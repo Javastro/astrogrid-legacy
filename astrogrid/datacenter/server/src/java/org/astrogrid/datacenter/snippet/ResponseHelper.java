@@ -1,17 +1,18 @@
 /*
- * $Id: ResponseHelper.java,v 1.1 2003/11/18 11:10:16 mch Exp $
+ * $Id: ResponseHelper.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.snippet;
-import org.astrogrid.datacenter.snippet.*;
 
 import java.net.URL;
+
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.query.*;
-import org.astrogrid.log.Log;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,6 +26,8 @@ import org.w3c.dom.Element;
 
 public class ResponseHelper
 {
+    private static final Log log = LogFactory.getLog(ResponseHelper.class);
+    
    /** Root tag used when acknowledging a query request, that a query has started */
    public static final String QUERY_STARTED_RESP_TAG = "QueryStarted";
 
@@ -43,8 +46,10 @@ public class ResponseHelper
     */
    public static Document makeQueryStartedResponse(DatabaseQuerier querier) throws Throwable
    {
+       log.debug("makeQueryStartedResponse");
       if (querier.getStatus() == QueryStatus.ERROR)
       {
+          log.info("querier in error",querier.getError());
          throw querier.getError();
       }
 
@@ -65,8 +70,10 @@ public class ResponseHelper
     */
    public static Document makeQueryCreatedResponse(DatabaseQuerier querier) throws Throwable
    {
+       log.debug("makeQueryCreatedResponse");
       if (querier.getStatus() == QueryStatus.ERROR)
       {
+          log.info("querier in error",querier.getError());
          throw querier.getError();
       }
 
@@ -88,8 +95,10 @@ public class ResponseHelper
     */
    public static Document makeStatusResponse(DatabaseQuerier querier) throws Throwable
    {
+       log.debug("makeStatusResponse");
       if (querier.getStatus() == QueryStatus.ERROR)
-      {
+      { 
+          log.info("querier in error");
          throw querier.getError();
       }
 
@@ -105,6 +114,7 @@ public class ResponseHelper
     */
    public static Document makeUnknownIdResponse(String id)
    {
+       log.debug("makeUnknownIdResponse");
          String doc =
             "<"+DocMessageHelper.ERROR_TAG+">\n"
             +"   Unknown Service ID submitted: "+id
@@ -123,8 +133,11 @@ public class ResponseHelper
     */
    public static Document makeResultsResponse(DatabaseQuerier querier, Element results)
    {
-      Log.affirm(results != null, "Results=null");
-
+       log.debug("makeResultsResponse");
+       if (results == null) {
+           log.error("Results = null");
+       }
+ 
       String doc =
           QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
@@ -145,7 +158,10 @@ public class ResponseHelper
     */
    public static Document makeResultsResponse(DatabaseQuerier querier, URL results)
    {
-      Log.affirm(results != null, "Results=null");
+       log.debug("makeResultsResponse");
+      if (results == null) {
+          log.error("Results=null");
+      }
 
       String doc =
           QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getHandle())+"\n"

@@ -14,24 +14,30 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class ServerTest extends TestCase
+public class ServerTest extends ServerTestCase
 {
+    public ServerTest(String name) {
+        super(name);
+    }
 
    /**
     * Tests the query service by itself
@@ -55,10 +61,16 @@ public class ServerTest extends TestCase
       assertNotNull(fileDoc);
 
       Select adql = ADQLUtils.unmarshalSelect(fileDoc);
+      Query q = new Query();
+      q.setSelect(adql);
       
       //submit query
-      Element votable = server.doQuery(AdqlQuerier.VOTABLE, adql);
-      assertNotNull(votable);
+      String result = server.doQuery(AdqlQuerier.VOTABLE,q);
+      assertNotNull(result);  
+      assertIsResultsResponse(result);
+      
+      
+      
    }
 
    /**
@@ -91,6 +103,11 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.2  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

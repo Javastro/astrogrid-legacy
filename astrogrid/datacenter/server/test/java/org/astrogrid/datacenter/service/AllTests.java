@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2003/11/20 15:45:47 nw Exp $
+/*$Id: AllTests.java,v 1.5 2003/11/21 17:37:56 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,10 @@
  *
 **/
 package org.astrogrid.datacenter.service;
-import org.astrogrid.util.*;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.astrogrid.datacenter.snippet.ResponseHelperTest;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
@@ -45,6 +45,11 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.5  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.4  2003/11/20 15:45:47  nw
 started looking at tese tests
 

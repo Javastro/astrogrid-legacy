@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: SqlQuerier.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,17 +17,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
-import org.astrogrid.log.Log;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -44,6 +46,7 @@ import org.xml.sax.SAXException;
 
 public class SqlQuerier extends DatabaseQuerier
 {
+    protected static final Log log = LogFactory.getLog(SqlQuerier.class);
    /** connection to the database */
    protected Connection jdbcConnection;
    /** configuration file key, that gives us the name of a datasource in JNDI to use for this database querier */
@@ -80,7 +83,13 @@ public class SqlQuerier extends DatabaseQuerier
 
    }
 
+/** @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
+ * @todo introduce a jdbc connection pool - new connection is currently made for each database querier. then discarded after a single query.
+ * @return
+ * @throws DatabaseAccessException
+ */
 protected Connection createConnection() throws DatabaseAccessException {
+    log.debug("Creating Connection");
       String userId = SimpleConfig.getProperty(USER_KEY);
       String password = SimpleConfig.getProperty(PASSWORD_KEY);
     
@@ -90,7 +99,7 @@ protected Connection createConnection() throws DatabaseAccessException {
       {
          try
          {
-            // look up data source,
+            log.debug("Looking for datasource in JNDI");
             DataSource ds = (DataSource)new InitialContext().lookup(jndiDataSourceName);
     
             //connect (using user/password if given)
@@ -105,17 +114,18 @@ protected Connection createConnection() throws DatabaseAccessException {
          }
          catch (NamingException ne)
          {
-             ne.printStackTrace();
+             log.error("Encountered naming exception",ne);
             throw new DatabaseAccessException(ne,"Failed to lookup datasource for '"+jndiDataSourceName+"'" + ne.getMessage());
          }
          catch (SQLException ne)
          {
-             ne.printStackTrace();
+            log.error("Failed to connect to datasrouce",ne);
             throw new DatabaseAccessException(ne,"Failed to connect to datasource '"+jndiDataSourceName+"'" + ne.getMessage());
          }
       }
       else
       {
+          log.debug("Looking in configuration");
          // failing that, look for a URL in configuration
          String jdbcURL = SimpleConfig.getProperty(JDBC_URL_KEY);
          if ( jdbcURL != null)
@@ -133,10 +143,12 @@ protected Connection createConnection() throws DatabaseAccessException {
                }
                catch (IOException ioe)
                {
+                   log.error("Failed to load connection properties",ioe);
                   throw new DatabaseAccessException(ioe,"Failed to load connection properties from key '"+JDBC_CONNECTION_PROPERTIES_KEY+"'");
                }
                catch (SQLException se)
                {
+                   log.error("Failed to connect to db",se);
                   throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
                }
             }
@@ -213,7 +225,7 @@ protected Connection createConnection() throws DatabaseAccessException {
    {
       try
       {
-          Log.trace("Starting JDBC driver '"+driverClassName+"'...");
+          log.info("Starting JDBC driver '"+driverClassName+"'...");
           Constructor constr= Class.forName(driverClassName).getConstructor(new Class[]{});
           constr.newInstance(new Object[]{});
       }
@@ -265,6 +277,7 @@ protected Connection createConnection() throws DatabaseAccessException {
          }
          catch (Exception e) //catch all problems with instantiation and rethrow with more info
          {
+             log.error("Failed to create query translator");
             throw new RuntimeException("Failed to create query translator ("+translatorClassName+") given in config by key "+ADQL_SQL_TRANSLATOR+": "+e, e);
          }
       }
@@ -276,14 +289,15 @@ protected Connection createConnection() throws DatabaseAccessException {
     * the SQL ResultSet.
     */
    public QueryResults queryDatabase(Query query) throws DatabaseAccessException {
-      String sql = null;
-
+      String sql = null;        
       try
       {
+          log.debug("Queying the database");
          jdbcConnection = createConnection();
          Statement statement = jdbcConnection.createStatement();
          QueryTranslator trans = createQueryTranslator();
-         sql = query.toSql(trans);
+         sql = trans.translate(query.getSelect());
+         log.debug("Query to perform: " + sql);
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 
@@ -291,7 +305,8 @@ protected Connection createConnection() throws DatabaseAccessException {
       } catch (SQLException e) {
          throw new DatabaseAccessException(e, "Could not query database using '" + sql + "'");
       } catch (Exception e) {
-         throw new DatabaseAccessException(e,"an error occurred");
+          e.printStackTrace();
+         throw new DatabaseAccessException(e,"an error occurred");       
       }
 
    }

@@ -1,29 +1,30 @@
 /*
- * $Id: ServiceServer.java,v 1.5 2003/11/18 11:10:16 mch Exp $
+ * $Id: ServiceServer.java,v 1.6 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
-import org.astrogrid.datacenter.snippet.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
-import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.axisdataserver.types.QueryId;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 
 /**
  * This abstract class provides the framework for managing the datacenter.  It
@@ -55,20 +56,12 @@ public abstract class ServiceServer
       return voResource;
    }
 
-   /**
-    * Returns the whole metadata file as a DOM document
-    * @todo implement better error reporting in case of failure
-    *
-    */
-   public Element getMetadata()
-   {
-      // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
-      // search for file, then for resource on classpath - fits better with appservers / servlet containers
-      String location = SimpleConfig.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
-      String trying = location; //for  error reporting
-      try
-      {
-
+/** primitive method to access stream containing metadata */
+    protected InputStream getMetadataStream() throws IOException {
+        // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
+        // search for file, then for resource on classpath - fits better with appservers / servlet containers
+        String location = SimpleConfig.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
+        String trying = location; //for  error reporting
         File metaFile = new File(location);
         InputStream is = null;
         if (metaFile.exists() && metaFile.isFile()) {
@@ -95,7 +88,21 @@ public abstract class ServiceServer
         if (is == null) {
             throw new IOException("metadata file '"+location+"' or '"+trying+" not found");
         }
+        return is;
+    }
 
+
+   /**
+    * Returns the whole metadata file as a DOM document
+    * @todo implement better error reporting in case of failure
+    *
+    */
+   public Element getMetadata()
+   {
+    InputStream is = null;
+      try
+      {
+        is = getMetadataStream();
          return XMLUtils.newDocument(is).getDocumentElement();
       }
       catch (ParserConfigurationException e)
@@ -106,12 +113,21 @@ public abstract class ServiceServer
       catch (SAXException e)
       {
          log.error("Invalid metadata",e);
-         throw new RuntimeException("Server not configured properly - invalid metadata in '"+trying+"'",e);
+         throw new RuntimeException("Server not configured properly - invalid metadata",e);
       }
       catch (IOException e)
       {
          log.error("Metadata file error",e);
-         throw new RuntimeException("Server not configured properly - metadata i/o error for '"+trying+"'",e);
+         throw new RuntimeException("Server not configured properly - metadata i/o error",e);
+      }
+      finally {
+          if (is != null) {
+              try {
+                is.close();
+              } catch (IOException e) {
+                  // not bothered
+              }
+          }
       }
    }
 
@@ -119,14 +135,18 @@ public abstract class ServiceServer
     * Returns the list of nodes of the metadata corresponding to the given XPath
     *
     * @todo implement
+    * @todo - is it possible to run XPATH over an input stream (SAX-like) rather than build a DOM first?
     */
    public NodeList getMetadata(String xpathExpression) throws IOException
    {
+       if (xpathExpression == null || xpathExpression.length() ==0) {
+           throw new IllegalArgumentException("Empty xpathExpression");
+       } 
       Element metadata = getMetadata();
 
       //do some xpathing
       try
-      {
+      {          
          NodeList nodes = XPathAPI.selectNodeList(metadata, xpathExpression);
 
          return nodes;
@@ -144,7 +164,7 @@ public abstract class ServiceServer
     * if the querier has an error (status = errro) throws the exception
     * (dont liek this too general)
     */
-   public Element getQuerierStatus(String queryId) throws Throwable
+   public Element getQuerierStatus(QueryId queryId) throws Throwable
    {
       return ResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
    }
@@ -152,10 +172,11 @@ public abstract class ServiceServer
    /**
     * Returns the service corresponding to the given ID
     */
-   public DatabaseQuerier getQuerier(String queryId)
+   protected DatabaseQuerier getQuerier(QueryId queryId)
    {
-      return DatabaseQuerierManager.getQuerier(queryId);
+      return DatabaseQuerierManager.getQuerier(queryId.getId());
    }
+
 
 
 }

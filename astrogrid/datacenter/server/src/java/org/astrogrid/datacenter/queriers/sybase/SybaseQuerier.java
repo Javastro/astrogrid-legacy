@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.1 2003/11/14 00:38:30 mch Exp $
+/*$Id: SybaseQuerier.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,10 +11,10 @@
 package org.astrogrid.datacenter.queriers.sybase;
 
 import java.io.IOException;
+
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /** DatabaseQuerier implementation for Sybase.
@@ -45,6 +45,11 @@ public class SybaseQuerier extends SqlQuerier
 
 /*
 $Log: SybaseQuerier.java,v $
+Revision 1.2  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.1  2003/11/14 00:38:30  mch
 Code restructure
 

@@ -1,22 +1,31 @@
 /*
- * $Id: SqlResults.java,v 1.2 2003/11/18 11:10:16 mch Exp $
+ * $Id: SqlResults.java,v 1.3 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.*;
-
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.util.Workspace;
 import org.astrogrid.log.Log;
+import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -189,6 +198,11 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.3  2003/11/21 17:37:56  nw
+ made a start tidying up the server.
+ reduced the number of failing tests
+ found commented out code
+
  Revision 1.2  2003/11/18 11:10:16  mch
  Removed client dependencies on server
 

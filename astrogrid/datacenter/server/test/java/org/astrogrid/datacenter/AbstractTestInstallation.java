@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.2 2003/11/17 15:42:03 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.3 2003/11/21 17:37:56 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,25 +10,31 @@
 **/
 package org.astrogrid.datacenter;
 
-import java.io.*;
-
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-import junit.framework.TestCase;
+
 import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.service.WebNotifyServiceListener;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -37,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
  *
  */
-public abstract class AbstractTestInstallation extends TestCase {
+public abstract class AbstractTestInstallation extends ServerTestCase {
 
     /**
      * Constructor for AbstractTestInstallation.
@@ -51,6 +57,7 @@ public abstract class AbstractTestInstallation extends TestCase {
           * unless system properties are defined (under the corresponding keys).
           */
     protected void setUp() throws Exception{
+        super.setUp();
         Call.initialize(); // registers new connction handlers.
         try {
        serviceURL = new URL (System.getProperty(SERVICE_URL_KEY,SERVICE_URL_DEFAULT)); // trailing / is important here.
@@ -79,7 +86,7 @@ public abstract class AbstractTestInstallation extends TestCase {
         System.out.println(SERVICE_URL_KEY + "=" + serviceURL.toString());
         System.out.println(QUERY_FILE_KEY + "=" + queryFile.getPath());
     }
-    /* not implemented yet
+/* unimplemented
     public void testGetRegistryMetadata() {
         AdqlQuerier del = createDelegate();
         try {
@@ -93,15 +100,15 @@ public abstract class AbstractTestInstallation extends TestCase {
             fail("Could not get registryMetaData: " + e.getMessage());
         }
     }
-     */
+ */    
     
     public void testGetMetatdata() {
         AdqlQuerier del = createDelegate();
         try {
             Metadata result = del.getMetadata();
             assertNotNull(result);
-             assertNotNull(result.getDocument());
-            // not much else we can do here yet.
+            Document d = result.getDocument();             
+             assertIsMetadata(d);
         } catch (IOException e) {
             e.printStackTrace();
             fail("Could not get metadata:" + e.getMessage());
@@ -149,9 +156,9 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** helper method to do a query */
-    protected void doQuery(AdqlQuerier del, InputStream is) throws IOException, ADQLException {
-       Element input = parseInput(is);
-       Select adql = ADQLUtils.unmarshalSelect(input);
+    protected void doQuery(AdqlQuerier del, InputStream is) throws Exception {
+       
+       Select adql = Select.unmarshalSelect(new InputStreamReader(is));
        DatacenterResults result = del.doQuery(AdqlQuerier.VOTABLE, adql);
         assertNotNull("Result of query was null",result);
 //        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
@@ -160,32 +167,12 @@ public abstract class AbstractTestInstallation extends TestCase {
     
     }
 
-    protected Element parseInput(InputStream is) {
-        Document doc = null;
-        try {
-            doc = XMLUtils.newDocument(is);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail("Error reading query document: " + e.getMessage());
-        } catch (SAXException e) {
-            e.printStackTrace();
-            fail("Could not parse query document: " + e.getMessage());
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            fail("Problem initializing XML parser: " + e.getMessage());
-        }
-        assertNotNull("VOQL document is null",doc);
-        Element input = doc.getDocumentElement();
-        assertNotNull("VOQL document has no root element",input);
-        return input;
-    }
+
 
     /** helper test method to do a non-blockinig query */
-    protected void doNonBlockingQuery(AdqlQuerier del, InputStream is) throws ADQLException, IOException {
+    protected void doNonBlockingQuery(AdqlQuerier del, InputStream is) throws Exception {
 
-        Element input = parseInput(is);
-        Select adql = ADQLUtils.unmarshalSelect(input);
-
+        Select adql = Select.unmarshalSelect(new InputStreamReader(is));
         DatacenterQuery query = del.makeQuery(adql);
         // check the response document.
         assertNotNull("query creation response document is null",query);
@@ -275,11 +262,23 @@ public abstract class AbstractTestInstallation extends TestCase {
     
    }
 
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
 }
 
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.3  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.2  2003/11/17 15:42:03  mch
 Package movements
 

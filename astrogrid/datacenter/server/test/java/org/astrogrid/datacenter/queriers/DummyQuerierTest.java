@@ -1,17 +1,16 @@
 /*
- * $Id: QuerierTest.java,v 1.1 2003/11/14 00:38:30 mch Exp $
+ * $Id: DummyQuerierTest.java,v 1.1 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import java.io.IOException;
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.astrogrid.datacenter.ServerTestCase;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * Tests the dummy querier and resultset.
@@ -19,13 +18,23 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class QuerierTest extends TestCase
+public class DummyQuerierTest extends ServerTestCase
 {
+    public DummyQuerierTest(String name) {
+        super(name);
+    }
+
+    protected void setUp() throws Exception{
+        super.setUp();
+    }
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
    /**
     * Tests the dummy queriers and results
     */
-   public void testDummies() throws IOException, SAXException, DatabaseAccessException
+   public void testDummies() throws Exception
    {
       DatabaseQuerier querier = new DummyQuerier();
       QueryResults results = null;
@@ -37,10 +46,7 @@ public class QuerierTest extends TestCase
       //into a DOM tree
       Document doc = results.toVotable();
       assertNotNull("results.toVotable() returns null",doc);
-
-      //this gives a visual test but isn't much use for automated testers
-//      System.out.println("...results:");
-//      XMLUtils.DocumentToStream(doc, System.out);
+      assertIsVotable(doc);
 
       //does a quick check for certain elements
       assertTrue(doc.getElementsByTagName("TR").getLength() > 5);
@@ -57,7 +63,7 @@ public class QuerierTest extends TestCase
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(QuerierTest.class);
+        return new TestSuite(DummyQuerierTest.class);
     }
 
     /**

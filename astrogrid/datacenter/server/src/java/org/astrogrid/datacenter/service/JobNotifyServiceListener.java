@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.6 2003/11/17 21:56:29 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.7 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,7 +7,9 @@
 package org.astrogrid.datacenter.service;
 
 import java.net.URL;
+
 import javax.xml.rpc.ServiceException;
+
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
@@ -51,6 +53,11 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.7  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.6  2003/11/17 21:56:29  mch
 Moved notification stuff to client part 2
 

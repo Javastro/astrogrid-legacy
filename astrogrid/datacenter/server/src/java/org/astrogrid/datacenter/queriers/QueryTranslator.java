@@ -1,4 +1,4 @@
-/*$Id: QueryTranslator.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: QueryTranslator.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.datacenter.queriers;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.DynamicVisitor;
@@ -29,6 +31,7 @@ import org.w3c.dom.Element;
  * @see TranslationFrame
  */
 public abstract  class QueryTranslator implements DynamicVisitor {
+    protected static final Log log = LogFactory.getLog(QueryTranslator.class);
     /** stack of translation frames
      * declare methods that require a translation frame via {@link #requiresFrame} */
     protected TranslationFrame.Stack stack = new TranslationFrame.Stack();
@@ -41,6 +44,7 @@ public abstract  class QueryTranslator implements DynamicVisitor {
     */
    public String translate(Element query) throws ADQLException, MarshalException, ValidationException
    {
+       log.debug("translating query");
       QOM qom = ADQLUtils.unmarshalSelect(query);
       return translate(qom);
    }
@@ -113,6 +117,11 @@ public abstract  class QueryTranslator implements DynamicVisitor {
 
 /*
 $Log: QueryTranslator.java,v $
+Revision 1.2  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

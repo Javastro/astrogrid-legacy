@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/11/14 00:38:30 mch Exp $
+/*$Id: AllTests.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ public class AllTests {
         TestSuite suite =
             new TestSuite("Test for org.astrogrid.datacenter.queriers");
         //$JUnit-BEGIN$
-        suite.addTest(QuerierTest.suite());
+        suite.addTest(DummyQuerierTest.suite());
         suite.addTest(QueryTranslatorTest.suite());
         //$JUnit-END$
         return suite;
@@ -42,6 +42,11 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.2  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.1  2003/11/14 00:38:30  mch
 Code restructure
 

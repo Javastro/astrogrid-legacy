@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: SocketServer.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.net.Socket;
 
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.log.Log;
-
+ 
 /**
  * A quick and dirty tcp/ip socket server that listens on a port, reading
  * SOAP messages and returning result documents.

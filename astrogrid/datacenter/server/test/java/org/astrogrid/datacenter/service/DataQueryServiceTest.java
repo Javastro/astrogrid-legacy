@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.4 2003/11/18 14:36:59 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.5 2003/11/21 17:37:56 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,30 +11,34 @@
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
  *@todo reinstate dummy myspace, once we get a myspace delegate built.
  */
-public class DataQueryServiceTest extends TestCase {
+public class DataQueryServiceTest extends ServerTestCase {
 
     /**
      * Constructor for DataQueryServiceTest.
@@ -50,13 +54,14 @@ public class DataQueryServiceTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        super.setUp();
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
         SimpleConfig.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,DatabaseQuerier.TEMPORARY_DUMMY);
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
-          String script = HsqlTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
+          String script = getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         HsqlTestCase.runSQLScript(script,conn);
     }
 
@@ -73,13 +78,14 @@ public class DataQueryServiceTest extends TestCase {
             } catch (Exception e) {
             }
         }
+        super.tearDown();
     }
 
     public void testHandleUniqueness() throws IOException {
         SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,DummyQuerier.class.getName());
-         DatabaseQuerier s1 = DatabaseQuerierManager.createQuerier();
+         DatabaseQuerier s1 = DatabaseQuerierManager.createQuerier((Query)null);
          assertNotNull(s1);
-         DatabaseQuerier s2 = DatabaseQuerierManager.createQuerier();
+         DatabaseQuerier s2 = DatabaseQuerierManager.createQuerier((Query)null);
          assertNotNull(s2);
          assertNotSame(s1,s2);
          assertTrue(! s1.getHandle().trim().equals(s2.getHandle().trim()));
@@ -92,10 +98,9 @@ public class DataQueryServiceTest extends TestCase {
        //get test query
         InputStream queryIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
         assertNotNull(queryIn);
-        Document testQuery = XMLUtils.newDocument(queryIn);
-        assertNotNull(testQuery);
+        Query query = Query.unmarshalQuery(new InputStreamReader(queryIn));
         
-        DatabaseQuerier querier =  DatabaseQuerierManager.createQuerier(testQuery.getDocumentElement());
+        DatabaseQuerier querier =  DatabaseQuerierManager.createQuerier(query);
         assertNotNull(querier);
         assertEquals(QueryStatus.CONSTRUCTED,querier.getStatus());
         assertEquals(-1.0,querier.getQueryTimeTaken(),0.001);
@@ -109,9 +114,8 @@ public class DataQueryServiceTest extends TestCase {
         assertTrue(querier.getQueryTimeTaken() > 0);
         URL votableLoc = new URL(querier.getResultsLoc());
         assertNotNull(votableLoc);
-
-        Document votable = XMLUtils.newDocument(votableLoc.openStream());
-        assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());
+        Document votable = XMLUtils.newDocument(votableLoc.openStream());       
+        assertIsVotable(votable);
     
        // check what the listener recorded. - should always be the same pattern for this query.
         assertEquals(4,l.statusList.size());
@@ -154,6 +158,11 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.5  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.4  2003/11/18 14:36:59  nw
 temporarily commented out references to MySpaceDummyDelegate, so that the sustem will build
 

@@ -12,18 +12,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.snippet.DocMessageHelper;
-import org.astrogrid.datacenter.query.QueryStatus;
+
+import org.apache.commons.logging.Log;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
-import org.astrogrid.util.Workspace;
-import org.astrogrid.log.Log;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManager;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
+import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -48,6 +47,9 @@ import org.xml.sax.SAXException;
 
 public abstract class DatabaseQuerier implements Runnable
 {
+    
+   protected static final Log log = org.apache.commons.logging.LogFactory.getLog(DatabaseQuerier.class);
+    
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();
 
@@ -116,23 +118,12 @@ public abstract class DatabaseQuerier implements Runnable
          this.userid = userid;
      }
 
-   /**
-    * Creates the query model based on the given DOM.
-    */
-   public void setQuery(Element givenDOM) throws ADQLException, QueryException
-   {
-      query = new Query(givenDOM);
-      setStatus(QueryStatus.CONSTRUCTED);
-   }
-
-   /**
-    * Creates the query model based on the given DOM.
-    */
-   public void setQuery(QOM adql)
-   {
-      query = new Query(adql);
-      setStatus(QueryStatus.CONSTRUCTED);
-   }
+ /** sets the query model */
+    public void setQuery(Query q) {
+        this.query =q;
+        this.setStatus(QueryStatus.CONSTRUCTED);
+    }
+    
 
    /**
     * Sets up the target of where the results will be sent to
@@ -199,22 +190,22 @@ public abstract class DatabaseQuerier implements Runnable
       }
       catch (QueryException e)
       {
-         Log.logError("Could not construct query in spawned thread ",e);
+         log.error("Could not construct query in spawned thread ",e);
          setErrorStatus(e);
       }
       catch (DatabaseAccessException e)
       {
-         Log.logError("Could not access database in spawned thread ",e);
+         log.error("Could not access database in spawned thread ",e);
          setErrorStatus(e);
       }
       catch (IOException e)
       {
-         Log.logError("Could not create file on myspace",e);
+         log.error("Could not create file on myspace",e);
          setErrorStatus(e);
       }
       catch (Exception e)
       {
-         Log.logError("Myspace raised an undescriptive exception",e);
+         log.error("Myspace raised an undescriptive exception",e);
          setErrorStatus(e);
       }
    }
@@ -234,10 +225,13 @@ public abstract class DatabaseQuerier implements Runnable
     */
    protected void testResultsDestination() throws Exception
    {
-      Log.affirm(resultsDestination != null,
+      if (resultsDestination == null) {
+          log.error(
                  "No Result target (eg myspace) given in config file (key "+DatabaseQuerierManager.RESULTS_TARGET_KEY+"), "+
                  "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
-
+        throw new IllegalStateException("no results destination");
+      }
+      
       MySpaceManagerDelegate myspace = null;
       
       if (resultsDestination.equals(TEMPORARY_DUMMY)) {
@@ -260,7 +254,10 @@ public abstract class DatabaseQuerier implements Runnable
     */
    protected void sendResults(QueryResults results) throws Exception
    {
-      Log.affirm(results != null, "No results to send");
+      if(results == null) {
+          log.error("No results to send");
+          throw new IllegalStateException("No results to send");
+      }
 
       MySpaceManagerDelegate myspace = null;
       
@@ -289,7 +286,7 @@ public abstract class DatabaseQuerier implements Runnable
       }
       catch (SAXException se)
       {
-         Log.logError("Could not create VOTable",se);
+         log.error("Could not create VOTable",se);
          //couldn't send as VOTable. Try CSV
          /*
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
@@ -375,7 +372,7 @@ public abstract class DatabaseQuerier implements Runnable
       }
       catch (IOException e)
       {
-         Log.logError("Aborting querier "+this,e);
+         log.error("Aborting querier "+this,e);
       }
    }
 
@@ -414,14 +411,20 @@ public abstract class DatabaseQuerier implements Runnable
     */
    public synchronized void setStatus(QueryStatus newStatus)
    {
-      Log.affirm(status != QueryStatus.ERROR,
+      if (status == QueryStatus.ERROR) {
+          log.error(
                  "Trying to start a step '"+newStatus+"' when the status is '"
                     +status+"'");
+           throw new IllegalStateException("Trying to start a step " + newStatus + " when the status is " + status);
+      }
 
-      Log.affirm(!newStatus.isBefore(status),
+      if (newStatus.isBefore(status)) {
+          log.error(
                  "Trying to start a step '"+newStatus
                     +"' that has already been completed:"
                     +" status '"+status);
+           throw new IllegalStateException("Trying to start a step " + newStatus + "that has already been completed" + status);
+      }
 
       status = newStatus;
 
@@ -445,8 +448,11 @@ public abstract class DatabaseQuerier implements Runnable
     */
    public Throwable getError()
    {
-      Log.affirm(status == QueryStatus.ERROR,
+      if (status != QueryStatus.ERROR){
+          log.error(
                  "Trying to get exception but there is no error, status='"+status+"'");
+          throw new IllegalStateException("Trying to get an ecception, but there is no error, status=" + status);
+      }
 
       return error;
    }
@@ -484,6 +490,11 @@ public abstract class DatabaseQuerier implements Runnable
 }
 /*
 $Log: DatabaseQuerier.java,v $
+Revision 1.6  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.5  2003/11/18 14:36:21  nw
 temporarily commented out references to MySpaceDummyDelegate, so that the sustem will build
 

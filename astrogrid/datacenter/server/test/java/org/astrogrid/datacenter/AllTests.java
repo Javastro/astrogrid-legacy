@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/11/17 12:16:33 nw Exp $
+/*$Id: AllTests.java,v 1.3 2003/11/21 17:37:56 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ public class AllTests {
 
 
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.datacenter");
+        TestSuite suite = new TestSuite("Test for Datacenter Server");
         //$JUnit-BEGIN$
         //suite.addTest(QueryTestSuite.suite());
         //$JUnit-END$ 
@@ -45,6 +45,11 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.2  2003/11/17 12:16:33  nw
 first stab at mavenizing the subprojects.
 

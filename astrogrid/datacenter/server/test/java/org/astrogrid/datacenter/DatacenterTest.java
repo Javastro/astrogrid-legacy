@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.4 2003/11/18 14:37:35 nw Exp $
+/*$Id: DatacenterTest.java,v 1.5 2003/11/21 17:37:56 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.datacenter;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -64,12 +63,12 @@ public class DatacenterTest extends AbstractTestInstallation {
         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
 
         // populate the database
-        String script = HsqlTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
+        String script = ServerTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         conn = ds.getConnection();
         HsqlTestCase.runSQLScript(script,conn);
         // Extract the wsdd file.
-        String wsdd = HsqlTestCase.getResourceAsString("/wsdd/deploy.wsdd");
+        String wsdd = ServerTestCase.getResourceAsString("/wsdd/deploy.wsdd");
         assertNotNull(wsdd);
         PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream("AxisDataServer-deploy.wsdd")));
         pw.print(wsdd);
@@ -82,7 +81,7 @@ public class DatacenterTest extends AbstractTestInstallation {
         AdminClient.main(args);
      // configure parameters to testing superclass.
         System.setProperty(SERVICE_URL_KEY,"local:///AxisDataServer");
-        System.setProperty(QUERY_FILE_KEY,"/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
+        System.setProperty(QUERY_FILE_KEY,"/org/astrogrid/datacenter/test-query.adql");
         // off we go.
         super.setUp();
     }
@@ -107,6 +106,11 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.5  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.4  2003/11/18 14:37:35  nw
 removed references to WorkspaceTest - has now been moved to astrogrid-common
 

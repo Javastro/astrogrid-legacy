@@ -1,25 +1,34 @@
 /*
- * $Id: AxisDataServer.java,v 1.6 2003/11/18 11:10:16 mch Exp $
+ * $Id: AxisDataServer.java,v 1.7 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import org.astrogrid.datacenter.snippet.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
+
+import org.apache.axis.types.URI;
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.axisdataserver.types.QueryId;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.log.Log;
+import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -38,13 +47,16 @@ import org.xml.sax.SAXException;
  *fits with WSDL description.
  * MCH - temporarily commented this out until I've learned to generate the WSDL + service implementation, as otherwise this
  * circular dependency breaks every time I modify this interface and try to run unit tests :-)
+ * @modified nww put it back in - otherwise we don't know whether the client and server will interoperate.
  * @author M Hill
  * @author Noel Winstanly
  *
  */
 
-public class AxisDataServer extends ServiceServer //MCH see above implements org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServer
-{
+public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.axisdataserver.AxisDataServer {
+    
+    public static Log log = LogFactory.getLog(AxisDataServer.class);
+    
    /**
     * Initialises the configuration.  The configuration is loaded from the
     * classpath, rather than file, because we don't know our home directory
@@ -61,10 +73,34 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * Returns the metadata file
     * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.
     * @soap
+    * @todo - improve type of this method. - return an object model? or element?
     */
-   public Element getMetadata(Object ignored)
+   public String getMetadata(Object ignored)
    {
-      return super.getMetadata();
+       BufferedReader is = null;
+       PrintWriter os = null;
+       try {
+        is = new BufferedReader( new InputStreamReader (super.getMetadataStream()));
+        StringWriter sw = new StringWriter();
+        os = new PrintWriter(sw);
+        String line = null;
+        while ( (line = is.readLine()) != null) {
+            os.println(line);
+         }
+      return sw.toString();
+       } catch (IOException e) {
+           throw new RuntimeException("Could not access metadata",e);
+       } finally {
+           try {
+               if (is != null) {
+                   is.close();
+               }
+               if (os != null) {
+                   os.close();
+               }
+           } catch (IOException notBothered) {
+           }
+       }
    }
 
 
@@ -77,29 +113,35 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public Element doQuery(String resultsFormat,  Select adql) throws IOException
+   public String doQuery(String resultsFormat,  Query q) throws IOException
    {
-      Log.affirm(resultsFormat.toLowerCase().equals("votable"), "Can only produce votable results");
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
+       if (resultsFormat == null || resultsFormat.length() == 0) {
+           throw new IllegalArgumentException("Empty parameter for results format");
+       }
+      if (!resultsFormat.toLowerCase().equals("votable")) {
+            log.error("Can only produce votable results");
+            throw new IllegalArgumentException("Can only produce votable results");
+      }
 
-      QueryResults results = querier.doQuery();
-
-      querier.setStatus(QueryStatus.RUNNING_RESULTS);
-
+        DatabaseQuerier querier = null;
       try
       {
+          querier = DatabaseQuerierManager.createQuerier(q);
+          QueryResults results = querier.doQuery();
+          querier.setStatus(QueryStatus.RUNNING_RESULTS);          
          Element result = ResponseHelper.makeResultsResponse(
-            querier,
-            results.toVotable().getDocumentElement()
-         ).getDocumentElement();
-         
-         querier.close();
-         return result;
-         
+                querier,
+                results.toVotable().getDocumentElement()
+            ).getDocumentElement();         
+         return XMLUtils.ElementToString(result);        
       }
       catch (SAXException e)
       {
          throw new DatacenterException("Failed to convert results to VOTable", e);
+      } finally {
+          if (querier != null) {
+              querier.close();
+          }
       }
    }
 
@@ -110,12 +152,15 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public String makeQuery(Select adql) throws IOException
+   public QueryId  makeQuery(Query q) throws IOException
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
+
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(q);
 
       //construct reply with id in it...
-      return querier.getHandle();
+      QueryId result = new QueryId();
+      result.setId( querier.getHandle() );
+      return result;
    }
 
    /**
@@ -126,33 +171,42 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * NWW - changed name (was makeQuery). Method overloading is tricky for soap.
     * @soap
     */
-   public String makeQueryWithId(Select adql, String assignedId) throws QueryException, IOException, SAXException
+   public QueryId makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, assignedId);
+      
+       if (assignedId == null || assignedId.length() == 0) {
+           throw new IllegalArgumentException("Empty assigned id");
+       }
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(q, assignedId);
 
       //construct reply with id in it...
-      return querier.getHandle();
+      QueryId result = new QueryId();      
+      result.setId(querier.getHandle());
+      return result;
    }
 
    /**
     * Sets where the results are to be sent
     * @soap
     */
-   public void setResultsDestination(String queryId, String resultsDestination)
+   public void setResultsDestination(QueryId queryId, URI resultsDestination)
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+       if (resultsDestination == null ) {
+           throw new IllegalArgumentException("Empty results destination");
+       }
+      DatabaseQuerier querier = getQuerier(queryId);
       
-      querier.setResultsDestination(resultsDestination);
+      querier.setResultsDestination(resultsDestination.toString());
    }
 
    /**
     * Starts an existing query running
     * @soap
+    * @todo - use a thread pool system here - threads are resource-hungry.
     */
-   public void startQuery(String id)
+   public void startQuery(QueryId id)
    {
-      //get id from soap body
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(id);
+      DatabaseQuerier querier = getQuerier(id);
 
       Thread queryThread = new Thread(querier);
       queryThread.start();
@@ -164,10 +218,9 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public String getResultsAndClose(String queryId)
+   public String getResultsAndClose(QueryId queryId)
    {
-
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+      DatabaseQuerier querier =getQuerier(queryId);
 
       //has querier finished?
       if (!querier.getStatus().isBefore(QueryStatus.FINISHED))
@@ -187,11 +240,12 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public void abortQuery(String queryId)
+   public void abortQuery(QueryId queryId)
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
-
-      querier.abort();
+      DatabaseQuerier querier = getQuerier(queryId);
+      if (querier != null) {
+        querier.abort();
+      }
    }
 
    /**
@@ -199,9 +253,9 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public String getStatus(String queryId)
+   public String getStatus(QueryId queryId)
    {
-      return DatabaseQuerierManager.getQuerier(queryId).getStatus().toString();
+      return getQuerier(queryId).getStatus().toString();
    }
 
    /**
@@ -209,11 +263,17 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public void registerWebListener(String queryId, String url) throws MalformedURLException
+   public void registerWebListener(QueryId queryId , URI uri) throws RemoteException
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
-      querier.registerListener(new WebNotifyServiceListener(new URL(url)));
+       try {
+       URL u = new URL(uri.toString());
+      DatabaseQuerier querier = getQuerier(queryId);
+
+      querier.registerListener(new WebNotifyServiceListener(u));
+       } catch (MalformedURLException e) {
+           throw new RemoteException("Malformed URL",e);
+       }
    }
 
    /**
@@ -221,11 +281,17 @@ public class AxisDataServer extends ServiceServer //MCH see above implements org
     * <p>
     * @soap
     */
-   public void registerJobMonitor(String queryId, String url) throws MalformedURLException
+   public void registerJobMonitor(QueryId queryId, URI uri) throws RemoteException 
    {
-      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+       // check we can create an URL first..
+       try {
+       URL u = new URL(uri.toString());
+      DatabaseQuerier querier = getQuerier(queryId);
 
-      querier.registerListener(new WebNotifyServiceListener(new URL(url)));
+      querier.registerListener(new WebNotifyServiceListener(u));
+       } catch (MalformedURLException e) {
+           throw new RemoteException("Malformed URL",e);
+       }
    }
 
 }

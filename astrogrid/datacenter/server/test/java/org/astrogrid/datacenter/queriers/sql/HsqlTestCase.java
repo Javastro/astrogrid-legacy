@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.2 2003/11/20 15:45:47 nw Exp $
+/*$Id: HsqlTestCase.java,v 1.3 2003/11/21 17:37:56 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -24,12 +19,11 @@ import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
+import junit.framework.TestCase;
+
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
-
-import junit.framework.TestCase;
 
 /** abstract test case for testing against an in-memory Hsql database.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
@@ -44,12 +38,48 @@ public abstract class HsqlTestCase extends TestCase {
     public HsqlTestCase(String arg0) {
         super(arg0);
     }
+    
+    public static final String JDBC_URL = "jdbc:hsqldb:test-db";
+    public static final String JDBC_DRIVER = "org.hsqldb.jdbcDriver";
+
+/**
+ *  run a sql script against a db connection
+ * @param script
+ * @param conn
+ * @throws SQLException
+ */
+    public static void runSQLScript(String script, Connection conn) throws SQLException {
+        StringTokenizer tok = new StringTokenizer(script,";");
+        assertTrue(tok.hasMoreElements());
+        while (tok.hasMoreElements()) {
+            String command = tok.nextToken();
+            Statement stmnt = conn.createStatement();
+            assertNotNull(stmnt);
+            stmnt.execute(command);
+        }
+    }
+
+    /** sets up correct Configuration properties for the in-memory hsql database */
+    public static void initializeConfiguration() throws DatabaseAccessException
+    {
+       //register HSQLDB driver with driver key in configration file
+       //put driver into config file
+       SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, JDBC_DRIVER );
+       SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
+        
+       //register where to find database
+       SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, JDBC_URL );
+       SimpleConfig.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+
+       SqlQuerier.startDrivers();
+    }
+    
 
     /** duff little class to provide a datasource over the in-memory hsql database */
     public static class HsqlDataSource implements DataSource {
         public HsqlDataSource() {
             try {
-            Class driver = Class.forName("org.hsqldb.jdbcDriver");
+            Class driver = Class.forName(JDBC_DRIVER);
             assertNotNull(driver);
             } catch (Exception e) {
                 fail("could not locate db driver: " + e.getMessage());
@@ -92,7 +122,7 @@ public abstract class HsqlTestCase extends TestCase {
          */
         public Connection getConnection() throws SQLException {
             // Auto-generated method stub
-            return DriverManager.getConnection ("jdbc:hsqldb:test-db", "sa", "");
+            return DriverManager.getConnection (JDBC_URL, "sa", "");
         }
 
         /* (non-Javadoc)
@@ -100,74 +130,20 @@ public abstract class HsqlTestCase extends TestCase {
          */
         public Connection getConnection(String username, String password) throws SQLException {
             // Auto-generated method stub
-            return DriverManager.getConnection ("jdbc:hsqldb:test-db", username,password);
+            return DriverManager.getConnection (JDBC_URL, username,password);
         }
-    }
-/**
- *  run a sql script against a db connection
- * @param script
- * @param conn
- * @throws SQLException
- */
-    public static void runSQLScript(String script, Connection conn) throws SQLException {
-        StringTokenizer tok = new StringTokenizer(script,";");
-        assertTrue(tok.hasMoreElements());
-        while (tok.hasMoreElements()) {
-            String command = tok.nextToken();
-            Statement stmnt = conn.createStatement();
-            assertNotNull(stmnt);
-            stmnt.execute(command);
-        }
-    }
-
-/**
- * load a resource file into a string.
- * @param resource
- * @return
- * @throws IOException
- */
-    public static String getResourceAsString(String resource) throws IOException {
-          InputStream is = HsqlTestCase.class.getResourceAsStream(resource);
-            assertNotNull(is);
-              String script = streamToString(is);
-              assertNotNull(script);
-        return script;
-    }
-    public static String streamToString(InputStream is) throws IOException {
-        assertNotNull(is);
-          BufferedReader r = new BufferedReader(new InputStreamReader(is));
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            String line = null;
-            while ( (line = r.readLine()) != null) {
-                pw.println(line);
-            }
-            pw.close();
-            r.close();
-            String str = sw.toString();
-            assertNotNull(str);
-        return str;
-    }
-    /** sets up correct Configuration properties for the in-memory hsql database */
-    public static void initializeConfiguration() throws DatabaseAccessException
-    {
-       //register HSQLDB driver with driver key in configration file
-       //put driver into config file
-       SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
-       SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
-        
-       //register where to find database
-       SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:.");
-       SimpleConfig.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
-
-       SqlQuerier.startDrivers();
-    }
+    }    
 
 }
 
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.3  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.2  2003/11/20 15:45:47  nw
 started looking at tese tests
 

@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
-import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator;
 /** test the query translator - maybe n the wrong package, but convenient to have it here for now.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  * * @todo add wider range of tests.
@@ -92,6 +91,11 @@ public class SqlQueryTranslatorTest extends TestCase {
 
 /* 
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.2  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

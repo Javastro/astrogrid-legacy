@@ -1,4 +1,4 @@
-/*$Id: SqlResultsTest.java,v 1.2 2003/11/20 15:45:47 nw Exp $
+/*$Id: SqlResultsTest.java,v 1.3 2003/11/21 17:37:56 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,19 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import org.astrogrid.datacenter.ServerTestCase;
 import org.w3c.dom.Document;
 
-import junit.framework.TestCase;
 
 /** test that exercises SqlResults
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
  *
  */
-public class SqlResultsTest extends TestCase {
+public class SqlResultsTest extends ServerTestCase {
 
     /**
      * Constructor for SqlResultsTest.
@@ -37,9 +37,10 @@ public class SqlResultsTest extends TestCase {
     }
 
     protected void setUp() throws Exception {
+        super.setUp();
          conn = new HsqlTestCase.HsqlDataSource().getConnection();
          assertNotNull(conn);
-           String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
+           String script = getResourceAsString("create-test-db.sql");
          HsqlTestCase.runSQLScript(script,conn);
         Statement stmnt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
         ResultSet rs = stmnt.executeQuery("select id,firstName,lastName from people order by id"); // deterministic query
@@ -58,9 +59,10 @@ public class SqlResultsTest extends TestCase {
         if (conn != null) {
                conn.close();
         }
+        super.tearDown();
     }
 
-
+    /** @todo testing commented out - add back in */
     public void testToVotable() throws Exception  {
 
         
@@ -75,7 +77,7 @@ public class SqlResultsTest extends TestCase {
        
        Document votable = res.toVotable();
        assertNotNull(votable);
-       assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());       
+       assertIsVotable(votable);    
     }
     
     
@@ -86,6 +88,11 @@ public class SqlResultsTest extends TestCase {
 
 /*
 $Log: SqlResultsTest.java,v $
+Revision 1.3  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.2  2003/11/20 15:45:47  nw
 started looking at tese tests
 

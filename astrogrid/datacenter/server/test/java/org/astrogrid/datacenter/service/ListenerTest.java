@@ -4,16 +4,18 @@
  */
 
 package org.astrogrid.datacenter.service;
-import org.astrogrid.util.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -22,19 +24,22 @@ import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import org.astrogrid.datacenter.query.QueryStatus;
 
 /**
  * Unit tests for the remote listening classes
  *
  * @author M Hill
+ * @todo add some assertions to this class - currenly tests nothing.
  */
 
-public class ListenerTest extends TestCase implements DelegateQueryListener
+public class ListenerTest extends ServerTestCase implements DelegateQueryListener
 {
-  
+  public ListenerTest(String name) {
+      super(name);
+  }
    /** Called by the delegate query when it has been notified of a
     * status change.
     */
@@ -54,6 +59,7 @@ public class ListenerTest extends TestCase implements DelegateQueryListener
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
       DatacenterQuery query = delegate.makeQuery(adql);
+      assertNotNull(query);
       query.registerListener(this);
 
       DummyQuerier querier = new DummyQuerier();
@@ -94,10 +100,29 @@ public class ListenerTest extends TestCase implements DelegateQueryListener
     }
 
 
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#setUp()
+     */
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
+
+    /* (non-Javadoc)
+     * @see junit.framework.TestCase#tearDown()
+     */
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
 }
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.5  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.4  2003/11/18 14:37:35  nw
 removed references to WorkspaceTest - has now been moved to astrogrid-common
 

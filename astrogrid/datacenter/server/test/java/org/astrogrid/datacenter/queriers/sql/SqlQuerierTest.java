@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.2 2003/11/20 15:45:47 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.3 2003/11/21 17:37:56 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,25 +11,22 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.Query;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /** test out the vanilla sql querier over an in-memory hsqldb database
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
  *
  */
-public class SqlQuerierTest extends TestCase {
+public class SqlQuerierTest extends ServerTestCase {
 
 
     public SqlQuerierTest(String arg0) {
@@ -57,9 +54,10 @@ public class SqlQuerierTest extends TestCase {
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
+        super.setUp();
         HsqlTestCase.initializeConfiguration();
         querier = new SqlQuerier();
-        String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
+        String script = getResourceAsString("create-test-db.sql");
         assertNotNull(script);
         conn = new HsqlTestCase.HsqlDataSource().getConnection();
         assertNotNull(conn);
@@ -78,6 +76,7 @@ public class SqlQuerierTest extends TestCase {
        if (querier != null) {
            querier.close();
        }
+       super.tearDown();
     }
 
     public void test1() throws Exception {
@@ -98,28 +97,15 @@ public class SqlQuerierTest extends TestCase {
      * @throws Exception
      */
     protected void performQuery(String queryFile) throws Exception {
-        assertNotNull(queryFile);
+        assertNotNull(queryFile);        
         InputStream is = this.getClass().getResourceAsStream(queryFile);
         assertNotNull("Could not open query file :" + queryFile,is);
-        Document doc = XMLUtils.newDocument(is);
-        assertNotNull(doc);
-
-        Element queryElement = doc.getDocumentElement();
-        assertNotNull(queryElement);
-        assertEquals("query",queryElement.getLocalName());
-
-        QueryResults results = querier.queryDatabase(new Query(queryElement));
+        Query q = Query.unmarshalQuery(new InputStreamReader(is));
+        QueryResults results = querier.queryDatabase(q);
         assertNotNull(results);
 
         Document voElement = results.toVotable();
-//        InputStream voStream = results.getInputStream();
-//        assertNotNull(voStream);
-//        Document resultDoc = XMLUtils.newDocument(voStream);
-//        assertNotNull(resultDoc);
-
-//        Element voElement = resultDoc.getDocumentElement();
-        assertNotNull(voElement);
-        assertEquals("VOTABLE",voElement.getDocumentElement().getLocalName());
+        assertIsVotable(voElement);
         // could add extra checking to compare with expected results here..
     }
 
@@ -128,6 +114,11 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.3  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.2  2003/11/20 15:45:47  nw
 started looking at tese tests
 

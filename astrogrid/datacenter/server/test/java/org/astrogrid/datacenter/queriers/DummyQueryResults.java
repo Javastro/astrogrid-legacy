@@ -1,14 +1,17 @@
 /*
- * $Id: DummyQueryResults.java,v 1.1 2003/11/14 00:38:30 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.2 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import java.io.*;
-
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;

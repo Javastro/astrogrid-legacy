@@ -1,21 +1,16 @@
 /*
- * $Id: SocketHandler.java,v 1.5 2003/11/18 11:10:16 mch Exp $
+ * $Id: SocketHandler.java,v 1.6 2003/11/21 17:37:56 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
-import org.astrogrid.datacenter.snippet.*;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
+
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.snippet.QueryIdHelper;
-import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.snippet.ResponseHelper;
-import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
@@ -24,6 +19,11 @@ import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
+import org.astrogrid.datacenter.snippet.QueryIdHelper;
+import org.astrogrid.datacenter.snippet.ResponseHelper;
+import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -250,6 +250,11 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.6  2003/11/21 17:37:56  nw
+made a start tidying up the server.
+reduced the number of failing tests
+found commented out code
+
 Revision 1.5  2003/11/18 11:10:16  mch
 Removed client dependencies on server
 
