@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+			<!--+
+	    | Import any java classes here.
+	    +-->
+	<xsp:structure>
+		<xsp:include>java.io.IOException</xsp:include>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.ArrayList</xsp:include>
+		<xsp:include>org.astrogrid.portal.query.DataSetColumn</xsp:include>
+		<xsp:include>org.astrogrid.portal.query.DataSetInformation</xsp:include>
+		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNode</xsp:include>
+		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNodeWalker</xsp:include>
+	</xsp:structure>
+	
+	<!--+
+	    | The XSP page needs one non-xsp tag.
+	    | Anything in here gets added inside the Generator generate() method.
+	    +-->
+	<query>
+
+		<!--+
+		    | Any code wrapped in xsp-logic tags will get added to the Generator generate() method.
+		    | Enclosing the code in a CDATA block means that you don't have to escape < and > symbols.
+		    +-->
+		<xsp:logic>
+			<![CDATA[
+				ArrayList dsInfoArrayList = request.getAttribute("DataSetArrayList");
+				Integer criteriaNumber = request.getAttribute("CriteriaNumber");
+				DataSetInformation dsInfo = null;
+			]]>
+		</xsp:logic>
+		
+		<options>
+			<datasets>
+			<xsp:logic>
+				<![CDATA[
+					Iterator iter = dsInfoArrayList;
+					while (iter.hasNext()) {
+						dsInfo = (DataSetInformation)info.next();
+						]]>
+						<xsp:element name="datasetname">
+							<xsp:attribute name="name"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
+							<xsp:attribute name="val"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
+						</xsp:element>
+						<![CDATA[
+					}
+				]]>					
+			</xsp:logic>
+			</datasets>
+		</options>
+		<options>
+			<subofdatasets>
+			<xsp:logic>
+				<![CDATA[
+					Iterator iter = dsInfoArrayList;
+					while (iter.hasNext()) {
+						dsInfo = (DataSetInformation)info.next();
+						]]>
+						<xsp:element name="returncolumn">
+							<xsp:attribute name="name"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
+							<xsp:attribute name="val"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
+						</xsp:element>
+						<![CDATA[
+					}
+				]]>					
+			</xsp:logic>
+			</subofdatasets>
+		</options>
+		<xsp:logic>
+			<![CDATA[
+				if(criteriaNumber != null && criteriaNumber.intValue() > 0) {
+					]]>
+					<options>
+						<joins>
+							<xsp:element name="jointype">
+								<xsp:attribute name="name">AND</xsp:attribute>
+								<xsp:attribute name="val">AND</xsp:attribute>
+							</xsp:element>
+							<xsp:element name="jointype">
+								<xsp:attribute name="name">OR</xsp:attribute>
+								<xsp:attribute name="val">OR</xsp:attribute>
+							</xsp:element>
+						</joins>
+					</options>
+					<![CDATA[
+				}
+			]]>					
+		</xsp:logic>
+		
+		<options>
+			<operators>
+				<xsp:element name="operator">
+					<xsp:attribute name="name">EQUALS</xsp:attribute>
+					<xsp:attribute name="val">EQUALS</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="operator">
+					<xsp:attribute name="name">LESS_THAN</xsp:attribute>
+					<xsp:attribute name="val">LESS_THAN</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="operator">
+					<xsp:attribute name="name">LESS_THAN_OR_EQUALS</xsp:attribute>
+					<xsp:attribute name="val">LESS_THAN_OR_EQUALS</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="operator">
+					<xsp:attribute name="name">GREATER_THAN</xsp:attribute>
+					<xsp:attribute name="val">GREATER_THAN</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="operator">
+					<xsp:attribute name="name">GREATER_THAN_OR_EQUALS</xsp:attribute>
+					<xsp:attribute name="val">GREATER_THAN_OR_EQUALS</xsp:attribute>
+				</xsp:element>
+				<xsp:element name="operator">
+					<xsp:attribute name="name">NONE</xsp:attribute>
+					<xsp:attribute name="val">NONE</xsp:attribute>
+				</xsp:element>
+			</operators>
+		<options>
+	</query>
+</xsp:page>
