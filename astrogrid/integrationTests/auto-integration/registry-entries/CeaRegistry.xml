@@ -41,8 +41,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<Subject>???</Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="InputFile" type="text">
-					<ceapd:DefaultValue>InputFile</ceapd:DefaultValue>
+				<cea:ParameterDefinition name="InputFiles" type="text">
+					<ceapd:DefaultValue>InputFiles</ceapd:DefaultValue>
 					<ceapd:UI_Description >
 						Filename of a text file containing the filenames of a 
 						series of FITS images.
@@ -58,7 +58,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 			<cea:Interfaces>
 				<ceab:Interface name="Simple"> 
 					<ceab:input>
-						<ceab:pref ref="InputFile"/>
+						<ceab:pref ref="InputFiles"/>
 					</ceab:input>
 					<ceab:output>
 						<ceab:pref ref="OutputFile"/>
