@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.15 2004/05/07 16:01:58 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.16 2004/05/08 12:35:09 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -244,7 +244,6 @@
         <report> maven-linkcheck-plugin </report>
         <report> maven-pmd-plugin </report>
         <report> maven-tasklist-plugin </report>
-        <report> maven-simian-plugin </report>
-        <report> maven-dashboard-plugin </report>    
+        <report> maven-simian-plugin </report> 
     </reports>
 </project>
