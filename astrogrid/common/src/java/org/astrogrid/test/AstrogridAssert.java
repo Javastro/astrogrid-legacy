@@ -1,4 +1,4 @@
-/*$Id: AstrogridAssert.java,v 1.3 2004/09/02 01:32:17 nw Exp $
+/*$Id: AstrogridAssert.java,v 1.4 2004/09/02 09:55:53 nw Exp $
  * Created on 27-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,7 +133,7 @@ public class AstrogridAssert extends XMLAssert{
     // assert a document is schema-valid. need to pass in a map defining namespace - schema location mappings.
     public static void assertSchemaValid(String xml,String rootElementName,Map schemaLocations) {
         try {
-            assertXpathEvaluatesTo("local-name(/node())",rootElementName,xml);
+            assertXpathEvaluatesTo(rootElementName,"local-name(/node())",xml);
         } catch (Exception e) {
             fail("Failed to extract root element name " + e.getMessage());
         }
@@ -258,6 +258,9 @@ public class AstrogridAssert extends XMLAssert{
 
 /* 
 $Log: AstrogridAssert.java,v $
+Revision 1.4  2004/09/02 09:55:53  nw
+fixed bug.
+
 Revision 1.3  2004/09/02 01:32:17  nw
 added in assertDTDValid() and assertSchemaValid() methods.
 
