@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-int-test.sh,v 1.4 2004/11/29 18:00:35 jdt Exp $ 
+# $Id: run-int-test.sh,v 1.5 2004/11/29 18:02:59 anoncvs Exp $ 
 ######################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -10,16 +10,12 @@
 # CHECKOUTHOME=/data/cvsDownloads/itn06
 # MAVEN_OPTS=-Mmx1024m #options for the JVM 
 # MY_MAVEN_OPTS = -Dmaven.download.meter=bootstrap #options to Maven itself
-# SCRIPTHOME=/home/integration/autobuilds #location of scripts on this machine
 # CATALINA_HOME
 # DOCLOCATION = /var/www/www/maven/docs/HEAD
 # DOCMACHINE = maven@www.astrogrid.org
+# These scripts need to be on your path!
 
 # Some reminders
-if [ -z "$SCRIPTHOME" ]; then
-   echo "Value of SCRIPTHOME (ie location of this script) must be set"
-   exit 1
-fi
 if [ -z "$CHECKOUTHOME" ]; then
 	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
 	exit 1
