@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.11 2004/08/19 19:47:55 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.12 2004/09/07 11:16:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v05;
+import javax.xml.rpc.ServiceException;
 
 public class WebDelegateTest extends TestCase
 {
@@ -58,11 +59,22 @@ public class WebDelegateTest extends TestCase
       
    }
     */
-   public void testDelegateFactory() throws IOException
+   public void testDelegateFactory() throws IOException, ServiceException
    {
-      fail("No suitable tests written yet");
+      ConeSearcher client = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v041);
+
+      client = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v05);
+
+      QuerySearcher queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v041);
+
+      queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v05);
    }
-   
+      
+  
 
 
    public static Test suite()
@@ -82,6 +94,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.12  2004/09/07 11:16:20  mch
+ * Added factory tests
+ *
  * Revision 1.11  2004/08/19 19:47:55  mch
  * Removed old temporary sql parser
  *
