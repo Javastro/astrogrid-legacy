@@ -116,7 +116,7 @@
                             </td>                            
                             <td>
                                 <input class="agActionButton" name="myspace-name" type="button" value="Browse...">
-                                    <xsl:attribute name="onClick">javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').value = 'true'; void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));</xsl:attribute>
+                                    <xsl:attribute name="onClick">javascript:document.getElementById('<xsl:value-of select="$indirect-id"/>').value = 'true'; void(window.open('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=<xsl:value-of select="$ivorn-id"/>&amp;agsl=<xsl:value-of select="$agsl-id"/>', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'));</xsl:attribute>
                                 </input>
                             </td>
                             <td><input class="agActionButton" type="submit" value="submit" /></td>
