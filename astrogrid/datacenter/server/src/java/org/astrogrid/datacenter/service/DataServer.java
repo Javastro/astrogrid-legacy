@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.5 2004/03/09 21:48:53 mch Exp $
+ * $Id: DataServer.java,v 1.6 2004/03/09 22:10:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -213,7 +213,7 @@ public class DataServer
     * Returns an error in html form.  Not strictly a data server
     * activity, but useful for JSPs to use.
     */
-   public static String exceptionAsHtml(String title, Exception e) {
+   public static String exceptionAsHtml(String title, Exception e, String details) {
 
       StringWriter sw = new StringWriter();
       e.printStackTrace(new PrintWriter(sw));
@@ -225,11 +225,17 @@ public class DataServer
          "<h1>ERROR REPORT</h1>\n"+
          "<b>"+title+"</b>\n"+
          "<p><b>"+e.getMessage()+"</b>\n"+
-         "<pre>"+sw.toString()+"</pre>"+
+         "<p><pre>"+sw.toString()+"</pre>"+
+         "<p>"+details+"\n"+
          "</body>\n"+
          "</html>\n";
    }
 
+   /** Convenience routine for exceptionAsHtml(String, Exception, String)   */
+   public static String exceptionAsHtml(String title, Exception e) {
+      return exceptionAsHtml(title, e, "");
+   }
 }
+
 
 
