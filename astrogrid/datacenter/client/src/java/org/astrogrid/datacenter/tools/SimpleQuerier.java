@@ -1,4 +1,4 @@
-/*$Id: SimpleQuerier.java,v 1.3 2004/01/13 00:32:47 nw Exp $
+/*$Id: SimpleQuerier.java,v 1.4 2004/01/14 12:49:49 nw Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
 
 /** Simple tool to fire a query at a server, and print out the response.
- * Usage: java org.astrogrid.datacenter.tools.SimpleQuerier <i>service URL</i> <i>adql file</i>
+ * Currently accepts queries in ADQL and SQL
+ * For usage instructions, run with no arguments:
+ * <pre>
+ * java org.astrogrid.datacenter.tools.SimpleQuerier
+ * </pre>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Nov-2003
  *
  */
@@ -128,6 +132,9 @@ public class SimpleQuerier {
 
 /* 
 $Log: SimpleQuerier.java,v $
+Revision 1.4  2004/01/14 12:49:49  nw
+improved documentation
+
 Revision 1.3  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through
