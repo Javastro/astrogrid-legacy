@@ -8,7 +8,7 @@
         <vm:targetPrefix>vrs</vm:targetPrefix>
       </xs:appinfo>
       <xs:documentation>
-        An extension to the core resource metadata (VOResource) for 
+        An extension to the core resource metadata (VOResource) for
         describing, specifically, relational database services.
       </xs:documentation>
 
@@ -57,13 +57,21 @@
                      </xs:documentation>
                   </xs:annotation>
                </xs:element>
-			<xs:element name="Functions"><xs:complexType><xs:sequence><xs:element name="Function" type="xs:string" maxOccurs="unbounded"/></xs:sequence></xs:complexType></xs:element></xs:sequence>
+         <xs:element name="Functions"><xs:complexType><xs:sequence><xs:element name="Function" type="xs:string" maxOccurs="unbounded"/></xs:sequence></xs:complexType></xs:element></xs:sequence>
          </xs:extension>
       </xs:complexContent>
    </xs:complexType>
 
    <xs:complexType name="TableType">
       <xs:sequence>
+
+         <xs:element name="Title" type="xs:string" minOccurs="0">
+            <xs:annotation>
+               <xs:documentation>
+                  a human description of the tables contents
+               </xs:documentation>
+            </xs:annotation>
+         </xs:element>
 
          <xs:element name="Description" type="xs:string" minOccurs="0">
             <xs:annotation>
@@ -82,7 +90,7 @@
          </xs:element>
 
          <xs:element name="Column" minOccurs="0" maxOccurs="unbounded">
-		 <xs:complexType>
+         <xs:complexType>
             <xs:sequence>
                <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
                <xs:element name="Units" type="xs:string" minOccurs="1" maxOccurs="1"/>
@@ -91,17 +99,17 @@
                <xs:element name="ErrorColumn" type="xs:string" minOccurs="0" maxOccurs="1"/>
                <xs:element name="Link" type="xs:anyURI" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
-			 <xs:attribute name="name" type="xs:string"/>
-			 <xs:attribute name="datatype"/>
-			 <xs:attribute name="indexed" type="xs:boolean" default="false"/>
-			 <xs:attribute name="arraysize"/>
-		 </xs:complexType>
+          <xs:attribute name="name" type="xs:string"/>
+          <xs:attribute name="datatype"/>
+          <xs:attribute name="indexed" type="xs:boolean" default="false"/>
+          <xs:attribute name="arraysize"/>
+       </xs:complexType>
 
 
-		 </xs:element>
+       </xs:element>
       </xs:sequence>
 
-   	  <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="name" type="xs:string"/>
    </xs:complexType>
 
 
