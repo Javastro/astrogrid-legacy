@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.140 2005/03/01 15:39:28 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.141 2005/04/05 16:40:14 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -1219,7 +1219,7 @@
                 <jsl:template match="/">
                         <testsuites>
                         <baseline-summary>
-                                <baseline-name>GeneratedSummary</baseline-name>
+                                <baseline-name>LAST RUN</baseline-name>
                                 <baseline-description>to fill in</baseline-description>
                                 <j:new var="now" className="java.util.Date" />
                                 <when>${now}</when>
@@ -1268,6 +1268,11 @@
         <echo>annotating test report with previous baselines</echo>
         <!-- take a copy to start -->
         <copy file="${basedir}/target/TESTS-TestSuites.xml" tofile="${basedir}/target/TESTS-TestSuites-Annotated.xml" overwrite="true"/>
+        <!--copy in previous results, if present"-->
+        <copy file="${user.home}/AGINAB-lastresults.xml" todir="${basedir}/baselines" overwrite="true" failonerror="false"/>
+        <!--back  up latest for use next time-->
+        <copy file="${basedir}/target/regression-baseline-summary.xml" tofile="${user.home}/AGINAB-lastresults.xml" overwrite="true"/>
+
         <fileScanner var="files">
                 <fileset dir="${basedir}/baselines">
                         <include name="*.xml" />
