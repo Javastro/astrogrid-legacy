@@ -1,4 +1,4 @@
-/*$Id: JobExecutionService.java,v 1.3 2004/03/03 11:15:23 nw Exp $
+/*$Id: JobExecutionService.java,v 1.4 2004/03/09 15:33:41 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.portal.workflow.intf;
 
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -27,15 +28,14 @@ public interface JobExecutionService {
      */
     JobURN submitWorkflow( Workflow workflow ) throws WorkflowInterfaceException;                               
     
-    // plus add bits required by Jes   
     /**
      * delete a job - remove all record of it from the jes store
-     * <p>Not implemented at present
+     * <p>does nothing at the moment
      * @param jobURN unique identifier of the job to delete 
      */    
     void deleteJob(JobURN jobURN) throws WorkflowInterfaceException;
     /**cancel a job - halt the execution of it
-     * <p> not implemented at present
+     * <p> does nothing at the momenr
      * @param jobURN unique identifier of the job
      * @throws WorkflowInterfaceException
      */
@@ -50,16 +50,18 @@ public interface JobExecutionService {
     /** retreive list of jobs for a particular user
      * 
      * @param account identifies a user
-     * @return array of job names.
+     * @return array of job summaries
      * @throws WorkflowInterfaceException
-     * @todo maybe make the return type a bit richer - not an array of workflows, but an array of objects with more info - current status, date, etc.
      */
-    String[] readJobList(Account account) throws WorkflowInterfaceException;
+    JobSummary[] readJobList(Account account) throws WorkflowInterfaceException;
 }
 
 
 /* 
 $Log: JobExecutionService.java,v $
+Revision 1.4  2004/03/09 15:33:41  nw
+updated types
+
 Revision 1.3  2004/03/03 11:15:23  nw
 tarted up javadocs, reviewed types
 
