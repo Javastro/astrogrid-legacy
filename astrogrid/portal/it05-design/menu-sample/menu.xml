@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<agp:menu
+    name="agMain_menu"
+    xmlns:agp="http://www.astrogrid.org/portal/it05">
+  <agp:menu
+      contents="Query"
+      contents-hover="Query"
+      icon="Query.gif"
+      uri=""
+      target="_self"
+      status-text="Query...">
+    <agp:item
+        contents="Load"
+        contents-hover="Load"
+        icon="Open.gif"
+        uri=""
+        target="_self"
+        status-text="Load a query"/>
+    <agp:item
+        contents="Save"
+        contents-hover="Save"
+        icon="Save.gif"
+        uri=""
+        target="_self"
+        status-text="Save a query"/>
+  </agp:menu>
+  <agp:menu
+      contents="Help"
+      contents-hover="Help"
+      icon="Help.gif"
+      uri=""
+      target="_self"
+      status-text="Help...">
+    <agp:item
+        contents="About"
+        contents-hover="About"
+        icon="About.gif"
+        uri=""
+        target="_self"
+        status-text="About Portal"/>
+  </agp:menu>
+</agp:menu>

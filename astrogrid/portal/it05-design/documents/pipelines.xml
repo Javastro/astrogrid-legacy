@@ -1,0 +1,247 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+  <!ENTITY gps "Peter Shillan">
+  <!ENTITY ag "AstroGrid">
+  <!ENTITY agp "AstroGrid Portal">
+]>
+<article>
+  <articleinfo>
+    <title>Cocoon Pipelines in Iteration 05</title>
+    <author>
+      <firstname>Peter</firstname>
+      <surname>Shillan</surname>
+    </author>
+  </articleinfo>
+  
+  <abstract>
+    <para>
+      This document describes the pipeline organization within Cocoon for
+      Iteration 05.
+    </para>
+  </abstract>
+  
+  <sect1>
+    <title>Introduction</title>
+    
+    <para>
+      The &agp; is using <ulink url="http://cocoon.apache.org">Apache
+      Cocoon</ulink> technology to manage the Graphical User Interface for
+      the &ag; suite of applications.  This article will show how the
+      various applications will build upon and make use of Cocoon to provide
+      the end user with a rich interface as well as allowing the development
+      of &ag; components to be isolated from each other.
+    </para>
+  </sect1>
+  
+  <sect1>
+    <title>Cocoon Architecture</title>
+    
+    <para>
+      The Cocoon platform is based around the separation of management,
+      content, logic and style in order to make each component easier to
+      maintain.
+      
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="./images/pyramid-model.gif" format="GIF"/>
+        </imageobject>
+
+        <textobject>
+          <para>
+            Pyramid Model
+          </para>
+        </textobject>
+
+        <caption>
+          <para>
+            The separation of concerns in Cocoon.
+          </para>
+        </caption>
+      </mediaobject>
+      
+      The central component of Cocoon which pulls together these aspects of
+      the application is the <emphasis>sitemap</emphasis>.  The sitemap sets
+      up a set of logical URIs which, when requested by the client, invoke a
+      <emphasis>pipeline</emphasis>.  Pipelines are made up, generally, of:
+      
+      <itemizedlist>
+        <listitem>
+          <para>
+            Generators
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Transformers
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Serializers
+          </para>
+        </listitem>
+      </itemizedlist>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="./images/pipeline.gif" format="GIF"/>
+        </imageobject>
+
+        <textobject>
+          <para>
+            Cocoon Pipeline
+          </para>
+        </textobject>
+
+        <caption>
+          <para>
+            Pipelines in Cocoon.
+          </para>
+        </caption>
+      </mediaobject>
+      
+      A pipeline can be an aggregate of other pipelines and a pipeline can
+      be redirected to another sitemap.  That sitemap is said to be
+      <emphasis>mounted</emphasis>.
+    </para>
+  </sect1>
+  
+  <sect1>
+    <title>Sitemaps and Sub-sitemaps</title>
+    
+    <para>
+      Cocoon's use of sitemaps allows us to create a sitemap structure that
+      is hierarchical.  Each sub-sitemap can refer to facilities made
+      available by its parent (<emphasis>common</emphasis>) and can also
+      (re-)define it's own facilities.  Iteration 05 will take advantage of
+      this by creating a basic Cocoon application the defines the &agp; and
+      all of its common components and then allowing each Portal component
+      to define its own sitemap and therefore it's own Cocoon facilities.
+    </para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="./images/sitemapControl.gif" format="GIF"/>
+        </imageobject>
+
+        <textobject>
+          <para>
+            Subsitemaps
+          </para>
+        </textobject>
+
+        <caption>
+          <para>
+            Subsitemaps in Cocoon.
+          </para>
+        </caption>
+      </mediaobject>
+      
+      <sect2>
+        <title>URI Organisation</title>
+        
+        <para>
+          Sitemaps and pipelines are selected by matching against a
+          requested URI.  The URI scheme for &agp; is as follows:
+          
+          <table frame="all">
+            <title>URI Mappings</title>
+            
+            <tgroup cols='4' align='left' colsep='1' rowsep='1'>
+              <colspec colname="c1"/>
+              <colspec colname="c2"/>
+              <colspec colname="c3"/>
+              <colspec colname="c4"/>
+              
+              <thead>
+                <row>
+                  <entry>
+                    URI
+                  </entry>
+                  <entry>
+                    Sitemap
+                  </entry>
+                  <entry>
+                    Pipeline
+                  </entry>
+                  <entry>
+                    Directory
+                  </entry>
+                </row>
+              </thead>
+              
+              <tfoot>
+                <row>
+                  <entry namest="c1" nameend="c4" align="center">
+                    <varname>... et. cetara</varname>
+                  </entry>
+                </row>
+              </tfoot>
+              
+              <tbody>
+                <row>
+                  <entry>
+                    /astrogrid-portal/*
+                  </entry>
+                  <entry>
+                    sitemap.xmap
+                  </entry>
+                  <entry>
+                    *
+                  </entry>
+                  <entry>
+                    <emphasis>${CATALINA_HOME}</emphasis>/webapps/astrogrid-portal/
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    /astrogrid-portal/app/<emphasis>&lt;component&gt;</emphasis>/*
+                  </entry>
+                  <entry>
+                    app/<emphasis>&lt;component&gt;</emphasis>/sitemap.xmap
+                  </entry>
+                  <entry>
+                    *
+                  </entry>
+                  <entry>
+                    <emphasis>${CATALINA_HOME}</emphasis>/webapps/astrogrid-portal/<emphasis>&lt;component&gt;</emphasis>/
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    /astrogrid-portal/<emphasis>&lt;any&gt;</emphasis>/images/**
+                  </entry>
+                  <entry>
+                    /<emphasis>&lt;any&gt;</emphasis>/sitemap.xmap
+                  </entry>
+                  <entry>
+                    **/images
+                  </entry>
+                  <entry>
+                    <emphasis>${CATALINA_HOME}</emphasis>/webapps/astrogrid-portal/<emphasis>&lt;any&gt;</emphasis>/web/images/
+                  </entry>
+                </row>
+                <row>
+                  <entry>
+                    /astrogrid-portal/<emphasis>&lt;any&gt;</emphasis>/css/**
+                  </entry>
+                  <entry>
+                    /<emphasis>&lt;any&gt;</emphasis>/sitemap.xmap
+                  </entry>
+                  <entry>
+                    **/css
+                  </entry>
+                  <entry>
+                    <emphasis>${CATALINA_HOME}</emphasis>/webapps/astrogrid-portal/<emphasis>&lt;any&gt;</emphasis>/web/css/
+                  </entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </para>
+      </sect2>
+  </sect1>
+</article>

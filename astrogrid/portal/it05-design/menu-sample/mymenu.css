@@ -1,0 +1,125 @@
+/* AstroGrid Main Menu Style */
+div.agMain_menu_menuBar {
+    padding: 2px 4px 0 4px;
+    background-color: lightblue;
+    border-color: red;
+}
+
+div.agMain_menu_subMenuBar {
+    border: 1px solid;
+    border-color: black;
+    background-color: lightgray;
+}
+div.agMain_menu_menuElement, div.agMain_menu_subMenuElement {
+    border: 0;
+    color: blue;
+    font-family: serif; 
+    font-size: 12px;
+    line-height: 14px;
+    text-align: left;
+    padding: 3px 5px;
+}
+div.agMain_menu_subMenuElement {
+    padding: 3px 3px 3px 13px;
+}
+div.agMain_menu_menuElementHover {
+    padding: 2px 4px;
+    border: 1px solid;
+    border-color: purple
+    background-color: green;
+}
+div.agMain_menu_subMenuElementHover {
+    padding: 2px 2px 2px 12px;
+    border: 1px solid;
+    border-color: gray;
+}
+
+/* Panel tab styles */
+#ag-body-panelbar
+{
+  /*
+    Dimensions.
+    */
+  width:                          20%;
+  
+  /*
+    Positioning.
+    */
+  position:                       relative;
+  float:                          right;
+}
+
+#ag-body-panelbar-header
+{
+  /*
+    Colors.
+    */
+  background-color:               lightgray;
+  color:                          black;
+  
+  /*
+    Cursor.
+    */
+  cursor:                         pointer;
+}
+
+span.ag-body-panelbar-tab
+{
+  /*
+    Borders.
+    */
+  border-style:                   outset;
+  border-width:                   thin;
+  
+  /*
+    Colors.
+    */
+  background-color:               blue;
+  color:                          lightblue;
+  
+  /*
+    Cursor.
+    */
+  cursor:                         pointer;
+}
+
+#ag-body-panelbar-toggle
+{
+  /*
+    Colors.
+    */
+  background-color:               lightgray;
+  color:                          black;
+  
+  /*
+    Cursor.
+    */
+  cursor:                         pointer;
+  
+  /*
+    Positioning.
+    */
+  float:                          right;
+}
+
+.ag-body-panelbar-content
+{
+  /*
+    Dimensions.
+    */
+/*
+  width:                          15%;
+*/
+
+  /*
+    Margins and Padding.
+    */
+  margin-right:                   2%;
+  
+  /*
+    Positioning.
+    */
+  position:                       absolute;
+  visibility:                     hidden;
+}
+

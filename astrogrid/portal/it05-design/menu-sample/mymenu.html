@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <title>MyMenu</title>
+    <link rel="stylesheet" type="text/css" href="mymenu.css" />
+
+    <script language="javascript" src="domMenu.js"></script>
+    <script language="javascript" src="mymenu.js"></script>
+    <script language="javascript" src="paneltab.js"></script>
+  </head>
+  
+  <body>
+    <div id="agMain_menu">
+      <script language="javascript">
+        domMenu_activate('agMain_menu');
+      </script>
+    </div>
+    
+    <span id="ag-body-panelbar-toggle" onclick="ag_body_panelbar_toggle()">
+      H<br/>
+      e<br/>
+      l<br/>
+      p
+    </span>
+
+    <div id="ag-body-panelbar">
+      <div class="ag-body-panelbar-tab">
+        <span class="ag-body-panelbar-tab" onclick="ag_body_panelbar_tab_click('ag-body-panelbar-body-1');">
+          (S)ADQL
+        </span>
+        <span class="ag-body-panelbar-tab" onclick="ag_body_panelbar_tab_click('ag-body-panelbar-body-2');">
+          MetaData
+        </span>
+      </div>
+  
+      <div id="ag-body-panelbar-content">
+        <div id="ag-body-panelbar-body-1" class="ag-body-panelbar-content">
+          <h3>ADQL Helper</h3>
+          <select>
+            <option>SELECT</option>
+            <option>FROM</option>
+            <option>WHERE</option>
+            <option>ORDER BY</option>
+            <option>GROUP BY</option>
+          </select>
+        </div>
+        
+        <div id="ag-body-panelbar-body-2" class="ag-body-panelbar-content">
+          <h3>MetaData Helper</h3>
+          <select size="5">
+            <option>Table1</option>
+            <option>Table2</option>
+            <option>Table3</option>
+            <option>Table4</option>
+          </select>
+          <select size="5">
+            <option>Col1</option>
+            <option>Col2</option>
+            <option>Col3</option>
+            <option>Col4</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div id="ag-body-content-text">
+      <textarea cols="100" rows="30" style="width:100%">(S)ADQL goes here</textarea><br/>
+      <center>
+        <input type="button" value="Load">
+        <input type="button" value="Save">
+      </center>
+    </div>
+  </body>
+</html>
