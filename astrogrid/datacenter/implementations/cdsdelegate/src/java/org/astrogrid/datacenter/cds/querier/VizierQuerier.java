@@ -1,4 +1,4 @@
-/*$Id: VizierQuerier.java,v 1.2 2003/11/20 15:47:18 nw Exp $
+/*$Id: VizierQuerier.java,v 1.3 2003/11/25 11:14:51 nw Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,9 +14,9 @@ import javax.xml.rpc.ServiceException;
 
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.cdsdelegate.vizier.*;
 import org.w3c.dom.Document;
 
@@ -54,6 +54,9 @@ public class VizierQuerier extends DatabaseQuerier {
 
 /* 
 $Log: VizierQuerier.java,v $
+Revision 1.3  2003/11/25 11:14:51  nw
+upgraded to new service interface
+
 Revision 1.2  2003/11/20 15:47:18  nw
 improved testing
 
