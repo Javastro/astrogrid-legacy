@@ -27,6 +27,10 @@
                         <packages>org.astrogrid.community.*</packages>
                 </packageGroup>
                 <packageGroup>
+                        <title>Registry Objects</title>
+                        <packages>org.astrogrid.registry.*</packages>
+                </packageGroup>
+                <packageGroup>
                         <title>Generated Web Service Delegates</title>
                         <packages>org.astrogrid.jes.delegate.*:org.astrogrid.jes.types.*</packages>
                 </packageGroup>
@@ -77,6 +81,15 @@
                 <!-- astrogrid components -->
         <dependency>
             <artifactId>astrogrid-common</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <artifactId>astrogrid-registry-common</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
