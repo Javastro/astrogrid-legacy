@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2Castor.java,v 1.4 2004/04/06 09:00:00 nw Exp $
+ * $Id: Axis2Castor.java,v 1.5 2004/04/20 11:43:22 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,12 @@
 
 package org.astrogrid.common.bean;
 
+import org.astrogrid.applications.beans.v1.ApplicationList;
+import org.astrogrid.applications.beans.v1.Parameters;
+import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
+import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters;
+import org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType;
+import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
@@ -148,5 +154,31 @@ public class Axis2Castor {
         } else {
             return org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel.valueOf(level.getValue());
         }
+    }
+    
+    public static ApplicationList convert (_ApplicationList in)
+    {
+      ApplicationList result = new ApplicationList();
+      ApplicationBase[] apps = in.getApplicationDefn();
+      for (int i = 0; i < apps.length; i++) {
+         result.addApplicationDefn(convert(apps[i]));
+      }
+      return result;
+       
+    }
+    
+    public static org.astrogrid.applications.beans.v1.ApplicationBase convert(ApplicationBase in)
+    {
+       
+       Parameters parameters = null;
+       org.astrogrid.applications.beans.v1.InterfacesType interfaces = null;
+       org.astrogrid.applications.beans.v1.ApplicationBase result = new org.astrogrid.applications.beans.v1.ApplicationBase();
+       result.setName(in.getName().toString());
+       InterfacesType ininterfaces = in.getInterfaces();
+       ApplicationBase_Parameters inparams = in.getParameters();
+       //FIXME - we need to have the interfaces and parameters
+       result.setInterfaces(interfaces);
+       result.setParameters(parameters);
+       return result;
     }
 }
