@@ -5,6 +5,7 @@
        org.apache.commons.logging.*,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.AdqlQuery,
+       org.astrogrid.datacenter.sqlparser.Sql2Adql074,
        org.astrogrid.datacenter.service.HtmlDataServer,
        org.astrogrid.io.*"
    isThreadSafe="false"
@@ -21,7 +22,7 @@
    String resultsTarget = request.getParameter("Target");
 
    try {
-     server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlSql), out, resultsFormat);
+     server.askQuery(Account.ANONYMOUS, new AdqlQuery(Sql2Adql074.translate(adqlSql)), out, resultsFormat);
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);

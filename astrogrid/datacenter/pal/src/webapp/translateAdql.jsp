@@ -28,6 +28,8 @@
          adqlXml = "ERROR: don't know which version of ADQL to translate to";
       }
    }
+   
+   String formAction = "translateAdql.jsp";
 %>
 <html>
 <head>
@@ -39,7 +41,10 @@
   <%=HtmlDataServer.getPageHeader() %>
   <h1>Translate ADQL/sql to ADQL/xml</h1>
   <p>
-   <form action="translateAdql.jsp" method="GET">
+  <form method="post" onSubmit="
+      this.action=formAction;
+      return true;
+      ">
     <p>
       <table><tr>
         <td>ADQL/sql</td>
@@ -49,13 +54,18 @@
     <p>
        <input type='submit' name='MakeAdql05' value='Make ADQL v0.5' />
        <input type='submit' name='MakeAdql074' value='Make ADQL v0.7.4' />
+       <input type='submit' name='AskAdqls' value='Submit ADQL/sql' onclick='formAction="askAdqlSql.jsp";' />
     </p>
     <p>
+      <b><i>Warning: Some browsers will mangle the XML (eg by changing the case
+      of the first letter of some elements), so it may not be possible to submit
+      this directly</i></b>
       <table><tr>
         <td>ADQL/xml</td>
-        <td><textarea name="AdqlXml" rows='50' cols='100'><%=adqlXml %></textarea></td>
+        <td><textarea name="AdqlXml" rows='30' cols='100'><%=adqlXml %></textarea></td>
       </tr></table>
     </p>
+       <input type='submit' name='AskAdqlx' value='Submit ADQL/xml' onclick='formAction="askAdqlXml.jsp";' />
    </form>
   </p>
   <%=HtmlDataServer.getPageFooter() %>

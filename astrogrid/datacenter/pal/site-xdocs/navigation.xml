@@ -11,10 +11,9 @@
    </menu>
    <menu name="Query">
       <item name="Cone Search" href="cone-form.html" />
-      <item name="Build Queries" href="querybuilder/qbuilder.jsp" />
+      <item name="Build Query" href="queryBuilder.jsp" />
       <item name="Ask Adql/Sql Query" href="adqls-form.html" />
       <item name="Ask Adql/Xml Query" href="adqlx-form.html" />
-      <item name="Ask Adql/Url Query" href="adqls-form.html" />
       <item name="Translate ADQL/SQL to XML" href="translateAdql.jsp" />
       <item name="Examples" href="adql" />
       <item name="XML Schema" href="schema.html" />
@@ -29,7 +28,7 @@
    </menu>
    <menu name="Server">
       <item name="Status" href="serverStatus.jsp" />
-      <item name="Metadata" href="metadata.jsp" />
+      <item name="Metadata" href="viewMetadata.jsp" />
    </menu>
    <menu name="CEA">
         <item name="Fingerprint" href="cea-fingerprint.jsp" />
