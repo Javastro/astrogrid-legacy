@@ -23,17 +23,32 @@ This documentation refers to the Iteration 5 release of the
 AstroGrid Grid Data Warehouse.
 
 </p><p>
+The AstroGrid Grid Data Warehouse (GDW) is intended to be a facility for storing
+and (cross-)querying both standard astronomy datasets and user-supplied
+datasets.
+
+</p><p>
+At the present time, it provides read-only access to pre-stored datasets;
+user-supplied dataset functionality will be forthcoming.
+
+</p><p>
+The GDW uses the OGSA-DAI grid middleware for database access and querying.
+This means it also currently relies on the OGSA implementation supplied
+with the Globus Toolkit 3.0.  Both of these technologies must be deployed 
+using Apache Tomcat.
+</p>
+</section>
+
+<section name="Installation"><p>
 At present, the Astrogrid Grid Data Warehouse (GDW) is a specialised deployment
 of the standard <a href="../datacenter/index.html">Astrogrid
 DataCenter</a>.  All required GDW front-end components are distributed as
 part of the AstroGrid DataCenter package, distributed as PAL-{version}.war.
 After installation, this package will need certain minor reconfigurations 
 to run as a GDW (see below).
-</p>
-</section>
 
-<section name="Installation">
-<p>
+</p><p>
+
 To supply its actual database access, the GDW requires an installation of 
 the <a href="http://www.ogsadai.org.uk">OGSA-DAI</a> grid middleware.
 The Iteration 4.1 release of GDW assumed OGSA-DAI 3.0;  the Iteration 5
