@@ -70,7 +70,7 @@
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>SNAPSHOT</version>
+      <version>Warehouse01</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>Warehouse01</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
