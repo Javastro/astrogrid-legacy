@@ -1,7 +1,7 @@
 /*
-   $Id: XmlOutputStream.java,v 1.1 2003/08/25 18:36:31 mch Exp $
+   $Id: XmlOutputStream.java,v 1.2 2004/03/03 00:09:37 mch Exp $
 
-   Date        Author      Changes
+  Date        Author      Changes
    8 Oct 2002  M Hill      Created
 
    (c) Copyright...
@@ -151,3 +151,4 @@ public class XmlOutputStream extends XmlOutput
       
    }
 }
+

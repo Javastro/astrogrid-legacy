@@ -1,5 +1,5 @@
 /*
-   $Id: XmlOutput.java,v 1.1 2003/08/25 18:36:31 mch Exp $
+   $Id: XmlOutput.java,v 1.2 2004/03/03 00:09:37 mch Exp $
 
    Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -181,3 +181,4 @@ public abstract class XmlOutput extends OutputStream
       throw new IllegalArgumentException("XmlOutput is not intended for writing ints - use writeString(String)");
    }
 }
+
