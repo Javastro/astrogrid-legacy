@@ -1,11 +1,15 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
+ *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
+ *   along with an AdministrationDelegate
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -31,6 +35,7 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
+import java.util.ArrayList;
 
 public class GroupManagerImpl
 	implements GroupManager
@@ -344,6 +349,89 @@ public class GroupManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return group ;
 		}
+      
+
+   public Object[] getAccountGroupList(String account) throws RemoteException {
+      if (DEBUG_FLAG) System.out.println("") ;
+      if (DEBUG_FLAG) System.out.println("----\"----") ;
+      if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupList()") ;
+
+      //
+      // Try QUERY the database.
+      Object[] array = null ;
+
+      try {
+         //
+         // Begin a new database transaction.
+         database.begin();
+         //
+         // Create our OQL query.
+         OQLQuery query = database.getOQLQuery(
+            "SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups where ident = $1 and type = $2"
+            );
+         query.bind(account);
+         query.bind(GroupData.MULTI_TYPE);
+         
+         //
+         // Execute our query.
+         QueryResults results = query.execute();
+         //
+         // Transfer our results to a vector.
+         Collection collection = new Vector() ;
+         while (results.hasMore())
+         {
+            collection.add(results.next()) ;
+         }
+         // 
+         // Convert it into an array.
+         array = collection.toArray() ;
+      //
+      // If anything went bang.
+      }catch (PersistenceException ouch)
+         {
+         if (DEBUG_FLAG) System.out.println("") ;
+         if (DEBUG_FLAG) System.out.println("  ----") ;
+         if (DEBUG_FLAG) System.out.println("PersistenceException in getGroupList()") ;
+
+         //
+         // Set the response to null.
+         array = null ;
+
+         if (DEBUG_FLAG) System.out.println("  ----") ;
+         if (DEBUG_FLAG) System.out.println("") ;
+         }
+      //
+      // Commit the transaction.
+      finally
+         {
+         try {
+            if (null != array)
+               {
+               database.commit() ;
+               }
+            else {
+               database.rollback() ;
+               }
+            }
+         catch (PersistenceException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("") ;
+            if (DEBUG_FLAG) System.out.println("  ----") ;
+            if (DEBUG_FLAG) System.out.println("PersistenceException in getGroupList() finally clause") ;
+
+            //
+            // Set the response to null.
+            array = null ;
+
+            if (DEBUG_FLAG) System.out.println("  ----") ;
+            if (DEBUG_FLAG) System.out.println("") ;
+            }
+         }
+
+      if (DEBUG_FLAG) System.out.println("----\"----") ;
+      return array;
+      
+   }
 
 	/**
 	 * Request a list of Groups.
@@ -358,7 +446,7 @@ public class GroupManagerImpl
 
 		//
 		// Try QUERY the database.
-		Object[] array = null ;
+      Object[] array = null ;
 		try {
 			//
 			// Begin a new database transaction.
@@ -371,20 +459,21 @@ public class GroupManagerImpl
 			//
 			// Execute our query.
 			QueryResults results = query.execute();
-			//
-			// Transfer our results to a vector.
-			Collection collection = new Vector() ;
-			while (results.hasMore())
-				{
-				collection.add(results.next()) ;
-				}
-			//
-			// Convert it into an array.
-			array = collection.toArray() ;
-			}
+         //
+         // Transfer our results to a vector.
+         Collection collection = new Vector() ;
+         while (results.hasMore())
+         {
+            collection.add(results.next()) ;
+         }
+         // 
+         // Convert it into an array.
+         array = collection.toArray() ;
+			
+		
 		//
 		// If anything went bang.
-		catch (PersistenceException ouch)
+      }catch (PersistenceException ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;
@@ -426,7 +515,7 @@ public class GroupManagerImpl
 			}
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return array ;
+		return array;
 		}
 
 	/**

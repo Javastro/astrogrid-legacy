@@ -2,15 +2,20 @@ package org.astrogrid.community.authentication.data;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.sql.Timestamp;
 
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/authentication/data/Attic/SecurityToken.java,v $</cvs:source>
  * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/05 09:13:35 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityToken.java,v $
+ *   Revision 1.3  2003/09/08 11:01:35  KevinBenson
+ *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
+ *   along with an AdministrationDelegate
+ *
  *   Revision 1.2  2003/09/05 09:13:35  KevinBenson
  *   Just changed the boolean to the object Boolean
  *
@@ -53,7 +58,7 @@ public class SecurityToken {
        * Our Account ident.
        *
        */
-      private Date expirationDate;
+      private Timestamp expirationDate;
       
       /**
        * Our Account ident.
@@ -71,7 +76,7 @@ public class SecurityToken {
        * Our Account ident.
        *
        */
-      private Date todaysDate;
+      private Timestamp todaysDate;
       
       private static final int INCREMENT_HOUR = 8;
       
@@ -104,8 +109,8 @@ public class SecurityToken {
       this.token = account + String.valueOf(System.currentTimeMillis());
       Calendar cal = Calendar.getInstance();
       cal.add(Calendar.HOUR_OF_DAY,INCREMENT_HOUR);
-      this.expirationDate = cal.getTime();
-      this.todaysDate = Calendar.getInstance().getTime();
+      this.expirationDate = new Timestamp(cal.getTimeInMillis());
+      this.todaysDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
    }   
 
 
@@ -178,7 +183,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public Date getExpirationDate(){
+   public Timestamp getExpirationDate(){
       return this.expirationDate;
    }
 
@@ -186,7 +191,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public void setExpirationDate(Date expirationDate) {
+   public void setExpirationDate(Timestamp expirationDate) {
       this.expirationDate = expirationDate;
    }
 
@@ -194,7 +199,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public Date getTodaysDate(){
+   public Timestamp getTodaysDate(){
       return this.todaysDate;
    }
 
@@ -202,7 +207,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public void setTodaysDate(Date todaysDate) {
+   public void setTodaysDate(Timestamp todaysDate) {
       this.todaysDate = todaysDate;
    }
    
@@ -222,6 +227,9 @@ public class SecurityToken {
       this.used = used;
    }
 
-
+   public String toString() {
+     String val = "Token=" + this.token + ", Target=" + target;
+     return val;
+   }
 
 }

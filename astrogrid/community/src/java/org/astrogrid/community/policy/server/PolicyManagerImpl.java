@@ -1,11 +1,15 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.5  2003/09/08 11:01:35  KevinBenson
+ *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
+ *   along with an AdministrationDelegate
+ *
  *   Revision 1.4  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -241,6 +245,17 @@ public class PolicyManagerImpl
 		{
 		return groupManager.getGroupList() ;
 		}
+
+      /**
+       * Request a list of Groups.
+       *
+       */
+      public Object[] getAccountGroupList(String account)
+         throws RemoteException
+      {
+         return groupManager.getAccountGroupList(account) ;
+      }
+
 
 	/**
 	 * Create a new Community.

@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/07 11:29:41 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.12  2003/09/08 11:01:35  KevinBenson
+    |   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
+    |   along with an AdministrationDelegate
+    |
     |   Revision 1.11  2003/09/07 11:29:41  pah
     |   added some initial authentication targets
     |
@@ -1395,6 +1399,8 @@
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
+				<!-- Include our delegate objects -->
+				<include name="org/astrogrid/community/delegate/policy/*.java"/>
 				<!-- Include our PolicyService interface -->
 				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 				<!-- Include our PolicyManager interface -->
@@ -1410,6 +1416,7 @@
 				<include name="org/astrogrid/community/policy/data/*.java"/>
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/client/junit/**"/>
+				
 			</fileset>
 		</copy>
 	</target>
@@ -1456,6 +1463,7 @@
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<include name="org/astrogrid/community/policy/client/**"/>
+			<include name="org/astrogrid/community/delegate/policy/**"/>
 			<classpath>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
@@ -1494,6 +1502,7 @@
 				<include name="org/astrogrid/community/policy/data/**"/>
 				<include name="org/astrogrid/community/policy/server/**"/>
 				<include name="org/astrogrid/community/policy/client/**"/>
+				<include name="org/astrogrid/community/delegate/policy/**"/>
 			</fileset>
 		</jar>
 	</target>
@@ -1872,6 +1881,751 @@
 		</junit>
 	</target>
 
+
+<!--
+Start of Authentication "auth" tasks
+-->
+	<!-- ================ auth tasks ================ -->
+
+	<property name="auth.base" value="${basedir}/build/auth"/>
+
+	<property name="auth.service.base" value="${auth.base}/service"/>
+<!--	<property name="auth.manager.base" value="${auth.base}/manager"/> -->
+	<property name="auth.server.base"  value="${auth.base}/server"/>
+	<property name="auth.client.base"  value="${auth.base}/client"/>
+
+	<property name="auth.server.jar"  value="auth-server-${project.version}.jar"/>
+	<property name="auth.client.jar"  value="auth-client-${project.version}.jar"/>
+
+	<!--+
+		| The auth server classpath.
+		+-->
+	<path id="auth.server.classpath">
+		<!-- The Axis libraries -->
+		<path refid="axis.classpath"/>
+		<!-- The Castor libraries -->
+		<path refid="castor.classpath"/>
+		<!-- The Xerces libraries -->
+		<path refid="xerces.classpath"/>
+		<!-- The Hsqldb libraries -->
+		<path refid="hsqldb.classpath"/>
+		<!-- Our server jar -->
+		<pathelement path="${auth.base}/jar/${auth.server.jar}"/>
+	</path>
+
+	<!--+
+		| The auth client classpath.
+		+-->
+	<path id="auth.client.classpath">
+		<!-- The Axis libraries -->
+		<path refid="axis.classpath"/>
+		<!-- Our client classes -->
+		<pathelement path="${auth.base}/jar/${auth.client.jar}"/>
+	</path>
+
+	<!--+
+		| Delete our build directory.
+		+-->
+	<target name="auth.delete" depends="">
+		<delete dir="build/auth" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Compile our authService interface classes.
+		| These are the Java classes for the service interface, used to generate the service WSDL.
+		+-->
+	<target name="auth.service.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${auth.service.base}/classes"/>
+		<!-- Compile the interface classes -->
+		<javac srcdir="src/java"
+		       destdir="${auth.service.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/auth/data/*.java"/>
+			<include name="org/astrogrid/community/auth/server/authService.java"/>
+			<classpath>
+			</classpath>
+		</javac>
+	</target>
+
+
+	<!--+
+		| Generate the authService WSDL description from our Java class.
+		| This generates the service WSDL based on the Java interface classes.
+		+-->
+	<target name="auth.service.java2wsdl" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating authService WSDL from Java ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${auth.service.base}/wsdl/java2wsdl"/>
+		<!-- Generate our WSDL description -->
+		<axis.java2wsdl
+			output="${auth.service.base}/wsdl/java2wsdl/authService.wsdl"
+			classname="org.astrogrid.community.auth.server.authService"
+			location="${axis.url}/services/authService"
+			methods="authenticateToken"
+			namespace="urn:server.auth.community.astrogrid.org"
+			namespaceimpl="urn:impl.server.auth.community.astrogrid.org"
+			style="RPC"
+			>
+			<!-- The classpath to find the authService classes -->
+			<classpath>
+				<path location="${auth.service.base}/classes"/>
+			</classpath>
+		</axis.java2wsdl>
+	</target>
+
+	<!--+
+		| Generate the authService code from our WSDL description.
+		| This generates the Axis stubs and templates from the WSDL description.
+		+-->
+	<target name="auth.service.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating authService code from WSDL ...."/>
+		<!-- Create our java directory -->
+		<mkdir dir="${auth.service.base}/java"/>
+		<!-- Generate the Java code -->
+		<axis.wsdl2java
+			verbose="false"
+			serverside="true"
+			skeletondeploy="false"
+			output="${auth.service.base}/java"
+			url="file://${auth.service.base}/wsdl/java2wsdl/authService.wsdl"
+			>
+			<mapping namespace="urn:server.auth.community.astrogrid.org" package="org.astrogrid.community.auth.server"/>
+			<mapping namespace="urn:data.auth.community.astrogrid.org"   package="org.astrogrid.community.auth.data"/>
+		</axis.wsdl2java>
+	</target>
+
+
+	<!--+
+		| Modify the authService WSDD deployment descriptor.
+		| This modifies the deployment descriptor to use our own implementation classes rather than the template generated from the WSDL.
+		+-->
+	<target name="auth.service.wsdd.xslt" depends="">
+		<!-- Create our wsdd directory -->
+		<mkdir dir="${auth.service.base}/wsdd"/>
+		<!-- Transform the deploy wsdd -->
+		<xslt style="src/xsl/build/auth/wsdd.xsl"
+		      in="${auth.service.base}/java/org/astrogrid/community/auth/server/deploy.wsdd"
+		      out="${auth.service.base}/wsdd/authServiceDeploy.wsdd">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="impl"    expression="org.astrogrid.community.auth.server.authServiceImpl"/>
+			<param name="service" expression="authService"/>
+		</xslt>
+		<!-- Copy the undeploy wsdd -->
+		<copy verbose="false"
+		      tofile="${auth.service.base}/wsdd/authServiceUndeploy.wsdd"
+		      file="${auth.service.base}/java/org/astrogrid/community/auth/server/undeploy.wsdd"
+		      />
+	</target>
+
+	<!--+
+		| Modify the authManager WSDD deployment descriptor.
+		| This modifies the deployment descriptor to use our own implementation classes rather than the template generated from the WSDL.
+		+-->
+	<target name="auth.manager.wsdd.xslt" depends="">
+		<!-- Create our wsdd directory -->
+		<mkdir dir="${auth.manager.base}/wsdd"/>
+		<!-- Transform the deploy wsdd -->
+		<xslt style="src/xsl/build/auth/wsdd.xsl"
+		      in="${auth.manager.base}/java/org/astrogrid/community/auth/server/deploy.wsdd"
+		      out="${auth.manager.base}/wsdd/authManagerDeploy.wsdd">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="impl"    expression="org.astrogrid.community.auth.server.authManagerImpl"/>
+			<param name="service" expression="authManager"/>
+		</xslt>
+		<!-- Copy the undeploy wsdd -->
+		<copy verbose="false"
+		      toFile="${auth.manager.base}/wsdd/authManagerUndeploy.wsdd"
+		      file="${auth.manager.base}/java/org/astrogrid/community/auth/server/undeploy.wsdd"
+		      />
+	</target>
+
+	<!--+
+		| Prepare the server code.
+		| This combines our own Java source with the code generated from the service WSDL.
+		| Uses the Axis generated stubs and data objects.
+		| Uses our service interface and implementation.
+		| I plan to use our data objects when I update them.
+		+-->
+	<target name="auth.server.prepare" depends="">
+		<!-- Copy the Java source code -->
+		<copy verbose="false" todir="${auth.server.base}/java">
+			<!-- Copy the authService wsdl2java generated source -->
+			<fileset dir="${auth.service.base}/java">
+				<!-- Include the generated authService stubs -->
+				<include name="org/astrogrid/community/auth/server/authServiceService.java"/>
+				<include name="org/astrogrid/community/auth/server/authServiceServiceLocator.java"/>
+				<include name="org/astrogrid/community/auth/server/authServiceSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
+			</fileset>
+			<!-- Copy the authService wsdl2java generated source -->
+			<fileset dir="${auth.manager.base}/java">
+				<!-- Include the generated authManager stubs -->
+				<include name="org/astrogrid/community/auth/server/authManagerService.java"/>
+				<include name="org/astrogrid/community/auth/server/authManagerServiceLocator.java"/>
+				<include name="org/astrogrid/community/auth/server/authManagerSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
+			</fileset>
+			<!-- Copy our own Java source -->
+			<fileset dir="src/java">
+				<!-- Include our authService interface and implementation -->
+				<include name="org/astrogrid/community/auth/server/authService.java"/>
+				<include name="org/astrogrid/community/auth/server/authServiceImpl.java"/>
+				<!-- Include our authManager interface and implementation -->
+				<include name="org/astrogrid/community/auth/server/authManager.java"/>
+				<include name="org/astrogrid/community/auth/server/authManagerImpl.java"/>
+				<!-- Include our DatabaseManager interface and implementation -->
+				<include name="org/astrogrid/community/auth/server/DatabaseManager.java"/>
+				<include name="org/astrogrid/community/auth/server/DatabaseManagerImpl.java"/>
+				<!-- Include our AccountManager interface and implementation -->
+				<include name="org/astrogrid/community/auth/server/AccountManager.java"/>
+				<include name="org/astrogrid/community/auth/server/AccountManagerImpl.java"/>
+				<!-- Include our GroupManager interface and implementation -->
+				<include name="org/astrogrid/community/auth/server/GroupManager.java"/>
+				<include name="org/astrogrid/community/auth/server/GroupManagerImpl.java"/>
+				<!-- Include our CommunityManager interface and implementation -->
+				<include name="org/astrogrid/community/auth/server/CommunityManager.java"/>
+				<include name="org/astrogrid/community/auth/server/CommunityManagerImpl.java"/>
+
+				<!-- Include our data objects -->
+				<include name="org/astrogrid/community/auth/data/*.java"/>
+				<!-- Include our JUnit tests -->
+				<include name="org/astrogrid/community/auth/server/junit/**"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+		| Prepare the client code.
+		| This combines our own Java source with the code generated from the service WSDL.
+		| Uses the Axis generated stubs and data objects.
+		| Uses our service interface and implementation.
+		| I plan to use our data objects when I update them.
+		+-->
+	<target name="auth.client.prepare" depends="">
+		<!-- Copy the Java source code -->
+		<copy verbose="false" todir="${auth.client.base}/java">
+			<!-- Copy the authService wsdl2java generated source -->
+			<fileset dir="${auth.service.base}/java">
+				<!-- Include the generated authService service and locator -->
+				<include name="org/astrogrid/community/auth/server/authServiceService.java"/>
+				<include name="org/astrogrid/community/auth/server/authServiceServiceLocator.java"/>
+				<include name="org/astrogrid/community/auth/server/authServiceSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
+			</fileset>
+			<!-- Copy the authManager wsdl2java generated source -->
+			<fileset dir="${auth.manager.base}/java">
+				<!-- Include the generated authManager service and locator -->
+				<include name="org/astrogrid/community/auth/server/authManagerService.java"/>
+				<include name="org/astrogrid/community/auth/server/authManagerServiceLocator.java"/>
+				<include name="org/astrogrid/community/auth/server/authManagerSoapBindingStub.java"/>
+				<!-- Include the generated data objects -->
+				<!-- <include name="org/astrogrid/community/auth/data/*.java"/> -->
+			</fileset>
+			<!-- Copy our own Java source -->
+			<fileset dir="src/java">
+				<!-- Include our delegate objects -->
+				<include name="org/astrogrid/community/delegate/auth/*.java"/>
+				<!-- Include our authService interface -->
+				<include name="org/astrogrid/community/auth/server/authService.java"/>
+				<!-- Include our authManager interface -->
+				<include name="org/astrogrid/community/auth/server/authManager.java"/>
+				<!-- Include our AccountManager interface -->
+				<include name="org/astrogrid/community/auth/server/AccountManager.java"/>
+				<!-- Include our GroupManager interface -->
+				<include name="org/astrogrid/community/auth/server/GroupManager.java"/>
+				<!-- Include our CommunityManager interface -->
+				<include name="org/astrogrid/community/auth/server/CommunityManager.java"/>
+
+				<!-- Include our data objects -->
+				<include name="org/astrogrid/community/auth/data/*.java"/>
+				<!-- Include our JUnit tests -->
+				<include name="org/astrogrid/community/auth/client/junit/**"/>
+				
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+		| Compile our server classes.
+		+-->
+	<target name="auth.server.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${auth.server.base}/classes"/>
+		<!-- Compile the server classes -->
+		<javac srcdir="${auth.server.base}/java"
+		       destdir="${auth.server.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/auth/data/**"/>
+			<include name="org/astrogrid/community/auth/server/**"/>
+			<classpath>
+				<!-- Include the JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- Include the Castor libraries -->
+				<path refid="castor.classpath"/>
+				<!-- Include the Axis libraries -->
+				<path refid="axis.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+		| Compile our client classes.
+		+-->
+	<target name="auth.client.javac" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${auth.client.base}/classes"/>
+		<!-- Compile the client classes -->
+		<javac srcdir="${auth.client.base}/java"
+		       destdir="${auth.client.base}/classes"
+		       debug="on"
+		       deprecation="on"
+		       optimize="on"
+		       >
+			<include name="org/astrogrid/community/auth/data/**"/>
+			<include name="org/astrogrid/community/auth/server/**"/>
+			<include name="org/astrogrid/community/auth/client/**"/>
+			<include name="org/astrogrid/community/delegate/auth/**"/>
+			<classpath>
+				<!-- Include the JUnit libraries -->
+				<path refid="junit.classpath"/>
+				<!-- Include the Axis libraries -->
+				<path refid="axis.classpath"/>
+			</classpath>
+		</javac>
+	</target>
+
+	<!--+
+		| Jar our server classes.
+		+-->
+	<target name="auth.server.jar" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${auth.base}/jar"/>
+		<!-- Create our jar file -->
+		<jar destfile="${auth.base}/jar/${auth.server.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${auth.server.base}/classes">
+				<include name="org/astrogrid/community/auth/data/**"/>
+				<include name="org/astrogrid/community/auth/server/**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!--+
+		| Jar our client classes.
+		+-->
+	<target name="auth.client.jar" depends="">
+		<!-- Create our build directory -->
+		<mkdir dir="${auth.base}/jar"/>
+		<!-- Create our jar file -->
+		<jar destfile="${auth.base}/jar/${auth.client.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${auth.client.base}/classes">
+				<include name="org/astrogrid/community/auth/data/**"/>
+				<include name="org/astrogrid/community/auth/server/**"/>
+				<include name="org/astrogrid/community/auth/client/**"/>
+				<include name="org/astrogrid/community/delegate/auth/**"/>
+			</fileset>
+		</jar>
+	</target>
+
+	<!--+
+		| Build our server config files.
+		| Not sure of the best place to put these at the moment.
+		| The mapping file should not change, so probably should be in the jar.
+		| The database file should be user configurable, so should NOT be in the jar.
+		+-->
+	<target name="auth.server.config" depends="">
+		<!-- Create our config directory -->
+		<mkdir dir="${auth.server.base}/config"/>
+		<!-- Copy our database mapping files -->
+		<copy verbose="false" overwrite="true" toDir="${auth.server.base}/config">
+			<fileset dir="src/castor/hsqldb">
+				<include name="database.xml"/>
+				<include name="mapping.xml"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+	    | Build our auth service.
+	    +-->
+	<target name="auth.BUILD" depends="">
+		<antcall target="auth.delete"/>
+
+		<antcall target="auth.service.javac"/>
+		<antcall target="auth.service.java2wsdl"/>
+		<antcall target="auth.service.wsdl2java"/>
+		<antcall target="auth.service.wsdd.xslt"/>
+
+		<antcall target="auth.manager.javac"/>
+		<antcall target="auth.manager.java2wsdl"/>
+		<antcall target="auth.manager.wsdl2java"/>
+		<antcall target="auth.manager.wsdd.xslt"/>
+
+		<antcall target="auth.server.prepare"/>
+		<antcall target="auth.server.javac"/>
+		<antcall target="auth.server.config"/>
+		<antcall target="auth.server.jar"/>
+
+		<antcall target="auth.client.prepare"/>
+		<antcall target="auth.client.javac"/>
+		<antcall target="auth.client.jar"/>
+	</target>
+
+	<!--+
+		| Install our service jars.
+		+-->
+	<target name="auth.server.install" depends="">
+		<!-- Copy the 3rd party libraries into our Axis WEB-INF/lib directory -->
+		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
+			<fileset dir="${castor.home}">
+				<include name="jta1.0.1.jar"/>
+				<include name="castor-${castor.version}.jar"/>
+				<include name="castor-${castor.version}-xml.jar"/>
+			</fileset>
+			<fileset dir="${xerces.home}">
+				<include name="xml-apis.jar"/>
+				<include name="xercesImpl.jar"/>
+			</fileset>
+			<fileset dir="${hsqldb.home}/lib">
+				<include name="hsqldb.jar"/>
+			</fileset>
+		</copy>
+		<!-- Copy our jar into the Axis WEB-INF/lib directory -->
+		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
+			<fileset dir="${auth.base}/jar">
+				<include name="${auth.server.jar}"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<!--+
+		| Remove our Axis service files.
+		+-->
+	<target name="auth.server.remove" depends="axis.tasks">
+		<!-- Remove our jar from the Axis WEB-INF/lib directory -->
+		<delete verbose="true" failonerror="false">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="auth-server*"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!--+
+		| Deploy our authService service.
+		+-->
+	<target name="auth.service.deploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Deploy our authService service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${auth.service.base}/wsdd/authServiceDeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Deploy our authManager service.
+		+-->
+	<target name="auth.manager.deploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Deploy our authManager service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${auth.manager.base}/wsdd/authManagerDeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Deploy our Axis services.
+		+-->
+	<target name="auth.server.deploy" depends="axis.tasks">
+		<antcall target="auth.service.deploy"/>
+		<antcall target="auth.manager.deploy"/>
+	</target>
+
+	<!--+
+		| Undeploy our authService service.
+		+-->
+	<target name="auth.service.undeploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Remove our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${auth.service.base}/wsdd/authServiceUndeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Undeploy our authManager service.
+		+-->
+	<target name="auth.manager.undeploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Remove our WebService -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${auth.manager.base}/wsdd/authManagerUndeploy.wsdd"
+			/>
+	</target>
+
+	<!--+
+		| Undeploy our Axis services.
+		+-->
+	<target name="auth.server.undeploy" depends="axis.tasks">
+		<antcall target="auth.service.undeploy"/>
+		<antcall target="auth.manager.undeploy"/>
+	</target>
+
+	<!--+
+	    | Request the WSDL description from our authService service.
+	    | Used as an initial check that our service has been deployed.
+	    +-->
+	<target name="auth.service.axis2wsdl" depends="">
+		<echo message=""/>
+		<echo message="Requesting WSDL from Axis ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${auth.service.base}/wsdl/axis2wsdl"/>
+		<!-- Request our WSDL description -->
+		<get verbose="true" usetimestamp="true"
+			src="${axis.url}/services/authService?wsdl"
+			dest="${auth.service.base}/wsdl/axis2wsdl/authService.wsdl"
+			/>
+	</target>
+
+	<!--+
+	    | Request the WSDL description from our authManager service.
+	    | Used as an initial check that our service has been deployed.
+	    +-->
+	<target name="auth.manager.axis2wsdl" depends="">
+		<echo message=""/>
+		<echo message="Requesting WSDL from Axis ...."/>
+		<!-- Create our wsdl directory -->
+		<mkdir dir="${auth.manager.base}/wsdl/axis2wsdl"/>
+		<!-- Request our WSDL description -->
+		<get verbose="true" usetimestamp="true"
+			src="${axis.url}/services/authManager?wsdl"
+			dest="${auth.manager.base}/wsdl/axis2wsdl/authManager.wsdl"
+			/>
+	</target>
+
+	<!--+
+		| Request the WSDL description for our Axis services.
+		+-->
+	<target name="auth.server.axis2wsdl" depends="axis.tasks">
+		<antcall target="auth.service.axis2wsdl"/>
+		<antcall target="auth.manager.axis2wsdl"/>
+	</target>
+
+	<!--+
+	    | Deploy our auth services.
+	    | If we were just copying our classes into the Axis/WEB-INF/classes directory, then no need to re-load Axis.
+	    | Because we are installing our classes as a jar file into the Axis/WEB-INF/lib directory, we need to re-load Axis before we can deploy the service.
+	    +-->
+	<target name="auth.DEPLOY" depends="">
+		<!-- Install our jar file -->
+		<antcall target="auth.server.install"/>
+		<!-- Reload Axis -->
+		<antcall target="axis.webapp.reload"/>
+		<!-- Deploy our service -->
+		<antcall target="auth.server.deploy"/>
+		<!-- Check we can read our service WSDL -->
+		<antcall target="auth.server.axis2wsdl"/>
+	</target>
+
+	<!--+
+	    | Remove our auth service.
+	    +-->
+	<target name="auth.REMOVE" depends="">
+		<!-- Remove our service -->
+		<antcall target="auth.server.undeploy"/>
+		<antcall target="auth.server.remove"/>
+	</target>
+
+	<!--+
+	    | Reload our auth service.
+	    +-->
+	<target name="auth.RELOAD" depends="">
+		<!-- Remove our service -->
+		<antcall target="auth.REMOVE"/>
+		<!-- Deploy our service -->
+		<antcall target="auth.DEPLOY"/>
+	</target>
+
+	<!--+
+		| Run our server side JUnit tests.
+		+-->
+	<target name="auth.server.junit" depends="">
+		<!-- Create our reports directory -->
+		<mkdir dir="${auth.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<!-- The auth classes -->
+				<path refid="auth.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+
+			<!-- Pass in the server config properties -->
+			<sysproperty key="org.astrogrid.auth.server.mapping"          value="file://${auth.server.base}/config/mapping.xml"/>
+			<sysproperty key="org.astrogrid.auth.server.database.config"  value="file://${auth.server.base}/config/database.xml"/>
+			<sysproperty key="org.astrogrid.auth.server.database.name"    value="${hsqldb.database}"/>
+
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${auth.base}/junit">
+				<fileset dir="${auth.server.base}/classes">
+					<include name="org/astrogrid/community/auth/server/junit/**/JUnit*.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+		| Run our client JUnit tests.
+		+-->
+	<target name="auth.client.junit" depends="">
+		<!-- Create our reports directory -->
+		<mkdir dir="${auth.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<!-- The auth classes -->
+				<path refid="auth.client.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${auth.base}/junit">
+				<fileset dir="${auth.client.base}/classes">
+					<include name="org/astrogrid/community/auth/client/junit/**/JUnit*.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+	    | Test our auth service.
+	    +-->
+	<target name="auth.TEST" depends="">
+		<!-- Reset our database -->
+		<antcall target="hsqldb.database.delete"/>
+		<!-- Run our server side tests -->
+		<antcall target="auth.server.junit"/>
+		<!-- Run our client side tests -->
+		<antcall target="auth.client.junit"/>
+		<!-- Display our database -->
+		<antcall target="hsqldb.database.select"/>
+	</target>
+
+<!--+
+	| Deprecated tests ..... code has changed since these were written ....
+	| Start
+	+-->
+
+	<!--+
+		| Run our server JUnit tests.
+		+-->
+	<target name="auth.server.junit.old" depends="auth.server.javac, auth.server.config">
+		<!-- Create our reports directory -->
+		<mkdir dir="${auth.server.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
+			<classpath>
+				<!-- The auth classes -->
+				<path refid="auth.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Pass in the location of our config files and database name -->
+			<sysproperty key="astrogrid.auth.server.mapping"          value="file://${auth.server.base}/config/mapping.xml"/>
+			<sysproperty key="astrogrid.auth.server.database.config"  value="file://${auth.server.base}/config/database.xml"/>
+			<sysproperty key="astrogrid.auth.server.database.name"    value="${hsqldb.database}"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${auth.server.base}/junit">
+				<fileset dir="${auth.server.base}/classes">
+					<include name="org/astrogrid/community/auth/server/**/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+	<!--+
+		| Run our database load JUnit tests.
+		+-->
+	<target name="auth.database.junit.load.old" depends="auth.server.javac, auth.server.config">
+
+		<!-- Empty our database -->
+		<antcall target="hsqldb.database.delete"/>
+
+		<!-- Create our XML data directory -->
+		<mkdir dir="${auth.server.base}/xml"/>
+		<mkdir dir="${auth.server.base}/xml/temp"/>
+		<!-- Create our reports directory -->
+		<mkdir dir="${auth.server.base}/junit"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="yes" haltonerror="yes" showoutput="yes" fork="true">
+			<classpath>
+				<!-- The auth classes -->
+				<path refid="auth.server.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Pass in the location of our config files and database name -->
+			<sysproperty key="astrogrid.auth.server.mapping"          value="file://${auth.server.base}/config/mapping.xml"/>
+			<sysproperty key="astrogrid.auth.server.database.config"  value="file://${auth.server.base}/config/database.xml"/>
+			<sysproperty key="astrogrid.auth.server.database.content" value="${auth.server.base}/config/content.xml"/>
+			<sysproperty key="astrogrid.auth.server.database.name"    value="${hsqldb.database}"/>
+			<sysproperty key="astrogrid.auth.server.test.xml.path"    value="${auth.server.base}/xml/temp"/>
+			<!-- Pass in the Castor settings -->
+			<sysproperty key="org.exolab.castor.indent" value="true"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${auth.server.base}/junit">
+				<fileset dir="${auth.server.base}/classes">
+					<include name="**/data/junit/load/JUnitTestCase.class"/>
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+
+
+
+
+
+<!-- 
+	End of Authentication tasks
+-->
 <!--+
 	| End
 	| Deprecated tests ..... code has changed since these were written ....

@@ -1,11 +1,15 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/CommunityManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.2  2003/09/08 11:01:35  KevinBenson
+ *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
+ *   along with an AdministrationDelegate
+ *
  *   Revision 1.1  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -29,6 +33,7 @@ import org.exolab.castor.jdo.DuplicateIdentityException ;
 import org.exolab.castor.jdo.TransactionNotInProgressException ;
 import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
+import java.util.ArrayList;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.CommunityData ;
 
@@ -360,9 +365,9 @@ public class CommunityManagerImpl
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getCommunityList()") ;
 
-		//
-		// Try QUERY the database.
-		Object[] array = null ;
+      //
+      // Try QUERY the database.
+      Object[] array = null ;
 		try {
 			//
 			// Begin a new database transaction.
@@ -375,20 +380,21 @@ public class CommunityManagerImpl
 			//
 			// Execute our query.
 			QueryResults results = query.execute();
-			//
-			// Transfer our results to a vector.
-			Collection collection = new Vector() ;
-			while (results.hasMore())
-				{
-				collection.add(results.next()) ;
-				}
-			//
-			// Convert it into an array.
-			array = collection.toArray() ;
-			}
+
+         //
+         // Transfer our results to a vector.
+         Collection collection = new Vector() ;
+         while (results.hasMore())
+         {
+            collection.add(results.next()) ;
+         }
+         // 
+         // Convert it into an array.
+         array = collection.toArray() ;
+		
 		//
 		// If anything went bang.
-		catch (PersistenceException ouch)
+      }catch (PersistenceException ouch)
 			{
 			if (DEBUG_FLAG) System.out.println("") ;
 			if (DEBUG_FLAG) System.out.println("  ----") ;

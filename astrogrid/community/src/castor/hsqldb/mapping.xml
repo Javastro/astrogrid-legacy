@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/06 20:10:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/08 11:01:35 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.5  2003/09/08 11:01:35  KevinBenson
+    |   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
+    |   along with an AdministrationDelegate
+    |
     |   Revision 1.4  2003/09/06 20:10:06  dave
     |   Split PolicyManager into separate components.
     |
@@ -38,6 +42,10 @@
 			<sql name="manager" type="char"/>
 			<bind-xml node="element"/>
 		</field>
+		<field name="authenticationUrl" type="string">
+			<sql name="identity" type="char"/>
+			<bind-xml node="element"/>
+		</field>
 		<field name="description" type="string">
 			<sql name="description" type="char"/>
 			<bind-xml node="element"/>
@@ -56,6 +64,40 @@
 			<bind-xml node="element"/>
 		</field>
 	</class>
+	
+	<!-- JDO and XML Mapping for Accounts -->
+	<class name="org.astrogrid.community.authentication.data.SecurityToken" identity="ident">
+		<map-to table="securitytokens" xml="token"/>
+		<field name="ident" type="integer">
+			<sql name="ident" type="integer"/>
+			<bind-xml node="attribute"/>
+		</field>
+		<field name="token" type="string">
+			<sql name="token" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="target" type="string">
+			<sql name="token" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="account" type="string">
+			<sql name="account" type="char"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="used" type="boolean">
+			<sql name="used" type="bit"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="expirationDate" type="date">
+			<sql name="expirationdate" type="timestamp"/>
+			<bind-xml node="element"/>
+		</field>
+		<field name="todaysDate" type="date">
+			<sql name="todaysdate" type="timestamp"/>
+			<bind-xml node="element"/>
+		</field>
+	</class>
+	
 
 	<!-- JDO and XML Mapping for Groups -->
 	<class name="org.astrogrid.community.policy.data.GroupData" identity="ident">
@@ -68,6 +110,10 @@
 			<sql name="description" type="char"/>
 			<bind-xml node="element"/>
 		</field>
+		<field name="type" type="string">
+			<sql name="type" type="char"/>
+			<bind-xml node="element"/>
+		</field>		
 	</class>
 
 	<!-- JDO and XML Mapping for Permissions -->
