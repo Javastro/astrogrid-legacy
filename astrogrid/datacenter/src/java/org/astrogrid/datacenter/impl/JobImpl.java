@@ -13,13 +13,13 @@ import org.astrogrid.datacenter.JobException ;
 import org.astrogrid.datacenter.DatasetAgent ;
 import org.astrogrid.datacenter.i18n.*;
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 import java.util.Date ;
 import java.sql.Connection ;
 import java.sql.PreparedStatement ;
 import java.sql.ResultSet ;
 import java.sql.SQLException ;
+import java.sql.Timestamp ;
 import java.text.MessageFormat ;
 
 public class JobImpl extends Job {
@@ -81,18 +81,25 @@ public class JobImpl extends Job {
 			Element
 			   element ;
 			   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
-				element = (Element) nodeList.item(i) ;
-				if( element.getTagName().equals( JobDocDescriptor.USERID_ELEMENT ) ) {
-					userId = element.getNodeValue().trim() ;
-				}
-				else if( element.getTagName().equals( JobDocDescriptor.COMMUNITY_ELEMENT ) ) {
-					community = element.getNodeValue().trim() ;
-				}
-				else if( element.getTagName().equals( JobDocDescriptor.JOBSTEP_ELEMENT ) ) {
-				    jobStep = new JobStep( element ) ;   
-				}
-				
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				if ( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {		
+					element = (Element) nodeList.item(i) ;
+				 
+				 	
+				 	if(element.getTagName().equals( JobDocDescriptor.USERID_ELEMENT ) ) {
+					    //userId = element.getNodeValue().trim() ;
+					    userId = element.getFirstChild().toString().trim();
+					}
+					
+					else if( element.getTagName().equals( JobDocDescriptor.COMMUNITY_ELEMENT ) ) {
+						//community = element.getNodeValue().trim() ;
+						community = element.getFirstChild().toString().trim();
+					}
+					
+					else if( element.getTagName().equals( JobDocDescriptor.JOBSTEP_ELEMENT ) ) {
+				    	jobStep = new JobStep( element ) ; 
+					}  
+				 } // end if
 			} // end for
 			
 			this.setStatus( Job.STATUS_INITIALIZED ) ;		
@@ -157,8 +164,10 @@ public class JobImpl extends Job {
 				  inserts = new Object[1] ;
 			   inserts[0] = DatasetAgent.getProperty( JobFactoryImpl.JOB_TABLENAME ) ;
 			   String
-				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ; 
-			   preparedStatement = getConnection().prepareStatement( updateString ) ;		
+				  updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ;
+
+// Commented out as no DB for Eclipse to use
+//			   preparedStatement = getConnection().prepareStatement( updateString ) ;		
 			}
 		    
 		}
