@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.7 2004/09/01 11:18:49 mch Exp $
+ * $Id: Query2Adql074.java,v 1.8 2004/09/06 20:31:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,7 +49,7 @@ public class Query2Adql074  {
       
       if ( !(query.getResultsDef() instanceof ReturnTable) ||
              ( ((ReturnTable) query.getResultsDef()).getColDefs()==null)  ) {
-         selectListTag.writeTag("Item", "xsi:type'allSelectionItemType'");
+         selectListTag.writeTag("Item", "xsi:type='allSelectionItemType'","");
       }
       else {
          NumericExpression[] colDefs = ((ReturnTable) query.getResultsDef()).getColDefs();
@@ -230,6 +230,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.8  2004/09/06 20:31:55  mch
+ Fix to select *
+
  Revision 1.7  2004/09/01 11:18:49  mch
  Removed initial processing instruction
 
