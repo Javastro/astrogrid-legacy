@@ -12,31 +12,14 @@
 package org.astrogrid.portal.workflow.design.unittest ;
 
 
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
-import org.astrogrid.portal.workflow.*;
-import org.astrogrid.portal.workflow.design.activity.*;
 import org.astrogrid.portal.workflow.design.*;
-import org.w3c.dom.Document ;
-import java.util.HashMap ;
-import java.util.ListIterator;
-import java.util.Map ;
-import java.util.Collections ;
 import java.util.Vector ;
-import java.util.Iterator ;
 import java.text.MessageFormat ;
-import java.io.InputStream ;
 import org.xml.sax.* ;
 import java.io.StringReader ;
 
 import org.apache.log4j.Logger ;
 import org.apache.axis.utils.XMLUtils ;
-import org.w3c.dom.* ;
-
-import org.astrogrid.community.common.util.CommunityMessage ;
-
-import org.astrogrid.i18n.*;
-import org.astrogrid.AstroGridException ;
-import org.astrogrid.jes.delegate.jobController.*;
 
 
 /**

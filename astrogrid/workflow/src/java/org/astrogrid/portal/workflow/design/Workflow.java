@@ -12,13 +12,10 @@
 package org.astrogrid.portal.workflow.design;
 
 import java.util.HashMap ;
-import java.util.ListIterator;
 import java.util.Map ;
 import java.util.Collections ;
-import java.util.Vector ;
 import java.util.Iterator ;
 import java.text.MessageFormat ;
-import java.io.InputStream ;
 import org.xml.sax.* ;
 import java.io.StringReader ;
 
@@ -28,8 +25,6 @@ import org.w3c.dom.* ;
 
 import org.astrogrid.community.common.util.CommunityMessage ;
 
-import org.astrogrid.i18n.*;
-import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.delegate.jobController.*;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;

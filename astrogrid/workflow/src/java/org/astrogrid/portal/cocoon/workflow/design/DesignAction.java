@@ -29,16 +29,11 @@ import org.astrogrid.portal.workflow.design.activity.*;
 
 import org.astrogrid.community.common.util.CommunityMessage;
 
-import java.io.File;
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.xml.sax.EntityResolver;
-
 import org.apache.avalon.framework.parameters.Parameters;
-import org.apache.avalon.framework.parameters.ParameterException ;
 import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
