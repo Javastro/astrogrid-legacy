@@ -13,6 +13,7 @@ import java.io.StringReader;
 import org.xml.sax.InputSource;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.astrogrid.registry.RegistryConfig;
 
 /**
  * 
@@ -83,14 +84,26 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       if(nl.getLength() > 1) {
          //throw an error trying to do more dates than expected.
       }
+      Document registryDoc = loadRegistry(null);
+      NodeList regNL = registryDoc.getElementsByTagName("ManagedAuthority");
+      
+      
       Node nd = nl.item(0);
       String updateVal = nd.getFirstChild().getNodeValue();
       String selectQuery = "<query><selectionSequence>" +
       "<selection item='searchElements' itemOp='EQ' value='all'/>" +
       "<selectionOp op='$and$'/>" +
-      "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>" +
-      "</selectionSequence></query>";
-      
+      "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>";
+      if(regNL.getLength() > 0) {
+         selectQuery += "<selectionOp op='AND'/>" + 
+         "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(0).getFirstChild().getNodeValue() + "'/>";
+      }
+      for(int i = 1;i < regNL.getLength();i++) {
+         selectQuery += "<selectionOp op='OR'/>" +
+         "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(i).getFirstChild().getNodeValue() + "'/>";
+         
+      }
+      selectQuery += "</selectionSequence></query>";      
       
       Reader reader2 = new StringReader(selectQuery);
       InputSource inputSource = new InputSource(reader2);
@@ -103,5 +116,30 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       System.out.println("the responsedoc in harvestQuery = " + XMLUtils.DocumentToString(responseDoc));
       return responseDoc;
    }
+   
+   public Document loadRegistry(Document query) throws Exception {
+      //System.out.println("received = " + XMLUtils.DocumentToString(query));
+      RegistryConfig.loadConfig();
+      String authorityID = RegistryConfig.getAuthorityID();
+      
+      String selectQuery = "<query><selectionSequence>" +
+      "<selection item='searchElements' itemOp='EQ' value='Registry'/>" +
+      "<selectionOp op='$and$'/>" +
+      "<selection item='AuthorityID' itemOp='CONTAINS' value='" + authorityID + "'/>" +
+      "</selectionSequence></query>";
+      
+      
+      Reader reader2 = new StringReader(selectQuery);
+      InputSource inputSource = new InputSource(reader2);
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(inputSource);
+      System.out.println("the select/harvest query = " + XMLUtils.DocumentToString(doc));
+      
+      Document responseDoc = QueryParser3_0.parseFullNodeQuery(doc);
+      System.out.println("the responsedoc in loadregistry = " + XMLUtils.DocumentToString(responseDoc));
+      return responseDoc;
+   }
+   
   
 }

@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.Iterator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder; 
 import javax.xml.parsers.DocumentBuilderFactory; 
@@ -15,6 +16,7 @@ import org.apache.axis.utils.XMLUtils;
 import junit.framework.*;
 import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.query.RegistryService;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.File;
@@ -163,6 +165,7 @@ public class RegistryAdminJunit extends TestCase {
       //ras.update(doc);
    }
    
+   
    private void updateRegistry(Document doc) throws Exception {
       Element elem = doc.getDocumentElement();
       Node e = elem.getFirstChild().getNextSibling();
@@ -207,6 +210,37 @@ public class RegistryAdminJunit extends TestCase {
       
       ras.remove(doc);
    }
+   
+   public void testUpdateAuthority() throws Exception {
+      String fileName = System.getProperty("junit.xml.dir");
+      fileName += "/" + "Authority2.xml";
+      File fi = new File(fileName);
+      
+      RegistryAdminService ras = new RegistryAdminService();
+      String requestQuery = " ";      
+      Reader reader2 = new StringReader(requestQuery);
+      InputSource inputSource = new InputSource(reader2);
+
+      DocumentBuilder registryBuilder = null;
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      dbf.setNamespaceAware(true);
+      registryBuilder = dbf.newDocumentBuilder();
+      System.out.println("ns aware = " + registryBuilder.isNamespaceAware());
+      Document doc = registryBuilder.parse(fi);
+      Element elem = doc.getDocumentElement();
+      updateRegistry(doc);
+
+      RegistryService rs = new RegistryService();
+      Document doc2 = rs.loadRegistry(null);
+      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc2));
+      NodeList nl2 = doc.getElementsByTagName("ManagedAuthority");
+      for(int i = 0;i < nl2.getLength();i++) {
+         System.out.println(nl2.item(i).getFirstChild().getNodeValue());
+      }//for
+            
+      //ras.update(doc);
+   }
+   
    
    private void printMap(Map tm) {
       Set keySet = tm.keySet();

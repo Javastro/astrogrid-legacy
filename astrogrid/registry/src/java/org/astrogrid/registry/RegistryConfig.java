@@ -1,14 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/src/java/org/astrogrid/registry/Attic/RegistryConfig.java,v $</cvs:source>
  * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/12/01 10:38:20 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/12/08 09:30:16 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: RegistryConfig.java,v $
- *   Revision 1.2  2003/12/01 10:38:20  KevinBenson
- *   This should be the results from the merger of Itn04-2003-28-11_HB (Head branch)
- *   merged with or should say replaced by Itn04-2003-01-12_RB
+ *   Revision 1.3  2003/12/08 09:30:16  KevinBenson
+ *   New result from merger with Itn04-Dec-08_RB tag
+ *
+ *   Revision 1.1.2.4  2003/12/02 16:11:56  KevinBenson
+ *   Dusting off the harvester still some more work to do on the harvester, but
+ *   it is getting their.
+ *   Also added a couple of more junit tests and another template
  *
  *   Revision 1.1.2.3  2003/12/01 10:25:51  KevinBenson
  *   Added more templates for the client.  So it can do the TabularSky service and 
@@ -131,12 +135,19 @@ public class RegistryConfig
     *
     */
    public static final String AUTHORITY_XML_TEMPLATE = "authority.xml.template";
+   
+   /**
+    * The name of the Authority Template used by portal
+    *
+    */
+   public static final String REGISTRY_XML_TEMPLATE = "registry.xml.template";
+   
 
 	/**
 	 * The name of the publsih registry's authority id used by this registry. (Currently not used)
 	 *
 	 */
-	public static final String PUBLISH_REGISTRY_AUTHORITY_ID = "publish.registry.authority.id";
+	public static final String REGISTRY_AUTHORITY_ID = "registry.authority.id";
    
    /**
     * The name of the full registry's authority id used by this registry. (Currently not used)
@@ -350,68 +361,35 @@ public class RegistryConfig
 	 * The publish registry authority id
 	 *
 	 */
-	private static String pub_authority_id = null ;
+	private static String authority_id = null ;
 
 	/**
 	 * Static method to get the publish registry's authority id.
 	 *
 	 */
-	public static String getPublishAuthorityID() {
+	public static String getAuthorityID() {
 		//
 		// Try reading our config property.
-		if ((null == pub_authority_id) || (pub_authority_id.length() <= 0))
+		if ((null == authority_id) || (authority_id.length() <= 0))
 			{
 			if (DEBUG_FLAG) System.out.println("getAuthorityID()") ;
-			if (DEBUG_FLAG) System.out.println("  Trying config property '" + PUBLISH_REGISTRY_AUTHORITY_ID + "'") ;
-         pub_authority_id = getProperty(PUBLISH_REGISTRY_AUTHORITY_ID) ;
-			if (DEBUG_FLAG) System.out.println("  Config property result : " + pub_authority_id) ;
+			if (DEBUG_FLAG) System.out.println("  Trying config property '" + REGISTRY_AUTHORITY_ID + "'") ;
+         authority_id = getProperty(REGISTRY_AUTHORITY_ID) ;
+			if (DEBUG_FLAG) System.out.println("  Config property result : " + authority_id) ;
 			}
 		//
 		// Try reading our system property.
-		if ((null == pub_authority_id) || (pub_authority_id.length() <= 0))
+		if ((null == authority_id) || (authority_id.length() <= 0))
 			{
-			String name = CONFIG_NAME + "." + PUBLISH_REGISTRY_AUTHORITY_ID ;
+			String name = CONFIG_NAME + "." + REGISTRY_AUTHORITY_ID ;
 			if (DEBUG_FLAG) System.out.println("getAuthorityID()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying system property '" + name + "'") ;
-         pub_authority_id = System.getProperty(name) ;
-			if (DEBUG_FLAG) System.out.println("  System property result : " + pub_authority_id) ;
+         authority_id = System.getProperty(name) ;
+			if (DEBUG_FLAG) System.out.println("  System property result : " + authority_id) ;
 		}
-		return pub_authority_id ;
+		return authority_id ;
    }
    
-   /**
-    * Our Full registry's authority id.
-    *
-    */
-   private static String full_authority_id = null ;
-
-   /**
-    * Static method to get the authority id of the full registry.
-    *
-    */
-   public static String getFullAuthorityID() {
-      //
-      // Try reading our config property.
-      if ((null == full_authority_id) || (full_authority_id.length() <= 0))
-         {
-         if (DEBUG_FLAG) System.out.println("getFullAuthorityID()") ;
-         if (DEBUG_FLAG) System.out.println("  Trying config property '" + FULL_REGISTRY_AUTHORITY_ID + "'") ;
-         full_authority_id = getProperty(FULL_REGISTRY_AUTHORITY_ID) ;
-         if (DEBUG_FLAG) System.out.println("  Config property result : " + full_authority_id) ;
-         }
-      //
-      // Try reading our system property.
-      if ((null == pub_authority_id) || (pub_authority_id.length() <= 0))
-         {
-         String name = CONFIG_NAME + "." + FULL_REGISTRY_AUTHORITY_ID ;
-         if (DEBUG_FLAG) System.out.println("getFullAuthorityID()") ;
-         if (DEBUG_FLAG) System.out.println("  Trying system property '" + name + "'") ;
-         full_authority_id = System.getProperty(name) ;
-         if (DEBUG_FLAG) System.out.println("  System property result : " + full_authority_id) ;
-      }
-      return full_authority_id ;
-   }   
-
 	/**
 	 * The file and location of the registry file.
 	 *
@@ -494,6 +472,32 @@ public class RegistryConfig
     File fi = new File(regOrganisationTemplate);
     return fi;
    }
+   
+   /**
+   * Organisatin Template file and location
+   *
+   */
+   private static String regRegistryTemplate = null ;
+
+   /**
+   * Static method to get our Organisation template
+   *
+   */
+   public static File getRegistryTemplate() {
+    //
+    // Try reading our config property.
+    if ((null == regRegistryTemplate) || (regRegistryTemplate.length() <= 0))
+       {
+       if (DEBUG_FLAG) System.out.println("getRegistryTemplate()") ;
+       if (DEBUG_FLAG) System.out.println("  Trying config property '" + REGISTRY_XML_TEMPLATE + "'") ;
+       regRegistryTemplate = getProperty(REGISTRY_XML_TEMPLATE);
+       if (null != regRegistryTemplate) regRegistryTemplate = regRegistryTemplate.trim();
+       if (DEBUG_FLAG) System.out.println("  Config property result : " + regRegistryTemplate);
+    }
+    File fi = new File(regRegistryTemplate);
+    return fi;
+   }
+   
 
    /**
    * Static method to get our Authority template

@@ -22,7 +22,7 @@
 
   <vg:Authority>
     <Identifier>
-      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>raitest.ncsa.uiuc.edu</AuthorityID>
       <ResourceKey xsi:nil="true"/>
     </Identifier>
     <Title>NCSA Radio Astronomy Imaging Naming Authority</Title>

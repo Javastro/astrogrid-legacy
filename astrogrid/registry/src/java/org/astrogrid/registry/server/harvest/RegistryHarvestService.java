@@ -57,13 +57,6 @@ public class RegistryHarvestService implements org.astrogrid.registry.RegistryHa
    Document doc = registryBuilder.parse(harvestQueryFile);
    Document queryResponseDoc = QueryParser3_0.parseFullNodeQuery(doc);
    
-   //DocumentBuilder responseDocBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-   //Document responseDoc = responseDocBuilder.newDocument();
-   //Element root = responseDoc.createElement("vodescription");
-   //responseDoc.appendChild(root);
-   
-   
-   
    if(queryResponseDoc.hasChildNodes()) {
       NodeList nl = queryResponseDoc.getChildNodes();
       for(int i = 0;i < nl.getLength();i++) {
@@ -99,8 +92,7 @@ public class RegistryHarvestService implements org.astrogrid.registry.RegistryHa
            harvestedDoc = harvestCallableRegistry(nl.item(i));   
            if(harvestedDoc != null) {
               RegistryFileHelper.updateDocument(RegistryFileHelper.loadRegistryFile(),harvestedDoc);
-           }
-           //               
+           }               
         }            
      }
      return harvestedDoc;

@@ -2,13 +2,17 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/12/01 10:38:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/08 09:30:16 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
-    |   Revision 1.2  2003/12/01 10:38:20  KevinBenson
-    |   This should be the results from the merger of Itn04-2003-28-11_HB (Head branch)
-    |   merged with or should say replaced by Itn04-2003-01-12_RB
+    |   Revision 1.3  2003/12/08 09:30:16  KevinBenson
+    |   New result from merger with Itn04-Dec-08_RB tag
+    |
+    |   Revision 1.1.2.4  2003/12/02 16:11:56  KevinBenson
+    |   Dusting off the harvester still some more work to do on the harvester, but
+    |   it is getting their.
+    |   Also added a couple of more junit tests and another template
     |
     |   Revision 1.1.2.3  2003/12/01 10:25:51  KevinBenson
     |   Added more templates for the client.  So it can do the TabularSky service and 
@@ -51,12 +55,13 @@
        +-->
    <category name="org.astrogrid.registry">
 
-      <property name="registry.authority.id" value="kmbmssl.authority.id"/>
+      <property name="registry.authority.id" value="adil.ncsa.uiuc.edu"/>
       
       <property name="publish.registry.query.url" value="http://localhost:8080/axis/services/Registry"/>
       <property name="publish.registry.update.url" value="http://localhost:8080/axis/services/RegistryAdmin"/>
       <property name="publish.registry.name" value="Leicester Publish Registry"/>      
       <property name="search.registry.query.url" value="http://localhost:8080/axis/services/Registry"/>
+      <property name="search.registry.update.url" value="http://localhost:8080/axis/services/RegistryAdmin"/>      
       <property name="search.registry.name" value="MSSL Search Registry"/>      
 
       <property name="registry.file" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\test\xml\adil.xml"/>
@@ -67,6 +72,7 @@
       <property name="sky.service.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\SkyServiceTemplate.xml"/>
       <property name="tabular.sky.service.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\TabularSkyServiceTemplate.xml"/>
       <property name="datacollection.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\DataCollectionTemplate.xml"/>
+      <property name="registry.xml.template" value="C:\Development\eclipse\workspace\RegistryProj\astrogrid\registry\src\templates\client\RegistryTemplate.xml"/>
       
    </category> 
 </properties>

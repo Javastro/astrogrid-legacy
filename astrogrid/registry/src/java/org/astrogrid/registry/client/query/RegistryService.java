@@ -11,6 +11,7 @@ import org.apache.axis.client.Service;
 import org.apache.axis.message.SOAPBodyElement; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
 import java.io.Reader;
 import java.io.StringReader;
@@ -18,7 +19,11 @@ import org.xml.sax.InputSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.ParseException;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Calendar;
+import java.util.Set;
+import java.util.Iterator;
 
 /**
  * 
@@ -37,7 +42,9 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
    /**
     * target end point  is the location of the webservice. 
     */
-   private String endPoint = null; 
+   private String endPoint = null;
+   
+     
 
    /**
     * Empty constructor that defaults the end point to local host.
@@ -175,10 +182,14 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       DocumentBuilder registryBuilder = null;
       registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       Document doc = registryBuilder.newDocument();
-      Element root = doc.createElement("date_since");
-      //root.setAttribute()
-      root.appendChild(doc.createTextNode(sdf.format(dateSince)));
-      doc.appendChild(root);
+      
+      Element elemDate = doc.createElement("date_since");
+      elemDate.appendChild(doc.createTextNode(sdf.format(dateSince)));
+      
+            
+      doc.appendChild(elemDate);
+      
+      
       return harvestQuery(doc);         
 
    }
@@ -209,6 +220,78 @@ public class RegistryService implements org.astrogrid.registry.RegistryInterface
       return sbe.getAsDocument();         
    }
    
-} 
+   public Document loadRegistry(Document query) throws Exception {      
+      Call call = getCall();
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.newDocument();
+      Element root = doc.createElementNS("http://query.server.registry.astrogrid.org","loadRegistry");
+      doc.appendChild(root);
 
+      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());
+      sbeRequest.setName("loadRegistry");
+      sbeRequest.setNamespaceURI("http://query.server.registry.astrogrid.org");
+      
+      System.out.println("sending " + XMLUtils.DocumentToString(doc));
+      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
 
+      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+      return sbe.getAsDocument();         
+   }
+   
+   public HashMap ManagedAuthorities() throws Exception {
+      Document doc = loadRegistry(null);
+      NodeList nl = doc.getElementsByTagName("ManagedAuthority");
+      HashMap hm = new HashMap();
+      for(int i = 0;i < nl.getLength();i++) {
+         hm.put(nl.item(i).getFirstChild().getNodeValue(),null);   
+      }
+      System.out.println("Size of mgauthority = " + hm.size());
+      return hm;      
+   }
+   
+   public static Document buildOAIDocument(Document responseDoc,String accessURL, String dateStamp,Map requestVars) {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+      String xmlDoc = "<OAI-PMH xmlns='http://www.openarchives.org/OAI/2.0/' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd'>";
+      Calendar rightNow = Calendar.getInstance();
+      xmlDoc += "<responseDate>" + sdf.format(rightNow.getTime()) + "</responseDate>";
+      if(requestVars != null && requestVars.size() > 0) {
+         Set keySet = requestVars.keySet();
+         Iterator iter = keySet.iterator();
+         String key = null;
+         xmlDoc += "<request ";         
+         while(iter.hasNext()) {
+            key = (String)iter.next();
+            //(String)requestVars.get(key);
+            xmlDoc += " " + key + "='" + (String)requestVars.get(key) + "'";
+         }
+         xmlDoc += ">" + accessURL + "</request>";
+      }
+      if(requestVars.containsKey("verb")) {
+         xmlDoc += "<" + requestVars.get("verb") + ">";
+         xmlDoc += "<record><header><identifier>ivo_vor://</identifier><dateStamp>" + dateStamp + "</dateStamp></header><metadata>";
+         xmlDoc += XMLUtils.ElementToString(responseDoc.getDocumentElement());
+         xmlDoc += "</metadata></record>" + "</" + requestVars.get("verb") + ">";
+         xmlDoc += "</OAI-PMH>";
+      }else {
+        //error there must be a verb to oai.  
+      }
+      System.out.println("here is the xmldoc = " + xmlDoc);
+      Reader reader2 = new StringReader(xmlDoc);
+      InputSource inputSource = new InputSource(reader2);
+      Document doc = null;
+      try {
+         DocumentBuilder registryBuilder = null;
+         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         doc = registryBuilder.parse(inputSource);
+      }catch(Exception e) {
+         e.printStackTrace();
+         doc = null;
+      }
+      return doc;
+   }
+   
+   
+   
+}

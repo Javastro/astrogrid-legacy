@@ -24,7 +24,7 @@
        management hierarchy for the ADIL -->
   <vc:Organisation created="2001-12-17T09:30:47-05:00" updated="2001-12-17T09:30:47-05:00" status="active">
     <Identifier>
-      <AuthorityID>rai.ncsa.uiuc.edu</AuthorityID>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
       <ResourceKey>RAI</ResourceKey>
     </Identifier>
     <Title>NCSA Radio Astronomy Imaging</Title>
@@ -651,6 +651,56 @@
     <Subject>grid-based processing</Subject>
     <ContentLevel>Research</ContentLevel>
   </vc:Organisation>
-  
+ <vg:Registry>
+    <Identifier>
+      <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+      <ResourceKey>Registry.html</ResourceKey>
+    </Identifier>
+    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
+    <ShortName>ADIL</ShortName>
+    <Summary>
+      <Description>
+        This Web page allows users to interactively search the contents
+        of the ADIL.
+      </Description>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+    </Summary>
+    <Type>Archive</Type>
+    <Curation>
+      <Publisher>
+    	 <Identifier>
+    	   <AuthorityID>adil.ncsa.uiuc.edu</AuthorityID>
+	   <ResourceKey>ADIL</ResourceKey>
+    	 </Identifier>
+         <Title>NCSA Astronomy Digital Image Library</Title>
+      </Publisher>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+      <Date>1994-09-01</Date>
+      <Creator>
+        <Name>Dr. Raymond Plante</Name>
+        <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <Contributor>
+        <Name>Damien Guillaume</Name>
+      </Contributor>
+    </Curation>
+    <Subject>radio astronomy</Subject>
+    <Subject>data repositories</Subject>
+    <Subject>digital libraries</Subject>
+    <Subject>grid-based processing</Subject>
+    <ContentLevel>Research</ContentLevel>
+    <ContentLevel>University</ContentLevel>
+    <ContentLevel>Community College</ContentLevel>
+    <ManagedAuthority>adil.ncsa.uiuc.edu</ManagedAuthority>
+    <ManagedAuthority>adilTEST.ncsa.uiuc.edu</ManagedAuthority>    
+    <ManagedAuthority>rai.ncsa.uiuc.edu</ManagedAuthority>
+    <Interface>
+      <Invocation>WebBrowser</Invocation>
+      <AccessURL use="dir">http://adil.ncsa.uiuc.edu/QueryPage.html</AccessURL>
+    </Interface>
+  </vg:Registry>
   
 </VODescription>

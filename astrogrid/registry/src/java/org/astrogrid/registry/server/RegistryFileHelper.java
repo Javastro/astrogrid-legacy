@@ -16,6 +16,13 @@ import java.io.FileNotFoundException;
 import org.apache.axis.utils.XMLUtils;
 import java.util.HashMap;
 import org.astrogrid.registry.RegistryConfig;
+import org.astrogrid.registry.server.query.RegistryService;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Calendar;
+import java.text.ParseException;
+
 
 /**
  * RegistryFile Helper class will have some of the methods placed in different classes in the next iteration.
@@ -188,6 +195,33 @@ public class RegistryFileHelper {
       replaceNodeParent.replaceChild(replacingNode, replacedNode);
       return replacedDocument;
    }  
+   
+   public static void updateRegistryEntry(Document authorityEntries) {
+      Node parentNode = findElementNode("vg:Authority",authorityEntries.getDocumentElement());
+      Document regEntry = null;
+      if(parentNode != null) {
+         RegistryService rs = new RegistryService();
+         try {
+            regEntry = rs.loadRegistry(null);
+         }catch(Exception e) {
+            e.printStackTrace();
+            regEntry = null;   
+         }
+         if(regEntry != null) {
+            while(parentNode != null) {
+               Node nd = findElementNode("AuthorityID",parentNode);
+               Element elem = regEntry.createElement("ManagedAuthority");
+               elem.appendChild(regEntry.createTextNode(nd.getFirstChild().getNodeValue()));
+               Node regNode = findElementNode("vg:Registry",regEntry.getDocumentElement());
+               if(regNode != null) {
+                  regNode.appendChild(elem);
+               }
+               updateDocument(regEntry);
+               parentNode = findElementNode("vg:Authority",parentNode.getNextSibling());   
+            }//while                
+         }//if       
+      }//if     
+   }
 
    /**
     * Recursively searches Nodes and all child Nodes from a DOM looking for a particular name.
@@ -206,13 +240,19 @@ public class RegistryFileHelper {
       if(root == null) {
          return null;   
       }
-      
       //Check to see if root is the desired element. If so return root.
       String nodeName = root.getNodeName();
       
       //see if their is a match with the current node.
       if((nodeName != null) & (nodeName.equals(elementName))) 
          return root;
+         
+      //String localName = root.getLocalName();
+      
+      //might be a match with the local part of the name if any.
+      //if((localName != null) & (localName.equals(elementName))) 
+      //   return root;
+      
 
         //Check to see if root has any children if not return null
       if(!(root.hasChildNodes()))
@@ -230,23 +270,25 @@ public class RegistryFileHelper {
       return matchingNode;
    }
 
+   public static synchronized void updateNode(Node subNode) {
+      updateDocument(subNode.getOwnerDocument());
+   }
    
    /**
     * Method takes in a DOM to be updated (seems to be always the registry file so this parameter may be removed.)
     * And takes in a DOM that has the new information to be updated.  This method updates the registry by
     * reviewing a DOM for AuthorityID's & ResourceKey's and checking if their are matches.  If their are matches 
     * then an update occurs if not then an Add will occur.
-    * @param fileDocument Main DOM - Document to be compared against.
     * @param subDocument DOM that has nodes to be updated/added to the main DOM.
     * 
     * @author Kevin Benson
     */
-   public static synchronized void updateDocument(Document fileDocument, Document subDocument) {
+   public static synchronized void updateDocument(Document subDocument) {
       boolean updated = false;
+      Document fileDocument = loadRegistryFile();
       //First get the root elements of both documents.
       Element fileRoot = fileDocument.getDocumentElement();
       Element subRoot = subDocument.getDocumentElement();
-      
       //Now find the first AuthorityID.
       Node subFoundNode = findElementNode("AuthorityID",subRoot);
       Node fileFoundNode = null;
@@ -293,11 +335,13 @@ public class RegistryFileHelper {
                      if(subResourceVal == null && !fileFoundNode.hasChildNodes()) {
                         // a match set update
                         updated = true;
+                        setNewDates(subFoundNode.getParentNode().getParentNode(),false);                        
                         //replace the node in the compared file DOM with the new Node
                         replaceNode(fileDocument,subFoundNode.getParentNode().getParentNode(),fileFoundNode.getParentNode().getParentNode());
                      }else if(fileFoundNode.hasChildNodes() && subResourceVal != null && subResourceVal.equals(fileFoundNode.getFirstChild().getNodeValue())) {
                         // a match set update
                         updated = true;
+                        setNewDates(subFoundNode.getParentNode().getParentNode(),false);
                         //replace the node in the compared file DOM with the new Node                        
                         replaceNode(fileDocument,subFoundNode.getParentNode().getParentNode(),fileFoundNode.getParentNode().getParentNode());
                      }//elseif
@@ -313,6 +357,7 @@ public class RegistryFileHelper {
          }//while
          //if no update was found then add it.
          if(!updated) {
+            setNewDates(subFoundNode.getParentNode().getParentNode(),true);
             //add the new entry into the registry.
             addNode(fileDocument,subFoundNode.getParentNode().getParentNode());
             //now add it was never found.
@@ -320,6 +365,29 @@ public class RegistryFileHelper {
          //Look for the next Authority ID that is in the next MAIN parent. MAIN parent being a direct child node from root element.
          subFoundNode = findElementNode("AuthorityID",subFoundNode.getParentNode().getParentNode().getNextSibling());
       }//while
+   }
+   
+   public static void setNewDates(Node nd,boolean add) {
+      if(!nd.hasAttributes()) {
+         //TODO logerror this method is supposed to be used when they have a created and upated attributes.
+         return;         
+      }
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+      NamedNodeMap nnm = nd.getAttributes();
+      Node updateNode = nnm.getNamedItem("updated");
+      Calendar rightNow = Calendar.getInstance();
+      System.out.println("checking updated");
+      if(updateNode != null) {
+         System.out.println("nod value before = " + updateNode.getNodeValue());
+         updateNode.setNodeValue(sdf.format(rightNow.getTime()));
+         System.out.println("nod value after = " + updateNode.getNodeValue());
+      }//if
+      if(add) {
+         Node createNode = nnm.getNamedItem("created");
+         if(createNode != null) {
+            createNode.setNodeValue(sdf.format(rightNow.getTime()));
+         }//if
+      }//if
    }
    
    /**
@@ -332,8 +400,10 @@ public class RegistryFileHelper {
     * 
     * @author Kevin Benson
     */
-   public static synchronized void removeDocument(Document fileDocument, Document subDocument) {
+   public static synchronized void removeDocument(Document subDocument) {
       boolean updated = false;
+      
+      Document fileDocument = loadRegistryFile();      
       //First get the root elements
       Element fileRoot = fileDocument.getDocumentElement();
       Element subRoot = subDocument.getDocumentElement();

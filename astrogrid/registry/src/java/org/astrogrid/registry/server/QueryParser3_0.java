@@ -151,7 +151,7 @@ public class QueryParser3_0
             rDate = null;  
           }
          if(lDate != null && rDate != null) {
-            return rDate.after(lDate);
+            return lDate.after(rDate);
          }else {
             System.out.println("problem supposed to be a date and it is not.");
             return false;
@@ -292,7 +292,7 @@ public class QueryParser3_0
             } else if (searchElements.equals("TabularSkyService")){
                xml_to_xql = "//VODescription/vs:TabularSkyService [" + xml_to_xql + "]";   
             } else if (searchElements.equals("Registry")){
-               xml_to_xql = "//VODescription/vg:Regsistry [" + xml_to_xql + "]";   
+               xml_to_xql = "//VODescription/vg:Registry [" + xml_to_xql + "]";   
             }  
            
 

@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 import org.apache.axis.utils.XMLUtils; 
 import org.w3c.dom.Document; 
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Element; 
 import java.io.Reader;
 import java.io.StringReader;
@@ -132,30 +133,19 @@ public class RegistryQueryJunit extends TestCase{
       assertNotNull(responseDoc);
       System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
    }
-   
+
+   public void testLoadRegistry() throws Exception {
+      System.out.println("load registry going");
+      RegistryService rs = new RegistryService();
+      Document doc = rs.loadRegistry(null);
+      System.out.println("received in junit test = " + XMLUtils.DocumentToString(doc));
+      NodeList nl = doc.getElementsByTagName("ManagedAuthority");
+      for(int i = 0;i < nl.getLength();i++) {
+         System.out.println(nl.item(i).getFirstChild().getNodeValue());
+      }//for
+         
+   }
    
     
-/*   
-   public void testRegistrySubmitQueryEqualQueryVODescription() throws Exception {
-      String fileName = System.getProperty("junit.xml.dir");
-      fileName += "/" + "OrganisationQuery1.xml";
-      File fi = new File(fileName);
-      
-      String requestQuery = " ";      
-      Reader reader2 = new StringReader(requestQuery);
-      InputSource inputSource = new InputSource(reader2);
-
-      DocumentBuilder registryBuilder = null;
-      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document doc = registryBuilder.parse(fi);
-      
- 
-      System.out.println("sending " + XMLUtils.DocumentToString(doc));  
-      RegistryService rs = new RegistryService();
-      Document responseDoc = rs.submitQuery(doc);
-      assertNotNull(responseDoc);
-      System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
-    } 
-*/
 } 
 

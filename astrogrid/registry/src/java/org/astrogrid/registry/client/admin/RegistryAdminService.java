@@ -148,4 +148,43 @@ public class RegistryAdminService implements org.astrogrid.registry.RegistryAdmi
       System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
       return sbe.getAsDocument();         
    }
+   
+   /**
+    * Takes an XML Document and will either update and insert the data in the registry.  If a client is
+    * intending for an insert, but the primarykey (AuthorityID and ResourceKey) are already in the registry
+    * an automatic update will occur.  This method will only update main pieces of data/elements
+    * conforming to the IVOA schema.
+    * 
+    * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
+    * DataCollection 
+    * 
+    * @param query Document a XML document dom object to be updated on the registry.
+    * @return the document updated on the registry is returned.
+    * @author Kevin Benson
+    * 
+    */   
+   public Document addRegistryEntries(Document query) throws Exception {
+      String requestQuery =   XMLUtils.ElementToString(query.getDocumentElement());
+      requestQuery = "<addRegistryEntries xmlns='http://admin.server.registry.astrogrid.org'>" + requestQuery + "</addRegistryEntries>";
+      
+      Reader reader2 = new StringReader(requestQuery);
+      InputSource inputSource = new InputSource(reader2);  
+      Call call = getCall(); 
+      //SOAPBodyElement sbeRequest = new SOAPBodyElement(query.getDocumentElement());
+      DocumentBuilder registryBuilder = null;
+      registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document doc = registryBuilder.parse(inputSource);
+      
+      SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
+      sbeRequest.setName("addRegistryEntries");
+      sbeRequest.setNamespaceURI("http://admin.server.registry.astrogrid.org");
+      System.out.println("sending " + XMLUtils.DocumentToString(doc));
+      
+      Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
+
+      SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+      System.out.println("received " + XMLUtils.DocumentToString(sbe.getAsDocument()));
+      return sbe.getAsDocument();
+   }   
+   
 } 
