@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2AxisTest.java,v 1.1 2004/03/29 12:38:12 pah Exp $
+ * $Id: Castor2AxisTest.java,v 1.2 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 26-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -74,8 +74,4 @@ public class Castor2AxisTest extends WorkFlowUsingTestCase {
    }
    
    
-   public void testCastor2AxisApplicationList()
-   {
-   }
-
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.18 2004/04/16 16:47:23 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.19 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,7 +14,13 @@
 package org.astrogrid.applications.manager;
 
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.rmi.RemoteException;
+
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Parameter;
@@ -29,6 +35,7 @@ import org.astrogrid.applications.description.ApplicationDescriptionConstants;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.TestAppConst;
 import org.astrogrid.community.User;
+import org.astrogrid.registry.beans.resource.VODescription;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
@@ -69,16 +76,11 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
    final public void testListApplications() throws CeaException {
       ApplicationList apps = controller.listApplications();
       assertNotNull(apps);
-      assertEquals("there should be 2 test applications", 2, apps.getApplicationDefnCount());
+      assertEquals("there should be 3 test applications", 3, apps.getApplicationDefnCount());
       // perhaps should test names also
    }
 
-   final public void testQueryApplicationExecutionStatus() {
-      //TODO Implement queryApplicationExecutionStatus().
-      
-      // need to start a long running application and then perform this query - would be good to try firing multiple applications at once also...
-   }
-
+ 
 
    final public void testMultiRun() throws CeaException
    {
@@ -86,8 +88,8 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
       setupTool();
       ex1 = runApplication();
       
-      //run te applications
-       MessageType status1 = controller.queryExecutionStatus(ex1);
+      //run the applications
+      MessageType status1 = controller.queryExecutionStatus(ex1);
       assertTrue("status", status1.getPhase() == ExecutionPhase.RUNNING);
       
       
@@ -108,6 +110,13 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
       status2 = controller.queryExecutionStatus(ex2);
       assertTrue("app2 status completed", status2.getPhase() == ExecutionPhase.COMPLETED);
        
+   }
+   
+   public final void testCreateRegistryEntry() throws MarshalException, IndexOutOfBoundsException, ValidationException, MalformedURLException, IOException
+   {
+      VODescription regentry = controller.createRegistryEntry(new URL("http://localhost:8080/"));
+      assertNotNull(regentry);
+      //TODO test some features of the regentry...
    }
    
  

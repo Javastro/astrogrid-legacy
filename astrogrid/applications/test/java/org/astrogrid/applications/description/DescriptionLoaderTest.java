@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.14 2004/04/02 17:45:42 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.15 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -144,7 +144,7 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
 
       }
       catch (ApplicationDescriptionNotFoundException e) {
-         fail("expected application testapp not found");
+         fail("expected test application "+TESTAPPNAME+"not found");
       }
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.7 2004/04/30 11:19:19 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.8 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -117,7 +117,7 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
    public final void testListApplications() throws CEADelegateException {
          ApplicationList apps = delegate.listApplications();
          assertNotNull("application name list", apps);
-         assertEquals("number of test applications", 2, apps.getApplicationDefnCount());
+         assertEquals("number of test applications", 3, apps.getApplicationDefnCount());
 
    }
 

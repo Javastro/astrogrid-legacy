@@ -1,7 +1,7 @@
 /*
- * $Id: AllTests.java,v 1.5 2004/04/30 18:03:52 pah Exp $
+ * $Id: AllTests.java,v 1.1 2004/04/30 18:03:52 pah Exp $
  * 
- * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
+ * Created on 30-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
@@ -11,13 +11,13 @@
  *
  */ 
 
-package org.astrogrid.applications.description;
+package org.astrogrid.applications.description.registry;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Paul Harrison (pah@jb.man.ac.uk) 11-Mar-2004
+ * @author Paul Harrison (pah@jb.man.ac.uk) 30-Apr-2004
  * @version $Name:  $
  * @since iteration5
  */
@@ -28,11 +28,11 @@ public class AllTests {
    }
 
    public static Test suite() {
-      TestSuite suite = new TestSuite("Test for org.astrogrid.applications.description");
+      TestSuite suite =
+         new TestSuite("Test for org.astrogrid.applications.description.registry");
       //$JUnit-BEGIN$
-      suite.addTest(new TestSuite(WFOApplicationConfigLoadTest.class));
-      suite.addTest(new TestSuite(DescriptionLoaderTest.class));
-      suite.addTest(new TestSuite(Castor2AxisTest.class));
+      suite.addTest(new TestSuite(RegistryEntryBuilderTest.class));
+      suite.addTest(new TestSuite(RegistryUploaderTest.class));
       //$JUnit-END$
       return suite;
    }

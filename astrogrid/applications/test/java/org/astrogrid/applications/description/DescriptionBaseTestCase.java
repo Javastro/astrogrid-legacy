@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionBaseTestCase.java,v 1.5 2004/04/02 17:45:42 pah Exp $
+ * $Id: DescriptionBaseTestCase.java,v 1.6 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 04-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -64,12 +64,21 @@ public class DescriptionBaseTestCase extends TestCase {
       config = ThisConfig.getInstance();
       inputFile = config.getApplicationConfigFile();
       assertNotNull("application config file", inputFile);
+      int i = TestAppConst.TESTAPP_NAME.indexOf("/");
+      
+      if (i != -1) {
+         TESTAPPNAME = TestAppConst.TESTAPP_NAME.substring(i+1);
+      }
+      else
+      {
+         TESTAPPNAME = TestAppConst.TESTAPP_NAME;
+      }
    }
 
 
    protected URL inputFile;
 
-   protected String TESTAPPNAME = TestAppConst.TESTAPP_NAME;
+   protected String TESTAPPNAME;
 
    protected CeaControllerConfig config;
    

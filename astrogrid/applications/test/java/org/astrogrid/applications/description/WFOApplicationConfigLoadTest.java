@@ -1,5 +1,5 @@
 /*
- * $Id: WFOApplicationConfigLoadTest.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+ * $Id: WFOApplicationConfigLoadTest.java,v 1.3 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 17-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -62,7 +62,7 @@ public class WFOApplicationConfigLoadTest extends DescriptionBaseTestCase {
       saxis = new InputSource(inputFile.openStream());
       CommandLineExecutionControllerConfig clconf =  (CommandLineExecutionControllerConfig)um.unmarshal( saxis);
       assertNotNull(clconf); // TODO do something more sophisticated - look at some values...
-      assertEquals("number of test applications", 2, clconf.getApplicationCount());
+      assertEquals("number of test applications", 3, clconf.getApplicationCount());
       CommandLineApplication application = clconf.getApplication(0);
       assertNotNull(application);
       assertEquals("application name", "testapp", application.getName());

@@ -1,5 +1,5 @@
 /*
- * $Id: CeaControllerConfigTest.java,v 1.3 2004/03/23 19:46:04 pah Exp $
+ * $Id: CeaControllerConfigTest.java,v 1.4 2004/04/30 18:03:52 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -76,21 +76,21 @@ public class CeaControllerConfigTest extends TestCase {
        assertNotNull(d);
     }
 
-
-    final public void testGetDataSource() {
-       DataSource ds = config.getDataSource();
-       assertNotNull(ds);
-    }
+// only applicable in a container really
+//    final public void testGetDataSource() {
+//       DataSource ds = config.getDataSource();
+//       assertNotNull(ds);
+//    }
 
     final public void testGetMySpaceManagerEndpoint() {
        String url = config.getMySpaceManagerEndpoint();
        assertNotNull(url);
     }
-
-    final public void testMailSessionInstance() {
-       Session ms = config.mailSessionInstance();
-       assertNotNull(ms);
-    }
+// only applicable in a container really
+//    final public void testMailSessionInstance() {
+//       Session ms = config.mailSessionInstance();
+//       assertNotNull(ms);
+//    }
 
     final public void testGetRegistryEndpoint() {
        String re = config.getRegistryEndpoint();
