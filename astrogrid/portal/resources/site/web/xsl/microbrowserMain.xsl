@@ -27,11 +27,19 @@
       <xsl:template match="resources">
         <ag-div>
 
-		  <agPUBMessage>
-            Resource Microbrowser
-          </agPUBMessage>
-
-          <body style="font-size: 90%"/> 
+          <table background="/astrogrid-portal/hudf_hst_strip.jpg" cellspacing="0" cellpadding="0" width="100%">
+            <tr>
+              <td align="left">
+                <span style="color: yellow; font-size: 12pt; font-weight: bold;">
+                  Resource Microbrowser
+                </span>
+              </td>
+              <td align="right">
+                <span style="background-color: black; cursor: pointer; color: yellow; font-variant: small-caps; font-size: 12pt; font-weight: bold; padding-right: 40px" onClick="javascript:window.close();">Close
+                </span>
+              </td>
+            </tr>
+          </table>
                                           
           <script language="javascript">
     /*

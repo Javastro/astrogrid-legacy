@@ -58,7 +58,7 @@
                     </td>
                   </tr>
                   <tr valign="top">
-                    <td nowrap="true">Res. name</td>
+                    <td nowrap="true">Resource name</td>
                     <td>
                       <input title="eg: vocone - (AuthorityID, ResourceKey)" type="text" name="resourceNameField" id="resourceNameField" onblur="defocusit(this)" onfocus="focusit(this)" >
                       </input>
@@ -66,7 +66,7 @@
                     <td><span>string</span></td>
                   </tr>
                   <tr valign="top">
-                    <td nowrap="true">Res. publisher</td>
+                    <td nowrap="true">Resource publisher</td>
                     <td>
                       <input title="eg: MSSL/UCL Mullard Space Science Laboratory" type="text" name="publisherField" id="resourcePublisherField" onblur="defocusit(this)" onfocus="focusit(this)" >
                       </input>
@@ -74,7 +74,7 @@
                     <td><span>string</span></td>
                   </tr>
                   <tr>
-                    <td nowrap="true">Res. title</td>
+                    <td nowrap="true">Resource title</td>
                     <td>
                       <input title="eg: NOAA SGAS Energetic Events" type="text" name="titleField" id="resourceTitleField" onblur="defocusit(this)" onfocus="focusit(this)" >
                       </input>
