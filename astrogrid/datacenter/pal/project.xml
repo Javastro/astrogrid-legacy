@@ -72,6 +72,15 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
+    <!-- required for the ApplicationController interface -->
+    <dependency>
+      <groupId>astrogrid-applications</groupId>
+      <artifactId>astrogrid-applications</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 
     <dependency>
       <id>breezetk</id>
