@@ -36,18 +36,24 @@ public class Field {
 		
 	private String
 	   name ,
-	   type ;
+	   type ,
+	   value;
 
 
     public Field( Element fieldElement ) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "Field(): enter") ; 	
 		   	
-		try {
-		 
-		   name = fieldElement.getAttribute( JobDocDescriptor.FIELD_NAME_ATTR ) ;
-		   type = fieldElement.getAttribute( JobDocDescriptor.FIELD_TYPE_ATTR ) ;
-		   		   
-		}
+		try {		 
+		    name = fieldElement.getAttribute( JobDocDescriptor.FIELD_NAME_ATTR ) ;
+		    type = fieldElement.getAttribute( JobDocDescriptor.FIELD_TYPE_ATTR ) ;
+		    NodeList nodeList = fieldElement.getChildNodes();
+			for (int iNode = 0; iNode < nodeList.getLength(); iNode++) {
+				Node ndChild = nodeList.item(iNode);
+				if (ndChild.getNodeType() == Node.TEXT_NODE) {
+					value = ndChild.getNodeValue() ;					
+				} // end op if
+			} // end of for
+		} // end of try
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "Field(): exit") ; 			 
 		}
@@ -69,6 +75,10 @@ public class Field {
 
 	public String getType() {
 		return type;
+	}
+	
+	public String getValue() {
+		return value;
 	}
 	   
 } // end of class Field
