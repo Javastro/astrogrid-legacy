@@ -113,8 +113,8 @@
 <goal name="setup" description="configure webapps and working dir">
         <echo>*** Configuring...</echo>
         <attainGoal name="setup-working-dir" />
-        <attainGoal name="setup-community" />
         <attainGoal name="setup-registry" />
+        <attainGoal name="setup-community" />
         <attainGoal name="setup-applications" />
         <attainGoal name="setup-myspace" />
 </goal>
@@ -165,8 +165,8 @@
 
 <goal name="setup-community" description="Community setup">
         <echo>Configuring Community</echo>
-        <attainGoal name="community-install"/>
         <attainGoal name="community-register"/>
+        <attainGoal name="community-install"/>
 </goal>
 
 <goal name="setup-registry" description="populate the registry">
