@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.5 2004/02/17 15:12:49 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.6 2004/03/07 02:21:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ public class WebDelegateTest extends TestCase
 {
 
    //an astrogrid web service
-   private static String TEST_PAL = "http://vm07.astrogrid.org:8080/pal/services/AxisDataServer";
+   private static String TEST_PAL = "http://vm07.astrogrid.org:8080/pal-SNAPSHOT/services/AxisDataServer";
    
    /**
     * Tests an SQL-pass through query on the dummy
@@ -62,6 +62,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.6  2004/03/07 02:21:07  mch
+ * Fixed url to vm07
+ *
  * Revision 1.5  2004/02/17 15:12:49  mch
  * Fix to access test pal
  *
