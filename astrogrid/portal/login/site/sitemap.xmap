@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/12/03 21:16:00 $</cvs:date>
-    | <cvs:version>$Revision: 1.19 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/07 16:26:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -84,19 +84,19 @@
                <!--validation succeeded-->
                <map:act type="astro-login">
                   <!--login successful-->
-		  <!--
-         	  <map:match call="myHome"/>
+<!--
                   <map:generate type="serverpages" src="xsp/login-pass.xsp" />
-		  -->
+-->
                   <map:generate type="serverpages" src="xsp/pseudo-login.xsp" />
                   <map:transform type="xslt" src="style/info.xsl" />
                   <map:serialize type="xml" />
                </map:act>
 
-               <!-- login unsuccessful -->
-               <map:generate type="file" src="xml/login-failed.xml"/>
-               <map:transform type="xslt" src="style/info.xsl" />
-               <map:serialize type="xml" />
+               <!-- login unsuccessful (show login form again) -->
+            	<map:generate type="serverpages" src="xsp/logon-failure.xsp"/>
+                <map:transform type="xslt" src="style/logon.xsl" />
+                <map:serialize type="xml" />
+
             </map:act>
             <!--if the validation fails (or it's first time thru) -->
             <map:generate type="serverpages" src="xsp/logon.xsp"/>
@@ -104,21 +104,28 @@
             <map:serialize type="xml" />
          </map:match>
          
-         <!-- Navigation header chooser, added by KEA.
+         <!-- Navigation header, footer chooser, added by KEA.
               Login is a special case for the nav. header bar, because 
-              we can't show the nav buttons if nobody is logged in yet. 
-              Also, have to explicitly hide them on logout due to timing
-              of session destruction. -->
+              we can't show the nav buttons if nobody is logged in yet. -->
          <map:match pattern="chooseNav">
             <map:generate type="serverpages" src="xsp/choose-nav.xsp" />
             <map:transform type="xslt" src="style/info.xsl" />
             <map:serialize type="xml" />
          </map:match>
+         <map:match pattern="chooseFooter">
+            <map:generate type="serverpages" src="xsp/choose-footer.xsp" />
+            <map:transform type="xslt" src="style/info.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+
+	<!-- THIS NEXT ONE IS PROBABLY REDUNDANT NOW -->
+<!--
          <map:match pattern="logoutNav">
             <map:generate type="serverpages" src="xsp/logout-nav.xsp" />
             <map:transform type="xslt" src="style/info.xsl" />
             <map:serialize type="xml" />
          </map:match>
+-->
 
          <!-- New myHome page, added by PFO -->
          <map:match pattern="myHome">
@@ -221,12 +228,11 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
-    |   Revision 1.19  2004/12/03 21:16:00  clq2
-    |   pjn3_799, pfo_708_717
+    |   Revision 1.20  2004/12/07 16:26:04  clq2
+    |   portal_kea_719
     |
-    |   Revision 1.18.10.1  2004/12/03 15:23:08  pfo
-    |   PFO: major portal modification. Registry still has pending issues which
-    |   PFO: sooner or later will make us crash
+    |   Revision 1.18.8.1  2004/12/03 16:34:21  kea
+    |   Changes for new login pages layout
     |
     |   Revision 1.18  2004/11/26 15:03:25  clq2
     |   POR_KEA_716/POR_KEA_716/portal_pfo_620_697_707_717_718_733_735

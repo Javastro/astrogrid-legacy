@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.13 2004/12/03 21:16:00 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.14 2004/12/07 16:26:04 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -672,9 +672,6 @@
 
     <!-- welcome page -->
       <map:match pattern="">
-	<!--
-        <map:redirect-to uri="main/mount/login/myHome"/>
-	-->
         <map:redirect-to uri="main/mount/login/login-form"/>
       </map:match>
 
@@ -697,26 +694,36 @@
       <!-- Need explicit match for logout because user is still set
       (session not destroyed yet) when header is generated). 
       -->
-      <map:match pattern="main/mount/login/logout">
+     <!-- The myHome page is a special case in the login section - it's the
+        only page where the user is logged in and should see nav etc -->
+      <map:match pattern="main/mount/login/myHome">
         <map:aggregate element="ag-page">
-          <map:part element="ag-header" src="cocoon:/mount/login/logoutNav"/>
+          <map:part element="ag-header" src="cocoon:/test/header_login.html"/>
           <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
-          <map:part element="ag-body" src="cocoon:/mount/login/logout"/>
+          <map:part element="ag-body" src="cocoon:/mount/login/myHome"/>
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
         </map:aggregate>
+
         <map:call resource="commonPageGenerator"/>
       </map:match>
-
-      <!-- This one chooses to show navbar or not depending on whether
-       user is logged in.  -->
+      <!-- Login pages - no nav, different stylesheet etc  -->
       <map:match pattern="main/mount/login/**">
         <map:aggregate element="ag-page">
+<!--
           <map:part element="ag-header" src="cocoon:/mount/login/chooseNav"/>
+-->
+          <map:part element="ag-header" src="cocoon:/test/header_login_bare.html"/>
           <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
           <map:part element="ag-body" src="cocoon:/mount/login/{1}"/>
-          <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
+<!--
+          <map:part element="ag-footer" src="cocoon:/mount/login/chooseFooter"/>
+-->
         </map:aggregate>
-        <map:call resource="commonPageGenerator"/>
+        <map:transform src="web/style/xsl/portal-dmm.xsl">
+          <map:parameter name="ag-css-url" value="/astrogrid-portal/login.css"/>
+          <map:parameter name="ag-title" value="Astrogrid Portal Login"/>
+        </map:transform>
+        <map:serialize type="xhtml"/>
       </map:match>
 
       <!-- This one is a hack to make sure that the job monitor stuff ends up
@@ -738,9 +745,7 @@
           <map:part element="ag-header" src="cocoon:/test/header_{2}.html"/>
           <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
           <map:part element="ag-body" src="cocoon:/{1}/{2}/{3}"/>
-	  <!--
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
-	  -->
         </map:aggregate>
 
         <map:call resource="commonPageGenerator"/>

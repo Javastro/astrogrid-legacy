@@ -42,6 +42,9 @@
      <!--enable this to see the raw results from the form validation-->	
 	 <!--P><xsp-formval:results/></P-->
 
+     <error>Sorry, your login was not successful.</error>
+     <error>Please check your login details and try again.</error>
+
      <div id="loginCaption"><div id="loginCaptionContent"><!-- Double border -->
      <div id="loginCaptionText">
      Please enter your username, community and password.

@@ -1,20 +1,24 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:id>$Id: login-failed.xml,v 1.5 2004/04/21 14:42:27 jdt Exp $</cvs:id>
-    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:id>$Id: login-failed.xml,v 1.6 2004/12/07 16:26:04 clq2 Exp $</cvs:id>
+    | <cvs:author>$Author: clq2 $</cvs:author>
     |
     +-->
+<!-- I DON'T THINK THIS ONE IS IN USE ANYMORE : KEA -->
 <page>
-<agComponentTitle>
-		Log On failed.
-</agComponentTitle>
 <content>
-    Log on has failed.  Please check your username and password and <a href="login-form">try again</a>.
+<boxmessage value="Log on has failed.  Please check your username and password and try again." title="Log on failed"/>
 </content>
 </page>
 <!--+
     | <cvs:log>
     |   $Log: login-failed.xml,v $
+    |   Revision 1.6  2004/12/07 16:26:04  clq2
+    |   portal_kea_719
+    |
+    |   Revision 1.5.150.1  2004/12/03 16:34:21  kea
+    |   Changes for new login pages layout
+    |
     |   Revision 1.5  2004/04/21 14:42:27  jdt
     |   changed title ->agComponentTitle
     |

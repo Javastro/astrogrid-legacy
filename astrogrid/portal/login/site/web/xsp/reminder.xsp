@@ -12,16 +12,16 @@
 	
     <!--enable this to see the raw results from the form validation-->	
     <!--xsp-formval:results/-->
-    <agPageMessage>Password reminder</agPageMessage>
+    <agPageMessage></agPageMessage>
     <content>
-     <login-form action="reminder" method="post" message="Please enter your name and email address.">
-       <login-input type="text" name="name" size="60" caption="Name:">
+     <login-form action="reminder" method="post" message="Please enter your name and email address." title="Password reminder">
+       <login-input type="text" name="name" size="40" caption="Name:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="name" default=""/></xsp:attribute>
        </login-input> 
-       <login-input type="text" name="email" size="60" caption="Email:">
+       <login-input type="text" name="email" size="40" caption="Email:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="email" default=""/></xsp:attribute>
        </login-input>
-       <login-input type="submit" name="action" value="Remind me"/>
+       <login-input-right type="submit" name="action" value="Remind me"/>
      </login-form>
 	 <!--TODO see if we can move this into a stylesheet or logic sheet too-->
 	 <P>

@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.30 2004/10/22 14:40:22 gps Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.31 2004/12/07 16:26:04 clq2 Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
- * <cvs:author>$Author: gps $</cvs:author>
- * <cvs:date>$Date: 2004/10/22 14:40:22 $</cvs:date>
- * <cvs:version>$Revision: 1.30 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2004/12/07 16:26:04 $</cvs:date>
+ * <cvs:version>$Revision: 1.31 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -199,8 +199,13 @@ public final class LoginAction extends AbstractAction {
             //It's possible this should return null (ie a failed login)
             //rather than be treated as an error, because it probably indicates
             //that the user mistyped their community
+            // ADDENDUM: CHANGED BY KEA TO RETURN NULL
+            log.debug("CommunityResolverException from security delegate",e);
+            return null;  //failed to log in
+/*
             log.error("CommunityResolverException from security delegate",e);
             throw new LoginException("CommunityResolverException from security delegate.  Please check that your community has been entered correctly and that your registry is properly configured.",e);
+*/
         } catch (RegistryException e) {
             log.error("RegistryException from security delegate",e);
             throw new LoginException("RegistryException from security delegate",e);
@@ -293,6 +298,12 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.31  2004/12/07 16:26:04  clq2
+ * portal_kea_719
+ *
+ * Revision 1.30.30.1  2004/12/06 17:56:23  kea
+ * Fix for exception when bad community name given.
+ *
  * Revision 1.30  2004/10/22 14:40:22  gps
  * - storing account space IVORN
  *

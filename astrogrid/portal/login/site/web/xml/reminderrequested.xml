@@ -1,22 +1,25 @@
 <?xml version="1.0"?>
 <!--+
-    | $Id: reminderrequested.xml,v 1.4 2004/04/21 14:42:27 jdt Exp $
+    | $Id: reminderrequested.xml,v 1.5 2004/12/07 16:26:04 clq2 Exp $
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xml/reminderrequested.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/04/21 14:42:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2004/12/07 16:26:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     +-->
 <page>
-<agComponentTitle>
-	Reminder requested.
-</agComponentTitle>
 <content>
-    Thankyou.  A message has been sent to the administrator who will contact you in due course.
+<boxmessage value="Thankyou.  A message has been sent to the administrator who will contact you in due course." title="Request received."/>
 </content>
 </page>
 <!--+
     | <cvs:log>
     |   $Log: reminderrequested.xml,v $
+    |   Revision 1.5  2004/12/07 16:26:04  clq2
+    |   portal_kea_719
+    |
+    |   Revision 1.4.150.1  2004/12/03 16:34:21  kea
+    |   Changes for new login pages layout
+    |
     |   Revision 1.4  2004/04/21 14:42:27  jdt
     |   changed title ->agComponentTitle
     |

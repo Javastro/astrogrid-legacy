@@ -1,0 +1,108 @@
+/* This sets up the background image for the page */
+body {
+  /* Background image */
+  background-color: #000000;
+  background-image: url(/astrogrid-portal/loginBackground.jpg);
+  background-repeat: no-repeat;
+  background-position: left top;
+}
+div#mainLoginPage { 
+  /* Dimensions */
+  position: absolute;
+  top: 0px
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  /* Font */
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  color: #000000;
+  letter-spacing: 0px;
+}
+
+/* Using double divs here to get a double line */
+div#loginBox { 
+  position: relative;
+  margin-top: 145px;
+  margin-left: 190px;
+  margin-bottom: 10px;
+  width: 400px;
+  height: auto;
+  padding: 0px;
+  background: #FFFFEE;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #FFFFFF;
+}
+div#loginBoxContent {
+  padding: 10px 10px 0px 10px;
+  border-style: solid;
+  border-width: 1px;
+  /*border-color: #66CCFF; */
+  border-color: #000099;
+}
+div#loginBox h1 {
+  font-size: 18px;
+  margin: 0px;
+  padding: 5px;
+  background: #FFFFFF;
+  color: #000099;
+  border-style: solid;
+  border-width: 1px 1px 0px 1px;
+  /*border-color: #66CCFF; */
+  border-color: #000099;
+}
+
+/* Using double divs here to get a double line */
+div#loginCaption { 
+  position: relative;
+  margin-top: 10px;
+  margin-left: 190px;
+  padding: 0px;
+  width: 400px;
+  height: auto;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #FFFFFF;
+}
+div#loginCaptionContent { 
+  width: auto;
+  background: #FFFFFF;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #000099;
+}
+div#loginCaptionText { 
+  padding: 10px;
+  width: auto;
+  text-align: left;
+  font-size: 13px;
+  line-height: 15px;
+}
+div#loginCaptionHint { 
+  padding: 0px 10px 10px 10px;
+  width: auto;
+  text-align: left;
+  font-size: 10px;
+  font-style: italic;
+  line-height: 13px;
+}
+
+div#loginErrorBox { 
+  position: relative;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-left: 190px;
+  padding: 2px;
+  width: 400px;
+  height: auto;
+  background: #FF3333;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  border-style: none;
+}
