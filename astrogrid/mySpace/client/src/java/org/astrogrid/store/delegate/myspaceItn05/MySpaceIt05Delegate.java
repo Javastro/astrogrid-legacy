@@ -307,6 +307,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       
       Object[] fileList =  results.getEntries();
 
+      if (fileList == null) {
+         return null;
+      }
+      
       MySpaceFolder root = new MySpaceFolder();
       
       //represent entries
@@ -1365,6 +1369,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.6  2004/08/05 15:37:25  mch
+Fix for empty myspaces
+
 Revision 1.5  2004/06/29 14:20:01  gps
 - making clear note of the "localhost hack"
 
@@ -1376,17 +1383,25 @@ Revision 1.3  2004/06/24 11:43:08  gps
 
 Revision 1.2  2004/06/14 23:08:52  jdt
 Merge from branches
+
 ClientServerSplit_JDT
+
 and
+
 MySpaceClientServerSplit_JDT
 
+
+
 MySpace now split into a client/delegate jar
+
 astrogrid-myspace-<version>.jar
+
 and a server/manager war
+
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:20  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
