@@ -89,7 +89,7 @@
   <parameter name="allowedMethods" value="abort returnRegistryEntry init registerResultsListener queryExecutionStatus getExecutionSummary registerProgressListener execute getResults"/>
   <parameter name="wsdlPortType" value="CommonExecutionConnector"/>
   <parameter name="scope" value="Application"/>
-  <parameter name="className" value="org.astrogrid.dataservice.service.cea.DatacenterApplication"/>
+  <parameter name="className" value="org.astrogrid.applications.service.v1.cea.CommonExecutionConnectorServiceSoapBindingImpl"/>
   <parameter name="wsdlServicePort" value="CommonExecutionConnectorService"/>
   <parameter name="wsdlTargetNamespace" value="urn:cea.applications.astrogrid.org"/>
   <parameter name="wsdlServiceElement" value="CommonExecutionConnectorService"/>
