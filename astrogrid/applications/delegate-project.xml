@@ -72,7 +72,16 @@
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
-     </dependency>        
+     </dependency>  
+           
+      <dependency>
+        <groupId>org.astrogrid</groupId>
+           <artifactId>astrogrid-workflow-objects</artifactId>
+           <version>SNAPSHOT</version>
+           <properties>
+                   <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
 
     <dependency>
        <groupId>junit</groupId>
