@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.3 2004/11/06 19:30:34 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.4 2004/11/08 02:56:13 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,8 @@ package org.astrogrid.datacenter.deployed;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -22,12 +23,16 @@ import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -35,8 +40,6 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.SAXException;
-import java.net.MalformedURLException;
-import org.astrogrid.datacenter.delegate.DatacenterException;
 
 /**
  * Tests to see if the real deployed services are up.  This isn't really an
@@ -46,6 +49,16 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
  */
 public class DeployedServicesTest extends TestCase {
 
+   /** Reads a file from myspace */
+   public void testMySpaceRead() throws URISyntaxException, IOException {
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.sc2004/frog","astrogrid:store:myspace:http://twmbarlwm.roe.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
+      
+      Ivorn file = new Ivorn("ivo://org.astrogrid.sc2004/frog#frog/queries/6df.q");
+      
+      InputStream i = VoSpaceResolver.resolveInputStream(Account.ANONYMOUS.toUser(), file);
+   }
+      
+   
       /** Runs a CEA test */
    public void doCea(String endpoint, String toolName, double ra, double dec, double radius) throws IOException, SAXException, IOException, ParserConfigurationException, CEADelegateException, MarshalException, ValidationException  {
       
@@ -120,7 +133,7 @@ public class DeployedServicesTest extends TestCase {
       doCea("http://astrogrid.roe.ac.uk:8080/pal-ssa/services/CommonExecutionConnectorService",
             "roe.ac.uk/DSA_SSA/ceaApplication",
             20,
-            20,
+            -20,
             0.1);
    }
    
@@ -259,6 +272,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.4  2004/11/08 02:56:13  mch
+more tests
+
 Revision 1.3  2004/11/06 19:30:34  mch
 Added CEA tests
 

@@ -1,4 +1,4 @@
-/*$Id: VizierTest.java,v 1.1 2004/11/03 05:20:50 mch Exp $
+/*$Id: VizierTest.java,v 1.2 2004/11/08 02:56:13 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,8 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.impl.cds.VizierQuerierPlugin;
+import org.astrogrid.datacenter.impl.cds.VizierResourcePlugin;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
@@ -28,6 +30,7 @@ import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
 /**
@@ -80,6 +83,24 @@ public class VizierTest extends TestCase {
 
    }
    
+   /** Metadata/Registry Resource stuff */
+   public void testRegResource() throws IOException, ServiceException, IOException, ParserConfigurationException, SAXException {
+      VizierResourcePlugin resourcePlugin = new VizierResourcePlugin();
+      resourcePlugin.getVizierMetadata();
+      String [] resources = resourcePlugin.getVoResources();
+      
+      String vodesc = VoDescriptionServer.VODESCRIPTION_ELEMENT;
+      for (int i = 0; i < resources.length; i++) {
+         vodesc = vodesc + resources[i];
+      }
+      vodesc = vodesc + VoDescriptionServer.VODESCRIPTION_ELEMENT_END;
+
+      //make sure it's valid XML
+      DomHelper.newDocument(vodesc);
+      
+      
+   }
+   
    /*
    public void testVizierProxyAdql() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       //load query
@@ -117,6 +138,9 @@ public class VizierTest extends TestCase {
 
 /*
  $Log: VizierTest.java,v $
+ Revision 1.2  2004/11/08 02:56:13  mch
+ more tests
+
  Revision 1.1  2004/11/03 05:20:50  mch
  Moved datacenter deployment tests out of standard tests
 
