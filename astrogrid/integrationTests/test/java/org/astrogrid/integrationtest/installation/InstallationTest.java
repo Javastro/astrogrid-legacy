@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.6 2004/03/31 01:17:35 jdt Exp $
+/* $Id: InstallationTest.java,v 1.7 2004/03/31 11:29:06 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -56,36 +57,22 @@ public final class InstallationTest  {
     
     /**
      * Return only keys in the config which are URLs
-     * At the moment this is a hardwired collection
-     * because no suitable method exists in Config to 
-     * get all the keys.
+     * For our purpose a URL is a string beginning with "http:"
      * 
      * @return a collection of keys which might be urls
      */
     private static Collection getURLKeys() {
-        final Collection keys = new ArrayList();
-        keys.add("registry.registry.endpoint");
-        keys.add("registry.admin.endpoint");
-        keys.add("registry.harvest.endpoint");
-                  
-        keys.add("appController.endPoint");
-        
-        keys.add("community.securityservice.endPoint");
-        keys.add("community.securitymanager.endPoint");
-        keys.add("community.policyservice.endPoint");
-        keys.add("community.policymanager.endPoint");
-        keys.add("community.databasemanager.endPoint");
-        
-     
-        keys.add("mySpaceEndPoint");
-        keys.add("portalWebSite");
-        
-        keys.add("jobControlerEndPoint");//@TODO not sure about this
-        keys.add("jes.controller.endpoint");
-        keys.add("jes.monitor.endpoint");
-         
-        keys.add("stdDatacenterEndPoint");
-        return keys;
+        final Collection keys = conf.keySet();
+        final Iterator it = keys.iterator();
+        final Collection urlKeys = new HashSet();
+        while(it.hasNext()) {
+            final String key = (String) it.next();
+            final String prop = conf.getString(key);
+            if (prop.startsWith("http:")) {
+                urlKeys.add(key);
+            }
+        }
+        return urlKeys;
     }
     
     /**
@@ -158,6 +145,9 @@ public final class InstallationTest  {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.7  2004/03/31 11:29:06  jdt
+ *  Now uses keySet to dynamically create the list of urls to test.
+ *
  *  Revision 1.6  2004/03/31 01:17:35  jdt
  *  added jes
  *
