@@ -1,7 +1,7 @@
 /*
- * $Id: ConfManager.java,v 1.4 2004/03/12 23:53:26 jdt Exp $ 
- * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk . 
- * Copyright (C) AstroGrid. All rights reserved. 
+ * $Id: ConfManager.java,v 1.5 2004/03/22 16:31:08 mch Exp $
+ * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
+ * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
  * Software License version 1.2, a copy of which has been included with this
  * distribution in the LICENSE.txt file.
@@ -31,7 +31,7 @@ public final class ConfManager {
     /**
      * name of key in properties file for merlin endpoint
      */
-    private static final String MERLIN_ENDPOINT = "merlinDatacenterEndPoint";
+    private static final String STD_PAL_ENDPOINT = "stdDatacenterEndPoint";
     /**
      * name of key in properties file for the jobcontroller endpoint;
      */
@@ -69,7 +69,7 @@ public final class ConfManager {
     }
     /**
      * singleton pattern
-     * 
+     *
      * @return the oneandonlyinstance
      */
     public static ConfManager getInstance() {
@@ -77,7 +77,7 @@ public final class ConfManager {
     }
     /**
      * Get the endpoint of our integration test myspace server
-     * 
+     *
      * @return string containing url
      * @throws IOException if we couldn't load the props
      */
@@ -88,7 +88,7 @@ public final class ConfManager {
     }
     /**
      * Gets the jobcontroller endpoint in the integration environment.
-     * 
+     *
      * @return the endpoint url
      * @throws IOException if we couldn't load the props
      */
@@ -97,7 +97,7 @@ public final class ConfManager {
     }
     /**
      * Gets the names property from the props file
-     * 
+     *
      * @param propertyDescription description of the property (just used for
      *            logging)
      * @param propertyName name of the property in the props file
@@ -117,19 +117,23 @@ public final class ConfManager {
         return property;
     }
     /**
-     * get the endpoint of a datacenter server containing the merlin dataset
-     * 
+     * get the endpoint of a datacenter server containing the standard default
+     * database (ie, a freshyly installed PAL)
+     *
      * @return string containing url
      * @throws IOException if we couldn't load the props
      */
-    public String getMerlinDatacenterEndPoint() throws IOException {
+    public String getStdDatacenterEndPoint() throws IOException {
         return getProperty(
-            ConfManager.MERLIN_ENDPOINT,
-            "Merlin Datacenter endpoint");
+            ConfManager.STD_PAL_ENDPOINT,
+            "Std Datacenter endpoint");
     }
 }
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.5  2004/03/22 16:31:08  mch
+ * Changed merlin to std datacenter
+ *
  * Revision 1.4  2004/03/12 23:53:26  jdt
  * my formatter's on the blink
  * Revision 1.3 2004/03/12 23:16:56 jdt got rid of
