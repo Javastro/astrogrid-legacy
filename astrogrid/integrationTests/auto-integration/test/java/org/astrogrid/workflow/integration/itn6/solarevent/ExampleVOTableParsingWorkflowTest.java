@@ -1,4 +1,4 @@
-/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.2 2004/08/12 15:15:55 nw Exp $
+/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.3 2004/08/12 21:30:07 nw Exp $
  * Created on 06-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
      * @param arg0
      */
     public ExampleVOTableParsingWorkflowTest(String arg0) {
-        super(arg0); //@todo add in real names.
+        super(arg0); 
     }
 
     
@@ -44,13 +44,13 @@ public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
     protected void buildWorkflow() throws Exception {
         super.buildWorkflow(); 
         // now the script that mangles the results.
-        // assumes its just a single-column votable, with urls - pity votable isn't so easy to parse.
+        // not very sophisticated parsing here. - pity votable isn't so easy to parse.
         Script sc = new Script();
         sc.setBody(
                 "votable = source.Result; // access result of previous step\n" +
                 "parser = new XmlParser(); //create new parser \n" +
                 "nodes = parser.parseText(votable); //parse votable into node tree\n" +
-                "urls = nodes.depthFirst().findAll{it.name() == 'TD'}.collect{it.value()}.flatten(); // filter node tree on 'TD', project value\n" +
+                "urls = nodes.depthFirst().findAll{it.name() == 'STREAM'}.collect{it.value()}.flatten(); // filter node tree on 'STREAM', project value\n" +
                 "print(urls); // show what we've found\n"
              //   "sinkStep = jes.getSteps().find {it.getName() == 'sink-step'}; // find next step in workflow\n" +
              //  "inputs = sinkStep.getTool().getInput(); // get to set of input parameters" +
@@ -85,6 +85,9 @@ public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
 
 /* 
 $Log: ExampleVOTableParsingWorkflowTest.java,v $
+Revision 1.3  2004/08/12 21:30:07  nw
+got it working. nice.
+
 Revision 1.2  2004/08/12 15:15:55  nw
 getting there
 

@@ -1,4 +1,4 @@
-/*$Id: SolarEventKeys.java,v 1.3 2004/08/12 15:54:06 nw Exp $
+/*$Id: SolarEventKeys.java,v 1.4 2004/08/12 21:30:07 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,15 +19,14 @@ public interface SolarEventKeys {
     public static final String FITS_APP = "org.astrogrid.localhost/trace_dsa";
     public static final String MPEG_APP = "org.astrogrid.localhost/CallMakeMPEGFitsImages";
     
-    //
-
-    public static final String VOTABLE_SOURCE = "org.astrogrid.localhost/something"; //@todo
-    public static final String URL_LIST_SINK = "org.astrogrid.localhost/somethingelse";
 }
 
 
 /* 
 $Log: SolarEventKeys.java,v $
+Revision 1.4  2004/08/12 21:30:07  nw
+got it working. nice.
+
 Revision 1.3  2004/08/12 15:54:06  nw
 fixed duff key
 

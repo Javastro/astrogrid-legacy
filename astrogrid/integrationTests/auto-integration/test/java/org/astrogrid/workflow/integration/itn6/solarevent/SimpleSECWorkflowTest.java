@@ -1,4 +1,4 @@
-/*$Id: SimpleSECWorkflowTest.java,v 1.2 2004/08/12 14:30:03 nw Exp $
+/*$Id: SimpleSECWorkflowTest.java,v 1.3 2004/08/12 21:30:07 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,7 +46,7 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
      */
     protected void buildWorkflow() throws Exception {
         wf.setName(this.getClass().getName());
-        ApplicationDescription desc = reg.getDescriptionFor(FITS_APP);
+        ApplicationDescription desc = reg.getDescriptionFor(SEC_APP);
         Tool secTool = desc.createToolFromDefaultInterface();
         // populate tool.
         ParameterValue format = (ParameterValue)secTool.findXPathValue("input/parameter[name='Format']");
@@ -91,6 +91,9 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleSECWorkflowTest.java,v $
+Revision 1.3  2004/08/12 21:30:07  nw
+got it working. nice.
+
 Revision 1.2  2004/08/12 14:30:03  nw
 constructed workflows to call fits and sec. need to check the results next
 

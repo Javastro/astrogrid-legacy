@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.4 2004/08/12 15:54:22 nw Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.5 2004/08/12 21:30:07 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,7 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         query.setIndirect(false); 
         query.setValue(out.toString());
                        
-        ParameterValue result = (ParameterValue)fitsTool.findXPathValue("output/parameter[name='Target']");
+        ParameterValue result = (ParameterValue)fitsTool.findXPathValue("output/parameter[name='Result']");
         assertNotNull(result);
         result.setIndirect(false); // want to get result straight back.
                 
@@ -87,12 +87,20 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(result,doc);
         XMLUtils.PrettyDocumentToStream(doc,System.out);
+        
+        // should have results inline in the document.
+        Step s = (Step)result.getSequence().getActivity(0);
+        assertStepCompleted(s);
+       
     }
 }
 
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
+Revision 1.5  2004/08/12 21:30:07  nw
+got it working. nice.
+
 Revision 1.4  2004/08/12 15:54:22  nw
 fixed faulty parameter name.
 
