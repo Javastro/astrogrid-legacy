@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleAxisDataServer.jws,v 1.1 2004/03/08 00:31:28 mch Exp $
+ * $Id: SimpleAxisDataServer.jws,v 1.2 2004/03/08 23:58:20 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,29 +46,10 @@ public class SimpleAxisDataServer  extends AxisDataServer {
     * string containing votable of results
     */
    public String searchCone(double ra, double dec, double sr) throws RemoteException {
-      
-      Querier querier = null;
       try {
-         querier =  QuerierManager.createQuerier(QueryConverter.makeConeQuery(ra, dec, sr));
-         QueryResults results = querier.doQuery();
-         querier.setState(QueryState.RUNNING_RESULTS);
-         Element result = ResponseHelper.makeResultsResponse(
-            querier,
-            results.toVotable().getDocumentElement()
-         ).getDocumentElement();
-         querier.setState(QueryState.FINISHED);
-         
-         return XMLUtils.ElementToString(result);
-      }
-      catch (Exception e) {
-         throw makeFault(SERVERFAULT, "Failed to convert results to VOTable", e);
-      }
-      finally  {
-         try {
-            QuerierManager.closeQuerier(querier);
-         } catch (IOException ioe) {
-            log.error(ioe+" closing querier "+querier,ioe);
-         }
+         return server.searchCone(Account.ANONYMOUS, ra, dec, sr);
+      } catch (Exception e) {
+         throw makeFault(SERVERFAULT, "searchCone("+ra+", "+dec+", "+sr+") failed", e);
       }
    }
    
@@ -77,6 +58,9 @@ public class SimpleAxisDataServer  extends AxisDataServer {
 
 /*
 $Log: SimpleAxisDataServer.jws,v $
+Revision 1.2  2004/03/08 23:58:20  mch
+Made use of server searchCone
+
 Revision 1.1  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 
