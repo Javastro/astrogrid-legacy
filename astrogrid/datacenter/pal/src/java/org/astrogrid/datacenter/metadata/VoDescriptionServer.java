@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.12 2004/11/12 10:44:54 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.13 2004/11/12 13:44:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -191,14 +191,6 @@ public class VoDescriptionServer {
          if (s != null) {
             plugins = new String[] { s };
          }
-      }
-      //if they are not specified, assume one AuthorityConfigPlugin and a FileResourcePlugin
-      if ((plugins == null) || (plugins.length==0)) {
-         plugins = new String[] {
-            AuthorityConfigPlugin.class.getName(),
-            FileResourcePlugin.class.getName(),
-            CeaResourceServer.class.getName(),
-         };
       }
 
       //start the vodescription document
