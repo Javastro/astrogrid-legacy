@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.9 2004/02/04 16:35:28 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
+<!-- $Id: project.xml,v 1.10 2004/02/04 17:10:55 jdt Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
-	<id>astrogrid-common</id>
-	<name>AstroGrid Common</name>
-	<description>Classes used across the components.</description>
-	<shortDescription>AstroGrid Common Components</shortDescription>
+    <id>astrogrid-common</id>
+    <name>AstroGrid Common</name>
+    <description>Classes used across the components.</description>
+    <shortDescription>AstroGrid Common Components</shortDescription>
     <!-- Temporary Overrides till we get consistent artifactIds-->
     <groupId>astrogrid-common</groupId>
     <siteDirectory>/var/www/www/maven/build/common</siteDirectory>
@@ -19,51 +20,51 @@
         <url> http://www.astrogrid.org/viewcvs/astrogrid/common/ </url>
     </repository>
     <!-- end of overrides -->
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
-			<includes>
-				<include>**/*Test.java</include>
-			</includes>
-			<resources>
-				<resource>
-					<directory>${basedir}/test/java</directory>
-					<includes>
-						<include>**/*.xml</include>
-						<include>**/*.xmltemplate</include>
-						<include>**/*.properties</include>
-						<include>**/*.sql</include>
-						<include>**/*.ddl</include>
-					</includes>
-				</resource>
-			</resources>
-		</unitTest>
-	</build>
-	<dependencies>
-		<dependency>
-			<id>axis</id>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<id>commons-logging</id>
-			<version>1.0.3</version>
-		</dependency>
-		<dependency>
-			<id>jconfig</id>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<id>junit</id>
-			<version>3.8</version>
-		</dependency>
-		<dependency>
-			<id>log4j</id>
-			<version>1.2.8</version>
-		</dependency>
-    <dependency>
-      <id>commons-discovery</id>
-      <version>20030211.213356</version>
-    </dependency>
-	</dependencies>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/test/java</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.xmltemplate</include>
+                        <include>**/*.properties</include>
+                        <include>**/*.sql</include>
+                        <include>**/*.ddl</include>
+                    </includes>
+                </resource>
+            </resources>
+        </unitTest>
+    </build>
+    <dependencies>
+        <dependency>
+            <id>axis</id>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <id>commons-logging</id>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <id>jconfig</id>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <id>junit</id>
+            <version>3.8</version>
+        </dependency>
+        <dependency>
+            <id>log4j</id>
+            <version>1.2.8</version>
+        </dependency>
+        <dependency>
+            <id>commons-discovery</id>
+            <version>20030211.213356</version>
+        </dependency>
+    </dependencies>
 </project>
