@@ -1,4 +1,4 @@
-/* $Id: DeploymentTests.java,v 1.2 2004/01/02 16:07:27 jdt Exp $
+/* $Id: DeploymentTests.java,v 1.3 2004/01/21 17:03:51 jdt Exp $
  * Created on 29-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class DeploymentTests {
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(ConfFileLocatedTest.class));
         suite.addTest(new TestSuite(DatabaseLocatedTest.class));
+        suite.addTest(new TestSuite(ServicesLocatedTest.class));
         //$JUnit-END$
         return suite;
     }
