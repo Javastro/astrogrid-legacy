@@ -21,6 +21,7 @@ import org.w3c.dom.Document;
 
 /**
  * Class to notify JES job monitor server
+ * @deprecated - use JobMonitorDelegate
  *
  * @author M Hill
  */
@@ -91,6 +92,9 @@ public class JobMonitorNotifier extends WebNotifier
 
 /*
 $Log: JobMonitorNotifier.java,v $
+Revision 1.6  2004/02/13 15:30:30  mch
+Deprecated
+
 Revision 1.5  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor
