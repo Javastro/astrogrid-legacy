@@ -1,5 +1,5 @@
 /*
- * $Id: StoreCommander.java,v 1.1 2004/04/15 12:40:54 mch Exp $
+ * $Id: StoreCommander.java,v 1.2 2004/05/03 08:55:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -87,7 +87,7 @@ public class StoreCommander
 
    /** Called by list to recursively print directory/entry tree */
    private static void printListEntry(int indent, StoreFile entry) {
-      System.out.print(entry.toAgsl());
+      System.out.print(entry.getPath());
 
       String line = "";
       while (line.length() <indent*2) { line = line +"  "; }
@@ -169,6 +169,9 @@ public class StoreCommander
 
 /*
 $Log: StoreCommander.java,v $
+Revision 1.2  2004/05/03 08:55:53  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.1  2004/04/15 12:40:54  mch
 Added command line UI
 

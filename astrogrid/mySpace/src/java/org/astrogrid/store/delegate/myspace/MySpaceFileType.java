@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileType.java,v 1.2 2004/04/23 11:38:19 mch Exp $
+ * $Id: MySpaceFileType.java,v 1.3 2004/05/03 08:55:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -43,10 +43,14 @@ public class MySpaceFileType extends TypeSafeEnumerator
       return (MySpaceFileType) holdingIdx.get(holdingRef);
    }
    
+   
 }
 
 /*
 $Log: MySpaceFileType.java,v $
+Revision 1.3  2004/05/03 08:55:53  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.2  2004/04/23 11:38:19  mch
 Fixes to return correct AGSL plus change to File model for It05 delegate
 

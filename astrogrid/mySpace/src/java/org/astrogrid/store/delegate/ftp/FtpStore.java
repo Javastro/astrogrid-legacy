@@ -1,5 +1,5 @@
 /*
- $Id: FtpStore.java,v 1.4 2004/04/23 11:38:19 mch Exp $
+ $Id: FtpStore.java,v 1.5 2004/05/03 08:55:53 mch Exp $
 
  (c) Copyright...
  */
@@ -25,6 +25,8 @@ import sun.net.ftp.FtpProtocolException;
  * that these are NOT supported directly.
  * <P>
  * Adapted from the ACE project
+ * <p>
+ * @deprecated - THIS HAS NOT BEEN PROPERLY MAINTAINED SINCE It04.1
  */
 
 public class FtpStore extends StoreDelegate {
@@ -349,12 +351,21 @@ public class FtpStore extends StoreDelegate {
    /**
     * Returns a list of the files that match the expression
     */
-   public StoreFile[] listFiles(String filter) throws IOException {
+   public StoreFile[] getChildren(StoreFile folder, String filter) throws IOException {
       
       throw new UnsupportedOperationException();
       //@todo
    }
    
+   /**
+    * Returns the parent of the given file
+    */
+   public StoreFile getParent(StoreFile child) throws IOException {
+      
+      throw new UnsupportedOperationException();
+      //@todo
+   }
+
    /**
     * Returns the file corresponding to the path
     */

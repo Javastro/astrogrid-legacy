@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.6 2004/04/23 11:38:19 mch Exp $
+ * $Id: StoreFile.java,v 1.7 2004/05/03 08:55:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,6 +9,7 @@
 
 package org.astrogrid.store.delegate;
 
+import java.util.Date;
 import org.astrogrid.store.Agsl;
 
 
@@ -29,6 +30,22 @@ public interface StoreFile {
    
    /** Returns parent folder of this file/folder */
    public StoreFile getParent();
+
+   /** Returns the owner of the file
+    * @todo - proper ownership stuff */
+   public String getOwner();
+
+   /** Returns the creation date  (null if unknown) */
+   public Date getCreated();
+   
+   /** Returns the date the file was last modified (null if unknown) */
+   public Date getModified();
+   
+   /** Returns the size of the file in bytes (-1 if unknown) */
+   public long getSize();
+
+   /** Returns the mime type (null if unknown) */
+   public String getMimeType();
    
    /** Returns true if this is a container that can hold other files/folders */
    public boolean isFolder();
@@ -43,16 +60,11 @@ public interface StoreFile {
    /** Returns the path to this file on the server, including the filename */
    public String getPath();
    
-   /** Returns where to find this file using an AStrogrid Store Locator
-    * @deprecated heavily - use StoreClient.getAgsl(), as this store file need not
-    * know where it comes from*/
-   public Agsl toAgsl();
-   
    /** Returns true if this represents the same file as the given one, within
     * this server.  This
     * won't check for references from different stores to the same file */
    public boolean equals(StoreFile anotherFile);
-
+   
 }
 
 /*

@@ -1,5 +1,5 @@
 /*
- $Id: StoreDelegate.java,v 1.3 2004/04/23 11:38:19 mch Exp $
+ $Id: StoreDelegate.java,v 1.4 2004/05/03 08:55:53 mch Exp $
 
  (c) Copyright...
  */
@@ -44,7 +44,11 @@ public abstract class StoreDelegate implements StoreClient {
    }
    
    /**
-    * Copies the contents of the file at the given source url to the given location
+    * Copies the contents of the file at the given source url to the given location.
+    * This implementation pipes the
+    * contents through this delegate, rather than telling the server to fetch the
+    * url
+    *
     */
    public void putUrl(URL source, String targetPath, boolean append) throws IOException {
       OutputStream out = putStream(targetPath, append);
@@ -55,7 +59,7 @@ public abstract class StoreDelegate implements StoreClient {
    }
    
    /**
-    * Puts the given byte buffer into the given location
+    * Puts the given byte buffer into the given location using putStream()
     */
    public void putBytes(byte[] bytes, int offset, int length, String targetPath, boolean append) throws IOException {
       OutputStream out = putStream(targetPath, append);

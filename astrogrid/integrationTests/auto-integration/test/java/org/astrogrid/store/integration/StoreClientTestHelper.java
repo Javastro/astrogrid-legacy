@@ -1,4 +1,4 @@
-/*$Id: StoreClientTestHelper.java,v 1.3 2004/04/22 13:50:38 mch Exp $
+/*$Id: StoreClientTestHelper.java,v 1.4 2004/05/03 08:58:49 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,7 +56,7 @@ public abstract class StoreClientTestHelper extends TestCase {
       //in both
       assertFileExists(sameStore, path+SOURCE_TEST);
 
-      assertEquals(aStore.getUrl(path+SOURCE_TEST), sameStore.getUrl(path+SOURCE_TEST));
+      assertEquals(aStore.getFile(path+SOURCE_TEST).getPath(), sameStore.getFile(path+SOURCE_TEST).getPath());
 
       //get rid of it if it's already there
       StoreFile f = differentStore.getFile(path+SOURCE_TEST);
@@ -101,9 +101,9 @@ public abstract class StoreClientTestHelper extends TestCase {
       assertNotNull(children);
 
       //test get list of files
-      StoreFile[] list = store.listFiles("*");
+      //StoreFile[] list = store.listFiles("*");
       
-      assertNotNull(list);
+      //assertNotNull(list);
 
       //tridy up and check getFiel can't find a missing file
       store.delete(path+SOURCE_TEST);
@@ -176,9 +176,9 @@ public abstract class StoreClientTestHelper extends TestCase {
     * actually throw a FileNotFoundException rather than an assertion error if
     * it can be URLd but not found */
    private void assertFileExists(StoreClient store, String path) throws IOException {
-      URL url = store.getUrl(path);
-      assertNotNull(url);
-      InputStream in = url.openStream();
+      StoreFile file = store.getFile(path);
+      assertNotNull(file);
+      InputStream in = store.getStream(path);
       assertNotNull(in);
       in.close();
    }
@@ -293,6 +293,9 @@ public abstract class StoreClientTestHelper extends TestCase {
 
 /*
 $Log: StoreClientTestHelper.java,v $
+Revision 1.4  2004/05/03 08:58:49  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.3  2004/04/22 13:50:38  mch
 Fixes to tests and more tests
 

@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.4 2004/04/06 13:56:00 mch Exp $
+ * $Id: LocalFile.java,v 1.5 2004/05/03 08:55:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import org.astrogrid.store.delegate.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import org.astrogrid.store.Agsl;
+import java.util.Date;
 
 /**
  * Represents a local file (ie a File class) as a StoreFile
@@ -21,8 +22,9 @@ import org.astrogrid.store.Agsl;
  */
 
 
-public class LocalFile implements StoreFile
-{
+public class LocalFile implements StoreFile {
+   
+   
    File file = null;
    LocalFileStore store = null;
    
@@ -78,24 +80,32 @@ public class LocalFile implements StoreFile
          throw new RuntimeException("Program Error: ", se);
       }
    }
-   
-   /** Returns where to find this file using an AStrogrid Store Locator */
-   public Agsl toAgsl() {
-      Agsl storeLoc = store.getEndpoint();
-      try {
-         if (getPath() == null) {
-            //file refers to root directory - ie the store point.
-            return storeLoc;
-         }
-         else {
-            return new Agsl(storeLoc.getEndpoint(), getPath());
-         }
-      }
-      catch (MalformedURLException mue) {
-         //should never happen as the Agsl is generated....
-         throw new RuntimeException("Program Error: generated invalid Agsl from ("+storeLoc+", "+getPath()+")",mue);
-      }
+
+   /** Returns the owner of the file */
+   public String getOwner() {
+      return null;
    }
+   
+   /** Returns the mime type (null if unknown) */
+   public String getMimeType() {
+      return null;
+   }
+   
+   /** Returns the date the file was last modified (null if unknown) */
+   public Date getModified() {
+      return new Date(file.lastModified());
+   }
+   
+   /** Returns the creation date  (null if unknown) */
+   public Date getCreated() {
+      return null;
+   }
+   
+   /** Returns the size of the file in bytes (-1 if unknown) */
+   public long getSize() {
+      return file.length();
+   }
+   
    
    /** Returns true if this is a container that can hold other files/folders */
    public boolean isFolder() {
@@ -119,6 +129,9 @@ public class LocalFile implements StoreFile
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.5  2004/05/03 08:55:53  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.4  2004/04/06 13:56:00  mch
 Fix to getParent null
 

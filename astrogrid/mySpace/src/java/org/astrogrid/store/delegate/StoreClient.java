@@ -1,5 +1,5 @@
 /*
- * $Id: StoreClient.java,v 1.7 2004/04/23 11:38:19 mch Exp $
+ * $Id: StoreClient.java,v 1.8 2004/05/03 08:55:53 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,12 +45,17 @@ public interface StoreClient {
    public StoreFile getFiles(String filter) throws IOException;
 
    /**
-    * Returns a list of all the files that match the expression
-    */
-   public StoreFile[] listFiles(String filter) throws IOException;
+    * Returns a list of all the children of the given folder that match the expression
+    *
+   public StoreFile[] getChildren(StoreFile folder, String filter) throws IOException;
 
    /**
-    * Returns the StoreFile representation of the file at the given AGSL
+    * Returns the parent of the given storefile
+    *
+   public StoreFile getParent(StoreFile file) throws IOException;
+
+   /**
+    * Returns the StoreFile representation of the file at the given path
     */
    public StoreFile getFile(String path) throws IOException;
 
@@ -128,6 +133,9 @@ public interface StoreClient {
 
 /*
 $Log: StoreClient.java,v $
+Revision 1.8  2004/05/03 08:55:53  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.7  2004/04/23 11:38:19  mch
 Fixes to return correct AGSL plus change to File model for It05 delegate
 

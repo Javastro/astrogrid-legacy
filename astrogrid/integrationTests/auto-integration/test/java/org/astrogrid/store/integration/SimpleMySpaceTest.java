@@ -14,7 +14,7 @@ import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
  * @TODO this class gets under the hood of the VOSpace delegate,
  * and uses deprecated classes such as User.  Find out whether this
  * is very naughty.
- * 
+ *
  * @author jdt@roe.ac.uk
  * @since Iteration 5.
  * @version Iteration 5.
@@ -27,7 +27,7 @@ public final class SimpleMySpaceTest extends TestCase {
         org.apache.commons.logging.LogFactory.getLog(SimpleMySpaceTest.class);
     /**
      * Standard constructor for JUnit test classes.
-     * 
+     *
      * @param name test name
      */
     public SimpleMySpaceTest(final String name) {
@@ -35,7 +35,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Fire up the text UI
-     * 
+     *
      * @param args ignored
      */
     public static void main(final String[] args) {
@@ -61,7 +61,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * Called before each test. Connects to a myspace, sets up a default user
      * and creates it
-     * 
+     *
      * @throws IOException a problem accessing the web service
      */
     public void setUp() throws IOException {
@@ -84,7 +84,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Tidy up following test. Deletes the default user
-     * 
+     *
      * @throws Exception on failure to load the config file, or a problem
      *             accessing the web service
      */
@@ -98,7 +98,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Delete the user with the given params
-     * 
+     *
      * @param userID userId
      * @param communityID communityID
      */
@@ -111,7 +111,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * create a user with the given params
-     * 
+     *
      * @param userID userId
      * @param communityID communityId
      * @param endPoint myspace webservice end point
@@ -134,7 +134,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Let's start with something trivial - can we save and return text?
-     * 
+     *
      * @throws IOException no idea
      */
     public void testImportExportDeleteSimpleText() throws IOException {
@@ -152,7 +152,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Now a bit harder - can we save and return xml?
-     * 
+     *
      * @throws IOException no idea
      */
     public void testImportExportDeleteXMLTextAgain() throws IOException {
@@ -165,7 +165,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Again, with single quotes
-     * 
+     *
      * @throws Exception no idea
      */
     public void testImportExportDeleteXMLText() throws IOException {
@@ -180,7 +180,7 @@ public final class SimpleMySpaceTest extends TestCase {
      * Now lets really go mad - multiline text. Note this has just been done by
      * the addition of a few \n chars....maybe need to think about this a bit
      * more
-     * 
+     *
      * @throws IOException nfi
      */
     public void testImportExportDeleteMultilineText() throws IOException {
@@ -194,7 +194,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Construct the full path name of a myspace artifact
-     * 
+     *
      * @param user user
      * @param community community
      * @param file filename
@@ -208,7 +208,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Utility method extracting the commonality of the saveDataHolding tests
-     * 
+     *
      * @param name full path name to save into myspace
      * @param text the text to store
      * @throws IOException who knows
@@ -229,7 +229,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Utility method extracting the commonality of the saveDataHolding tests
-     * 
+     *
      * @param name under which you wish to save the text
      * @param urlString the url of the data you wish to save
      * @throws Exception who knows
@@ -261,7 +261,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * test reading from url
-     * 
+     *
      * @throws Exception no idea
      */
     public void testImportExportDeleteURL() throws Exception {
@@ -274,7 +274,7 @@ public final class SimpleMySpaceTest extends TestCase {
     }
     /**
      * Let's start with something trivial - can we save and return text?
-     * 
+     *
      * @throws IOException no idea
      */
 /*    public void testImportExportDeleteSomethingHuge() throws IOException {
@@ -291,7 +291,7 @@ public final class SimpleMySpaceTest extends TestCase {
     /**
      * For mucking out the myspace following a test. Will get a list of all a
      * user's holdings and delete the lot.
-     * 
+     *
      * @author jdt
      */
     private static class MySpaceWiper {
@@ -305,9 +305,9 @@ public final class SimpleMySpaceTest extends TestCase {
          */
         private MySpaceIt05Delegate myspace;
         /**
-         * 
+         *
          * Constructor
-         * 
+         *
          * @param myspace The MySpace to wipe
          */
         public MySpaceWiper(final MySpaceIt05Delegate myspace) {
@@ -315,13 +315,14 @@ public final class SimpleMySpaceTest extends TestCase {
         }
         /**
          * Wipe the account's holding, then delete the account
-         * 
+         *
          * @param account User's holdings to wipe
          * @throws IOException if something bad happens
          */
         private void wipe(final User account) throws IOException {
-            final StoreFile[] files =
-                myspace.listFiles("/" + account.getUserId() + "/*");
+            final StoreFile root =
+                myspace.getFiles("/" + account.getUserId() + "/*");
+            final StoreFile[] files = root.listFiles();
             if (files == null) {
                 log.debug("Found no files");
             } else {

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.11 2004/03/22 10:25:42 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.12 2004/05/03 08:55:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -117,7 +117,7 @@ public class MySpaceIt04Delegate extends StoreDelegate
    
    public StoreFile getFiles(String filter) throws StoreException {
 
-      MySpaceFolder rootFolder = new MySpaceFolder(serverMsrl, "");
+      MySpaceFolder rootFolder = new MySpaceFolder("");
       
       try {
          
@@ -421,6 +421,9 @@ public class MySpaceIt04Delegate extends StoreDelegate
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.12  2004/05/03 08:55:53  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.11  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 

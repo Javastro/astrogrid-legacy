@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.8 2004/04/23 11:38:19 mch Exp $
+ * $Id: LocalFileStore.java,v 1.9 2004/05/03 08:55:53 mch Exp $
  *
  */
 
@@ -187,17 +187,24 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
    }
 
    /**
-    * Returns a list of the files in the given directory */
-   public StoreFile[] listFiles(String filter) {
+    * Returns a list of the children of the given folder */
+   public StoreFile[] getChildren(StoreFile folder, String filter) {
 
       if (!filter.equals("*")) {
          //@todo - borrow from somwhere
          throw new UnsupportedOperationException("Can only filter * for now");
       }
 
-      return new LocalFile(this, rootDir).listFiles();
+      return new LocalFile(this, new File(folder.getPath())).listFiles();
    }
 
+   /**
+    * Returns the parent of the given file
+    */
+   public StoreFile getParent(StoreFile child) {
+      return new LocalFile(this, new File(child.getPath()).getParentFile());
+   }
+   
    /**
     * Returns the full path, within the context of this server, to the given
     * file, including the filename
@@ -355,10 +362,14 @@ public class LocalFileStore extends StoreDelegate implements StoreAdminClient {
       newFolder(newUser.getUserId()+"@"+newUser.getCommunity());
    }
    
+   
 }
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.9  2004/05/03 08:55:53  mch
+Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
 Revision 1.8  2004/04/23 11:38:19  mch
 Fixes to return correct AGSL plus change to File model for It05 delegate
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.3 2004/04/26 16:40:54 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.4 2004/05/03 08:55:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -18,79 +18,64 @@ import org.astrogrid.store.delegate.StoreFile;
 
 /**
  * Represents a folder in myspace. Not threadsafe.
- * See also comments on @link MySpaceEntry
+ * See also comments on @link MySpaceFile
  *
  * @author mch
  */
 
 
-public class MySpaceFolder implements StoreFile {
+public class MySpaceFolder extends MySpaceFile  {
    
-   Hashtable files = new Hashtable();
-   
-   MySpaceFolder parentFolder = null; //getParentFile() does some path analysis
-   
-   String name = null;
-   
-   Agsl agsl = null;
+   Hashtable children = new Hashtable();
+
+   boolean isRoot = false;
    
    /** Create folder from a myspace reference.  Use to create root folders - to
-    * create entries that are children, use the constructor that tkaes a parent */
+    * create entries that are children, use the constructor that tkaes a parent
    public MySpaceFolder(Msrl givenMsrl, String givenName) {
       this.agsl = givenMsrl.toAgsl();
       name = givenName;
    }
  
-   /** Creates a folder that is a child of another one.  Use
-    * the constructor that takes an Msrl to define the root folder*/
+   /** Creates a folder that is a child of another one. */
    public MySpaceFolder(MySpaceFolder parent, String childName) {
-      
-      assert parent != null : "Parent must not be null - use MySpaceFolder(Msrl) for root folders";
-      
-      this.parentFolder = parent;
-      this.name = childName;
-      
-      try {
-         //build AGSL from parents one and child
-         agsl = new Agsl(parent.toAgsl()+"/"+childName);
-      }
-      catch (MalformedURLException mue) {
-         throw new RuntimeException("Program Error: should not be possible to build illegal AGSLs here", mue);
-      }
-      
+      super(parent, childName);
    }
 
-   /** Adds the given StoreFile as a file that exists in this folder */
+   /** Creates the root folder */
+   public MySpaceFolder(String childName) {
+      super(null, childName);
+      isRoot = true;
+   }
+
+   /** Adds the given StoreFile as a child that exists in this folder */
    public void add(StoreFile child) {
-      files.put(child.getName(), child);
+      children.put(child.getName(), child);
    }
 
    /** Returns the StoreFile representation of the child with the given filename */
    public StoreFile getChild(String filename) {
-      return (StoreFile) files.get(filename);
+      return (StoreFile) children.get(filename);
    }
    
    /** Returns an array of the files in this container */
    public StoreFile[] listFiles() {
-      return (StoreFile[]) (files.values().toArray(new StoreFile[] {}));
+      return (StoreFile[]) (children.values().toArray(new StoreFile[] {}));
    }
 
    /** Returns path on server */
    public String getPath() {
-      if (parentFolder != null) {
-         return parentFolder.getPath()+getName()+"/";
-      }
-      else {
+      if (isRoot) {
          return "";
+      }
+      else
+      {
+         return getParent().getPath()+getName()+"/";
       }
    }
    
-   /** Returns full agsl path */
-   public String toString()    {    return getName();   }
-   
-
-   /** Returns where to find this file using an AStrogrid Store Locator */
-   public Agsl toAgsl() {           return agsl; }
+   /** Returns the file path */
+   public String toString()    {    return getPath();   }
    
    /** Returns parent folder of this file/folder */
    public StoreFile getParent() {   return this.parentFolder;  }
@@ -152,6 +137,9 @@ public class MySpaceFolder implements StoreFile {
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.4  2004/05/03 08:55:53  mch
+ Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
  Revision 1.3  2004/04/26 16:40:54  mch
  More fixes to It05 delegate
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.2 2004/04/23 11:38:19 mch Exp $
+ * $Id: MySpaceFile.java,v 1.3 2004/05/03 08:55:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -12,27 +12,27 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreFile;
+import java.util.Date;
 
 /**
- * Represents a file in vospace.  There is also MySpaceFolder to represent
+ * Represents a file in myspace (it04).  There is also MySpaceFolder to represent
  * a folder.
- *
- * Currently extends File, which was part of an effort to make myspace/vospace
- * 'look' like any other file system.  I've abandoned that so not sure if
- * this is really a good idea - eg some File methods are not overridden
- * (esp Stream operations...)
+ * It04 MySpace delegate only has one method for returning the files, and that
+ * method returns the whole tree.  So we can assume getParent() getChildren()
+ * etc are always fully populated
  *
  * @author mch
  */
 
 
 public class MySpaceFile implements StoreFile {
+   
    String name
       , owner, created, expires, size, permissions = null;
    URL url = null;
    
    MySpaceFileType type = null;
-   MySpaceFolder parentFolder = null; //the ordinary parent is not quite right
+   MySpaceFolder parentFolder = null;
    
    public MySpaceFile(MySpaceFolder parent, String child) {
       this.name = child;
@@ -72,41 +72,36 @@ public class MySpaceFile implements StoreFile {
    public String getOwner() {    return owner; }
    
    /** Returns the date the file was created */
-   public String getCreated() { return created; }
+   public Date getCreated() { return new Date(created); }
       
    public String getExpires() { return expires; }
 
-   public String getSize() { return size; }
+   public long getSize() { return Integer.parseInt(size); }
 
    public String getPermissions() { return permissions; }
 
-   public URL getUrl() { return url; }
-   
-   /** Returns the location of this file as an Astrogrid Storepoint Location */
-   public Agsl toAgsl()
-   {
-      try {
-         return new Agsl(parentFolder.toAgsl()+"/"+getName());
-      }
-      catch (MalformedURLException mue) {
-         throw new RuntimeException("Program error: Should not be possible to construct myspacefiles with illegal AGSLs...");
-      }
+   /** Returns the mime type (null if unknown) */
+   public String getMimeType() {
+      return null;
    }
+   
+   /** Returns the date the file was last modified (null if unknown) */
+   public Date getModified() { return null;  }
+   
+   /** Returns URL to the file */
+   public URL getUrl() { return url; }
    
    /** Returns the path to this file on the server */
    public String getPath() {
-      if (parentFolder != null) {
-         return parentFolder.getPath()+getName();
-      } else {
-         return getName();
-      }
+      return getParent().getPath()+getName();
    }
    
    public String getName() {           return name; }
    
-   /** Returns the parent folder - differs from getParent() with makes
-    * a guess at the path from the initial filename... */
-   public StoreFile getParent() {      return parentFolder; }
+   /** Returns the parent folder */
+   public StoreFile getParent() {
+      return parentFolder;
+   }
 
    
    /** Lists children files if this is a container - returns null otherwise */
@@ -131,6 +126,9 @@ public class MySpaceFile implements StoreFile {
 
 /*
  $Log: MySpaceFile.java,v $
+ Revision 1.3  2004/05/03 08:55:53  mch
+ Fixes to getFiles(), introduced getSize(), getOwner() etc to StoreFile
+
  Revision 1.2  2004/04/23 11:38:19  mch
  Fixes to return correct AGSL plus change to File model for It05 delegate
 
