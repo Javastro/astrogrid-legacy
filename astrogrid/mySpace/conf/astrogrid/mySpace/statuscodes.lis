@@ -1,9 +1,17 @@
 #qin.star.le.ac.uk:
 REGISTRYCONF=/home/clq2/develop/MSRegistryTestDir/example
 TEMPPATHTO=/tmp/mySpaceTest/
+#location of service: MySpaceManager
+MYSPACEMANAGER=http://143.210.36.131:8080/axis/services/MySpaceManager
+#location of service: ServerManager
+SERVERMANAGER=http://143.210.36.131:8080/axis/services/ServerManager
+
 #hydra:
 #REGISTRYCONF=/usr/local/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace
 #TEMPPATHTO=/tmp/mySpaceTest/
+#MYSPACEMANAGER=http://143.210.36.120:8080/axis/services/MySpaceManager
+#SERVERMANAGER=http://143.210.36.120:8080/axis/services/ServerManager
+
 MS-E-REGDWRT="Failed to write registry data file."
 MS-E-REGDCRT="Registry data file is corrupt."
 MS-E-REGDRED="Failed to read registry data file."
