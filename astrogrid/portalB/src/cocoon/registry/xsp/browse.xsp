@@ -40,7 +40,7 @@
       List Identity and Curation Metadata <br/>
       <input type='RADIO' name='QueryType' value='content'/>
       List Identity and Contents Metadata <br/>
-      <input type='RADIO' name='QueryType' value='serviceMetadataConcepts'/>
+      <input type='RADIO' name='QueryType' value='serviceMetadataConcept'/>
       List Identity and Service Metadata Concepts Metadata
       <p>
       And enter other query details below: <br/>
