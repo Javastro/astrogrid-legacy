@@ -76,14 +76,33 @@ public class Return {
      
 	
 	public String toSQLString() {
-    	
-		StringBuffer
-		   buffer = new StringBuffer(64) ;
-    	   
-		buffer
-		  .append( "" )
-		  .append( "" );
-    	   
+		
+        StringBuffer
+		    buffer = new StringBuffer(64) ;  	
+		
+		try {
+			
+		    Field 
+		        field[] = this.fields;
+		    buffer.append(" ");
+		
+		    for (int i = 0; i < field.length; i++){
+		        buffer.append(field[i].getName());
+		        buffer.append(", ");			  
+		    } // end of for
+		
+		    buffer.deleteCharAt(buffer.lastIndexOf(","));
+		}
+		
+		catch( Exception ex) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+			logger.error( message.toString(), ex ) ;   		
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "Return(Element): exit") ;   	
+		} 
+		
 		return buffer.toString() ;
     	
 	} // end of toSQLString()	
