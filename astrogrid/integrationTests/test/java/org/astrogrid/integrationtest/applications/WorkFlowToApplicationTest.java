@@ -1,26 +1,33 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.2 2004/03/12 23:55:04 jdt Exp $
- * 
+ * $Id: WorkFlowToApplicationTest.java,v 1.3 2004/03/22 19:48:27 mch Exp $
+ *
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
  * Copyright 2004 AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 
-package org.astrogrid.integrationtest.applications;
+package org.astrogrid.integrationTests.applications;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.applications.beans.v1.Parameter;
-import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.InputSource;
+
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.common.config.ConfigLoader;
@@ -28,7 +35,7 @@ import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.integrationtest.common.ConfManager;
+import org.astrogrid.integrationTests.common.ConfManager;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
@@ -36,6 +43,7 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
 import org.astrogrid.portal.workflow.WKF;
+import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
@@ -90,7 +98,7 @@ public class WorkFlowToApplicationTest extends TestCase {
 
    }
 
-   public void testRun() throws JesDelegateException, IOException {
+   public void testRun() throws JesDelegateException, IOException, MarshalException, ValidationException {
       // need to put a file into mySpace
       Vector servers = new Vector();
       servers.add("serv1");
@@ -169,24 +177,24 @@ public class WorkFlowToApplicationTest extends TestCase {
       param.setName("P1");
       param.setType(ParameterTypes.INTEGER);
       
-      param.setContent("15");
+      param.setValue("15");
       inputs.addParameter(param);
 
       
       param = new ParameterValue();
       param.setName("P2");
       param.setType(ParameterTypes.DOUBLE);
-      param.setContent("25.4");
+      param.setValue("25.4");
 
       param = new ParameterValue();
       param.setName("P4");
       param.setType(ParameterTypes.STRING);
-      param.setContent("Hello World");
+      param.setValue("Hello World");
 
       param = new ParameterValue();
       param.setName("p9");
       param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
-      param.setContent(infileName);
+      param.setValue(infileName);
       
       
       // output
@@ -195,7 +203,7 @@ public class WorkFlowToApplicationTest extends TestCase {
       param = new ParameterValue();
       param.setName("P3");
       param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
-      param.setContent(outFilename);
+      param.setValue(outFilename);
       
       
       tool.setInput(inputs);
@@ -215,15 +223,24 @@ public class WorkFlowToApplicationTest extends TestCase {
       group.setCommunity("test.astrogrid.org");
       credentials.setGroup(group);
       credentials.setSecurityToken("dummy");
-      
+ 
+      File f1 = new File("/tmp/workflowtest.xml");
+     
       workflow.setCredentials(credentials);
+      FileWriter writer = new FileWriter(f1);
+      Marshaller.marshal(workflow, writer);
+ 
+      Unmarshaller um = new Unmarshaller(Workflow.class);
       
+      FileInputStream istream = new FileInputStream(f1);
+      InputSource saxis = new InputSource(istream);
+      Workflow inwf =  (Workflow)um.unmarshal( saxis);
       
       //submit the job....
          
-      JobController jobcon = JesDelegateFactory.createJobController(ConfManager.getInstance().getJobControllerEndPoint());  
-      //@TODO reinstate this - breaks build
-      //jobcon.submitJob(workflow);      
+      JobController jobcon = JesDelegateFactory.createJobController(ConfManager.getInstance().getJobControllerEndPoint());
+      
+      jobcon.submitWorkflow(workflow);
  
    }
 
@@ -232,14 +249,6 @@ public class WorkFlowToApplicationTest extends TestCase {
     */
    private String communitySnippet() {
       return user.toSnippet();
-   }
-   
-   /**
-    * Remind us to deal with this
-    * @TODO fix me
-    */
-   public void testIFail() {
-       fail("This test class needs bringing up to date");
    }
 
 }
