@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.14 2004/02/17 15:14:44 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.15 2004/02/23 18:08:47 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
@@ -47,6 +48,16 @@ public class DatacenterDelegateFactory {
          return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       }
    }
+
+   /** Wrapper version that takes community User
+    * @deprecated
+    */
+   public static ConeSearcher makeConeSearcher(User user, String givenEndPoint, String serviceType)
+      throws MalformedURLException, DatacenterException {
+   
+      return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, serviceType);
+   }
+   
    /** Creates a ConeSearcher-implementing delegate given an endpoint
     * (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against, which
@@ -71,6 +82,7 @@ public class DatacenterDelegateFactory {
       }
       throw new IllegalArgumentException("Service Type '" + serviceType + "' unknown");
    }
+   
    /**
     * For backwards compatibility - call without user & type info.  It makes
     * best attempt to work out type but it's not safe
@@ -93,6 +105,15 @@ public class DatacenterDelegateFactory {
          return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
       }
       return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
+   }
+   
+   /** Wrapper version that takes community User
+    * @deprecated
+    */
+   public static ConeSearcher makeFullSearcher(User user, String givenEndPoint, String serviceType)
+      throws MalformedURLException, DatacenterException {
+   
+      return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, serviceType);
    }
    /** Creates an  delegate given an endpoint
     * (a url to the service). If the endPoint
@@ -131,6 +152,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.15  2004/02/23 18:08:47  mch
+ Added methods to take community.User class
+
  Revision 1.14  2004/02/17 15:14:44  mch
  Removed unused imports
 
