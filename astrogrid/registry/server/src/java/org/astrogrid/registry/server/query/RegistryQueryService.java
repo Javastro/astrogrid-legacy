@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import org.apache.axis.AxisFault;
 import org.astrogrid.xmldb.eXist.server.QueryDBService;
+import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 
 /**
  *
@@ -61,6 +62,7 @@ public class RegistryQueryService {
       Document doc = queryRegistry("0_73",query);
       Document resultDoc = xslHelper.transformExistResult(versionNumber,true,doc.getDocumentElement());
       System.out.println("the final result of the query is = " + DomHelper.DocumentToString(resultDoc));
+      //instead of xsl maybe we should try to replace the exist root element then add the searchResponse?
       //throw to xsl stylesheet to get rid of the root element 
       //and probably put the SearchResponse element around as well and the VoResources
       log.debug("end Search");
@@ -258,5 +260,16 @@ public class RegistryQueryService {
       return query;
    }
    
-
+   public Document harvestResource(Document resources)  throws AxisFault {
+         RegistryHarvestService rhs = new RegistryHarvestService();
+         try {         
+            NodeList nl = DomHelper.getNodeListTags(resources,"Resource","vr");
+            for(int i = 0;i < nl.getLength();i++) {
+               rhs.harvestResource(nl.item(i), null);
+            }//for
+         }catch(IOException ioe) {
+            throw new AxisFault("IOE problem",ioe);
+         }
+         return resources;      
+   }
 }

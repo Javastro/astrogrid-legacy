@@ -201,11 +201,15 @@ public class RegistryHarvestService {
     * @return null (nothing is returned on this web service operation).
     * @author Kevin Benson
     */
-   public Document harvestResource(Document resources)  throws AxisFault {
+   public Document harvestResource(Node resource,Date dt)  throws AxisFault {
       log.debug("start harvestResource");
       log.info("update harvestResource");
-
+      
+      /*
       RegistryAdminService ras = new RegistryAdminService();
+
+      Change this up to look at the Node make sure it is a REgistryType or a Web service
+      if not then throw an exception if so then try to call it.
 
       //Okay this is just a small xsl sheet to make sure the xml is formatted in
       //a nice consistent way.  Because currently the schema espcially version 0.9
@@ -225,6 +229,7 @@ public class RegistryHarvestService {
       }catch(IOException ioe) {
          throw new AxisFault("IO problem", ioe);   
       }
+      */
       
 
       log.info("exiting harvestResource");
@@ -233,55 +238,61 @@ public class RegistryHarvestService {
    }
 
    /**
-     * Takes a Resource entry (a Registry type entry).  And performs a
-     * harvest from that registry, to populate this registry.  Usually there is only one
-     * Registry Resource, but there might be more.  This method though is different from
-     * harvestResource, because a "date_since" tag element may be passed in along with the
-     * Resources, and will perform a harvest based on that date.
-     *
-     * @param query XML document object representing the query language used on the registry.
-     * @return null (nothing is returned on this web service operation).
-     * @author Kevin Benson
-     */
-   public Document harvestFromResource(Document resource)  throws AxisFault  {
-      log.debug("start harvestFromResource");
-      RegistryAdminService ras = new RegistryAdminService();
-      XSLHelper xs = new XSLHelper();
-      Document resourceChange = xs.transformDatabaseProcess(
-                                   (Node)resource.getDocumentElement());
-      //Now get the dateFrom element value as well.
-      ras.Update(resourceChange);
-      try {
-         beginHarvest(null,resourceChange);
-      }catch(IOException ioe) {
-         log.error(ioe);
-         throw new AxisFault("IO problem", ioe);
-      }
-      
-      log.debug("end harvestFromResource");
-      return null;
-   }
-
-
-   /**
        * Will start a harvest of all the Registries known to this registry.
        *
        * @param resources XML document object representing the query language used on the registry.
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson
        */
-   public Document harvestAll(Document resources)  throws AxisFault  {
+   public Document harvestAll(boolean onlyRegistries, boolean useDates)  throws AxisFault  {
       log.debug("start harvestAll");
       Document harvestedDoc = null;
       //This next statement will go away with Castor.
       //NodeList nl = query.getElementsByTagNameNS(
       //              "http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
+      /*
       if(resources != null && resources.getElementsByTagName("VODescription").
                                         getLength() > 0) {
          return harvestResource(resources);
       } else {
          return harvestResource(harvest(null));
       }
+      */
+      if(onlyRegistries) {
+         //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
+         
+         /*
+          NodeList nl = DomHelper.getNodeList(doc,"Resource","vr");
+          for(int i = 0; i < nl.getLenth();i++) {
+            Element elem = (Element) nl.item(i);
+            if(useDates) {
+               // now look up the stats data for the last time it was harvestes.
+               //this should be fairly easy we can get the identifier and the stats file should be that
+               //get identifier name.  
+               //once you get the stats Document dom get the lastharvestdate element. 
+               //harvestResource(elem,lastharvestdate); 
+            }
+            harvestResource(elem);
+          }
+          */
+      }else {
+        //query for all RegistryTypes or WebService interface
+        /*
+         NodeList nl = DomHelper.getNodeList(doc,"Resource","vr");
+         for(int i = 0; i < nl.getLenth();i++) {
+           Element elem = (Element) nl.item(i);
+           if(useDates) {
+              // now look up the stats data for the last time it was harvestes.
+              //this should be fairly easy we can get the identifier and the stats file should be that
+              //get identifier name.  
+              //once you get the stats Document dom get the lastharvestdate element. 
+              //harvestResource(elem,lastharvestdate); 
+           }
+           harvestResource(elem);
+         }
+         */
+      }
+      return null;
    }
 
 /**
