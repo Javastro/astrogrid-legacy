@@ -67,7 +67,7 @@
          </xsl:if>
        </ag-onload>      
                             
-        <agComponentTitle>Workflow</agComponentTitle>             
+        <agComponentTitle>Workflow Editor</agComponentTitle>             
                 
         <table border="1">
           <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form" method="post">

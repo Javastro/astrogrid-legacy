@@ -29,7 +29,7 @@
     
   <xsl:template match="workflow">
     <ag-div>        
-      <agComponentTitle>Workflow</agComponentTitle>        
+      <agComponentTitle>Job Monitor</agComponentTitle>        
                 
         <table border="1" cellpadding="0" cellspacing="0">
           <tr>
