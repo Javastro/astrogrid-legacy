@@ -262,52 +262,54 @@ public class JesAction extends AbstractAction {
         } // end of JesActionImpl()
         
         
-        private void retrieveUserDetails() {
-            if( TRACE_ENABLED )
-               trace( "JesActionImpl.retrieveUserDetails() entry" );   
 
-            try {
-                     
-                // PJN note: alterred slightly,
-                // also not sure if LoginAction intends to put security token
-                // into session?
-                             
-                this.userid = (String)session.getAttribute( USER_TAG );
-			    debug( "userid: " + this.userid );
-                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
-			    debug( "community: " + this.community );
-                this.group = (String)session.getAttribute( CREDENTIAL_TAG );
-			    debug( "group: " + this.group ); 
-//                SecurityToken secToken =
-//                   (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
-//                this.token = secToken.getToken();
-			    debug( "token: " + this.token ); 
-                
-                Account account = new Account();
-                account.setName( userid );
-                account.setCommunity( community );
-                Group group = new Group();
-                group.setName( this.group );
-                group.setCommunity( community );
-                        
-                this.credentials = new Credentials();
-                credentials.setAccount( account );
-                credentials.setGroup( group );
-                credentials.setSecurityToken( "dummy" );
-                
-                this.user = new User();
-                user.setAccount( userid );
-                user.setGroup( this.group );
-                user.setToken( token );
 
-            }
-            finally {
-                if( TRACE_ENABLED )
-                   trace( "JesActionImpl.retrieveUserDetails() exit" );  
-            }
-                
-        } // end of retrieveUserDetails()
-        
+
+		        private void retrieveUserDetails() {
+		            if( TRACE_ENABLED ) trace( "JesActionImpl.retrieveUserDetails() entry" );   
+		                     
+		            try {
+		                
+		                // 22nd April 2004.JBL note. This is Jeff's quick fix...
+		                String fullUserid = (String)session.getAttribute( USER_TAG );
+		                this.userid = fullUserid.substring( fullUserid.lastIndexOf('/')+1 );
+		                this.community = fullUserid.substring( fullUserid.indexOf('/')+2, fullUserid.lastIndexOf('/') );
+		                this.group = this.community;
+		             
+		                debug( "userid: " + this.userid );
+		//                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
+		                debug( "community: " + this.community );
+		//                this.group = (String)session.getAttribute( CREDENTIAL_TAG );
+		                debug( "group: " + this.group ); 
+		//                SecurityToken secToken =
+		//                   (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
+		//                this.token = secToken.getToken();
+		                debug( "token: " + this.token ); 
+		                            
+		                Account account = new Account();
+		                account.setName( userid );
+		                account.setCommunity( community );
+		                
+		                Group group = new Group();
+		                group.setName( this.userid );
+		                group.setCommunity( community );
+		                        
+		                this.credentials = new Credentials();
+		                credentials.setAccount( account );
+		                credentials.setGroup( group );
+		                credentials.setSecurityToken( "dummy" );
+		                
+		                this.user = new User();
+		                user.setAccount( this.userid );
+		                user.setGroup( this.group );
+		                user.setToken( this.token );
+		                     
+		            }
+		            finally {
+		                if( TRACE_ENABLED ) trace( "JesActionImpl.retrieveUserDetails() exit" );  
+		            }
+		                
+		        } // end of retrieveUserDetails()        
        
         /**
          * Get the policy delegate.  
