@@ -88,7 +88,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
                             <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
                         </xsl:element>
                         <td>
