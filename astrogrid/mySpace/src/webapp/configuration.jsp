@@ -272,7 +272,7 @@ if (loadedConfig) {
   <button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='Guess the URLs from the webapps installation location (need to press change use the values)';" onmouseout="javascript:window.status='';">Guess URLs</button>
   <BR>
   <button type="submit" name="<%=exportBtn%>" onmouseover="javascript:window.status='Export these values to the named config file.';" onmouseout="javascript:window.status='';">Export</button> to 
-<input:text name="<%=filenameTxt%>" attributesText='size="50"' default="/ASTROGRID_myspacemanagerconfig.export"/>
+<input:text name="<%=filenameTxt%>" attributesText='size="50"' default="../ASTROGRID_myspacemanagerconfig.export"/>
 </input:form>
 <%  } %>
 <p>Run the <a href="TestServlet?suite=org.astrogrid.mySpace.installationTests.DeploymentTests">Installation Tests</a> to see if the configuration is correct.<BR>
