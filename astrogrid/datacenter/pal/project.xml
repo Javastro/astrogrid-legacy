@@ -139,6 +139,31 @@ tomcat.password=secret<br />
       </properties>
     </dependency>
 
+        <!-- community -->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>SNAPSHOT</version>
+                      <properties>
+                         <war.bundle>true</war.bundle>
+                      </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>SNAPSHOT</version>
+                      <properties>
+                         <war.bundle>true</war.bundle>
+                      </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>SNAPSHOT</version>
+                      <properties>
+                         <war.bundle>true</war.bundle>
+                      </properties>
+        </dependency>
    <!-- supporting libraries -->
     <dependency>
       <id>breezetk</id>
@@ -174,6 +199,34 @@ tomcat.password=secret<br />
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
+    </dependency>
+
+    <!-- required for the registry -->
+            <dependency>
+                <artifactId>astrogrid-registry-client</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+        <dependency>
+                <artifactId>astrogrid-registry-common</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+
+        <!-- myspace -->
+       <dependency>
+        <id>astrogrid-mySpace</id>
+        <groupId>org.astrogrid</groupId>
+        <version>SNAPSHOT</version>
+       <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
     </dependency>
 
    <!-- sun's activation jar. we need to include it, as tomcat 5 lacks it -->
