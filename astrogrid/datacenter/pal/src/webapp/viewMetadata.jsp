@@ -58,7 +58,7 @@
             Element tableElement = (Element) tables.item(table);
             String tableName = tableElement.getAttribute("name");
 %>
-            <h2>Table '<%=tableName %>' - <%= DomHelper.getValue(tableElement,"Title") %> </h2>
+            <h3>Table '<%=tableName %>' - <%= DomHelper.getValue(tableElement,"Title") %> </h3>
             <p><%= DomHelper.getValue(tableElement,"Description") %></p>
             <p>
             <table border=1 summary='Column details for table <%=tableName %>' cellpadding='5%'>
