@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.1 2004/03/22 17:23:06 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.2 2004/09/02 12:45:48 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class Query2MySpaceTest extends TestCase {
     */
    public void testSubmit() throws Exception {
       
-      Agsl resultsTarget = new Agsl(myspaceEndpoint.toString(), resultsPath);
+      Agsl resultsTarget = new Agsl(myspaceEndpoint, resultsPath);
       
       String queryId = delegate.submitQuery(
          new ConeQuery(30,30,6),
@@ -91,6 +91,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.2  2004/09/02 12:45:48  mch
+Fixed AGSL creation
+
 Revision 1.1  2004/03/22 17:23:06  mch
 moved from old package name
 
