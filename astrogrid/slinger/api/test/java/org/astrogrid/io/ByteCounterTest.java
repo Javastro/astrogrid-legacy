@@ -1,5 +1,5 @@
 /*
- * $Id: ByteCounterTest.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: ByteCounterTest.java,v 1.2 2005/02/14 21:04:48 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -39,9 +39,9 @@ public class ByteCounterTest extends TestCase
       
       String s = new String(b,0, siz);
       
-      assertEquals("String read is not same as string supplied", s, sampleText);
+      assertEquals("String read is not same as string supplied", sampleText, s);
       
-      assertEquals("Number bytes read not right ", in.getBytesRead(), sampleText.length());
+      assertEquals("Number bytes read not right ", sampleText.length(), in.getBytesRead());
    }
    
 
