@@ -48,7 +48,7 @@
           +-->
     <xsl:template name="parameter">
       <xsl:param name="direction"/>
-        <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="parent">
+        <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">
           <tr>
             <td><xsl:value-of select="@param-name"/></td>
             <td style="color: blue;">
