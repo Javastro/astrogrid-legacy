@@ -13,5 +13,10 @@
       <item name="UI"             href="http://www.astrogrid.org/maven/build/ui/index.html"/>
       <item name="Job Management" href="http://www.astrogrid.org/maven/build/jes/index.html"/>
     </menu>
+    <menu name="Maven Build Logs">
+      <item name="Registry"       href="http://www.astrogrid.org/maven/build/log/maven-build-registry.log"/>
+      <item name="UI"             href="http://www.astrogrid.org/maven/build/log/maven-build-ui.log"/>
+      <item name="Job Management" href="http://www.astrogrid.org/maven/build/log/maven-build-jes.log"/>
+    </menu>
   </body>
 </project>
