@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.30 2004/11/07 16:44:25 mch Exp $
+ * $Id: FailbackConfig.java,v 1.31 2004/11/07 16:48:30 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -384,9 +384,23 @@ public class FailbackConfig extends Config {
       if (properties == null) {
          properties = new Properties();
       }
-      properties.load(url.openStream());
 
-      addLoadedFrom(url.toString());
+      //we load them into a local variable properties instance first, so that
+      //we can override the included config settings with these ones.
+      Properties localProperties = new Properties();
+      localProperties.load(url.openStream());
+
+      addLoadedFrom(url.toString()); //add to string indicating what's happening
+      
+      //look for chain; if this file contains the property 'include.config.filename'
+      //then load that into the global properties
+      if (localProperties.getProperty("include.config.filename") != null) {
+         lookForConfigFile(localProperties.getProperty("include.config.filename"));
+      }
+      
+      //override any existing set propertis with the local ones loaded above
+      properties.putAll(localProperties);
+      
    }
    
    /**
@@ -741,6 +755,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.31  2004/11/07 16:48:30  mch
+Added include so we can maintain all the ivorn shortcuts
+
 Revision 1.30  2004/11/07 16:44:25  mch
 fix to multi-value getProperties for JNDI
 
