@@ -134,6 +134,22 @@ This functionality is provided with the ApplicationController service, of which 
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-common</artifactId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
         <!-- we need the myspace client to compile. fix this later when mySpace packaging is better. -->
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -216,8 +232,8 @@ This functionality is provided with the ApplicationController service, of which 
         <dependency>
             <artifactId>castor</artifactId>
             <groupId>castor</groupId>
-            <version>0.9.5</version>
-            <jar>castor-0.9.5-xml.jar</jar>
+            <version>0.9.5.3</version>
+<!--            <jar>castor-0.9.5-xml.jar</jar> -->
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
