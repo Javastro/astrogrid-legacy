@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.1 2005/03/22 13:03:34 mch Exp $ -->
+<!-- $Id: project.xml,v 1.2 2005/03/22 16:35:16 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -10,7 +10,7 @@
 
     <extend>${basedir}/../maven-base/project.xml</extend>
 
-    <currentVersion>${astrogrid.xml.version}</currentVersion>
+    <currentVersion>${astrogrid.xml.latest}</currentVersion>
 
     <id>astrogrid-xml</id>
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.4 2005/03/22 16:18:48 mch Exp $ -->
+<!-- $Id: project.xml,v 1.5 2005/03/22 16:32:20 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -25,13 +25,13 @@
         <dependency>
             <artifactId>astrogrid-slinger-api</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.slinger.version}</version>
+            <version>${astrogrid.slinger.latest}</version>
         </dependency>
 
         <dependency>
             <artifactId>astrogrid-xml</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.xml.version}</version>
+            <version>${astrogrid.xml.stable}</version>
         </dependency>
 
 
