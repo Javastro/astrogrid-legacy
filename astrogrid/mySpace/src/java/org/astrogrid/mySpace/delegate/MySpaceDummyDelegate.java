@@ -415,7 +415,7 @@ public class MySpaceDummyDelegate implements MySpaceClient
 
       String fullpath = file.getCanonicalPath();
 
-      return "file://localhost:"+fullpath;
+      return "file://localhost:/"+fullpath;
    }
 
    /**
