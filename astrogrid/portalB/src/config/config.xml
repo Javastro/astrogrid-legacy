@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/15 06:42:28 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/15 22:12:39 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.2  2003/09/15 22:12:39  KevinBenson
+    |   added an entry to the config file for a security port used on the community
+    |
     |   Revision 1.1  2003/09/15 06:42:28  KevinBenson
     |   *** empty log message ***
     |
@@ -24,6 +27,7 @@
        <property name="portal.security" value="on" />
        <property name="portal.secure.port" value="8443" />
        <property name="portal.nonsecure.port" value="8080" />       
+       <property name="community.secure.port" value="8443" />
        <property name="astrogrid.admin" value="Kevin Benson" />
        <property name="astrogrid.adminEmail" value="kmb@mssl.ucl.ac.uk" />
    </category>
