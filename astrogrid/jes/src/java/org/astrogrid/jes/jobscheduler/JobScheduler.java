@@ -501,8 +501,6 @@ public class JobScheduler {
            guardSteps = new HashMap() ;
         ArrayList
            candidates = new ArrayList() ;
-        Integer
-           sequenceNumber = null ;
         
         try {
             

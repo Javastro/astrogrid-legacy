@@ -373,7 +373,7 @@ public class JobController {
             community = extractCommunity( listRequestDocument ) ;
             factory = Job.getFactory() ;
             iterator = factory.findUserJobs( userid, community ) ;
-            response = formatListResponse( iterator ) ;
+            response = formatListGoodResponse( userid, community, iterator ) ;
 
         }
         catch( AstroGridException jex ) {
@@ -383,6 +383,7 @@ public class JobController {
                generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_LISTFAILURE
                                                     , this.getComponentName() ) ;
             logger.error( generalMessage.toString() ) ;
+            response = formatListErrorResponse( userid, community, detailMessage ) ;
                               
         }
         finally {
@@ -395,18 +396,121 @@ public class JobController {
     
     
     private String extractUserid( Document doc ) {
-        return null ;
+        if( TRACE_ENABLED ) logger.debug( "extractUserid() entry") ;
+        
+        String
+            name ;
+        
+        try {
+            Element
+               element = doc.getDocumentElement() ;   
+               
+            name = element.getAttribute( JobListRequestDD.JOBLIST_USERID_ATTR ).trim() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "extractUserid() exit") ;
+        }
+        
+        return name ;
+        
     }
     
     
     private String extractCommunity( Document doc ) {
-        return null ;
+        if( TRACE_ENABLED ) logger.debug( "extractCommunity() entry") ;
+        
+       String
+           community ;
+        
+       try {
+           Element
+              element = doc.getDocumentElement() ;   
+               
+           community = element.getAttribute( JobListRequestDD.JOBLIST_COMMUNITY_ATTR ).trim() ;
+       }
+       finally {
+           if( TRACE_ENABLED ) logger.debug( "extractCommunity() exit") ;
+       }
+        
+       return community ;
     }
     
     
-    private String formatListResponse( ListIterator iterator ) {
-        return null ;
-    }
+    private String formatListGoodResponse( String userid, String community, ListIterator iterator ) {
+         if( TRACE_ENABLED ) logger.debug( "formatListGoodResponse() entry") ;
+        
+        String
+            response = null ;
+        // append is here to allow for an empty list (i.e. no jobs)
+        StringBuffer
+            rBuffer = new StringBuffer( 256 ).append(" ") ; 
+        Job
+            job = null ;
+            
+        Object []
+            inserts = new Object[ 5 ] ;
+      
+        try {
+            
+            // Format the list itself ...
+            while( iterator.hasNext() ) {
+                
+                job = (Job)iterator.next() ;
+                inserts[0] = job.getName() ;                 
+                inserts[1] = job.getId() ; //JBL What, no description !!!!!!!!!
+                inserts[2] = job.getStatus() ;           
+                inserts[2] = job.getDate() ;
+                inserts[3] = job.getId() ;
+                
+                rBuffer.append( MessageFormat.format( JobListResponseDD.JOB_TEMPLATE, inserts ) ) ;
+                 
+            } // end while
+            
+            // Format the header details ...
+            inserts = new Object[ 4 ] ;
+            inserts[0] = "" ; // no message                 
+            inserts[1] = userid ;           
+            inserts[2] = community ;
+            inserts[3] = rBuffer.toString() ;
+             
+            response = MessageFormat.format( JobListResponseDD.RESPONSE_TEMPLATE, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "formatListGoodResponse() exit") ;
+        }
+        
+        return response ;
+        
+    } // end of formatListGoodResponse()
+    
+    
+    private String formatListErrorResponse( String userid, String community, AstroGridMessage message ) {
+        if( TRACE_ENABLED ) logger.debug( "formatListErrorResponse() entry") ;
+        
+        String
+            response = null ;
+                   
+        try {
+            
+            Object []
+                inserts = new Object[ 4 ] ;
+            inserts[0] = message.toString() ;                 
+            inserts[1] = userid ;           
+            inserts[2] = community ;
+            inserts[3] = "" ; // no list
+             
+            response = MessageFormat.format( JobListResponseDD.RESPONSE_TEMPLATE, inserts ) ;
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "formatListErrorResponse() exit") ;
+        }
+        
+        return response ;
+        
+    } // end of formatListErrorResponse()
+    
     
     
 	/**

@@ -21,13 +21,14 @@ public final class SubmissionRequestDD {
 	    
 	public static final String
 	    USERID_ELEMENT = "userid",
-	    COMMUNITY_ELEMENT = "community";
+	    COMMUNITY_ELEMENT = "community",
+        DESCRIPTION_ELEMENT = "description" ;
 	    
 	public static final String
 	    JOBSTEP_ELEMENT = "jobstep",
 	    JOBSTEP_NAME_ATTR = "name",
 	    JOBSTEP_STEPNUMBER_ATTR = "stepNumber",
-        JOBSTEP_SEQUENCENUMBER_ATTR = "stepSequenceNumber",
+        JOBSTEP_SEQUENCENUMBER_ATTR = "sequenceNumber",
         JOBSTEP_JOINCONDITION_ATTR = "stepJoinCondition";
         
 	public static final String    

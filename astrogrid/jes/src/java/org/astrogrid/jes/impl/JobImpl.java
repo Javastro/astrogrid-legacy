@@ -61,6 +61,7 @@ public class JobImpl extends Job {
 	   documentXML = null,
 	   jobURN = "",
 	   name = "",
+       description = "",
 	   community = "",
 	   userId = "",
 	   status ;
@@ -110,36 +111,20 @@ public class JobImpl extends Job {
                         // We must be certain these appear in StepNumber order!
 						jobSteps.add( new JobStep( this, element ) ) ;   
 					}					
-					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT) ) {					 	
+					else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {					 	
 						userId = element.getFirstChild().getNodeValue().trim();
 					}
-					else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT) ) {					 	
+					else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {					 	
 					    community = element.getFirstChild().getNodeValue().trim();
 				 	}
+                    else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
+                        description = element.getFirstChild().getNodeValue().trim();
+                    }
 					
 				} // end if
 								
 			} // end for		
-/*
-			nodeList = element.getChildNodes() ;  					   
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-							
-				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {				
-					element = (Element) nodeList.item(i) ;					
-				    if( element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {				    	
-					    userId = element.getNodeValue().trim() ;					    
-				    }
-				    else if( element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {
-					    community = element.getNodeValue().trim() ;					    
-				    }
-				    else if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
-				        jobSteps.add( new JobStep( this, element ) ) ;   
-				    }
-				
-				} // end if
-				
-			} // end for
-*/			
+
 		}
 		catch( Exception ex ) {		
 			AstroGridMessage
@@ -224,6 +209,9 @@ public class JobImpl extends Job {
 
 	public void setName( String name ) { this.name = name; }
 	public String getName() { return (this.name == null ? "" : this.name.trim() ); }
+    
+    public String getDescription() { return this.description ; }
+    public void setDescription( String description ) { this.description = description ; }
 	
 	public Date getDate() { return this.date ; }
 	public void setDate( Date date ) { this.date = date ; }

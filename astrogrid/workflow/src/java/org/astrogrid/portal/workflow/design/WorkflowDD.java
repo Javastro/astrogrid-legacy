@@ -12,7 +12,7 @@
 package org.astrogrid.portal.workflow.design ;
 
 /**
- * The <code>MySpaceManagerResponseDD</code> class represents 
+ * The <code>WorkflowDD</code> class represents 
  *
  * @author  Jeff Lusted
  * @version 1.0 09-Jun-2003
@@ -21,38 +21,55 @@ package org.astrogrid.portal.workflow.design ;
  * @since   AstroGrid 1.2
  */
 public class WorkflowDD {
-	
-	public static final String
-		RESULTS_ELEMENT = "result" ;
-		
-	public static final String
-	    STATUS_ELEMENT_01 = "status" ;
-	    
-	public static final String
-	    STATUS_ELEMENT_02 = "status",
-	    DETAILS_ELEMENT_02 = "details" ;
+    
+    public static final String
+        WORKFLOW_ELEMENT = "workflow",
+        WORKFLOW_NAME_ATTR = "name" ;
+        
+    public static final String
+        USERID_ELEMENT = "userid",
+        COMMUNITY_ELEMENT = "community",
+        DESCRIPTION_ELEMENT = "description",
+        SEQUENCE_ELEMENT = "sequence",
+        FLOW_ELEMENT = "flow" ;
+        
+    public static final String
+        STEP_ELEMENT = "step",    
+        STEP_NAME_ATTR = "name",
+        STEP_STEPNUMBER_ATTR = "stepNumber",
+        STEP_SEQUENCENUMBER_ATTR = "sequenceNumber",
+        STEP_JOINCONDITION_ATTR = "stepJoinCondition";
+        
+    public static final String
+        TOOL_ELEMENT = "tool",
+        RESOURCES_ELEMENT = "resources";
+        
+    public static final String       
+        RESOURCE_ELEMENT = "resource",
+        RESOURCE_TYPE_ATTR = "type" ;
         
     public static final String
         WORKFLOW_TEMPLATE =
-        "<?xml version='1.0' encoding='UTF-8'?>" +        "<workflow name=\"{0}\">" +        "   <userid>{1}</userid>" +        "   <community>{2}</community>" +        "       {3}" +        "</workflow>" ;
+        "<?xml version='1.0' encoding='UTF-8'?>" +        "<workflow name=\"{0}\">" +        "   <userid>{1}</userid>" +        "   <community>{2}</community>" +
+        "   <description>{3}</description>" +                "       {4}" +                      // sequence by default        "</workflow>" ;
         
     public static final String
         SEQUENCE_TEMPLATE =
         "<sequence >" +
-        "   {0}" +
+        "   {0}" +                          // whatever an ActivityContainer contains
         "</sequence>" ;        
 	    
     public static final String
         FLOW_TEMPLATE =
         "<flow >" +
-        "   {0}" +
+        "   {0}" +                          // whatever an ActivityContainer contains
         "</flow>" ;                
         
     public static final String
         STEP_TEMPLATE =
-        "<step name=\"{0}\" joinCondition=\"{1}\">" +
-        "   {2}" +
-        "   {3}" +
+        "<step name=\"{0}\" " +        "      joinCondition=\"{1}\" " +        "      stepNumber=\"{2}\" " +        "      sequenceNumber=\"{3}\">" +
+        "   {4}" +                          // tool
+        "   {5}" +                          // resources
         "</step>" ;
         
     public static final String
@@ -62,11 +79,11 @@ public class WorkflowDD {
         
     public static final String
         RESOURCES_TEMPLATE =
-        "<resources>" +        "   {0}" +        "</resources>" ;
+        "<resources>" +        "   {0}" +                          // one or more resources        "</resources>" ;
           
     public static final String
         RESOURCE_TEMPLATE =
         "   <resource type=\"{0}\">" +
         "   </resource>" ;
 
-}
+} // end of class WorkflowDD

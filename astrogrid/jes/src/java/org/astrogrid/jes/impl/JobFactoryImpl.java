@@ -47,8 +47,8 @@ public class JobFactoryImpl implements JobFactory {
         SUBCOMPONENT_NAME = Configurator.getClassName( JobFactoryImpl.class );        
 	    
 	public static final String
-		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
-												"VALUES ( ?, ?, ?, ?, ?, ?, ? )" ,	                          
+		JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML, DESCRIPTION ) " +
+												"VALUES ( ?, ?, ?, ?, ?, ?, ?, ? )" ,	                          
 	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ''{1}'' WHERE JOBURN = ''{2}''" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = ''{1}''" ,
 	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	
@@ -62,7 +62,8 @@ public class JobFactoryImpl implements JobFactory {
 	    COL_SUBMITTIMESTAMP = 4,
 	    COL_USERID = 5,
 	    COL_COMMUNITY = 6,
-	    COL_JOBXML = 7 ;
+	    COL_JOBXML = 7,
+        COL_DESCRIPTION = 8 ;
 	 
 	public static final String
         //JBL altered for iteration 3 - added SEQUENCENUMBER, JOINCONDITION and ORDER BY
@@ -260,6 +261,7 @@ public class JobFactoryImpl implements JobFactory {
 			pStatement.setString( 5, job.getUserId() ) ; 
 			pStatement.setString( 6, job.getCommunity() ) ;
 			pStatement.setString( 7, job.getDocumentXML() ) ;
+            pStatement.setString( 8, job.getDescription() ) ;
 			
 			pStatement.execute();
 			job.setDirty( false ) ;
@@ -357,6 +359,7 @@ public class JobFactoryImpl implements JobFactory {
 				job.setUserId( rs.getString( COL_USERID ) ) ;
 				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
 				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
+                job.setDescription( rs.getString( COL_DESCRIPTION ) ) ;
 				job.setDirty( false ) ;
 				
 				findJobSteps( job ) ;

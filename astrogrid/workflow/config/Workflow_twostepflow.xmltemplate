@@ -5,6 +5,7 @@
 <workflow name = "TwoParallelJobsteps">
    <userid></userid>
    <community></community>
+   <description>description goes here</description>   
    <!--
       | Every workflow begins with a top level sequence
       -------------------------------------------------- -->
@@ -14,12 +15,12 @@
          | These two steps will be dispatched in this order
          | but they will execute in parallel
          ----------------------------------------------- -->
-         <step name="StepOne" >
+         <step name="StepOne" stepNumber="1" sequenceNumber="1">
             <tool>      
                <nulltool/>
             </tool>
          </step>
-         <step name="StepTwo" >
+         <step name="StepTwo" stepNumber="2" sequenceNumber="1">
             <tool>
                <nulltool/>
             </tool>

@@ -28,16 +28,6 @@
         </xsd:simpleType>
     </xsd:element>
     
-    <!--+
-        | Added Iteration 3
-        |
-        +-->
-    <xsd:element name="description">
-        <xsd:simpleType>
-            <xsd:restriction base="xsd:string"/>
-        </xsd:simpleType>
-    </xsd:element>  
-    
     <xsd:element name="jobstep">
         <xsd:complexType>
             <xsd:sequence>
@@ -50,27 +40,6 @@
                     </xsd:restriction>
                 </xsd:simpleType>
             </xsd:attribute>
-            <xsd:attribute name="stepNumber" use="required">
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:string">
-                        <xsd:whiteSpace value="preserve"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:attribute>            
-            <xsd:attribute name="sequenceNumber" use="required">
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:string">
-                        <xsd:whiteSpace value="preserve"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:attribute>
-            <xsd:attribute name="stepJoinCondition" use="required">
-                <xsd:simpleType>
-                    <xsd:restriction base="xsd:string">
-                        <xsd:whiteSpace value="preserve"/>
-                    </xsd:restriction>
-                </xsd:simpleType>
-            </xsd:attribute>            
         </xsd:complexType>
     </xsd:element>
     
@@ -159,9 +128,27 @@
     
     <xsd:element name="operation">
         <xsd:complexType>
+
             <xsd:sequence>
-                <xsd:group maxOccurs="1" minOccurs="1" ref="opsChoice"/>
+                   
+           		<xsd:element maxOccurs="unbounded" minOccurs="0" ref="operation"/>
+
+ <!--  		
+        		<xsd:sequence>
+            		<xsd:element maxOccurs="unbounded" minOccurs="0" ref="operation"/>
+            		<xsd:element maxOccurs="unbounded" minOccurs="0" ref="field"/>            		
+        		</xsd:sequence>
+        		<xsd:sequence>
+            		<xsd:element maxOccurs="unbounded" minOccurs="0" ref="field"/>
+            		<xsd:element maxOccurs="unbounded" minOccurs="0" ref="operation"/>            		            		
+        		</xsd:sequence>        		
+ -->       		
+       		
+           		<xsd:element maxOccurs="unbounded" minOccurs="0" ref="field"/>
+
+      		
             </xsd:sequence>
+           
             <xsd:attribute name="name" use="required">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
@@ -191,32 +178,5 @@
             </xsd:attribute>
         </xsd:complexType>
     </xsd:element>
-    
-    <xsd:group name="opsSequenceA">
-        <xsd:sequence>
-            <xsd:element maxOccurs="1" minOccurs="1" ref="operation"/>
-        </xsd:sequence>
-    </xsd:group>
-    
-    <xsd:group name="opsSequenceB">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="field"/>
-            <xsd:element maxOccurs="1" minOccurs="1" ref="operation"/>
-        </xsd:sequence>
-    </xsd:group>
-    
-    <xsd:group name="opsSequenceC">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="field"/>
-        </xsd:sequence>
-    </xsd:group>
-    
-    <xsd:group name="opsChoice">
-        <xsd:choice>
-            <xsd:group maxOccurs="1" minOccurs="1" ref="opsSequenceA"/>
-            <xsd:group maxOccurs="1" minOccurs="1" ref="opsSequenceB"/>
-            <xsd:group maxOccurs="1" minOccurs="1" ref="opsSequenceC"/>
-        </xsd:choice>
-    </xsd:group>
     
 </xsd:schema>

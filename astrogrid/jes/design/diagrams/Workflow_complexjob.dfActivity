@@ -1,0 +1,175 @@
+package id3kvledji4ova5dji8j1it;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node41:oiref><oihard>
+@__modelType reference 
+*/
+class reference42 {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node43:oiref><oihard>
+@__modelType reference 
+*/
+class reference44 {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node45:oiref><oihard>
+@__modelType reference 
+*/
+class reference46 {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node47:oiref><oihard>
+@__modelType reference 
+*/
+class reference48 {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node49:oiref><oihard>
+@__modelType reference 
+*/
+class reference50 {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node52:oiref><oihard>
+@__modelType reference 
+*/
+class reference53 {
+}/**
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node54:oiref><oihard>
+@__modelType reference 
+*/
+class reference55 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node47.link51:oiref>=305,206,421,260:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node54.link:oiref>=298,426,298,490:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node41:oiref>=290,490,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node43.link:oiref>=290,153,290,200:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node52.link:oiref>=187,363,300,420:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node45:oiref>=140,260,102,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node52:oiref>=140,340,95,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node49:oiref>=370,260,103,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node43:oiref>=240,130,95,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node49.link:oiref>=421,283,315,420:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node47.link:oiref>=290,206,191,260:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node:oiref>=282,43,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node47:oiref>=260,200,60,6,1:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node.link:oiref>=288,55,288,130:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node45.link:oiref>=187,283,187,340:oigroup>
+<oigroup:<oiref:design#Class#id3kvledji4ova5dji8j1it.node54:oiref>=270,420,60,6,1:oigroup>
+*/
+class __positions {
+}/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node43:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndPoint
+@backgroundColor 0,0,0*/
+class node41 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Jobstep 1 
+*/
+class node43 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node47:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Jobstep 2a 
+*/
+class node45 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node52:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1
+@backgroundColor 0,0,0 
+*/
+class node47 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node45:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node49:oiref><oihard> 
+*/
+class link51 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Jobstep 2b 
+*/
+class node49 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node54:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Jobstep 3 
+*/
+class node52 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node54:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar2
+@backgroundColor 0,0,0 
+*/
+class node54 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3kvledji4ova5dji8j1it.node41:oiref><oihard> 
+*/
+class link {
+}}

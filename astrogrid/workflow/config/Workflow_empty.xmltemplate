@@ -5,6 +5,7 @@
 <workflow name = "EmptySequence">
    <userid></userid>
    <community></community>
+   <description>description goes here</description>
    <sequence>
    </sequence>
 </workflow>

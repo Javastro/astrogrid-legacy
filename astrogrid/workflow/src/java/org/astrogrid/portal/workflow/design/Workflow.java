@@ -18,6 +18,7 @@ import java.util.Collections ;
 import java.text.MessageFormat ;
 
 import org.apache.log4j.Logger ;
+import org.w3c.dom.* ;
 
 import org.astrogrid.i18n.*;
 import org.astrogrid.AstroGridException ;
@@ -270,16 +271,45 @@ public class Workflow extends Sequence {
       * 
       * @see 
       **/        
-    private Workflow( String workflowXML ) {
+    private Workflow( Document document ) {
         super() ;
         if( TRACE_ENABLED ) trace( "Workflow(String) entry") ;
         
         try{
             this.activities.put( this.getKey(), this ) ;
-        
-            //JBL todo: Parse XML string to document...
-        
-            //JBL todo: Fill object model from document... 
+            
+            Element
+               element = document.getDocumentElement() ;   
+               
+            name = element.getAttribute( SubmissionRequestDD.JOB_NAME_ATTR ) ;
+                       
+            NodeList
+               nodeList = element.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
+//                      name = element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
+                        // We must be certain these appear in StepNumber order!
+                        jobSteps.add( new JobStep( this, element ) ) ;   
+                    }                   
+                    else if (element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {                      
+                        userId = element.getFirstChild().getNodeValue().trim();
+                    }
+                    else if (element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {                       
+                        community = element.getFirstChild().getNodeValue().trim();
+                    }
+                    else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
+                        description = element.getFirstChild().getNodeValue().trim();
+                    }
+                    
+                } // end if
+                                
+            } // end for        
+
             
         }
         finally {

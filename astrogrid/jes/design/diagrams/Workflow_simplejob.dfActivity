@@ -1,0 +1,71 @@
+package id1dk8jdji4ova5dji8bfp1;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node37:oiref><oihard>
+@__modelType reference 
+*/
+class reference38 {
+}/**
+@__ref <oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node39:oiref><oihard>
+@__modelType reference 
+*/
+class reference40 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node37:oiref>=320,140,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node39:oiref>=280,70,95,23,1:oigroup>
+<oigroup:<oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node:oiref>=320,10,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node.link:oiref>=326,22,326,70:oigroup>
+<oigroup:<oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node39.link:oiref>=328,93,328,140:oigroup> 
+*/
+class __positions {
+}/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node39:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1 
+*/
+class node37 {
+}/**
+@shapeType Activity
+@__modelType node
+@name Jobstep 1 
+*/
+class node39 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id1dk8jdji4ova5dji8bfp1.node37:oiref><oihard> 
+*/
+class link {
+}}
