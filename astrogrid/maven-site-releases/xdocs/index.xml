@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.14 2004/11/16 17:25:28 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.15 2004/11/16 18:24:37 jdt Exp $ -->
 <document>
 	<properties>
 		<title>Astrogrid Releases and Test Installations</title>
@@ -37,6 +37,9 @@
 			<subsection name="Itn06 Release">
 				<P> The latest stable release is Iteration 06 (0.6.0). </P>
 				<P> An installation of this release is on <a href="http://www.astrogrid.org/TechPreview">/Release</a>.</P>
+                 <P> For a summary of the latest features and fixes in Iteration 6 see the <a 
+                    href="http://www.astrogrid.org/maven/docs/0.6.0/changes-report.html">changes</a> 
+                    report.</P>    
 			</subsection>            
 		</section>
 		<section name="Previous Astrogrid Releases">
