@@ -1,4 +1,5 @@
-<RdbmsMetadata>
+<VODescription xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+<Resource xsi:type="RdbmsMetadata">
    <ProductName>HSQL Database Engine</ProductName>
    <Version>1.7.1</Version>
    <Driver>HSQL Database Engine Driver v1.7.1</Driver>
@@ -34,64 +35,68 @@
       <Function>CIRCLE</Function>
    </Functions>
    <Table name="SAMPLESTARS">
-      <Description>Some stars, consisting of many background, a few extra around pleidies.</Description>
+      <Description>A table of artifically placed stars.  There is a general spread of background
+      stars, and a smiley face around where the pleidies are on the real sky</Description>
+      <!-- schema='' -->
       <Column datatype="int" indexed="false" name="ID">
-         <Description>A unique ID </Description>
-         <UCD>ID</UCD>
-         <UcdPlus>meta.record</UcdPlus>
+         <Description>IDENTITY</Description>
+         <UCD>ID_CATALOG</UCD>
+         <UcdPlus>meta.id</UcdPlus>
       </Column>
       <Column arraysize="*" datatype="char" indexed="false" name="NAME">
-         <Description>Generated Name of the object</Description>
-         <UCD>ID_MAIN</UCD>
-         <UcdPlus>meta.note</UcdPlus>
+         <Description>Made up name</Description>
+         <UCD> </UCD>
+         <UcdPlus> </UcdPlus>
       </Column>
-      <Column datatype="double" indexed="true" name="RA">
-         <Description>Right Ascension of the object</Description>
+      <Column datatype="double" indexed="false" name="RA">
+         <Description>Right Ascension (left-rightness)</Description>
          <Units>deg</Units>
          <UCD>POS_EQ_RA_MAIN</UCD>
-         <UcdPlus>pos.ra.main </UcdPlus>
+         <UcdPlus>pos.eq.ra</UcdPlus>
+         <ErrorColumn> </ErrorColumn>
       </Column>
-      <Column datatype="double" indexed="true" name="DEC">
-         <Description>Declination of the object</Description>
+      <Column datatype="double" indexed="false" name="DEC">
+         <Description>Declination (up-downness)</Description>
          <Units>deg</Units>
-         <UCD>POS_EQ_DEC_MAIN</UCD>
-         <UcdPlus>pos.dec.main </UcdPlus>
+         <UCD>POS_EQ_RA_MAIN</UCD>
+         <UcdPlus>pos.eq.dec</UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
       <Column datatype="double" indexed="false" name="MAG">
-         <Description>Brightness of the object at an unspecified wavelength</Description>
+         <Description>Magnitude at some arbitrary wavelength</Description>
          <Units>mag</Units>
-         <UCD>PHOT.MAG</UCD>
+         <UCD>PHOT_MAG</UCD>
          <UcdPlus> </UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
    </Table>
    <Table name="SAMPLEGALAXIES">
-      <Description>null </Description>
+      <Description>A table of artifically placed galaxies</Description>
       <!-- schema='' -->
       <Column datatype="int" indexed="false" name="ID">
-         <Description>IDENTITY </Description>
-         <UCD>ID</UCD>
-         <UcdPlus>meta.record</UcdPlus>
+         <Description>IDENTITY</Description>
+         <UCD>ID_CATALOG</UCD>
+         <UcdPlus>meta.id</UcdPlus>
       </Column>
-      <Column datatype="double" indexed="true" name="RA">
-         <Description>Right Ascension of the object</Description>
+      <Column datatype="double" indexed="false" name="RA">
+         <Description>Right Ascension (left-rightness)</Description>
          <Units>deg</Units>
          <UCD>POS_EQ_RA_MAIN</UCD>
-         <UcdPlus>pos.ra.main </UcdPlus>
+         <UcdPlus>pos.eq.ra</UcdPlus>
+         <ErrorColumn> </ErrorColumn>
       </Column>
-      <Column datatype="double" indexed="true" name="DEC">
-         <Description>Declination of the object</Description>
+      <Column datatype="double" indexed="false" name="DEC">
+         <Description>Declination (up-downness)</Description>
          <Units>deg</Units>
-         <UCD>POS_EQ_DEC_MAIN</UCD>
-         <UcdPlus>pos.dec.main </UcdPlus>
+         <UCD>POS_EQ_RA_MAIN</UCD>
+         <UcdPlus>pos.eq.dec</UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
       <Column arraysize="*" datatype="char" indexed="false" name="SHAPE">
-         <Description>What shape of galaxy is it</Description>
-         <UcdPlus>src.morph</UcdPlus>
+         <Description>Rough shape (type) of galaxy; eg elliptical, spherical, barred etc </Description>
          <UCD>MORPH</UCD>
+         <UcdPlus>src.morph</UcdPlus>
       </Column>
    </Table>
-</RdbmsMetadata>
-
+</Resource>
+</VODescription>

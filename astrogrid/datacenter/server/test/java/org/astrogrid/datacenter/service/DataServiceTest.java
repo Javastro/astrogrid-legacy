@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.11 2004/09/01 13:19:54 mch Exp $
+/*$Id: DataServiceTest.java,v 1.12 2004/09/06 20:23:00 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,9 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.metadata.FileServer;
-import org.astrogrid.datacenter.metadata.MetadataPlugin;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.FileResourcePlugin;
+import org.astrogrid.datacenter.metadata.VoResourcePlugin;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -56,36 +56,7 @@ public class DataServiceTest extends ServerTestCase {
        query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.5-3.xml"));
     }
 
-    public void testMetatdataPlugin() throws Throwable{
-       
-       //check plugin works
-       MetadataPlugin plugin = MetadataServer.createPlugin();
-       
-       assertNotNull(plugin);
-    }
     
-    public void testMetatdataFileServer() throws Throwable{
-
-        //get non-existent file
-        SimpleConfig.setProperty(FileServer.METADATA_FILE_LOC_KEY, "doesntexist");
-        try {
-           Document metadata = MetadataServer.getMetadata();
-           fail("Should have complained no metadata file");
-        } catch (FileNotFoundException fnfe) {
-            //ignore, supposed to happen
-        }
-        SimpleConfig.setProperty(FileServer.METADATA_FILE_LOC_KEY, null);
-
-        SimpleConfig.setProperty(FileServer.METADATA_URL_LOC_KEY, this.getClass().getResource("v05/metadata.xml").toString());
-        Document metadata = MetadataServer.getMetadata();
-        assertNotNull(metadata);
-        assertIsMetadata(metadata);
-
-         SimpleConfig.setProperty(FileServer.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/service/v05/metadata.xml");
-         SimpleConfig.setProperty(FileServer.METADATA_URL_LOC_KEY, null);
-        FileServer plugin = (FileServer) MetadataServer.createPlugin();
-         assertNotNull(plugin.getMetadata());
-     }
 
     public void testConeSearch() throws Throwable {
        
@@ -156,6 +127,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.12  2004/09/06 20:23:00  mch
+Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
 Revision 1.11  2004/09/01 13:19:54  mch
 Added sample stars metadata
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.25 2004/09/02 08:02:17 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.26 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.StringTokenizer;
-import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
@@ -25,9 +25,6 @@ import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -42,7 +39,7 @@ import org.xml.sax.SAXException;
  *  * @author M Hill
  */
 
-public class JdbcPlugin extends QuerierPlugin  {
+public class JdbcPlugin extends QuerierPlugin implements VoResourcePlugin  {
    
    
    /** Adql -> SQL translator class */
@@ -55,6 +52,10 @@ public class JdbcPlugin extends QuerierPlugin  {
       super(querier);
    }
    
+   /** Used in its resource plugin role */
+   public JdbcPlugin() {
+      super(null);
+   }
 
    /** performs a synchronous call to the database, submitting the given query
     * in sql form and retiirning the results as a SqlResults wrapper arond the JDBC result set.
@@ -201,8 +202,9 @@ public class JdbcPlugin extends QuerierPlugin  {
    }
    
    
-   /** Generates metadata about the database. For SQL servers, this is a list of columns */
-   public Document getMetadata() throws IOException {
+   /** Generates a voResource element about the database.
+    * For SQL servers, this is a list of columns */
+   public String getVoResource() throws IOException {
 
       Connection connection = null;
       StringWriter sw = new StringWriter();
@@ -213,9 +215,9 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          
          /** Alternative XmlWriter form */
-         XmlPrinter xw = new XmlPrinter(sw, true);
+         XmlPrinter xw = new XmlPrinter(sw, false);
 
-         XmlTagPrinter metaTag = xw.newTag("RdbmsMetadata");
+         XmlTagPrinter metaTag = xw.newTag("Resource", "xsi:type='RdbmsMetadata'");
 
          /** Get general info */
          String name = metadata.getDatabaseProductName();
@@ -298,22 +300,13 @@ public class JdbcPlugin extends QuerierPlugin  {
          xw.close();
          
          connection.close();
+         
+         return sw.toString();
       }
       catch (SQLException e) {
          throw new DatabaseAccessException("Could not get metadata: "+e,e);
       }
 
-      //parse results and return them
-      try {
-         log.debug("Generated metadata: "+sw.toString());
-         return DomHelper.newDocument(sw.toString());
-      }
-      catch (ParserConfigurationException e) {
-         throw new DatabaseAccessException("Server not configured correctly (no parser): "+e,e);
-      }
-      catch (SAXException e) {
-         throw new DatabaseAccessException("Server not configured correctly (produces illegal XML) ",e);
-      }
    }
    
    

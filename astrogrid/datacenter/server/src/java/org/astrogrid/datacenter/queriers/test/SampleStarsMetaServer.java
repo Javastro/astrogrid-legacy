@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.1 2004/09/01 13:40:32 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.2 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.net.URL;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.metadata.FileServer;
+import org.astrogrid.datacenter.metadata.FileResourcePlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 
 /**
@@ -22,7 +22,7 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
  * @author M Hill
  */
 
-public class SampleStarsMetaServer extends FileServer
+public class SampleStarsMetaServer extends FileResourcePlugin
 {
    /** Returns a URL to the metadata file */
    public URL getMetadataUrl() throws IOException {

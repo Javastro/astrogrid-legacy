@@ -1,5 +1,5 @@
 /*
- * $Id: FileServer.java,v 1.3 2004/09/02 08:02:17 mch Exp $
+ * $Id: FileResourcePlugin.java,v 1.1 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,17 +18,19 @@ import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Serves the service's metadata from a file on disk.
+ * Serves a metadata resource from a file on disk.
  * <p>
  * @author M Hill
  */
 
-public class FileServer implements MetadataPlugin
+public class FileResourcePlugin implements VoResourcePlugin
 {
-   protected static Log log = LogFactory.getLog(MetadataServer.class);
+   protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
    
    /** Configuration key to where the metadata file is located */
    public static final String METADATA_FILE_LOC_KEY = "datacenter.metadata.filename";
@@ -69,9 +71,9 @@ public class FileServer implements MetadataPlugin
    
    
    /**
-    * Returns the whole metadata file as a DOM document
+    * Returns the resource elements in the metadata file
     */
-   public Document getMetadata() throws IOException
+   public String getVoResource() throws IOException
    {
       URL url = getMetadataUrl();
       InputStream is = url.openStream();
@@ -82,7 +84,30 @@ public class FileServer implements MetadataPlugin
       
       try
       {
-         return DomHelper.newDocument(is);
+         Document diskDoc = DomHelper.newDocument(is);
+         
+         String rootElementName = diskDoc.getDocumentElement().getNodeName();
+         
+         //if the root element is a resource, return that
+         if (diskDoc.getDocumentElement().getNodeName().equals("Resource")) {
+            return DomHelper.ElementToString(diskDoc.getDocumentElement());
+         }
+
+         //if the root element is a vodescription, return all resource elements
+         if (diskDoc.getDocumentElement().getNodeName().equals("VODescription")) {
+            NodeList voResources = diskDoc.getElementsByTagName("Resource");
+            if (voResources.getLength()==0) {
+               throw new MetadataException("No <Resource> elements in metadata file "+url);
+            }
+            StringBuffer s = new StringBuffer();
+            for (int i = 0; i < voResources.getLength(); i++) {
+               s.append(DomHelper.ElementToString((Element) voResources.item(i))+"\n");
+            }
+            return s.toString();
+         }
+   
+         throw new MetadataException("Metadata file "+url+" does not have <Resource> or <VODescription> as root element");
+         
       }
       catch (ParserConfigurationException e)
       {

@@ -1,5 +1,5 @@
 /*
- * $Id: SoapDataServer.java,v 1.4 2004/08/18 18:44:12 mch Exp $
+ * $Id: SoapDataServer.java,v 1.5 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import javax.xml.soap.SOAPFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
@@ -47,7 +47,7 @@ public abstract class SoapDataServer    {
     */
    public String getMetadata() throws SOAPFaultException {
       try  {
-         return DomHelper.DocumentToString(MetadataServer.getMetadata());
+         return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription());
       }
       catch (Throwable e)  {
          throw makeSoapFault("Server", "Could not access metadata", e);
@@ -154,6 +154,9 @@ public abstract class SoapDataServer    {
 
 /*
 $Log: SoapDataServer.java,v $
+Revision 1.5  2004/09/06 20:23:00  mch
+Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
 Revision 1.4  2004/08/18 18:44:12  mch
 Created metadata plugin service and added helper methods
 

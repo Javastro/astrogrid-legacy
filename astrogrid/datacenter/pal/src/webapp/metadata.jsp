@@ -1,7 +1,0 @@
-<%@ page import="java.io.*,
-       org.astrogrid.util.DomHelper,
-       org.astrogrid.datacenter.metadata.MetadataServer"
-   isThreadSafe="false"
-   session="false"
-   contentType="text/xml"
-%><%= DomHelper.DocumentToString(MetadataServer.getMetadata()) %>

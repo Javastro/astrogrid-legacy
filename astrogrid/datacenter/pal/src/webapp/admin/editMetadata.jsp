@@ -27,17 +27,7 @@
 <form action='mergeEditMeta.jsp'>
 <!--- list tables & columns --->
 <%
-   Document metadata = null;
-   try {
-      metadata = MetadataServer.getMetadata();
-   }
-   catch (FileNotFoundException fnfe) {
-      metadata = MetadataInitialiser.generateMetadata();
-      %>
-      <p>Note that a configured metadata file could not be found (<%= fnfe %>)
-      so this is based on the plugin's automatically generated metadata.
-      <%
-   }
+   Document metadata = VoDescriptionServer.getVoDescription();
 
    NodeList tableNodes = metadata.getElementsByTagName("Table");
    for (int table=0;table<tableNodes.getLength();table++) {

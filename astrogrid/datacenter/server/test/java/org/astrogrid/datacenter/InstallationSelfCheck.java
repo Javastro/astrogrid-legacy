@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.23 2004/09/01 12:10:58 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.24 2004/09/06 20:23:00 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
@@ -113,7 +113,7 @@ public class InstallationSelfCheck extends TestCase {
     * Checks metadata is OK
     */
    public void testMetadata() throws IOException {
-      MetadataServer.getVODescription();
+      VoDescriptionServer.getVoDescription();
    }
    
 }
@@ -121,6 +121,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.24  2004/09/06 20:23:00  mch
+ Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
  Revision 1.23  2004/09/01 12:10:58  mch
  added results.toHtml
 

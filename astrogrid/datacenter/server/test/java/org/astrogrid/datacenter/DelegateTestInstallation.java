@@ -1,4 +1,4 @@
-/*$Id: DelegateTestInstallation.java,v 1.2 2004/03/13 16:26:56 mch Exp $
+/*$Id: DelegateTestInstallation.java,v 1.3 2004/09/06 20:23:00 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -93,8 +93,8 @@ public abstract class DelegateTestInstallation extends ServerTestCase {
     
     public void testGetMetatdata() throws Throwable{
         try {
-           MetadataServer server = new MetadataServer();
-           Document metadata = server.getMetadata();
+           VoDescriptionServer server = new VoDescriptionServer();
+           Document metadata = server.getVoDescription();
            assertNotNull(metadata);
            assertIsMetadata(metadata);
         } catch (Throwable t) {
@@ -288,6 +288,9 @@ public abstract class DelegateTestInstallation extends ServerTestCase {
 
 /*
 $Log: DelegateTestInstallation.java,v $
+Revision 1.3  2004/09/06 20:23:00  mch
+Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
 Revision 1.2  2004/03/13 16:26:56  mch
 Changed makeFullSearcher to makeQuerySearcher
 

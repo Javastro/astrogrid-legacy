@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.14 2004/08/25 23:38:34 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.15 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -157,12 +157,12 @@ public abstract class QuerierPlugin  {
    }
 
    /**
-    * All Plugins should implement this method to return some sort of
-    * information about the database (eg column names, etc) that should be
-    * published. The format of this is still to be decided, so at the moment
-    * the default is to retrun null
+    * Plugins should implement this method to return a metadata voResource
+    * element that includes
+    * information about the database (eg column names, etc) that is being
+    * published.
     */
-   public Document getMetadata() throws IOException {
+   public String getVoResource() throws IOException {
       return null;
    }
    
@@ -177,6 +177,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.15  2004/09/06 20:23:00  mch
+ Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
  Revision 1.14  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

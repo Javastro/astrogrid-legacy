@@ -1,4 +1,4 @@
-/*$Id: AxisDataServiceQueryTest.java,v 1.5 2004/09/01 13:19:54 mch Exp $
+/*$Id: AxisDataServiceQueryTest.java,v 1.6 2004/09/06 20:23:00 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.apache.axis.types.URI;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.metadata.FileServer;
+import org.astrogrid.datacenter.metadata.FileResourcePlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
@@ -72,7 +72,7 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
      */
     
     public void testGetMetadata() throws Exception {
-       SimpleConfig.setProperty(FileServer.METADATA_URL_LOC_KEY, ""+this.getClass().getResource("metadata.xml"));
+       SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, ""+this.getClass().getResource("metadata.xml"));
         String result = server.getMetadata(new Object());
         assertNotNull(result);
         Document doc = DomHelper.newDocument(result);
@@ -168,6 +168,9 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataServiceQueryTest.java,v $
+Revision 1.6  2004/09/06 20:23:00  mch
+Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
 Revision 1.5  2004/09/01 13:19:54  mch
 Added sample stars metadata
 

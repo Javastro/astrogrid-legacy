@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.15 2004/03/12 20:11:09 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.16 2004/09/06 20:23:00 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -75,8 +75,8 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     
     public void testGetMetatdata() throws Throwable{
         try {
-           MetadataServer server = new MetadataServer();
-           Document metadata = server.getMetadata();
+           VoDescriptionServer server = new VoDescriptionServer();
+           Document metadata = server.getVoDescription();
            assertNotNull(metadata);
            assertIsMetadata(metadata);
         } catch (Throwable t) {
@@ -99,6 +99,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.16  2004/09/06 20:23:00  mch
+Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
 Revision 1.15  2004/03/12 20:11:09  mch
 It05 Refactor (Client)
 

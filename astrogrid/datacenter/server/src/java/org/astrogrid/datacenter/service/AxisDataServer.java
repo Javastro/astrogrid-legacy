@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.45 2004/08/25 23:38:34 mch Exp $
+ * $Id: AxisDataServer.java,v 1.46 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.returns.TargetIndicator;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
@@ -97,7 +97,7 @@ public abstract class AxisDataServer  {
     */
    public String getMetadata() throws AxisFault {
       try  {
-         return DomHelper.DocumentToString(MetadataServer.getMetadata());
+         return DomHelper.DocumentToString(VoDescriptionServer.getVoDescription());
       }
       catch (Throwable e)  {
          throw makeFault(SERVERFAULT, "Could not access metadata", e);
@@ -171,6 +171,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.46  2004/09/06 20:23:00  mch
+Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
 Revision 1.45  2004/08/25 23:38:34  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

@@ -152,7 +152,7 @@ Parameter names in this request:
    Query query = new Query( (String[]) searchTables.toArray(new String[] {}), criteria, resultsDef);
          
    String adqlXml = "";
-   String comment = "Generated from queryBuilder '"+request.getRequestURL()+"'"; //doesn't give complete URL... :-(
+   String comment = "Generated from queryBuilder '"+request.getRequestURI()+"'"; //doesn't give complete URL... :-(
    if (request.getParameter("MakeAdql074") != null) {
       adqlXml = Query2Adql074.makeAdql(query, comment);
    }

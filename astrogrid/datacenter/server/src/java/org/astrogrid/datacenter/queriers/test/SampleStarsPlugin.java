@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.1 2004/09/01 13:40:32 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.2 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
@@ -16,8 +17,6 @@ import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.sql.JdbcPlugin;
 import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 
 /**
  * This plugin works with a 'fixed' set of values in an HSQL database.  So
@@ -59,6 +58,8 @@ public class SampleStarsPlugin extends JdbcPlugin
       SimpleConfig.setProperty(JdbcConnections.JDBC_URL_KEY, "jdbc:hsqldb:dummydb"); //db on disk
       SimpleConfig.setProperty(JdbcConnections.JDBC_USER_KEY, "sa");
       SimpleConfig.setProperty(JdbcConnections.JDBC_PASSWORD_KEY, "");
+      
+      SimpleConfig.setProperty(VoDescriptionServer.PLUGIN_KEY, SampleStarsMetaServer.class.getName());
     }
    
 
@@ -199,6 +200,9 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.2  2004/09/06 20:23:00  mch
+   Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
    Revision 1.1  2004/09/01 13:40:32  mch
    Renamed dummy to samplestars and added metadata server
 

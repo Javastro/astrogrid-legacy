@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.1 2004/09/01 13:43:07 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.2 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
 import org.astrogrid.datacenter.queriers.test.PrecannedResults;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
@@ -89,16 +89,16 @@ public class SampleStarsPluginTest extends TestCase {
       QuerierPlugin plugin = new SampleStarsPlugin(null);
       
       //generate metadata
-      Document metadata = plugin.getMetadata();
+      String metadata = plugin.getVoResource();
       
       //debug
-      DomHelper.DocumentToStream(metadata, System.out);
+      System.out.print(metadata);
       
    }
    
    /** Tests the served data plugin */
    public void testMetadataServer() throws Exception {
-      Document metadata = MetadataServer.getMetadata();
+      Document metadata = VoDescriptionServer.getVoDescription();
       
       //debug
       DomHelper.DocumentToStream(metadata, System.out);

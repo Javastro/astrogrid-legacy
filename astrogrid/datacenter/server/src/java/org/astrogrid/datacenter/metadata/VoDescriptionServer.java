@@ -1,31 +1,36 @@
 /*
- * $Id: MetadataServer.java,v 1.15 2004/08/30 17:30:36 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.1 2004/09/06 20:23:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.metadata;
-import org.astrogrid.datacenter.fits.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
- * Serves the service's metadata file.  See package documentation.
+ * Serves the service's VoDescrption.
+ * <p>
+ * This file includes a VODescrption element, but at the moment I am assuming that
+ * the VODescription might be wrapped in other by combining the various Resources returned
+ * by the configured MetataPlugins into a VODescription.
+ *
+ * <p>See package documentation.
  * <p>
  * @author M Hill
  */
 
-public class MetadataServer {
-   protected static Log log = LogFactory.getLog(MetadataServer.class);
+public class VoDescriptionServer {
+   protected static Log log = LogFactory.getLog(VoDescriptionServer.class);
    
    public final static String PLUGIN_KEY = "datacenter.metadata.plugin";
    
@@ -34,24 +39,11 @@ public class MetadataServer {
    /**
     * Returns the whole metadata file as a DOM document
     */
-   public synchronized static Document getMetadata() throws IOException {
+   public synchronized static Document getVoDescription() throws IOException {
       if (cache == null) {
-         cache = createPlugin().getMetadata();
+         cache = makeVoDescription();
       }
       return cache;
-   }
-   
-   /**
-    * Returns the metadata; if it can't find the normal stuff, it will return
-    * whatever can be generated
-    */
-   public synchronized static Document getOrGenerateMetadata() throws IOException {
-      try {
-         return getMetadata();
-      }
-      catch (FileNotFoundException fnfe) {
-         return MetadataInitialiser.generateMetadata();
-      }
    }
    
    /** Instantiates the class with the given name.  This is useful for things
@@ -59,13 +51,12 @@ public class MetadataServer {
     * Rather messily throws Throwable because anything might have
     * gone wrong in the constructor.
     */
-   public static MetadataPlugin createPlugin() {
+   public static VoResourcePlugin createPlugin(String pluginClassName) {
       
-      String pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin",org.astrogrid.datacenter.metadata.FileServer.class.getName());
       Object plugin = null;
       
       try {
-         log.debug("Creating MetadataPlugin '"+pluginClassName+"'");
+         log.debug("Creating VoResourcePlugin '"+pluginClassName+"'");
          
          Class qClass = Class.forName(pluginClassName);
          
@@ -91,11 +82,11 @@ public class MetadataServer {
          throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+")",th);
       }
       
-      if (!(plugin instanceof MetadataPlugin)) {
+      if (!(plugin instanceof VoResourcePlugin)) {
          throw new RuntimeException("Bad metadata plugin specified ("+pluginClassName+") - does not implement MetadataPlugin");
       }
       
-      return (MetadataPlugin) plugin;
+      return (VoResourcePlugin) plugin;
       
    }
    
@@ -108,47 +99,72 @@ public class MetadataServer {
    }
    
    /**
-    * Returns the VODescription element of the metadata
-    * If there is more than one, logs an error but does not fail.
-    */
-   public static Element getVODescription() throws IOException {
-      NodeList nodes = getMetadata().getElementsByTagName("VODescription");
+    * Make a VODescription document out of all the voResourcePlugins. The default
+    * is to use the aut*/
+   protected static Document makeVoDescription() throws IOException, MetadataException {
+
+      StringBuffer vod = new StringBuffer();
+      vod.append("<VODescription  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n");
       
-      if (nodes.getLength()>1) {
-         log.error("Server not configured properly: Too many VODescription nodes in metadata - place all VOResource elements in one VODescription");
+      //lookup authority plugin
+      String pluginClassName = SimpleConfig.getSingleton().getString("datacenter.authority.metadata.plugin",null);
+      if (pluginClassName != null) {
+         VoResourcePlugin authorityPlugin = createPlugin(pluginClassName);
+         vod.append(authorityPlugin.getVoResource());
       }
       
-      if (nodes.getLength()==0) {
-         throw new DatacenterException("Server not configured completely; no VODescription element in its metadata");
+      //lookup secondary/main plugin
+      pluginClassName = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin");
+      VoResourcePlugin plugin = createPlugin(pluginClassName);
+      vod.append(plugin.getVoResource());
+
+      //this gives metadata about the CEA access to the datacenter
+      try {
+         //I've wrapped this in a separate try/catch so that problems with CEA
+         //don't stop the initialiser from working.. which is naughty
+         String ceaResource = CEAComponentManagerFactory.getInstance().getMetadataService().returnRegistryEntry();
+      } catch (Throwable th) {
+        log.error(th);
       }
+
+      vod.append("</VODescription>");
+
       
-      return (Element) nodes.item(0);
+      try {
+         return DomHelper.newDocument(vod.toString());
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException("Server not setup properly: "+e,e);
+      }
+      catch (SAXException e) {
+         throw new MetadataException("XML error with Metadata: "+e,e);
+      }
    }
    
    
    
    /** Returns the element representing the given table name in the served
-    * metadata */
+    * metadata *
    public static Element getTableElement(String tableName) throws IOException {
       return getTableElement(tableName, getMetadata().getDocumentElement());
    }
    
-   /** Returns the element for the given table/column in the served metadata */
+   /** Returns the element for the given table/column in the served metadata
    public static Element getColumnElement(String tableName, String columnName) throws IOException {
       return getColumnElement(tableName, columnName, getMetadata().getDocumentElement());
    }
    
-   /** Returns a list of the tables of the served metadata */
+   /** Returns a list of the tables of the served metadata
    public static String[] getTables() throws IOException {
       return getTables(getMetadata().getDocumentElement());
    }
    
-   /** Returns a list of the columns for the given table of the served metadata */
+   /** Returns a list of the columns for the given table of the served metadata
    public static String[] getColumns(String tableName) throws IOException {
       return getColumns(tableName, getMetadata().getDocumentElement());
    }
    
-   /** Returns a list of the tables of the served metadata */
+   /** Returns a list of the tables of the served metadata
    public static String[] getTables(Element metatables) throws IOException {
       NodeList tableNodes = metatables.getElementsByTagName("Table");
       String[] tables = new String[tableNodes.getLength()];
@@ -158,7 +174,7 @@ public class MetadataServer {
       return tables;
    }
    
-   /** Returns a list of the columns for the given table of the served metadata */
+   /** Returns a list of the columns for the given table of the served metadata
    public static String[] getColumns(String tableName, Element metatables) throws IOException {
       
       NodeList colNodes = getTableElement(tableName, metatables).getElementsByTagName("Column");
@@ -171,7 +187,7 @@ public class MetadataServer {
    }
    
    /** Returns the element representing the given table name in the given
-    * metadata */
+    * metadata
    public static Element getTableElement(String tableName, Element metatables) throws IOException {
       NodeList tables = metatables.getElementsByTagName("Table");
       
@@ -184,7 +200,7 @@ public class MetadataServer {
       throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
    }
    
-   /** Returns the element for the given table/column in the served metadata */
+   /** Returns the element for the given table/column in the served metadata
    public static Element getColumnElement(String tableName, String columnName, Element metatables) throws IOException {
       NodeList tables = metatables.getElementsByTagName("Table");
       
@@ -214,7 +230,7 @@ public class MetadataServer {
       
       return colElement;
    }
-   
+    /**/
    
 }
 

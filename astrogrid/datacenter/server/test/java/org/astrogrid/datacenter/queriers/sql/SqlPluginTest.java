@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.14 2004/09/01 13:19:54 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.15 2004/09/06 20:23:00 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
@@ -163,24 +164,43 @@ public class SqlPluginTest extends ServerTestCase {
 
     }
    
-    public void testAutoMetadata() throws Exception {
+    public void testResourceMaker() throws Exception {
        setUp();
        
        QuerierPlugin plugin = new JdbcPlugin(null);
 
        //generate metadata
-       Document metadata = plugin.getMetadata();
+       String metadata = plugin.getVoResource();
        
+       Document metaDoc = DomHelper.newDocument("<VODescription xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+metadata+"\n</VODescription>");
+      
        //debug
-       //DomHelper.DocumentToStream(metadata, System.out);
+       DomHelper.DocumentToStream(metaDoc, System.out);
        
        //check results
-       long numTables = metadata.getElementsByTagName("Table").getLength();
+       long numTables = metaDoc.getElementsByTagName("Table").getLength();
        assertEquals("Should be two tables in metadata", numTables, 2);
        
     }
    
-   /** Test harness - runs tests
+    public void testDescriptionMaker() throws Exception {
+       setUp();
+
+       SimpleConfig.setProperty("datacenter.metadata.plugin", JdbcPlugin.class.getName());
+       
+       //generate metadata
+       Document metaDoc = VoDescriptionServer.getVoDescription();
+       
+       //debug
+       DomHelper.DocumentToStream(metaDoc, System.out);
+       
+       //check results
+       long numTables = metaDoc.getElementsByTagName("Table").getLength();
+       assertEquals("Should be two tables in metadata", numTables, 2);
+       
+    }
+
+    /** Test harness - runs tests
    */
    public static void main(String[] args) {
       junit.textui.TestRunner.run(SqlPluginTest.class);
@@ -198,6 +218,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.15  2004/09/06 20:23:00  mch
+ Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
  Revision 1.14  2004/09/01 13:19:54  mch
  Added sample stars metadata
 

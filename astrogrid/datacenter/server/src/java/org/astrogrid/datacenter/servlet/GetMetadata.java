@@ -1,5 +1,5 @@
 /*
- * $Id: GetMetadata.java,v 1.1 2004/09/02 08:02:17 mch Exp $
+ * $Id: GetMetadata.java,v 1.2 2004/09/06 20:23:00 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -7,7 +7,7 @@ package org.astrogrid.datacenter.servlet;
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.util.DomHelper;
 
 /**
@@ -21,7 +21,7 @@ public class GetMetadata extends StdServlet {
 
       try {
          response.setContentType("text/xml");
-         response.getWriter().write(DomHelper.DocumentToString(MetadataServer.getMetadata()));
+         response.getWriter().write(DomHelper.DocumentToString(VoDescriptionServer.getVoDescription()));
       }
       catch (Throwable th) {
          doError(response, "Geting Metadata",th);

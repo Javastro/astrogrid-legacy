@@ -1,11 +1,13 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.3 2004/07/07 19:32:53 mch Exp $
+   $Id: XmlTagPrinter.java,v 1.4 2004/09/06 20:23:00 mch Exp $
 
    (c) Copyright...
 */
 package org.astrogrid.io.xml;
 
-import java.io.*;
+import java.io.IOException;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Element;
 
 /**
  * Class used to write to an Xml Element.  The element is always created within
@@ -25,7 +27,10 @@ public class XmlTagPrinter
    private String attrs = null;
    private boolean closed = false;
 
-   public XmlTagPrinter(String givenName, String givenAttrs, XmlTagPrinter parentWriter) throws IOException
+   /** Constructor for a new xml tag (ie, a new element). The constructor should
+    * be called using the factory method XmlTagPrinter.newTag(), so that it can
+    * be properly attached to the parent */
+   protected XmlTagPrinter(String givenName, String givenAttrs, XmlTagPrinter parentWriter) throws IOException
    {
       super();
       
@@ -95,6 +100,15 @@ public class XmlTagPrinter
    {
       closeChild();
       this.writeLine("<"+tag+" "+attr+">"+transformSpecials(value)+"</"+tag+">");
+   }
+
+   /**
+    * Convenience routine to write out an element and all its children within this element
+    */
+   public void writeTag(Element e) throws IOException
+   {
+      closeChild();
+      this.writeLine(DomHelper.ElementToString(e));
    }
 
    /**
@@ -188,7 +202,7 @@ public class XmlTagPrinter
 
    
    /** closes the child tag  */
-   protected void closeChild() throws IOException
+   public void closeChild() throws IOException
    {
       if (getChild() != null)
       {
@@ -224,6 +238,9 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
+ Revision 1.4  2004/09/06 20:23:00  mch
+ Replaced metadata generators/servers with plugin mechanism. Added Authority plugin
+
  Revision 1.3  2004/07/07 19:32:53  mch
  Fix for null values
 

@@ -26,18 +26,7 @@ This form helps you construct a query without messing about with SQL or ADQL.
 Just select below what you want to know; if you leave all of the 'Return' checkboxes
 empty you will receive all the columns in your results.
 <%
-   Document metadata = null;
-   try {
-      metadata = MetadataServer.getMetadata();
-   }
-   catch (FileNotFoundException fnfe) {
-      metadata = MetadataInitialiser.generateMetadata();
-      %>
-      <p>Note that a configured metadata file could not be found (<%= fnfe %>)
-      so this is based on automatically generated metadata meant for initial
-      metadata creation.
-      <%
-   }
+   Document metadata = VoDescriptionServer.getVoDescription();
 %>
 <p>
  <form method="get" action='queryBuilder-2-Constraints.jsp'>
