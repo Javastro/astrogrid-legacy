@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.39 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.40 2004/11/24 23:38:29 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>${basedir}/../../maven-base/project.xml</extend>
     <id>auto-integration-tests</id>
-	<currentVersion>${astrogrid.iteration}</currentVersion>
     <name>Tests for Automated Integration.</name>
     <description> This project document defines the tests to execute against
         the installed local astorgrid setup. In a separate project, so that the

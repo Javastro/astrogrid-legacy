@@ -5,7 +5,6 @@
     <artifactId>auto-integration</artifactId>
     <name>Automated Integration Testing</name>
     <groupId>auto-integration</groupId>
-    <currentVersion>${astrogrid.iteration}</currentVersion>
     <description> Automated integration testing. This project will install all
         the astrogrid components (someday) to a local tomcat5 server, and set
         up the required configuration and workfing directories. Then a batch of
