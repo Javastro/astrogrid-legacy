@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2004/04/21 10:43:03 nw Exp $
+/*$Id: AllTests.java,v 1.2 2004/04/21 13:41:34 nw Exp $
  * Created on 20-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,8 @@
  *
 **/
 package org.astrogrid.applications.integration;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Apr-2004
  *
@@ -22,17 +20,19 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.applications.integration");
+        TestSuite suite = new TestSuite("CEA");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(WorkFlowToApplicationTest.class));
+        suite.addTest(new TestSuite(ApplicationsInstallationTest.class));
+        suite.addTest(new TestSuite(DataCenterIntegrationTest.class));
         //$JUnit-END$
         return suite;
     }
 }
-
-
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2004/04/21 13:41:34  nw
+set up applications integration tests
+
 Revision 1.1  2004/04/21 10:43:03  nw
 fixed complaint about lacking interface field
  

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.4 2004/04/21 10:44:05 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.1 2004/04/21 13:41:34 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,10 +8,11 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.workflow.integration;
+package org.astrogrid.applications.integration;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.integration.*;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
@@ -26,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /** 
- * Test integration between workflow and applications.
+ * Test CEA interface of command-line application controller.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
@@ -135,6 +136,9 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.1  2004/04/21 13:41:34  nw
+set up applications integration tests
+
 Revision 1.4  2004/04/21 10:44:05  nw
 tidied to check applicatrions are resolvable.
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.9 2004/04/21 10:57:46 nw Exp $
+/*$Id: AllTests.java,v 1.10 2004/04/21 13:42:59 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.workflow.integration;
+import org.astrogrid.applications.integration.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -22,20 +23,20 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Workflow");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(AbstractTestForIntegration.class));
-        suite.addTest(new TestSuite(ApplicationsInstallationTest.class));
-        suite.addTest(new TestSuite(DataCenterIntegrationTest.class));
         suite.addTest(new TestSuite(JesInstallationTest.class));
+        suite.addTest(new TestSuite(JesSelfTest.class));
         suite.addTest(new TestSuite(MySpaceIntegrationTest.class));
         suite.addTest(new TestSuite(RegistryIntegrationTest.class));
         suite.addTest(new TestSuite(WorkflowEndToEndTest.class));
-        suite.addTest(new TestSuite(JesSelfTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.10  2004/04/21 13:42:59  nw
+set up applications integration tests
+
 Revision 1.9  2004/04/21 10:57:46  nw
 added jes installation test
 
