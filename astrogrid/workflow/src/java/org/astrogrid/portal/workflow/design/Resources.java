@@ -16,6 +16,7 @@ import java.util.List ;
 import java.util.ListIterator ;
 import org.apache.log4j.Logger ;
 import java.text.MessageFormat ;
+import org.w3c.dom.* ;
 
 /**
  * The <code>Resources</code> class represents... 
@@ -43,6 +44,35 @@ public class Resources {
        
     private List
         resourceCollection = Collections.synchronizedList( new ArrayList() ) ;
+        
+    public Resources( Element element ){
+        if( TRACE_ENABLED ) trace( "Resources(Element) entry") ; 
+        
+        try {
+                       
+            NodeList
+               nodeList = element.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
+                        this.resourceCollection.add( new Resource( element ) ) ;   
+                    }   
+                    
+                } // end if
+                                
+            } // end for        
+        
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Resources(Element) exit") ;
+        }
+        
+    }
+    
     
     public String toXMLString() {
         if( TRACE_ENABLED ) trace( "Resources.toXMLString() entry") ;  

@@ -13,6 +13,7 @@ package org.astrogrid.portal.workflow.design;
 
 import org.apache.log4j.Logger ;
 import java.text.MessageFormat ;
+import org.w3c.dom.* ;
 /**
  * The <code>Resource</code> class represents... 
  * <p>
@@ -40,6 +41,24 @@ public class Resource {
     private String
         type = null ;
   
+    public Resource( Element element ) {
+        if( TRACE_ENABLED ) trace( "Resource(Element) entry") ; 
+        
+        try {
+                       
+            this.type = element.getAttribute( WorkflowDD.RESOURCE_TYPE_ATTR ) ;
+             
+            if( type != null ) { 
+                type.trim();
+            }  
+        
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Resource(Element) exit") ;
+        }
+        
+    }
+    
        
     public String toXMLString() {
         if( TRACE_ENABLED ) trace( "Resource.toXMLString() entry") ;  

@@ -15,6 +15,7 @@ import org.apache.log4j.Logger ;
 import org.astrogrid.i18n.*;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
+import org.w3c.dom.* ;
 
 /**
  * The <code>Flow</code> class represents... 
@@ -44,7 +45,14 @@ public class Flow extends ActivityContainer {
         super() ;
         if( TRACE_ENABLED ) trace( "Flow() entry/exit") ; 
     }
+   
+   
+    public Flow( Element element ) {
+        super(element) ;
+        if( TRACE_ENABLED ) trace( "Flow(Element) entry/exit") ; 
+    } 
     
+
     
     public String toXMLString() {
         if( TRACE_ENABLED ) trace( "Flow.toXMLString() entry") ;   

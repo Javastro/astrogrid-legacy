@@ -26,6 +26,8 @@ import org.astrogrid.i18n.*;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 
+import org.w3c.dom.* ;
+
 /**
  * The <code>ActivityContainer</code> class represents... 
  * <p>
@@ -58,13 +60,51 @@ public abstract class ActivityContainer extends Activity {
     }
     
     
+    public ActivityContainer( Element element ) {
+        super() ;
+        if( TRACE_ENABLED ) trace( "ActivityContainer(Element) entry") ; 
+        
+        try {
+                       
+            NodeList
+               nodeList = element.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
+                        this.add( new Sequence( element ) ) ;   
+                    }   
+                    else if( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
+                        this.add( new Flow( element ) ) ;                
+                    }
+                    else if( element.getTagName().equals( WorkflowDD.STEP_ELEMENT ) ) {
+                        this.add( new Step( element ) ) ;                
+                    }
+                    
+                } // end if
+                                
+            } // end for        
+
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "ActivityContainer(Element) exit") ;
+        }
+        
+     }
+    
+    
+    
     public synchronized Sequence createSequence() {
         return this.createSequence( children.size() ) ;
     }
     
     
     public synchronized Sequence createSequence( int index ) {
-        return (Sequence)this.create( index, new Sequence() ) ;
+        return (Sequence)this.add( index, new Sequence() ) ;
     }
     
     
@@ -74,17 +114,17 @@ public abstract class ActivityContainer extends Activity {
     
     
     public synchronized Flow createFlow( int index ) {
-        return (Flow)this.create( index, new Flow() ) ;
+        return (Flow)this.add( index, new Flow() ) ;
     }
     
     
     public synchronized Step createStep( int index ) {
-        return (Step)this.create( index, new Step() ) ;        
+        return (Step)this.add( index, new Step() ) ;        
     }
    
     
-    private Activity create( int index, Activity activity ) {
-        if( TRACE_ENABLED ) trace( "Activity.create() entry") ;
+    public Activity add( int index, Activity activity ) {
+        if( TRACE_ENABLED ) trace( "Activity.add(int,Activity) entry") ;
         
         try {
             children.add( index, activity ) ;
@@ -92,7 +132,24 @@ public abstract class ActivityContainer extends Activity {
             this.getWorkflow().putActivity( activity ) ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Activity.create() exit") ;
+            if( TRACE_ENABLED ) trace( "Activity.add(int,Activity) exit") ;
+        }
+
+        return activity ;    
+                        
+    }
+    
+    
+    public Activity add( Activity activity ) {
+        if( TRACE_ENABLED ) trace( "Activity.add(Activity) entry") ;
+        
+        try {
+            children.add( activity ) ;
+            activity.setParent( this ) ;
+            this.getWorkflow().putActivity( activity ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Activity.add(Activity) exit") ;
         }
 
         return activity ;    

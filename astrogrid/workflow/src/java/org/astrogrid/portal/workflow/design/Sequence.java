@@ -50,8 +50,8 @@ public class Sequence extends ActivityContainer {
     
     
     public Sequence( Element element ) {
-        super() ;
-        if( TRACE_ENABLED ) trace( "Sequence() entry/exit") ; 
+        super( element ) ;
+        if( TRACE_ENABLED ) trace( "Sequence(Element) entry/exit") ; 
     }
     
     

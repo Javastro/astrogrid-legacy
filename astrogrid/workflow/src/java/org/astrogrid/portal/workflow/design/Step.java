@@ -14,6 +14,7 @@ package org.astrogrid.portal.workflow.design;
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.apache.log4j.Logger ;
 import java.text.MessageFormat ;
+import org.w3c.dom.* ;
 
 /**
  * The <code>Step</code> class represents... 
@@ -47,6 +48,9 @@ public class Step extends Activity {
         description = null ;
     private JoinCondition
         joinCondition ;
+    private int
+        stepNumber = 0,
+        sequenceNumber = 0 ;
     private Tool
         tool = NULLTOOL ;
     private Resources
@@ -57,6 +61,71 @@ public class Step extends Activity {
         if( TRACE_ENABLED ) trace( "Step() entry/exit") ;
         joinCondition = JoinCondition.ANY ; 
     }
+    
+ 
+    public Step( Element element ) {
+        super() ;
+        joinCondition = JoinCondition.ANY ; 
+        if( TRACE_ENABLED ) trace( "Step(Element) entry") ; 
+        
+        try {
+            
+            this.name = element.getAttribute( WorkflowDD.STEP_NAME_ATTR ) ;
+            
+            String
+                condition = element.getAttribute( WorkflowDD.STEP_JOINCONDITION_ATTR ) ;
+             
+            if( condition == null ) { 
+                this.joinCondition = JoinCondition.ANY ;    
+            }
+            else {
+                condition.trim() ;
+            }
+            
+            if( condition.equalsIgnoreCase("true") ) {
+                this.joinCondition = JoinCondition.TRUE ;
+            }
+            else if( condition.equalsIgnoreCase("false") ) {
+                this.joinCondition = JoinCondition.FALSE ;
+            }
+            else {
+                this.joinCondition = JoinCondition.ANY ; 
+            }
+            
+            this.stepNumber = new Integer( element.getAttribute( WorkflowDD.STEP_STEPNUMBER_ATTR ).trim() ).intValue() ;
+            this.sequenceNumber = new Integer( element.getAttribute( WorkflowDD.STEP_SEQUENCENUMBER_ATTR ).trim() ).intValue() ;  
+                     
+            NodeList
+               nodeList = element.getChildNodes() ; 
+                           
+            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
+                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+                    
+                    element = (Element) nodeList.item(i) ;
+                
+                    if ( element.getTagName().equals( WorkflowDD.TOOL_ELEMENT ) ) {
+                        this.tool = new NullTool() ;   
+                    }   
+                    else if( element.getTagName().equals( WorkflowDD.RESOURCES_ELEMENT ) ) {
+                        this.resources = new Resources( element ) ;                
+                    }
+                    
+                } // end if
+                                
+            } // end for        
+
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Step(Element) exit") ;
+        }
+        
+    }   
+    
+
+    
+    
+    
 
 	public void setName(String name) {
 		this.name = name;
@@ -148,5 +217,21 @@ public class Step extends Activity {
         System.out.println( logString ) ;
         // logger.debug( logString ) ;
     }
+
+	public void setStepNumber(int stepNumber) {
+		this.stepNumber = stepNumber;
+	}
+
+	public int getStepNumber() {
+		return stepNumber;
+	}
+
+	public void setSequenceNumber(int sequenceNumber) {
+		this.sequenceNumber = sequenceNumber;
+	}
+
+	public int getSequenceNumber() {
+		return sequenceNumber;
+	}
    
 } // end of class Step
