@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.5 2004/09/10 12:13:09 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.6 2004/09/10 21:29:00 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,10 @@ import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.manager.DefaultExecutionController;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
+import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.community.User;
@@ -134,6 +137,10 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         assertTrue(appPath.isDirectory());
         cAppDescr.setExecutionPath(cAppDescr.getExecutionPath().replaceAll(
                 "@TOOLBASEDIR@", appPath.getAbsolutePath()));
+        
+        ExecutionHistory history = new InMemoryExecutionHistory();
+        
+        controller = new DefaultExecutionController(dl,history);
     }
 
     protected BaseApplicationDescriptionLibrary descs;
@@ -339,6 +346,7 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         assertTrue(app instanceof CommandLineApplication);
         // and now run it.
         MockMonitor monitor = new MockMonitor();
+        app.addObserver(controller);
         app.addObserver(monitor);
         app.execute();
         monitor.waitFor(WAIT_SECONDS);
@@ -362,10 +370,15 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
     }
 
     private static final int WAIT_SECONDS = 30;
+
+    private DefaultExecutionController controller;
 }
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.6  2004/09/10 21:29:00  pah
+ * add the controller as an observer
+ *
  * Revision 1.5  2004/09/10 12:13:09  pah
  * allow for p9 to be repeatable
  *
