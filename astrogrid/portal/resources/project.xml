@@ -4,7 +4,7 @@
   <extend>../maven-base/project.xml</extend>
   
   <artifactId>astrogrid-portal-resources</artifactId>
-  <name>AstroGrid Portal Base Project</name>
+  <name>AstroGrid Portal Resources Project</name>
 
   <dependencies>
     <!-- Portal Common -->
