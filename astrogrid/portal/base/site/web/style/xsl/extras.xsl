@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- CVS $Id: extras.xsl,v 1.6 2004/12/03 21:16:00 clq2 Exp $ -->
+<!-- CVS $Id: extras.xsl,v 1.7 2004/12/08 15:43:04 clq2 Exp $ -->
 
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -45,9 +45,11 @@ select="."/></xsl:variable>
 <tr><td align="left" height="20px">
 <span class="agCoolishTitle"><xsl:value-of select="."/></span>
   </td>
+  <!--
   <td width="100" align="right">
   <a style="colour: #000000; padding-right: 20px; font-size: 12pt;" href="/astrogrid-portal/main/mount/login/logout">Log out</a>
   </td>
+  -->
   </tr></table>
 <script language="javascript">
 document.title = '<xsl:value-of select="."/>';
