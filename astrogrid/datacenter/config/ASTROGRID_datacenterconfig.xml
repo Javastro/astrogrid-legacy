@@ -10,13 +10,6 @@
   </category>
   
   
-  <!-- CONFIGURATION CATEGORY =============================================== -->  
-  <category name="CONFIGURATION">
-    <property name="FILE.LOADBALANCING" value="ASTROGRID_LoadBalancingConfig.xml" />
-    <property name="MANAGER.LOADBALANCING" value="org.astrogrid.datacenter.impl.LoadBalancingConfigManager" />    
-  </category>
-  
-
   <!-- MESSAGES CATEGORY =========================================================
    Following are the base name, language code and country code for 
    the properties file that contains all messages for a datacenter 
@@ -48,7 +41,7 @@
  
   <!-- MONITOR CATEGORY ========================================================== -->    
   <category name="MONITOR">
-    <property name="TEMPLATE.REQUEST" value="JobMonitorRequestTemplate.xml" />
+    <property name="TEMPLATE.REQUEST" value="JobMonitorRequest.xmltemplate" />
   </category>
   
   
@@ -83,7 +76,7 @@
     <property name="URL" value="http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager" /> 
     
    <!-- MySpace Request Template -->
-    <property name="TEMPLATE.REQUEST" value="MySpaceManagerRequestTemplate.xml" />  
+    <property name="TEMPLATE.REQUEST" value="MySpaceManagerRequest.xmltemplate" />  
   </category>
 
 
