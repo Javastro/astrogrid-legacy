@@ -1,4 +1,4 @@
-/* $Id: PortalLoginPageTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
+/* $Id: PortalLoginPageTest.java,v 1.2 2004/04/21 14:24:09 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -22,6 +22,12 @@ import org.astrogrid.config.SimpleConfig;
  * @author jdt
  */
 public final class PortalLoginPageTest extends WebTestCase {
+    /**
+     * The location of a registry must be set with the property
+     * org.astrogrid.portal.registry.url, and this registry must
+     * contain the community given below.
+     */
+    private static final String LOCAL_COMMUNITY = "org.astrogrid.localhost";
     /**
      * Configuration holding endpoints of tests
      */
@@ -72,7 +78,7 @@ public final class PortalLoginPageTest extends WebTestCase {
      */
     public void testDivert() {
         beginAt("/");
-        assertTextPresent("Welcome to AstroGrid");
+        assertTitleEquals("Astrogrid Portal");
         assertTextPresent("Log On");
     }
     /**
@@ -195,11 +201,66 @@ public final class PortalLoginPageTest extends WebTestCase {
         assertTextPresent("Log On");
     }
     
+    /**
+     * Test logging in to a real community
+     * Woohoo.
+     * 
+     */
+    public void testRealLogin() {
+        beginAt("/");
+        setFormElement(USER,"frog");
+        setFormElement(COMMUNITY,LOCAL_COMMUNITY);
+        setFormElement(PASS,"qwerty");
+        submit();
+        assertTextPresent("You have successfully logged in.");
+        assertLinkPresentWithText("Log out");
+    }
+    
+    /**
+     * Test failing to log in to a real community - bad password
+     * Woohoo.
+     * 
+     */
+    public void testRealFailedLoginBadPassword() {
+        beginAt("/");
+        setFormElement(USER,"frog");
+        setFormElement(COMMUNITY,LOCAL_COMMUNITY);
+        setFormElement(PASS,"wrong");
+        submit();
+        assertTextPresent("Log On failed.");
+        final String string = "try again";
+        assertLinkPresentWithText(string);
+        clickLinkWithText(string);
+        assertTextPresent("Log On");
+    }
+    /**
+     * Test failing to log in to a real community - bad password
+     * Woohoo.
+     * 
+     */
+    public void testRealFailedLoginBadUser() {
+        beginAt("/");
+        setFormElement(USER,"hylacinerea");
+        setFormElement(COMMUNITY,LOCAL_COMMUNITY);
+        setFormElement(PASS,"qwerty");
+        submit();
+        assertTextPresent("Log On failed.");
+        final String string = "try again";
+        assertLinkPresentWithText(string);
+        clickLinkWithText(string);
+        assertTextPresent("Log On");
+    }
+    
 }
 
 
 /*
  *  $Log: PortalLoginPageTest.java,v $
+ *  Revision 1.2  2004/04/21 14:24:09  jdt
+ *  Added some tests for connecting to a real registry.  
+ *  Changed another test to keep pace with the 
+ *  changes to the portal.
+ *
  *  Revision 1.1  2004/04/15 11:48:09  jdt
  *  Moved to auto-integration
  *
