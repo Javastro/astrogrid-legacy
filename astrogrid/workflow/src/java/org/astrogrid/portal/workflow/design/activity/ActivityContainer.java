@@ -12,10 +12,19 @@
 package org.astrogrid.portal.workflow.design.activity;
 
 import java.util.LinkedList; 
+import java.util.ListIterator ;
 import org.apache.log4j.Logger ;
 import org.astrogrid.portal.workflow.design.Flow;
 import org.astrogrid.portal.workflow.design.Sequence;
 import org.astrogrid.portal.workflow.design.Step;
+
+import org.astrogrid.portal.workflow.design.*;
+
+import java.text.MessageFormat ;
+import org.apache.log4j.Logger ;
+import org.astrogrid.i18n.*;
+import org.astrogrid.portal.workflow.*;
+import org.astrogrid.portal.workflow.design.activity.*;
 
 /**
  * The <code>ActivityContainer</code> class represents... 
@@ -109,9 +118,29 @@ public abstract class ActivityContainer extends Activity {
         this.children.add( index, activity ) ;
     }
     
+    
     public String toXMLString() {
-        return null ;
-    }
+        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;   
+              
+        StringBuffer 
+            childrenBuffer = new StringBuffer( 256 ) ;
+        ListIterator
+            iterator = this.children.listIterator() ;
+                                              
+        try {
+            
+            while ( iterator.hasNext() ) {   
+                childrenBuffer.append( ((Activity) iterator.next()).toXMLString() ) ;
+            }
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
+        }       
+        
+        return childrenBuffer.toString() ;
+          
+    } // end of toXMLString()
     
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;

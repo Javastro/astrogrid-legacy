@@ -47,11 +47,11 @@ public class Flow extends ActivityContainer {
     
     
     public String toXMLString() {
-        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;   
+        if( TRACE_ENABLED ) trace( "Flow.toXMLString() entry") ;   
               
         String 
-           response = WKF.getProperty( WKF.FLOW_CATEGORY
-                                     , WKF.FLOW_XML_TEMPLATE ) ;
+            xmlTemplate = WorkflowDD.FLOW_TEMPLATE,
+            response = null ;
                                      
         try {
             
@@ -62,19 +62,14 @@ public class Flow extends ActivityContainer {
             response = MessageFormat.format( response, inserts ) ;
 
         }
-        catch ( Exception ex ) {
-            AstroGridMessage
-                message = new AstroGridMessage( "" // ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE
-                                              , WKF.getClassName( this.getClass() ) ) ; 
-            logger.error( message.toString(), ex ) ;
-        } 
         finally {
-            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "Flow.toXMLString() exit") ;    
         }       
         
         return response ;   
-         
-    }
+               
+    } // end of toXMLString()
+    
     
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;

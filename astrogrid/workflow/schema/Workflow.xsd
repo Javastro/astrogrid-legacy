@@ -72,7 +72,7 @@
 </xsd:element>
 
 <xsd:element name = "tool">
-   <xsd:complexType mixed = "true">
+   <xsd:complexType>
       <xsd:sequence>
       </xsd:sequence>
    </xsd:complexType>

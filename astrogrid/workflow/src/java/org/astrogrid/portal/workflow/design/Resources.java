@@ -15,6 +15,7 @@ import java.util.Collections ;
 import java.util.List ;
 import java.util.ListIterator ;
 import org.apache.log4j.Logger ;
+import java.text.MessageFormat ;
 
 /**
  * The <code>Resources</code> class represents... 
@@ -41,34 +42,37 @@ public class Resources {
         logger = Logger.getLogger( Resources.class ) ; 
        
     private List
-        names = Collections.synchronizedList( new ArrayList() ) ;
-        
-	public boolean add( String name ) {
-		return this.names.add( name ) ;
-	}
+        resourceCollection = Collections.synchronizedList( new ArrayList() ) ;
     
-    public void add( int index, String name ) {
-        this.names.add( index, name ) ;
-    }
+    public String toXMLString() {
+        if( TRACE_ENABLED ) trace( "Resources.toXMLString() entry") ;  
+          
+       String 
+          response = null ;
+       StringBuffer
+          buffer = new StringBuffer( 64 ) ;
+       ListIterator
+          iterator = this.resourceCollection.listIterator();
+                                     
+       try {
+            
+           while ( iterator.hasNext() ) {   
+               buffer.append( ((Resource) iterator.next()).toXMLString() ) ;
+           }
+            
+           Object []
+              inserts = new Object[1] ;
+           inserts[0] = buffer.toString() ;
+            
+           response = MessageFormat.format( WorkflowDD.RESOURCES_TEMPLATE, inserts ) ;
 
-    public String get( int index ) {
-        return (String)names.get( index ) ;
-    }
-    
-    public boolean isEmpty() {
-        return names.isEmpty() ;
-    }
-    
-    public String remove( int index ) {
-        return (String)names.remove( index ) ;
-    }
-    
-    public String set( int index, String name ) {
-        return (String)names.set( index, name ) ;
-    }
-    
-    public ListIterator listIterator() {
-        return names.listIterator() ;
+       }
+       finally {
+           if( TRACE_ENABLED ) trace( "Step.toXMLString() exit") ;    
+       }       
+        
+       return response ;        
+        
     }
     
     private static void trace( String traceString ) {

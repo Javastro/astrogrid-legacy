@@ -13,6 +13,7 @@ package org.astrogrid.portal.workflow.design;
 
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.apache.log4j.Logger ;
+import java.text.MessageFormat ;
 
 /**
  * The <code>Step</code> class represents... 
@@ -49,8 +50,7 @@ public class Step extends Activity {
     private Tool
         tool = NULLTOOL ;
     private Resources
-        inputResources = null ,
-        outputResources = null ;
+        resources = null ;
     
     public Step() {
         super() ;
@@ -94,25 +94,42 @@ public class Step extends Activity {
 		return tool;
 	}
 
-	public void setInputResources( Resources inputResources ) {
-		this.inputResources = inputResources;
+	public void setResources( Resources resources ) {
+		this.resources = resources;
 	}
+    public Resources getResources() {
+        return this.resources ;
+    }
 
 	public Resources getInputResources() {
-		return inputResources;
+		return resources;
 	}
 
-	public void setOutputResources( Resources outputResources ) {
-		this.outputResources = outputResources;
-	}
-
-	public Resources getOutputResources() {
-		return outputResources;
-	}
-    
     public String toXMLString() {
-        return null ;
-    }
+        if( TRACE_ENABLED ) trace( "Step.toXMLString() entry") ;  
+          
+        String 
+           xmlTemplate = WorkflowDD.STEP_TEMPLATE,
+           response = null ;
+                                     
+        try {
+            
+            Object []
+               inserts = new Object[2] ;
+            inserts[0] = this.getTool().toXMLString() ;
+            inserts[1] = ( (this.resources == null)  ?  " "  :  this.resources.toXMLString() ) ;
+            
+            response = MessageFormat.format( response, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Step.toXMLString() exit") ;    
+        }       
+        
+        return response ;        
+        
+    } // end toXMLString()
+    
 
 	public void setDescription(String description) {
 		this.description = description;

@@ -348,8 +348,8 @@ public class Workflow extends Sequence {
         if( TRACE_ENABLED ) trace( "Workflow.toXMLString() entry") ;  
           
         String 
-           response = WKF.getProperty( WKF.WORKFLOW_CATEGORY
-                                     , WKF.WORKFLOW_XML_TEMPLATE ) ;
+           xmlTemplate = WorkflowDD.WORKFLOW_TEMPLATE,
+           response = null ;
                                      
         try {
             
@@ -363,12 +363,6 @@ public class Workflow extends Sequence {
             response = MessageFormat.format( response, inserts ) ;
 
         }
-        catch ( Exception ex ) {
-            AstroGridMessage
-                message = new AstroGridMessage( "" // ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE
-                                              , WKF.getClassName( this.getClass() ) ) ; 
-            logger.error( message.toString(), ex ) ;
-        } 
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.toXMLString() exit") ;    
         }       

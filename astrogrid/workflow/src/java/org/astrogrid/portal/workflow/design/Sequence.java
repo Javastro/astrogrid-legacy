@@ -49,11 +49,11 @@ public class Sequence extends ActivityContainer {
     
     
     public String toXMLString() {
-        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;   
+        if( TRACE_ENABLED ) trace( "Sequence.toXMLString() entry") ;   
               
         String 
-           response = WKF.getProperty( WKF.SEQUENCE_CATEGORY
-                                     , WKF.SEQUENCE_XML_TEMPLATE ) ;
+            xmlTemplate = WorkflowDD.SEQUENCE_TEMPLATE,
+            response = null ;
                                      
         try {
             
@@ -64,14 +64,8 @@ public class Sequence extends ActivityContainer {
             response = MessageFormat.format( response, inserts ) ;
 
         }
-        catch ( Exception ex ) {
-            AstroGridMessage
-                message = new AstroGridMessage( "" // ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE
-                                              , WKF.getClassName( this.getClass() ) ) ; 
-            logger.error( message.toString(), ex ) ;
-        } 
         finally {
-            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "Sequence.toXMLString() exit") ;    
         }       
         
         return response ;   
