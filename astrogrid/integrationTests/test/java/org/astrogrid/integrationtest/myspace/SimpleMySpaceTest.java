@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.2 2004/03/12 22:27:19 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,6 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 /**
  * Not really an integration test this - just an attempt to see if we can call
  * a few webservices remotely. 
- * @TODO fix broken tests
  * 
  * @author john taylor
  */
@@ -49,7 +48,10 @@ public final class SimpleMySpaceTest extends TestCase {
   public static void main(final String[] args) {
     junit.textui.TestRunner.run(SimpleMySpaceTest.class);
   }
-  private final static Log log = LogFactory.getLog(SimpleMySpaceTest.class);
+  /**
+   * Commons logger
+   */
+  private static final  Log log = LogFactory.getLog(SimpleMySpaceTest.class);
 
   /**
    * Location of MySpace webservice property file
@@ -78,7 +80,7 @@ public final class SimpleMySpaceTest extends TestCase {
    *             on failure to load the config file, or a problem accessing
    *             the web service
    */
-  public final void setUp() throws Exception {
+  public  void setUp() throws Exception {
     log.debug("\n\n\n\nSetting up...");
     mySpaceEndPoint = ConfManager.getInstance().getMySpaceEndPoint();
     assert(mySpaceEndPoint != null);
@@ -94,7 +96,7 @@ public final class SimpleMySpaceTest extends TestCase {
    *             on failure to load the config file, or a problem accessing
    *             the web service
    */
-  public final void tearDown() throws Exception {
+  public  void tearDown() throws Exception {
     log.debug("Tearing down...");
     boolean ok = deleteUser(defaultUser, defaultCommunity, mySpaceEndPoint);
     if (!ok) {
@@ -103,7 +105,11 @@ public final class SimpleMySpaceTest extends TestCase {
   }
 
   /**
-   *  
+   *  Delete the user with the given params
+   * @param userID userId
+   * @param communityID communityID
+   * @param endPoint end point of myspace server
+   * @return returns false if there was an exception thrown by the mySpace
    */
   private boolean deleteUser(
     final String userID,
@@ -126,13 +132,18 @@ public final class SimpleMySpaceTest extends TestCase {
     return true;
   }
   /**
-   *  
+   *  create a user with the given params
+   * @param userID userId
+   * @param communityID communityId
+   * @param endPoint myspace webservice end point
+   * @throws Exception if the mySpace delegate chucks one
+   * @return the value from the delegate method.  Bad mix of exceptions and return codes.
    */
   private boolean createUser(
     final String userID,
     final String communityID,
-    final String endPoint)
-    throws Exception {
+    final String endPoint) throws Exception
+     {
 
     MySpaceClient client = getDelegate(endPoint);
     // Attempt to add, and then delete a user
@@ -151,13 +162,11 @@ public final class SimpleMySpaceTest extends TestCase {
     } catch (Exception e) {
       log.error("Error creating user: " + e);
       throw e;
-    } finally {
-
-    }
+    } 
     return ok;
   }
   /**
-   * @param endPoint
+   * @param endPoint myspace service endpoint
    * @return a mySpace delegate
    * @throws IOException on failure to obtain delegate
    */
@@ -267,14 +276,14 @@ public final class SimpleMySpaceTest extends TestCase {
     try {
       Thread.sleep((int) (maxDelay * Math.random()));
     } catch (InterruptedException e) {
-      ;
+      log.debug(e);//ignore
     }
 
     final MySpaceClient client = getDelegate(mySpaceEndPoint);
     try {
       Thread.sleep((int) (maxDelay * Math.random()));
     } catch (InterruptedException e) {
-      ;
+        log.debug(e);//ignore
     }
 
     boolean ok =
@@ -292,7 +301,7 @@ public final class SimpleMySpaceTest extends TestCase {
     try {
       Thread.sleep((int) (maxDelay * Math.random()));
     } catch (InterruptedException e) {
-      ;
+        log.debug(e);//ignore
     }
 
     String result =
@@ -312,7 +321,7 @@ public final class SimpleMySpaceTest extends TestCase {
     try {
       Thread.sleep((int) (maxDelay * Math.random()));
     } catch (InterruptedException e) {
-      ;
+        log.debug(e);//ignore
     }
 
     String ok2 =
@@ -327,9 +336,11 @@ public final class SimpleMySpaceTest extends TestCase {
   }
   /**
    * Utility method extracting the commonality of the saveDataHolding tests
+   * @param name under which you wish to save the text
+   * @param urlString the url of the data you wish to save
    * @throws Exception who knows
    */
-  private void importURLExportDelete(final String name, final String urlTxt)
+  private void importURLExportDelete(final String name, final String urlString)
     throws Exception {
     MySpaceClient client = getDelegate(mySpaceEndPoint);
     boolean ok =
@@ -338,7 +349,7 @@ public final class SimpleMySpaceTest extends TestCase {
         defaultCommunity,
         defaultCredential,
         name,
-        urlTxt,
+        urlString,
         "any",
         MySpaceClient.OVERWRITE);
     assertTrue(
@@ -351,7 +362,7 @@ public final class SimpleMySpaceTest extends TestCase {
         defaultCredential,
         name);
     assertNotNull("Returned result from getDataHolding was null", result);
-    URL url = new URL(urlTxt);
+    URL url = new URL(urlString);
     InputStream is = url.openStream();
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     StringBuffer textBuff = new StringBuffer();
@@ -360,7 +371,6 @@ public final class SimpleMySpaceTest extends TestCase {
         textBuff.append((char)ch);
     }
     String text = textBuff.toString();
-    //@TODO - readline isn't enough...got toread the lot
 
     log.debug("Attempted to save from'" + url + "' under name " + name);
     log.debug("Received back '" + result + "'");
@@ -386,48 +396,4 @@ public final class SimpleMySpaceTest extends TestCase {
       getFullPath(defaultUser, defaultCommunity, name),
       url);
   }
-  /**
-   * Create a number of threads all trying to read, write and delete and watch the
-   * chaos.  @TODO consider moving the threaded tests to another class
-   * @throws Exception no idea
-   *//*@TODO fixme
-  public void testImportExportDeleteSimpleTextThreaded() throws Exception {
-    final int nTheads = 100;
-    final int maxDelay = 1000; //milliseconds
-    for (int i = 0; i < nTheads; ++i) {
-      final String name =
-        "foo_"
-          + Integer.toString(i)
-          + "_"
-          + Long.toString(System.currentTimeMillis());
-      final String text = "argle" + Integer.toString(i);
-      new Thread() {
-        public void run() {
-          try {
-            threadCount++;
-            importExportDeleteDelayed(
-              getFullPath(defaultUser, defaultCommunity, name),
-              text,
-              maxDelay);
-          } catch (Exception e) {
-            fail("Exception in testImportExportDeleteSimpleTextThreaded" + e);
-          } finally {
-            threadCount--;
-            this.notify();
-            //@TODO blurgh this lot needs fixing- synch methods etc...manana manana
-          }
-        }
-      }
-      .start();
-    }
-    while (threadCount > 0) {
-      try {
-        wait();
-      } catch (InterruptedException ie) {
-        ; //do nothing
-      }
-    }
-  }
-  private int threadCount = 0;
-*/
 }
