@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/ant/resolver.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/16 13:08:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/16 14:11:20 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: resolver.xml,v $
+    |   Revision 1.6  2004/04/16 14:11:20  dave
+    |   Added create account tool.
+    |
     |   Revision 1.5  2004/04/16 13:08:45  dave
     |   Added create account tool.
     |
@@ -258,7 +261,7 @@
         <echo message="Account test ...."/>
         <account.task
             registry="${org.astrogrid.registry.url}"
-            account="${org.astrogrid.community.account}"
+            account="${org.astrogrid.community.ident}/grebo"
             />
     </target>
 
