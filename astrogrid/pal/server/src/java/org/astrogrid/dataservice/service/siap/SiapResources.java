@@ -1,4 +1,4 @@
-/*$Id: SiapResources.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+/*$Id: SiapResources.java,v 1.4 2005/03/23 17:54:15 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ public class SiapResources extends VoResourceSupport implements VoResourcePlugin
    public String getVoResource() throws IOException {
 
       String siap =
-         makeVoResourceElement("ServiceType")+
+         makeVoResourceElement("ServiceType", "")+
          makeCore("/siap")+
       
            //"<Subject>Stars</Subject>"+ //etc
@@ -65,6 +65,9 @@ public class SiapResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: SiapResources.java,v $
+ Revision 1.4  2005/03/23 17:54:15  mch
+ removed rbmsresours
+
  Revision 1.3  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

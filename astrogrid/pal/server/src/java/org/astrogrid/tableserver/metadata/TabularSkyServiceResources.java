@@ -1,5 +1,5 @@
 /*
- * $Id: TabularSkyServiceResources.java,v 1.2 2005/03/10 22:39:17 mch Exp $
+ * $Id: TabularSkyServiceResources.java,v 1.3 2005/03/23 17:54:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,7 +27,7 @@ public class TabularSkyServiceResources extends VoResourceSupport implements VoR
       TableMetaDocInterpreter reader = new TableMetaDocInterpreter();
 
       StringBuffer tabularDb = new StringBuffer(
-         makeVoResourceElement("vor:TabularSkyService")+
+         makeVoResourceElement("vor:TabularSkyService", "")+
          makeCore("SkyService")
       );
       
