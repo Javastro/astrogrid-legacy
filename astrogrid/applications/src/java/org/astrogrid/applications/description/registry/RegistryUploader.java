@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploader.java,v 1.1 2004/03/24 17:13:15 pah Exp $
+ * $Id: RegistryUploader.java,v 1.2 2004/03/29 12:35:12 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,8 +13,11 @@
 
 package org.astrogrid.applications.description.registry;
 
-import org.astrogrid.applications.manager.RegistryQueryLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
+import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
+import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.VODescription;
+import org.astrogrid.registry.client.admin.RegistryAdminService;
 
 /**
  * Writes registry entries to the Registry.
@@ -26,18 +29,21 @@ public class RegistryUploader {
 
    private VODescription registryEntry;
 
-   private RegistryQueryLocator queryLocator;
+   private RegistryAdminLocator adminLocator;
 
    /**
     * 
     */
-   public RegistryUploader(VODescription registryEntry, RegistryQueryLocator queryLocator) {
+   public RegistryUploader(VODescription registryEntry, RegistryAdminLocator adminLocator) {
       this.registryEntry = registryEntry;
-      this.queryLocator = queryLocator;
+      this.adminLocator = adminLocator;
     }
     
-    public void write()
+    public void write() throws ServiceNotFoundException, RegistryException
     {
+       RegistryAdminService delegate = adminLocator.getClient();
+       delegate.update(registryEntry);
+       
     }
 
 }
