@@ -87,7 +87,7 @@ public class QueryParser3_0
 				else if (searchElements.equals("serviceMetadataConcept")){
 					query = "//service[" + query + "]/identity | //service[" + query + "]/serviceMetadataConcept";	
 				}
-
+				
 				xqlResponse = reg.xmlQuery(query);				
 				queryResponse = xqlToXML(xqlResponse, searchElements);						
 			}
@@ -115,23 +115,6 @@ public class QueryParser3_0
 		boolean goodQuery = true;
 		
 		for (int z=0; z < nlSS.getLength(); z++){
-			if (nlSS.item(z).getNodeName().equals("selectionOp")){
-				String selOp = "";
-				if (((Element) nlSS.item(z)).getAttribute("op").equals("AND")){
-					selOp = "$and$";
-				}
-				if (((Element) nlSS.item(z)).getAttribute("op").equals("OR")){
-					selOp = "$or$";
-				}
-				if (((Element) nlSS.item(z)).getAttribute("op").equals("NOT")){
-					selOp = "$not$";
-				}
-				response = response + " "+ selOp + " ";
-
-			}
-			if (nlSS.item(z).getNodeName().equals("selectionSequence")){
-				response = response + xmlToXQL(nlSS.item(z));
-			}
 			if (nlSS.item(z).getNodeName().equals("selection")){
 				se = true;
 				String itemOp = "";
@@ -175,11 +158,29 @@ public class QueryParser3_0
 					response = response + ")";
 				}
 
-			}					
+			}
+			if (nlSS.item(z).getNodeName().equals("selectionOp")){
+				String selOp = "";
+				if (((Element) nlSS.item(z)).getAttribute("op").equals("AND")){
+					selOp = "$and$";
+				}
+				if (((Element) nlSS.item(z)).getAttribute("op").equals("OR")){
+					selOp = "$or$";
+				}
+				if (((Element) nlSS.item(z)).getAttribute("op").equals("NOT")){
+					selOp = "$and$ $not$"; //Added 21/08/03
+				}
+				response = response + " "+ selOp + " ";
+			}
+			if (nlSS.item(z).getNodeName().equals("selectionSequence")){
+				response = response + xmlToXQL(nlSS.item(z));
+			}
+				
+					
 		}
 		response = response + ")";
 		goodQuery = (se && it && itOp && val);
-		goodQuery = true; 
+		goodQuery = true;  //EDIT THIS LATER
 		if (goodQuery == false){
 			response = null;
 			response = ("Selection, item, itemOp, or value is missing.");
@@ -337,7 +338,6 @@ public class QueryParser3_0
 	try {
 		parameterBuilder = parameterFactory.newDocumentBuilder();
 		parameterDoc = parameterBuilder.parse("http://msslxy.mssl.ucl.ac.uk:8080/org/astrogrid/registry/qpParameters.xml");
-		//parameterDoc = parameterBuilder.parse("http://localhost:8080/org/astrogrid/registry/qpParameters.xml");
 	}
 	catch (ParserConfigurationException e) {
 		registrySource = "REGISTRY SOURCE - " + e.toString();
