@@ -1,5 +1,5 @@
 /*
- * $Id: AgslTest.java,v 1.4 2004/04/01 15:21:07 mch Exp $
+ * $Id: AgslTest.java,v 1.5 2004/04/21 10:35:29 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -81,7 +81,20 @@ public class AgslTest extends TestCase
       }
    
    }
+
+   /**
+    * Test equals works for different instances
+    */
+   public void testEquals() throws MalformedURLException {
+      String validAgsl = "astrogrid:store:ftp://grendel12.roe.ac.uk/thing#path/path/file.txt";
       
+      Agsl agsl1 = new Agsl(validAgsl);
+      
+      Agsl agsl2 = new Agsl(validAgsl);
+      
+      assertEquals(agsl1, agsl2);
+   }
+   
    
    /**
     * test deprecated 4.1 vospaceRl
@@ -125,6 +138,9 @@ public class AgslTest extends TestCase
 
 /*
 $Log: AgslTest.java,v $
+Revision 1.5  2004/04/21 10:35:29  mch
+Fixes to ivorn/fragment resolving
+
 Revision 1.4  2004/04/01 15:21:07  mch
 Added toIvorn() method
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolverTest.java,v 1.4 2004/04/21 09:42:02 mch Exp $
+ * $Id: VoSpaceResolverTest.java,v 1.5 2004/04/21 10:35:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,12 +32,14 @@ import org.astrogrid.store.delegate.local.LocalFileStore;
 
 public class VoSpaceResolverTest extends TestCase {
 
-   public static final String ACCOUNT_FILE_IVORN = "ivo://roe.ac.uk/mch#mch@roe.ac.uk/famous/data/file.txt";
+   public static final String ACCOUNT_FILE_KEY = "roe.ac.uk/mch";
 
-   public static final String ACCOUNT_FILE_AGSL = "astrogrid:store:myspace://grendel12.roe.ac.uk/something#mch@roe.ac.uk/famous/data/file.txt";
+   public static final String ACCOUNT_FILE_IVORN = "ivo://"+ACCOUNT_FILE_KEY+"#mch@roe.ac.uk/famous/data/file.txt";
+
+   public static final String ACCOUNT_STOREPOINT_AGSL = "astrogrid:store:myspace:http://grendel12.roe.ac.uk/something";
+   public static final String ACCOUNT_FILE_AGSL = ACCOUNT_STOREPOINT_AGSL+"#mch@roe.ac.uk/famous/data/file.txt";
+   public static final String LOCAL_MS_KEY = "localmyspace/file.txt";
    
-   public static final String LOCAL_MS_I = "ivo://localmyspace/file.txt";
-
                                              
    /** Tests that the shortcut works - ie that the local configuration can be used
     * to override registry/community resolving
@@ -45,19 +47,24 @@ public class VoSpaceResolverTest extends TestCase {
    public void testShortcut() throws IOException, MalformedURLException, URISyntaxException
    {
       // make sure it works
-      SimpleConfig.getSingleton().setProperty(ACCOUNT_FILE_IVORN, ACCOUNT_FILE_AGSL);
+      SimpleConfig.getSingleton().setProperty(ACCOUNT_FILE_KEY, ACCOUNT_STOREPOINT_AGSL);
       
-      VoSpaceResolver resolver = new VoSpaceResolver();
-      Agsl resolvedAgsl = resolver.resolveAgsl(new Ivorn(ACCOUNT_FILE_IVORN));
+      Agsl resolvedAgsl = VoSpaceResolver.resolveAgsl(new Ivorn(ACCOUNT_FILE_IVORN));
       
-      assertEquals(new Agsl(ACCOUNT_FILE_AGSL), resolvedAgsl);
+      assertEquals(resolvedAgsl, new Agsl(ACCOUNT_FILE_AGSL));
       
       // make sure it doesn't
-      SimpleConfig.getSingleton().setProperty(ACCOUNT_FILE_IVORN, "Something wrong");
+      SimpleConfig.getSingleton().setProperty(ACCOUNT_FILE_KEY, "Something wrong");
       
-      resolvedAgsl = resolver.resolveAgsl(new Ivorn(ACCOUNT_FILE_IVORN));
-      
-      assertNotSame(new Agsl(ACCOUNT_FILE_AGSL), resolvedAgsl);
+      try {
+         resolvedAgsl = VoSpaceResolver.resolveAgsl(new Ivorn(ACCOUNT_FILE_IVORN));
+         
+         fail("Should have failed with badly formed Agsl");
+      } catch (MalformedURLException mue) {
+         //ignore - should happen
+      }
+    
+//    assertFalse(new Agsl(ACCOUNT_FILE_AGSL).toString().equals(resolvedAgsl.toString()));
    }
 
    /**
@@ -72,10 +79,9 @@ public class VoSpaceResolverTest extends TestCase {
       store.putString(testContents, filename, false);
 
       //add AGSL file location to configuration
-      SimpleConfig.getSingleton().setProperty(LOCAL_MS_I, "astrogrid:store:file://"+filename);
+      SimpleConfig.getSingleton().setProperty(LOCAL_MS_KEY, "astrogrid:store:file://"+filename);
       
-      VoSpaceResolver resolver = new VoSpaceResolver();
-      Reader reader = new InputStreamReader(resolver.resolveInputStream(Account.ANONYMOUS.toUser(), new Ivorn(LOCAL_MS_I)));
+      Reader reader = new InputStreamReader(VoSpaceResolver.resolveInputStream(Account.ANONYMOUS.toUser(), new Ivorn("ivo://"+LOCAL_MS_KEY)));
       StringWriter writer = new StringWriter();
       Piper.pipe(reader, writer);
 
@@ -83,17 +89,18 @@ public class VoSpaceResolverTest extends TestCase {
       
    }
 
+   /** Tests that the softwired ivorn -> agsl for auto-integration works OK */
    public void testAutoIntMySpaceResolver() throws IOException, URISyntaxException {
       Agsl agsl = VoSpaceResolver.resolveAgsl(new Ivorn("ivo://"+VoSpaceResolver.AUTOINT_MYSPACE_IVOKEY));
       
-      assertSame(agsl.toString(), new Agsl(VoSpaceResolver.AUTOINT_MYSPACE_AGSL).toString());
+      assertEquals(agsl, new Agsl(VoSpaceResolver.AUTOINT_MYSPACE_AGSL));
 
       agsl = VoSpaceResolver.resolveAgsl(new Ivorn("ivo://"+VoSpaceResolver.AUTOINT_MYSPACE_IVOKEY+"#frog/results.txt"));
       
-      assertSame(agsl.toString(), new Agsl(VoSpaceResolver.AUTOINT_MYSPACE_AGSL+"#frog/results.txt").toString());
+      assertTrue(agsl.toString().equals(new Agsl(VoSpaceResolver.AUTOINT_MYSPACE_AGSL+"#frog/results.txt").toString()));
    
    }
-   
+
    public static void main(String[] args)  {
       junit.textui.TestRunner.run(suite());
    }
@@ -106,6 +113,9 @@ public class VoSpaceResolverTest extends TestCase {
 
 /*
  $Log: VoSpaceResolverTest.java,v $
+ Revision 1.5  2004/04/21 10:35:29  mch
+ Fixes to ivorn/fragment resolving
+
  Revision 1.4  2004/04/21 09:42:02  mch
  Added softwired shortcut for auto-integration tests
 

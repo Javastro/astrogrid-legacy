@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.16 2004/04/06 15:39:53 mch Exp $
+ * $Id: Agsl.java,v 1.17 2004/04/21 10:35:50 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -69,6 +69,8 @@ public class Agsl
     */
    public Agsl(String endpoint, String path) throws MalformedURLException
    {
+      if (endpoint == null) throw new IllegalArgumentException("endpoint must not be null");
+      
       if (path == null) {
          init(endpoint);
       }
@@ -257,11 +259,18 @@ public class Agsl
    }
    
    
+   /** Tests that an AGSL is the same as another AGSL */
+   public boolean equals(Object anAgsl) {
+      return toString().equals(anAgsl.toString());
+   }
    
 }
 
 /*
 $Log: Agsl.java,v $
+Revision 1.17  2004/04/21 10:35:50  mch
+Fixes to ivorn/fragment resolving
+
 Revision 1.16  2004/04/06 15:39:53  mch
 Fixes for creating with nul path
 

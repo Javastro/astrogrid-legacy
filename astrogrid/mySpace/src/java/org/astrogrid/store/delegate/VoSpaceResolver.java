@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.17 2004/04/21 09:41:38 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.18 2004/04/21 10:35:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
@@ -23,9 +24,6 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.community.common.exception.CommunityServiceException;
-import org.astrogrid.community.common.exception.CommunityIdentifierException;
-import org.astrogrid.community.common.exception.CommunityPolicyException;
 
 /**
  * A VoSpaceResolver is used to resolve actual locations from IVORNs to any
@@ -60,6 +58,12 @@ public class VoSpaceResolver {
     */
    public static Agsl resolveAgsl(Ivorn ivorn) throws IOException {
 
+      //preserve for after resolving...
+      String fragment = "";
+      if (ivorn.getFragment() != null) {
+         fragment = "#"+ivorn.getFragment();
+      }
+      
       //used for debug/user info - says somethign about where the ivorn has been looked for
       String lookedIn = "";
       
@@ -69,7 +73,7 @@ public class VoSpaceResolver {
       String s = SimpleConfig.getSingleton().getString(ivorn.getPath(), null);
       lookedIn += "Config (key="+ivorn.getPath()+") ";
       if (s != null) {
-         agsl = new Agsl(s, ivorn.getFragment());
+         agsl = new Agsl(s+fragment);
          
       }
 
@@ -77,7 +81,17 @@ public class VoSpaceResolver {
       if (agsl == null) {
          Ivorn homespace = getCommunityMySpace(ivorn);
          lookedIn += ", Community "+community+ "(->"+homespace+")";
-         ivorn = homespace; //now resolve this
+         if (homespace != null)  {
+            ivorn = homespace;
+            /*
+            try {
+               //new Ivorn(homespace.toString()+fragment); //now resolve this
+            }
+            catch (URISyntaxException e) {
+               throw new ResolverException("community resolved "+ivorn+" to myspace "+homespace+", but "+homespace+"#"+fragment+" is not a valid IVORN");
+            }
+             */
+         }
       }
       
       //if not found, see if the registry can resolve it
@@ -89,7 +103,7 @@ public class VoSpaceResolver {
       //if not found, use hardcoded entries for auto-integration tests
       if (agsl == null) {
          if (ivorn.getPath().toString().trim().toLowerCase().equals(AUTOINT_MYSPACE_IVOKEY.toLowerCase())) {
-            agsl = new Agsl(AUTOINT_MYSPACE_AGSL);
+            agsl = new Agsl(AUTOINT_MYSPACE_AGSL+fragment);
          }
       }
       
@@ -142,13 +156,21 @@ public class VoSpaceResolver {
     * Given an IVORN, does a straight resolve using the registry delegate
     */
    private static Agsl resolveUsingRegistry(Ivorn ivorn) throws IOException {
+
+      if (ivorn == null) throw new IllegalArgumentException("Cannot resolve null ivorn");
+      
       if (registry == null) {
          makeRegistryDelegate();
       }
 
       try {
          String endPoint = registry.getEndPointByIdentifier(ivorn.getPath());
-         return new Agsl(endPoint, ivorn.getFragment());
+         if (endPoint == null) {
+            return null;
+         }
+         else {
+            return new Agsl(endPoint, ivorn.getFragment());
+         }
       }
       catch (RegistryException e) {
          throw new ResolverException("Failed to find agsl endpoint for '"+ivorn+"' using "+registry);
@@ -266,7 +288,8 @@ public class VoSpaceResolver {
    }
 
    /**
-    * Returns the ivorn to the myspace for the community specified by the givne ivorn
+    * Returns the ivorn to the myspace for the community specified by the givne ivorn,
+    * preserving that ivorn's fragment
     */
    private static Ivorn getCommunityMySpace(Ivorn communityIvorn) throws IOException {
       //lazy load delegate - also more robust in case it doesn't instantiate
@@ -356,6 +379,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.18  2004/04/21 10:35:50  mch
+Fixes to ivorn/fragment resolving
+
 Revision 1.17  2004/04/21 09:41:38  mch
 Added softwired shortcut for auto-integration tests
 
