@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.7 2003/12/01 20:57:39 mch Exp $
+/*$Id: QuerierManager.java,v 1.8 2003/12/03 12:47:44 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -239,10 +239,10 @@ public class QuerierManager {
          throw new DatabaseAccessException(cce, "Server not configured properly: plugin '"+querierClass+"' is not a Querier subclass");
       }
       catch (InvocationTargetException e) {
-         throw new DatabaseAccessException(e.getCause(), "Could not load Querier '"+querierClass+"'");
+         throw new DatabaseAccessException(e.getCause(), "Querier '"+querierClass+"' constructor failed: "+e);
       }
       catch (Exception e) {
-         throw new DatabaseAccessException(e, "Could not load Querier '"+querierClass+"'");
+         throw new DatabaseAccessException(e, "Could not load Querier '"+querierClass+"': "+e);
       }
    }
    
@@ -280,6 +280,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.8  2003/12/03 12:47:44  mch
+ Better error reportiong for failed Querier instantiations
+
  Revision 1.7  2003/12/01 20:57:39  mch
  Abstracting coarse-grained plugin
 
