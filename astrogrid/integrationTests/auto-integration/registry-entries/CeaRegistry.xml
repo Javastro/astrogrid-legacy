@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vr:VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
+xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID> 
+			<vr:ResourceKey>CallMakeMPEGFitsImages</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>Make MPEG from Fits Images</vr:Title>
+		<vr:ShortName>MakeMPEGFitsImages</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This shell script uses IDL to convert a 3-D array to an MPEG file.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 5</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="InputFile" 
+					type="MySpace_FileReference">
+					<ceapd:DefaultValue>InputFile</ceapd:DefaultValue>
+					<ceapd:UI_Description >
+						Filename of a text file containing the filenames of a 
+						series of FITS images.
+					</ceapd:UI_Description>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="OutputFile" 
+					type="MySpace_FileReference">
+					<ceapd:DefaultValue>OutputFile</ceapd:DefaultValue>
+					<ceapd:UI_Description >
+						Filename of solar movie MPEG file created from fits images.
+					</ceapd:UI_Description>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="Simple"> 
+					<ceab:input>
+						<ceab:pref ref="InputFile"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="OutputFile"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>CallMakeMPEGDataCube</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>Make MPEG from Data Cube</vr:Title>
+		<vr:ShortName>MakeMPEGDataCube</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This shell script uses IDL to convert a 3-D array to an MPEG file.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 6</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="InputFile" 
+					type="MySpace_FileReference">
+					<ceapd:DefaultValue>InputFile</ceapd:DefaultValue>
+					<ceapd:UI_Description >
+						Filename of a binary IDL .sav file containing a
+                                                datacube.					
+					</ceapd:UI_Description>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="ArrayName" 
+					type="string">
+					<ceapd:DefaultValue>ArrayName</ceapd:DefaultValue>
+					<ceapd:UI_Description >
+						Name of the 3-D array inside the datacube restore file
+                                                to save as an MPEG
+					</ceapd:UI_Description>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="OutputFile" 
+					type="MySpace_FileReference">
+					<ceapd:DefaultValue>OutputFile</ceapd:DefaultValue>
+					<ceapd:UI_Description >
+						Filename of solar movie MPEG file created from fits images.
+					</ceapd:UI_Description>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ceab:Interface name="Simple"> 
+					<ceab:input>
+						<ceab:pref ref="InputFile"/>
+						<ceab:pref ref="ArrayName"/>
+					</ceab:input>
+					<ceab:output>
+						<ceab:pref ref="OutputFile"/>
+					</ceab:output>
+				</ceab:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</vr:Resource>
+	<vr:Resource status="active" xsi:type="cea:CeaServiceType" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<vr:Identifier>
+			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+			<vr:ResourceKey>TemplateEntry</vr:ResourceKey>
+		</vr:Identifier>
+		<vr:Title>TemplateEntry</vr:Title>
+		<vr:ShortName>TemplateEntry</vr:ShortName>
+		<vr:Summary>
+			<vr:Description>This is part of the astrogrid CEA.</vr:Description>
+			<vr:ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+		</vr:Summary>
+		<vr:Type>Other</vr:Type>
+		<vr:Curation>
+			<vr:Publisher>
+				<vr:Title>Astrogrid</vr:Title>
+				<vr:Description>blah blab</vr:Description>
+				<vr:ReferenceURL>http://www.astrogrid.org/</vr:ReferenceURL>
+			</vr:Publisher>
+			<vr:Contact>
+				<vr:Name>Paul Harrison</vr:Name>
+				<vr:Email>pah@jb.man.ac.uk</vr:Email>
+			</vr:Contact>
+			<vr:Date role="representative">2004-03-26</vr:Date>
+			<vr:Creator>
+				<vr:Name>Astrogrid</vr:Name>
+				<vr:Logo>??</vr:Logo>
+			</vr:Creator>
+			<vr:Version>Iteration 6</vr:Version>
+		</vr:Curation>
+		<vr:Subject>???</vr:Subject>
+		<vr:Capability>
+			<vr:StandardURL>
+				http://www.astrogrid.org/maven/build/applications/</vr:StandardURL>
+			<vr:StandardID>
+				<vr:AuthorityID>astrogrid.og</vr:AuthorityID>
+				<vr:ResourceKey>CommonExecutionArchitucture</vr:ResourceKey>
+			</vr:StandardID>
+		</vr:Capability>
+		<vr:Interface>
+			<vr:Invocation>WebService</vr:Invocation>
+			<vr:AccessURL use="base">
+				@TOMCATROOT@/astrogrid-applications-@RELEASE@/services/CommonExecutionConnectorService</vr:AccessURL>
+		</vr:Interface>
+		<cea:ManagedApplications>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>CallMakeMPEGFitsImages</vr:ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+				<vr:ResourceKey>CallMakeMPEGDataCube</vr:ResourceKey>
+			</cea:ApplicationReference>
+		</cea:ManagedApplications>
+	</vr:Resource>
+</vr:VODescription>
