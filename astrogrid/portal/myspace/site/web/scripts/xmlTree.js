@@ -42,8 +42,6 @@ function setIVORNAgsl(newIvorn, newAgsl){
 function setParentIVORNAgsl(parent_ivorn, parent_agsl){
   parentDoc = window.opener.document;
   
-  alert(parent_ivorn + " - - " + parent_agsl);
-  
   parent_ivorn = parentDoc.getElementById(parent_ivorn);
   parent_agsl = parentDoc.getElementById(parent_agsl);
   

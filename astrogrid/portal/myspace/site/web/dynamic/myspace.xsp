@@ -14,12 +14,12 @@
       name="myspace-end-point">
     <agp-utils:option
         compare-field="myspace-end-point"
-        value="myspace:http://twmbarlwm.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"
-        label="LOCALHOST"/>
-  
-    <agp-utils:option
-        compare-field="myspace-end-point"
         value="file://astrogrid-myspace-file"
         label="FILESYSTEM"/>
-  </select>
+
+    <agp-utils:option
+        compare-field="myspace-end-point"
+        value="myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"
+        label="LOCALHOST"/>
+    </select>
 </xsp:page>
