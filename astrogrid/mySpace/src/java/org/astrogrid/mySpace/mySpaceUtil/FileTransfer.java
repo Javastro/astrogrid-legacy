@@ -8,8 +8,6 @@ import java.io.File;
 import org.globus.ftp.DataChannelAuthentication;
 import org.globus.ftp.GridFTPClient;
 import org.globus.ftp.Session;
-import org.globus.ftp.exception.ClientException;
-import org.globus.ftp.exception.ServerException;
 import org.globus.io.streams.GlobusFileInputStream;
 import org.globus.io.streams.GlobusFileOutputStream;
 import org.globus.io.streams.GlobusInputStream;
@@ -18,7 +16,6 @@ import org.globus.io.streams.HTTPInputStream;
 import org.globus.util.GlobusURL;
 import org.gridforum.jgss.ExtendedGSSManager;
 import org.ietf.jgss.GSSCredential;
-import org.ietf.jgss.GSSException;
 
 /**
  * A manager for the download of a single data-set from a URL.
@@ -45,56 +42,76 @@ import org.ietf.jgss.GSSException;
  */
 public class FileTransfer {
 
+  /**
+   * The mirrors of the data-source.
+   */
   private String[]    urls;
+
+  /**
+   * The destination for the transferred data.
+   */
   private File        file;
+
+  /**
+   * The mirror that actually gave a valid transfer.
+   */
   private String      urlUsed;
+
+  /**
+   * The error associated with each mirror.
+   * Errors are null where a mirror gave a successful
+   * transfer or where a mirror has not yet been used.
+   */
   private Exception[] errors;
-  private byte[]      buffer = new byte[2048];  // Transfer buffer.
-  private int         bytes  = 0;  // Bytes transferred.
 
 
   /**
    * Creates a FileTransfer with a set of source URLs and
    * one destination file.  The source URLs must be given
    * in order of preference.
+   *
+   * @param sources     the list of mirror URLs from which to transfer.
+   * @param destination the name of the file in which to put the data.
    */
-  public FileTransfer (String[] urls, String file) {
-    this.urls   = urls;
-    this.file   = new File(file);
-    this.errors = new Exception[urls.length];
+  public FileTransfer (final String[] sources, final String destination) {
+    this.urls   = sources;
+    this.file   = new File(destination);
+    this.errors = new Exception[sources.length];
   }
 
 
   /**
    * Creates a FileTransfer with a single source URL and
    * one destination file.
+   *
+   * @param source      the URL from which to transfer.
+   * @param destination the name of the file in which to put the data.
    */
-  public FileTransfer (String url, String file) {
-	String[] urls = {url};
-    this.urls     = urls;
-    this.file     = new File(file);
-    this.errors   = new Exception[1];
+  public FileTransfer (final String source, final String destination) {
+    String[] mirrors = {source};
+    this.urls        = mirrors;
+    this.file        = new File(destination);
+    this.errors      = new Exception[1];
   }
 
 
 
   /**
-   * Executes the transfer using the source(s) and destination
+   * Executes the transfer using the sources and destination
    * set during construction.  The given sources are tried in
    * order until a transfer succeeds or there are no more sources.
    *
    * @throws FileTransferException if all sources fail.
    */
-  public void transfer () throws FileTransferException {
-	boolean success = false;
-	for (int i = 0; i < this.urls.length && !success; i++) {
+  public final void transfer () throws FileTransferException {
+    boolean success = false;
+    for (int i = 0; i < this.urls.length && !success; i++) {
       try {
         this.transfer(this.urls[i], this.file);
         success = true;
-        this.urlUsed = urls[i];
+        this.urlUsed = this.urls[i];
       }
       catch (Exception e) {
-        System.out.println(this.urls[i] + " failed: " + e.getMessage());
         this.errors[i] = e;
       }
     }
@@ -109,9 +126,11 @@ public class FileTransfer {
   /**
    * Returns the URL used in the last transfer.  Returns null if
    * no transfer has been made since construction.
+   *
+   * @return the URL used in the transfer.
    */
-  public String getChosenUrl () {
-	return this.urlUsed;
+  public final String getChosenUrl () {
+    return this.urlUsed;
   }
 
 
@@ -126,27 +145,28 @@ public class FileTransfer {
    * @return array of Exceptions mapped on-for-one to the
    * array of source URLs given at construction.
    */
-  public Exception[] getErrors () {
-	return this.errors;
+  public final Exception[] getErrors () {
+    return this.errors;
   }
 
 
   /**
    * Attempts one transfer, using one source URL.
+   *
+   * @param urlStr the URL for the data source.
+   * @param localFile the destination of the data.
+   *
+   * @throws FileTransferException if the transfer does not complete.
    */
-  private void transfer(String urlStr,File localFile) throws Exception {
+  private void transfer(final String urlStr, final File localFile)
+      throws FileTransferException {
 
     GlobusInputStream  in  = null;
     GlobusOutputStream out = null;
     GlobusURL          url = null;
 
-    System.out.println("FileTransfer.transfer(): copying from " +
-                       urlStr +
-                       " to " +
-                       localFile.getAbsolutePath());
-
-
-    // Catch any exception and rethrow as a FileTransferException.
+    // Catch any exception and rethrow as a FileTransferException
+    // with the original exception as the cause.
     try {
 
       // Parse the source URL.  GlobusURL is used insted of java.net.URL
@@ -154,39 +174,48 @@ public class FileTransfer {
       url = new GlobusURL(urlStr);
 
       // Do the transfer.
-      if( url.getProtocol().equalsIgnoreCase("gsiftp") ||
-          url.getProtocol().equalsIgnoreCase("gridftp")){
-      this.useGridFtp(url, localFile);
+      if (url.getProtocol().equalsIgnoreCase("gsiftp") ||
+          url.getProtocol().equalsIgnoreCase("gridftp")) {
+        this.useGridFtp(url, localFile);
       }
       else if (url.getProtocol().equalsIgnoreCase("http")) {
-	    this.useHttp(url, localFile);
+        this.useHttp(url, localFile);
       }
       else if (url.getProtocol().equalsIgnoreCase("file")) {
         this.useFile(url, localFile);
       }
       else {
-	    System.out.println("FileTransfer.transfer: unknown protocol: " + url.getProtocol());
-	    throw new Exception("Unknown protocol: " + url.getProtocol());
+        System.out.println("FileTransfer.transfer: unknown protocol: "
+                           + url.getProtocol());
+        throw new Exception("Unknown protocol: " + url.getProtocol());
       }
 
     }
     catch (Exception e) {
-      throw new FileTransferException(e.getMessage());
+      String message = "File transfer from "
+                       + urlStr
+                       + " to "
+                       + localFile.getPath()
+                       + " failed.";
+      System.out.println(message + " " + e.getMessage());
+      throw new FileTransferException(message, e);
     }
   }
 
 
   /**
    * Transfers from a GridFTP URL (scheme gsiftp or gridftp).
+   *
+   * @param url       the data source.
+   * @param localFile the data destination.
+   *
+   * @throws Exception if the transfer fails.
    */
-  private void useGridFtp (GlobusURL url, File localFile) throws Exception {
+  private void useGridFtp (final GlobusURL url, final File localFile)
+      throws Exception {
 
-    GlobusInputStream  in        = null;
-    GlobusOutputStream out       = null;
     GSSCredential      cred      = null;
     GridFTPClient      hotClient = null;
-
-    System.out.println("FileTransfer.transfer : using gsiftp");
 
     try {
       hotClient = new GridFTPClient(url.getHost(), url.getPort());
@@ -195,7 +224,7 @@ public class FileTransfer {
       // Create a credential
       System.out.println("FileTransfer.transfer : creaing credentials");
       ExtendedGSSManager manager =
-          (ExtendedGSSManager)ExtendedGSSManager.getInstance();
+          (ExtendedGSSManager) ExtendedGSSManager.getInstance();
       cred = manager.createCredential(GSSCredential.INITIATE_AND_ACCEPT);
 
       // Authenticate to the server
@@ -225,7 +254,6 @@ public class FileTransfer {
       throw e;
     }
     finally {
-      System.out.println("FileTransfer.transfer : closing");
       if (hotClient != null) hotClient.close();
     }
   }
@@ -233,22 +261,26 @@ public class FileTransfer {
 
   /**
    * Attempts a transfer from an HTTP URL.
+   *
+   * @param url       the data source.
+   * @param localFile the data destination.
+   *
+   * @throws Exception if the transfer fails
    */
-  private void useHttp (GlobusURL url, File localFile) throws Exception {
-
-    System.out.println("FileTransfer.transfer : using http");
+  private void useHttp (final GlobusURL url, final File localFile)
+      throws Exception {
 
     HTTPInputStream        in  = null;
     GlobusFileOutputStream out = null;
 
     try {
-      in  = new HTTPInputStream(url.getHost(),url.getPort(),url.getPath());
+      in  = new HTTPInputStream(url.getHost(), url.getPort(), url.getPath());
       out = new GlobusFileOutputStream(localFile.getPath(), false);
-      int size = in.getSize();
-      if (size == -1) {
-        throw new FileTransferException("source size: unknown");
-      }
-      while( (bytes = in.read(buffer)) != -1) {
+      byte[] buffer = new byte[2048];
+      int    bytes;
+      while (true) {
+        bytes = in.read(buffer);
+        if (bytes == -1) break;
         out.write(buffer, 0, bytes);
         out.flush();
       }
@@ -259,14 +291,20 @@ public class FileTransfer {
     finally {
       if (in  != null) in.close();
       if (out != null) out.close();
-	}
+    }
   }
 
 
   /**
    * Attempts a transfer from a file URL.
+   *
+   * @param url       the data source.
+   * @param localFile the data destination.
+   *
+   * @throws Exception if the transfer fails.
    */
-  private void useFile (GlobusURL url, File localFile) throws Exception {
+  private void useFile (final GlobusURL url, final File localFile)
+      throws Exception {
 
     GlobusFileInputStream  in  = null;
     GlobusFileOutputStream out = null;
@@ -275,12 +313,12 @@ public class FileTransfer {
 
     try {
       in  = new GlobusFileInputStream(url.getPath());
-      out = new GlobusFileOutputStream(localFile.getPath(),false);
-      int size = in.getSize();
-      if (size == -1) {
-        throw new FileTransferException("source size: unknown");
-      }
-      while ((bytes = in.read(buffer)) != -1) {
+      out = new GlobusFileOutputStream(localFile.getPath(), false);
+      byte[] buffer = new byte[2048];
+      int    bytes;
+      while (true) {
+        bytes = in.read(buffer);
+        if (bytes == -1) break;
         out.write(buffer, 0, bytes);
         out.flush();
       }
