@@ -2,6 +2,7 @@ package org.astrogrid.mySpace.delegate.mySpaceManager;
 
 import junit.framework.*;
 import java.util.*;
+import java.net.*;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 
@@ -20,6 +21,7 @@ public class MySpaceManagerDelegateTest extends TestCase
 
    private String userId = "acd";
    private String communityId = "roe";
+   private String credentials = "none whatsoever";
 
 /**
  * Standard constructor for JUnit test classes.
@@ -38,7 +40,7 @@ public class MySpaceManagerDelegateTest extends TestCase
 
    protected void setUp()
    {  try
-      {  // System.out.println("mssUrl: " +  mssUrl);
+      {  //System.out.println("mssUrl: " +  mssUrl);
          delegate = new MySpaceManagerDelegate(mssUrl);
 
          Vector allMssUrls = delegate.getAllMssUrl();
@@ -77,25 +79,6 @@ public class MySpaceManagerDelegateTest extends TestCase
       }
    }
 
-/**
- * Standard method which is invoked after running each of the tests.
- * The current delegate object (if there is one) is finalised.
- */
-
-//   protected void tearDown()
-//   {  try
-//      {  if (delegate != null)
-//         {  delegate.finalize();
-//         }
-//      }
-//      catch (Exception tearDownEx)
-//      {  System.out.println("*** Error closing down after test.");
-//         tearDownEx.printStackTrace();
-//      }
-//   }
-
-
-
 // ====================================================================
 
 /**
@@ -104,7 +87,34 @@ public class MySpaceManagerDelegateTest extends TestCase
 
    public void testListDataHoldings()
    {  System.out.println("Testing listDataHoldings...");
-      System.out.println("  ... not implemented.");
+
+      try
+      {  if (delegate != null)
+         {  Vector result = delegate.listDataHoldings(userId,
+              communityId, credentials, "*");
+
+//            System.out.println("  no. elements: " + result.size());
+
+//            Object o = (Object)result.elementAt(0);
+//            String s = o.toString();
+//            System.out.println(s);
+
+            Vector firstResult = (Vector)result.elementAt(0);
+
+            if (fakeWebServices)
+            {  Assert.assertTrue(result.size() == 2);
+               Assert.assertEquals(
+                 (String)firstResult.elementAt(0), "myfile");
+            }
+            else
+            {  Assert.assertTrue(result.size()>0);
+            }
+         }
+      }
+      catch (Exception e)
+      {  System.out.println("*** Error during listDataHoldings.");
+         e.printStackTrace();
+      }
    }
 
 
@@ -118,14 +128,20 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  Vector result = delegate.listDataHoldingsGen(userId,
-              communityId, "*");
+              communityId, credentials, "*");
 
             if (fakeWebServices)
             {  Assert.assertTrue(result.size() == 2);
-               Assert.assertEquals(
-                 (String)result.elementAt(0), "lookupDataHoldersDetails");
-               Assert.assertEquals(
-                 (String)result.elementAt(1), "lookupDataHoldersDetails");
+
+               String resultElement = (String)result.elementAt(0);
+               int pos = resultElement.indexOf
+                 ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+               Assert.assertTrue(pos>-1);
+
+               resultElement = (String)result.elementAt(1);
+               pos = resultElement.indexOf
+                 ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+               Assert.assertTrue(pos>-1);
             }
             else
             {  Assert.assertTrue(result.size()>0);
@@ -148,7 +164,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  String result = delegate.listDataHolding(userId, communityId,
-              "/acd@roe/serv1/file1");
+              credentials, "/acd@roe/serv1/file1");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "lookupDataHolderDetails");
@@ -174,7 +190,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  String result = delegate.copyDataHolding(userId, communityId,
-              "/acd@roe/serv1/file1", "/acd@roe/serv1/file2");
+              credentials, "/acd@roe/serv1/file1", "/acd@roe/serv1/file2");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "copyDataHolder");
@@ -201,8 +217,8 @@ public class MySpaceManagerDelegateTest extends TestCase
       {  if (delegate != null)
          {  String remoteUrl = delegate.getMssUrl();
             boolean result = delegate.copyRemoteDataHolding(userId,
-              communityId, remoteUrl, "/acd@roe/serv1/file1",
-              "/acd@roe/serv1/file3");
+              communityId, credentials, remoteUrl,
+              "/acd@roe/serv1/file1", "/acd@roe/serv1/file3");
 
             if (fakeWebServices)
             {  Assert.assertTrue(result);
@@ -228,7 +244,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  String result = delegate.renameDataHolding(userId, communityId,
-              "/acd@roe/serv1/file1", "/acd@roe/serv1/file2");
+              credentials, "/acd@roe/serv1/file1", "/acd@roe/serv1/file2");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "moveDataHolder");
@@ -254,7 +270,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  String result = delegate.deleteDataHolding(userId, communityId,
-              "/acd@roe/serv1/file1");
+              credentials, "/acd@roe/serv1/file1");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "deleteDataHolder");
@@ -280,8 +296,8 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  boolean result = delegate.saveDataHolding(userId, communityId,
-              "/acd@roe/serv1/file1", "contents required.", "VOtable",
-              "");
+              credentials, "/acd@roe/serv1/file1", "contents required.",
+              "VOtable", "");
 
             if (fakeWebServices)
             {  Assert.assertTrue(result);
@@ -307,7 +323,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  boolean result = delegate.saveDataHoldingURL(userId,
-              communityId, "/acd@roe/serv1/file1",
+              communityId, credentials, "/acd@roe/serv1/file1",
               "http://www.roe.ac.uk/acdwww/index.html", "VOtable", "");
 
             if (fakeWebServices)
@@ -334,7 +350,7 @@ public class MySpaceManagerDelegateTest extends TestCase
      try
       {  if (delegate != null)
          {  String result = delegate.getDataHolding(userId, communityId,
-              "/acd@roe/serv1/file1");
+              credentials, "/acd@roe/serv1/file1");
 
 //            System.out.println(result);
 
@@ -354,6 +370,38 @@ public class MySpaceManagerDelegateTest extends TestCase
    }
 
 /**
+ * Test the <code>getDataHoldingUrl</code> method.
+ */
+
+   public void testGetDataHoldingUrl()
+   {  System.out.println("Testing getDataHoldingUrl...");
+
+     try
+      {  if (delegate != null)
+         {  String result = delegate.getDataHoldingUrl(userId, communityId,
+              credentials, "/acd@roe/serv1/file1");
+
+//            System.out.println("getDataHoldingUrl: " + result);
+
+            boolean isUrl = true;
+
+            try
+            {  URL url = new URL(result);
+            }
+            catch (Exception eurl)
+            {  isUrl = false;
+            }
+
+            Assert.assertTrue(isUrl);
+         }
+      }
+      catch (Exception e)
+      {  System.out.println("*** Error during getDataHoldingUrl.");
+         e.printStackTrace();
+      }
+   }
+
+/**
  * Test the <code>extendLease(</code> method.
  */
 
@@ -363,7 +411,7 @@ public class MySpaceManagerDelegateTest extends TestCase
      try
       {  if (delegate != null)
          {  String result = delegate.extendLease(userId, communityId,
-              "/acd@roe/serv1/file1", 15);
+              credentials, "/acd@roe/serv1/file1", 15);
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "extendLease");
@@ -388,10 +436,8 @@ public class MySpaceManagerDelegateTest extends TestCase
 
       try
       {  if (delegate != null)
-         {  String result = delegate.publish("jobdetails");
-
-//            String result = delegate.publish(userId, communityId,
-//              "/acd@roe/serv1/file1");
+         {  String result = delegate.publish(userId, communityId,
+              credentials, "/acd@roe/serv1/file1");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "publish");
@@ -417,7 +463,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  String result = delegate.createContainer(userId, communityId,
-              "/acd@roe/serv1/newcontainer");
+              credentials, "/acd@roe/serv1/newcontainer");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "createContainer");
@@ -449,7 +495,7 @@ public class MySpaceManagerDelegateTest extends TestCase
             servers.add("serv4");
 
             boolean result = delegate.createUser("helen", "troy",
-              servers);
+              credentials, servers);
 
             if (fakeWebServices)
             {  Assert.assertTrue(result);
@@ -474,7 +520,8 @@ public class MySpaceManagerDelegateTest extends TestCase
 
       try
       {  if (delegate != null)
-         {  boolean result = delegate.deleteUser("helen", "troy");
+         {  boolean result = delegate.deleteUser("helen", "troy",
+              credentials);
 
             if (fakeWebServices)
             {  Assert.assertTrue(result);
@@ -500,7 +547,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       try
       {  if (delegate != null)
          {  String result = delegate.changeOwner(userId, communityId,
-              "/acd@roe/serv1/file1", "helen");
+              credentials, "/acd@roe/serv1/file1", "helen");
 
             if (fakeWebServices)
             {  Assert.assertEquals(result, "changeOwner");
@@ -516,31 +563,7 @@ public class MySpaceManagerDelegateTest extends TestCase
       }
    }
 
-
-//   public void testListDataHoldings()
-//   {  MySpaceManagerDelegate delegate = new MySpaceManagerDelegate();
-//      Vector allMssUrls = delegate.getAllMssUrl();
-//      String mssUrl = null;
-//      if (allMssUrls.size() > 0)
-//      {  mssUrl = (String)allMssUrls.elementAt(0);
-//         delegate.setMssUrl( mssUrl);
-
-//         Vector result = delegate.listDataHoldings(userId, communityId,
-//           "*");
-
-//         if (fakeWebServices)
-//         {  Assert.assertTrue(result.size()>0);
-//            System.out.println("running with fakes.");
-//         }
-//         else
-//         {  Assert.assertTrue(result.size()>0);
-//         }
-//      }
-//      else
-//      {  System.out.println("*** Error setting up delegate.");
-//      }
-//   }
-
+// =======================================================================
 
 /**
  * Main method to run the class.

@@ -10,7 +10,7 @@ import java.util.Vector;
 
 public class MySpaceManagerSoapBindingStub
 {
-    public Vector allMssUrls() throws java.rmi.RemoteException
+    public Vector getServerURLs() throws java.rmi.RemoteException
     {  Vector vec = new Vector();
        vec.add("http://www.roe.ac.uk/acdwww/index.html");
        vec.add("http://www.roe.ac.uk/acdwww/frequent.html");
@@ -19,14 +19,36 @@ public class MySpaceManagerSoapBindingStub
 
     public java.lang.String lookupDataHolderDetails
       (java.lang.String jobDetails) throws java.rmi.RemoteException
-    {
-       return "lookupDataHolderDetails";
+    {  return "lookupDataHolderDetails";
+
     }
 
     public java.lang.String lookupDataHoldersDetails
       (java.lang.String jobDetails) throws java.rmi.RemoteException
-    {
-       return "lookupDataHoldersDetails";
+    {  String xmlFragment =
+         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+         "<results>\n" +
+         "    <status>\n" +
+         "        <status>{0}</status>\n" +
+         "        <details>{1}</details>\n" +
+         "        <currentDate>{2}</currentDate>\n" +
+         "    </status>\n" +
+         "    <dataItemRecords>\n" +
+         "      <dataItemRecord>\n" +
+         "        <dataItemName>/acd/serv1/conta/myfile</dataItemName>\n" +
+         "        <dataItemID>{4}</dataItemID>\n" +
+         "        <ownerID>{5}</ownerID>\n" +
+         "        <creationDate>{6}</creationDate>\n" +
+         "        <expiryDate>{7}</expiryDate>\n" +
+         "        <size>{8}</size>\n" +
+         "        <type>{9}</type>\n" +
+         "        <permissionsMask>{10}</permissionsMask>\n" +
+         "        <dataHolderURI>{11}</dataHolderURI>\n" +
+         "      </dataItemRecord>\n" +
+         "    </dataItemRecords>\n" +
+         "</results>\n";
+
+       return xmlFragment;
     }
 
     public java.lang.String copyDataHolder(java.lang.String jobDetails) 
@@ -37,8 +59,31 @@ public class MySpaceManagerSoapBindingStub
 
     public java.lang.String exportDataHolder(java.lang.String jobDetails) 
       throws java.rmi.RemoteException
-    {
-       return "http://www.roe.ac.uk/acdwww/index.html";
+    {  String xmlFragment =
+         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+         "<results>\n" +
+         "    <status>\n" +
+         "        <status>{0}</status>\n" +
+         "        <details>{1}</details>\n" +
+         "        <currentDate>{2}</currentDate>\n" +
+         "    </status>\n" +
+         "    <dataItemRecords>\n" +
+         "      <dataItemRecord>\n" +
+         "        <dataItemName>{3}</dataItemName>\n" +
+         "        <dataItemID>{4}</dataItemID>\n" +
+         "        <ownerID>{5}</ownerID>\n" +
+         "        <creationDate>{6}</creationDate>\n" +
+         "        <expiryDate>{7}</expiryDate>\n" +
+         "        <size>{8}</size>\n" +
+         "        <type>{9}</type>\n" +
+         "        <permissionsMask>{10}</permissionsMask>\n" +
+         "        <dataHolderURI>http://www.roe.ac.uk/acdwww/index.html" +
+                     "</dataHolderURI>\n" +
+         "      </dataItemRecord>\n" +
+         "    </dataItemRecords>\n" +
+         "</results>\n";
+
+       return xmlFragment;
     }
 
     public java.lang.String moveDataHolder(java.lang.String jobDetails) 

@@ -18,7 +18,7 @@ public class MySpaceManagerDelegate {
 
     private String mssUrl = " ";       // MSS the delegate is operating on.
     private Vector queryMssUrl = new Vector(); // Vector of MSSs to query.
-    private boolean DEBUG = true;
+    private boolean DEBUG = false;
    
     private String value ="";
 
@@ -33,6 +33,8 @@ public class MySpaceManagerDelegate {
  */
 
     public MySpaceManagerDelegate() {
+        this.mssUrl = mssUrl;
+        this.queryMssUrl = queryMssUrl;
     }
 
 /**
@@ -43,7 +45,7 @@ public class MySpaceManagerDelegate {
 
     public MySpaceManagerDelegate(String mssUrl) {
         this.mssUrl = mssUrl;
-        System.out.println("initializor: mssUrl: "+mssUrl);
+        if (DEBUG) System.out.println("initializor: mssUrl: "+mssUrl);
         (this.queryMssUrl).add(mssUrl);
     }    
     
@@ -123,6 +125,8 @@ public class MySpaceManagerDelegate {
 
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 
+        if (DEBUG) System.out.println("mssUrl in getAllMssUrl = " + mssUrl);
+
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
               new org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerServiceLocator()
@@ -134,13 +138,13 @@ public class MySpaceManagerDelegate {
         }
         
         try{
-        	System.out.println("before call getServerURLs");
+        	if (DEBUG) System.out.println("before call getServerURLs");
            allMssUrls  = binding.getServerURLs();
            
-		   System.out.println("after call getServerURLs  "+allMssUrls.size());
+		   if (DEBUG) System.out.println("after call getServerURLs  "+allMssUrls.size());
 		   for (int i=0;i<allMssUrls.size(); i++)
 		   {
-		   	System.out.println("after... "+allMssUrls.elementAt(i));
+		   	if (DEBUG) System.out.println("after... "+allMssUrls.elementAt(i));
 		   }
         }catch(java.rmi.RemoteException re) {
            re.printStackTrace();
@@ -190,15 +194,15 @@ public class MySpaceManagerDelegate {
 				if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
                 Vector currentList  = helper.getList(currentResponse, "dataItemName");
 				if (DEBUG){ 
-					System.out.println("size: "+currentList.size()); 
+					if (DEBUG) System.out.println("size: "+currentList.size()); 
 					for (int j=0;j<currentList.size();j++){
-						System.out.println(" currentlist: "+currentList.elementAt(j));
+						if (DEBUG) System.out.println(" currentlist: "+currentList.elementAt(j));
 					}
 				}
                 returnList.add(currentList);
                 if (DEBUG){
                 	for (int i=0;i<returnList.size();i++){
-                		System.out.println("returnList from delegate: "+returnList.elementAt(i));
+                		if (DEBUG) System.out.println("returnList from delegate: "+returnList.elementAt(i));
                 	}
                 }
             }
@@ -233,18 +237,18 @@ public class MySpaceManagerDelegate {
 
     public Vector listDataHoldingsGen(String userId, String communityId, String credential,
       String query)throws Exception {
-      	System.out.println("xxxxxxxxxxxxxxxxx");
+      	if (DEBUG) System.out.println("xxxxxxxxxxxxxxxxx");
         Vector returnList = new Vector();
         this.setQueryMssUrl(this.getAllMssUrl());
         //query = "/" +userId+"@"+communityId+"/"+"*";
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
             	
-				System.out.println("before call internalDataHoldings "+ userId +"  :"+communityId +"  query: "+query);
+				if (DEBUG) System.out.println("before call internalDataHoldings "+ userId +"  :"+communityId +"  query: "+query);
                 String currentResponse = this.internalDataHoldings(
                   userId, communityId, credential, query,
                   (String)queryMssUrl.elementAt(loop) );
-                  System.out.println("yyyyyyyy"+(String)queryMssUrl.elementAt(loop) );
+                  if (DEBUG) System.out.println("yyyyyyyy"+(String)queryMssUrl.elementAt(loop) );
 
                 returnList.add(currentResponse);
             }
@@ -346,7 +350,7 @@ public class MySpaceManagerDelegate {
     public boolean copyRemoteDataHolding(String userId, String communityId, String credential,
       String remoteMssUrl, String remoteMySpaceName,
       String newMySpaceName) throws Exception {
-        boolean isSaved = false;
+        boolean isSaved = true;
         org.astrogrid.mySpace.delegate.mySpaceManager.
           MySpaceManagerSoapBindingStub binding = null;
 
@@ -557,7 +561,7 @@ public class MySpaceManagerDelegate {
         try{
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildSaveURL(userId, communityId, credential, fileName, importURL, category, action);
-            System.out.println("filename: "+fileName+ "importURL: "+importURL);
+            if (DEBUG) System.out.println("filename: "+fileName+ "importURL: "+importURL);
             binding.upLoadURL(jobDetails);
             isSaved = true;
         }catch(java.rmi.RemoteException re) {
@@ -581,69 +585,37 @@ public class MySpaceManagerDelegate {
  *
  * @return: A String containing the contents of the specified dataHolder.
  */
-    public String getDataHolding(String userId, String communityId, String credential,
-      String mySpaceName) throws Exception {
+    public String getDataHolding(String userId, String communityId,
+      String credential, String mySpaceName) throws Exception {
         String contents = null;
+
         org.astrogrid.mySpace.delegate.mySpaceManager.
           MySpaceManagerSoapBindingStub binding = null;
 
-//
-//     Set up for accessing the current MSS.
+        String dataHolderUrl;
 
         try {
-            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.
-              MySpaceManagerSoapBindingStub)
-              new org.astrogrid.mySpace.delegate.mySpaceManager.
-                MySpaceManagerServiceLocator().
-                  getMySpaceManager(new java.net.URL(mssUrl));
-        }
-        catch (javax.xml.rpc.ServiceException jre) {
-            if(jre.getLinkedCause()!=null)
-                jre.getLinkedCause().printStackTrace();
-        }
-
-//
-//     Obtain the URL of the required dataHolder.
-
-        boolean isOk = false;
-        String responsXML = " ";
-        String dataHolderUrl = " ";
-
-        try{
-            MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildDownload(userId,
-              communityId, credential, mySpaceName);
-			responsXML = binding.exportDataHolder(jobDetails);
-			System.out.println("2222jobDetails : "+responsXML);
-			Vector dataHolderUrlReturn  = helper.getList(responsXML, "dataHolderURI");
-			for (int i=0;i<dataHolderUrlReturn.size();i++){
-				//System.out.println("$*********size: "+dataHolderUrlReturn.size());
-				dataHolderUrl = (String)dataHolderUrlReturn.elementAt(i);
-				//System.out.println("$*********elementat i:: "+dataHolderUrl);
-			}
-			//System.out.println("$*********** dataHolderUrl:0000000"+dataHolderUrl);
-            if (dataHolderUrl != null) {
-               isOk = true;
-            }
-        }
-        catch(java.rmi.RemoteException re) {
+            dataHolderUrl =this.internalGetDataHoldingUrl(userId,
+               communityId, credential, mySpaceName);
+        } catch (java.rmi.RemoteException re) {
+            dataHolderUrl = null;
             re.printStackTrace();
         }
 
 //
 //     If the URL was obtained ok then attempt to retrieve the contents.
 
-        if (isOk) {
+        if (dataHolderUrl != null) {
             try {
                 URL url = new URL(dataHolderUrl);
-                //System.out.println("$*********** url: "+url);
+                //if (DEBUG) System.out.println("$*********** url: "+url);
                 InputStream iStream = url.openStream();
 
                 int b;
                 StringBuffer buffer = new StringBuffer("");
 
                 while( (b = iStream.read())  !=  -1) {
-                    buffer.append(b);
+                    buffer.append((char)b);
                 }
 
                 contents = buffer.toString();
@@ -654,10 +626,42 @@ public class MySpaceManagerDelegate {
             }
 
         }
-         // System.out.println("  YYYYYYYYYYYY content: "+contents);
+         // if (DEBUG) System.out.println("  YYYYYYYYYYYY content: "+contents);
         return contents;
     }        
-    
+
+//
+// --------------------------------------------------------------------------
+
+/**
+ * Return the URL of a dataHolder.
+ *
+ * @param userId User identifier.
+ * @param communityId community identifier.
+ * @param  mySpaceName MySpace name of the dataHolder whose contents are
+ *   to be retrieved.
+ *
+ * @return: The URL for the specified  dataHolder.
+ */
+
+    public String getDataHoldingUrl(String userId, String communityId,
+      String credential, String mySpaceName) throws Exception {
+        String dataHolderUrl;
+
+        org.astrogrid.mySpace.delegate.mySpaceManager.
+          MySpaceManagerSoapBindingStub binding = null;
+
+        try {
+            dataHolderUrl = this.internalGetDataHoldingUrl(userId,
+               communityId, credential, mySpaceName);
+        } catch (java.rmi.RemoteException re) {
+            dataHolderUrl = null;
+            re.printStackTrace();
+        }
+
+        return dataHolderUrl;
+    }
+
 //
 // --------------------------------------------------------------------------
 
@@ -700,7 +704,8 @@ public class MySpaceManagerDelegate {
      * @throws Exception
      */
     
-    public String publish(String jobDetails) throws Exception {
+    public String publish(String userId, String communityId, 
+      String credential, String mySpaceName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -712,6 +717,13 @@ public class MySpaceManagerDelegate {
         }
 
         try{
+
+//         In due course the following line will be replaced with a
+//         helper method.
+
+            String jobDetails = userId + communityId + credential
+              + mySpaceName;
+
             value = binding.publish(jobDetails);
         }catch(java.rmi.RemoteException re) {
                     re.printStackTrace();
@@ -851,8 +863,8 @@ public class MySpaceManagerDelegate {
 // ==========================================================================
 
     private String internalDataHoldings(String userId,
-      String communityId, String credential, String criteria, String currentURL)
-      throws Exception {
+      String communityId, String credential, String criteria,
+      String currentURL) throws Exception {
 
         String response = null;
 
@@ -877,4 +889,58 @@ public class MySpaceManagerDelegate {
         }
         return response;
     }        
+
+//
+// -------------------------------------------------------------------
+
+    private String internalGetDataHoldingUrl(String userId,
+      String communityId, String credential, String mySpaceName)
+      throws Exception {
+        String dataHolderUrl = null;
+
+        org.astrogrid.mySpace.delegate.mySpaceManager.
+          MySpaceManagerSoapBindingStub binding = null;
+
+//
+//     Set up for accessing the current MSS.
+
+        try {
+            binding = (org.astrogrid.mySpace.delegate.mySpaceManager.
+              MySpaceManagerSoapBindingStub)
+              new org.astrogrid.mySpace.delegate.mySpaceManager.
+                MySpaceManagerServiceLocator().
+                  getMySpaceManager(new java.net.URL(mssUrl));
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+        }
+
+//
+//     Obtain the URL of the required dataHolder.
+
+        boolean isOk = false;
+        String responsXML = " ";
+
+        try{
+            MySpaceHelper helper = new MySpaceHelper();
+            String jobDetails = helper.buildDownload(userId,
+              communityId, credential, mySpaceName);
+            responsXML = binding.exportDataHolder(jobDetails);
+
+            Vector dataHolderUrlReturn  =
+              helper.getList(responsXML, "dataHolderURI");
+
+            if (dataHolderUrlReturn.size()>0) {
+               dataHolderUrl = (String)dataHolderUrlReturn.elementAt(0);
+            }
+        }
+        catch(java.rmi.RemoteException re) {
+            re.printStackTrace();
+        }
+
+//        System.out.println("returned URL: " + dataHolderUrl);
+
+        return dataHolderUrl;
+    }
 }

@@ -7,8 +7,6 @@ import org.xml.sax.InputSource ;
 
 import java.util.Vector;
 
-
-
 /**
  * @author C L QIN
  * @version Iteration 2.
@@ -374,9 +372,8 @@ public class MySpaceHelper{
 									if (checker.getNodeName().equalsIgnoreCase(key)){
 										if(key.equals("dataItemName")){
 										    text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
-										}else{
-											request.add(text);
 										}
+										request.add(text);
 									}								
 									if( DEBUG )  System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
 								}
@@ -395,9 +392,8 @@ public class MySpaceHelper{
 									if (checker.getNodeName().equalsIgnoreCase(key)){
 										if(key.equals("dataItemName")){
 											text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
-										}else{
-											request.add(text);
 										}
+										request.add(text);
 									}
 																
 									System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
@@ -414,9 +410,8 @@ public class MySpaceHelper{
 									if (checker.getNodeName().equalsIgnoreCase(key)){
 										if(key.equals("dataItemName")){
 											text = text.substring(text.lastIndexOf('/')+1,text.trim().length());
-										}else{
-											request.add(text);
 										}
+										request.add(text);
 									}								
 									
 									System.out.println("NODENAME: "+checker.getNodeName() +",  TEXTVALUE: "+text);
