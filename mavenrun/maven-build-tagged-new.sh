@@ -58,9 +58,11 @@ cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
-echo "[ag-build-$PROJECT_NAME] generate jar and war"
-
-maven astrogrid-deploy-site >> $LOG_FILE 2>&1
+echo "[ag-build-$PROJECT_NAME] generate and deploy site"
+echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
+maven astrogrid-deploy-site >> $LOG_FILE 2>&1 
+echo "[ag-build-$PROJECT_NAME] generate and deploy artifact"
+echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1 
 maven astrogrid-deploy-artifact >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] deploy build log"
