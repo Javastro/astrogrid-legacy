@@ -133,10 +133,14 @@
          try {
             String workflow;
 
-            while( iterator.hasNext() ) {
+            while( iterator.hasNext() ) {            
                workflow = (String)iterator.next();
                outputWorkflow( workflow, xspAttrWorkflow );			
             }
+         }
+         catch(Exception e) {
+            // some logging requred
+            ;
          }
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.workflowlist() exit");
@@ -171,6 +175,10 @@
                outputQuery( query, xspAttrQuery );
             }
          }
+         catch(Exception e) {
+            ;
+            // some logging required
+         }         
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.queryList() exit");
          }
@@ -204,6 +212,10 @@
                outputTool( tool, xspAttrTool );
             }
          }
+         catch(Exception e) {
+            ;
+            // some logging required
+         }         
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.toolList() exit");
          }
@@ -262,7 +274,8 @@
                   </xsp:element>
 		    }
             catch(Exception e) {
-               e.printStackTrace() ;
+               ;
+               // some logging required
             }		    
         	finally {
                if( TRACE_ENABLED ) trace( "workflow-main-xsp.sequence() exit") ;
