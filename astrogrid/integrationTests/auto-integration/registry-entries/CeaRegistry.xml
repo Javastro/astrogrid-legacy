@@ -42,7 +42,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 <Subject>???</Subject>
                 <cea:ApplicationDefinition>
                         <cea:Parameters>
-                                <cea:ParameterDefinition name="InputFiles" type="binary" minOccurs="1" maxOccurs="unbounded">
+                                <cea:ParameterDefinition name="InputFiles" type="FITS" minOccurs="1" maxOccurs="unbounded">
                                         <ceapd:DefaultValue>InputFiles</ceapd:DefaultValue>
                                         <ceapd:UI_Description >
                                                 FITS images used to create a solar movie (repeatable parameter)
