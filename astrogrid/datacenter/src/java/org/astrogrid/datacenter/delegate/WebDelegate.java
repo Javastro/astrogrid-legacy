@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.12 2003/09/18 13:12:27 nw Exp $
+ * $Id: WebDelegate.java,v 1.13 2003/09/25 01:22:14 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -163,8 +163,9 @@ public class WebDelegate extends DatacenterDelegate
     * Polls the service and asks for the current status
     */
    public QueryStatus getStatus(String id) throws RemoteException
-   {
-      return QueryStatus.getFor(binding.getStatus(id));
+   { 
+       Element idElement = DocHelper.wrap(QueryIdHelper.makeQueryIdTag(id)).getDocumentElement();
+      return QueryStatus.getFor(binding.getStatus(idElement));
    }
 
    /**
@@ -205,6 +206,9 @@ public Element getMetadata() throws IOException {
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.13  2003/09/25 01:22:14  nw
+fixed bug - was passing string instead of element
+
 Revision 1.12  2003/09/18 13:12:27  nw
 renamed delegate methods to match those in web service
 
