@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.13 2004/09/02 10:26:24 mch Exp $
+ * $Id: FitsResults.java,v 1.14 2004/09/03 09:28:51 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -67,7 +67,7 @@ public class FitsResults extends QueryResults {
        <PARAM ID="PositionalError" datatype="E" value="0.1"/>
        <PARAM ID="Credit" datatype="A" arraysize="*" value="Charles Messier, Richard Gelderman"/>
        */
-      printOut.println("<TABLE>");
+      
       
       
       if (statusToUpdate != null) {
@@ -77,13 +77,15 @@ public class FitsResults extends QueryResults {
          if (statusToUpdate != null) {
             statusToUpdate.setProgress(i);
          }
+         printOut.println("<TABLE>");         
          printOut.println("<DATA><FITS>");
          printOut.println("   <STREAM>"+filenames[i]+"</STREAM>");
          
          printOut.println("</FITS></DATA>");
+         printOut.println("</TABLE>");         
       }
       
-      printOut.println("</TABLE>");
+      
       
       printOut.println("</RESOURCE>");
       
@@ -151,6 +153,9 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.14  2004/09/03 09:28:51  KevinBenson
+ change the table to be in the for loop
+
  Revision 1.13  2004/09/02 10:26:24  mch
  Fixed XML form
 
