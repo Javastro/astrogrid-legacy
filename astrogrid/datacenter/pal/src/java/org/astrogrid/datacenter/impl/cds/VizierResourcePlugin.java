@@ -1,4 +1,4 @@
-/*$Id: VizierResourcePlugin.java,v 1.4 2004/11/08 02:59:13 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.5 2004/11/08 14:26:56 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,7 +91,7 @@ public class VizierResourcePlugin implements VoResourcePlugin {
               "</SkyNodeInterface>\n"+
               "<AstroGridInterface version='0.6'>"+
                   "<AccessURL>"+ServletHelper.getUrlStem()+"/services/AxisDataService06</AccessURL>"+
-              "</SkyNodeInterface>\n"+
+              "</AstroGridInterface>\n"+
             "</Resource>\n";
          
          return resource;
@@ -137,7 +137,7 @@ public class VizierResourcePlugin implements VoResourcePlugin {
    }
 
    /**
-    *
+    * test harness Quick check that it's valid
     */
    public static void main(String[] args) throws IOException, IOException, ServiceException {
       System.out.print(new VizierResourcePlugin().getVizierMetadata());
@@ -147,6 +147,9 @@ public class VizierResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: VizierResourcePlugin.java,v $
+ Revision 1.5  2004/11/08 14:26:56  mch
+ Fixed queryable resource
+
  Revision 1.4  2004/11/08 02:59:13  mch
  Fixes to connect to Vizier
 
