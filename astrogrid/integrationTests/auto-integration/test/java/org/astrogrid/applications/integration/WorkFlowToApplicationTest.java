@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.2 2004/04/20 14:45:22 nw Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.3 2004/04/21 10:43:03 nw Exp $
  *
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -149,6 +149,7 @@ public class WorkFlowToApplicationTest extends AbstractTestForIntegration {
 
       Tool tool = new Tool();
       tool.setName("testapp");
+      tool.setInterface("i1");
       
       Input inputs = new Input();
 
