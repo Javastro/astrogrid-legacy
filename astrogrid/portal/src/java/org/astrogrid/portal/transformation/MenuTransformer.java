@@ -27,6 +27,7 @@ public class MenuTransformer extends AbstractDOMTransformer {
   private Category logger = Category.getInstance(getClass().getName());
   
   private String menuDirectory = null;
+  private String menuHref = null;
 
   /* (non-Javadoc)
    * @see org.apache.cocoon.sitemap.SitemapModelComponent#setup(org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
@@ -36,6 +37,7 @@ public class MenuTransformer extends AbstractDOMTransformer {
     super.setup(resolver, objectModel, src, params);
     
     menuDirectory = params.getParameter("menu-directory", "");
+    menuHref = params.getParameter("menu-href", "");
     
     logger.debug("[setup] menu directory: " + menuDirectory);
   }
@@ -76,7 +78,7 @@ public class MenuTransformer extends AbstractDOMTransformer {
 
       xIncludeEl =
         result.createElementNS("http://www.w3.org/2001/XInclude", "xi:include");
-      xIncludeEl.setAttribute("href", "WEB-INF/menu/" + menuFile.getName());
+      xIncludeEl.setAttribute("href", menuHref + menuFile.getName());
 
       if(testMenuInclude(sourceDoc.getDocumentElement(), menuFile)) {
         menuEl.appendChild(xIncludeEl);
