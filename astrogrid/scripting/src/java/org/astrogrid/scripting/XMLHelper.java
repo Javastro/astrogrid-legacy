@@ -1,4 +1,4 @@
-/*$Id: XMLHelper.java,v 1.2 2004/03/14 23:11:32 nw Exp $
+/*$Id: XMLHelper.java,v 1.3 2004/08/09 11:28:17 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.scripting;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-//import org.astrogrid.datacenter.sql.SQLUtils;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
@@ -80,6 +79,10 @@ public class XMLHelper {
 
 /* 
 $Log: XMLHelper.java,v $
+Revision 1.3  2004/08/09 11:28:17  nw
+improvied behaviour when no service list is found.
+tidied imports.
+
 Revision 1.2  2004/03/14 23:11:32  nw
 commented out code that used methods that have dissapeared from datacenter and applications delegate jars
 

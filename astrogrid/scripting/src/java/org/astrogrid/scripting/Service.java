@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.11 2004/08/09 09:10:38 nw Exp $
+/*$Id: Service.java,v 1.12 2004/08/09 11:28:17 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,18 @@
 **/
 package org.astrogrid.scripting;
 
-import org.apache.log4j.Logger;
+import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.net.URL;
 
 import javax.xml.rpc.ServiceException;
-
-import org.astrogrid.applications.delegate.DelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.jes.delegate.JesDelegateFactory;
-import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 
 /**
@@ -32,7 +33,8 @@ public class Service {
     /**
      * Commons Logger for this class
      */
-    private static final Logger logger = Logger.getLogger(Service.class);
+    private static final Log logger = LogFactory.getLog(Service.class);
+    
 
    public static final String DATACENTER_SERVICE = "datacenter";
    public static final String REGISTRY_SERVICE = "registry";
@@ -187,6 +189,10 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.12  2004/08/09 11:28:17  nw
+improvied behaviour when no service list is found.
+tidied imports.
+
 Revision 1.11  2004/08/09 09:10:38  nw
 updated list of service types (renamed applications to cea)
 improved toString()

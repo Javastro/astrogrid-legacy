@@ -1,7 +1,5 @@
 package org.astrogrid.scripting;
 
-import org.apache.log4j.Logger;
-
 import org.astrogrid.community.User;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
@@ -11,8 +9,9 @@ import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.VoSpaceClient;
-import org.astrogrid.store.delegate.StoreClient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
@@ -48,7 +47,8 @@ public class Astrogrid extends Services {
     /**
      * Commons Logger for this class
      */
-    private static final Logger logger = Logger.getLogger(Astrogrid.class);
+    private static final Log logger = LogFactory.getLog(Astrogrid.class);
+    
 
    /** construct a new astrogrid object, using the default service document
     * <p>

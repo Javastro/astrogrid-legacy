@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.12 2004/08/09 09:55:17 nw Exp $
+/*$Id: Services.java,v 1.13 2004/08/09 11:28:17 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,19 @@
 **/
 package org.astrogrid.scripting;
 
-import org.apache.log4j.Logger;
-
 import org.astrogrid.config.SimpleConfig;
+
+import org.apache.commons.digester.Digester;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
-import org.apache.commons.digester.*;
-import org.xml.sax.SAXException;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Maintains lists of known astrogrid services<p />
  * 
@@ -33,7 +35,8 @@ public class Services {
     /**
      * Commons Logger for this class
      */
-    private static final Logger logger = Logger.getLogger(Services.class);
+    private static final Log logger = LogFactory.getLog(Services.class);
+
 
    
    /** default location of service list document - at the root of the classpath */
@@ -73,14 +76,19 @@ public class Services {
       dig.addBeanPropertySetter("services/service/description");
       dig.addBeanPropertySetter("services/service/type");      
       dig.addSetNext("services/service","addService");
-      InputStream is = null;
       if (serviceListDocument == null){
-          serviceListDocument = SimpleConfig.getSingleton().getUrl(SERVICE_LIST_URL_KEY,this.getClass().getResource(DEFAULT_SERVICE_LIST));
+          try {
+              serviceListDocument = SimpleConfig.getSingleton().getUrl(SERVICE_LIST_URL_KEY,this.getClass().getResource(DEFAULT_SERVICE_LIST));
+          } catch (NullPointerException e) { // not even found the default - silly config class throws when it shouldn;t.
+              logger.warn("No service document defined - service list will be empty");
+              return;
+          }
       }
       logger.info("Reading service list from " + serviceListDocument);
-      is = serviceListDocument.openStream();
+      InputStream is = serviceListDocument.openStream();
       if (is == null) {
           logger.warn("No Service document present at " + serviceListDocument + " - service list will be empty");
+          return;
       }
       dig.parse(is);
       is.close();
@@ -238,6 +246,10 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.13  2004/08/09 11:28:17  nw
+improvied behaviour when no service list is found.
+tidied imports.
+
 Revision 1.12  2004/08/09 09:55:17  nw
 altered default location on classpath to look for services.xml
 
