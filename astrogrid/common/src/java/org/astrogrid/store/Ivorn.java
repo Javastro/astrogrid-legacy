@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.1 2004/03/12 13:13:09 mch Exp $
+ * $Id: Ivorn.java,v 1.2 2004/03/12 15:11:33 dave Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -96,7 +96,7 @@ public class Ivorn
    /** String representation */
    public String toString() {
       if (fragment == null) {
-         return SCHEME+"://"+path+"#";
+         return SCHEME+"://"+path;
       } else {
          return SCHEME+"://"+path+"#"+fragment;
       }
@@ -112,6 +112,11 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.2  2004/03/12 15:11:33  dave
+Removed extra import in IvornTest.
+Fixed redundant '#' in Ivorn with no fragment.
+Fixed missing new-line at end of file.
+
 Revision 1.1  2004/03/12 13:13:09  mch
 Moved & Fixed null fragment error
 

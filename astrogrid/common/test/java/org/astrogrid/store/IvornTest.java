@@ -1,5 +1,5 @@
 /*
- * $Id: IvornTest.java,v 1.1 2004/03/12 13:14:01 mch Exp $
+ * $Id: IvornTest.java,v 1.2 2004/03/12 15:11:33 dave Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,8 +14,6 @@ import java.net.URISyntaxException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.mySpace.delegate.DummyDelegateTest;
-
 
 /**
  * IVO Resource Name.  A URI used to name specific IVO resources.
@@ -112,6 +110,11 @@ public class IvornTest extends TestCase
 
 /*
 $Log: IvornTest.java,v $
+Revision 1.2  2004/03/12 15:11:33  dave
+Removed extra import in IvornTest.
+Fixed redundant '#' in Ivorn with no fragment.
+Fixed missing new-line at end of file.
+
 Revision 1.1  2004/03/12 13:14:01  mch
 Moved to common
 
