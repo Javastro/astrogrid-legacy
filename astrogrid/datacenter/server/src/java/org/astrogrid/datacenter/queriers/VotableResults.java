@@ -1,4 +1,4 @@
-/*$Id: VotableResults.java,v 1.3 2004/09/01 12:10:58 mch Exp $
+/*$Id: VotableResults.java,v 1.1 2004/09/06 21:37:26 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.cds.querier;
+package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -49,14 +49,14 @@ public class VotableResults extends QueryResults {
      * Not quite so easy one - HTML
      */
     public void toHtml(Writer out, QuerierProcessingResults querierStatus) throws IOException {
-        throw new UnsupportedOperationException("Not yet impelmeneted");
+        throw new UnsupportedOperationException("Not yet implemeneted");
     }
 
     /**
      * writes out VOTable in memory to writer in CSV form
      */
     public void toCSV(Writer out, QuerierProcessingResults querierStatus) throws IOException {
-        throw new UnsupportedOperationException("Not yet impelmeneted");
+        throw new UnsupportedOperationException("Not yet implemeneted");
     }
     
 }
@@ -64,6 +64,9 @@ public class VotableResults extends QueryResults {
 
 /*
 $Log: VotableResults.java,v $
+Revision 1.1  2004/09/06 21:37:26  mch
+Factored out VotableResults
+
 Revision 1.3  2004/09/01 12:10:58  mch
 added results.toHtml
 

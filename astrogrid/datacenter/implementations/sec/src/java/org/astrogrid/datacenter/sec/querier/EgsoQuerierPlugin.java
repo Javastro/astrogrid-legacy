@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.2 2004/07/07 14:32:54 KevinBenson Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.3 2004/09/06 21:36:15 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,14 +11,11 @@
 package org.astrogrid.datacenter.sec.querier;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.sec.secdelegate.egso.EgsoDelegate;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.datacenter.queriers.VotableResults;
+import org.astrogrid.datacenter.sec.secdelegate.egso.EgsoDelegate;
 import org.w3c.dom.Document;
 
 /** Datacenter querier that performs queries against SEC webservice.
@@ -37,17 +34,20 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
    /* (non-Javadoc)
     * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery(java.lang.Object, java.lang.Class)
     */
-   public void askQuery() throws IOException {      
+   public void askQuery() throws IOException {
       EgsoQueryMaker translator = new EgsoQueryMaker();
       EgsoQuery query = translator.getEgsoQuery(querier.getQuery());
       Document results = query.doDelegateQuery(delegate);
-      processResults(new EgsoResults(results));
+      processResults(new VotableResults(results, null));
    }
 }
 
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.3  2004/09/06 21:36:15  mch
+ Factored out VotableResults
+
  Revision 1.2  2004/07/07 14:32:54  KevinBenson
  Few small changes because I had it referencing "cds" at the moment.
 
