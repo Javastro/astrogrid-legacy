@@ -21,7 +21,7 @@
 	
 	<property name="tool.dir" value="/home/applications/tools"/>
      <!-- iteration specific -->	
-	<property name="astrogrid.release" value="Itn06_case3-SNAPSHOT" />
+	<property name="astrogrid.release" value="SNAPSHOT" />
 	<property name="registry.authorityid" value="org.astrogrid.itn06"/>
 	<property name="registry.location" value="http://${tomcat.host}:8080/astrogrid-registry-${astrogrid.release}/services/Registry"/>
 	
@@ -44,7 +44,7 @@
 	<filter token="TOMCATROOT" value="${tomcat.url}" />
 	<filter token="TOMCATLOC" value="${tomcat.location}" />
 	<filter token="REGAUTHORITY" value="${registry.authorityid}" />
-	<filter token="COMMUNITYID" value="${registry.authorityid}" />
+	<filter token="COMMUNITYID" value="${registry.authorityid}" /> <!--NB in general it is obviously not true that community=authority-->
 	<filter token="CENTRALREGISTRY" value="${registry.location}"/>
 	<filter token="RELEASE" value="${astrogrid.release}" />
 	<filter token="TOOLBASEDIR" value="${tool.dir}"/>
@@ -396,11 +396,14 @@
 				antfile="${temporary.dir}/community/install.xml" />
 		</j:catch>
 		<!--+
-            | Load our database tables.
+            | Load our database tables 
+			| TODO - this still needs to be loaded from somewhere better, but this will do for now....
             +-->
 		<j:catch>
 			<ant target="database.load" dir="${temporary.dir}/community" 
-				antfile="${temporary.dir}/community/install.xml" />
+				antfile="${temporary.dir}/community/install.xml">
+				<property name="community.xmlfile" value="${work.dir}/community/defaultusers.xml"/>
+				</ant>
 		</j:catch>
 	</goal>
 	<!--+
