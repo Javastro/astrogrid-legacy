@@ -263,7 +263,7 @@
         
         <map:match pattern="agjobmanager-job-status.html">            
           <map:act type="astrogrid-jes" />
-          <map:generate src="web/xsp/job-status.xsp" type="serverpages" label="002" />
+          <map:generate src="web/xsp/job-status.xsp" type="serverpages" label="000" />
           <map:transform src="web/xsl/display-job-status.xsl">
           <map:parameter name="use-request-parameters" value="true"/>
           <!-- Add the action params -->
