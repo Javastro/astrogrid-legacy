@@ -1,4 +1,4 @@
-/*$Id: VizierCone.java,v 1.2 2003/12/01 16:50:11 nw Exp $
+/*$Id: VizierCone.java,v 1.3 2003/12/09 16:25:08 nw Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -87,43 +87,43 @@ public class VizierCone {
         }
     }
 
-    /**
-     * @param string
+    /** Set additional search terms for the cone search
+     * @param string pattern to match. Set to null for no pattern
      */
     public void setAdditionalTerms(String string) {
         additionalTerms = string;
     }
 
-    /**
-     * @param d
+    /** Set radius of search cone
+     * @param d radius
      */
     public void setRadius(double d) {
         radius = d;
     }
 
-    /**
+    /** Set the target of the cone search
      * @param target
      */
     public void setTarget(Target target) {
         this.target = target;
     }
 
-    /**
+    /** Set the units used to express the radius
      * @param unit
      */
     public void setUnit(Unit unit) {
         this.unit = unit;
     }
 
-    /**
-     * @param wavelength
+    /** Set the wavelength to restrict the search to 
+     * @param wavelength to search on. Set to null for all.
      */
     public void setWavelength(Wavelength wavelength) {
         this.wavelength = wavelength;
     }
 
-    /**
-     * @param b
+    /** Set whether the search is to query meta-data or data.
+     * @param b true for meta-data
      */
     public void setMetaData(boolean b) {
         metaData = b;
@@ -141,6 +141,9 @@ public class VizierCone {
 
 /* 
 $Log: VizierCone.java,v $
+Revision 1.3  2003/12/09 16:25:08  nw
+wrote plugin documentation
+
 Revision 1.2  2003/12/01 16:50:11  nw
 first working tested version
 

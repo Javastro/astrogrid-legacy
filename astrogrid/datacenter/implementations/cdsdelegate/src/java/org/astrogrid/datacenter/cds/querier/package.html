@@ -1,0 +1,76 @@
+<html>
+	<body>
+		<h1>Vizier Datacenter backend</h1>
+		This package implements a datacenter backend that performs queries against the Vizier catalogue-of-catalogues at CDS.
+	<h2>Plugin Installation</h2>
+	The plugin SPI class is {@link org.astrogrid.datacenter.cds.querier.VizierQuerier}. To use this backend, the following properties should be set in the
+	<tt>AstroGridConfig.properties</tt> file for the datacenter
+	<pre>
+QuerierSPI=org.astrogrid.datacenter.cds.querier.VizierQuerier
+DatabaseQuerierClass=org.astrogrid.datacenter.queriers.spi.PluginQuerier		
+	</pre>
+	
+	<h2>Input Query Format</h2>
+	Presently, the plugin expects queries in ADQL. However, as the vizier datacenter isn't backed by a relational database, the adql document is
+	interpreted in a different. The querier looks for certain column and table names to query against - any other functions, ordering, group-by or other 
+	processing instructions are ignored.
+	
+	<p />
+	<i>I'm going to present examples in the sql-equiuvalent for adql - otherwise they become too verbose.</i>
+	<h3>Search Type</h3>
+	  If the list of tables specified by the query contains a table called 'metadata' then a meta-catalogue search will be performed. Otherwise
+	  a catalogue search will be performed.
+	  <pre>
+	  	select * from metadata
+	  </pre>
+	perform a meta-catalogue search.
+	<pre>
+		select * from atable
+	</pre>
+	perform a catalogue search.
+	
+	<h3>Criteria</h3>
+	The vizier service can be searched on a number of criteria - these are expressed in ADQL as a where clause on a particular column. Only equality
+	conditions are supported. Conditions may only be composed using the<tt>and</tt> logical operator - other logical operators (<tt>or</tt>, <tt>not</tt>, etc) are
+	not supported.
+	<h4>Target (required)</h4>
+	Targets may either be given by name, or position.
+	<h5>By Name</h5>
+	The <tt>target</tt> and <tt>radius</tt>  columns must be specified
+	<pre>
+		select * from atable where target='alpha centuri' and radius=1.0 ' ...
+	</pre>
+
+	<h5>By Position</h5>
+	or by position, using the circle ADQL expression - this gives Ra, Dec and Radius
+	<pre>
+		select * from atable where Circle(ra=3.45,dec=4.65,radius=1.0) ...
+	</pre>
+	
+	<h4>Unit (required)</h4>
+	The units that the <tt>radius</tt> column is measured in. May be one of <tt>deg</tt>, <tt>arcmin</tt>, <tt>arcsec</tt>(not case sensitive)
+<pre>
+	select * from atable where ... and unit='deg'
+</pre>	
+	<h4>Wavelength (optional)</h4>
+A	wavelength to restrict the search to. Leave unspecified to search all wavelengths. 
+ Valid values are <tt>X-ray</tt>, <tt>Gamma-ray</tt></tt><tt>IR</tt>, <tt>Optical</tt>, <tt>UV</tt>, <tt>EUV</tt>, <tt>Radio</tt>
+ (not case sensitive)
+<pre>
+	select * from atable where ... and wavelength='IR'
+</pre>
+
+<h4>Additional Strings (optional)</h4>
+Additional search terms may also be provided. These are passed through to vizier, and are used to restict results to those which match the search terms.
+Additional strings to search for are expressed using the 'LIKE' sql keyword, The expression used is ignored, just the search string is passed to vizier. For instance
+<pre>
+	select * from atable where .. and col like 'hubble';
+</pre>
+will filter the search results to only those that contain the string 'hubble'.	
+<p />
+More than one additional string expression may be given - then results will be filtered to those that match all the specified strings. 
+<p />
+The SQL Like keyword provides a wildcard syntax, where % matches any sequence of characters. This is not supported by this querier - % is interpreted literally.
+			
+	</body>
+</html>

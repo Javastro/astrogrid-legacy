@@ -1,4 +1,4 @@
-/*$Id: VizierQuerier.java,v 1.5 2003/12/01 16:50:11 nw Exp $
+/*$Id: VizierQuerier.java,v 1.6 2003/12/09 16:25:08 nw Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,9 @@ import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 import org.w3c.dom.Document;
 
-/**
+/** Datacenter querier SPI that performs queries against CDS Vizier webservice.
+ * @see AdqlVizierTranslator
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
- *@todo implement this.
  */
 public class VizierQuerier extends BaseQuerierSPI implements QuerierSPI{
 
@@ -54,6 +54,9 @@ public class VizierQuerier extends BaseQuerierSPI implements QuerierSPI{
 
 /* 
 $Log: VizierQuerier.java,v $
+Revision 1.6  2003/12/09 16:25:08  nw
+wrote plugin documentation
+
 Revision 1.5  2003/12/01 16:50:11  nw
 first working tested version
 

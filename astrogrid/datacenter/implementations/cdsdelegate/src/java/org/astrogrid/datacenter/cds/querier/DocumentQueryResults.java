@@ -1,4 +1,4 @@
-/*$Id: DocumentQueryResults.java,v 1.1 2003/11/18 11:23:49 nw Exp $
+/*$Id: DocumentQueryResults.java,v 1.2 2003/12/09 16:25:08 nw Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-/**
+/** Trivial Implementation of {@link org.astrogrid.datacenter.queriers.QueryResults} backed by a {@link org.w3c.dom.Document}
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
  *
  */
@@ -51,6 +51,9 @@ public class DocumentQueryResults implements QueryResults {
 
 /* 
 $Log: DocumentQueryResults.java,v $
+Revision 1.2  2003/12/09 16:25:08  nw
+wrote plugin documentation
+
 Revision 1.1  2003/11/18 11:23:49  nw
 mavenized cds delegate
 
