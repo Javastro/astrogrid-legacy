@@ -29,7 +29,7 @@ import org.apache.axis.encoding.XMLType;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.impl.abstr.AbstractJob;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
@@ -148,8 +148,7 @@ public class JobImpl extends AbstractJob implements Job {
 
       try {
          String
-            requestTemplate = getConfiguration().getProperty( ConfigurationKeys.MONITOR_REQUEST_TEMPLATE
-                                                , ConfigurationKeys.MONITOR_CATEGORY ) ;
+            requestTemplate = Configuration.getProperty( ConfigurationKeys.MONITOR_REQUEST_TEMPLATE) ;
          Object []
             inserts = new Object[8] ;
          inserts[0] = this.getName() ;
@@ -260,8 +259,7 @@ public class JobImpl extends AbstractJob implements Job {
                     initialContext = new InitialContext() ;
                   logger.debug( "acquired InitialContext!" ) ;
                   logger.debug( "about to acquire datasource name/location..." ) ;
-                  datasourceName = getConfiguration().getProperty( ConfigurationKeys.JOB_DATASOURCE_LOCATION
-                                          , ConfigurationKeys.JOB_CATEGORY ) ;
+                  datasourceName = Configuration.getProperty( ConfigurationKeys.JOB_DATASOURCE_LOCATION) ;
                   logger.debug( "datasource name/location = " + datasourceName ) ;
                   logger.debug( "about to do lookup..." ) ;
                   datasource = (DataSource) initialContext.lookup( datasourceName ) ;
@@ -298,8 +296,7 @@ public class JobImpl extends AbstractJob implements Job {
          if( preparedStatement == null ) {
             Object[]
               inserts = new Object[1] ;
-            inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME
-                                           , ConfigurationKeys.JOB_CATEGORY ) ;
+            inserts[0] = Configuration.getProperty( ConfigurationKeys.JOB_TABLENAME) ;
             String
               updateString = MessageFormat.format( JobFactoryImpl.UPDATE_TEMPLATE, inserts ) ;
             preparedStatement = getConnection().prepareStatement( updateString ) ;

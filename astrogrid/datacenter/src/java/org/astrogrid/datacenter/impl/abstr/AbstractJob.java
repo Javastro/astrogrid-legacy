@@ -1,18 +1,17 @@
-/*$Id: AbstractJob.java,v 1.1 2003/08/22 10:35:02 nw Exp $
+/*$Id: AbstractJob.java,v 1.2 2003/08/28 15:52:00 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.impl.abstr;
 
 import java.util.Date;
 
-import org.astrogrid.datacenter.config.ConfigurableImpl;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobStep;
 
@@ -21,7 +20,7 @@ import org.astrogrid.datacenter.job.JobStep;
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
  *
  */
-public abstract class AbstractJob extends ConfigurableImpl implements Job {
+public abstract class AbstractJob implements Job {
 
     protected boolean dirty = false;
 
@@ -36,7 +35,7 @@ public abstract class AbstractJob extends ConfigurableImpl implements Job {
     protected String name = "";
 
     protected String jobURN = "";
-    
+
     protected String status = "";
 
     protected Date date = new Date();
@@ -45,7 +44,7 @@ public abstract class AbstractJob extends ConfigurableImpl implements Job {
 
     public abstract void informJobMonitor();
 
-    public String getId() {	return jobURN ;	}
+    public String getId() {   return jobURN ;   }
 
     public void setId(String jobURN) { this.jobURN = jobURN ;}
 
@@ -78,22 +77,25 @@ public abstract class AbstractJob extends ConfigurableImpl implements Job {
     public void setComment(String comment) { this.comment = comment ; }
 
     public String getStatus() {
-    	return this.status;
+      return this.status;
     }
 
     public void setStatus(String status) {
-    	if( this.status != null )
-    	    dirty = true ;
+      if( this.status != null )
+          dirty = true ;
         this.status = status ;
     }
 
-  
+
 }
 
 
-/* 
+/*
 $Log: AbstractJob.java,v $
+Revision 1.2  2003/08/28 15:52:00  mch
+New Configuration package
+
 Revision 1.1  2003/08/22 10:35:02  nw
 refactored job and job step into interface, abstract base class and implementation
- 
+
 */

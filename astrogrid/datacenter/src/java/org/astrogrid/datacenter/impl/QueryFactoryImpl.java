@@ -23,8 +23,7 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.ConfigurableImpl;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
@@ -32,7 +31,7 @@ import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 
 /** implementation of the query factory */
-public class QueryFactoryImpl extends ConfigurableImpl implements QueryFactory {
+public class QueryFactoryImpl  implements QueryFactory {
 
    private static final boolean
       TRACE_ENABLED = true ;
@@ -235,12 +234,10 @@ public class QueryFactoryImpl extends ConfigurableImpl implements QueryFactory {
       if( TRACE_ENABLED ) logger.debug( "getDataSourceName(): entry") ;
 
       String
-          datasourceName = getConfiguration().getProperty( catalogName.toUpperCase() + ".DATASOURCE"
-                                            , ConfigurationKeys.CATALOG_CATEGORY ) ;
+          datasourceName = Configuration.getProperty( catalogName.toUpperCase() + ".DATASOURCE" ) ;
 
       if( datasourceName == null ) {
-         datasourceName = getConfiguration().getProperty( ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY
-                                            , ConfigurationKeys.CATALOG_CATEGORY ) ;
+         datasourceName = Configuration.getProperty( ConfigurationKeys.CATALOG_DEFAULT_QUERYFACTORY) ;
       }
 
       if( TRACE_ENABLED ) logger.debug( "getDataSourceName(): exit") ;
