@@ -178,6 +178,10 @@ public class GridServiceDelegate {
       return false;
     }
     
+    if (this.simulating) {
+      return this.connected;
+    }
+    
     // Talk to the service.  Ask it to return the service datum
     // for its termination time.  The answer is irrelevant, but if
     // the query is successful we know that there is an instance
@@ -262,12 +266,18 @@ public class GridServiceDelegate {
 
   /**
    * Destroys the service instance.  Sets to null the attributes referring to
-   * the instance. findInstanceGridServicePort must have been called before
-   * this method.
+   * the instance. 
    */
   protected void destroyServiceInstance () throws Exception {
-    this.instanceGridServicePort.destroy();
+    // Clear the metadata before destroying the instance;
+    // therefore, remember the port from the metadata.
+    // Clearing the metadata and failing to destroy the instance
+    // leaks the instance, but normal OGSI state-management should
+    // clear that up.  Failing to clear the metadata is much
+    // more harmful.
+    GridService port = this.instanceGridServicePort;
     this.recordServiceDisconnected();
+    this.instanceGridServicePort.destroy();
   }
   
 
