@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <registryFilename>org/astrogrid/registry/registry.xml</registryFilename>
+</parameters>

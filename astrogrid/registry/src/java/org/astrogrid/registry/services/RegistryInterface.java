@@ -6,6 +6,8 @@
  */
 package org.astrogrid.registry;
 
+import java.sql.SQLException;
+
 /**
  * @author Elizabeth Auden
  *
@@ -17,7 +19,15 @@ public class RegistryInterface {
   public String submitQuery(String query) {
     String queryResponse = new String();
     QueryParser qp = new QueryParser();
-    queryResponse = QueryParser.parseQuery(query);
+    try {
+		queryResponse = QueryParser.parseQuery(query);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (ClassNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	return queryResponse;
   }
 }
