@@ -143,7 +143,7 @@ public class AdministrationDelegate {
     * @param community
     * @return
     */
-   public ArrayList getAccountList(String community) {
+   public ArrayList getAccountList(String community) throws Exception {
       return getAccountList(service.getRemoteAccounts(community));
    }
    
@@ -247,7 +247,7 @@ public class AdministrationDelegate {
     * @param community
     * @return
     */
-   public ArrayList getGroupList(String community) {
+   public ArrayList getGroupList(String community) throws Exception {
       return getGroupList(service.getRemoteGroups(community));  
    }
    
@@ -341,7 +341,7 @@ public class AdministrationDelegate {
     * @throws Exception
     */
    public boolean delCommunity(String ident) throws Exception  {
-      return service.delCommunity(ident);
+      return (null != service.delCommunity(ident));
    }
    
    /**
