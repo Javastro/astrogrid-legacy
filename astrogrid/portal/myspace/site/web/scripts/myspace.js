@@ -152,5 +152,5 @@ function myspace_clipboard_move(srcId, clipId, agslId) {
 }
 
 function myspace_micro_browser(ivornId, agslId, formName, formAction, fieldName, fieldValue) {
-  window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=" + ivornId + "&agsl=" + agslId + "&form_name=" + formName + "&form_action=" + formAction + "&field_name=" + fieldName + "&field_value=" + fieldValue, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+  window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=" + ivornId + "&agsl=" + agslId + "&form_name=" + formName + "&form_action=" + formAction + "&field_name=" + fieldName + "&field_value=" + fieldValue, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
 }
