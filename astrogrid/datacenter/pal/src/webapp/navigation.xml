@@ -28,7 +28,7 @@
          <li><a href='index.html'>Index</a>
          <li><a href="serverStatus.jsp">Status</a>
          <li><a href="viewMetadata.jsp">Metadata</a>
-         <li><a href="admin/GetLog?Log=DEBUG">Log</a>
+         <li><a href="admin/GetLog">Log</a>
       </ul>
    </div>
 </div>
