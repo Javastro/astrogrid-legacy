@@ -1,4 +1,4 @@
-/* $Id: LoginActionWithConfigTest.java,v 1.1 2004/04/05 16:39:52 jdt Exp $
+/* $Id: LoginActionWithConfigTest.java,v 1.2 2004/04/21 13:56:29 jdt Exp $
  * Created on Apr 2, 2004 by jdt
  * The portal-head project
  * (c) 2004 
@@ -112,33 +112,14 @@ public class LoginActionWithConfigTest extends TestCase {
             return; //expected
         }
     }
-    
-    /**
-     * This is using a registry that I know exists
-     * @throws LoginException it shouldn't
-     * @TODO move this into integrationTests
-     * @TODO try variations: no login, bad community etc
-     */
-    public void testLogin() throws LoginException {
-        final Config config = SimpleConfig.getSingleton();
-        config.setProperty(
-                LoginAction.ORG_ASTROGRID_PORTAL_REGISTRY_URL,
-        "http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry"); 
-        final LoginAction action = new LoginAction();
-        final Map objectModel = new HashMap();
-        final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.USER_PARAM, "dave");
-        request.addParameter(LoginAction.COMMUNITY_PARAM, "org.astrogrid.test.iter-5");
-        request.addParameter(LoginAction.PASS_PARAM, "qwerty");
-        objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
-        Map result = action.act(null, null, objectModel, null, null);
-        assertNotNull("A successful login should have resulted in a nonnull map being returned", result);
-    }
 }
 
 
 /*
  *  $Log: LoginActionWithConfigTest.java,v $
+ *  Revision 1.2  2004/04/21 13:56:29  jdt
+ *  moved a test to integration testing.
+ *
  *  Revision 1.1  2004/04/05 16:39:52  jdt
  *  Moved tests that use configuration to a separate class, 
  *  otherwise they interfere with the unconfigured tests.  Added 
