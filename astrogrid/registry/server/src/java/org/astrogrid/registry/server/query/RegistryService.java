@@ -16,13 +16,17 @@ import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.server.XQueryExecution;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * 
  * The RegistryService class is a web service that submits an XML formatted
  * registry query to the QueryParser class.
- * This delegate helps the user browse the registry.  Queries should be formatted according to
- * the schema at IVOA schema version 0.9.  This class also uses the common RegistryInterface for
- * knowing the web service methods to call on the server side.
+ * This delegate helps the user browse the registry.  Queries should be
+ * formatted according to the schema at IVOA schema version 0.9.  This class
+ * also uses the common RegistryInterface for knowing the web service methods
+ * to call on the server side.
  * 
  * @see org.astrogrid.registry.common.RegistryInterface
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
@@ -31,10 +35,12 @@ import org.astrogrid.registry.server.XQueryExecution;
 public class RegistryService implements
                              org.astrogrid.registry.common.RegistryInterface {
 
+   private static final Log log = LogFactory.getLog(RegistryService.class);
 
    public static Config conf = null;
    
-   private static final String AUTHORITYID_PROPERTY = "org.astrogrid.registry.authorityid";
+   private static final String AUTHORITYID_PROPERTY = 
+                                          "org.astrogrid.registry.authorityid";
    
    static {
       if(conf == null) {
@@ -44,27 +50,33 @@ public class RegistryService implements
 
 
    /**
-   * submitQuery queries the registry with the same XML document used as fullNodeQuery, but
-   * the response comes back in a different record key pair XML formatted document object.
-   * Current implementation uses the fullNodeQuery.  fullNodeQuery may be deprecated at a
-   * later date and this method reestablished as the main method to use.
+   * submitQuery queries the registry with the same XML document used as 
+   * fullNodeQuery, but the response comes back in a different record key pair
+   * XML formatted document object. Current implementation uses the 
+   * fullNodeQuery.  fullNodeQuery may be deprecated at a later date and this 
+   * method reestablished as the main method to use.
    * 
    * @param query XML document object representing the query language used on the registry.
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */
    public Document submitQuery(Document query) {
+      log.debug("start submitQuery");
       long beginQ = System.currentTimeMillis();
       Document registryDoc = null;
-      System.out.println("received = " + DomHelper.DocumentToString(query));    
-   	registryDoc = XQueryExecution.parseQuery(query);
+      log.info("received = " + DomHelper.DocumentToString(query));    
+         registryDoc = XQueryExecution.parseQuery(query);
       if(registryDoc != null)
-         System.out.println("the registryDoc = " + DomHelper.DocumentToString(registryDoc));
-      System.out.println("Time taken to complete submitQuery on server = " + (System.currentTimeMillis() - beginQ));
+         log.info("the registryDoc = " + DomHelper.
+                                         DocumentToString(registryDoc));
+      log.info("Time taken to complete submitQuery on server = " +
+               (System.currentTimeMillis() - beginQ));
+      log.debug("end submitQuery");
       return registryDoc;
    }
    
    public Document loadRegistry(Document query) {
+      log.debug("start loadRegistry");
       long beginQ = System.currentTimeMillis();
       String authorityID = conf.getString(AUTHORITYID_PROPERTY);
       authorityID = authorityID.trim();
@@ -72,31 +84,38 @@ public class RegistryService implements
       Document responseDoc = null;
       
       String selectQuery = "<query><selectionSequence>" +
-      "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
-      "<selectionOp op='$and$'/>" +
-      "<selection item='AuthorityID' itemOp='EQ' value='" + authorityID + "'/>" +
-      "<selectionOp op='AND'/>" +
-      "<selection item='@*:type' itemOp='EQ' value='RegistryType'/>"  +
-      "</selectionSequence></query>";
+            "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+            "<selectionOp op='$and$'/>" +
+            "<selection item='AuthorityID' itemOp='EQ' value='" +
+                authorityID + "'/>" +
+            "<selectionOp op='AND'/>" +
+            "<selection item='@*:type' itemOp='EQ' value='RegistryType'/>"  +
+         "</selectionSequence></query>";
       
       try {
          Reader reader2 = new StringReader(selectQuery);
          InputSource inputSource = new InputSource(reader2);
          DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         registryBuilder = DocumentBuilderFactory.
+                           newInstance().newDocumentBuilder();
          doc = registryBuilder.parse(inputSource);
       }catch(ParserConfigurationException pce) {
          pce.printStackTrace();
+         log.error(pce);
       }catch(IOException ioe) {
          ioe.printStackTrace();
+         log.error(ioe);
       }catch(SAXException sax) {
          sax.printStackTrace();
+         log.error(sax);
       }
       
       if(doc != null) {
          responseDoc = XQueryExecution.parseQuery(doc);
       }
-      System.out.println("Time taken to complete loadRegistry on server = " + (System.currentTimeMillis() - beginQ));
+      log.info("Time taken to complete loadRegistry on server = " +
+               (System.currentTimeMillis() - beginQ));
+      log.debug("end loadRegistry");
       return responseDoc;
    }
 }

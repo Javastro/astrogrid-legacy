@@ -33,6 +33,8 @@ import java.util.Vector;
 import org.apache.axis.client.Call; 
 import org.apache.axis.client.Service; 
 import org.apache.axis.message.SOAPBodyElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
@@ -46,9 +48,10 @@ import org.astrogrid.registry.common.XSLHelper;
  * 
  * The RegistryService class is a web service that submits an XML formatted
  * registry query to the QueryParser class.
- * This delegate helps the user browse the registry.  Queries should be formatted according to
- * the schema at IVOA schema version 0.9.  This class also uses the common RegistryInterface for
- * knowing the web service methods to call on the server side.
+ * This delegate helps the user browse the registry.  Queries should be
+ * formatted according to the schema at IVOA schema version 0.9.  This class
+ * also uses the common RegistryInterface for knowing the web service methods
+ * to call on the server side.
  * 
  * @see org.astrogrid.registry.common.RegistryInterface
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
@@ -57,7 +60,10 @@ import org.astrogrid.registry.common.XSLHelper;
 public class RegistryHarvestService implements
                       org.astrogrid.registry.common.RegistryHarvestInterface {
   
-   private static final String HARVEST_TEMPLATE_URL_PROPERTY = "org.astrogrid.registry.harvest.template.url";
+   private static final Log log = 
+                          LogFactory.getLog(RegistryHarvestService.class);
+   private static final String HARVEST_TEMPLATE_URL_PROPERTY = 
+                          "org.astrogrid.registry.harvest.template.url";
   
    public static Config conf = null;
    
@@ -68,56 +74,68 @@ public class RegistryHarvestService implements
    }
   
   /**
-    * Queries it's own registry for all the Registry entries and performs a harvest on those registries.
+    * Queries it's own registry for all the Registry entries and performs a 
+    * harvest on those registries.
     * 
     * @param registry This parameter is normally null.  Kicks off returning everything manged by this registry.
     * @return XML docuemnt object representing the result of the query. Used internally.
     * @author Kevin Benson 
     */  
    public Document harvest(Document registry) {
+      log.debug("start harvest");
       try {
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
-         //NodeList regNL = registryDoc.getElementsByTagNameNS("vg","ManagedAuthority" );
-         NodeList regNL = RegistryFileHelper.findNodeListFromXML("ManagedAuthority",registry.getDocumentElement());
+         //NodeList regNL = registryDoc.getElementsByTagNameNS("vg",
+         //                                               "ManagedAuthority" );
+         NodeList regNL = RegistryFileHelper.
+                             findNodeListFromXML("ManagedAuthority",
+                                                registry.getDocumentElement());
          //Okay for some reason vg seems to pick up the ManagedAuthority.
          //Lets try to find it by the url namespace.
-         /*
-         if(regNL.getLength() == 0) {
-            regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
-         }
-
-         if(regNL.getLength() == 0) {
-            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
-         }
-         */
+//
+//         if(regNL.getLength() == 0) {
+//            regNL = registryDoc.getElementsByTagNameNS(
+//                                  "http://www.ivoa.net/xml/VORegistry/v0.2",
+//                                  "ManagedAuthority" );
+//         }
+//
+//         if(regNL.getLength() == 0) {
+//            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
+//         }
 
          
-         //NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
+         //NodeList regNL = registryDoc.getElementsByTagNameNS(
+         //      "http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
          String selectQuery = "<query><selectionSequence>" +
               "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
               "<selectionOp op='$and$'/>";
          if(regNL.getLength() > 0) {
             selectQuery +=  
-            "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(0).getFirstChild().getNodeValue() + "'/>";
+            "<selection item='AuthorityID' itemOp='EQ' value='" + 
+            regNL.item(0).getFirstChild().getNodeValue() + "'/>";
          }
          for(int i = 1;i < regNL.getLength();i++) {
             selectQuery += "<selectionOp op='OR'/>" +
-            "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(i).getFirstChild().getNodeValue() + "'/>";
+            "<selection item='AuthorityID' itemOp='EQ' value='" +
+            regNL.item(i).getFirstChild().getNodeValue() + "'/>";
          }
          selectQuery += "</selectionSequence></query>";      
          
          Reader reader2 = new StringReader(selectQuery);
          InputSource inputSource = new InputSource(reader2);
          DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         registryBuilder = DocumentBuilderFactory.newInstance().
+                                                  newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
          
          Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
          e.printStackTrace();
+         log.error(e);
       }   
+      log.debug("end harvest");
       return null;
   }
   
@@ -129,6 +147,7 @@ public class RegistryHarvestService implements
     * @author Kevin Benson 
     */  
    public Document harvestFrom(Document dateDom) {
+      log.debug("start harvestFrom");
       try {
          if(dateDom == null)
             return harvest(dateDom);
@@ -143,42 +162,51 @@ public class RegistryHarvestService implements
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
         
-         //NodeList regNL = registryDoc.getElementsByTagNameNS("vg","ManagedAuthority" );
-         NodeList regNL = RegistryFileHelper.findNodeListFromXML("ManagedAuthority",registryDoc.getDocumentElement());         
+         //NodeList regNL = registryDoc.getElementsByTagNameNS("vg",
+         //                                               "ManagedAuthority" );
+         NodeList regNL = RegistryFileHelper.
+                          findNodeListFromXML("ManagedAuthority",
+                                             registryDoc.getDocumentElement());
          //Okay for some reason vg seems to pick up the ManagedAuthority.
          //Lets try to find it by the url namespace.
-         /*
-         if(regNL.getLength() == 0) {
-            regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
-         }
-
-         if(regNL.getLength() == 0) {
-            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
-         }
-         */
+//
+//         if(regNL.getLength() == 0) {
+//            regNL = registryDoc.getElementsByTagNameNS(
+//                                    "http://www.ivoa.net/xml/VORegistry/v0.2",
+//                                    "ManagedAuthority" );
+//         }
+//
+//         if(regNL.getLength() == 0) {
+//            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
+//         }
          
          String selectQuery = "<query><selectionSequence>" +
-             "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+             "<selection item='searchElements' itemOp='EQ' value='Resource'/>"+
              "<selectionOp op='$and$'/>" + 
-             "<selection item='@updated' itemOp='AFTER' value='" + updateVal + "'/>";;
+             "<selection item='@updated' itemOp='AFTER' value='" + updateVal 
+                + "'/>";;
          if(regNL.getLength() > 0) {
             selectQuery +=  
-            "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(0).getFirstChild().getNodeValue() + "'/>";
+            "<selection item='AuthorityID' itemOp='EQ' value='" +
+            regNL.item(0).getFirstChild().getNodeValue() + "'/>";
          }
          for(int i = 1;i < regNL.getLength();i++) {
             selectQuery += "<selectionOp op='OR'/>" +
-            "<selection item='AuthorityID' itemOp='EQ' value='" + regNL.item(i).getFirstChild().getNodeValue() + "'/>";
+            "<selection item='AuthorityID' itemOp='EQ' value='" +
+            regNL.item(i).getFirstChild().getNodeValue() + "'/>";
          }
          selectQuery += "</selectionSequence></query>";      
          Reader reader2 = new StringReader(selectQuery);
          InputSource inputSource = new InputSource(reader2);
          DocumentBuilder registryBuilder = null;
-         registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+         registryBuilder = DocumentBuilderFactory.newInstance().
+                                                  newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
          Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
         e.printStackTrace();
+        log.error(e);
       }   
       return null;
    }  
@@ -192,21 +220,29 @@ public class RegistryHarvestService implements
     * @author Kevin Benson 
     */  
    public Document harvestResource(Document resources){
-      System.out.println("update harvestResource");
-      //System.out.println("THE RESOURCES IN HARVESTRESOURCE = " +  DomHelper.DocumentToString(resources));
-      //NodeList voList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
-      //NodeList voList = RegistryFileHelper.findNodeListFromXML("VoDescription",resources.getDocumentElement());
+      log.debug("start harvestResource");
+      log.info("update harvestResource");
+      //log.info("THE RESOURCES IN HARVESTRESOURCE = " +  
+      //         DomHelper.DocumentToString(resources));
+      //NodeList voList = resources.getElementsByTagNameNS(
+      //            "http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
+      //NodeList voList = RegistryFileHelper.
+      //                  findNodeListFromXML("VoDescription",
+      //                                      resources.getDocumentElement());
       //This next statement will go away with Castor.
       //ArrayList al = new ArrayList();
       RegistryAdminService ras = new RegistryAdminService();
 
       XSLHelper xs = new XSLHelper();
-      Document resourceChange = xs.transformDatabaseProcess((Node)resources.getDocumentElement());
+      Document resourceChange = xs.transformDatabaseProcess(
+                                (Node)resources.getDocumentElement());
       Node harvestCopy = resourceChange.cloneNode(true);
       ras.updateNoCheck(resourceChange);
-      System.out.println("THE RESOURCECHANGE IN HARVESTRESOURCE1 = " +  DomHelper.DocumentToString((Document)harvestCopy));
+      log.info("THE RESOURCECHANGE IN HARVESTRESOURCE1 = " +
+               DomHelper.DocumentToString((Document)harvestCopy));
       beginHarvest(null,(Document)harvestCopy);
-      System.out.println("exiting harvestResource");
+      log.info("exiting harvestResource");
+      log.debug("end harvestResource");
       return null;
    }
    
@@ -219,33 +255,38 @@ public class RegistryHarvestService implements
      * @author Kevin Benson 
      */  
    public Document harvestFromResource(Document resource) {
+      log.debug("start harvestFromResource");
       RegistryAdminService ras = new RegistryAdminService();
       XSLHelper xs = new XSLHelper();
-      Document resourceChange = xs.transformDatabaseProcess((Node)resource.getDocumentElement());
-      
-         
-          //Now get the dateFrom element value as well.
+      Document resourceChange = xs.transformDatabaseProcess(
+                                   (Node)resource.getDocumentElement());
+      //Now get the dateFrom element value as well.
       ras.update(resourceChange);             
       beginHarvest(null,resourceChange);
+      log.debug("end harvestFromResource");
       return null;         
    }
    
    
    /**
-       * Grabs Registry entries from a DOM object and performs harvests on those registries. Normally the DOM
-       * object will only have 1 registry entry, but may contain more. Used externally by clients.
+       * Grabs Registry entries from a DOM object and performs harvests on
+       * those registries. Normally the DOM object will only have one registry
+       * entry, but may contain more. Used externally by clients.
        * 
        * @param resources XML document object representing the query language used on the registry.
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson 
        */  
    public Document harvestAll(Document resources) {
-         Document harvestedDoc = null;
-         //This next statement will go away with Castor.            
-         //NodeList nl = query.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
-      if(resources != null && resources.getElementsByTagName("VODescription").getLength() > 0) {
+      log.debug("start harvestAll");
+      Document harvestedDoc = null;
+      //This next statement will go away with Castor.            
+      //NodeList nl = query.getElementsByTagNameNS(
+      //              "http://www.ivoa.net/xml/VOResource/v0.9","Identifier");
+      if(resources != null && resources.getElementsByTagName("VODescription").
+                                        getLength() > 0) {
          return harvestResource(resources);   
-      }else {
+      } else {
          return harvestResource(harvest(null));   
       }
    }
@@ -267,18 +308,26 @@ private class HarvestThread extends Thread {
 }
       
    public void beginHarvest(Date dt, Document resources) {
-      System.out.println("entered beginharvest");
+      log.debug("start beginHarvest");
+      log.info("entered beginharvest");
       String accessURL = null;
       String invocationType = null;
       Document doc = null;
       RegistryAdminService ras = new RegistryAdminService();
-      //System.out.println("THE FULL RESOURCES IN BEGINHARVEST = " + DomHelper.DocumentToString(resources));
-      NodeList resourceList = RegistryFileHelper.findNodeListFromXML("vr","Resource",resources.getDocumentElement());
-      //System.out.println("the getLength = " + resourceList.getLength());
+      //log.info("THE FULL RESOURCES IN BEGINHARVEST = " + 
+      //         DomHelper.DocumentToString(resources));
+      NodeList resourceList = RegistryFileHelper.
+                                 findNodeListFromXML("vr","Resource",
+                                              resources.getDocumentElement());
+      //log.info("the getLength = " + resourceList.getLength());
       for(int i = 0; i < resourceList.getLength();i++) {
-         accessURL = RegistryFileHelper.findValueFromXML("AccessURL",(Element)resourceList.item(i));
-         invocationType = RegistryFileHelper.findValueFromXML("Invocation",(Element)resourceList.item(i));
-         System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
+         accessURL = RegistryFileHelper.findValueFromXML("AccessURL",
+                        (Element)resourceList.item(i));
+         invocationType = RegistryFileHelper.
+                             findValueFromXML("Invocation",
+                             (Element)resourceList.item(i));
+         log.info("The access URL = " + accessURL + " invocationType = " + 
+                  invocationType);
          if("WEBSERVICE".equals(invocationType)) {
             //call the service
             //remeber to look at the date
@@ -287,51 +336,66 @@ private class HarvestThread extends Thread {
             }
             WSDLBasicInformation wsdlBasic = null;
             try {
-               wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
+               wsdlBasic = WSDLInformation.
+                           getBasicInformationFromURL(accessURL);
             }catch(RegistryException re) {
-               re.printStackTrace();   
+               re.printStackTrace();
+               log.error(re);   
             }
             if(wsdlBasic != null) {
-               System.out.println("calling call obj with endpoint = " + (String)wsdlBasic.getEndPoint().values().iterator().next());
-               Call callObj = getCall((String)wsdlBasic.getEndPoint().values().iterator().next());
+               log.info("calling call obj with endpoint = " +
+                   (String)wsdlBasic.getEndPoint().values().iterator().next());
+               Call callObj = getCall((String)wsdlBasic.getEndPoint().
+                              values().iterator().next());
                DocumentBuilder registryBuilder = null;
                try {
-                  DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                  DocumentBuilderFactory dbf = DocumentBuilderFactory.
+                                               newInstance();
                   dbf.setNamespaceAware(true);
                   registryBuilder = dbf.newDocumentBuilder();
                   doc = registryBuilder.newDocument();
                   Element root = null;
                   String interfaceMethod = "ListResources";
-                  String nameSpaceURI = WSDLInformation.getNameSpaceFromBinding(accessURL,interfaceMethod);
+                  String nameSpaceURI = WSDLInformation.
+                            getNameSpaceFromBinding(accessURL,interfaceMethod);
                   root = doc.createElementNS(nameSpaceURI,interfaceMethod);
                   doc.appendChild(root);
-                  System.out.println("Creating soap request for operation name = " + interfaceMethod + " with namespaceuri = " + nameSpaceURI);
-                     //System.out.println("the doc webservice = " + DomHelper.DocumentToString(doc));
-                  SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-                     //sbeRequest.setName("harvestAll");
+                  log.info("Creating soap request for operation name = " +
+                            interfaceMethod + " with namespaceuri = " +
+                            nameSpaceURI);
+                  //log.info("the doc webservice = " + DomHelper.
+                  //                                   DocumentToString(doc));
+                  SOAPBodyElement sbeRequest = new SOAPBodyElement(
+                                                   doc.getDocumentElement());
+                  //sbeRequest.setName("harvestAll");
                   sbeRequest.setName(interfaceMethod);
                   sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
-                  Vector result = (Vector) callObj.invoke (new Object[] {sbeRequest});
+                  Vector result = (Vector) callObj.invoke 
+                                           (new Object[] {sbeRequest});
                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
                   (new HarvestThread(ras,sbe.getAsDocument())).start();
-               }catch(RemoteException re) {
+               } catch(RemoteException re) {
                  //log error
-                 re.printStackTrace();   
+                 re.printStackTrace();
+                 log.error(re);   
                }catch(ParserConfigurationException pce) {
                   pce.printStackTrace();   
+                 log.error(pce);   
                }catch(Exception e) {
                   e.printStackTrace();   
+                 log.error(e);   
                }
             }
          }else if("WebBrowser".equals(invocationType)) {
             try {
                String ending = "";
-               //might need to put some oai date stuff on the end.  This is unknown.
-               //System.out.println("inside the web broser");
+               //might need to put some oai date stuff on the end.  This is 
+               //unknown.
+               log.info("inside the web browser");
             
                if(accessURL.indexOf("?") == -1) {
                   ending = "?verb=ListRecords"; //&from=" + date;   
-               }else {
+               } else {
                   /*
                   if(accessURL.indexOf("verb") == -1)
                      ending = "&verb=ListRecords&from=" + date;
@@ -340,34 +404,45 @@ private class HarvestThread extends Thread {
                   */
                }
             
-               System.out.println("Grabbing Document from this url = " + accessURL + ending);           
+               log.info("Grabbing Document from this url = " +
+                        accessURL + ending);           
                doc = DomHelper.newDocument(new URL(accessURL + ending));
-               //System.out.println("Okay got this far to reading the url doc = " + DomHelper.DocumentToString(doc));
-               
+               log.info("Okay got this far to reading the url doc = " + 
+                        DomHelper.DocumentToString(doc));
                (new HarvestThread(ras,doc)).start();
                NodeList moreTokens = null;
-               //System.out.println("resumptionToken length = " + doc.getElementsByTagName("resumptionToken").getLength());
-               while( (moreTokens = doc.getElementsByTagName("resumptionToken")).getLength() > 0) {
+               //log.info("resumptionToken length = " + 
+               //         doc.getElementsByTagName("resumptionToken").
+               //         getLength());
+               while( (moreTokens = doc.getElementsByTagName(
+                                        "resumptionToken")).getLength() > 0) {
                   Node nd = moreTokens.item(0);
                   if(accessURL.indexOf("?") != -1) {
                      accessURL = accessURL.substring(0,accessURL.indexOf("?"));
                   }
-                  ending = "?verb=ListRecords&resumptionToken=" + nd.getFirstChild().getNodeValue();
-                  System.out.println("the harvestcallregistry's accessurl inside the token calls = " + accessURL + ending);
+                  ending = "?verb=ListRecords&resumptionToken=" + 
+                            nd.getFirstChild().getNodeValue();
+                  log.info(
+              "the harvestcallregistry's accessurl inside the token calls = " +
+                          accessURL + ending);
                   doc = DomHelper.newDocument(new URL(accessURL + ending));
                   System.out.println("INSIDE THE MORETOKENS = " + DomHelper.DocumentToString(doc) + " resumption token length = " + doc.getElementsByTagName("resumptionToken").getLength() );
                   (new HarvestThread(ras,doc)).start();
                }//while
             }catch(ParserConfigurationException pce) {
                pce.printStackTrace();
+               log.error(pce);   
             }catch(SAXException sax) {
                sax.printStackTrace();   
+               log.error(sax);   
             }catch(IOException ioe){
                ioe.printStackTrace();   
+               log.error(ioe);   
             }
          }//elseif
       }//for
-      System.out.println("exiting beghinHarvest");
+      log.info("exiting beginHarvest");
+      log.debug("end beginHarvest");
    }//beginHarvest
 
    /**
@@ -377,6 +452,7 @@ private class HarvestThread extends Thread {
     * @author Kevin Benson
     */     
    private Call getCall(String endPoint) {
+      log.debug("start getCall");
       Call _call = null;
       try {
          Service  service = new Service();      
@@ -388,9 +464,11 @@ private class HarvestThread extends Thread {
          _call.setEncodingStyle(null);
       } catch(ServiceException se) {
          se.printStackTrace();
+         log.error(se);
          _call = null;            
       }finally {
-         return _call;
+         log.debug("end getCall");
       }       
+      return _call;
    }//getCall
 }
