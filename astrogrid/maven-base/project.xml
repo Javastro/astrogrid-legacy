@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.5 2004/02/06 11:49:41 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.6 2004/02/06 13:13:58 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -14,16 +14,16 @@
     <inceptionYear>2002</inceptionYear>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <package>org.astrogrid</package>
-    <siteDirectory>/var/www/www/maven/build/${pom.artifactId}</siteDirectory>
+    <siteDirectory>/var/www/www/maven/build/${pom.name}</siteDirectory>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <repository>
         <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${pom.artifactId} 
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${pom.name} 
             </connection>
         <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${pom.artifactId} 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${pom.name} 
             </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/${pom.artifactId}/ 
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/${pom.name}/ 
             </url>
     </repository>
     <build>
