@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 00:04:53 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/03 15:17:17 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsp,v $
+    | Revision 1.4  2003/07/03 15:17:17  dave
+    | Updated list of MySpace services for demo
+    |
     | Revision 1.3  2003/06/30 00:04:53  dave
     | Added initial astrogrid style
     |
@@ -123,6 +126,7 @@
 					<xsp:attribute name="name">Leicester (hydra)</xsp:attribute>
 					<xsp:attribute name="url">http://hydra.star.le.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
+<!-- Removed for demo version
 				<xsp:element name="service">
 					<xsp:attribute name="name">Leicester (qin)</xsp:attribute>
 					<xsp:attribute name="url">http://qin.star.le.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
@@ -131,6 +135,7 @@
 					<xsp:attribute name="name">Cambridge (dave)</xsp:attribute>
 					<xsp:attribute name="url">http://capc49.ast.cam.ac.uk:8080/axis/services/MySpaceManager</xsp:attribute>
 				</xsp:element>
+-->
 				<xsp:element name="service">
 					<xsp:attribute name="name">Localhost </xsp:attribute>
 					<xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
