@@ -1,21 +1,24 @@
 /*
- * $Id: SocketDelegate.java,v 1.1 2003/09/09 17:55:49 mch Exp $
+ * $Id: SocketDelegate.java,v 1.2 2003/09/11 16:16:07 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
-
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
-import org.w3c.dom.Element;
-
 import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.log.Log;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+import sun.security.krb5.internal.crypto.e;
 
 /**
  * A standard AstroGrid datacenter delegate implementation.
@@ -28,7 +31,20 @@ import org.astrogrid.log.Log;
 
 public class SocketDelegate extends DatacenterDelegate
 {
+   /** The socket connection - opened when the instance is constructed */
    private Socket socket = null;
+   
+   /** Output stream to the socket connection */
+   private DataOutputStream out = null;
+
+   /** Input stream from the socket connection */
+   private DataInputStream in = null;
+
+   /** String used to request registry metadata */
+   public final static String REQ_REG_METADATA = "Give me registry metadata please!";
+   
+   /** String used to request metadata */
+   public final static String REQ_METADATA = "Give me metadata please!";
 
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
@@ -38,6 +54,21 @@ public class SocketDelegate extends DatacenterDelegate
    {
       socket = new Socket(socketAddress.getAddress(), socketAddress.getPort());
    }
+
+   /** Don't use this directly - use the factory method
+    * DatacenterDelegate.makeDelegate() in case we need to create new sorts
+    * of datacenter delegates in the future...
+    */
+   public SocketDelegate(String endPoint) throws IOException
+   {
+      //parse string to extract address & port
+      endPoint = endPoint.substring(9); //remove 'socket://'
+      int colon = endPoint.indexOf(":");
+      String address = endPoint.substring(0,colon);
+      int port = Integer.parseInt(endPoint.substring(colon+1));
+      socket = new Socket(address, port);
+   }
+
 
    /**
     * Sets the timeout for calling the service - ie how long after the initial call
@@ -113,6 +144,22 @@ public class SocketDelegate extends DatacenterDelegate
     */
    public Element getRegistryMetadata() throws IOException
    {
+      out.writeChars(REQ_REG_METADATA);
+      
+      try
+      {
+         XMLUtils.newDocument(in);
+      }
+      catch (ParserConfigurationException e)
+      {
+         throw new RuntimeException("Application not set up correctly",e);
+      }
+      catch (SAXException e)
+      {
+         throw new IOException("Response from server not XML: "+e);
+      }
+         
+      
       throw new UnsupportedOperationException();
    }
 
@@ -138,6 +185,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.2  2003/09/11 16:16:07  mch
+Correction for 'socket' protocol, plus get registry metadata added
+
 Revision 1.1  2003/09/09 17:55:49  mch
 New Delegate for socket datacenter servers
 
