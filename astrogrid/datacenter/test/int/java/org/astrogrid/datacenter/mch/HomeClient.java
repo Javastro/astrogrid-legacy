@@ -5,19 +5,12 @@
 
 package org.astrogrid.datacenter.mch;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.io.IOException;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.queriers.Query;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
-import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.service.SocketServer;
 import org.astrogrid.log.Log;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -48,13 +41,17 @@ public class HomeClient
          Log.starting();
 
          //create a delegate to talk to it
-         DatacenterDelegate delegate = DatacenterDelegate.makeDelegate("socket://localhost:"+SocketServer.DEFAULT_PORT);
+         DatacenterDelegate delegate = DatacenterDelegate.makeDelegate("socket://kubwa:"+SocketServer.DEFAULT_PORT);
 
-         Log.trace("Pausing...");
-         Thread.currentThread().sleep(5000);
+//         Log.trace("Pausing...");
+//         Thread.currentThread().sleep(5000);
 
          //basic tests
          Element voRegistry = delegate.getRegistryMetadata();
+
+         //query test
+         InputStream in = HomeClient.class.getResourceAsStream("adqlQuery.xml");
+         Element results = delegate.query(XMLUtils.newDocument(in).getDocumentElement());
           /**/
       }
       catch (Exception e)
@@ -66,6 +63,9 @@ public class HomeClient
 
 /*
  $Log: HomeClient.java,v $
+ Revision 1.2  2003/09/15 23:01:06  mch
+ fix for delegate method rename
+
  Revision 1.1  2003/09/14 19:49:46  mch
  Tester for home environment
 
