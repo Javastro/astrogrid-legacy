@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.5 2004/03/07 21:04:39 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.6 2004/03/12 15:32:14 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,9 @@ import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
@@ -40,6 +43,7 @@ import junit.framework.TestSuite;
  *
  */
 public class ApplicationControllerDispatcher implements Dispatcher , ComponentDescriptor{
+    private static final Log logger = LogFactory.getLog(ApplicationControllerDispatcher.class); 
     /** Configuration component for Application Controller Dispatcher
      * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
      *
@@ -54,6 +58,7 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
         this.locator = locator;
         this.monitorURL = endpoint.getURL();
         assert monitorURL != null;
+        logger.info("monitor URL set to " + monitorURL.toString());
     }
     protected final Locator locator;
     protected final URL monitorURL;
@@ -62,14 +67,16 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
      */
     public void dispatchStep( Workflow job, Step js) throws JesException {
         boolean succeeded = false;
-        try {
+
         String toolLocation = locator.locateTool(js);
         ApplicationController appController = DelegateFactory.createDelegate(toolLocation);
 
         User user = buildUser(job);
         ParameterValues params = buildParameterValues(js);
-            String xpath = null;
+            String xpath = job.getXPathFor(js);
             JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),xpath);
+            logger.debug("Calling application controller at " + toolLocation + " for " + js.getTool().getName() + ", " + id.getValue());
+            try {
             String applicationID = appController.initializeApplication( js.getTool().getName() 
                                                                        , id.getValue()
                                                                        , monitorURL.toString()
@@ -78,9 +85,11 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
                                                                         
             succeeded = appController.executeApplication( applicationID ) ;
             if (! succeeded) {
-                throw new JesException("Application controller failed with unspecified error");
+                logger.error(id.getValue() + " : Appcontroller failed with unspecified error - just returned false");
+                throw new JesException("Application controller failed with unspecified error - just returned false");
             }
         } catch (RemoteException re) {
+            logger.error(id.getValue() + " : Failed to communitcate with application controller",re);
             throw new JesException("Failed to communicate with application controller",re);
         } 
          
@@ -103,6 +112,7 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
         StringWriter sw = new StringWriter();
         js.getTool().marshal(sw);
         sw.close();
+        logger.debug("ParameterSpec := " + sw.toString());
         params.setParameterSpec(sw.toString());
         return params;
         } catch (Exception e) {
@@ -160,6 +170,9 @@ public class ApplicationControllerDispatcher implements Dispatcher , ComponentDe
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.6  2004/03/12 15:32:14  nw
+improved logging
+
 Revision 1.5  2004/03/07 21:04:39  nw
 merged in nww-itn05-pico - adds picocontainer
 

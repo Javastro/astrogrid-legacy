@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.4 2004/03/07 21:04:38 nw Exp $
+/*$Id: MapLocator.java,v 1.5 2004/03/12 15:32:14 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,9 @@ import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -35,6 +38,7 @@ import junit.framework.TestSuite;
  *
  */
 public class MapLocator implements Locator, ComponentDescriptor {
+    protected static final Log logger = LogFactory.getLog(MapLocator.class);
     /** Construct a new MapToolLocator
      * 
      */
@@ -53,6 +57,7 @@ public class MapLocator implements Locator, ComponentDescriptor {
      */
     public String locateTool(Step js) throws JesException{
         ToolInfo nfo = getToolInfo(js);
+        logger.debug("tool location for " + js.getTool().getName() + " :=" + nfo.getLocation());
         return nfo.getLocation();
         
     }
@@ -176,6 +181,9 @@ public class MapLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.5  2004/03/12 15:32:14  nw
+improved logging
+
 Revision 1.4  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 

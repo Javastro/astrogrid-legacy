@@ -45,6 +45,9 @@ public class JobScheduler implements org.astrogrid.jes.comm.JobScheduler, Compon
      * @param policy interface to something that determines which job steps to execute next
      */
     public JobScheduler(BeanFacade facade,Dispatcher dispatcher,Policy policy) {
+        assert facade != null;
+        assert dispatcher != null;
+        assert policy != null;
         this.policy = policy;
         this.facade = facade;
         this.dispatcher = dispatcher;

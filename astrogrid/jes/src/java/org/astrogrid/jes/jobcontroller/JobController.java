@@ -81,6 +81,8 @@ import junit.framework.Test;
 public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController, ComponentDescriptor{
     
     public JobController(BeanFacade facade,SchedulerNotifier nudger) {
+        assert facade != null;
+        assert nudger != null;
         this.facade = facade;
         this.nudger = nudger;
     }
@@ -92,6 +94,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
     
     /** adapter, to enable this class to implement the generated JobController interface */
     public JobURN submitWorkflow(WorkflowString workflowXML) throws JesFault{
+        logger.debug("in submit workflow");
         try {
             SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML.getValue());
             return this.submitJob(req);
@@ -117,6 +120,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	  * Bug#12   Jeff Lusted - 30-June-2003
 	  **/     
     public JobURN submitJob( SubmitJobRequest req ) throws JesFault {
+        logger.debug("in submit job");
 		JobFactory factory = null ;
         Workflow job= null;
 
@@ -174,6 +178,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
      * @todo implement - pass on to jobmonitor
      */
     public void cancelJob(JobURN arg0)  {
+        logger.warn("call to cancelJob - unimplemented");
     }
 
     /**
@@ -181,6 +186,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
      * @todo implement - pass on to jobmonitor.
      */
     public void deleteJob(JobURN arg0){
+        logger.warn("call to deleteJob - unimplemented");
     }
 
     /**
@@ -188,7 +194,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
      */
     public WorkflowSummary[] readJobList(_Account arg0) throws JesFault {
         try {
-            logger.error("in read job list");
+        logger.debug("in read job list");
         JobFactory fac = facade.getJobFactory();
         Iterator i = fac.findUserJobs(JesUtil.axis2castor(arg0));
         List itemList = new ArrayList();
@@ -221,7 +227,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
      */
     public WorkflowString readJob(JobURN arg0) throws JesFault {
         try {
-            logger.error("in readJob()");
+            logger.debug("in readJob()");
         JobFactory fac = facade.getJobFactory();
         Workflow w = fac.findJob(JesUtil.axis2castor(arg0));
         if ( w == null) {

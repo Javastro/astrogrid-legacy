@@ -35,7 +35,7 @@ public class JobMonitor implements org.astrogrid.jes.delegate.v1.jobmonitor.JobM
          
         
     public JobMonitor(SchedulerNotifier nudger) {
-     
+        assert nudger != null;
         this.nudger = nudger; 
 
     }
