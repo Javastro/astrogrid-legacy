@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.7 2004/03/29 17:17:55 jdt Exp $
+ * $Id: ConfManager.java,v 1.8 2004/03/29 17:25:41 jdt Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -16,6 +16,16 @@ import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 /**
  * Deal with properties common to all the tests
+ * This class is mainly deprecated in favour of Martin's
+ * @link org.astrogrid.config package
+ * The main purpose of this class is to load up the properties from a text file
+ * on the class path.
+ * This is the best way to get the config properties:
+ * <verbatim>
+ * Config conf = ConfManager.getConfig();
+ * String myProp = conf.getString("key");
+ * </verbatim>
+ *  
  * @author jdt 
  */
 public final class ConfManager {
@@ -73,7 +83,7 @@ public final class ConfManager {
     }
     /**
      * singleton pattern
-     *
+     * @deprecated 
      * @return the oneandonlyinstance
      */
     public static ConfManager getInstance() {
@@ -90,7 +100,7 @@ public final class ConfManager {
     }
     /**
      * Get the endpoint of our integration test myspace server
-     *
+     * @deprecated use ConfManager.getConfig().getString(key)
      * @return string containing url
      * @throws IOException if we couldn't load the props
      */
@@ -101,6 +111,7 @@ public final class ConfManager {
     }
     /**
      * Gets the jobcontroller endpoint in the integration environment.
+     * @deprecated use ConfManager.getConfig().getString(key)
      *
      * @return the endpoint url
      * @throws IOException if we couldn't load the props
@@ -110,6 +121,7 @@ public final class ConfManager {
     }
     /**
      * Gets the portal website in the integration environment.
+     * @deprecated use ConfManager.getConfig().getString(key)
      *
      * @return the web site url
      * @throws IOException if we couldn't load the props
@@ -144,6 +156,7 @@ public final class ConfManager {
     /**
      * get the endpoint of a datacenter server containing the standard default
      * database (ie, a freshyly installed PAL)
+     * @deprecated use ConfManager.getConfig().getString(key)
      *
      * @return string containing url
      * @throws IOException if we couldn't load the props
@@ -156,6 +169,9 @@ public final class ConfManager {
 }
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.8  2004/03/29 17:25:41  jdt
+ * Added deprecation warnings.
+ *
  * Revision 1.7  2004/03/29 17:17:55  jdt
  * Refactored ConfManager to use the astrogrid config class
  *
