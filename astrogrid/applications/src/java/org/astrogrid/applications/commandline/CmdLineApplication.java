@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.21 2004/04/19 17:34:08 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.22 2004/04/26 15:06:30 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -180,8 +180,19 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          try {
              MessageType ack = new MessageType();
              ack.setContent("The application has completed with exit status="+exitStatus);
-             ack.setLevel(LogLevel.info);
-             ack.setPhase(ExecutionPhase.COMPLETED);
+             if(exitStatus == 0)
+             {
+                ack.setPhase(ExecutionPhase.COMPLETED);
+                ack.setLevel(LogLevel.info);
+
+             }
+             else
+             {
+                //TODO we have phase and level set to info - does it mean anything to have just one of these as an error?
+                ack.setPhase(ExecutionPhase.ERROR);
+                ack.setLevel(LogLevel.error);
+
+             }
              ack.setSource(applicationDescription.getName());
              ack.setTimestamp(Calendar.getInstance());
              
