@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.5 2004/03/11 13:53:36 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.6 2004/03/15 17:01:01 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -128,8 +128,8 @@ public class WorkflowManagerFactory {
      */
     private JobExecutionService buildJes() {
         try {
-            URL url = conf.getUrl(WORKFLOW_JES_ENDPOINT_KEY);
-            log.info(WORKFLOW_JES_ENDPOINT_KEY + " := " + url.toString());
+            String url = conf.getString(WORKFLOW_JES_ENDPOINT_KEY);
+            log.info(WORKFLOW_JES_ENDPOINT_KEY + " := " + url);
              return new JesJobExecutionService(url);
         } catch (PropertyNotFoundException e) {
             log.info("no url found under " + WORKFLOW_JES_ENDPOINT_KEY + ", trying letting delegate configure itself");
@@ -211,6 +211,10 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.6  2004/03/15 17:01:01  nw
+loosened type of endpoint for JesJobExecutionService from URL to String -
+allows the dummy urn:test to be passed in.
+
 Revision 1.5  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 

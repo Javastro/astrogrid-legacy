@@ -1,4 +1,4 @@
-/*$Id: JesJobExecutionService.java,v 1.2 2004/03/11 13:53:36 nw Exp $
+/*$Id: JesJobExecutionService.java,v 1.3 2004/03/15 17:01:01 nw Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,8 +40,8 @@ public class JesJobExecutionService implements JobExecutionService {
     /** Construct a new JesJobExecutionService
      * 
      */
-    public JesJobExecutionService(URL endpoint) {
-        controller = JesDelegateFactory.createJobController(endpoint.toString());
+    public JesJobExecutionService(String endpoint) {
+        controller = JesDelegateFactory.createJobController(endpoint);
     }
     protected final JobController controller;
     /**
@@ -100,6 +100,10 @@ public class JesJobExecutionService implements JobExecutionService {
 
 /* 
 $Log: JesJobExecutionService.java,v $
+Revision 1.3  2004/03/15 17:01:01  nw
+loosened type of endpoint for JesJobExecutionService from URL to String -
+allows the dummy urn:test to be passed in.
+
 Revision 1.2  2004/03/11 13:53:36  nw
 merged in branch bz#236 - implementation of interfaces
 
