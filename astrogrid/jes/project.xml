@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by John Taylor (ROE) -->
-<!-- $Id: project.xml,v 1.29 2003/12/09 16:48:01 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.30 2003/12/16 16:34:06 jl99 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
 	<pomVersion>3</pomVersion>
 	<id>astrogrid-jes</id>
@@ -207,6 +207,15 @@
 				<war.bundle>true</war.bundle>
 			</properties>
 		</dependency>
+		<dependency>
+			<artifactId>mysql-connector-java-3.0.8-stable-bin</artifactId>
+			<groupId>mysql</groupId>
+			<version>3.0.8</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+			<jar>mysql-connector-java-3.0.8-stable-bin.jar</jar>
+		</dependency>		
 		<!--This is for testing only and can be removed from the released build.
      **WARNING** For reasons best known to themselves, the HSQLDB people have omitted to
        package their jdbcDataSource class in this jar.  Hence I've added it explicitly to the
@@ -224,9 +233,9 @@
 			<directory>${basedir}</directory>
 			<includes>
 				<include>src/webapp/WEB-INF/server-config.wsdd</include>
-				<include>${maven.build.dest}/*.xmltemplate</include>
-				<include>${maven.build.dest}/*.xml</include>
-				<include>${maven.build.dest}/*.properties</include>
+				<include>src/webapp/*.ddl</include>
+				<include>src/webapp/WEB-INF/classes/*.xml*</include>
+				<include>src/webapp/WEB-INF/classes/*.properties</include>				
 			</includes>
 		</resource>
 	</resources>
