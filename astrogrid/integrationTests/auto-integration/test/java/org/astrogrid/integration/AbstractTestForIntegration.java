@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.4 2004/07/01 11:47:17 nw Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.5 2004/08/10 11:06:09 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,9 +41,9 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
         super.setUp();
         ag = Astrogrid.getInstance();
         // credentials object
-        acc = ag.getObjectHelper().createAccount(USERNAME,COMMUNITY); // will want to change this to a standard user later.
-        group = ag.getObjectHelper().createGroup("devel",COMMUNITY);
-        creds = ag.getObjectHelper().createCredendtials(acc,group);
+        acc = ag.getObjectBuilder().createAccount(USERNAME,COMMUNITY); // will want to change this to a standard user later.
+        group = ag.getObjectBuilder().createGroup("devel",COMMUNITY);
+        creds = ag.getObjectBuilder().createCredendtials(acc,group);
 
         //equivalent user object
         user = new User();
@@ -86,6 +86,10 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.5  2004/08/10 11:06:09  nw
+fixed breakage due to my refactoring of astrogrid-scripting.
+sorry about that.
+
 Revision 1.4  2004/07/01 11:47:17  nw
 made our integration-test base case extend groboUtils IntegrationTestCase
 this means that 'softAssertions' can be used in any of the integration tests now.
