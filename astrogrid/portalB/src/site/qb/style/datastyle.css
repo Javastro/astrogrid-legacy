@@ -1,0 +1,93 @@
+body
+{
+  background-color: white;
+  color:            black;
+}
+
+h1
+{
+  color:            blue;
+  text-align:       center;
+  vertical-align:   middle;
+  font-size:        xx-large;
+  
+  width:            100%;
+}
+
+img.logo
+{
+  border:       0;
+}
+
+input.submit
+{
+  text-align:   center;
+  font-size:    large;
+  font-style:   italic;
+  font-weight:  bold;
+}
+
+p.caption
+{
+  text-align:   center;
+  font-style:   italic;
+  font-weight:  bold;
+}
+
+p.error-text
+{
+  color:        red;
+  text-align:   center;
+  font-style:   italic;
+  font-weight:  bold;
+}
+
+p.notes
+{
+  color:        white;
+}
+/*
+p.notes
+{
+  color:        red;
+  text-align:   center;
+  font-size:    small;
+  font-style:   italic;
+  font-weight:  bold;
+}
+*/
+
+p.question
+{
+  text-align:   right;
+  font-style:   italic;
+  font-weight:  bold;
+}
+
+table.form
+{
+/*
+  background-image: url(aglogo.png);
+*/
+  border:           0;
+}
+
+table.header
+{
+  border:           0;
+  border-spacing:   0;
+  padding:          0;
+  width:            100%;
+}
+
+td.h1
+{
+  background-color: lightgrey;
+  width:            100%;
+}
+
+td.space
+{
+  background-color: blue;
+  width:            100%;
+}
