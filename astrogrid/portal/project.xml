@@ -9,9 +9,10 @@
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <pomVersion>3</pomVersion>
   
-  <id>AstroGridPortal</id>
+  <id>astrogrid-portal</id>
   <name>AstroGrid Portal</name>
-  
+  <groupId>astrogrid-portal</groupId>
+
   <currentVersion>HEAD</currentVersion>
   
   <organization>
@@ -77,38 +78,15 @@
     <dependency>
       <id>log4j</id>
       <version>1.2.8</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
 
     <!--
       Cocoon.
       -->
       &cocoon-deps;
-<!--
-    <dependency>
-      <id>avalon-framework</id>
-      <version>4.1.4</version>
-    </dependency>
-
-    <dependency>
-      <id>cocoon</id>
-      <version>2.1.2</version>
-    </dependency>
-
-    <dependency>
-      <id>commons-jxpath</id>
-      <version>1.1</version>
-    </dependency>
-
-    <dependency>
-      <id>excalibur-pool</id>
-      <version>1.2</version>
-    </dependency>
-
-    <dependency>
-      <id>excalibur-sourceresolve</id>
-      <version>20030715</version>
-    </dependency>
--->
   </dependencies>
   
   <build>
