@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.7 2003/09/17 14:53:02 nw Exp $
+/*$Id: TestInstallation.java,v 1.8 2003/09/17 18:52:12 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,9 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -170,12 +172,44 @@ public class TestInstallation extends TestCase {
         try {
             Element result = del.getRegistryMetadata();
             assertNotNull(result);
-            assertEquals("Registry Metadata not in expected format","DataCenterMetaData",result.getLocalName());
+            assertEquals("Registry Metadata not in expected format","DataCenterMetadata",result.getLocalName());
+            System.out.println("Registry Metadata:");
+            System.out.println(XMLUtils.ElementToString(result));
         } catch (IOException e) {
             e.printStackTrace();
             fail("Could not get registryMetaData: " + e.getMessage());
         }
     }
+
+    /** do a standard (blocking) query for each query file found */
+    public void testDoBlockingQuery()  {
+        DatacenterDelegate del = createDelegate();
+        FileProcessor fp = new FileProcessor() {
+            protected void processStream(DatacenterDelegate del, InputStream is) {
+                doQuery(del,is);
+            }
+        };
+        fp.findFiles(del);
+    }
+    /**do a nonblocking query for each file found */
+    public void testDoNonblockingQuery() {
+        DatacenterDelegate del = createDelegate();
+        FileProcessor fp = new FileProcessor() {
+            protected void processStream(DatacenterDelegate del, InputStream is) {
+                doNonBlockingQuery(del,is);
+            }
+        };
+        fp.findFiles(del);
+    }
+
+    /** abstract class that captures the pattern of scanning for query files
+     * implement processStream to do something once query files are found
+     * @author Noel Winstanley nw@jb.man.ac.uk 17-Sep-2003
+     *
+     */
+   protected abstract class FileProcessor {
+       /** extender-defined method that consumes the files that are found */
+    protected abstract void processStream(DatacenterDelegate del,InputStream is);
     /** run a series of sample queries through the service
      *  <p>
      *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
@@ -183,15 +217,13 @@ public class TestInstallation extends TestCase {
      * <li>a directory named ${QUERY_FILE_KEY} - uses each *.xml file within it as an input
      * <li>a file named ${QUERY_FILE_KEY} - uses this as the single input
      * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
-     * @throws Exception
-     */
-    public void testDoQuery()  {
-        DatacenterDelegate del = createDelegate();
+     * @throws Exception */
+    public void findFiles(DatacenterDelegate del) {
         if (queryFile.exists()) { // on local file system.
             if (queryFile.isFile()) {
                 System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
                 try {
-                    doQuery(del,new FileInputStream(queryFile));
+                   this.processStream(del,new FileInputStream(queryFile));
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     fail("Could not find file: " + e.getMessage());
@@ -206,7 +238,7 @@ public class TestInstallation extends TestCase {
                 for (int i  = 0; i < inputs.length; i++) {
                     System.out.println("Processing file: " + inputs[i].getName());
                     try {
-                        doQuery(del,new FileInputStream(inputs[i]));
+                        processStream(del,new FileInputStream(inputs[i]));
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                         fail("Could not find file: " + e.getMessage());
@@ -217,9 +249,14 @@ public class TestInstallation extends TestCase {
             System.out.println("Taking VOQL query from classpath resource" + queryFile.getPath());
             InputStream is = this.getClass().getResourceAsStream(queryFile.getPath()); 
             assertNotNull("VOQL query file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
-            doQuery(del,is);
+            processStream(del,is);
         }
     }
+    
+   } // end inner class
+    
+
+    
     /** helper method to create a datacenter delegate, based on properties initialized in {@link setUp} */
     protected DatacenterDelegate createDelegate() {
         URL serviceURL = null;
@@ -245,6 +282,22 @@ public class TestInstallation extends TestCase {
     }
     /** helper method to do a query */
     protected void doQuery(DatacenterDelegate del,InputStream is)  {
+        Element input = parseInput(is);
+        Element result =null;
+        try {
+            result = del.query(input);
+        } catch (IOException e1) {           
+            e1.printStackTrace();
+            fail("Call to web service failed with exception: " + e1.getMessage());
+        }
+        assertNotNull("Result of query was null",result); 
+        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
+        System.out.println("Results for query");
+        System.out.println(XMLUtils.ElementToString(result));
+
+    }
+
+    private Element parseInput(InputStream is) {
         Document doc = null;
         try {
             doc = XMLUtils.newDocument(is);
@@ -261,18 +314,46 @@ public class TestInstallation extends TestCase {
         assertNotNull("VOQL document is null",doc);
         Element input = doc.getDocumentElement();
         assertNotNull("VOQL document has no root element",input);
-        Element result =null;
+        return input;
+    }
+    
+    /** helper test method to do a non-blockinig query */
+    protected void doNonBlockingQuery(DatacenterDelegate del,InputStream is) {
         try {
-            result = del.query(input);
-        } catch (IOException e1) {           
-            e1.printStackTrace();
-            fail("Call to web service failed with exception: " + e1.getMessage());
-        }
-        assertNotNull("Result of query was null",result); 
+        Element input = parseInput(is);
+        Element queryIdDocument = del.makeQuery(input);
+        assertNotNull("query creation response document is null",queryIdDocument);
+        assertEquals("Query creation response document not in expected format","QueryCreated",queryIdDocument.getLocalName()); 
+        Element queryIdEl = (Element)queryIdDocument.getElementsByTagName("QueryId").item(0) ;
+        assertNotNull("Query response document has not ID",queryIdEl);
+        String queryId = queryIdEl.getChildNodes().item(0).getNodeValue(); 
+        assertNotNull("query ID is null",queryId);
+        System.out.println(queryId);
+        /* leave this for now - barfs
+        QueryStatus stat = del.getQueryStatus(queryId);
+        assertNotNull("status is null",stat);
+        assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
+        */
+        /*
+        DatacenterStatusListener list = null;
+        assertNotNull("listener is null",list);
+        del.registerListener(queryId,list);
+        */
+        Element whatIsThis = del.startQuery(queryId);
+        assertNotNull("start query response is null",whatIsThis);
+        // should be seeing some things happen now with the listener.
+        // wait till completed.
+        
+        Element result = del.getResults(queryId);
+        assertNotNull("result of query is null",result);
         assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
         System.out.println("Results for query");
         System.out.println(XMLUtils.ElementToString(result));
-
+        } 
+        catch (IOException e) {
+            e.printStackTrace();
+            fail("Call to web service failed with exception " + e.getMessage());    
+        }        
     }
     
 
@@ -281,6 +362,9 @@ public class TestInstallation extends TestCase {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.8  2003/09/17 18:52:12  nw
+added more to the installation test
+
 Revision 1.7  2003/09/17 14:53:02  nw
 tidied imports
 

@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<!-- simple template query -fill in table to perform a select *
 <query type="adql">
 <Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<SelectionAll />
@@ -6,33 +7,11 @@
 		<FromClause>
 			<TableReference>
 				<Table>
-					<Name>merlinCatalog</Name>
-					<AliasName>cat</AliasName>
+					<Name>_tablename_</Name>
+					<AliasName>t</AliasName>
 				</Table>
 			</TableReference>
 		</FromClause>
-				<WhereClause>
- <PredicateSearch>
-        <ComparisonPred>
-          <FirstExpr xsi:type="ColumnExpr">
-                <SingleColumnReference>
-                  <TableName>cat</TableName>
-                  <Name>DataNo</Name>
-                </SingleColumnReference>
-          </FirstExpr>
-          <Compare>=</Compare>
-          <SecondExpr xsi:type="AtomExpr">
-            <Value>
-              <NumberLiteral>
-                <IntNum>
-                  <Value>657037</Value>
-                </IntNum>
-              </NumberLiteral>
-            </Value>
-          </SecondExpr>
-        </ComparisonPred>
-      </PredicateSearch>
-		</WhereClause>
 	</TableClause>
 </Select>
 </query>
