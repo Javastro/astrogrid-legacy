@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.12 2003/09/24 21:10:05 nw Exp $
+ * $Id: DummyQuerier.java,v 1.13 2003/09/25 01:18:34 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,6 +22,7 @@ public class DummyQuerier extends DatabaseQuerier
    public DummyQuerier() throws IOException
    {
       super();
+      this.setHandle(DatabaseQuerierManager.generateHandle());
    }
 
    public QueryResults queryDatabase(Query query ) throws DatabaseAccessException
