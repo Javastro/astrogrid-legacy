@@ -1,4 +1,4 @@
-/* $Id: JobFactoryImplTest.java,v 1.2 2003/11/11 23:50:50 anoncvs Exp $
+/* $Id: JobFactoryImplTest.java,v 1.3 2003/11/12 11:59:30 jdt Exp $
  * Created on 31-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import javax.naming.spi.NamingManager;
 import javax.sql.DataSource;
 import org.hsqldb.jdbcDataSource;
 import org.astrogrid.jes.JES;
+import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.testutils.naming.SimpleContextFactoryBuilder;
 import junit.framework.TestCase;
 /**
@@ -59,7 +60,7 @@ public final class JobFactoryImplTest extends TestCase {
      * @throws NamingException if the naming service falls over
      * @throws JobException if there's an exception in the JobFactoryImpl class
      */
-    public final void testDataSource() throws NamingException {
+    public final void testDataSource() throws JobException  {
 
         //see DATASOURCE property in the *_jesconfig.xml file
         DataSource jobFactoryDataSource = JobFactoryImpl.getDataSource();
@@ -89,6 +90,9 @@ public final class JobFactoryImplTest extends TestCase {
 }
 /*
 *$Log: JobFactoryImplTest.java,v $
+*Revision 1.3  2003/11/12 11:59:30  jdt
+*Fixed a bug that stopped Maven running last night.
+*
 *Revision 1.2  2003/11/11 23:50:50  anoncvs
 *Added a new test but it ain't working yet.
 *
