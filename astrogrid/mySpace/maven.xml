@@ -7,7 +7,7 @@
 		+-->
 	<goal name="astrogrid-clean" prereqs="multiproject:clean"/>
 	<goal name="astrogrid-deploy-site" 
-		prereqs="astrogrid-build-site,site:deploy" />
+		prereqs="astrogrid-build-site,site:sshdeploy" />
 	<goal name="astrogrid-build-site" prereqs="multiproject:site"/>
 	<goal name="astrogrid-deploy-snapshot" prereqs="multiproject:deploy-snapshot"/>
 	<goal name="astrogrid-build-snapshot" prereqs="multiproject:artifact"/>
