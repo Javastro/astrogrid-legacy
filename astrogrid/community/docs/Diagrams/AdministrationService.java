@@ -30,7 +30,4 @@ public class AdministrationService {
     public ArrayList getPermissionsByResource() {
 
     }
-
-
-
 }

@@ -32,7 +32,7 @@ server.config.2.url=http://localhost:9080/tf
 server.config.3.url=http://localhost:9080/tf
 [workspace]
 Developer.CodingWorkspace={{0,2,-1,0,0,0,0,0,0,1,0,50,75,25,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,0,50,75,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,66,50,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,66,50,25,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,5,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,1,66,50,25,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
-Developer.Community={{0,2,-1,0,0,0,0,1,0,1,0,64,75,22,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,0,64,75,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,1,50,50,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,1,50,50,22,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,0,-1,0,0,0,0,1,0,1,0,86,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
+Developer.Community={{0,2,-1,0,0,0,0,1,0,1,0,64,75,22,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,1,64,75,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,0,-1,0,0,0,0,1,0,1,0,86,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
 Developer.DebugWorkspace={{0,2,-1,0,0,0,0,0,0,1,0,50,75,25,-1,-1,-1,-1}${0,1,-1,0,0,0,0,1,0,1,1,50,75,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,3,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,0,0,1,0,50,50,25,-1,-1,-1,-1}${0,0,-1,0,0,0,0,1,0,1,0,75,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
 Developer.DesignWorkspace={{0,2,-1,0,0,0,0,1,0,1,0,50,75,22,-1,-1,-1,-1}${0,1,-1,0,0,0,0,0,0,1,0,50,75,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,3,-1,0,0,0,0,1,0,1,0,50,50,22,-1,-1,-1,-1}${0,-1,-1,0,0,0,0,0,0,1,0,5,5,5,-1,-1,-1,-1}${0,4,-1,0,0,0,0,1,0,1,1,50,50,22,-1,-1,-1,-1}${0,0,-1,0,0,0,0,0,0,1,0,75,5,5,-1,-1,-1,-1}${0,7,-1,0,0,0,0,0,0,1,0,50,50,75,-1,-1,-1,-1}}
 names.Developer={Community,DesignWorkspace,CodingWorkspace,DebugWorkspace}
@@ -75,16 +75,16 @@ Developer=Community
 [compiler]
 cross-bootclasspath=C:/Development/TogetherSoft/Together6.0.1/jdk/jre/lib/rt.jar
 [editor]
-recent.file.0=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthorizationService.java
-recent.file.1=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AccountDataObject.java
-recent.file.2=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\GroupDataObject.java
-recent.file.3=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\CommunityDb.java
-recent.file.4=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\CommunityDbHelper.java
-recent.file.5=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthenticationService.java
-recent.file.6=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AdministrationService.java
-recent.file.7=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\RegistrationService.java
-recent.file.8=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\CommunityDbHelper1.java
-recent.file.9=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthenticationDelegate1.java
+recent.file.0=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthenticationService.java
+recent.file.1=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AdministrationDelegate.java
+recent.file.2=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AdministrationService.java
+recent.file.3=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthorizationDelegate.java
+recent.file.4=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AuthorizationService.java
+recent.file.5=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\AccountDataObject.java
+recent.file.6=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\GroupDataObject.java
+recent.file.7=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\CommunityDb.java
+recent.file.8=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\CommunityDbHelper.java
+recent.file.9=C:\\Development\\eclipse\\workspace\\AstroProj\\astrogrid\\community\\docs\\Diagrams\\RegistrationService.java
 [search]
 file.replaceWith=
 file.textToFind=location:String	Resource	Group	Account

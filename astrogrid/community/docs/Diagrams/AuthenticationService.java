@@ -4,8 +4,12 @@ public class AuthenticationService {
 
     private Connection conn = CommunityDB.getConnection();
 
-    public boolean authenticateLogin(String userName,String password) {
-        return true;
+ //    public boolean authenticateLogin(String userName,String password) {
+ //       return true;
+ // }
+
+    public String authenticateLogin(String username, String password) {
+
     }
 
     public boolean authenticateToken(String token) {
