@@ -4,7 +4,18 @@
     xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd">
    <div id="ag-content">
       Job Manager:
+      Create workflows:
+      <ol>
+         <li>Select template for workflow, and enter Name/Description. Click create</li>
+         <li>For each step of the workflow select a tool. Click select</li>
+         <li>Enter each input/output parameter. Click submit to enter each parameter</li>
+         <li>Click done when each parameter has been submitted</li>
+         <li>Once a tool has been selected for each step save the workflow. Click save workflow</li>
+         <li>The completed workflow has now been saved into you workspace.</li>
+      </ol>
+      Completed workflows can now be submitted to JES.
       <p />
-      Job Monitor:  
+      Job Monitor:
+      Shows the status of any jobs which have been submitted to JES  
    </div>
 </div>
