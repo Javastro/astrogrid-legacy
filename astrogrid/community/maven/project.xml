@@ -4,10 +4,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/07/05 16:27:43 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/07 17:56:33 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.14  2004/07/07 17:56:33  jdt
+    |   restore clover report since it doesn't make a blind bit of difference.
+    |
     |   Revision 1.13  2004/07/05 16:27:43  jdt
     |   see if removing the clover report stops community grinding to a halt.
     |
@@ -181,9 +184,9 @@
         <report>
             maven-checkstyle-plugin
         </report>
-        <!--report>
+        <report>
             maven-clover-plugin
-        </report-->
+        </report>
         <report>
             maven-developer-activity-plugin
         </report>
