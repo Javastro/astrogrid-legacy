@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<!DOCTYPE VOTABLE SYSTEM "http://us-vo.org/xml/VOTable.dtd">
+<VOTABLE version="1.0">
+<DEFINITIONS>
+</DEFINITIONS>
+<RESOURCE>
+<PARAM name="archive" datatype="char" arraysize="*" value=""><DESCRIPTION>URL of data archive</DESCRIPTION></PARAM>
+<TABLE name="Results">
+<DESCRIPTION>Results of Query</DESCRIPTION>
+<FIELD name="RA" datatype="double"/> 
+<FIELD name="Dec" datatype="double"/> 
+<FIELD name="sigRA" datatype="double"/> 
+<FIELD name="sigDec" datatype="double"/> 
+<FIELD name="epoch" datatype="float"/> 
+<FIELD name="muAcosD" datatype="float"/> 
+<FIELD name="muD" datatype="float"/> 
+<FIELD name="sigMuAcosD" datatype="float"/> 
+<FIELD name="sigMuD" datatype="float"/> 
+<FIELD name="chi2" datatype="float"/> 
+<FIELD name="bestMagB" datatype="float"/> 
+<FIELD name="bestMagR1" datatype="float"/> 
+<FIELD name="bestMagR2" datatype="float"/> 
+<FIELD name="bestMagI" datatype="float"/> 
+<FIELD name="bestClass" datatype="short"/> 
+<FIELD name="classB" datatype="short"/> 
+<FIELD name="classR1" datatype="short"/> 
+<FIELD name="classR2" datatype="short"/> 
+<FIELD name="classI" datatype="short"/> 
+<FIELD name="ellipB" datatype="float"/> 
+<FIELD name="ellipR1" datatype="float"/> 
+<FIELD name="ellipR2" datatype="float"/> 
+<FIELD name="ellipI" datatype="float"/> 
+<FIELD name="qualB" datatype="int"/> 
+<FIELD name="qualR1" datatype="int"/> 
+<FIELD name="qualR2" datatype="int"/> 
+<FIELD name="qualI" datatype="int"/> 
+<DATA>
+<TABLEDATA>
+
+<TR><TD>    +185.0017432</TD><TD>      -0.0134439</TD><TD> +8.9381416E-005</TD><TD> +9.1100289E-005</TD><TD>  +1985.366000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    +22.172000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   1</TD><TD>   1</TD><TD>   0</TD><TD>   0</TD><TD>   0</TD><TD>     +0.419137</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0002517</TD><TD>      -0.0095059</TD><TD> +4.8701413E-005</TD><TD> +4.8701413E-005</TD><TD>  +1987.168700</TD><TD>    +99.776436</TD><TD>    +81.137314</TD><TD>    +93.057860</TD><TD>    +93.074010</TD><TD>-9.999999E+008</TD><TD>    +22.257000</TD><TD>    -99.999990</TD><TD>    +20.405000</TD><TD>    -99.999990</TD><TD>   2</TD><TD>   2</TD><TD>   0</TD><TD>   2</TD><TD>   0</TD><TD>     +0.116779</TD><TD>-9.999999E+008</TD><TD>     +0.389425</TD><TD>-9.999999E+008</TD><TD>          0</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD></TR>
+<TR><TD>    +184.9876799</TD><TD>      -0.0080867</TD><TD> +5.9014653E-005</TD><TD> +5.6722822E-005</TD><TD>  +1976.528900</TD><TD>    +13.718211</TD><TD>    -62.093765</TD><TD>    +15.805507</TD><TD>    +14.673472</TD><TD>-9.999999E+008</TD><TD>    +22.388000</TD><TD>    +20.043000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   2</TD><TD>   2</TD><TD>   2</TD><TD>   0</TD><TD>   0</TD><TD>     +0.436402</TD><TD>     +0.136364</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>          0</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0072579</TD><TD>      -0.0022002</TD><TD> +2.9220848E-005</TD><TD> +2.9220848E-005</TD><TD>  +1984.142700</TD><TD>     +0.136740</TD><TD>     -4.223492</TD><TD>    +10.197994</TD><TD>     +9.801397</TD><TD>     +0.405977</TD><TD>    +19.517000</TD><TD>    +18.371000</TD><TD>    +18.497000</TD><TD>    +17.838000</TD><TD>   1</TD><TD>   1</TD><TD>   1</TD><TD>   1</TD><TD>   1</TD><TD>     +0.330968</TD><TD>     +0.231218</TD><TD>     +0.333139</TD><TD>     +0.397111</TD><TD>          0</TD><TD>          0</TD><TD>          0</TD><TD>          0</TD></TR>
+<TR><TD>    +184.9984062</TD><TD>      -0.0009712</TD><TD> +3.6096341E-005</TD><TD> +3.4950426E-005</TD><TD>  +1984.706700</TD><TD>    +26.735018</TD><TD>     +2.605812</TD><TD>    +12.083376</TD><TD>    +10.963586</TD><TD>     +1.342277</TD><TD>    +22.399000</TD><TD>    +19.811000</TD><TD>    +19.623000</TD><TD>    +18.800000</TD><TD>   2</TD><TD>   2</TD><TD>   2</TD><TD>   2</TD><TD>   2</TD><TD>     +0.390869</TD><TD>     +0.210832</TD><TD>     +0.147826</TD><TD>     +0.310615</TD><TD>          0</TD><TD>          0</TD><TD>          0</TD><TD>          0</TD></TR>
+<TR><TD>    +185.0113786</TD><TD>      +0.0027731</TD><TD> +7.5057471E-005</TD><TD> +7.5057471E-005</TD><TD>  +1985.366000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    +22.752000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   2</TD><TD>   2</TD><TD>   0</TD><TD>   0</TD><TD>   0</TD><TD>     +0.302120</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +184.9901092</TD><TD>      +0.0106307</TD><TD> +5.0420286E-005</TD><TD> +5.0420286E-005</TD><TD>  +1987.367800</TD><TD>   -257.114140</TD><TD>   -194.619840</TD><TD>    +96.597160</TD><TD>    +96.572266</TD><TD>-9.999999E+008</TD><TD>    +21.221000</TD><TD>    -99.999990</TD><TD>    +20.300000</TD><TD>    -99.999990</TD><TD>   1</TD><TD>   1</TD><TD>   0</TD><TD>   2</TD><TD>   0</TD><TD>     +0.440345</TD><TD>-9.999999E+008</TD><TD>     +0.390840</TD><TD>-9.999999E+008</TD><TD>          0</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0004202</TD><TD>      +0.0135545</TD><TD> +3.7815214E-005</TD><TD> +3.6096341E-005</TD><TD>  +1984.835200</TD><TD>    +17.248142</TD><TD>     -8.780155</TD><TD>    +12.711296</TD><TD>    +11.494966</TD><TD>     +1.138170</TD><TD>    +22.218000</TD><TD>    +20.100000</TD><TD>    +19.804000</TD><TD>    +18.454000</TD><TD>   2</TD><TD>   2</TD><TD>   2</TD><TD>   1</TD><TD>   2</TD><TD>     +0.577069</TD><TD>     +0.350706</TD><TD>     +0.413554</TD><TD>     +0.314266</TD><TD>          0</TD><TD>          0</TD><TD>          0</TD><TD>          0</TD></TR>
+<TR><TD>    +185.0070929</TD><TD>      -0.0128113</TD><TD>      +0.0001077</TD><TD> +9.6829867E-005</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +19.813000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   2</TD><TD>   0</TD><TD>   2</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.280280</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0092231</TD><TD>      -0.0117537</TD><TD> +6.3598315E-005</TD><TD> +6.0733526E-005</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +17.785000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   1</TD><TD>   0</TD><TD>   1</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.299144</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0105054</TD><TD>      -0.0087279</TD><TD> +7.5630429E-005</TD><TD> +7.2192682E-005</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +18.084000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   1</TD><TD>   0</TD><TD>   1</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.029878</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0118060</TD><TD>      -0.0066377</TD><TD> +6.9900851E-005</TD><TD> +6.6463104E-005</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +17.950000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   1</TD><TD>   0</TD><TD>   1</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.359225</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +184.9867998</TD><TD>      -0.0027548</TD><TD>      +0.0001369</TD><TD>      +0.0001312</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +19.998000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   4</TD><TD>   0</TD><TD>   4</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.233234</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +185.0142732</TD><TD>      -0.0025187</TD><TD> +5.4430991E-005</TD><TD> +5.2139159E-005</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +17.522000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   1</TD><TD>   0</TD><TD>   1</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.480304</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+<TR><TD>    +184.9980831</TD><TD>      +0.0036595</TD><TD>      +0.0001157</TD><TD>      +0.0001043</TD><TD>  +1955.306000</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>    -99.999990</TD><TD>    +20.205000</TD><TD>    -99.999990</TD><TD>    -99.999990</TD><TD>   2</TD><TD>   0</TD><TD>   2</TD><TD>   0</TD><TD>   0</TD><TD>-9.999999E+008</TD><TD>     +0.529813</TD><TD>-9.999999E+008</TD><TD>-9.999999E+008</TD><TD>         -1</TD><TD>          0</TD><TD>         -1</TD><TD>         -1</TD></TR>
+</TABLEDATA>
+</DATA>
+</TABLE>
+</RESOURCE>
+</VOTABLE>

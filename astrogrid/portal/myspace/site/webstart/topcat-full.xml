@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jnlp SYSTEM "jnlp.dtd">
+<jnlp spec="1.0+" codebase="http://localhost:8080/astrogrid-portal/">
+  <information>
+    <title>Topcat</title>
+    <vendor>Starlink</vendor>
+    <homepage href="http://www.starlink.ac.uk/topcat/"/>
+    <description>Generic table viewer/editor</description>
+    <icon href="http://localhost:8080/astrogrid-portal/topcat.gif"/>
+    <offline-allowed/>
+  </information>
+
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+    <j2se version="1.4+" max-heap-size="256m"/>
+    <jar href="http://localhost:8080/astrogrid-portal/topcat-full.jar"/>
+  </resources>
+  
+  <application-desc main-class="uk/ac/starlink/topcat/TableViewer">
+  </application-desc>
+</jnlp>
+
