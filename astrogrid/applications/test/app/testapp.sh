@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: testapp.sh,v 1.7 2003/12/31 00:56:18 pah Exp $
+# $Id: testapp.sh,v 1.8 2004/03/31 12:39:44 pah Exp $
 #Paul Harrison
 #This is a small command line test application - it attempts to parse the major types of command line arguments
 # p1 should be an integer which will be a wait time in seconds
