@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $id$ -->
+<!-- $Id: project.xml,v 1.14 2003/10/28 12:45:50 jdt Exp $ -->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
