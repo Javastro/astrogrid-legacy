@@ -11,7 +11,7 @@ import javax.security.auth.login.Configuration;
  * part of Java Authentication and Authorization System (JAAS).
  *
  * An object of this class returns a hard-coded configuration
- * telling JAAS to use AstroGrid's One-Time-Password (OTP)
+ * telling JAAS to use AstroGrid's NonceToken
  * authentication system.
  *
  * @author Guy Rixon
@@ -27,7 +27,7 @@ public class SimpleLoginConfiguration extends Configuration {
   public AppConfigurationEntry[]
       getAppConfigurationEntry (String appName) {
     AppConfigurationEntry a
-        = new AppConfigurationEntry("org.astrogrid.security.jaas.OneTimePasswordCheck",
+        = new AppConfigurationEntry("org.astrogrid.security.jaas.NonceTokenCheck",
                                     LoginModuleControlFlag.SUFFICIENT,
                                     new Hashtable());
     return new AppConfigurationEntry[] {a};
