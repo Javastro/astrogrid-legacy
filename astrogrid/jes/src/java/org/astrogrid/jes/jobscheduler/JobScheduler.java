@@ -10,39 +10,35 @@
  */
 package org.astrogrid.jes.jobscheduler;
 
-import org.astrogrid.AstroGridException ;
-import org.astrogrid.i18n.* ;
-import org.astrogrid.jes.* ;
-import org.astrogrid.jes.job.Job ;
-import org.astrogrid.jes.job.JobStep ;
-import org.astrogrid.jes.job.JobFactory ;
-import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
+import java.io.StringReader;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
-import java.io.StringReader ; 
-import java.text.MessageFormat ;
-import java.util.HashMap ;
-import java.util.ArrayList;
-import java.util.Iterator ;
-
-import javax.xml.parsers.*;
-import javax.xml.namespace.QName ;
-import org.w3c.dom.*;
-import org.xml.sax.InputSource ;
-
-import org.apache.axis.client.Service;
-import org.apache.axis.client.Call;
-import org.apache.axis.encoding.XMLType;
-import javax.xml.rpc.ParameterMode;
-import org.apache.axis.utils.XMLUtils;
-
-import java.net.URL;
-import org.astrogrid.datacenter.delegate.* ;
-import org.astrogrid.applications.delegate.*;
-import org.astrogrid.applications.delegate.beans.*;
+import org.astrogrid.AstroGridException;
+import org.astrogrid.applications.delegate.ApplicationController;
+import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.applications.delegate.beans.ParameterValues;
+import org.astrogrid.applications.delegate.beans.User;
 import org.astrogrid.community.common.util.CommunityMessage;
-import java.rmi.RemoteException;
+import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.jes.JES;
+import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.job.Job;
+import org.astrogrid.jes.job.JobFactory;
+import org.astrogrid.jes.job.JobStep;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
 
 /**
  * The <code>JobScheduler</code> class represents ...
@@ -204,7 +200,14 @@ public class JobScheduler {
         
     } // end of scheduleSteps()
 	
-    
+    /**
+     * 
+     * @TODO check with Jeff & Paul that the tagged mods are correct
+     * 
+     * @param communitySnippet
+     * @param step
+     * @throws JesException
+     */
     private void dispatchOneStep( String communitySnippet, JobStep step )  throws JesException {
         if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): entry") ; 
         
@@ -223,7 +226,15 @@ public class JobScheduler {
            
             toolLocation = locateTool( step ) ;
             applicationController = DelegateFactory.createDelegate( toolLocation ) ;
-            parameterValues.setParameterSpec( step.getTool().toJESXMLString() ) ;
+            parameterValues.setParameterSpec( step.getTool().toJESXMLString() ) ; //@TODO isn't this null? -JDT
+            
+            // @TODO JDT to check with JL and PAH these are correct
+            final Job parent = step.getParent();
+            final User user = new User();
+            user.setAccount(parent.getUserId());
+            user.setGroup(parent.getGroup());
+            user.setToken(parent.getToken());
+            // end mods
             
             // set the URL for the JobMonitor so that it can be contacted... 
             jobMonitorURL = JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ; 
@@ -231,6 +242,7 @@ public class JobScheduler {
             applicationID = applicationController.initializeApplication( step.getParent().getId()
                                                                        , step.getStepNumber().toString()
                                                                        , jobMonitorURL
+                                                                       , user
                                                                        , parameterValues ) ;
                                                                         
             applicationController.executeApplication( applicationID ) ;                                                            
