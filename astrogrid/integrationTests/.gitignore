@@ -1,7 +1,0 @@
-.project
-.classpath
-target
-maven.log
-*.checkstyle
-*.log
-junit*.properties

@@ -1,4 +1,4 @@
-/* $Id: ConfManagerTest.java,v 1.1 2004/03/29 17:17:55 jdt Exp $
+/* $Id: ConfManagerTest.java,v 1.2 2004/11/23 18:35:46 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * Copyright (C) AstroGrid. All rights reserved.
@@ -94,6 +94,13 @@ public final class ConfManagerTest extends TestCase {
 
 /*
  *  $Log: ConfManagerTest.java,v $
+ *  Revision 1.2  2004/11/23 18:35:46  jdt
+ *  Merges from  BLD_JDT_648.  Moved obsolete files from the parent folder, where they just caused confusion.
+ *  These need to be added to the main tests as time permits.
+ *
+ *  Revision 1.1.2.1  2004/11/12 11:39:35  jdt
+ *  Moved old files inside the auto-integration project.   Need to be dealt with at some point.
+ *
  *  Revision 1.1  2004/03/29 17:17:55  jdt
  *  Refactored ConfManager to use the astrogrid config class
  *

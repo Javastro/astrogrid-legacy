@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.7 2004/03/31 10:46:46 jdt Exp $ 
+ * $Id: SimpleMySpaceTest.java,v 1.2 2004/11/23 18:35:46 jdt Exp $ 
  * 
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
