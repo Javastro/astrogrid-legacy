@@ -41,10 +41,18 @@ public class GdsDelegate extends GridServiceDelegate {
    * the location of the OGSA-DAI warehouse services, configure
    * OGSA-DAI input etc.
    */
-    private Properties serviceProperties = null;
-    static Logger logger = Logger.getLogger("GdsLogger");
-	private String factoryGsh = null;
-	private ExtensibilityType factoryHandle = null;
+  private Properties serviceProperties = null;
+  static Logger logger = Logger.getLogger("GdsLogger");
+
+  /**
+   * Grid Service Handle for the registry of 
+   * Grid Data Service Factories.  This is used in the
+   * no-argument form of {@link setFactoryGshFromRegistry}.
+   */
+  private String registryGsh = null;
+
+  private ExtensibilityType factoryHandle = null;
+
 	    
   /**
    * Initialises the GdsDelegate using values in its properties file
@@ -72,15 +80,23 @@ public class GdsDelegate extends GridServiceDelegate {
   }
 
   /**
-   *  Getter and setter methods for factory grid service handle.
-   */ 
-  public String getFactoryGsh() {
-	return this.factoryGsh;
+   * Returns the Grid Service Handle for the registry of 
+   * service factories.  This property is used by the
+   * no-argument form of {@link setFactoryGshFromRegistry}.
+   */
+  public String getRegistryGsh() {
+    return this.registryGsh;
   }
 
-  public void setFactoryGsh(String factoryGsh) {
-	this.factoryGsh = factoryGsh;
+  /**
+   * Sets the Grid Service Handle for the registry of 
+   * service factories.  This property is used by the
+   * no-argument form of {@link setFactoryGshFromRegistry}.
+   */
+  public void setRegistryGsh(String gsh) {
+    this.registryGsh = gsh;
   }
+
 
   /**
    * Invokes an SQL select statement on the GDS instance. The
@@ -169,14 +185,29 @@ public class GdsDelegate extends GridServiceDelegate {
    */
 
 
-/**
- * Obtains the grid data service factory handle from the specified registry and sets it
- * to a factory service handle. 
- * @param registryUrl The URL of the registry.
- * @param timeoutValue The timeout value in seconds
- * @return void
- * @throws Exception
- */
+  /**
+   * Obtains the grid data service factory handle from the specified 
+   * registry and records it in the delegate.
+   *
+   * The GSH for the registry must previously have been set by
+   * a call to {@link setRegistryGsh}.
+   * 
+   * @throws Exception
+   */
+  public void setFactoryGshFromRegistry () throws Exception {
+    this.setFactoryGshFromRegistry(this.registryGsh, 15);
+  }
+
+
+  /**
+   * Obtains the grid data service factory handle from the specified 
+   * registry and sets it to a factory service handle.
+   * 
+   * @param registryUrl The URL of the registry.
+   * @param timeoutValue The timeout value in seconds
+   * @return void
+   * @throws Exception
+   */
   public void setFactoryGshFromRegistry( 
 	  String registryUrl, int timeoutValue ) throws Exception
   {
