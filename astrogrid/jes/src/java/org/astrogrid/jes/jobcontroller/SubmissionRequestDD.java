@@ -6,12 +6,7 @@
  */
 package org.astrogrid.jes.jobcontroller;
 
-/**
- * @author jl99
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
+
 public final class SubmissionRequestDD {
 	
 	public static final String
@@ -26,7 +21,8 @@ public final class SubmissionRequestDD {
 	    
 	public static final String
 	    JOBSTEP_ELEMENT = "jobstep",
-	    JOBSTEP_NAME_ATTR = "name";
+	    JOBSTEP_NAME_ATTR = "name",
+	    JOBSTEP_STEPNUMBER_ATTR = "stepNumber";
 	    
 	public static final String    
 	    QUERY_ELEMENT = "query";

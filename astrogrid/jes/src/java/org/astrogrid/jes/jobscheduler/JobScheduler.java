@@ -15,6 +15,7 @@ import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobStep ;
 import org.astrogrid.jes.job.Catalog ;
 import org.astrogrid.jes.job.JobFactory ;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD ;
 
 import org.apache.log4j.Logger;
 
@@ -412,6 +413,9 @@ public class JobScheduler {
 		
         try {
         	
+        	//JBL Note: This is  adequate only for iteration two where we are expecting
+        	//          one jobstep only. You have been warned!
+        	
 			InputSource
 			   jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
 			
@@ -421,25 +425,33 @@ public class JobScheduler {
             Element
                element = doc.getDocumentElement() ;   // This should pick up the "job" element
                
-            // set the Job id, it's job URN
-            element.setAttribute( ScheduleRequestDD.JOB_URN_ATTR,job.getId() ) ; 
-			element.setAttribute( ScheduleRequestDD.JOB_MONITOR_URL, JobScheduler.getProperty( MONITOR_URL ) ) ; 
+            // set the Job id (i.e. its job URN)...
+            element.setAttribute( SubmissionRequestDD.JOB_URN_ATTR,job.getId() ) ;
+            
+            // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
+			element.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR, JobScheduler.getProperty( MONITOR_URL ) ) ; 
                
-               /*
-                * 
-                * 
-                * 	    JOB_ELEMENT = "job",
-	    JOB_NAME_ATTR = "name",
-	    JOB_URN_ATTR = "jobURN",
-	    JOB_USERID_ATTR = "userid",
-	    JOB_COMMUNITY_ATTR = "community",
-	    JOB_TIMESTAMP_ATTR = "time";
-                * 
-                * 
-                * 
-                */
+			NodeList
+			   nodeList = element.getChildNodes() ;  	
+			   
+			// identify jobstep and add the step number attribute...
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+							
+				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+					
+					element = (Element) nodeList.item(i) ;					
+                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {                   	
+                    	String
+                    	   stepNumber = ((JobStep)job.getJobSteps().next()).getStepNumber().toString() ;	
+						element.setAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR, stepNumber ) ;
+					}
+				
+				} // end if
+				
+			} // end for
+			
+			request = XMLUtils.DocumentToString( doc ) ;
                
-
 		}
 		catch ( Exception ex ) {
 			Message
