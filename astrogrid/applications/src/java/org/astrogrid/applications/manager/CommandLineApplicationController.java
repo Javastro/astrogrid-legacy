@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.28 2004/04/20 09:03:22 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.29 2004/04/20 09:51:51 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,8 +15,6 @@ import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import CeaApplication.Application;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
