@@ -1,5 +1,5 @@
 /*
- * $Id: AgslTest.java,v 1.2 2004/06/14 23:08:52 jdt Exp $
+ * $Id: AgslTest.java,v 1.3 2004/07/07 10:57:01 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -97,27 +97,6 @@ public class AgslTest extends TestCase
    
    
    /**
-    * test deprecated 4.1 vospaceRl
-    */
-   public void testVospaceRL()  {
-      
-      String validVorl = "vospace://http.vm05.astrogrid.org:8080/astrogrid-mySpace#test.astrogrid.org/avodemo/serv1/votable/ProdderResults6dF.vot";
-
-      try {
-         Vorl vorl = new Vorl(validVorl);
-         assertEquals(validVorl, vorl.toString());
-         
-         Agsl agsl = new Agsl(validVorl);
-         String s = agsl.toString();
-         assertEquals("astrogrid:store:myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace#avodemo@test.astrogrid.org/serv1/votable/ProdderResults6dF.vot",
-                        agsl.toString());
-      }
-      catch (MalformedURLException mue) {
-         fail("Could not cope with valid vorl '"+validVorl+"'");
-      }
-   }
-
-   /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
      * of this class.
      */
@@ -138,6 +117,9 @@ public class AgslTest extends TestCase
 
 /*
 $Log: AgslTest.java,v $
+Revision 1.3  2004/07/07 10:57:01  mch
+Removed Vorls
+
 Revision 1.2  2004/06/14 23:08:52  jdt
 Merge from branches
 ClientServerSplit_JDT
@@ -150,7 +132,7 @@ and a server/manager war
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
