@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.1 2004/11/03 05:20:50 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.2 2004/11/03 19:35:41 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.applications.delegate.CEADelegateException;
+import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
@@ -23,7 +26,10 @@ import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.util.DomHelper;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.xml.sax.SAXException;
 
 /**
@@ -57,7 +63,7 @@ public class DeployedServicesTest extends TestCase {
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       delegate.setTimeout(60000);
 
-      String adqls = "SELECT * FROM sgas_event WHERE nar>9500 AND nar<9600";
+      String adqls = "SELECT * FROM sgas_event AS s WHERE s.nar>9500 AND s.nar<9600";
       
       Query query = SqlQueryMaker.makeQuery(adqls);
       query.getResultsDef().setFormat(ReturnTable.VOTABLE);
@@ -81,18 +87,30 @@ public class DeployedServicesTest extends TestCase {
    }
 
    /** Runs a cone search on SSA */
-   public void testSsa() throws IOException, SAXException, IOException, ParserConfigurationException  {
+   public void testSsaCone() throws IOException, SAXException, IOException, ParserConfigurationException  {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
          Account.ANONYMOUS,
          "http://astrogrid.roe.ac.uk:8080/pal-sss/services/AxisDataService05",
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       delegate.setTimeout(60000);
 
-      InputStream is = delegate.coneSearch(10,10,2);
+      InputStream is = delegate.coneSearch(10,-10,0.1);
       assertNotNull(is);
       DomHelper.newDocument(is);
    }
 
+   /** Runs a CEA test on SSA */
+   public void testSsaCea() throws IOException, SAXException, IOException, ParserConfigurationException, CEADelegateException  {
+      
+      CommonExecutionConnectorClient client = DelegateFactory.createDelegate("http://astrogrid.roe.ac.uk:8080/pal-sss/services/CommonExecutionConnectorService");
+
+      Tool dsaTool = new Tool();
+      dsaTool.setInput(new Input());
+      
+      client.init(dsaTool, new JobIdentifierType("DeployedServicesTestJesID1"));
+      boolean success = client.execute("DeployedServicesTestExID1");
+   }
+   
    /** Runs a cone search on INT-WFS */
    public void testIntWfs() throws IOException, SAXException, IOException, ParserConfigurationException  {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
@@ -114,6 +132,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.2  2004/11/03 19:35:41  mch
+added CEA test (not working yet) and fixed SQL for SEC that didn't have table names/alias
+
 Revision 1.1  2004/11/03 05:20:50  mch
 Moved datacenter deployment tests out of standard tests
 
