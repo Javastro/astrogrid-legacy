@@ -1,4 +1,4 @@
-/* $Id: ReminderPageTest.java,v 1.3 2004/04/21 15:50:17 jdt Exp $
+/* $Id: ReminderPageTest.java,v 1.4 2004/06/07 14:39:36 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -10,10 +10,6 @@
  */
 package org.astrogrid.portal.integration;
 
-import net.sourceforge.jwebunit.WebTestCase;
-
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * Test that the portal login page functions correctly
@@ -22,11 +18,7 @@ import org.astrogrid.config.SimpleConfig;
  * @TODO this test is almost a duplicate of RegisterPageTest.   Refactor?
  * @author jdt
  */
-public final class ReminderPageTest extends WebTestCase {
-    /**
-     * Configuration holding endpoints of tests
-     */
-    private static Config conf=SimpleConfig.getSingleton();
+public final class ReminderPageTest extends AstrogridPortalWebTestCase {
     /**
      * Form parameter name
      */
@@ -56,11 +48,6 @@ public final class ReminderPageTest extends WebTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        final String url = conf.getString("org.astrogrid.portal.site");
-        assert url!=null;
-        log.debug("Setting portal URL to " + url);
-        // Set up for jwebtest
-        getTestContext().setBaseUrl(url);
         beginAt("/");
         clickLinkWithText("password");
     }
@@ -132,6 +119,9 @@ public final class ReminderPageTest extends WebTestCase {
 
 /*
  *  $Log: ReminderPageTest.java,v $
+ *  Revision 1.4  2004/06/07 14:39:36  jdt
+ *  Refactored out some common stuff
+ *
  *  Revision 1.3  2004/04/21 15:50:17  jdt
  *  rename of method
  *

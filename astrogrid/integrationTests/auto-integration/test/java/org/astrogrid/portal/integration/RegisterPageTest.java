@@ -1,4 +1,4 @@
-/* $Id: RegisterPageTest.java,v 1.2 2004/04/21 14:23:39 jdt Exp $
+/* $Id: RegisterPageTest.java,v 1.3 2004/06/07 14:39:36 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -10,10 +10,6 @@
  */
 package org.astrogrid.portal.integration;
 
-import net.sourceforge.jwebunit.WebTestCase;
-
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * Test that the portal login page functions correctly
@@ -21,11 +17,7 @@ import org.astrogrid.config.SimpleConfig;
  * @TODO add tests that use a real registry
  * @author jdt
  */
-public final class RegisterPageTest extends WebTestCase {
-    /**
-     * Configuration holding endpoints of tests
-     */
-    private static Config conf=SimpleConfig.getSingleton();
+public final class RegisterPageTest extends AstrogridPortalWebTestCase {
     /**
      * Form parameter name
      */
@@ -40,13 +32,7 @@ public final class RegisterPageTest extends WebTestCase {
     private static final org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(RegisterPageTest.class);
     
-    /**
-     * Kick off the textui
-     * @param args ignored
-     */
-    public static void main(final String[] args) {
-        junit.textui.TestRunner.run(RegisterPageTest.class);
-    }
+
     /**
      * Get the url of the website and 
      * set it for the remaining tests
@@ -55,11 +41,6 @@ public final class RegisterPageTest extends WebTestCase {
      */
     protected void setUp() throws Exception {
         super.setUp();
-        final String url = conf.getString("org.astrogrid.portal.site");
-        assert url!=null;
-        log.debug("Setting portal URL to " + url);
-        // Set up for jwebtest
-        getTestContext().setBaseUrl(url);
         beginAt("/");
         clickLinkWithText("register");
     }
@@ -102,9 +83,10 @@ public final class RegisterPageTest extends WebTestCase {
         registerWithDuffValues("not a valid email address", EMAIL, "Oh those russians");
     }
     /**
-     * Utility method factoring commonality of testLoginBadValues*
+     * Utility method factoring commonality of testLoginBadValues
      * @param textToFind text to look for on error page
-     * @param setMeBlank parameter to set to ""
+     * @param setMeBad parameter to set to badValue
+     * @param badValue the value to use
      */
     private void registerWithDuffValues(final String textToFind, final String setMeBad, final String badValue) {
         setFormElement(NAME,"John the Tester");
@@ -131,6 +113,9 @@ public final class RegisterPageTest extends WebTestCase {
 
 /*
  *  $Log: RegisterPageTest.java,v $
+ *  Revision 1.3  2004/06/07 14:39:36  jdt
+ *  Refactored out some common stuff
+ *
  *  Revision 1.2  2004/04/21 14:23:39  jdt
  *  typos in test names.
  *

@@ -1,4 +1,4 @@
-/* $Id: PortalLoginPageTest.java,v 1.2 2004/04/21 14:24:09 jdt Exp $
+/* $Id: PortalLoginPageTest.java,v 1.3 2004/06/07 14:39:36 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -10,10 +10,6 @@
  */
 package org.astrogrid.portal.integration;
 
-import net.sourceforge.jwebunit.WebTestCase;
-
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
 
 /**
  * Test that the portal login page functions correctly
@@ -21,34 +17,28 @@ import org.astrogrid.config.SimpleConfig;
  * @TODO add tests that use a real registry
  * @author jdt
  */
-public final class PortalLoginPageTest extends WebTestCase {
-    /**
-     * The location of a registry must be set with the property
-     * org.astrogrid.portal.registry.url, and this registry must
-     * contain the community given below.
-     */
-    private static final String LOCAL_COMMUNITY = "org.astrogrid.localhost";
-    /**
-     * Configuration holding endpoints of tests
-     */
-    private static Config conf=SimpleConfig.getSingleton();
+public final class PortalLoginPageTest extends AstrogridPortalWebTestCase {
     /**
      * Form parameter name
      */
-    private static final String PASS = "pass";
+    public static final String PASS = "pass";
     /**
      * Form parameter name
      */
-    private static final String COMMUNITY = "community";
+    public static final String COMMUNITY = "community";
     /**
      * Form parameter name
      */
-    private static final String USER = "user";
+    public static final String USER = "user";
     /**
      * Commons logger
      */
     private static final org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(PortalLoginPageTest.class);
+    /**
+     * How we determine a successful login///
+     */
+    public static final String LOGIN_SUCCESS_TEXT = "You have successfully logged in.";
     
     /**
      * Kick off the textui
@@ -57,20 +47,7 @@ public final class PortalLoginPageTest extends WebTestCase {
     public static void main(final String[] args) {
         junit.textui.TestRunner.run(PortalLoginPageTest.class);
     }
-    /**
-     * Get the url of the website and 
-     * set it for the remaining tests
-     * @throws Exception most likely to throw a RunTime exception if it can't find the property which locates the website
-     * @see TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        final String url = conf.getString("org.astrogrid.portal.site");
-        assert url!=null;
-        log.debug("Setting portal URL to " + url);
-        // Set up for jwebtest
-        getTestContext().setBaseUrl(url);
-    }
+
 
     /**
      * Check that the root diverts to the login page
@@ -138,17 +115,34 @@ public final class PortalLoginPageTest extends WebTestCase {
     }
     /**
      * Exactly what it says on the tin
+     * The mock community is a back door that accepts any username and
+     * password secret.  It might be removed in the future,
+     * invalidating this test
      *
      */
     public void testSuccessfulLogin() {
+        final String user = "jdt";
+        final String community = "org.astrogrid.mock";
+        final String password = "secret";
+        login(user, community, password);
+    }
+    /**
+     * Login to the portal
+     * @param user username
+     * @param community community
+     * @param password password
+     */
+    private void login(final String user, final String community, final String password) {
         beginAt("/");
-        setFormElement(USER,"jdt");
-        setFormElement(COMMUNITY,"org.astrogrid.mock");
-        setFormElement(PASS,"secret");
+        setFormElement(USER,user);
+        setFormElement(COMMUNITY,community);     
+        setFormElement(PASS,password);
         submit();
-        assertTextPresent("You have successfully logged in.");
+        assertTextPresent(LOGIN_SUCCESS_TEXT);
         assertLinkPresentWithText("Log out");
     }
+
+
     /**
      * Exactly what it says on the tin
      *
@@ -191,6 +185,13 @@ public final class PortalLoginPageTest extends WebTestCase {
      */
     public void testLogout() {
         testSuccessfulLogin();
+        logout();
+    }
+    
+    /**
+     * Logs out from the webpage - assumes you're on the login page.
+     */
+    private void logout() {
         final String string = "Log out";
         assertLinkPresentWithText(string);
         clickLinkWithText(string);
@@ -200,7 +201,8 @@ public final class PortalLoginPageTest extends WebTestCase {
         clickLinkWithText(string2);
         assertTextPresent("Log On");
     }
-    
+
+
     /**
      * Test logging in to a real community
      * Woohoo.
@@ -208,11 +210,11 @@ public final class PortalLoginPageTest extends WebTestCase {
      */
     public void testRealLogin() {
         beginAt("/");
-        setFormElement(USER,"frog");
-        setFormElement(COMMUNITY,LOCAL_COMMUNITY);
-        setFormElement(PASS,"qwerty");
+        setFormElement(USER,RegisteredUsers.USERNAME);
+        setFormElement(COMMUNITY,RegisteredUsers.LOCAL_COMMUNITY);
+        setFormElement(PASS,RegisteredUsers.PASSWORD);
         submit();
-        assertTextPresent("You have successfully logged in.");
+        assertTextPresent(LOGIN_SUCCESS_TEXT);
         assertLinkPresentWithText("Log out");
     }
     
@@ -223,8 +225,8 @@ public final class PortalLoginPageTest extends WebTestCase {
      */
     public void testRealFailedLoginBadPassword() {
         beginAt("/");
-        setFormElement(USER,"frog");
-        setFormElement(COMMUNITY,LOCAL_COMMUNITY);
+        setFormElement(USER,RegisteredUsers.USERNAME);
+        setFormElement(COMMUNITY,RegisteredUsers.LOCAL_COMMUNITY);
         setFormElement(PASS,"wrong");
         submit();
         assertTextPresent("Log On failed.");
@@ -241,8 +243,8 @@ public final class PortalLoginPageTest extends WebTestCase {
     public void testRealFailedLoginBadUser() {
         beginAt("/");
         setFormElement(USER,"hylacinerea");
-        setFormElement(COMMUNITY,LOCAL_COMMUNITY);
-        setFormElement(PASS,"qwerty");
+        setFormElement(COMMUNITY,RegisteredUsers.LOCAL_COMMUNITY);
+        setFormElement(PASS,RegisteredUsers.PASSWORD);
         submit();
         assertTextPresent("Log On failed.");
         final String string = "try again";
@@ -256,6 +258,9 @@ public final class PortalLoginPageTest extends WebTestCase {
 
 /*
  *  $Log: PortalLoginPageTest.java,v $
+ *  Revision 1.3  2004/06/07 14:39:36  jdt
+ *  Refactored out some common stuff
+ *
  *  Revision 1.2  2004/04/21 14:24:09  jdt
  *  Added some tests for connecting to a real registry.  
  *  Changed another test to keep pace with the 
