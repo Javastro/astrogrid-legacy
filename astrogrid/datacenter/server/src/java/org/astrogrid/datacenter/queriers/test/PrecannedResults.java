@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedResults.java,v 1.2 2004/03/14 02:17:07 mch Exp $
+ * $Id: PrecannedResults.java,v 1.3 2004/07/20 02:14:24 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -59,7 +59,8 @@ public class PrecannedResults extends QueryResults
 
       Piper.bufferedPipe(in, out);
       in.close();
-      out.close();
+      /**NWW:  shouldn't close output stream - causes failure in QueryerPlugin.processResults(line 104) */
+      out.close();      
    }
    
    /**
@@ -76,9 +77,10 @@ public class PrecannedResults extends QueryResults
       
       Reader in = new InputStreamReader(table);
       
-      Piper.bufferedPipe(in, out);
+      Piper.bufferedPipe(in, out);      
       in.close();
-      out.close();
+      /**NWW:  shouldn't close output stream - causes failure in QueryerPlugin.processResults(line 104) */
+      //out.close();
    }
    
 }
