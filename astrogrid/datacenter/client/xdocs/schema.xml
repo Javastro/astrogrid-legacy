@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+	<title>WSDL and Schema</title>
+</properties>
+
+<body>
+<section name="WSDL">
+<p>
+<ul>
+<li><a href="AxisDataServer.wsdl">AxisDataServer.wsdl</a>
+The wsdl that describes the interface of the Datacenter web service.
+</li></ul>
+
+
+</p>
+</section>
+
+<section name="Schema">
+<p>
+<ul>
+<li><a href="ADQLSchema.xsd">ADQLSchema.xsd</a>
+Schema defining the version of the ADQL query language used in the Datacenter web service
+</li><li><a href="AxisDataServer.xsd">AxisDataServer.xsd</a>
+Schema defining types passed by the Datacenter web service - referenced by <tt>AxisDataServer.wsdl</tt>
+</li><li><a href="User.xsd">User.xsd</a>
+Schema defining the common astrogrid user / authentication type - referenced by
+<tt>AxisDataServer.xsd</tt>
+</li>
+</ul>
+</p>
+</section>
+
+</body>
+</document>

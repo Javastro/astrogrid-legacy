@@ -56,6 +56,25 @@
     </developerConnection>
   </repository>
 
+	<packageGroups>
+		<packageGroup>
+			<title>Public API</title>
+			<packages>org.astrogrid.datacenter.delegate:org.astrogrid.datacenter.query:org.astrogrid.datacenter.webnotify:org.astrogrid.datacenter.tools</packages>
+		</packageGroup>
+		<packageGroup>
+			<title>Query Languages</title>
+			<packages>org.astrogrid.datacenter.adql*:org.astrogrid.datacenter.sql</packages>
+		</packageGroup>
+		<packageGroup>
+			<title>Delegates</title>
+			<packages>org.astrogrid.datacenter.delegate.*</packages>
+		</packageGroup>
+		<packageGroup>
+			<title>Transport</title>
+			<packages>org.astrogrid.datacenter.axisdataserver*</packages>
+		</packageGroup>
+	</packageGroups>
+
 
   <!-- jar files the project is dependent on -->
   <dependencies>

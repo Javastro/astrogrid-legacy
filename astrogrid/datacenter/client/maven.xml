@@ -166,6 +166,19 @@ Requires:
 		</replace>
 	</goal>
 
+<!-- documentation related tasks -->
+
+<!-- copy schemas into site documentation directory -->
+<postGoal name="xdoc:copy-resources">
+	<echo>Copying Schemas into documentation set</echo>
+	<copy todir="${maven.docs.dest}" flatten="true">
+		<fileset dir="${basedir}/src">
+			<include name="**/*.xsd" />
+			<incude name="**/*.wsdl" />
+		</fileset>
+	</copy>
+</postGoal>
+
 <!-- run javadoc over both source trees -->
 
 <!-- removes previously generated javadocs, and does javadoc again including generated sources too -->
