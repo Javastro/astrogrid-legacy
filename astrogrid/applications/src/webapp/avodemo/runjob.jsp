@@ -6,7 +6,7 @@
    runner.setHemi(request.getParameter("hemi"));
    runner.setSector(request.getParameter("sector"));
    isworkflow = request.getParameterMap().containsKey("workflow");
-   if(isworkflow)
+   if(!isworkflow)
    {
    runner.runit();
    }
