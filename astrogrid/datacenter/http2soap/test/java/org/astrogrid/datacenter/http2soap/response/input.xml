@@ -1,8 +1,0 @@
-<test-document>
-	<an-element attr="value">
-	  mixed text <p /> and element content<b> more here </b>
-	</an-element>
-	<tr>
-	  <td>45</td><td>4.54</td><td>weradgdw</td>
-	</tr>
-</test-document>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+<extend>${basedir}/../project-base.xml</extend>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+  
+  <!-- a unique name for this project -->
+  <id>astrogrid-datacenter-client</id>
+  <name>AstroGrid DataCenter Client Delegate</name>
+
+  <currentVersion>HEAD</currentVersion>
+
+	<description><![CDATA[
+	 This project contains the client interface to the datacenter, plus supporting libraries
+	 At present this includes
+	 <ul>
+	 <li>ADQL Object Model</li>
+	 </ul>
+	 <p/>
+	 Still to do:
+	 <ul>
+	 	<li>add unit testing of serialization mechanisms (auto generate tests?)</li>
+	 	<li>Sort licesnse</li>
+	 	<li>sort header</li>
+	 	<li>refine tasklist tags</li>
+	 	
+	 </ul>
+	 	]]>
+	</description>
+
+  <shortDescription>Client-side delegate and supporting libraries</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter/client</siteDirectory>
+
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/client
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/client
+    </developerConnection>
+  </repository>
+
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+
+
+	<!-- used as part of build - no need to deploy with final app.-->
+
+	<dependency>
+		<groupId>axis</groupId>
+		<artifactId>axis-ant</artifactId>
+		<version>1.1</version>
+	</dependency>
+
+  </dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/generated</directory>
+				<includes>
+					<include>wsdd/**</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src</directory>
+				<includes>
+					<include>wsdl/**</include>
+					<include>xsd/**</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/java</directory>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>					
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+</project>
+
