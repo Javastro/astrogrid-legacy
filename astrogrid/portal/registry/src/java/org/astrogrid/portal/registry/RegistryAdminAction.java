@@ -92,7 +92,7 @@ public class RegistryAdminAction extends AbstractAction
       String harvestResult = "";
       Document resultDoc = null;
       RegistryAdminService ras = null;
-      System.out.println("inside action of harvest");
+      System.out.println("inside action of admin");
       try {
          //get where you putting the harvest results to.
             
@@ -128,6 +128,7 @@ public class RegistryAdminAction extends AbstractAction
                      if (part != null) {
                         ras = RegistryDelegateFactory.createAdmin();
                         harvestDoc = registryBuilder.parse(part.getInputStream());
+                        //System.out.println("the harvestdoc TEST = " + DomHelper.DocumentToString(harvestDoc));
                         //System.out.println("the filename = " + part.getFileName() + " the size = " + part.getSize() + " and harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
                         resultDoc = ras.update(harvestDoc);
                         //ras.validateDocument(harvestDoc);

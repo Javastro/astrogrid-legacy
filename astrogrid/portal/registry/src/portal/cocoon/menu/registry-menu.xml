@@ -11,8 +11,7 @@
       <agp:item
           contents="Query"
           contents-hover="Registry"
-          uri=
-"/astrogrid-portal/main/mount/registry/registryquery.html?mainelement=Resource"
+          uri="/astrogrid-portal/main/mount/registry/registryquery.html?mainelement=Resource"
           target="_top"
           status-text="Registry... the final frontier"/>
         <agp:menu
@@ -24,37 +23,9 @@
            <agp:item
             contents="From File or Url"
             contents-hover="Registry"
-            uri="/astrogrid-portal/main/mount/registry/registryharvest.html"
+            uri="/astrogrid-portal/main/mount/registry/registryadmin.html"
             target="_top"
             status-text="Registry... the final frontier"/>          
-           <agp:item
-            contents="Resource"
-            contents-hover="Resource"
-            uri=
-"/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=Resource"
-            target="_top"
-            status-text="Registry... the final frontier"/>            
-           <agp:item
-            contents="Service"
-            contents-hover="Service"
-            uri=
-"/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=Service"
-            target="_top"
-            status-text="Registry... the final frontier"/>            
-           <agp:item
-            contents="SkyService"
-            contents-hover="SkyService"
-            uri=
-"/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=SkyService"
-            target="_top"
-            status-text="Registry... the final frontier"/>            
-           <agp:item
-            contents="TabularSkyService"
-            contents-hover="TabularSkyService"
-            uri=
-"/astrogrid-portal/main/mount/registry/registryupdate.html?mainelement=TabularSkyService"
-            target="_top"
-            status-text="Registry... the final frontier"/>            
       </agp:menu>
       <agp:item
           contents="Status"
@@ -62,12 +33,6 @@
           uri="/astrogrid-portal/main/mount/registry/registrystatus.html"
           target="_top"
           status-text="Registry... the final frontier"/>
-      <agp:item
-          contents="Harvest"
-          contents-hover="Harvest"
-          uri="/astrogrid-portal/main/mount/registry/registryharvest.html"
-          target="_top"
-          status-text="Registry... the final frontier"/>      
       <agp:item
           contents="Catalogue Finder"
           contents-hover="MicroBrowser"
