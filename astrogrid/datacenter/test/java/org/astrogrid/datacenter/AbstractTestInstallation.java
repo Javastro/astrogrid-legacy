@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.3 2003/09/24 21:14:01 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.4 2003/09/25 01:20:37 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,10 +95,10 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** do a standard (blocking) query for each query file found */
-    public void testDoBlockingQuery() {
+    public void testDoBlockingQuery() throws Exception {
         DatacenterDelegate del = createDelegate();
         FileProcessor fp = new FileProcessor() {
-            protected void processStream(DatacenterDelegate del, InputStream is) {
+            protected void processStream(DatacenterDelegate del, InputStream is) throws Exception{
                 doQuery(del,is);
             }
         };
@@ -106,10 +106,10 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /**do a nonblocking query for each file found */
-    public void testDoNonblockingQuery() {
+    public void testDoNonblockingQuery() throws Exception{
         DatacenterDelegate del = createDelegate();
         FileProcessor fp = new FileProcessor() {
-            protected void processStream(DatacenterDelegate del, InputStream is) {
+            protected void processStream(DatacenterDelegate del, InputStream is) throws Exception{
                 doNonBlockingQuery(del,is);
             }
         };
@@ -135,15 +135,9 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** helper method to do a query */
-    protected void doQuery(DatacenterDelegate del, InputStream is) {
+    protected void doQuery(DatacenterDelegate del, InputStream is) throws IOException {
         Element input = parseInput(is);
-        Element result =null;
-        try {
-            result = del.doQuery(input);
-        } catch (IOException e1) {           
-            e1.printStackTrace();
-            fail("Call to web service failed with exception: " + e1.getMessage());
-        }
+        Element result = del.doQuery(input);
         assertNotNull("Result of query was null",result); 
         assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
         System.out.println("Results for blocking query");
@@ -172,8 +166,9 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** helper test method to do a non-blockinig query */
-    protected void doNonBlockingQuery(DatacenterDelegate del, InputStream is) {
-        try {
+    protected void doNonBlockingQuery(DatacenterDelegate del, InputStream is)
+        throws IOException {
+
         Element input = parseInput(is);
         Element queryIdDocument = del.makeQuery(input);
         // check the response document.
@@ -184,35 +179,35 @@ public abstract class AbstractTestInstallation extends TestCase {
         String queryId = queryIdEl.getChildNodes().item(0).getNodeValue(); 
         assertNotNull("query ID is null",queryId);
         System.out.println("Non blocking QueryID:" + queryId);
-        
-        
+               
         QueryStatus stat = del.getStatus(queryId);
         assertNotNull("status is null",stat);
         assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
-        
-        
-        /* don't work - not transportable, as contains URL
+                      
         URL notifyURL = new URL("local:///SomethingService");
         DatacenterStatusListener list = new WebNotifyServiceListener(notifyURL);
         assertNotNull("listener is null",list);
         del.registerListener(queryId,list);
-        */
-        
+            
         Element startResp = del.startQuery(queryId);
         assertNotNull("start query response is null",startResp);
         assertEquals("start query response not in expected format","QueryStarted",startResp.getLocalName());
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            fail("Been interrupted");
+        }
+        stat = del.getStatus(queryId);
+        assertNotNull("status is null",stat);
+        assertEquals("status code not as expected",QueryStatus.QUERY_COMPLETE,stat);
         
-        Element result = del.getResultsAndClose(queryId);
+        Element result = del.getResultsAndClose(queryId);        
         assertNotNull("result of query is null",result);        
         System.out.println("Results for Non-blocking query");
         System.out.println(XMLUtils.ElementToString(result));
         // doesn't seem to return the document anymore. argh.
-        assertEquals("Result of query not in expected format","Status",result.getLocalName());
-        } 
-        catch (IOException e) {
-            e.printStackTrace();
-            fail("Call to web service failed with exception " + e.getMessage());    
-        }        
+        assertEquals("Result of query not in expected format","Status",result.getLocalName());        
+  
     }
     
     /** abstract class that captures the pattern of scanning for query files
@@ -222,7 +217,7 @@ public abstract class AbstractTestInstallation extends TestCase {
      */
    protected abstract class FileProcessor {
        /** extender-defined method that consumes the files that are found */
-    protected abstract void processStream(DatacenterDelegate del,InputStream is);
+    protected abstract void processStream(DatacenterDelegate del,InputStream is) throws Exception;
     /** run a series of sample queries through the service
      *  <p>
      *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
@@ -231,7 +226,7 @@ public abstract class AbstractTestInstallation extends TestCase {
      * <li>a file named ${QUERY_FILE_KEY} - uses this as the single input
      * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
      * @throws Exception */
-    public void findFiles(DatacenterDelegate del) {
+    public void findFiles(DatacenterDelegate del) throws Exception{
         if (queryFile.exists()) { // on local file system.
             if (queryFile.isFile()) {
                 System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
@@ -273,6 +268,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
 /* 
 $Log: AbstractTestInstallation.java,v $
+Revision 1.4  2003/09/25 01:20:37  nw
+got non-blocking test working, down to last status code returned. need to check this.
+
 Revision 1.3  2003/09/24 21:14:01  nw
 fixed to match behaviour of server.
  - non blocking test still fails with transport problems
