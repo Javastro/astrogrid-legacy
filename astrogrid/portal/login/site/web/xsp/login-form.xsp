@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/Attic/login-form.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 13:18:08 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/12 21:01:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: login-form.xsp,v $
+    |   Revision 1.2  2004/01/12 21:01:45  dave
+    |   Added community_name session attribute and menu file
+    |
     |   Revision 1.1  2004/01/09 13:18:08  dave
     |   Shuffled things round for Maven build
     |
@@ -74,7 +77,7 @@
         </xsp:logic>
         <form method="post" action="login-form">
             <input type="hidden" name="action" value="login"/>
-            <table border="1">
+            <table border="0">
                 <tr>
                     <td colspan="2">
                         <xsp:expr>(null != message) ? message : LOGIN_MESSAGE</xsp:expr>
