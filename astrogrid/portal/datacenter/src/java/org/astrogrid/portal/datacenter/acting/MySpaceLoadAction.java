@@ -65,6 +65,9 @@ public class MySpaceLoadAction extends AbstractAction {
     
     String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request, session);
     logger.debug("[act] endPoint: " + endPoint);
+    logger.error("JDT! myspace-end-point "+endPoint);
+    endPoint="http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager"; //FIXME TODO This is a temporary demo hack
+    logger.error("JDT! myspace-end-point hacked to "+endPoint);
 
     try {
       MySpaceClient delegate = MySpaceDelegateFactory.createDelegate(endPoint);
