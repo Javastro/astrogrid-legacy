@@ -5,6 +5,7 @@
 
 package org.astrogrid.datacenter.delegate;
 
+import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -30,6 +31,7 @@ public class Metadata
    {
       this.metadataDom = metadataFromServer.getOwnerDocument();
    }
+
 
    /**
     * Returns metadata document for whatever the client wants to do with it
@@ -100,6 +102,9 @@ public class Metadata
 
 /*
 $Log: Metadata.java,v $
+Revision 1.2  2003/11/18 14:25:45  nw
+altered types to fit with new wsdl
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

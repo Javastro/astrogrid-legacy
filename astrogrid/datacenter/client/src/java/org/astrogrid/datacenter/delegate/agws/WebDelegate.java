@@ -1,11 +1,12 @@
 /*
- * $Id: WebDelegate.java,v 1.4 2003/11/17 20:47:57 mch Exp $
+ * $Id: WebDelegate.java,v 1.5 2003/11/18 14:25:23 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agws;
 
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.*;
 
 import java.io.ByteArrayInputStream;
@@ -14,6 +15,8 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
@@ -24,7 +27,9 @@ import org.astrogrid.datacenter.adql.generated.ColumnExpr;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
+import org.w3c.dom.Document;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -185,7 +190,15 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
    /* Returns the metadata
    */
    public Metadata getMetadata() throws RemoteException {
-      return new Metadata(binding.getMetadata(null));
+       String metaD = binding.getMetadata(null);
+       ByteArrayInputStream is = new ByteArrayInputStream(metaD.getBytes());
+       try {
+        Document doc = XMLUtils.newDocument(is);
+        return new Metadata(doc.getDocumentElement());
+       } catch (Exception e) {
+           throw new RemoteException("Could not parse document",e);
+       }
+
    }
 
    /**
@@ -211,7 +224,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
    {
       try
       {
-         return new WebQueryDelegate(binding.makeQueryWithId(adql, givenId));
+          Query q = new Query();
+          q.setSelect(adql);
+         return new WebQueryDelegate(binding.makeQueryWithId(q, givenId));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
@@ -228,7 +243,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
    {
       try
       {
-         return new WebQueryDelegate(binding.makeQuery(adql));
+          Query q = new Query();
+          q.setSelect(adql);
+      return new WebQueryDelegate(binding.makeQuery(q));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
@@ -246,11 +263,15 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
    {
       try {
          //run query on server
-         Element resultsDoc = binding.doQuery(resultsFormat, adql);
+         Query q = new Query();
+         q.setSelect(adql);
+         String result = binding.doQuery(resultsFormat, q);
+         InputStream is = new ByteArrayInputStream(result.getBytes());
+         Document rDoc = XMLUtils.newDocument(is);
          
          //extract results to DatacenterResults
          //only one type for It03 servers - votable
-         return new DatacenterResults(resultsDoc);
+         return new DatacenterResults(rDoc.getDocumentElement());
          
       }
       catch (Exception e) {
@@ -341,6 +362,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.5  2003/11/18 14:25:23  nw
+altered types to fit with new wsdl
+
 Revision 1.4  2003/11/17 20:47:57  mch
 Adding Adql-like access to Nvo cone searches
 
