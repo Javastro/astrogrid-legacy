@@ -107,7 +107,8 @@
     <xsl:template match="executionRecord" mode="mapping"/>
     <xsl:template match="message" mode="mapping"/>
     <xsl:template match="inputParam" mode="mapping"/>  
-    <xsl:template match="outputParam" mode="mapping"/>            
+    <xsl:template match="outputParam" mode="mapping"/>
+    <xsl:template match="workflowExecutionRecord" mode="mapping"/>            
 
     <!-- Default, copy all and apply templates -->
     <xsl:template match="@*|node()" priority="-2">
