@@ -1,32 +1,36 @@
 /*
- * $Id: Configuration.java,v 1.4 2003/08/28 17:25:41 mch Exp $
+ * $Id: Configuration.java,v 1.5 2003/08/28 18:19:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.config;
 
-
 /**
  * A static singleton so that all packages have access to the *same*
- * configuration file (for now) in one runtime environment.  This is partly
+ * configuration set (for now) in one runtime environment.  This is partly
  * to make things easier for the user, but also because it'll be quite tricky
- * (and unnecessary?) for a package to understand which service is using it.
+ * for a package to understand which service is using it.
  * <p>
  * For example, the SecurityDelegate will need to know where the policy files
  * are, and what security servers are available to carry out
  * authentication/authorisation.  If we run a MySpace and a Datacenter on one
- * Axis server, these will run in a common VM and this singleton will be the
- * same to both.
+ * Axis server, these will run in a common VM and so this configuration singleton
+ * will be the same for both.
  * <p>
- * But... delegate code from this package will need to run under other services
+ * But also... delegate code from this package will need to run under other services
  * (eg JobFlow) and so will need to read a JobFlow configuration file...
  * <p>
- * During the meanwhilst, here is a simple static singleton, that needs to be
- * initialised with a call to init() before being used.
+ * So although this configuration is a common access point, it can be used to
+ * access several configuration files.  Any application can call the 'load'
+ * methods and properties will be loaded from the given file/url/etc.
  * <p>
- * In fact this might be sufficient - each package that wants to include a
- * new properties file can just call init() again...
+ * This does mean that packages using the configuration file must make sure their
+ * keys are unique. The most reliable way to do this is to prefix each key with
+ * the package name (ie the code namespace) but this doesn't produce very nice
+ * property files for humans to edit.
+ * <p>
+ * @todo work out a nice way of ensuring keys are unique.
  *
  * @author M Hill
  */
@@ -40,21 +44,13 @@ import java.util.Properties;
 public abstract class Configuration
 {
    /** Made-up constant */
-   public static String defaultFilename = "AstroGridConfig.properties";
+   public static String DEFAULT_FILENAME = "AstroGridConfig.properties";
 
    /** List of locations that the configuration file has been loaded from */
    public static String locations = null;
 
    /** The way this implementation works, from a Properties file */
    private static Properties properties = new Properties();
-
-   /**
-    * Null initialisation - used for test harnesses etc
-    *
-   public static void init()
-   {
-      properties = new Properties();
-   }
 
    /**
     * Loads the file at the given filepath as a properties file
