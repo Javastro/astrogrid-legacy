@@ -146,7 +146,8 @@ public class DesignAction extends AbstractAction {
         LOCATION_PARAMETER = "location",
 	    PARAM_NAME_PARAMETER = "param-name",
 	    PARAM_VALUE_PARAMETER = "param-value",
-        ORIG_PARAM_VALUE_PARAMETER = "original-param-value",        
+        ORIG_PARAM_VALUE_PARAMETER = "original-param-value",
+        IVORN_VALUE_PARAMETER = "ivorn-value",        
         DIRECTION_PARAMETER = "direction",
 	    STEP_NAME_PARAMETER = "step_name",
 	    STEP_DESCRIPTION_PARAMETER = "step_description";
@@ -573,6 +574,7 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() entry" ) ;
             
             String ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+			debug( "ivornName: " + ivornName );
             Ivorn ivorn = null;
                                        
             try {
@@ -955,6 +957,8 @@ public class DesignAction extends AbstractAction {
 			String parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
 			String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+			String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
+			debug( "ivornValue: " + ivornValue );
 			debug( "parameterName:" + parameterName ) ;
 			debug( "parameterValue: " + parameterValue ) ;
 			debug( "oldParameterValue: " + oldParameterValue ) ;
@@ -968,7 +972,12 @@ public class DesignAction extends AbstractAction {
 			}
 			else if ( activityKey == null) {
 				debug( "activityKey is null" ) ;
-			}            
+			}
+			else if (ivornValue != null && ivornValue.length() > 0) {
+				debug( "setting parameterValue to equal ivornValue" ) ;
+				parameterValue = ivornValue ;          
+				debug( "parameterValue now: " + parameterValue ) ;
+			}
 
             step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
             tool = step.getTool() ;
@@ -1006,6 +1015,8 @@ public class DesignAction extends AbstractAction {
                     oldParameterValue = request.getParameter( ORIG_PARAM_VALUE_PARAMETER ),
 					parameterName = request.getParameter( PARAM_NAME_PARAMETER ),			  
 					parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
+					String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
+					debug( "ivornValue: " + ivornValue );					
                             
 			     if ( parameterName == null) {
 					debug( "parameterName is null" ) ;
@@ -1013,6 +1024,12 @@ public class DesignAction extends AbstractAction {
 			     else if ( parameterValue == null) {
 					debug( "parameterValue is null" ) ;
 			     }
+			    
+				else if (ivornValue != null && ivornValue.length() > 0) {
+					debug( "setting parameterValue to equal ivornValue" ) ;
+					parameterValue = ivornValue ;          
+					debug( "parameterValue now: " + parameterValue ) ;
+				}			     
 
                  step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
 			     tool = step.getTool() ; 
