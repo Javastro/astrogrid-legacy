@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: bkm $</cvs:date>
-    | <cvs:author>$Date: 2003/10/10 09:19:05 $</cvs:author>
-    | <cvs:version>$Revision: 1.53 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/12/16 17:10:01 $</cvs:author>
+    | <cvs:version>$Revision: 1.54 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.54  2003/12/16 17:10:01  KevinBenson
+    | *** empty log message ***
+    |
     | Revision 1.53  2003/10/10 09:19:05  bkm
     | Change target to portalcvs.BUILD
     |
@@ -213,6 +216,10 @@
 	<!-- Community client jar -->
 	<property name="community.home" value="depends/community/" />
 	
+	<!-- Community client jar -->
+	<property name="registry.home" value="depends/registry/" />
+	
+	
 	<!-- JConfig jar -->
 	<property name="jconfig.jar" value="depends/jconfig/jconfig.jar" />
 	<property name="jconfig.home" value="depends/jconfig/" />
@@ -332,12 +339,20 @@
 	</path>
 <!-- /PJN -->	
 	
-	<!-- The Plugin libraries -->
+	<!-- The Community libraries -->
 	<path id="community.classpath">
 		<fileset dir="${community.home}">
 			<include name="**/*.jar"/>
 		</fileset>
 	</path>
+	
+	<!-- The Community libraries -->
+	<path id="registry.classpath">
+		<fileset dir="${registry.home}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+
 
 	<!-- ================ Ant tasks ================ -->
 	<!-- The Ant libraries -->
@@ -1212,6 +1227,7 @@
 <!-- /PJN -->
 					
 				<path refid="community.classpath" />
+				<path refid="registry.classpath" />				
 				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
 				<!-- The JUnit libraries -->
@@ -2388,6 +2404,13 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
+		<!-- Copy our Registry jar -->
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${registry.home}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		
 		<!-- Copy the Axis client jars -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${axis.webapp}/WEB-INF/lib">
