@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.7 2003/12/15 14:39:20 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.8 2003/12/15 15:36:09 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,18 +15,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.apache.log4j.Logger;
 
-
 import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-/*
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.dom.DOMResult;
-*/
 
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
@@ -38,20 +29,6 @@ import org.globus.ogsa.utils.AnyHelper;
 import org.globus.ogsa.GridServiceException;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.apache.axis.AxisFault;
-
-/**
- * The following imports are declared but not used:
- * import java.io.FileNotFoundException;
- * import java.io.File;
- * import java.io.FileWriter;
- * import java.io.FileReader;
- * import java.net.URL;
- * import org.xml.sax.SAXException;
- * import org.gridforum.ogsi.HandleType;
- * import org.apache.axis.client.Stub;
- */
-
-
 
 /**
  *
@@ -76,10 +53,14 @@ public class GdsQueryDelegate
   }
 
   /*
-   * Use an OGSA-DAI Grid Data Service to perform the supplied SQL query.
+   * Uses an OGSA-DAI Grid Data Service to perform the supplied SQL query.
+   *
+   * @returns Document containing XML RowSet database query results
+   * @throws Exception
+
    */
   protected Document doRealQuery(String sql, String registryUrlString, 
-        OutputStream output, boolean invokedFromMain) throws Exception {
+        OutputStream output) throws Exception {
 
     int timeout = 300;  // TOFIX configurable?
 
@@ -89,12 +70,6 @@ public class GdsQueryDelegate
     // Do a synchronous query using the GDS.
     try {
 
-      // Look at the registry to get the factory URL
-      //String factoryUrlString = 
-       //   GdsDelegate.getFactoryUrlFromRegistry(registryUrlString,timeout);
-      //System.out.println("GDSF is " + factoryUrlString);
-      //logger.info("GDSF is " + factoryUrlString);
-
       // Create a grid-service delegate for the GDS.  This handles the
       // awkward semantics of the grid-service, including creating
       // the grid-service instance.
@@ -102,68 +77,61 @@ public class GdsQueryDelegate
       GdsDelegate gds = new GdsDelegate();
       gds.setRegistryGsh(registryUrlString);
       gds.setFactoryGshFromRegistry();
-      //String factoryUrlString = gds.getFactoryHandle();
-      logger.info("Connecting to the GDS...");
-      gds.connect();
 
       // Run the query in the GDS.  
       // Receive in return an OGSA-DAI "response" document.
-      //System.out.println("Query is " + sql);
+      logger.info("Connecting to the GDS...");
+      gds.connect();
+
       logger.info("Query is " + sql);
       ExtensibilityType result = gds.performSelect(sql);
 
-      // Output the results as an XML rowset
+      // OGSA-DAI results wrap up the actual XML RowSet as a CDATA node
+      // embedded within some ogsa-dai related XML, so extract the actual
+      // results.
       Node cdataNode = getResultsRowset(result);
       xmlString = cdataNode.getNodeValue();
 
-      // Print this to stdout just in case we're shipping results via stdout
-      //System.out.println(WAREHOUSE_RESULT_START);
-      logger.info(WAREHOUSE_RESULT_START);
+      // Print start tag to stdout just in case we're shipping results 
+      // via stdout (this might happen if the invoking WarehouseQuerier 
+      // couldn't create a temporary file for results in its workspace).  
+      // Putting custom start and end tags into the output stream makes
+      // it possible for the WarehouseQuerier to extract the actual data 
+      // from any other messages being spat to stdout.
+      System.out.println(WAREHOUSE_RESULT_START); //DON'T REMOVE THIS LINE!!
 
-      //Print byte stream to output stream
+      // Print byte stream to output stream (might be stdout).
+      // We do this as well as returning a document to handle cases where 
+      // this class is invoked from the command line and can't pass a 
+      // Document object back to its caller (eg WarehouseQuerier).
       output.write(xmlString.getBytes());
 
       // Print this to stdout just in case we're shipping results via stdout
-      //System.out.println(WAREHOUSE_RESULT_END);
-      logger.info(WAREHOUSE_RESULT_END);
+      System.out.println(WAREHOUSE_RESULT_END); // DON'T REMOVE THIS LINE!!
     }
     catch (AxisFault e) {
-        logger.error(
-		"Problem with Axis: " + e.getMessage());
-        throw new Exception(
-          "Problem with Axis: " + e.getMessage());
+      String errorMessage = "Problem with Axis: " + e.getMessage();
+      logger.error(errorMessage);
+      throw new Exception(errorMessage);
     }
     catch (Exception e) {
-      logger.error(
-	  "Unspecified exception: " + e.getMessage());
-      throw new Exception(
-          "Unspecified exception: " + e.getMessage());
+      String errorMessage = "Unspecified exception: " + e.getMessage();
+      logger.error(errorMessage);
+      throw new Exception(errorMessage);
     }
-    //TOFIX OUGHT TO RETURN DOCUMENT HERE JUST IN CASE
-    //WE;RE INVOKED DIERECTLY
-    if (invokedFromMain) {
-      return null;    //No point returning a document in shelled-out mode
+    // Parse XML and return proper Document (as well as printing XML
+    // to supplied output stream above).
+    DOMParser parser = new DOMParser();
+    try {
+      parser.parse(new InputSource(new StringReader(xmlString)));
     }
-    else {
-      DOMParser parser = new DOMParser();
-      try {
-        parser.parse(new InputSource(
-               new StringReader(xmlString)));
-      }
-      catch (SAXException e) {
-      	logger.error(
-		"Couldn't parse results XML Rowset: " + e.getMessage());
-        throw new Exception(
-            "Couldn't parse results XML Rowset: " + e.getMessage());
-      }
-      catch (IOException e) {
-      	logger.error(
-		"Couldn't parse results XML Rowset: " + e.getMessage());
-        throw new Exception(
-            "Couldn't parse results XML Rowset: " + e.getMessage());
-      }
-      return parser.getDocument();
-    }
+    catch (Exception e) {//SAXException, IOException
+      String errorMessage = 
+          "Couldn't parse results XML Rowset: " + e.getMessage();
+      logger.error(errorMessage);
+      throw new Exception(errorMessage);
+    }  
+    return parser.getDocument();
   }
 
   protected Node getResultsRowset(ExtensibilityType results) 
@@ -336,9 +304,9 @@ public class GdsQueryDelegate
     else {
       output = new FileOutputStream(outputFileName);
     }
-    //Do real query in shelled-out mode
+    //Do actual query 
     Document result = gdsQueryDelegate.doRealQuery(
-        sql, registryUrlString,output, false);
+      sql, registryUrlString, output);
   }
 
   // ----------------------------------------------------------
@@ -359,6 +327,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.8  2003/12/15 15:36:09  kea
+Tidying up GdsQueryDelegate to remove some old cruft.
+
 Revision 1.7  2003/12/15 14:39:20  kea
 Fixed parameter count checks.
 
