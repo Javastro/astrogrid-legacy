@@ -8,20 +8,41 @@
      <path id="integration.src" locaton="${basedir}/test/int/java" />
     <maven:addPath id="maven.compile.src.set" refid="generated.src"/>  <!-- declares new src tree to maven -->
     <maven:addPath id="maven.compile.src.set" refid="integration.src" />
-	<attainGoal name="compile-AxisDataServer" />
-	<attainGoal name="generate-wsdl" />
-	<attainGoal name="generate-delegate" />
-  	<attainGoal name="generate-adql" />
+	<attainGoal name="maybe-regenerate-wsdl" />
+  	<attainGoal name="maybe-regenerate-adql" />
   </preGoal>
 
-  <postGoal name="site">
-    <attainGoal name="ant" />
-	<!-- check updated stuff back into cvs
-	  generated code, and ant script. - maybe the maven system gives more support here than the
-	  standard ant tag ? -->
-  </postGoal>
+
+<!-- hook to get my own stuff run before xdocs binds the site together-->
+  <preGoal name="xdoc">
+  	<attainGoal name="ant" />
+  	<attainGoal  name="pal-zip" />
+	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
+	<!-- check stuff back into cvs -->
+  </preGoal>
 
 <!-- new goals -->
+
+<!--
+WSDL
+-->
+<goal name="maybe-regenerate-wsdl" description="regenerate WSDL and classes if older than AxisDataServer.java">
+	<condition property="wsdlRegenerate" value="true">
+		<not>
+		<uptodate targetfile="wsdl/AxisDataServer.wsdl">
+		  <srcfiles dir="src/java/org/astrogrid/datacenter/service"
+		  	includes="*.java" /> <!-- better to be safe than sorry -->
+		</uptodate>
+		</not>
+	</condition>
+	<j:if test="${wsdlRegenerate}">
+		<echo>Regenerating WSDL and client classes</echo>
+		<attainGoal name="generate-wsdl" />
+		<attainGoal name="generate-delegate" />
+	</j:if>
+</goal>
+
+
  <goal name="compile-AxisDataServer" description="compiles classes required to generate wsdl" prereqs="java:prepare-filesystem">
  	<javac
 	debug="${maven.compile.debug}" deprecation="${maven.compile.deprecation}"
@@ -36,7 +57,7 @@
 	</javac>
  </goal>
 
-  <goal name="generate-wsdl" description="generate wsdl from java class" prereqs="axis-declare-tasks">
+  <goal name="generate-wsdl" description="generate wsdl from java class AxisDataServer" prereqs="axis-declare-tasks,compile-AxisDataServer">
   	<axis-java2wsdl	useinheritedmethods="true"
 		methods="
 		doQuery
@@ -91,14 +112,34 @@
 	</axis-wsdl2java>
   </goal>
 -->
-  <goal name="generate-adql" description="regenerate the ADQL object model">
+
+
+<!--
+ADQL
+-->
+<goal name="maybe-regenerate-adql" description="generate ADQl if schema is more recent than classes">
+	<condition property="adqlRegenerate" value="true">
+		<not>
+		<uptodate
+			srcfile="schema/ADQLschema.xsd"
+			targetfile="generated/java/org/astrogrid/datacenter/adql/generated/Select.java"
+		/>
+		</not>
+	</condition>
+	<j:if test="${adqlRegenerate}">
+		<echo>Regenerating ADQL classes</echo>
+		<attainGoal name="generate-adql" />
+	</j:if>
+</goal>
+
+  <goal name="generate-adql"  description="regenerate the ADQL object model">
 	<!-- set up the classpath for the source generator tool -->
   <path id="castor.class.path">
     <!-- needed to override the default configuration file - knew there was a reason I disliked Castor.. -->
 	<pathelement location="lib/config" />
   	<path refid="maven.dependency.classpath" />
   </path>
-    <delete quiet="true"><!-- remove previous files -->
+    <delete quiet="true">
    <fileset dir="generated/java/org/astrogrid/datacenter/adql/generated">
   	 	<include name="**/*.java" />
    		<include name="**/*.class" />
@@ -125,7 +166,6 @@
 	<java fork="true" jar="packaging/pal/bin/test-server.jar"/>
   </goal>
 
-  <!-- remove hardcoded server location -->
 <goal name="dataserver-publish" description="jar up, deploy to webserver, restart webapp, redeploy webservice."
 	prereqs="jar:jar,tomcat-declare-tasks">
 	<!-- assumes vanilla tomcat & axis installation, and configured tomcat manager app. -->
@@ -167,6 +207,7 @@
 	</delete>
 	<deploy:copy-deps todir="packaging/datacenter-server/WEB-INF/lib"
 		excludes="axis,wsdl4j,saaj,commons-logging,commons-discovery,jaxrpc-api,junit,log4j" />
+	<echo file="packaging/datacenter-server/VERSION">${DSTAMP}</echo>		
 	<zip destfile="packaging/pal/lib/datacenter-server.zip" basedir="packaging/datacenter-server"/>
 </goal>
 
@@ -180,6 +221,7 @@
   <jar destfile="packaging/pal/bin/test-server.jar">
   	<manifest>
 	  <attribute name="Main-Class" value="org.astrogrid.datacenter.integration.axisdataserver.TestInstallation" />
+	  <attribute name="Version" value="${DSTAMP}" />
 	</manifest>
 	<fileset dir="${maven.build.dest}" /> <!-- all our sources - just to be safe -->
 	<zipgroupfileset dir="tmp" includes="*.jar" />
@@ -195,6 +237,7 @@
   <jar destfile="packaging/pal/bin/register-service.jar">
   	<manifest>
 	  <attribute name="Main-Class" value="org.astrogrid.datacenter.integration.axisdataserver.DeployServer" />
+	  <attribute name="Version" value="${DSTAMP}" />
 	</manifest>
 	<zipgroupfileset dir="tmp" includes="*.jar" />
 	<fileset dir="${maven.build.dest}">
@@ -205,6 +248,10 @@
 	</fileset>
   </jar>
 </goal>
+
+<preGoal name="pal-zip">
+	<tstamp />
+</preGoal>
 
 <goal name="pal-zip" description="bundle together everything required for a datacenter"
    prereqs="axis-zip,datacenter-server-zip,datacenter-test-client-jar,datacenter-register-client-jar">
@@ -222,13 +269,16 @@
 	<copy todir="packaging/pal/doc/src-doc">
 		<fileset dir="${maven.build.dir}/docs/xref" />s
 	</copy>
+	<!-- add a timestamp -->
+	<echo file="packaging/pal/VERSION">${DSTAMP}</echo>
 	<!-- bundle everything together, place in target -->
-	<zip destfile="${maven.build.dir}/pal-${version}.zip"
+	<zip destfile="${maven.build.dir}/pal.zip"
 		basedir="packaging">
 		<include name="pal/**" />
 	</zip>
 </goal>
 
+<!-- boilerplate below here -->
   <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
   	prereqs="axis-declare-tasks">
   	<axis-admin xmlfile="wsdd/AxisDataServer-deploy.wsdd" />
@@ -239,7 +289,6 @@
   	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
   </goal>
 
-<!-- boilerplate below here -->
   <goal name="axis-declare-tasks">
       <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
   </goal>
