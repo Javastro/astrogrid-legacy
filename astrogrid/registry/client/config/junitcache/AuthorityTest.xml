@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-<vr:Resource  xsi:type="java:org.astrogrid.registry.beans.resource.registry.AuthorityType">
+<vr:Resource  xsi:type="AuthorityType">
     <Identifier>
       <AuthorityID>vm05.astrogrid.org</AuthorityID>
       <ResourceKey>AuthorityTest</ResourceKey>
