@@ -75,11 +75,10 @@ then
 #OK
 else
 #Something wrong....
-echo "[ag-build-$PROJECT_NAME] deploy build log"
    echo "astrogrid-deploy-snapshot failed for $PROJECT_NAME" | mail -s "Build Failure" $ADMIN_EMAIL 
 fi
 
-
+echo "[ag-build-$PROJECT_NAME] deploy build log"
 cp $LOG_FILE /var/www/www/maven/build/log
 
 echo "[ag-build-$PROJECT_NAME] back to start dir: $OLDDIR"
