@@ -1,5 +1,5 @@
 /*
- * $Id: HttpDirectExecutionTest.java,v 1.3 2004/09/14 16:35:56 jdt Exp $
+ * $Id: HttpDirectExecutionTest.java,v 1.4 2004/09/15 17:03:50 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.integration.AbstractRunTestForCEA;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -48,22 +49,20 @@ public class HttpDirectExecutionTest extends AbstractRunTestForCEA {
         serverInfo.populateDirectTool(tool);
       }                                   
 
+   /**
+    * Overrides the normal test, since we expect an error to occur.
+    */
+   public void testExecute() throws Exception {
+   	try {
+   		super.testExecute();
+   	} catch (CEADelegateException e) {
+   		//expected
+   		return;
+   	}
+    fail("Expected a CEADelegateException since this application isn't valid");
+   }
 
-
-protected void checkResults(ResultListType results) throws Exception {
-    assertNotNull(results);
-    softAssertEquals("more than one result returned",1,results.getResultCount());
-    ParameterValue result = results.getResult(0);
-    assertNotNull(result);
-    String value = result.getValue();
-
-	logger.debug("checkResults() - Value of results: : value = " + value);
-
-    assertNotNull(value);
-    assertTrue("expected message not found in execution output\n" + value,value.indexOf(HttpProviderServerInfo.TEST_CONTENTS) != -1);           
-}
-   
-   
-
-
+	protected void checkResults(ResultListType results) throws Exception {
+	   	fail("I doubt we'll get this far");
+	}
 }
