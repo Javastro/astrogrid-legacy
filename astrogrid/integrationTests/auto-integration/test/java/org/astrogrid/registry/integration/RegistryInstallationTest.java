@@ -1,4 +1,4 @@
-/*$Id: RegistryInstallationTest.java,v 1.8 2004/08/05 12:08:08 KevinBenson Exp $
+/*$Id: RegistryInstallationTest.java,v 1.9 2004/08/05 12:13:58 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,7 @@ import junit.framework.TestCase;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class RegistryInstallationTest extends RegistryBaseTestCase {
+public class RegistryInstallationTest extends RegistryBaseTest {
     /**
      * Constructor for RegistryInstallationTest.
      * @param arg0
@@ -68,6 +68,9 @@ public class RegistryInstallationTest extends RegistryBaseTestCase {
 
 /* 
 $Log: RegistryInstallationTest.java,v $
+Revision 1.9  2004/08/05 12:13:58  KevinBenson
+Changed the name of the BaseTestCase to BaseTest and made sure all it's child classes extnded reference the new name.
+
 Revision 1.8  2004/08/05 12:08:08  KevinBenson
 small changes to extend the regsitrybasetestcase
 

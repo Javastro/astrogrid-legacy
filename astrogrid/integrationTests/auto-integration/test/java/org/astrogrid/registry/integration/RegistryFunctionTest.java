@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryFunctionTest.java,v 1.6 2004/08/05 12:08:08 KevinBenson Exp $
+ * $Id: RegistryFunctionTest.java,v 1.7 2004/08/05 12:13:58 KevinBenson Exp $
  * 
  * Created on 07-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,7 +32,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration5
  */
-public class RegistryFunctionTest extends RegistryBaseTestCase {
+public class RegistryFunctionTest extends RegistryBaseTest {
 
    private URL entryurl;
 

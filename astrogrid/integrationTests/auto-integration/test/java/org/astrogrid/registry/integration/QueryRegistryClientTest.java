@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.3 2004/08/05 12:07:39 KevinBenson Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.4 2004/08/05 12:13:58 KevinBenson Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import java.net.URL;
  * @author Paul Harrison pah@jb.man.ac.uk 07-May-2004
  *
  */
-public class QueryRegistryClientTest extends RegistryBaseTestCase {
+public class QueryRegistryClientTest extends RegistryBaseTest {
      
     /**
      * Constructor for RegistryInstallationTest.
