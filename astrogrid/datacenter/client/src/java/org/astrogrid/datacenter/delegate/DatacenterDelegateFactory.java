@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.11 2004/01/22 14:57:55 nw Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.12 2004/02/15 23:09:04 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,7 +15,6 @@ import org.astrogrid.community.User;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
@@ -116,9 +115,6 @@ public class DatacenterDelegateFactory {
       if (serviceType.equals(NVO_CONE_SERVICE)) {
          return new AdqlNvoConeDelegate(givenEndPoint);
       }
-      if (serviceType.equals(ASTROGRID_SOCKET_SERVICE)) {
-         return new SocketDelegate(givenEndPoint, null);
-      }
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
          return new WebDelegate(user, new URL(givenEndPoint));
       }
@@ -132,102 +128,19 @@ public class DatacenterDelegateFactory {
             return (FullSearcher) constr.newInstance(new Object[] { user });
          } catch (Exception e) {
             //other exceptions raised by constructor of the direct delegate
-            throw new RuntimeException(e);           
+            throw new RuntimeException(e);
          }
       }
      
       throw new IllegalArgumentException("Service Type '" + serviceType + "' unknown");
    }
    
-   ////////////////////////
-   //Deprecated Methods and adapter classes to support them
-   ////////////////////////
-   /** 
-    *@deprecated use {@link #makeConeSearcher(User, String, String)} 
-    */
-   public static ConeSearcher makeConeSearcher(Certification c,String endpoint,String serviceType) throws DatacenterException, MalformedURLException {
-      return makeConeSearcher(c.user,endpoint,serviceType);
-   }
-   /**
-    * For backwards compatibility - call without user & type info.  It makes
-    * best attempt to work out type but it's not safe
-    * @deprecated {@link AdqlQuerier}  is deprecated. Instead use {@link FullSearcher} and {@link #makeFullSearcher}
-    */
-   public static AdqlQuerier makeAdqlQuerier(String givenEndPoint)
-      throws ServiceException, MalformedURLException, IOException {
-      FullSearcher fs = makeFullSearcher(givenEndPoint);
-      return new FullSearcherToAdqlQuerierAdapter(fs);
-   }
-   /** Creates an adql-implementing delegate given an endpoint
-    * (a url to the service). If the endPoint
-    * is null, creates a dummy delegate that can be used to test against, which
-    * does not need access to any datacenter servers.
-    *  @deprecated {@link AdqlQuerier}  is deprecated. Instead use {@link FullSearcher} and {@link #makeFullSearcher}   
-    */
-   public static AdqlQuerier makeAdqlQuerier(Certification cert, String givenEndPoint, String serviceType)
-      throws ServiceException, MalformedURLException, IOException {
-      FullSearcher fs = makeFullSearcher(cert.user, givenEndPoint, serviceType);
-      return new FullSearcherToAdqlQuerierAdapter(fs);
-   }
-   /**
-    * Creates a SQL-passthrough-implementing delegate given an endpoint (a
-    * url to the service). and a service type.
-    * <p>
-    * For a test call, use:
-    * <pre>
-    *    querier = makeSqlQuerier(Certification.ANONYMOUS, "something random", DatacenterDelegateFactory.DUMMY_SERVICE
-    * </pre>
-    * @deprecated use {@link #makeFullSearcher}, 
-    * and utilize methods in {@link org.astrogrid.datacenter.sql.SQLUtils} to convert sql to an Element
-    */
-   public static SqlQuerier makeSqlQuerier(Certification cert, String givenEndPoint, String serviceType)
-      throws ServiceException, MalformedURLException, IOException {
-      // create a full searcher
-      final FullSearcher fs = makeFullSearcher(cert.user, givenEndPoint, serviceType);
-      // now wrap it in a sql-querier compatability layer 
-      return new SqlQuerier() {
-         public DatacenterResults doSqlQuery(String resultsFormat, String sql) throws IOException {
-            Element el = SQLUtils.toQueryBody(sql);
-            return fs.doQuery(resultsFormat, el);
-         }
-      };
-   }
-   /** temporary class that wraps a full searcher so that it implements the legacy AdqlQuerier interface
-    * for backwards compatability.
-    * @author Noel Winstanley nw@jb.man.ac.uk 09-Jan-2004
-    *
-    */
-   private static class FullSearcherToAdqlQuerierAdapter implements AdqlQuerier {
-      public FullSearcherToAdqlQuerierAdapter(FullSearcher fs) {
-         this.fs = fs;
-      }
-      private final FullSearcher fs;
-      private Element toXML(Select adql) throws IOException {
-         try {
-            return ADQLUtils.toQueryBody(adql);
-         } catch (ADQLException e) {
-            throw new IOException("Could not serialize adql: " + e.getMessage());
-         }
-      }
-      public DatacenterResults doQuery(String resultsFormat, Select adql) throws IOException {
-         return fs.doQuery(resultsFormat, toXML(adql));
-      }
-      public int countQuery(Select adql) throws IOException {
-         return fs.countQuery(toXML(adql));
-      }
-      public DatacenterQuery makeQuery(Select adql) throws IOException {
-         return fs.makeQuery(toXML(adql));
-      }
-      public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException {
-         return fs.makeQuery(toXML(adql), givenId);
-      }
-      public Metadata getMetadata() throws IOException {
-         return fs.getMetadata();
-      }
-   }
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.12  2004/02/15 23:09:04  mch
+ Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
  Revision 1.11  2004/01/22 14:57:55  nw
  minor doc fix
 

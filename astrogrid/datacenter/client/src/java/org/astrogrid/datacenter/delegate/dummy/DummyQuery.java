@@ -46,7 +46,7 @@ public class DummyQuery implements DatacenterQuery
     * or the service may throw an exception when attempting to start the
     * query
     */
-   public void setResultsDestination(URL myspace) throws DatacenterException
+   public void setResultsDestination(String myspace) throws DatacenterException
    {
    }
    
@@ -90,6 +90,9 @@ public class DummyQuery implements DatacenterQuery
 
 /*
 $Log: DummyQuery.java,v $
+Revision 1.4  2004/02/15 23:09:04  mch
+Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
 Revision 1.3  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

@@ -1,5 +1,5 @@
 /*
- * $Id: WebQueryDelegate.java,v 1.1 2004/01/05 19:06:26 mch Exp $
+ * $Id: WebQueryDelegate.java,v 1.2 2004/02/15 23:09:04 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -45,7 +45,7 @@ class WebQueryDelegate implements DatacenterQuery {
     * or the service may throw an exception when attempting to start the
     * query
     */
-   public void setResultsDestination(URL resultsDestination) throws RemoteException {
+   public void setResultsDestination(String resultsDestination) throws RemoteException {
       binding.setResultsDestination(queryId,buildURI(resultsDestination));
    }
    
@@ -102,22 +102,28 @@ class WebQueryDelegate implements DatacenterQuery {
     * @param url
     * @return valid apache uri
     */
-   private URI buildURI(URL url) {
-       try {
-        URI uri = new URI(url.toString());
-        return uri;
-       } catch (URI.MalformedURIException e) {
-           // very unlikely to happen - just come from a URL, which is stricter..
-           throw new IllegalArgumentException("Malformed URI: " + e.getMessage());
-       }
+   private URI buildURI(String loc) {
+      try {
+         URI uri = new URI(loc);
+         return uri;
+      } catch (URI.MalformedURIException e) {
+         // very unlikely to happen - just come from a URL, which is stricter..
+         throw new IllegalArgumentException("Malformed URI: " + e.getMessage());
+      }
    }
    
+   private URI buildURI(URL url) {
+      return buildURI(url.toString());
+   }
 
 
 }
 
 /*
 $Log: WebQueryDelegate.java,v $
+Revision 1.2  2004/02/15 23:09:04  mch
+Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
 Revision 1.1  2004/01/05 19:06:26  mch
 Introduced ApplicationController interface
 

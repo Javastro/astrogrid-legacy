@@ -44,7 +44,7 @@ public interface DatacenterQuery
     * or the service may throw an exception when attempting to start the
     * query
     */
-   public void setResultsDestination(URL myspace) throws IOException;
+   public void setResultsDestination(String uri) throws IOException;
 
    /**
     * Starts the query running - eg submits SQL to database.
@@ -83,6 +83,9 @@ public interface DatacenterQuery
 
 /*
 $Log: DatacenterQuery.java,v $
+Revision 1.4  2004/02/15 23:09:04  mch
+Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
 Revision 1.3  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

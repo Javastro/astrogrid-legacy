@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.17 2004/01/13 00:32:47 nw Exp $
+ * $Id: WebDelegate.java,v 1.18 2004/02/15 23:09:04 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -33,8 +33,9 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
+import org.astrogrid.myspace.delegate.MySpaceReference;
+import org.astrogrid.myspace.delegate.VoSpaceClient;
+import org.astrogrid.myspace.delegate.VoSpaceDelegateFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,7 +52,6 @@ import org.xml.sax.SAXException;
  * @author M Hill
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
-
   
    
 public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationController
@@ -126,7 +126,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
       {
           Query q = new Query();
           q.setQueryBody(queryBody);
-         return new WebQueryDelegate(binding,binding.makeQueryWithId(q, givenId));
+          return new WebQueryDelegate(binding,binding.makeQueryWithId(q, givenId));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
@@ -144,9 +144,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    {
       try
       {
-          Query q = new Query();
-          q.setQueryBody(queryBody);
-      return new WebQueryDelegate(binding,binding.makeQuery(q));
+         Query q = new Query();
+         q.setQueryBody(queryBody);
+         return new WebQueryDelegate(binding,binding.makeQuery(q));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
@@ -163,7 +163,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    {
       try {
          //run query on server
-         Query q = new Query();         
+         Query q = new Query();
          q.setQueryBody(queryBody);
          String result = binding.doQuery(resultsFormat, q);
          InputStream is = new ByteArrayInputStream(result.getBytes());
@@ -187,8 +187,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    
    /**
     * ConeSearcher implementation.  Creates ADQL from the parameters that can
-    * be submitted to the service.  NOTE: For simplicity & speed, the ADQL
-    * is actually a 'cubed cone' rather than a circular one.
+    * be submitted to the service.
     *
     * @param ra Right Ascension in decimal degrees, J2000
     * @param dec Decliniation in decimal degress, J2000
@@ -199,41 +198,13 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    
    public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
       
-      //construct adql query
-      /* wrong document - doesn't need enclosing 'query' tag, and select needs an xmlns: attrib. How did this pass tests?
-      String adqlString =
-
-                     "<?xml version='1.0' ?>\n"+
-                     "<query type='adql'>\n"+
-                     "<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+
-                     "   <SelectionAll />\n"+
-                     "   <TableClause>\n"+
-//                   "     <FromClause>\n"+
-//                   "         <TableReference>\n"+
-//                   "            <Table>\n"+
-//                   "               <Name>objects</Name>\n"+
-//                   "               <AliasName>cat</AliasName>\n"+
-//                   "            </Table>\n"+
-//                   "         </TableReference>\n"+
-//                   "      </FromClause>\n"+
-                     "    <WhereClause>\n"+
-                     "         <Circle>\n"+
-                     "            <Ra><Value>"+ra+"</Value></Ra>\n"+
-                     "            <Dec><Value>"+dec+"</Value></Dec>\n"+
-                     "            <Radius><Value>"+sr+"</Value></Radius>\n"+
-                     "          </Circle>\n"+
-                     "    </WhereClause>\n"+
-                     "   </TableClause>\n"+
-                     "</Select>\n"+
-                     "</query>\n";
-      */
       try
       {
          Select s = ADQLUtils.buildMinimalQuery();
          TableExpression tc = new TableExpression();
          s.setTableClause(tc);
          
-         Where w = new Where(); 
+         Where w = new Where();
          tc.setWhereClause(w);
          
          Circle c = new Circle();
@@ -288,10 +259,12 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    
    /**
     * ApplicationController implemenation: Initialises a query, returning the query id.
-    * Parameter Values should include the
+    * Parameter Values should include the location of the query, and where the
+    * results are to be placed.
     *
     */
-   public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
+   public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL,
+                                       User user, ParameterValues parameters) {
       
       try {
          Document doc = null;
@@ -306,60 +279,52 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          
          NodeList elements = doc.getElementsByTagName("Parameter");
          
-         String queryUrl = null;
-         String resultsDestinationUrl = null;
-         MySpaceClient myspace = null;
-         String myspaceFile = null;
+         String queryUri = null;
+         String resultsDestinationUri = null;
          
          
-         //look through parameters
+         //look through parameters, find query and results destination
          for (int i=0;i<elements.getLength();i++) {
             Node n = elements.item(i);
             String name = n.getAttributes().getNamedItem("name").getNodeValue();
             
-            if (name.toLowerCase().equals("querymyspacefile")) {
-               myspaceFile = n.getFirstChild().getNodeValue();
+            if (name.toLowerCase().equals("querymyspacereference")) { //deprecate this
+               queryUri = n.getFirstChild().getNodeValue();
             }
-            if (name.toLowerCase().equals("querymyspaceserver")) {
-               String myspaceUrl = n.getFirstChild().getNodeValue();
-               myspace = MySpaceDelegateFactory.createDelegate(myspaceUrl);
+            else if (name.toLowerCase().equals("queryref")) {
+               queryUri = n.getFirstChild().getNodeValue();
             }
-            if (name.toLowerCase().equals("queryurl")) {
-               queryUrl = n.getFirstChild().getNodeValue();
+            else if (name.toLowerCase().equals("resultsmyspacereference")) {//deprecate this
+               resultsDestinationUri = n.getFirstChild().getNodeValue();
             }
-            else if (name.toLowerCase().equals("resultsurl")) {
-               resultsDestinationUrl = n.getFirstChild().getNodeValue();
+            else if (name.toLowerCase().equals("resultsref")) {
+               resultsDestinationUri = n.getFirstChild().getNodeValue();
             }
             else {
-               throw new IllegalArgumentException("Unknown parameter '"+name+"' not QueryUrl or ResultsUrl");
+               throw new IllegalArgumentException("Unknown parameter '"+name+"'");
             }
          }
-         
-         if ((myspaceFile != null) && (myspace != null))
+
+         //convert myspace references to urls
+         if (MySpaceReference.isMySpaceRef(queryUri))
          {
-            try
-            {
-               queryUrl = myspace.getDataHoldingUrl(User.ANONYMOUS.getAccount(), User.ANONYMOUS.getGroup(), User.ANONYMOUS.getToken(), myspaceFile);
-            } catch (Exception e)
-            {
-               throw new RuntimeException("Failed to get url for file '"+myspaceFile+"' from server '"+myspace);
-            }
+            VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, MySpaceReference.getDelegateEndpoint(queryUri));
+            queryUri = myspace.getUrl(MySpaceReference.getDelegateFileRef(queryUri)).toString();
          }
          
-         
-         assert queryUrl != null : "QueryUrl - or QueryMySpaceFile AND QueryMySpaceServer - not given in parameters";
-         assert resultsDestinationUrl != null : "ResultsUrl not given in parameters";
+         assert queryUri != null : "Query URI not givem in parameters";
+         assert resultsDestinationUri != null : "Results Destination URI not given in parameters";
          
          //Transform to the right types
          Select adql = null;
          try {
             //load query
-            Document adqlDoc = XMLUtils.newDocument(queryUrl);
-            
+            Document adqlDoc = XMLUtils.newDocument(queryUri);
+            //validate it really is adql
             adql = ADQLUtils.unmarshalSelect(adqlDoc);
          }
-         catch (SAXException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid xml: "+e); }
-         catch (ADQLException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid adql: "+e); }
+         catch (SAXException e) { throw new IllegalArgumentException("Query at '"+queryUri+"' not valid xml: "+e); }
+         catch (ADQLException e) { throw new IllegalArgumentException("Query at '"+queryUri+"' not valid adql: "+e); }
          catch (ParserConfigurationException e) { throw new RuntimeException(e); }
          
          WebQueryDelegate query = (WebQueryDelegate) makeQuery(ADQLUtils.toQueryBody(adql), jobstepID);
@@ -367,7 +332,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          queries.put(query.getId(), query);
          
          query.registerJobMonitor(new URL(jobMonitorURL));
-         query.setResultsDestination(new URL(resultsDestinationUrl));
+         query.setResultsDestination(resultsDestinationUri);
          
          return query.getId();
       }
@@ -449,6 +414,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.18  2004/02/15 23:09:04  mch
+ Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
  Revision 1.17  2004/01/13 00:32:47  nw
  Merged in branch providing
  * sql pass-through
@@ -458,6 +426,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.18  2004/02/15 23:09:04  mch
+Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
 Revision 1.17  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through

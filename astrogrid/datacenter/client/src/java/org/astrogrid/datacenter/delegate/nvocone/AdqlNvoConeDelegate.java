@@ -5,36 +5,32 @@
 
 package org.astrogrid.datacenter.delegate.nvocone;
 
+import org.astrogrid.datacenter.delegate.*;
+
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.DelegateQueryListener;
-import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.io.Piper;
-import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
-import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
+import org.astrogrid.myspace.delegate.VoSpaceClient;
+import org.astrogrid.myspace.delegate.VoSpaceDelegateFactory;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -57,8 +53,11 @@ import org.xml.sax.SAXException;
 public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSearcher
 {
    Log log = LogFactory.getLog(AdqlNvoConeDelegate.class);
+
+   /** User certification - for myspace */
+   private User user = null;
    
-   private String userId, communityId, credentials = null;
+   
    /** @todo - adjust to use the MySpaceDummyDelegate */
    private class NvoConeSearchDummyQuery implements DatacenterQuery
    {
@@ -91,7 +90,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
        * or the service may throw an exception when attempting to start the
        * query
        */
-      public void setResultsDestination(URL myspace) throws IOException
+      public void setResultsDestination(String myspace) throws IOException
       {
          destinationServer = myspace.toString();
       }
@@ -188,7 +187,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
        */
       public void registerJobMonitor(URL url) throws IOException
       {
-          listeners.add(new JobMonitorNotifier(url));
+         throw new UnsupportedOperationException("Still need to implement JobMonitorDelegate for cone searches");
      }
 
      /**
@@ -226,65 +225,32 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       
       /**
        * Send results to myspace
-       * @todo - temporarily commented out the myspaceDummyDelegate
        */
-      public void sendResults(InputStream resultsDoc) throws IOException
+      public void sendResults(InputStream resultsIn) throws IOException
       {
-         /**
-         if (destinationServer == null) {
-            //store locally
-            File resultsFile = workspace.makeWorkFile("results");
-            FileOutputStream out = new FileOutputStream(resultsFile);
-            Piper.pipe(resultsDoc, out);
-            out.close();
-            
-            resultsUrl = resultsFile.toURL();
-               
-            return;
-         }
-          */
+         VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, destinationServer.toString());
          
-         MySpaceManagerDelegate myspace = null;
-      /*
-         if (destinationServer.equals(MySpaceDummyDelegate.DUMMY)) {
-            myspace = new MySpaceDummyDelegate(destinationServer.toString());
-         } else {
-         */
-            myspace = new MySpaceManagerDelegate(destinationServer.toString());
-         
+         String myspaceFilename = "/"+user.getIvoRef()+"/"+getId()+"_results";
 
-         String myspaceFilename = getId()+"_results";
-         ByteArrayOutputStream ba = new ByteArrayOutputStream();
+         OutputStream myspaceOut = new BufferedOutputStream(myspace.putStream(myspaceFilename));
 
          try
          {
-            Piper.pipe(resultsDoc, ba);
-            ba.close();
+            Piper.pipe(resultsIn, myspaceOut);
+            myspaceOut.close();
          }
          catch (IOException ioe)
          {
-            log.error("Failed to read results from server "+serverUrl, ioe);
+            log.error("Failed to pipe results from server "+serverUrl+" to "+myspace, ioe);
          }
 
          String resultsLoc = null;
          
          try {
-            myspace.saveDataHolding(getUserId(), getCommunityId(), getCredentials(), myspaceFilename,
-                              ba.toString(),
-                              "VOTable",
-                              MySpaceDummyDelegate.OVERWRITE);
-
-            resultsLoc = myspace.getDataHoldingUrl(getUserId(), getCommunityId(), getCredentials(), myspaceFilename);
-
-            resultsUrl = new URL(resultsLoc);
-
+            resultsUrl = myspace.getUrl(myspaceFilename);
          }
-         catch (MalformedURLException e) {
-            log.error("Invalid URL '"+resultsLoc+"' returned by myspace for results location");
-         }
-            
-         catch (Exception e) {
-            log.error("Failed to store results correctly in myspace at "+destinationServer, e);
+         catch (IOException e) {
+            log.error("Failed to store results file "+myspaceFilename+" correctly in myspace at "+destinationServer, e);
          }
 
       }
@@ -299,27 +265,13 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       super(givenEndpoint);
    }
    
-   /**
-    * Set user credentials (for myspace access)
-    */
-   public void setUserCredentials(String newUserId, String newCommunityId, String newCredentials)
-   {
-      this.userId = newUserId;
-      this.communityId = newCommunityId;
-      this.credentials = newCredentials;
-   }
-
-   public String getUserId()        { return userId; }
-   public String getCommunityId()   { return communityId; }
-   public String getCredentials()   { return credentials; }
-   
    
    /**
     * Constructs the query at the
     * server end, but does not start it yet as other Things May Need To Be Done
     * such as registering listeners or setting the destination for the results.
     *
-    * @param queryBody - query language. only adql supported for now. could imagine sql later. 
+    * @param queryBody - query language. only adql supported for now. could imagine sql later.
     * @param givenId an id for the query is assigned here rather than
     * generated by the server
     */
@@ -405,6 +357,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.9  2004/02/15 23:09:04  mch
+Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
+
 Revision 1.8  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through
