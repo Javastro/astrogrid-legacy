@@ -1,34 +1,68 @@
-package test.org.astrogrid.mySpace.mySpaceManager;
+// package org.astrogrid.mySpace.mySpaceStatus;
 
 import junit.framework.*;
+import java.util.*;
+
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 
-/** JUnit TestCase. 
- * @testfamily JUnit
- * @testkind testcase
- * @testsetup Default TestCase
- * @testedclass org.astrogrid.mySpace.mySpaceManager.DataItemRecord*/
-public class TestDataItemRecord extends TestCase {
-    /** Constructs a test case with the given name. */
-    public TestDataItemRecord(String name) {
-        super(name);
-    }
+/**
+ * Junit tests for the <code>DataItemRecord</code> class.
+ *
+ * @author A C Davenhall (Edinburgh)
+ * @version Iteration 2.
+ */
 
-    /** Sets up the fixture, for example, open a network connection. This method is called before a test is executed. */
-    protected void setUp() {
-        // Write your code here
-    }
+public class TestDataItemRecord extends TestCase
+{
 
-    /** Tears down the fixture, for example, close a network connection. This method is called after a test is executed. */
-    protected void tearDown() {
-        // Write your code here
-    }
+/**
+ * Standard constructor for JUnit test classes.
+ */
 
-    public void testResetDataItemFile() {
-        fail("not implemented");
-    }
+   public TestDataItemRecord (String name)
+   {  super(name);
+   }
 
-    public void testToString() {
-        fail("not implemented");
-    }
+/**
+ * Test the <code>resetDataItemFile</code> method.
+ */
+
+   public void testResetDataItemFile()
+   {  Date creation = new Date(0);
+      DataItemRecord dataItem = new DataItemRecord("name", 0, "file",
+        "owner", creation, creation, 0, DataItemRecord.UNKNOWN,
+        "permissions");
+
+//
+//   Check that the dataItemFile has been set correctly, reset it and
+//   check that it is null.
+
+      Assert.assertEquals(dataItem.getDataItemFile(), "file");
+      dataItem.resetDataItemFile();
+      Assert.assertEquals(dataItem.getDataItemFile(), null);
+   }
+
+/**
+ * Test the <code>toString</code> method.
+ */
+
+   public void testToString()
+   {  Date creation = new Date(0);
+      DataItemRecord dataItem = new DataItemRecord("name", 0, "file",
+        "owner", creation, creation, 0, DataItemRecord.UNKNOWN,
+        "permissions");
+
+      Assert.assertEquals(dataItem.toString(),
+       "name (unknown, created 01/01/70 01:00)");
+   }
+
+/**
+ * Main method to run the class.
+ */
+
+   public static void main (String[] args)
+   {
+//    junit.textui.TestRunner.run (TestDataItemRecord.class);
+      junit.swingui.TestRunner.run (TestDataItemRecord.class);
+   }
 }
