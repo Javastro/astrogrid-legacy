@@ -382,6 +382,7 @@ public class AdministrationAction extends AbstractAction
                      adminDelegate.setAccount(ad);
 //                     adminDelegate.setPassword(String.valueOf(pass.hashCode()));                  
                      adminDelegate.setPassword(ident,pass);                  
+                     adminDelegate.addGroupMember(ident,"guest");
                   }
                   message = "Account inserted.";
                }catch(Exception e) {
