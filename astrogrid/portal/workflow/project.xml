@@ -10,21 +10,36 @@
   <extend>../project.xml</extend>
   
   <id>astrogrid-portal-workflow</id>
-  <name>AstroGrid Portal DataCenter</name>
+  <name>AstroGrid Portal Workflow</name>
 
   <dependencies>
-    <!-- Datacenter -->
-    <dependency>
-      <groupId>astrogrid-workflow</groupId>
-      <artifactId>astrogrid-workflow-client</artifactId>
-      <version>SNAPSHOT</version>
-    </dependency>
 
     <!-- MySpace -->
     <dependency>
       <groupId>astrogrid-mySpace</groupId>
-      <artifactId>astrogrid-mySpace-delegate</artifactId>
-      <version>it03</version>
+      <artifactId>astrogrid-mySpace</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <!-- Jes -->
+    <dependency>
+      <groupId>astrogrid-jes</groupId>
+      <artifactId>astrogrid-jes</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <!-- Common -->
+    <dependency>
+      <groupId>astrogrid-common</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <!-- Community -->
+    <dependency>
+      <groupId>astrogrid-community</groupId>
+      <artifactId>authentication-client</artifactId>
+      <version>1.0</version>
     </dependency>
     
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
