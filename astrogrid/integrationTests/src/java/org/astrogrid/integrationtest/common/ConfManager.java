@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.6 2004/03/29 12:08:03 jdt Exp $
+ * $Id: ConfManager.java,v 1.7 2004/03/29 17:17:55 jdt Exp $
  * Created on 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -8,13 +8,14 @@
  */
 package org.astrogrid.integrationtest.common;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
+import java.net.URL;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 /**
  * Deal with properties common to all the tests
- * @TODO refactor this to use Martin's config.
  * @author jdt 
  */
 public final class ConfManager {
@@ -54,24 +55,21 @@ public final class ConfManager {
     /**
      * The class's raison d'etre
      */
-    private Properties props;
+    private Config config;
     /**
      * ctor
      */
     private ConfManager() {
+        final URL url = this.getClass().getResource(WEBSERVICES_PROPS);
+        assert url != null : "No properties file found";
+        log.debug("Attempting to load " + ConfManager.WEBSERVICES_PROPS + " from "+url);
         try {
-            props = new Properties();
-            log.debug("Attempting to load " + ConfManager.WEBSERVICES_PROPS);
-            final InputStream inputStream =
-                this.getClass().getResourceAsStream(
-                    ConfManager.WEBSERVICES_PROPS);
-            assert inputStream != null : "No file found";
-            props.load(inputStream);
+            SimpleConfig.load(url);
             fileNotLoaded = false;
         } catch (IOException ex) {
-            fileNotLoaded = true;
             log.error("Problem loading test properties", ex);
         }
+        config = SimpleConfig.getSingleton();
     }
     /**
      * singleton pattern
@@ -80,6 +78,15 @@ public final class ConfManager {
      */
     public static ConfManager getInstance() {
         return instance;
+    }
+    
+    /**
+     * Static access to the singleton's the underlying config
+     *
+     * @return the config
+     */
+    public static Config getConfig() {
+        return getInstance().config;
     }
     /**
      * Get the endpoint of our integration test myspace server
@@ -126,10 +133,13 @@ public final class ConfManager {
         if (fileNotLoaded) {
             throw new IOException("Configuration file not loaded");
         }
-        final String property = props.getProperty(propertyName);
+        final String property = config.getString(propertyName);
         log.debug(propertyDescription + ": " + property);
         assert property != null && property.length() > 0;
         return property;
+        
+        
+         
     }
     /**
      * get the endpoint of a datacenter server containing the standard default
@@ -146,6 +156,9 @@ public final class ConfManager {
 }
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.7  2004/03/29 17:17:55  jdt
+ * Refactored ConfManager to use the astrogrid config class
+ *
  * Revision 1.6  2004/03/29 12:08:03  jdt
  * Added new prop for portal.  Think this class should be deprecated
  * in favour of Martin's config thing.  Let's face it, it's  pants.
