@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.27 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/12 11:16:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.28 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.28  2003/09/12 11:16:09  KevinBenson
+    |   added the jconfig into it.
+    |
     |   Revision 1.27  2003/09/11 03:15:06  dave
     |   1) Implemented PolicyService internals - no tests yet.
     |   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -182,7 +185,7 @@
 		<pathelement location="${ant.home}/lib/ant.jar"/>
 		<pathelement location="${ant.home}/lib/optional.jar"/>
 	</path>
-
+	
 	<!--+
 		| Run an Ant task in a forked VM.
 		| Requires two properties, the task in task.name and a path refenece in task.path.
@@ -1138,6 +1141,13 @@
 
 	<property name="policy.server.jar"  value="policy-server-${project.version}.jar"/>
 	<property name="policy.client.jar"  value="policy-client-${project.version}.jar"/>
+	<property name="jconfig.jar" value="${basedir}/depends/jconfig/jconfig.jar" />
+
+	
+	<path id="jconfig.classpath">
+		<pathelement location="${jconfig.jar}"/>
+	</path>
+
 
 	<!--+
 		| The Policy server classpath.
@@ -1151,6 +1161,8 @@
 		<path refid="xerces.classpath"/>
 		<!-- The Hsqldb libraries -->
 		<path refid="hsqldb.classpath"/>
+		<!-- Jconfig libraries -->
+		<path refid="jconfig.classpath"/>
 		<!-- Our server jar -->
 		<pathelement path="${policy.base}/jar/${policy.server.jar}"/>
 	</path>
@@ -1161,6 +1173,8 @@
 	<path id="policy.client.classpath">
 		<!-- The Axis libraries -->
 		<path refid="axis.classpath"/>
+		<!-- Jconfig libraries -->		
+		<path refid="jconfig.classpath"/>
 		<!-- Our client classes -->
 		<pathelement path="${policy.base}/jar/${policy.client.jar}"/>
 	</path>
@@ -1189,6 +1203,7 @@
 			<include name="org/astrogrid/community/policy/data/*.java"/>
 			<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 			<classpath>
+			
 			</classpath>
 		</javac>
 	</target>
@@ -1387,6 +1402,10 @@
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
+			
+				<!-- Include our common objects -->
+	  	        <include name="org/astrogrid/community/common/*.java"/>
+
 				<!-- Include our PolicyService interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyServiceImpl.java"/>
@@ -1465,6 +1484,8 @@
 			<fileset dir="src/java">
 				<!-- Include our delegate objects -->
 				<include name="org/astrogrid/community/delegate/policy/*.java"/>
+				<!-- Include our common objects -->
+	  	        <include name="org/astrogrid/community/common/*.java"/>
 				<!-- Include our PolicyService interface -->
 				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 				<!-- Include our PolicyManager interface -->
@@ -1502,6 +1523,7 @@
 		       deprecation="on"
 		       optimize="on"
 		       >
+   	        <include name="org/astrogrid/community/common/*.java"/>		       
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<!--+
@@ -1518,6 +1540,9 @@
 				<path refid="castor.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
+				
+				<path refid="jconfig.classpath"/>
+				
 			</classpath>
 		</javac>
 	</target>
@@ -1535,6 +1560,7 @@
 		       deprecation="on"
 		       optimize="on"
 		       >
+  	        <include name="org/astrogrid/community/common/*.java"/>		       		       
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<include name="org/astrogrid/community/policy/client/**"/>
@@ -1542,6 +1568,8 @@
 			<classpath>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
+				
+				<path refid="jconfig.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
 			</classpath>
@@ -1558,6 +1586,7 @@
 		<jar destfile="${policy.base}/jar/${policy.server.jar}">
 			<!-- Copy our own Java source -->
 			<fileset dir="${policy.server.base}/classes">
+				<include name="org/astrogrid/community/common/**"/>
 				<include name="org/astrogrid/community/policy/data/**"/>
 				<include name="org/astrogrid/community/policy/server/**"/>
 				<!--+
@@ -1580,6 +1609,7 @@
 		<jar destfile="${policy.base}/jar/${policy.client.jar}">
 			<!-- Copy our own Java source -->
 			<fileset dir="${policy.client.base}/classes">
+				<include name="org/astrogrid/community/common/**"/>
 				<include name="org/astrogrid/community/policy/data/**"/>
 				<include name="org/astrogrid/community/policy/server/**"/>
 				<include name="org/astrogrid/community/policy/client/**"/>
