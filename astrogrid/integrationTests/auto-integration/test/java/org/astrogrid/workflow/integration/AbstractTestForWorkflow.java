@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.6 2004/08/12 14:29:39 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.7 2004/08/12 21:29:54 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.integration.AbstractTestForIntegration;
@@ -20,10 +21,13 @@ import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
+import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -58,12 +62,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     protected abstract void buildWorkflow() throws  Exception;
 
    public static final long WAIT_TIME = 240 * 1000;
-
+/** override this to do fuller tests */
     public void checkExecutionResults(Workflow result) throws Exception{
-        softAssertEquals("Workflow not completed",
-            ExecutionPhase.COMPLETED,
-            result.getJobExecutionRecord().getStatus());
-        // i.e. its not in error             
+        assertWorkflowCompleted(result);
     }
 
     public void testWorkflow() throws Exception {
@@ -119,11 +120,91 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             checkExecutionResults(result);
  
     }
+    
+    // helper assertions to use.
+    /**
+     * @param result
+     */
+    public void assertWorkflowCompleted(Workflow result) {
+        // workflow should have been executed and completed.
+        assertNotNull("no execution record",result.getJobExecutionRecord());
+        JobExecutionRecord jrec = result.getJobExecutionRecord();
+        softAssertNotNull("no finish time recorded",jrec.getFinishTime());
+        softAssertEquals("status not completed",ExecutionPhase.COMPLETED,jrec.getStatus());
+    }
+
+    protected void assertWorkflowError(Workflow result) {
+        // workflow should have been executed and completed.
+        assertNotNull(result.getJobExecutionRecord());
+        JobExecutionRecord jrec = result.getJobExecutionRecord();
+        softAssertNotNull("no finish time recorded",jrec.getFinishTime());
+        softAssertEquals("status not completed",ExecutionPhase.ERROR,jrec.getStatus());
+    }    
+    
+    /**
+     * @param sc2
+     */
+    protected void assertScriptCompletedWithMessage(Script sc2, String msg) {
+        softAssertEquals("expected a single execution",1,sc2.getStepExecutionRecordCount());
+        StepExecutionRecord rec = sc2.getStepExecutionRecord(0);
+        softAssertEquals("expected to complete",ExecutionPhase.COMPLETED, rec.getStatus());
+        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+        //check stdout and stderr messages.
+        MessageType stdout = (MessageType)rec.findXPathValue("message[source='stdout']");
+        assertNotNull("no stdout message found",stdout);
+        System.out.println(stdout.getContent());
+        softAssertEquals("Message was " + stdout.getContent(),msg,stdout.getContent().trim());
+    }
+
+    /**
+     * @param sc1
+     */
+    protected void assertScriptCompleted(Script sc1) {
+        softAssertEquals("expected a single execution",1,sc1.getStepExecutionRecordCount());
+        StepExecutionRecord rec = sc1.getStepExecutionRecord(0);
+        softAssertEquals("expected to complete",ExecutionPhase.COMPLETED,rec.getStatus());
+        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+    }
+    protected void assertScriptError(Script sc1) {
+        softAssertEquals("expected a single execution",1,sc1.getStepExecutionRecordCount());
+        StepExecutionRecord rec = sc1.getStepExecutionRecord(0);
+        softAssertEquals("expected to err",ExecutionPhase.ERROR,rec.getStatus());
+        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+    }    
+    protected void assertScriptNotRun(Script sc1) {
+        softAssertEquals("expected script not to run",0,sc1.getStepExecutionRecordCount());
+
+    }    
+    /**
+     * @param step
+     */
+    protected void assertStepCompleted(Step step) {
+        softAssertEquals("expected a single execution",1,step.getStepExecutionRecordCount());
+        StepExecutionRecord rec = step.getStepExecutionRecord(0);
+        softAssertEquals("expected step to complete",ExecutionPhase.COMPLETED, rec.getStatus());
+        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+    }
+    
+
+    /**
+     * @param step
+     */
+    protected void assertStepRunning(Step step) {
+        softAssertEquals("expected a single execution",1,step.getStepExecutionRecordCount());
+        StepExecutionRecord rec = step.getStepExecutionRecord(0);
+        softAssertEquals("expected script to be running",ExecutionPhase.RUNNING,rec.getStatus());
+        softAssertNotNull("expected a start time",rec.getStartTime());
+        softAssertNull("didn't expect a finish time",rec.getFinishTime());
+    }
+        
 }
 
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.7  2004/08/12 21:29:54  nw
+added helper assertion methods
+
 Revision 1.6  2004/08/12 14:29:39  nw
 loosened up an exception type
 
