@@ -51,7 +51,7 @@
 </goal>
 <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
    <echo message="Master Project: astrogrid-deploy-site"/>
-   <attainGoal name="site:fsdeploy" />
+   <attainGoal name="site:sshdeploy" />
 </goal>
 <goal name="astrogrid-clean">
    <echo message="Master Project: astrogrid-clean"/>
