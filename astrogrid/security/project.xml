@@ -57,42 +57,42 @@
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
   
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-community-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-community-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-community-resolver</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-registry-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
 
     <dependency>
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
       <artifactId>astrogrid-registry-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
   
     <dependency>

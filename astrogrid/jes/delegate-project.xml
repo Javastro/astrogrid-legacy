@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: delegate-project.xml,v 1.4 2004/04/29 16:54:12 jdt Exp $ -->
+<!-- $Id: delegate-project.xml,v 1.5 2004/06/11 19:28:18 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes-delegate</id>
@@ -75,7 +75,7 @@
         <dependency>
             <artifactId>astrogrid-workflow-objects</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
 
         </dependency>
         <dependency>
@@ -85,8 +85,8 @@
         </dependency>
 <dependency>
             <artifactId>astrogrid-common</artifactId>
-            <groupId>astrogrid-common</groupId>
-            <version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
+            <version>${pom.currentVersion}</version>
         </dependency>
     </dependencies>
 </project>

@@ -7,7 +7,7 @@
   <id>astrogrid-datawarehouse</id>
   <name>AstroGrid Data Warehouse</name>
 
-  <currentVersion>SNAPSHOT</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
   
   <organization>
     <name>AstroGrid</name>

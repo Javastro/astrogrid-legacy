@@ -87,13 +87,13 @@
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         
         <dependency>
             <artifactId>astrogrid-workflow-objects</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
 
         <dependency>

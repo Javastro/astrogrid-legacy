@@ -8,7 +8,7 @@
   <!-- a unique name for this project -->
   <id>pal</id>
   <name>Publishers Astrogrid Library</name>
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
   <description><![CDATA[
    <p>
@@ -91,7 +91,7 @@ tomcat.password=secret<br />
    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -100,7 +100,7 @@ tomcat.password=secret<br />
    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
           <properties>
       <war.bundle>true</war.bundle>
     </properties>
@@ -109,7 +109,7 @@ tomcat.password=secret<br />
    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>cdsdelegate</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -122,6 +122,12 @@ tomcat.password=secret<br />
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
+       <dependency>
+        <id>astrogrid-mySpace</id>
+        <version>${pom.currentVersion}</version>
+       <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
     </dependency>
 
     <dependency>
@@ -136,7 +142,7 @@ tomcat.password=secret<br />
       <groupId>astrogrid-ogsadai</groupId>
       <type>jar</type>
       <artifactId>astrogrid-ogsadai-app</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
 
     <!-- JavaMail -->
@@ -152,7 +158,7 @@ tomcat.password=secret<br />
     <dependency>
       <groupId>astrogrid-jes</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -162,7 +168,7 @@ tomcat.password=secret<br />
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
                       <properties>
                          <war.bundle>true</war.bundle>
                       </properties>
@@ -170,7 +176,7 @@ tomcat.password=secret<br />
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
                       <properties>
                          <war.bundle>true</war.bundle>
                       </properties>
@@ -178,7 +184,7 @@ tomcat.password=secret<br />
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
                       <properties>
                          <war.bundle>true</war.bundle>
                       </properties>
@@ -206,7 +212,7 @@ tomcat.password=secret<br />
     <dependency>
       <id>astrogrid-workflow-objects</id>
       <groupId>org.astrogrid</groupId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -224,7 +230,7 @@ tomcat.password=secret<br />
             <dependency>
                 <artifactId>astrogrid-registry-client</artifactId>
                 <groupId>org.astrogrid</groupId>
-                <version>SNAPSHOT</version>
+                <version>${pom.currentVersion}</version>
                 <properties>
                         <war.bundle>true</war.bundle>
                 </properties>
@@ -232,7 +238,7 @@ tomcat.password=secret<br />
         <dependency>
                 <artifactId>astrogrid-registry-common</artifactId>
                 <groupId>org.astrogrid</groupId>
-                <version>SNAPSHOT</version>
+                <version>${pom.currentVersion}</version>
                 <properties>
                         <war.bundle>true</war.bundle>
                 </properties>
@@ -242,7 +248,7 @@ tomcat.password=secret<br />
        <dependency>
         <id>astrogrid-mySpace</id>
         <groupId>org.astrogrid</groupId>
-        <version>SNAPSHOT</version>
+        <version>${pom.currentVersion}</version>
        <properties>
       <war.bundle>true</war.bundle>
     </properties>

@@ -45,19 +45,19 @@
         <!-- astrogrid -specific deps -->
                 <dependency>
                         <artifactId>astrogrid-common</artifactId>
-                        <version>SNAPSHOT</version>
+                        <version>${pom.currentVersion}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>
         <!-- registry -->
                 <dependency>
                         <artifactId>astrogrid-registry-client</artifactId>
                         <groupId>org.astrogrid</groupId>
-                        <version>SNAPSHOT</version>
+                        <version>${pom.currentVersion}</version>
                 </dependency>
                 <dependency>
                         <artifactId>astrogrid-registry-common</artifactId>
                         <groupId>org.astrogrid</groupId>
-                        <version>SNAPSHOT</version>
+                        <version>${pom.currentVersion}</version>
                 </dependency>
                      <dependency >
                            <id>wsdl4j</id>
@@ -67,19 +67,19 @@
         <!-- myspace -->
                 <dependency>
                         <artifactId>astrogrid-mySpace</artifactId>
-                        <version>SNAPSHOT</version>
+                        <version>${pom.currentVersion}</version>
                         <groupId>org.astrogrid</groupId>
                 </dependency>
         <!-- jes -->
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-jes-delegate</artifactId>
-                           <version>SNAPSHOT</version>
+                           <version>${pom.currentVersion}</version>
                     </dependency>
                 <dependency>
                            <groupId>org.astrogrid</groupId>
                            <artifactId>astrogrid-workflow-objects</artifactId>
-                           <version>SNAPSHOT</version>
+                           <version>${pom.currentVersion}</version>
                 </dependency>
      <!-- Third party dependencies -->
                 <dependency>

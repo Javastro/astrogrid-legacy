@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <groupId>org.astrogrid</groupId>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
   
   <organization>
     <name>AstroGrid</name>
@@ -69,7 +69,8 @@
     <!-- astrogrid -specific deps -->
     <dependency>
       <id>astrogrid-common</id>
-      <version>SNAPSHOT</version>
+	  <groupId>org.astrogrid</groupId>
+      <version>${pom.currentVersion}</version>
           <properties>
       <war.bundle>true</war.bundle>
     </properties>

@@ -21,6 +21,22 @@
       ignoreFailures="true" />
 
 </goal>
+<goal name="astrogrid-deploy-artifact">
+   <echo message="Master Project: astrogrid-deploy-artifact"/>
+   <maven:reactor
+     basedir="${basedir}"
+     postProcessing="false"
+     includes="*/project.xml,implementations/*/project.xml"
+     excludes="pal/**,implementations/http2java/**"
+     goals="jar:deploy,dist"
+     banner="Deploying snapshots"
+     ignoreFailures="true" />
+    <maven:maven descriptor="${basedir}/pal/project.xml"
+      goals="webapp-site,war:deploy"
+      ignoreFailures="true" />
+
+</goal>
+
 <goal name="astrogrid-install-snapshot">
    <echo message="Master Project: astrogrid-install-snapshot"/>
    <maven:reactor
@@ -35,7 +51,21 @@
       goals="webapp-site,war:install-snapshot"
       ignoreFailures="true" />
 </goal>
-<goal name="astrogrid-build-site">
+<goal name="astrogrid-install-artifact">
+   <echo message="Master Project: astrogrid-install-artifact"/>
+   <maven:reactor
+     basedir="${basedir}"
+     postProcessing="false"
+     includes="*/project.xml,implementations/*/project.xml"
+     excludes="pal/**"
+     goals="jar:install,dist"
+     banner="installing artifact"
+     ignoreFailures="true" />
+    <maven:maven descriptor="${basedir}/pal/project.xml"
+      goals="webapp-site,war:install"
+      ignoreFailures="true" />
+</goal>
+	<goal name="astrogrid-build-site">
    <echo message="Master Project: astrogrid-build-site"/>
    <attainGoal name="multiproject:site" />
 </goal>

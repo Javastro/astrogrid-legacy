@@ -71,6 +71,11 @@
         <ant:echo message="Building component artifact ...."/>
         <attainGoal name="jar:install"/>
     </goal>
+	
+	<goal name="deploy-artifact">
+	<attainGoal name="jar:deploy"/>
+	</goal>
+	
 
     <!--+
         | Build and install our snapshot jar.

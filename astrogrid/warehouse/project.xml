@@ -146,36 +146,38 @@ WAREHOUSE_ExecutableJarName=astrogrid-ogsadai-app-{VERSION}.jar
         <!-- astrogrid -specific deps -->
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <id>astrogrid-common</id>
-            <version>SNAPSHOT</version>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-server</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
         <!-- This is needed for runtime tests because 
          the datacentre stuff needs it. -->
         <dependency>
             <groupId>org.astrogrid</groupId>
-            <id>astrogrid-mySpace</id>
-            <version>SNAPSHOT</version>
+            <artifactId>astrogrid-mySpace</artifactId>
+            <version>${pom.currentVersion}</version>
         </dependency>
+		<!-- surely it does not have a dependency on applications - pah
         <dependency>
             <groupId>org.astrogrid</groupId>
             <id>astrogrid-applications</id>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
         </dependency>
+		-->
         <!--
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>pal</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
         </dependency>-->
         <!-- more standard deps -->

@@ -3,11 +3,17 @@
     | Maven project description for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2004/05/11 00:45:10 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2004/06/11 19:28:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.12  2004/06/11 19:28:24  pah
+    |   changes for iteration 5 release build
+    |
+    |   Revision 1.11.2.1  2004/06/10 14:58:43  pah
+    |   update the project files to get the dependencies right...
+    |
     |   Revision 1.11  2004/05/11 00:45:10  KevinBenson
     |   The castor objects have been moved to here
     |
@@ -134,7 +140,7 @@
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-community-webapp</artifactId>
+            <artifactId>astrogrid-community</artifactId>
             <version>${pom.currentVersion}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>

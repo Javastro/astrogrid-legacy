@@ -8,7 +8,7 @@
   <id>astrogrid-datacenter-client</id>
   <name>AstroGrid DataCenter Client Delegate</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
    <description><![CDATA[
    <section name="Astrogrid Datacenter Client">
@@ -86,31 +86,23 @@
     <!-- required for the NVO cone search delegate -->
     <dependency>
       <id>astrogrid-mySpace</id>
-      <version>SNAPSHOT</version>
+	  <groupId>org.astrogrid</groupId>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
 
     <dependency>
-      <id>astrogrid-ui</id>
-      <version>SNAPSHOT</version>
+	 <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-ui</artifactId>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
 
-    <!-- required for the ApplicationController interface
-    <dependency>
-      <groupId>astrogrid-applications</groupId>
-      <artifactId>astrogrid-applications</artifactId>
-      <version>SNAPSHOT</version>
-      <properties>
-        <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
-    not needed any more? -->
-
+ 
     <dependency>
       <id>breezetk</id>
       <version>UNKNOWN</version>

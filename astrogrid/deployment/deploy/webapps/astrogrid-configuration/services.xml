@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<services>
+<!-- configuration file for scripting - lists all known services. -->
+<service type="Application">
+        <endpoint>@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <description>dummy command-line application</description>
+</service>
+<service type="Application">
+        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CeaDataService</endpoint>
+        <description>cea interface to a datacenter</description>
+</service>
+<service type="jobcontrol">
+        <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobControllerService</endpoint>
+        <description>a job controller</description>
+</service>
+<service type="jobmonitor">
+        <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobMonitorService</endpoint>
+        <description>a job monitor</description>
+</service>
+<service type="Datacenter">
+        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/AxisDataServer</endpoint>
+        <description>local datacenter</description>
+</service>
+
+<service type="Myspace">
+        <endpoint>@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/MySpaceManager</endpoint>
+        <description>local myspace</description>
+</service>
+
+<service type="Registry">
+        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
+        <description>local registry query endpoint</description>
+</service>
+<service type="RegistryAdmin">
+        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</endpoint>
+        <description>local registry query endpoint</description>
+</service>
+	<!-- more to come here -->
+</services>

@@ -12,7 +12,7 @@
 
   <!-- The version of the project under development, e.g.
        1.1, 1.2, 2.0-dev -->
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
 
   <description>
@@ -42,18 +42,20 @@
   <dependencies>
 
 	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
+		<groupId>org.astrogrid</groupId>
 		<artifactId>astrogrid-datacenter-client</artifactId>
-		<version>SNAPSHOT</version>
+		<version>${pom.currentVersion}</version>
 	</dependency>
 	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
+		<groupId>org.astrogrid</groupId>
 		<artifactId>astrogrid-datacenter-server</artifactId>
-		<version>SNAPSHOT</version>
+		<version>${pom.currentVersion}</version>
 	</dependency>
 	    <dependency>
+	    <groupId>org.astrogrid</groupId>
         <id>astrogrid-mySpace</id>
-        <version>SNAPSHOT</version>
+		
+        <version>${pom.currentVersion}</version>
 	    <properties>
       <war.bundle>true</war.bundle>
     </properties>

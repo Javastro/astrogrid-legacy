@@ -4,7 +4,7 @@
           <groupId>org.astrogrid</groupId>
         <id>astrogrid-scripting</id>
         <name>Astrogrid Scripting Language Interface</name>
-        <currentVersion>SNAPSHOT</currentVersion>
+        <currentVersion>${astrogrid.iteration}</currentVersion>
         <organization>
                 <name>AstroGrid</name>
                 <url>http://www.astrogrid.org</url>
@@ -140,48 +140,48 @@
                 <dependency>
                         <artifactId>astrogrid-mySpace</artifactId>
                         <groupId>org.astrogrid</groupId>
-                        <version>SNAPSHOT</version>
+                        <version>${pom.currentVersion}</version>
                 </dependency>
                 <dependency>
            <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-jes-delegate</artifactId>
-           <version>SNAPSHOT</version>
+           <version>${pom.currentVersion}</version>
             </dependency>
         <dependency>
            <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-common</artifactId>
-           <version>SNAPSHOT</version>
+           <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
            <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-workflow-objects</artifactId>
-           <version>SNAPSHOT</version>
+           <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
            <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-applications</artifactId>
-           <version>SNAPSHOT</version>
+           <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
         	<groupId>org.astrogrid</groupId>
         	<artifactId>astrogrid-workflow</artifactId>
-        	<version>SNAPSHOT</version>
+        	<version>${pom.currentVersion}</version>
         </dependency>
 		<dependency>
 			<groupId>org.astrogrid</groupId>
 			<artifactId>astrogrid-registry-client</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${pom.currentVersion}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.astrogrid</groupId>
 			<artifactId>astrogrid-registry-common</artifactId>
-			<version>SNAPSHOT</version>
+			<version>${pom.currentVersion}</version>
 		</dependency>
     <!-- stuff for datacenter -->
     <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
     </dependency>
     <dependency><!-- think this is neded -->
       <id>breezetk</id>

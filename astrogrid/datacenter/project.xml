@@ -8,7 +8,7 @@
   <id>astrogrid-datacenter</id>
   <name>AstroGrid DataCenter</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
 	<description><![CDATA[
 	<p>

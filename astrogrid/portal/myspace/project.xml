@@ -17,21 +17,21 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
     
     <!-- Portal Common -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-portal-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
     </dependency>
     
     <!-- MySpace -->
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-mySpace</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -58,7 +58,7 @@
         <dependency>
             <artifactId>astrogrid-registry-client</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -66,7 +66,7 @@
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -76,7 +76,7 @@
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -85,7 +85,7 @@
         <!-- mch why is this in?! dependency>
             <artifactId>astrogrid-datacenter-client</artifactId>
             <groupId>astrogrid-datacenter</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>

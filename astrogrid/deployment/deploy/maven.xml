@@ -1,0 +1,606 @@
+<?xml version="1.0" ?>
+<!-- to use:
+	
+	TODO 
+	  1. need to remove reliance on community toolkit for entering registry entries...
+	 
+   -->
+<!-- extension maven script -->
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:util="jelly:util" 
+	xmlns:define="jelly:define" xmlns:ag="org.astrogrid.deploy" 
+	xmlns:deploy="deploy" default="deploy-core">
+	<property environment="env"/>
+	<!--use immutability in the next two lines...-->
+	<property name="tomcat.host" value="${env.HOSTNAME}"/> <!-- unix -->
+	<property name="tomcat.host" value="${env.COMPUTERNAME}"/> <!-- windows -->
+	<!--
+	   | properties that might need to be customized 
+	   -->  
+	<property name="tomcat.location" value="/usr/tomcat"/>
+	<property name="tomcat.port" value="8080"/>
+     <!-- iteration specific -->
+	<property name="registry.authorityid" value="org.astrogrid.itn05"/>
+	<property name="astrogrid.release" value="Itn05_release" />
+	<!-- other, non-configurable properties -->
+	<property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
+	<property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
+	<property name="astrogrid.repository" 
+		value="http://www.astrogrid.org/maven/org.astrogrid/"/>
+			<!-- temp dir - used for mangling files, etc -->
+	<property name="temporary.dir" location="${basedir}/tmp" />
+	<property name="download.dir" location="${basedir}/download" />
+	<property name="config.webapp.name" 
+		value="astrogrid-configuration-${astrogrid.release}" />
+	<j:if test="${context.getVariable('registry.authorityid') == null}">
+		<j:set var="registry.authorityid" value="org.astrogrid.itn05"/>
+	</j:if>
+	<!-- tokens to subst into config files -->
+	<filter token="WORKDIR" value="${work.dir}" />
+	<filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
+	<filter token="TOMCATROOT" value="${tomcat.url}" />
+	<filter token="TOMCATLOC" value="${tomcat.location}" />
+	<filter token="REGAUTHORITY" value="${registry.authorityid}" />
+	<filter token="RELEASE" value="${astrogrid.release}" />
+	<!-- setup -->
+	<goal name="init" prereqs="tomcat-declare-tasks">
+		<echo>AuthorityID used: ${registry.authorityid}</echo>
+		<delete dir="${temporary.dir}" />
+		<mkdir dir="${temporary.dir}" />
+		<deploy:copy-deps todir="${temporary.dir}" />
+		<copy file="webapps/astrogrid-configuration/AstroGridConfig.properties" tofile="${temporary.dir}/astrogrid.properties" filtering="true" overwrite="true" />
+		
+		<mkdir dir="${download.dir}" />
+		<attainGoal name="community-toolkit"/>
+	</goal>
+	<goal name="debug-out">
+		<echo>Tomcat host ${tomcat.host}</echo>
+		<echo>AuthorityID used: ${registry.authorityid}</echo>
+		<echo>Working dir ${work.dir}</echo>
+	</goal>
+	<define:taglib uri="org.astrogrid.deploy">
+		<!-- need to decide how careful to be about property lookups - context stuff -->
+		<define:tag name="GetDeploy" >
+			<j:set var="component.name" value="${name}"/>
+			<j:choose>
+				<j:when test="${!empty(version)}">
+					<j:set var="component.version" value="${version}"/>
+				</j:when>
+				<j:otherwise>
+					<j:set var="component.version" 
+						value="${context.getVariable('astrogrid.release')}"/>
+				</j:otherwise>
+			</j:choose>
+			<filter token="RELEASE" value="${component.version}"/> <!-- does this behave like a property? - this might not change once set initially -->
+			<j:set var="war.name" 
+				value="astrogrid-${component.name}-${component.version}" />
+			<get src="${astrogrid.repository}/wars/${war.name}.war" 
+				dest="${download.dir}/${war.name}tmp.war" usetimestamp="true" verbose="true"/>
+			<copy todir="${temporary.dir}/${component.name}" filtering="true">
+				<fileset dir="contexts/${component.name}" />
+			</copy>
+			<copy todir="${temporary.dir}/" filtering="false">
+				<fileset dir="${download.dir}" includes="${war.name}tmp.war" />
+			</copy>
+			<war update="true" destfile="${temporary.dir}/${war.name}tmp.war">
+				<metainf dir="${temporary.dir}/${component.name}"/>
+			</war>
+			<echo>
+			   installing ${war.name} to /astrogrid-${component.name}-${component.version}
+			</echo>
+			<j:choose >
+			<j:when test="${context.getVariable('name') eq 'portal'}">
+				<!-- unfortunately this is a hack because the portal must be called portal -->
+				
+				<j:catch>
+					<echo>doing portal install fudge</echo>
+					<tomcat-deploy url="${context.getVariable('tomcat.manager.url')}" 
+						username="${context.getVariable('tomcat.manager.username')}" 
+						password="${context.getVariable('tomcat.manager.password')}" 
+						path="/astrogrid-portal" 
+						war="file://${context.getVariable('temporary.dir')}/${war.name}tmp.war"/>
+				</j:catch>
+			</j:when>
+			<j:otherwise>
+				<j:catch>
+					<tomcat-deploy url="${context.getVariable('tomcat.manager.url')}" 
+						username="${context.getVariable('tomcat.manager.username')}" 
+						password="${context.getVariable('tomcat.manager.password')}" 
+						update="true"
+						path="/${war.name}"
+						localWar="file://${context.getVariable('temporary.dir')}/${war.name}tmp.war"/>
+				</j:catch>
+			</j:otherwise>
+			</j:choose>
+		</define:tag>
+		<define:tag name="UnDeploy">
+			<j:set var="component.name" value="${name}"/>
+			<j:choose>
+				<j:when test="${!empty(version)}">
+					<j:set var="component.version" value="${version}"/>
+				</j:when>
+				<j:otherwise>
+					<j:set var="component.version" 
+						value="${context.getVariable('astrogrid.release')}"/>
+				</j:otherwise>
+			</j:choose>
+			<j:catch>
+				<tomcat-remove url="${context.getVariable('tomcat.manager.url')}" 
+					username="${context.getVariable('tomcat.manager.username')}" 
+					password="${context.getVariable('tomcat.manager.password')}" 
+					path="/astrogrid-${component.name}-${component.version}" />
+			</j:catch>
+		</define:tag>
+	</define:taglib>
+	<!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
+	<goal name="deploy-core" prereqs="init" 
+		description="deploy all webapps, setup environment.">
+		<echo>*** Deploying all webapps...</echo>
+		<attainGoal name="common-libs-deploy" />
+		<attainGoal name="configuration-deploy" />
+		<sleep seconds="2" />
+		<attainGoal name="myspace-store-deploy" />
+		<sleep seconds="2" />
+		<attainGoal name="reg-deploy" />
+		<sleep seconds="4" />
+		<attainGoal name="jes-deploy" />
+		<sleep seconds="2" />
+		<attainGoal name="myspace-deploy" />
+		<sleep seconds="2" />
+		<attainGoal name="community-deploy"/>
+		<sleep seconds="2" />
+		<attainGoal name="portal-deploy" />
+		<sleep seconds="4" />
+	</goal>
+	<goal name="undeploy-core" prereqs="init" description="undeploy core webapps">
+		<echo>*** Undeploying all webapps...</echo>
+		<attainGoal name="configuration-undeploy" />
+		<attainGoal name="myspace-store-undeploy" />
+		<attainGoal name="jes-undeploy" />
+		<attainGoal name="reg-undeploy" />
+		<attainGoal name="myspace-undeploy" />
+		<attainGoal name="community-undeploy" />
+		<attainGoal name="portal-undeploy" />
+	</goal>
+	<goal name="list" prereqs="init" description="list deployed webapps">
+		<tomcat-list url="${tomcat.manager.url}" 
+			username="${tomcat.manager.username}" 
+			password="${tomcat.manager.password}" />
+	</goal>
+	<goal name="style-workflows" 
+		description="apply presentation stylesheet to all workflows"> <!--declare the transformer factory to use -->
+		 
+		${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')} 
+		<xslt style="${basedir}/build/workflow.xsl" 
+		destdir="${work.dir}/styled-workflows" basedir="${work.dir}/jes" /> 
+		</goal>
+	<!-- Working direcotry //////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<goal name="setup" description="configure webapps and working dir">
+		<echo>*** Configuring...</echo>
+		<attainGoal name="setup-working-dir" />
+		<attainGoal name="setup-registry" />
+		<attainGoal name="setup-community" />
+		<attainGoal name="setup-applications" />
+		<attainGoal name="setup-myspace" />
+		<!--Finally kick the CommonExecutionController to register itself-->
+		<http 
+			url="${tomcat.url}/astrogrid-applications-SNAPSHOT/servlet/initForRegistry"/>
+	</goal>
+	<goal name="setup-core" description="setup the core set of portal apps" prereqs="init,community-toolkit">
+		<echo>*** configuring core...</echo>
+		<attainGoal name="setup-working-dir" />
+		<attainGoal name="setup-registry" />
+		<attainGoal name="setup-community" />
+		<attainGoal name="setup-myspace" />
+		
+	</goal>
+	<goal name="setup-working-dir" 
+		description="create working dir, copy across templates">
+		<echo>Setting up working directory ${work.dir}</echo>
+		<mkdir dir="${work.dir}" />
+		<copy todir="${work.dir}" overwrite="true" filtering="true">
+			<fileset dir="work" />
+		</copy>
+		<!-- make everything world-accessible - necessary as tomcat may be running as different user to
+        whoever is executing this script -->
+		<chmod file="${work.dir}" perm="a+rwx" type="dir"/>
+		<chmod dir="${work.dir}" perm="a+rwx" type="dir">
+			<include name="**/*" />
+		</chmod>
+		<chmod dir="${work.dir}" perm="a+rw" type="file">
+			<include name="**/*" />
+		</chmod>
+	</goal>
+	<goal name="setup-applications" 
+		description="setup specific to applications">
+		<echo>Configuring Applications</echo>
+		<!-- make all scripts executable -->
+		<chmod dir="${work.dir}/applications" perm="a+x">
+			<include name="*.sh" />
+		</chmod>
+		<!-- initialize database : no need, db contents should be stored as a template really.-->
+		<sql driver="org.hsqldb.jdbcDriver" 
+			url="jdbc:hsqldb:${work.dir}/applications/application-db" 
+			classpathref="maven.dependency.classpath" userid="sa" password="" 
+			print="true" ><![CDATA[
+        DROP TABLE exestat IF EXISTS ;
+        CREATE TABLE exestat
+                    (
+    executionId      INTEGER IDENTITY,
+    jobstepId    VARCHAR ,
+    program      VARCHAR ,
+    starttime        DATETIME DEFAULT 'now',
+    params         VARCHAR,
+    endtime TIMESTAMP,
+    status  VARCHAR
+            ) ;
+           ]]></sql>
+	</goal>
+	<goal name="setup-myspace" description="myspace setup">
+		<echo>Configuring Myspace</echo>
+	</goal>
+	<goal name="setup-community" description="Community setup" prereqs="community-toolkit">
+	    <attainGoal name="community-database"/>
+		<attainGoal name="community-register"/>
+		
+	</goal>
+	<goal name="setup-registry" description="populate the registry">
+		<echo>Configuring Registry</echo>
+		<!-- expand tokens -->
+		<copy todir="${temporary.dir}/registry-entries" filtering="true">
+			<fileset dir="registry-entries">
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+		<!-- now upload each one -->
+		<pathconvert property="entries" pathsep=" ">
+			<path>
+				<fileset dir="${temporary.dir}/registry-entries"/>
+			</path>
+		</pathconvert>
+		<util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
+		<j:catch>
+			<j:expr 
+				value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+			<ant target="register" antfile="register.xml" > 
+									    <classpath>
+      <pathelement path="${maven.dependency.classpath}"/>
+      <pathelement location="${temporary.dir}"/>
+                     </classpath>
+				
+				` <property 
+				name="registry.entry" 
+				value="${temporary.dir}/registry-entries/ARegistry.xml"/> </ant>
+		</j:catch>
+		<waitfor maxwait="10" maxwaitunit="second" checkevery="500">
+			<http 
+				url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
+		</waitfor>
+		<j:forEach var="entry" items="${entryList}">
+			<j:catch>
+				<j:expr 
+					value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+				<ant target="register" antfile="register.xml" > `
+					    <classpath>
+      <pathelement path="${maven.dependency.classpath}"/>
+      <pathelement location="${temporary.dir}"/>
+                     </classpath>
+
+					 <property 
+					name="registry.entry" value="${entry}"/> </ant>
+			</j:catch>
+		</j:forEach>
+	</goal>
+	<!--+
+    | Unpack our Community install toolkit.
+    +-->
+	<goal name="community-toolkit">
+		<echo message=""/>
+		<echo message="Installing community toolkit ...."/>
+		<!--+
+            | Unpack our toolkit.
+            +-->
+		<unzip src="${temporary.dir}/astrogrid-community-install-${astrogrid.release}.zip" 
+			dest="${temporary.dir}/community"/>
+		<!--+
+            | Set the community ident.
+            +-->
+		<propertyfile file="${temporary.dir}/community/install.properties">
+			<entry key="org.astrogrid.community.ident" 
+				value="${registry.authorityid}"/>
+		</propertyfile>
+	</goal>
+	<!--+
+    | Initialise our Community database.
+    +-->
+	<goal name="community-database">
+		<echo message=""/>
+		<echo message="Installing community database ...."/>
+		<!--+
+            | Wait for our service to respond.
+            +-->
+		<attainGoal name="community-wait"/>
+		<!--+
+            | Reset our database tables.
+            +-->
+		<j:catch>
+			<ant target="database.reset" dir="${temporary.dir}/community" 
+				antfile="${temporary.dir}/community/install.xml" />
+		</j:catch>
+		<!--+
+            | Load our database tables.
+            +-->
+		<j:catch>
+			<ant target="database.load" dir="${temporary.dir}/community" 
+				antfile="${temporary.dir}/community/install.xml" />
+		</j:catch>
+	</goal>
+	<!--+
+    | Register the Community.
+    +-->
+	<goal name="community-register">
+		<echo message=""/>
+		<echo message="Registering community service ...."/>
+		<j:expr 
+			value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+		<echo message=""/>
+		<!--+
+            | Set the community ident.
+            +-->
+		<propertyfile file="${temporary.dir}/community/install.properties">
+			<entry key="org.astrogrid.community.ident" 
+				value="${registry.authorityid}"/>
+		</propertyfile>
+		<!--+
+            | Set the registry endpoint.
+            +-->
+		<propertyfile file="${temporary.dir}/community/install.properties">
+			<entry key="org.astrogrid.registry.url" 
+				value="${tomcat.url}//astrogrid-registry-${astrogrid.release}/services/Registry"/>
+		</propertyfile>
+		<!--+
+            | Set the registry admin endpoint.
+            +-->
+		<propertyfile file="${temporary.dir}/community/install.properties">
+			<entry key="org.astrogrid.registry.admin" 
+				value="${tomcat.url}//astrogrid-registry-${astrogrid.release}/services/RegistryAdmin"/>
+		</propertyfile>
+		<!--+
+            | Set the local hostname.
+            +-->
+		<propertyfile file="${temporary.dir}/community/install.properties">
+			<entry key="service.host" value="${tomcat.host}"/>
+		</propertyfile>
+		<!--+
+            | Wait for our service to respond.
+            +-->
+		<attainGoal name="community-wait"/>
+		<!--+
+            | Register our service.
+            +-->
+		<j:catch>
+			<ant target="service.register" dir="${temporary.dir}/community" 
+				antfile="${temporary.dir}/community/install.xml" />
+		</j:catch>
+	</goal>
+	<!--+
+    | Wait for the Community service to respond.
+    +-->
+	<goal name="community-wait">
+		<echo message="Waiting for Community webapp .."/>
+		<echo 
+			message="  URL : ${tomcat.url}/astrogrid-community-${astrogrid.iteration}/happyaxis.jsp"/>
+		<waitfor maxwait="10" maxwaitunit="second" checkevery="500">
+			<http url="${tomcat.url}/astrogrid-community-${astrogrid.iteration}"/>
+		</waitfor>
+	</goal>
+	<!--+
+    | Upload a Registry Entry to the local service.
+    +-->
+	<goal name="registry.upload.test" prereqs="init">
+		<echo message="Uploading Registry Entry .."/>
+		<j:expr 
+			value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+		<echo message=""/>
+		<ant target="register" antfile="register.xml" >
+			<property name="registry.entry" 
+				value="tmp/community/config/service/policy.manager.xml"/>
+		</ant>
+	</goal>
+	<!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<preGoal name="java:compile">
+		<mkdir dir="${basedir}/target/classes" />
+		<!-- Clover fails if this dir is not present -->
+	</preGoal>
+  <preGoal name="test:test-resources">
+            <echo>Copying global config file across to the client / test code</echo>
+          <copy file="webapps/astrogrid-configuration/AstroGridConfig.properties" tofile="test/java/astrogrid.properties" filtering="true" overwrite="true" />
+  </preGoal>
+
+	
+	
+	
+	<goal name="run-scripting-gui" 
+		description="don't call directly - use scripting-gui goal">
+		<mkdir dir="${temporary.dir}/client" />
+		<copy todir="${temporary.dir}/client" filtering="true">
+			<fileset dir="client-config" />
+		</copy>
+		<!-- classname="org.mozilla.javascript.tools.shell.Main" for command-line version -->
+		<java classname="org.mozilla.javascript.tools.debugger.Main" 
+			fork="true" classpathref="maven.dependency.classpath" 
+			dir="${temporary.dir}/client">
+		</java>
+	</goal>
+	<!-- deployment //////////////////////////////////////////////////////////////////////// -->
+	<goal name="common-libs-deploy" 
+		description="copy db drivers, etc into shared directory">
+		<echo message="Tomcat common : ${tomcat.common.lib.dir}"/>
+		<copy verbose="true" todir="${tomcat.common.lib.dir}">
+			<fileset dir="${temporary.dir}">
+				<include name="hsql*.jar" />
+				<!-- may need to add more here later -->
+			</fileset>
+		</copy>
+	</goal>
+	<!-- hand assembled webapps ///////////////////////////////////////-->
+	<goal name="configuration-deploy" 
+		description="create and install configuration webapp">
+		<copy todir="${temporary.dir}/astrogrid-configuration" filtering="true">
+			<fileset dir="webapps/astrogrid-configuration" />
+		</copy>
+		<jar destfile="${temporary.dir}/${config.webapp.name}.war" 
+			basedir="${temporary.dir}/astrogrid-configuration">
+		</jar>
+		<j:catch>
+			<tomcat-deploy url="${tomcat.manager.url}" 
+				username="${tomcat.manager.username}" 
+				password="${tomcat.manager.password}" 
+				path="/${config.webapp.name}" 
+				war="file:///${temporary.dir}/${config.webapp.name}.war" />
+		</j:catch>
+	</goal>
+	<!-- need a webspace store for myspace?? - this is a first stab -->
+	<goal name="myspace-store-deploy">
+		<copy todir="${temporary.dir}/myspace-store" filtering="true">
+			<fileset dir="webapps/myspace-store" />
+		</copy>
+		<jar destfile="${temporary.dir}/myspace-store.war" 
+			basedir="${temporary.dir}/myspace-store">
+		</jar>
+		<j:catch>
+			<tomcat-deploy url="${tomcat.manager.url}" 
+				username="${tomcat.manager.username}" 
+				password="${tomcat.manager.password}" path="/myspace-store" 
+				war="file:///${temporary.dir}/myspace-store.war" />
+		</j:catch>
+	</goal>
+	<!-- context- driven webapps ////////////////////////////////-->
+	<goal name="jes-deploy">
+		<ag:GetDeploy name="jes"/>
+	</goal>
+	<goal name="apps-deploy" prereqs="tomcat-declare-tasks" >
+		<ag:UnDeploy name="applications"/>
+		<ag:GetDeploy name="applications"/>
+	</goal>
+	<goal name="reg-deploy" >
+		<ag:GetDeploy name="registry" />
+		<j:catch>
+			<tomcat-deploy url="${tomcat.manager.url}" 
+				username="${tomcat.manager.username}" 
+				password="${tomcat.manager.password}" path="/exist" 
+				war="file:///${temporary.dir}/exist-inttest.war"/>
+		</j:catch>
+	</goal>
+	<goal name="myspace-deploy" >
+		<ag:GetDeploy name="mySpace" />
+	</goal>
+	<goal name="pal-deploy" >
+		<ag:GetDeploy name="pal" />
+	</goal>
+	<goal name="portal-deploy">
+	   <ag:GetDeploy name="portal" />
+		
+	</goal>
+	<goal name="community-deploy">
+		<ag:GetDeploy name="community"/>
+	</goal>
+	<!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+	<goal name="reg-undeploy" >
+		<ag:UnDeploy name="registry"/>
+		<j:catch>
+			<tomcat-remove url="${tomcat.manager.url}" 
+				username="${tomcat.manager.username}" 
+				password="${tomcat.manager.password}" path="/exist" />
+		</j:catch>
+	</goal>
+	<goal name="myspace-undeploy" >
+		<ag:UnDeploy name="mySpace"/>
+	</goal>
+	<goal name="apps-undeploy" >
+		<ag:UnDeploy name="applications"/>
+	</goal>
+	<goal name="jes-undeploy" >
+		<ag:UnDeploy name="jes" />
+	</goal>
+	<goal name="pal-undeploy" >
+		<ag:UnDeploy name="pal" />
+	</goal>
+	<goal name="configuration-undeploy" >
+		<ag:UnDeploy name="configuration" />		
+	</goal>
+	<goal name="myspace-store-undeploy" >
+		<j:catch>
+			<tomcat-remove url="${tomcat.manager.url}" 
+				username="${tomcat.manager.username}" 
+				password="${tomcat.manager.password}" path="/myspace-store" />
+		</j:catch>
+	</goal>
+	<goal name="portal-undeploy">
+		<j:catch>
+			<tomcat-remove url="${tomcat.manager.url}" 
+				username="${tomcat.manager.username}" 
+				password="${tomcat.manager.password}" path="/astrogrid-portal" 
+				/>
+		</j:catch>
+	</goal>
+	<goal name="community-undeploy" >
+		<ag:UnDeploy name="community"/>
+	</goal>
+	<goal name="CLEANTOMCAT" 
+		description="run this to clean out tomcat directories if tomcat not running">
+		<delete includeEmptyDirs="true" defaultexcludes="false" >
+			<fileset dir="${tomcat.location}/webapps" >
+				<include name="astrogrid-*/**"/>
+				<include name="exist*/**"/>
+			</fileset>
+			<fileset dir="${tomcat.location}/work/Catalina/localhost" >
+				<include name="*/**"/>
+			</fileset>
+			<fileset dir="${tomcat.location}/conf/Catalina/localhost" >
+				<include name="astrogrid-*.xml"/>
+			</fileset>
+			<fileset dir="${tomcat.location}/logs" >
+				<include name="*"/>
+			</fileset>
+		</delete>
+	</goal>
+	<!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
+	<goal name="axis-declare-tasks">
+		<taskdef resource="axis-tasks.properties" 
+			classpathref="maven.dependency.classpath" />
+	</goal>
+	<!-- tomcat tools -->
+	<goal name="tomcat-declare-tasks">
+		<!-- Configure the custom Ant tasks for the Manager application -->
+		<taskdef name="tomcat-deploy" 
+			classname="org.apache.catalina.ant.DeployTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-install" 
+			classname="org.apache.catalina.ant.InstallTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-list" 
+			classname="org.apache.catalina.ant.ListTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-reload" 
+			classname="org.apache.catalina.ant.ReloadTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-remove" 
+			classname="org.apache.catalina.ant.RemoveTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-resources" 
+			classname="org.apache.catalina.ant.ResourcesTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-roles" 
+			classname="org.apache.catalina.ant.RolesTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-start" 
+			classname="org.apache.catalina.ant.StartTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-stop" 
+			classname="org.apache.catalina.ant.StopTask" 
+			classpathref="maven.dependency.classpath"/>
+		<taskdef name="tomcat-undeploy" 
+			classname="org.apache.catalina.ant.UndeployTask" 
+			classpathref="maven.dependency.classpath"/>
+	</goal>
+</project>

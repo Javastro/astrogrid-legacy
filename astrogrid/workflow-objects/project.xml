@@ -83,16 +83,7 @@
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-        <dependency>
-            <artifactId>astrogrid-registry-common</artifactId>
-            <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>

@@ -66,6 +66,10 @@
         <ant:echo message="Building component artifact ...."/>
         <attainGoal name="war:install"/>
     </goal>
+    <goal name="deploy-artifact">
+	  <attainGoal name="war:deploy"/>
+	</goal>
+	
 
     <!--+
         | Build and install our snapshot war.

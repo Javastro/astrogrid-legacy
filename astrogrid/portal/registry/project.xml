@@ -83,9 +83,9 @@
             | The Registry common components.
             +-->
         <dependency>
-            <groupId>astrogrid-registry</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -113,9 +113,9 @@
         
         
         <dependency>
-            <groupId>astrogrid-common</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -129,7 +129,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-workflow-objects</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
@@ -158,9 +158,9 @@
             | The Registry components.
             +-->
         <dependency>
-            <groupId>astrogrid-registry</groupId>
+            <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry-client</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>

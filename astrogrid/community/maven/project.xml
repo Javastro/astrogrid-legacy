@@ -3,11 +3,17 @@
     | Maven project description for the AstroGrid community components.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/30 01:40:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2004/06/11 19:28:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.9  2004/06/11 19:28:24  pah
+    |   changes for iteration 5 release build
+    |
+    |   Revision 1.8.24.1  2004/06/10 14:58:43  pah
+    |   update the project files to get the dependencies right...
+    |
     |   Revision 1.8  2004/03/30 01:40:03  dave
     |   Merged development branch, dave-dev-200403242058, into HEAD
     |
@@ -102,7 +108,7 @@
     <currentVersion>SNAPSHOT</currentVersion>
     <currentVersion>1.5.0</currentVersion>
         +-->
-    <currentVersion>SNAPSHOT</currentVersion>
+    <currentVersion>${astrogrid.iteration}</currentVersion>
 
     <!--+
         | The current versions of other AstroGrid components.

@@ -1,0 +1,15 @@
+<!DOCTYPE root>
+<services>
+	<applications>
+		<webappname></webappname>
+		<warname></warname>
+		<
+	</applications>
+	<myspace></myspace>
+	<jes></jes>
+	<registry>
+    <pal></pal>
+    <community></community>
+	<portal></portal>	
+	</registry>
+</services>

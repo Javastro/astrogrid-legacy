@@ -7,7 +7,7 @@
   <!-- a unique name for this project -->
   <id>cdsdelegate</id>
   <name>AstroGrid DataCenter CDS Vizier Delegate</name>
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
 
   <description><![CDATA[
    Astrogrid Datacenter implementation that acts as a 'gateway' (ahem) for the CDS Vizier catalogue
@@ -46,16 +46,17 @@
    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
    </dependency>
    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
    </dependency>
        <dependency>
-        <id>astrogrid-mySpace</id>
-        <version>SNAPSHOT</version>
+      <groupId>org.astrogrid</groupId>
+        <artifactId>astrogrid-mySpace</artifactId>
+        <version>${pom.currentVersion}</version>
        <properties>
       <war.bundle>true</war.bundle>
     </properties>

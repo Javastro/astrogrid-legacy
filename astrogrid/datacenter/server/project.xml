@@ -8,7 +8,7 @@
    <!-- a unique name for this project -->
    <id>astrogrid-datacenter-server</id>
    <name>AstroGrid DataCenter Server</name>
-   <currentVersion>HEAD</currentVersion>
+   <currentVersion>${astrogrid.iteration}</currentVersion>
 
    <description><![CDATA[
     This project contains the datacenter server framework.
@@ -66,7 +66,7 @@
    <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
           <properties>
       <war.bundle>true</war.bundle>
     </properties>
@@ -74,7 +74,7 @@
        <dependency>
         <id>astrogrid-mySpace</id>
         <groupId>org.astrogrid</groupId>
-        <version>SNAPSHOT</version>
+        <version>${pom.currentVersion}</version>
        <properties>
       <war.bundle>true</war.bundle>
     </properties>
@@ -82,7 +82,7 @@
     <dependency>
       <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-jes-delegate</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
          <war.bundle>true</war.bundle>
       </properties>
@@ -92,7 +92,7 @@
     <dependency>
       <id>astrogrid-workflow-objects</id>
       <groupId>org.astrogrid</groupId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -103,7 +103,7 @@
 
       <id>astrogrid-ogsadai-app</id>
       <groupId>astrogrid-datawarehouse</groupId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

@@ -286,10 +286,6 @@
 <goal name="community-register">
         <echo message=""/>
         <echo message="Registering community service ...."/>
-        <!--+
-            | Fix the Maven JAXP properties.
-            +-->
-        <echo message="Fixing JAXP properties ...."/>
         <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
         <echo message=""/>
         <!--+
@@ -355,12 +351,7 @@
     +-->
 <goal name="registry.upload.test">
     <echo message="Uploading Registry Entry .."/>
-
-    <!--+
-        | Fix the Maven JAXP properties.
-        +-->
-    <echo message="Fixing JAXP properties ...."/>
-    <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+   <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
     <echo message=""/>
 
     <ant
@@ -527,7 +518,7 @@
         </war>
    <j:catch>
         <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal" war="file:///${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
+                path="/astrogrid-portal-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-portal-SNAPSHOT.war" />
    </j:catch>
 </goal>
 
@@ -544,7 +535,7 @@
             url="${tomcat.manager.url}"
             username="${tomcat.manager.username}"
             password="${tomcat.manager.password}"
-            path="/astrogrid-community" war="file:///${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war"/>
+            path="/astrogrid-community-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-community-webapp-SNAPSHOT.war"/>
     </j:catch>
 </goal>
 

@@ -21,7 +21,7 @@
         | The current version of the project.
         | This value is used when naming jars and distribution files.
         +-->
-    <currentVersion>1.5.0</currentVersion>
+    <currentVersion>${astrogrid.iteration}</currentVersion>
 
     <!--+
         | The cvs repository location.

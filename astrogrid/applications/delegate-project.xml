@@ -8,7 +8,7 @@
   <groupId>org.astrogrid</groupId>
   <name>AstroGrid Common Execution Architecture client</name>
 
-  <currentVersion>$Name:  $</currentVersion>
+  <currentVersion>${astrogrid.iteration}</currentVersion>
   
   <organization>
     <name>AstroGrid</name>
@@ -71,13 +71,13 @@
      <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
      </dependency>  
            
       <dependency>
         <groupId>org.astrogrid</groupId>
            <artifactId>astrogrid-workflow-objects</artifactId>
-           <version>SNAPSHOT</version>
+           <version>${pom.currentVersion}</version>
            <properties>
                    <war.bundle>true</war.bundle>
          </properties>

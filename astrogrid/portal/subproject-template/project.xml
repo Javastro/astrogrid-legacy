@@ -17,7 +17,7 @@
     <dependency>
       <groupId>astrogrid-common</groupId>
       <artifactId>astrogrid-common</artifactId>
-      <version>SNAPSHOT</version>
+      <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

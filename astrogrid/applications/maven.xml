@@ -56,7 +56,17 @@
         <attainGoal name="jar:deploy-snapshot" />
         <attainGoal name="war:deploy-snapshot" />
 </goal>
-<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
+<goal name="astrogrid-install-artifact">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install" />
+        <attainGoal name="jar:install" />
+        <attainGoal name="war:install" />
+</goal>
+<goal name="astrogrid-deploy-artifact">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
+        <attainGoal name="jar:deploy" />
+        <attainGoal name="war:deploy" />
+</goal>
+
 
 
 	<preGoal name="war:init">
