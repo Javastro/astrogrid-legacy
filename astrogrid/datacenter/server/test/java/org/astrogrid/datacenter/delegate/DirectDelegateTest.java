@@ -1,4 +1,4 @@
-/*$Id: DirectDelegateTest.java,v 1.1 2003/12/03 19:37:03 mch Exp $
+/*$Id: DirectDelegateTest.java,v 1.2 2004/01/13 00:33:14 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,12 +13,16 @@ package org.astrogrid.datacenter.delegate;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
@@ -35,7 +39,7 @@ public class DirectDelegateTest  extends TestCase {
 
    public void testFactory() throws ServiceException, MalformedURLException, IOException
    {
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier(Certification.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
       
       assertNotNull(querier);
    }
@@ -47,7 +51,7 @@ public class DirectDelegateTest  extends TestCase {
    {
       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, DummyQuerier.class.getName());
       
-      AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(Certification.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
+      FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
       
       assertNotNull(delegate);
       
@@ -61,7 +65,7 @@ public class DirectDelegateTest  extends TestCase {
       //int count = delegate.countQuery(adql);
 
       //submit query for votable results
-      DatacenterResults results = delegate.doQuery(AdqlQuerier.VOTABLE, adql);
+      DatacenterResults results = delegate.doQuery(FullSearcher.VOTABLE,ADQLUtils.toQueryBody(adql));
 
    }
 
@@ -78,6 +82,19 @@ public class DirectDelegateTest  extends TestCase {
 
 /*
 $Log: DirectDelegateTest.java,v $
+Revision 1.2  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.1.6.2  2004/01/08 09:43:41  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
+Revision 1.1.6.1  2004/01/07 13:02:09  nw
+removed Community object, now using User object from common
+
 Revision 1.1  2003/12/03 19:37:03  mch
 Introduced DirectDelegate, fixed DummyQuerier
 

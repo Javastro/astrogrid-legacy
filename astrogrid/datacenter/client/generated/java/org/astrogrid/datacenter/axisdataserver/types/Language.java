@@ -1,5 +1,5 @@
 /**
- * _language.java
+ * Language.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -7,12 +7,12 @@
 
 package org.astrogrid.datacenter.axisdataserver.types;
 
-public class _language  implements java.io.Serializable {
+public class Language  implements java.io.Serializable {
     private org.apache.axis.types.URI namespace;
     private org.apache.axis.types.URI schemaLocation;
     private java.lang.String implementingClass;
 
-    public _language() {
+    public Language() {
     }
 
     public org.apache.axis.types.URI getNamespace() {
@@ -41,8 +41,8 @@ public class _language  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof _language)) return false;
-        _language other = (_language) obj;
+        if (!(obj instanceof Language)) return false;
+        Language other = (Language) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -86,10 +86,10 @@ public class _language  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(_language.class);
+        new org.apache.axis.description.TypeDesc(Language.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">language"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "Language"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("namespace");
         elemField.setXmlName(new javax.xml.namespace.QName("", "namespace"));

@@ -1,4 +1,4 @@
-/*$Id: SimpleQuerier.java,v 1.2 2003/11/26 16:31:46 nw Exp $
+/*$Id: SimpleQuerier.java,v 1.3 2004/01/13 00:32:47 nw Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.datacenter.tools;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -21,10 +20,13 @@ import java.net.URL;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.sql.SQLUtils;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
@@ -37,31 +39,58 @@ import org.w3c.dom.Element;
 public class SimpleQuerier {
 
     public final static void main(String[] args) throws Exception {
-        (new SimpleQuerier(args)).doIt();
-        
+       SimpleQuerier q = new SimpleQuerier();
+       try {
+          q.parse(args);
+          q.doIt();
+       } catch (Exception e) {
+          System.out.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
+          q.usage();
+       }        
     }
-    Element e = null;
-    
+
     public SimpleQuerier() {
     }
-    public SimpleQuerier(String[] args) throws IllegalArgumentException, MalformedURLException{
-        if (args.length != 2) {
-            throw new IllegalArgumentException("Usage: java org.astrogrid.datacenter.tools.SimpleQuerier <service URL> <query file>");
+    
+    public void parse(String[] args) throws IllegalArgumentException, MalformedURLException{
+        if (args.length < 2 || args.length > 3) {
+            throw new IllegalArgumentException("Incorrect number of arguments");
         }
         endpoint = new URL(args[0]);
-        queryFile = new File(args[1]);
-        if (!queryFile.exists()) {
+        if (args[1].toLowerCase().startsWith("--sql")) {
+           if (args.length != 3) {
+              throw new IllegalArgumentException("Must provide a sql expression");
+           }
+           sql = args[2].trim();
+           if (sql == null || sql.length() == 0) {
+              throw new IllegalArgumentException("Must provide a sql expression");
+           }           
+        } else {
+         queryFile = new File(args[1]);
+         if (!queryFile.exists()) {
             throw new IllegalArgumentException("Query file does not exist: " + queryFile.getAbsolutePath());
-        }
-                
+         }
+        }                
     }
+    
     protected URL endpoint;
     protected File queryFile;
-
-    public void doIt() throws MalformedURLException, ServiceException, IOException, MarshalException, ValidationException, FileNotFoundException{
-        AdqlQuerier del = DatacenterDelegateFactory.makeAdqlQuerier(endpoint.toString());
-        Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
-        DatacenterResults results = del.doQuery(AdqlQuerier.VOTABLE,select);
+    protected String sql;
+   
+   public void usage() {
+      System.out.println("Usage: java org.astrogrid.datacenter.tools.SimpleQuerier <service URL> [ <query file> | --sql \"<sql expression>\"]");
+   }
+   
+    public void doIt() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
+        FullSearcher del = DatacenterDelegateFactory.makeFullSearcher(endpoint.toString());
+        Element queryBody = null;
+        if (queryFile != null) {
+            Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
+            queryBody = ADQLUtils.toQueryBody(select);
+        } else {
+           queryBody = SQLUtils.toQueryBody(sql);
+        }
+        DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
         XMLUtils.PrettyElementToStream(results.getVotable(), System.out);        
     }
 
@@ -99,6 +128,22 @@ public class SimpleQuerier {
 
 /* 
 $Log: SimpleQuerier.java,v $
+Revision 1.3  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.2.10.3  2004/01/12 17:04:50  nw
+fixed bug with argument parsing
+
+Revision 1.2.10.2  2004/01/08 09:42:26  nw
+tidied imports
+
+Revision 1.2.10.1  2004/01/08 09:10:20  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.2  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

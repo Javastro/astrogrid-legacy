@@ -1,4 +1,4 @@
-/*$Id: AxisDataServerSoapBinding.java,v 1.2 2003/12/16 11:10:12 mch Exp $
+/*$Id: AxisDataServerSoapBinding.java,v 1.3 2004/01/13 00:33:14 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
+
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingSkeleton;
 
 /** Soap binding stub that wraps our implementation class
@@ -40,6 +41,16 @@ public class AxisDataServerSoapBinding
 
 /*
 $Log: AxisDataServerSoapBinding.java,v $
+Revision 1.3  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.2.4.1  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.2  2003/12/16 11:10:12  mch
 Added IOException throws to constructor
 

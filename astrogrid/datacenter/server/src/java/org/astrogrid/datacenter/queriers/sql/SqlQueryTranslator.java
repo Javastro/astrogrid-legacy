@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.5 2004/01/13 00:33:14 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,8 @@ package org.astrogrid.datacenter.queriers.sql;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.apache.commons.logging.*;
+import org.astrogrid.config.SimpleConfig;
 
 /** Simple translator that expects following documents in following format
  * &lt;sql xmlns="urn:sql" &gt;
@@ -22,11 +24,20 @@ import org.w3c.dom.NodeList;
  * @todo write unit test.
  */
 public class SqlQueryTranslator implements Translator {
-
+   /** set this key to 'true' to the config file to enable SQL passthru*/
+   public static final String SQL_PASSTHRU_ENABLED_KEY = "SqlQueryTranslator.passthru.enabled";
+   private static final Log log = LogFactory.getLog(SqlQueryTranslator.class);
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.queriers.spi.Translator#translate(org.w3c.dom.Element)
      */
     public Object translate(Element e) throws Exception {
+       String val = SimpleConfig.getProperty(SQL_PASSTHRU_ENABLED_KEY,"false");
+       if (val.trim().equalsIgnoreCase("true")) {
+          log.debug("SQL passthru enabled");
+       } else {
+          log.warn("Attempt to access SQL passthru, which is disabled");
+          throw new SecurityException("This datacenter feature is disabled");
+       }
         if (e.getLocalName().equals("sql")) {
             return e.getFirstChild().getNodeValue();
         } else {
@@ -37,15 +48,26 @@ public class SqlQueryTranslator implements Translator {
             if (nodes.getLength() > 1) {
                 throw new IllegalArgumentException("More than one element named 'sql' found in document - there can be only 0ne");
             }
+            String sql = null;
             if (nodes.item(0).getFirstChild() != null) {
-               return nodes.item(0).getFirstChild().getNodeValue();
+                sql = nodes.item(0).getFirstChild().getNodeValue();
             } else {                
-               return nodes.item(0).getNodeValue();
+               sql =  nodes.item(0).getNodeValue();
             }
+            inspectSQL(sql);
+            log.info("Passthru sql to execute: " + sql);
+            return sql;
         }
-        
-
     }
+       /** method that verifies the SQL statement is not malicious or harmful to the server
+        * <p>
+        * Blank implementation  - Can be overridden to provide additional checking. 
+        * @throws SecurityException if the sql is judged to be dodgy
+        * @todo add sensible default implementation - blank for now.
+        */ 
+      protected void inspectSQL(String sql) throws SecurityException {
+      }
+    
 
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.queriers.spi.Translator#getResultType()
@@ -59,6 +81,15 @@ public class SqlQueryTranslator implements Translator {
 
 /* 
 $Log: SqlQueryTranslator.java,v $
+Revision 1.5  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.4.10.1  2004/01/08 15:36:54  nw
+enabled pass-thru SQL
+
 Revision 1.4  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

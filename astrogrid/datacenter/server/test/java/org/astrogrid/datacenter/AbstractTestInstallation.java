@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.6 2003/11/28 16:10:30 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.7 2004/01/13 00:33:14 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,11 +23,12 @@ import java.net.URL;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Call;
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
@@ -82,7 +83,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     }
 /* unimplemented
     public void testGetRegistryMetadata() {
-        AdqlQuerier del = createDelegate();
+        FullSearcher del = createDelegate();
         try {
             Element result = del.getVoRegistryMetadata();
             assertNotNull(result);
@@ -98,7 +99,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     
     public void testGetMetatdata() throws Throwable{
         try {
-        AdqlQuerier del = createDelegate();
+        FullSearcher del = createDelegate();
             Metadata result = del.getMetadata();
             assertNotNull(result);
             Document d = result.getDocument();             
@@ -112,9 +113,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     /** do a standard (blocking) query for each query file found */
     public void testDoBlockingQuery() throws Throwable {
         try {
-        AdqlQuerier del = createDelegate();
+        FullSearcher del = createDelegate();
         FileProcessor fp = new FileProcessor() {
-            protected void processStream(AdqlQuerier del, InputStream is) throws Exception{
+            protected void processStream(FullSearcher del, InputStream is) throws Exception{
                 doQuery(del,is);
             }
         };
@@ -128,9 +129,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     /**do a nonblocking query for each file found */
     public void testDoNonblockingQuery() throws Throwable{
         try {
-        AdqlQuerier del = createDelegate();
+        FullSearcher del = createDelegate();
         FileProcessor fp = new FileProcessor() {
-            protected void processStream(AdqlQuerier del, InputStream is) throws Exception{
+            protected void processStream(FullSearcher del, InputStream is) throws Exception{
                 doNonBlockingQuery(del,is);
             }
         };
@@ -142,12 +143,12 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     }
 
     /** helper method to create a datacenter delegate, based on properties initialized in {@link setUp} */
-    protected AdqlQuerier createDelegate() {
+    protected FullSearcher createDelegate() {
 
         System.out.println("Connecting to datacenter service at " + serviceURL.toString());
-        AdqlQuerier del = null;
+        FullSearcher del = null;
         try {
-            del = DatacenterDelegateFactory.makeAdqlQuerier( serviceURL.toString()) ;// pity it can't take a URL
+            del = DatacenterDelegateFactory.makeFullSearcher( serviceURL.toString()) ;// pity it can't take a URL
         } catch (IOException e) {
             e.printStackTrace();
             fail("Exception while creating delegate: " + e.getMessage());
@@ -160,11 +161,11 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     }
 
     /** helper method to do a query */
-    protected void doQuery(AdqlQuerier del, InputStream is) throws Exception {
+    protected void doQuery(FullSearcher del, InputStream is) throws Exception {
        assertNotNull(is);
        Select adql = Select.unmarshalSelect(new InputStreamReader(is));
        assertNotNull("query input is null",adql);
-       DatacenterResults result = del.doQuery(AdqlQuerier.VOTABLE, adql);
+       DatacenterResults result = del.doQuery(FullSearcher.VOTABLE, ADQLUtils.toQueryBody(adql));
         assertNotNull("Result of query was null",result);
        Element vo = result.getVotable();
        assertNotNull(vo);
@@ -174,11 +175,11 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 
     /** helper test method to do a non-blockinig query */
-    protected void doNonBlockingQuery(AdqlQuerier del, InputStream is) throws Exception {
+    protected void doNonBlockingQuery(FullSearcher del, InputStream is) throws Exception {
         assertNotNull(is);
         Select adql = Select.unmarshalSelect(new InputStreamReader(is));
         assertNotNull(adql);
-        DatacenterQuery query = del.makeQuery(adql);
+        DatacenterQuery query = del.makeQuery(ADQLUtils.toQueryBody(adql));
         // check the response document.
         assertNotNull("query creation response document is null",query);
         assertNotNull("Query response document has not ID",query.getId());
@@ -217,7 +218,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
      */
    protected abstract class FileProcessor {
        /** extender-defined method that consumes the files that are found */
-    protected abstract void processStream(AdqlQuerier del,InputStream is) throws Exception;
+    protected abstract void processStream(FullSearcher del,InputStream is) throws Exception;
     /** run a series of sample queries through the service
      *  <p>
      *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
@@ -226,7 +227,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
      * <li>a file named ${QUERY_FILE_KEY} - uses this as the single input
      * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
      * @throws Exception */
-    public void findFiles(AdqlQuerier del) throws Exception{
+    public void findFiles(FullSearcher del) throws Exception{
         if (queryFile.exists()) { // on local file system.
             if (queryFile.isFile()) {
                 System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
@@ -275,6 +276,16 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.7  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.6.10.1  2004/01/08 09:43:41  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.6  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

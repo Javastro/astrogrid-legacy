@@ -1,4 +1,4 @@
-/*$Id: SimpleTranslatorMap.java,v 1.1 2003/11/27 00:52:58 nw Exp $
+/*$Id: SimpleTranslatorMap.java,v 1.2 2004/01/13 00:33:14 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.axis.types.URI;
-import org.astrogrid.datacenter.axisdataserver.types._language;
+import org.astrogrid.datacenter.axisdataserver.types.Language;
 
 /** basic implementation of a translator map.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
@@ -66,16 +66,16 @@ public class SimpleTranslatorMap implements TranslatorMap {
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.queriers.spi.TranslatorMap#list()
      */
-    public _language[] list() {
+    public Language[] list() {
         try {
             int size = codeMap.size();
-            _language[] result = new _language[size];
+            Language[] result = new Language[size];
             int pos = 0;
             for (Iterator i = codeMap.entrySet().iterator();
                 i.hasNext();
                 pos++) {
                 Map.Entry e = (Map.Entry) i.next();
-                _language lang = new _language();
+                Language lang = new Language();
                 lang.setNamespace(new URI((String) e.getKey()));
                 lang.setImplementingClass(e.getValue().getClass().getName());
                 String schema = (String) schemaMap.get(e.getKey());
@@ -96,6 +96,16 @@ public class SimpleTranslatorMap implements TranslatorMap {
 
 /* 
 $Log: SimpleTranslatorMap.java,v $
+Revision 1.2  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.1.10.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.1  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

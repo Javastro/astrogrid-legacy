@@ -13,14 +13,19 @@ package org.astrogrid.datacenter.queriers.fits;
  * @author M Hill
  */
 
-import org.astrogrid.datacenter.fits.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
+
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.fits.FitsHdu;
+import org.astrogrid.datacenter.fits.FitsHeader;
+import org.astrogrid.datacenter.fits.FitsKeyword;
+import org.astrogrid.datacenter.fits.FitsReader;
+import org.astrogrid.datacenter.fits.FitsStreamReader;
+import org.astrogrid.datacenter.fits.FitsWCS;
 import org.astrogrid.log.Log;
 
 public class IndexGenerator
@@ -194,6 +199,16 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.4  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.3.4.1  2004/01/08 09:43:41  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.3  2003/12/15 14:34:02  mch
 Added trace code, extra fits file
 

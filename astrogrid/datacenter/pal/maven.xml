@@ -9,7 +9,7 @@
 <property name="webapp.root" location="${basedir}/target/pal" />
 <property name="webapp.docs" location="${basedir}/target/webapp-docs" />
 <property name="working.dir" location="${basedir}/target/tmp" />
-
+<property name="tomcat.path" value="/pal" />
 <goal name="pal" prereqs="clean,site,webapp-site,war:war" />
 
 
@@ -119,6 +119,21 @@
 	      extension=".wsdd"
 	      style="${basedir}/build/server-config.xsl"
 	/>
+</goal>
+
+<!-- tasks to help development -->
+
+<!-- deploy freshly-built pal to local server -->
+
+<goal name="pal-undeploy" prereqs="tomcat-declare-tasks">
+  <tomcat-remove url="${tomcat.endpoint}" username="${tomcat.username}" password="${tomcat.password}"
+  	path="${tomcat.path}" />
+</goal>
+
+
+<goal name="pal-deploy" prereqs="tomcat-declare-tasks">
+  <tomcat-deploy url="${tomcat.endpoint}" username="${tomcat.username}" password="${tomcat.password}"
+  	path="${tomcat.path}" war="file://${basedir}/target/pal.war"/>
 </goal>
 
 <!--

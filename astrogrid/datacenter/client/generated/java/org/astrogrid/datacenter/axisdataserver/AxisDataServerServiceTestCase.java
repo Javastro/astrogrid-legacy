@@ -50,7 +50,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         binding.setTimeout(60000);
 
         // Test operation
-        org.astrogrid.datacenter.axisdataserver.types._language[] value = null;
+        org.astrogrid.datacenter.axisdataserver.types.Language[] value = null;
         value = binding.getLanguageInfo(new java.lang.String());
         // TBD - validate results
     }
@@ -74,7 +74,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             java.lang.String value = null;
-            value = binding.doQuery(new java.lang.String(), org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery());
+            value = binding.doQuery(new java.lang.String(), new org.astrogrid.datacenter.axisdataserver.types.Query());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
@@ -107,7 +107,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             java.lang.String value = null;
-            value = binding.makeQuery(org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery());
+            value = binding.makeQuery(new org.astrogrid.datacenter.axisdataserver.types.Query());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);
@@ -140,7 +140,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // Test operation
         try {
             java.lang.String value = null;
-            value = binding.makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery(), new java.lang.String());
+            value = binding.makeQueryWithId(new org.astrogrid.datacenter.axisdataserver.types.Query(), new java.lang.String());
         }
         catch (java.io.IOException e1) {
             throw new junit.framework.AssertionFailedError("IOException Exception caught: " + e1);

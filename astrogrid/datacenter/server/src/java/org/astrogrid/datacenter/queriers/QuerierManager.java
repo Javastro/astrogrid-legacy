@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.9 2003/12/03 19:37:03 mch Exp $
+/*$Id: QuerierManager.java,v 1.10 2004/01/13 00:33:14 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,10 +20,7 @@ import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
-import org.astrogrid.util.Workspace;
-import org.w3c.dom.Element;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 
 /** Manages the construction and initialization of Queriers,
  * and maintains a  collection of current Queriers
@@ -78,7 +75,7 @@ public class QuerierManager {
          String resultsDestination = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
          // extract values from document, if present.
          if (rootElement != null) {
-            String aHandle = DocHelper.getTagValue(rootElement, DocMessageHelper.ASSIGN_QUERY_ID_TAG);
+            String aHandle = DocHelper.getTagValue(rootElement, DocMessageHelper.ASSIGNQuery_ID_TAG);
             if (aHandle != null) {
                handle = aHandle;
             }
@@ -125,7 +122,7 @@ public class QuerierManager {
    /**
     * Creates an adql querier with a generated (unique-to-this-service) handle
     */
-   public static Querier createQuerier(_query q) throws DatabaseAccessException {
+   public static Querier createQuerier(Query q) throws DatabaseAccessException {
       return QuerierManager.createQuerier(q, generateQueryId());
    }
    
@@ -137,7 +134,7 @@ public class QuerierManager {
     * @throws DatabaseAccessException on error (contains cause exception)
     * @todo - add parsing of results target?
     */
-   public static Querier createQuerier(_query query, String qid) throws DatabaseAccessException {
+   public static Querier createQuerier(Query query, String qid) throws DatabaseAccessException {
       
       //assigns handle
       if (queriers.get(qid) != null) {
@@ -204,7 +201,7 @@ public class QuerierManager {
    
    /** Instantiates the querier given in the configuration file
     */
-   public static Querier instantiateQuerier(_query query, String id) throws DatabaseAccessException {
+   public static Querier instantiateQuerier(Query query, String id) throws DatabaseAccessException {
       
       String querierClass = SimpleConfig.getProperty(DATABASE_QUERIER_KEY);
       
@@ -224,7 +221,7 @@ public class QuerierManager {
           this means the exception boils out of the code, and is unstoppable - dodgy
           work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
 
-         Constructor constr = qClass.getConstructor(new Class[] {String.class, _query.class });
+         Constructor constr = qClass.getConstructor(new Class[] {String.class, Query.class });
          return (Querier) constr.newInstance(new Object[] {id, query});
       }
       catch (ClassNotFoundException cnfe) {
@@ -275,6 +272,20 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.10  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.9.6.2  2004/01/08 09:43:41  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.9.6.1  2004/01/07 11:51:07  nw
+ found out how to get wsdl to generate nice java class names.
+ Replaced _query with Query throughout sources.
+
  Revision 1.9  2003/12/03 19:37:03  mch
  Introduced DirectDelegate, fixed DummyQuerier
 
@@ -285,7 +296,7 @@ public class QuerierManager {
  Abstracting coarse-grained plugin
 
  Revision 1.6  2003/12/01 16:43:52  nw
- dropped _QueryId, back to string
+ dropped QueryId, back to string
 
  Revision 1.5  2003/11/28 16:10:30  nw
  finished plugin-rewrite.

@@ -1,24 +1,29 @@
 /*
- * $Id: FitsQuerier.java,v 1.11 2003/12/09 12:31:23 mch Exp $
+ * $Id: FitsQuerier.java,v 1.12 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.fits;
 
-import java.io.*;
-
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Hashtable;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -37,7 +42,7 @@ public class FitsQuerier extends Querier
 {
    Document index = null;
 
-   public FitsQuerier(String id, _query query) throws IOException
+   public FitsQuerier(String id, Query query) throws IOException
    {
       super(id, query);
    }
@@ -227,6 +232,20 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.12  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.11.6.2  2004/01/08 09:43:41  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.11.6.1  2004/01/07 11:51:07  nw
+ found out how to get wsdl to generate nice java class names.
+ Replaced _query with Query throughout sources.
+
  Revision 1.11  2003/12/09 12:31:23  mch
  New Fits Result set
 

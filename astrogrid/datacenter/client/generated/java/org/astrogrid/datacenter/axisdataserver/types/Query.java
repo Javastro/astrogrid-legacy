@@ -1,5 +1,5 @@
 /**
- * _query.java
+ * Query.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -7,19 +7,19 @@
 
 package org.astrogrid.datacenter.axisdataserver.types;
 
-public class _query  implements java.io.Serializable {
-    private org.astrogrid.datacenter.axisdataserver.types._community community;
+public class Query  implements java.io.Serializable {
+    private org.astrogrid.community.User user;
     private org.w3c.dom.Element queryBody;
 
-    public _query() {
+    public Query() {
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types._community getCommunity() {
-        return community;
+    public org.astrogrid.community.User getUser() {
+        return user;
     }
 
-    public void setCommunity(org.astrogrid.datacenter.axisdataserver.types._community community) {
-        this.community = community;
+    public void setUser(org.astrogrid.community.User user) {
+        this.user = user;
     }
 
     public org.w3c.dom.Element getQueryBody() {
@@ -32,8 +32,8 @@ public class _query  implements java.io.Serializable {
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof _query)) return false;
-        _query other = (_query) obj;
+        if (!(obj instanceof Query)) return false;
+        Query other = (Query) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -42,9 +42,9 @@ public class _query  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.community==null && other.getCommunity()==null) || 
-             (this.community!=null &&
-              this.community.equals(other.getCommunity()))) &&
+            ((this.user==null && other.getUser()==null) || 
+             (this.user!=null &&
+              this.user.equals(other.getUser()))) &&
             ((this.queryBody==null && other.getQueryBody()==null) || 
              (this.queryBody!=null &&
               this.queryBody.equals(other.getQueryBody())));
@@ -59,8 +59,8 @@ public class _query  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getCommunity() != null) {
-            _hashCode += getCommunity().hashCode();
+        if (getUser() != null) {
+            _hashCode += getUser().hashCode();
         }
         if (getQueryBody() != null) {
             _hashCode += getQueryBody().hashCode();
@@ -71,14 +71,14 @@ public class _query  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(_query.class);
+        new org.apache.axis.description.TypeDesc(Query.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">query"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "Query"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("community");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "community"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">community"));
+        elemField.setFieldName("user");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "user"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://community.astrogrid.org", "User"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("queryBody");

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Where.java,v 1.11 2003/12/01 16:30:01 nw Exp $
+ * $Id: Where.java,v 1.12 2004/01/13 00:31:24 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -11,20 +11,13 @@ package org.astrogrid.datacenter.adql.generated;
  //- Imported classes and packages -/
 //---------------------------------/
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Serializable;
-import java.io.Writer;
-import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.xml.sax.ContentHandler;
 
 /**
  * Class Where.
  * 
- * @version $Revision: 1.11 $ $Date: 2003/12/01 16:30:01 $
+ * @version $Revision: 1.12 $ $Date: 2004/01/13 00:31:24 $
  */
 public class Where extends org.astrogrid.datacenter.adql.AbstractQOM implements java.io.Serializable {
 

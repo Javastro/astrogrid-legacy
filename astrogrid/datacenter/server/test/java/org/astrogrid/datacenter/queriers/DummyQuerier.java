@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.6 2003/12/03 19:37:03 mch Exp $
+ * $Id: DummyQuerier.java,v 1.7 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,8 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.util.Date;
-import org.astrogrid.datacenter.axisdataserver.types._query;
+
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 
 /**
  * DummyQuerier.java
@@ -18,7 +19,7 @@ import org.astrogrid.datacenter.axisdataserver.types._query;
 
 public class DummyQuerier extends Querier
 {
-   public DummyQuerier(String id, _query query) throws IOException
+   public DummyQuerier(String id, Query query) throws IOException
    {
       super(id, query);
    }

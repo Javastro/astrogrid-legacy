@@ -27,12 +27,14 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -50,7 +52,7 @@ public class AdqlNvoConeTest extends TestCase
     */
    public void testFactory() throws MalformedURLException, IOException, ServiceException
    {
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier("http://dummy.nvoconesearch/cone?cat=mycatalogue");
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://dummy.nvoconesearch/cone?cat=mycatalogue");
       
       assertTrue(querier instanceof AdqlNvoConeDelegate);
    }
@@ -59,15 +61,15 @@ public class AdqlNvoConeTest extends TestCase
    /**
     * Tests the format of the url is right
     */
-   public void testUrlFormat() throws IOException, ServiceException, MarshalException, ValidationException
+   public void testUrlFormat() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException
    {
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier("http://dummy.nvoconesearch/cone?cat=mycatalogue");
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://dummy.nvoconesearch/cone?cat=mycatalogue");
       
       //this should throw an exception as the given url is wrong
       try
       {
          Select adql = loadAdql("coneQuery2.xml");
-         querier.doQuery(querier.VOTABLE, adql);
+         querier.doQuery(querier.VOTABLE, ADQLUtils.toQueryBody(adql));
          
          fail("Should have thrown an exception trying to run cone search on "+querier);
       }
@@ -101,14 +103,14 @@ public class AdqlNvoConeTest extends TestCase
     * 
     * @todo temporarily commented out 25/11/03 - query just blocked. for ever. no time out or anything. weird.
     */
-   public void testMessier() throws MalformedURLException, IOException, ServiceException, MarshalException, ValidationException
+   public void testMessier() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException
    {
        fail("This test blocks for ever");
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier("http://virtualsky.org/servlet/cover?CAT=messier");
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://virtualsky.org/servlet/cover?CAT=messier");
       
       Select adql = loadAdql("coneQuery2.xml");
       
-      DatacenterResults results = querier.doQuery(querier.VOTABLE, adql);
+      DatacenterResults results = querier.doQuery(querier.VOTABLE, ADQLUtils.toQueryBody(adql));
       
       assertNotNull(results);
       
@@ -123,13 +125,13 @@ public class AdqlNvoConeTest extends TestCase
     * Tests an async query against a real service - NCSA Radio
     * @see http://voservices.org/cone/register/showlist.asp for a list of nvo cone search implementations
     */
-   public void testNcsa() throws MalformedURLException, IOException, ServiceException, MarshalException, ValidationException
+   public void testNcsa() throws ServiceException, MarshalException, ValidationException, IOException, ADQLException
    {
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier("http://adil.ncsa.uiuc.edu/cgi-bin/vocone?survey=f");
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://adil.ncsa.uiuc.edu/cgi-bin/vocone?survey=f");
       
       Select adql = loadAdql("coneQuery3.xml");
       
-      DatacenterQuery query = querier.makeQuery(adql);
+      DatacenterQuery query = querier.makeQuery(ADQLUtils.toQueryBody(adql));
       
       query.start();
 
@@ -191,6 +193,19 @@ public class AdqlNvoConeTest extends TestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.5  2004/01/13 00:32:47  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.4.10.2  2004/01/08 09:42:26  nw
+ tidied imports
+
+ Revision 1.4.10.1  2004/01/08 09:10:20  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
  Revision 1.4  2003/11/26 16:31:46  nw
  altered transport to accept any query format.
  moved back to axis from castor

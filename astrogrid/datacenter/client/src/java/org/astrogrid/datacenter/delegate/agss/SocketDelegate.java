@@ -1,31 +1,30 @@
 /*
- * $Id: SocketDelegate.java,v 1.7 2003/12/03 19:37:03 mch Exp $
+ * $Id: SocketDelegate.java,v 1.8 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agss;
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
-import org.astrogrid.datacenter.delegate.Certification;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.snippet.io.XmlDocInputStream;
-import org.astrogrid.datacenter.snippet.io.XmlDocOutputStream;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.datacenter.snippet.QueryIdHelper;
 import org.astrogrid.datacenter.snippet.StatusHelper;
+import org.astrogrid.datacenter.snippet.io.XmlDocInputStream;
+import org.astrogrid.datacenter.snippet.io.XmlDocOutputStream;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,7 +47,7 @@ import org.xml.sax.SAXException;
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class SocketDelegate implements AdqlQuerier
+public class SocketDelegate implements FullSearcher
 {
    /** The socket connection - opened when the instance is constructed */
    private Socket socket = null;
@@ -63,7 +62,7 @@ public class SocketDelegate implements AdqlQuerier
 
   
    /** User certification */
-   private Certification certification = null;
+   private User user = null;
    
    /** String used to request registry metadata */
    public static final String REQ_REGISTRY_METADATA_TAG = "RequestRegistryMetata";
@@ -90,9 +89,9 @@ public class SocketDelegate implements AdqlQuerier
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public SocketDelegate(InetSocketAddress socketAddress, Certification givenCertification) throws IOException
+   public SocketDelegate(InetSocketAddress socketAddress, User givenUser) throws IOException
    {
-      this.certification = givenCertification;
+      this.user = givenUser;
       setSocket(new Socket(socketAddress.getAddress(), socketAddress.getPort()));
    }
 
@@ -100,9 +99,9 @@ public class SocketDelegate implements AdqlQuerier
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public SocketDelegate(String endPoint, Certification givenCertification) throws IOException
+   public SocketDelegate(String endPoint, User givenUser) throws IOException
    {
-      this.certification = givenCertification;
+      this.user = givenUser;
 
       //parse string to extract address & port
       String host = endPoint.substring(9); //remove 'socket://'
@@ -244,28 +243,12 @@ public class SocketDelegate implements AdqlQuerier
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public int countQuery(Select adql) throws IOException
+   public int countQuery(Element el) throws IOException
    {
       throw new UnsupportedOperationException();
    }
 
-   /**
-    * Support method for creating the right xml from the adql object model. Bit
-    * of a pain this SOAPy beans in some way - means we keep converting from &
-    * to XML, but at least things are being type-checked...
-    */
-   private String getAdqlXml(Select adql)
-   {
-      StringWriter writer = new StringWriter();
-      try {
-         adql.marshal(writer);
-         return writer.toString();
-      }
-      catch (org.exolab.castor.xml.CastorException e)
-      {
-         throw new RuntimeException("Could not write adql to string");
-      }
-   }
+
    
    
    /**
@@ -276,11 +259,11 @@ public class SocketDelegate implements AdqlQuerier
     * @param ADQL
     * @todo move adql package into common
     */
-   public DatacenterResults doQuery(String resultsFormat, Select adql) throws IOException
+   public DatacenterResults doQuery(String resultsFormat, Element queryBody) throws IOException
    {
       String reqTag = "<"+DO_QUERY_TAG+">\n"
                      //+getUserTag()+"\n"
-                     +getAdqlXml(adql)
+                     + XMLUtils.ElementToString(queryBody)
                      +"\n</"+DO_QUERY_TAG+">";
 
       return new DatacenterResults(atomicSendReceive(reqTag));
@@ -291,11 +274,11 @@ public class SocketDelegate implements AdqlQuerier
     * server end, but does not start it yet as other Things May Need To Be Done
     * such as registering listeners or setting the destination for the results.
     *
-    * @param adql object model
+    * @param queryBody query language statement to execute
     * @param givenId an id for the query is assigned here rather than
     * generated by the server
     */
-   public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException
+   public DatacenterQuery makeQuery(Element queryBody, String givenId) throws IOException
    {
       String reqTag = "<"+CREATE_QUERY_TAG+">\n";
       if (givenId != null) {
@@ -303,7 +286,7 @@ public class SocketDelegate implements AdqlQuerier
       }
 
       reqTag = reqTag //+getUserTag()+"\n"
-                     +getAdqlXml(adql)
+                     + XMLUtils.ElementToString(queryBody)
                      +"\n</"+CREATE_QUERY_TAG+">";
 
       Element response = atomicSendReceive(reqTag);
@@ -316,11 +299,11 @@ public class SocketDelegate implements AdqlQuerier
     * server end, but does not start it yet as other Things May Need To Be Done
     * such as registering listeners or setting the destination for the results.
     *
-    * @param adql object model
+    * @param queryBody the query to execute
     */
-   public DatacenterQuery makeQuery(Select adql) throws IOException
+   public DatacenterQuery makeQuery(Element queryBody) throws IOException
    {
-      return makeQuery(adql, null);
+      return makeQuery(queryBody, null);
    }
    
    /**
@@ -432,6 +415,21 @@ public class SocketDelegate implements AdqlQuerier
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.8  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.7.6.3  2004/01/08 09:42:26  nw
+tidied imports
+
+Revision 1.7.6.2  2004/01/07 15:30:42  nw
+updated to implement full searcher interface
+
+Revision 1.7.6.1  2004/01/07 13:01:44  nw
+removed Community object, now using User object from common
+
 Revision 1.7  2003/12/03 19:37:03  mch
 Introduced DirectDelegate, fixed DummyQuerier
 

@@ -12,9 +12,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
+
 import org.apache.commons.logging.Log;
-import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.community.User;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
@@ -22,8 +23,6 @@ import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
-import org.astrogrid.mySpace.delegate.MySpaceManagerDelegate;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -52,7 +51,7 @@ public abstract class Querier implements Runnable {
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
        
    /** query to perform */
-   protected final _query query;
+   protected final Query query;
    
    /** Temporary workspace for working files, and somewhere to put the results
     * for non-blocking calls */
@@ -63,7 +62,7 @@ public abstract class Querier implements Runnable {
    private final String id;
    
    /** certification information */
-   private final Certification cert;
+   private final User user;
 
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();
@@ -89,14 +88,14 @@ public abstract class Querier implements Runnable {
    /** For measuring how long query took */
    private Date timeQueryCompleted = null;
    
-   public Querier(String queryId, _query query) throws IOException {
+   public Querier(String queryId, Query query) throws IOException {
        this.id = queryId;
        this.query = query;
        workspace = new Workspace(queryId);
-       if ((query == null) || (query.getCommunity() == null)) {
-           this.cert = Certification.ANONYMOUS;
+       if ((query == null) || (query.getUser() == null)) {
+           this.user = User.ANONYMOUS;
        } else {
-           this.cert = new Certification(query.getCommunity());
+           this.user = query.getUser();
        }
    }
 
@@ -110,7 +109,7 @@ public abstract class Querier implements Runnable {
    /**
     * Returns the query
     */
-   protected _query getQuery() { return query; }
+   protected Query getQuery() { return query; }
    
    /**
     * Convenience routine for getting the querying element
@@ -225,7 +224,7 @@ public abstract class Querier implements Runnable {
       
       MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(resultsDestination);
       
-      myspace.saveDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),
+      myspace.saveDataHolding(user.getAccount(), user.getGroup(), user.getToken(),
                               "testFile",
                               "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
                               "",
@@ -253,15 +252,14 @@ public abstract class Querier implements Runnable {
          //to that
          ByteArrayOutputStream ba = new ByteArrayOutputStream();
          results.toVotable(ba);
-         ba.close();
-         
-         myspace.saveDataHolding(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),
+         ba.close();        
+         myspace.saveDataHolding(user.getAccount(), user.getGroup(), user.getToken(),
                                  myspaceFilename,
                                  ba.toString(),
                                  "VOTable",
                                  "Overwrite");
          
-         resultsLoc = myspace.getDataHoldingUrl(cert.getUserId(), cert.getCommunityId(), cert.getCredentials(),  myspaceFilename);
+         resultsLoc = myspace.getDataHoldingUrl(user.getAccount(), user.getGroup(), user.getToken(),  myspaceFilename);
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -429,8 +427,25 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.13  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
  Revision 1.12  2004/01/12 15:08:14  mch
  Fix to record url of results not content of results...
+
+ Revision 1.11.4.3  2004/01/08 09:43:41  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.11.4.2  2004/01/07 13:02:09  nw
+ removed Community object, now using User object from common
+
+ Revision 1.11.4.1  2004/01/07 11:51:07  nw
+ found out how to get wsdl to generate nice java class names.
+ Replaced _query with Query throughout sources.
 
  Revision 1.11  2003/12/15 17:47:55  mch
  Introduced proper MySpace Factory
@@ -445,7 +460,7 @@ public abstract class Querier implements Runnable {
  Abstracting coarse-grained plugin
 
  Revision 1.7  2003/12/01 16:43:52  nw
- dropped _QueryId, back to string
+ dropped QueryId, back to string
 
  Revision 1.6  2003/12/01 16:11:30  nw
  removed config interface.

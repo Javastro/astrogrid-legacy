@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.20 2003/12/16 12:20:40 mch Exp $
+ * $Id: AxisDataServer.java,v 1.21 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,15 +14,16 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
+
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._language;
-import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.axisdataserver.types.Language;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -115,13 +116,13 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String doQuery(String resultsFormat,  _query q) throws IOException {
+   public String doQuery(String resultsFormat,  Query q) throws IOException {
       
       if (resultsFormat == null || resultsFormat.length() == 0)  {
          log.error("Empty parameter for results format");
          throw new IllegalArgumentException("Empty parameter for results format");
       }
-      if (!resultsFormat.toLowerCase().equals(AdqlQuerier.VOTABLE.toLowerCase()))  {
+      if (!resultsFormat.toLowerCase().equals(FullSearcher.VOTABLE.toLowerCase()))  {
          log.error("Can only produce votable results");
          throw new IllegalArgumentException("Can only produce votable results");
       }
@@ -153,7 +154,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String  makeQuery(_query q) throws IOException {
+   public String  makeQuery(Query q) throws IOException {
       
       Querier querier = QuerierManager.createQuerier(q);
       return querier.getQueryId();
@@ -167,7 +168,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @todo - add our own prefix to this assigned id before using it internally to ensure its unique?
     * @soap
     */
-   public String makeQueryWithId(_query q, String assignedId) throws QueryException, IOException, SAXException {
+   public String makeQueryWithId(Query q, String assignedId) throws QueryException, IOException, SAXException {
       
       if (assignedId == null || assignedId.length() == 0)  {
          throw new IllegalArgumentException("Empty assigned id");
@@ -301,7 +302,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    /* (non-Javadoc)
     * @see org.astrogrid.datacenter.axisdataserver.AxisDataServer#getLanguageInfo(java.lang.Object)
     */
-   public _language[] getLanguageInfo(Object arg0) throws RemoteException {
+   public Language[] getLanguageInfo(Object arg0) throws RemoteException {
       
       try {
          return PluginQuerier.instantiateQuerierSPI().getTranslatorMap().list();

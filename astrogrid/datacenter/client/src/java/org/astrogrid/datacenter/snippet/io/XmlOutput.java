@@ -1,5 +1,5 @@
 /*
- $Id: XmlOutput.java,v 1.1 2003/12/02 19:49:44 mch Exp $
+ $Id: XmlOutput.java,v 1.2 2004/01/13 00:32:47 nw Exp $
 
  Date        Author      Changes
  8 Oct 2002  M Hill      Created
@@ -10,7 +10,7 @@ package org.astrogrid.datacenter.snippet.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import org.astrogrid.datacenter.snippet.io.XmlTag;
+
 import org.astrogrid.log.Log;
 
 /**

@@ -1,20 +1,12 @@
 /*
- $Id: FitsReader.java,v 1.4 2003/11/28 18:20:32 mch Exp $
+ $Id: FitsReader.java,v 1.5 2004/01/13 00:33:14 nw Exp $
 
  Copyright (c) etc
  */
 
 package org.astrogrid.datacenter.fits;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * An interface so that appilcations that want to read FITS files can do so
@@ -49,6 +41,16 @@ public interface FitsReader
 
 /*
  $Log: FitsReader.java,v $
+ Revision 1.5  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.4.10.1  2004/01/08 09:43:40  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
  Revision 1.4  2003/11/28 18:20:32  mch
  Debugged fits readers
 

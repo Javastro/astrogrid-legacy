@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.8 2003/12/01 20:58:42 mch Exp $
+/*$Id: SqlQuerierTest.java,v 1.9 2004/01/13 00:33:14 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,31 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
+import org.astrogrid.datacenter.sql.SQLUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /** test out the vanilla sql querier over an in-memory hsqldb database
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Sep-2003
@@ -59,7 +70,7 @@ public class SqlQuerierTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         HsqlTestCase.initializeConfiguration();
-
+        SimpleConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
         String script = getResourceAsString("create-test-db.sql");
         assertNotNull(script);
         conn = new HsqlTestCase.HsqlDataSource().getConnection();
@@ -80,15 +91,15 @@ public class SqlQuerierTest extends ServerTestCase {
     }
 
     public void test1() throws Exception {
-        performQuery("sql-querier-test-1.xml");
+        doQueryFromFile("sql-querier-test-1.xml");
     }
 
     public void test2() throws Exception {
-        performQuery("sql-querier-test-2.xml");
+        doQueryFromFile("sql-querier-test-2.xml");
     }
 
     public void test3() throws Exception {
-        performQuery("sql-querier-test-3.xml");
+        doQueryFromFile("sql-querier-test-3.xml");
     }
 
     /** perform an end-to-end query - from ADQL input document to VOTable output document
@@ -96,37 +107,68 @@ public class SqlQuerierTest extends ServerTestCase {
      * @param queryFile resource file of query
      * @throws Exception
      */
-    protected void performQuery(String queryFile) throws Exception {
+    protected void doQueryFromFile(String queryFile) throws Exception {
         assertNotNull(queryFile);
         InputStream is = this.getClass().getResourceAsStream(queryFile);
         assertNotNull("Could not open query file :" + queryFile,is);
         Select select = Select.unmarshalSelect(new InputStreamReader(is));
         assertNotNull(select);
-        _query q = new _query();
-        q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
-
+        Query q = new Query();
+        q.setQueryBody(ADQLUtils.toQueryBody(select));
+       runQuery(q);
+    }
+    
+   public void testSQLPassthru() throws Exception {
+      Query q = new Query();
+      Element queryBody = SQLUtils.toQueryBody("select * from people");
+      assertNotNull(queryBody);
+      q.setQueryBody(queryBody);
+      runQuery(q);
+   }
+   
+   private void runQuery(Query q) throws Exception {
         Querier querier = new PluginQuerier(new SqlQuerierSPI(),"handle", q);
         assertNotNull(querier);
         QueryResults results = querier.doQuery();
         assertNotNull(results);
-
+      
         Document voElement = results.toVotable();
         querier.close();
         assertIsVotable(voElement);
         // could add extra checking to compare with expected results here..
         XMLUtils.PrettyDocumentToStream(voElement,System.out);
-    }
+   }
+
+       
+   
 
 }
 
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.9  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.8.10.3  2004/01/08 15:37:27  nw
+added tests for SQL passthru
+
+Revision 1.8.10.2  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
+Revision 1.8.10.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.8  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 
 Revision 1.7  2003/12/01 16:44:11  nw
-dropped _QueryId, back to string
+dropped QueryId, back to string
 
 Revision 1.6  2003/11/28 16:10:30  nw
 finished plugin-rewrite.

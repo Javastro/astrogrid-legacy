@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.6 2003/12/01 20:58:42 mch Exp $
+/*$Id: FitsTest.java,v 1.7 2004/01/13 00:33:14 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,9 +11,11 @@ package org.astrogrid.datacenter.fits;
 
 import java.io.IOException;
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 
 /** Test the Fits processing classes
@@ -44,7 +46,7 @@ public class FitsTest extends TestCase
             new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
             new URL("http://www.roe.ac.uk/~mch/r169101.fit")
      };
-      
+      fail("takes too long for a unit test");
       String index = IndexGenerator.generateIndex(fits);
       assertNotNull(index);
    }
@@ -70,6 +72,19 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.7  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.6.10.2  2004/01/08 09:43:41  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.6.10.1  2004/01/07 13:02:09  nw
+ removed Community object, now using User object from common
+
  Revision 1.6  2003/12/01 20:58:42  mch
  Abstracting coarse-grained plugin
 

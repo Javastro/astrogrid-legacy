@@ -8,24 +8,24 @@
 package org.astrogrid.datacenter.axisdataserver.types;
 
 public class _getLanguageInfoResponse  implements java.io.Serializable {
-    private org.astrogrid.datacenter.axisdataserver.types._language[] language;
+    private org.astrogrid.datacenter.axisdataserver.types.Language[] language;
 
     public _getLanguageInfoResponse() {
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types._language[] getLanguage() {
+    public org.astrogrid.datacenter.axisdataserver.types.Language[] getLanguage() {
         return language;
     }
 
-    public void setLanguage(org.astrogrid.datacenter.axisdataserver.types._language[] language) {
+    public void setLanguage(org.astrogrid.datacenter.axisdataserver.types.Language[] language) {
         this.language = language;
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types._language getLanguage(int i) {
+    public org.astrogrid.datacenter.axisdataserver.types.Language getLanguage(int i) {
         return language[i];
     }
 
-    public void setLanguage(int i, org.astrogrid.datacenter.axisdataserver.types._language value) {
+    public void setLanguage(int i, org.astrogrid.datacenter.axisdataserver.types.Language value) {
         this.language[i] = value;
     }
 
@@ -78,8 +78,8 @@ public class _getLanguageInfoResponse  implements java.io.Serializable {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">getLanguageInfoResponse"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("language");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "language"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">language"));
+        elemField.setXmlName(new javax.xml.namespace.QName("", "language"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "Language"));
         typeDesc.addFieldDesc(elemField);
     }
 

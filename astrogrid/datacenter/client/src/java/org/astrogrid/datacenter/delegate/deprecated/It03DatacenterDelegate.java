@@ -1,5 +1,5 @@
 /*
- * $Id: It03DatacenterDelegate.java,v 1.4 2003/11/26 16:31:46 nw Exp $
+ * $Id: It03DatacenterDelegate.java,v 1.5 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,10 +13,10 @@ import java.util.Hashtable;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.log.Log;
@@ -36,11 +36,11 @@ import org.w3c.dom.NodeList;
 
 public class It03DatacenterDelegate
 {
-   AdqlQuerier wrappedDelegate = null;
+   FullSearcher wrappedDelegate = null;
    
    Hashtable queries = new Hashtable();
    
-   public It03DatacenterDelegate(AdqlQuerier delegateToWrap)
+   public It03DatacenterDelegate(FullSearcher delegateToWrap)
    {
       this.wrappedDelegate = delegateToWrap;
    }
@@ -111,10 +111,10 @@ public class It03DatacenterDelegate
          //make query
          DatacenterQuery query = null;
          if (assignedId == null) {
-            query = wrappedDelegate.makeQuery(adql);
+            query = wrappedDelegate.makeQuery(ADQLUtils.toQueryBody(adql));
          }
          else {
-            query = wrappedDelegate.makeQuery(adql, assignedId);
+            query = wrappedDelegate.makeQuery(ADQLUtils.toQueryBody(adql), assignedId);
          }
          
          queries.put(query.getId(), query);
@@ -212,6 +212,19 @@ public class It03DatacenterDelegate
 
 /*
 $Log: It03DatacenterDelegate.java,v $
+Revision 1.5  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.4.10.2  2004/01/08 09:42:26  nw
+tidied imports
+
+Revision 1.4.10.1  2004/01/08 09:10:20  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.4  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

@@ -1,4 +1,4 @@
-/*$Id: IdTranslator.java,v 1.1 2003/11/27 17:28:09 nw Exp $
+/*$Id: IdTranslator.java,v 1.2 2004/01/13 00:33:14 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.spi;
 
-import org.astrogrid.datacenter.axisdataserver.types._language;
+import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.w3c.dom.Element;
 
 /** Simplest possible translator - returns its Element argument unchanged
@@ -53,8 +53,8 @@ public class IdTranslator implements Translator {
         }
 
         /** returns an empty array */
-        public _language[] list() {
-            return new _language[0];
+        public Language[] list() {
+            return new Language[0];
         }
     }
 
@@ -63,6 +63,16 @@ public class IdTranslator implements Translator {
 
 /* 
 $Log: IdTranslator.java,v $
+Revision 1.2  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.1.10.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.1  2003/11/27 17:28:09  nw
 finished plugin-refactoring
  

@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.3 2003/12/03 19:37:03 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.4 2004/01/13 00:33:14 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -14,14 +14,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 
 /** Test the Fits processing classes
  */
@@ -32,7 +33,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       FitsQuerier querier = new FitsQuerier("DummyId", null);
-
+      fail("takes too long for a unit test");
       setIndex(querier);
       
       querier.coneSearch(300,60,12);
@@ -42,7 +43,7 @@ public class FitsQuerierTest extends TestCase
    public void testLots() throws IOException
    {
       org.astrogrid.log.Log.logToConsole();
-
+      fail("takes too long for a unit test");
       FitsQuerier querier = new FitsQuerier("test",null);
       setIndex(querier);
 
@@ -112,6 +113,19 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.4  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.3.6.2  2004/01/08 09:43:40  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.3.6.1  2004/01/07 13:02:09  nw
+ removed Community object, now using User object from common
+
  Revision 1.3  2003/12/03 19:37:03  mch
  Introduced DirectDelegate, fixed DummyQuerier
 

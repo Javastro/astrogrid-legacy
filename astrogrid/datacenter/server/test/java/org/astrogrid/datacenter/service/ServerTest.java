@@ -14,16 +14,19 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.net.URL;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -61,11 +64,11 @@ public class ServerTest extends ServerTestCase
       assertNotNull(fileDoc);
 
       Select adql = ADQLUtils.unmarshalSelect(fileDoc);
-      _query q = new _query();
+      Query q = new Query();
       q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
       
       //submit query
-      String result = server.doQuery(AdqlQuerier.VOTABLE,q);
+      String result = server.doQuery(FullSearcher.VOTABLE,q);
       assertNotNull(result);
       assertIsVotableResultsResponse(result);
       
@@ -103,6 +106,20 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.7  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.6.10.2  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
+Revision 1.6.10.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.6  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 

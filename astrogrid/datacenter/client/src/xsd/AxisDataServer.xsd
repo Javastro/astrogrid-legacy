@@ -3,9 +3,20 @@
      targetNamespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
      xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
      xmlns:apachesoap="http://xml.apache.org/xml-soap"
+     xmlns:community="http://community.astrogrid.org"
      >
+     <!--
+     	This schema describes the types passed to and from the datacenter web service.
+     	It uses plain encoding, and the wrapped style.
+     	
+     	Each xml namespace can map to a different java package; but a schema can only define a single 
+     	namespace. Hence the community user fragment is defined in a separate schema and imported into this
+     	one. 
+     	
+     	-->
         <!--<xsd:import namespace="http://tempuri.org/adql" schemaLocation="ADQLschema.xsd"/>-->
-
+		<xsd:import namespace="http://community.astrogrid.org" schemaLocation="User.xsd" />
+		
             <xsd:element name="getMetadata">
                 <!-- need to find way of expressing a null service -->
             </xsd:element>
@@ -27,43 +38,31 @@
 	<xsd:element name="getLanguageInfoResponse">
 	<xsd:complexType>
 		<xsd:sequence>
-			<xsd:element ref="ns:language" maxOccurs="unbounded" />
+			<xsd:element name="language" type="ns:Language" maxOccurs="unbounded" />
 		</xsd:sequence>
 	</xsd:complexType>
 	</xsd:element>
 
-	<xsd:element name="language" maxOccurs="unbounded">
-		<xsd:complexType>
+		<xsd:complexType name="Language">
 			<xsd:sequence>
 				<xsd:element name="namespace" type="xsd:anyURI" />
 				<xsd:element name="schema-location" type="xsd:anyURI" minOccurs="1"/>
 				<xsd:element name="implementing-class" type="xsd:string" />
 			</xsd:sequence>
 		</xsd:complexType>
-	</xsd:element>
 
 
 	<!-- thing to hang other attributes off later.. -->
-	<xsd:element name="query">
-	  <xsd:complexType>
+
+	  <xsd:complexType name="Query">
 	    <xsd:sequence>
+		<xsd:element name="user" type="community:User" />
+		<xsd:element name="query-body" type="apachesoap:Element" />
 	    	<!--
 	    	<xsd:any processContents="lax" namespace="##other"/> - more correct, but gives an ugly type.
 		-->
-		<xsd:element ref="ns:community" />
-		<xsd:element name="query-body" type="apachesoap:Element" />
 	    </xsd:sequence>
 	  </xsd:complexType>
-	</xsd:element>
-
-	<!-- first stab at the community snippet. -->
-	<xsd:element name="community">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="account" type="xsd:string" />
-			</xsd:sequence>
-		</xsd:complexType>
-	</xsd:element>
 
 	<xsd:element name="QueryId" type="xsd:string">
 		<!--
@@ -77,7 +76,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element name="resultsFormat" type="xsd:string"/>
-                         <xsd:element ref="ns:query"/>
+                         <xsd:element name="query" type="ns:Query"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -96,7 +95,7 @@
             <xsd:element name="makeQuery">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element ref="ns:query"/>
+                        <xsd:element name="query" type="ns:Query"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -104,7 +103,7 @@
             <xsd:element name="makeQueryWithId">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element ref="ns:query" />
+                        <xsd:element name="query" type="ns:Query" />
                         <xsd:element name="assignedId" type="xsd:string" />
                     </xsd:sequence>
                 </xsd:complexType>

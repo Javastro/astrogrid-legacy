@@ -1,17 +1,16 @@
 /*
- * $Id: XmlDocOutputStream.java,v 1.1 2003/12/02 19:49:44 mch Exp $
+ * $Id: XmlDocOutputStream.java,v 1.2 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.snippet.io;
-import org.astrogrid.datacenter.io.*;
-
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.io.AsciiCodes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

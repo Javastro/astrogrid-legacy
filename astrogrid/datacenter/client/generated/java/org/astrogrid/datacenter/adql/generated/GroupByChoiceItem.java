@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GroupByChoiceItem.java,v 1.11 2003/12/01 16:30:01 nw Exp $
+ * $Id: GroupByChoiceItem.java,v 1.12 2004/01/13 00:31:23 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -12,19 +12,16 @@ package org.astrogrid.datacenter.adql.generated;
 //---------------------------------/
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.Writer;
 
-import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
-import org.xml.sax.ContentHandler;
 import org.astrogrid.datacenter.adql.AbstractQOM;
+import org.exolab.castor.xml.CastorException;
+import org.xml.sax.ContentHandler;
 
 /**
  * Class GroupByChoiceItem.
  *edited by NWW to make instance of AbstractQOM.
- * @version $Revision: 1.11 $ $Date: 2003/12/01 16:30:01 $
+ * @version $Revision: 1.12 $ $Date: 2004/01/13 00:31:23 $
  */
 public class GroupByChoiceItem extends AbstractQOM implements java.io.Serializable {
 

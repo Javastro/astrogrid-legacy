@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.12 2003/12/02 18:00:03 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.13 2004/01/13 00:33:14 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,17 +15,20 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._language;
-import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types.Language;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -68,13 +71,13 @@ public class DataQueryServiceTest extends ServerTestCase {
         InputStream adqlIn = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/queriers/sql/sql-querier-test-3.xml");
         assertNotNull(adqlIn);
         Select s =Select.unmarshalSelect(new InputStreamReader(adqlIn));
-        query = new _query();
+        query = new Query();
          query.setQueryBody(ADQLUtils.marshallSelect(s).getDocumentElement());
     }
 
     protected Connection conn;
     protected AxisDataServer server;
-    protected _query query;
+    protected Query query;
     //protected final MyWorkspaceTest wsTest = new MyWorkspaceTest(null);
 
     /*
@@ -98,7 +101,7 @@ public class DataQueryServiceTest extends ServerTestCase {
     }
     
     public void testGetLanguageInfo() throws Exception {
-        _language[] langs = server.getLanguageInfo(null);
+        Language[] langs = server.getLanguageInfo(null);
         assertNotNull(langs);
         assertEquals(2,langs.length);
     }
@@ -150,7 +153,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         /*
        // check what the listener recorded. - should always be the same pattern for this query.
         assertEquals(4,l.statusList.size());
-        QueryStatus[] expected = new QueryStatus[]{QueryStatus.RUNNING_QUERY,QueryStatus.QUERY_COMPLETE,QueryStatus.RUNNING_RESULTS,QueryStatus.FINISHED};
+        QueryStatus[] expected = new QueryStatus[]{QueryStatus.RUNNINGQuery,QueryStatus.QUERY_COMPLETE,QueryStatus.RUNNING_RESULTS,QueryStatus.FINISHED};
         for (int i = 0; i < l.statusList.size(); i++) {
             assertEquals(expected[i],l.statusList.get(i));
         }
@@ -190,6 +193,20 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.13  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.12.10.2  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
+Revision 1.12.10.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.12  2003/12/02 18:00:03  mch
 Moved MySpaceDummyDelegate
 
@@ -197,7 +214,7 @@ Revision 1.11  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 
 Revision 1.10  2003/12/01 16:44:11  nw
-dropped _QueryId, back to string
+dropped QueryId, back to string
 
 Revision 1.9  2003/11/28 16:10:30  nw
 finished plugin-rewrite.

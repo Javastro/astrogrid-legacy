@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.6 2003/12/02 17:56:39 mch Exp $
+ * $Id: DelegateTest.java,v 1.7 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -47,47 +47,34 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
     */
    public void testDelegateTypes() throws MalformedURLException, IOException, ServiceException
    {
-      DummyDelegate dummy = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
+      DummyDelegate dummy = (DummyDelegate) DatacenterDelegateFactory.makeFullSearcher(null);
       dummy.setTimeout(200);
 
       //these will throw exceptions, but will at least test creation code
       try
       {
-         SocketDelegate socket = (SocketDelegate) DatacenterDelegateFactory.makeAdqlQuerier("socket://wibble:20");
+         SocketDelegate socket = (SocketDelegate) DatacenterDelegateFactory.makeFullSearcher("socket://wibble:20");
       }
       catch (UnknownHostException se)   {  } //expect to not connect
 
       try
       {
-         WebDelegate web = (WebDelegate) DatacenterDelegateFactory.makeAdqlQuerier("http://wibble");
+         WebDelegate web = (WebDelegate) DatacenterDelegateFactory.makeFullSearcher("http://wibble");
       }
       catch (IOException se)     { } // expect to not connect
       
-      try
-      {
-         WebDelegate web = (WebDelegate) DatacenterDelegateFactory.makeSqlQuerier(Certification.ANONYMOUS, "http://wibble", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      }
-      catch (IOException se)     { } // expect to not connect
+
       
    }
 
-   /**
-    * Tests an SQL-pass through query on the dummy
-    */
-   public void testSqlQuerier() throws IOException, ServiceException
-   {
-      SqlQuerier delegate = DatacenterDelegateFactory.makeSqlQuerier(Certification.ANONYMOUS, "http://wibble", DatacenterDelegateFactory.DUMMY_SERVICE);
-      
-      DatacenterResults results = delegate.doSqlQuery(AdqlQuerier.VOTABLE, "SELECT * FROM Population p WHERE scots = marsbarbatterers AND english = morrisdancers");
-      
-   }
+
    
    /**
     * Creates a delegate, passes it a query and checks the return values
     */
    public void testBlockingQuery() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException, ADQLException
    {
-      AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(null);
+      FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(null);
 
       //load test query file
       URL url = getClass().getResource("adqlQuery.xml");
@@ -96,10 +83,10 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
       //'submit' query to dummy service for count results
-      int count = delegate.countQuery(adql);
+      int count = delegate.countQuery(ADQLUtils.toQueryBody(adql));
 
       //submit query for votable results
-      DatacenterResults results = delegate.doQuery(AdqlQuerier.VOTABLE, adql);
+      DatacenterResults results = delegate.doQuery(FullSearcher.VOTABLE, ADQLUtils.toQueryBody(adql));
 
       checkResults(results);
    }
@@ -131,7 +118,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
     */
    public void testSpawnQuery() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException, ADQLException
    {
-      AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(null);
+      FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(null);
 
       //load test query file
       URL url = getClass().getResource("adqlQuery.xml");
@@ -140,7 +127,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
       //create query
-      DatacenterQuery query = delegate.makeQuery(adql);
+      DatacenterQuery query = delegate.makeQuery(ADQLUtils.toQueryBody(adql));
       assertNotNull(query);
       assertEquals(DummyDelegate.QUERY_ID, query.getId());
 
@@ -165,7 +152,7 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
     */
    public void testMetadata() throws IOException, ServiceException, ParserConfigurationException, SAXException
    {
-      AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(null);
+      FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(null);
 
       Metadata meta = delegate.getMetadata();
       
@@ -199,6 +186,22 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.7  2004/01/13 00:32:47  nw
+ * Merged in branch providing
+ * * sql pass-through
+ * * replace Certification by User
+ * * Rename _query as Query
+ *
+ * Revision 1.6.10.3  2004/01/08 09:42:26  nw
+ * tidied imports
+ *
+ * Revision 1.6.10.2  2004/01/08 09:10:20  nw
+ * replaced adql front end with a generalized front end that accepts
+ * a range of query languages (pass-thru sql at the moment)
+ *
+ * Revision 1.6.10.1  2004/01/07 13:01:44  nw
+ * removed Community object, now using User object from common
+ *
  * Revision 1.6  2003/12/02 17:56:39  mch
  * Added sql pass through test
  *

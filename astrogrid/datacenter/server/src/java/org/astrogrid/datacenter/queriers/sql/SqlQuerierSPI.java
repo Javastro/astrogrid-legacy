@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.3 2003/12/01 16:11:29 nw Exp $
+ * $Id: SqlQuerierSPI.java,v 1.4 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,10 +23,12 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
+import org.astrogrid.datacenter.sql.SQLUtils;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -62,8 +64,8 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
 
   /** configure translators */
   static {
-      map.add("http://tempuri.org/adql",new AdqlQueryTranslator());
-      map.add("urn:sql",new SqlQueryTranslator());
+      map.add(ADQLUtils.ADQL_XMLNS,new AdqlQueryTranslator());
+      map.add(SQLUtils.SQL_XMLNS,new SqlQueryTranslator());
   }
 
 /** 

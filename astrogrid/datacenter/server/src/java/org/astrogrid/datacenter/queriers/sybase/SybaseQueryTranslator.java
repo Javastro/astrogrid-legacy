@@ -1,4 +1,4 @@
-/*$Id: SybaseQueryTranslator.java,v 1.3 2003/12/15 18:11:47 mch Exp $
+/*$Id: SybaseQueryTranslator.java,v 1.4 2004/01/13 00:33:14 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.sybase;
 
-import java.text.MessageFormat;
-
 import org.astrogrid.datacenter.adql.generated.ArchiveTable;
-import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.queriers.sql.AdqlQueryTranslator;
 
 /** ADQL translator to Sybase SQL.
@@ -56,6 +53,16 @@ public class SybaseQueryTranslator extends AdqlQueryTranslator {
 
 /*
 $Log: SybaseQueryTranslator.java,v $
+Revision 1.4  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.3.4.1  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.3  2003/12/15 18:11:47  mch
 Fixed Circle SQL
 

@@ -1,5 +1,5 @@
 /*
- * $Id: It03DatacenterDelegateFactory.java,v 1.2 2003/11/26 16:31:46 nw Exp $
+ * $Id: It03DatacenterDelegateFactory.java,v 1.3 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -34,7 +34,7 @@ public class It03DatacenterDelegateFactory
    public static It03DatacenterDelegate makeDelegate(String givenEndPoint)
          throws MalformedURLException, ServiceException, IOException
    {
-      return new It03DatacenterDelegate(DatacenterDelegateFactory.makeAdqlQuerier(givenEndPoint));
+      return new It03DatacenterDelegate(DatacenterDelegateFactory.makeFullSearcher(givenEndPoint));
    }
    
 
@@ -43,6 +43,16 @@ public class It03DatacenterDelegateFactory
 
 /*
 $Log: It03DatacenterDelegateFactory.java,v $
+Revision 1.3  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.2.10.1  2004/01/08 09:10:20  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.2  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

@@ -53,7 +53,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
    public void testDelegateListener() throws MalformedURLException, IOException, ServiceException, ADQLException, SAXException, ParserConfigurationException
    {
       //make sure it can be registered properly
-      DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
+      DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeFullSearcher(null);
       
       URL url = getClass().getResource(TEST_QUERY_DOCUMENT);
       assertNotNull(url);
@@ -61,7 +61,7 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       assertNotNull(adql);
-      DatacenterQuery query = delegate.makeQuery(adql);
+      DatacenterQuery query = delegate.makeQuery(ADQLUtils.toQueryBody(adql));
       assertNotNull(query);
       query.registerListener(this);
 
@@ -71,14 +71,14 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
    public void testWebListener() throws MalformedURLException, IOException, ServiceException, ADQLException, SAXException, ParserConfigurationException
    {
       //make sure it can be registered properly
-      DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
+      DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeFullSearcher(null);
       
       URL url = getClass().getResource(TEST_QUERY_DOCUMENT);
       Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
 
       Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
       
-      DatacenterQuery query = delegate.makeQuery(adql);
+      DatacenterQuery query = delegate.makeQuery(ADQLUtils.toQueryBody(adql));
       query.registerWebListener(new URL("http://wibble"));
 
       DummyQuerierSPI querier = new DummyQuerierSPI();
@@ -121,6 +121,16 @@ public class ListenerTest extends ServerTestCase implements DelegateQueryListene
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.8  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.7.10.1  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.7  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 

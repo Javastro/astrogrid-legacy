@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.4 2003/12/16 11:09:00 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.5 2004/01/13 00:33:14 nw Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,12 @@ package org.astrogrid.datacenter;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+
 import junit.framework.TestCase;
+
+import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
@@ -65,8 +67,8 @@ public class InstallationSelfCheck extends TestCase {
          // check its type
          assertTrue(QuerierManager.DATABASE_QUERIER_KEY + " does not extend Querier",Querier.class.isAssignableFrom(plugin));
          // we expect a contructor as follows
-         Constructor constr = plugin.getConstructor(new Class[]{String.class,_query.class});
-         assertNotNull("Plugin class must provide constructor(String,_query)",constr);
+         Constructor constr = plugin.getConstructor(new Class[]{String.class,Query.class});
+         assertNotNull("Plugin class must provide constructor(String,Query)",constr);
          // if its not the plugin querier, then we stop.
          if (! PluginQuerier.class.isAssignableFrom(plugin)) {
             return;
@@ -113,7 +115,7 @@ public class InstallationSelfCheck extends TestCase {
 
       MySpaceClient myspace = MySpaceDelegateFactory.createDelegate(defaultTarget);
       
-      myspace.saveDataHolding(Certification.ANONYMOUS.getUserId(), Certification.ANONYMOUS.getCommunityId(), Certification.ANONYMOUS.getCredentials(),
+      myspace.saveDataHolding(User.ANONYMOUS.getAccount(), User.ANONYMOUS.getGroup(), User.ANONYMOUS.getToken(),
                               "testFile",
                               "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
                               "",
@@ -131,6 +133,23 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.5  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.4.4.3  2004/01/08 09:43:40  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.4.4.2  2004/01/07 13:02:09  nw
+ removed Community object, now using User object from common
+
+ Revision 1.4.4.1  2004/01/07 11:51:07  nw
+ found out how to get wsdl to generate nice java class names.
+ Replaced _query with Query throughout sources.
+
  Revision 1.4  2003/12/16 11:09:00  mch
  Added myspace check, removed some fails to let exceptions through
 

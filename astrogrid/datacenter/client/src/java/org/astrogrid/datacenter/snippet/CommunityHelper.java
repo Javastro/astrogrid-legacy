@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityHelper.java,v 1.4 2003/11/27 00:49:52 nw Exp $
+ * $Id: CommunityHelper.java,v 1.5 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.snippet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.community.User;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 /**
@@ -28,13 +28,13 @@ public class CommunityHelper
    public final static String ACCOUNT = "account";
    public static String account = "";
 
-   public static Certification getCertification(Element dom)
+   public static User getCertification(Element dom)
    {
       if (getAccount(dom) == null) {
-         return Certification.ANONYMOUS;
+         return User.ANONYMOUS;
       }
       else {
-          return new Certification(getUserId(dom), getCommunityId(dom));
+          return new User(getAccount(dom));
       }
    }
    
@@ -99,6 +99,15 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.5  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.4.10.1  2004/01/07 13:01:44  nw
+removed Community object, now using User object from common
+
 Revision 1.4  2003/11/27 00:49:52  nw
 added community bean to query
 

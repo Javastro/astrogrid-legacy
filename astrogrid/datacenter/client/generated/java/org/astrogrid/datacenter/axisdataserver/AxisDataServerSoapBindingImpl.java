@@ -12,19 +12,19 @@ public class AxisDataServerSoapBindingImpl implements org.astrogrid.datacenter.a
         return null;
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types._language[] getLanguageInfo(java.lang.Object parameters) throws java.rmi.RemoteException {
+    public org.astrogrid.datacenter.axisdataserver.types.Language[] getLanguageInfo(java.lang.Object parameters) throws java.rmi.RemoteException {
         return null;
     }
 
-    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types._query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
 
-    public java.lang.String makeQuery(org.astrogrid.datacenter.axisdataserver.types._query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String makeQuery(org.astrogrid.datacenter.axisdataserver.types.Query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
 
-    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types._query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
+    public java.lang.String makeQueryWithId(org.astrogrid.datacenter.axisdataserver.types.Query query, java.lang.String assignedId) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
 

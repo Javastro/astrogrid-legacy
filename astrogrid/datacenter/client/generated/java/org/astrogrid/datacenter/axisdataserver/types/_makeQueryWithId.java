@@ -8,17 +8,17 @@
 package org.astrogrid.datacenter.axisdataserver.types;
 
 public class _makeQueryWithId  implements java.io.Serializable {
-    private org.astrogrid.datacenter.axisdataserver.types._query query;
+    private org.astrogrid.datacenter.axisdataserver.types.Query query;
     private java.lang.String assignedId;
 
     public _makeQueryWithId() {
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types._query getQuery() {
+    public org.astrogrid.datacenter.axisdataserver.types.Query getQuery() {
         return query;
     }
 
-    public void setQuery(org.astrogrid.datacenter.axisdataserver.types._query query) {
+    public void setQuery(org.astrogrid.datacenter.axisdataserver.types.Query query) {
         this.query = query;
     }
 
@@ -77,8 +77,8 @@ public class _makeQueryWithId  implements java.io.Serializable {
         typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">makeQueryWithId"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("query");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">query"));
+        elemField.setXmlName(new javax.xml.namespace.QName("", "query"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "Query"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("assignedId");

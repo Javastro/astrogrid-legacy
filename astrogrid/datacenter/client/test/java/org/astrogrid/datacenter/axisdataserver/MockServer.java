@@ -1,4 +1,4 @@
-/*$Id: MockServer.java,v 1.5 2003/12/09 11:18:39 nw Exp $
+/*$Id: MockServer.java,v 1.6 2004/01/13 00:32:47 nw Exp $
  * Created on 16-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,15 +13,12 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.rmi.RemoteException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 import junit.framework.Assert;
 
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.axisdataserver.types._language;
+import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -66,11 +63,11 @@ public class MockServer implements InvocationHandler {
         Class retType = method.getReturnType();
         if (retType.equals(Void.TYPE)) {
             return null;
-        } else if (retType.isArray() && retType.getComponentType().equals(_language.class)) {
-           _language lang = new _language();
+        } else if (retType.isArray() && retType.getComponentType().equals(Language.class)) {
+           Language lang = new Language();
            lang.setNamespace(new URI("urn:none"));
            lang.setImplementingClass(Void.TYPE.getName());
-           return new _language[]{lang}; // strange that this fails at the moment.
+           return new Language[]{lang}; // strange that this fails at the moment.
         }else  if (! retType.isInterface()) {
             return retType.newInstance();
         } else if ( retType.equals(Element.class)) {
@@ -89,6 +86,19 @@ public class MockServer implements InvocationHandler {
 
 /* 
 $Log: MockServer.java,v $
+Revision 1.6  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.5.6.2  2004/01/08 09:42:26  nw
+tidied imports
+
+Revision 1.5.6.1  2004/01/07 11:50:23  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.5  2003/12/09 11:18:39  nw
 fixed failing test
 

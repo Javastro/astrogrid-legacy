@@ -10,14 +10,13 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
-import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 
@@ -43,14 +42,14 @@ public class PluginQuerier extends Querier {
    
    /**
     * Standard Querier constructor */
-   public PluginQuerier(String queryId, _query query) throws IOException {
+   public PluginQuerier(String queryId, Query query) throws IOException {
       super(queryId, query);
       this.spi =  instantiateQuerierSPI();
    }
    
    /** Quickfix so that plugin tests work after my abstracting Querier.  spi
     * should really be set using the configuration files - MCH, 1/12/2003 */
-   public PluginQuerier(QuerierSPI givenSpi, String queryId, _query query) throws IOException
+   public PluginQuerier(QuerierSPI givenSpi, String queryId, Query query) throws IOException
    {
       super(queryId, query);
       this.spi = givenSpi;
@@ -165,6 +164,20 @@ public class PluginQuerier extends Querier {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.2  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.1.10.2  2004/01/08 09:43:41  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
+ Revision 1.1.10.1  2004/01/07 11:51:07  nw
+ found out how to get wsdl to generate nice java class names.
+ Replaced _query with Query throughout sources.
+
  Revision 1.1  2003/12/01 20:59:05  mch
  Abstracting coarse-grained plugin
 

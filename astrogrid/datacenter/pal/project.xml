@@ -123,6 +123,11 @@
 	<war.bundle>true</war.bundle>
 	</properties>
     </dependency>
+	<!-- catalina-ant - used for test deployments to local tomcat -->
+	<dependency>
+		<id>catalina-ant</id>
+		<version>4.1.24</version>
+	</dependency>
   </dependencies>
 
 

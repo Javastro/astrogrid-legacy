@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.5 2004/01/13 00:33:14 nw Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,10 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.spi.Translator;
+import org.astrogrid.datacenter.sql.SQLUtils;
 import org.w3c.dom.Document;
 
 /**
@@ -38,6 +40,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         trans = new SqlQueryTranslator();
+        SimpleConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
     }
     protected Translator trans; 
     /*
@@ -51,7 +54,6 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
         assertEquals(String.class,trans.getResultType());
     }
     public final static String QUERY = "select * from bling";    
-    public final static String VALID_XML = "<?xml version='1.0'?><sql>" + QUERY + "</sql>";
     public final static String INVALID_XML = "<?xml version='1.0'?><Sql>" + QUERY + "</Sql>";
     public final static String DUPLICATE_XML = "<?xml version='1.0'?><foo><sql></sql><sql></sql></foo>";
     public final static String QUERY1 = "select * from hens where teeth < 1"; // has a < in it
@@ -60,8 +62,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
     
     public void testValid() throws Exception {
-        Document doc = stringToDocument(VALID_XML);
-        Object o = trans.translate(doc.getDocumentElement());
+        Object o = trans.translate(SQLUtils.toQueryBody(QUERY));
         assertNotNull(o);
         assertEquals(trans.getResultType(),o.getClass());
         assertEquals(QUERY,o);               
@@ -106,6 +107,15 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /* 
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.5  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.4.10.1  2004/01/08 15:37:27  nw
+added tests for SQL passthru
+
 Revision 1.4  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

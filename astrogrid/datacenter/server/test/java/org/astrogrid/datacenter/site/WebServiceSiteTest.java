@@ -1,4 +1,4 @@
-/*$Id: WebServiceSiteTest.java,v 1.1 2003/12/16 16:31:29 mch Exp $
+/*$Id: WebServiceSiteTest.java,v 1.2 2004/01/13 00:33:14 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,22 +13,21 @@ package org.astrogrid.datacenter.site;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestResult;
 import junit.framework.TestSuite;
+
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
-import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
-import org.astrogrid.datacenter.queriers.sql.SqlQuerierSPI;
 
 /**
  * For testing astrogrid datacenter web services and their delegates
@@ -51,7 +50,7 @@ public class WebServiceSiteTest extends TestCase {
    
    public void testMetadata() throws IOException, ServiceException
    {
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier(Certification.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       Metadata metadata = querier.getMetadata();
       
@@ -60,16 +59,16 @@ public class WebServiceSiteTest extends TestCase {
    
    public void testBlockingQuery() throws Exception
    {
-      AdqlQuerier querier = DatacenterDelegateFactory.makeAdqlQuerier(Certification.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
       InputStream is = WebServiceSiteTest.class.getResourceAsStream("test-query.adql");
 
         Select select = Select.unmarshalSelect(new InputStreamReader(is));
         assertNotNull(select);
-        _query q = new _query();
+        Query q = new Query();
         q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
 
-      DatacenterResults results = querier.doQuery(querier.VOTABLE, select);
+      DatacenterResults results = querier.doQuery(querier.VOTABLE, ADQLUtils.toQueryBody(select));
       
       assertNotNull(results);
    }
@@ -99,6 +98,23 @@ public class WebServiceSiteTest extends TestCase {
 
 /*
 $Log: WebServiceSiteTest.java,v $
+Revision 1.2  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.1.2.3  2004/01/08 09:43:41  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
+Revision 1.1.2.2  2004/01/07 13:02:09  nw
+removed Community object, now using User object from common
+
+Revision 1.1.2.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.1  2003/12/16 16:31:29  mch
 Checks for individual sites
 

@@ -1,5 +1,5 @@
 /*
- $Id: FitsStreamReader.java,v 1.1 2003/11/28 18:21:03 mch Exp $
+ $Id: FitsStreamReader.java,v 1.2 2004/01/13 00:33:14 nw Exp $
 
  Copyright (c) etc
  */
@@ -12,8 +12,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-//import org.apache.commons.logging.Log;
-//import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.log.Log;
 
 /**
@@ -198,6 +197,16 @@ public class FitsStreamReader implements FitsReader
 
 /*
  $Log: FitsStreamReader.java,v $
+ Revision 1.2  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.1.10.1  2004/01/08 09:43:40  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
  Revision 1.1  2003/11/28 18:21:03  mch
  Stream implementation of FitsReader
 

@@ -1,11 +1,10 @@
 /*
- * $Id: SocketHandler.java,v 1.2 2003/12/15 14:35:01 mch Exp $
+ * $Id: SocketHandler.java,v 1.3 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service.socket;
-import org.astrogrid.datacenter.service.*;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -13,18 +12,18 @@ import java.net.URL;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
-import org.astrogrid.datacenter.snippet.io.XmlDocInputStream;
-import org.astrogrid.datacenter.snippet.io.XmlDocOutputStream;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.datacenter.snippet.QueryIdHelper;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.astrogrid.datacenter.snippet.StatusHelper;
+import org.astrogrid.datacenter.snippet.io.XmlDocInputStream;
+import org.astrogrid.datacenter.snippet.io.XmlDocOutputStream;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -253,6 +252,16 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.3  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.2.4.1  2004/01/08 09:43:41  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.2  2003/12/15 14:35:01  mch
 Fix to logging to adjust for new, simpler logger
 

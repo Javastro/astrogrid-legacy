@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.1 2003/12/09 12:30:52 mch Exp $
+ * $Id: FitsResults.java,v 1.2 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,23 +9,14 @@ package org.astrogrid.datacenter.queriers.fits;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Types;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.util.Workspace;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -120,6 +111,16 @@ public class FitsResults implements QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.2  2004/01/13 00:33:14  nw
+ Merged in branch providing
+ * sql pass-through
+ * replace Certification by User
+ * Rename _query as Query
+
+ Revision 1.1.6.1  2004/01/08 09:43:41  nw
+ replaced adql front end with a generalized front end that accepts
+ a range of query languages (pass-thru sql at the moment)
+
  Revision 1.1  2003/12/09 12:30:52  mch
  New Fits Result set
 

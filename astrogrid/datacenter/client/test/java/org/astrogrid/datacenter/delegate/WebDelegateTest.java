@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.1 2003/12/16 11:14:32 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.2 2004/01/13 00:32:47 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,9 +15,12 @@ package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 
 public class WebDelegateTest extends TestCase
@@ -31,7 +34,7 @@ public class WebDelegateTest extends TestCase
     */
    public void testConeSearch() throws IOException
    {
-      WebDelegate delegate = (WebDelegate) DatacenterDelegateFactory.makeConeSearcher(Certification.ANONYMOUS, ROE_6DF, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      WebDelegate delegate = (WebDelegate) DatacenterDelegateFactory.makeConeSearcher(User.ANONYMOUS, ROE_6DF, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       InputStream results = delegate.coneSearch(308, 60, 12);
 		
@@ -59,6 +62,18 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.2  2004/01/13 00:32:47  nw
+ * Merged in branch providing
+ * * sql pass-through
+ * * replace Certification by User
+ * * Rename _query as Query
+ *
+ * Revision 1.1.4.2  2004/01/08 09:42:26  nw
+ * tidied imports
+ *
+ * Revision 1.1.4.1  2004/01/07 13:01:44  nw
+ * removed Community object, now using User object from common
+ *
  * Revision 1.1  2003/12/16 11:14:32  mch
  * Added cone search tests for web delegate
  *

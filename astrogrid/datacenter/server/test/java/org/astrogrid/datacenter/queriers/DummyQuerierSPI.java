@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierSPI.java,v 1.6 2003/12/16 12:26:02 mch Exp $
+ * $Id: DummyQuerierSPI.java,v 1.7 2004/01/13 00:33:14 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.util.Date;
+
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.IdTranslator;

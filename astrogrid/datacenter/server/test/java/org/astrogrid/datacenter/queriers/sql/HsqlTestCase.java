@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.6 2003/12/01 20:58:42 mch Exp $
+/*$Id: HsqlTestCase.java,v 1.7 2004/01/13 00:33:14 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.StringTokenizer;
+
 import javax.sql.DataSource;
+
 import junit.framework.TestCase;
+
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -139,6 +142,16 @@ public abstract class HsqlTestCase extends TestCase {
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.7  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.6.10.1  2004/01/08 09:43:40  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.6  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 

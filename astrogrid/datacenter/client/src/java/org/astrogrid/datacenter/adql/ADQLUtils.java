@@ -1,4 +1,4 @@
-/*$Id: ADQLUtils.java,v 1.2 2003/11/26 16:31:46 nw Exp $
+/*$Id: ADQLUtils.java,v 1.3 2004/01/13 00:32:47 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.generated.ApproxNum;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.adql.generated.SelectChoice;
 import org.astrogrid.datacenter.adql.generated.SelectionAll;
@@ -22,6 +23,7 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /** some static helper methods for working with ADQL object trees.
@@ -29,6 +31,11 @@ import org.w3c.dom.Node;
  *
  */
 public class ADQLUtils {
+   private ADQLUtils() {
+   }
+   
+   /** temporary namespace identifier used for this version of adql */
+    public static final String ADQL_XMLNS = "http://tempuri.org/adql";
     /** write query out to string
      * -- why can't this be implemented by castor already*/
     public static String queryToString(Select q) throws IOException, CastorException {
@@ -68,21 +75,58 @@ public class ADQLUtils {
          throw new ADQLException("Failed to load adql object model",e);
       }
     }
-    
+ 
     public static Document marshallSelect(Select s) throws ADQLException{
         try {
             Document doc = XMLUtils.newDocument();
-            Marshaller.marshal(s, doc);
+            Marshaller.marshal(s, doc);                        
             return doc; 
         } catch (Exception e) {
             throw new ADQLException("Failed to marshall select",e);
         }        
     }
+   
+    public static ApproxNum mkApproxNum(double num) {
+       ApproxNum an = new ApproxNum();
+       an.setValue(num);
+       return an;
+    }
+    
+    /** convert a select object to an Element that can be used as the query body in a 
+     * {@link org.astrogrid.datacenter.delegate.FullSearcher}
+     * @param s
+     * @return
+     * @throws ADQLException
+     */
+   public static Element toQueryBody(Select s) throws ADQLException{
+       try {
+           Document doc = XMLUtils.newDocument();
+           Marshaller.marshal(s, doc);            
+           return doc.getDocumentElement();
+       } catch (Exception e) {
+           throw new ADQLException("Failed to marshall select",e);
+       }        
+   }
+    
+    
 }
 
 
 /*
 $Log: ADQLUtils.java,v $
+Revision 1.3  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.2.10.2  2004/01/08 15:36:00  nw
+added xmlns constant to this class, as with SQLUtils
+
+Revision 1.2.10.1  2004/01/08 09:10:20  nw
+replaced adql front end with a generalized front end that accepts
+a range of query languages (pass-thru sql at the moment)
+
 Revision 1.2  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor

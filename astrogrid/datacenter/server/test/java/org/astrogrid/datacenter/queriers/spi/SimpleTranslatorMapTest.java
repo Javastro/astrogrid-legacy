@@ -1,4 +1,4 @@
-/*$Id: SimpleTranslatorMapTest.java,v 1.2 2003/11/28 16:10:30 nw Exp $
+/*$Id: SimpleTranslatorMapTest.java,v 1.3 2004/01/13 00:33:14 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.queriers.spi;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.datacenter.axisdataserver.types._language;
+import org.astrogrid.datacenter.axisdataserver.types.Language;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
@@ -52,7 +52,7 @@ public class SimpleTranslatorMapTest extends TestCase {
     }
     
     public void testList() {
-        _language[] lang = map.list();
+        Language[] lang = map.list();
         assertNotNull(lang);
         assertEquals(1,lang.length);
         assertNotNull(lang[0]);
@@ -86,6 +86,16 @@ public class SimpleTranslatorMapTest extends TestCase {
 
 /* 
 $Log: SimpleTranslatorMapTest.java,v $
+Revision 1.3  2004/01/13 00:33:14  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.2.10.1  2004/01/07 11:51:07  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.2  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

@@ -23,6 +23,14 @@
 
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+        qname="ns:Language"
+        type="java:org.astrogrid.datacenter.axisdataserver.types.Language"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>registerJobMonitor"
         type="java:org.astrogrid.datacenter.axisdataserver.types._registerJobMonitor"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -38,9 +46,9 @@
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>query"
-        type="java:org.astrogrid.datacenter.axisdataserver.types._query"
+        xmlns:ns="http://community.astrogrid.org"
+        qname="ns:User"
+        type="java:org.astrogrid.community.User"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
@@ -87,14 +95,6 @@
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>community"
-        type="java:org.astrogrid.datacenter.axisdataserver.types._community"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>startQuery"
         type="java:org.astrogrid.datacenter.axisdataserver.types._startQuery"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -135,6 +135,14 @@
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+        qname="ns:Query"
+        type="java:org.astrogrid.datacenter.axisdataserver.types.Query"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>getLanguageInfoResponse"
         type="java:org.astrogrid.datacenter.axisdataserver.types._getLanguageInfoResponse"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -153,14 +161,6 @@
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>getMetadataResponse"
         type="java:org.astrogrid.datacenter.axisdataserver.types._getMetadataResponse"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>language"
-        type="java:org.astrogrid.datacenter.axisdataserver.types._language"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""

@@ -1,4 +1,4 @@
-/*$Id: QueryHelper.java,v 1.1 2003/11/27 17:27:15 nw Exp $
+/*$Id: QueryHelper.java,v 1.2 2004/01/13 00:32:47 nw Exp $
  * Created on 18-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.axisdataserver.types;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 
@@ -30,8 +29,8 @@ public class QueryHelper {
     }
     
     /** construct the simplest valid query object */
-    public static _query buildMinimalQuery() throws Exception {
-        _query q = new _query();
+    public static Query buildMinimalQuery() throws Exception {
+        Query q = new Query();
         Select select = ADQLUtils.buildMinimalQuery();
         Document doc = XMLUtils.newDocument();
         Marshaller.marshal(select,doc);        
@@ -45,6 +44,19 @@ public class QueryHelper {
 
 /* 
 $Log: QueryHelper.java,v $
+Revision 1.2  2004/01/13 00:32:47  nw
+Merged in branch providing
+* sql pass-through
+* replace Certification by User
+* Rename _query as Query
+
+Revision 1.1.10.2  2004/01/08 09:42:26  nw
+tidied imports
+
+Revision 1.1.10.1  2004/01/07 11:49:55  nw
+found out how to get wsdl to generate nice java class names.
+Replaced _query with Query throughout sources.
+
 Revision 1.1  2003/11/27 17:27:15  nw
 build tweaks
 
