@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.2 2004/10/06 22:24:58 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -387,9 +387,9 @@ public class StdSqlMaker  extends SqlMaker {
             Angle dec = Angle.fromDegrees(Double.parseDouble(s.nextToken()));
             Angle radius = Angle.fromDegrees(Double.parseDouble(s.nextToken()));
             
-            return sql.substring(0,start-1)+
+            return sql.substring(0,start)+
                makeSqlCircleCondition(ra, dec, radius)+
-               sql.substring(end);
+               sql.substring(end+1);
             
          }
          else if (type.equals("cartesian")) {
@@ -409,6 +409,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.2  2004/10/06 22:24:58  mch
+ Fixed wrong brackets in replaceRegion
+
  Revision 1.1  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
