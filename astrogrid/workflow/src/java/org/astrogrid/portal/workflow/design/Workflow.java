@@ -387,6 +387,8 @@ public class Workflow extends Activity {
              
              MySpaceClient
                  mySpace =  MySpaceDelegateFactory.createDelegate( mySpaceLocation ) ; 
+                              
+             workflow.setDirty( false ) ;
             
              retValue = mySpace.saveDataHolding( Workflow.extractUserid( account ) 
                                                , Workflow.extractCommunity( account ) 
@@ -395,10 +397,12 @@ public class Workflow extends Activity {
                                                , xmlWorkflow               // file contents
                                                , "workflow"                // it's a workflow
                                                , "Overwrite" ) ;           // overwrite it if it already exists
+                                                            
          }
                          
      }
      catch( Exception ex ) {
+         workflow.setDirty( true ) ;
          ex.printStackTrace() ;
      }
      finally {
@@ -739,9 +743,7 @@ public class Workflow extends Activity {
     protected Workflow() {
         super(null) ; // null because no parent 
         if( TRACE_ENABLED ) trace( "Workflow() entry/exit") ;
-//        this.activities = Collections.synchronizedMap( new HashMap() ) ;   
-//        this.activities.put( this.getKey(), this ) ;
-//        if( TRACE_ENABLED ) trace( "Workflow() exit") ;
+        this.setDirty( true ) ;
     }
     
     
@@ -762,9 +764,7 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow(Document) entry") ;
         
         try{
-		        	
-//            this.activities = Collections.synchronizedMap( new HashMap() ) ;
-//            this.activities.put( this.getKey(), this ) ;  
+		    this.setDirty( true ) ;
             
             Element
                element = document.getDocumentElement() ;         
@@ -1364,10 +1364,9 @@ public class Workflow extends Activity {
                         retValue = true ;
                         break ;
                     }
-                    else if( value == null ) {
-                        break ;
-                    }
-                    else if( value.equals( p.getValue() ) ) {
+                    else if( (value != null)
+                             &&
+                             (value.equals( p.getValue() )) ) {
                         iterator.remove() ;
                         retValue = true ;
                         break ;
@@ -1508,10 +1507,10 @@ public class Workflow extends Activity {
                         retValue = true ;
                         break ;
                     }
-                    else if( oldValue == null ) {
-                        break ;
-                    }
-                    else if( oldValue.equals( p.getValue() ) ) {
+                    else if( (oldValue != null)
+                             &&
+                             (oldValue.equals( p.getValue() )) ) {
+                                 
                         p.setValue( newValue ) ;
                         retValue = true ;
                         break ;
