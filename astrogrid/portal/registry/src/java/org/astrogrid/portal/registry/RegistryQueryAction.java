@@ -241,7 +241,7 @@ public class RegistryQueryAction extends AbstractAction
 //               VODescription vo = rs.submitQueryString(query);
 //               if (DEBUG_FLAG) printDebug( method, "VO Description = " + vo);
                //Document doc = rs.submitQuery( query );
-               Document doc = rs.submitQueryStringDOM( query );
+               Document doc = rs.submitQuery( query );
                if ( DEBUG_FLAG) printDebug( method, "doc = " + doc );
                 //                     XMLUtils.DocumentToString(doc) );
                //if ( doc == null )
