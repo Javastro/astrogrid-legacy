@@ -4,10 +4,10 @@
     <name>Automated Integration Testing</name>
     <groupId>auto-integration</groupId>
     <currentVersion>${astrogrid.iteration}</currentVersion>
-    <description> Automated integration testing. This project will install all 
-        the astrogrid components (someday) to a local tomcat5 server, and set 
-        up the required configuration and workfing directories. Then a batch of 
-        integration tests are run against the installed components. 
+    <description> Automated integration testing. This project will install all
+        the astrogrid components (someday) to a local tomcat5 server, and set
+        up the required configuration and workfing directories. Then a batch of
+        integration tests are run against the installed components.
         </description>
     <dependencies>
         <dependency>
@@ -23,7 +23,7 @@
             <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-commandline</artifactId>
@@ -55,10 +55,10 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-exist</artifactId>
-	        <version>${pom.currentVersion}</version>
+                <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>pal</artifactId>
@@ -78,6 +78,11 @@
             <artifactId>hsqldb</artifactId>
             <version>1.7.1</version>
             <properties/>
+        </dependency>
+        <dependency>
+                <groupId>sun</groupId>
+                <artifactId>mail</artifactId>
+                <version>1.3.1</version>
         </dependency>
         <dependency>
             <groupId>catalina-ant</groupId>
@@ -130,12 +135,12 @@
             <url>http://jakarta.apache.org/commons/jelly/libs/xml/</url>
             <properties/>
         </dependency>
-		<dependency>
+                <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-http</artifactId>
             <version>SNAPSHOT</version>
             <properties/>
-        </dependency>        
+        </dependency>
         <!--+
             | Filestore WebApp.
             +-->
