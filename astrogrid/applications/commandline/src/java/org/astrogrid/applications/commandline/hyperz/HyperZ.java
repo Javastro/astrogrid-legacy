@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.4 2004/07/26 12:03:33 nw Exp $
+ * $Id: HyperZ.java,v 1.5 2004/09/24 15:54:08 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -49,22 +49,7 @@ public class HyperZ extends CommandLineApplication {
 
    
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.commandline.CmdLineApplication#preRunHook()
-    */
-   protected void preRunHook() {
-      
-      // Add in the missing parameters from the simple interface FIXME - add these to the main interface and remove from here...
-      argvals.add("-FILTERS_RES");
-      argvals.add("/home/applications/demo/hyperz/FILTER.RES");
-      argvals.add("-FILTERS_FILE");
-      argvals.add("/home/applications/demo/hyperz/cdfs-bviz.param");
-      argvals.add("-TEMPLATES_FILE");
-      argvals.add("/home/applications/demo/hyperz/spectra.param");
-    
-      
-   }
-
+ 
 /*
    protected void preWritebackHook() {
       // TODO convert the output file 

@@ -59,6 +59,18 @@
 				<agpd:UI_Name>Redshift Catalogue</agpd:UI_Name>
 				<agpd:UI_Description>The catalogue of estimated redshifts</agpd:UI_Description>
 			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTERS_RES" type="binary" fileRef="true" >
+				<agpd:UI_Name>filter res</agpd:UI_Name>
+				<agpd:UI_Description>?</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTERS_FILE" type="binary"  fileRef="true">
+				<agpd:UI_Name>Filters file</agpd:UI_Name>
+				<agpd:UI_Description>?</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="TEMPLATES_FILE" type="binary"  fileRef="true">
+				<agpd:UI_Name>Templates file</agpd:UI_Name>
+				<agpd:UI_Description>?</agpd:UI_Description>
+			</CmdLineParameterDefn>
 		</Parameters>
 		<Interfaces>
 			<Interface name="simple">
