@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.text.*;
 
+import org.astrogrid.store.delegate.myspaceItn05.EntryCodes;
+import org.astrogrid.store.delegate.myspaceItn05.EntryResults;
+
 /**
  * The <code>DataItemRecord</code> class represents the details held in
  * the MySpace registry for a single <code>DataHolder</code> (in practice
@@ -40,7 +43,8 @@ import java.text.*;
  * </p>
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 4.
+ * @since Iteration 2.
+ * @version Iteration 5.
  */
 
 public class DataItemRecord implements Serializable
@@ -49,14 +53,16 @@ public class DataItemRecord implements Serializable
 //
 //Public constants defining the permitted codes for the DataHolder type.
 
-   public static final int UNKNOWN = 0;  // Unknown.
-   public static final int CON = 1;      // Container.
-   public static final int VOT = 2;      // VOTable (XML).
-   public static final int QUERY = 3;    // Query (XML).
-   public static final int WORKFLOW = 4; // Workflow (XML).
+   public static final int UNKNOWN = EntryCodes.UNKNOWN;   // Unknown.
+   public static final int CON = EntryCodes.CON;           // Container.
+   public static final int VOT = EntryCodes.VOT;           // VOTable (XML).
+   public static final int QUERY = EntryCodes.QUERY;       // Query (XML).
+   public static final int WORKFLOW = EntryCodes.WORKFLOW; // Workflow (XML).
+   public static final int XML = EntryCodes.XML;           // Generic XML.
 
    private String dataItemName;     // Full Name.
    private int    dataItemID;       // Identifier in the registry.
+   private String dataItemUri;      // URI to access the file.
    private String dataItemFile;     // Corresponding server file name.
    private String ownerID;          // Owner's identifier.
    private Date   creationDate;     // Creation date.
@@ -85,6 +91,8 @@ public class DataItemRecord implements Serializable
       this.size = size;
       this.type = type;
       this.permissionsMask = permissionsMask;
+
+      this.dataItemUri = null;
    }
 
 /**
@@ -95,6 +103,7 @@ public class DataItemRecord implements Serializable
    public DataItemRecord ()
    {  this.dataItemName = null;
       this.dataItemID = -1;
+      this.dataItemUri = null;
       this.dataItemFile = null;
       this.ownerID = null;
       this.creationDate = null;
@@ -215,27 +224,34 @@ public class DataItemRecord implements Serializable
    {  String serverName = "";
 
 //
-//   Recall that dataItemNames are of the form:
-//
-//     /user@community/server/...
-//
-//   Therefore the procedure is to examine the dataItemName to
-//   check that the third "/" exists and then extract the substring
-//   between the second and third "/"s.
+//   [TODO]: do not hard-wire the server name.
 
-      int containSepPos1 = dataItemName.indexOf("/");
-      int containSepPos2 = dataItemName.indexOf("/", containSepPos1+1);
-      int containSepPos3 = dataItemName.indexOf("/", containSepPos2+1);
-
-      if (containSepPos3 > 0)
-      {  serverName = dataItemName.substring(containSepPos2+1,
-           containSepPos3);
-      }
-      else
-      {  serverName = "";
-      }
+      serverName = "serv1";
 
       return serverName;
+   }
+
+/**
+ * Return an EntryResults object constructed from the DataItemRecord.
+ */
+
+   public EntryResults getEntryResults()
+   {  EntryResults entryResult = new EntryResults();
+
+      long creation = creationDate.getTime();
+      long expiry = expiryDate.getTime();
+
+      entryResult.setCreationDate(creation);
+      entryResult.setEntryId(dataItemID);
+      entryResult.setEntryName(dataItemName);
+      entryResult.setEntryUri(dataItemUri);
+      entryResult.setExpiryDate(expiry);
+      entryResult.setOwnerId(ownerID);
+      entryResult.setPermissionsMask(permissionsMask);
+      entryResult.setSize(size);
+      entryResult.setType(type);
+
+      return entryResult;
    }
 
 // ----------------------------------------------------------------------

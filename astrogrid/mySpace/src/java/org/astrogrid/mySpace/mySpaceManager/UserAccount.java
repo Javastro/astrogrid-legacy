@@ -26,7 +26,8 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  * object to be created directly.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 3.
+ * @since Iteration 3.
+ * @version Iteration 5.
  *
  */
 
@@ -102,7 +103,7 @@ public class UserAccount
  */
 
    public String getUserAGrId()
-   {  return userId + "@" + communityId;
+   {  return userId;
    }
 
 /**
@@ -140,14 +141,11 @@ public class UserAccount
 /**
  * Return the User's base container.
  *
- * The base container starts with a leading `/'.  It then comprises
- * the user's userId concatenated with the his communityId.  The
- * combination of userId and communityId should be unique throughout
- * the AstroGrid system.
+ * The base container comprises a leading `/' followed by the userId.
  */
 
    public String getBaseContainer()
-   {  return "/" +  userId + "@" + communityId;
+   {  return "/" +  userId;
    }
 
 //
@@ -192,6 +190,8 @@ public class UserAccount
  * perform the requested given operation, otherwise returns false.
  */
 
+// [TODO]: A permissions check is required here.
+
   public boolean checkAuthorisation(int opCode, String ownerID,
     String permissions)
   {  return true;
@@ -205,6 +205,8 @@ public class UserAccount
  * @param opCode <code>UserAccount.READ</code> code for the class of
  *   operation being attempted.
  */
+
+// [TODO]: A permissions check is required here.
 
   public boolean checkSystemAuthorisation(int opCode)
   {  boolean authorised = true;
@@ -239,6 +241,8 @@ public class UserAccount
 //     If ok then create a permissions manager delegate and check whether
 //     the user is authorised for this type of operation.
 
+//     [TODO]: A permissions check is required here.
+
 //      if (authorised)
 //      {  PolicyServiceDelegate psd = new PolicyServiceDelegate();
 
@@ -267,6 +271,8 @@ public class UserAccount
   * of the MySpace system.
   */
 
+// [TODO]: A permissions check is required here.
+
   public boolean checkCanModifyUsers()
   {  return true;
   }
@@ -280,10 +286,10 @@ public class UserAccount
    {  String userRepn = null;
 
       if (userName != null)
-      {  userRepn = userId + "@" + communityId + " (" + userName + ")";
+      {  userRepn = userId + " (" + userName + ")";
       }
       else
-      {  userRepn = userId + "@" + communityId;
+      {  userRepn = userId;
       }
 
       return userRepn;

@@ -166,6 +166,59 @@ public class ServerDriver
 // -----------------------------------------------------------------
 
 /**
+ * Read the contents of a file held on a MySpace server and return
+ * them as a String.
+ *
+ * @param contents The string containing the contents to be written
+ *  to the new file.
+ *
+ * @param newDataHolderFileName The name of the file on the server
+ * which is to be read.
+ *
+ * @return The contents of the file.
+ */
+
+   public String retrieveString(String dataHolderFileName)
+   {  String contents = null;
+
+      Configuration config = new Configuration();
+
+      try
+      {  if (config.getSERVERDEPLOYMENT() == config.SEPARATESERVERS)
+         {  
+//
+//         [TODO]: Add the retrieveString function when the Servers
+//         are deployed as separate Web Services.
+
+            logger.appendMessage("retrieveString no available in this mode.");
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.INTERNALSERVERS)
+         {  ServerManager server = new ServerManager();
+            contents = server.retrieveString(dataHolderFileName);
+         }
+         else if (config.getSERVERDEPLOYMENT() == config.MANAGERONLY)
+         {  logger.appendMessage(
+              "Attempt to read a dataHolder from a server:\n"
+              + "  server file name: "+ dataHolderFileName);
+         }
+         else
+         {  throw new Exception("Invalid SERVERDEPLOYMENT.");
+         }
+      }
+      catch(Exception e)
+      {  contents = null;
+
+         if (config.getDEBUG() )
+         {  e.printStackTrace();
+         }
+      }
+
+      return contents;
+   }
+
+// -----------------------------------------------------------------
+
+/**
   * Copy a DataHolder from one location on a MySpace server to another
   * location on the same server.
   *
