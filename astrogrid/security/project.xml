@@ -32,7 +32,13 @@
   </repository>
 
   <dependencies>
-    <!-- TODO: replace the id elements in the old dependencies. -->
+    
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <type>jar</type>
+      <artifactId>astrogrid-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
   
     <dependency>
       <groupId>org.astrogrid</groupId>
@@ -49,18 +55,24 @@
     </dependency>
   
     <dependency>
-      <id>axis</id>
+      <groupId>axis</groupId>
+      <type>jar</type>
+      <artifactId>axis</artifactId>
       <version>1.1</version>
     </dependency>
 
     <dependency>
-      <id>saaj</id>
+      <groupId>saaj</groupId>
+      <type>jar</type>
+      <artifactId>saaj</artifactId>
       <version>1.0</version>
       <jar>saaj.jar</jar>
     </dependency>
 
     <dependency>
-      <id>commons-logging</id>
+      <groupId>commons-logging</groupId>
+      <type>jar</type>
+      <artifactId>commons-logging</artifactId>
       <version>1.0.3</version>
     </dependency>
     
@@ -78,13 +90,17 @@
     </dependency>
     
     <dependency>
-      <id>xml-apis</id>
+      <groupId>xml-apis</groupId>
+      <type>jar</type>
+      <artifactId>xml-apis</artifactId>
       <version>1.0.b2</version>
     </dependency>
 
    <dependency>
-      <id>log4j</id>
-      <version>1.2.4</version>
+      <groupId>log4j</groupId>
+      <type>jar</type>
+      <artifactId>log4j</artifactId>
+      <version>1.2.8</version>
     </dependency>
       
     <!-- DOM4J is used in the test classes. -->
