@@ -274,14 +274,18 @@
 
         <xslt basedir="${generated.src}"
               includes="**/*-deploy.wsdd" style="${basedir}/build/clean-wsdd.xsl"
-              destdir="${generated.src}" extension=".wsdd">
+              destdir="${basedir}/wsdd" extension=".wsdd">
+                <outputproperty name="encoding" value="iso8859_1"/>
+                <outputproperty name="indent" value="yes"/>
+              
         </xslt>
         <copy todir="${basedir}/wsdd">
-                <fileset dir="${generated.src}">
+                <fileset dir="${basedir}/wsdd">
                         <include name="**/*-deploy.wsdd" />
                 </fileset>
                 <mapper type="flatten" />
         </copy>
+        <delete dir="${basedir}/wsdd/org"/>
 
    </goal>
 
