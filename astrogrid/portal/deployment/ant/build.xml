@@ -88,7 +88,7 @@
 	     set by an enclosing Maven? script-->
 	<target name="define-custom-tasks" unless="tasks.already.set">
     	<taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />	
-    	<taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+	    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
 	</target>
 	
 	
