@@ -104,11 +104,13 @@ public class RegistryService  {
     * @author Kevin Benson
     */     
    public RegistryService(URL endPoint) {
+      if(DEBUG_FLAG) System.out.println("entered const(url) of RegistryService");
       this.endPoint = endPoint;
-      dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
+      //dummyMode = Boolean.valueOf(conf.getString(DUMMY_MODE_PROPERTY,"false")).booleanValue();
       if(this.endPoint == null) {
          useCache = true;
       }
+      if(DEBUG_FLAG) System.out.println("exiting const(url) of RegistryService");
    }
    
     
@@ -120,6 +122,7 @@ public class RegistryService  {
     * @author Kevin Benson
     */     
    private Call getCall() {
+      if(DEBUG_FLAG) System.out.println("entered getCall()");      
       Call _call = null;
       try {
          Service  service = new Service();      
@@ -133,6 +136,7 @@ public class RegistryService  {
          se.printStackTrace();
          _call = null;            
       }finally {
+         if(DEBUG_FLAG) System.out.println("exiting getCall()");
          return _call;   
       }       
    }
@@ -153,6 +157,7 @@ public class RegistryService  {
    }
    
    public Document submitQueryStringDOM(String query) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered submitQueryStringDOM()");      
       try {
          Reader reader2 = new StringReader(query);
          InputSource inputSource = new InputSource(reader2);
@@ -166,10 +171,13 @@ public class RegistryService  {
          throw new RegistryException(ioe);   
       }catch(SAXException sax) {
          throw new RegistryException(sax);   
+      }finally {
+         if(DEBUG_FLAG) System.out.println("exiting submitQueryStringDOM()");
       }
    }
    
    public Document submitQueryDOM(Document query) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered submitQueryDOM()");
       DocumentBuilder registryBuilder = null;
       Document doc = null;
       Document resultDoc = null;
@@ -185,17 +193,16 @@ public class RegistryService  {
       }catch(ParserConfigurationException pce){
          doc = null;
          pce.printStackTrace();
-      }
-      if(DEBUG_FLAG) System.out.println("creating call object");              
+      }              
       Call call = getCall();
       SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
       sbeRequest.setName("submitQuery");
       sbeRequest.setNamespaceURI(NAMESPACE_URI);
-      try {            
-         if(DEBUG_FLAG) System.out.println("invoking service call");
+      try {
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
          resultDoc = sbe.getAsDocument();
+         if(DEBUG_FLAG) System.out.println("status message for submitQueryDOM the returned doc = " + resultDoc);
       }catch(RemoteException re) {
          resultDoc = null;
          re.printStackTrace();
@@ -203,6 +210,7 @@ public class RegistryService  {
          resultDoc = null;
          e.printStackTrace();
       }finally {
+         if(DEBUG_FLAG) System.out.println("exiting submitQueryDOM()");
          return resultDoc;   
       }
    }
@@ -217,6 +225,7 @@ public class RegistryService  {
       * @author Kevin Benson 
       */   
    public VODescription submitQueryString(String query) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered submitQueryString()");      
       try {
          Reader reader2 = new StringReader(query);
          InputSource inputSource = new InputSource(reader2);
@@ -230,6 +239,8 @@ public class RegistryService  {
          throw new RegistryException(ioe);   
       }catch(SAXException sax) {
          throw new RegistryException(sax);   
+      }finally {
+         if(DEBUG_FLAG) System.out.println("exiting submitQueryString()");   
       }         
    }
    
@@ -243,7 +254,8 @@ public class RegistryService  {
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */        
-   public VODescription submitQuery(Document query) throws RegistryException {      
+   public VODescription submitQuery(Document query) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered submitQuery()");
       VODescription vo = null;
       Document resultDoc = submitQueryDOM(query);
       try {
@@ -257,11 +269,13 @@ public class RegistryService  {
          vo = null;
          me.printStackTrace();   
       }finally {
+         if(DEBUG_FLAG) System.out.println("exiting submitQuery()");         
          return vo;
       }
    }
    
    public Document loadRegistryDOM()  throws RegistryException  {
+      if(DEBUG_FLAG) System.out.println("loadRegistryDOM()");
       Document doc = null;
       Document resultDoc = null;
       try {
@@ -283,36 +297,40 @@ public class RegistryService  {
          Vector result = (Vector) call.invoke (new Object[] {sbeRequest});
          SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
          resultDoc = sbe.getAsDocument();
+         if(DEBUG_FLAG) System.out.println("status message for loadRegistryDOM() the doc returned = " + XMLUtils.DocumentToString(resultDoc));
       }catch(RemoteException re) {
          re.printStackTrace();
       }catch (Exception e) {
          e.printStackTrace();
       }finally {
+         if(DEBUG_FLAG) System.out.println("exiting loadRegistryDOM()");
          return resultDoc;
       }  
    }
    
    public VODescription loadRegistry()  throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("loadRegistry()");
       VODescription vo = null;
       Document resultDoc = loadRegistryDOM();     
       try {
-         System.out.println("inside loadretisty castor = " + XMLUtils.DocumentToString(resultDoc));
          XSLHelper xs = new XSLHelper();
          //Document xsDoc = xs.transformDatabaseProcess((Node)resultDoc);
          //System.out.println("inside loadretisty xsdoc = " + XMLUtils.DocumentToString(xsDoc));
          //Document castorXS = xs.transformCastorProcess((Node)xsDoc);
          Document castorXS = xs.transformCastorProcess((Node)resultDoc);
-         System.out.println("the castor xsl in loadregistry = " + XMLUtils.DocumentToString(castorXS));                     
+         if(DEBUG_FLAG) System.out.println("status message for loadRegistry() the xsl for castor = " + XMLUtils.DocumentToString(castorXS));                     
          vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch (Exception e) {
          vo = null;
          e.printStackTrace();
       }finally {
+         if(DEBUG_FLAG) System.out.println("exiting loadRegistry()");
          return vo;
       }  
    }
    
    public HashMap managedAuthorities() throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered managedAuthorities");      
       HashMap hm = null;
       Document doc = loadRegistryDOM();      
       if(doc != null) {
@@ -326,8 +344,9 @@ public class RegistryService  {
          hm = new HashMap();
          for(int i = 0;i < nl.getLength();i++) {
             hm.put(nl.item(i).getFirstChild().getNodeValue(),null);   
-         }
+         }//for
       }
+      if(DEBUG_FLAG) System.out.println("exiting managedAuthorities");      
       return hm;      
    }
    
@@ -335,17 +354,16 @@ public class RegistryService  {
       if(ident == null)  {
          throw new RegistryException("Cannot call this method with a null ivorn identifier");
       }      
-      return getResourceByIdentifierDOM(ident.toRegistryString());   
+      return getResourceByIdentifierDOM(ident.getPath());   
    }
    
    public Document getResourceByIdentifierDOM(String ident)  throws RegistryException {
       Document doc = null;
+      if(DEBUG_FLAG) System.out.println("entered getResourceByIdentifierDOM");
       if(ident == null)  {
          throw new RegistryException("Cannot call this method with a null identifier");
       }
-      if(ident.indexOf("ivo://") != -1) {
-         ident = ident.substring(6);         
-      }
+      if(DEBUG_FLAG) System.out.println("using ident = " + ident);
       if(!useCache) {
          int iTemp = 0;
          iTemp = ident.indexOf("/");
@@ -360,14 +378,17 @@ public class RegistryService  {
          }
          selectQuery += "</selectionSequence></query>";
          doc = submitQueryStringDOM(selectQuery);
+         if(DEBUG_FLAG) System.out.println("exiting getResourceByIdentifierDOM (did not use config cache)");
          return doc;
       }else {
+         if(DEBUG_FLAG) System.out.println("exiting getResourceByIdentifierDOM (used config cache)");
          return conf.getDom(ident);
       }         
    }
    
    public VODescription getResourceByIdentifier(String ident)  throws RegistryException {
-      if(dummyMode) return null;
+      //if(dummyMode) return null;
+      if(DEBUG_FLAG) System.out.println("entered getResourceByIdentifier");
       VODescription vo = null;
       try {
          Document doc = getResourceByIdentifierDOM(ident);
@@ -378,9 +399,10 @@ public class RegistryService  {
        throw new RegistryException(me);   
       }catch(ValidationException ve) {
        throw new RegistryException(ve);   
-      }finally {         
-         return vo;
       }
+      if(DEBUG_FLAG) System.out.println("exiting getResourceByIdentifier");         
+      return vo;
+      
    }
    
    public VODescription getResourceByIdentifier(Ivorn ident) throws RegistryException {
@@ -392,21 +414,26 @@ public class RegistryService  {
    }
    
    public String getEndPointByIdentifier(String ident) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered getEndPointByIdentifier with ident = " + ident);
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
+      String returnVal = null;
       try {
          WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(ident);
-         return (String)wsdlBasic.getEndPoint().values().iterator().next();
+         returnVal = (String)wsdlBasic.getEndPoint().values().iterator().next();
       }catch(RegistryException re) {
+         if(DEBUG_FLAG) System.out.println("status message for getEndPointByIdentifier: RegistryException was thrown (probably not a WebService InvocationType try to return the AccessURL)");
          //Log warning this was supposed to be a web service.
          Document doc = getResourceByIdentifierDOM(ident);
          NodeList nl = doc.getElementsByTagName("AccessURL");
          if(nl.getLength() > 0) {
-            return nl.item(0).getFirstChild().getNodeValue();
+            returnVal = nl.item(0).getFirstChild().getNodeValue();
          }
-      }
-      return null;   
+      }finally {
+         if(DEBUG_FLAG) System.out.println("exiting getEndPointByIdentifier with ident = " + ident);
+         return returnVal;   
+      }         
    }
 
    public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException {
@@ -415,19 +442,23 @@ public class RegistryService  {
       
    
    public WSDLBasicInformation getBasicWSDLInformation(String ident) throws RegistryException {
+      if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);
       VODescription vodesc = getResourceByIdentifier(ident);
       WSDLBasicInformation wsdlBasic = null;
       //check for an AccessURL
       //if AccessURL is their and it is a web service then get the wsdl
       //into a DOM object and run an XSL on it to get the endpoint.
       //NodeList nl = doc.getElementsByTagName("AccessURL");
+      if(DEBUG_FLAG) System.out.println("status msg for getBasicWSDLInformation, vodesc resource count " + vodesc.getResourceCount());
       ResourceType rt = vodesc.getResource(0);
       ServiceType st = null; 
       if(rt instanceof ServiceType) {
          st = (ServiceType)rt;
-         String accessURL = st.getInterface().getAccessURL().getContent();  
+         String accessURL = st.getInterface().getAccessURL().getContent();
+         if(DEBUG_FLAG) System.out.println("status msg for getBasicWSDLInformation, resource is a type of Service and accessURL =  " + accessURL);  
          if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
             try {
+               if(DEBUG_FLAG) System.out.println("status msg for getBasicWSDLInformation, the invocation is a Web service being processing wsdl");
                WSDLFactory wf = WSDLFactory.newInstance();
                WSDLReader wr = wf.newWSDLReader();               
                Definition def = wr.readWSDL(accessURL);
@@ -452,12 +483,13 @@ public class RegistryService  {
                      for(int i = 0; i < lst.size();i++) {
                         ExtensibilityElement extElement = (ExtensibilityElement)lst.get(i);                        
                         if(extElement instanceof SOAPAddress) {
-                           SOAPAddress soapAddress = (SOAPAddress)extElement;                           
+                           SOAPAddress soapAddress = (SOAPAddress)extElement;
+                           if(DEBUG_FLAG) System.out.println("status msg for getBasicWSDLInformation, found a LocationURI in the wsdl = " + soapAddress.getLocationURI());                           
                            wsdlBasic.addEndPoint(port.getName(),soapAddress.getLocationURI());   
-                        }   
-                     }                        
-                  }                     
-               }
+                        }//if   
+                     }//for                        
+                  }//while                     
+               }//while
             }catch(WSDLException wsdle) {
                wsdle.printStackTrace();
                throw new RegistryException(wsdle);
@@ -466,6 +498,7 @@ public class RegistryService  {
             throw new RegistryException("Invalid Entry in Method: This method only accepts WEBSERVICE InvocationTypes");   
          }
       }
+      if(DEBUG_FLAG) System.out.println("exiting getBasicWSDLInformation with ident");
       return wsdlBasic;     
    }
       
