@@ -2,18 +2,12 @@
 <agp:menu-def
     name="datacenter-menu"
     xmlns:agp="http://www.astrogrid.org/portal">
-<!--
-      icon="/astrogrid-portal/icons/Data.png"
--->
   <agp:menu
       contents="DataCenter"
       contents-hover="DataCenter"
       uri=""
       target="_self"
       status-text="DataCenter...">
-<!--
-        icon="/astrogrid-portal/icons/DataQuery2.png"
--->
     <agp:item
         contents="Query"
         contents-hover="Query"

@@ -2,27 +2,18 @@
 <agp:menu-def
     name="myspace-menu"
     xmlns:agp="http://www.astrogrid.org/portal">
-<!--
-      icon="/astrogrid-portal/icons/Folder.png"
--->
   <agp:menu
       contents="MySpace"
       contents-hover="MySpace"
       uri=""
       target="_self"
       status-text="MySpace...">
-<!--
-        icon="/astrogrid-portal/icons/FolderIn.png"
--->
     <agp:item
         contents="Explorer"
         contents-hover="Explorer"
         uri="/astrogrid-portal/main/mount/myspace/myspace-explorer"
         target="_self"
         status-text="AstroGrid MySpace Explorer"/>
-<!--
-        icon="/astrogrid-portal/icons/Frame.png"
--->
     <agp:item
         contents="MicroBrowser"
         contents-hover="MicroBrowser"
