@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.8 2003/09/09 17:52:29 mch Exp $
+ * $Id: AxisDataServer.java,v 1.9 2003/09/10 10:00:41 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,6 +7,8 @@
 package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
+
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
@@ -36,8 +38,17 @@ public class AxisDataServer extends ServiceServer
    /**
     * Empty constructor
     */
-   public AxisDataServer()
+   public AxisDataServer() throws IOException
    {
+       /*NWW
+        initialize the configuration - needs to be called explicitly.
+        load a resource on classpath, rather than file, because we don't know our home directory - depends on
+        how the tomcat server is run
+        much easier to place a config file in the WEB-INF/classes directory of the axis web app.
+        */ 
+        java.net.URL res = this.getClass().getResource("/" + Configuration.DEFAULT_FILENAME);
+        Configuration.load(res);
+
    }
 
    /**
