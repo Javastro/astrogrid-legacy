@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.1 2004/04/22 15:14:34 mch Exp $
+ * $Id: WebDelegate_v05.java,v 1.2 2004/08/31 17:44:02 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -133,7 +133,7 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    public String getStatus(String id) throws IOException {
       QueryStatusSoapyBean status = binding.getQueryStatus(id);
       
-      return status.toString();
+      return status.getState();
    }
    
 
@@ -156,6 +156,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
+ Revision 1.2  2004/08/31 17:44:02  mch
+ Fix to getStatus
+
  Revision 1.1  2004/04/22 15:14:34  mch
  Introduced WebDelegate_v05
 
@@ -204,6 +207,9 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
+Revision 1.2  2004/08/31 17:44:02  mch
+Fix to getStatus
+
 Revision 1.1  2004/04/22 15:14:34  mch
 Introduced WebDelegate_v05
 
