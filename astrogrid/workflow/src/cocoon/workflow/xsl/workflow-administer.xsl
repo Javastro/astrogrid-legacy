@@ -104,18 +104,46 @@
 	    | List workflows currently stored in MySpace
 	    +-->	
 	<xsl:template name="list_workflow">
-	    <p>
-	    <strong>List of workflows currently stored in mySpace to be displayed here</strong>
-	    </p>
+       <table border="0">
+           <tr>
+               <td>
+                   Workflows currently strored in your mySpace:
+               </td>
+           </tr>
+           <xsl:for-each select="//workflow">
+           <tr>
+               <td>
+                   <xsl:value-of select="@workflow-name"/>
+               </td>
+               <td>
+                   <xsl:value-of select="@workflow-description"/>
+               </td>
+           </tr>
+           </xsl:for-each>
+       </table>	    
 	</xsl:template>
 	
 	<!--+
 	    | List queries currently stored in MySpace
 	    +-->	
 	<xsl:template name="list_query">
-	    <p>
-	    <strong>List of queries currently stored in mySpace to be displayed here</strong>
-	    </p>
+       <table border="0">
+           <tr>
+               <td>
+                   Queries currently strored in your mySpace:
+               </td>
+           </tr>
+           <xsl:for-each select="//query">
+           <tr>
+               <td>
+                   <xsl:value-of select="@query-name"/>
+               </td>
+               <td>
+                   <xsl:value-of select="@query-description"/>
+               </td>
+           </tr>
+           </xsl:for-each>
+       </table>
 	</xsl:template>	
 
 	<!--+
@@ -236,10 +264,47 @@
 	    | Delete workflow
 	    +-->	
 	<xsl:template name="delete_worklow">
-	    <p>
-	    <strong>To do</strong>
-	    </p>	    
-	</xsl:template>	
+	    <form name="deleteWorkflow" method="get" action="agworkflow-administer.html">
+          <table cellpadding="2" cellspacing="2" border="0">
+            <tbody>
+              <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
+                <td width="0" height="0" colspan="6" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
+                  Delete workflow
+                </td>
+              </tr>
+<!--              <tr>
+                <td>
+                  UserId:
+                </td>
+                <td>
+                  <xsl:value-of select="$user-param"/>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Community:
+                </td>
+                <td>
+                  <xsl:value-of select="$community"/>
+                </td>
+              </tr>
+-->              <tr>
+                <td>
+                  Job Name:
+                </td>
+              <td>
+                <input type="text" size="40" name="workflow-name"></input>
+              </td>
+             </tr>
+             <tr>
+               <td>
+                 <input type="submit" name="action" value="delete-workflow"></input>
+               </td>
+             </tr>
+          </tbody>
+        </table>
+      </form>	    
+	</xsl:template>		
 
 	<!--+
 	    | Submit workflow
