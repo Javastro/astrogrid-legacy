@@ -1,4 +1,4 @@
-/*$Id: Toolbox.java,v 1.2 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: Toolbox.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
  * Created on 19-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -97,12 +97,12 @@ public class Toolbox {
 
     /** access helper object for working with xml 
      * @return object that assists with constructing and manipulatingn xml.*/
-    public XMLHelper getXMLHelper() {
+    public XMLHelper getXmlHelper() {
         return xHelper;
     }
     
     /** access helper object for working with IO */
-    public IOHelper getIOHelper() {
+    public IOHelper getIoHelper() {
         return iHelper;
     }
 
@@ -197,8 +197,11 @@ public class Toolbox {
 
 /* 
 $Log: Toolbox.java,v $
-Revision 1.2  2004/11/22 18:26:54  clq2
-scripting-nww-715
+Revision 1.3  2004/11/30 15:39:56  clq2
+scripting-nww-777
+
+Revision 1.1.2.1.2.1  2004/11/26 15:38:16  nw
+improved some names, added some missing methods.
 
 Revision 1.1.2.1  2004/11/22 15:54:51  nw
 deprecated existing scripting interface (which includes service lists).

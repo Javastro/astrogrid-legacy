@@ -1,4 +1,4 @@
-/*$Id: ObjectBuilderTest.java,v 1.2 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: ObjectBuilderTest.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,11 +24,11 @@ public class ObjectBuilderTest extends TestCase {
     protected ObjectBuilder ob;
     
     public void testCreateAccount() {
-        assertNotNull(ob.createAccount("frog","wibble.com"));
+        assertNotNull(ob.newAccount("frog","wibble.com"));
     }
 
     public void testCreateGroup() {
-        assertNotNull(ob.createGroup("frog","wibble.com"));
+        assertNotNull(ob.newGroup("frog","wibble.com"));
     }
 
 
@@ -37,14 +37,14 @@ public class ObjectBuilderTest extends TestCase {
      * Class under test for User createUser()
      */
     public void testCreateUser() {
-        assertNotNull(ob.createUser());
+        assertNotNull(ob.user());
     }
 
     /*
      * Class under test for User createUser(String, String, String, String)
      */
     public void testCreateUserStringStringStringString() {
-        assertNotNull(ob.createUser("frog","wibble","amphibians","null"));
+        assertNotNull(ob.newUser("frog","wibble","amphibians","null"));
     }
 
 
@@ -53,6 +53,12 @@ public class ObjectBuilderTest extends TestCase {
 
 /* 
 $Log: ObjectBuilderTest.java,v $
+Revision 1.3  2004/11/30 15:39:56  clq2
+scripting-nww-777
+
+Revision 1.2.2.1  2004/11/26 15:38:16  nw
+improved some names, added some missing methods.
+
 Revision 1.2  2004/11/22 18:26:54  clq2
 scripting-nww-715
 

@@ -1,4 +1,4 @@
-/*$Id: StarTableBuilder.java,v 1.2 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: StarTableBuilder.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.scripting;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -22,6 +23,7 @@ import uk.ac.starlink.table.TableFormatException;
 import uk.ac.starlink.util.DataSource;
 
 /** Extension of the standard StarTableFactory that also allows star tables to be contructed from ExternalValues 
+ * encourages factory to build random-access tables by dfault - less surprising then.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Nov-2004
  *
  */
@@ -31,15 +33,10 @@ public class StarTableBuilder extends StarTableFactory {
      * 
      */
     public StarTableBuilder() {
-        super();
+        super(true);
     }
 
-    /** Construct a new StarTableBuilder
-     * @param arg0
-     */
-    public StarTableBuilder(boolean arg0) {
-        super(arg0);
-    }
+   
     /** construct a star table from an external value
      * 
      * @param externalValue reference to a remote location
@@ -64,6 +61,33 @@ public class StarTableBuilder extends StarTableFactory {
     public StarTable makeStarTable(ExternalValue externalValue,String handler) throws TableFormatException, IOException {
         return makeStarTable(new ExternalValueDataSource(externalValue),handler);
     }
+    
+    public StarTable makeStarTableFromString(String tableContent,String handler) throws TableFormatException, IOException {
+        return makeStarTable(new InlineDataSource(tableContent),handler);
+    }
+    
+    public StarTable makeStarTableFromString(String tableContent) throws TableFormatException, IOException {
+        return makeStarTable(new InlineDataSource(tableContent));
+    }
+    
+    /** a helper class that wraps a string as a datasource
+     * 
+     * @author Noel Winstanley nw@jb.man.ac.uk 24-Nov-2004
+     *
+     */
+    public static class InlineDataSource extends DataSource {
+        public InlineDataSource(String content) {
+            this.content = content;
+        }
+        protected final String content;
+        /**
+         * @see uk.ac.starlink.util.DataSource#getRawInputStream()
+         */
+        protected InputStream getRawInputStream() throws IOException {
+            return new ByteArrayInputStream(content.getBytes());
+        }
+    }
+    
     /**
      * A helper class that wraps an ExternalValue as a Datasource - acts as a bridge between the 
      * Astrogrid and Starlink worlds.
@@ -94,8 +118,12 @@ public class StarTableBuilder extends StarTableFactory {
 
 /* 
 $Log: StarTableBuilder.java,v $
-Revision 1.2  2004/11/22 18:26:54  clq2
-scripting-nww-715
+Revision 1.3  2004/11/30 15:39:56  clq2
+scripting-nww-777
+
+Revision 1.1.2.1.2.1  2004/11/25 00:34:54  nw
+configured to build random-access tables,
+and added methods to build tables from string
 
 Revision 1.1.2.1  2004/11/22 15:54:51  nw
 deprecated existing scripting interface (which includes service lists).

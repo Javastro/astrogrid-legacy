@@ -1,4 +1,4 @@
-/*$Id: ObjectBuilder.java,v 1.3 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: ObjectBuilder.java,v 1.4 2004/11/30 15:39:56 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,7 +39,7 @@ public class ObjectBuilder {
      * @param community community the user is registered with
      * @return
      */
-    public Account createAccount(String username,String community) {
+    public Account newAccount(String username,String community) {
         Account acc = new Account();
         acc.setName(username);
         acc.setCommunity(community);
@@ -51,7 +51,7 @@ public class ObjectBuilder {
      * @param community community the group belongs to
      * @return
      */
-    public Group createGroup(String groupName,String community) {
+    public Group newGroup(String groupName,String community) {
         Group g = new Group();
         g.setName(groupName);
         g.setCommunity(community);
@@ -59,7 +59,7 @@ public class ObjectBuilder {
         
     }
     /** create a credentials object from an account and a group */
-    public Credentials createCredendtials(Account acc,Group grp) {
+    public Credentials newCredendtials(Account acc,Group grp) {
         Credentials c = new Credentials();
         c.setAccount(acc);
         c.setGroup(grp);
@@ -68,7 +68,7 @@ public class ObjectBuilder {
     }
     
     /** create the anonymous user */
-    public User createUser() {
+    public User user() {
         return new User();
     }
     
@@ -80,7 +80,7 @@ public class ObjectBuilder {
      * @param token not used
      * @return
      */
-    public User createUser(String userid,String community,String group,String token) {
+    public User newUser(String userid,String community,String group,String token) {
         return new User(userid,community,group,token);
     }
     
@@ -90,8 +90,8 @@ public class ObjectBuilder {
        * @return the equivalent user ivorn.
        * @throws CommunityIdentifierException if the community is not known
        */
-    public Ivorn createUserIvorn(User u) throws CommunityIdentifierException {
-        return createUserIvorn(u.getCommunity(),u.getAccount());
+    public Ivorn newUserIvorn(User u) throws CommunityIdentifierException {
+        return newUserIvorn(u.getCommunity(),u.getAccount());
     }
     /** create a user ivorn, from community and account name 
      * 
@@ -100,7 +100,7 @@ public class ObjectBuilder {
      * @return
      * @throws CommunityIdentifierException if the community is not known.
      */
-    public Ivorn createUserIvorn(String community,String account) throws CommunityIdentifierException {
+    public Ivorn newUserIvorn(String community,String account) throws CommunityIdentifierException {
         return CommunityAccountIvornFactory.createIvorn(community,account);
     }
     /** create a user ivorn, from account name and locally-configured community 
@@ -110,12 +110,18 @@ public class ObjectBuilder {
      * @throws CommunityServiceException is the commnity service can't be accessed
      * @throws CommunityIdentifierException 
      */
-    public Ivorn createLocalUserIvorn(String account) throws CommunityServiceException, CommunityIdentifierException {
+    public Ivorn newLocalUserIvorn(String account) throws CommunityServiceException, CommunityIdentifierException {
         return CommunityAccountIvornFactory.createLocal(account);
     }
+    
+    public Ivorn newIvorn(Ivorn root,String file) throws URISyntaxException {
+        String r = root.toString();       
+        return new Ivorn(r + (r.endsWith("/") ? "" : "/") + file);
+    }
+    
     /** construct an arbitrary ivorn object 
      * @throws URISyntaxException*/
-    public Ivorn createIvorn(String ivorn) throws URISyntaxException {
+    public Ivorn newIvorn(String ivorn) throws URISyntaxException {
         return new Ivorn(ivorn);
     }
     /** construct an abritray ivorn object 
@@ -124,7 +130,7 @@ public class ObjectBuilder {
      * @param fragment a fragment - i.e. the bit after <tt>#</tt>
      * @return an ivorn of form <tt>ivo://<i>path</i>#<i>fragment</i></tt>
      */
-    public Ivorn createIvorn(String path,String fragment) {
+    public Ivorn newIvorn(String path,String fragment) {
         return new Ivorn(path,fragment);
     }
     /** construct an abritray ivorn object 
@@ -134,7 +140,7 @@ public class ObjectBuilder {
      * @param fragment 
      * @return an ivorn of form <tt>ivo://<i>authority</i>/<i>key</i>#<i>fragment</i></tt>
      */
-    public Ivorn createIvorn(String authority,String key,String fragment) {
+    public Ivorn newIvorn(String authority,String key,String fragment) {
         return new Ivorn(authority,key,fragment);
     }
     
@@ -145,8 +151,11 @@ public class ObjectBuilder {
 
 /* 
 $Log: ObjectBuilder.java,v $
-Revision 1.3  2004/11/22 18:26:54  clq2
-scripting-nww-715
+Revision 1.4  2004/11/30 15:39:56  clq2
+scripting-nww-777
+
+Revision 1.2.68.1.2.1  2004/11/26 15:38:16  nw
+improved some names, added some missing methods.
 
 Revision 1.2.68.1  2004/11/22 15:54:51  nw
 deprecated existing scripting interface (which includes service lists).

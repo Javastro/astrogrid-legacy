@@ -1,4 +1,4 @@
-/*$Id: ToolboxTest.java,v 1.2 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: ToolboxTest.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -51,11 +51,11 @@ public class ToolboxTest extends TestCase {
     }
 
     public void testGetXMLHelper() {
-        assertNotNull(t.getXMLHelper());
+        assertNotNull(t.getXmlHelper());
     }
 
     public void testGetIOHelper() {
-        assertNotNull(t.getIOHelper());
+        assertNotNull(t.getIoHelper());
     }
 
     public void testGetSystemInfo() {
@@ -88,7 +88,7 @@ public class ToolboxTest extends TestCase {
     }
 
     public void testCreateVoSpaceClient() {
-        assertNotNull(t.createVoSpaceClient(t.getObjectBuilder().createUser()));
+        assertNotNull(t.createVoSpaceClient(t.getObjectBuilder().user()));
     }
 
     public void testCreateTreeClient() {
@@ -107,6 +107,12 @@ public class ToolboxTest extends TestCase {
 
 /* 
 $Log: ToolboxTest.java,v $
+Revision 1.3  2004/11/30 15:39:56  clq2
+scripting-nww-777
+
+Revision 1.2.2.1  2004/11/26 15:38:16  nw
+improved some names, added some missing methods.
+
 Revision 1.2  2004/11/22 18:26:54  clq2
 scripting-nww-715
 

@@ -1,4 +1,4 @@
-/*$Id: IOHelper.java,v 1.2 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: IOHelper.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.scripting;
 
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
 import org.astrogrid.io.Piper;
 
 import java.io.ByteArrayInputStream;
@@ -21,6 +23,8 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /** hellper methods for working with IO.
  * 
@@ -54,6 +58,18 @@ public class IOHelper {
         Piper.pipe(in,out);
     }
     
+    public void pipe(ExternalValue in, OutputStream out) throws InaccessibleExternalValueException, IOException {
+        pipe(in.read(),out);
+    }
+    
+    public void pipe(InputStream in,ExternalValue out) throws InaccessibleExternalValueException, IOException {
+        pipe(in,out.write());
+    }
+    
+    public void pipe(ExternalValue in,ExternalValue out) throws InaccessibleExternalValueException, IOException {
+        pipe(in.read(),out.write());
+    }
+    
     public InputStream streamFromString(String content) {
         return new ByteArrayInputStream(content.getBytes());
     }
@@ -62,7 +78,7 @@ public class IOHelper {
         return new StringReader(content);
     }
     
-    public String streamToString(InputStream is) throws IOException {
+    public String getContents(InputStream is) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         this.pipe(is,os);
         is.close();
@@ -70,21 +86,45 @@ public class IOHelper {
         return os.toString();
     }
     
-    public  String writeToString(Reader r) throws IOException {
+    public  String getContents(Reader r) throws IOException {
         StringWriter sw = new StringWriter();
         this.pipe(r,sw);
         r.close();
         sw.close();
         return sw.toString();             
     }
+    
+    public String getContents(ExternalValue ext) throws InaccessibleExternalValueException, IOException {
+        return getContents(ext.read());
+    }
+    
+    public String dateStamp() {
+        return dateFormat.format(new Date());
+    }
+    
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
+    
+    public String timeStamp() {
+        return String.valueOf(System.currentTimeMillis());
+    }
+    
+    public String dateTimeStamp() {
+        return dateTimeFormat.format(new Date());
+    }
+    
+    private final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yy-HHmmss");
 
+    
 }
 
 
 /* 
 $Log: IOHelper.java,v $
-Revision 1.2  2004/11/22 18:26:54  clq2
-scripting-nww-715
+Revision 1.3  2004/11/30 15:39:56  clq2
+scripting-nww-777
+
+Revision 1.1.2.1.2.1  2004/11/26 15:38:16  nw
+improved some names, added some missing methods.
 
 Revision 1.1.2.1  2004/11/22 15:54:51  nw
 deprecated existing scripting interface (which includes service lists).
