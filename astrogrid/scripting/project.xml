@@ -162,13 +162,21 @@
            <artifactId>astrogrid-applications</artifactId>
            <version>SNAPSHOT</version>
         </dependency>
-        <!-- doesn't build at the moment - so will have to be commented out for now
         <dependency>
-                <groupId>astrogrid-registry</groupId>
-                <artifactId>astrogrid-registry</artifactId>
-                <version>SNAPSHOT</version>
+        	<groupId>org.astrogrid</groupId>
+        	<artifactId>astrogrid-workflow</artifactId>
+        	<version>SNAPSHOT</version>
         </dependency>
-            -->
+		<dependency>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-registry-client</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.astrogrid</groupId>
+			<artifactId>astrogrid-registry-common</artifactId>
+			<version>SNAPSHOT</version>
+		</dependency>
     <!-- stuff for datacenter -->
     <dependency>
             <groupId>org.astrogrid</groupId>
@@ -269,7 +277,7 @@
                 <dependency>
                         <artifactId>wsdl4j</artifactId>
                         <groupId>wsdl4j</groupId>
-                        <jar>wsdl4j.jar</jar>
+                        <version>1.0</version>
                 </dependency>
         </dependencies>
         <reports>
