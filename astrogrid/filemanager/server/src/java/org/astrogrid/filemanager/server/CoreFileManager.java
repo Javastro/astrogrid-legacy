@@ -1,4 +1,4 @@
-/*$Id: CoreFileManager.java,v 1.2 2005/03/11 13:37:06 clq2 Exp $
+/*$Id: CoreFileManager.java,v 1.3 2005/03/31 14:59:29 dave Exp $
  * Created on 16-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -253,13 +253,26 @@ public class CoreFileManager implements FileManagerPortType {
                 store.putNode(t,node);
             }
             // set default target..
+//
+// Looks to me like this ignores location and always writes to default store ?
             URI target = config.getDefaultStorageServiceURI();
             StoreFacade.Store filestore = fsfacade.resolve(target);
             TransferInfo ti;
             if (location.getIdent() != null) {
+//
+// Bug - Saving changes to a file does not work, always get the same (original) file back.
+// Problem - On importInit() the FileStore will return a new ident for the file.
+// Patch for now, treat this as a new import (copied code from the else).
+// Side effect is FileStore won't know that the old file is to be replaced.
+// Symptoms suggest that it didn't remove the old one anyway - need to fix this asap or we will run out of disk space.
+/*
                 String ident = location.getIdent();
                 t.readyToCommit();            
                 ti =  filestore.requestWriteToStore(ident,overwrite);                
+ */
+                StoreFacade.NewResource nu = filestore.requestWriteToStore();                
+                location.setIdent(nu.ident);
+                ti = nu.transfer;                      
             } else { // create a new storage location.
                 StoreFacade.NewResource nu = filestore.requestWriteToStore();                
                 location.setIdent(nu.ident);
@@ -549,6 +562,10 @@ public class CoreFileManager implements FileManagerPortType {
 
 /* 
 $Log: CoreFileManager.java,v $
+Revision 1.3  2005/03/31 14:59:29  dave
+Patch fix to enable overwriting of file with the same name.
+** This needs to be refactored when we get time **
+
 Revision 1.2  2005/03/11 13:37:06  clq2
 new filemanager merged with filemanager-nww-jdt-903-943
 
