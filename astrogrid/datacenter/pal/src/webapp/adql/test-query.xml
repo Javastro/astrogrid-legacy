@@ -1,0 +1,61 @@
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+<!-- equivalent to select p.firstName, p.id from person as p order by p.firstName -->
+	<SelectionList>
+	  <ColumnExpr>
+		<SingleColumnReference>
+			<TableName>p</TableName>
+			<Name>firstName</Name>
+		</SingleColumnReference>
+		</ColumnExpr>
+		<ColumnExpr>
+			<SingleColumnReference>
+				<TableName>p</TableName>
+				<Name>id</Name>
+			</SingleColumnReference>
+		</ColumnExpr>
+	</SelectionList>
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>People</Name>
+					<AliasName>p</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+		<WhereClause>
+ <PredicateSearch>
+        <ComparisonPred>
+          <FirstExpr xsi:type="ColumnExpr">
+                <SingleColumnReference>
+                  <TableName>p</TableName>
+                  <Name>id</Name>
+                </SingleColumnReference>
+          </FirstExpr>
+          <Compare>&lt;</Compare>
+          <SecondExpr xsi:type="AtomExpr">
+            <Value>
+              <NumberLiteral>
+                <IntNum>
+                  <Value>3</Value>
+                </IntNum>
+              </NumberLiteral>
+            </Value>
+          </SecondExpr>
+        </ComparisonPred>
+      </PredicateSearch>
+		</WhereClause>
+	</TableClause>
+	<OrderBy>
+  		<OrderList>
+      		<Order>
+        		<Expr xsi:type="ColumnExpr">
+          		<SingleColumnReference>
+            		<TableName>p</TableName>
+            		<Name>firstName</Name>
+          		</SingleColumnReference>
+        		</Expr>
+      		</Order>
+      	</OrderList>
+      </OrderBy>
+</Select>

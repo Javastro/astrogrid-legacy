@@ -1,0 +1,35 @@
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>first</Name>
+					<AliasName>f</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+				<WhereClause>
+ <PredicateSearch>
+        <ComparisonPred>
+          <FirstExpr xsi:type="ColumnExpr">
+                <SingleColumnReference>
+                  <TableName>f</TableName>
+                  <Name>POS_ED_DEC</Name>
+                </SingleColumnReference>
+          </FirstExpr>
+          <Compare>&gt;</Compare>
+          <SecondExpr xsi:type="AtomExpr">
+            <Value>
+              <NumberLiteral>
+                <ApproxNum>
+                  <Value>59.9</Value>
+                </ApproxNum>
+              </NumberLiteral>
+            </Value>
+          </SecondExpr>
+        </ComparisonPred>
+      </PredicateSearch>
+		</WhereClause>
+	</TableClause>
+</Select>

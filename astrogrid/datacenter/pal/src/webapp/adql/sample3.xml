@@ -1,0 +1,94 @@
+<!--  SQL equivalent
+SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER BY t.g - b.g, b.h
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://tempuri.org/adql"
+>
+  <SelectionList>
+    <ColumnExpr>
+      <AllColumnReference>
+        <TableName>t</TableName>
+      </AllColumnReference>
+    </ColumnExpr>
+    <ColumnExpr>
+      <AllColumnReference>
+        <TableName>b</TableName>
+      </AllColumnReference>
+    </ColumnExpr>
+  </SelectionList>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>t</AliasName>
+        </Table>
+        <Table>
+          <Name>Bob</Name>
+          <AliasName>b</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <IntersectionSearch>
+        <FirstCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>t</TableName>
+                <Name>g</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&lt;&gt;</Compare>
+            <SecondExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>b</TableName>
+                <Name>g</Name>
+              </SingleColumnReference>
+            </SecondExpr>
+          </ComparisonPred>
+        </FirstCondition>
+        <SecondCondition xsi:type="Circle">
+          <Ra>
+            <Value>12.5</Value>
+          </Ra>
+          <Dec>
+            <Value>23</Value>
+          </Dec>
+          <Radius>
+            <Value>5</Value>
+          </Radius>
+        </SecondCondition>
+      </IntersectionSearch>
+    </WhereClause>
+  </TableClause>
+  <OrderBy>
+    <OrderList>
+      <Order>
+        <Expr xsi:type="BinaryExpr">
+          <FirstExpr xsi:type="ColumnExpr">
+            <SingleColumnReference>
+              <TableName>t</TableName>
+              <Name>g</Name>
+            </SingleColumnReference>
+          </FirstExpr>
+          <Operator>-</Operator>
+          <SecondExpr xsi:type="ColumnExpr">
+            <SingleColumnReference>
+              <TableName>b</TableName>
+              <Name>g</Name>
+            </SingleColumnReference>
+          </SecondExpr>
+        </Expr>
+      </Order>
+      <Order>
+        <Expr xsi:type="ColumnExpr">
+          <SingleColumnReference>
+            <TableName>b</TableName>
+            <Name>h</Name>
+          </SingleColumnReference>
+        </Expr>
+      </Order>
+    </OrderList>
+  </OrderBy>
+</Select>

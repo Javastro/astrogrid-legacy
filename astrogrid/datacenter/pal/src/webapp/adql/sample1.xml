@@ -1,0 +1,18 @@
+<!-- SQL equivalent
+SELECT * FROM Tab t
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://tempuri.org/adql"
+>
+  <SelectionAll />
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>t</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+  </TableClause>
+</Select>
