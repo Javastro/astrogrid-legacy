@@ -24,6 +24,7 @@
     <servlet-class>org.junitee.servlet.JUnitEEServlet</servlet-class>
   </servlet>
 
+   <!-- Query-managing servlets -->
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
     <description>Servlet for submitting simple (NVO compatible) cone searches via POST or GET</description>
@@ -40,6 +41,12 @@
     <servlet-name>SubmitSql</servlet-name>
     <description>Servlet for submitting raw SQL queries</description>
     <servlet-class>org.astrogrid.datacenter.servlet.SubmitRawSql</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>SubmitAdqlSql</servlet-name>
+    <description>Servlet for submitting ADQL/SQL queries</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.SubmitAdqlSql</servlet-class>
   </servlet>
 
   <servlet>
@@ -60,6 +67,20 @@
     <servlet-class>org.astrogrid.datacenter.servlet.SimpleSpectraAccess</servlet-class>
   </servlet>
 
+  <!-- Admin servlets -->
+  <servlet>
+    <servlet-name>GetGeneratedMetadata</servlet-name>
+    <description>serves the 'initialising' generated metadata</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.GetGeneratedMetadata</servlet-class>
+  </servlet>
+
+  <servlet>
+    <servlet-name>GetMetadata</servlet-name>
+    <description>serves the datacenter's metadata</description>
+    <servlet-class>org.astrogrid.datacenter.servlet.GetMetadata</servlet-class>
+  </servlet>
+
+  <!-- CEA -->
   <servlet>
       <servlet-name>cec-http</servlet-name>
       <description>
@@ -80,11 +101,7 @@
       <load-on-startup>200</load-on-startup>
   </servlet>
 
-  <servlet-mapping>
-    <servlet-name>AxisServlet</servlet-name>
-    <url-pattern>/servlet/AxisServlet</url-pattern>
-  </servlet-mapping>
-
+  <!-- Query Managing tasks -->
   <servlet-mapping>
     <servlet-name>SubmitCone</servlet-name>
     <url-pattern>/SubmitCone</url-pattern>
@@ -93,6 +110,11 @@
   <servlet-mapping>
     <servlet-name>SubmitAdql</servlet-name>
     <url-pattern>/SubmitAdql</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>SubmitAdqlSql</servlet-name>
+    <url-pattern>/SubmitAdqlSql</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>
@@ -123,6 +145,23 @@
   <servlet-mapping>
     <servlet-name>SimpleSpectraAccess</servlet-name>
     <url-pattern>/SSA</url-pattern>
+  </servlet-mapping>
+
+  <!-- Administration type stuff -->
+  <servlet-mapping>
+    <servlet-name>GetGeneratedMetadata</servlet-name>
+    <url-pattern>/admin/GetGeneratedMetadata</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>GetMetadata</servlet-name>
+    <url-pattern>/GetMetadata</url-pattern>
+  </servlet-mapping>
+
+  <!-- Axis -->
+  <servlet-mapping>
+    <servlet-name>AxisServlet</servlet-name>
+    <url-pattern>/servlet/AxisServlet</url-pattern>
   </servlet-mapping>
 
   <servlet-mapping>

@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.2 2004/09/01 21:37:59 mch Exp $
+ * $Id: ServletHelper.java,v 1.3 2004/09/02 08:02:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -123,13 +123,15 @@ public class ServletHelper
    /** Returns exception suitable for a paragraph in an hmtl page */
    public static String exceptionAsHtml(String title, Throwable th, String details) {
 
-      StringWriter sw = new StringWriter();
-      th.printStackTrace(new PrintWriter(sw));
-      String stack = sw.toString();
-
-      return
+      String s =
          "<h1>ERROR REPORT</h1>\n"+
-         "<h2>"+title+"</h2>\n"+
+         "<h2>"+title+"</h2>\n";
+      if (th != null) {
+         StringWriter sw = new StringWriter();
+         th.printStackTrace(new PrintWriter(sw));
+         String stack = sw.toString();
+
+         s = s +
          "<p><b>"+makeSafeForHtml(th.toString())+"</b></p>\n"+
          "<p>\n"+
          "<pre>"+makeSafeForHtml(stack)+"</pre>\n"+
@@ -137,11 +139,16 @@ public class ServletHelper
          "<p>\n"+
          "<pre>"+makeSafeForHtml(details)+"</pre>\n"+
          "</p>\n";
+      }
+      return s;
    }
 
    /**
     * Deals with special characters */
    public static String makeSafeForHtml(String s) {
+      if (s==null) {
+         return "";
+      }
       s = s.replaceAll(">", "&gt;").replaceAll("<", "&lt;");
       return s.replaceAll("\n","<br/>");
    }

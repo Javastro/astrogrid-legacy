@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.24 2004/09/01 13:19:54 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.25 2004/09/02 08:02:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -305,6 +305,7 @@ public class JdbcPlugin extends QuerierPlugin  {
 
       //parse results and return them
       try {
+         log.debug("Generated metadata: "+sw.toString());
          return DomHelper.newDocument(sw.toString());
       }
       catch (ParserConfigurationException e) {

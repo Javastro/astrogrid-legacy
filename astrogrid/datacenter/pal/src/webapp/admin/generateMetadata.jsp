@@ -1,5 +1,6 @@
-<%@ page import="org.astrogrid.datacenter.metadata.MetadataInitialiser"
+<%@ page import="org.astrogrid.datacenter.metadata.MetadataInitialiser, org.astrogrid.util.DomHelper"
+   
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
-%><%= MetadataInitialiser.generateMetadata() %>
+%><%= DomHelper.DocumentToString(MetadataInitialiser.generateMetadata()) %>

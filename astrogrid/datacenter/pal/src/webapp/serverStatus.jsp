@@ -13,12 +13,12 @@
     DataServer server = new DataServer();
 %>
 <html>
-<head><title>Status of <%= DataServer.getDatacenterName() %>
+<head><title>Status of <%= DataServer.getDatacenterName() %></title>
 <style type="text/css" media="all">
           @import url("./style/maven-base.css");
           @import url("./style/maven-theme.css");
 </style>
-</title></head>
+</head>
 <body>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>

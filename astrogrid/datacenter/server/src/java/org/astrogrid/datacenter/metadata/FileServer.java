@@ -1,29 +1,23 @@
 /*
- * $Id: FileServer.java,v 1.2 2004/09/01 13:19:54 mch Exp $
+ * $Id: FileServer.java,v 1.3 2004/09/02 08:02:17 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.metadata;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types.Language;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -79,7 +73,12 @@ public class FileServer implements MetadataPlugin
     */
    public Document getMetadata() throws IOException
    {
-      InputStream is = getMetadataUrl().openStream();
+      URL url = getMetadataUrl();
+      InputStream is = url.openStream();
+
+      if (is == null) {
+         throw new FileNotFoundException("Metadata file not found at "+url);
+      }
       
       try
       {

@@ -14,12 +14,12 @@
     DataServer server = new DataServer();
 %>
 <html>
-<head><title>Status of Query<%= request.getParameter("ID") %>
+<head><title>Status of Query<%= request.getParameter("ID") %></title>
 <style type="text/css" media="all">
           @import url("./style/maven-base.css");
           @import url("./style/maven-theme.css");
 </style>
-</title></head>
+</head>
 <body>
 <%@ include file="header.xml" %>
 <%@ include file="navigation.xml" %>
