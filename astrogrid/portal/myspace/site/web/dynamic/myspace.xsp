@@ -19,6 +19,7 @@
             id="myspace-end-point-select"
             name="myspace-end-point-select"
             onchange="copy_from_to('myspace-end-point-select', 'myspace-end-point');">
+<!--
           <agp-utils:option
               compare-field="myspace-end-point-select"
               value="http://astrogrid.jb.man.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"
@@ -33,6 +34,7 @@
               compare-field="myspace-end-point-select"
               value="http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager"
               label="GRENDEL@ROE.AC.UK"/>
+-->
       
           <agp-utils:option
               compare-field="myspace-end-point-select"
