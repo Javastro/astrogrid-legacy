@@ -106,7 +106,7 @@
                                       <xsl:attribute name="name">jobURN</xsl:attribute>
                                       <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
                                   </xsl:element>                                                                                                        
-                                  <input type="submit" name="action" value="delete-job"/>                          
+                                  <input class="agActionButton" type="submit" name="action" value="delete-job"/>                          
                               </form>
                           </xsl:when>
                           <xsl:when test="@status = 'COMPLETED'">  <!--  COMPLETED -->
@@ -116,7 +116,7 @@
                                       <xsl:attribute name="name">jobURN</xsl:attribute>
                                       <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
                                   </xsl:element>                                                                                                        
-                                  <input type="submit" name="action" value="delete-job"/>                          
+                                  <input class="agActionButton" type="submit" name="action" value="delete-job"/>                          
                               </form>
                           </xsl:when> 
                           <xsl:when test="@status = 'n/a'">  <!--  EMPLTY LIST -->
@@ -129,7 +129,7 @@
                                       <xsl:attribute name="name">jobURN</xsl:attribute>
                                       <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
                                   </xsl:element>                                                                                                        
-                                  <input type="submit" name="action" value="cancel-job"/>                          
+                                  <input class="agActionButton" type="submit" name="action" value="cancel-job"/>                          
                               </form>                        
                           </xsl:otherwise>
                       </xsl:choose>                                                                                                                                                                                      

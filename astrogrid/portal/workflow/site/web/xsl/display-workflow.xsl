@@ -38,8 +38,8 @@
                             <xsl:attribute name="name">workflow-name</xsl:attribute>
                         </xsl:element>           
                     </td>
-                    <td rowspan="2">                        
-                        <input type="submit" name="action" value="add-name-description" />
+                    <td rowspan="2">
+                      <input class="agActionButton" name="action" type="submit" value="add-name-description"/>                    
                     </td>
                     <td rowspan="2">
                         <xsl:call-template name="workflow-map"/>
@@ -79,7 +79,7 @@
             <tr>
                 <xsl:apply-templates select="*"/>
             </tr>
-        </table>     
+        </table>           
         <xsl:call-template name="tool-details"/>
         <xsl:call-template name="script-details"/>
       </ag-div>

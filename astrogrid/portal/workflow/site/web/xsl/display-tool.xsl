@@ -27,7 +27,7 @@
                                         <td width="70%">
                                             <input type="text" width="40" name="step_name"></input>
                                             <a id="step_name_button">
-                                                <input type="submit" name="action" value="add-step-name"/>
+                                                <input class="agActionButton" type="submit" name="action" value="add-step-name"/>
                                                 <input type="hidden" name="activity_key"/>                                            
                                             </a>                                     
                                         </td>
@@ -39,14 +39,14 @@
                                             any <input type="radio" onClick="document.properties_form.edit_condition.value = 'any'; "/>
                                             true <input type="radio" onClick="document.properties_form.edit_condition.value = 'true'; " />
                                             false <input type="radio" onClick="document.properties_form.edit_condition.value = 'false';" />
-                                            <input type="submit" name="action" value="edit-join-condition"/>
+                                            <input class="agActionButton" type="submit" name="action" value="edit-join-condition"/>
                                         </td>
                                     </tr>                                     
                                     <tr>
                                         <td>Description:</td>
                                         <td>
-                                            <textarea name="step_description" cols="45" rows="2" readonly="true">...</textarea>
-                                            <input type="submit" name="action" value="add-step-description" />
+                                            <textarea name="step_description" cols="45" rows="2">...</textarea>
+                                            <input class="agActionButton" type="submit" name="action" value="add-step-description" />
                                         </td>
                                     </tr>
                                 </table>
@@ -59,7 +59,7 @@
                                         <td width="70%">
                                             <input type="text" width="40" name="tool_name" id="tool_name"></input>
                                             <a>
-                                                <input type="submit" name="action" value="insert-tool-into-step" />
+                                                <input class="agActionButton" type="submit" name="action" value="insert-tool-into-step" />
                                             </a>
                                         </td>
                                     </tr>                                                                      

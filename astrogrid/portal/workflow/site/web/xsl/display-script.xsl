@@ -20,13 +20,13 @@
             <tr>
               <td>
                 Description: <input type="text" size="60" name="script_description"/>
-                <input type="submit" name="action" value="insert-script-description" />
+                <input class="agActionButton" type="submit" name="action" value="insert-script-description" />
               </td>
             </tr>
             <tr>
               <td>
                 <textarea name="script_body" cols="115" rows="4">...</textarea>
-                <input type="submit" name="action" value="insert-script-body" />
+                <input class="agActionButton" type="submit" name="action" value="insert-script-body" />
               </td>
             </tr>
           </table>
