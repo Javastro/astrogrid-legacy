@@ -4,3 +4,4 @@ target
 .project
 velocity.log
 velocity.log.1
+build.properties
