@@ -1,0 +1,63 @@
+<!--  SQL equivalent
+SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER BY t.g - b.g, b.h
+-->
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://tempuri.org/adql">
+
+  <SelectionAll/>
+ 
+  <TableClause>
+ 
+   <FromClause>
+      <TableReference>
+        <Table>
+          <Name>obj</Name>
+          <AliasName>o</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+
+    <WhereClause>
+      <IntersectionSearch>
+        <FirstCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>o</TableName>
+                <Name>Err_z</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+
+            <Compare>&lt;</Compare>
+
+            <SecondExpr xsi:type="AtomExpr">
+               <Value>
+                   <NumberLiteral>
+                       <ApproxNum>
+                           <Value>0.5</Value>
+                       </ApproxNum>
+                   </NumberLiteral>
+               </Value>
+            </SecondExpr>
+
+          </ComparisonPred>
+        </FirstCondition>
+        
+        <SecondCondition xsi:type="Circle">
+          <Ra>
+            <Value>56.75</Value>
+          </Ra>
+          <Dec>
+            <Value>23.867</Value>
+          </Dec>
+          <Radius>
+            <Value>0.3</Value>
+          </Radius>
+        </SecondCondition>
+
+      </IntersectionSearch>
+    </WhereClause>
+  </TableClause>
+
+</Select>
+

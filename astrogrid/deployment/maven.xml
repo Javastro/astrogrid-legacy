@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- $Id: maven.xml,v 1.2 2004/08/04 12:23:28 pah Exp $ -->
+<!-- extension maven script -->
+<project>
+	<!-- astrogrid goals -->
+<goal name="astrogrid-clean" prereqs="clean"/>
+
+<goal name="astrogrid-build-site">
+        <attainGoal name="site" />
+</goal>
+<goal name="astrogrid-deploy-site" prereqs="site">
+        <attainGoal name="site:fsdeploy" />
+</goal>
+	<goal name="astrogrid-deploy-snapshot">
+		<attainGoal name="jar:deploy-snapshot" />
+	</goal>
+	<goal name="astrogrid-build-snapshot">
+		<attainGoal name="jar:snapshot" />
+	</goal>
+	<goal name="astrogrid-install-snapshot">
+		<attainGoal name="jar:install-snapshot" />
+	</goal>
+	<goal name="astrogrid-deploy-artifact">
+		<attainGoal name="jar:deploy" />
+	</goal>
+	<goal name="astrogrid-build-artifact" prereqs="jar">
+	</goal>
+	<goal name="astrogrid-install-artifact" prereqs="jar:install">
+	</goal>
+</project>

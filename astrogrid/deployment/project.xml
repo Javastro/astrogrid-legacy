@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.2 2004/07/27 11:57:11 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.3 2004/08/04 12:23:28 pah Exp $ -->
 <project>
   <extend>../maven-base/project.xml</extend>
   <id>astrogrid-deployment</id>
   <name>AstroGrid Deployment</name>
-  <shortDescription>This project contains tools to assist in the deployment of AstroGrid components</shortDescription>
-  <siteDirectory>${maven.site.central.directory}/${pom.currentVersion}/</siteDirectory>
   
+  <description><![CDATA[
+	The deploy subproject is the project that is actually used to deploy components - see <a href="README.html">README</a>]]></description>
+  <shortDescription>This project contains tools to assist in the deployment of AstroGrid components</shortDescription>
+  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/deployment</siteDirectory>
+  	
   <dependencies/>
   
   <repository>
         <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/deployment
             </connection>
         <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/deployment 
             </developerConnection>
         <url> http://www.astrogrid.org/viewcvs/astrogrid/
             </url>
     </repository>
+	<build>
+	<resources>
+		<resource><directory>${basedir}/deploy</directory>
+			<excludes>
+				<exclude>download/**</exclude>
+				<exclude>tmp/**</exclude>
+			</excludes>
+			</resource>
+	</resources>
+	</build>
   <reports>
-      <report> maven-changelog-plugin </report>
+      <report>maven-changelog-plugin</report>
   </reports>
 
 </project>

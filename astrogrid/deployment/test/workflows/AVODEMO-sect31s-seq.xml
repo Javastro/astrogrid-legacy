@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow name="AVODEMO-sect31s" 
+	xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+	<sequence>
+		<Activity name="sextractor - b" joinCondition="any" xsi:type="step" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<tool name="org.astrogrid.itn05/SExtractor" interface="simple">
+				<input>
+					<parameter name="DetectionImage" type="FileReference">
+						<ns1:value 
+							xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sz_sect31_v1.0_drz_img.fits</ns1:value>
+					</parameter>
+					<parameter name="PhotoImage" type="FileReference">
+						<ns2:value 
+							xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sb_sect31_v1.0_drz_img.fits</ns2:value>
+					</parameter>
+					<parameter name="config_file" type="FileReference">
+						<ns3:value 
+							xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/h_goods_sb_r1.0z_phot_sex.txt</ns3:value>
+					</parameter>
+					<parameter name="PARAMETERS_NAME" type="FileReference">
+						<ns4:value 
+							xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/std.param</ns4:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+						<ns5:value 
+							xmlns:ns5="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_b</ns5:value>
+					</parameter>
+				</output>
+			</tool>
+		</Activity>
+		<Activity name="sextractor - v" joinCondition="any" xsi:type="step" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<tool name="org.astrogrid.itn05/SExtractor" interface="simple">
+				<input>
+					<parameter name="DetectionImage" type="FileReference">
+						<ns6:value 
+							xmlns:ns6="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sz_sect31_v1.0_drz_img.fits</ns6:value>
+					</parameter>
+					<parameter name="PhotoImage" type="FileReference">
+						<ns7:value 
+							xmlns:ns7="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sv_sect31_v1.0_drz_img.fits</ns7:value>
+					</parameter>
+					<parameter name="config_file" type="FileReference">
+						<ns8:value 
+							xmlns:ns8="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/h_goods_sv_r1.0z_phot_sex.txt</ns8:value>
+					</parameter>
+					<parameter name="PARAMETERS_NAME" type="FileReference">
+						<ns9:value 
+							xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/std.param</ns9:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+						<ns10:value 
+							xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_v</ns10:value>
+					</parameter>
+				</output>
+			</tool>
+		</Activity>
+		<Activity name="sextractor - i" joinCondition="any" xsi:type="step" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<tool name="org.astrogrid.itn05/SExtractor" interface="simple">
+				<input>
+					<parameter name="DetectionImage" type="FileReference">
+						<ns11:value 
+							xmlns:ns11="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sz_sect31_v1.0_drz_img.fits</ns11:value>
+					</parameter>
+					<parameter name="PhotoImage" type="FileReference">
+						<ns12:value 
+							xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_si_sect31_v1.0_drz_img.fits</ns12:value>
+					</parameter>
+					<parameter name="config_file" type="FileReference">
+						<ns13:value 
+							xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/h_goods_si_r1.0z_phot_sex.txt</ns13:value>
+					</parameter>
+					<parameter name="PARAMETERS_NAME" type="FileReference">
+						<ns14:value 
+							xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/std.param</ns14:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+						<ns15:value 
+							xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_i</ns15:value>
+					</parameter>
+				</output>
+			</tool>
+		</Activity>
+		<Activity name="sextractor - z" joinCondition="any" xsi:type="step" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<tool name="org.astrogrid.itn05/SExtractor" interface="simple">
+				<input>
+					<parameter name="DetectionImage" type="FileReference">
+						<ns16:value 
+							xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sz_sect31_v1.0_drz_img.fits</ns16:value>
+					</parameter>
+					<parameter name="PhotoImage" type="FileReference">
+						<ns17:value 
+							xmlns:ns17="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/data/GOODS/h_sz_sect31_v1.0_drz_img.fits</ns17:value>
+					</parameter>
+					<parameter name="config_file" type="FileReference">
+						<ns18:value 
+							xmlns:ns18="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/h_goods_sz_r1.0z_phot_sex.txt</ns18:value>
+					</parameter>
+					<parameter name="PARAMETERS_NAME" type="FileReference">
+						<ns19:value 
+							xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/std.param</ns19:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="CATALOG_NAME" type="MySpace_FileReference">
+						<ns20:value 
+							xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_z</ns20:value>
+					</parameter>
+				</output>
+			</tool>
+		</Activity>
+		<Activity name="dft" joinCondition="any" xsi:type="step" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<tool name="org.astrogrid.itn05/CrossMatcher" interface="simple">
+				<input>
+					<parameter name="targets" type="MySpace_VOTableReference">
+						<ns21:value 
+							xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_z</ns21:value>
+					</parameter>
+					<parameter name="matches" type="MySpace_FileReference">
+						<ns22:value 
+							xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_b</ns22:value>
+					</parameter>
+					<parameter name="matches" type="MySpace_FileReference">
+						<ns23:value 
+							xmlns:ns23="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_v</ns23:value>
+					</parameter>
+					<parameter name="matches" type="MySpace_FileReference">
+						<ns24:value 
+							xmlns:ns24="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/sexout_i</ns24:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="merged_output" 
+						type="MySpace_FileReference">
+						<ns25:value 
+							xmlns:ns25="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/merged</ns25:value>
+					</parameter>
+				</output>
+			</tool>
+		</Activity>
+		<Activity name="hyperz" joinCondition="any" xsi:type="step" 
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+			<tool name="org.astrogrid.itn05/HyperZ" interface="simple">
+				<input>
+					<parameter name="config_file" type="FileReference">
+						<ns26:value 
+							xmlns:ns26="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							/home/applications/demo/hyperz/zphot.param</ns26:value>
+					</parameter>
+					<parameter name="input_catalog" 
+						type="MySpace_FileReference">
+						<ns27:value 
+							xmlns:ns27="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/merged</ns27:value>
+					</parameter>
+				</input>
+				<output>
+					<parameter name="output_catalog" 
+						type="MySpace_FileReference">
+						<ns28:value 
+							xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+							ivo://org.astrogrid.itn05/myspace#frog/sect31s/hyperzout</ns28:value>
+					</parameter>
+				</output>
+			</tool>
+		</Activity>
+	</sequence>
+	<description>Workflow involving multi-band sextractor run followed by a 
+		data federation and hyperz run</description>
+	<Credentials>
+		<ns29:Account 
+			xmlns:ns29="http://www.astrogrid.org/schema/Credentials/v1">
+			<ns29:Name>frog</ns29:Name>
+			<ns29:Community>org.astrogrid.itn05</ns29:Community>
+		</ns29:Account>
+		<ns30:Group xmlns:ns30="http://www.astrogrid.org/schema/Credentials/v1">
+			<ns30:Name>any</ns30:Name>
+			<ns30:Community>org.astrogrid.itn05</ns30:Community>
+		</ns30:Group>
+		<ns31:SecurityToken 
+			xmlns:ns31="http://www.astrogrid.org/schema/Credentials/v1">
+			notoken</ns31:SecurityToken>
+	</Credentials>
+</workflow>

@@ -1,0 +1,100 @@
+<?xml version="1.0" ?>
+<document>
+<properties>
+        <author email="pah@jb.man.ac.uk">Paul Harrison</author>
+        <title>README for Deployment</title>
+</properties>
+<body>
+<section name="Preparing for Deployment">
+<p>
+This project contains a special subproject called deploy that provides a maven script to aid in the deployment of the astrogrid components.
+</p>
+<p>The deploy project has been derived from the <a href="../IntegrationTests/">auto-integration</a> project but with the following specializations</p>
+<ul>
+	<li>The script has been parameterized at a lower level as the differnet components can be on different machines</li>
+	<li>operations such as deploy and setup have been kept distinct, as it is likely that multiple deployments of new versions will likely be made to a component that has already been configured</li>
+</ul>
+<subsection name="Prerequisites">
+	<p>Before you can install the astrogrid components there is a minimum set of 3rd party software that you will need to download</p>
+	<ul><li>Java Developer Kit 1.4.2 or greater</li>
+		<li>Tomcat 5 or greater</li>
+		<li>Maven RC1 or greater</li></ul>
+		
+	<p>Then you should download the latest version of the deployment scripts. This can be done with the following cvs command</p>
+	<source>
+		cvs -d :pserver:anoncvs@cvs.astrogrid.org:/devel co -r Itn05_release astrogrid/deployment/deploy
+	</source>
+</subsection>
+<subsection name="Properties">
+	<p>There are several important properties that are used to control the behaviour of the deployment script. To change these property values it is probably best to edit the file <tt>$HOME/build.properties</tt> which is automatically read by maven, although to change a property for a single run then it is also possible to 
+		use the <tt>-Dproperty=value</tt> command line switch for maven</p>
+	<source>
+		maven -Dtomcat.host=my.strange.hostname
+	</source>
+	<p>The properties that can be set are</p>
+	<dl>
+		<dt>tpmcat.host</dt>
+		<dd>This should be the externally resolveable name of the host on which the components are to be deployed. The standard script will try to pick this up from environment variables, so it should not be necessary to set this explicitly in most circumstances.</dd>
+		<dt>tomcat.location</dt>
+		<dd>This is the filesystem location of the tomcat installation - This will have to be explictly set if not the value of /usr/tomcat that is assumed in the script.</dd>
+		<dt>tomcat.port</dt>
+		<dd>This is the port that the tomcat service is running on. The default that the script assumes is 8080</dd>
+		<dt>tomcat.manager.username</dt>
+		<dd>The username of the tomcat manager. This will have to be explicitly set - there is no default.</dd>
+		<dt>tomcat.manager.password</dt>
+		<dd>The password of the tomcat manager. This will have to be explicitly set - there is no default.</dd>
+		<dt>work.dir</dt>
+		<dd>The filesystem location of a local working directory. This (and subdirectories) is used by the various components to store temporary files and to pick up specialized configuration information.</dd>
+		<dt>astrogrid.release</dt>
+		<dd>This is the release name for the release that you desire to install. The default is Itn05_release</dd>
+		<dt>registry.authorityid</dt>
+		<dd>This is the authority id that registry entries are entered under. It is also used as the default community name at the moment (this will be subject to change when a separate property will be used).</dd>
+		<dt>registry.location</dt>
+		<dd>This is the url that is the endpoint of the basic registry service</dd>
+	</dl>
+</subsection>
+
+</section>
+<section name="Deploying">
+	<subsection name="deployment groups">
+		<p>The astrogrid components have been split into 3 groups at the moment for deployment purposes</p>
+		<ul>
+			<li>The "core" - consisting of
+				<ul>
+					<li>Registry</li>
+					<li>Community</li>
+					<li>Portal</li>
+					<li>JES</li>
+					<li>MySpace</li>
+			    </ul>
+				</li>
+		    <li>Datacentre via the PAL</li>
+			<li>Applications</li>
+		</ul>
+		<p>It is expected that a community will deploy one "core" and multiple Datacenters and Applications packages with the current level of Astrogrid functionality. It is of course possible to install multiple MySpace components for instance, but the script does not aid in their setup.</p>
+	</subsection>
+	<subsection name="Deploying Core">
+		<p>After ensuring that the properties have been set up properly, then to deploy the core components, the following commands should be run.</p>
+	<source>
+		maven core-deploy
+		maven setup-core
+	</source>	
+	</subsection>
+	<subsection name="Deploying Applications">
+		<p>First the application configuration files and the registry entry files need to be created and stored in <tt>${work.dir}/cea/config</tt>. The applications themselves need to be installed and configured, but this is of course beyond the scope of these notes.</p>
+		<p>Then the following commands used</p>
+		<source>
+			maven applications-deploy
+			maven setup-applications
+		</source>
+	</subsection>
+	<subsection name="Deploying Datacenter">
+		<p>First the DSA configuration files and the registry entry files need to be created and stored in <tt>${work.dir}/pal/config</tt></p>
+		<source>
+			maven pal-deploy
+			maven setup-pal
+		</source>
+	</subsection>
+</section>
+</body>
+</document>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project - Deployment</title>
+
+  <body>
+     <menu name="Deploying">
+       <item name="Read me" href="README.html"/>
+	   <item name="cvs location of Deploy package" href="http://www.astrogrid.org/viewcvs/astrogrid/deployment/deploy/"/>
+       <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/zips/astrogrid-deploy-${astrogrid.iterations}.zip"/>
+    </menu>
+    <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="Projects"        href="../index.html"/>
+       <item name="Deployment"  href="index.html"/>
+    </links>
+  </body>
+</project>

@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-	This is really just a template for the regitsty entry for a datacentre - it needs to be edited to give proper names to data "application" and the service.
-	-->
 <vr:VODescription xmlns="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
         <CeaApplication>
                 <vr:Identifier>
-                        <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>testdsa</vr:ResourceKey>
+                        <vr:AuthorityID>org.astrogrid.itn05</vr:AuthorityID>
+                        <vr:ResourceKey>INTWFS</vr:ResourceKey>
                 </vr:Identifier>
-                <vr:Title>TemplateEntry</vr:Title>
-                <vr:ShortName>TemplateEntry</vr:ShortName>
+                <vr:Title>INT WFS</vr:Title>
+                <vr:ShortName>INT WFS</vr:ShortName>
                 <vr:Summary>
                         <vr:Description>This is part of the astrogrid CEA.</vr:Description>
                         <vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
@@ -64,8 +61,8 @@
         </CeaApplication>
        <CeaService>
                 <vr:Identifier>
-                        <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>testdsaservice</vr:ResourceKey>
+                        <vr:AuthorityID>org.astrogrid.itn05</vr:AuthorityID>
+                        <vr:ResourceKey>INTWFS.service</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>
                 <vr:ShortName>TemplateEntry</vr:ShortName>
@@ -101,12 +98,12 @@
                 </vr:Capability>
                 <vr:Interface>
                         <vr:Invocation>WebService</vr:Invocation>
-                        <vr:AccessURL use="base">@TOMCATROOT@/astrogrid-pal-@RELEASE@/services/CommonExecutionConnectorService</vr:AccessURL>
+                        <vr:AccessURL use="base">http://ag01.ast.cam.ac.uk:8080/astrogrid-pal-Itn05_release/services/CommonExecutionConnectorService</vr:AccessURL>
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>
-                                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                                <vr:ResourceKey>testdsa</vr:ResourceKey>
+                                <vr:AuthorityID>org.astrogrid.itn05</vr:AuthorityID>
+                                <vr:ResourceKey>INTWFS</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </CeaService>

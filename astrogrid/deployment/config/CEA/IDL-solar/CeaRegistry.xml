@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
+	xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
+	<cea:CeaApplication status="active" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<Identifier>
+			<AuthorityID>@REGAUTHORITY@</AuthorityID>
+			<ResourceKey>CallMakeMPEGFitsImages</ResourceKey>
+		</Identifier>
+		<Title>TemplateEntry</Title>
+		<ShortName>TemplateEntry</ShortName>
+		<Summary>
+			<Description>Thisis part of the astrogrid CEA.</Description>
+			<ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+		</Summary>
+		<Type>Other</Type>
+		<Curation>
+			<Publisher>
+				<Title>Astrogrid</Title>
+				<Description>blah blab</Description>
+				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+			</Publisher>
+			<Contact>
+				<Name>Paul Harrison</Name>
+				<Email>pah@jb.man.ac.uk</Email>
+			</Contact>
+			<Date role="representative">2004-03-26</Date>
+			<Creator>
+				<Name>Astrogrid</Name>
+				<Logo>??</Logo>
+			</Creator>
+			<Version>Iteration 5</Version>
+		</Curation>
+		<Subject>???</Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="InputFile" 
+					type="MySpace_FileReference">
+					<ns1:UI_Name 
+						xmlns:ns1="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						InputFile</ns1:UI_Name>
+					<ns2:UI_Description 
+						xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						Filename of a text file containing the filenames of a 
+						series of FITS images.</ns2:UI_Description>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="OutputFile" 
+					type="MySpace_FileReference">
+					<ns3:UI_Name 
+						xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						OutputFile</ns3:UI_Name>
+					<ns4:UI_Description 
+						xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						Filename of solar movie MPEG file created from fits 
+						images.</ns4:UI_Description>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ns5:Interface name="Simple" 
+					xmlns:ns5="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+					<ns5:input>
+						<ns5:pref ref="InputFile"/>
+					</ns5:input>
+					<ns5:output>
+						<ns5:pref ref="OutputFile"/>
+					</ns5:output>
+				</ns5:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</cea:CeaApplication>
+	<cea:CeaApplication status="active" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<Identifier>
+			<AuthorityID>@REGAUTHORITY@</AuthorityID>
+			<ResourceKey>CallMakeMPEGDataCube</ResourceKey>
+		</Identifier>
+		<Title>TemplateEntry</Title>
+		<ShortName>TemplateEntry</ShortName>
+		<Summary>
+			<Description>Thisis part of the astrogrid CEA.</Description>
+			<ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+		</Summary>
+		<Type>Other</Type>
+		<Curation>
+			<Publisher>
+				<Title>Astrogrid</Title>
+				<Description>blah blab</Description>
+				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+			</Publisher>
+			<Contact>
+				<Name>Paul Harrison</Name>
+				<Email>pah@jb.man.ac.uk</Email>
+			</Contact>
+			<Date role="representative">2004-03-26</Date>
+			<Creator>
+				<Name>Astrogrid</Name>
+				<Logo>??</Logo>
+			</Creator>
+			<Version>Iteration 5</Version>
+		</Curation>
+		<Subject>???</Subject>
+		<cea:ApplicationDefinition>
+			<cea:Parameters>
+				<cea:ParameterDefinition name="InputFile" 
+					type="MySpace_FileReference">
+					<ns6:UI_Name 
+						xmlns:ns6="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						InputFile</ns6:UI_Name>
+					<ns7:UI_Description 
+						xmlns:ns7="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						Filename of a binary IDL .sav file containing a 
+						datacube.</ns7:UI_Description>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="ArrayName" type="string">
+					<ns8:UI_Name 
+						xmlns:ns8="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						ArrayName</ns8:UI_Name>
+					<ns9:UI_Description 
+						xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						Name of the 3-D array inside the datacube restore file 
+						to save as an MPEG</ns9:UI_Description>
+				</cea:ParameterDefinition>
+				<cea:ParameterDefinition name="OutputFile" 
+					type="MySpace_FileReference">
+					<ns10:UI_Name 
+						xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						OutputFile</ns10:UI_Name>
+					<ns11:UI_Description 
+						xmlns:ns11="http://www.astrogrid.org/schema/AGParameterDefinition/v1">
+						Filename of solar movie MPEG file created from fits 
+						images.</ns11:UI_Description>
+				</cea:ParameterDefinition>
+			</cea:Parameters>
+			<cea:Interfaces>
+				<ns12:Interface name="Simple" 
+					xmlns:ns12="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+					<ns12:input>
+						<ns12:pref ref="InputFile"/>
+						<ns12:pref ref="ArrayName"/>
+					</ns12:input>
+					<ns12:output>
+						<ns12:pref ref="OutputFile"/>
+					</ns12:output>
+				</ns12:Interface>
+			</cea:Interfaces>
+		</cea:ApplicationDefinition>
+	</cea:CeaApplication>
+	<cea:CeaService status="active" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<Identifier>
+			<AuthorityID>@REGAUTHORITY@</AuthorityID>
+			<ResourceKey>TemplateEntry</ResourceKey>
+		</Identifier>
+		<Title>TemplateEntry</Title>
+		<ShortName>TemplateEntry</ShortName>
+		<Summary>
+			<Description>This is part of the astrogrid CEA.</Description>
+			<ReferenceURL>
+				http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+		</Summary>
+		<Type>Other</Type>
+		<Curation>
+			<Publisher>
+				<Title>Astrogrid</Title>
+				<Description>blah blab</Description>
+				<ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
+			</Publisher>
+			<Contact>
+				<Name>Paul Harrison</Name>
+				<Email>pah@jb.man.ac.uk</Email>
+			</Contact>
+			<Date role="representative">2004-03-26</Date>
+			<Creator>
+				<Name>Astrogrid</Name>
+				<Logo>??</Logo>
+			</Creator>
+			<Version>Iteration 5</Version>
+		</Curation>
+		<Subject>???</Subject>
+		<Capability>
+			<StandardURL>
+				http://www.astrogrid.org/maven/build/applications/</StandardURL>
+			<StandardID>
+				<AuthorityID>astrogrid.og</AuthorityID>
+				<ResourceKey>CommonExecutionArchitucture</ResourceKey>
+			</StandardID>
+		</Capability>
+		<Interface>
+			<Invocation>WebService</Invocation>
+			<AccessURL use="base">
+				@TOMCATROOT@/astrogrid-applications-@RELEASE@/services/CommonExecutionConnectorService</AccessURL>
+		</Interface>
+		<cea:ManagedApplications>
+			<cea:ApplicationReference>
+				<AuthorityID>@REGAUTHORITY@</AuthorityID>
+				<ResourceKey>CallMakeMPEGFitsImages</ResourceKey>
+			</cea:ApplicationReference>
+			<cea:ApplicationReference>
+				<AuthorityID>@REGAUTHORITY@</AuthorityID>
+				<ResourceKey>CallMakeMPEGDataCube</ResourceKey>
+			</cea:ApplicationReference>
+		</cea:ManagedApplications>
+	</cea:CeaService>
+</VODescription>

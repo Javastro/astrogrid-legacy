@@ -56,7 +56,7 @@
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/Manager?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-mySpace-@RELEASE@/services/Manager?wsdl</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>

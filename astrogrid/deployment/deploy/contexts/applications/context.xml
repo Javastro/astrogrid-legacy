@@ -1,9 +1,9 @@
 <Context path="/astrogrid-applications-@RELEASE@">
 <!-- configuration file for the applications webapp -->
          <Environment description="properties file" name="AstrogridApplicationsConfigURL" override="true"
-         type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties"/>
+         type="java.lang.String" value="file://@WORKDIR@/cea/config/astrogrid.properties"/>
          <Environment description="properties file" name="org.astrogrid.config.url" override="true"
-         type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties"/>
+         type="java.lang.String" value="file://@WORKDIR@/cea/config/astrogrid.properties"/>
           <Resource name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource"/>
           <Resource name="mail/AGMailSession" scope="Shareable" type="javax.mail.Session"/>
           

@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.2 2004/06/11 19:28:15 pah Exp $ -->
+<!-- $Id: project.xml,v 1.3 2004/08/04 12:23:28 pah Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
-<!--    <extend>../../maven-base/project.xml</extend> -->
-    <id>auto-integration</id>
-    <name>Automated Integration Testing</name>
+    <groupId>org.astrogrid</groupId>
+    <id>astrogrid-deploy</id>
+    <name>Deployment scripts</name>
+    <currentVersion>Itn05_release</currentVersion>
+    <organization>
+        <name>AstroGrid</name>
+        <url>http://www.astrogrid.org</url>
+        <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    </organization>
     <description>
-    Automated integration testing. This project will install all the astorgrid components
-    (someday) to a local tomcat5 server, and set up the required configuration and workfing
-    directories. Then a batch of integration tests are run against the installed components.
+    Automated deployment testing. This project will assist in the installation and configuration of bundles of the astorgrid components
+    to a local tomcat5 server.
     </description>
+    <inceptionYear>2002</inceptionYear>
+    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+    <package>org.astrogrid</package>
+    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}</siteDirectory>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
 
     <build />
     <dependencies>
@@ -17,7 +27,7 @@
        <dependency>
                 <artifactId>exist</artifactId>
                 <groupId>exist</groupId>
-                <version>inttest</version>
+                <version>SNAPSHOT</version>
                 <type>war</type>
         </dependency>
         <!-- cheeky little database driver -->

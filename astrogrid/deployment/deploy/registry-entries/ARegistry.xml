@@ -24,17 +24,17 @@
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
     </Identifier>
-    <Title>Astrogrid localhost test Registry</Title>
+    <Title>Astrogrid Deployed Registry</Title>
     <Summary>
       <Description>
-      	This is the Astrogrid localhost test main registry currently holding datate for MSSL, Cambridge Community, and Edinburgh-ROE Myspace.
+      	This is the central registry for the deployed Astrogrid components
       </Description>
       <ReferenceURL>http://localhost:8080/</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
     <Curation>
       <Publisher>
-         <Title>MSSL Registry</Title>
+         <Title>Astrogrid</Title>
       </Publisher>
       <Contact>
         <Name>Integration tests</Name>

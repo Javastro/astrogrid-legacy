@@ -99,7 +99,7 @@
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>@WORKDIR@/applications/testapp.sh</ExecutionPath>
+		<ExecutionPath>@TOOLBASEDIR@/testapp.sh</ExecutionPath>
 	</Application>
 	<Application name="testap2">
 		<!-- do not test specific instance app for now -->
@@ -198,7 +198,7 @@
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>@WORKDIR@/applications/testapp.sh</ExecutionPath>
+		<ExecutionPath>@TOOLBASEDIR@/testapp.sh</ExecutionPath>
 	</Application>
 	<Application name="testap3">
 		<!--This Application does not exist - this is just here to help with testing the description reading modules-->
@@ -257,21 +257,34 @@
 				<agpd:UI_Name>Derived output catalogue</agpd:UI_Name>
 				<agpd:UI_Description>The catalogue of images derived from the input images</agpd:UI_Description>
 			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="WEIGHT_IMAGE" type="MySpace_FileReference">
+				<agpd:UI_Name>Weight Image</agpd:UI_Name>
+				<agpd:UI_Description>The Image that is used to weight photometric parameters</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="WEIGHT_TYPE" type="string">
+				<agpd:UI_Name>Weight Type</agpd:UI_Name>
+				<agpd:UI_Description>The type of weighting that is used</agpd:UI_Description>
+				<agpd:DefaultValue>NONE</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			
+			
 		</Parameters>
 		<Interfaces>
-			<Interface name="Simple">
+			<Interface name="simple">
 				<input>
 					<pref ref="DetectionImage"/>
 					<pref ref="PhotoImage"/>
 					<pref ref="config_file"/>
 					<pref ref="PARAMETERS_NAME"/>
+					<pref ref="WEIGHT_IMAGE"/>
+					<pref ref="WEIGHT_TYPE"/>
 				</input>
 				<output>
 					<pref ref="CATALOG_NAME"/>
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools/sextractor-2.3/sex</ExecutionPath>
+		<ExecutionPath>@TOOLBASEDIR@/sextractor-2.3/sex</ExecutionPath>
 	</Application>
 	<Application name="HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
 		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
@@ -300,7 +313,7 @@
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</ExecutionPath>
+		<ExecutionPath>@TOOLBASEDIR@/ZPHOT/hyperzwrapper.sh</ExecutionPath>
 	</Application>
 	<Application name="CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
 		<!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
@@ -348,7 +361,7 @@
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools/dft/bin/dft</ExecutionPath>
+		<ExecutionPath>@TOOLBASEDIR@/dft/bin/dft</ExecutionPath>
 	</Application>
 	
 </CommandLineExecutionControllerConfig>
