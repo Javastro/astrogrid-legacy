@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.3 2004/05/17 12:37:31 pah Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.4 2004/05/17 22:54:59 pah Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,12 +73,22 @@ public class ApplicationsInstallationTest extends AbstractTestForApplications {
         assertNotNull(entry);
         // I guess its xml or something. need to add further testing here
     }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.integration.AbstractTestForApplications#applicationName()
+    */
+   protected String applicationName() {
+      return TESTAPP2;
+     }
     
     }
 
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.4  2004/05/17 22:54:59  pah
+look at the actual interfaces that are being run
+
 Revision 1.3  2004/05/17 12:37:31  pah
 Improve CEA tests that call application controller directly
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationRunTest.java,v 1.1 2004/05/17 12:37:31 pah Exp $
+ * $Id: ApplicationRunTest.java,v 1.2 2004/05/17 22:54:59 pah Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -102,6 +102,13 @@ public class ApplicationRunTest extends AbstractRunTestForApplications {
           
       
    }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.integration.AbstractTestForApplications#applicationName()
+    */
+   protected String applicationName() {
+      return TESTAPP2;
+         }
    
 
 }

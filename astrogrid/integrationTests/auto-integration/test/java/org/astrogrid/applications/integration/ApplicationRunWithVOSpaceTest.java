@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationRunWithVOSpaceTest.java,v 1.1 2004/05/17 12:37:31 pah Exp $
+ * $Id: ApplicationRunWithVOSpaceTest.java,v 1.2 2004/05/17 22:54:59 pah Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -103,5 +103,12 @@ public class ApplicationRunWithVOSpaceTest extends AbstractRunTestForApplication
       assertTrue("the test string was not found in the application output", test);
 
    }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.integration.AbstractTestForApplications#applicationName()
+    */
+   protected String applicationName() {
+      return TESTAPP;  
+       }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForApplications.java,v 1.1 2004/05/17 12:37:31 pah Exp $
+ * $Id: AbstractTestForApplications.java,v 1.2 2004/05/17 22:54:59 pah Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -60,8 +60,5 @@ public abstract class AbstractTestForApplications extends AbstractTestForIntegra
         return null;
     }
 
-   protected String applicationName() {
-        return TESTAPP2;
-    }
-
+   protected abstract String applicationName();
 }
