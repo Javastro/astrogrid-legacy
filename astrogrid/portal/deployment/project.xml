@@ -1,0 +1,30 @@
+<project>
+    <extend>../maven/project-nodependencies.xml</extend>
+    <artifactId>astrogrid-portal-deploy-script</artifactId>
+    <name>Portal Installation Script</name>
+    <organization/>
+    <description>This project contains everything necessary to install the application, when run as a stand-alone ant script.  This is then bundled into a jar for installation on a webserver from where it can be accessed by other applications.
+	</description>
+    <shortDescription>Subproject to hold ant scripts and resources specific to the portal installation</shortDescription>
+    <repository/>
+    <build>
+        <resources>
+            <resource>
+                <directory>ant</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+    <dependencies>        <dependency>
+           <groupId>catalina-ant</groupId>
+            <artifactId>catalina-ant</artifactId>
+            <version>5.0.18</version>
+            <properties/>
+        </dependency>
+        
+    </dependencies>
+    <properties/>
+</project>

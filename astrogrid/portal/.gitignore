@@ -4,3 +4,5 @@ target
 .checkstyle
 .classpath
 javadoc*
+astrogrid-portal.war
+build.properties

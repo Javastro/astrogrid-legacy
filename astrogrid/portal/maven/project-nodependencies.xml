@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Portal Base POM
+    | Portal subcomponents should inherit from this POM
+    | which includes the "core" dependencies, and set 
+    | the property astrogrid.warbundle to true or false
+    | depending on whether the dependencies should be bundled into
+    | the subcomponent's war or not.
+    | This POM in turn inherits from maven-base which sets most
+    | general Astrogrid Properties.
+    +-->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <extend>${basedir}/../../maven-base/project.xml</extend>
+    <artifactId>astrogrid-portal-maven-base-nodependencies</artifactId>
+    <currentVersion>${astrogrid.portal.version}</currentVersion>
+    <name>AstroGrid Portal Base POM (no deps)</name>
+    <shortDescription>AstroGrid Web Portal Base POM</shortDescription>
+    <build>
+        <sourceDirectory/>
+        <unitTestSourceDirectory/>
+    </build>
+</project>

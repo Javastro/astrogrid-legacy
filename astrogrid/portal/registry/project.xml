@@ -1,5 +1,5 @@
 <project>
-    <extend>../maven-base/project.xml</extend>
+    <extend>../maven/project.xml</extend>
     <artifactId>astrogrid-portal-registry</artifactId>
     <name>AstroGrid Portal Registry</name>
     <description>

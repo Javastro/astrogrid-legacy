@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.31 2004/12/07 16:26:04 clq2 Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.32 2005/01/31 19:39:00 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2004/12/07 16:26:04 $</cvs:date>
- * <cvs:version>$Revision: 1.31 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/01/31 19:39:00 $</cvs:date>
+ * <cvs:version>$Revision: 1.32 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -40,10 +40,6 @@ import org.astrogrid.store.Ivorn;
  * Login Action.  Extracts login parameters from the 
  * request action and checks them with the security 
  * delegate.
- * The portal expects to be told the endpoint of a registry service (see configuration
- * property below).  If this is unset, then a local, properties-based registry
- * will be used. See the Registry docs http://www.astrogrid.org/maven/docs/snapshot/registry/index.html
- * for more details.
  * Note that using an incorrect community will cause this class' act() method
  * to throw an exception, since an
  * attempt is made to look up the community in the registry.  If you have not configured
@@ -56,10 +52,7 @@ import org.astrogrid.store.Ivorn;
  * @author dave/jdt
  */
 public final class LoginAction extends AbstractAction {
-    /**
-     * Name of JNDI property holding security delegate endpoint URL
-     */
-    public static final String ORG_ASTROGRID_PORTAL_REGISTRY_URL = "org.astrogrid.portal.registry.url";
+
     /**
      * Parameter names to look for in the request object. We could refer to
      * these vars for better safety in the xsps, but it makes the code so ugly
@@ -76,25 +69,10 @@ public final class LoginAction extends AbstractAction {
     public static final String PASS_PARAM = "pass";
 
     /**
-     * Switch for our debug statements. 
-     * JDT: I know we shouldn't be using System.outs but they
-     * can be *so* useful. Retain, but switch off for deployment and
-     * supplement with logging to files.
-     *  
-     */
-    private static final boolean debugToSystemOutOn = true;
-    /**
      * Logger
      */
     private Logger log;
   
-    /**
-     * Add's a password to Dave's backdoor - see class description
-     * @TODO remove this in production
-     */
-    static {
-        SecurityServiceMock.setPassword("secret");
-    }
   
     /**
      * Our action method. Expects the "user", "community" and "pass" to be in
@@ -155,30 +133,8 @@ public final class LoginAction extends AbstractAction {
         }
         log.debug("  Ivorn : " + ivorn);
         final String name = ivorn.toString();
-        //
-        // Create a community password resolver
-        // This attempts to connect to the registry, and then
-        // automatically connects the correct community
-        // based on the community parameter in the Ivorn
-        // If a registry endpoint hasn't been set up, then a "local"
-        // registry is used instead.
-        final CommunityPasswordResolver passwordResolver;
-        try {
-            final Config config = SimpleConfig.getSingleton();
-            final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
-            log.debug("Registry endpoint:"+endpoint);
-            if (endpoint!=null) {
-                passwordResolver = new CommunityPasswordResolver(new URL(endpoint));
-            } else {
-                passwordResolver = new CommunityPasswordResolver();
-        }
-            log.debug("Got CommunityPasswordResolver "+passwordResolver);
-        } catch (MalformedURLException e1) {
-            log.error("Unable to create registry URL", e1);
-            throw new LoginException("Unable to contact registry.  Please check your registry URL",e1);
-        }
 
-
+        final CommunityPasswordResolver passwordResolver = new CommunityPasswordResolver();
 
         //
         // Try logging in to the Community.
@@ -221,10 +177,7 @@ public final class LoginAction extends AbstractAction {
         // Get MySpace Manager end point.
         Ivorn accountSpace = null;
         try {
-          final Config config = SimpleConfig.getSingleton();
-          final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
-          
-          CommunityAccountSpaceResolver accSpaceResolver = new CommunityAccountSpaceResolver(new URL(endpoint));
+          CommunityAccountSpaceResolver accSpaceResolver = new CommunityAccountSpaceResolver();
           accountSpace = accSpaceResolver.resolve(ivorn);
           
           assert accountSpace != null : "Account Space should not be null";
@@ -283,13 +236,12 @@ public final class LoginAction extends AbstractAction {
 
     /**
      * During unit tests the logger isn't setup properly, hence this method to
-     * use a console logger instead.  Also will log to console
-     * if debugToSystemOutOn - can be useful.
+     * use a console logger instead. 
      *  
      */
     private void checkLogger() {
         log = super.getLogger();
-        if (log == null || debugToSystemOutOn) {
+        if (log == null) {
             enableLogging(new ConsoleLogger());
             log = super.getLogger();
         }
@@ -298,6 +250,15 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.32  2005/01/31 19:39:00  jdt
+ * Merges from POR_JDT_882
+ *
+ * Revision 1.31.28.2  2005/01/31 11:48:49  jdt
+ * fixed some noncompiling tests - these need attention, and dropped the debug flag from the login action.
+ *
+ * Revision 1.31.28.1  2005/01/31 02:16:39  jdt
+ * Rationalised config properties
+ *
  * Revision 1.31  2004/12/07 16:26:04  clq2
  * portal_kea_719
  *

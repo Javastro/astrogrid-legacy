@@ -8,7 +8,7 @@
     <artifactId>astrogrid-portal</artifactId>
     <currentVersion>${astrogrid.portal.version}</currentVersion>
     <name>AstroGrid Portal</name>
-
+	<logo>/img/portallogo.jpg</logo>
     <description>
     The AstroGrid Web Portal: access to AstroGrid via Cocoon.
     </description>

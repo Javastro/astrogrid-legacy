@@ -15,7 +15,7 @@
     -->
 
     <cocoon id="core">
-      <filename>${context-root}/WEB-INF/logs/core.log</filename>
+      <filename>${context-root}/../../logs/portal-core.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -39,7 +39,7 @@
     </cocoon>
 
     <cocoon id="sitemap">
-      <filename>${context-root}/WEB-INF/logs/sitemap.log</filename>
+      <filename>${context-root}/../../logs/portal-sitemap.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -47,7 +47,7 @@
     </cocoon>
 
     <cocoon id="handled-errors">
-      <filename>${context-root}/WEB-INF/logs/handled-errors.log</filename>
+      <filename>${context-root}/../../logs/portal-handled-errors.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -55,7 +55,7 @@
     </cocoon>
 
     <cocoon id="access">
-      <filename>${context-root}/WEB-INF/logs/access.log</filename>
+      <filename>${context-root}/../../logs/portal-access.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -64,7 +64,7 @@
 
     <!-- The logger for the flow layer -->
     <cocoon id="flow">
-      <filename>${context-root}/WEB-INF/logs/flow.log</filename>
+      <filename>${context-root}/../../logs/portal-flow.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -76,7 +76,7 @@
     -->
     <priority-filter id="error" log-level="ERROR">
       <cocoon>
-        <filename>${context-root}/WEB-INF/logs/error.log</filename>
+        <filename>${context-root}/../../logs/portal-error.log</filename>
         <format type="cocoon">
           %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
         </format>
@@ -86,7 +86,7 @@
   
     <!-- The logger for the Slide components -->
     <cocoon id="slide">
-      <filename>${context-root}/WEB-INF/logs/slide.log</filename>
+      <filename>${context-root}/../../logs/portal-slide.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -95,7 +95,7 @@
 
     <!-- The logger for the xmlform components -->
     <cocoon id="jxforms">
-      <filename>${context-root}/WEB-INF/logs/jxforms.log</filename>
+      <filename>${context-root}/../../logs/portal-jxforms.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -104,7 +104,7 @@
 
     <!-- The logger for the xslt components -->
     <cocoon id="xslt">
-      <filename>${context-root}/WEB-INF/logs/xslt.log</filename>
+      <filename>${context-root}/../../logs/portal-xslt.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>
@@ -113,7 +113,7 @@
     
     <!-- The logger for Astrogrid components -->
     <cocoon id="astrogrid-log">
-      <filename>${context-root}/WEB-INF/logs/astrogrid.log</filename>
+      <filename>${context-root}/../../logs/portal-astrogrid.log</filename>
       <format type="cocoon">
         %7.7{priority} %{time}   [%{category}] (%{uri}) %{thread}/%{class:short}: %{message}\n%{throwable}
       </format>

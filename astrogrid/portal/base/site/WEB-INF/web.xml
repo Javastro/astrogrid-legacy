@@ -382,19 +382,74 @@
     <extension>grm</extension>
     <mime-type>text/plain</mime-type>
   </mime-mapping>
-
+  
+  
+  <!-- This is not an ideal place for these entries, since
+       some are used in some sub-projects and not others...
+       would be better for the subproject wars to add in what
+       they need.  However, this will do for now.-->
+  <!--email related entries-->
   <env-entry>
-    <!--JNDI property for registry config-->
-    <env-entry-name>org.astrogrid.registry.config</env-entry-name>
-    <env-entry-value>/usr/local/tomcat/registry-config.xml</env-entry-value>
+    <env-entry-name>emailserver.address</env-entry-name>
+    <env-entry-value>127.0.0.1</env-entry-value>
     <env-entry-type>java.lang.String</env-entry-type>
+    <description>The address of your local smtp server</description>
   </env-entry>
 
   <env-entry>
-    <!--JNDI property for community config-->
-    <env-entry-name>org.astrogrid.community.config</env-entry-name>
-    <env-entry-value>/etc/astrogrid/community/astrogrid-community-config.xml</env-entry-value>
+    <env-entry-name>emailserver.user</env-entry-name>
+    <env-entry-value>astrogrid</env-entry-value>
     <env-entry-type>java.lang.String</env-entry-type>
+    <description>Username from which you can send admin mail</description>
   </env-entry>
+  
+  <env-entry>
+    <env-entry-name>emailserver.password</env-entry-name>
+    <env-entry-value>astrogrid</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Password for Username from which you can send admin mail</description>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>emailserver.from</env-entry-name>
+    <env-entry-value>admin@astrogrid.org</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Return address for admin mail</description>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>astrogrid.portal.admin.email</env-entry-name>
+    <env-entry-value>jdt@roe.ac.uk</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Destination for admin mail</description>
+  </env-entry>
+  
+  <!-- Registry configuration -->
+   <env-entry>
+    <env-entry-name>org.astrogrid.registry.query.endpoint</env-entry-name>
+    <env-entry-value>http://myregistry.org/services/RegistryQuery</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Endpoint for Registry Query Service</description>
+  </env-entry>
+  
+  <env-entry>
+    <env-entry-name>org.astrogrid.registry.admin.endpoint</env-entry-name>
+    <env-entry-value>http://myregistry.org/services/RegistryUpdate</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Endpoint for Registry Admin Service</description>
+  </env-entry>
+  <!-- Workflow configuration -->
+  <env-entry>
+    <env-entry-name>workflow.jes.endpoint</env-entry-name>
+    <env-entry-value>http://myjes.org/services/JobControllerService</env-entry-value>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <description>Endpoint for Job Entry System Service</description>
+  </env-entry> 
+    <env-entry>
+    <env-entry-name>workflow.applist</env-entry-name>
+    <env-entry-value>http://myjes.org/services/JobControllerService</env-entry-value>
+    <env-entry-type>registry</env-entry-type>
+    <description>Set to registry to instruct the portal to get the list of apps from the registry</description>
+  </env-entry>   
 </web-app>
 

@@ -1,5 +1,5 @@
 <project>
-    <extend>../maven-base/project.xml</extend>
+    <extend>../maven/project.xml</extend>
     <artifactId>astrogrid-portal-login</artifactId>
     <name>AstroGrid Portal Login</name>
     <dependencies>

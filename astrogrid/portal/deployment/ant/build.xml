@@ -1,0 +1,151 @@
+<project name="install" default="install-portal" basedir=".">
+    <!-- Configure the custom Ant tasks for the Manager application -->
+    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />
+    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" />
+    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" />
+    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" />
+    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
+    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" />
+    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" />
+    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" />
+    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" />
+    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" />
+    
+    <property file="default.properties"/>
+    <property name="temporary.dir" value="tmp"/>
+    <property name="portal.war" value="${maven.local.repo}/${astrogrid.groupId}/wars/${portal.war.name}"/>
+    <property name="local.portal.war" value="${basedir}/portal.war"/>
+    <property name="portal.contextpath" value="/astrogrid-portal"/> <!--This cannot be changed at the moment-->
+    
+    <target name="checkTomcat">
+        <input addProperty="input.tomcat.present" validargs="yes,no"> Is Tomcat running on your system with the Manager app enabled? </input>
+        <condition property="tomcat.present.true">
+            <equals arg1="${input.tomcat.present}" arg2="yes"/>
+        </condition>
+        <fail message="Please start Tomcat and retry the installation" unless="tomcat.present.true"/>
+        <input addProperty="input.tomcat.url" defaultvalue="http://127.0.0.1:8080"> Please enter the URL of Tomcat on your system </input>
+        <input addProperty="input.tomcat.manager.user" defaultvalue="tomcat"> Please enter the Tomcat manager username </input>
+        <input addProperty="input.tomcat.manager.pass" defaultvalue="tomcat"> Please enter the Tomcat manager password </input>
+        <echo>Attempting to contact Tomcat Manager...</echo>
+        <tempfile property="page.check"/>
+        <property name="tomcat.manager.url" value="${input.tomcat.url}/manager"/>
+        <get src="${tomcat.manager.url}" dest="${page.check}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}"/>
+        <echo>...OK</echo>
+    </target>
+    
+    <target name="checkRegistry">
+        <input addProperty="input.astrogrid.registry.endpoint" defaultvalue="http://127.0.0.1:8080/astrogrid-registry-SNAPSHOT/"> Please enter the URL of your registry end-point </input>
+    	<property name="astrogrid.registry.endpoint" value="${input.astrogrid.registry.endpoint}"/>
+        <echo>Attempting to contact the registry...</echo>
+        <tempfile property="page.check"/>
+        <get src="${astrogrid.registry.endpoint}" dest="${page.check}"/>
+        <echo>...OK</echo>
+    </target>
+    
+    <!--consider downloading this to the maven repository, rather than a temp folder-->
+    <target name="downloadPortal">
+    	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
+        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${portal.war.name}" dest="${portal.war}" verbose="true" usetimestamp="true"/>
+    </target>
+    <target name="install-portal" description="Install the AstroGrid Portal" depends="checkTomcat, checkRegistry, downloadPortal, portal-deploy, check-installed-ok">
+        <echo>***The Portal has been successfully installed***</echo>
+        <echo>Click Done to exit</echo>
+    	<property name="portal.installed" value="true"/>
+    </target>
+	
+	<target name="check-installed-ok" depends="checkTomcat">
+    	<waitfor maxwait="30" maxwaitunit="second" checkevery="2000" timeoutproperty="installation.failed">
+    	    <http url="${input.tomcat.url}${portal.contextpath}"/>
+    	</waitfor>
+    	<fail if="installation.failed">Installation failed for some reason.  Please retry</fail>
+	</target>
+	
+	<target name="check-uninstalled-ok" depends="checkTomcat">
+    	<waitfor maxwait="6" maxwaitunit="second" checkevery="2000" timeoutproperty="uninstallation.failed">
+    	    <http url="${input.tomcat.url}${portal.contextpath}"/>
+    	</waitfor>
+    	<fail unless="uninstallation.failed">Uninstallation failed for some reason.  Please retry</fail>
+	</target>	
+	
+	
+    <target name="uninstall-portal" description="Uninstall the AstroGrid Portal" depends="checkTomcat,  portal-undeploy, check-uninstalled-ok">
+    	<sleep seconds="10" description="Allow Tomcat to catch up"/>
+        <echo>***The Portal has been successfully removed***</echo>
+        <echo>Click Done to exit</echo>
+    	<property name="portal.uninstalled" value="true"/>
+    </target>    
+    
+    <target name="save-settings" description="Save your settings for next time">
+        <input addProperty="input.saveProperties.file" defaultvalue="${user.home}/portal-installer.properties">
+            Enter a file name for saving your current settings
+        </input>
+        <echoproperties destfile="${input.saveProperties.file}" prefix="input." description="This file can then be reused for hands-free operation"/>
+    	<property name="properties.saved" value="true"/>
+    </target>
+    <target name="load-settings" description="Load previously saved settings">
+    	<input addProperty="input.loadProperties.file" defaultvalue="${user.home}/portal-installer.properties">
+            Enter the filename of your previously saved settings
+        </input>
+    	<property file="${input.loadProperties.file}"/>
+    </target>
+    
+    <target name="createTmpDir">
+        <delete dir="${temporary.dir}"/>
+        <mkdir dir="${temporary.dir}"/>
+    </target>
+    <target name="portal-deploy" depends="createTmpDir,checkTomcat,checkRegistry,downloadPortal,updatePortalWar">
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${portal.contextpath}" war="${local.portal.war}" />
+    </target>
+    <target name="portal-undeploy" depends="checkTomcat">
+        <tomcat-remove url="${tomcat.manager.url}" username="${input.tomcat.manager.user}" password="${input.tomcat.manager.pass}" 
+            path="${portal.contextpath}"  />
+    </target>    
+	
+	<target name="input-email-settings">
+		<echo>To enable emails to be sent to users requesting accounts, you need to configure the portal to use an SMTP email server</echo>
+		<input addproperty="input.mail.server" defaultvalue="127.0.0.1">Enter the address of your SMTP server</input>
+		<input addproperty="input.mail.user" defaultvalue="astrogrid">Enter a username for your SMTP server</input>
+		<input addproperty="input.mail.pass" defaultvalue="">Enter a password for your SMTP server</input>
+		<input addproperty="input.mail.from" defaultvalue="admin@astrogrid.org">Enter the replyto: address</input>
+		<input addproperty="input.mail.admin" defaultvalue="youraddress@astrogrid.org">Enter the Administrator email address</input>
+	</target>
+	
+	<target name="input-jes-settings">
+		<echo>In order to run workflows from the portal, you need to enter the location of your Job Entry System</echo>
+		<input addproperty="input.astrogrid.jes.endpoint" defaultvalue="http://127.0.0.1/astrogrid-jes-SNAPSHOT">
+        	Enter the location of your JES
+		</input>
+	</target>
+	
+    <target name="updatePortalWar" depends="downloadPortal, input-jes-settings, input-email-settings">
+        <filterset id="myfilter">
+            <filter token="CENTRALREGISTRY" value="${astrogrid.registry.endpoint}"/>
+            <filter token="JOBENTRYSYSTEM" value="${input.astrogrid.jes.endpoint}" /> 
+        	<filter token="SMTPSERVER" value="${input.mail.server}"/>
+       		<filter token="SMTPUSER" value="${input.mail.user}"/>
+       		<filter token="SMTPPASS" value="${input.mail.pass}"/>
+        	<filter token="MAILFROM" value="${input.mail.from}"/>
+        	<filter token="ADMINEMAIL" value="${input.mail.admin}"/>
+        </filterset>
+        <echo>Registry endpoint is ${astrogrid.registry.endpoint}</echo>
+        <copy todir="${temporary.dir}/portal">
+            <filterset refid="myfilter"/>
+            <fileset dir="portal" />
+        </copy>
+        <copy file="${portal.war}" tofile="${local.portal.war}"/>
+    	<!--update the context.xml, and login image file, if set-->
+        <war update="yes" destfile="${local.portal.war}">
+            <metainf dir="${temporary.dir}/portal" />
+        	<!--hardwire this in for now, though a bit fragile-->
+        	<zipfileset fullpath="web/images/loginBackground.jpg" file="backGroundImg.jpg"/>
+        </war>
+    </target>
+	<target name="customize-login-page" description="Customize the login page background">
+		<input addproperty="input.login.image.file">
+			Please enter the location of a jpeg for the login page background
+		</input>
+    	<copy file="${input.login.image.file}" tofile="backGroundImg.jpg"/>
+    	<touch file="backGroundImg.jpg"/> <!--got to makesure it's newer than the one in the war file-->
+	</target>
+</project>

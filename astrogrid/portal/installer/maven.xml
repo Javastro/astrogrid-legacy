@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" 
+    xmlns:deploy="deploy" xmlns:util="jelly:util" xmlns:doc="doc">
+ 
+ <preGoal name="java:jar-resources">
+  	<filter token="PORTAL-VERSION" value="${pom.currentVersion}"/>
+ </preGoal>
+ 
+</project>

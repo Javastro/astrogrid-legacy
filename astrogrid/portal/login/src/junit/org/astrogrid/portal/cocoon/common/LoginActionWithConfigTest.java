@@ -1,4 +1,4 @@
-/* $Id: LoginActionWithConfigTest.java,v 1.2 2004/04/21 13:56:29 jdt Exp $
+/* $Id: LoginActionWithConfigTest.java,v 1.3 2005/01/31 19:39:00 jdt Exp $
  * Created on Apr 2, 2004 by jdt
  * The portal-head project
  * (c) 2004 
@@ -38,36 +38,14 @@ public class LoginActionWithConfigTest extends TestCase {
         SecurityServiceMock.setPassword("secret");
     }
     
-    /**
-     * Try bad config.  Give a registry url which is nonsense
-     */
-    public void testBadlyConfiguredBadURL() {
-        final Config config = SimpleConfig.getSingleton();
-        config.setProperty(
-                LoginAction.ORG_ASTROGRID_PORTAL_REGISTRY_URL,
-        "bad address");
-        final LoginAction action = new LoginAction();
-        final Map objectModel = new HashMap();
-        final DummyRequest request = new DummyRequest();
-        request.addParameter(LoginAction.USER_PARAM, "John");
-        request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
-        request.addParameter(LoginAction.PASS_PARAM, "pass");
-        objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
-        try {
-            action.act(null, null, objectModel, null, null);
-            fail("Expected a LoginException");
-        } catch (LoginException le) {
-            assertTrue(le.getCause() instanceof MalformedURLException);
-            return; //expected
-        }
-    }
+
     /**
      * Try bad config - good URL, but doesn't point to a Registry
      */
     public void testBadlyConfiguredGoodURL() {
         final Config config = SimpleConfig.getSingleton();
         config.setProperty(
-                LoginAction.ORG_ASTROGRID_PORTAL_REGISTRY_URL,
+                "org.astrogrid.registry.query.endpoint",
                 "http://www.google.com");  //A url that's safe as the bank of england
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
@@ -93,7 +71,7 @@ public class LoginActionWithConfigTest extends TestCase {
     public void testBadlyConfiguredNoneExistentURL() {
         final Config config = SimpleConfig.getSingleton();
         config.setProperty(
-                LoginAction.ORG_ASTROGRID_PORTAL_REGISTRY_URL,
+                "org.astrogrid.registry.query.endpoint",
                 "http://wwww.astrogrid.org/thisregistrydoesnotexist"); //need a url that returns a 404
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
@@ -117,6 +95,12 @@ public class LoginActionWithConfigTest extends TestCase {
 
 /*
  *  $Log: LoginActionWithConfigTest.java,v $
+ *  Revision 1.3  2005/01/31 19:39:00  jdt
+ *  Merges from POR_JDT_882
+ *
+ *  Revision 1.2.182.1  2005/01/31 11:48:49  jdt
+ *  fixed some noncompiling tests - these need attention, and dropped the debug flag from the login action.
+ *
  *  Revision 1.2  2004/04/21 13:56:29  jdt
  *  moved a test to integration testing.
  *
