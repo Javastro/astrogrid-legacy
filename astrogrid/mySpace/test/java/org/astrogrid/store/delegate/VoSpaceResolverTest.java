@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolverTest.java,v 1.3 2004/03/22 12:10:04 mch Exp $
+ * $Id: VoSpaceResolverTest.java,v 1.4 2004/04/21 09:42:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,8 +82,19 @@ public class VoSpaceResolverTest extends TestCase {
       assertSame(testContents, writer.toString());
       
    }
+
+   public void testAutoIntMySpaceResolver() throws IOException, URISyntaxException {
+      Agsl agsl = VoSpaceResolver.resolveAgsl(new Ivorn("ivo://"+VoSpaceResolver.AUTOINT_MYSPACE_IVOKEY));
+      
+      assertSame(agsl.toString(), new Agsl(VoSpaceResolver.AUTOINT_MYSPACE_AGSL).toString());
+
+      agsl = VoSpaceResolver.resolveAgsl(new Ivorn("ivo://"+VoSpaceResolver.AUTOINT_MYSPACE_IVOKEY+"#frog/results.txt"));
+      
+      assertSame(agsl.toString(), new Agsl(VoSpaceResolver.AUTOINT_MYSPACE_AGSL+"#frog/results.txt").toString());
    
-   public static void main(String[] args) throws IOException {
+   }
+   
+   public static void main(String[] args)  {
       junit.textui.TestRunner.run(suite());
    }
 
@@ -95,6 +106,9 @@ public class VoSpaceResolverTest extends TestCase {
 
 /*
  $Log: VoSpaceResolverTest.java,v $
+ Revision 1.4  2004/04/21 09:42:02  mch
+ Added softwired shortcut for auto-integration tests
+
  Revision 1.3  2004/03/22 12:10:04  mch
  Fixed tests for new StoreClient  methods
 

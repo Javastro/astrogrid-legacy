@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.16 2004/04/21 08:54:29 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.17 2004/04/21 09:41:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -22,6 +23,9 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.exception.CommunityPolicyException;
 
 /**
  * A VoSpaceResolver is used to resolve actual locations from IVORNs to any
@@ -48,6 +52,9 @@ public class VoSpaceResolver {
 //   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "org.astrogrid.store.myspace.MyspaceMgr";
    private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "myspace";
    
+   public static final String AUTOINT_MYSPACE_IVOKEY = "org.astrogrid.localhost/myspace";
+   public static final String AUTOINT_MYSPACE_AGSL = "astrogrid:store:myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager";
+   
    /**
     * Given an IVO Resource Name, resolves the AGSL
     */
@@ -68,8 +75,9 @@ public class VoSpaceResolver {
 
       //if not found, see if it's an account identifier, and if so get that account's homespace (eg that community's myspace)
       if (agsl == null) {
-         ivorn = getCommunityMySpace(ivorn);
-         lookedIn += ", Community "+community+ "(->"+ivorn+")";
+         Ivorn homespace = getCommunityMySpace(ivorn);
+         lookedIn += ", Community "+community+ "(->"+homespace+")";
+         ivorn = homespace; //now resolve this
       }
       
       //if not found, see if the registry can resolve it
@@ -80,8 +88,8 @@ public class VoSpaceResolver {
       
       //if not found, use hardcoded entries for auto-integration tests
       if (agsl == null) {
-         if (ivorn.getPath().toString().trim().toLowerCase().equals("org.astrogrid.localhost/myspace")) {
-            agsl = new Agsl("astrogrid:store:myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
+         if (ivorn.getPath().toString().trim().toLowerCase().equals(AUTOINT_MYSPACE_IVOKEY.toLowerCase())) {
+            agsl = new Agsl(AUTOINT_MYSPACE_AGSL);
          }
       }
       
@@ -269,11 +277,23 @@ public class VoSpaceResolver {
          Ivorn commIvo = community.resolve(communityIvorn);
          return commIvo;
       }
-      catch (CommunityException e) {
-         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn);
+      catch (CommunityResolverException cre) {
+         //ignore this - rather naughtily we assume that this is just a registry returns null point error
+         log.trace(cre+" resolving "+communityIvorn+" from community "+community+", ignoring...");
+         return null;
       }
+      catch (CommunityException e) {
+         throw new ResolverException("Community "+community+" failure returning myspace for community "+communityIvorn, e);
+      }
+//      catch (CommunityIdentifierException e) {
+//         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn, e);
+//      }
+//      catch (CommunityPolicyException e) {
+//         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn, e);
+//      }
+   
       catch (RegistryException e) {
-         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn);
+         throw new ResolverException("Community "+community+" failed to return myspace for community "+communityIvorn, e);
       }
    }
    
@@ -336,6 +356,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.17  2004/04/21 09:41:38  mch
+Added softwired shortcut for auto-integration tests
+
 Revision 1.16  2004/04/21 08:54:29  mch
 Added special hardcoded resolving for auto-integration tests
 
@@ -397,5 +420,6 @@ Revision 1.1  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
  */
+
 
 

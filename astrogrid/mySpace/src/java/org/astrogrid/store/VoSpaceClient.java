@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.9 2004/04/20 15:26:46 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.10 2004/04/21 09:41:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -130,9 +130,13 @@ public class VoSpaceClient {
       client.newFolder(fileAgsl.getPath());
    }
    
-   public Ivorn createUser(Ivorn target, Ivorn user) throws IOException, URISyntaxException {
+   /**
+    * Creates a new user (identified by the given user ivorn) on the storepoint given by
+    * the 'target' Ivorn.
+    */
+   public Ivorn createUser(Ivorn targetVoSpace, Ivorn user) throws IOException, URISyntaxException {
       //Agsl vospaceTarget = VoSpaceResolver.resolveAgsl(target);
-      StoreAdminClient client = VoSpaceResolver.resolveStoreAdmin(operator, target);
+      StoreAdminClient client = VoSpaceResolver.resolveStoreAdmin(operator, targetVoSpace);
       CommunityIvornParser ci = null;
       try {
          ci = new CommunityIvornParser(user);
@@ -141,7 +145,7 @@ public class VoSpaceClient {
       }
             
       client.createUser(new User(ci.getAccountName(),ci.getCommunityName(),"Anonymous","None"));
-      return new Ivorn(target.toString());
+      return new Ivorn(targetVoSpace.toString());
    }
    
    public void deleteUser(Ivorn target, Ivorn user) throws IOException {
@@ -160,6 +164,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.10  2004/04/21 09:41:38  mch
+Added softwired shortcut for auto-integration tests
+
 Revision 1.9  2004/04/20 15:26:46  mch
 More complete error reporting and simplified resolving (not as featureful ? as before)
 
@@ -194,5 +201,6 @@ Revision 1.4  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
  */
+
 
 
