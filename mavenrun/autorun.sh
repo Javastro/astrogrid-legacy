@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.26 2004/10/07 09:23:41 anoncvs Exp $ 
+# $Id: autorun.sh,v 1.27 2004/11/24 10:28:14 jdt Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -70,7 +70,7 @@ echo "Waiting for tomcat to shutdown...." >> $LOGFILE
 #sleep 15
 rm -rf $CATALINA_HOME/logs/*
 #too crude to do this but we seem to have problem shutting down catalina at the moment
-killall java
+killall -9 java
 
 echo "Starting Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
@@ -101,14 +101,14 @@ else
    cat $LOGFILE | mail -s "portal-deploy Failure in integration tests" $ADMIN_EMAIL 
 fi
 
-scp $LOGFILE maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/log/integration.log
+scp $LOGFILE maven@www.astrogrid.org:/var/www/www/maven/docs/HEAD/log/integration.log
 
 #back up those that logs that will be useful..
 cd $TOMLOGS
 tar -cvzf catalina.logs.tar.gz *
 
-scp catalina.logs.tar.gz maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/backupReports/integrationTests/$TIMESTAMP
-scp /home/integration/mavenrun/auto.log maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/backupReports/integrationTests/$TIMESTAMP
+scp catalina.logs.tar.gz maven@www.astrogrid.org:/var/www/www/maven/docs/HEAD/backupReports/integrationTests/$TIMESTAMP
+scp /home/integration/mavenrun/auto.log maven@www.astrogrid.org:/var/www/www/maven/docs/HEAD/backupReports/integrationTests/$TIMESTAMP
 
 rm catalina.logs.tar.gz
 
