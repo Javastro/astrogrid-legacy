@@ -31,7 +31,7 @@ public class AllTests {
       suite.addTest(org.astrogrid.test.AllTests.suite());
       suite.addTest(org.astrogrid.testutils.naming.AllTests.suite());
       suite.addTest(org.astrogrid.util.AllTests.suite());
-      
+      suite.addTest(org.astrogrid.io.PiperTest.suite());
         //$JUnit-END$
         return suite;
     }
