@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.8 2004/09/20 16:40:43 pah Exp $
+ * $Id: DefaultExecutionController.java,v 1.9 2004/10/08 20:01:10 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -141,6 +141,7 @@ public String init(Tool tool, String jobstepID) throws CeaException {
      if (stat.equals(Status.COMPLETED) || stat.equals(Status.ERROR)) {
          Application app = (Application)o;
          try {
+             logger.debug("moving "+app.getID()+" execution history to archive");
             executionHistory.moveApplicationFromCurrentSetToArchive(app.getID());
         } catch (PersistenceException e) { // oh well
               logger.error("Could not move application status to archive " + app.getID(),e);
