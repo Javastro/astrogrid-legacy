@@ -33,7 +33,7 @@ public class JES extends org.astrogrid.Configurator {
         CONFIG_FILENAME = "ASTROGRID_jesconfig.xml" ;
         
     /** Configuration file for this component. */
-    private static final String JNDI_NAME = "jesConfigFileURL";        
+    private static final String JNDI_NAME = "java:comp/env/jesConfigFileURL";        
     
     public static final String 
     /** Jes category within the component's configuration */  
