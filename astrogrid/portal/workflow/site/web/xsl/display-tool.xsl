@@ -92,26 +92,33 @@
             </div> 
 <!-- This is not right, and temporary! -->                
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_sequence_form">
-                   <input type="hidden" name="activity_key" id="activity_key"/>
+                   <input type="hidden" name="activity_key" id="activity_key"/>                   
                    <input type="hidden" name="activity_index_key"/>
                    <input type="hidden" name="activity_index_order"  id="activity_index_order_sequence"/>
+                   <input type="hidden" name="parent_activity_key"/>
+                   <input type="hidden" name="activity_type" id="activity_type"/>
                    <input type="hidden"  name="action" value="insert-sequence"/>                           
                 </form>            
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_flow_form">
                    <input type="hidden" name="activity_key" id="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
                    <input type="hidden" name="activity_index_order"  id="activity_index_order_flow"/>
+                   <input type="hidden" name="parent_activity_key"/>
+                   <input type="hidden" name="activity_type" id="activity_type"/>
                    <input type="hidden"  name="action" value="insert-flow"/>                       
                 </form>                
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_step_form">
                    <input type="hidden" name="activity_key" id="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
                    <input type="hidden" name="activity_index_order"  id="activity_index_order_step"/>
+                   <input type="hidden" name="parent_activity_key"/>
+                   <input type="hidden" name="activity_type" id="activity_type"/>
                    <input type="hidden"  name="action" value="insert-step"/>            
                 </form>
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form">
                    <input type="hidden" name="activity_key"/>
-                   <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden" name="parent_activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>                   
                    <input type="hidden"  name="action" value="remove_activity"/>            
                 </form>                                                                                              
         </xsl:template>

@@ -136,8 +136,6 @@ public class DesignAction extends AbstractAction {
         
     public static final String
         EDIT_CONDITION_PARAMETER = "edit_condition",
-        ACTIVITY_KEY_PARAMETER = "activity_key",
-	    ACTIVITY_ORDER_PARAMETER = "activity_index_order",
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
 	    TOOL_LIST_PARAMETER = "tool-list",
@@ -159,7 +157,11 @@ public class DesignAction extends AbstractAction {
     public static final String
         FLOW_KEY_PARAMETER = "flow-key",
         SEQUENCE_KEY_PARAMETER = "sequence-key",
-        ACTIVITY_INDEX_PARAMETER = "activity_index_key";
+        ACTIVITY_INDEX_PARAMETER = "activity_index_key",
+	    ACTIVITY_KEY_PARAMETER = "activity_key",
+	    PARENT_ACTIVITY_KEY_PARAMETER = "parent_activity_key",	    
+	    ACTIVITY_ORDER_PARAMETER = "activity_index_order",
+	    ACTIVITY_TYPE_PARAMETER = "activity_type";
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -1338,11 +1340,15 @@ public class DesignAction extends AbstractAction {
            try {
 
               String activityTargetKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-              debug("activityTargetKey: " + activityTargetKey ) ;                                     
+              debug("activityTargetKey: " + activityTargetKey ) ;
+			  String parentKey = request.getParameter( PARENT_ACTIVITY_KEY_PARAMETER ) ; 
+			  debug("parentKey: " + parentKey ) ;                                                   
               String activityIndex = request.getParameter( ACTIVITY_INDEX_PARAMETER ) ;
               debug("activityIndex: " + activityIndex ) ;
 			  String activityOrder = request.getParameter( ACTIVITY_ORDER_PARAMETER ) ;
-			  debug("activityOrder: " + activityOrder ) ;              
+			  debug("activityOrder: " + activityOrder ) ; 
+			  String activityType = request.getParameter( ACTIVITY_TYPE_PARAMETER ) ;
+			  debug("activityType: " + activityType ) ;			               
                             
               if ( activityTargetKey == null) {
                   debug( "activityTargetKey is null" ) ;
@@ -1350,8 +1356,7 @@ public class DesignAction extends AbstractAction {
               else if ( activityIndex == null) {
                   debug( "activityIndex is null" ) ;
               }
-              
-              
+                            
               try { 
                   index = new Integer( activityIndex ).intValue() ;
               }
@@ -1359,27 +1364,32 @@ public class DesignAction extends AbstractAction {
                   index = -1;
               }
               
-              activityContainer = locateActivityContainer( workflow, activityTargetKey );
-			 
-              highWaterMark = activityContainer.getActivityCount() - 1;
-              if( highWaterMark < 0 ) {
-                  highWaterMark = 0;
-              }			  
-                                
-              if( index < 0 || index > highWaterMark ){
-                  index = highWaterMark;
-              }
-              
-			  if (index == 0) { 
-			  	// Attempt to insert 'after' when activityContainer is empty will produce IndexOutOfBoundsException
-			  	// therefore if index is 0 ensure index is not incremented.
-                  activityOrder = ""; 	
+			  if (activityOrder.equalsIgnoreCase("HERE"))
+			  {
+			      activityContainer = locateActivityContainer( workflow, activityTargetKey );
+			      index = 0;
 			  }
-              
-			  if (activityOrder.equalsIgnoreCase("AFTER")){
+			  else 
+			  {
+					activityContainer = locateActivityContainer( workflow, parentKey );
+			  }
+			  	              
+			  
+			  highWaterMark = activityContainer.getActivityCount() - 1;
+			  
+			  if( highWaterMark < 0 ) {
+			      highWaterMark = 0;
+			  }			  
+                                
+			  if( index < 0 || index > highWaterMark ){
+			      index = highWaterMark;
+			  }
+			  
+			  if (activityOrder.equalsIgnoreCase("AFTER"))
+			  {                            
 			      index ++;
 			  }
-			           	                                                            
+         	                                                            
               activityContainer.addActivity( index, activity ) ;              
                         
             }
@@ -1468,13 +1478,14 @@ public class DesignAction extends AbstractAction {
             
            ActivityContainer activityContainer = null;
            AbstractActivity activity = null;
-           String parentKey = null;
 		   int index = 0;
               
            try {
 
               String activityTargetKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
-              debug("activityTargetKey: " + activityTargetKey ) ; 
+              debug("activityTargetKey: " + activityTargetKey ) ;
+			  String parentKey = request.getParameter( PARENT_ACTIVITY_KEY_PARAMETER ) ; 
+			  debug("parentKey: " + parentKey ) ;
 			  String activityIndex = request.getParameter( ACTIVITY_INDEX_PARAMETER ) ; 
 		      debug("activityIndex: " + activityIndex ) ;
 			  index = new Integer( activityIndex ).intValue() ;                                   
@@ -1482,10 +1493,16 @@ public class DesignAction extends AbstractAction {
               if ( activityTargetKey == null) {
                   debug( "activityTargetKey is null" ) ;
               }
-              
+			  else if ( parentKey == null) {
+			      debug( "parentKey is null" ) ;
+			  }
+  			  else if( activityTargetKey.equals( "/sequence" ) && index == 0) {						
+			      ; // ignore the top sequence
+			  }
+			                
               else {
 					activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
-					activityContainer = locateActivityContainer( workflow, activityTargetKey );
+					activityContainer = locateActivityContainer( workflow, parentKey );
 				if( activityContainer != null ) {
 						activityContainer.removeActivity( activity ) ;
 				}					

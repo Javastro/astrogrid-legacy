@@ -42,14 +42,58 @@
             <agp:item
                 contents="before"
                 contents-hover="before"
-                uri='javascript:if (document.getElementById("activity_key").value) { document.insert_step_form.submit(); } else { alert("Please highlight where...."); }'
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order_step").value = "BEFORE";
+                         document.insert_step_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                      }'
                 target="_self"
                 status-text="Insert step into workflow...."/>
             <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (document.getElementById("activity_type").value == "step")
+                     {
+                         alert("Not possible here (cannot insert into step)....");
+                     }
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order_step").value = "HERE";
+                         document.insert_step_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert step into workflow...."/>                
+            <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript:document.getElementById("activity_index_order_step").value = "AFTER"; 
-                     if (document.getElementById("activity_key").value) { document.insert_step_form.submit(); } else { alert("Please highlight where...."); }'
+                uri='javascript: 
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order_step").value = "AFTER";
+                         document.insert_step_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
                 target="_self"
                 status-text="Insert step into workflow...."/>
 
@@ -63,14 +107,58 @@
             <agp:item
                 contents="before"
                 contents-hover="before"
-                uri='javascript:if (document.getElementById("activity_key").value) { document.insert_flow_form.submit(); } else { alert("Please highlight where...."); }'
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order_flow").value = "BEFORE";
+                         document.insert_flow_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
                 target="_self"
                 status-text="Insert flow into workflow...."/>
             <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (document.getElementById("activity_type").value == "step")
+                     {
+                         alert("Not possible here (cannot insert into step)....");
+                     }
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order_flow").value = "HERE"; 
+                         document.insert_flow_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert flow into workflow...."/>                
+            <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript:document.getElementById("activity_index_order_flow").value = "AFTER";
-                     if (document.getElementById("activity_key").value) { document.insert_flow_form.submit(); } else { alert("Please highlight where...."); }'
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order_flow").value = "AFTER"; 
+                         document.insert_flow_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
                 target="_self"
                 status-text="Insert flow into workflow...."/>
 
@@ -84,14 +172,58 @@
             <agp:item
                 contents="before"
                 contents-hover="before"
-                uri='javascript:if (document.getElementById("activity_key").value) { document.insert_sequence_form.submit(); } else { alert("Please highlight where...."); }'
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert before root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     {
+                         document.getElementById("activity_index_order_sequence").value = "BEFORE"; 
+                         document.insert_sequence_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
                 target="_self"
-                status-text="Insert step into workflow...."/>
+                status-text="Insert sequence into workflow...."/>
+            <agp:item
+                contents="here"
+                contents-hover="here"
+                uri='javascript:
+                     if (document.getElementById("activity_type").value == "step")
+                     {
+                         alert("Not possible here (cannot insert into step)....");
+                     }
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order_sequence").value = "HERE";
+                         document.insert_sequence_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
+                target="_self"
+                status-text="Insert sequence into workflow...."/>
             <agp:item
                 contents="after"
                 contents-hover="after"
-                uri='javascript:document.getElementById("activity_index_order_sequence").value = "AFTER";
-                     if (document.getElementById("activity_key").value) { document.insert_sequence_form.submit(); } else { alert("Please highlight where...."); }'
+                uri='javascript:
+                     if (document.getElementById("activity_key").value == "/sequence")
+                     {
+                         alert("Not possible here (cannot insert after root element)....");
+                     }                
+                     else if (document.getElementById("activity_key").value) 
+                     { 
+                         document.getElementById("activity_index_order_sequence").value = "AFTER";
+                         document.insert_sequence_form.submit(); 
+                     } 
+                     else 
+                     { 
+                         alert("Please highlight where...."); 
+                     }'
                 target="_self"
                 status-text="Insert sequence into workflow...."/>
 
@@ -99,14 +231,45 @@
     <agp:item
         contents="Remove"
         contents-hover="Remove"
-        uri="javascript:document.remove_activity_form.submit();"
+        uri='javascript:if (document.getElementById("activity_key").value == "/sequence")
+             {
+                 alert("Not possible here (cannot remove root element)....");
+             }
+             else if (document.getElementById("activity_key").value)
+             { 
+                 document.remove_activity_form.submit(); 
+             }
+             else
+             {
+                 alert("Please highlight where....");
+             }'
         target="_self"
         status-text="Remove acativity...."/>
     <agp:item
         contents="Reset"
         contents-hover="Reset"
-        uri='javascript:if (confirm("All workflow information will be removed....")) location.replace("/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=reset-workflow"); else location.replace("/astrogrid-portal/main/mount/workflow/agjobmanager.html");' 
+        uri='javascript:if (confirm("All workflow information will be removed....")) 
+             { 
+                 location.replace("/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=reset-workflow"); 
+             }
+             else 
+             {
+                 location.replace("/astrogrid-portal/main/mount/workflow/agjobmanager.html");
+             }'
         target="_self"
         status-text="Start with an empty workflow"/>                         
+  </agp:menu>
+  <agp:menu
+      contents="Help"
+      contents-hover="Help"
+      uri=""
+      target="_self"
+      status-text="Help...">  
+    <agp:item
+        contents="FAQ"
+        contents-hover="FAQ"
+        uri=""
+        target="_self"
+        status-text="Frequently asked questions..."/>      
   </agp:menu>
 </agp:menu-def>
