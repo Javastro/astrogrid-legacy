@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.11 2005/03/22 10:05:23 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.12 2005/03/22 13:28:48 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -33,9 +33,9 @@ public class IndexGeneratorTest extends TestCase
    /** Tests generating indexes from the test fits files.   */
    public void testGenerate() throws Exception
    {
-      URL []genURLS = FitsTestSupport.getTestFits();      
+      URL []genURLS = FitsTestSupport.getTestFits();
       System.out.println("length of urls = " + genURLS.length);
-      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
+      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -57,7 +57,7 @@ public class IndexGeneratorTest extends TestCase
    public void testGenerateAndUpdate() throws Exception
    {
       URL []genURLS = FitsTestSupport.getTestFits();
-      SimpleConfig.setProperty("upload.collection","IndexGenTest/CDSData");      
+      SimpleConfig.setProperty("upload.collection","IndexGenTest/CDSData");
       SimpleConfig.setProperty("test.bypass","yes");
       SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
       SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
@@ -67,7 +67,7 @@ public class IndexGeneratorTest extends TestCase
       SimpleConfig.setProperty("exist.config.file", "target/test-classes/exist.xml");
 
       System.out.println("length of urls = " + genURLS.length);
-      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
+      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
@@ -83,14 +83,14 @@ public class IndexGeneratorTest extends TestCase
       catch (SAXException e) {
          fail("Generated index is not valid xml"+e);
       }
-      generator.updateXMLDB(indexDir);
+  //    generator.updateXMLDB(indexDir);
       //SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
       //IndexFitsQuerierTest ifqt = new IndexFitsQuerierTest();
       //ifqt.testQuery()
       
    }
 
-   /** Tests generating indexes from the test fits files.   
+   /** Tests generating indexes from the test fits files.
    public void testToStream() throws Exception
    {
       DataOutputStream out = new DataOutputStream(new FileOutputStream("IndexGeneratorTestList.urls"));
@@ -136,6 +136,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.12  2005/03/22 13:28:48  mch
+ Temporarily removed call to generator as it asks a question - stalls unit tests
+
  Revision 1.11  2005/03/22 10:05:23  KevinBenson
  new tests for indexgenerator
 
