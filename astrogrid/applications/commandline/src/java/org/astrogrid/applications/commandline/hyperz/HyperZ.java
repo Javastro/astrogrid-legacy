@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.3 2004/07/23 07:46:16 nw Exp $
+ * $Id: HyperZ.java,v 1.4 2004/07/26 12:03:33 nw Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,8 +20,8 @@ import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import cds.savot.model.SavotVOTable;
@@ -41,7 +41,7 @@ public class HyperZ extends CommandLineApplication {
      * @param user
      * @param description
      */
-    public HyperZ(String id, String jobStepId, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,IndirectionProtocolLibrary lib) {
+    public HyperZ(String id, String jobStepId, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,ProtocolLibrary lib) {
         super(jobStepId, tool,description,env,lib);
     }
 
@@ -94,7 +94,7 @@ public class HyperZ extends CommandLineApplication {
      *
      */
   
-        protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, IndirectParameterValue indirectVal) {
+        protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {
             if (pval.getName().equals("input_catalog")) {
                 HyperZVOTableReader reader = new HyperZVOTableReader(getApplicationInterface(),pval, (CommandLineParameterDescription) desr,applicationEnvironment,indirectVal);
                 votableSource.setSource(reader);

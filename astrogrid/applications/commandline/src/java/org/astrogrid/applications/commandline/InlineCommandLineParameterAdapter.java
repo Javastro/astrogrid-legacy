@@ -1,4 +1,4 @@
-/*$Id: InlineCommandLineParameterAdapter.java,v 1.3 2004/07/23 07:46:16 nw Exp $
+/*$Id: InlineCommandLineParameterAdapter.java,v 1.4 2004/07/26 12:03:33 nw Exp $
  * Created on 18-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.applications.commandline;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 /** Parameter adapter for arguments that are added to the commandline directly - i.e. inline ones.
  *  - so obviously, can only be used for input parameters.
@@ -33,7 +33,7 @@ public class InlineCommandLineParameterAdapter extends DefaultParameterAdapter {
      * @param arg1
      * @param arg2
      */
-    public InlineCommandLineParameterAdapter(ParameterValue arg0, CommandLineParameterDescription arg1, IndirectParameterValue arg2) {
+    public InlineCommandLineParameterAdapter(ParameterValue arg0, CommandLineParameterDescription arg1, ExternalValue arg2) {
         super(arg0, arg1, arg2);
         this.desc= arg1;
     }
@@ -53,6 +53,9 @@ public class InlineCommandLineParameterAdapter extends DefaultParameterAdapter {
 
 /* 
 $Log: InlineCommandLineParameterAdapter.java,v $
+Revision 1.4  2004/07/26 12:03:33  nw
+updated to match name changes in cea server library
+
 Revision 1.3  2004/07/23 07:46:16  nw
 cleaned up application / parameter adapter interface.
 

@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.3 2004/07/26 12:03:33 nw Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,8 +23,8 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.FileProtocol;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.FileProtocol;
 import org.astrogrid.community.User;
 import org.astrogrid.io.Piper;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -79,7 +79,7 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
                 return workingDir;
             }
         });
-        DefaultIndirectionProtocolLibrary lib = new DefaultIndirectionProtocolLibrary();
+        DefaultProtocolLibrary lib = new DefaultProtocolLibrary();
         lib.addProtocol(new FileProtocol());
         container.registerComponentInstance(lib);
         container.registerComponentImplementation(ApplicationDescriptionEnvironment.class);
@@ -216,6 +216,9 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
 
 /* 
 $Log: CommandLineApplicationTest.java,v $
+Revision 1.3  2004/07/26 12:03:33  nw
+updated to match name changes in cea server library
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.3 2004/07/23 07:46:16 nw Exp $
+ * $Id: Dft.java,v 1.4 2004/07/26 12:03:33 nw Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,7 +18,7 @@ import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class Dft extends CommandLineApplication {
      * @param user
      * @param description
      */
-    public Dft(String id, String jobStepId, Tool tool,ApplicationInterface interf, CommandLineApplicationEnvironment env, IndirectionProtocolLibrary lib) {
+    public Dft(String id, String jobStepId, Tool tool,ApplicationInterface interf, CommandLineApplicationEnvironment env, ProtocolLibrary lib) {
         super(jobStepId, tool,interf,env,lib);
     }
 

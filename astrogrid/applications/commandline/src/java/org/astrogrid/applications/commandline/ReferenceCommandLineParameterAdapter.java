@@ -1,4 +1,4 @@
-/*$Id: ReferenceCommandLineParameterAdapter.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: ReferenceCommandLineParameterAdapter.java,v 1.3 2004/07/26 12:03:33 nw Exp $
  * Created on 18-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.astrogrid.applications.description.exception.ParameterNotInInterfaceE
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
 import org.astrogrid.applications.parameter.ParameterWriteBackException;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
 
 import java.io.*;
@@ -34,7 +34,7 @@ public class ReferenceCommandLineParameterAdapter implements ParameterAdapter {
      * @param arg1
      * @param arg2
      */
-    public ReferenceCommandLineParameterAdapter(ApplicationInterface appInterface, ParameterValue pval,  CommandLineParameterDescription desc, IndirectParameterValue indirect, CommandLineApplicationEnvironment env) {
+    public ReferenceCommandLineParameterAdapter(ApplicationInterface appInterface, ParameterValue pval,  CommandLineParameterDescription desc, ExternalValue indirect, CommandLineApplicationEnvironment env) {
         this.pval = pval;
         this.desc = desc;
         this.indirect =indirect;
@@ -50,7 +50,7 @@ public class ReferenceCommandLineParameterAdapter implements ParameterAdapter {
     protected boolean isOutputOnly;
     protected final ParameterValue pval;
     protected final CommandLineParameterDescription desc;
-    protected final IndirectParameterValue indirect;
+    protected final ExternalValue indirect;
     protected File referenceFile;
     protected final CommandLineApplicationEnvironment env;
     public File getReferenceFile() {
@@ -119,6 +119,9 @@ public class ReferenceCommandLineParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: ReferenceCommandLineParameterAdapter.java,v $
+Revision 1.3  2004/07/26 12:03:33  nw
+updated to match name changes in cea server library
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization

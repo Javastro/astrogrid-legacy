@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.3 2004/07/26 12:03:33 nw Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,7 +19,7 @@ import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
 import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
 import cds.savot.model.FieldSet;
 import cds.savot.model.SavotField;
@@ -54,7 +54,7 @@ public class HyperZVOTableWriter extends ReferenceCommandLineParameterAdapter {
      * @param val
      * @param descr
      */
-    public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, IndirectParameterValue ival, VOTableSource votableSource) {
+    public HyperZVOTableWriter(ApplicationInterface interf, ParameterValue val, CommandLineParameterDescription descr,CommandLineApplicationEnvironment env, ExternalValue ival, VOTableSource votableSource) {
         super(interf,val, descr,ival,env);
         this.votableSource = votableSource;
         tmpfile = env.getTempFile();

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.4 2004/07/23 07:46:16 nw Exp $
+ * $Id: CommandLineApplication.java,v 1.5 2004/07/26 12:03:33 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,8 +21,8 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterWriteBackException;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
@@ -68,7 +68,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     * @param controller
     * @param user
     */
-   public CommandLineApplication(String jobStepId,  Tool t,ApplicationInterface interf, CommandLineApplicationEnvironment env,IndirectionProtocolLibrary lib) {
+   public CommandLineApplication(String jobStepId,  Tool t,ApplicationInterface interf, CommandLineApplicationEnvironment env,ProtocolLibrary lib) {
       super(new DefaultIDs(jobStepId,env.getExecutionId()),t, interf,lib);
       this.applicationEnvironment = env;
    }
@@ -90,7 +90,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     /** override  so that commandline parameters are returned
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
-    protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, IndirectParameterValue indirectVal) {                
+    protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {                
         CommandLineParameterDescription clpd = (CommandLineParameterDescription)desr;
          if (!clpd.isFile()) {
              logger.debug("treating " + pval.getName() + " as inline parameter");

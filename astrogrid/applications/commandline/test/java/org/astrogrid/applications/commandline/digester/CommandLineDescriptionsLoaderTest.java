@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineDescriptionsLoaderTest.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: CommandLineDescriptionsLoaderTest.java,v 1.3 2004/07/26 12:03:33 nw Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -26,7 +26,7 @@ import org.astrogrid.applications.description.exception.InterfaceDescriptionNotF
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 
 import org.picocontainer.PicoException;
 import org.picocontainer.defaults.ConstructorInjectionComponentAdapter;
@@ -70,7 +70,7 @@ public class CommandLineDescriptionsLoaderTest extends DescriptionBaseTestCase {
         new ConstructorInjectionComponentAdapter(CommandLineApplicationDescription.class,CommandLineApplicationDescription.class)
       );
       container.registerComponentImplementation(InMemoryIdGen.class);
-      container.registerComponentImplementation(DefaultIndirectionProtocolLibrary.class);
+      container.registerComponentImplementation(DefaultProtocolLibrary.class);
       container.registerComponentImplementation(ApplicationDescriptionEnvironment.class);
                         
       try {

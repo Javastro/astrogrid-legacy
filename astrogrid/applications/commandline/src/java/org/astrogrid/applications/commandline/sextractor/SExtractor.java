@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: SExtractor.java,v 1.3 2004/07/26 12:03:33 nw Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,7 +15,7 @@ import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -31,7 +31,7 @@ public class SExtractor extends CommandLineApplication {
      * @param user
      * @param description
      */
-    public SExtractor(String id, String jobStepId, User user, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,IndirectionProtocolLibrary lib) {
+    public SExtractor(String id, String jobStepId, User user, Tool tool, ApplicationInterface description, CommandLineApplicationEnvironment env,ProtocolLibrary lib) {
         super(jobStepId,  tool,description, env,lib);
     }
  

@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationDescriptionTest.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: CommandLineApplicationDescriptionTest.java,v 1.3 2004/07/26 12:03:33 nw Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,8 +16,8 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.base.BaseApplicationInterface;
 import org.astrogrid.applications.manager.idgen.IdGen;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -59,7 +59,7 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
         });
         DefaultPicoContainer container = new DefaultPicoContainer();
         container.registerComponentInstance(fac);
-        IndirectionProtocolLibrary lib = new DefaultIndirectionProtocolLibrary();
+        ProtocolLibrary lib = new DefaultProtocolLibrary();
         container.registerComponentInstance(lib);
         appDescEnv = new ApplicationDescriptionEnvironment(idgen,lib);
         descr = new CommandLineApplicationDescription(appDescEnv,container);
@@ -95,6 +95,9 @@ public class CommandLineApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: CommandLineApplicationDescriptionTest.java,v $
+Revision 1.3  2004/07/26 12:03:33  nw
+updated to match name changes in cea server library
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization
