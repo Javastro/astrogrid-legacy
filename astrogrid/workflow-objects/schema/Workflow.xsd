@@ -7,27 +7,25 @@
 	<xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" schemaLocation="ExecutionRecord.xsd"/>
 	<xsd:element name="workflow">
 		<xsd:annotation>
-			<xsd:documentation>General representation of a workflow</xsd:documentation>
+			<xsd:documentation>
+				Representation of a workflow document, conforming to the schema
+				defined for namespace <tt>http://www.astrogrid.org/schema/AGWorkflow/v1</tt>
+				</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:element name="Activities">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-				<xsd:element name="Credentials" type="agcred:Credentials"/>
-				<xsd:element ref="er:job-execution-record" minOccurs="0"/>
-			</xsd:sequence>
-			<xsd:attribute name="name" type="xsd:string" use="required"/>
+			<xsd:all>
+				<xsd:element ref="agwf:sequence" minOccurs="1" maxOccurs="1"/>
+				<xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+				<xsd:element name="Credentials" type="agcred:Credentials" minOccurs="1" maxOccurs="1"/>
+				<xsd:element ref="er:job-execution-record" minOccurs="0" maxOccurs="1"/>
+			</xsd:all>
+			<xsd:attribute name="name" type="xsd:string" use="required">
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="sequence" substitutionGroup="agwf:Activity">
 		<xsd:annotation>
-			<xsd:documentation>a sequential sequence of activities</xsd:documentation>
+			<xsd:documentation>a collection of activities to be performed sequentially</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -41,7 +39,7 @@
 	</xsd:element>
 	<xsd:element name="flow" substitutionGroup="agwf:Activity">
 		<xsd:annotation>
-			<xsd:documentation>a parallel group of activities</xsd:documentation>
+			<xsd:documentation>a collection of activities to be performed potentially in parallel</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
@@ -55,32 +53,25 @@
 	</xsd:element>
 	<xsd:element name="step" substitutionGroup="agwf:Activity">
 		<xsd:annotation>
-			<xsd:documentation>an acitity to be performed</xsd:documentation>
+			<xsd:documentation>an activity to be performed</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
 				<xsd:extension base="agwf:AbstractActivity">
-					<xsd:sequence>
-						<xsd:element ref="agwf:tool"/>
+					<xsd:sequence>						
 						<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+						<xsd:element ref="agwf:tool"/>
 						<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded"/>
 					</xsd:sequence>
 					<xsd:attribute name="name" type="xsd:string" use="required"/>
-					<xsd:attribute name="joinCondition" use="optional" default="any">
-						<xsd:simpleType>
-							<xsd:restriction base="xsd:string">
-								<xsd:enumeration value="true"/>
-								<xsd:enumeration value="false"/>
-								<xsd:enumeration value="any"/>
-							</xsd:restriction>
-						</xsd:simpleType>
-					</xsd:attribute>
+					<xsd:attribute name="joinCondition" use="optional" default="any" type="agwf:join-type"/>
 					<xsd:attribute name="stepNumber" type="xsd:int" use="optional"/>
 					<xsd:attribute name="sequenceNumber" type="xsd:int" use="optional"/>
 				</xsd:extension>
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
+	
 	<xsd:element name="tool">
 		<xsd:annotation>
 			<xsd:documentation>the CEA definition of the tool to be run </xsd:documentation>
@@ -94,7 +85,7 @@
 			<xsd:attribute name="interface" type="xsd:string" use="required"/>
 		</xsd:complexType>
 	</xsd:element>
-	<!-- NWW - gave these some simple content - before were empty -->
+	
 	<xsd:element name="input">
 		<xsd:annotation>
 			<xsd:documentation>the list of input parameters</xsd:documentation>
@@ -130,4 +121,11 @@
 			<xsd:documentation>The abstract base class of all activities that can be performed in a workflow</xsd:documentation>
 		</xsd:annotation>
 	</xsd:complexType>
+	<xsd:simpleType name="join-type">
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="true"/>
+								<xsd:enumeration value="false"/>
+								<xsd:enumeration value="any"/>
+							</xsd:restriction>
+	</xsd:simpleType>	
 </xsd:schema>
