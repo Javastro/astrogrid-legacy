@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.116 2004/09/22 11:43:35 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.117 2004/09/23 09:59:54 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -1090,7 +1090,7 @@
                         <jsl:template match="testsuite">
                                 <jxml:copy select=".">
                                         <jxml:set var="currentSuite" select="." />
-                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[@name=$currentSuite/@name and @package=$currentSuite/@package]" />
+                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[(@name=$currentSuite/@name and @package=$currentSuite/@package)]" />
 
                                           <jxml:element name="baseline">
                                                 <jxml:attribute name="name">${baselineName}</jxml:attribute>
