@@ -40,7 +40,7 @@
         <div id="ag-main">
           <div id="ag-title-bar">
             <div id="img-logo">
-              <img src="../web/images/aglogo.png" alt="AstroGrid"/>
+              <img src="/astrogrid-portal/aglogo.png" alt="AstroGrid"/>
             </div>
             <h1 class="ag-main-header">Welcome to AstroGrid</h1>
             <p/>
