@@ -29,52 +29,52 @@
   <vr:referenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</vr:referenceURL>
   <vr:type>Other</vr:type>
  </vr:content>
-    <ApplicationDefinition>
-      <Parameters>
-        <ParameterDefinition name="Query" type="ADQL"  sub-type="">
+    <cea:ApplicationDefinition>
+      <cea:Parameters>
+        <cea:ParameterDefinition name="Query" type="ADQL"  sub-type="">
           <ns2:UI_Name xmlns:ns2="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Query</ns2:UI_Name>
           <ns3:UI_Description xmlns:ns3="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Astronomy Data Query Language that defines the search criteria</ns3:UI_Description>
           <ns4:UCD xmlns:ns4="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns4:UCD>
           <ns5:DefaultValue xmlns:ns5="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns5:DefaultValue>
           <ns6:Units xmlns:ns6="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns6:Units>
-        </ParameterDefinition>
-        <ParameterDefinition name="Result" type="text"  sub-type="">
+        </cea:ParameterDefinition>
+        <cea:ParameterDefinition name="Result" type="text"  sub-type="">
           <ns7:UI_Name xmlns:ns7="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Result</ns7:UI_Name>
           <ns8:UI_Description xmlns:ns8="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Query results</ns8:UI_Description>
           <ns9:UCD xmlns:ns9="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns9:UCD>
           <ns10:DefaultValue xmlns:ns10="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns10:DefaultValue>
           <ns11:Units xmlns:ns11="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns11:Units>
-        </ParameterDefinition>
-        <ParameterDefinition name="DEC" type="Dec"  sub-type="">
+        </cea:ParameterDefinition>
+        <cea:ParameterDefinition name="DEC" type="Dec"  sub-type="">
           <ns12:UI_Name xmlns:ns12="http://www.astrogrid.org/schema/AGParameterDefinition/v1">DEC</ns12:UI_Name>
           <ns13:UI_Description xmlns:ns13="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Declination of cone</ns13:UI_Description>
           <ns14:UCD xmlns:ns14="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns14:UCD>
           <ns15:DefaultValue xmlns:ns15="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns15:DefaultValue>
           <ns16:Units xmlns:ns16="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns16:Units>
-        </ParameterDefinition>
-        <ParameterDefinition name="Format" type="text"  sub-type="">
+        </cea:ParameterDefinition>
+        <cea:ParameterDefinition name="Format" type="text"  sub-type="">
           <ns17:UI_Name xmlns:ns17="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Format</ns17:UI_Name>
           <ns18:UI_Description xmlns:ns18="http://www.astrogrid.org/schema/AGParameterDefinition/v1">How the results are to be returned. VOTABLE or CSV for now</ns18:UI_Description>
           <ns19:UCD xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns19:UCD>
           <ns20:DefaultValue xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1">VOTABLE</ns20:DefaultValue>
           <ns21:Units xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns21:Units>
-        </ParameterDefinition>
-        <ParameterDefinition name="RA" type="RA"  sub-type="">
+        </cea:ParameterDefinition>
+        <cea:ParameterDefinition name="RA" type="RA"  sub-type="">
           <ns22:UI_Name xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1">RA</ns22:UI_Name>
           <ns23:UI_Description xmlns:ns23="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Right-Ascension of cone</ns23:UI_Description>
           <ns24:UCD xmlns:ns24="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns24:UCD>
           <ns25:DefaultValue xmlns:ns25="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns25:DefaultValue>
           <ns26:Units xmlns:ns26="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns26:Units>
-        </ParameterDefinition>
-        <ParameterDefinition name="Radius" type="double"  sub-type="">
+        </cea:ParameterDefinition>
+        <cea:ParameterDefinition name="Radius" type="double"  sub-type="">
           <ns27:UI_Name xmlns:ns27="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Radius</ns27:UI_Name>
           <ns28:UI_Description xmlns:ns28="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Radius of cone</ns28:UI_Description>
           <ns29:UCD xmlns:ns29="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns29:UCD>
           <ns30:DefaultValue xmlns:ns30="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns30:DefaultValue>
           <ns31:Units xmlns:ns31="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns31:Units>
-        </ParameterDefinition>
-      </Parameters>
-      <Interfaces>
+        </cea:ParameterDefinition>
+      </cea:Parameters>
+      <cea:Interfaces>
         <ns33:Interface name="adql" xmlns:ns33="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
           <ns33:input>
             <ns33:pref ref="Format" />
@@ -95,8 +95,8 @@
             <ns32:pref ref="Result" />
           </ns32:output>
         </ns32:Interface>
-      </Interfaces>
-    </ApplicationDefinition>
+      </cea:Interfaces>
+    </cea:ApplicationDefinition>
   </vor:Resource>
 <vor:Resource xmlns="http://www.ivoa.net/xml/CEAService/v0.2" status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
     	<vr:title>TemplateEntry</vr:title>
@@ -115,21 +115,21 @@
   <vr:referenceURL>http://www.astrogrid.org/maven/docs/@VERSION@/applications/</vr:referenceURL>
   <vr:type>Other</vr:type>
  </vr:content>
-                <ApplicationDefinition>
-                        <Parameters>
-                                <ParameterDefinition name="Query" type="ADQL">
+                <cea:ApplicationDefinition>
+                        <cea:Parameters>
+                                <cea:ParameterDefinition name="Query" type="ADQL">
                                         <ceapd:DefaultValue>Query</ceapd:DefaultValue>
                                         <ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>
-                                </ParameterDefinition>
-                                <ParameterDefinition name="Format" type="text">
+                                </cea:ParameterDefinition>
+                                <cea:ParameterDefinition name="Format" type="text">
                                         <ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>
                                         <ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>
-                                </ParameterDefinition>
-                                <ParameterDefinition name="Result" type="anyURI">
+                                </cea:ParameterDefinition>
+                                <cea:ParameterDefinition name="Result" type="anyURI">
                                         <ceapd:UI_Description>Where the results will be sent to; eg, use IVORN (eg IVO://community/individual#path)</ceapd:UI_Description>
-                                </ParameterDefinition>
-                        </Parameters>
-                        <Interfaces>
+                                </cea:ParameterDefinition>
+                        </cea:Parameters>
+                        <cea:Interfaces>
                                 <ceab:Interface name="adql">
                                         <ceab:input>
                                                 <ceab:pref ref="Query"/>
@@ -139,8 +139,8 @@
                                                 <ceab:pref ref="Result"/>
                                         </ceab:output>
                                 </ceab:Interface>
-                        </Interfaces>
-                </ApplicationDefinition>
+                        </cea:Interfaces>
+                </cea:ApplicationDefinition>
         </vor:Resource>
     <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaServiceType">
     	<title>TemplateEntry</title>
@@ -166,7 +166,6 @@
             <cea:ApplicationReference>ivo://@REGAUTHORITY@/sec_dsa</cea:ApplicationReference>
                 </cea:ManagedApplications>
         </vor:Resource>
-
  <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaServiceType">
     	<title>TemplateEntry</title>
         <shortName>TemplateEntry</shortName>
