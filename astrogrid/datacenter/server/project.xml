@@ -116,15 +116,24 @@
     </properties>
     </dependency>
 
-
-
-    <dependency><!-- hsqldb - for testing -->
-        <id>hsqldb</id>
-        <version>1.7.1</version>
-       <properties>
-      <war.bundle>true</war.bundle>
-    </properties>
+    <!-- JavaMail -->
+    <dependency>
+      <id>JavaMail</id>
+      <version>UNKNOWN</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
     </dependency>
+
+      <!-- hsqldb - for testing -->
+    <dependency>
+      <id>hsqldb</id>
+      <version>1.7.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
   </dependencies>
 
   <!-- build information for the project -->
