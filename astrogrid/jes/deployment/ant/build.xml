@@ -33,13 +33,13 @@
 		<mkdir dir="${input.jes.working.dir}"/>		
 	</target>
 
-	<target name="install-jes" description="Install JES" depends="checkTomcat, download, deploy, check-installed-ok">
+	<target name="install-jes" description="Install JES" depends="checkTomcat, download, deploy">
 	        <echo>***The Job Entry System has been successfully installed***</echo>
 	    	<property name="jes.installed" value="true"/>
     </target>		
 	
 		
-	<target name="remove-jes" description="Remove JES (does not remove the JES working dir)" depends="checkTomcat,  undeploy, check-uninstalled-ok">
+	<target name="remove-jes" description="Remove JES (does not remove the JES working dir)" depends="checkTomcat,  undeploy">
     	<sleep seconds="10" description="Allow Tomcat to catch up"/>
         <echo>***The jes has been successfully removed***</echo>
     	<property name="jes.uninstalled" value="true"/>
@@ -178,7 +178,7 @@
 
     <!-- Configure the custom Ant tasks for the Manager application -->
 	<!-- The reason for making these optional is that they might be already
-	     set by an enclosing Maven? script-->
+	     set by an enclosing Maven script-->
 	<target name="define-custom-tasks" unless="tasks.already.set">
     	<taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" />	
 	    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" />
