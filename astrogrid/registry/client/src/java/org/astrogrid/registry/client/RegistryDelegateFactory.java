@@ -1,22 +1,20 @@
-/*
- * $Id: RegistryDelegateFactory.java,v 1.4 2004/03/29 09:43:26 KevinBenson Exp $
+/* $Id: RegistryDelegateFactory.java,v 1.5 2004/07/06 09:56:28 bkm Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.registry.client;
 
-
 import java.io.IOException;
+import java.net.URL;
 
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.harvest.RegistryHarvestService;
-
-
-import java.net.URL;
-
 import org.astrogrid.config.Config;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Creates the appropriate delegates to access the registry.
@@ -24,13 +22,16 @@ import org.astrogrid.config.Config;
  */
 
 public class RegistryDelegateFactory {
-
-
+   private static final Log log = 
+                            LogFactory.getLog(RegistryDelegateFactory.class);
    public static Config conf = null;
    
-   private static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
-   private static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
-   private static final String HARVEST_URL_PROPERTY = "org.astrogrid.registry.harvest.endpoint";   
+   private static final String QUERY_URL_PROPERTY = 
+       "org.astrogrid.registry.query.endpoint";
+   private static final String ADMIN_URL_PROPERTY = 
+       "org.astrogrid.registry.admin.endpoint";
+   private static final String HARVEST_URL_PROPERTY = 
+       "org.astrogrid.registry.harvest.endpoint";   
    
    static {
       if(conf == null) {
@@ -43,6 +44,7 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryService createQuery() {
+      log.debug("createQuery - no arguments");
       return createQuery(conf.getUrl(QUERY_URL_PROPERTY,null));
    }
 
@@ -52,8 +54,9 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryService createQuery(URL endPoint) {
+      log.debug("createQuery - URL argument");
       if(endPoint != null)
-         System.out.println("the ENDPOINT AT DELEGATE = " + endPoint.toString());
+         log.info("the ENDPOINT AT DELEGATE = " + endPoint.toString());
       return new org.astrogrid.registry.client.query.RegistryService(endPoint);
    }
    
@@ -61,7 +64,8 @@ public class RegistryDelegateFactory {
     * 
     * @return
     */
-   public static synchronized RegistryAdminService createAdmin() {      
+   public static synchronized RegistryAdminService createAdmin() {
+      log.debug("start RegistryAdminService");      
       return createAdmin(conf.getUrl(ADMIN_URL_PROPERTY,null));      
    }
 
@@ -71,7 +75,9 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryAdminService createAdmin(URL endPoint) {
-      return new org.astrogrid.registry.client.admin.RegistryAdminService(endPoint);
+      log.debug("start createAdmin");
+      return 
+        new org.astrogrid.registry.client.admin.RegistryAdminService(endPoint);
    }
    
    /**
@@ -79,6 +85,7 @@ public class RegistryDelegateFactory {
     * @return
     */
    public static synchronized RegistryHarvestService createHarvest() {
+      log.debug("start createHarvest - no arguments");
       return createHarvest(conf.getUrl(HARVEST_URL_PROPERTY,null));      
    }
 
@@ -87,8 +94,10 @@ public class RegistryDelegateFactory {
     * @param endPoint
     * @return
     */
-   public static synchronized RegistryHarvestService createHarvest(URL endPoint) {
-      return new org.astrogrid.registry.client.harvest.RegistryHarvestService(endPoint);
+   public static synchronized RegistryHarvestService createHarvest(
+                                                     URL endPoint) {
+      log.debug("start createHarvest - URLargument");
+      return new org.astrogrid.registry.client.harvest.
+                                              RegistryHarvestService(endPoint);
    }
-
 }

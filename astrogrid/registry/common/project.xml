@@ -42,8 +42,7 @@
     <description>
         <![CDATA[
 	<p>
-		The Common area are what is common between both the Client and Server areas.  Registry also uses Castor to generate
-		java objects which are used both in the common and server areas.
+		The Common area are what is common between both the Client and Server areas.
 	</p>
 	<section name="Builds">
 		<p>			

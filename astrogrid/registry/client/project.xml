@@ -50,11 +50,14 @@
     <description>
         <![CDATA[
 	<p>
-		The Client area's main purpose is to give the users a delegate to go by and to interact with a Registry server or cache.
-		The Client section will read in a config file and determine to use a Registry server which will be the most common or
-		use a a local cache through it's config file.  Able to look up identifiers in a config file to point to a particular xml
-		file for grabbing the necessary information.  This can be used with other Astrogrid components not wishing to use a 
-		Registry server.
+		The Client area's main purpose is to give the users a delegate to go by
+		and to interact with a Registry server or cache.  The Client section
+		will read in a config file and determine to use a Registry server which
+		will be the most common or use a a local cache through it's config file.
+		It determines rather to use a server or local config file by simply determining
+		if the endpoints are in the config file.  It should be noted current 
+		implementation only queries based on identifiers when using the local config
+		cache.
 	</p>
 	<section name="Builds">
 		<p>
@@ -70,33 +73,44 @@
 	</section>
 	<section name="Installation">
 		<p>
-			It is expected that this jar will be bunded with an appropriate war file for use with other components.  There
-			is no seperate installation just for the client itself.  After a build a jar file is produced in the "target"
-			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
-			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
+			It is expected that this jar will be bunded with an appropriate
+			war file for use with other components.  There is no seperate 
+			installation just for the client itself.  After a build a jar
+			file is produced in the "target" directory.  When ever it is 
+			bundled with another component, it is expected to have in the
+			System properties or JNDI a key value of "org.astrogrid.config.url"
+			pointing to a config file.  An example config file is given in
 			cvs under the config directory for this client area.
+			Current config properties needed to use a server:			
 			<ul>
-				<li>clean - cleans out and removes all previous builds.</li>
-				<li>install-snapshot - Builds all the necessry jar and war files.</li>
-				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
-				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+				<li>org.astrogrid.registry.admin.endpoint - administration endpoint for updates.</li>
+				<li>org.astrogrid.registry.harvest.endpoint - harvesting endpoint.</li>
+				<li>org.astrogrid.registry.query.endpoint - query endpoint.</li>
 			</ul>
+			<i>just leave the endpoints blank and define an identifier pointing
+			   to a xml file of the Resource for that identifier when using the local
+			   config cache.
+			</i>
 		</p>
 	</section>
 	<section name="How to Use for Other Components">
 		<p>
-		Once the configuration is complete and ready for another component to use.  It may use the various delegates with the delegate factory.
+		Once the configuration is complete and ready for another component
+		to use.  It may use the various delegates with the delegate factory.
 		<br /><strong>The Query:</strong><br />
-		Instantiate with: org.astrogrid.registry.client.query.RegistryService rs = org.astrogrid.registry.client.RegistryDelegateFactory.createQuery()
-		<br />From there you have access to all the delegate methods mentioned below for the Query section.  It is of course advisable to
+		Instantiate with: 
+		org.astrogrid.registry.client.query.RegistryService rs = org.astrogrid.registry.client.RegistryDelegateFactory.createQuery()
+		<br />From there you have access to all the delegate methods 
+		mentioned below for the Query section.  It is of course advisable to
 		use import statements at the top of your code to make things easier.
 		<strong>Still need to put some examples of the query schema/string here</strong>
 		</p>	
 	</section>
 	<section name="Delegate - Helper methods to the Interface">
 		<p>
-			This section is a quick description of what delegate methods can be used for other components to take advantage of.
-			This is not necessarily the actual web service interface methods on the server side registry.
+			This section is a quick description of what delegate methods can be used for
+			other components to take advantage of. This is not necessarily the actual web
+			service interface methods on the server side registry.
 			<br />
 			<strong>First the Query:</strong>
 			<ul>
@@ -119,7 +133,6 @@
 			<ul>
 				<li>update(VODescription) - updates a resource entries in the registry given a one or more Resources from a VODescription bean.</li>
 				<li>update(Document) - updates a resource entries in the registry given a one or more Resources from a Document DOM object.</li>
-				<li>add - will put here later about add it may be factored out later.</li>
 				<li>updateFromUrl(URL url) - Not yet implemented.</li>
 				<li>updateFromFile(File fi) - Not Yet imnplemented.</li>
 			</ul>
@@ -153,7 +166,6 @@
 			</ul>			
 			<br />
 			<i>Examples:</i><br />
-			Load Registry interface is just a convenience interface to query for a particular RegistryType.<br />
 			<i>			
 				<query>
 					<selectionSequence>

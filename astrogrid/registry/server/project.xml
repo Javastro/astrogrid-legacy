@@ -89,7 +89,6 @@
 			</ul>			
 			<br />
 			<i>Examples:</i><br />
-			Load Registry interface is just a convenience interface to query for a particular RegistryType.<br />
 			<i>			
 				<query>
 					<selectionSequence>
@@ -117,13 +116,18 @@
 	</section>
 	<section name="Installation">
 		<p>
-			This only builds the server jar and is expected to be bundled up with a war file.  See the WebApp portion of
-			the registry which bundles up the full server installation into a war file.
+			This only builds the server jar and is expected to be bundled up with a war file.  
+			See the WebApp portion of the registry which bundles up the full server installation into a war file.
 			After a build a jar file is produced in the "target"
 			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
 			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
-			cvs under the config directory.  Currently the config file requires pointing to a xml file which will be your
-			registry, this will be factored out as we come online with the eXist XMLDB.
+			cvs under the config directory as config.prop.  
+			Currently the config file only requires three properties:
+			<ul>
+			  <li>org.astrogrid.registry.version - a version number of the current main IVOA registry schema.</li>
+			  <li>exist.db.url - eXist url property pointing to the root location of the eXist XML database.</li>
+			  <li>exist.query.returncount - the return count number.</li>
+			</ul>
 		</p>
 	</section>	
 		]]>        

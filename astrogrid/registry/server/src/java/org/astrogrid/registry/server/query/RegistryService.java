@@ -21,12 +21,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 
- * The RegistryService class is a web service that submits an XML formatted
- * registry query to the QueryParser class.
- * This delegate helps the user browse the registry.  Queries should be
- * formatted according to the schema at IVOA schema version 0.9.  This class
- * also uses the common RegistryInterface for knowing the web service methods
- * to call on the server side.
+ *  
  * 
  * @see org.astrogrid.registry.common.RegistryInterface
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
@@ -50,13 +45,13 @@ public class RegistryService implements
 
 
    /**
-   * submitQuery queries the registry with the same XML document used as 
-   * fullNodeQuery, but the response comes back in a different record key pair
-   * XML formatted document object. Current implementation uses the 
-   * fullNodeQuery.  fullNodeQuery may be deprecated at a later date and this 
-   * method reestablished as the main method to use.
+   * submitQuery queries the registry for Resources.  Currently uses
+   * an older xml query language that Astrogrid came up with, but will
+   * soon be rarely used for the ADQL version to be the standard for the
+   * IVOA.
    * 
-   * @param query XML document object representing the query language used on the registry.
+   * @param query XML document object representing the query language used on
+   *  the registry.
    * @return XML docuemnt object representing the result of the query.
    * @author Kevin Benson 
    */
@@ -64,8 +59,9 @@ public class RegistryService implements
       log.debug("start submitQuery");
       long beginQ = System.currentTimeMillis();
       Document registryDoc = null;
-      log.info("received = " + DomHelper.DocumentToString(query));    
-         registryDoc = XQueryExecution.parseQuery(query);
+      //log.info("received = " + DomHelper.DocumentToString(query));
+      //parse query right now actually does the query.    
+      registryDoc = XQueryExecution.parseQuery(query);
       if(registryDoc != null)
          log.info("the registryDoc = " + DomHelper.
                                          DocumentToString(registryDoc));
@@ -75,6 +71,14 @@ public class RegistryService implements
       return registryDoc;
    }
    
+   /**
+    * Queries for the Registry Resource element that is tied to this Registry.
+    * All Astrogrid Registries have one Registry Resource tied to the Registry.
+    * Which defines the AuthorityID's it manages and how to access the Registry.
+    * 
+    * @param query actually normally empty/null
+    * @return XML docuemnt object representing the result of the query.
+    */
    public Document loadRegistry(Document query) {
       log.debug("start loadRegistry");
       long beginQ = System.currentTimeMillis();

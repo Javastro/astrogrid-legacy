@@ -65,10 +65,13 @@
 			directory. Once installed as a System property or JNDI entry in the web.xml file located in the 
 			astrogrid-registry-webapp/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file.  
 			An example config file is given in
-			cvs under the registry/server/config directory.  
-			Currently the config file requires pointing to a xml file which will be your
-			registry, this will be factored out as we come online with the eXist XMLDB.  Once the properties are set you
-			need to restart the server.
+			cvs under the registry/server/config directory as config.prop.  
+			Currently the config file only requires three properties:
+			<ul>
+			  <li>org.astrogrid.registry.version - a version number of the current main IVOA registry schema.</li>
+			  <li>exist.db.url - eXist url property pointing to the root location of the eXist XML database.</li>
+			  <li>exist.query.returncount - the return count number.</li>
+			</ul>
 		</p>
 	</section>
 		]]>        

@@ -46,14 +46,8 @@ import org.astrogrid.registry.common.XSLHelper;
 
 /**
  * 
- * The RegistryService class is a web service that submits an XML formatted
- * registry query to the QueryParser class.
- * This delegate helps the user browse the registry.  Queries should be
- * formatted according to the schema at IVOA schema version 0.9.  This class
- * also uses the common RegistryInterface for knowing the web service methods
- * to call on the server side.
- * 
- * @see org.astrogrid.registry.common.RegistryInterface
+ * The RegistryHarvestService class is the main web service class dealing with 
+ * harvesting from registries and returning information from a registry.    
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
@@ -74,11 +68,13 @@ public class RegistryHarvestService implements
    }
   
   /**
-    * Queries it's own registry for all the Registry entries and performs a 
-    * harvest on those registries.
+    * Queries for all Resource entries managed by this registry.  
+    * And returns all of the Resource entries.  The use of this method is for all other
+    * registries who wish to replicate this registry.
     * 
-    * @param registry This parameter is normally null.  Kicks off returning everything manged by this registry.
-    * @return XML docuemnt object representing the result of the query. Used internally.
+    * @param registry This parameter is null.  Kicks off returning everything 
+    *   managed by this registry.
+    * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson 
     */  
    public Document harvest(Document registry) {
@@ -86,38 +82,24 @@ public class RegistryHarvestService implements
       try {
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
-         //NodeList regNL = registryDoc.getElementsByTagNameNS("vg",
-         //                                               "ManagedAuthority" );
-         NodeList regNL = RegistryFileHelper.
-                             findNodeListFromXML("ManagedAuthority",
-                                                registry.getDocumentElement());
-         //Okay for some reason vg seems to pick up the ManagedAuthority.
-         //Lets try to find it by the url namespace.
-//
-//         if(regNL.getLength() == 0) {
-//            regNL = registryDoc.getElementsByTagNameNS(
-//                                  "http://www.ivoa.net/xml/VORegistry/v0.2",
-//                                  "ManagedAuthority" );
-//         }
-//
-//         if(regNL.getLength() == 0) {
-//            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
-//         }
-
          
-         //NodeList regNL = registryDoc.getElementsByTagNameNS(
-         //      "http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
+         //Grab all the authority id's that is managed by this registry.
+         NodeList regNL = RegistryFileHelper.
+                             findNodeListFromXML("vg","ManagedAuthority",
+                                                registryDoc.getDocumentElement());
+         
+         //Construct the query in a string.
          String selectQuery = "<query><selectionSequence>" +
-              "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
-              "<selectionOp op='$and$'/>";
+            "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+            "<selectionOp op='$and$'/>";
          if(regNL.getLength() > 0) {
             selectQuery +=  
-            "<selection item='AuthorityID' itemOp='EQ' value='" + 
+            "<selection item='Identifer/AuthorityID' itemOp='EQ' value='" + 
             regNL.item(0).getFirstChild().getNodeValue() + "'/>";
          }
          for(int i = 1;i < regNL.getLength();i++) {
             selectQuery += "<selectionOp op='OR'/>" +
-            "<selection item='AuthorityID' itemOp='EQ' value='" +
+            "<selection item='Identifier/AuthorityID' itemOp='EQ' value='" +
             regNL.item(i).getFirstChild().getNodeValue() + "'/>";
          }
          selectQuery += "</selectionSequence></query>";      
@@ -129,6 +111,7 @@ public class RegistryHarvestService implements
                                                   newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
          
+         //performs the query and return the results.
          Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
@@ -140,24 +123,40 @@ public class RegistryHarvestService implements
   }
   
   /**
-    * Queries it's own registry for all the Registry entries and performs a harvest on those registries.
+    * Queries for all Resource entries managed by this registry based around 
+    * a date.
+    *   
+    * And returns all of the Resource entries.  The use of this method is for 
+    * all other registries who wish to harvest the resource entries based 
+    * around a date.  This will more commonly be used as other Registries 
+    * will harvest daily or weekly.
     * 
-    * @param dateDom XML document object representing the query language used on the registry.
-    * @return XML docuemnt object representing the result of the query. Used internally.
+    * If no date is given then the results are the same as calling harvest 
+    * method.
+    * 
+    * @param registry This parameter is null.  Kicks off returning everything 
+    * managed by this registry.
+    * @return XML docuemnt object representing the result of the query.
     * @author Kevin Benson 
     */  
    public Document harvestFrom(Document dateDom) {
       log.debug("start harvestFrom");
       try {
+         //if there is no date or xml tag at all then call harvest
          if(dateDom == null)
             return harvest(dateDom);
+            
+         //grab the date_since tag.   
          NodeList nl = dateDom.getElementsByTagName("date_since");
+         //if there is no date_since element then replicate/harvest
          if(nl.getLength() == 0) {
             return harvest(dateDom);   
          }
+         
+         //get the date value as a string.
          String updateVal = nl.item(0).getFirstChild().getNodeValue();
          
-         //Probably should parse this with a date  and validat it is a date.
+         //Probably should parse this with a date  and validate it is a date.
                  
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
@@ -165,21 +164,13 @@ public class RegistryHarvestService implements
          //NodeList regNL = registryDoc.getElementsByTagNameNS("vg",
          //                                               "ManagedAuthority" );
          NodeList regNL = RegistryFileHelper.
-                          findNodeListFromXML("ManagedAuthority",
+                          findNodeListFromXML("vg","ManagedAuthority",
                                              registryDoc.getDocumentElement());
-         //Okay for some reason vg seems to pick up the ManagedAuthority.
-         //Lets try to find it by the url namespace.
-//
-//         if(regNL.getLength() == 0) {
-//            regNL = registryDoc.getElementsByTagNameNS(
-//                                    "http://www.ivoa.net/xml/VORegistry/v0.2",
-//                                    "ManagedAuthority" );
-//         }
-//
-//         if(regNL.getLength() == 0) {
-//            regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority" );
-//         }
-         
+
+         //This query for the moment is the same as harvest.  When the 
+         // statistical data is added which is coming soon, then this will be 
+         // changed to get the identifiers first of all the resources that 
+         // have recently changed.
          String selectQuery = "<query><selectionSequence>" +
              "<selection item='searchElements' itemOp='EQ' value='Resource'/>"+
              "<selectionOp op='$and$'/>" + 
@@ -202,6 +193,7 @@ public class RegistryHarvestService implements
          registryBuilder = DocumentBuilderFactory.newInstance().
                                                   newDocumentBuilder();
          Document doc = registryBuilder.parse(inputSource);
+         //perform the query and return it.
          Document responseDoc = XQueryExecution.parseFullNodeQuery(doc);
          return responseDoc;
       }catch(Exception e) {
@@ -212,46 +204,52 @@ public class RegistryHarvestService implements
    }  
   
   /**
-    * Grabs Registry entries from a DOM object and performs harvests on those registries. Normally the DOM
-    * object will only have 1 registry entry, but may contain more. Used externally by clients.
+    * Takes a Resource entry (a Registry type entry).  And performs a full 
+    * replicate or harvest from that registry, to populate this registry.  
+    * Usually there is only one Registry Resource, but there might be more.
     * 
-    * @param query XML document object representing the query language used on the registry.
-    * @return XML docuemnt object representing the result of the query.
+    * @param query XML document object representing the query language used 
+    * on the registry.
+    * @return null (nothing is returned on this web service operation).
     * @author Kevin Benson 
     */  
    public Document harvestResource(Document resources){
       log.debug("start harvestResource");
       log.info("update harvestResource");
-      //log.info("THE RESOURCES IN HARVESTRESOURCE = " +  
-      //         DomHelper.DocumentToString(resources));
-      //NodeList voList = resources.getElementsByTagNameNS(
-      //            "http://www.ivoa.net/xml/VOResource/v0.9","VODescription");
-      //NodeList voList = RegistryFileHelper.
-      //                  findNodeListFromXML("VoDescription",
-      //                                      resources.getDocumentElement());
-      //This next statement will go away with Castor.
-      //ArrayList al = new ArrayList();
+
       RegistryAdminService ras = new RegistryAdminService();
 
+      //Okay this is just a small xsl sheet to make sure the xml is formatted in 
+      //a nice consistent way.  Because currently the schema espcially version 0.9
+      //allows the user to put the xml in a few different ways.
       XSLHelper xs = new XSLHelper();
       Document resourceChange = xs.transformDatabaseProcess(
                                 (Node)resources.getDocumentElement());
+      
+      //Okay update this one resource entry.                          
       Node harvestCopy = resourceChange.cloneNode(true);
       ras.updateNoCheck(resourceChange);
       log.info("THE RESOURCECHANGE IN HARVESTRESOURCE1 = " +
                DomHelper.DocumentToString((Document)harvestCopy));
+      //Start a full (replicate) harvest on this registry.               
       beginHarvest(null,(Document)harvestCopy);
+      
       log.info("exiting harvestResource");
       log.debug("end harvestResource");
       return null;
    }
    
    /**
-     * Grabs Registry entries from a DOM object and performs harvests on those registries. Normally the DOM
-     * object will only have 1 registry entry, but may contain more. Used externally by clients.
+     * Takes a Resource entry (a Registry type entry).  And performs a
+     * harvest from that registry, to populate this registry.  Usually there 
+     * is only one Registry Resource, but there might be more.  This method 
+     * though is different from harvestResource, because a "date_since" tag 
+     * element may be passed in along with the Resources, and will perform a 
+     * harvest based on that date.
      * 
-     * @param query XML document object representing the query language used on the registry.
-     * @return XML docuemnt object representing the result of the query.
+     * @param query XML document object representing the query language used 
+     * on the registry.
+     * @return null (nothing is returned on this web service operation).
      * @author Kevin Benson 
      */  
    public Document harvestFromResource(Document resource) {
@@ -269,12 +267,11 @@ public class RegistryHarvestService implements
    
    
    /**
-       * Grabs Registry entries from a DOM object and performs harvests on
-       * those registries. Normally the DOM object will only have one registry
-       * entry, but may contain more. Used externally by clients.
+       * Will start a harvest of all the Registries known to this registry.
        * 
-       * @param resources XML document object representing the query language used on the registry.
-       * @return XML docuemnt object representing the result of the query.
+       * @param resources XML document object representing the query language
+       *  used on the registry.
+       * @return XML document object representing the result of the query.
        * @author Kevin Benson 
        */  
    public Document harvestAll(Document resources) {
@@ -291,28 +288,59 @@ public class RegistryHarvestService implements
       }
    }
          
+/**
+ * Small Thread class to update the registry with a particular number
+ * of Resources.  This class inherits from the Thread class, so
+ * the harvesting can continue to keep harvesting more Resources.
+ * Some Registries require paging through the Resources hence, the
+ * multithreading helps performance.
+ *  
+ *
+ */         
 private class HarvestThread extends Thread {
    
    private RegistryAdminService ras = null;
    private Document updateDoc = null;
    
+   /**
+    * HarvestThread class constructor.
+    * @param ras The RegistryAdminService class which does updates of Resources
+    * @param updateDoc a set of one or more Resources.
+    */
    public HarvestThread(RegistryAdminService ras, Document updateDoc) {
       this.ras = ras;
       this.updateDoc = updateDoc;   
    }
    
+   /**
+    * Begin the update, Calls updateNoCheck from RegistryAdminService, because
+    * it is assumed the Rewsources have been checked and valid and require no 
+    * special checking.
+    */
    public void run() {
       ras.updateNoCheck(updateDoc);
    }
    
 }
       
+   /**
+    * This is the main method which uses the HarvestThread class to begin
+    * harvesting and updates.  This method will interrogate Resource entries
+    * and see how to call the Resources via the AccessURL and determine if 
+    * it is a WebService or WebBrowser.  Then makes the appropriately call
+    * to the web service or browser grabbing there Resources and update into
+    * this Registry.
+    * 
+    * @param dt An optional date used to harvest from a particular date
+    * @param resources Set of Resources to harvest on, normally a Registry Resource.
+    */   
    public void beginHarvest(Date dt, Document resources) {
       log.debug("start beginHarvest");
       log.info("entered beginharvest");
       String accessURL = null;
       String invocationType = null;
       Document doc = null;
+      //instantiate the Admin service that has update methods.
       RegistryAdminService ras = new RegistryAdminService();
       //log.info("THE FULL RESOURCES IN BEGINHARVEST = " + 
       //         DomHelper.DocumentToString(resources));
@@ -320,7 +348,10 @@ private class HarvestThread extends Thread {
                                  findNodeListFromXML("vr","Resource",
                                               resources.getDocumentElement());
       //log.info("the getLength = " + resourceList.getLength());
+      //go through all the resources
       for(int i = 0; i < resourceList.getLength();i++) {
+         //get the accessurl and invocation type.
+         //invocationtype is either WEbService or WebBrowser.
          accessURL = RegistryFileHelper.findValueFromXML("AccessURL",
                         (Element)resourceList.item(i));
          invocationType = RegistryFileHelper.
@@ -331,9 +362,11 @@ private class HarvestThread extends Thread {
          if("WEBSERVICE".equals(invocationType)) {
             //call the service
             //remeber to look at the date
+            
             if("?wsdl".indexOf(accessURL) == -1) {
                accessURL += "?wsdl";
             }
+            //Read in the wsdl for the endpoint and namespace
             WSDLBasicInformation wsdlBasic = null;
             try {
                wsdlBasic = WSDLInformation.
@@ -345,6 +378,7 @@ private class HarvestThread extends Thread {
             if(wsdlBasic != null) {
                log.info("calling call obj with endpoint = " +
                    (String)wsdlBasic.getEndPoint().values().iterator().next());
+               //create a call object    
                Call callObj = getCall((String)wsdlBasic.getEndPoint().
                               values().iterator().next());
                DocumentBuilder registryBuilder = null;
@@ -355,9 +389,11 @@ private class HarvestThread extends Thread {
                   registryBuilder = dbf.newDocumentBuilder();
                   doc = registryBuilder.newDocument();
                   Element root = null;
+                  //set the operation name/interface method to ListResources
                   String interfaceMethod = "ListResources";
                   String nameSpaceURI = WSDLInformation.
                             getNameSpaceFromBinding(accessURL,interfaceMethod);
+                            
                   root = doc.createElementNS(nameSpaceURI,interfaceMethod);
                   doc.appendChild(root);
                   log.info("Creating soap request for operation name = " +
@@ -365,13 +401,16 @@ private class HarvestThread extends Thread {
                             nameSpaceURI);
                   //log.info("the doc webservice = " + DomHelper.
                   //                                   DocumentToString(doc));
+                  //
                   SOAPBodyElement sbeRequest = new SOAPBodyElement(
                                                    doc.getDocumentElement());
                   //sbeRequest.setName("harvestAll");
                   sbeRequest.setName(interfaceMethod);
                   sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+                  //invoke the web service call
                   Vector result = (Vector) callObj.invoke 
                                            (new Object[] {sbeRequest});
+                  //Take the results and harvest.
                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
                   (new HarvestThread(ras,sbe.getAsDocument())).start();
                } catch(RemoteException re) {
@@ -387,6 +426,7 @@ private class HarvestThread extends Thread {
                }
             }
          }else if("WebBrowser".equals(invocationType)) {
+            //its a web browser so assume for oai.
             try {
                String ending = "";
                //might need to put some oai date stuff on the end.  This is 
@@ -414,6 +454,7 @@ private class HarvestThread extends Thread {
                //log.info("resumptionToken length = " + 
                //         doc.getElementsByTagName("resumptionToken").
                //         getLength());
+               //if there are more paging(next) then keep calling them.
                while( (moreTokens = doc.getElementsByTagName(
                                         "resumptionToken")).getLength() > 0) {
                   Node nd = moreTokens.item(0);
@@ -447,7 +488,8 @@ private class HarvestThread extends Thread {
 
    /**
     * Method to establish a Service and a Call to the server side web service.
-    * @return Call object which has the necessary properties set for an Axis message style.
+    * @return Call object which has the necessary properties set for an Axis 
+    *  message style.
     * @throws Exception
     * @author Kevin Benson
     */     

@@ -332,7 +332,8 @@ public class RegistryFileHelper {
       }
       
       if(regEntry != null) {
-         NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority");
+         NodeList nl = regEntry.getElementsByTagNameNS("vg",
+                                                       "ManagedAuthority");
          //Okay for some reason vg seems to pick up the ManagedAuthority.
          if(nl.getLength() == 0) {
             nl = regEntry.getElementsByTagName("ManagedAuthority" );
