@@ -5,11 +5,24 @@
 	
 	DON'T CHECK THIS INTO CVS WITH
 	THE PASSWORDS VISIBLE!
+	
+	The current build script does not
+	overwrite this file on Uluru, so
+	values you change here in CVS will have
+	no effect.  This is to get round the problem 
+	that we can't store this file in CVS with
+	real passwords in it for security reasons.
+	Therefore, consider this file as an example only,
+	and if you want to make real changes to deployment
+	locations see 
+	~maven/build/astrogrid/integrationTests/deployWebapps.xml
+	
 	                                 
 ***********************************-->
 <root>
    <servers>
       <a>
+        <!--for example......-->           
         <url>http://uml01.astrogrid.org:8080/manager/</url>
         <user>integration</user>
         <password></password>
