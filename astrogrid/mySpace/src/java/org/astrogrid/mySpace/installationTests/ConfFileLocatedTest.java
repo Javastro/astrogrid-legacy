@@ -1,4 +1,4 @@
-/* $Id: ConfFileLocatedTest.java,v 1.2 2004/01/02 16:07:27 jdt Exp $
+/* $Id: ConfFileLocatedTest.java,v 1.3 2004/01/04 18:07:50 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,32 +22,35 @@ import junit.framework.TestCase;
  *
  */
 public class ConfFileLocatedTest extends TestCase {
-    /**
-     * Constructor for ConfFileLocatedTest.
-     * @param arg0 test name
-     */
-    public ConfFileLocatedTest(String arg0) {
-        super(arg0);
-    }
-    /**
-     * Fire up the text ui.
-     * @param args ignored
-     */
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(ConfFileLocatedTest.class);
-    }
-    
-    /** 
-     * There's one file for MySpaceManager
-     */
-    public void testGotMySpaceManagerConfig() throws AstroGridException {
-			MMC.getInstance().checkPropertiesLoaded();
-    }
-    
-	/** 
-	 * There's one file for MySpaceServer
-	 */
-	public void testGotMySpaceServerConfig() throws AstroGridException {
-			MSC.getInstance().checkPropertiesLoaded();
-	}
+  /**
+   * Constructor for ConfFileLocatedTest.
+   * @param arg0 test name
+   */
+  public ConfFileLocatedTest(final String arg0) {
+    super(arg0);
+  }
+  /**
+   * Fire up the text ui.
+   * @param args ignored
+   */
+  public static void main(final String[] args) {
+    junit.textui.TestRunner.run(ConfFileLocatedTest.class);
+  }
+
+  /** 
+   * There's one file for MySpaceManager
+   * @throws AstroGridException if trouble finding config file
+   */
+  public final void testGotMySpaceManagerConfig() throws AstroGridException {
+    MMC.getInstance().checkPropertiesLoaded();
+  }
+
+  /** 
+   * There's one file for MySpaceServer
+   * @throws AstroGridException if trouble finding config file
+   */
+
+  public final void testGotMySpaceServerConfig() throws AstroGridException {
+    MSC.getInstance().checkPropertiesLoaded();
+  }
 }
