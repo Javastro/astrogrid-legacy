@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImpl.java,v 1.5 2004/09/03 13:48:58 jdt Exp $
+/* $Id: RegistryQuerierImpl.java,v 1.6 2004/09/10 13:52:16 jdt Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -8,6 +8,10 @@
  *
  * Created on Jul 29, 2004
  */
+// This class needs a registry to be tested
+// It is tested by the Integration Tests, so we
+// don't need to include it in the clover stats.
+///CLOVER:OFF 
 package org.astrogrid.applications.http.registry;
 
 import java.io.IOException;
