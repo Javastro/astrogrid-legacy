@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.10 2004/03/22 12:26:12 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.11 2004/03/22 12:31:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,10 +40,10 @@ public abstract class QuerierPlugin  {
    
    protected static final Log log = LogFactory.getLog(QuerierPlugin.class);
 
-   public final static String EMAIL_SERVER = "datacenter.emailserver.address";
-   public final static String EMAIL_USER   = "datacenter.emailserver.user";
-   public final static String EMAIL_PWD    = "datacenter.emailserver.password";
-   public final static String EMAIL_FROM   = "datacenter.emailserver.from";
+   public final static String EMAIL_SERVER = "emailserver.address";
+   public final static String EMAIL_USER   = "emailserver.user";
+   public final static String EMAIL_PWD    = "emailserver.password";
+   public final static String EMAIL_FROM   = "emailserver.from";
    
    /** All Plugins implementations will have to have the same constructor as this */
    public QuerierPlugin(Querier givenParent) {
@@ -166,6 +166,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.11  2004/03/22 12:31:10  mch
+ Removed datacenter prefix from emailing keys
+
  Revision 1.10  2004/03/22 12:26:12  mch
  Removed writer close
 
@@ -197,6 +200,7 @@ public abstract class QuerierPlugin  {
  It05 MCH Refactor
 
  */
+
 
 
 
