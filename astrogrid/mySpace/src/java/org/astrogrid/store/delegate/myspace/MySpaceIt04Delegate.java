@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.5 2004/03/16 00:01:09 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.6 2004/03/16 00:01:26 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -245,7 +245,7 @@ public class MySpaceIt04Delegate implements StoreClient
    {
       private String targetPath = null;
 
-      private byte[] buffer = new byte[5000];
+      private byte[] buffer = new byte[4096];
       private int cursor = 0;  //insert point
       
       public MySpaceOutputStream(String aTargetPath) throws StoreException
@@ -385,6 +385,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.6  2004/03/16 00:01:26  mch
+Streaming is now a series of PutStrings
+
 Revision 1.5  2004/03/16 00:01:09  mch
 Streaming is now a series of PutStrings
 
