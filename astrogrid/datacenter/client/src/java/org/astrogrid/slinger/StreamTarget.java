@@ -1,5 +1,5 @@
 /*
- * $Id: StreamTarget.java,v 1.1 2004/10/06 21:12:17 mch Exp $
+ * $Id: StreamTarget.java,v 1.2 2004/10/12 17:41:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,10 +39,15 @@ public class StreamTarget extends TargetIndicator  {
        return out.getClass()+" TargetIndicator ";
    }
    
+   /** Cannot be forwarded to remote services */
+   public boolean isForwardable() { return false; }
    
 }
 /*
  $Log: StreamTarget.java,v $
+ Revision 1.2  2004/10/12 17:41:41  mch
+ added isForwardable
+
  Revision 1.1  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

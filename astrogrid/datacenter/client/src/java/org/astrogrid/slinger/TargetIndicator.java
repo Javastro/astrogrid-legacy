@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.1 2004/10/06 21:12:17 mch Exp $
+ * $Id: TargetIndicator.java,v 1.2 2004/10/12 17:41:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -91,10 +91,18 @@ public abstract class TargetIndicator  {
     * for permissioning. */
    public abstract OutputStream resolveStream(Account user) throws IOException;
    
+   /** Returns true if the target indicator is forwardable.  That is to say, if
+    * it is a reference to a target that can be passed on to a remote service.
+    * WriterTargets for example are not forwardable, as they hold a reference to
+    * a java object, which does not survive remote requests */
+   public abstract boolean isForwardable();
    
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.2  2004/10/12 17:41:41  mch
+ added isForwardable
+
  Revision 1.1  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
