@@ -1,14 +1,14 @@
-<!-- $Id: deployWebapps.xml,v 1.2 2004/01/08 22:46:11 jdt Exp $ -->
+<!-- $Id: deployWebapps.xml,v 1.3 2004/01/09 15:16:22 jdt Exp $ -->
 <!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
-	This could also be run nightly following the maven run.
+
 	Note that these ant tasks require the catalina-ant.jar (found in your tomcat download) to be placed in
 	your ant lib folder.  If you're running ant from Eclipse this is likely to be something like:
 	C:\Java\eclipse\plugins\org.apache.ant_1.5.3
 	To run it from maven, you will need to pop the catalina-ant.jar into maven's lib directory AND
 	modify forehead.conf to pick it up.
-	You'll need to set the urls, Tomcat Manager usernames and passwords below.
+	You'll need to set the urls, Tomcat Manager usernames and passwords below in the tomcatServers.xml file.
 	-->
 	
 
@@ -24,13 +24,13 @@
     <!-- URLs of the wars-->
     <property name="mavenURL" value="http://www.astrogrid.org/maven/"/>
   
-    <property name="mySpace.path"    value="/astrogrid-mySpace-jdtTest"/>
+    <property name="mySpace.path"    value="/astrogrid-mySpace-intTest"/>
     <property name="mySpace.war.url"  value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
     <property name="mySpace.host.url"    value="${servers.a.url}"/>
     <property name="mySpace.host.user"    value="${servers.a.user}"/>
     <property name="mySpace.host.password"    value="${servers.a.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
   
-    <property name="jes.path"     value="/jes-jdt"/>   
+    <property name="jes.path"     value="/astrogrid-jes-intTest"/>   
     <property name="jes.war.url"     value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
     <property name="jes.host.url"    value="${servers.a.url}"/>
     <property name="jes.host.user"    value="${servers.a.user}"/>

@@ -9,9 +9,9 @@
   <body>
     <section name="Astrogrid Integration Testing">
       <p>
-         The integration tests are executed as a maven project which is processed
-         after all of of the component maven projects.  The integration tests consist of a 
-         number of JUnit tests which may be viewed using the menu on the left.
+         The integration tests are executed as a maven project which is executed by a shell script
+         maven-integration-tests.sh which lives in /mavenrun.
+         The integration tests consist of a number of <a href ="junit-report.html">JUnit tests</a>.
       </p>
     </section>
     <section name="What's next?">
