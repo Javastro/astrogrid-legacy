@@ -5,6 +5,12 @@ var abgColour = "#000080";
 var vbgColour = "#ffffff";
 var pub, glossy;
 var GLO = new Array(); 
+var oldClass, hOldClass;
+var priorClass, hPriorClass;
+var bar, bar2, iname;
+var imageCompress = "/astrogrid-portal/sort_up2.gif"
+var imageExpand = "/astrogrid-portal/sort_down.gif"
+
 
 /*
   window.status = "checking: " + fir.name;
@@ -61,6 +67,86 @@ function findPosY(obj)
 		curtop += obj.y;
 	return curtop;
 }
+
+function showHiddenDiv(theDiv){
+	var a = document.getElementById(theDiv);
+	getOzSize();
+	var boxWidth = winW - 200;
+	if(a != null){
+		a.style.position="absolute";
+		a.style.left= 95 + "px";
+		a.style.top= "2px";
+		a.style.textAlign= "left";
+		a.style.width= boxWidth+"px";
+/*		a.style.width= 100+"px";
+	alert("showHiddenDev was invoked for " + theDiv + " " + a.style.display + " width: " + boxWidth);
+*/
+		if(a.style.display == "none"){
+			a.style.display = "";
+		} else {
+			a.style.display = "none";
+		}
+	} else {
+		var msg = theDiv + "  is null";
+		alert(msg);
+	}
+}
+
+function showHelpFrame(theDiv){
+	var a = document.getElementById(theDiv);
+	var fram = theDiv + "F";
+	var f = document.getElementById(fram);
+	getOzSize();
+	var boxWidth = winW - 200;
+	var boxHeight = winH - 20;
+	if(f != null){
+		f.style.height= boxHeight+"px";
+	}
+	if(a != null){
+		a.style.position="absolute";
+		a.style.left= 95 + "px";
+		a.style.top= "2px";
+		a.style.textAlign= "left";
+		a.style.width= boxWidth+"px";
+/*		a.style.height= boxHeight+"px";*/
+/*		a.style.width= 100+"px";
+	alert("showHiddenDev was invoked for " + theDiv + " " + a.style.display + " width: " + boxWidth);
+*/
+		if(a.style.display == "none"){
+			a.style.display = "";
+		} else {
+			a.style.display = "none";
+		}
+	} else {
+		var msg = theDiv + "  is null";
+		alert(msg);
+	}
+}
+
+function showHiddenDiv(theDiv){
+	var a = document.getElementById(theDiv);
+	getOzSize();
+	var boxWidth = winW - 200;
+	if(a != null){
+		a.style.position="absolute";
+		a.style.left= 95 + "px";
+		a.style.top= "2px";
+		a.style.textAlign= "left";
+		a.style.width= boxWidth+"px";
+/*		a.style.width= 100+"px";
+	alert("showHiddenDev was invoked for " + theDiv + " " + a.style.display + " width: " + boxWidth);
+*/
+		if(a.style.display == "none"){
+			a.style.display = "";
+		} else {
+			a.style.display = "none";
+		}
+	} else {
+		var msg = theDiv + "  is null";
+		alert(msg);
+	}
+}
+
 
 function hinter(elem){
 	var idd = elem.id + "stick";
@@ -160,11 +246,15 @@ function cvbc(linkObj){
 	linkObj.style.color = vfgColour;
 }       
 
-function openUp(idtag, posi, total, paddi){
-	var tag, box, guten, match, pod;
+function openUp(idtag, posi, total, paddi, aclass, iclass){
+	var tag, box, guten, match, pod, class_a, class_i;
 /*	alert( "padding area: " + paddi);*/
 	tag = idtag + "Tab" + posi;
 	box = idtag + "Box" + posi;
+	if(aclass!= null){ class_a = aclass;
+	} else { class_a = "agActiveSpan2"; }
+	if(iclass!= null){ class_i = iclass;
+	} else { class_i = "agInActiveSpan2"; }
 	guten = document.getElementById(tag);
 	match = document.getElementById(box);
 	pod   = document.getElementById(paddi);
@@ -172,13 +262,13 @@ function openUp(idtag, posi, total, paddi){
 	if(match != null){
 		if(match.style.display == "none"){
 			match.style.display = "";
-			guten.className = "agActiveSpan2";
+			guten.className = class_a;
 			if(pod != null){
 				pod.style.display = "none";
 			}
 		} else {
 			match.style.display = "none";
-			guten.className = "agInActiveSpan2";
+			guten.className = class_i;
 			if(pod != null){
 				pod.style.display = "";
 			}
@@ -191,7 +281,7 @@ function openUp(idtag, posi, total, paddi){
 		guten = document.getElementById(tag);
 		match = document.getElementById(box);
 		if(guten != null){
-			guten.className = "agInActiveSpan2";
+			guten.className = class_i;
 		}
 		if(match != null){
 			match.style.display = "none";
@@ -270,8 +360,6 @@ function rotweiller(all_box, boxes){
       }
     }
   }
-  /*
-  */
 }
 
 function makeADQL(){
@@ -344,6 +432,24 @@ function popupBrowser(url, uwidth, uheight){
 	pub.focus();
 }
 
+function closeDynamic(moi){
+	var body = document.getElementById(moi);
+	body.style.display = "none";
+}
+
+function openDynamic(moi){
+	var body = document.getElementById(moi);
+	body.style.display = "";
+	/*
+	if(body != null){
+		if(body.style.display == "none"){
+			body.style.display = "";
+		} else {
+			body.style.display = "none";
+		}
+	}
+	*/
+}
 
 function closeGlossary(){
 	glossy.close();
@@ -423,71 +529,163 @@ function defocusit(a){
 	a.style.background = "#ffffff";
 }
 
-function findSelection() {
-  var choice=false;
-  selector = document.RegistryBrowser.selection;
-  if ( selector.length > 1 ) {
-    for ( var i=0; i < selector.length; i++ ) {
-       if ( selector[i].checked ) {
-          choice = true;
-          identifier = selector[i].value;
-          break;
-       }
-    }
-  } else {
-    choice = true;
-    identifier = document.RegistryBrowser.selection.value
-  }
-  if ( !choice ) alert( "Please select a resource" );
-  else {
-    var url = "/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html?action=getTable&uniqueID=";
-    url = url + identifier;
-	window.close();
-	opener.parent.location.href = url;
-	opener.parent.focus();  
-  }
+/* ----------- functions needed for menus only --------------- */
+
+
+function swapImages(destiny, image1, image2, width, height){
+	var theImage = destiny.id + "IMG";
+	currentImage = document.getElementById(theImage);
+	window.status = "images: "+ image1 + " " + image2;
+	if(image2 == null){ return; }
+	if(currentImage.src == image1){
+		currentImage.src = image2;
+	} else {
+		currentImage.src = image1;
+	}
+}
+
+function OnMouseComplex(destiny, classy, menuID, nitems){
+	var thisName = destiny.id;
+	oldClass = destiny.className;
+	destiny.className = classy;
+}
+
+/*
+function OnMooseClick(destiny, classy, menuID, nitems){
+	var thisName = destiny.id + "bar";
+	bar2 = document.getElementById(thisName);
+	if(bar2.style.display == "none"){
+		bar2.style.display = "";
+	} else {
+		bar2.style.display = "none";
+	}
+}
+*/
+
+function OnMiceClick(destiny, classy, menuID, nitems){
+	var thisName = destiny.id + "bar";
+	bar2 = document.getElementById(thisName);
+	var e=document.all? document.all : document.getElementsByTagName("*");
+	for(i=0;i<e.length;i++){
+		if(e[i].id == thisName){
+	window.status = "I got this SOB! " + thisName +"  "+ e[i].summary;
+		}
+	}
+	if(bar2.style.display == "none"){
+		bar2.style.display = "";
+	} else {
+		bar2.style.display = "none";
+	}
+}
+
+function OnMouseVComplex(destiny, classy, menuID, nitems){
+	var thisName = destiny.id;
+	oldClass = destiny.className;
+	destiny.className = classy;
+	thisName += "bar";
 }
 
 
-function getSelectionId(authId, resourceKey) {
-  parentDoc = window.opener.document;
-  parentId = parentDoc.getElementById(authId);
-  parentKey = parentDoc.getElementById(resourceKey);
+function OnMousyClick(destiny, classy, menuID, nitems, voff, hoff, ori, level, href){
+	getOzSize();
+	var thisName = destiny.id;
+	var thisImage = thisName + "I";
+	var newY, newX, margin;
+	var thisDiv = thisName + "DIV";
+	var left = destiny.left;
+	var imref = thisName + "imRef";
+	thisName += "bar";
+	var xposi = findPosX(destiny);
+	var yposi = findPosY(destiny);
+	var parentYposition =  yposi;
+	margin = winW - hoff -20;
+//window.status = "this name is: "+thisName + "  " + thisDiv + " "+thisImage;
+//window.status = "left point: "+ xposi + " top: " + yposi+ " Voff: "+voff + " hoff: " + hoff + " Orientation: " + ori;
+//window.status = "width: " + winW + " Height: " + winH;
+	if(level == "top"){
+	var e=document.all? document.all : document.getElementsByTagName("*");
+		for(i=0;i<e.length;i++){
+			if(e[i].className == menuID && e[i].id != thisName){
+				if(e[i].style.display != "none"){
+					e[i].style.display = "none";
+				}
+			}
+		}
+	}
+	if(document.getElementById(thisName)!= null) {
+		bar2 = document.getElementById(thisName);
+		ima = document.getElementById(thisImage);
+		if(bar2.style.display == "none"){
+			destiny.title = "close the extra options";
+			if(ori == 'horizontal'){
+				bar = document.getElementById(imref);
+				var yposi = findPosY(bar);
+window.status += " " + parentYposition + " vs " + yposi;
+				if(yposi < parentYposition){
+window.status += " imref: "+ imref + " barra: " + bar.id + " ypos: "+yposi;
+					newY = yposi+voff;
+				} else {
+window.status += " reference is different: " + imref;
+					newY = yposi;
+				}
+				if(href == 1){
+					bar2.style.left= xposi +"px";
+window.status += " xpos is modified: " + xposi;
+				}
+				bar2.style.top= newY+"px";
+			} else {
+/*window.status = "Vertical bar"*/
+				newX = xposi+hoff*0.9;
+				while(newX > margin){
+					newX -= 10;
+				}
+				bar2.style.left= newX+"px";
+				bar2.style.top= yposi+"px";
+			}
+			bar2.style.position="absolute";
+			bar2.style.display = "";
+			ima.src = imageCompress;
+		} else {
+			bar2.style.display = "none";
+			destiny.title = "Click HERE for more options";
+			ima.src = imageExpand;
+		}
+	} else {
+window.status = "Failed to identify " + thisName;
+	}
+}
 
-  var choice=false;
-  selector = document.RegistryBrowser.selection;
-  if ( selector.length > 1 ) {
-    for ( var i=0; i < selector.length; i++ ) {
-       if ( selector[i].checked ) {
-          choice = true;
-          identifier = selector[i].value;
-          break;
-       }
-    }
-  } else {
-    choice = true;
-    identifier = document.RegistryBrowser.selection.value
-  } 
-  if ( !choice ) alert( "Please select a resource" );
-  else {
-     j = identifier.indexOf( '/' );
-     id = identifier.substring(0, j);
-     key = identifier.substring(j+1);
+function OutMouseComplex(destiny){
+	var thisName = destiny.id;
+	destiny.className = oldClass;
+}
 
-     if ( parentId && parentKey ) 
-     {
-       parentKey.value = key;
-       parentId.value = id;       
-     }
-     else if (parentId)
-     {
-       parentId.value = identifier;
-     }
-     else alert ( "\nauthId = " + id +
-            "\nresourceKey = " + key );
-     var choice=false;
+function OutMouseVComplex(destiny){
+	var thisName = destiny.id;
+	destiny.className = oldClass;
+}
 
-     window.close();
-  }
+/*
+function OnMouseSingle(destiny, classy){
+	var thisName = destiny.id;
+	thisName = thisName + "H";
+	oldClass = destiny.className;
+	destiny.className = classy;
+	if(document.getElementById(thisName)!= null) {
+		bar2 = document.getElementById(thisName);
+		hOldClass = bar2.className;
+		bar2.className = classy;
+	}
+}
+*/
+
+function OutMouseSingle(destiny){
+	var thisName = destiny.id;
+	thisName = thisName + "H";
+	destiny.className = oldClass;
+	if(document.getElementById(thisName)!= null) {
+		bar2 = document.getElementById(thisName);
+		bar2.className = hOldClass;
+	}
 }
 
