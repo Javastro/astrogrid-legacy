@@ -18,6 +18,8 @@
   <package>org.astrogrid</package>
   
   <shortDescription>AstroGrid DataCenter Components</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter</siteDirectory>
   
   <repository>
     <connection>

@@ -18,6 +18,8 @@
   <package>org.astrogrid</package>
   
   <shortDescription>AstroGrid MySpace Components</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
   
   <repository>
     <connection>

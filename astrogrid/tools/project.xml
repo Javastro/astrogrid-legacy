@@ -18,6 +18,8 @@
   <package>org.astrogrid</package>
   
   <shortDescription>AstroGrid Tools</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/tools</siteDirectory>
   
   <repository>
     <connection>

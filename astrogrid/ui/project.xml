@@ -18,6 +18,8 @@
   <package>org.astrogrid</package>
   
   <shortDescription>AstroGrid User Interface</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/ui</siteDirectory>
   
   <repository>
     <connection>
