@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.7 2004/09/02 12:33:49 mch Exp $
+/*$Id: SecTest.java,v 1.1 2004/09/02 12:33:49 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,48 +35,23 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.transform.TransformerException;
 
 /**
- * Test querying using ADQL against std PAL
+ * Test the SEC proxy/installation
  *
  */
-public class AdqlTest extends TestCase implements StdKeys {
+public class SecTest extends TestCase implements StdKeys {
 
    private static final Log log = LogFactory.getLog(AdqlTest.class);
 
-   /**
-    * Run sample query on std PAL
- * @throws IOException
- * @throws ParserConfigurationException
- * @throws TransformerException
- * @throws SAXException
-    */
-   public void testAdqlSearch() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
+   public void testAdqlSearchForSEC() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       //load query
-      InputStream is = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      System.out.println("Start testAdqlSearchForSEC");
+      InputStream is = this.getClass().getResourceAsStream("SimpleSECQuery-adql05.xml");
       assertNotNull(is);
       StringWriter out = new StringWriter();
       Piper.pipe(new InputStreamReader(is),out);
       AdqlQuery query = new AdqlQuery(out.toString());
       
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertNotNull("delegate was null",delegate);
-
-      InputStream results = delegate.askQuery(query, "VOTABLE");
-      assertNotNull(results);
-      //should be empty votable
-      AstrogridAssert.assertVotable(results);
-   }
-   
-
-   public void testAdqlSearchForFITS() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
-      //load query
-      System.out.println("Start testAdqlSearchForFITS");
-      InputStream is = this.getClass().getResourceAsStream("SimpleFITSQuery-adql073.xml");
-      assertNotNull(is);
-      StringWriter out = new StringWriter();
-      Piper.pipe(new InputStreamReader(is),out);
-      AdqlQuery query = new AdqlQuery(out.toString());
-      
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_FITS_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_SEC_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
       InputStream results = delegate.askQuery(query, "VOTABLE");
@@ -85,8 +60,11 @@ public class AdqlTest extends TestCase implements StdKeys {
       assertNotNull(doc);
       AstrogridAssert.assertVotable(doc);
       DomHelper.DocumentToStream(doc,System.out);
-      System.out.println("End testAdqlSearchForFITS");
+      System.out.println("End testAdqlSearchForSEC");
+      //StringWriter outResult = new StringWriter();
+      //Piper.pipe(new InputStreamReader(results),System.out);
    }
+
    
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -106,8 +84,8 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 
 /*
-$Log: AdqlTest.java,v $
-Revision 1.7  2004/09/02 12:33:49  mch
+$Log: SecTest.java,v $
+Revision 1.1  2004/09/02 12:33:49  mch
 Added better tests and reporting
 
 Revision 1.6  2004/09/02 01:33:48  nw

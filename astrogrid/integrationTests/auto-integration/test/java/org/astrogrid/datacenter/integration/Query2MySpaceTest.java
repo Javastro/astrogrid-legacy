@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.12 2004/09/02 01:33:48 nw Exp $
+/*$Id: Query2MySpaceTest.java,v 1.13 2004/09/02 12:33:49 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,9 @@
 **/
 package org.astrogrid.datacenter.integration;
 
+import java.io.IOException;
 import java.io.InputStream;
+import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -22,25 +24,27 @@ import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.Msrl;
+import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Tests that queries are carried out OK and sent to myspace correctly
  *
  */
-public class Query2MySpaceTest extends TestCase {
+public class Query2MySpaceTest extends TestCase implements StdKeys {
 
    private static final Log log = LogFactory.getLog(Query2MySpaceTest.class);
    
    protected QuerySearcher delegate;
-
-   private static final String resultsPath = "avodemo/autoIntegrationTest.results";
 
    protected void setUp() throws Exception {
       delegate = DatacenterDelegateFactory.makeQuerySearcher(
@@ -51,13 +55,53 @@ public class Query2MySpaceTest extends TestCase {
       assertNotNull("delegate was null",delegate);
    }
    
+   /** do a blocking query, where results are left in myspace - this is handy
+    * as we can get the exception back if there's a problem, before we do the
+    * submit (non-blocking) query
+    * @todo - no web binding for this
+   public void testAsk() throws Exception {
+
+      Agsl resultsTarget = new Agsl(new Msrl(StdKeys.MYSPACE), resultsPath);
+
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      assertNotNull("Could not find test query", in);
+      
+      String queryId = delegate.askQuery(
+         new AdqlQuery(in),
+         resultsTarget,
+         QuerySearcher.VOTABLE
+      );
+         
+      String stat = delegate.getStatus(queryId);
+      TimeStamp timeout = new TimeStamp();
+      
+      //wait until query finishes
+      do {
+         stat = delegate.getStatus(queryId);
+      }
+      while (!stat.equals(QueryState.FINISHED.toString()) && (!stat.equals(QueryState.ERROR.toString()))
+            && (timeout.getSecsSince()<60) ); // ..or timesout
+
+      if (timeout.getSecsSince()>=60) {
+         fail("query timed out, query ["+queryId+"] status="+stat);
+      }
+      
+      assertTrue("Query ["+queryId+"] failed with "+stat+" see "+PAL_QUERYSTATUS+queryId, stat.equals(QueryState.FINISHED.toString()));
+      
+      //see if results are in expected myspace location
+      StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), resultsTarget);
+      checkResults(store.getStream(resultsPath));
+   }
+
    /** do a non-blocking query, where results are left in myspace.
     * retreive from myspace, check they're what we expect
     */
    public void testSubmit() throws Exception {
       // fail("This is causing the integration tests to freeze");
 
+      String resultsPath = "anonymous/Query2MySpaceTest.Submit.vot";
       Agsl resultsTarget = new Agsl(new Msrl(StdKeys.MYSPACE), resultsPath);
+
 
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
       assertNotNull("Could not find test query", in);
@@ -82,11 +126,58 @@ public class Query2MySpaceTest extends TestCase {
          fail("query timed out, query ["+queryId+"] status="+stat);
       }
       
+      assertTrue("Query ["+queryId+"] failed with "+stat+" see "+PAL_QUERYSTATUS+queryId, stat.equals(QueryState.FINISHED.toString()));
+      
       //see if results are in expected myspace location
       StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), resultsTarget);
-      StoreFile file = store.getFile(resultsTarget.getPath());
+      checkResults(store.getFile(resultsPath), store.getStream(resultsPath));
+   }
+
+      /** do a non-blocking query, where results are left in myspace.
+    * retreive from myspace, check they're what we expect
+    */
+   public void testSubmitWithIvorn() throws Exception {
+
+      String resultsPath = "anonymous/Query2MySpaceTest.Submit.vot";
+      Ivorn resultsTarget = new Ivorn("ivo://org.astrogrid.localhost/myspace#"+resultsPath);
+
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      assertNotNull("Could not find test query", in);
       
-      Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget.getPath()));
+      String queryId = delegate.submitQuery(
+         new AdqlQuery(in),
+         VoSpaceResolver.resolveAgsl(resultsTarget),
+         QuerySearcher.VOTABLE
+      );
+         
+      String stat = delegate.getStatus(queryId);
+
+      //wait until query finishes
+      TimeStamp timeout = new TimeStamp();
+      do {
+         stat = delegate.getStatus(queryId);
+      }
+      while ((!stat.equals(QueryState.FINISHED.toString()) && (!stat.equals(QueryState.ERROR.toString()))) // need some extra timout here too
+            && (timeout.getSecsSince()<60) ); // ..or timesout
+
+      if (timeout.getSecsSince()>=60) {
+         fail("query timed out, query ["+queryId+"] status="+stat);
+      }
+
+      assertTrue("Query ["+queryId+"] failed with "+stat+" see "+PAL_QUERYSTATUS+queryId, stat.equals(QueryState.FINISHED.toString()));
+      
+      //see if results are in expected myspace location
+      VoSpaceClient store = new VoSpaceClient(Account.ANONYMOUS.toUser());
+      
+      checkResults(store.getFile(resultsTarget), store.getStream(resultsTarget));
+   }
+
+   /** Checks that the given results Path does contain a votable */
+   public void checkResults(StoreFile file, InputStream in) throws SAXException, IOException, ParserConfigurationException {
+      
+      assertNotNull("Results file not found on store", in);
+      
+      Document resultDoc = DomHelper.newDocument(in);
       assertNotNull("null result document",resultDoc);
       AstrogridAssert.assertVotable(resultDoc);
    }
@@ -110,6 +201,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.13  2004/09/02 12:33:49  mch
+Added better tests and reporting
+
 Revision 1.12  2004/09/02 01:33:48  nw
 added asssertions that valid VOTables are returned.
 

@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.7 2004/09/02 12:33:49 mch Exp $
+/*$Id: VizierTest.java,v 1.1 2004/09/02 12:33:49 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,55 +38,32 @@ import javax.xml.transform.TransformerException;
  * Test querying using ADQL against std PAL
  *
  */
-public class AdqlTest extends TestCase implements StdKeys {
+public class VizierTest extends TestCase implements StdKeys {
 
    private static final Log log = LogFactory.getLog(AdqlTest.class);
 
-   /**
-    * Run sample query on std PAL
- * @throws IOException
- * @throws ParserConfigurationException
- * @throws TransformerException
- * @throws SAXException
-    */
-   public void testAdqlSearch() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
-      //load query
-      InputStream is = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
-      assertNotNull(is);
-      StringWriter out = new StringWriter();
-      Piper.pipe(new InputStreamReader(is),out);
-      AdqlQuery query = new AdqlQuery(out.toString());
-      
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertNotNull("delegate was null",delegate);
-
-      InputStream results = delegate.askQuery(query, "VOTABLE");
-      assertNotNull(results);
-      //should be empty votable
-      AstrogridAssert.assertVotable(results);
-   }
    
+   public void testAdqlSearchForVizier() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
+       //load query
+       System.out.println("Start testAdqlSearchForVizier");
+       InputStream is = this.getClass().getResourceAsStream("SimpleVizierCircle-adql05.xml");
+       assertNotNull(is);
+       StringWriter out = new StringWriter();
+       Piper.pipe(new InputStreamReader(is),out);
+       AdqlQuery query = new AdqlQuery(out.toString());
+       
+       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_VIZIER_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+       assertNotNull("delegate was null",delegate);
 
-   public void testAdqlSearchForFITS() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
-      //load query
-      System.out.println("Start testAdqlSearchForFITS");
-      InputStream is = this.getClass().getResourceAsStream("SimpleFITSQuery-adql073.xml");
-      assertNotNull(is);
-      StringWriter out = new StringWriter();
-      Piper.pipe(new InputStreamReader(is),out);
-      AdqlQuery query = new AdqlQuery(out.toString());
-      
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_FITS_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertNotNull("delegate was null",delegate);
-
-      InputStream results = delegate.askQuery(query, "VOTABLE");
-      assertNotNull(results);
-      Document doc = DomHelper.newDocument(results);
-      assertNotNull(doc);
-      AstrogridAssert.assertVotable(doc);
-      DomHelper.DocumentToStream(doc,System.out);
-      System.out.println("End testAdqlSearchForFITS");
-   }
+       InputStream results = delegate.askQuery(query, "VOTABLE");
+       assertNotNull(results);
+       Document doc = DomHelper.newDocument(results);
+       assertNotNull(doc);
+       AstrogridAssert.assertVotable(doc);
+       DomHelper.DocumentToStream(doc,System.out);
+       System.out.println("End testAdqlSearchForVizier");
+       //should be empty votable
+    }
    
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -106,8 +83,8 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 
 /*
-$Log: AdqlTest.java,v $
-Revision 1.7  2004/09/02 12:33:49  mch
+$Log: VizierTest.java,v $
+Revision 1.1  2004/09/02 12:33:49  mch
 Added better tests and reporting
 
 Revision 1.6  2004/09/02 01:33:48  nw
