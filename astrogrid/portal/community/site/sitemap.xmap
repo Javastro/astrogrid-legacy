@@ -60,9 +60,9 @@
    <map:pipelines>
       <map:pipeline>
 
-         <!-- Community administation page -->
+         <!-- Community administration page -->
          <map:match pattern="community">
-            <map:redirect-to uri="administation.html"/>
+            <map:redirect-to uri="administration.html"/>
          </map:match>
          
          <!-- Administration page -->
