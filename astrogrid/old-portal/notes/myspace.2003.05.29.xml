@@ -1,0 +1,448 @@
+<notes>
+	<note>
+		Ok, starting with the lookup service.
+
+		[quote]
+		<i>Originally posted by CliveDavenhall<i>
+		Lookup DataHoldersDetails. 
+		Lookup the details of a named set of DataHolders and containers (which are specified using a wild-carded name; see Section `Naming DataHolders and searching the MySpace System to find them', below). 
+
+		given: 
+		User identifier (string) 
+		Community identifier (string) 
+		MySpace names of the DataHolders whose details are to be looked up.
+		Typically the names will be supplied as a partly wild-carded string and names which match will be looked up (string) 
+
+		returned: 
+		List of MySpace details for all the DataHolders that match the given criterion. 
+		status information (including boolean success/failure flag, human-readable error string and perhaps other information).
+		[/quote]
+
+		----"----
+
+		Based on the following data.
+		<verbatim>
+		<!-- First node, user name -->
+		<container ident="####" name="frog">
+		    <!-- Second node, location -->
+		    <container ident="####" name="cambridge">
+		        <!-- Containers and data holders at that location -->
+		        <container ident="####" name="2003">
+		            <container ident="####" name="04">
+		                <container ident="####" name="tables">
+		                    <holder ident="####" name="results-A" type="VO-TABLE"/>
+		                    <holder ident="####" name="results-B" type="VO-TABLE"/>
+		                    <container ident="####" name="images">
+		                        <holder ident="####" name="image-A" type="VO-IMAGE"/>
+		                    </container>
+		                </container>
+		            </container>
+		            <container ident="####" name="05">
+		                <container ident="####" name="tables">
+		                    <holder ident="####" name="results-C" type="VO-TABLE"/>
+		                    <holder ident="####" name="results-D" type="VO-TABLE"/>
+		                </container>
+		            </container>
+		        </container>
+		    </container>
+		</container>
+		</verbatim>
+		----"----
+		How about the following for the XML messages:
+
+		<verbatim>
+		<!--+
+		    | User 'frog' creates a new explorer view and sets the path.
+		    | Request list of containers for VO-TABLE items that match the path.
+		    | (using Ant style wildcards in the path)
+		    +-->
+		<lookup-request>
+		    <request>
+		        <!-- Who is asking -->
+		        <user>
+		            <user>frog</user>
+		            <community>xxxx</community>
+		        </user>
+		        <!-- What they want to match -->
+		        <query>
+		            <!-- Path of the matching items -->
+		            <path>/frog/cambridge/**/tables/*</path>
+		            <!-- Type(s) of the matching items -->
+		            <types>
+		                <type>VO-TABLE</type>
+		                <type>AST-CONTAINER</type>
+		            </types>
+		        </query>
+		        <!-- What they want back -->
+		        <select>
+		            <filter>
+		                <!-- Type(s) of the matching items -->
+		                <types>
+		                    <type>AST-CONTAINER</type>
+		                </types>
+		            </filter>
+		            <!-- The format of the response -->
+		            <format>AST-FORMAT-NESTED|AST-FORMAT-LIST</format>
+		        </select>
+		    </request>
+		</lookup-request>
+		</verbatim>
+
+		<verbatim>
+		<!--+
+		    | Response is set of containers for VO-TABLE items that match the path.
+		    | (with nested container elements)
+		    +-->
+		<lookup-response>
+		    <!--+
+		        | The original request.
+		        | Not required in the production system, useful for debugging during development.
+		        +-->
+		    <request>
+		        <!-- Who is asking -->
+		        <user>
+		            <user>frog</user>
+		            <community>xxxx</community>
+		        </user>
+		        <!-- What they want to match -->
+		        <query>
+		            <!-- Path of the matching items -->
+		            <path>/frog/cambridge/**/tables/*</path>
+		            <!-- Type(s) of the matching items -->
+		            <types>
+		                <type>VO-TABLE</type>
+		                <type>AST-CONTAINER</type>
+		            </types>
+		        </query>
+		        <!-- What they want back -->
+		        <select>
+		            <filter>
+		                <!-- Type(s) of the matching items -->
+		                <types>
+		                    <type>AST-CONTAINER</type>
+		                </types>
+		            </filter>
+		            <!-- The format of the response -->
+		            <format>AST-FORMAT-NESTED</format>
+		        </select>
+		    </request>
+		    <!--+
+		        | The results.
+		        +-->
+		    <results>
+		        <status>
+		            <!-- The status code -->
+		            <status>AST-STATUS-SUCCESS</status>
+		            <!-- Optional details element -->
+		            <details>Optional details of the reason if status is not success ....</details>
+		        </status>
+		        <elements>
+		            <element type="AST-CONTAINER" ident="####" name="frog">
+		                <element type="AST-CONTAINER" ident="####" name="cambridge">
+		                    <element type="AST-CONTAINER" ident="####" name="2003">
+		                        <element type="AST-CONTAINER" ident="####" name="04">
+		                            <element type="AST-CONTAINER" ident="####" name="tables">
+		                                <!--+
+		                                    | Only containers requested, so no data items listed.
+		                                    | The 'images' container matches the path, but does not contain any VO-TABLE data
+		                                    | It gets included in the list because the query asked for VO-TABLE and AST-CONTAINERS.
+		                                    +-->
+		                                <element type="AST-CONTAINER" ident="####" name="images">
+		                                </element>
+		                            </element>
+		                        </element>
+		                        <element type="AST-CONTAINER" ident="####" name="05">
+		                            <element ident="####" name="tables">
+		                                <!--+
+		                                    | Only containers requested, so no data items listed.
+		                                    +-->
+		                            </element>
+		                        </element>
+		                    </element>
+		                </element>
+		            </element>
+		        </elements>
+		    </results>
+		</lookup-response>
+		</verbatim>
+
+		<verbatim>
+		<!--+
+		    | Alternative response with flat list of elements.
+		    +-->
+		<lookup-response>
+		    <!--+
+		        | The original request.
+		        | Not required in the production system, useful for debugging during development.
+		        +-->
+		    <request>
+		        <!-- Who is asking -->
+		        <user>
+		            <user>frog</user>
+		            <community>xxxx</community>
+		        </user>
+		        <!-- What they want to match -->
+		        <query>
+		            <!-- Path of the matching items -->
+		            <path>/frog/cambridge/**/tables/*</path>
+		            <!-- Type(s) of the matching items -->
+		            <types>
+		                <type>VO-TABLE</type>
+		                <type>AST-CONTAINER</type>
+		            </types>
+		        </query>
+		        <!-- What they want back -->
+		        <select>
+		            <filter>
+		                <!-- Type(s) of the matching items -->
+		                <types>
+		                    <type>AST-CONTAINER</type>
+		                </types>
+		            </filter>
+		            <!-- The format of the response -->
+		            <format>AST-FORMAT-LIST</format>
+		        </select>
+		    </request>
+		    <!--+
+		        | The results.
+		        +-->
+		    <results>
+		        <status>
+		            <!-- The status code -->
+		            <status>AST-STATUS-SUCCESS</status>
+		            <!-- Optional details element -->
+		            <details>Optional details of the reason if status is not success ....</details>
+		        </status>
+		        <elements>
+		            <!--+
+		                | Flat list of the matching containers
+		                | The two 'tables' containers are listed because they contain VO-TABLE items.
+		                | The 'images' container matches the path, but does not contain any VO-TABLE data
+		                | It gets included in the list because the query asked for VO-TABLE and AST-CONTAINERS.
+		                +-->
+		            <element type="AST-CONTAINER" ident="####" name="tables" path="frog/cambridge/2003/04"/>
+		            <element type="AST-CONTAINER" ident="####" name="images" path="frog/cambridge/2003/04/tables"/>
+		            <element type="AST-CONTAINER" ident="####" name="tables" path="frog/cambridge/2003/05"/>
+		        </elements>
+		    </results>
+		</lookup-response>
+		</verbatim>
+
+		<verbatim>
+		<!--+
+		    | User selects a folder 'frog/cambridge/2003/04/tables'.
+		    | Request list of VO-TABLE items in a container, specified using container path.
+		    +-->
+		<lookup-request>
+		    <request>
+		        <!-- Who is asking -->
+		        <user>
+		            <user>frog</user>
+		            <community>xxxx</community>
+		        </user>
+		        <!-- What they want to match -->
+		        <query>
+		            <!-- Path of the matching items -->
+		            <path>/frog/cambridge/2003/04/tables/*</path>
+		            <!-- Type(s) of the matching items -->
+		            <types>
+		                <type>VO-TABLE</type>
+		                <type>AST-CONTAINER</type>
+		            </types>
+		        </query>
+		        <!-- What they want back -->
+		        <select>
+		            <filter>
+		                <!-- Type(s) of the matching items -->
+		                <types>
+		                    <!--+
+		                        | This means any of the matching items.
+		                        | We could make this optional, and default to 'any' if not specified.
+		                        +-->
+		                    <type>AST-ANY</type>
+		                </types>
+		            </filter>
+		            <!-- The format of the response -->
+		            <format>AST-FORMAT-LIST</format>
+		        </select>
+		    </request>
+		</lookup-request>
+		</verbatim>
+
+		<verbatim>
+		<!--+
+		    | Request list of VO-TABLE items in a container.
+		    | Alternative form, using container ident.
+		    +-->
+		<lookup-request>
+		    <request>
+		        <!-- Who is asking -->
+		        <user>
+		            <user>frog</user>
+		            <community>xxxx</community>
+		        </user>
+		        <!-- What they want to match -->
+		        <query>
+		            <!-- Container identifier -->
+		            <container>####</container>
+		            <!-- Type(s) of the matching items -->
+		            <types>
+		                <type>VO-TABLE</type>
+		                <type>AST-CONTAINER</type>
+		            </types>
+		        </query>
+		        <!-- What they want back -->
+		        <select>
+		            <filter>
+		                <!-- Type(s) of the matching items -->
+		                <types>
+		                    <!--+
+		                        | This means any of the matching items.
+		                        | We could make this optional, and default to 'any' if not specified.
+		                        +-->
+		                    <type>AST-ANY</type>
+		                </types>
+		            </filter>
+		            <!-- The format of the response -->
+		            <format>AST-FORMAT-LIST</format>
+		        </select>
+		    </request>
+		</lookup-request>
+		</verbatim>
+
+		<verbatim>
+		<!--+
+		    | Container contents response with flat list of elements.
+		    +-->
+		<lookup-response>
+		    <!--+
+		        | The original request.
+		        | Not required in the production system, useful for debugging during development.
+		        +-->
+		    <request>
+		        <!-- Who is asking -->
+		        <user>
+		            <user>frog</user>
+		            <community>xxxx</community>
+		        </user>
+		        <!-- What they want to match -->
+		        <query>
+		            <!-- Container identifier -->
+		            <container>####</container>
+		            <!-- Type(s) of the matching items -->
+		            <types>
+		                <type>VO-TABLE</type>
+		                <type>AST-CONTAINER</type>
+		            </types>
+		        </query>
+		        <!-- What they want back -->
+		        <select>
+		            <filter>
+		                <!-- Type(s) of the matching items -->
+		                <types>
+		                    <!--+
+		                        | This means any of the matching items.
+		                        | We could make this optional, and default to 'any' if not specified.
+		                        +-->
+		                    <type>AST-ANY</type>
+		                </types>
+		            </filter>
+		            <!-- The format of the response -->
+		            <format>AST-FORMAT-LIST</format>
+		        </select>
+		    </request>
+		    <!--+
+		        | The results.
+		        +-->
+		    <results>
+		        <status>
+		            <!-- The status code -->
+		            <status>AST-STATUS-SUCCESS</status>
+		            <!-- Optional details element -->
+		            <details>Optional details of the reason if status is not success ....</details>
+		        </status>
+		        <elements>
+		            <!--+
+		                | Flat list of the matching items (data and containers).
+		                | The two data holders are listed because they contain VO-TABLE data.
+		                | The 'images' container matches the path, but does not contain any VO-TABLE data
+		                | It gets included in the list because the query asked for VO-TABLE and AST-CONTAINERS.
+		                +-->
+		            <element type="VO-TABLE" ident="####" name="results-A" path="frog/cambridge/2003/04/tables"/>
+		            <element type="VO-TABLE" ident="####" name="results-B" path="frog/cambridge/2003/04/tables"/>
+		            <element type="AST-CONTAINER" ident="####" name="images" path="frog/cambridge/2003/04/tables"/>
+		        </elements>
+		    </results>
+		</lookup-response>
+		</verbatim>
+
+		I have tried to make the XML as 'Xtensible' as possible.
+		At the moment, we only have VO-TABLE data, but we might as well allow space for different data types later on.
+		I've described two types of response format, flat-list and nested.
+		The flat-list is probably the easiest for you, but nested would be useful for us.
+		If the nested elements is tricky, don't panic.
+		I think I might be able to come up with an XSL transform to convert flat-list into nested if required.
+
+		I suppose first question is 'Is this what you were thinking of ?'
+		If this is close, the I'll build a more detailed schema for it.
+
+		Dave
+	</note>
+	<note>
+		Need to send multiple SOAP calls to process one request.
+		Contents of SOAP calls depends on the results from the previous ones.
+		Useful to be able to make SOAP calls at multiple stages in a Cocoon pipeline.
+		Implies a SOAPRequestTransformer, intercepts marker tags and replaces with results from SOAP call.
+		Might be able to use a modified form of the CInclude transformer ....
+		<code language="xml">
+			<![CDATA[
+				<?xml version="1.0"?>
+				<data xmlns:cinclude="http://apache.org/cocoon/include/1.0">
+					<cinclude:includexml>
+						<cinclude:src>http://itsunshine/tamino/blah</cinclude:src>
+							<cinclude:configuration>
+							<cinclude:parameter>
+								<cinclude:name>method</cinclude:name>
+								<cinclude:value>POST</cinclude:value>
+							</cinclude:parameter>
+						</cinclude:configuration>
+						<cinclude:parameters>
+							<cinclude:parameter>
+								<cinclude:name>message</session:name>
+								<cinclude:value>Hi there</session:value>
+							</cinclude:parameter>
+							<cinclude:parameter>
+								<cinclude:name>_Process</cinclude:name>
+								<cinclude:value><name>matti</name><age>36</age></cinclude:value>
+							</cinclude:parameter>
+						</cinclude:parameters>
+					</cinclude:includexml>
+				</data>
+			]]>
+		</code>
+	</note>
+	<note>
+		To implement mock myspace service, need to use path from SOAP request to parse data in myspace.
+		Generate initial data from data file.
+		Generate select path from SOAP request.
+		Combine these into one document.
+		Convert request path into XPath select for transformer.
+
+		Can't use aggregate with XSP generator, as http request is null.
+		Might be able to use XInclude instead ....
+	</note>
+	<note>
+
+http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/session/
+http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/session/new-view?path=//collection[@name='cambridge']
+http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/AST-5/
+http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/AST-5/set-path?path=//collection[@name='tables']
+http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/AST-5/set-path?path=//collection[@name='images']
+
+http://methionine.codon.demon.co.uk:8080/cocoon/astrogrid/explorer/AST-5/set-path?path=//collection[element[@type='VO-TABLE']]
+
+	</note>
+
+
+
+</notes>

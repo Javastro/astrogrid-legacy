@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/xml/myspace/Attic/lookup-data.xml,v $</cvs:source>
+<cvs:date>$Author: dave $</cvs:date>
+<cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
+<cvs:version>$Revision: 1.1 $</cvs:version>
+<cvs:log>
+	$Log: lookup-data.xml,v $
+	Revision 1.1  2003/06/03 13:16:47  dave
+	Added initial iter 02 code
+
+	Revision 1.1  2003/06/01 19:22:09  Dumbledore
+	Added test SOAP service and dummy myspace service.
+	
+</cvs:log>
+ -->
+<!-- First node, user name -->
+<collection ident="0000" name="frog">
+	<!-- Second node, location -->
+	<collection ident="0001" name="cambridge">
+		<collection ident="0002" name="2003">
+			<collection ident="0003" name="04">
+				<collection ident="0004" name="tables">
+					<element ident="0005" name="results-A" type="VO-TABLE"/>
+					<element ident="0006" name="results-B" type="VO-TABLE"/>
+					<collection ident="0007" name="images">
+						<holder elementident="0008" name="image-A" type="VO-IMAGE"/>
+					</collection>
+				</collection>
+			</collection>
+			<collection ident="0009" name="05">
+				<collection ident="000A" name="tables">
+					<element ident="000B" name="results-C" type="VO-TABLE"/>
+					<element ident="000C" name="results-D" type="VO-TABLE"/>
+				</collection>
+			</collection>
+		</collection>
+	</collection>
+</collection>

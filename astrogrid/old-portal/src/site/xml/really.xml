@@ -1,0 +1,49 @@
+<!--
+<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/xml/Attic/really.xml,v $</cvs:source>
+<cvs:date>$Author: dave $</cvs:date>
+<cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
+<cvs:version>$Revision: 1.1 $</cvs:version>
+<cvs:log>
+	$Log: really.xml,v $
+	Revision 1.1  2003/06/03 13:16:47  dave
+	Added initial iter 02 code
+
+	Revision 1.2  2003/05/25 11:29:04  Dumbledore
+	Fixed bug in the cvs log header.
+	
+</cvs:log>
+ -->
+<notes>
+	<note>
+		<title>Data Center</title>
+		<notes>
+			<note>
+				<title>Astrogrid Query Processing Overview</title>
+				<href>http://wiki.astrogrid.org/bin/view/Astrogrid/AgCd08OverView</href>
+				<notes/>
+			</note>
+			<note>
+				<title>Query Interfaces</title>
+				<href>http://wiki.astrogrid.org/bin/view/Astrogrid/QueryInterfaces</href>
+				<notes/>
+			</note>
+		</notes>
+	</note>
+
+
+	<note>
+		<title>Job Controler</title>
+		<notes>
+			<note>
+				<title>Job Control Design Documents</title>
+				<href>http://wiki.astrogrid.org/bin/view/Astrogrid/AgCd05DesignDocs</href>
+				<notes/>
+			</note>
+			<note>
+				<title>Request and Response Schema</title>
+				<href>http://wiki.astrogrid.org/bin/view/Astrogrid/AgCd05Schema</href>
+				<notes/>
+			</note>
+		</notes>
+	</note>
+</notes>

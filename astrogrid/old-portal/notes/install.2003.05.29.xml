@@ -1,0 +1,24 @@
+<notes date="2003.05.29">
+	<note>
+		Updated into cocon cvs.
+		Checked out clean copy in Cambridge machine.
+		Tarred the files to keep a copy (took a long time to arrive).
+		Needed to chmod build.sh to allow me to run it.
+		
+		./build.sh init
+		works ok
+
+		./build.sh project.REBUILD
+		Looks like it worked ....
+
+		./build.sh project.run
+		Looks like it worked ....
+
+		Minor bug fixes
+		One crossed over directory (xsp/explorer and xsp/query).
+		One type in Ant build (axis.webapp path)
+
+	</note>
+
+</notes>
+

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+<cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/site/xml/data/services/Attic/astro_test_0002_WENSS.xml,v $</cvs:source>
+<cvs:date>$Author: dave $</cvs:date>
+<cvs:author>$Date: 2003/06/03 13:16:47 $</cvs:author>
+<cvs:version>$Revision: 1.1 $</cvs:version>
+<cvs:log>
+	$Log: astro_test_0002_WENSS.xml,v $
+	Revision 1.1  2003/06/03 13:16:47  dave
+	Added initial iter 02 code
+
+	Revision 1.2  2003/05/25 11:28:36  Dumbledore
+	Fixed bug in the cvs log header.
+	
+</cvs:log>
+ -->
+<!-- edited with XMLSPY v5 rel. 2 U (http://www.xmlspy.com) by c.h.perry@rl.ac.uk (CCLRC) -->
+<service xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="M:\AstroReg\service.xsd">
+	<id>WENESS</id>
+	<serviceType>
+		<dataSvc>
+			<type>archive</type>
+			<format>image/FITS</format>
+			<coverage>
+				<wavelength>
+					<wavelengthrange>radio</wavelengthrange>
+					<wavelengthshort>4900000000</wavelengthshort>
+					<wavelengthlong>9200000000</wavelengthlong>
+				</wavelength>
+				<startdate>1998-</startdate>
+				<enddate>2000</enddate>
+				<decmin>28</decmin>
+				<decmax>90</decmax>
+				<sensitvity>1</sensitvity>
+			</coverage>
+			<spatialresolution>54</spatialresolution>
+			<facility>radio survey made with   the WSRT at wavelengths 92 and 49 cm</facility>
+			<location>
+				<servicelocation>http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=VIII/62</servicelocation>
+				<master>http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=VIII/62</master>
+			</location>
+			<community>public</community>
+			<briefsummary>WENSS The Westerbork Northern Sky Survey</briefsummary>
+		</dataSvc>
+	</serviceType>
+	<title>WENSS The Westerbork Northern Sky Survey</title>
+	<publisher>Centre deDonnées astronomiques de Strasbourg </publisher>
+	<creator>WENESS</creator>
+	<subjectList>
+		<subject>galaxies</subject>
+		<subject>quasars</subject>
+		<subject>stars</subject>
+		<subject>CCD photometry</subject>
+		<subject>spectroscopy</subject>
+		<subject>redshift</subject>
+		<subject>sky surveys</subject>
+	</subjectList>
+	<description>
+    The Westerbork Northern Sky Survey (WENSS) is a low-frequency radio
+    survey that covers the whole sky north of 30° at a wavelength of
+    92cm (330MHz) to a limiting flux density of approximately 18 mJy
+    (5{sigma}). This survey has a resolution of 54"x54" cosec(delta) and a
+    positional accuracy for strong sources of 1.5".
+
+    The WENSS project is a collaboration between the Netherlands
+    Foundation for Research in Astronomy (NFRA/ASTRON) and the 
+    Leiden Observatory.
+
+Introduction to the WENSS:
+    The Westerbork Northern Sky Survey (WENSS) is a radio survey made with
+    the WSRT at wavelengths 92 and 49 cm. At 92 cm the entire sky above
+    declination 30° is covered. The other wavelength regime does
+    not cover the whole sky, but only 30-50 percent, due to the amount of
+    telescope time that is needed to do this. Using a synthesis array like
+    the WSRT means that we get a better resolution than single dish
+    observations, but also has the disadvantage of a smaller field of
+    view, unless we find a way of dealing with wide field imaging. The
+    solution for this problem is mosaicing. Instead of making one
+    observation of a large field we make a lot of snapshots of different
+    fields and bind them together with the help of special build software.
+    A typical mosaic contains 80 pointing centres. Each pointing centre is
+    sampled during 20 seconds and then the telescope moves to another
+    centre. This takes about 10 seconds. After 40 minutes all fields are
+    scanned and the procedure starts again. This means that in a 12 hour
+    observation each field is scanned 18 times. To move grating rings of
+    the map 6 different baseline settings are used, so 1 mosaic data block
+    involves 72 hours of observational data. Each pointing centre is
+    located at half half-power maximum beamwidth in order to get a smooth
+    sampling grid of the data. The noise background is uniform up to 5
+    percent. At 92 cm (declination 30°) a mosaic block is about 10
+    by 14° large.
+
+    The final product that the WENSS survey produces contain 6x6°
+    frames taken from the mosaic blocks. They are centered on the new POSS
+    plate positions (5° grid). The limiting flux density will be about
+    15 mJy (5 sigma) at both wavelengths. As a result the final catalogue
+    will consist of 300,000 sources at 92 cm and 60,000 at 49 cm. The
+    positional accuracy will be superior to all other all sky surveys (5"
+    for the faint sources to better than 1" for the stronger sources). A
+    large number of sources will have sufficient accurate positions to
+    allow optical identification using a digitized version of the Palomar
+    Sky Survey made with the APM at Cambridge. Final maps will be made at
+    different resolutions in order to make accurate spectral index
+    measurements. At each wavelength we will make high, medium and low
+    resolution maps (1', 2.5' and 4' resolution at 92 cm and 0.5', 1' and
+    2.5' resolution at 49 cm). Maps will be made with all Stokes
+    parameters (I, Q, U and V). This means that source information will be
+    available both on spectral type and polarization characteristics. This
+    is important for using the catalogue as a database for finding sources
+    based on well known selection criteria, such as steep spectra for high
+    redshift radio galaxies.
+</description>
+	<contributor>WENSS</contributor>
+	<date>2000-02-10</date>
+	<version>Not Specified</version>
+	<serviceURL>http://vizier.u-strasbg.fr/viz-bin/VizieR?-source=VIII/62</serviceURL>
+	<contact>
+		<name> wenss.people</name>
+		<email> wenss.people@strw.leidenuniv.nl</email>
+	</contact>
+</service>
