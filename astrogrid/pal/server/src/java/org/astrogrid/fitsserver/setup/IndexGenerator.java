@@ -100,7 +100,8 @@ public class IndexGenerator
    public String makeIndexSnippet(Fits reader, String filename) throws IOException, FitsException
    {
       StringBuffer snippet = new StringBuffer();
-      
+      System.out.println("entered makeIndexNippet(fitsreader,file)");
+      System.out.println("Number of hdus = " + reader.getNumberOfHDUs());
       for (int i = 0; i < reader.getNumberOfHDUs(); i++)
       {
          log.trace(""); //seperate headers
@@ -120,9 +121,11 @@ public class IndexGenerator
     */
    public String makeIndexSnippet(Header header, String fileLocation) throws IOException, FitsException
    {
+      System.out.println("entered makeIndexNippet(header,filelocation)");
       if(header == null) {
         return "";
       }
+      System.out.println("header not null");
                                 
       //run trhough all keywords adding them
       StringBuffer keywordSnippet = new StringBuffer();
@@ -132,7 +135,7 @@ public class IndexGenerator
       {
          String key = header.getKey(i).trim();
          String value = header.getStringValue(key);
-
+         System.out.println("The key = " + key + " the value = " + value);
          //if the key is 'comment' leave it at that, if the comment comes from and-of-line comment, include that too
          String eolComment = null;
          if (!key.toUpperCase().equals("COMMENT")) {
@@ -240,6 +243,7 @@ public class IndexGenerator
     */
    public File generateIndex(InputStream urlsIn) throws IOException, FitsException
    {
+      System.out.println("entered generateIndex(inputstream)");
       BufferedReader in = new BufferedReader(new InputStreamReader(urlsIn));
       String line = null;
       while( (line = in.readLine()) != null) {
@@ -254,6 +258,7 @@ public class IndexGenerator
     */
    public File generateIndex(URL []urls) throws IOException, FitsException
    {
+      System.out.println("entered generateIndex(urls[])");
       for(int i = 0; i < urls.length;i++) {
             generateIndex(urls[i]);
       }//for
@@ -266,6 +271,9 @@ public class IndexGenerator
     */
    public File generateIndex(URL url) throws IOException, FitsException
    {
+       System.out.println("entered generateIndex(url)");
+       if(url == null)
+           System.out.println("the url is null");
        Calendar rightNow = Calendar.getInstance();
        int year = rightNow.get(Calendar.YEAR);
        int month = rightNow.get(Calendar.MONTH);
@@ -443,6 +451,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.3  2005/03/11 16:19:58  KevinBenson
+new indexgenerator worked around.
+
 Revision 1.2  2005/03/11 14:50:59  KevinBenson
 added catch for parserconfigurationexception
 

@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.6 2005/03/11 14:50:59 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.7 2005/03/11 16:19:58 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -31,10 +31,12 @@ public class IndexGeneratorTest extends TestCase
    /** Tests generating indexes from the test fits files.   */
    public void testInMemory() throws Exception
    {
+      URL []genURLS = FitsTestSupport.getTestFits();
+      System.out.println("length of urls = " + genURLS.length);
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
-      File indexDir = generator.generateIndex(FitsTestSupport.getTestFits());
+      File indexDir = generator.generateIndex(genURLS);
       assertNotNull(indexDir);
       assertTrue(indexDir.isDirectory());
       assertEquals(FitsTestSupport.getTestFits().length,indexDir.list().length);
@@ -94,6 +96,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.7  2005/03/11 16:19:58  KevinBenson
+ new indexgenerator worked around.
+
  Revision 1.6  2005/03/11 14:50:59  KevinBenson
  added catch for parserconfigurationexception
 
