@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!-- ADQL generated from: {Query: In scope sgas_event,look for where (([ColRef sgas_event.nar]) < ([Integer] 9600)) AND (([ColRef sgas_event.nar]) > ([Integer] 9500)),  returning [Results: target=null, cols=*]} -->
+<!-- ADQL generated from SQL: select * from sgas_event as se where se.nar < 9600 and se.nar > 9500
+ -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+      <Item xsi:type='allSelectionItemType' ></Item>
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='sgas_event' Alias='sgas_event' ></Table>
+   </From>
+   <Where>
+      <Condition xsi:type='intersectionSearchType' >
+         <Condition xsi:type='comparisonPredType' Comparison='&lt;' >
+            <Arg xsi:type='columnReferenceType'  Table='sgas_event'  Name='nar' ></Arg>
+            <Arg xsi:type='atomType' >
+               <Literal xsi:type='integerType' Value='9600' ></Literal>
+            </Arg>
+         </Condition>
+         <Condition xsi:type='comparisonPredType' Comparison='&gt;' >
+            <Arg xsi:type='columnReferenceType'  Table='sgas_event'  Name='nar' ></Arg>
+            <Arg xsi:type='atomType' >
+               <Literal xsi:type='integerType' Value='9500' ></Literal>
+            </Arg>
+         </Condition>
+      </Condition>
+   </Where>
+</Select>
+

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!-- ADQL generated from: {Query: In scope sgas_event,find everything,  returning [Results: target=null, cols=*]} -->
+<!-- ADQL generated from SQL: select * from sgas_event as se -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+      <Item xsi:type='allSelectionItemType' ></Item>
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='sgas_event' Alias='sgas_event' ></Table>
+   </From>
+</Select>
+
