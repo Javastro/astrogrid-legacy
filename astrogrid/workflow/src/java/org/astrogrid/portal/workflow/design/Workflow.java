@@ -12,10 +12,13 @@
 package org.astrogrid.portal.workflow.design;
 
 import java.util.HashMap ;
+//import java.util.ListIterator;
 import java.util.Map ;
 import java.util.Collections ;
+//import java.util.Vector ;
 import java.util.Iterator ;
 import java.text.MessageFormat ;
+//import java.io.InputStream ;
 import org.xml.sax.* ;
 import java.io.StringReader ;
 
@@ -25,6 +28,8 @@ import org.w3c.dom.* ;
 
 import org.astrogrid.community.common.util.CommunityMessage ;
 
+//import org.astrogrid.i18n.*;
+//import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.delegate.jobController.*;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
@@ -81,54 +86,54 @@ import org.astrogrid.portal.workflow.design.unittest.* ;
  */
 public class Workflow extends Activity {
 	
-	private static final String oneStepSequenceTemplate = 		"<?xml version='1.0' encoding='UTF8'?>" +
+	private static final String oneStepSequenceTemplate = 		"<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
 		"<!-- | Workflow Template contains a sequence of one step =================================================== -->" +
-        "<workflow name = 'OneStepJob' templateName='oneStepJob'>" +
+        "<workflow name = \"OneStepJob\" templateName=\"oneStepJob\">" +
         "<userid>userid</userid>" +
-        "<community>community</community>" +
+        "<jes_community>community1</jes_community>" +
         "<description>This is a one step job</description>" +
         "<!-- | The top level structure within a workflow is | always a sequence... =============================================== -->" +
         "<sequence>" +
-        " <step name='StepOne' stepNumber='1' sequenceNumber='1'>" +
+        " <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +
         "<nulltool/>" +
         "</step>" +
         "</sequence>" +
         "</workflow>" ;
         
 	private static final String twoStepSequenceTemplate =
-		"<?xml version='1.0' encoding='UTF8'?>" +
+		"<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
         "<!-- | Workflow Template contains a sequence of two steps ==================================================== -->" +
-        "<workflow name = 'TwoSequentialJobsteps' templateName='twoStepSequence'>" +
+        "<workflow name = \"TwoSequentialJobsteps\" templateName=\"twoStepSequence\">" +
         "<userid>userid</userid>" +
-        "<community>community</community>" +
+        "<jes_community>community1</jes_community>" +
         "<description>This is a two step job executed in sequence</description>" +
         "<!-- | These two steps are run in sequence because they are | enclosed within a sequence block =================================================== -->" +
         "<sequence>" +
-        " <step name='StepOne' joinCondition='true' stepNumber='1' sequenceNumber='1'>" +
+        " <step name=\"StepOne\" joinCondition=\"true\" stepNumber=\"1\" sequenceNumber=\"1\">" +
         "  <nulltool/>" +
         " </step>" +
         " <!-- | This step will only execute if the previous step | executed with a return code of true =============================================== -->" +
-        " <step name='StepTwo' joinCondition='true' stepNumber='2' sequenceNumber='2'>" +
+        " <step name=\"StepTwo\" joinCondition=\"true\" stepNumber=\"2\" sequenceNumber=\"2\">" +
         "  <nulltool/>" +
         " </step>" +
         "</sequence>" +
         "</workflow>" ; 
         
     private static final String twoStepFlowTemplate = 
-        "<?xml version='1.0' encoding='UTF8'?>" +
+        "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
         "<!-- | Workflow Template contains a flow of two steps ================================================ -->" +
-        "<workflow name = 'TwoParallelJobsteps' templateName='twoStepFlow'>" +
+        "<workflow name = \"TwoParallelJobsteps\" templateName=\"twoStepFlow\">" +
         "<userid>userid</userid>" +
-        "<community>community</community>" +
+        "<jes_community>community1</jes_community>" +
         "<description>This is a two step job executed in parallel</description>" +
         "<!-- | Every workflow begins with a top level sequence ================================================= -->" +
         "<sequence>" +
         " <flow>" +
         "  <!-- | These two steps will be dispatched in this order | but they will execute in parallel =============================================== -->" +
-        "  <step name='StepOne' stepNumber='1' sequenceNumber='1'>" +
+        "  <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +
         "   <nulltool/>" +
         "  </step>" +
-        "  <step name='StepTwo' stepNumber='2' sequenceNumber='1'>" +
+        "  <step name=\"StepTwo\" stepNumber=\"2\" sequenceNumber=\"1\">" +
         "   <nulltool/>" +
         "  </step>" +
         " </flow>" +
@@ -326,10 +331,10 @@ public class Workflow extends Activity {
                .append( "/")
                .append( name ) ;
             
-           mySpace.deleteDataHolding( userid
-                                    , community
-                                    , CommunityMessage.getGroup( communitySnippet )
-                                    , pathBuffer.toString() ) ;                      
+            mySpace.deleteDataHolding( userid
+                                     , community
+                                     , CommunityMessage.getGroup( communitySnippet )
+                                     , pathBuffer.toString() ) ;                      
 
         }
         catch( Exception ex ) {
@@ -366,13 +371,13 @@ public class Workflow extends Activity {
         MySpaceManagerDelegate
             mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
             
-        mySpace.saveDataHolding( workflow.getUserid()
-                               , workflow.getCommunity()
-                               , workflow.getGroup() + "@" + workflow.getCommunity()
-                               , workflow.getName()        // file name
-                               , workflow.toXMLString()    // file contents
-                               , "WF"                      // it's a workflow
-                               , "Overwrite" ) ;           // overwrite it if it already exists
+         retValue = mySpace.saveDataHolding( workflow.getUserid()
+                                           , workflow.getCommunity()
+                                           , workflow.getGroup() + "@" + workflow.getCommunity()
+                                           , workflow.getName()        // file name
+                                           , workflow.toXMLString()    // file contents
+                                           , "workflow"                // it's a workflow
+                                           , "Overwrite" ) ;           // overwrite it if it already exists
                         
      }
      catch( Exception ex ) {
@@ -391,12 +396,13 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() entry") ; 
 
         boolean
-            retValue = false ;
+            retValue = true ;
         String
             request = null,
             jesLocation = null ;
         JobControllerDelegate
             jobController = null ;
+        
                     
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
@@ -411,7 +417,7 @@ public class Workflow extends Activity {
             if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() exit") ; 
         }
         
-        return false ;
+        return retValue ;
 
     } // end of submitWorkflow()
     
@@ -655,7 +661,7 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow.getActivity() entry") ; 
         try { 
             if( TRACE_ENABLED )debug( "key: [" + key +"]" ) ;
-            if( TRACE_ENABLED ) debug( "activities: " + activities.toString() ) ;
+            if( TRACE_ENABLED )debug( "activities: " + activities.toString() ) ;
             return (Activity)activities.get( new ActivityKey( key ) ) ;
             
         }

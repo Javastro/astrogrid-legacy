@@ -46,7 +46,7 @@ public class JobImpl extends Job {
 		
 	private static String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,
-	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGJESE00180" ;
+	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGJESE00170" ;
 	  
 	private JobFactoryImpl
 	   factoryImpl = null ;

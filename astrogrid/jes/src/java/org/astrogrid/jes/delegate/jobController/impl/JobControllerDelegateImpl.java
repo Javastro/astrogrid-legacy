@@ -27,6 +27,8 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
     }
     
     public void submitJob(String req) throws JesDelegateException {
+
+        System.out.print( "submission: " + req ) ;
         
         JobControllerServiceSoapBindingStub 
             binding = null ;
@@ -41,6 +43,7 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
             throw new JesDelegateException( mex ) ;
         }
         catch( RemoteException rex) {
+            rex.printStackTrace() ;
             throw new JesDelegateException( rex ) ;            
         }
         catch( javax.xml.rpc.ServiceException sex ) {
