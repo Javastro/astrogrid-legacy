@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.3 2004/02/01 00:38:24 nw Exp $
+/*$Id: Services.java,v 1.4 2004/02/02 10:30:48 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,6 +76,19 @@ public class Services {
    protected List registries = new ArrayList();
    protected List jes = new ArrayList();
    protected List unknownServices = new ArrayList();
+   
+   /** helper method to create a service 
+    * 
+    * @param type one of the constants in {@link Service}
+    * @param endpoint url of the service endpoint
+    * @return a freshly-created service object.
+    */
+   public Service createService(String type,String endpoint) {
+      Service s = new Service();
+      s.setType(type);
+      s.setEndpoint(endpoint);
+      return s;
+   }
    
    /** add a service to the list */
    public void addService(Service s) {
@@ -163,6 +176,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.4  2004/02/02 10:30:48  nw
+added helper method to create services.
+
 Revision 1.3  2004/02/01 00:38:24  nw
 added two other kinds of job delegate
 
