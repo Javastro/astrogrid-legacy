@@ -5,7 +5,8 @@
 	>
 	
 	<xsl:param name="action" />		
-	<xsl:param name="ErrorMessage" />	
+	<xsl:param name="errormessage" />	
+	<xsl:param name="message" />		
 
 	<!--+
 	    | Match the root element.
@@ -30,10 +31,15 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="admin_form">
-		<xsl:if test="$ErrorMessage != ''">	
+		<xsl:if test="$errormessage != ''">	
 			<font color="red">
-				<xsl:value-of select="$ErrorMessage" />
-			</font>	
+				<xsl:value-of select="$errormessage" />
+			</font>	<br />
+		</xsl:if>
+		<xsl:if test="$message != ''">	
+			<font color="blue">
+				<xsl:value-of select="$message" />
+			</font>	<br />
 		</xsl:if>
 		<form method="get" name="AdminTaskSelect">
 			<select name="action">
@@ -309,8 +315,8 @@
 			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'viewgroups'">			
-			<strong>Groups: </strong>
-			<table border="0" cellspacing="0" cellpadding="0">
+			<strong>Groups: </strong><br />
+			<table border="0" cellspacing="10" cellpadding="0">
 				<tr>
 					<td>
 						<strong>Group:</strong>
@@ -328,10 +334,7 @@
 							<xsl:value-of select="@val"/>
 						</td>
 						<td>
-							MSSL
-						</td>
-						<td>
-							<xsl:value-of select="@val"/>
+							<xsl:value-of select="@type"/>
 						</td>
 						<td>
 							<xsl:value-of select="@desc"/>
@@ -340,6 +343,59 @@
 				</xsl:for-each>
 			</table>
 		</xsl:if>
+		<xsl:if test="$action = 'viewaccounts'">			
+			<strong>Accounts: </strong><br />
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>
+						<strong>Name:</strong>
+					</td>
+				</tr>
+				<xsl:for-each select="//admin/options/accounts/account">
+					<tr>
+						<td>
+							<xsl:value-of select="@val"/>
+						</td>
+					</tr>
+				</xsl:for-each>
+			</table>
+		</xsl:if>
+		<xsl:if test="$action = 'viewresources'">			
+			<strong>Resources: </strong><br />
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>
+						<strong>Name:</strong>
+					</td>
+				</tr>
+				<xsl:for-each select="//admin/options/resources/resource">
+					<tr>
+						<td>
+							<xsl:value-of select="@val"/>
+						</td>
+					</tr>
+				</xsl:for-each>
+			</table>
+		</xsl:if>
+		<xsl:if test="$action = 'viewcommunity'">			
+			<strong>Resources: </strong><br />
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>
+						<strong>Name:</strong>
+					</td>
+				</tr>
+				<xsl:for-each select="//admin/options/communities/community">
+					<tr>
+						<td>
+							<xsl:value-of select="@val"/>
+						</td>
+					</tr>
+				</xsl:for-each>
+			</table>
+		</xsl:if>
+
+		
 	</xsl:template>
 
 	<!--+

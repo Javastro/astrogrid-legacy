@@ -78,6 +78,12 @@ public class AdministrationAction extends AbstractAction
 		
 	private static final String ACTION_VIEW_GROUPS = "viewgroups";	
    
+   private static final String ACTION_VIEW_ACCOUNTS = "viewaccounts";   
+   
+   private static final String ACTION_VIEW_COMMUNITY = "viewcommunity";   
+   
+   private static final String ACTION_VIEW_RESOURCES = "viewresources";   
+   
    private static final String ACTION_CHANGE_PASSWORD = "changeofpassword";
    
    private static final String IDENT = "ident";
@@ -112,7 +118,8 @@ public class AdministrationAction extends AbstractAction
       
             
       String errorMessage = null;
-
+      String message = null;
+      
 		String action = request.getParameter(ACTION);
       String processAction = request.getParameter(PROCESS_ACTION);
       
@@ -126,21 +133,32 @@ public class AdministrationAction extends AbstractAction
       String ident = (String)request.getParameter(IDENT);
 
       Hashtable actionTable = new Hashtable();
-      actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
-      actionTable.put(ACTION_REMOVE_ACCOUNT,"Remove Account");
-      actionTable.put(ACTION_INSERT_GROUP,"Insert Group");
-      actionTable.put(ACTION_REMOVE_GROUP,"Remove Group");
-      actionTable.put(ACTION_INSERT_COMMUNITY,"Insert Community");
-      actionTable.put(ACTION_REMOVE_COMMUNITY,"Remove Community");
-      actionTable.put(ACTION_INSERT_RESOURCE,"Insert Resource");
-      actionTable.put(ACTION_REMOVE_RESOURCE,"Remove Resource");
-      actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");
-      actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
-      actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
-      actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
-      actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
-      actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
-      
+      String comm_account = (String)session.getAttribute("community_account");
+      if(comm_account == null || comm_account.length() <= 0) {
+         comm_account = (String)session.getAttribute("user");
+      }
+      if(comm_account == null) {
+         //user is a new user registring
+         actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
+      }else {
+         actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
+         actionTable.put(ACTION_REMOVE_ACCOUNT,"Remove Account");
+         actionTable.put(ACTION_INSERT_GROUP,"Insert Group");
+         actionTable.put(ACTION_REMOVE_GROUP,"Remove Group");
+         actionTable.put(ACTION_INSERT_COMMUNITY,"Insert Community");
+         actionTable.put(ACTION_REMOVE_COMMUNITY,"Remove Community");
+         actionTable.put(ACTION_INSERT_RESOURCE,"Insert Resource");
+         actionTable.put(ACTION_REMOVE_RESOURCE,"Remove Resource");
+         actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");
+         actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
+         actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
+         actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
+         actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
+         actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
+         actionTable.put(ACTION_VIEW_COMMUNITY,"View Community");
+         actionTable.put(ACTION_VIEW_ACCOUNTS,"View Accounts");         
+         actionTable.put(ACTION_VIEW_RESOURCES,"View Resources");         
+      }      
       
       session.setAttribute("actionlist",actionTable);
       
@@ -150,13 +168,13 @@ public class AdministrationAction extends AbstractAction
         try {
          ArrayList al = adminDelegate.getGroupList();
          session.setAttribute(PARAM_GROUP_LIST,al);
-           
+              
         }catch(Exception e) {
             errorMessage = e.toString();
             e.printStackTrace();
         }
       }
-      if(ACTION_REMOVE_COMMUNITY.equals(action)) {
+      if(ACTION_REMOVE_COMMUNITY.equals(action) || ACTION_VIEW_COMMUNITY.equals(action)) {
         try {
          ArrayList al = adminDelegate.getCommunityList();
          session.setAttribute(PARAM_COMMUNITY_LIST,al);
@@ -165,10 +183,10 @@ public class AdministrationAction extends AbstractAction
             errorMessage = e.toString();
             e.printStackTrace();
         }
-      }
+      }      
       
       if(ACTION_REMOVE_RESOURCE.equals(action) ||  ACTION_INSERT_PERMISSION.equals(action)
-         || ACTION_REMOVE_PERMISSION.equals(action)) {
+         || ACTION_REMOVE_PERMISSION.equals(action) || ACTION_VIEW_RESOURCES.equals(action) ) {
         try {
          ArrayList al = adminDelegate.getResourceList();
          session.setAttribute(PARAM_RESOURCE_LIST,al);
@@ -181,7 +199,7 @@ public class AdministrationAction extends AbstractAction
       
       
       if(ACTION_REMOVE_ACCOUNT.equals(action) || ACTION_REMOVE_MEMBER.equals(action) 
-         || ACTION_INSERT_MEMBER.equals(action)) {
+         || ACTION_INSERT_MEMBER.equals(action) || ACTION_VIEW_ACCOUNTS.equals(action)) {
               try {
                ArrayList al = adminDelegate.getAccountList();
                session.setAttribute(PARAM_ACCOUNT_LIST,al);
@@ -200,6 +218,7 @@ public class AdministrationAction extends AbstractAction
                gd.setDescription(request.getParameter("description"));
                gd.setType(GroupData.MULTI_TYPE);
                adminDelegate.setGroup(gd);
+               message = "Group was Inserted.";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -212,6 +231,7 @@ public class AdministrationAction extends AbstractAction
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.delGroup(ident);
+               message = "Group was deleted";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -224,17 +244,19 @@ public class AdministrationAction extends AbstractAction
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.addCommunity(ident);
+               message = "Community inserted.";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
             }
          }else {
-            errorMessage = "No insert empty community";
+            errorMessage = "Cannot insert an empty community";
          } 
       } else if(ACTION_REMOVE_COMMUNITY.equals(processAction)) {
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.delCommunity(ident);
+               message = "Community deleted";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -250,23 +272,25 @@ public class AdministrationAction extends AbstractAction
                ad.setDescription(request.getParameter("description"));
                ad.setPassword(request.getParameter("password"));
                adminDelegate.setAccount(ad);
+               message = "Account inserted.";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
             }
          }else {
-            errorMessage = "No insert empty community";
+            errorMessage = "No account given to insert";
          } 
       } else if(ACTION_REMOVE_ACCOUNT.equals(processAction)) {
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.delAccount(ident);
+               message = "Account deleted";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
             }
          }else {
-            errorMessage = "No insert empty community";
+            errorMessage = "No account given to remove";
          } 
       } else if(ACTION_INSERT_PERMISSION.equals(processAction)) {
          if(ident != null && ident.length() > 0) {
@@ -274,12 +298,13 @@ public class AdministrationAction extends AbstractAction
                String permGroup = request.getParameter("group");
                String permAction = request.getParameter("policy");
                adminDelegate.addPermission(ident,permGroup,permAction);
+               message = "Permission inserted";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
             }
          }else {
-            errorMessage = "No insert empty community";
+            errorMessage = "All parameters required for inserting permission";
          } 
       } else if(ACTION_REMOVE_PERMISSION.equals(processAction)) {
          if(ident != null && ident.length() > 0) {
@@ -287,12 +312,13 @@ public class AdministrationAction extends AbstractAction
                String permGroup = request.getParameter("group");
                String permAction = request.getParameter("policy");
                adminDelegate.delPermission(ident,permGroup,permAction);
+               message = "Permission removed";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
             }
          }else {
-            errorMessage = "No insert empty community";
+            errorMessage = "No Permission given to remove.";
          } 
       } else if(ACTION_CHANGE_PASSWORD.equals(processAction)) {
          ident = (String)session.getAttribute("community_account");
@@ -307,6 +333,7 @@ public class AdministrationAction extends AbstractAction
                   if(newpassword.equals(verifypassword)) {
                      ad.setPassword(newpassword);
                      adminDelegate.setAccount(ad);
+                     message = "Account's password changed.";
                   }else {
                      errorMessage = "Your new password and the verification password do not match.";
                   }
@@ -325,6 +352,7 @@ public class AdministrationAction extends AbstractAction
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.addGroupMember(ident,request.getParameter("group"));
+               message = "Member added.";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -336,6 +364,7 @@ public class AdministrationAction extends AbstractAction
          if(ident != null && ident.length() > 0) {
             try {
                adminDelegate.delGroupMember(ident,request.getParameter("group"));
+               message = "Member removed.";
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -349,6 +378,7 @@ public class AdministrationAction extends AbstractAction
                     ResourceData rd = adminDelegate.addResource(ident);
                     rd.setDescription(request.getParameter("description"));
                     adminDelegate.setResource(rd);
+                    message = "Resource inserted.";
                  }catch(Exception e) {
                     errorMessage = e.toString();
                     e.printStackTrace();
@@ -360,6 +390,7 @@ public class AdministrationAction extends AbstractAction
            if(ident != null && ident.length() > 0) {
               try {
                  adminDelegate.delResource(ident);
+                 message = "Resource removed.";
               }catch(Exception e) {
                  errorMessage = e.toString();
                  e.printStackTrace();
@@ -377,6 +408,8 @@ public class AdministrationAction extends AbstractAction
 		//pass to the transformer (xsl page)
 		Map results = new HashMap();
 		results.put(ACTION,action);
+      results.put("errormessage",errorMessage);
+      results.put("message",message);
 		return results;
 	}	
 }

@@ -114,7 +114,8 @@
                <!-- Convert the data into a page -->
                <map:transform src="community/xsl/administration.xsl" label="002">
                   <map:parameter name="action" value="{action}"/>
-                  <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="message" value="{message}"/>
                </map:transform>
             </map:act>
             <!-- Wrap the page in our HTML template -->
