@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/08/28 16:05:02 mch Exp $
+/*$Id: AllTests.java,v 1.3 2003/09/05 12:05:42 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ public class AllTests {
             new TestSuite("Test for org.astrogrid.datacenter.config");
         //$JUnit-BEGIN$
         suite.addTest(ConfigurationTest.suite());
-        suite.addTest(FactoryManagerTest.suite());
         //$JUnit-END$
         return suite;
     }
@@ -37,6 +36,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2003/09/05 12:05:42  mch
+Removed tests on removed classes
+
 Revision 1.2  2003/08/28 16:05:02  mch
 New Configuration package
 

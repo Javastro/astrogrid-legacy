@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.9 2003/09/05 01:06:09 nw Exp $
+/*$Id: AllTests.java,v 1.10 2003/09/05 12:05:42 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,8 +35,6 @@ public class AllTests {
         //$JUnit-END$
         // and add other suites too.
         suite.addTest(org.astrogrid.datacenter.config.AllTests.suite());
-        suite.addTest(org.astrogrid.datacenter.datasetagent.AllTests.suite());
-        suite.addTest(org.astrogrid.datacenter.impl.abstr.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
@@ -50,6 +48,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.10  2003/09/05 12:05:42  mch
+Removed tests on removed classes
+
 Revision 1.9  2003/09/05 01:06:09  nw
 linked in new tests
 
