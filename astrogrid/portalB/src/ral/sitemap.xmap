@@ -141,15 +141,16 @@
             <map:match pattern="agmyspace.html">
             <!-- Call our explorer action -->
                <map:act type="astrogrid-explorer">
+                  <!-- Set the session attribute to check for the user name -->
+                  <map:parameter name="user-param"  value="user"/>
                   <!-- Generate our page XML -->
-                  <map:generate src="explorer/xsp/explorer.xsp"
-                     type="serverpages" label="000, 001"/>
+                  <map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
                   <!-- Convert the data into a page -->
-	          <map:transform src="explorer/xsl/explorer.xsl" label="002">
-	          <!-- Add the action params -->
-	             <map:parameter name="action"  value="{action}"/>
+                  <map:transform src="explorer/xsl/explorer.xsl" label="002">
+                     <!-- Add the action params -->
+                     <map:parameter name="action"  value="{action}"/>
                      <map:parameter name="confirm" value="{confirm}"/>
-                  <!-- Add the explorer page names -->
+                     <!-- Add the explorer page names -->
                      <map:parameter name="explorer-page" value="agmyspace.html"/>
                      <map:parameter name="votable-page"  value="agvotable.html"/>
                   </map:transform>

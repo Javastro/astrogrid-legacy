@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 00:39:54 $</cvs:author>
-    | <cvs:version>$Revision: 1.24 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 15:57:55 $</cvs:author>
+    | <cvs:version>$Revision: 1.25 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.25  2003/06/30 15:57:55  dave
+    | Fixed user attribute name
+    |
     | Revision 1.24  2003/06/30 00:39:54  dave
     | Removed experiments from build file
     |
@@ -2120,7 +2123,7 @@
 	</target>
 
 	<!-- Export our files for a manual installation into Cocoon -->
-	<target name="cocoon.export" depends="init">
+	<target name="cocoon.export.zip" depends="init">
 		<!-- Delete the export directories -->
 		<delete dir="build/export" failonerror="false"/>
 		<!-- Create the export directories -->
@@ -2158,6 +2161,58 @@
 		<zip zipfile="build/export/zip/libraries-${build.time}.zip">
 			<zipfileset prefix="" dir="build/export/libraries"/>
 		</zip>
+	</target>
+
+	<!-- Build our new Cocoon web-app for release as a WAR file  -->
+	<target name="cocoon.release" depends="init, cocoon.init">
+		<!-- Delete the export directories -->
+		<delete dir="build/release" failonerror="false"/>
+		<!-- Create the export directories -->
+		<mkdir dir="build/release"/>
+		<mkdir dir="build/release/cocoon"/>
+		<mkdir dir="build/release/cocoon/webapp"/>
+		<!-- Unpack the standard Cocoon war file -->
+		<unwar src="${cocoon.war}" dest="build/release/cocoon/webapp"/>
+		<!-- Create the astrogrid directory -->
+		<mkdir dir="build/release/cocoon/webapp/astrogrid"/>
+		<!-- Copy our explorer files across (excluding the sitemap) -->
+		<copy verbose="true" toDir="build/release/cocoon/webapp/astrogrid">
+			<fileset dir="src/cocoon">
+				<exclude name="**/CVS/**"/>
+				<exclude name="build.properties"/>
+				<exclude name="blocks.properties"/>
+				<exclude name="sitemap.xslt"/>
+				<exclude name="sitemap.xmap"/>
+			</fileset>
+		</copy>
+		<!-- Copy our portal jar -->
+		<copy verbose="true" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${portal.build}/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<!-- Copy the Axis client jars -->
+		<copy verbose="true" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${axis.webapp}/WEB-INF/lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<!-- Copy the RAL files across (including the astrogrid sitemap) -->
+		<copy verbose="true" toDir="build/release/cocoon/webapp/astrogrid">
+			<fileset dir="src/ral">
+				<exclude name="**/CVS/**"/>
+				<exclude name="cocoon.xmap"/>
+			</fileset>
+		</copy>
+		<!-- Replace the main cocoon sitemap -->
+		<copy verbose="true" file="src/ral/cocoon.xmap" toFile="build/release/cocoon/webapp/sitemap.xmap"/>
+		<!-- Wrap everything up as a WAR fil -->
+		<jar destfile="build/release/cocoon/cocoon.war"
+		     manifest="build/release/cocoon/webapp/META-INF/MANIFEST.MF"
+		     >
+			<fileset dir="build/release/cocoon/webapp">
+			</fileset>
+		</jar>
 	</target>
 
 </project>
