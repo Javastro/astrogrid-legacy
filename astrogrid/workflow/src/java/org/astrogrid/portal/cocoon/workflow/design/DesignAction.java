@@ -304,7 +304,7 @@ public class DesignAction extends AbstractAction {
         
         
         private void saveWorkflow() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() entry" ) ;
               
             try {
 
@@ -317,14 +317,14 @@ public class DesignAction extends AbstractAction {
                 }            
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.saveWorkflow() exit" ) ;
             }
          
         } // end of createWorkflow()
         
         
         private void readWorkflow() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() entry" ) ;
               
             try {
                 
@@ -354,14 +354,14 @@ public class DesignAction extends AbstractAction {
                     
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() exit" ) ;
             }
          
         }
         
         
         private void deleteWorkflow() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.deleteWorkflow() entry" ) ;
               
             try {
                 
@@ -384,40 +384,40 @@ public class DesignAction extends AbstractAction {
                 }                              
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.deleteWorkflow() exit" ) ;
             }
          
         }
         
         
         private void createWorkflowFromTemplate() {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() entry" ) ;
               
             try {
                            
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.createWorkflowFromTemplate() exit" ) ;
             }
          
         }
         
         
         private void chooseQuery() {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() entry" ) ;
               
             try {
                            
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.chooseQuery() exit" ) ;
             }
                     
         }
         
         
         private void editJoinCondition() throws ConsistencyException {
-            if( TRACE_ENABLED ) trace( "DesignActionImpl.() entry" ) ;
+            if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() entry" ) ;
               
             try {
                 
@@ -448,7 +448,7 @@ public class DesignAction extends AbstractAction {
 */                          
             }
             finally {
-                if( TRACE_ENABLED ) trace( "DesignActionImpl.() exit" ) ;
+                if( TRACE_ENABLED ) trace( "DesignActionImpl.editJoinCondition() exit" ) ;
             }
          
         }

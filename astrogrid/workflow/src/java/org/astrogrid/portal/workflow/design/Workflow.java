@@ -104,7 +104,7 @@ public class Workflow extends Sequence {
         
         
     public static Workflow createWorkflow(  String userid, String community, String name  ) {
-        if( TRACE_ENABLED ) trace( "createWorkflow() entry") ;   
+        if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
            
         Workflow
             workflow ;
@@ -121,7 +121,7 @@ public class Workflow extends Sequence {
             workflow.setDescription( "some description of a query" ) ; 
         }
         finally {
-            if( TRACE_ENABLED ) trace( "createWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() exit") ; 
         }
  
         return workflow ;
@@ -130,7 +130,7 @@ public class Workflow extends Sequence {
         
         
     public static Workflow readWorkflow( String userid, String community, String name ) {
-        if( TRACE_ENABLED ) trace( "readWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() entry") ; 
         
         Workflow
             workflow = null;
@@ -153,7 +153,7 @@ public class Workflow extends Sequence {
         catch ( Exception ex ) {
         }
         finally {
-            if( TRACE_ENABLED ) trace( "readWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() exit") ; 
         }
        
         return workflow ;
@@ -162,7 +162,7 @@ public class Workflow extends Sequence {
     
     
     public static boolean deleteWorkflow( String userid, String community, String name  ) {
-        if( TRACE_ENABLED ) trace( "deleteWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() entry") ; 
         
         boolean
             retValue = true ;
@@ -182,7 +182,7 @@ public class Workflow extends Sequence {
 
         }
         finally {
-            if( TRACE_ENABLED ) trace( "deleteWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() exit") ; 
         }
         
         return retValue ;
@@ -191,7 +191,7 @@ public class Workflow extends Sequence {
     
     
     public static boolean saveWorkflow( Workflow workflow ) {
-        if( TRACE_ENABLED ) trace( "saveWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() entry") ; 
         
      boolean
          retValue = true ;
@@ -217,7 +217,7 @@ public class Workflow extends Sequence {
   */      
      }
      finally {
-         if( TRACE_ENABLED ) trace( "saveWorkflow() exit") ; 
+         if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() exit") ; 
      }
         
      return retValue ;
@@ -302,12 +302,12 @@ public class Workflow extends Sequence {
       * @see 
       **/     
     public Activity getActivity( String key ) {
-        if( TRACE_ENABLED ) trace( "getActivity() entry") ; 
+        if( TRACE_ENABLED ) trace( "Workflow.getActivity() entry") ; 
         try { 
             return (Activity)activities.get( new ActivityKey( key ) ) ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "getActivity() exit") ;  
+            if( TRACE_ENABLED ) trace( "Workflow.getActivity() exit") ;  
         }
     }
     
@@ -318,7 +318,7 @@ public class Workflow extends Sequence {
     
     
     public boolean putActivity( Activity activity ) {
-        if( TRACE_ENABLED ) trace( "putActivity() entry") ;  
+        if( TRACE_ENABLED ) trace( "Workflow.putActivity() entry") ;  
                
         boolean
             retValue = false ;
@@ -332,7 +332,7 @@ public class Workflow extends Sequence {
        
         }
         finally {
-            if( TRACE_ENABLED ) trace( "putActivity() exit") ;  
+            if( TRACE_ENABLED ) trace( "Workflow.putActivity() exit") ;  
         }
        
         return retValue ;
@@ -346,7 +346,7 @@ public class Workflow extends Sequence {
     
     
     public String toXMLString() {
-        if( TRACE_ENABLED ) trace( "toXMLString() entry") ;  
+        if( TRACE_ENABLED ) trace( "Workflow.toXMLString() entry") ;  
           
         String 
            response = WKF.getProperty( WKF.WORKFLOW_CATEGORY
@@ -371,7 +371,7 @@ public class Workflow extends Sequence {
             logger.error( message.toString(), ex ) ;
         } 
         finally {
-            if( TRACE_ENABLED ) trace( "toXMLString() exit") ;    
+            if( TRACE_ENABLED ) trace( "Workflow.toXMLString() exit") ;    
         }       
         
         return response ;                              
@@ -404,12 +404,12 @@ public class Workflow extends Sequence {
 	}
     
     private static String locateMySpace( String userid, String community ) {
-        if( TRACE_ENABLED ) trace( "locateMySpace() entry") ;
+        if( TRACE_ENABLED ) trace( "Workflow.locateMySpace() entry") ;
         try {
             return WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "locateMySpace() exit") ;
+            if( TRACE_ENABLED ) trace( "Workflow.locateMySpace() exit") ;
         }
     }
 

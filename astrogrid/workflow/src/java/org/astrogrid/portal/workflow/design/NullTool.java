@@ -36,5 +36,9 @@ public final class NullTool implements Tool {
 	public String toXMLString() {
 		return xmlString ;
 	}
+    
+    public String getName() {
+        return "NullTool" ;      
+    }
 
 } // end of class NullTool

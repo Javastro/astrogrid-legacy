@@ -34,7 +34,8 @@ public class Step extends Activity {
         NULLTOOL = new NullTool() ;
     
     private String
-        name = null ;
+        name = null,
+        description = null ;
     private boolean
         joinCondition = true ;
     private Tool
@@ -88,5 +89,13 @@ public class Step extends Activity {
     public String toXMLString() {
         return null ;
     }
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
+	}
    
 } // end of class Step

@@ -28,5 +28,7 @@ package org.astrogrid.portal.workflow.design;
 public interface Tool {
     
     public String toXMLString() ;
+    
+    public String getName() ; 
 
 }
