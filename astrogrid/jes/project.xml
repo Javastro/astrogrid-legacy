@@ -1,310 +1,288 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.37 2004/01/21 17:51:34 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
-	<pomVersion>3</pomVersion>
-	<id>astrogrid-jes</id>
-	<name>AstroGrid Job Management</name>
-	<currentVersion>$Name:  $</currentVersion>
-	<organization>
-		<name>AstroGrid</name>
-		<url>http://www.astrogrid.org</url>
-		<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	</organization>
-	<inceptionYear>2002</inceptionYear>
-	<description> This work package provides AstroGrid with the facility to submit jobs. Jobs will initially consist of a query to be run asynchronously against one or more catalogues held at a particular data centre. Hence the package is closely associated with the AgCd08DataCentre package. The facility covers job submission, job scheduling and job monitoring. A job consists of one or more job steps, run in parallel or - where there is a dependency - in sequence, or some mixture of the two. Although a job may be submitted, it may not be until the job is scheduled that the location where an actual job step runs is identified. Job monitoring is important in simple terms to track the progress of a job through its job steps, e.g. in order to trigger subsequent steps.</description>
-	<shortDescription>AstroGrid Job Management Components</shortDescription>
-	<siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
-	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-	<package>org.astrogrid</package>
-	<logo>http://www.astrogrid.org/images/AGlogo</logo>
-	<build>
-		<sourceDirectory>src/java</sourceDirectory>
-		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-		<unitTest>
-			<includes>
-				<include>**/*Test.java</include>
-			</includes>
-			<resources>
-				<resource>
-					<directory>${basedir}/test/java</directory>
-					<includes>
-						<include>**/*.xml</include>
-						<include>**/*.xmltemplate</include>
-						<include>**/*.properties</include>
-						<include>**/*.sql</include>
-						<include>**/*.ddl</include>
-					</includes>
-				</resource>
-			</resources>
-		</unitTest>
-	</build>
-	<developers>
-		<developer>
-			<name>Jeff Lusted</name>
-			<id>jl99</id>
-			<email>jl99@star.le.ac.uk</email>
-		</developer>
-		<developer>
-			<name>John D Taylor</name>
-			<id>jdt</id>
-			<email>jdt@roe.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Phil Nicholson</name>
-			<id>pjn3</id>
-			<email>pjn3@star.le.ac.uk</email>
-		</developer>
-		<developer>
-			<name>Paul Harrison</name>
-			<id>pah</id>
-			<email>pah@jb.man.ac.uk</email>
-			<roles>
-				<role>WGL</role>
-			</roles>
-		</developer>
-	</developers>
-	<repository>
-		<connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes
-    </connection>
-		<developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes
-    </developerConnection>
-		<url>
-    	http://www.astrogrid.org/viewcvs/astrogrid/jes/
-    </url>
-	</repository>
-	<dependencies>
-		<dependency>
-			<artifactId>axisfull</artifactId>
-			<groupId>axis</groupId>
-			<version>1.1</version>
-			<type>zip</type>
-		</dependency>
-		<dependency>
-			<artifactId>astrogrid-common</artifactId>
-			<groupId>astrogrid-common</groupId>
-			<version>SNAPSHOT</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>ApplicationControllerDelegate</artifactId>
-			<groupId>astrogrid-applications</groupId>
-			<version>SNAPSHOT</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>astrogrid-datacenter-client</artifactId>
-			<groupId>astrogrid-datacenter</groupId>
-			<version>SNAPSHOT</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>authentication-client</artifactId>
-			<groupId>astrogrid-community</groupId>
-			<version>1.0</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>policy-client</artifactId>
-			<groupId>astrogrid-community</groupId>
-			<version>1.0</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>axis</artifactId>
-			<groupId>axis</groupId>
-			<version>1.1<!--1.2.8 now available-->
-			</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>log4j</artifactId>
-			<groupId>log4j</groupId>
-			<version>1.2.4<!--version 2.3 now available-->
-			</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>servletapi</artifactId>
-			<groupId>servletapi</groupId>
-			<version>2.2</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>commons-logging</artifactId>
-			<groupId>commons-logging</groupId>
-			<version>1.0.3</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>commons-discovery</artifactId>
-			<groupId>commons-discovery</groupId>
-			<version>20030211.213356</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>jconfig</artifactId>
-			<groupId>jconfig</groupId>
-			<version>2.1</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>jaxrpc</artifactId>
-			<groupId>jaxrpc</groupId>
-			<version>UNKNOWN</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-			<jar>jaxrpc.jar</jar>
-		</dependency>
-		<dependency>
-			<artifactId>saaj</artifactId>
-			<groupId>saaj</groupId>
-			<version>UNKNOWN</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-			<jar>saaj.jar</jar>
-		</dependency>
-		<dependency>
-			<artifactId>wsdl4j</artifactId>
-			<groupId>wsdl4j</groupId>
-			<version>UNKNOWN</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-			<jar>wsdl4j.jar</jar>
-		</dependency>
-		<dependency>
-			<artifactId>catalina-ant</artifactId>
-			<groupId>catalina-ant</groupId>
-			<version>4.1.24</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>mysql-connector-java-3.0.8-stable-bin</artifactId>
-			<groupId>mysql</groupId>
-			<version>3.0.8</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-			<jar>mysql-connector-java-3.0.8-stable-bin.jar</jar>
-		</dependency>		
-		<dependency>
-			<artifactId>junitee</artifactId>
-			<groupId>junitee</groupId>
-			<version>1.8</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>	
-		<dependency>
-			<artifactId>junit</artifactId>
-			<groupId>junit</groupId>
-			<version>3.8</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>taglibs-input</artifactId>
-			<groupId>jakarta-taglibs</groupId>
-			<version>20040115</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-		<dependency>
-			<artifactId>taglibs-input-tld</artifactId>
-			<groupId>jakarta-taglibs</groupId>
-			<version>20040115</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-			<type>tld</type>
-		</dependency>
-		<!--This is for testing only and can be removed from the released build.
+<!-- $Id: project.xml,v 1.38 2004/02/02 17:15:02 jdt Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <pomVersion>3</pomVersion>
+    <id>astrogrid-jes</id>
+    <name>AstroGrid Job Management</name>
+    <currentVersion>$Name:  $</currentVersion>
+    <organization>
+        <name>AstroGrid</name>
+        <url>http://www.astrogrid.org</url>
+        <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    </organization>
+    <inceptionYear>2002</inceptionYear>
+    <description> This work package provides AstroGrid with the facility to 
+        submit jobs. Jobs will initially consist of a query to be run 
+        asynchronously against one or more catalogues held at a particular data 
+        centre. Hence the package is closely associated with the 
+        AgCd08DataCentre package. The facility covers job submission, job 
+        scheduling and job monitoring. A job consists of one or more job steps, 
+        run in parallel or - where there is a dependency - in sequence, or some 
+        mixture of the two. Although a job may be submitted, it may not be 
+        until the job is scheduled that the location where an actual job step 
+        runs is identified. Job monitoring is important in simple terms to 
+        track the progress of a job through its job steps, e.g. in order to 
+        trigger subsequent steps.</description>
+    <shortDescription>AstroGrid Job Management Components</shortDescription>
+    <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
+    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+    <package>org.astrogrid</package>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/test/java</directory>
+                    <includes>
+                        <include>**/*.xml</include>
+                        <include>**/*.xmltemplate</include>
+                        <include>**/*.properties</include>
+                        <include>**/*.sql</include>
+                        <include>**/*.ddl</include>
+                    </includes>
+                </resource>
+            </resources>
+        </unitTest>
+    </build>
+    <developers>
+        <developer>
+            <name>Jeff Lusted</name>
+            <id>jl99</id>
+            <email>jl99@star.le.ac.uk</email>
+        </developer>
+        <developer>
+            <name>John D Taylor</name>
+            <id>jdt</id>
+            <email>jdt@roe.ac.uk</email>
+        </developer>
+        <developer>
+            <name>Phil Nicholson</name>
+            <id>pjn3</id>
+            <email>pjn3@star.le.ac.uk</email>
+        </developer>
+        <developer>
+            <name>Paul Harrison</name>
+            <id>pah</id>
+            <email>pah@jb.man.ac.uk</email>
+            <roles>
+                <role>WGL</role>
+            </roles>
+        </developer>
+    </developers>
+    <repository>
+        <connection> 
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes 
+            </connection>
+        <developerConnection> 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes 
+            </developerConnection>
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/jes/ </url>
+    </repository>
+    <dependencies>
+        <dependency>
+            <artifactId>axisfull</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-common</artifactId>
+            <groupId>astrogrid-common</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>ApplicationControllerDelegate</artifactId>
+            <groupId>astrogrid-applications</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-datacenter-client</artifactId>
+            <groupId>astrogrid-datacenter</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>authentication-client</artifactId>
+            <groupId>astrogrid-community</groupId>
+            <version>1.0</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>policy-client</artifactId>
+            <groupId>astrogrid-community</groupId>
+            <version>1.0</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>axis</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1<!--1.2.8 now available--> </version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+            <version>1.2.4<!--version 2.3 now available--> </version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>servletapi</artifactId>
+            <groupId>servletapi</groupId>
+            <version>2.2</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>jconfig</artifactId>
+            <groupId>jconfig</groupId>
+            <version>2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>jaxrpc</artifactId>
+            <groupId>jaxrpc</groupId>
+            <version>UNKNOWN</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+            <jar>jaxrpc.jar</jar>
+        </dependency>
+        <dependency>
+            <artifactId>saaj</artifactId>
+            <groupId>saaj</groupId>
+            <version>UNKNOWN</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+            <jar>saaj.jar</jar>
+        </dependency>
+        <dependency>
+            <artifactId>wsdl4j</artifactId>
+            <groupId>wsdl4j</groupId>
+            <version>UNKNOWN</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+            <jar>wsdl4j.jar</jar>
+        </dependency>
+        <dependency>
+            <artifactId>catalina-ant</artifactId>
+            <groupId>catalina-ant</groupId>
+            <version>4.1.24</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>mysql-connector-java-3.0.8-stable-bin</artifactId>
+            <groupId>mysql</groupId>
+            <version>3.0.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+            <jar>mysql-connector-java-3.0.8-stable-bin.jar</jar>
+        </dependency>
+        <dependency>
+            <artifactId>junitee</artifactId>
+            <groupId>junitee</groupId>
+            <version>1.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <version>3.8</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>taglibs-input</artifactId>
+            <groupId>jakarta-taglibs</groupId>
+            <version>20040115</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>taglibs-input-tld</artifactId>
+            <groupId>jakarta-taglibs</groupId>
+            <version>20040115</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+            <type>tld</type>
+        </dependency>
+        <!--This is for testing only and can be removed from the released build.
      **WARNING** For reasons best known to themselves, the HSQLDB people have omitted to
        package their jdbcDataSource class in this jar.  Hence I've added it explicitly to the
        test directory.  This is going to give us all sorts of annoying headaches with versions
        in the future, but I can't think of anything else to do right now. -->
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.7.1</version>
-			<!-- hsqldb - for testing -->
-		</dependency>
-	</dependencies>
-	<reports>
-		<report>
-      maven-changelog-plugin
-    </report>
-		<report>
-      maven-changes-plugin
-    </report>
-		<report>
-      maven-checkstyle-plugin
-    </report>
-		<report>
-      maven-clover-plugin
-    </report>
-		<report>
-      maven-developer-activity-plugin
-    </report>
-		<report>
-      maven-file-activity-plugin
-    </report>
-		<report>
-      maven-javadoc-plugin
-    </report>
-		<report>
-      maven-jdepend-plugin
-    </report>
-		<report>
-      maven-junit-report-plugin
-    </report>
-		<report>
-      maven-jxr-plugin
-    </report>
-		<report>
-      maven-license-plugin
-    </report>
-		<report>
-      maven-linkcheck-plugin
-    </report>
-		<report>
-      maven-pmd-plugin
-    </report>
-		<report>
-      maven-tasklist-plugin
-    </report>
-		<report>
-      maven-simian-plugin
-    </report>
-	</reports>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.7.1</version>
+            <!-- hsqldb - for testing -->
+        </dependency>
+    </dependencies>
+    <reports>
+        <report> maven-changelog-plugin </report>
+        <report> maven-changes-plugin </report>
+        <report> maven-checkstyle-plugin </report>
+        <report> maven-clover-plugin </report>
+        <report> maven-developer-activity-plugin </report>
+        <report> maven-file-activity-plugin </report>
+        <report> maven-javadoc-plugin </report>
+        <report> maven-jdepend-plugin </report>
+        <report> maven-junit-report-plugin </report>
+        <report> maven-jxr-plugin </report>
+        <report> maven-license-plugin </report>
+        <report> maven-linkcheck-plugin </report>
+        <report> maven-pmd-plugin </report>
+        <report> maven-tasklist-plugin </report>
+        <report> maven-simian-plugin </report>
+    </reports>
 </project>
