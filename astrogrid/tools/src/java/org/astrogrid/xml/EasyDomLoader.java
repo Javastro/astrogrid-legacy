@@ -34,7 +34,7 @@ public class EasyDomLoader
       {
          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
          //dbf.setValidating(true);
-         dbf.setIgnoringElementContentWhitespace(true);
+         //dbf.setIgnoringElementContentWhitespace(true);  //not available in 1.3
          dbf.setNamespaceAware(true);
          
          DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -66,7 +66,7 @@ public class EasyDomLoader
       }
       catch (Exception e)
       {
-         Log.logError("Failed to load parameters from '"+filename+"'",e);
+         Log.logError("Failed to load DOM from '"+filename+"'",e);
          return null;
       }
    }
