@@ -100,7 +100,9 @@
     <target name="download">
     	<echo>Downloading FileStore software....this may take some time...</echo>
     	<mkdir dir="${maven.local.repo}/${astrogrid.groupId}/wars/"/>
-        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filestore.war.name}" dest="${filestore.war}" verbose="true" usetimestamp="true"/>
+<!--        <get src="${astrogrid.repo}/${astrogrid.groupId}/wars/${filestore.war.name}" dest="${filestore.war}" verbose="true" usetimestamp="true"/>-->
+		<!--Due to firewall, assume war bundled with installer-->
+    	<copy file="${filestore.war.name}" toFile="${filestore.war}"/>   	
     </target>
 	
     <target name="deploy" depends="createTmpDir,checkTomcat,download,update-war,set-context-path">

@@ -82,5 +82,13 @@
             <version>1.4</version>
             <properties/>
         </dependency>
+        <!--make sure the war gets built first, so we can copy it in-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-filestore</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>war</type>
+            <properties/>        
+        </dependency>
     </dependencies>
 </project>

@@ -33,5 +33,11 @@
     <goal name="astrogrid-deploy-snapshot">
         	<attainGoal name="jar:deploy-snapshot"/>
     </goal>
+    
+    <!--temp fix to problem that can't download war from behind firewall-->
+    <preGoal name="jar:jar">
+    	<deploy:copy-deps todir="tmp" />
+    	<copy toDir="${maven.build.dest}" file="tmp/astrogrid-filestore-${pom.currentVersion}.war"/>
+    </preGoal>
  
 </project>
