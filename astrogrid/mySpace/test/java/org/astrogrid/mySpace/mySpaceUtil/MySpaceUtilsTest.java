@@ -3,6 +3,7 @@ package org.astrogrid.mySpace.mySpaceUtil;
 import java.io.*;
 import junit.framework.*;
 
+import org.astrogrid.mySpace.mySpaceStatus.Logger;
 import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
 
 /**
@@ -15,7 +16,7 @@ import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
  */
 
 public class MySpaceUtilsTest extends TestCase
-{
+{  private static Logger logger = new Logger (false, false, false, "");
 
 /**
  * Standard constructor for JUnit test classes.
@@ -39,14 +40,14 @@ public class MySpaceUtilsTest extends TestCase
 //   Write a file.
 
       String contents = "I wandered lonely as a cloud...";
-      Assert.assertTrue(msUtil.writeToFile(testFile, contents) );
+      Assert.assertTrue(msUtil.writeToFile(testFile, contents, false) );
       System.out.println("Tested writeToFile...");
 
 //
 //   Read the file back.
 
       String readback = msUtil.readFromFile(testFile);
-      Assert.assertEquals(readback, contents + "\n");
+      Assert.assertEquals(readback, contents);
       System.out.println("Tested readFromFile: " + readback);
 
 //
