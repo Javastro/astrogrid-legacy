@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.34 2004/03/12 05:12:29 mch Exp $
+ * $Id: Querier.java,v 1.35 2004/03/12 05:15:32 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -102,12 +102,13 @@ public class Querier implements Runnable {
       this.extRef = this.id; //default to same as internal
 
       //default results destination is taken from default myspace given in config
+      /** don't do this, as it means queries that have not been given an AGSL try to send to mysapce...
       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(DEFAULT_MYSPACE, null);
       if (defaultMySpace != null) {
           String path = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/"+id+".vot";
           resultsTargetAgsl = new Agsl(new Msrl(defaultMySpace, path));
        }
-       
+       **/
        //make plugin
       QuerierPlugin plugin = QuerierPluginFactory.createPlugin(this);
    }
@@ -395,6 +396,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.35  2004/03/12 05:15:32  mch
+ Removed automatic send to myspace
+
  Revision 1.34  2004/03/12 05:12:29  mch
  Made sure failed delete doens't stop query
 
@@ -544,6 +548,7 @@ public class Querier implements Runnable {
  Introducing SOAPy Beans
 
  */
+
 
 
 
