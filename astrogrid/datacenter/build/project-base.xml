@@ -221,9 +221,11 @@
     <report>
       maven-changes-plugin
     </report>
+    <!-- still not working
     <report>
       maven-checkstyle-plugin
     </report>
+    -->
     <report>
       maven-clover-plugin
     </report>

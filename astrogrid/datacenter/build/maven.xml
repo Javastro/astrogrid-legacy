@@ -4,9 +4,11 @@
 <!-- hooks to farm out everything to subprojects -->
 
 <!-- bugfix suggested by john -->
+<!-- take out for now - seems to break other things. arg
 <preGoal name="site">
 	<attainGoal name="dist:prepare-bin-filesystem" />
 </preGoal>
+-->
 
 
 
