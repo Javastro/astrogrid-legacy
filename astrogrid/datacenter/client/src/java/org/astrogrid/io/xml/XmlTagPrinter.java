@@ -1,17 +1,20 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.1 2004/07/02 16:52:20 mch Exp $
+   $Id: XmlTagPrinter.java,v 1.2 2004/07/06 14:43:19 mch Exp $
 
    (c) Copyright...
 */
 package org.astrogrid.io.xml;
 
 import java.io.*;
-import org.astrogrid.log.Log;
 
 /**
  * Class used to write to an Xml Element.  The element is always created within
  * the context of another element (the root element being the file).
- *
+ * <p>
+ * Not very happy with this at the moment; XmlPrinter both subclasses this and
+ * acts as the root node, which is a bit dodgy.  It means for example that there
+ * are problems writing things in the XmlTagPrinter constructor, as the XmlPrinter
+ * hasn't initialised things properly
  */
 
 public class XmlTagPrinter
@@ -19,73 +22,60 @@ public class XmlTagPrinter
    private XmlTagPrinter parent = null;
    private XmlTagPrinter child = null;  //can only have one child at a time
    private String name = null;
+   private String attrs = null;
+   private boolean closed = false;
 
-   
-   public XmlTagPrinter(String givenName, String attrs, XmlTagPrinter parentWriter) throws IOException
+   public XmlTagPrinter(String givenName, String givenAttrs, XmlTagPrinter parentWriter) throws IOException
    {
       super();
       
       this.parent = parentWriter;
       this.name = givenName;
-      
+      this.attrs = givenAttrs;
+   }
+   
+   /** Opens the tag - ie writes out the name & atts */
+   protected void open() throws IOException {
       //write out tag here WITHOUT indent at this level.
-      if ((attrs == null) || (attrs.length() == 0))
-      {
-         writeLine("<"+name+">");
+      if (name != null) {
+         if ((attrs == null) || (attrs.length() == 0))
+         {
+            writeLine(0,"<"+name+">");
+         }
+         else
+         {
+            writeLine(0,"<"+name+" "+attrs+">");
+         }
       }
-      else
-      {
-         writeLine("<"+name+" "+attrs+">");
-      }
-         
    }
    
    /**
-    * Writes out the given string as an indented line
-    * at this level plus one (the indentation is dependent on the number of
-    * children this tag/stream has)
-    */
-   public void writeIndentedLine(String string) throws IOException
-   {
-      Log.affirm(!hasChild(), "Cannot write to this tag ["+this+"], it has an open child "+getChild());
-      writeIndentedLine(1, string);
-   }
-
-   /**
-    * Writes out the given string as an indented line
-    * at this level (ie the indentation is dependent on the number of
-    * children this tag/stream has)
+    * Writes out the given string indented relative to this tag.
     */
    public void writeLine(String string) throws IOException
    {
-      Log.affirm(!hasChild(), "Cannot write to this tag ["+this+"], it has an open child "+getChild());
-      writeIndentedLine(0, string);
+      assert !closed : "Cannot write to a closed tag ["+this+"]";
+      assert !hasChild() : "Cannot write to this tag ["+this+"], it has an open child "+getChild();
+      writeLine(1, string);
    }
 
    /**
-    * WriteIndentedLine implementation - calls parent with incremented
+    * Writes a string with the given indentation, relative to this tag.
+    * By default calls the parentWriteLine implementation - calls parent with incremented
     * indentation, so that the indent increases for each level of tag
     */
-   protected void writeIndentedLine(int indent, String string) throws IOException
+   protected void writeLine(int indent, String string) throws IOException
    {
-      parent.writeIndentedLine(indent+1, string);
+      parent.writeLine(indent+1, string);
    }
    
-   /**
-    * writeString implementation - writes the given string within the opening
-    * & closing tags of this element. Really you should use writeTag or writeComment...
-    */
-   public void writeString(String s) throws IOException
-   {
-      parent.writeString(s);
-   }
-
    /**
     * Convenience routine to write a child tag within this element
     */
    public void writeTag(String tag, String value) throws IOException
    {
-      this.writeIndentedLine("<"+tag+">"+transformSpecials(value)+"</"+tag+">");
+      closeChild();
+      this.writeLine("<"+tag+">"+transformSpecials(value)+"</"+tag+">");
    }
 
    /**
@@ -93,7 +83,8 @@ public class XmlTagPrinter
     */
    public void writeComment(String text) throws IOException
    {
-      this.writeIndentedLine("<!-- "+text+" -->");
+      closeChild();
+      this.writeLine("<!-- "+text+" -->");
    }
 
    /**
@@ -102,7 +93,8 @@ public class XmlTagPrinter
     */
    public void writeTag(String tag, String attr, String value) throws IOException
    {
-      this.writeIndentedLine("<"+tag+" "+attr+">"+transformSpecials(value)+"</"+tag+">");
+      closeChild();
+      this.writeLine("<"+tag+" "+attr+">"+transformSpecials(value)+"</"+tag+">");
    }
 
    /**
@@ -111,14 +103,13 @@ public class XmlTagPrinter
    public static String transformSpecials(String s)
    {
       //java v1.4
-      /*
       s = s.replaceAll("&", "&amp;");  //do first so we don't catch specials
       s = s.replaceAll("<", "&lt;");
       s = s.replaceAll(">", "&gt;");
       return s;
        /**/
 
-      /**/
+      /*
       //pre java 1.4
       int pos =0;
       while ((pos = s.indexOf('&',pos+1)) != -1)
@@ -139,56 +130,42 @@ public class XmlTagPrinter
    }
    
    /**
-    * Called to make a new child tag with the given tag name and a string of attribute/values.
-    * @param attr a string such as " name='this' size='other' "
-    */
-   public XmlTagPrinter newTag(String tag, String attr) throws IOException
-   {
-      closeChild();
-      return newTag(new XmlTagPrinter(tag, attr, this));
-   }
-
-   /**
-    * Called to make a new child tag with the given tag name
-    */
-   public XmlTagPrinter newTag(String tag) throws IOException
-   {
-      closeChild();
-      return newTag(new XmlTagPrinter(tag, null, this));
-   }
-
-   /**
-    * Called to take the given tag and make it the child.  Useful for specialist
-    * derived Tags.
+    * Called to take the given tag and make it the child.  Closes existing child.
+    * Public for use by specialist derived Tags.
     */
    public XmlTagPrinter newTag(XmlTagPrinter tag) throws IOException
    {
       closeChild();
       child = tag;
+      child.open();
       return child;
    }
 
-   /** remove the child tag */
-   protected void clearChild()
+   /**
+    * Convenience routine to make a new child tag with the given tag name and a string of attribute/values.
+    * Automatically closes existing child
+    * @param attr a string such as " name='this' size='other' "
+    */
+   public XmlTagPrinter newTag(String tag, String attr) throws IOException
    {
-      child = null;
+      return newTag(new XmlTagPrinter(tag, attr, this));
    }
 
-   /** closes the child tag  */
-   protected void closeChild() throws IOException
+   /**
+    * Convenience routine to make a new child tag with the given tag name
+    * Automatically closes existing child
+    */
+   public XmlTagPrinter newTag(String tag) throws IOException
    {
-      if (child != null)
-      {
-         child.close();
-         child = null;
-      }
+      return newTag(new XmlTagPrinter(tag, null, this));
    }
+
 
    /**
     * Returns true if the tag has a child tag - implying the child tag is open */
    public boolean hasChild()
    {
-      return (child != null);
+      return (getChild() != null);
    }
 
    /**
@@ -197,21 +174,39 @@ public class XmlTagPrinter
     */
    protected XmlTagPrinter getChild()
    {
+      //if it's been closed, remove it
+      if ( (child != null) && (child.closed)) {
+         child = null;
+      }
+      
       return child;
    }
 
    
+   /** closes the child tag  */
+   protected void closeChild() throws IOException
+   {
+      if (getChild() != null)
+      {
+         child.close();
+         child = null;
+      }
+   }
+
    /**
-    * Close tag
+    * Close tag and its child tags
     */
    public void close() throws IOException
    {
-      Log.affirm(parent.getChild() == this, "Closing XML tag but it's not the child of its parent");
-
+      assert !closed : "Reclosing tag "+name;
+      
       closeChild();
 
-      writeLine("</"+name+">");
-      parent.clearChild();
+      if (name != null) {
+         writeLine(0,"</"+name+">");
+      }
+   
+      closed = true;
    }
    
    /** For debug and display purposes
@@ -225,6 +220,9 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
+ Revision 1.2  2004/07/06 14:43:19  mch
+ Fixed a series of bugs
+
  Revision 1.1  2004/07/02 16:52:20  mch
  More sensible names
 

@@ -1,5 +1,5 @@
 /*
-   $Id: XmlPrinter.java,v 1.1 2004/07/02 16:52:20 mch Exp $
+   $Id: XmlPrinter.java,v 1.2 2004/07/06 14:43:19 mch Exp $
 
   Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -13,7 +13,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
-import org.astrogrid.log.Log;
 
 /**
  * A special XmlTagPrinter used to represent the underlying output stream.
@@ -28,10 +27,9 @@ public class XmlPrinter extends XmlTagPrinter
    private String indentSpaces = "   ";
    private final static int INDENT_SIZE = 3;
 
-   private int state = STATE_PRETAG;
-   private final static int STATE_PRETAG = 0;   //tag has not yet been set
-   private final static int STATE_TAG = 1;      //tag is set
-   private final static int STATE_POSTTAG = 2;  //tag has been closed
+   /** marker to say whether root tag has already been opened.  Can only have
+    * one root tag.*/
+   private boolean startedRootTag = false;
    
    /**
     * Constructor - pass in output stream to pipe to, and
@@ -41,9 +39,13 @@ public class XmlPrinter extends XmlTagPrinter
    {
       super(null, null, null);
       out = new PrintWriter(aWriter);
-      writeLine("<?xml version=\"1.0\"?>");
+      open();
    }
    
+   protected void open() throws IOException{
+      writeLine(0,"<?xml version=\"1.0\"?>");
+   }
+
    /**
     * Constructor - pass in output stream to pipe to, and
     * the initial header will be written
@@ -70,8 +72,8 @@ public class XmlPrinter extends XmlTagPrinter
     */
    public XmlTagPrinter newTag(XmlTagPrinter aTag) throws IOException
    {
-      Log.affirm(state == STATE_PRETAG, "Cannot set new tag - one "+getChild()+" already set");
-      state = STATE_TAG;
+      assert !startedRootTag : "Cannot have more than one tag at root, trying to add "+aTag;
+      startedRootTag = true;
       return super.newTag(aTag);
    }
    
@@ -80,9 +82,8 @@ public class XmlPrinter extends XmlTagPrinter
     * the constructor, using the AsciiOutputStream as a filter.
     * NB - all writing is eventually channelled through this.
     */
-   public void writeString(String s) throws IOException
+   protected void writeString(String s) throws IOException
    {
-      Log.affirm(state != STATE_POSTTAG, "Cannot write - tag has closed");
       out.write(s);
    }
 
@@ -91,10 +92,8 @@ public class XmlPrinter extends XmlTagPrinter
     * plus a new line character, with a suitable number of spaces at the
     * beginning corresponding to the given indent.
     */
-   protected void writeIndentedLine(int indentIndex, String string) throws IOException
+   protected void writeLine(int indentIndex, String string) throws IOException
    {
-      Log.affirm(state != STATE_POSTTAG, "Cannot write - tag has closed");
-      
       //convert indent index to index spaces
       //there's a bit of a botch here to allow root nodes to be on the same level
       //(ie 0 spaces) as the comment tags.
@@ -114,13 +113,11 @@ public class XmlPrinter extends XmlTagPrinter
    }
 
    /**
-    * Close stream - ensure all tag blocks are closed too
+    * Close tag - and output stream
     */
    public void close() throws IOException
    {
-      closeChild();
       super.close();
-      state = STATE_POSTTAG;
       out.close();
    }
 
