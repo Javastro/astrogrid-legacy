@@ -39,7 +39,7 @@ empty you will receive all the columns in your results.
    }
    for (int t=0;t<tables.getLength();t++) {
       Element tableElement = (Element) tables.item(t);
-      String tableName = tableElement.getAttribute("name");
+      String tableName = DomHelper.getValue(tableElement, "Name");
       String link = DomHelper.getValue(tableElement, "Link");
 %>
       <h3><%=tableName %></h3>
@@ -61,7 +61,7 @@ empty you will receive all the columns in your results.
       NodeList columns = tableElement.getElementsByTagName("Column");
       for (int c=0;c<columns.getLength();c++) {
          Element colElement = (Element) columns.item(c);
-         String colName = colElement.getAttribute("name");
+         String colName = DomHelper.getValue(colElement, "Name");
          String colId = tableName+"."+colName;
 %>
          <tr>

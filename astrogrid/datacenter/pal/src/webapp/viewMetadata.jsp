@@ -59,7 +59,7 @@
          NodeList tables = rdbmsResource.getElementsByTagName("Table");
          for (int table=0;table<tables.getLength();table++) {
             Element tableElement = (Element) tables.item(table);
-            String tableName = tableElement.getAttribute("name");
+            String tableName = DomHelper.getValue(tableElement, "Name");
 %>
             <h3>Table '<%=tableName %>' - <%= DomHelper.getValue(tableElement,"Title") %> </h3>
             <p><%= DomHelper.getValue(tableElement,"Description") %></p>
@@ -80,7 +80,7 @@
                Element colElement = (Element) columns.item(col);
 %>
                <tr>
-               <th><%=colElement.getAttribute("name") %></th>
+               <th><%=DomHelper.getValue(colElement, "Name") %></th>
                <td><%=colElement.getAttribute("datatype") %></td>
                <td><%=DomHelper.getValue(colElement, "Units") %></td>
                <td><%=DomHelper.getValue(colElement, "UCD") %></td>
@@ -115,8 +115,7 @@
 
 <h1>Raw Metadata</h1>
 
-<p>Download the metadata document <a href='GetMetadata'>here</a></p>
-<p>Download the raw metadata document <a href='getRawMetadata.jsp'>here</a></p>
+<p>Download the raw metadata xml document <a href='GetMetadata'>here</a></p>
 <%-- <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p> --%>
 
 </div>
