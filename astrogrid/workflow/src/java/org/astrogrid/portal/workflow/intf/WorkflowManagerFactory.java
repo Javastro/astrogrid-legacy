@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.6 2004/03/15 17:01:01 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.7 2004/04/14 13:02:57 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -175,9 +175,11 @@ public class WorkflowManagerFactory {
     }
 
     /**
-     * @return
+     *@todo implement this.
      */
     private WorkflowStore buildStore() throws Exception {
+        return null;
+        /*
         try {
             String option = conf.getString(WORKFLOW_STORE_KEY).trim();            
             log.info(WORKFLOW_STORE_KEY + " := " + option);
@@ -198,6 +200,7 @@ public class WorkflowManagerFactory {
             log.warn("no value for " + WORKFLOW_STORE_KEY + " falling back to default");
             return buildDefaultStore();
         }
+        */
     }
     /** build default myspace-based implementation */  
     private WorkflowStore buildDefaultStore() throws PropertyNotFoundException, IOException{
@@ -211,6 +214,9 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.7  2004/04/14 13:02:57  nw
+cut down workflow store interface. now to implement it.
+
 Revision 1.6  2004/03/15 17:01:01  nw
 loosened type of endpoint for JesJobExecutionService from URL to String -
 allows the dummy urn:test to be passed in.
