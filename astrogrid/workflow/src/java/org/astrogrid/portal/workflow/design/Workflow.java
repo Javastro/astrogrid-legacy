@@ -618,7 +618,7 @@ public class Workflow extends Activity {
                 
                 argumentBuffer
                    .append( "/")
-                   .append( CommunityMessage.getGroup( communitySnippet ) )
+                   .append( CommunityMessage.getAccount( communitySnippet ) )
                    .append( "/")
                    .append( "serv1")
                    .append( "/" )
@@ -983,12 +983,18 @@ public class Workflow extends Activity {
     
     
     protected static String extractUserid( String account ) {
-        return account.substring( 0, account.indexOf("@") ) ;
+        String
+            retVal = account.substring( 0, account.indexOf("@") ) ;
+        debug( "Userid: " + retVal ) ;
+        return retVal; 
     }
     
     
     protected static String extractCommunity( String account ) {
-        return account.substring( account.indexOf("@") + 1 ) ;
+        String
+            retVal = account.substring( account.indexOf("@") + 1 ) ;
+        debug( "Community: " + retVal ) ;        
+        return retVal; 
     }
     
 
@@ -1042,14 +1048,18 @@ public class Workflow extends Activity {
            iterator = null ;
         java.util.Vector
            vector = null ;
+        String
+           account ;
         
         try {
+               
+            account = CommunityMessage.getAccount( communitySnippet ) ;
                             
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( myspaceLocation ) ;
                 
-            vector = mySpace.listDataHoldings( Workflow.extractUserid( communitySnippet )
-                                             , Workflow.extractCommunity( communitySnippet )
+            vector = mySpace.listDataHoldings( Workflow.extractUserid( account )
+                                             , Workflow.extractCommunity( account )
                                              , CommunityMessage.getGroup( communitySnippet )
                                              , myspaceArguments ) ;
                                               
@@ -1078,6 +1088,8 @@ public class Workflow extends Activity {
             fileString = null ;
          
         try {
+            
+            debug( "myspaceLocation: " + myspaceLocation ) ;
             
             account = CommunityMessage.getAccount( communitySnippet ) ;
             

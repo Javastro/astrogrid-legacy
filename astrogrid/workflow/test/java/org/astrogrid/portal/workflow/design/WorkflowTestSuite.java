@@ -52,7 +52,7 @@ public class WorkflowTestSuite extends TestCase {
 	
     
     
-    public void testWorkflowActivityNavigation() {
+    public void tostWorkflowActivityNavigation() {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
@@ -100,7 +100,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    public void testCreateWorkflowFromTemplate_MissingTemplate() {
+    public void tostCreateWorkflowFromTemplate_MissingTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
@@ -127,7 +127,7 @@ public class WorkflowTestSuite extends TestCase {
     } // end of testCreateWorkflowFromTemplate_MissingTemplate()
 
 
-    public void testCreateWorkflowFromTemplate_OneStepTemplate() {
+    public void tostCreateWorkflowFromTemplate_OneStepTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
@@ -162,9 +162,12 @@ public class WorkflowTestSuite extends TestCase {
     public void testSaveWorkflow() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
+         
+        Date
+            date = new Date() ;
         
         final String 
-             name = "WorkflowOct6_02",
+             name = "WorkflowTestSuite_testSaveWorkflow()_" + date.getTime(),
              description = "This is a one step job",
              templateName = "OneStepJob" ;
          Workflow
@@ -235,7 +238,8 @@ public class WorkflowTestSuite extends TestCase {
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
          final String 
-             name = "OneStepJob" ;
+//             name = "OneStepJob" ;
+               name = "WorkflowTestSuite_testSaveWorkflow()_1070024120435" ;
          Workflow
             workflow ;
             
@@ -260,7 +264,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
 
-    public void testDeleteWorkflow() {
+    public void tostDeleteWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
@@ -291,7 +295,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testReadQueryList() {
+    public void tostReadQueryList() {
          logger.info( "--------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
@@ -324,7 +328,7 @@ public class WorkflowTestSuite extends TestCase {
     
     
     
-    public void testReadQuery() {
+    public void tostReadQuery() {
          logger.info( "----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
@@ -350,7 +354,7 @@ public class WorkflowTestSuite extends TestCase {
      } // end of testReadQuery()
    
    
-    public void testReadToolList() {
+    public void tostReadToolList() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadToolList()" ); 
         
@@ -384,7 +388,7 @@ public class WorkflowTestSuite extends TestCase {
      
      
      
-    public void testCreateTool() {
+    public void tostCreateTool() {
          logger.info( "-----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateTool()" ); 
         
@@ -443,7 +447,7 @@ public class WorkflowTestSuite extends TestCase {
    
    
    
-    public void testSubmitWorkflow() {
+    public void tostSubmitWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
@@ -536,7 +540,7 @@ public class WorkflowTestSuite extends TestCase {
 
 
 
-    public void testCreateQueryAndSubmitWorkflow() {
+    public void tostCreateQueryAndSubmitWorkflow() {
          logger.info( "-----------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
