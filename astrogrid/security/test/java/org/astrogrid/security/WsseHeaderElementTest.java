@@ -39,9 +39,11 @@ public class WsseHeaderElementTest extends TestCase {
     xc.addXpathNamespace("wsse",
                          "http://schemas.xmlsoap.org/ws/2002/04/secext");
     assertTrue(0 < xc.countMatchingNodes("//soapenv:Header/wsse:Security"));
-    assertTrue(0 < xc.countMatchingNodes("//wsse:Security/wsse:UsernameToken"));
-    assertTrue(0 < xc.countMatchingNodes("//wsse:UsernameToken/wsse:Username"));
-    assertTrue(0 < xc.countMatchingNodes("//wsse:UsernameToken/wsse:Password"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:Security/wsse:UsernameToken"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Username"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Password"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Nonce"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Created"));
   }
 
 
@@ -66,36 +68,40 @@ public class WsseHeaderElementTest extends TestCase {
       xc.addXpathNamespace("wsse",
                            "http://schemas.xmlsoap.org/ws/2002/04/secext");
       assertTrue(0 < xc.countMatchingNodes("//soapenv:Header/wsse:Security"));
-      assertTrue(0 < xc.countMatchingNodes("//wsse:Security/wsse:UsernameToken"));
-      assertTrue(0 < xc.countMatchingNodes("//wsse:UsernameToken/wsse:Username"));
+      assertEquals(1, xc.countMatchingNodes("//wsse:Security/wsse:UsernameToken"));
+      assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Username"));
       assertEquals(0, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Password"));
+      assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Nonce"));
+      assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Created"));
+    }
+
+
+  /**
+   * Tests the serializer when no credentials are present.
+   */
+  public void testSerializerBlank () throws Exception {
+    SecurityGuard sg = new SecurityGuard();
+
+    SOAPMessage sm = MessageFactory.newInstance().createMessage();
+
+    WsseHeaderElement he = new WsseHeaderElement(sg, sm);
+    he.write();
+
+    String soapSerialized = sm.getSOAPPart().getEnvelope().toString();
+    System.out.println(soapSerialized);
+
+    // Check the structure of the XML.
+    XmlChecker xc = new XmlChecker(soapSerialized);
+    xc.addXpathNamespace("soapenv",
+                         "http://schemas.xmlsoap.org/soap/envelope/");
+    xc.addXpathNamespace("wsse",
+                         "http://schemas.xmlsoap.org/ws/2002/04/secext");
+    assertTrue(0 < xc.countMatchingNodes("//soapenv:Header/wsse:Security"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:Security/wsse:UsernameToken"));
+    assertEquals(0, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Username"));
+    assertEquals(0, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Password"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Nonce"));
+    assertEquals(1, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Created"));
   }
-
-
-      /**
-       * Tests the serializer when no credentials are present.
-       */
-      public void testSerializerBlank () throws Exception {
-        SecurityGuard sg = new SecurityGuard();
-
-        SOAPMessage sm = MessageFactory.newInstance().createMessage();
-
-        WsseHeaderElement he = new WsseHeaderElement(sg, sm);
-        he.write();
-        String soapSerialized = sm.getSOAPPart().getEnvelope().toString();
-        System.out.println(soapSerialized);
-
-        // Check the structure of the XML.
-        XmlChecker xc = new XmlChecker(soapSerialized);
-        xc.addXpathNamespace("soapenv",
-                             "http://schemas.xmlsoap.org/soap/envelope/");
-        xc.addXpathNamespace("wsse",
-                             "http://schemas.xmlsoap.org/ws/2002/04/secext");
-        assertTrue(0 < xc.countMatchingNodes("//soapenv:Header/wsse:Security"));
-        assertTrue(0 < xc.countMatchingNodes("//wsse:Security/wsse:UsernameToken"));
-        assertEquals(0, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Username"));
-        assertEquals(0, xc.countMatchingNodes("//wsse:UsernameToken/wsse:Password"));
-  }
-
 
 }
