@@ -366,47 +366,121 @@ public class WorkflowTestSuite extends TestCase {
 				         
 				}
 
-				public void test_BH_InsertValue_InputParameter() {
-				    trace( "---------------------------------------------------------" ); 
-				    trace( "enter: WorkflowTestSuite.test_BH_InsertValue_InputParameter()" ); 
+    public void test_BH_ReplaceValue_InputParameter() {
+	   trace( "---------------------------------------------------------" ); 
+       trace( "enter: WorkflowTestSuite.test_BH_ReplaceValue_InputParameter()" ); 
 				    
-				    try {
+	   try {
 				
-				        Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+	       Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
 				        
-				        if(tool != null) {
-				            ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
-				            ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
-				            trace( "tool name: " + tool.getName() );
-				            trace( "tool interface: " + tool.getInterface() );
+		   if(tool != null) {
+		      ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+			  ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+			  trace( "tool name: " + tool.getName() );
+			  trace( "tool interface: " + tool.getInterface() );
                             
-                            WorkflowHelper.insertInputParameterValue( applDescription, tool, "P2", "Text", "3.1415926535" ) ;
+              WorkflowHelper.insertInputParameterValue( applDescription, tool, "P2", "Text", "3.1415926535" ) ;
                                         
-				            ParameterValue[] pvs = tool.getInput().getParameter();
-				            ParameterRef pr = null;
-				            trace( "tool input parameters...");         
-				            for( int i=0; i<pvs.length; i++ ){
-				                trace( "parameterValue name: " + pvs[i].getName() );
-				                trace( "parameterValue type: " + pvs[i].getType().toString() );
-				                trace( "parameterValue value: " + pvs[i].getValue() );
-				            }
-				        }
-				        else {
-				            trace( "tool is null" );
-				        }
-				    }
-				    catch( Exception ex ) {
-				        ex.printStackTrace();
-				    }
-				    finally {
-				        trace( "exit: WorkflowTestSuite.test_BH_InsertValue_InputParameter()" ); 
-				    }
+			  ParameterValue[] pvs = tool.getInput().getParameter();
+			  ParameterRef pr = null;
+			  trace( "tool input parameters...");         
+			  for( int i=0; i<pvs.length; i++ ){
+			     trace( "parameterValue name: " + pvs[i].getName() );
+			     trace( "parameterValue type: " + pvs[i].getType().toString() );
+			     trace( "parameterValue value: " + pvs[i].getValue() );
+			  }
+		   }
+		   else {
+		      trace( "tool is null" );
+		   }
+	   }
+       catch( Exception ex ) {
+	       ex.printStackTrace();
+	   }
+	   finally {
+	       trace( "exit: WorkflowTestSuite.test_BH_ReplaceValue_InputParameter()" ); 
+	   }
 				         
-				}
+    }
     
     
+    public void test_BJ_DeleteInputParameter() {
+       trace( "---------------------------------------------------------" ); 
+       trace( "enter: WorkflowTestSuite.test_BJ_DeleteInputParameter()" ); 
+                    
+       try {
+                
+           Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+                        
+           if(tool != null) {
+              ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+              ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+              trace( "tool name: " + tool.getName() );
+              trace( "tool interface: " + tool.getInterface() );
+                            
+              WorkflowHelper.deleteInputParameter( tool, "P2", "3.1415926535" ) ;
+                                        
+              ParameterValue[] pvs = tool.getInput().getParameter();
+              ParameterRef pr = null;
+              trace( "tool input parameters...");         
+              for( int i=0; i<pvs.length; i++ ){
+                 trace( "parameterValue name: " + pvs[i].getName() );
+                 trace( "parameterValue type: " + pvs[i].getType().toString() );
+                 trace( "parameterValue value: " + pvs[i].getValue() );
+              }
+           }
+           else {
+              trace( "tool is null" );
+           }
+       }
+       catch( Exception ex ) {
+           ex.printStackTrace();
+       }
+       finally {
+           trace( "exit: WorkflowTestSuite.test_BJ_DeleteInputParameter()" ); 
+       }
+                         
+    }
 
 
+    public void test_BK_InsertInputParameter() {
+       trace( "---------------------------------------------------------" ); 
+       trace( "enter: WorkflowTestSuite.test_BK_InsertInputParameter()" ); 
+                    
+       try {
+                
+           Tool tool = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+                        
+           if(tool != null) {
+              ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
+              ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
+              trace( "tool name: " + tool.getName() );
+              trace( "tool interface: " + tool.getInterface() );
+                            
+              WorkflowHelper.insertInputParameterValue( applDescription, tool, "P2", "", "4.56789" ) ;
+                                        
+              ParameterValue[] pvs = tool.getInput().getParameter();
+              ParameterRef pr = null;
+              trace( "tool input parameters...");         
+              for( int i=0; i<pvs.length; i++ ){
+                 trace( "parameterValue name: " + pvs[i].getName() );
+                 trace( "parameterValue type: " + pvs[i].getType().toString() );
+                 trace( "parameterValue value: " + pvs[i].getValue() );
+              }
+           }
+           else {
+              trace( "tool is null" );
+           }
+       }
+       catch( Exception ex ) {
+           ex.printStackTrace();
+       }
+       finally {
+           trace( "exit: WorkflowTestSuite.test_BK_InsertInputParameter()" ); 
+       }
+                         
+    }
 
     /**
      * Helper method which sets up HyperZ specific job step details.

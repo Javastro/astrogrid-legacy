@@ -127,6 +127,22 @@ public class WorkflowHelper {
                 } // end if
             } // end while
             
+            if( retValue == false ) {
+                ParameterValue pValue = new ParameterValue(); 
+                pValue.setName( paramName ) ;
+                ParameterRef pRef = WorkflowHelper.getParameterRef(applDescription,tool,pValue);                 
+                BaseParameterDefinition paramDef = applDescription.getDefinitionForReference(pRef);
+                ParameterValue paramVal = applDescription.createValueFromDefinition(paramDef);
+                           
+                if( bInParam ){
+                   tool.getInput().addParameter( paramVal );
+                }
+                else {
+                   tool.getOutput().addParameter( paramVal );
+                }
+                
+            }
+            
             // If we have inserted a brand new value and the cardinality is unbounded
             if( savedNewInsertTarget != null ) {
                 
