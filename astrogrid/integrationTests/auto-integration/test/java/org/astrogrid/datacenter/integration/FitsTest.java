@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
+/*$Id: FitsTest.java,v 1.3 2004/10/07 10:52:53 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,7 +33,7 @@ public class FitsTest extends DatacenterTestCase implements StdKeys {
 
    public void testAdql() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       System.out.println("Start testAdqlSearchForFITS");
-      Query query = loadSampleQuery(FitsTest.class, "SimpleFITSQuery-adql073.xml");
+      Query query = loadSampleQuery(FitsTest.class, "SimpleFITSQuery-adql074.xml");
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_FITS_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
@@ -55,6 +55,9 @@ public class FitsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: FitsTest.java,v $
+Revision 1.3  2004/10/07 10:52:53  mch
+Fixed FITS test
+
 Revision 1.2  2004/10/06 22:03:45  mch
 Following Query model changes in PAL
 

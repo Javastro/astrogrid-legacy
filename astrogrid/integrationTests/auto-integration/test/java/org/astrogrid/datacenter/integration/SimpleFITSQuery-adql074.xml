@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- ADQL generated from: {Query: In scope test,look for where ([ColRef test.keywords/naxis_1]) < ([Integer] 200000),  returning [Results: target=null, cols=*]} -->
+<!-- ADQL generated from SQL: Select * from test where keywords/naxis_1 < 200000 -->
+<Select xmlns='http://www.ivoa.net/xml/ADQL/v0.7.4'  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'  xmlns:xsd='http://www.w3.org/2001/XMLSchema' >
+   <SelectionList>
+      <Item xsi:type='allSelectionItemType' ></Item>
+   </SelectionList>
+   <From>
+      <Table xsi:type='tableType' Name='test' Alias='test' ></Table>
+   </From>
+   <Where>
+      <Condition xsi:type='comparisonPredType' Comparison='&lt;' >
+         <Arg xsi:type='columnReferenceType'  Table='test'  Name='Keywords/NAXIS1' ></Arg>
+         <Arg xsi:type='atomType' >
+            <Literal xsi:type='integerType' Value='20000000' ></Literal>
+         </Arg>
+      </Condition>
+   </Where>
+</Select>
