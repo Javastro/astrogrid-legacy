@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreTreeView.java,v 1.2 2005/03/28 03:28:49 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -32,7 +32,7 @@ public class StoreTreeView extends JTree {
    Log log = LogFactory.getLog(StoreTreeView.class);
    
    public StoreTreeView(Principal aUser) throws IOException {
-      super(new DefaultTreeModel(new StoresList(aUser)));
+      super(new DirectoryTreeModel(new StoresList(aUser)));
       
       ((StoresList) getModel().getRoot()).setModel( (DefaultTreeModel) getModel());
       
@@ -116,6 +116,9 @@ public class StoreTreeView extends JTree {
 
 /*
  $Log: StoreTreeView.java,v $
+ Revision 1.2  2005/03/28 03:28:49  mch
+ Some fixes for threadsafety
+
  Revision 1.1  2005/03/28 02:06:35  mch
  Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

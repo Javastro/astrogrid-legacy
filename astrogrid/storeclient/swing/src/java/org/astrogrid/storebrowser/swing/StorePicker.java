@@ -1,5 +1,5 @@
 /*
- * $Id: StorePicker.java,v 1.1 2005/03/28 02:06:35 mch Exp $
+ * $Id: StorePicker.java,v 1.2 2005/03/28 03:28:49 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,7 +16,6 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.security.Principal;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -27,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.IvoAccount;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.io.Piper;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.storebrowser.tree.StoreFileNode;
 import org.astrogrid.storebrowser.tree.StoreTreeView;
@@ -371,8 +371,14 @@ public class StorePicker extends JDialog
 
       try
       {
-         StoreFile picked = StorePicker.choose(new IvoAccount("DSATEST1", "uk.ac.le.star", null), "OK");
-         System.out.println("Picked file "+picked);
+         Principal user = new IvoAccount("DSATEST1", "uk.ac.le.star", null);
+         StoreFile picked = StorePicker.choose(user, "OK");
+         System.out.println("Picked file "+picked+":");
+         
+         if ((picked != null) && (picked.isFile())) {
+            Piper.bufferedPipe(picked.openInputStream(user), System.out);
+         }
+         
       } catch (IOException ioe)
       {
          ioe.printStackTrace();
@@ -382,6 +388,9 @@ public class StorePicker extends JDialog
 
 /*
 $Log: StorePicker.java,v $
+Revision 1.2  2005/03/28 03:28:49  mch
+Some fixes for threadsafety
+
 Revision 1.1  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 
