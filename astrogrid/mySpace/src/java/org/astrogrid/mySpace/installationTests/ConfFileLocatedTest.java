@@ -1,4 +1,4 @@
-/* $Id: ConfFileLocatedTest.java,v 1.1 2003/12/28 12:59:04 jdt Exp $
+/* $Id: ConfFileLocatedTest.java,v 1.1 2004/01/02 15:28:17 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
