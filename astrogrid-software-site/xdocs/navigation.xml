@@ -50,15 +50,14 @@
 		<menu name="Developers">
 			<item name="Information for Developers" href="/developerdocs/index.html" collapse="true">
 				<item name="Obtaining source code" href="/cvs-usage.html"/>
-				<item name="XML schemata" href="http://www.astrogrid.org/maven/docs/HEAD/contracts/schema/index.html"/>
-      			<item name="Build AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
-                <item name="Development Process" href="/developerdocs/developmentprocess.html" collapse="true">
-				<item name="Coding Standard" href="/developerdocs/standards.html"/>
-                </item>
-                <!--item name="AstroGrid architecture" href="fillmein"/-->
-					<!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
+      	<item name="Build AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
+        <item name="Development Process" href="/developerdocs/developmentprocess.html" collapse="true"/>
+        <item name="Coding Standards" href="/developerdocs/standards.html"/>
+        <item name="XML schemata" href="/schema/index.html"/>
+        </item>
+        <!--item name="AstroGrid architecture" href="fillmein"/-->
+			  <!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
 				<item name="How to change these docs" href="/about.html"/>
-			</item>
 		</menu>
 		<menu name="Further Information">
 			<item name="Main site" href="http://www.astrogrid.org"/>

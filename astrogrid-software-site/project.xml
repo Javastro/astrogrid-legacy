@@ -60,11 +60,17 @@
     		<version>${astrogrid.aggregate.version}</version>
     	</dependency>
     	<dependency>
-    		<artifactId>astrogrid-desktop</artifactId>
+    		<artifactId>astrogrid-contracts</artifactId>
     		<groupId>org.astrogrid</groupId>
-    		<type>war</type>
-    		<version>${astrogrid.desktop.version}</version>
-    	</dependency>  
+    		<type>jar</type>
+    		<version>${astrogrid.contracts.version}</version>
+    		<properties>
+    			<!-- This property tells the unpack-schema goal
+    			     (custom goal in maven.xml)
+    			     to process this jar. -->
+    			<jar-with-schema>true</jar-with-schema>
+    		</properties>
+    	</dependency>
     </dependencies>
     <reports>
         <report>maven-license-plugin</report>
