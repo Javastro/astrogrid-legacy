@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.2 2003/10/13 14:13:47 nw Exp $
+ * $Id: WebDelegate.java,v 1.3 2003/11/05 18:52:53 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,13 +8,17 @@ package org.astrogrid.datacenter.delegate.agws;
 
 import org.astrogrid.datacenter.delegate.*;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.adql.QOM;
+import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerSoapBindingStub;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * A standard AstroGrid datacenter delegate implementation, based on
@@ -65,146 +69,6 @@ public class WebDelegate implements AdqlQuerier
       binding.setTimeout(givenTimeout);
    }
 
-   
-  /**
-    * General purpose query database; pass in an XML document with the query
-    * described in ADQL (Astronomical Data Query Language).  Returns the
-    * results part of the returned document, which may be VOTable or otherwise
-    * depending on the results format specified in the ADQL
-    *
-   public Element doQuery(Element adql) throws RemoteException
-   {
-       try {
-          return binding.doQuery(adql);
-       } catch (QueryException e) {
-           RemoteException r = new RemoteException(e.getMessage());
-           r.initCause(e);
-           throw r;
-       }
-
-   }
-
-   /**
-    * Returns votable results (or status info if results not ready)
-    *
-   public Element getResultsAndClose(String queryId) throws RemoteException
-   {
-      try
-      {
-         return binding.getResultsAndClose(
-            DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement());
-
-      }
-      catch (Exception e)
-      {
-         throw new RemoteException(e.getMessage());
-      }
-   }
-
-   /**
-    * Spawns the given query - ie starts it, returns with the server acknowledgement
-    *
-   public Element spawnAdqlQuery(Element adql) throws RemoteException
-   {
-      try
-      {
-         Element response = makeAdqlQuery(adql);
-         return startAdqlQuery(QueryIdHelper.getQueryId(response));
-      }
-      catch (Exception e)
-      {
-         throw new RemoteException(e.getMessage());
-      }
-   }
-    /**/
-
-   /**
-    * Creates the given query, returning the server acknowledgement
-    *
-   public Element makeQuery(Element adql) throws RemoteException
-   {
-      try
-      {
-         return binding.makeQuery(adql);
-      }
-      catch (Exception e)
-      {
-         throw new RemoteException(e.getMessage());
-      }
-   }
-
-   /**
-    * Starts query identified by given id
-    *
-   public Element startQuery(String queryId) throws RemoteException
-   {
-      try
-      {
-         Element whoWhatWhy = DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement();
-
-         return binding.startQuery(whoWhatWhy);
-      }
-      catch (Exception e)
-      {
-         throw new RemoteException(e.getMessage());
-      }
-   }
-
-   /**
-    * Returns the number of items that match the given query.  This is useful for
-    * doing checks on how big the result set is likely to be before it has to be
-    * transferred about the net.
-    *
-   public int adqlCountDatacenter(Element adql)
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   /**
-    * returns metadata (an XML document describing the data the
-    * center serves) in the form required by registries. See the VOResource
-    * schema; I think that is what this should return...
-    *
-   public Element getVoRegistryMetadata() throws RemoteException
-   {
-     return binding.getVoRegistryMetadata();
-   }
-
-   /**
-    * Polls the service and asks for the current status
-    *
-   public QueryStatus getStatus(String id) throws RemoteException
-   {
-       Element idElement = DocHelper.wrap(QueryIdHelper.makeQueryIdTag(id)).getDocumentElement();
-      return QueryStatus.getFor(binding.getStatus(idElement));
-   }
-
-   /**
-    * Register a listener with the server.  Note that only
-    * WebNotify Listeners will work - as this delegate has
-    * no session contact with the server.
-    *
-   public void registerListener(String queryId, DatacenterStatusListener listener) throws RemoteException
-   {
-      if (listener instanceof WebNotifyServiceListener)
-      {
-         Element whoWhatWhy = DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement();
-
-         binding.registerWebListener( whoWhatWhy, (WebNotifyServiceListener) listener);
-      }
-      else
-      {
-         //what to do?  user of the client won't necessarily know.... so throw
-         //an exception that they can catch and so decide on an action
-         throw new IllegalArgumentException("Web Services can only accept WebNotifyServiceListener listeners");
-      }
-   }
-
-   /**
-   public void abortQuery(String queryId) throws IOException {
-      binding.abortQuery(DocHelper.wrap(QueryIdHelper.makeQueryIdTag(queryId)).getDocumentElement());
-    
-   }
 
     /**
     * Implementation of a query instance, represening the query at the
@@ -222,9 +86,14 @@ public class WebDelegate implements AdqlQuerier
       /**
       * @see DatacenterQuery.getResultsAndClose()
       */
-      public URL getResultsAndClose() throws DatacenterException
+      public DatacenterResults getResultsAndClose() throws IOException
       {
-         return binding.getResultsAndClose(queryId);
+         try
+         {
+            return new DatacenterResults(new String[] {binding.getResultsAndClose(queryId)});
+         }
+         catch (SAXException e) {}  //temporary - remove when binding is updated to not throw this exception
+         return null;
       }
       
       /**
@@ -233,15 +102,15 @@ public class WebDelegate implements AdqlQuerier
       * or the service may throw an exception when attempting to start the
       * query
       */
-      public void setResultsDestination(URL myspace) throws DatacenterException
+      public void setResultsDestination(URL resultsDestination) throws RemoteException
       {
-         binding.setResultsDestination(queryId, myspace);
+         binding.setResultsDestination(queryId, resultsDestination);
       }
       
       /**
       * Starts the query running - eg submits SQL to database.
       */
-      public void start() throws DatacenterException
+      public void start() throws RemoteException
       {
          binding.startQuery(queryId);
       }
@@ -251,9 +120,9 @@ public class WebDelegate implements AdqlQuerier
       * spawn asynchronous queries but cannot publish a url for the service to
       * send status updates to.
       */
-      public QueryStatus getStatus() throws DatacenterException
+      public QueryStatus getStatus() throws RemoteException
       {
-         binding.getStatus(queryId);
+         return QueryStatus.getFor(binding.getStatus(queryId));
       }
       
       /**
@@ -267,7 +136,7 @@ public class WebDelegate implements AdqlQuerier
       /**
       * Tells the server to stop running the query.  Don't use the query id after this...
       */
-      public void abort() throws DatacenterException
+      public void abort() throws RemoteException
       {
          binding.abortQuery(queryId);
       }
@@ -277,20 +146,27 @@ public class WebDelegate implements AdqlQuerier
       {
       }
       
-      public void registerJobMonitor(URL url)
+      public void registerJobMonitor(URL url) throws RemoteException
       {
-         binding.registerJobMonitor(url.toString());
+         
+         try
+         {
+            binding.registerJobMonitor(queryId, url.toString());
+         }
+         catch (RemoteException e) {}
+         catch (MalformedURLException e) {}
       }
-      public void registerWebListener(URL url)
+
+      public void registerWebListener(URL url) throws RemoteException, MalformedURLException
       {
-         binding.registerWebListener(url.toString());
+         binding.registerWebListener(queryId, url.toString());
       }
       
    }
    
    /* Returns the metadata
    */
-   public Metadata getMetadata() throws DatacenterException {
+   public Metadata getMetadata() throws RemoteException {
       return new Metadata(binding.getMetadata(null));
    }
 
@@ -299,8 +175,9 @@ public class WebDelegate implements AdqlQuerier
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public int countQuery(QOM adql) throws DatacenterException
+   public int countQuery(Select adql) throws DatacenterException
    {
+      return -1;
    }
    
    /**
@@ -312,9 +189,9 @@ public class WebDelegate implements AdqlQuerier
     * @param givenId an id for the query is assigned here rather than
     * generated by the server
     */
-   public DatacenterQuery makeQuery(QOM adql, String givenId) throws DatacenterException
+   public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException
    {
-      binding.makeQuery(adql,  givenId);
+      return new WebQueryDelegate(binding.makeQuery(adql,  givenId));
    }
    
    /**
@@ -324,9 +201,9 @@ public class WebDelegate implements AdqlQuerier
     *
     * @param adql object model
     */
-   public DatacenterQuery makeQuery(QOM adql) throws DatacenterException
+   public DatacenterQuery makeQuery(Select adql) throws IOException
    {
-      binding.makeQuery(adql);
+      return new WebQueryDelegate(binding.makeQuery(adql));
    }
    
    /**
@@ -337,14 +214,14 @@ public class WebDelegate implements AdqlQuerier
     * @param ADQL
     * @todo move adql package into common
     */
-   public DatacenterResults doQuery(String resultsFormat, QOM adql) throws DatacenterException
+   public DatacenterResults doQuery(String resultsFormat, Select adql) throws DatacenterException
    {
       try {
          //make up document including resultsFormat, adql
          
          
          //run query on server
-         Element results = binding.doQuery(adql);
+         Element results = binding.doQuery(resultsFormat, adql);
          
          //extract results to DatacenterResults
          //only one type for It03 servers - votable
@@ -360,6 +237,9 @@ public class WebDelegate implements AdqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.3  2003/11/05 18:52:53  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.2  2003/10/13 14:13:47  nw
 massaged one method to fit wih new delegate. still lots more to do here
 - don't understand intentions here myself

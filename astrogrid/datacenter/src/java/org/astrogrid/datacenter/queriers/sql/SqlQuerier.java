@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.21 2003/09/26 11:00:15 nw Exp $
+ * $Id: SqlQuerier.java,v 1.22 2003/11/05 18:57:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.Query;
@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
  * forms a basis for oter implementations for different db flavours
  * <p>
  * NWW: altered to delay creating jdbcConnection until required by {@link #queryDatabase}. DatabaseQueriers are one-shot
- * beasts anyhow, so this isn't a problem, but it fixes problems of moving jdbcConnection across threads when non-blocking querying is done. 
+ * beasts anyhow, so this isn't a problem, but it fixes problems of moving jdbcConnection across threads when non-blocking querying is done.
  * @author M Hill
  */
 
@@ -81,11 +81,11 @@ public class SqlQuerier extends DatabaseQuerier
    }
 
 protected Connection createConnection() throws DatabaseAccessException {
-      String userId = Configuration.getProperty(USER_KEY);
-      String password = Configuration.getProperty(PASSWORD_KEY);
+      String userId = SimpleConfig.getProperty(USER_KEY);
+      String password = SimpleConfig.getProperty(PASSWORD_KEY);
     
       // look for jndi link to datasource,
-      String jndiDataSourceName = Configuration.getProperty(JNDI_DATASOURCE_KEY);
+      String jndiDataSourceName = SimpleConfig.getProperty(JNDI_DATASOURCE_KEY);
       if ( jndiDataSourceName != null)
       {
          try
@@ -117,12 +117,12 @@ protected Connection createConnection() throws DatabaseAccessException {
       else
       {
          // failing that, look for a URL in configuration
-         String jdbcURL = Configuration.getProperty(JDBC_URL_KEY);
+         String jdbcURL = SimpleConfig.getProperty(JDBC_URL_KEY);
          if ( jdbcURL != null)
          {
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
-            String connectionPropertyValue = Configuration.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
+            String connectionPropertyValue = SimpleConfig.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
             if (connectionPropertyValue != null)
             {
                try
@@ -190,7 +190,7 @@ protected Connection createConnection() throws DatabaseAccessException {
    public static void startDrivers() throws DatabaseAccessException
    {
          //read value
-         String drivers = Configuration.getProperty(JDBC_DRIVERS_KEY);
+         String drivers = SimpleConfig.getProperty(JDBC_DRIVERS_KEY);
          if (drivers != null)
          {
             //break down into lines
@@ -251,7 +251,7 @@ protected Connection createConnection() throws DatabaseAccessException {
     */
    protected QueryTranslator createQueryTranslator()
    {
-      String translatorClassName = Configuration.getProperty(ADQL_SQL_TRANSLATOR);
+      String translatorClassName = SimpleConfig.getProperty(ADQL_SQL_TRANSLATOR);
       if (translatorClassName == null)
       {
          return new SqlQueryTranslator();
@@ -279,7 +279,7 @@ protected Connection createConnection() throws DatabaseAccessException {
       String sql = null;
 
       try
-      { 
+      {
          jdbcConnection = createConnection();
          Statement statement = jdbcConnection.createStatement();
          QueryTranslator trans = createQueryTranslator();

@@ -7,9 +7,13 @@ package org.astrogrid.datacenter.mch;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.service.SocketServer;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
@@ -39,20 +43,24 @@ public class HomeClient
 
          Log.logToConsole();
          Log.logToFile("error.log");
-         Log.starting();
+         Log.starting("HomeClient");
 
          //create a delegate to talk to it
-         DatacenterDelegate delegate = DatacenterDelegate.makeDelegate("socket://kubwa:"+SocketServer.DEFAULT_PORT);
+         AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier("socket://kubwa:"+SocketServer.DEFAULT_PORT);
 
 //         Log.trace("Pausing...");
 //         Thread.currentThread().sleep(5000);
 
          //basic tests
-         Element voRegistry = delegate.getVoRegistryMetadata();
+         Metadata metadata = delegate.getMetadata();
 
          //query test
          InputStream in = HomeClient.class.getResourceAsStream("adqlQuery.xml");
-         Element results = delegate.doQuery(XMLUtils.newDocument(in).getDocumentElement());
+         Element adqlDoc = XMLUtils.newDocument(in).getDocumentElement();
+
+         Select adql = ADQLUtils.unmarshalSelect(adqlDoc);
+         
+         DatacenterResults results = delegate.doQuery(AdqlQuerier.VOTABLE, adql);
           /**/
       }
       catch (Exception e)
@@ -64,6 +72,9 @@ public class HomeClient
 
 /*
  $Log: HomeClient.java,v $
+ Revision 1.5  2003/11/05 18:54:52  mch
+ Build fixes for change to SOAPy Beans and new delegates
+
  Revision 1.4  2003/09/18 13:15:23  nw
  renamed delegate methods to match those in web service
 

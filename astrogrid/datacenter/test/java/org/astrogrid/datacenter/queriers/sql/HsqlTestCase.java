@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.4 2003/09/25 01:18:02 nw Exp $
+/*$Id: HsqlTestCase.java,v 1.5 2003/11/05 18:54:43 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
 
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
@@ -145,16 +145,18 @@ public abstract class HsqlTestCase extends TestCase {
         return str;
     }
     /** sets up correct Configuration properties for the in-memory hsql database */
-    public static void initializeConfiguration() throws DatabaseAccessException {
-        //register HSQLDB driver with driver key in configration file
-        //put driver into config file
-        Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
-        Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
+    public static void initializeConfiguration() throws DatabaseAccessException
+    {
+       //register HSQLDB driver with driver key in configration file
+       //put driver into config file
+       SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
+       SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
         
-        //register where to find database
-        Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:test-db");
-        Configuration.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
-        SqlQuerier.startDrivers();
+       //register where to find database
+       SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:.");
+       SimpleConfig.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+
+       SqlQuerier.startDrivers();
     }
 
 }
@@ -162,6 +164,9 @@ public abstract class HsqlTestCase extends TestCase {
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.5  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.4  2003/09/25 01:18:02  nw
 fixed two-thread database accessed - now uses disk-based temporary db
 

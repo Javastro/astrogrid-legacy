@@ -14,17 +14,16 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
@@ -44,7 +43,7 @@ public class ServerTest extends TestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
+      SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.DummyQuerier");
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -54,8 +53,11 @@ public class ServerTest extends TestCase
       URL url = getClass().getResource("testQuery.xml");
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
       assertNotNull(fileDoc);
+
+      Select adql = ADQLUtils.unmarshalSelect(fileDoc);
+      
       //submit query
-      Element votable = server.doQuery(fileDoc.getDocumentElement());
+      Element votable = server.doQuery(AdqlQuerier.VOTABLE, adql);
       assertNotNull(votable);
    }
 
@@ -89,6 +91,9 @@ public class ServerTest extends TestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.7  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.6  2003/09/24 21:12:35  nw
 updated to refer to manager
 

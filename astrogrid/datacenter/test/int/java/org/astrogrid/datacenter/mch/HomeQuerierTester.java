@@ -1,5 +1,5 @@
 /*
- * $Id: HomeQuerierTester.java,v 1.3 2003/09/24 21:04:52 nw Exp $
+ * $Id: HomeQuerierTester.java,v 1.4 2003/11/05 18:54:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,17 +8,16 @@ package org.astrogrid.datacenter.mch;
 
 import java.io.IOException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.AxisDataServer;
@@ -47,7 +46,7 @@ public class HomeQuerierTester extends TestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, org.astrogrid.datacenter.queriers.mysql.MySqlQuerier.class.getName());
+      SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, org.astrogrid.datacenter.queriers.mysql.MySqlQuerier.class.getName());
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -56,8 +55,10 @@ public class HomeQuerierTester extends TestCase
       URL url = getClass().getResource("testQuery.xml");
       Document fileDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
+      Select adql = ADQLUtils.unmarshalSelect(fileDoc);
+      
       //submit query
-      Element votable = server.doQuery(fileDoc.getDocumentElement());
+      Element votable = server.doQuery(AdqlQuerier.VOTABLE, adql);
    }
 
     /**

@@ -1,37 +1,37 @@
-/*$Id: AbstractTestInstallation.java,v 1.7 2003/10/14 13:07:12 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.8 2003/11/05 18:54:43 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
+import junit.framework.TestCase;
 import org.apache.axis.client.Call;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.QueryStatus;
-import org.astrogrid.datacenter.delegate.deprecated.*;
-import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
-import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
-
-import java.io.*;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.Metadata;
+import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
-import junit.framework.TestCase;
 
 /** Abstract base class that captures commonality between top level unit test and installation test.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -53,7 +53,7 @@ public abstract class AbstractTestInstallation extends TestCase {
     protected void setUp() throws Exception{
         Call.initialize(); // registers new connction handlers.
         try {
-       serviceURL = new URL (System.getProperty(SERVICE_URL_KEY,SERVICE_URL_DEFAULT)); // trailing / is important here.       
+       serviceURL = new URL (System.getProperty(SERVICE_URL_KEY,SERVICE_URL_DEFAULT)); // trailing / is important here.
         } catch (MalformedURLException e) {
             e.printStackTrace();
             fail(SERVICE_URL_KEY + " is not a correctly formatted URL: " + e.getMessage());
@@ -79,9 +79,9 @@ public abstract class AbstractTestInstallation extends TestCase {
         System.out.println(SERVICE_URL_KEY + "=" + serviceURL.toString());
         System.out.println(QUERY_FILE_KEY + "=" + queryFile.getPath());
     }
-
+    /* not implemented yet
     public void testGetRegistryMetadata() {
-        DatacenterDelegate del = createDelegate();
+        AdqlQuerier del = createDelegate();
         try {
             Element result = del.getVoRegistryMetadata();
             assertNotNull(result);
@@ -93,12 +93,14 @@ public abstract class AbstractTestInstallation extends TestCase {
             fail("Could not get registryMetaData: " + e.getMessage());
         }
     }
+     */
     
     public void testGetMetatdata() {
-        DatacenterDelegate del = createDelegate();
+        AdqlQuerier del = createDelegate();
         try {
-            Element result = del.getMetadata();
+            Metadata result = del.getMetadata();
             assertNotNull(result);
+             assertNotNull(result.getDocument());
             // not much else we can do here yet.
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,9 +110,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
     /** do a standard (blocking) query for each query file found */
     public void testDoBlockingQuery() throws Exception {
-        DatacenterDelegate del = createDelegate();
+        AdqlQuerier del = createDelegate();
         FileProcessor fp = new FileProcessor() {
-            protected void processStream(DatacenterDelegate del, InputStream is) throws Exception{
+            protected void processStream(AdqlQuerier del, InputStream is) throws Exception{
                 doQuery(del,is);
             }
         };
@@ -119,9 +121,9 @@ public abstract class AbstractTestInstallation extends TestCase {
 
     /**do a nonblocking query for each file found */
     public void testDoNonblockingQuery() throws Exception{
-        DatacenterDelegate del = createDelegate();
+        AdqlQuerier del = createDelegate();
         FileProcessor fp = new FileProcessor() {
-            protected void processStream(DatacenterDelegate del, InputStream is) throws Exception{
+            protected void processStream(AdqlQuerier del, InputStream is) throws Exception{
                 doNonBlockingQuery(del,is);
             }
         };
@@ -129,12 +131,12 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** helper method to create a datacenter delegate, based on properties initialized in {@link setUp} */
-    protected DatacenterDelegate createDelegate() {
+    protected AdqlQuerier createDelegate() {
 
         System.out.println("Connecting to datacenter service at " + serviceURL.toString());
-        DatacenterDelegate del = null;
+        AdqlQuerier del = null;
         try {
-            del = DatacenterDelegate.makeDelegate( serviceURL.toString()) ;// pity it can't take a URL
+            del = DatacenterDelegateFactory.makeAdqlQuerier( serviceURL.toString()) ;// pity it can't take a URL
         } catch (IOException e) {
             e.printStackTrace();
             fail("Exception while creating delegate: " + e.getMessage());
@@ -147,13 +149,14 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** helper method to do a query */
-    protected void doQuery(DatacenterDelegate del, InputStream is) throws IOException {
-        Element input = parseInput(is);
-        Element result = del.doQuery(input);
-        assertNotNull("Result of query was null",result); 
-        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
-        System.out.println("Results for blocking query");
-        System.out.println(XMLUtils.ElementToString(result));
+    protected void doQuery(AdqlQuerier del, InputStream is) throws IOException, ADQLException {
+       Element input = parseInput(is);
+       Select adql = ADQLUtils.unmarshalSelect(input);
+       DatacenterResults result = del.doQuery(AdqlQuerier.VOTABLE, adql);
+        assertNotNull("Result of query was null",result);
+//        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
+//        System.out.println("Results for blocking query");
+//        System.out.println(XMLUtils.ElementToString(result));
     
     }
 
@@ -178,47 +181,44 @@ public abstract class AbstractTestInstallation extends TestCase {
     }
 
     /** helper test method to do a non-blockinig query */
-    protected void doNonBlockingQuery(DatacenterDelegate del, InputStream is)
-        throws IOException {
+    protected void doNonBlockingQuery(AdqlQuerier del, InputStream is) throws ADQLException, IOException {
 
         Element input = parseInput(is);
-        Element queryIdDocument = del.makeQuery(input);
+        Select adql = ADQLUtils.unmarshalSelect(input);
+
+        DatacenterQuery query = del.makeQuery(adql);
         // check the response document.
-        assertNotNull("query creation response document is null",queryIdDocument);
-        assertEquals("Query creation response document not in expected format","QueryCreated",queryIdDocument.getLocalName()); 
-        Element queryIdEl = (Element)queryIdDocument.getElementsByTagName("QueryId").item(0) ;
-        assertNotNull("Query response document has not ID",queryIdEl);
-        String queryId = queryIdEl.getChildNodes().item(0).getNodeValue(); 
-        assertNotNull("query ID is null",queryId);
-        System.out.println("Non blocking QueryID:" + queryId);
+        assertNotNull("query creation response document is null",query);
+//        assertEquals("Query creation response document not in expected format","QueryCreated",queryIdDocument.getLocalName());
+//        Element queryIdEl = (Element)queryIdDocument.getElementsByTagName("QueryId").item(0) ;
+        assertNotNull("Query response document has not ID",query.getId());
+//        String queryId = queryIdEl.getChildNodes().item(0).getNodeValue();
+//        assertNotNull("query ID is null",queryId);
+        System.out.println("Non blocking QueryID:" + query.getId());
                
-        QueryStatus stat = del.getStatus(queryId);
+        QueryStatus stat = query.getStatus();
         assertNotNull("status is null",stat);
         assertEquals("status code is not as expected",QueryStatus.CONSTRUCTED,stat);
                       
         URL notifyURL = new URL("http://www.nobody.there.com");
-        DatacenterStatusListener list = new WebNotifyServiceListener(notifyURL);
-        assertNotNull("listener is null",list);
-        del.registerListener(queryId,list);
+        query.registerWebListener(notifyURL);
                  
-        Element startResp = del.startQuery(queryId);
-        assertNotNull("start query response is null",startResp);
-        assertEquals("start query response not in expected format","QueryStarted",startResp.getLocalName());
+        query.start();
         try { // bit ad-hoc really- depend on latency?
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             fail("Been interrupted");
         }
-        stat = del.getStatus(queryId);
+        stat = query.getStatus();
         assertNotNull("status is null",stat);
         assertEquals("status code not as expected",QueryStatus.FINISHED,stat);
         
-        Element result = del.getResultsAndClose(queryId);        
-        assertNotNull("result of query is null",result);        
+        DatacenterResults result = query.getResultsAndClose();
+        assertNotNull("result of query is null",result);
         System.out.println("Results for Non-blocking query");
-        System.out.println(XMLUtils.ElementToString(result));
+//        System.out.println(XMLUtils.ElementToString(result));
         // doesn't seem to return the document anymore - instead returns pointer to them.
-        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());        
+//        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
   
     }
     
@@ -229,7 +229,7 @@ public abstract class AbstractTestInstallation extends TestCase {
      */
    protected abstract class FileProcessor {
        /** extender-defined method that consumes the files that are found */
-    protected abstract void processStream(DatacenterDelegate del,InputStream is) throws Exception;
+    protected abstract void processStream(AdqlQuerier del,InputStream is) throws Exception;
     /** run a series of sample queries through the service
      *  <p>
      *  examines value of {@link #QUERY_FILE_KEY}, searches for input files in following order
@@ -238,7 +238,7 @@ public abstract class AbstractTestInstallation extends TestCase {
      * <li>a file named ${QUERY_FILE_KEY} - uses this as the single input
      * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
      * @throws Exception */
-    public void findFiles(DatacenterDelegate del) throws Exception{
+    public void findFiles(AdqlQuerier del) throws Exception{
         if (queryFile.exists()) { // on local file system.
             if (queryFile.isFile()) {
                 System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
@@ -251,7 +251,7 @@ public abstract class AbstractTestInstallation extends TestCase {
             } else if (queryFile.isDirectory()) {
                 System.out.println("Taking VOQL queries from files in local directory: " + queryFile.getPath());
                 File[] inputs = queryFile.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {                        
+                    public boolean accept(File pathname) {
                         return pathname.getName().toLowerCase().endsWith(".xml");
                     }
                 });
@@ -267,7 +267,7 @@ public abstract class AbstractTestInstallation extends TestCase {
             }
         } else { // try loading from classpath.
             System.out.println("Taking VOQL query from classpath resource" + queryFile.getPath());
-            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath()); 
+            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath());
             assertNotNull("VOQL query file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
             processStream(del,is);
         }
@@ -278,8 +278,11 @@ public abstract class AbstractTestInstallation extends TestCase {
 }
 
 
-/* 
+/*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.8  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.7  2003/10/14 13:07:12  nw
 moved to common subproject
 

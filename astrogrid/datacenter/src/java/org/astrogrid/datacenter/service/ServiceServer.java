@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.15 2003/10/02 12:53:49 mch Exp $
+ * $Id: ServiceServer.java,v 1.16 2003/11/05 18:54:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.xpath.XPathAPI;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.log.Log;
@@ -61,7 +61,7 @@ public abstract class ServiceServer
    {
       // File metaFile = new File(Configuration.getProperty(METADATA_FILE_LOC_KEY, "metadata.xml"));
       // search for file, then for resource on classpath - fits better with appservers / servlet containers
-      String location = Configuration.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
+      String location = SimpleConfig.getProperty(METADATA_FILE_LOC_KEY,"metadata.xml");
       String trying = location; //for  error reporting
       try
       {

@@ -10,6 +10,7 @@ import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DelegateQueryListener;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
 
 
 /**
@@ -33,9 +34,9 @@ public class DummyQuery implements DatacenterQuery
       return id;
    }
    
-   public URL getResultsAndClose() throws DatacenterException
+   public DatacenterResults getResultsAndClose() throws DatacenterException
    {
-      return getClass().getResource(DummyDelegate.RESULTSFILENAME);
+      return new DatacenterResults(new String[] {getClass().getResource(DummyDelegate.RESULTSFILENAME).toString()});
    }
    
    /**
@@ -76,7 +77,7 @@ public class DummyQuery implements DatacenterQuery
    {
    }
    
-   public void registerJobListener(URL url)
+   public void registerJobMonitor(URL url)
    {
    }
    
@@ -88,6 +89,9 @@ public class DummyQuery implements DatacenterQuery
 
 /*
 $Log: DummyQuery.java,v $
+Revision 1.2  2003/11/05 18:52:53  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.1  2003/10/06 18:55:21  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 

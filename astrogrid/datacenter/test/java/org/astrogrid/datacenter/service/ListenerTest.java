@@ -7,17 +7,23 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
-import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.queriers.DummyQuerier;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+import org.astrogrid.datacenter.common.QueryStatus;
 
 /**
  * Unit tests for the remote listening classes
@@ -25,20 +31,50 @@ import org.astrogrid.datacenter.queriers.DummyQuerier;
  * @author M Hill
  */
 
-public class ListenerTest extends TestCase
+public class ListenerTest extends TestCase implements DelegateQueryListener
 {
-
-   public void testWebListener() throws MalformedURLException, IOException, ServiceException
+  
+   /** Called by the delegate query when it has been notified of a
+    * status change.
+    */
+   public void delegateQueryChanged(DatacenterQuery query, QueryStatus newStatus)
    {
-      WebNotifyServiceListener listener = new WebNotifyServiceListener(new URL("http://wibble"));
-
+      // TODO
+   }
+   
+   public void testDelegateListener() throws MalformedURLException, IOException, ServiceException, ADQLException, SAXException, ParserConfigurationException
+   {
       //make sure it can be registered properly
-      DummyDelegate delegate = (DummyDelegate) DatacenterDelegate.makeDelegate(null);
-      delegate.registerListener(DummyDelegate.QUERY_ID, listener);
+      DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
+      
+      URL url = getClass().getResource("testQuery.xml");
+      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+
+      Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
+      
+      DatacenterQuery query = delegate.makeQuery(adql);
+      query.registerListener(this);
 
       DummyQuerier querier = new DummyQuerier();
    }
 
+   public void testWebListener() throws MalformedURLException, IOException, ServiceException, ADQLException, SAXException, ParserConfigurationException
+   {
+      //make sure it can be registered properly
+      DummyDelegate delegate = (DummyDelegate) DatacenterDelegateFactory.makeAdqlQuerier(null);
+      
+      URL url = getClass().getResource("testQuery.xml");
+      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+
+      Select adql = ADQLUtils.unmarshalSelect(adqlQuery);
+      
+      DatacenterQuery query = delegate.makeQuery(adql);
+      query.registerWebListener(new URL("http://wibble"));
+
+      DummyQuerier querier = new DummyQuerier();
+   }
+
+   
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
@@ -61,6 +97,9 @@ public class ListenerTest extends TestCase
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.6  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.5  2003/09/24 21:11:37  nw
 altered constructor to fit in with others.
 

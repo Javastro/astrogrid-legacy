@@ -1,5 +1,5 @@
 /*
- * $Id: It03DatacenterDelegateFactory.java,v 1.1 2003/10/06 18:55:21 mch Exp $
+ * $Id: It03DatacenterDelegateFactory.java,v 1.2 2003/11/05 18:52:53 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 
 /**
@@ -45,6 +45,9 @@ public class It03DatacenterDelegateFactory
 
 /*
 $Log: It03DatacenterDelegateFactory.java,v $
+Revision 1.2  2003/11/05 18:52:53  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.1  2003/10/06 18:55:21  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 

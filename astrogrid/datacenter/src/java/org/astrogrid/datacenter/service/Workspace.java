@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.13 2003/09/17 14:51:30 nw Exp $
+ * $Id: Workspace.java,v 1.14 2003/11/05 18:54:28 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -7,7 +7,7 @@ package org.astrogrid.datacenter.service;
 import java.io.File;
 import java.io.IOException;
 
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.log.Log;
 
 /**
@@ -53,7 +53,7 @@ public class Workspace
    public Workspace(String workspaceId) throws IOException
    {
       //see if a working root has been specified
-      String workRoot = Configuration.getProperty( WORKSPACE_DIRECTORY_KEY  );
+      String workRoot = SimpleConfig.getProperty( WORKSPACE_DIRECTORY_KEY  );
 
       if (workRoot == null)
       {

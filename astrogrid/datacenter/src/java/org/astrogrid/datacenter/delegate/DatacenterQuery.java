@@ -29,13 +29,13 @@ public interface DatacenterQuery
    /** Register a job monitor with the query.
     * @deprecated - use registerWebListener
     */
-   public void registerJobListener(URL url);
+   public void registerJobMonitor(URL url) throws IOException;
    
    /** Register a web listener with the query.  This is the url of a web
     * service with a particular method (not yet defined) that will be called
     * when the query status chagnes
     */
-   public void registerWebListener(URL url);
+   public void registerWebListener(URL url) throws IOException;
 
    /**
     * Give the datacenter the location of the service that the results should
@@ -75,13 +75,16 @@ public interface DatacenterQuery
     * After this call, the queryId cannot be used for any more operations at the
     * datacenter
     */
-   public URL getResultsAndClose() throws IOException;
+   public DatacenterResults getResultsAndClose() throws IOException;
 
 
 }
 
 /*
 $Log: DatacenterQuery.java,v $
+Revision 1.2  2003/11/05 18:52:53  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.1  2003/10/06 18:55:21  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 

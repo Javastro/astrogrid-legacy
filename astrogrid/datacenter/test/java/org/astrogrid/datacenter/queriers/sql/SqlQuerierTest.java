@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.12 2003/09/25 01:19:33 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.13 2003/11/05 18:54:43 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -125,6 +125,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.13  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.12  2003/09/25 01:19:33  nw
 updated to fit with hsqldb test fixes
 

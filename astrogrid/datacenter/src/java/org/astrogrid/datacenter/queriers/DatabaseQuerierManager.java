@@ -1,4 +1,4 @@
-/*$Id: DatabaseQuerierManager.java,v 1.4 2003/10/06 18:56:27 mch Exp $
+/*$Id: DatabaseQuerierManager.java,v 1.5 2003/11/05 18:57:26 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.adql.QOM;
 import org.astrogrid.datacenter.common.CommunityHelper;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.DocMessageHelper;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.Workspace;
 import org.astrogrid.log.Log;
@@ -78,7 +78,7 @@ public class DatabaseQuerierManager {
         //assigns handle
         try {
             String handle = generateHandle();
-            String resultsDestination = Configuration.getProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY);
+            String resultsDestination = SimpleConfig.getProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY);
             // extract values from document, if present.
             if (rootElement != null) {
                 String aHandle = DocHelper.getTagValue(rootElement, DocMessageHelper.ASSIGN_QUERY_ID_TAG);
@@ -149,12 +149,12 @@ public class DatabaseQuerierManager {
     /** method that handles the business of instantiating the querier object */
     private static DatabaseQuerier instantiateQuerier()
         throws DatabaseAccessException {
-        String querierClass = Configuration.getProperty(DATABASE_QUERIER_KEY);
+        String querierClass = SimpleConfig.getProperty(DATABASE_QUERIER_KEY);
         //       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
 
         if (querierClass == null) {
             throw new DatabaseAccessException("Database Querier key [" + DATABASE_QUERIER_KEY + "] "
-                    + "cannot be found in the configuration file(s) '"  + Configuration.getLocations() + "'");
+                    + "cannot be found in the configuration file(s) '"  + SimpleConfig.getLocations() + "'");
         }
 
         //create querier implementation
@@ -223,6 +223,9 @@ public class DatabaseQuerierManager {
 
 /*
 $Log: DatabaseQuerierManager.java,v $
+Revision 1.5  2003/11/05 18:57:26  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.4  2003/10/06 18:56:27  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 

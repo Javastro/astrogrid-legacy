@@ -7,7 +7,7 @@ package org.astrogrid.datacenter.mch;
 
 import java.io.IOException;
 
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
@@ -40,21 +40,21 @@ public class HomeDataCenter extends SocketServer
 
          Log.logToConsole();
          Log.logToFile("error.log");
-         Log.starting();
+         Log.starting("HomeDatacenter");
 
          //tell it the metadata file can be found here where the class is
          //URL metadataUrl = HomeDataCenter.class.getResource("metadata.xml");
 //         Configuration.setProperty(ServiceServer.METADATA_FILE_LOC_KEY, metadataUrl.toString());
-         Configuration.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,
+         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,
                "C:\\astrogrid\\class\\org\\astrogrid\\datacenter\\mch\\metadata.xml");
 
          //tell the queriers where to find the database connection
-         Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:mysql://localhost:3306/Catalogue");
+         SimpleConfig.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:mysql://localhost:3306/Catalogue");
          //Configuration.setProperty(SqlQuerier.USER_KEY, "dbreader");
          //Configuration.setProperty(SqlQuerier.PASSWORD_KEY, "328purpleant");
-         Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.sql.SqlQuerier");
+         SimpleConfig.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.sql.SqlQuerier");
 
-         Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, org.gjt.mm.mysql.Driver.class.getName());
+         SimpleConfig.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, org.gjt.mm.mysql.Driver.class.getName());
 
          SqlQuerier.startDrivers();
 
@@ -81,6 +81,9 @@ public class HomeDataCenter extends SocketServer
 
 /*
  $Log: HomeDataCenter.java,v $
+ Revision 1.5  2003/11/05 18:54:52  mch
+ Build fixes for change to SOAPy Beans and new delegates
+
  Revision 1.4  2003/09/24 21:04:52  nw
  altered to use DatabaseQuerierManager
 

@@ -14,8 +14,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -26,7 +30,6 @@ import org.astrogrid.datacenter.service.SocketServer;
 import org.astrogrid.log.Log;
 import org.astrogrid.util.ClassPathUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,7 +46,7 @@ public class SixdfDataCenter extends SocketServer
       //start logging
       Log.logToConsole();
       Log.logToFile("error.log");
-      Log.starting(" $Id: SixdfDataCenter.java,v 1.7 2003/10/31 16:45:17 mch Exp $ ");
+      Log.starting(" $Id: SixdfDataCenter.java,v 1.8 2003/11/05 18:54:52 mch Exp $ ");
       
       //tell it the metadata file can be found here where the class is
       Log.logInfo("Initialising...");
@@ -111,19 +114,21 @@ public class SixdfDataCenter extends SocketServer
     * methods
     * @todo - call *all* methods
     */
-   public void runExternalTests() throws MalformedURLException, ServiceException, IOException, ParserConfigurationException, SAXException
+   public void runExternalTests() throws MalformedURLException, ServiceException, IOException, ParserConfigurationException, SAXException, ADQLException
    {
       //create a delegate to talk to it
       Log.logInfo("Testing using delegate...");
-      DatacenterDelegate delegate = DatacenterDelegate.makeDelegate("socket://localhost:"+SocketServer.DEFAULT_PORT);
+      AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier("socket://localhost:"+SocketServer.DEFAULT_PORT);
       
       //get metadata
-      Element voRegistry = delegate.getVoRegistryMetadata();
+      Metadata metadata = delegate.getMetadata();
       
       //submit blocking query tests
       InputStream is = SixdfDataCenter.class.getResourceAsStream("query.xml");
       Document doc = XMLUtils.newDocument(is);
-      delegate.doQuery(doc.getDocumentElement());
+      Select adql = ADQLUtils.unmarshalSelect(doc);
+      
+      delegate.doQuery(AdqlQuerier.VOTABLE, adql);
       
       Log.logInfo("Delegate tests complete...");
    }
@@ -150,6 +155,9 @@ public class SixdfDataCenter extends SocketServer
 
 /*
  $Log: SixdfDataCenter.java,v $
+ Revision 1.8  2003/11/05 18:54:52  mch
+ Build fixes for change to SOAPy Beans and new delegates
+
  Revision 1.7  2003/10/31 16:45:17  mch
  Added comment
 

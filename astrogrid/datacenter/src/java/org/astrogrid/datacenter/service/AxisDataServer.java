@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.25 2003/10/13 14:12:43 nw Exp $
+ * $Id: AxisDataServer.java,v 1.26 2003/11/05 18:54:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,11 +8,11 @@ package org.astrogrid.datacenter.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
-import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -34,12 +34,14 @@ import org.xml.sax.SAXException;
  *
  *NW- extended to implement generated interface - acts as an assertion that service implementation
  *fits with WSDL description.
+ * MCH - temporarily commented this out until I've learned to generate the WSDL + service implementation, as otherwise this
+ * circular dependency breaks every time I modify this interface and try to run unit tests :-)
  * @author M Hill
  * @author Noel Winstanly
- * 
+ *
  */
 
-public class AxisDataServer extends ServiceServer implements org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServer
+public class AxisDataServer extends ServiceServer //MCH see above implements org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServer
 {
    /**
     * Initialises the configuration.  The configuration is loaded from the
@@ -50,12 +52,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     */
    public AxisDataServer() throws IOException
    {
-             
-        java.net.URL res = this.getClass().getResource("/" + Configuration.DEFAULT_FILENAME);
-        if (res != null) {
-            Configuration.load(res);
-        }
-
+      SimpleConfig.autoLoad();
    }
 
    /**
@@ -73,12 +70,12 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * Carries out a full synchronous (ie blocking) query.  Note that queries
     * that take a long time might therefore cause a timeout at the client as
     * it waits for its response.
-    * Takes a soap document including the query, and returns a document
+    * Returns a document
     * including the results (or location of the results)
     * <p>
     * @soap
-    */ 
-   public Element doQuery(String resultsFormat,  Select adql) throws IOException, QueryException, SAXException
+    */
+   public Element doQuery(String resultsFormat,  Select adql) throws IOException
    {
       Log.affirm(resultsFormat.toLowerCase().equals("votable"), "Can only produce votable results");
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
@@ -87,12 +84,21 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
 
       querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
-      Element result = ResponseHelper.makeResultsResponse(
-         querier,
-         results.toVotable().getDocumentElement()
-      ).getDocumentElement();
-      querier.close();
-      return result;
+      try
+      {
+         Element result = ResponseHelper.makeResultsResponse(
+            querier,
+            results.toVotable().getDocumentElement()
+         ).getDocumentElement();
+         
+         querier.close();
+         return result;
+         
+      }
+      catch (SAXException e)
+      {
+         throw new DatacenterException("Failed to convert results to VOTable", e);
+      }
    }
 
    /**
@@ -102,7 +108,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String makeQuery(Select adql) throws QueryException, IOException, SAXException
+   public String makeQuery(Select adql) throws IOException
    {
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(adql, null);
 
@@ -130,8 +136,11 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * Sets where the results are to be sent
     * @soap
     */
-   public void setResultsDestination(String myspaceUrl)
+   public void setResultsDestination(String queryId, String resultsDestination)
    {
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
+      
+      querier.setResultsDestination(resultsDestination);
    }
 
    /**
@@ -153,7 +162,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String getResultsAndClose(String queryId) throws SAXException
+   public String getResultsAndClose(String queryId)
    {
 
       DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);

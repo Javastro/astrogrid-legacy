@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -637,7 +637,7 @@ public class QueryParsingTest extends TestCase {
    public static void main(String args[]) throws IOException
    {
       //if this throws a NulPointerException the test properties file is probably missing
-      Configuration.load(QueryParsingTest.class.getResource("test.properties"));
+      SimpleConfig.load(QueryParsingTest.class.getResource("test.properties"));
 
       junit.textui.TestRunner.run(suite());
    }

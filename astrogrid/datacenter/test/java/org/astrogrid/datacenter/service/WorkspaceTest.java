@@ -19,32 +19,24 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 
 public class WorkspaceTest extends TestCase
 {
-    /** working directory */
-    protected File tmpDir;
-
-   /** Constructor makes a temporary directory to create workspaces in. *Could*
-    * do this in setUp(), but that applies to each test, whereas Workspaces
-    * should be running in a simple single 'working' directory.
-    * It appears a new instance is run for every test...
-    *  NWW: moved to setUp - same behaviour, but better handling if exception is thrown.
-    *  - to setUp a test fixture once, for a whole batch of tests, need to wrap the testSuite in a testDecorator.
-    * -- there's examples in the JUnit docs, but its a bit of a faff - if possible don't do it.
-    */
-   public WorkspaceTest(String s) 
+   protected File tmpDir = null; //the area we use to test workspaces in...
+   
+   public WorkspaceTest(String s)
    {
         super(s);
-
    }
 
-public static File setUpWorkspace() throws IOException {
-        Workspace.PERSIST = false; //make sure they tidy up properly
-    File dir = null;
-      String workspaceProperty = Configuration.getProperty(Workspace.WORKSPACE_DIRECTORY_KEY);
-    
+   /** Makes a temporary directory to create all our test workspaces in.
+    */
+   public static File setUpWorkspaceArea() throws IOException {
+
+      Workspace.PERSIST = false; //make sure they tidy up properly
+      String workspaceProperty = SimpleConfig.getProperty(Workspace.WORKSPACE_DIRECTORY_KEY);
+      File dir = null;
       if ( workspaceProperty == null)
       {
         //specify a working directory area - need to do this so we can
@@ -54,18 +46,27 @@ public static File setUpWorkspace() throws IOException {
         dir.delete();
         dir.mkdir();
     
-        //set the configuratio property so Workspace can find it
-        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, dir.getAbsolutePath());
       }
       else
       {
          dir = new File(workspaceProperty);
       }
       return dir;
-}
+   }
+
+   /** Set up the workspace area that we are going to create our temporary
+    * workspaces in...  We specify this explicitly so that we can look inside
+    * the workspace using ordinary java file handling to check the operations
+    * have completed correctly
+    *<p>
+    * Using this method ensures that the space is only set up once per test.
+    * Doing this in the constructor can be difficult as exceptions are not properly caught.
+    */
 
     protected void setUp() throws Exception{
-        this.tmpDir = setUpWorkspace();
+        this.tmpDir = setUpWorkspaceArea();
+        //set the configuratio property so Workspace can find it
+        SimpleConfig.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, tmpDir.getAbsolutePath());
     }
 
     /** deletes working directory -- otherwise tests are not repeatable
@@ -266,6 +267,9 @@ public static File setUpWorkspace() throws IOException {
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.12  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.11  2003/09/24 21:13:16  nw
 moved setup fromo constructor to setUp() - then can call from other tests.
 

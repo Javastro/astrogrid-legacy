@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.12 2003/09/19 12:02:37 nw Exp $
+/*$Id: AllTests.java,v 1.13 2003/11/05 18:54:43 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class AllTests {
         //suite.addTest(QueryTestSuite.suite());
         //$JUnit-END$ 
         // and add other suites too.
-        suite.addTest(org.astrogrid.datacenter.config.AllTests.suite());
+        suite.addTest(org.astrogrid.config.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
@@ -50,6 +50,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.13  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.12  2003/09/19 12:02:37  nw
 Added top level test - runs integration tests against an inprocess db and inprocess axis.
 

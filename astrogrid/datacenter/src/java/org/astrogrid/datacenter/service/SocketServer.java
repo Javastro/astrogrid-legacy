@@ -1,5 +1,5 @@
 /*
- * $Id: SocketServer.java,v 1.7 2003/09/23 18:09:50 mch Exp $
+ * $Id: SocketServer.java,v 1.8 2003/11/05 18:54:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.log.Log;
 
 /**
@@ -36,7 +36,7 @@ public class SocketServer implements Runnable
     */
    public SocketServer() throws IOException
    {
-      this(Integer.parseInt(Configuration.getProperty("SocketServerPort", ""+DEFAULT_PORT)));
+      this(Integer.parseInt(SimpleConfig.getProperty("SocketServerPort", ""+DEFAULT_PORT)));
    }
 
    /** Constructs a server socket on the given port.  To start listening, use

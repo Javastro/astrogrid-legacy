@@ -1,15 +1,15 @@
 /*
- * $Id: SocketHandler.java,v 1.18 2003/10/06 18:56:58 mch Exp $
+ * $Id: SocketHandler.java,v 1.19 2003/11/05 18:54:28 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.URL;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.QueryIdHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -18,7 +18,6 @@ import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
-import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierListener;
@@ -156,7 +155,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Results Requested");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
-               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResultsLoc());
+               Document response = ResponseHelper.makeResultsResponse(querier, new URL(querier.getResultsLoc()));
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
@@ -250,6 +249,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.19  2003/11/05 18:54:28  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.18  2003/10/06 18:56:58  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 

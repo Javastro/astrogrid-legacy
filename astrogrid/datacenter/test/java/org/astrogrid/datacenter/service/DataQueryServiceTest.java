@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.15 2003/10/13 14:08:10 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.16 2003/11/05 18:54:43 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class DataQueryServiceTest extends TestCase {
         HsqlTestCase.initializeConfiguration();
         Configuration.setProperty(DatabaseQuerierManager.RESULTS_TARGET_KEY,"fooble");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
-        File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
+        //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
           String script = HsqlTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         HsqlTestCase.runSQLScript(script,conn);
@@ -110,7 +110,7 @@ public class DataQueryServiceTest extends TestCase {
         querier.run(); // note this is running in the same thread - simpler for testing - we don't mind wating.
         assertEquals(QueryStatus.FINISHED,querier.getStatus());
         assertTrue(querier.getQueryTimeTaken() > 0);
-        URL votableLoc = querier.getResultsLoc();
+        URL votableLoc = new URL(querier.getResultsLoc());
         assertNotNull(votableLoc);
 
         Document votable = XMLUtils.newDocument(votableLoc.openStream());
@@ -148,6 +148,9 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.16  2003/11/05 18:54:43  mch
+Build fixes for change to SOAPy Beans and new delegates
+
 Revision 1.15  2003/10/13 14:08:10  nw
 little fix to changed class name.
 
