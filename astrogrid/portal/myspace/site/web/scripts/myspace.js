@@ -63,3 +63,20 @@ function myspace_upload_url() {
     }
   }
 }
+
+function myspace_submit_form(formId, actionId, actionValue) {
+  formEl = document.getElementById(formId);
+  if(formEl) {
+    actionEl = document.getElementById(actionId);
+    if(actionEl) {
+      actionEl.value = actionValue;
+      formEl.submit();
+    }
+    else {
+      alert('Invalid action field: <' + actionId + '>');
+    }
+  }
+  else {
+    alert('Cannot submit form: <' + formId + '>');
+  }
+}

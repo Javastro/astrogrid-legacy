@@ -60,3 +60,19 @@
     */
   visibility:                     hidden;
 }
+
+hr.agbar
+{
+  /*
+    Colors.
+    */
+  background-color:               lightblue;
+  color:                          blue;
+
+  /*
+    Dimensions.
+    */
+  height:                         10px;
+  width:                          100%;
+}
+

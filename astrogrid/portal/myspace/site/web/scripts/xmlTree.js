@@ -24,6 +24,8 @@ function swapFolder(img){
 function setOldMySpaceName(oldMySpaceName){
   myspace_old_name = document.getElementById('myspace-src');
   myspace_old_name.value = oldMySpaceName;
+  myspace_clipboard = document.getElementById('myspace-clipboard');
+  myspace_clipboard.value = oldMySpaceName;
 }
 
 function setNewMySpaceName(newMySpaceName){

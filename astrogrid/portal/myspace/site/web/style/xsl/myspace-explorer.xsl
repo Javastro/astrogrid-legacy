@@ -9,7 +9,7 @@
   </xsl:template>
   
   <xsl:template match="ag-div">
-    <xsl:copy select=".">
+    <xsl:copy>
       <xsl:apply-templates select="@*"/>
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/utils.js"/>
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/explorer.js"/>

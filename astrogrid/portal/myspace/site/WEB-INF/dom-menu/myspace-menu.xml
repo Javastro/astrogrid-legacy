@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<agp:menu-def
+    name="myspace-menu"
+    xmlns:agp="http://www.astrogrid.org/portal">
+  <agp:menu
+      contents="File"
+      contents-hover="File"
+      uri=""
+      target="_self"
+      status-text="File...">
+    <agp:item
+        contents="New Container"
+        contents-hover="New Container"
+        uri='javascript:void(myspace_submit_form("myspace-explorer-form", "myspace-action", "myspace-new-container"));'
+        target="_self"
+        status-text="Create a new container"/>
+    <agp:item
+        contents="Delete"
+        contents-hover="Delete"
+        uri='javascript:void(myspace_submit_form("myspace-explorer-form", "myspace-action", "myspace-delete"));'
+        target="_self"
+        status-text="Delete a MySpace Item"/>
+    <agp:item
+        contents="Rename"
+        contents-hover="Rename"
+        uri='javascript:void(myspace_submit_form("myspace-explorer-form", "myspace-action", "myspace-move"));'
+        target="_self"
+        status-text="Rename a MySpace Item"/>
+    <agp:item
+        contents="Download"
+        contents-hover="Download"
+        uri=""
+        target="_self"
+        status-text="Download a MySpace Item"/>
+    <agp:item
+        contents="Properties"
+        contents-hover="Properties"
+        uri=""
+        target="_self"
+        status-text="Show the properties of a MySpace item"/>
+  </agp:menu>
+</agp:menu-def>
