@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationProviderTest.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/*$Id: HttpApplicationProviderTest.java,v 1.5 2004/09/01 16:17:07 jdt Exp $
  * Created on 30-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,7 +102,7 @@ public class HttpApplicationProviderTest extends TestCase {
 
         ApplicationDescription hw = getApplicationDescription("/HelloWorld");
         
-        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-HelloWorld1.xml");
+        Tool tool  = (Tool) toolUnmarshaller.unmarshallFromFile("tool-helloWorld1.xml");
         
         Application app = hw.initializeApplication("testrun",user,tool);
         assertNotNull(app);
@@ -332,6 +332,9 @@ public class HttpApplicationProviderTest extends TestCase {
 
 /* 
 $Log: HttpApplicationProviderTest.java,v $
+Revision 1.5  2004/09/01 16:17:07  jdt
+fixed unit test - file name was wrong case you great pillock.
+
 Revision 1.4  2004/09/01 15:42:26  jdt
 Merged in Case 3
 
