@@ -357,7 +357,7 @@ public class JesAction extends AbstractAction {
                 WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                 
                 for( int i=0; i<workflows.length; i++ ) {
-                     workflows[i] = wfStore.readWorkflow( credentials.getAccount(), jobSummaries[i].getName() ) ;
+//                     workflows[i] = wfStore.readWorkflow( credentials.getAccount(), jobSummaries[i].getName() ) ;
                 }
     
                 this.request.setAttribute( HTTP_JOBLIST_TAG, workflows );
