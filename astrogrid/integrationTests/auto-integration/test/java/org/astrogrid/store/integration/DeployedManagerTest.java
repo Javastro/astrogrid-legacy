@@ -24,7 +24,7 @@ import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
  */
 
 public class DeployedManagerTest extends TestCase
-{  
+{
     /**
      * Commons logger
      */
@@ -74,6 +74,7 @@ public class DeployedManagerTest extends TestCase
 //
 
          final String endPoint = SimpleConfig.getSingleton().getString("org.astrogrid.myspace.endpoint");
+         assertNotNull(endPoint);
          log.debug("Running test against endpoint "+endPoint);
 
          User operator = new User("someuser", "group", "token");
