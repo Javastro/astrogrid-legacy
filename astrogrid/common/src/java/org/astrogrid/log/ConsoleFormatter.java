@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
@@ -20,7 +21,7 @@ import java.util.logging.LogRecord;
 
 public class ConsoleFormatter extends Formatter
 {
-   
+
    /**
     * Format the given log record and return the formatted string.
     * <p>
@@ -36,25 +37,35 @@ public class ConsoleFormatter extends Formatter
    {
       Date d = new Date(record.getMillis());
 
-      SimpleDateFormat format = new SimpleDateFormat("yy-MM-DD HH:mm:ss.S");
+      SimpleDateFormat format = new SimpleDateFormat("yy-MM-DD HH:mm:ss");
 
-      String msg = format.format(d)+" "+record.getLevel()+" "+record.getMessage()+"\n";
+      String msg = format.format(d)+" "+record.getLevel()+" "+record.getMessage();
 
       if (record.getThrown() != null)
       {
-         StringWriter writer = new StringWriter();
-         record.getThrown().printStackTrace(new PrintWriter(writer));
-         msg = msg + "\n"+writer.toString();
+         if (record.getLevel().intValue() < Level.SEVERE.intValue())
+         {
+            msg = msg + " ("+record.getThrown()+")\n";
+         }
+         else
+         {
+            StringWriter writer = new StringWriter();
+            record.getThrown().printStackTrace(new PrintWriter(writer));
+            msg = msg + "\n\n"+writer.toString();
+         }
       }
-      
+
       return msg;
    }
-   
-   
+
+
 }
 
 /*
 $Log: ConsoleFormatter.java,v $
+Revision 1.2  2003/09/14 22:34:02  mch
+Nicer warning messages
+
 Revision 1.1  2003/09/11 17:53:54  mch
 Added logTo() methods and made sure trace can go to console
 
