@@ -1,0 +1,24 @@
+<html>
+<body>
+
+<h2>Metadata</h2>
+Virtual Observatory components are expected to have somewhere a VODescription
+document, which is an XML document consisting of one or more VOResource elements.
+<p>
+Datacenters expect to hold the master copy of their metadata, and serve this out
+to registries (for example) on request.  Updates might also be 'pushed' to the
+Registries.
+<p>
+This package provides classes that serve such VODescription documents by collecting
+together from three sources: an AuthorityType plugin, the CEA resource from the CEA components,
+and another 'body' plugin.  At some point I'll make this a bit clearer...
+<p>
+By default values for the AuthorityType Resource are read from the configuration file,
+and the 'body' plugin reads the metadata from disk.
+<p>
+To create your own metadata generator, it must implement VOResourcePlugin, and
+set the property datacenter.metadata.plugin to its class name.
+<p>
+etc
+</body>
+</html>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: project.xml,v 1.1 2005/02/17 18:37:34 mch Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../maven-base/xsd/maven-project.xsd">
+    <extend>../maven-base/project.xml</extend>
+    <id>astrogrid-pal</id>
+    <name>Publishers' Astrogrid Library</name>
+    <description> A set of libraries and webapps for data publishers
+    </description>
+    <shortDescription>Publishers' Astrogrid Library</shortDescription>
+    <build>
+        <sourceDirectory/>
+        <unitTestSourceDirectory/>
+    </build>
+</project>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SQL equivalent
+SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b
+-->
+<ADQ xmlns="http://astrogrid.org/sadql/v1.1">
+   <From>
+      <Column>
+         <Alias>a.dAlias</Alias>
+         <Table>a</Table>
+         <Column>d</Column>
+      </Column>
+      <Column>
+         <Alias>a.fAlias</Alias>
+         <Table>a</Table>
+         <Column>f</Column>
+      </Column>
+
+      <Column>
+         <Alias>d.eAlias</Alias>
+         <Table>d</Table>
+         <Column>e</Column>
+      </Column>
+      <Column>
+         <Alias>d.fAlias</Alias>
+         <Table>d</Table>
+         <Column>f</Column>
+      </Column>
+
+      <Column>
+         <Alias>t.aAlias</Alias>
+         <Table>t</Table>
+         <Column>a</Column>
+      </Column>
+      <Column>
+         <Alias>t.fAlias</Alias>
+         <Table>t</Table>
+         <Column>f</Column>
+      </Column>
+
+      <Column>
+         <Alias>g.dAlias</Alias>
+         <Table>g</Table>
+         <Column>d</Column>
+      </Column>
+      <Column>
+         <Alias>g.bAlias</Alias>
+         <Table>g</Table>
+         <Column>b</Column>
+      </Column>
+   </From>
+
+   <Return>
+      <Set>
+         <Alias>t.aAlias</Alias>
+         <Alias>g.dAlias</Alias>
+      </Set>
+
+      <OrderedBy>
+         <Key><Alias>t.fAlias</Alias></Key>
+         <Key><Alias>g.bAlias</Alias></Key>
+      </OrderedBy>
+
+   </Return>
+
+   <Where>
+      <Intersection>
+         <Compare>
+            <Alias>a.dAlias</Alias>
+            <LESSTHAN/>
+            <Alias>d.eAlias</Alias>
+         </Compare>
+         <Compare>
+            <Alias>a.fAlias</Alias>
+            <LESSTHAN/>
+            <Alias>d.fAlias</Alias>
+         </Compare>
+      </Intersection>
+   </Where>
+</ADQ>
+
+
