@@ -23,9 +23,8 @@ This prevents users from running the web-application until you have it
 properly configured.
 
 Open Tomcat's administration interface (see the Tomcat manual). In the
-tree display at the left of the screen, open the service object, the
-host object and then the context object called "warehouse". Open the
-"Environmental Entries" object. From the drop-down menu, labelled
+tree display at the left of the screen, open the "Environment Entities"
+object in the "Resources" section. From the drop-down menu, labelled
 "Available Actions", select "Create New Env Entry". Make an entry as
 follows:
 
