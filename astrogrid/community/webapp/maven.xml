@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
-    | <cvs:version>$Revision: 1.21 $</cvs:version>
+    | <cvs:date>$Date: 2005/02/08 16:04:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.22 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.22  2005/02/08 16:04:45  jdt
+    |   merge from COMM_JDT_936
+    |
+    |   Revision 1.21.28.1  2005/02/08 14:50:31  jdt
+    |   Custom webapp code doesn't work under Maven 1.0.2.
+    |
     |   Revision 1.21  2004/11/04 18:00:02  jdt
     |   Restored following fixes to auto-integration
     |   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
@@ -220,7 +226,7 @@
     <!--+
         | Initialise the webapp files.
         +-->
-    <preGoal name="war:webapp">
+    <preGoal name="war:init">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Pre-processing for webapp task"/>
