@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.29 2004/04/20 09:51:51 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.30 2004/04/23 11:01:44 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -254,8 +254,15 @@ public class CommandLineApplicationController extends AbstractApplicationControl
             e);
       }
       String executionId;
+      int idx;
+      String toolname = tool.getName();
+      if((idx = toolname.indexOf("/")) != -1)
+      {
+      
+          toolname = toolname.substring(idx+1); //FIXME chop off the authorityID for now as the CEC does not know about it
+      }
       executionId =
-         initializeApplication(tool.getName(), jobstepID, jobMonitorURL, parameters);
+         initializeApplication(toolname, jobstepID, jobMonitorURL, parameters);
       executeApplication(executionId);
       return executionId;
    }
