@@ -52,6 +52,8 @@ public class XqlMaker {
       }
       catch (SAXException e) {
          throw new RuntimeException("Query2Adql074 procuced invalid XML from query "+query,e);
+      }catch(ParserConfigurationException pce) {
+          throw new RuntimeException("Query2Adql074 procuced configuration error in the parser "+query,pce);
       }
       
       //Create DOM
@@ -172,6 +174,9 @@ public class XqlMaker {
 
 /*
 $Log$
+Revision 1.4  2005/03/11 14:38:47  KevinBenson
+changed it so it would compile
+
 Revision 1.3  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 
