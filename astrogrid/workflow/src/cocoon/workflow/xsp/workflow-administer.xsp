@@ -8,10 +8,10 @@
 		>
 
 <xsp:structure>
+	<xsp:include>java.util.Iterator</xsp:include>
 	<xsp:include>org.astrogrid.portal.cocoon.workflow.design.DesignAction</xsp:include>
 	<xsp:include>org.astrogrid.portal.workflow.design.*</xsp:include>
 	<xsp:include>org.astrogrid.portal.workflow.design.activity.*</xsp:include>
-	<xsp:include>java.util.Iterator</xsp:include>
 </xsp:structure>
 
 <xsp:logic>
@@ -20,10 +20,13 @@
 		private static final boolean 
         	TRACE_ENABLED = true ;
         	
-		public void workflowList ( Iterator iterator ) throws SAXException {
-        	if( TRACE_ENABLED ) trace("workflow-administer.list() entry") ; 
+		AttributesImpl 
+			xspAttr = null ;        	
         	
-        	AttributesImpl xspAttr = new AttributesImpl() ;
+		public void workflowList ( Iterator iterator ) throws SAXException {
+        	if( TRACE_ENABLED ) trace("workflow-administer.workflowlist() entry") ; 
+        	
+        	xspAttrWorkflow = new AttributesImpl() ;
         
         	try {
         	
@@ -31,7 +34,7 @@
         	
 				while( iterator.hasNext() ) {
 					workflow = (Workflow)iterator.next() ;
-					outputWorkflow( workflow ) ;			
+					outputWorkflow( workflow, xspAttrWorkflow ) ;			
 				}
        
         	}
@@ -39,8 +42,28 @@
         		if( TRACE_ENABLED ) trace( "workflow-administer-xsp.list() exit") ;
         	}
           
-		} // end of list() 
-		
+		} // end of workflowList() 
+	
+		public void queryList ( Iterator iterator ) throws SAXException {
+        	if( TRACE_ENABLED ) trace("workflow-administer.querylist() entry") ; 
+        	
+        	xspAttrQuery = new AttributesImpl() ;
+        
+        	try {
+        	
+        		Query query;
+        	
+				while( iterator.hasNext() ) {
+					query = (Query)iterator.next() ;
+					outputQuery( query, xspAttrQuery ) ;			
+				}
+       
+        	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-administer-xsp.QueryList() exit") ;
+        	}
+          
+		} // end of QueryList()		
 		
 		private void outputWorkflow( Workflow workflow, AttributesImpl xspAttr ) throws SAXException {  	
 			if( TRACE_ENABLED ) trace( "workflow-administer-xsp.outputWorkflow() entry") ;
@@ -51,8 +74,8 @@
 	
 			<content>	
 				<xsp:element name="workflow">
-					<xsp:attribute name="name"><xsp:expr>workflow.getName()</xsp:expr></xsp:element>
-					<xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:element>										
+					<xsp:attribute name="name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>										
 				</xsp:element>
 			</content>
 		
@@ -65,7 +88,31 @@
         	}
 		
 		} // end of outputWorkflow()
+
+
+		private void outputQuery( Query query, AttributesImpl xspAttr ) throws SAXException {  	
+			if( TRACE_ENABLED ) trace( "workflow-administer-xsp.outputQuery() entry") ;
+		        	
+		    try { 
+		     	
+		]]>
+	
+			<content>	
+				<xsp:element name="query">
+					<xsp:attribute name="query-name"><xsp:expr>query.getName()</xsp:expr></xsp:attribute>
+					<xsp:attribute name="description"><xsp:expr>query.getDescription()</xsp:expr></xsp:attribute>										
+				</xsp:element>
+			</content>
 		
+
+		<![CDATA[
+		
+		       	}
+        	finally {
+        		if( TRACE_ENABLED ) trace( "workflow-administer-xsp.outputQuery() exit") ;
+        	}
+		
+		} // end of outputQuery()		
 		
 		private static void trace( String traceString ) {
 			System.out.println( traceString ) ;
@@ -87,8 +134,7 @@
 		<![CDATA[
 		//================================================================================
 		Iterator
-			workflowIterator = (Iterator)request.getAttribute( DesignAction.WORKFLOW_LIST_PARAMETER ) ;
-			
+			workflowIterator = (Iterator)request.getAttribute( DesignAction.WORKFLOW_LIST_PARAMETER ) ;			
 		
 		//================================================================================
 		]]>
@@ -106,5 +152,31 @@
 	</xsp:logic>
 
 </workflow>
+
+<query>
+
+	<xsp:logic>		
+	
+		<![CDATA[
+		//================================================================================
+		Iterator
+			queryIterator = (Iterator)request.getAttribute( DesignAction.QUERY_LIST_PARAMETER ) ;			
+		
+		//================================================================================
+		]]>
+		
+		<xsp:logic>
+			<![CDATA[
+			//========================================================================
+			
+			queryList( queryIterator ) ;
+		
+			//========================================================================
+			]]>
+		</xsp:logic>
+				
+	</xsp:logic>
+
+</query>
 
 </xsp:page>

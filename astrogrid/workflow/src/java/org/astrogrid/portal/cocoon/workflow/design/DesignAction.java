@@ -135,7 +135,8 @@ public class DesignAction extends AbstractAction {
         ACTION_EDIT_JOINCONDITION = "edit-join-condition",
         ACTION_READ_QUERY = "read-query",
         ACTION_READ_QUERY_LIST = "read-query-list",
-        ACTION_INSERT_QUERY_INTO_STEP = "insert-query-into-step" ;
+        ACTION_INSERT_QUERY_INTO_STEP = "insert-query-into-step",
+        ACTION_READ_LISTS = "read-lists" ;
         
     public static final String
         AUTHORIZATION_RESOURCE_WORKFLOW = "workflow" ,
@@ -283,9 +284,6 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_DELETE_WORKFLOW ) ) {
                     this.deleteWorkflow() ; 
                 }
-//                else if( action.equals( ACTION_CREATE_WORKFLOW_FROM_TEMPLATE ) ) {
-//                    this.createWorkflowFromTemplate() ; 
-//                }
                 else if( action.equals( ACTION_SUBMIT_WORKFLOW ) ) {
                     this.submitWorkflow() ; 
                 }
@@ -301,6 +299,9 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
                     this.readQueryList() ; 
                 }
+				else if( action.equals( ACTION_READ_LISTS ) ) {
+						this.readLists() ; 
+				}			
 				else if( action.equals( ACTION_INSERT_QUERY_INTO_STEP ) ) {
 					this.insertQueryIntoStep() ;                     								
                 }
@@ -740,6 +741,40 @@ public class DesignAction extends AbstractAction {
                     
         } // end of readQueryList()   
 
+		private void readLists() {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.readLists() entry" ) ;
+              
+			try {
+                    
+					// For the moment this is where we have placed the door.
+					// If users cannot see a list, then they cannot do anything...
+					this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
+									 , AUTHORIZATION_ACTION_EDIT ) ;
+                               
+					//NB: The filter argument is ignored at present (Sept 2003).
+					Iterator
+						workflowIterator =  Workflow.readWorkflowList( userid
+																	 , community
+																	 , "*"
+																	 , communitySnippet() ) ;
+					this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflowIterator ) ;
+					Iterator
+						queryIterator = Query.readQueryList( userid
+															,community
+															,communitySnippet()
+															, "*" ) ;
+					this.request.setAttribute( QUERY_LIST_PARAMETER, queryIterator ) ;               
+				}
+				catch( WorkflowException wfex ) {
+                
+					this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wfex.toString() ) ;
+                
+				}
+				finally {
+					if( TRACE_ENABLED ) trace( "DesignActionImpl.readLists() exit" ) ;
+				}
+                    
+			} // end of readLists()
            
 		private void insertQueryIntoStep() throws ConsistencyException {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() entry" ) ;
