@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.14 2003/09/10 12:09:01 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.15 2003/09/10 14:49:12 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -161,25 +161,26 @@ public abstract class DatabaseQuerier implements Runnable
          querier.setQuery(domContainingQuery);
 
          return querier;
-      }
+      } // NWW - temporarily added more to messages being thrown back - as we're not getting the embedded exceptions back on the server side.
+       // think this is an issue with WSDL and DatabaseAccessException not having a null constructor - because is subclass of IOException.
       catch (ClassNotFoundException e)
       {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"'");
+         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
       }
       catch (IllegalAccessException e)
       {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"'");
+         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
       }
       catch (InstantiationException e)
       {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"'");
+         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
      } 
      catch (NoSuchMethodException e) {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass+"'");
+         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass+"' :" + e.getMessage());
       } 
       catch (InvocationTargetException e) {
           // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
-          throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "'");
+          throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "' :" + e.getCause().getMessage());
       }
    }
 
