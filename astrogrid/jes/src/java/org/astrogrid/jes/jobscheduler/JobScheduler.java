@@ -529,7 +529,7 @@ public class JobScheduler {
                  // assume this step should execute...
                  if( guardStep == null ) {
                      this.maintainCandidateList( candidates, jobStep ) ; 
-                     break ;   
+                     continue ;   
                  }  
                       
                  // If a guardstep has finished (either OK or in error)
@@ -543,7 +543,7 @@ public class JobScheduler {
                    ) {
                          
                      this.maintainCandidateList( candidates, jobStep ) ;
-                     break ;   
+                     continue ;   
                  }
                        
                  // Those that should execute provided the previous
@@ -553,7 +553,7 @@ public class JobScheduler {
                      joinCondition.equals( JobStep.JOINCONDITION_TRUE )
                  ) {
                      this.maintainCandidateList( candidates, jobStep ) ;
-                     break ;   
+                     continue ;   
                  }
                     
                  // Those that should execute only when the previous
@@ -563,7 +563,7 @@ public class JobScheduler {
                      joinCondition.equals( JobStep.JOINCONDITION_FALSE )
                  ) {
                      this.maintainCandidateList( candidates, jobStep ) ;
-                     break ;   
+                     continue ;   
                  }
                     
               } // end if
