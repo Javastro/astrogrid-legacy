@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.8 2004/08/12 22:05:22 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.9 2004/08/17 13:33:07 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -220,12 +220,29 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         softAssertNotNull("no stdout available",stdout);
         return stdout.getContent();
     }
+
+    /** clone the parameter.
+     * @param src
+     * @return
+     */
+    protected ParameterValue copyParameter(ParameterValue src) {
+        ParameterValue clone = new ParameterValue();
+        clone.setEncoding(src.getEncoding());
+        clone.setIndirect(src.getIndirect());
+        clone.setName(src.getName());
+        clone.setValue(src.getValue());
+        return clone;
+        
+    }
         
 }
 
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.9  2004/08/17 13:33:07  nw
+added another helper method
+
 Revision 1.8  2004/08/12 22:05:22  nw
 added more helper methods
 
