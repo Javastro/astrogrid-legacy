@@ -3,15 +3,15 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 
@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>
- *     
+ *
  * </pre></blockquote>
  * <p>
  *
@@ -31,43 +31,40 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Table {
-	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-        
-    private static final String
-        SUBCOMPONENT_NAME = Util.getComponentName( Table.class ) ;
-	
-	private static Logger 
-		logger = Logger.getLogger( Table.class ) ;
-		
-	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_TABLE_FROM_ELEMENT = "AGDTCE00440" ;
 
-	private String 
-	   name ;
-	   
-	public Table( Element tableElement ) throws QueryException {
-		if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ;   
-				
-		try {
-			setName( tableElement.getFirstChild().getNodeValue().trim() ) ;			
-		}
-		catch( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_TABLE_FROM_ELEMENT
-                                              , SUBCOMPONENT_NAME ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new QueryException( message, ex );    		
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "Table(Element): exit") ;   	
-		}
-		   
-	} // end of Table( Element )
+   private static final boolean
+      TRACE_ENABLED = true ;
+
+   private static Logger
+      logger = Logger.getLogger( Table.class ) ;
+
+   private static final String
+      ASTROGRIDERROR_COULD_NOT_CREATE_TABLE_FROM_ELEMENT = "AGDTCE00440" ;
+
+   private String
+      name ;
+
+   public Table( Element tableElement ) throws QueryException {
+      if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ;
+
+      try {
+         setName( tableElement.getFirstChild().getNodeValue().trim() ) ;
+      }
+      catch( Exception ex ) {
+         AstroGridMessage
+            message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_TABLE_FROM_ELEMENT
+                                              , this);
+         logger.error( message.toString(), ex ) ;
+         throw new QueryException( message, ex );
+      }
+      finally {
+         if( TRACE_ENABLED ) logger.debug( "Table(Element): exit") ;
+      }
+
+   } // end of Table( Element )
 
 
-	public void setName(String name) { this.name = name; }
-	public String getName() { return name; }	   
+   public void setName(String name) { this.name = name; }
+   public String getName() { return name; }
 
-} // end of class Table 
+} // end of class Table

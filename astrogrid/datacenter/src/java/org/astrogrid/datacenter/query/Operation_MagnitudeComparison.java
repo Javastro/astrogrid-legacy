@@ -3,9 +3,9 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.query;
@@ -13,17 +13,17 @@ package org.astrogrid.datacenter.query;
 import java.text.MessageFormat;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.w3c.dom.Element;
 
 
 /**
- * The <code>Operation_MagnitudeComparison</code> class represents operation within an 
+ * The <code>Operation_MagnitudeComparison</code> class represents operation within an
  * SQL query string.
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *
  * </pre></blockquote>
  * <p>
  *
@@ -34,73 +34,70 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public abstract class Operation_MagnitudeComparison extends Operation {
-	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-        
-    private static final String
-        SUBCOMPONENT_NAME =  Util.getComponentName( Operation_MagnitudeComparison.class ) ;
-	
-	private static Logger 
-		logger = Logger.getLogger( Operation_MagnitudeComparison.class ) ;
-			
-	private Operand
-	   operandOne,
-	   operandTwo ;
-	
-	   
-	public Operation_MagnitudeComparison( Element opElement , Catalog catalog ) throws QueryException {
-		super( opElement, catalog ) ;
-	}
-	
-	
-	public String toSQLString() {
-		if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.toSQLString(): entry") ;  
-		 	
-		String
-		   retValue = null ; 	
-		
-		Object []
+
+   private static final boolean
+      TRACE_ENABLED = true ;
+
+   private static Logger
+      logger = Logger.getLogger( Operation_MagnitudeComparison.class ) ;
+
+   private Operand
+      operandOne,
+      operandTwo ;
+
+
+   public Operation_MagnitudeComparison( Element opElement , Catalog catalog ) throws QueryException {
+      super( opElement, catalog ) ;
+   }
+
+
+   public String toSQLString() {
+      if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.toSQLString(): entry") ;
+
+      String
+         retValue = null ;
+
+      Object []
            inserts = new Object[2] ;   // Only two operands are allowed for a comparison
-        
-        try {   
+
+        try {
            inserts[0] = operandOne.toSQLString() ;
            inserts[1] = operandTwo.toSQLString() ;
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.toSQLString(): exit") ;         	        
+         if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.toSQLString(): exit") ;
         }
-        
-		return retValue ;
-		
-	} // end of toSQLString()
+
+      return retValue ;
+
+   } // end of toSQLString()
 
 
     public void push( Operand operand ) {
-		if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.push(): entry") ;  
-		
-		try {
-			
-			if( operandOne == null ){
-				operandOne = operand ;
-			}
-			else if( operandTwo == null ) {
-				operandTwo = operand ;
-			}
-			else {
-				; // a serious error  has occurred
-			}
-			
-		} finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.push(): exit") ; 
-		}
+      if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.push(): entry") ;
 
-    	
+      try {
+
+         if( operandOne == null ){
+            operandOne = operand ;
+         }
+         else if( operandTwo == null ) {
+            operandTwo = operand ;
+         }
+         else {
+            ; // a serious error  has occurred
+         }
+
+      } finally {
+         if( TRACE_ENABLED ) logger.debug( "Operation_MagnitudeComparison.push(): exit") ;
+      }
+
+
     } // end of push()
 
-	
-	public abstract String getTemplate() ;
 
-	
+   public abstract String getTemplate() ;
+
+
 } // end of class Operation_MagnitudeComparison

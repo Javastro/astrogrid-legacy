@@ -11,7 +11,7 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 
@@ -35,9 +35,6 @@ public class Service {
    private static final boolean
       TRACE_ENABLED = true ;
 
-    private static final String
-        SUBCOMPONENT_NAME = Util.getComponentName( Service.class ) ;
-
    private static Logger
       logger = Logger.getLogger( Service.class ) ;
 
@@ -58,7 +55,7 @@ public class Service {
       catch( Exception ex ) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SERVICE
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this);
          logger.error( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }

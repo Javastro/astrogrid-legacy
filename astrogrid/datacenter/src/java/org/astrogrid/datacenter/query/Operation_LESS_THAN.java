@@ -3,24 +3,24 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.w3c.dom.Element;
 
 /**
- * The <code>Operation_LESS_THAN</code> class represents operations within an 
+ * The <code>Operation_LESS_THAN</code> class represents operations within an
  * SQL query string.
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *
  * </pre></blockquote>
  * <p>
  *
@@ -31,24 +31,21 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Operation_LESS_THAN extends Operation_MagnitudeComparison {
-	 
-	private static final boolean 
-		TRACE_ENABLED = true ;
-	
-    private final static String
-         SUBCOMPONENT_NAME =  Util.getComponentName( Operation_LESS_THAN.class ) ;                        
-    
-	private static Logger 
-		logger = Logger.getLogger( Operation_LESS_THAN.class ) ;
-        
-	// Template for the SQL LESS_THAN query   
-	public static final String
-		TEMPLATE = "( {0} < {1} )" ;
-		
-	public Operation_LESS_THAN( Element opElement , Catalog catalog ) throws QueryException {	
-		super( opElement, catalog ) ; 
-	}
-		
-	public String getTemplate() { return TEMPLATE ; }
+
+   private static final boolean
+      TRACE_ENABLED = true ;
+
+   private static Logger
+      logger = Logger.getLogger( Operation_LESS_THAN.class ) ;
+
+   // Template for the SQL LESS_THAN query
+   public static final String
+      TEMPLATE = "( {0} < {1} )" ;
+
+   public Operation_LESS_THAN( Element opElement , Catalog catalog ) throws QueryException {
+      super( opElement, catalog ) ;
+   }
+
+   public String getTemplate() { return TEMPLATE ; }
 
 } // end of class Operation_LESS_THAN

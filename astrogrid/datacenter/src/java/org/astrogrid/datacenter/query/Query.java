@@ -11,7 +11,7 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 //import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -23,9 +23,6 @@ public class Query {
    private static final boolean
       TRACE_ENABLED = true ;
 
-   private static final String
-      SUBCOMPONENT_NAME =  Util.getComponentName( Query.class ) ;
-
     private static Logger
        logger = Logger.getLogger( Query.class ) ;
 
@@ -34,8 +31,6 @@ public class Query {
 
     public static final String
       QUERYFACTORY_KEY_SUFFIX = ".QUERYFACTORY" ;
-
-//    private QueryFactory        factory ;
 
     private Criteria
         criteria ;
@@ -127,7 +122,7 @@ public class Query {
       catch( Exception ex ) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this);
          logger.error( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }

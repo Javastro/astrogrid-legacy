@@ -3,9 +3,9 @@
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
  */
 package org.astrogrid.datacenter.query;
@@ -13,17 +13,17 @@ package org.astrogrid.datacenter.query;
 import java.text.MessageFormat;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.w3c.dom.Element;
 
 
 /**
- * The <code>Operation_NOT</code> class represents operation within an 
+ * The <code>Operation_NOT</code> class represents operation within an
  * SQL query string.
  * <p>
  * Some example text. For example:
  * <p><blockquote><pre>
- *     
+ *
  * </pre></blockquote>
  * <p>
  *
@@ -34,72 +34,69 @@ import org.w3c.dom.Element;
  * @since   AstroGrid 1.2
  */
 public class Operation_LOGICAL_NOT extends Operation {
-	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-        
-    private static final String
-        SUBCOMPONENT_NAME =  Util.getComponentName( Operation_LOGICAL_NOT.class ) ;
-	
-	private static Logger 
-		logger = Logger.getLogger( Operation_LOGICAL_NOT.class ) ;
-		
-	// Template for the SQL NOT query   
-	public static final String
-		TEMPLATE = "( NOT {0} )" ;
-			
-	private Operand
-	   operandSingleton ;
-	
-	   
-	public Operation_LOGICAL_NOT( Element opElement , Catalog catalog ) throws QueryException {
-		super( opElement, catalog ) ;
-	}
-	
-	
-	public String toSQLString() {
-		if( TRACE_ENABLED ) logger.debug( "Operation_NOT.toSQLString(): entry") ;  
-		 	
-		String
-		   retValue = null ; 	
-		
-		Object []
-           inserts = new Object[1] ;   
-        
-        try {   
+
+   private static final boolean
+      TRACE_ENABLED = true ;
+
+   private static Logger
+      logger = Logger.getLogger( Operation_LOGICAL_NOT.class ) ;
+
+   // Template for the SQL NOT query
+   public static final String
+      TEMPLATE = "( NOT {0} )" ;
+
+   private Operand
+      operandSingleton ;
+
+
+   public Operation_LOGICAL_NOT( Element opElement , Catalog catalog ) throws QueryException {
+      super( opElement, catalog ) ;
+   }
+
+
+   public String toSQLString() {
+      if( TRACE_ENABLED ) logger.debug( "Operation_NOT.toSQLString(): entry") ;
+
+      String
+         retValue = null ;
+
+      Object []
+           inserts = new Object[1] ;
+
+        try {
            inserts[0] = operandSingleton.toSQLString() ;
            retValue = MessageFormat.format( this.getTemplate(), inserts ) ;
         }
         finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_NOT.toSQLString(): exit") ;         	        
+         if( TRACE_ENABLED ) logger.debug( "Operation_NOT.toSQLString(): exit") ;
         }
-        
-		return retValue ;
-		
-	} // end of toSQLString()
+
+      return retValue ;
+
+   } // end of toSQLString()
 
 
     public void push( Operand operand ) {
-		if( TRACE_ENABLED ) logger.debug( "Operation_NOT.push(): entry") ;  
-		
-		try {
-			
-			if( operandSingleton == null ){
-				operandSingleton = operand ;
-			}
-			else {
-				; // a serious error  has occurred
-			}
-			
-		} finally {
-			if( TRACE_ENABLED ) logger.debug( "Operation_NOT.push(): exit") ; 
-		}
+      if( TRACE_ENABLED ) logger.debug( "Operation_NOT.push(): entry") ;
 
-    	
+      try {
+
+         if( operandSingleton == null ){
+            operandSingleton = operand ;
+         }
+         else {
+            ; // a serious error  has occurred
+         }
+
+      } finally {
+         if( TRACE_ENABLED ) logger.debug( "Operation_NOT.push(): exit") ;
+      }
+
+
     } // end of push()
 
-	
-	public String getTemplate() { return TEMPLATE ; }
 
-	
+   public String getTemplate() { return TEMPLATE ; }
+
+
 } // end of class Operation_NOT

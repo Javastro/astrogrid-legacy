@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.query;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -42,9 +41,6 @@ public class Field extends SQLComponent  implements Operand{
 
    private static Logger
       logger = Logger.getLogger( Field.class ) ;
-
-    private final static String
-        SUBCOMPONENT_NAME =  Util.getComponentName( Field.class ) ;
 
    private static final String
       ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED = "AGDTCE00430" ;
@@ -100,7 +96,7 @@ public class Field extends SQLComponent  implements Operand{
          else {
             AstroGridMessage
                message = new AstroGridMessage( ASTROGRIDERROR_UNKNOWN_FIELD_TYPE_ENCOUNTERED
-                                                 , SUBCOMPONENT_NAME
+                                                 , this
                                                  , type ) ;
             logger.error( message.toString() ) ;
             throw new QueryException( message ) ;

@@ -11,7 +11,6 @@
 package org.astrogrid.datacenter.query;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,9 +38,6 @@ public class Criteria extends  SQLComponent {
 
    private static Logger
       logger = Logger.getLogger( Criteria.class ) ;
-
-    private final static String
-        SUBCOMPONENT_NAME =  Util.getComponentName( Criteria.class ) ;
 
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA_ELEMENT = "AGDTCE00220",
@@ -80,7 +76,7 @@ public class Criteria extends  SQLComponent {
       catch( Exception ex ) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA_ELEMENT
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this ) ;
          logger.error( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }

@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.query;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -46,9 +46,6 @@ public class GroupBy extends SQLComponent {
 
    private static final boolean
       TRACE_ENABLED = true ;
-
-   public final static String
-         SUBCOMPONENT_NAME =  Util.getComponentName( Operation_GROUP_BY.class ) ;
 
    private static Logger
       logger = Logger.getLogger( Operation_GROUP_BY.class ) ;

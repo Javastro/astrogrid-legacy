@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -44,9 +43,6 @@ public class From extends SQLComponent {
 
    private static Logger
       logger = Logger.getLogger( From.class ) ;
-
-    private final static String
-        SUBCOMPONENT_NAME = Util.getComponentName( From.class ) ;
 
    private static final String
       ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT = "AGDTCE00200",
@@ -79,7 +75,7 @@ public class From extends SQLComponent {
       catch( Exception ex ) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_FROM_FROM_ELEMENT
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this ) ;
          logger.error( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
@@ -148,7 +144,7 @@ public class From extends SQLComponent {
       catch( Exception ex) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_FROM
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this);
          logger.error( message.toString(), ex ) ;
       }
       finally {

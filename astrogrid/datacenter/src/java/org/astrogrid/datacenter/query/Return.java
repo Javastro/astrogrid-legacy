@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.Util;
+
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -40,9 +40,6 @@ public class Return extends SQLComponent{
 
    private static final boolean
       TRACE_ENABLED = true ;
-
-    private static final String
-        SUBCOMPONENT_NAME =  Util.getComponentName( Return.class ) ;
 
    private static Logger
       logger = Logger.getLogger( Return.class ) ;
@@ -97,7 +94,7 @@ public class Return extends SQLComponent{
       catch( Exception ex ) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_RETURN_FROM_ELEMENT
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this);
          logger.error( message.toString(), ex ) ;
          throw new QueryException( message, ex );
       }
@@ -155,7 +152,7 @@ public class Return extends SQLComponent{
       catch( Exception ex) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_RETURN
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this);
          logger.error( message.toString(), ex ) ;
       }
       finally {
@@ -234,7 +231,7 @@ public class Return extends SQLComponent{
       catch (Exception ex) {
          AstroGridMessage
             message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_MAP_CATALOG_UCD_TO_COLUMN_HEADING
-                                              , SUBCOMPONENT_NAME ) ;
+                                              , this);
          logger.error( message.toString(), ex ) ;
       }
       finally {
