@@ -1,11 +1,10 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.5 2004/11/29 18:09:21 anoncvs Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.6 2004/12/01 22:18:01 jdt Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
 ######################################################
 #
-# I really shouldn't be able to do this
 if [ -z "$BUILDHOME" ]; then
 	echo "Value of BUILDHOME (ie where AGINAB is) must be set"
 	exit 1
@@ -20,7 +19,7 @@ cd $BUILDHOME
 echo "Undeploying old apps..." 
 if maven $MY_MAVEN_OPTS -Dastrogrid.docs.root=$DOCLOCATION astrogrid-deploy-site 
 then
-   echo "*** SUCCESS ***" 
+   echo "OK" 
 else
    echo "*** FAILURE ***"
    exit 1 
