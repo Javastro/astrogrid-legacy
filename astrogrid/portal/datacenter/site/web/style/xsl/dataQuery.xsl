@@ -231,7 +231,7 @@ class="agResetButton">Clear</span></td></tr>
 	  <input id="myspace-agsl" onFocus="focusit(this)" onBlur="defocusit(this)"  name="myspace-name" type="text"/>
 	  <input id="myspace-ivorn" name="myspace-name" type="hidden"/>
 	  &#160;
-	  <input class="agActionButton" name="myspace-name" type="button" value="Browse MySpace" onclick="popupBrowser('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl')"/>
+	  <input class="agActionButton" name="myspace-name" type="button" value="Browse MySpace" onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl')"/>
 
 </td><td bgcolor="yellow">
 <!-- junkyard
