@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.25 2004/08/04 12:11:59 mch Exp $
+ * $Id: FailbackConfig.java,v 1.26 2004/08/25 00:34:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -26,42 +26,47 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * All Things To All Men Configuration file.
- *
+ * All Things To All Men Configuration.
+ * <p>
  * A comprehensive facade singleton provding fallback access to Jndi and
  * standard text configuration files.
- *
+ * <p>
  * The fallback works like this:
- * - Look in local cache (so setProperty can override others)
- * - Look in jndi for the property.
- * - If that fails, then look in the configuration file (see below for how this is located)
- * - If that fails, then look in the system environments.
- * - If that fails, throw an exception unless a default has been supplied.
- *
+ * <ul>
+ * <li> Look in local cache (so calling 'setProperty' will override file properties)
+ * <li> Look in jndi for the property.
+ * <li> If that fails, then look in the configuration file (see below for how this is located)
+ * <li> If that fails, then look in the system environments.
+ * <li> If that fails, throw an exception unless a default has been supplied.
+ * </ul>
+ * <p>
  * The configuration file locator works like this:
- * - look in jndi for the key "org.astrogrid.config.url" which gives the url to the file
- * - look in jndi for the key "org.astrogrid.config" which gives the property filename
- * - if that fails, look in the system environment vars for the same key
- * - if that fails, look for the file "astrogrid.properties" on the classpath (not yet implemented)
- * - if that fials, look for the file "astrogrid.properties" in the working directory
- *
+ * <ul>
+ * <li> look in jndi for the key "org.astrogrid.config.url" which gives the url to the file
+ * <li> look in jndi for the key "org.astrogrid.config" which gives the property filename
+ * <li> if that fails, look in the system environment vars for the same key
+ * <li> if that fails, look for the file "astrogrid.properties" on the classpath (not yet implemented)
+ * <li> if that fials, look for the file "astrogrid.properties" in the working directory
+ * </ul>
+ * <p>
  * The configuration file lookup stops at the first find, so we don't get *too* confused
  * with lots of configuration files around, and properties being found in one
- * but not others.  If at any point it is referred to (ie JNDI name for it exists) but
- * there is a problem loading the file, it fails.
- *
+ * but not others.  If at any point it is referred to (ie JNDI key for the config filename exists) but
+ * there is a problem loading the file, it fails.  This means you can be sure that
+ * if you've *tried* to configure it, you will know if it hasn't worked.
+ * <p>
  * Initialisation is 'lazy' - particularly as we may not want to go looking for
  * configuration files if everything is in Jndi. However given the dangers of
  * double-checked locking, the initialisation routines are synchronised and
  * checked *within* for the initialisation flag
- *
+ * <p>
  * Failures are *all* reported as exceptions, unless a default is given.  So
  * if you think a value might be missing and you don't want your app to fallover,
- * supply a default
- *
+ * supply a default.
+ * <p>
  * We could think about adding resource bundles instead of property files, but
  * I think JNDI provides all the complexity we need if we need that much...?
- *
+ * <p>
  * @author mch
  */
 
@@ -627,6 +632,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.26  2004/08/25 00:34:15  mch
+Updated documentaiton
+
 Revision 1.25  2004/08/04 12:11:59  mch
 Fixed access control exception so it gets thrown when a config file is given
 
