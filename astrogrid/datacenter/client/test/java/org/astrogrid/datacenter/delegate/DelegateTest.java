@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.5 2003/11/26 16:31:46 nw Exp $
+ * $Id: DelegateTest.java,v 1.6 2003/12/02 17:56:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,8 +62,26 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
          WebDelegate web = (WebDelegate) DatacenterDelegateFactory.makeAdqlQuerier("http://wibble");
       }
       catch (IOException se)     { } // expect to not connect
+      
+      try
+      {
+         WebDelegate web = (WebDelegate) DatacenterDelegateFactory.makeSqlQuerier(Certification.ANONYMOUS, "http://wibble", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      }
+      catch (IOException se)     { } // expect to not connect
+      
    }
 
+   /**
+    * Tests an SQL-pass through query on the dummy
+    */
+   public void testSqlQuerier() throws IOException, ServiceException
+   {
+      SqlQuerier delegate = DatacenterDelegateFactory.makeSqlQuerier(Certification.ANONYMOUS, "http://wibble", DatacenterDelegateFactory.DUMMY_SERVICE);
+      
+      DatacenterResults results = delegate.doSqlQuery(AdqlQuerier.VOTABLE, "SELECT * FROM Population p WHERE scots = marsbarbatterers AND english = morrisdancers");
+      
+   }
+   
    /**
     * Creates a delegate, passes it a query and checks the return values
     */
@@ -181,6 +199,9 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.6  2003/12/02 17:56:39  mch
+ * Added sql pass through test
+ *
  * Revision 1.5  2003/11/26 16:31:46  nw
  * altered transport to accept any query format.
  * moved back to axis from castor
