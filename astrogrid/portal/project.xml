@@ -67,15 +67,6 @@
   
   <dependencies>
     <!--
-      AstroGrid dependencies.
-      -->
-    <dependency>
-      <id>astrogrid-datacenter</id>
-      <version>SNAPSHOT</version>
-      <jar>astrogrid-datacenter-client-SNAPSHOT.jar</jar>
-    </dependency>
-
-    <!--
       Utilities.
       -->
     <dependency>
