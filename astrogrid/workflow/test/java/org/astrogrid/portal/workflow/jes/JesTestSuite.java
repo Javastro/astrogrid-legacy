@@ -69,7 +69,7 @@ public class JesTestSuite extends TestCase {
         
          final String 
              userid = "jl99",
-             community = "star.le.as.uk",
+             community = "star.le.ac.uk",
              communitySnippet 
                 = CommunityMessage.getMessage( "1234"
                                              , userid + "@" + community

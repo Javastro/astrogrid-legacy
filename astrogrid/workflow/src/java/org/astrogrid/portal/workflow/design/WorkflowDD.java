@@ -61,9 +61,8 @@ public class WorkflowDD {
         
     public static final String
         WORKFLOW_TEMPLATE =
-//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-//        "<![CDATA[" +        "<workflow name=\"{0}\" {1}>" +        "   <userid>{2}</userid>" +        "   <jes_community>{3}</jes_community>" +
-        "   <description>{4}</description>" +              "       {5}" +                      // sequence by default        "</workflow>" ;//        "]]>" ;
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +        "<workflow name=\"{0}\" {1}>" +        "   <userid>{2}</userid>" +        "   <jes_community>{3}</jes_community>" +
+        "   <description>{4}</description>" +              "       {5}" +                      // sequence by default        "</workflow>" ;
         
     public static final String
         SEQUENCE_TEMPLATE =
@@ -99,7 +98,7 @@ public class WorkflowDD {
         
     public static final String
         JOB_TEMPLATE =
-//        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "<job name=\"{0}\" >" +
         "   <userid>{1}</userid>" +
         "   <jes_community>{2}</jes_community>" +

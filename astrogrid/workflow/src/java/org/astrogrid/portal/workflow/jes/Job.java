@@ -13,7 +13,7 @@ package org.astrogrid.portal.workflow.jes;
 
 import java.util.ListIterator;
 import org.xml.sax.* ;
-import java.io.StringReader ;
+import java.io.StringReader ; 
 import java.util.Date ;
 import java.util.ArrayList ;
 
@@ -299,23 +299,29 @@ public class Job {
         
         try {
             
-             name = element.getAttribute( JobDD.NAME_ATTR ) ;           
+             debug( "element: " + XMLUtils.ElementToString( element )) ;
+            
+             name = element.getAttribute( JobDD.NAME_ATTR ) ;   
+             debug( "name :" + name ) ;        
             
              NodeList
-                nodeList = element.getChildNodes() ;                           
+                nodeList = element.getChildNodes() ; 
+                                          
              for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
                  if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
                     
                      element = (Element) nodeList.item(i) ;
+                     debug( "element_" + i + ": " + XMLUtils.ElementToString( element )) ;
                 
                      if ( element.getTagName().equals( JobDD.DESCRIPTION_ELEMENT ) ) {
-                         this.description = element.getFirstChild().getNodeValue().trim() ;  
+                         this.description = element.getFirstChild().getNodeValue();  
                      }  
                      else if( element.getTagName().equals( JobDD.STATUS_ELEMENT ) ) {
                          this.status = element.getFirstChild().getNodeValue().trim() ;
                      }  
                      else if( element.getTagName().equals( JobDD.TIME_ELEMENT ) ) {
                          //JBL Is this OK? Look at jes.
+                         debug( "time element: " + element.getFirstChild().getNodeValue().trim() ) ;
                          this.timestamp = new Date ( element.getFirstChild().getNodeValue().trim() ) ;
                      }  
                      else if ( element.getTagName().equals( JobDD.JOBID_ELEMENT ) ) {

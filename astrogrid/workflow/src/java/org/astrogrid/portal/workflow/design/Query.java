@@ -74,11 +74,15 @@ public final class Query implements Tool {
             
             mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
            
+           debug( "mySpaceLocation: " + mySpaceLocation ) ;
+           
             // This is here purely for test situations...
             if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
                 query = WorkflowHelper.readQuery( userid, community, communitySnippet, name ) ;
                return query ;
             }
+            
+            
                
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
@@ -299,4 +303,4 @@ public final class Query implements Tool {
         // logger.debug( logString ) ;
     }  
 
-} // end of class QueryTool
+} // end of class Query
