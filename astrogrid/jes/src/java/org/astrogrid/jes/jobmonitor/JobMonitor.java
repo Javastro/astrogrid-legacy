@@ -338,7 +338,8 @@ public class JobMonitor {
 					continue ;				
 				element = (Element) nodeList.item(i) ;
 				if( element.getTagName().equals( MonitorRequestDD.COMMENT_ELEMENT ) ) {
-                    jobStep.setComment( element.getNodeValue().trim() ) ; 
+                  
+                    jobStep.setComment( XMLUtils.getChildCharacterData(element) ) ; 
                     logger.debug( "jobStep comment set to : " + jobStep.getComment() ) ;
 				}
       
