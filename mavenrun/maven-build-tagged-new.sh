@@ -36,7 +36,7 @@ cd $BUILD_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
-rm -fr $BUILD_HOME/astrogrid/maven* >> $LOG_FILE 2>&1
+rm -fr $BUILD_HOME/astrogrid/maven-base >> $LOG_FILE 2>&1
 
 
 
@@ -48,7 +48,6 @@ echo "[ag-build-$PROJECT_NAME] cvs checkout for tag $TAGNAME"
 #first need to check out the common maven stuff
 
 cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
-cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/maven-site >> $LOG_FILE 2>&1
 cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/maven-base >> $LOG_FILE 2>&1
 
 

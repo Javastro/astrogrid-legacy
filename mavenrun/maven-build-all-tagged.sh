@@ -19,10 +19,6 @@ echo "AstroGrid Build ($DATE)" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" >> $BUILD_DIR/$LOG_FILE 2>&1
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
 
-#Check out the maven project first, since this may act as a base
-#from which other projects may inherit
-$SCRIPTHOME/maven-build-tagged-new.sh maven-base $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-#Now the "real" projects.
 #$SCRIPTHOME/maven-build-tagged-new.sh common $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #$SCRIPTHOME/maven-build-tagged.sh applications $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #$SCRIPTHOME/maven-build-tagged.sh community $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
@@ -35,7 +31,7 @@ $SCRIPTHOME/maven-build-tagged-new.sh maven-base $TAG_TO_BUILD >> $BUILD_DIR/$LO
 #$SCRIPTHOME/maven-build-tagged.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #$SCRIPTHOME/maven-build-tagged.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 
-$SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo "Moving docs to release location" >> $BUILD_DIR/$LOG_FILE 2>&1
 cp -r $MAVEN_PUBLIC/build/* $RELEASEDOCS
