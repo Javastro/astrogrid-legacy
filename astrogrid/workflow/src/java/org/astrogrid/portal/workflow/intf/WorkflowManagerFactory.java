@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.3 2004/03/01 15:03:38 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.4 2004/03/03 11:15:23 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
-/**
+/** Factory that creates a new workflow manager
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
  *
  */
@@ -35,6 +35,9 @@ public class WorkflowManagerFactory {
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.4  2004/03/03 11:15:23  nw
+tarted up javadocs, reviewed types
+
 Revision 1.3  2004/03/01 15:03:38  nw
 simplified by removing facade - will expose object model directly
 

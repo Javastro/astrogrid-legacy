@@ -1,4 +1,4 @@
-/*$Id: WorkflowInterfaceException.java,v 1.2 2004/02/25 10:57:43 nw Exp $
+/*$Id: WorkflowInterfaceException.java,v 1.3 2004/03/03 11:15:23 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.portal.workflow.intf;
 
 /** Catch all exception type for things that go wrong with the workflow interface.
- * not using workflow exception, as this extends AstrogridException, and don't want to get bogged down in internationalizing messages. no need!
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
  *
  */
@@ -46,6 +45,9 @@ public class WorkflowInterfaceException extends Exception {
 
 /* 
 $Log: WorkflowInterfaceException.java,v $
+Revision 1.3  2004/03/03 11:15:23  nw
+tarted up javadocs, reviewed types
+
 Revision 1.2  2004/02/25 10:57:43  nw
 merged in branch nww-itn05-bz#140 (refactor in preparation for changing object model)
 
