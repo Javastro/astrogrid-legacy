@@ -1,4 +1,4 @@
-/* $Id
+/* $Id: UserTest.java,v 1.2 2004/02/14 17:26:20 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -97,5 +97,8 @@ public class UserTest extends TestCase
 }
 
 /*
-$Log
+$Log: UserTest.java,v $
+Revision 1.2  2004/02/14 17:26:20  mch
+Fixed CVS tags
+
  */
