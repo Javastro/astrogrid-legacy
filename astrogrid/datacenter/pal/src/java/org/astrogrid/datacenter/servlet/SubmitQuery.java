@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitQuery.java,v 1.4 2004/11/10 22:01:50 mch Exp $
+ * $Id: SubmitQuery.java,v 1.5 2004/11/11 20:42:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -55,7 +55,7 @@ public class SubmitQuery extends DefaultServlet {
          
          //submit query - and return just the query ID
          response.setContentType("text/plain");
-         String id = server.submitQuery(ServletHelper.getUser(request), query);
+         String id = server.submitQuery(ServletHelper.getUser(request), query, this);
          response.getWriter().write(id);
       }
       catch (Throwable th) {

@@ -6,6 +6,7 @@
        org.astrogrid.datacenter.ucd.UcdDictionary,
        org.astrogrid.datacenter.units.UnitDictionary,
        org.astrogrid.util.DomHelper,
+       org.astrogrid.datacenter.queriers.sql.RdbmsResourceGenerator,
        org.astrogrid.datacenter.metadata.*,
        org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
@@ -49,7 +50,7 @@
       }
    }
    
-   Element rdbmsResource = VoDescriptionServer.getResource("RdbmsMetadata");
+   Element rdbmsResource = VoDescriptionServer.getResource(RdbmsResourceGenerator.XSI_TYPE);
    if (rdbmsResource != null) {
       out.println("<h2>RDBMS Metadata</h2>");
 

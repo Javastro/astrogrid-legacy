@@ -1,5 +1,5 @@
 /*
- * $Id: DsaDomHelper.java,v 1.5 2004/11/10 22:01:50 mch Exp $
+ * $Id: DsaDomHelper.java,v 1.6 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,11 +44,14 @@ public class DsaDomHelper
     @todo move to DomHelper */
    public static Element getSingleChildByTagName(Element parent, String tagName) {
       Element[] children = getChildrenByTagName(parent, tagName);
-      if (children.length>1) {
+      if (children == null) {
+         return null;
+      }
+      else if (children.length>1) {
          //more than one from is bad
          throw new IllegalArgumentException("More than one "+tagName+" element in "+parent.getNodeName());
       }
-      if (children.length>0) {
+      else if (children.length>0) {
          return children[0];
       }
       else {
@@ -61,6 +64,9 @@ public class DsaDomHelper
     @todo move to DomHelper
     */
    public static Element[] getChildrenByTagName(Element parent, String name) {
+      if (parent == null) {
+         return null;
+      }
       Vector v =  new Vector();
       NodeList c = parent.getChildNodes();
       for (int n = 0; n < c.getLength(); n++) {

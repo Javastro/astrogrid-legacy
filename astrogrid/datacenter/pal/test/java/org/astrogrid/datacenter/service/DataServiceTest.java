@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.9 2004/11/10 22:01:50 mch Exp $
+/*$Id: DataServiceTest.java,v 1.10 2004/11/11 20:42:50 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -63,7 +63,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(TESTACCOUNT, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
+       server.askQuery(TESTACCOUNT, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")), this);
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -78,7 +78,7 @@ public class DataServiceTest extends ServerTestCase {
       //submit query
       StringWriter sw = new StringWriter();
        query1.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE"));
-      server.askQuery(TESTACCOUNT, query1);
+      server.askQuery(TESTACCOUNT, query1, this);
       String result = sw.toString();
        
       assertNotNull(result);
@@ -91,9 +91,9 @@ public class DataServiceTest extends ServerTestCase {
    public void testStatus() throws Throwable {
       //submit queries
       StringWriter sw = new StringWriter();
-      server.submitQuery(TESTACCOUNT, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
+      server.submitQuery(TESTACCOUNT, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")), this);
        query1.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE"));
-      server.submitQuery(TESTACCOUNT, query1);
+      server.submitQuery(TESTACCOUNT, query1, this);
 
       DataServiceStatus status = DataServer.getStatus();
       TaskStatus[] tasks = status.getTasks();
@@ -106,12 +106,12 @@ public class DataServiceTest extends ServerTestCase {
    public void testCount() throws Throwable {
       Query query = SimpleQueryMaker.makeConeQuery(30,30,6);
       
-      long count = server.askCount(TESTACCOUNT, query.getCriteria());
+      long count = server.askCount(TESTACCOUNT, query.getCriteria(), this);
       
       //now do same query but get full results (to check count is equal)
       StringWriter sw = new StringWriter();
       query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw)));
-      server.askQuery(TESTACCOUNT, query);
+      server.askQuery(TESTACCOUNT, query, this);
       
       Document votDoc = DomHelper.newDocument(sw.toString());
       NodeList rows = votDoc.getElementsByTagNameNS("*", "TR");
@@ -157,6 +157,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.10  2004/11/11 20:42:50  mch
+Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
 Revision 1.9  2004/11/10 22:01:50  mch
 skynode starts and some fixes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.12 2004/11/09 18:27:21 mch Exp $
+ * $Id: AxisDataService_v06.java,v 1.13 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,7 +62,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
          query.getResultsDef().setTarget(TargetMaker.makeIndicator(sw));
-         server.askQuery(getUser(), query);
+         server.askQuery(getUser(), query, this);
          return sw.toString();
       }
       catch (Throwable e) {
@@ -78,7 +78,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
          query.getResultsDef().setTarget(TargetMaker.makeIndicator(target));
-         server.askQuery(getUser(), query);
+         server.askQuery(getUser(), query, this);
          return target.toString();
       }
       catch (Throwable e) {
@@ -103,7 +103,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    public long askCount(String adql) throws AxisFault {
       try {
          Query query = AdqlQueryMaker.makeQuery(adql);
-         return server.askCount(getUser(), query.getCriteria());
+         return server.askCount(getUser(), query.getCriteria(), this);
       }
       catch (Throwable e) {
          throw server.makeFault(server.SERVERFAULT, e+", asking Query("+adql+")", e);
@@ -139,7 +139,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
          query.getResultsDef().setTarget(TargetMaker.makeIndicator(resultsTarget));
-         return server.submitQuery(getUser(), query);
+         return server.submitQuery(getUser(), query, this);
       }
       catch (MalformedURLException mue) {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
@@ -235,6 +235,9 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
+Revision 1.13  2004/11/11 20:42:50  mch
+Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
 Revision 1.12  2004/11/09 18:27:21  mch
 added askCount
 

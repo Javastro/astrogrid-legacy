@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.9 2004/11/10 22:01:50 mch Exp $
+ * $Id: SubmitCone.java,v 1.10 2004/11/11 20:42:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -55,7 +55,7 @@ public class SubmitCone extends DefaultServlet {
          //stream.
          if (tableDef.getTarget() == null) {
             tableDef.setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
-            server.askQuery(ServletHelper.getUser(request), SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
+            server.askQuery(ServletHelper.getUser(request), SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef), this);
          }
          else {
             response.setContentType("text/html");
@@ -65,7 +65,7 @@ public class SubmitCone extends DefaultServlet {
                "<body>");
             response.getWriter().flush();
 
-            String id = server.submitQuery(ServletHelper.getUser(request), SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
+            String id = server.submitQuery(ServletHelper.getUser(request), SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef), this);
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status

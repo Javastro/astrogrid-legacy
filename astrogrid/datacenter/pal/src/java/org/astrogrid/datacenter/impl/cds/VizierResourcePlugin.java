@@ -1,4 +1,4 @@
-/*$Id: VizierResourcePlugin.java,v 1.6 2004/11/08 23:15:38 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.7 2004/11/11 20:42:50 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieR;
 import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieRService;
 import org.astrogrid.datacenter.impl.cds.generated.vizier.VizieRServiceLocator;
+import org.astrogrid.datacenter.impl.cds.vizier.VizierWavelength;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.service.ServletHelper;
@@ -45,7 +46,7 @@ public class VizierResourcePlugin implements VoResourcePlugin {
    
    
    /**
-    * Returns Queryable, which describes the way the query can be built
+    * Returns Queryable, which describes the way the query can be built.
     */
    public String getQueryable() throws IOException {
          String resource =
@@ -81,7 +82,7 @@ public class VizierResourcePlugin implements VoResourcePlugin {
                   "<Option>X-Ray</Option>"+
                   "<Option>Gamma-Ray</Option>"+
               "</Field>\n"+
-              "<Field name='Text' optional='true' datatype='varchar'>"+
+              "<Field name='Text' optional='false' datatype='varchar'>"+
                   "<Description>Name of target, eg M31.  Do not specify RA/DEC/CIRCLE if naming the target</Description>"+
               "</Field>\n"+
 //              "<Field name='Unit' optional='false' datatype='options'>"+
@@ -115,18 +116,28 @@ public class VizierResourcePlugin implements VoResourcePlugin {
               "</Identifier>"+
               "<Table>\n"+
                   "<Name>Vizier</Name>\n"+
+                  "<Description>A 'virtual' table that maps onto what fields can be searched on the Vizier SOAP interface, "+
+                  "details of which are <a href='http://cdsweb.u-strasbg.fr/cdsws/vizierAccess.gml'>here</a>. "+
+                  "You can use either Target+Radius, OR the CIRCLE function, but not both."+
+                  "</Description>\n"+
                   "<Column>"+
                      "<Name>Target</Name>"+
+                     "<Description>Name of target (eg 'M31')</Description>"+
                   "</Column>\n"+
                   "<Column>"+
                      "<Name>Radius</Name>"+
                      "<Unit>deg</Unit>"+
+                     "<Description>Radius around named target to look in</Description>"+
                   "</Column>\n"+
                   "<Column>"+
                      "<Name>Wavelength</Name>"+
+                     "<Description>Wavelength can be "+asCSList(VizierWavelength.getAll(VizierWavelength.class))+
+                     "</Description>"+
                   "</Column>\n"+
                   "<Column>"+
                      "<Name>Text</Name>"+
+                     "<Description>Not sure yet.  Some kind of keyword thing"+
+                     "</Description>"+
                   "</Column>\n"+
                "</Table>\n"+
               "<Functions><Function>CIRCLE</Function></Functions>\n"+
@@ -134,6 +145,15 @@ public class VizierResourcePlugin implements VoResourcePlugin {
          
          return resource;
 
+   }
+   
+   /** Just a simple convenience method to write out a list of objects as comma separated strings */
+   private String asCSList(Object[] list) {
+      StringBuffer s = new StringBuffer();
+      for (int i = 0; i < list.length; i++) {
+         s.append(", "+list[i]);
+      }
+      return s.toString().substring(2);
    }
    
    
@@ -156,6 +176,9 @@ public class VizierResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: VizierResourcePlugin.java,v $
+ Revision 1.7  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.6  2004/11/08 23:15:38  mch
  Various fixes for SC demo, more store browser, more Vizier stuff
 

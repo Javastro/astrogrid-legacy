@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.18 2004/11/10 22:01:50 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.19 2004/11/11 20:42:50 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,7 +93,7 @@ public class InstallationSelfCheck extends TestCase {
                      "  <From> <Table xsi:type='tableType' Name='"+SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY)+"' Alias='s' />  </From>"+
                      "</Select>";
 
-      server.askQuery(testAccount, AdqlQueryMaker.makeQuery(adql, TargetMaker.makeIndicator("null"), ReturnTable.CSV));
+      server.askQuery(testAccount, AdqlQueryMaker.makeQuery(adql, TargetMaker.makeIndicator("null"), ReturnTable.CSV), this);
    }
 
    /** Checks the querier/plugin operates - runs a cone query that will exercise it - so
@@ -102,7 +102,7 @@ public class InstallationSelfCheck extends TestCase {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
       server.askQuery(testAccount,
-                      SimpleQueryMaker.makeConeQuery(30,-80,0.1, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
+                      SimpleQueryMaker.makeConeQuery(30,-80,0.1, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE), this);
    }
 
    /** Checks that the delegates can connect correctly */
@@ -187,6 +187,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.19  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.18  2004/11/10 22:01:50  mch
  skynode starts and some fixes
 

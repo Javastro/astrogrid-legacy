@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.11 2004/11/10 22:01:50 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.12 2004/11/11 20:42:50 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,7 +142,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
          Query query = buildQuery(getApplicationInterface());
          query.getResultsDef().setTarget(ti);
          query.getResultsDef().setFormat(resultsFormat);
-         Querier querier = Querier.makeQuerier(acc,query);
+         Querier querier = Querier.makeQuerier(acc,query, this);
          querier.addListener(this);
          
          setStatus(Status.INITIALIZED);
@@ -269,6 +269,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
  $Log: DatacenterApplication.java,v $
+ Revision 1.12  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.11  2004/11/10 22:01:50  mch
  skynode starts and some fixes
 

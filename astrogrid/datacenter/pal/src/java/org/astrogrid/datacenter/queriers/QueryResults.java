@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.7 2004/11/09 17:42:22 mch Exp $
+ * $Id: QueryResults.java,v 1.8 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -125,6 +126,10 @@ public abstract class QueryResults
 
       log.info(querier+", sending results to "+returns);
 
+      if (returns.getTarget() == null) {
+         throw new DatacenterException("No Target given for results");
+      }
+      
       if (returns.getTarget() instanceof EmailTarget) {
 
          email(returns, status);

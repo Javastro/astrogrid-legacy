@@ -1,4 +1,4 @@
-/*$Id: KeywordMaker.java,v 1.3 2004/11/09 18:14:59 mch Exp $
+/*$Id: KeywordMaker.java,v 1.4 2004/11/11 20:42:50 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,23 +38,41 @@ public class KeywordMaker  {
    public static final String RADIUS_KEYWORD = "RADIUS";
    public static final String UNIT_KEYWORD = "UNIT";
    
+   Hashtable keywords;
+   
    /**
-    * Makes an SQL string from the given Query */
+    * Sets the keywords from the given query.  Also returns the hashtable  */
    public Hashtable makeKeywords(Query query) throws QueryException {
       Condition c = query.getCriteria();
-      Hashtable keywords = new Hashtable();
-      addKeywordPair(keywords, c);
+      keywords = new Hashtable();
+      addKeywordPair(c);
       return keywords;
    }
 
+   /** case insensitive lookup */
+   public String getValue(String key) {
+      return keywords.get(key.toUpperCase()).toString();
+   }
+   
+   /** case insensitive lookup, throwing a meaningful exception if the parameter
+    * doesn't exist */
+   public String getRequiredValue(String key) {
+      String value = getValue(key);
+      if (value == null) {
+         throw new IllegalArgumentException("Must specify "+key+" in the query");
+      }
+      return value;
+   }
+
    /**
-    * Takes a single condition and extracts keyword pair
+    * Takes a single condition and extracts keyword pair, inserst it into the
+    * hashtable.  Converts all keys to upper case
     */
-   private void addKeywordPair(Hashtable keywords, Condition c) {
+   private void addKeywordPair(Condition c) {
       if (c instanceof Intersection) {
          Condition[] conditions = ((Intersection) c).getConditions();
          for (int i = 0; i < conditions.length; i++) {
-            addKeywordPair(keywords, conditions[i]);
+            addKeywordPair(conditions[i]);
          }
       }
       else if (c instanceof Union) {
@@ -109,6 +127,9 @@ public class KeywordMaker  {
 
 /*
 $Log: KeywordMaker.java,v $
+Revision 1.4  2004/11/11 20:42:50  mch
+Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
 Revision 1.3  2004/11/09 18:14:59  mch
 Better error text
 

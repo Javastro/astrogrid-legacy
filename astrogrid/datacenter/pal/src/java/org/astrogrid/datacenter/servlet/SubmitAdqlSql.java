@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.7 2004/11/10 22:01:50 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.8 2004/11/11 20:42:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -49,7 +49,7 @@ public class SubmitAdqlSql extends DefaultServlet {
             Query query = SqlQueryMaker.makeQuery(adqlSql);
             query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
             query.getResultsDef().setFormat(tableDef.getFormat());
-            server.askQuery(ServletHelper.getUser(request), query);
+            server.askQuery(ServletHelper.getUser(request), query, this);
          }
          else {
             response.setContentType("text/html");
@@ -61,7 +61,7 @@ public class SubmitAdqlSql extends DefaultServlet {
             Query query = SqlQueryMaker.makeQuery(adqlSql);
             query.getResultsDef().setTarget(tableDef.getTarget());
             query.getResultsDef().setFormat(tableDef.getFormat());
-            String id = server.submitQuery(ServletHelper.getUser(request), query);
+            String id = server.submitQuery(ServletHelper.getUser(request), query, this);
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status

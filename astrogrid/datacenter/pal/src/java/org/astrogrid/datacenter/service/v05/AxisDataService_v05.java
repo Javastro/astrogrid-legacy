@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.8 2004/11/09 17:42:22 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.9 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,11 +73,11 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
          query.getResultsDef().setTarget(TargetMaker.makeIndicator(sw));
-         server.askQuery(getUser(), query);
+         server.askQuery(getUser(), query, this);
          return sw.toString();
       }
       catch (Throwable e) {
-         throw server.makeFault(server.SERVERFAULT, e+", asking Query("+adql+", "+requestedFormat+")", e);
+         throw server.makeFault(server.SERVERFAULT, e+", asking Adql Query", e);
       }
    }
 
@@ -94,7 +94,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          Query query = SqlQueryMaker.makeQuery(sql);
          query.getResultsDef().setFormat(requestedFormat);
          query.getResultsDef().setTarget(TargetMaker.makeIndicator(sw));
-         server.askQuery(getUser(), query);
+         server.askQuery(getUser(), query, this);
          return sw.toString();
       }
       catch (Throwable e) {
@@ -108,7 +108,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
    public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), SimpleQueryMaker.makeConeQuery(ra, dec, radius, new ReturnTable(TargetMaker.makeIndicator(sw), requestedFormat)));
+         server.askQuery(getUser(), SimpleQueryMaker.makeConeQuery(ra, dec, radius, new ReturnTable(TargetMaker.makeIndicator(sw), requestedFormat)), this);
          return sw.toString();
       }
       catch (Throwable e) {
@@ -124,8 +124,8 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
          query.getResultsDef().setTarget(TargetMaker.makeIndicator(resultsTarget));
-         server.askQuery(getUser(), query);
-         return server.submitQuery(getUser(), query);
+         server.askQuery(getUser(), query, this);
+         return server.submitQuery(getUser(), query, this);
       }
       catch (MalformedURLException mue) {
          throw server.makeFault(server.CLIENTFAULT, "malformed resultsTarget", mue);
@@ -199,6 +199,9 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.9  2004/11/11 20:42:50  mch
+Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
 Revision 1.8  2004/11/09 17:42:22  mch
 Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

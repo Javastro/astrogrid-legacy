@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.9 2004/11/09 17:42:22 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.10 2004/11/11 20:42:50 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,7 +84,7 @@ public class SqlPluginTest extends ServerTestCase {
       
       StringWriter sw = new StringWriter();
       Query q = SimpleQueryMaker.makeConeQuery(ra,dec,r, new WriterTarget(sw), ReturnTable.VOTABLE);
-      manager.askQuerier(Querier.makeQuerier(Account.ANONYMOUS, q));
+      manager.askQuerier(Querier.makeQuerier(Account.ANONYMOUS, q, this));
       log.info("Checking results...");
       System.out.println(sw.toString());
       Document results = DomHelper.newDocument(sw.toString());
@@ -119,7 +119,7 @@ public class SqlPluginTest extends ServerTestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is, new WriterTarget(sw), ReturnTable.VOTABLE));
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is, new WriterTarget(sw), ReturnTable.VOTABLE), this);
       
       manager.askQuerier(q);
       
@@ -216,6 +216,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.10  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.9  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

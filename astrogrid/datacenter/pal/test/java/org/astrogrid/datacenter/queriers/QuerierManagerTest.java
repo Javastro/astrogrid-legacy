@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.4 2004/11/09 17:42:22 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.5 2004/11/11 20:42:50 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,9 +45,9 @@ public class QuerierManagerTest extends ServerTestCase {
    }
    public void testHandleUniqueness() throws Exception {
       
-      s1 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)));
+      s1 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)), this);
       assertNotNull(s1);
-      s2 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)));
+      s2 = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, new ReturnTable(new NullTarget(), ReturnTable.VOTABLE)), this);
       assertNotNull(s2);
       assertNotSame(s1,s2);
       assertFalse(s1.getId().equals(s2.getId()));
@@ -66,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.5  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.4  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

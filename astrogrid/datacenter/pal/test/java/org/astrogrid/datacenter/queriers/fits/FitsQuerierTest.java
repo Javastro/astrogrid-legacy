@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.7 2004/11/09 17:42:22 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.8 2004/11/11 20:42:50 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -53,7 +53,7 @@ public class FitsQuerierTest extends TestCase
 
    /** Check to see the right plugin is made */
    public void testPluginClass() throws IOException, IOException, URISyntaxException {
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE));
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE), this);
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
@@ -61,7 +61,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE), this);
       
       querier.ask();
 
@@ -91,6 +91,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.8  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.7  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

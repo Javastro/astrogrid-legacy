@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.9 2004/11/08 23:15:38 mch Exp $
+ * $Id: QuerierStatus.java,v 1.10 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -103,6 +103,8 @@ public abstract class QuerierStatus implements TaskStatus
    
    public void addDetail(String message) {
       details.add(message);
+      //it may be a bit naughty to log this, but it's useful. It's not even trace...
+      System.out.println(message);
    }
 
    
@@ -156,6 +158,9 @@ public abstract class QuerierStatus implements TaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.10  2004/11/11 20:42:50  mch
+Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
 Revision 1.9  2004/11/08 23:15:38  mch
 Various fixes for SC demo, more store browser, more Vizier stuff
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AskQuery.java,v 1.3 2004/11/09 17:42:22 mch Exp $
+ * $Id: AskQuery.java,v 1.4 2004/11/11 20:42:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -51,12 +51,12 @@ public class AskQuery extends DefaultServlet {
                response.setContentType("text/plain");
             }
             query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter(), false));
-            server.askQuery(user, query);
+            server.askQuery(user, query, this);
          }
          else {
             //target given, so ask query, returning status when complete
             response.setContentType("text/html");
-            server.askQuery(user, query);
+            server.askQuery(user, query, this);
             response.getWriter().println(
                "<html>"+
                "<head><title>Query Asked</title></head>"+

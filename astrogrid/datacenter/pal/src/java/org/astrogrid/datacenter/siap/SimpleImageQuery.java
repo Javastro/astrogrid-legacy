@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleImageQuery.java,v 1.3 2004/11/09 17:42:22 mch Exp $
+ * $Id: SimpleImageQuery.java,v 1.4 2004/11/11 20:42:50 mch Exp $
  */
 
 package org.astrogrid.datacenter.siap;
@@ -37,7 +37,7 @@ public class SimpleImageQuery extends DefaultServlet {
          double dec = Double.parseDouble(pos.substring(comma+1));
          
          try {
-            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, size, new ReturnTable(TargetMaker.makeIndicator(response.getWriter()), formatList)));
+            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, size, new ReturnTable(TargetMaker.makeIndicator(response.getWriter()), formatList)), this);
          } catch (Throwable e) {
             doError(response, "SIAP error (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList+")", e);
          }

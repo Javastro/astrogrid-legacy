@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.11 2004/11/10 22:01:50 mch Exp $
+ * $Id: DataServer.java,v 1.12 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -94,9 +94,9 @@ public class DataServer
    
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the stream given
-    * in query.resultsSpec
+    * in query.resultsSpec. Source indicates what interface is requesting the query (optional)
     */
-   public void askQuery(Account user, Query query) throws Throwable {
+   public void askQuery(Account user, Query query, Object source) throws Throwable {
 
       Querier querier = null;
       try {
@@ -104,7 +104,7 @@ public class DataServer
 //            throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
 //         }
    
-         querier = Querier.makeQuerier(user, query);
+         querier = Querier.makeQuerier(user, query, source);
          querierManager.askQuerier(querier);
       }
       catch (Throwable th) {
@@ -126,7 +126,7 @@ public class DataServer
     * @deprecated convenience method
     */
    public void askQuery(Account user, Condition condition, ReturnSpec returns) throws Throwable {
-      askQuery(user, new Query(condition, returns));
+      askQuery(user, new Query(condition, returns), null);
    }
 
    /**
@@ -137,13 +137,14 @@ public class DataServer
    
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
-    * reference id.  Results will be output to given Agsl
+    * reference id.  Results will be output to given Agsl.  Source indicates
+    * which interface is submitting
     */
-   public String submitQuery(Account user, Query query) throws Throwable {
+   public String submitQuery(Account user, Query query, Object source) throws Throwable {
 
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, query);
+         querier = Querier.makeQuerier(user, query, source);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
@@ -166,16 +167,17 @@ public class DataServer
     * @deprecated convenience method
     */
    public String submitQuery(Account user, Condition condition, ReturnSpec returns) throws Throwable {
-      return submitQuery(user, new Query(condition, returns));
+      return submitQuery(user, new Query(condition, returns), null);
    }
 
    /**
-    * Returns the number of matches of the given condition
+    * Returns the number of matches of the given condition. Source indicates which
+    * interface is requesting the count
     */
-   public long askCount(Account user, Condition searchCondition) throws Throwable {
+   public long askCount(Account user, Condition searchCondition, Object source) throws Throwable {
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, new Query(searchCondition, null));
+         querier = Querier.makeQuerier(user, new Query(searchCondition, null), source);
          return querierManager.askCount(querier);
       }
       catch (Throwable th) {

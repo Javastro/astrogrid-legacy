@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsResourceGenerator.java,v 1.2 2004/11/09 17:42:22 mch Exp $
+ * $Id: RdbmsResourceGenerator.java,v 1.3 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,6 +38,8 @@ import org.astrogrid.io.xml.XmlTagPrinter;
 public class RdbmsResourceGenerator {
    
    protected static Log log = LogFactory.getLog(RdbmsResourceGenerator.class);
+   
+   public static String XSI_TYPE = "RdbmsMetadata"; //so that I don't get confused between this and RdbmsResource....
    
    /** Convenience routine for finding the value of a column in a result set row,
     * but ignoring

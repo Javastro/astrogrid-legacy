@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.12 2004/11/10 22:01:50 mch Exp $
+ * $Id: Querier.java,v 1.13 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.slinger.Slinger;
 
@@ -64,6 +65,9 @@ public class Querier implements Runnable, PluginListener {
    /** true if abort called */
    private boolean aborted = false;
    
+   /** Represents what created this querier */
+   private Object source = null;
+   
    /** For measuring how long the query took - calculated from status change times*/
 //use status info   private Date timeQueryStarted = null;
    /** For measuring how long query took - calculated from status change times*/
@@ -75,16 +79,24 @@ public class Querier implements Runnable, PluginListener {
    private static java.util.Random random = new java.util.Random();
 
 
-   /** Can't remember why this is private  - there was a reason... */
-   protected Querier(Account forUser, Query query) throws IOException {
+   /** This is private so that if the mechanism changes and we make the plugins
+    subclasses of queriers, for example, then we don't have to change the rest of the
+    * code.  The query includes details about the results, and the 'aSource' is just
+    * used to indicate where the querier came from - eg a test class, or JSPs, or
+    * CEA, etc */
+   private Querier(Account forUser, Query query, Object aSource) throws IOException {
       this.id = generateQueryId();
       this.user = forUser;
       this.query = query;
-
+      this.source = aSource;
+      
       //make plugin
       plugin = QuerierPluginFactory.createPlugin(this);
       
       setStatus(new QuerierConstructed(this));
+      if (source != null) {
+         status.addDetail("Source: "+source.toString());
+      }
 
       //do this as part of the constructor so that we get errors back even on
       //submitted (asynchronous) queries.
@@ -97,9 +109,14 @@ public class Querier implements Runnable, PluginListener {
       
    }
    
-   /** Factory method   */
-   public static Querier makeQuerier(Account forUser, Query query) throws IOException {
-      Querier querier = new Querier(forUser, query);
+   /** Factory method.  Query includes the results definition, and 'source' represents
+    * what clas was used to create this querier (optional) */
+   public static Querier makeQuerier(Account forUser, Query query, Object source) throws IOException {
+      if (source != null) {
+         source = source.getClass();
+      }
+      
+      Querier querier = new Querier(forUser, query, source);
 
       return querier;
    }
@@ -116,6 +133,9 @@ public class Querier implements Runnable, PluginListener {
    /** Returns the plugin - this is *only* for testing @todo a nicer way of doing this */
    public QuerierPlugin getPlugin() { return plugin; }
    
+   /** Returns the class involved in creating this querier instance.  Used for
+    * analysis etc */
+   public Object getSource() { return source; }
    
    /**
     * Runnable implementation - this method is called when the thread to run
@@ -144,6 +164,10 @@ public class Querier implements Runnable, PluginListener {
      */
    public void ask() throws IOException {
       
+      //by this stage a target should have been specified
+      if ((query.getResultsDef() == null) || (query.getTarget() == null)) {
+         throw new DatacenterException("No taret given for the results");
+      }
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
       if (!(getStatus() instanceof QuerierAborted)) { // it may be that the query has been aborted immediately after being created, or while queued, etc
@@ -333,6 +357,9 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.13  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.12  2004/11/10 22:01:50  mch
  skynode starts and some fixes
 

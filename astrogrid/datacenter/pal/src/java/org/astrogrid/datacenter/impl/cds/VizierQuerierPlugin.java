@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.8 2004/11/08 02:59:13 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.9 2004/11/11 20:42:50 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.datacenter.impl.cds;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
@@ -25,10 +25,15 @@ import org.astrogrid.datacenter.impl.cds.vizier.VizierUnit;
 import org.astrogrid.datacenter.impl.cds.vizier.VizierWavelength;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.VotableDomResults;
 import org.astrogrid.datacenter.queriers.VotableInResults;
+import org.astrogrid.datacenter.queriers.sql.RdbmsResourceReader;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier SPI that performs queries against CDS Vizier webservice.
@@ -44,6 +49,12 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 public class VizierQuerierPlugin extends DefaultPlugin  {
+   
+   String[] mirrorUrls = new String[] {
+      "http://cdsws.u-strasbg.fr/axis/services/VizieR",
+      "http://archive.ast.cam.ac.uk/axis/services/VizieR"
+   };
+   
    
    /** default constructor */
    public VizierQuerierPlugin() {
@@ -75,10 +86,10 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       }
       
       String u = (String) keywords.get("UNIT");
-      if (u == null) {
-         throw new IllegalArgumentException("UNIT must be specified in query");
+      VizierUnit unit = VizierUnit.getFor(RdbmsResourceReader.getUnitsOf("Vizier","Radius")); //default to what's in the resource file
+      if (u != null) {
+         unit = VizierUnit.getFor(u);
       }
-      VizierUnit unit = VizierUnit.getFor(u);
       
       String w = (String) keywords.get("WAVELENGTH");
       VizierWavelength wavelength = null;
@@ -103,44 +114,52 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
          
          target = ra+" "+dec;
       }
+
+      //try each of the vizier services until one works
+      QueryResults results = null;
+      int site=0;
+      while ((results == null) && (site<mirrorUrls.length) && (!aborted)) {
+         try {
+            results = useSoap(mirrorUrls[site], querier, target, radius, unit, text, wavelength);
+         }
+         catch (IOException ioe) {
+            querier.getStatus().addDetail(ioe+" accessing "+mirrorUrls[site]);
+         }
+         site++;
+      }
+      if (aborted) return;
+      
+      if (results != null) {
+         results.send(query.getResultsDef(), user);
+      } else {
+         throw new IOException("No results from any of the Vizier services, details in the query status:\n"+querier.getStatus().asFullMessage());
+      }
+   }
+
+   /* SOAP access - no good for large results */
+   protected QueryResults useSoap(String siteUrl, Querier querier, String target, double radius, VizierUnit unit, String text, VizierWavelength wavelength) throws IOException {
       
       try {
 
-         /* SOAP access - no good for large datasets but required for now if ra/dec given */
-         if (target.indexOf(" ")>-1) {
             VizieRService service = new VizieRServiceLocator();
-            VizieR vizier = service.getVizieR(new URL("http://cdsws.u-strasbg.fr/axis/services/VizieR"));
+            VizieR vizier = service.getVizieR(new URL(siteUrl));
             String response;
             if (wavelength == null) {
-               System.out.println("Calling vizier via SOAP...");
+               querier.getStatus().addDetail("Calling vizier at "+siteUrl+" via SOAP, target='"+target+"', radius='"+radius+"', unit='"+unit+"' text='"+text+"'...");
                response = vizier.cataloguesData(target, radius, unit.toString(), text);
             }
             else {
-               System.out.println("Calling vizier (with wavelength) via SOAP...");
+               querier.getStatus().addDetail("Calling vizier at "+siteUrl+" via SOAP, target='"+target+"', radius='"+radius+"', unit='"+unit+"' text='"+text+"' wavelength='"+wavelength+"'...");
                response = vizier.cataloguesData(target, radius, unit.toString(), text, wavelength.toString());
             }
-            System.out.println("...vizier responded");
+            querier.getStatus().addDetail("Vizier Responded");
             if (!aborted) {
                if (response == null) {
                   throw new DatacenterException("Vizier returned null");
                }
-               VotableDomResults results = new VotableDomResults(querier, response);
-               results.send(query.getResultsDef(), user);
+               return new VotableDomResults(querier, response);
             }
-         }
-         else {
-            //but this times out....
-            String url = "http://cdsws.u-strasbg.fr/axis/services/VizieR?method=cataloguesData&target="+target+"&radius="+radius+"&unit="+unit+"&text="+text;
-            if (wavelength != null) {
-               url = url + "&wavelength="+wavelength;
-            }
-            System.out.println("Calling vizier via Url "+url+"...");
-            URLConnection connection = new URL(url).openConnection();
-            VotableInResults results = new VotableInResults(querier, new URL(url).openStream());
-            System.out.println("...vizier responded");
-            results.send(query.getResultsDef(), user);
-         }
-
+            return null;
       }
       catch (ServiceException e) {
          throw new IOException("Could not connect to Vizier: "+e);
@@ -153,12 +172,37 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       }
       
    }
+
+   /** Uses the http post provided by Axis along with the SOAP. This is better
+    for larger result sets than naively using SOAP, but seems to have troubles
+    * with timeouts as the socket timeout is not exposed here.  There are ways
+    around this see http://www.logicamente.com/sockets.html for example... */
+   protected QueryResults useHttp(String siteUrl, Querier querier, String target, double radius, VizierUnit unit, String text, VizierWavelength wavelength) throws IOException {
+      String url = siteUrl+"?method=cataloguesData&target="+target+"&radius="+radius+"&unit="+unit+"&text="+text;
+      if (wavelength != null) {
+         url = url + "&wavelength="+wavelength;
+      }
+      querier.getStatus().addDetail("Calling vizier via Url "+url+"...");
+//    URLConnection connection = new URL(url).openConnection();
+      return new VotableInResults(querier, new URL(url).openStream());
+   }
    
-   /** Returns just the number of matches rather than the list of matches */
+   
+   /** Returns just the number of matches rather than the list of matches. Since there's no way to do this yet
+    * directly with Vizier (I don't think?), we just do a normal query then count the rows */
    public long getCount(Account user, Query query, Querier querier) throws IOException {
-      // TODO
-      throw new UnsupportedOperationException("Todo");
-      
+      StringWriter sw = new StringWriter();
+      query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
+      askQuery(user, query, querier);
+      try {
+         return DomHelper.newDocument(sw.toString()).getElementsByTagName("TR").getLength();
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException("Server not configured correctly ",e);
+      }
+      catch (SAXException e) {
+         throw new IOException("Vizier returned invalid VOTable: "+e);
+      }
    }
    
    
@@ -167,6 +211,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.9  2004/11/11 20:42:50  mch
+ Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
  Revision 1.8  2004/11/08 02:59:13  mch
  Fixes to connect to Vizier
 

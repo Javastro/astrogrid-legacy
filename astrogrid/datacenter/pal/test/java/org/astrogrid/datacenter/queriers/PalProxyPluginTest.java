@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPluginTest.java,v 1.2 2004/11/09 17:42:22 mch Exp $
+ * $Id: PalProxyPluginTest.java,v 1.3 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,7 +38,7 @@ public class PalProxyPluginTest extends TestCase {
 
       StringWriter results = new StringWriter();
       Query query = SimpleQueryMaker.makeConeQuery(20,-89.9,0.2, TargetMaker.makeIndicator(results));
-      Querier querier = new Querier(Account.ANONYMOUS, query);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, query, this);
       querier.ask();
 
       String s = results.toString();

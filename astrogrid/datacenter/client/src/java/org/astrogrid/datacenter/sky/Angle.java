@@ -1,5 +1,5 @@
 /*
- * $Id: Angle.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: Angle.java,v 1.2 2004/11/11 20:42:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -87,6 +87,11 @@ public class Angle
    /** Creates an angle from hours */
    public static Angle fromHours(double hours)  { return new Angle(hours*HRS2DEG); }
 
+   /** Parses the given string for an Angle.  Currently just reads as decimal degrees */
+   public static Angle parseAngle(String angle) {
+      return fromDegrees(Double.parseDouble(angle));
+   }
+   
    /** Return internal representation of angle */
    private double getAngle()              {  return degs;   }
 
@@ -165,6 +170,9 @@ public class Angle
 
 /*
 $Log: Angle.java,v $
+Revision 1.2  2004/11/11 20:42:50  mch
+Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
+
 Revision 1.1  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
