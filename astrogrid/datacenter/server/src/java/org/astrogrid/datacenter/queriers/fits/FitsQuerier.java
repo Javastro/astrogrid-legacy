@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.10 2003/12/03 19:37:03 mch Exp $
+ * $Id: FitsQuerier.java,v 1.11 2003/12/09 12:31:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,7 +55,7 @@ public class FitsQuerier extends Querier
                                          adqlRegion.getRadius().getValue());
 
          //@todo now what?
-         return null;
+         return new FitsResults(filenames);
       }
       catch (ADQLException e)
       {
@@ -227,6 +227,9 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.11  2003/12/09 12:31:23  mch
+ New Fits Result set
+
  Revision 1.10  2003/12/03 19:37:03  mch
  Introduced DirectDelegate, fixed DummyQuerier
 
