@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<DataCenterMetadata version="0.1">
+<!-- describe the columns of each published table as follows:
+<column table="_table_name_" name="_column_name_">
+   <ucd>_UCD_</ucd>
+   <units>_String_</units>
+   <description>_Textual_Description_</description>
+</column>
+-->
+
+</DataCenterMetadata>
