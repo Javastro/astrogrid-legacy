@@ -1,7 +1,9 @@
-// package org.astrogrid.mySpace.mySpaceRegistry;
+package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
 import java.util.*;
+
+import org.astrogrid.mySpace.mySpaceStatus.*;
 
 /**
  * The <code>RegistryManager</code> class is used to access entries in
@@ -92,6 +94,9 @@ public class RegistryManager
             }
             catch (ClassNotFoundException cnfe)
             {  more = false;
+               MySpaceStatus stat1  = new MySpaceStatus(
+                 "Registry file " + registryFileName + " is corrupt.",
+                 "e");
             }
          }
 
@@ -101,8 +106,9 @@ public class RegistryManager
          ois.close();
       }
       catch (IOException e)
-      {  System.out.println("Error reading registry file: "
-           + e.toString() );
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           "Failure reading registry file " + registryFileName + ".",
+           "e");
       }
    }
 
@@ -117,6 +123,14 @@ public class RegistryManager
    {  this.registryFileName = registryFileName;
    }
 
+/**
+ * Dummy constructor with no arguments.
+ */
+
+   public RegistryManager()
+   {  registryFileName = "";
+   }
+
 //
 // Finaliser.
 
@@ -125,7 +139,7 @@ public class RegistryManager
  * <code>RegistryManager</code> is no longer required.
  */
 
-   protected void finalize()
+   public void finalize()
    {
 
 //
@@ -156,8 +170,9 @@ public class RegistryManager
          oos.close();
       }
       catch (IOException e)
-      {  System.out.println("Error writing registry file: "
-          + e.toString() );
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           "Failure writing registry file " + registryFileName + ".",
+           "e");
       }
    }
 

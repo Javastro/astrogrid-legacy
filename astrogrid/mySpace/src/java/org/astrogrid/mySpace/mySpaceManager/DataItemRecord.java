@@ -1,4 +1,4 @@
-// package org.astrogrid.mySpace.mySpaceRegistry;
+package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
 import java.util.Calendar;
