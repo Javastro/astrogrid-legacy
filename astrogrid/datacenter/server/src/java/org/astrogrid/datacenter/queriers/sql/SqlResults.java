@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.31 2004/08/18 18:44:12 mch Exp $
+ * $Id: SqlResults.java,v 1.32 2004/08/27 11:20:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -199,7 +199,8 @@ public class SqlResults extends QueryResults
 
             for (int c=1;c<=cols;c++)
             {
-               printOut.print(sqlResults.getString(c)+", ");
+               printOut.print(sqlResults.getString(c));
+               if (c<cols) { printOut.print(", "); }
             }
             printOut.println();
             
@@ -235,6 +236,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.32  2004/08/27 11:20:43  mch
+ Fix to remove comma at end of lines in a CSV
+
  Revision 1.31  2004/08/18 18:44:12  mch
  Created metadata plugin service and added helper methods
 
