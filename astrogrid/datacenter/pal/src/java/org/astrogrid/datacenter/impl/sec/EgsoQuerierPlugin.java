@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,7 +53,7 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
       querier.setStatus(new QuerierQuerying(querier.getStatus()));
       //convert query to SQL
       StdSqlMaker ssm = new StdSqlMaker();
-      String sql = ssm.getSql(query);
+      String sql = ssm.makeSql(query);
 
       try {
          //call SEC - results come back as a complete String
@@ -73,11 +73,47 @@ public class EgsoQuerierPlugin extends DefaultPlugin {
          throw new QuerierPluginException(e+", Server Configuration Error",e);
       }
    }
+   
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+      //convert query to SQL
+      StdSqlMaker ssm = new StdSqlMaker();
+      String sql = ssm.makeCountSql(query);
+
+      try {
+         //call SEC - results come back as a complete String
+         String resultsVot = secPort.sql(sql);
+         VotableDomResults results = new VotableDomResults(querier, resultsVot);
+         if (!aborted) {
+            throw new UnsupportedOperationException("Not done yet");
+         }
+         return -1;
+      }
+      catch (RemoteException e) {
+         throw new QuerierPluginException(e+" from PAL to EGSO, Submitting '"+sql+"' to EGSO service at "+SEC_URL,e);
+      }
+      catch (SAXException e) {
+         throw new QuerierPluginException(e+" parsing results from submitting '"+sql+"' to EGSO service at "+SEC_URL,e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new QuerierPluginException(e+", Server Configuration Error",e);
+      }
+   }
+   
+   
+   
 }
 
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.4  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.3.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.3  2004/10/18 13:11:30  mch
  Lumpy Merge
 

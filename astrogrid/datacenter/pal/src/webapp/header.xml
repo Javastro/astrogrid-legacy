@@ -5,7 +5,7 @@
          <img border='0' alt='AstroGrid' src='http://www.astrogrid.org/images/AGlogo' align='left'></img>
          </a>
       </td><td>
-         <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/index.html' id='projectLogo'>
+         <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/' id='projectLogo'>
          <img border='0' alt='Publishers Astrogrid Library' src='http://www.astrogrid.org/images/AGlogo' align='right'></img>
          </a>
       </td>
@@ -16,7 +16,7 @@
   <div class='xright'>
     <a href='http://www.astrogrid.org'>AstroGrid</a>
     | <a href='index.html'> <%= DataServer.getDatacenterName() %></a>
-    | <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/index.html'>Latest PAL</a>
+    | <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/'>Latest PAL</a>
   </div>
   <div class='clear'></div> <!-- switch off left right stuff -->
 </div>

@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.5 2004/10/18 13:11:30 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.6 2004/11/03 00:17:56 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -25,7 +25,7 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.NullTarget;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import java.net.URISyntaxException;
 
 /** Test the Fits processing classes
@@ -61,7 +61,7 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
       
       querier.ask();
 
@@ -91,6 +91,12 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.6  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.5.6.1  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
  Revision 1.5  2004/10/18 13:11:30  mch
  Lumpy Merge
 

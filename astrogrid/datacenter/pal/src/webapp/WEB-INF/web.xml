@@ -17,7 +17,8 @@
         <listener-class>org.astrogrid.datacenter.servlet.ContainerListener</listener-class>
     </listener>
     -->
-     
+
+    
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -91,7 +92,7 @@
   <servlet>
     <servlet-name>GetLog</servlet-name>
     <description>Returns the log</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.GetLog</servlet-class>
+    <servlet-class>org.astrogrid.webapp.GetLog</servlet-class>
   </servlet>
 
   <servlet>
@@ -229,6 +230,36 @@
     <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
+
+  <!-- Security stuff - ensure admin & setup pages are not readily available -->
+  <security-constraint>
+      <web-resource-collection>
+          <web-resource-name></web-resource-name>
+          <url-pattern>/admin/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+          <role-name>administrator</role-name>
+      </auth-constraint>
+  </security-constraint>
+
+  <security-constraint>
+      <web-resource-collection>
+          <web-resource-name></web-resource-name>
+          <url-pattern>/setup/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+          <role-name>administrator</role-name>
+      </auth-constraint>
+  </security-constraint>
+   
+  <login-config>
+      <auth-method>BASIC</auth-method>
+      <realm-name>AstroGrid</realm-name>
+  </login-config>
+
+  <security-role>
+     <role-name>manager</role-name>
+  </security-role>
 
   <!-- causes Tomcat to throw an exception... fix later
   <resource-ref>

@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+ * $Id: TargetIndicator.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,74 +14,26 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import org.astrogrid.community.Account;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.Msrl;
 
 /**
- * Used to indicate the target where the results are to be sent.  May be an AGSL, or an email address, or
- * some IVO based thingamy that is still to be resolved
+ * Indicates the target where the results are to be sent.  TargetIndicators
+ * represent anything that can be resolved into a stream or writer.  Thus they
+ * might be URLsMay be an AGSL, or an email address, or
+ * some IVO based thingamy that is still to be resolved.
+ * <p>
+ * Essentially TargetIndicators provide a suitably typed and validated way of
+ * passing around where results are going to go, rather than having to pass around
+ * Strings to indicate Identifiers, and separate methods to handle Writers/Streams.
  *
  */
 
-public abstract class TargetIndicator  {
+public interface TargetIndicator  {
 
-   /**
-    * Tests the string & creates the right kind of TargetIndicator
-    */
-   public static TargetIndicator makeIndicator(String id) throws MalformedURLException, URISyntaxException {
-      if ((id == null) || (id.length() == 0) || (id.toLowerCase().equals("null")) || (id.toLowerCase().equals(NullTarget.NULL_TARGET_URI.toString().toLowerCase()))) {
-         return new NullTarget();
-      }
-      else if (id.startsWith("mailto:")) {
-         return new EmailTarget(id);
-      }
-      else if (Agsl.isAgsl(id)) {
-         return new AgslTarget(new Agsl(id));
-      }
-      else if (Ivorn.isIvorn(id)) {
-         return new IvornTarget(new Ivorn(id));
-      }
-      else {
-         throw new IllegalArgumentException("'"+id+" should start 'mailto:' or '"+Ivorn.SCHEME+"' or '"+Agsl.SCHEME+"'");
-      }
-   }
-
-   /**
-    * Creates the right kind of TargetIndicator for the given URI
-    */
-   public static TargetIndicator makeIndicator(URI target) throws MalformedURLException, URISyntaxException {
-      return makeIndicator(target.toString());
-   }
-   
-   /**
-    * Makes a target that will write to the given writer
-    */
-   public static TargetIndicator makeIndicator(Writer target)  {
-      return new WriterTarget(target);
-   }
-   
-   /**
-    * Makes a target that will write to the given AGSL
-    */
-   public static TargetIndicator makeIndicator(Agsl target)  {
-      return new AgslTarget(target);
-   }
-   
-   /**
-    * Makes a target that will write to the given IVORN
-    */
-   public static TargetIndicator makeIndicator(Ivorn target)  {
-      return new IvornTarget(target);
-   }
-   
-
-   /**
-    * Makes a target that will write to the given stream
-    */
-   public static TargetIndicator makeIndicator(OutputStream target)  {
-      return new StreamTarget(target);
-   }
 
    /** All targets must be able to resolve to a writer. The user is required
     * for permissions */
@@ -100,6 +52,15 @@ public abstract class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.4  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.3.6.2  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.3.6.1  2004/11/01 20:47:23  mch
+ Added a little bit of doc and introduced MsrlTarget/UrlTargets
+
  Revision 1.3  2004/10/18 13:11:30  mch
  Lumpy Merge
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StreamTarget.java,v 1.2 2004/10/12 17:41:41 mch Exp $
+ * $Id: StreamTarget.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,12 +13,12 @@ import java.io.Writer;
 import org.astrogrid.community.Account;
 
 /**
- * Used to indicate the target where the results are to be sent.  May be an AGSL, or an email address, or
- * some IVO based thingamy that is still to be resolved
+ * Used to indicate the target where the results are to be sent when that target
+ * is a given stream.
  *
  */
 
-public class StreamTarget extends TargetIndicator  {
+public class StreamTarget implements TargetIndicator  {
 
    protected OutputStream out = null;
    
@@ -45,6 +45,15 @@ public class StreamTarget extends TargetIndicator  {
 }
 /*
  $Log: StreamTarget.java,v $
+ Revision 1.3  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.2.8.2  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.2.8.1  2004/11/01 20:47:23  mch
+ Added a little bit of doc and introduced MsrlTarget/UrlTargets
+
  Revision 1.2  2004/10/12 17:41:41  mch
  added isForwardable
 

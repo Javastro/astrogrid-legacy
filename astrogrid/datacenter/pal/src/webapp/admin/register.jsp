@@ -33,7 +33,9 @@
          <form action="Register" method="POST">
           <p>
             Registry URL <input type="text" name="RegistryUrl" size="60"/>
-            (leave blank to register at <%= SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>)<br />
+            (leave blank to register on the
+            <a href='<%= SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>'>Default Registry</a>)
+            <br />
           </p>
            <p>
              <input type="submit" name='Submit' value="Register"  />
@@ -61,6 +63,32 @@
       out.write("</p>");
    }
 %>
+<!-- links to test/standard registries -->
+<hr>
+<table border='0'>
+   <tr>
+   <td><a href='http://hydra.star.le.ac.uk:8080/astrogrid-registry'>Hydra</a>
+   <td><a href='http://hydra.star.le.ac.uk:8080/astrogrid-registry/admin/entryForm.html'>Entry Form</a>
+   <td><a href='Register?RegistryUrl=http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/AdminService'>Push</a>
+   <td><a href='http://hydra.star.le.ac.uk:8080/astrogrid-registry/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
+   </tr>
+
+   <tr>
+   <td><a href='http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT'>Snapshot</a>
+   <td><a href='http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT/admin/entryForm.html'>Entry Form</a>
+   <td><a href='Register?RegistryUrl=http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT/services/AdminService'>Push</a>
+   <td><a href='http://twmbarlwm.star.le.ac.uk:8888/astrogrid-registry-SNAPSHOT/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
+   </tr>
+
+   <tr>
+   <td><a href='http://grendel12.roe.ac.uk:8080/astrogrid-registry'>ROE</a>
+   <td><a href='http://grendel12.roe.ac.uk:8080/astrogrid-registry/admin/entryForm.html'>Entry Form</a>
+   <td><a href='Register?RegistryUrl=http://grendel12.roe.ac.uk:8080/astrogrid-registry/services/AdminService'>Push</a>
+   <td><a href='http://grendel12.roe.ac.uk:8080/astrogrid-registry/pullResources.jsp?ResourceUrl=<%=ServletHelper.getUrlStem() %>GetMetadata'>Pull</a>
+   </tr>
+
+</table>
+
 </body>
 
 </div>

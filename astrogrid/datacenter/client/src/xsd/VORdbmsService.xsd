@@ -34,21 +34,9 @@
                <xs:element name="Driver" type="xs:string" minOccurs="0" maxOccurs="1"/>
                <xs:element name="Catalog" type="xs:string" minOccurs="0" maxOccurs="1"/>
 
-              <xs:element name="AstroGridServiceUrl05" type="vr:AccessURL" minOccurs="0">
-                 <xs:annotation>
-                   <xs:documentation>
-                     The SOAP service endpoint URL, conforming to the AstroGrid Itn05 WSDL interface
-                   </xs:documentation>
-                 </xs:annotation>
-              </xs:element>
+              
 
-              <xs:element name="SkyNodeUrl" type="vr:AccessURL" minOccurs="0">
-                 <xs:annotation>
-                   <xs:documentation>
-                     The SOAP service endpoint URL, conforming to the SkyNode WSDL interface
-                   </xs:documentation>
-                 </xs:annotation>
-              </xs:element>
+              
 
                <xs:element name="Table" type="TableType" minOccurs="1" maxOccurs="unbounded">
                   <xs:annotation>
@@ -65,7 +53,7 @@
    <xs:complexType name="TableType">
       <xs:sequence>
 
-         <xs:element name="Title" type="xs:string" minOccurs="0">
+         <xs:element name="Name" type="xs:string"/><xs:element name="Title" type="xs:string" minOccurs="0">
             <xs:annotation>
                <xs:documentation>
                   a human description of the tables contents
@@ -92,7 +80,7 @@
          <xs:element name="Column" minOccurs="0" maxOccurs="unbounded">
          <xs:complexType>
             <xs:sequence>
-               <xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
+               <xs:element name="Name" type="xs:string"/><xs:element name="Datatype" type="xs:string"/><xs:element name="Description" type="xs:string" minOccurs="0" maxOccurs="1"/>
                <xs:element name="Units" type="xs:string" minOccurs="1" maxOccurs="1"/>
                <xs:element name="UCD" type="xs:string" minOccurs="1" maxOccurs="1"/>
                <xs:element name="UcdPlus" type="xs:string" minOccurs="1" maxOccurs="1"/>
@@ -100,7 +88,7 @@
                <xs:element name="Link" type="xs:anyURI" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
           <xs:attribute name="name" type="xs:string"/>
-          <xs:attribute name="datatype"/>
+          <xs:attribute name="datatype" type="xs:string"/>
           <xs:attribute name="indexed" type="xs:boolean" default="false"/>
           <xs:attribute name="arraysize"/>
        </xs:complexType>
@@ -109,7 +97,7 @@
        </xs:element>
       </xs:sequence>
 
-        <xs:attribute name="name" type="xs:string"/>
+        
    </xs:complexType>
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: ExistPlugin.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: ExistPlugin.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,9 +32,8 @@ import org.xml.sax.SAXException;
  * @author Kevin B, Martin H
  */
 
-public class ExistPlugin extends DefaultPlugin
-{
-
+public class ExistPlugin extends DefaultPlugin {
+   
    /** Plugin implementation - carries out query.
     */
    public void askQuery(Account user, Query query, Querier querier) throws IOException {
@@ -49,6 +48,12 @@ public class ExistPlugin extends DefaultPlugin
       }
    }
    
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+      throw new UnsupportedOperationException("To do");
+   }
+   
+
    /** Returns the limit configured for this application */
    public long getLocalLimit() {
       return SimpleConfig.getSingleton().getInt("datacenter.results.limit",300);
@@ -117,6 +122,12 @@ public class ExistPlugin extends DefaultPlugin
 
 /*
  $Log: ExistPlugin.java,v $
+ Revision 1.3  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.2.6.1  2004/10/27 00:43:40  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

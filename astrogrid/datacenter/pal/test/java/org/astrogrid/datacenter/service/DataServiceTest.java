@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.6 2004/10/08 15:21:42 mch Exp $
+/*$Id: DataServiceTest.java,v 1.7 2004/11/03 00:17:56 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.status.SelfMonitorBody;
 import org.astrogrid.status.TaskStatus;
 import org.astrogrid.util.DomHelper;
@@ -57,12 +57,10 @@ public class DataServiceTest extends ServerTestCase {
 //       query3 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-3.xml"));
     }
 
-    
-
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE")));
+       server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -76,7 +74,7 @@ public class DataServiceTest extends ServerTestCase {
    {
       //submit query
       StringWriter sw = new StringWriter();
-       query1.setResultsDef(new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+       query1.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE"));
       server.askQuery(Account.ANONYMOUS, query1);
       String result = sw.toString();
        
@@ -90,8 +88,8 @@ public class DataServiceTest extends ServerTestCase {
    public void testStatus() throws Throwable {
       //submit queries
       StringWriter sw = new StringWriter();
-      server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE")));
-       query1.setResultsDef(new ReturnTable(TargetIndicator.makeIndicator(sw), "VOTABLE"));
+      server.submitQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30, 30, 6, new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE")));
+       query1.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), "VOTABLE"));
       server.submitQuery(Account.ANONYMOUS, query1);
 
       DataServiceStatus status = DataServer.getStatus();
@@ -100,6 +98,13 @@ public class DataServiceTest extends ServerTestCase {
       
       SelfMonitorBody.writeHtmlStatus(new StringWriter(), status.getServiceStatus());
    }
+
+   /** Tests the count return */
+   public void testCount() throws Exception {
+      long count = server.askCount(Account.ANONYMOUS, SimpleQueryMaker.makeConeCondition(30,30,6));
+      
+   }
+   
     
     public void testAbort() throws Exception {
        //@todo
@@ -137,6 +142,15 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.7  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.6.8.2  2004/11/02 19:41:26  mch
+Split TargetIndicator to indicator and maker
+
+Revision 1.6.8.1  2004/10/27 00:43:40  mch
+Started adding getCount, some resource fixes, some jsps
+
 Revision 1.6  2004/10/08 15:21:42  mch
 updates for status
 

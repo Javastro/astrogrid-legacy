@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate_v05.java,v 1.8 2004/10/25 13:14:19 jdt Exp $
+ * $Id: WebDelegate_v05.java,v 1.9 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -49,11 +49,8 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
    /** Generated binding code that mirrors the service's methods */
    private AxisDataServerV05SoapBindingStub binding;
    
-   /** Returns the metadata  */
-   public String getMetadata() throws RemoteException {
-      return binding.getMetadata();
-   }
-   
+   /** endpoint for error messages */
+   private URL endpoint = null;
    
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
@@ -61,22 +58,45 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
     */
    public WebDelegate_v05(URL givenEndPoint) throws AxisFault
    {
+      this.endpoint = givenEndPoint;
       binding = new AxisDataServerV05SoapBindingStub(givenEndPoint, new AxisDataServer_v05_ServiceLocator());
    }
    
    /**
     * Sets the timeout for calling the service - ie how long after the initial call
-    * is made before a timeout exception is thrown
+    * is made before a timeout exception is thrown, in milliseconds
     */
-   public void setTimeout(int givenTimeout) {
-      binding.setTimeout(givenTimeout);
+   public void setTimeout(int millis) {
+      binding.setTimeout(millis);
    }
+   
+   /** Returns the metadata  */
+   public String getMetadata() throws IOException {
+      try {
+         return binding.getMetadata();
+      }
+      catch (IOException ioe) {
+         //add URL
+         IOException nioe = new IOException(ioe.getMessage()+", endpoint="+endpoint);
+         nioe.setStackTrace(ioe.getStackTrace());
+         throw nioe;
+      }
+   }
+   
    
    /**
     * Attempt to stop a query
     */
    public void abortQuery(String id) throws IOException {
-      binding.abortQuery(id);
+      try {
+         binding.abortQuery(id);
+      }
+      catch (IOException ioe) {
+         //add URL
+         IOException nioe = new IOException(ioe.getMessage()+", endpoint="+endpoint);
+         nioe.setStackTrace(ioe.getStackTrace());
+         throw nioe;
+      }
    }
 
    /**
@@ -84,10 +104,18 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
     */
    public String submitQuery(Query query) throws IOException {
       assert (query.getResultsDef().getTarget() instanceof UriTarget) : "Specify Target using a URI";
-      
-      return binding.submitAdqlQuery(Adql074Writer.makeAdql(query),
+
+      try {
+         return binding.submitAdqlQuery(Adql074Writer.makeAdql(query),
                                      ((UriTarget) query.getResultsDef().getTarget()).toURI().toString(),
                                      query.getResultsDef().getFormat());
+      }
+      catch (IOException ioe) {
+         //add URL
+         IOException nioe = new IOException(ioe.getMessage()+", endpoint="+endpoint);
+         nioe.setStackTrace(ioe.getStackTrace());
+         throw nioe;
+      }
    }
    
    /**
@@ -110,8 +138,16 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
       if (query.getResultsDef().getTarget() != null) {
          throw new IllegalArgumentException("Use v06 delegates to do blocking queries that send results elsewhere.  Otherwise remove target and read returned results");
       }
-      
-      results = binding.askAdqlQuery(Adql074Writer.makeAdql(query), query.getResultsDef().getFormat());
+
+      try {
+         results = binding.askAdqlQuery(Adql074Writer.makeAdql(query), query.getResultsDef().getFormat());
+      }
+      catch (IOException ioe) {
+         //add URL
+         IOException nioe = new IOException(ioe.getMessage()+", endpoint="+endpoint);
+         nioe.setStackTrace(ioe.getStackTrace());
+         throw nioe;
+      }
       
       return new StringBufferInputStream(results);
    }
@@ -121,9 +157,16 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
     * Get Status of query
     */
    public String getStatus(String id) throws IOException {
-      QueryStatusSoapyBean status = binding.getQueryStatus(id);
-      
-      return status.getState();
+      try {
+         QueryStatusSoapyBean status = binding.getQueryStatus(id);
+         return status.getState();
+      }
+      catch (IOException ioe) {
+         //add URL
+         IOException nioe = new IOException(ioe.getMessage()+", endpoint="+endpoint);
+         nioe.setStackTrace(ioe.getStackTrace());
+         throw nioe;
+      }
    }
    
 
@@ -146,8 +189,14 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
 
 /*
  $Log: WebDelegate_v05.java,v $
- Revision 1.8  2004/10/25 13:14:19  jdt
- Merges from branch PAL_MCH - another attempt
+ Revision 1.9  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.5.8.3  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.5.8.2  2004/10/29 17:56:14  mch
+ Added comment
 
  Revision 1.5.8.1  2004/10/21 19:10:24  mch
  Removed deprecated translators, moved SqlMaker back to server,
@@ -212,8 +261,14 @@ public class WebDelegate_v05 implements QuerySearcher, ConeSearcher {
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate_v05.java,v $
-Revision 1.8  2004/10/25 13:14:19  jdt
-Merges from branch PAL_MCH - another attempt
+Revision 1.9  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.5.8.3  2004/11/02 19:41:26  mch
+Split TargetIndicator to indicator and maker
+
+Revision 1.5.8.2  2004/10/29 17:56:14  mch
+Added comment
 
 Revision 1.5.8.1  2004/10/21 19:10:24  mch
 Removed deprecated translators, moved SqlMaker back to server,

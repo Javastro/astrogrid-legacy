@@ -1,5 +1,5 @@
 /*
- * $Id: WriterTarget.java,v 1.2 2004/10/12 17:41:41 mch Exp $
+ * $Id: WriterTarget.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,15 +9,15 @@ package org.astrogrid.slinger;
 import java.io.IOException;
 import java.io.Writer;
 import org.astrogrid.community.Account;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import java.io.OutputStream;
 
 /**
- * Target is a Writer
+ * Where the target is a Writer (eg an http response.out)
  *
  */
 
-public class WriterTarget extends TargetIndicator {
+public class WriterTarget implements TargetIndicator {
    
    protected Writer out = null;
    
@@ -51,6 +51,15 @@ public class WriterTarget extends TargetIndicator {
 }
 /*
  $Log: WriterTarget.java,v $
+ Revision 1.3  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.2.8.2  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.2.8.1  2004/11/01 20:47:23  mch
+ Added a little bit of doc and introduced MsrlTarget/UrlTargets
+
  Revision 1.2  2004/10/12 17:41:41  mch
  added isForwardable
 

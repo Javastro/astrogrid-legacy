@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,6 +73,25 @@ public class FitsQuerierPlugin extends DefaultPlugin
          FitsResults results = new FitsResults(querier, filenames);
          results.send(query.getResultsDef(), querier.getUser());
       }
+   }
+
+   /** Plugin implementation - returns number of matches
+    */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+
+      if (index == null) {
+         loadIndex();
+      }
+      String[] filenames = null;
+
+      XqlMaker maker = new XqlMaker();
+      String xql = maker.getXql(query);
+      
+      filenames = useeXist(xql);
+
+      return filenames.length;
    }
    
    private String[] useeXist(String xql) throws IOException {
@@ -226,6 +245,12 @@ public class FitsQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.4  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.3.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.3  2004/10/18 13:11:30  mch
  Lumpy Merge
 

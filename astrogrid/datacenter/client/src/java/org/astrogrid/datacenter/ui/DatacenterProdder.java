@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.11 2004/10/06 21:12:17 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.12 2004/11/03 00:17:56 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -31,7 +31,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.io.Piper;
-import org.astrogrid.slinger.AgslTarget;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
@@ -291,7 +291,7 @@ public class DatacenterProdder extends JFrame
          progBox.setProgress(4);
          progBox.setNote("Starting query");
          Query query = AdqlQueryMaker.makeQuery(queryDoc);
-         query.setResultsDef(new ReturnTable(new AgslTarget(new Agsl(resultsLoc)), QuerySearcher.VOTABLE));
+         query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(resultsLoc), QuerySearcher.VOTABLE));
          String id = querier.submitQuery(query);
 
          JFrame frame = new QueryPollingMonitor(new URL(datacenterLocator.getDelegateEndPoint()), id);
@@ -425,6 +425,12 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.12  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.11.8.1  2004/11/02 21:51:54  mch
+ Replaced AgslTarget with UrlTarget and MySpaceTarget
+
  Revision 1.11  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

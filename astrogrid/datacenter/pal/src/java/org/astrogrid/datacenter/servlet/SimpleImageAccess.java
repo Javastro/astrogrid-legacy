@@ -1,8 +1,9 @@
 /*
- * $Id: SimpleImageAccess.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+ * $Id: SimpleImageAccess.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -12,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 
@@ -23,7 +24,7 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public class SimpleImageAccess extends StdServlet {
+public class SimpleImageAccess extends DefaultServlet {
    
    DataServer server = new DataServer();
  
@@ -39,7 +40,7 @@ public class SimpleImageAccess extends StdServlet {
          double dec = Double.parseDouble(pos.substring(comma+1));
          
          try {
-            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, size, new ReturnTable(TargetIndicator.makeIndicator(response.getWriter()), formatList)));
+            server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, size, new ReturnTable(TargetMaker.makeIndicator(response.getWriter()), formatList)));
          } catch (Throwable e) {
             doError(response, "SIAP error (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList+")", e);
          }

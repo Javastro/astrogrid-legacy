@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,6 +11,7 @@ package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.condition.Condition;
 
 /**
  * Querier Plugins are used to carry out all the database specific backend
@@ -33,9 +34,17 @@ public interface QuerierPlugin  {
    /** Abort - if this is called, try and top the query and tidy up.   */
    public void abort();
    
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException;
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.4  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.3.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.3  2004/10/18 13:11:30  mch
  Lumpy Merge
 

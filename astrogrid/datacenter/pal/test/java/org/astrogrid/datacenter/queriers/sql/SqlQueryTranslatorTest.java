@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -77,7 +77,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
        assertNotNull(in);
        Query query = AdqlQueryMaker.makeQuery(in);
        
-       String result = translator.getSql(query).trim();
+       String result = translator.makeSql(query).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
        assertEquals("Returned incorrect '"+result+"'; ", correct.trim().toLowerCase(), result.trim().toLowerCase());
     }
@@ -92,6 +92,12 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.4  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.3.6.1  2004/10/27 00:43:40  mch
+Started adding getCount, some resource fixes, some jsps
+
 Revision 1.3  2004/10/18 13:11:30  mch
 Lumpy Merge
 

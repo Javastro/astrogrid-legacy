@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -77,7 +77,7 @@ public class WarehouseQuerier extends DefaultPlugin {
 
     //Convert to SQL
     PostgresSqlMaker sqlMaker = new PostgresSqlMaker();
-    String sql = escapeXmlSpecialChars(sqlMaker.getSql(query));
+    String sql = escapeXmlSpecialChars(sqlMaker.makeSql(query));
      
     log.debug("Successfully created SQL query from input ADQL");
 
@@ -339,6 +339,10 @@ public class WarehouseQuerier extends DefaultPlugin {
     return outString;
   }
 
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+            throw new UnsupportedOperationException("Not done yet");
+   }
   // ----------------------------------------------------------
   // Fallback defaults for values that should be configured on a
   // per-installation basis in the WarehouseServiceImpl.properties
@@ -350,6 +354,12 @@ public class WarehouseQuerier extends DefaultPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.3  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.2.6.1  2004/10/27 00:43:39  mch
+Started adding getCount, some resource fixes, some jsps
+
 Revision 1.2  2004/10/18 13:11:30  mch
 Lumpy Merge
 

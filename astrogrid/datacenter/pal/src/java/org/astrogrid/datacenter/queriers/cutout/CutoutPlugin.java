@@ -1,5 +1,5 @@
 /*
- * $Id: CutoutPlugin.java,v 1.4 2004/10/18 13:11:30 mch Exp $
+ * $Id: CutoutPlugin.java,v 1.5 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -41,6 +41,10 @@ public class CutoutPlugin extends DefaultPlugin {
    
    }
    
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+            throw new UnsupportedOperationException("Not done yet");
+   }
    
    
  
@@ -48,6 +52,12 @@ public class CutoutPlugin extends DefaultPlugin {
 
 /*
  $Log: CutoutPlugin.java,v $
+ Revision 1.5  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.4.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.4  2004/10/18 13:11:30  mch
  Lumpy Merge
 

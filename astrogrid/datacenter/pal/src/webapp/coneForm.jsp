@@ -40,9 +40,11 @@
    
          <form action="SubmitCone" method="POST">
           <p>
-            Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
-            Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />
-            Search radius in decimal degrees <input type="text" name="SR" /><br />
+            <table border='0'>
+            <tr><td align='right'>Right Ascension in decimal degrees, J2000 <td><input type="text" name="RA"/></tr>
+            <tr><td align='right'>Decliniation in decimal degress, J2000   <td><input type="text" name="DEC" /></tr>
+            <tr><td align='right'>Search radius in decimal degrees         <td><input type="text" name="SR" /></tr>
+            </table>
           </p>
            <p>
              <%@ include file='resultsForm.xml' %>

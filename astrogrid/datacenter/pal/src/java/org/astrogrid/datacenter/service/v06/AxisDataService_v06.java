@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v06.java,v 1.9 2004/10/25 13:14:19 jdt Exp $
+ * $Id: AxisDataService_v06.java,v 1.10 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,7 +21,7 @@ import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.service.AxisDataServer;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.status.ServiceStatus;
 
 /**
@@ -40,7 +40,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    AxisDataServer server = new AxisDataServer();
    
    /** Called by Axis when the service needs to be initialised. Not actuall of
-    * much use, as it only gets called through Axis, and other servlet/JSP access
+    * much use, as it only gets called when Axis is called, and other servlet/JSP access
     * won't do that
     */
    public void init(Object context) throws ServiceException {
@@ -61,7 +61,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
          StringWriter sw = new StringWriter();
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(sw));
          server.askQuery(getUser(), query);
          return sw.toString();
       }
@@ -77,7 +77,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
       try {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(target));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(target));
          server.askQuery(getUser(), query);
          return target.toString();
       }
@@ -87,7 +87,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    }
 
    /**
-    * Converts SQL-like ADQL into XML ADQL
+    * Translation service - Converts SQL-like ADQL into XML ADQL
     */
    public String adqlSql2xml(String sql) throws AxisFault {
       try {
@@ -98,6 +98,17 @@ public class AxisDataService_v06 implements ServiceLifecycle {
       }
    }
 
+   /** Returns the number of matches - this ought to be part of the select statement but
+    * it will do for temporary use */
+   public long count(String adql) throws AxisFault {
+      try {
+         Query query = AdqlQueryMaker.makeQuery(adql);
+         return server.askCount(getUser(), query.getCriteria());
+      }
+      catch (Throwable e) {
+         throw server.makeFault(server.SERVERFAULT, e+", asking Query("+adql+")", e);
+      }
+   }
 
    /**
     * Ask raw sql for blocking operation - returns the results
@@ -127,7 +138,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
       try {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(resultsTarget));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(resultsTarget));
          return server.submitQuery(getUser(), query);
       }
       catch (MalformedURLException mue) {
@@ -184,7 +195,7 @@ public class AxisDataService_v06 implements ServiceLifecycle {
    }
    
    /**
-    * Returns the user from the Message Context header
+    * Returns the user from the current Message Context header
     */
    protected Account getUser() {
       return Account.ANONYMOUS;
@@ -224,8 +235,14 @@ public class AxisDataService_v06 implements ServiceLifecycle {
 
 /*
 $Log: AxisDataService_v06.java,v $
-Revision 1.9  2004/10/25 13:14:19  jdt
-Merges from branch PAL_MCH - another attempt
+Revision 1.10  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.6.8.4  2004/11/02 19:41:26  mch
+Split TargetIndicator to indicator and maker
+
+Revision 1.6.8.3  2004/10/27 00:43:40  mch
+Started adding getCount, some resource fixes, some jsps
 
 Revision 1.6.8.2  2004/10/21 19:10:24  mch
 Removed deprecated translators, moved SqlMaker back to server,

@@ -1,4 +1,4 @@
-/*$Id: VotableDomResults.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+/*$Id: VotableDomResults.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,13 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.io.Writer;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import javax.xml.parsers.ParserConfigurationException;
 
 /** Trivial Implementation of {@link org.astrogrid.datacenter.queriers.QueryResults} backed by a
  * document object model containing a VOTable document
@@ -81,6 +81,12 @@ public class VotableDomResults extends QueryResults {
 
 /*
 $Log: VotableDomResults.java,v $
+Revision 1.3  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.2.6.1  2004/10/27 00:43:39  mch
+Started adding getCount, some resource fixes, some jsps
+
 Revision 1.2  2004/10/18 13:11:30  mch
 Lumpy Merge
 

@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,8 @@ import org.xml.sax.SAXException;
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
  */
 public class VizierQuerierPlugin extends DefaultPlugin  {
+   
+   
 
   /** Key specifying which Vizier catalogue to query. */
    public static final String CATALOGUE_NAME =
@@ -52,6 +54,8 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       try {
          delegate = new VizierDelegate();
 
+       public java.lang.String cataloguesData(java.lang.String target, double radius, java.lang.String unit, java.lang.String text, java.lang.String wavelength) throws java.rmi.RemoteException {
+
          VizierQueryMaker translator = new VizierQueryMaker();
          VizierQuery vquery = translator.getVizierQuery(query);
    
@@ -75,6 +79,12 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       
    }
    
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+      // TODO
+      throw new UnsupportedOperationException("Todo");
+      
+   }
    /**
     * Returns the VOResource element of the metadata.  Returns a string (rather than
     * DOM element)
@@ -101,6 +111,12 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.4  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.3.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.3  2004/10/18 13:11:30  mch
  Lumpy Merge
 

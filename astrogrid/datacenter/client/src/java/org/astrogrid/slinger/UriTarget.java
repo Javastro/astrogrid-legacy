@@ -1,5 +1,5 @@
 /*
- * $Id: UriTarget.java,v 1.1 2004/10/06 21:12:17 mch Exp $
+ * $Id: UriTarget.java,v 1.2 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,20 +19,21 @@ import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
- * Used to indicate the target where the results are to be sent.  May be an AGSL, or an email address, or
- * some IVO based thingamy that is still to be resolved
+ * Used to indicate the target where the results are to be sent, when that target
+ * is given by some identifier (eg URL, AGSL, IVORN, emial address etc).  Subclasses
+ * should handle each specific type; this should not be directly constructed.
  *
  */
 
-public abstract class UriTarget extends TargetIndicator {
+public abstract class UriTarget implements TargetIndicator {
 
    protected URI uri = null;
    
-   public UriTarget(URI givenUri) {
+   protected UriTarget(URI givenUri) {
       this.uri = givenUri;
    }
 
-   public UriTarget(String givenUri) throws URISyntaxException {
+   protected UriTarget(String givenUri) throws URISyntaxException {
       this.uri = new URI(givenUri);
    }
    
@@ -49,10 +50,20 @@ public abstract class UriTarget extends TargetIndicator {
       return "UriTarget ["+uri+"]";
    }
    
-   
+   /** All URI targets are forwardable, by passing the URI */
+   public boolean isForwardable() { return true; }
 }
 /*
  $Log: UriTarget.java,v $
+ Revision 1.2  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.1.8.2  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.1.8.1  2004/11/01 20:47:23  mch
+ Added a little bit of doc and introduced MsrlTarget/UrlTargets
+
  Revision 1.1  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

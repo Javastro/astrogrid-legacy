@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.7 2004/10/25 13:14:19 jdt Exp $
+/*$Id: DatacenterApplication.java,v 1.8 2004/11/03 00:17:56 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -116,7 +116,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     public boolean execute() throws CeaException {
         createAdapters();
         try {
-            TargetIndicator ti = CEATargetIndicator.makeIndicator((DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT));
+            TargetIndicator ti = CEATargetMaker.makeIndicator((DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT));
             String resultsFormat = (String)findInputParameterAdapter(DatacenterApplicationDescription.FORMAT).process();
             Query query = buildQuery(getApplicationInterface());
             query.getResultsDef().setTarget(ti);
@@ -174,7 +174,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            
        } else if (state.equals(QueryState.RUNNING_RESULTS)) {
            this.setStatus(Status.WRITINGBACK);
-          /*
+          /* this is all handled by the target indicators and the 'finish' below
            final ParameterAdapter result = (ParameterAdapter)outputParameterAdapters().next();
            //necessary to perform write-back in separate thread - as we don't know what thread is calling this callback
            // and it mustn't be the same one as is going to write out the output - otherwise we'll deadlock on the pipe.
@@ -203,17 +203,18 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            this.reportError(qs.toString()); // sets us in error state.
            
        } else if (state.equals(QueryState.FINISHED)) {
-          //if the output parameter indicates that the results are to be written to a string, then
-          //now that the query is finished we can set the internal value of that parameter to the
-          //string that contains the results, from a StringWriter created as part of
-          //CEATargetIndicator.makeIndicator
-         DatacenterParameterAdapter result = (DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT);
+          DatacenterParameterAdapter result = (DatacenterParameterAdapter) findOutputParameterAdapter(DatacenterApplicationDescription.RESULT);
           if (result.getExternalValue() == null) {
+             //if the output parameter indicates that the results are to be written to a string, then
+             //now that the query is finished we can set the internal value of that parameter to the
+             //string that contains the results, from a StringWriter created as part of
+             //CEATargetMaker.makeIndicator
              WriterTarget target = (WriterTarget) querier.getQuery().getTarget();
              StringWriter sw = (StringWriter) target.resolveWriter(acc);
              result.setInternalValue(sw.toString() );
           }
           else {
+             //if it's an external value - eg a URL - then we need to close that stream
              try {
                 StreamTarget target = (StreamTarget) querier.getQuery().getTarget();
                 target.resolveStream(acc).close();
@@ -252,8 +253,17 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
-Revision 1.7  2004/10/25 13:14:19  jdt
-Merges from branch PAL_MCH - another attempt
+Revision 1.8  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.3.8.4  2004/11/02 21:51:54  mch
+Replaced AgslTarget with UrlTarget and MySpaceTarget
+
+Revision 1.3.8.3  2004/11/02 19:48:43  mch
+Split TargetIndicator to indicator and maker
+
+Revision 1.3.8.2  2004/11/02 19:41:26  mch
+Split TargetIndicator to indicator and maker
 
 Revision 1.3.8.1  2004/10/20 18:12:45  mch
 CEA fixes, resource tests and fixes, minor navigation changes
@@ -299,3 +309,4 @@ Revision 1.1  2004/07/13 17:11:09  nw
 first draft of an itn06 CEA implementation for datacenter
  
 */
+

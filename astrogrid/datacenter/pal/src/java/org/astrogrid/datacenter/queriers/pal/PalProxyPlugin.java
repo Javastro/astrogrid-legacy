@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.6 2004/10/25 13:14:19 jdt Exp $
+ * $Id: PalProxyPlugin.java,v 1.7 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -79,6 +79,11 @@ public class PalProxyPlugin extends DefaultPlugin {
          vot.send(query.getResultsDef(), querier.getUser());
       }
       
+   }
+
+   /** Returns just the number of matches rather than the list of matches */
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+            throw new UnsupportedOperationException("Not done yet");
    }
 
    /** Use the remote PAL's SOAP interface */

@@ -1,8 +1,9 @@
 /*
- * $Id: GetMetadata.java,v 1.2 2004/10/12 23:09:53 mch Exp $
+ * $Id: GetMetadata.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,7 +17,7 @@ import org.astrogrid.util.DomHelper;
  *
  * @author mch
  */
-public class GetMetadata extends StdServlet {
+public class GetMetadata extends DefaultServlet {
    
    
    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

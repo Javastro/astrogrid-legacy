@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.9 2004/10/25 13:14:19 jdt Exp $
+/*$Id: QuerierManager.java,v 1.10 2004/11/03 00:17:56 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,10 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.TreeSet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.status.QuerierClosed;
 import org.astrogrid.datacenter.queriers.status.QuerierQueued;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
@@ -305,8 +303,11 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
- Revision 1.9  2004/10/25 13:14:19  jdt
- Merges from branch PAL_MCH - another attempt
+ Revision 1.10  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.6.10.2  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
 
  Revision 1.6.10.1  2004/10/20 19:42:03  mch
  Added context listener and initalisation code

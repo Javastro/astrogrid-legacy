@@ -1,8 +1,9 @@
 /*
- * $Id: SubmitAdqlSql.java,v 1.4 2004/10/13 01:28:59 mch Exp $
+ * $Id: SubmitAdqlSql.java,v 1.5 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,7 +17,7 @@ import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 
 /**
  * A servlet for processing Cone Queries.
@@ -25,7 +26,7 @@ import org.astrogrid.slinger.TargetIndicator;
  *
  * @author mch
  */
-public class SubmitAdqlSql extends StdServlet {
+public class SubmitAdqlSql extends DefaultServlet {
    
    DataServer server = new DataServer();
  
@@ -47,7 +48,7 @@ public class SubmitAdqlSql extends StdServlet {
          //stream.
          if (tableDef.getTarget() == null) {
             Query query = SqlQueryMaker.makeQuery(adqlSql);
-            query.getResultsDef().setTarget(TargetIndicator.makeIndicator(response.getWriter()));
+            query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter()));
             query.getResultsDef().setFormat(tableDef.getFormat());
             server.askQuery(Account.ANONYMOUS, query);
          }

@@ -1,11 +1,12 @@
 /*
- * $Id: Query.java,v 1.5 2004/10/18 13:11:30 mch Exp $
+ * $Id: Query.java,v 1.6 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.query;
 import java.util.Hashtable;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.slinger.TargetIndicator;
@@ -36,6 +37,9 @@ public class Query  {
     * queries or where we want the exact same output as was input.  */
    Hashtable aliases = new Hashtable();
    
+   /** Key used to define maximum number of matches allowed - defaults to 200, -1 = any */
+   public final static String MAX_RETURN_KEY = "datacenter.max.return";
+
    public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef) {
       this.scope = givenScope;
       this.criteria = someCriteria;
@@ -70,6 +74,18 @@ public class Query  {
       this.results = spec;
    }
 
+   /** Returns the lowest of the query or local limit */
+   public long getLocalLimit() {
+      long localLimit = SimpleConfig.getSingleton().getInt(MAX_RETURN_KEY, -1);
+      long queryLimit = getLimit();
+      if ((queryLimit == -1) || ((queryLimit > localLimit) && (localLimit != -1))) {
+         queryLimit = localLimit;
+      }
+      return queryLimit;
+   }
+   
+
+   
    public void addAlias(String table, String alias)
    {
       //note that this is indexed *by table*, so that we can look up which alias
@@ -107,6 +123,15 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.6  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.5.6.2  2004/11/01 16:01:25  mch
+ removed unnecessary getLocalLimit parameter, and added check for abort in sqlResults
+
+ Revision 1.5.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.5  2004/10/18 13:11:30  mch
  Lumpy Merge
 

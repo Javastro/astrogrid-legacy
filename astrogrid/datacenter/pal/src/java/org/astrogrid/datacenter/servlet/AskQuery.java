@@ -1,8 +1,9 @@
 /*
- * $Id: AskQuery.java,v 1.1 2004/10/12 23:09:53 mch Exp $
+ * $Id: AskQuery.java,v 1.2 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -14,7 +15,7 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 
 /**
  * A servlet for asking a query ynchronously.
@@ -25,7 +26,7 @@ import org.astrogrid.slinger.TargetIndicator;
  *
  * @author mch
  */
-public class AskQuery extends StdServlet {
+public class AskQuery extends DefaultServlet {
    
    DataServer server = new DataServer();
    
@@ -49,7 +50,7 @@ public class AskQuery extends StdServlet {
             else {
                response.setContentType("text/plain");
             }
-            query.getResultsDef().setTarget(TargetIndicator.makeIndicator(response.getWriter()));
+            query.getResultsDef().setTarget(TargetMaker.makeIndicator(response.getWriter()));
             server.askQuery(user, query);
          }
          else {

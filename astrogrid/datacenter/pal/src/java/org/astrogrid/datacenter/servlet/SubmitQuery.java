@@ -1,8 +1,9 @@
 /*
- * $Id: SubmitQuery.java,v 1.1 2004/10/12 23:09:53 mch Exp $
+ * $Id: SubmitQuery.java,v 1.2 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +37,7 @@ import java.net.URISyntaxException;
  *
  * @author mch
  */
-public class SubmitQuery extends StdServlet {
+public class SubmitQuery extends DefaultServlet {
    
    DataServer server = new DataServer();
    

@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.6 2004/11/03 00:17:56 mch Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
      * @see org.astrogrid.applications.parameter.ParameterAdapter#writeBack(java.lang.Object)
      */
     public void writeBack(Object arg0) throws CeaException {
-       throw new UnsupportedOperationException("Shouldn't use this in DSAs, see CEATargetIndicator");
+       throw new UnsupportedOperationException("Shouldn't use this in DSAs, see CEATargetMaker");
        /*
        CEATargetIndicator ti = (CEATargetIndicator) arg0;
         logger.debug("writing back "+ti+" to "+externalVal);
@@ -87,8 +87,11 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
 
 /*
 $Log: DatacenterParameterAdapter.java,v $
-Revision 1.5  2004/10/25 13:14:19  jdt
-Merges from branch PAL_MCH - another attempt
+Revision 1.6  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.1.12.2  2004/11/02 19:48:43  mch
+Split TargetIndicator to indicator and maker
 
 Revision 1.1.12.1  2004/10/20 18:12:45  mch
 CEA fixes, resource tests and fixes, minor navigation changes

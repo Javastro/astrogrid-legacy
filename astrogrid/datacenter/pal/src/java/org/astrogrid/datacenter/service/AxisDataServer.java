@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.6 2004/10/08 15:16:04 mch Exp $
+ * $Id: AxisDataServer.java,v 1.7 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,12 +19,11 @@ import org.apache.axis.server.AxisServer;
 import org.apache.axis.transport.http.HTTPConstants;
 
 /**
- * A class for serving data through an Axis webservice implementation.  It is
- * abstract as subclasses should inherit from it and implement the appropriate
- * interfaces/use appropriate bindings to the particular version of the interface
+ * A class for serving data through an Axis webservice implementation.  Implementations
+ * are the Axis interface classes and should 'have' it rather than 'subclass' it; if
+ * they 'subclass' it then this classes methods get exposed
  * <p>
- * (When Axis receives a SOAP message from the client it is routed to the subclass for processing.
- * It can be a singleton; state comes from the Queriers).
+ * It can be a singleton; state comes from the Queriers.
 
  * @author M Hill
  * @author Noel Winstanly
@@ -132,6 +131,12 @@ public class AxisDataServer extends DataServer {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.7  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.6.8.1  2004/11/02 19:41:26  mch
+Split TargetIndicator to indicator and maker
+
 Revision 1.6  2004/10/08 15:16:04  mch
 More on providing status
 

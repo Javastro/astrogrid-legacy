@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.6 2004/10/12 21:34:04 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.7 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -29,7 +29,7 @@ import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 
 /**
  * The implementation of the Datacenter web service for It4.1.
@@ -72,7 +72,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          StringWriter sw = new StringWriter();
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(sw));
          server.askQuery(getUser(), query);
          return sw.toString();
       }
@@ -93,7 +93,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
          StringWriter sw = new StringWriter();
          Query query = SqlQueryMaker.makeQuery(sql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(sw));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(sw));
          server.askQuery(getUser(), query);
          return sw.toString();
       }
@@ -108,7 +108,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
    public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), SimpleQueryMaker.makeConeQuery(ra, dec, radius, new ReturnTable(TargetIndicator.makeIndicator(sw), requestedFormat)));
+         server.askQuery(getUser(), SimpleQueryMaker.makeConeQuery(ra, dec, radius, new ReturnTable(TargetMaker.makeIndicator(sw), requestedFormat)));
          return sw.toString();
       }
       catch (Throwable e) {
@@ -123,7 +123,7 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
       try {
          Query query = AdqlQueryMaker.makeQuery(adql);
          query.getResultsDef().setFormat(requestedFormat);
-         query.getResultsDef().setTarget(TargetIndicator.makeIndicator(resultsTarget));
+         query.getResultsDef().setTarget(TargetMaker.makeIndicator(resultsTarget));
          server.askQuery(getUser(), query);
          return server.submitQuery(getUser(), query);
       }
@@ -199,6 +199,12 @@ public class AxisDataService_v05 implements AxisDataServer_v05_Port, ServiceLife
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.7  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.6.8.1  2004/11/02 19:41:26  mch
+Split TargetIndicator to indicator and maker
+
 Revision 1.6  2004/10/12 21:34:04  mch
 Slight change to error messages
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.5 2004/10/18 13:11:30 mch Exp $
+ * $Id: QueryResults.java,v 1.6 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,7 +72,8 @@ public abstract class QueryResults
    /** Write out in the native form produced by the backend.
     */
    public abstract void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
-   
+
+  
    /** Returns the number of results - or -1 if unknown */
    public abstract int getCount() throws IOException;
    
@@ -108,6 +109,16 @@ public abstract class QueryResults
     * as required, updating the querier status appropriately.
     */
    public void send(ReturnSpec returns, Account user) throws IOException {
+      if (returns instanceof ReturnTable) {
+         sendTable( (ReturnTable) returns, user);
+      }
+      else {
+         throw new UnsupportedOperationException("Unknown return type "+returns.getClass().getName());
+      }
+   }
+   
+   /** Sends a table */
+   public void sendTable(ReturnTable returns, Account user) throws IOException {
       
       QuerierProcessingResults status = new QuerierProcessingResults(querier.getStatus());
       querier.setStatus(status);

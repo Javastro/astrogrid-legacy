@@ -1,8 +1,9 @@
 /*
- * $Id: SubmitCone.java,v 1.6 2004/10/25 13:14:19 jdt Exp $
+ * $Id: SubmitCone.java,v 1.7 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,7 +16,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 
@@ -26,7 +27,7 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public class SubmitCone extends StdServlet {
+public class SubmitCone extends DefaultServlet {
    
    DataServer server = new DataServer();
  
@@ -57,7 +58,7 @@ public class SubmitCone extends StdServlet {
          //if a target is not given, we do an asynchronous (ask) Query to the response
          //stream.
          if (tableDef.getTarget() == null) {
-            tableDef.setTarget(TargetIndicator.makeIndicator(response.getWriter()));
+            tableDef.setTarget(TargetMaker.makeIndicator(response.getWriter()));
             server.askQuery(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra, dec, sr, tableDef));
          }
          else {

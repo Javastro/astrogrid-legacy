@@ -39,12 +39,11 @@
          <b>No Query found for that ID</b>
 <%   } %>
      
-<h2> <%= ServletHelper.makeSafeForHtml(status.getState().toString()) %></h2>
+<h2> <%= ServletHelper.makeSafeForHtml(status.getState().toString()) %> at <%= status.getTimestamp() %> </h2>
 
 <p>
 <b>  <%= ServletHelper.makeSafeForHtml(status.getMessage()) %></b>
 </p>
-      
 <%
       while (status != null) {
          String[] details= status.getDetails();

@@ -1,5 +1,5 @@
 /*
- * $Id: Slinger.java,v 1.3 2004/10/08 15:16:45 mch Exp $
+ * $Id: Slinger.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,16 +13,13 @@ import javax.mail.MessagingException;
 import javax.mail.Provider;
 import javax.mail.Session;
 import javax.mail.Transport;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.slinger.AgslTarget;
 import org.astrogrid.slinger.EmailTarget;
 import org.astrogrid.slinger.IvornTarget;
+import org.astrogrid.slinger.MySpaceTarget;
 import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.store.delegate.StoreException;
+import org.astrogrid.slinger.UrlTarget;
 
 /**
  * Something to do with sending things. Not really properly thought out yet
@@ -69,7 +66,7 @@ public class Slinger  {
       }
 
       // test to see that the agsl for the results is valid
-      if ((target instanceof AgslTarget) || (target instanceof IvornTarget)) {
+      if ( (target instanceof UrlTarget) || (target instanceof IvornTarget) || (target instanceof MySpaceTarget) ) {
 
          Writer out = target.resolveWriter(user);
 
@@ -96,6 +93,12 @@ public class Slinger  {
 }
 /*
  $Log: Slinger.java,v $
+ Revision 1.4  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.3.8.1  2004/11/02 21:51:54  mch
+ Replaced AgslTarget with UrlTarget and MySpaceTarget
+
  Revision 1.3  2004/10/08 15:16:45  mch
  Removed unnecessary imports
 

@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.4 2004/11/03 00:17:56 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -80,7 +80,7 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
        Document adqlDom = DomHelper.newDocument( SqlQueryTranslatorTest.class.getResourceAsStream(filename));
        Query adqlQuery = AdqlQueryMaker.makeQuery(adqlDom.getDocumentElement());
        
-       String result = translator.getSql(adqlQuery).trim();
+       String result = translator.makeSql(adqlQuery).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
        assertEquals("Returned incorrect '"+result+"'; ", correct.trim().toLowerCase(), result.trim().toLowerCase());
     }
@@ -95,6 +95,12 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.4  2004/11/03 00:17:56  mch
+PAL_MCH Candidate 2 merge
+
+Revision 1.3.6.1  2004/10/27 00:43:40  mch
+Started adding getCount, some resource fixes, some jsps
+
 Revision 1.3  2004/10/18 13:11:30  mch
 Lumpy Merge
 

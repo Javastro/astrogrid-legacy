@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.8 2004/10/25 13:14:19 jdt Exp $
+ * $Id: DataServer.java,v 1.9 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -167,6 +167,17 @@ public class DataServer
    public String submitQuery(Account user, Condition condition, ReturnSpec returns) throws Throwable {
       return submitQuery(user, new Query(condition, returns));
    }
+
+   /**
+    * Returns the number of matches of the given condition
+    */
+   public long askCount(Account user, Condition searchCondition) throws IOException {
+//      Querier querier = Querier.makeQuerier(user, new Query(searchCondition, new ReturnCost(cost)));
+//      querierManager.askQuerier(querier);
+//      return cost.getNumResults();
+      throw new UnsupportedOperationException("todo");
+   }
+   
    
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external

@@ -1,10 +1,10 @@
 /*
- * $Id: TargetIndicatorTest.java,v 1.7 2004/10/25 13:14:19 jdt Exp $
+ * $Id: TargetIndicatorTest.java,v 1.1 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.queriers;
+package org.astrogrid.slinger;
 
 
 import org.astrogrid.slinger.*;
@@ -22,27 +22,40 @@ public class TargetIndicatorTest extends TestCase {
 
    public void testNullMaker() throws Exception {
 
-      TargetIndicator target = TargetIndicator.makeIndicator((String) null);
+      TargetIndicator target = TargetMaker.makeIndicator((String) null);
       assertTrue( (target instanceof NullTarget));
       
-      target = TargetIndicator.makeIndicator("");
+      target = TargetMaker.makeIndicator("");
       assertTrue( (target instanceof NullTarget));
    }
    
    public void testIvornMaker() throws Exception {
-      TargetIndicator target = TargetIndicator.makeIndicator("ivo://wibble/key#path/to/file");
+      TargetIndicator target = TargetMaker.makeIndicator("ivo://wibble/key#path/to/file");
       assertNotNull(target);
       assertTrue(target instanceof IvornTarget);
    }
    
+   /*
    public void testAgslMaker() throws Exception {
-      TargetIndicator target = TargetIndicator.makeIndicator("astrogrid:store:http://some/place/with/a/file");
+      TargetIndicator target = TargetMaker.makeIndicator("astrogrid:store:http://some/place/with/a/file");
       assertNotNull(target);
       assertTrue(target instanceof AgslTarget);
    }
+    */
+   public void testUrlMaker() throws Exception {
+      TargetIndicator target = TargetMaker.makeIndicator("http://some/place/with/a/file");
+      assertNotNull(target);
+      assertTrue(target instanceof UrlTarget);
+   }
+
+   public void testMsrlMaker() throws Exception {
+      TargetIndicator target = TargetMaker.makeIndicator("myspace://somecommunity/some/place#with/a/file");
+      assertNotNull(target);
+      assertTrue(target instanceof MySpaceTarget);
+   }
    
    public void testEmailMaker() throws Exception {
-      TargetIndicator target = TargetIndicator.makeIndicator("mailto:mch@roe.ac.uk");
+      TargetIndicator target = TargetMaker.makeIndicator("mailto:mch@roe.ac.uk");
       assertNotNull(target);
       assertTrue(target instanceof EmailTarget);
    }

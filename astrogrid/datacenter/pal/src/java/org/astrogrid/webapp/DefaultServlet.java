@@ -1,8 +1,8 @@
 /*
- * $Id: StdServlet.java,v 1.2 2004/10/13 01:01:36 mch Exp $
+ * $Id: DefaultServlet.java,v 1.2 2004/11/03 00:17:56 mch Exp $
  */
 
-package org.astrogrid.datacenter.servlet;
+package org.astrogrid.webapp;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -19,9 +19,9 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public abstract class StdServlet extends HttpServlet {
+public abstract class DefaultServlet extends HttpServlet {
    
-   Log log = LogFactory.getLog(StdServlet.class);
+   Log log = LogFactory.getLog(DefaultServlet.class);
    
    /** Do same on POST requests as GET requests */
    public void doPost(HttpServletRequest request,

@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedResults.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: PrecannedResults.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -97,5 +97,4 @@ public class PrecannedResults extends QueryResults
       writeVotable(out, statusToUpdate);
    }
 
-}
-
+ }

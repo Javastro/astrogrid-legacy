@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedPlugin.java,v 1.6 2004/10/25 13:14:19 jdt Exp $
+ * $Id: PrecannedPlugin.java,v 1.7 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,7 +34,9 @@ public class PrecannedPlugin extends DefaultPlugin
       results.send(query.getResultsDef(), querier.getUser());
    }
 
-
+   public long getCount(Account user, Query query, Querier querier) throws IOException {
+      return 15;
+   }
 
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultPlugin.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: DefaultPlugin.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,10 +7,8 @@
 package org.astrogrid.datacenter.queriers;
 
 
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
 
 /**
  * Default plugin has an aborted flag and a logger
@@ -30,6 +28,12 @@ public abstract class DefaultPlugin implements QuerierPlugin {
 }
 /*
  $Log: DefaultPlugin.java,v $
+ Revision 1.3  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+ Revision 1.2.6.1  2004/10/27 00:43:39  mch
+ Started adding getCount, some resource fixes, some jsps
+
  Revision 1.2  2004/10/18 13:11:30  mch
  Lumpy Merge
 

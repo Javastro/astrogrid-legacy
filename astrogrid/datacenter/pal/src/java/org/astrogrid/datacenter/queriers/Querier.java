@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.9 2004/10/25 13:14:19 jdt Exp $
+ * $Id: Querier.java,v 1.10 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.service.v06.CEATargetIndicator;
 import org.astrogrid.datacenter.slinger.Slinger;
 
 /**
@@ -62,7 +61,9 @@ public class Querier implements Runnable, PluginListener {
    /** status of query */
    private QuerierStatus status;
 
-
+   /** true if abort called */
+   private boolean aborted = false;
+   
    /** For measuring how long the query took - calculated from status change times*/
 //use status info   private Date timeQueryStarted = null;
    /** For measuring how long query took - calculated from status change times*/
@@ -201,6 +202,8 @@ public class Querier implements Runnable, PluginListener {
          setStatus(new QuerierAborted(getStatus()));
       }
          
+      aborted = true;
+      
       return getStatus();
          
    }
@@ -322,8 +325,15 @@ public class Querier implements Runnable, PluginListener {
 }
 /*
  $Log: Querier.java,v $
- Revision 1.9  2004/10/25 13:14:19  jdt
- Merges from branch PAL_MCH - another attempt
+ Revision 1.10  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
+
+
+ Revision 1.6.6.3  2004/11/02 19:41:26  mch
+ Split TargetIndicator to indicator and maker
+
+ Revision 1.6.6.2  2004/11/01 16:01:25  mch
+ removed unnecessary getLocalLimit parameter, and added check for abort in sqlResults
 
  Revision 1.6.6.1  2004/10/20 18:12:45  mch
  CEA fixes, resource tests and fixes, minor navigation changes

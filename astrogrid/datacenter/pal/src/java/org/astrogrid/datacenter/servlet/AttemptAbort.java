@@ -1,8 +1,9 @@
 /*
- * $Id: AttemptAbort.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: AttemptAbort.java,v 1.3 2004/11/03 00:17:56 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
+import org.astrogrid.webapp.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,7 +16,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.ServletHelper;
 
@@ -24,7 +25,7 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public class AttemptAbort extends StdServlet {
+public class AttemptAbort extends DefaultServlet {
    
    DataServer server = new DataServer();
  

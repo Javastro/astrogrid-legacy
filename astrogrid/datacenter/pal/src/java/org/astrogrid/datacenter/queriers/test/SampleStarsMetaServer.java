@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.7 2004/10/25 13:14:19 jdt Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.8 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */

@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlTestHelper.java,v 1.5 2004/10/25 13:14:19 jdt Exp $
+ * $Id: AdqlTestHelper.java,v 1.6 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -110,8 +110,8 @@ public class AdqlTestHelper    {
 
 /*
  $Log: AdqlTestHelper.java,v $
- Revision 1.5  2004/10/25 13:14:19  jdt
- Merges from branch PAL_MCH - another attempt
+ Revision 1.6  2004/11/03 00:17:56  mch
+ PAL_MCH Candidate 2 merge
 
  Revision 1.2.6.1  2004/10/19 17:21:10  mch
  Removed incorrect assertElementsEqual recursion - not yet right

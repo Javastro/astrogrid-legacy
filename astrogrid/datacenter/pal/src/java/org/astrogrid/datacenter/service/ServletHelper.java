@@ -1,15 +1,15 @@
 /*
- * $Id: ServletHelper.java,v 1.8 2004/10/25 13:14:19 jdt Exp $
+ * $Id: ServletHelper.java,v 1.9 2004/11/03 00:17:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +18,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.TargetIndicator;
+import org.astrogrid.slinger.TargetMaker;
 
 /**
  * A set of dataserver methods for helping serving data in HTML form, eg for servlets
@@ -52,7 +53,7 @@ public class ServletHelper
 
    public static void setUrlStem(HttpServletRequest request) {
       setUrlStem(
-         request.getServerName() +":" + request.getServerPort()+"/"+request.getContextPath()
+         request.getScheme()+"://"+request.getServerName() +":" + request.getServerPort()+request.getContextPath()
       );
    }
 
@@ -96,17 +97,15 @@ public class ServletHelper
 
       TargetIndicator target = null;
 
-      if (request.getParameter("TargetBrowser") != null) {
+      if (request.getParameter("TargetResponse") != null) {
+         //return the results to the response (eg browser, servlet caller)
          target = null;
       }
       else if (request.getParameter("TargetURI") != null) {
-         String targetUri = request.getParameter("Target");   //direction - eg URI
-         if ( (targetUri == null) || (targetUri.trim().length()==0)) {
-            throw new IllegalArgumentException("No Target URI given");
-         }
+         String targetUri = request.getParameter("TargetURI");   //direction - eg URI
             
          try {
-            target = TargetIndicator.makeIndicator(targetUri);
+            target = TargetMaker.makeIndicator(targetUri);
          }
          catch (URISyntaxException e) {
             throw new IllegalArgumentException("Invalid target: "+target+" ("+e+")");
@@ -115,7 +114,10 @@ public class ServletHelper
             throw new IllegalArgumentException("Invalid target: "+target+" ("+e+")");
          }
       }
-      
+      else {
+        throw new IllegalArgumentException("No TargetURI or TargetResponse given");
+      }
+         
       String format = request.getParameter("Format");
       if ( (format != null) && (format.trim().length()>0)) {
          tableSpec.setFormat(format);
