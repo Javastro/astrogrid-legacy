@@ -6,3 +6,4 @@ velocity.log
 .project
 jestest.log
 .classpath
+junit*.properties
