@@ -6,7 +6,7 @@
        org.astrogrid.store.Agsl,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.sqlparser.Sql2Adql05,
-       org.astrogrid.datacenter.queriers.TargetIndicator,
+       org.astrogrid.datacenter.TargetIndicator,
        org.astrogrid.datacenter.query.AdqlQuery,
        org.astrogrid.datacenter.service.HtmlDataServer,
        org.astrogrid.io.*"

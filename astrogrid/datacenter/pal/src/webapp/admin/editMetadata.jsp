@@ -5,7 +5,6 @@
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.metadata.MetadataServer,
-       org.astrogrid.datacenter.admin.*,
        org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false"

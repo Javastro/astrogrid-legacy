@@ -6,7 +6,7 @@
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.ConeQuery,
        org.astrogrid.store.Agsl,
-       org.astrogrid.datacenter.queriers.TargetIndicator,
+       org.astrogrid.datacenter.TargetIndicator,
        org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false" %>
