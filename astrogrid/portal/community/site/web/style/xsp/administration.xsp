@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	>
+			
+	<!--+
+	    | The XSP page needs one non-xsp tag.
+	    | Anything in here gets added inside the Generator generate() method.
+	    +-->
+	    
+	<xsp:structure>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.ArrayList</xsp:include>
+		<xsp:include>java.util.Hashtable</xsp:include>
+		<xsp:include>java.util.Enumeration</xsp:include>		
+		<xsp:include>java.util.LinkedHashMap</xsp:include>
+		<xsp:include>java.util.Set</xsp:include>
+		<xsp:include>org.astrogrid.community.policy.data.GroupData</xsp:include>
+		<xsp:include>org.astrogrid.community.policy.data.CommunityData</xsp:include>		
+		<xsp:include>org.astrogrid.community.policy.data.AccountData</xsp:include>				
+		<xsp:include>org.astrogrid.community.policy.data.ResourceData</xsp:include>
+		<xsp:include>org.astrogrid.community.policy.data.GroupMemberData</xsp:include>
+	</xsp:structure>	    
+	    
+	    
+	<admin>
+	
+		<options>
+			<actions>
+			<xsp:logic>
+			<![CDATA[
+				LinkedHashMap actTable = (LinkedHashMap)session.getAttribute("actionlist");
+				if(actTable != null && actTable.size() > 0 ) {
+				Set keySet = actTable.keySet();
+				Iterator actionIterator = keySet.iterator();
+				    while(actionIterator.hasNext()) {
+    	              String key = (String)actionIterator.next();
+    	    ]]>
+    	              <xsp:element name="action">
+						<xsp:attribute name="name"><xsp:expr>actTable.get(key)</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>key</xsp:expr></xsp:attribute>
+					</xsp:element>     
+    	    <![CDATA[ 
+				    }
+				}
+			]]>				
+			</xsp:logic>				
+			</actions>
+		
+		</options>
+		
+		<options>
+			<resources>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList resList = (ArrayList)session.getAttribute("resourcelist");
+				ResourceData data = null;
+				Iterator iter = null;				
+				if(resList != null && resList.size() > 0 ) {
+				iter = resList.iterator();
+				while (iter.hasNext()) {
+					data = (ResourceData)iter.next();
+			]]>
+					<xsp:element name="resource">
+						<xsp:attribute name="name"><xsp:expr>data.getIdent()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>data.getIdent()</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+			</resources>
+		</options>
+
+		<options>
+			<members>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList memberList = (ArrayList)session.getAttribute("memberslist");
+				GroupMemberData gmd = null;
+				if(memberList != null && memberList.size() > 0 ) {
+				iter = memberList.iterator();
+				while (iter.hasNext()) {
+					gmd = (GroupMemberData)iter.next();
+			]]>
+					<xsp:element name="member">
+						<xsp:attribute name="group"><xsp:expr>gmd.getGroup()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="account"><xsp:expr>gmd.getAccount()</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+			</members>
+		</options>
+		
+		
+		<options>
+		<groups>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList groupList = (ArrayList)session.getAttribute("grouplist");
+				GroupData gd = null;
+				if(groupList != null && groupList.size() > 0 ) {
+				iter = groupList.iterator();
+				while (iter.hasNext()) {
+					gd = (GroupData)iter.next();
+			]]>
+					<xsp:element name="group">
+						<xsp:attribute name="name"><xsp:expr>gd.getIdent()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>gd.getIdent()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="type"><xsp:expr>gd.getType()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="desc"><xsp:expr>gd.getDescription()</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</groups>
+		</options>
+		<options>
+		<communities>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList commList = (ArrayList)session.getAttribute("communitylist");
+				CommunityData cd = null;
+				if(commList != null && commList.size() > 0 ) {
+				iter = commList.iterator();
+				while (iter.hasNext()) {
+					cd = (CommunityData)iter.next();
+			]]>
+					<xsp:element name="community">
+						<xsp:attribute name="name"><xsp:expr>cd.getIdent()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>cd.getIdent()</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</communities>
+		</options>
+
+		<options>
+		<accounts>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList adList = (ArrayList)session.getAttribute("accountlist");
+				AccountData ad = null;
+				if(adList != null && adList.size() > 0 ) {
+				iter = adList.iterator();
+				while (iter.hasNext()) {
+					ad = (AccountData)iter.next();
+			]]>
+					<xsp:element name="account">
+						<xsp:attribute name="name"><xsp:expr>ad.getIdent()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>ad.getIdent()</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</accounts>
+		</options>
+
+
+		
+	</admin>
+</xsp:page>
