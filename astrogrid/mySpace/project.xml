@@ -1,20 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.33 2004/03/08 16:14:15 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<!-- $Id: project.xml,v 1.34 2004/03/09 23:17:01 mch Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-mySpace</id>
     <name>Astrogrid MySpace</name>
-    <description> MySpace provides astronomers with data storage that is not 
-        necessarily at their home institution and which they can use to store 
-        things (e.g. result sets from queries, workflows, private datasets, 
-        etc) related to their work within the AstroGrid system. Users will be 
-        able to interact with their holdings in MySpace as easily as if they 
-        were directly on a local machine - i.e. transparent access/listings, 
-        ease of moving files between MySpace and a local machine, with no need 
+    <description> MySpace provides astronomers with data storage that is not
+        necessarily at their home institution and which they can use to store
+        things (e.g. result sets from queries, workflows, private datasets,
+        etc) related to their work within the AstroGrid system. Users will be
+        able to interact with their holdings in MySpace as easily as if they
+        were directly on a local machine - i.e. transparent access/listings,
+        ease of moving files between MySpace and a local machine, with no need
         for special logins (beyond generic log into AstroGrid).</description>
     <shortDescription>AstroGrid MySpace Components</shortDescription>
     <dependencies>
+    
+    
+      <!-- for VoSpaceClient resolver - not needed when this is removed -->
+        <dependency>
+            <artifactId>astrogrid-registry-client</artifactId>
+            <groupId>astrogrid-registry-client</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <groupId>astrogrid-registry-common</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+    
+    
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>astrogrid-common</groupId>
