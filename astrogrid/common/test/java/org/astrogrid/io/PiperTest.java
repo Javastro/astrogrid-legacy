@@ -1,0 +1,74 @@
+/*
+ * $Id: PiperTest.java,v 1.1 2004/02/17 14:56:25 mch Exp $
+ */
+
+package org.astrogrid.io;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import org.hsqldb.lib.StringInputStream;
+
+/**
+ * Tests Piper
+ */
+
+public class PiperTest extends TestCase
+{
+   private static final String testContents = "A length of string to test streams against";
+
+   /**
+    * Streams
+    */
+   public void testStreamPipe() throws IOException
+   {
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      
+      Piper.pipe(new StringInputStream(testContents), out);
+
+      assertEquals("Pipe has changed contents", testContents, out.toString());
+   }
+
+   /**
+    * Readers
+    */
+   public void testReadPipe() throws IOException
+   {
+      StringWriter writer = new StringWriter();
+      
+      Piper.pipe(new StringReader(testContents), writer);
+
+      assertEquals("Pipe has changed contents", testContents, writer.toString());
+   }
+
+
+    /**
+     * Assembles and returns a test suite made up of all the testXxxx() methods
+      * of this class.
+     */
+    public static Test suite() {
+        // Reflection is used here to add all the testXXX() methods to the suite.
+        return new TestSuite(PiperTest.class);
+    }
+
+    /**
+     * Runs the test case.
+     */
+    public static void main(String args[])
+    {
+       junit.textui.TestRunner.run(suite());
+    }
+}
+
+/*
+ $Log: PiperTest.java,v $
+ Revision 1.1  2004/02/17 14:56:25  mch
+ Increased test coverage
+
+
+ */
