@@ -1,4 +1,4 @@
-/*$Id: MicrosoftSqlMaker.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: MicrosoftSqlMaker.java,v 1.2 2005/02/18 18:17:10 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,6 @@
  *
 **/
 package org.astrogrid.dataservice.queriers.sql.sqlserver;
-import org.astrogrid.query.sql.sqlserver.*;
 
 import java.io.IOException;
 import org.astrogrid.dataservice.queriers.sql.StdSqlMaker;
@@ -35,8 +34,11 @@ public class MicrosoftSqlMaker extends StdSqlMaker {
 
 /*
 $Log: MicrosoftSqlMaker.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/18 18:17:10  mch
+Fixed a few compile problems
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

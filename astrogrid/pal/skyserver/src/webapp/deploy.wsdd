@@ -9,15 +9,18 @@
 <deployment xmlns="http://xml.apache.org/axis/wsdd/"
             xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
 
- <service name="AxisDataService05" style="RPC">
-  <parameter name="className" value="org.astrogrid.datacenter.service.v05.AxisDataService_v05"/>
-  <parameter name="allowedMethods" value="*"/>
+ <!-- Iteration 06 interface -->
+ <service name="AxisDataService06" style="wrapped" use='literal'>
+  <!-- Class that defines the interface -->
+  <parameter name="className" value="org.astrogrid.dataservice.service.soap.AxisDataService_v06"/>
   <!-- Create one instance for the life of the service -->
   <parameter name="scope" value="Application"/>
+  <!-- Publish all of the service's methods -->
+  <parameter name="allowedMethods" value="*"/>
  </service>
- 
- <!-- Iteration 06 improvements -->
- <service name="AxisDataService06" style="wrapped" use='literal'>
+
+ <!-- Version 1.0 interface -->
+ <service name="DataServer-v1" style="wrapped" use='literal'>
   <!-- Class that defines the interface -->
   <parameter name="className" value="org.astrogrid.datacenter.service.v06.AxisDataService_v06"/>
   <!-- Create one instance for the life of the service -->
