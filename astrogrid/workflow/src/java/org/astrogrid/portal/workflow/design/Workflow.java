@@ -602,9 +602,19 @@ public class Workflow extends Activity {
         
     } // end of readWorkflowList()
     
-    
+  
+    /**
+      * <p> 
+      * Static helper method that reads a list of available application tools.
+      * <p>
+      * At present this returns just an Iterator of string Objects representing the names
+      * of the tools.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @return An iterator of tool names. 
+      **/ 
     public static Iterator readToolList( String communitySnippet ) {
-        if( TRACE_ENABLED ) trace( "Workflow.readToolList() entry") ;
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readToolList()") ;
 
         ArrayList
             list = null ;
@@ -627,14 +637,29 @@ public class Workflow extends Activity {
  
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.readToolList() exit") ;
+            if( TRACE_ENABLED ) trace( "exit: Workflow.readToolList()") ;
         }
         
         return list.listIterator() ;
 
-    } 
+    } // end of readToolList()
     
     
+    /**
+      * <p> 
+      * Static helper method that instantiates a tool loaded with a minimum
+      * set of parameters.
+      * <p>
+      * 
+      * This method requires rewriting when we gain this information from the Registry.
+      * At present all the information is held in rather ugly format in a config file.
+      * There is little error checking, so make sure the tool name is correct
+      * and that the tool details exist.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param name - name of required tool.
+      * @return An instance of the tool. 
+      **/ 
     public static Tool createTool( String communitySnippet
                                  , String name ) {  
         if( TRACE_ENABLED ) trace( "Workflow.createTool() entry") ;
@@ -694,12 +719,24 @@ public class Workflow extends Activity {
           
         return tool ;
                                            
-    }
+    } // end of createTool()
     
-    
+
+    /**
+      * <p> 
+      * Static helper method that reads a list of queries contained in MySpace.
+      * <p>
+      * At present this returns just an Iterator of string Objects representing the names
+      * of the query files held by the given user within MySpace.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param filter - a filter argument against file name sumitted to MySpace. NB: this 
+      * is not currently used. 
+      * @return An iterator of file names. 
+      **/      
     public static Iterator readQueryList( String communitySnippet
                                         , String filter ) {
-        if( TRACE_ENABLED ) trace( "Workflow.readQueryList() entry") ;
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readQueryList()") ;
         
         // JBL: For the moment we are ignoring filter.
         
@@ -744,14 +781,25 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.readQueryList() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.readQueryList()") ; 
         }
        
         return iterator ;
         
-    } 
+    } // end of readQueryList()
     
-    
+ 
+    /**
+      * <p> 
+      * Static helper method for reading a query from MySpace.
+      * <p>
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param name - name of the query. 
+      * @return A query held as an xml String. If the requested query is not found, 
+      * will return null.
+      * 
+      **/           
     public static String readQuery( String communitySnippet
                                   , String name ) {     
         if( TRACE_ENABLED ) trace( "Workflow.readQuery() entry") ;                                                                        
@@ -802,60 +850,103 @@ public class Workflow extends Activity {
                                          
     } // end of Workflow.readQuery()
     
-     
-    private String
-        name,
-        description,
-        templateName ;
+    /**
+      * <p> 
+      * Name of the Workflow. 
+      * If the workflow is saved in MySpace, this will constitute its file name.
+      * <p>
+      **/         
+    private String name ;
+    
+    /**
+      * <p> 
+      * Some meaningful description of the workflow.
+      * <p>
+      **/   
+    private String description ;
+    
+    /**
+      * <p> 
+      * If the workflow was created with the use of a template, this
+      * is the name of that template, otherwise null.
+      * <p>
+      **/   
+    private String templateName ;
         
     /**
       * <p> 
-      * Userid is a synonym for Account.
+      * Userid is a synonym for Account, eg: jl99@star.le.ac.uk.
       * <p>
-      * 
-      * 
       **/     
     private String
         userid ;
-          
+    
+    /**
+      * <p> 
+      * Child is the top level structure held within Workflow, which
+      * must be some sort of container of activities.
+      * It could be a Flow, but at present (January 2004) it is a Sequence.
+      * <p>
+      **/           
     private ActivityContainer 
         child ;
-        
+    
+    /**
+      * <p> 
+      * Activities is the complete collection of activities that forms this
+      * Workflow. It's use is primarily for navigating to an Activity given
+      * a key.
+      * <p>
+      **/     
     private Map 
         activities ;
-        
+    
+    /**
+      * <p> 
+      * The dirty flag. At present is not used in anger, but will be used to
+      * guarantee that updates are flushed to MySpace when requested.
+      * <p>
+      **/         
     private boolean
         dirty ;
         
     /**
       * <p> 
-      * Default constructor.
+      * Default Workflow constructor.
       * <p>
       * 
+      * The parent is set to null by calling super(null).
+      * This is the indication within a tree of activities that the top
+      * Activity (ie: the Workflow instance itself) has been reached.
+      * 
+      * We set the dirty flag as this Workflow instance has obviously
+      * not been saved yet.
       * 
       **/           
     protected Workflow() {
         super(null) ; // null because no parent 
-        if( TRACE_ENABLED ) trace( "Workflow() entry/exit") ;
+        if( TRACE_ENABLED ) trace( " entry/exit: Workflow()") ;
         this.setDirty( true ) ;
     }
     
     
     /**
       * <p> 
-      * Constructor using Document.
+      * Workflow constructor using Document.
       * <p>
+      * The parent is set to null by calling super(null).
+      * This is the indication within a tree of activities that the top
+      * Activity (ie: the Workflow instance itself) has been reached.
       * 
+      * We set the dirty flag as this Workflow instance has obviously
+      * not been saved yet.
       * 
-      * 
-      * @param document - Origination could be from MySpace
-      * or from a template loaded from a config file.
-      * 
-      * @see 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param document - Origination could be from MySpace or from a template.
       **/        
     public Workflow( String communitySnippet, Document document ) {
         super(null) ;   // null because no parent 
-        if( TRACE_ENABLED ) trace( "Workflow(Document) entry") ;
+        if( TRACE_ENABLED ) trace( "entry: Workflow(communitySnippet,document)") ;
         
         try{
 		    this.setDirty( true ) ;
@@ -889,11 +980,10 @@ public class Workflow extends Activity {
                 } // end if
                                 
             } // end for        
-
-            
+         
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow(Document) exit") ;
+            if( TRACE_ENABLED ) trace( "exit: Workflow(communitySnippet,document)") ;
         }
         
     } // end of Workflow(Document)
@@ -907,11 +997,9 @@ public class Workflow extends Activity {
       * <p>
       * 
       * @param String key - the key of the activity
-      * 
-      * @see 
       **/     
     public Activity getActivity( String key ) {
-        if( TRACE_ENABLED ) trace( "Workflow.getActivity() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.getActivity()") ; 
         try { 
             if( TRACE_ENABLED )debug( "key: [" + key +"]" ) ;
             if( TRACE_ENABLED )debug( "activities: " + activities.toString() ) ;
@@ -919,19 +1007,36 @@ public class Workflow extends Activity {
             
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.getActivity() exit") ;  
+            if( TRACE_ENABLED ) trace( "exit: Workflow.getActivity()") ;  
         }
     }
     
-     
+   
+    /**
+      * <p> 
+      * Maintains the map of activity keys for this Workflow instance.
+      * <p>
+      * If the activity already exists in the collection, the call is ignored.
+      * However, this is indicated by a failure return.
+      * NB: The map is simply a navigational aid. The activity must
+      * be separately inserted into the Workflow structure itself.
+      * 
+      * JBL Note. Should not have a public access scope.
+      * 
+      * @param Activity activity - an activity that has just been newly created.
+      * @return boolean indicating success or failure.
+      **/         
     public boolean putActivity( Activity activity ) {
-        if( TRACE_ENABLED ) trace( "Workflow.putActivity() entry") ;  
+        if( TRACE_ENABLED ) trace( "entry: Workflow.putActivity()") ;  
                
         boolean
             retValue = false ;
         
         try { 
             
+            // JBL note: this itself probably needs to be synchronized...
+            // But is any case poorly placed here. Much better in a
+            // constructor.
             if( this.activities == null ) {
                 this.activities = Collections.synchronizedMap( new HashMap() ) ;   
             }
@@ -943,7 +1048,7 @@ public class Workflow extends Activity {
        
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.putActivity() exit") ;  
+            if( TRACE_ENABLED ) trace( "exit: Workflow.putActivity()") ;  
         }
        
         return retValue ;
@@ -951,16 +1056,38 @@ public class Workflow extends Activity {
     } // end putActivity() 
    
 
+    /**
+      * <p> 
+      * Removes an activity from the map for this Workflow instance.
+      * <p>
+      * NB: The map is simply a navigational aid. The activity must
+      * be separately removed from the Workflow structure itself.
+      * 
+      * @param Activity activity - an activity to be removed.
+      * @return boolean indicating success or failure.
+      **/      
     public boolean removeActivity( Activity activity ) {
         return ( activities.remove( activity.getKey() ) == null ? false : true ) ;
     }
     
     
+    /**
+      * <p> 
+      * Produces the xml description of this workflow instance.
+      * <p>
+      * @see constructJESXML() to which it is strongly related.
+      * The duplication is historical. JES was produced in an earlier iteration
+      * than Workflow and we have yet to systematize the two object models.
+      * @see toXMLString(). This was its original appelation, but change was forced
+      * by the necessity of using the communitySnippet.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @return the workflow as an xml String.
+      **/      
     protected String constructWorkflowXML( String communitySnippet ) {
-        if( TRACE_ENABLED ) trace( "Workflow.constructWorkflowXML() entry") ;  
+        if( TRACE_ENABLED ) trace( "entry: Workflow.constructWorkflowXML()") ;  
           
-        String 
-           response = null ;
+        String response = null ;
                                      
         try {
             
@@ -976,7 +1103,7 @@ public class Workflow extends Activity {
             debug( "Workflow xml: \n" + response ) ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.constructWorkflowXML() exit") ;    
+            if( TRACE_ENABLED ) trace( "exit: Workflow.constructWorkflowXML()") ;    
         }       
         
         return response ;                              
@@ -984,13 +1111,30 @@ public class Workflow extends Activity {
     } // end of constructWorkflowXML()
 
 
+    /**
+     * Basically here to satisfy the requirements of inheriting from 
+     * the Activity abstract class.
+     * 
+     * @see constructWorkflowXML()
+     */
     public String toXMLString() {
         return getChild().toXMLString() ;
     }
     
 
+    /**
+      * <p> 
+      * Produces the xml job description of this workflow instance.
+      * <p>
+      * @see constructWorkflowXML() to which it is strongly related.
+      * The duplication is historical. JES was produced in an earlier iteration
+      * than Workflow and we have yet to systematize the two object models.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @return the workflow as a JES xml String.
+      **/   
     protected String constructJESXML( String communitySnippet ) {
-        if( TRACE_ENABLED ) trace( "Workflow.constructJESXML() entry") ;  
+        if( TRACE_ENABLED ) trace( "entry: Workflow.constructJESXML()") ;  
           
         String 
            response = null ;
@@ -1008,7 +1152,7 @@ public class Workflow extends Activity {
             debug( "JES xml: \n" + response ) ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.constructJESXML() exit") ;    
+            if( TRACE_ENABLED ) trace( "exit: Workflow.constructJESXML()") ;    
         }       
         
         return response ;                              
@@ -1016,25 +1160,46 @@ public class Workflow extends Activity {
     } // end of constructJESXML()
     
     
+    /**
+     * Basically here to satisfy the requirements of inheriting from 
+     * the Activity abstract class.
+     * 
+     * @see constructJESXML()
+     */
     public String toJESXMLString() {
         return getChild().toJESXMLString() ;  
     }
 
+    /**
+     * Sets workflow name. Sets the dirty flag.
+     */
 	public void setName(String name) {
 		this.name = name;
+        this.dirty = true;
 	}
 
+    /**
+     * Gets workflow name.
+     */
 	public String getName() {
 		return name;
 	}
 
+    /**
+     * Sets the userid (synonym for account). Sets the dirty flag.
+     */
 	public void setUserid(String userid) {
 		this.userid = userid;
+        this.dirty = true;
 	}
 
+    /**
+     * Gets the userid.
+     */
 	public String getUserid() {
 		return userid;
 	}
+
 
     protected static String locateMySpace( String userid, String community ) {
         if( TRACE_ENABLED ) trace( "Workflow.locateMySpace() entry") ;
@@ -1164,14 +1329,25 @@ public class Workflow extends Activity {
                             
             MySpaceClient
                 mySpace =  MySpaceDelegateFactory.createDelegate( myspaceLocation ) ; 
-                
+             
+            // JBL Note (Jan 2004): listDataHoldings returns a vector of vectors...
+            // one for each list in the systems that the account participates in!
+            // For now, deal with an empty vector. Then if not empty, get the
+            // first (and only) vector held within the overall vector and retrieve
+            // an iterator for that. This will represent the list from the one and only 
+            // (at present) system that this account belongs to. 
             vector = mySpace.listDataHoldings( Workflow.extractUserid( account )
                                              , Workflow.extractCommunity( account )
                                              , CommunityMessage.getGroup( communitySnippet )
                                              , myspaceArguments ) ;
-                                              
-            iterator = vector.iterator() ;  
-                          
+                                             
+//            debug( "vector.size(): " + vector.size() ) ;
+//            debug( "vector.isEmpty(): " + vector.isEmpty() ) ;
+                       
+            if( !( (vector == null) || (vector.size() == 0) ) ) {     
+                iterator = ((Vector)vector.firstElement()).iterator() ;                  
+            }
+                           
         }
         catch ( Exception ex ) {
             ex.printStackTrace() ;
@@ -1227,7 +1403,8 @@ public class Workflow extends Activity {
       * This is a guess at present. 
       * 
       * @param communitySnippet - Account and Group details.
-      * @param logicalDirectoryPath - Path without user details
+      * @param logicalDirectoryPath - a logical path to a file within MySpace.
+      *        The path may be a full of parial path.
       *        Directories should be separated by forward slashes.
       * @param fileName - just the file name
       * @see 
@@ -1235,7 +1412,7 @@ public class Workflow extends Activity {
     public static String formatMySpaceURL( String communitySnippet
                                          , String logicalDirectoryPath
                                          , String fileName ) {
-        if( TRACE_ENABLED ) trace( "Workflow.formatMySpaceURL() entry") ;  
+        if( TRACE_ENABLED ) trace( "entry: Workflow.formatMySpaceURL()") ;  
                
         StringBuffer
             buffer = new StringBuffer(64) ;
@@ -1262,14 +1439,12 @@ public class Workflow extends Activity {
                        
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.formatMySpaceURL() exit" ) ;
+            if( TRACE_ENABLED ) trace( "exit: Workflow.formatMySpaceURL()" ) ;
         }
-            
-
-            
+                    
         return buffer.toString() ; 
             
-    }
+    } // formatMySpaceURL()
     
 
     public static boolean insertToolIntoStep( String stepActivityKey
@@ -1667,9 +1842,23 @@ public class Workflow extends Activity {
     } // end of Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)
    
                                                
-    
+    /**
+     * 
+     * <p>Tries to second-guess whether a MySpace logical path is a
+     * full or partial path. This is somewhat rough-and-ready and so is a 
+     * prime candidate for change as MySpace evolves.
+     * 
+     * Some examples. The path may be presented as a full path...
+     *     /jl99@star.le.ac.uk/serv1/datafederation/votables
+     * or a simple partial path...
+     *     datafederation/votables
+     * This method returns true if the full path is detected.
+     * 
+     * @param path - the MySpace logical path
+     * @return boolean - true if the full path is detected.
+     */
     private static boolean pathContainsAccountDetails( String path ) {
-        if( TRACE_ENABLED ) trace( "Workflow.pathContainsAccountDetails() entry") ;
+        if( TRACE_ENABLED ) trace( "entry: Workflow.pathContainsAccountDetails()") ;
         
         boolean retValue = false ;
         
@@ -1689,16 +1878,19 @@ public class Workflow extends Activity {
             
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.pathContainsAccountDetails() exit") ;  
+            if( TRACE_ENABLED ) trace( "exit: Workflow.pathContainsAccountDetails()") ;  
         }
         
         return retValue ;
-    }
+        
+    } // end of pathContainsAccountDetails()
+        
         
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;
         // logger.debug( traceString ) ;
     }
+ 
     
     private static void debug( String logString ){
         System.out.println( logString ) ;
