@@ -499,11 +499,11 @@ public class AdministrationAction extends AbstractAction
          
          SecurityToken st = null;
          try {
-            String ivo_account = (String)session.getAttribute(SessionKeys.COMMUNITY_NAME) + "/" + (String)session.getAttribute(SessionKeys.USER); 
+            String ivo_account = (String)session.getAttribute("community_authority") + "/" + (String)session.getAttribute(SessionKeys.USER); 
             SecurityServiceDelegate ssd = ssr.resolve(userIvo = new Ivorn(ivo_account,null));
             smd = smr.resolve(userIvo);
             
-            st = ssd.checkPassword((String)session.getAttribute(SessionKeys.USER),password);
+            st = ssd.checkPassword(userIvo.toString(),password);
             if(st != null && st.isValid()) {
                if(newpassword.equals(verifypassword)) {
                   if(newpassword == null || newpassword.trim().length() <= 0) {
@@ -514,7 +514,7 @@ public class AdministrationAction extends AbstractAction
                      //adminDelegate.setAccount(ad);
 //                     adminDelegate.setPassword(String.valueOf(newPasswordHashed));
                      //adminDelegate.setPassword(ident,newpassword);
-                     smd.setPassword((String)session.getAttribute(SessionKeys.USER),newpassword);
+                     smd.setPassword(userIvo.toString(),newpassword);
                      message = "Account's password changed.";
                   }
                }else {
