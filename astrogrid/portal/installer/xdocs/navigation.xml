@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="AstroGrid">
-    <title>Portal Instakker</title>
+    <title>Portal Installer</title>
     <body>
 	    <menu name="Screenshots">
  		  <item name="Welcome Screen" 
