@@ -1,5 +1,5 @@
 /*
- * $Id: AgslTest.java,v 1.2 2004/03/09 23:18:09 mch Exp $
+ * $Id: AgslTest.java,v 1.3 2004/03/14 13:47:26 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -27,7 +27,7 @@ public class AgslTest extends TestCase
    /**
     * Basic tests
     */
-   public void testAgsl()  {
+   public void testMake()  {
       
       String validAgsl = "astrogrid:store:myspace:"+MsrlTest.DELEGATE+"#"+MsrlTest.PATH;
 
@@ -45,6 +45,7 @@ public class AgslTest extends TestCase
       
          assertEquals(agsl.getEndpoint(), "ftp://grendel12.roe.ac.uk/thing");
          assertEquals(agsl.getPath(), "path/path/file.txt");
+         assertEquals("file.txt", agsl.getFilename());
          
          //check file (a rather peculiar url...)
          validAgsl = "astrogrid:store:file://aname#path/path/file.txt";
@@ -61,6 +62,8 @@ public class AgslTest extends TestCase
       }
    }
 
+      
+   
    /**
     * test deprecated 4.1 vospaceRl
     */
@@ -103,6 +106,9 @@ public class AgslTest extends TestCase
 
 /*
 $Log: AgslTest.java,v $
+Revision 1.3  2004/03/14 13:47:26  mch
+Increased coverage
+
 Revision 1.2  2004/03/09 23:18:09  mch
 Added Vorl tests
 

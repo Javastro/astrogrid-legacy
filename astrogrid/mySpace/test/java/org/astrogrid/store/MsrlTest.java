@@ -1,5 +1,5 @@
 /*
- * $Id: MsrlTest.java,v 1.2 2004/03/10 00:23:33 mch Exp $
+ * $Id: MsrlTest.java,v 1.3 2004/03/14 13:44:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -28,10 +28,12 @@ public class MsrlTest extends TestCase
    public final static String PATH = "test.astrogrid.org/avodemo/serv1/query/mch-6dF-query.xml";
    public final static String SERVER = "SomeServerId";
    
+   public final static String NAME = "mch-6dF-query.xml";
+   
    /**
     * Basic tests
     */
-   public void testMsrl()  {
+   public void testStringMake()  {
       
       String validMsrl = "myspace:"+DELEGATE;
       assertTrue(Msrl.isMsrl(validMsrl));
@@ -43,18 +45,25 @@ public class MsrlTest extends TestCase
          validMsrl = validMsrl +"#"+PATH;
          msrl = new Msrl(validMsrl);
          assertEquals(msrl.toString(), validMsrl);
+         assertEquals(NAME, msrl.getName());
          
          validMsrl = validMsrl +"!"+SERVER;
          msrl = new Msrl(validMsrl);
-         assertEquals(msrl.toString(), validMsrl);
+         assertEquals(NAME, msrl.getFilename());
+         assertEquals(Msrl.SCHEME+":"+DELEGATE, msrl.getManagerMsrl());
       }
       catch (MalformedURLException mue) {
          fail("Could not cope with valid msrl '"+validMsrl+"'");
       }
-
+   }
+   
+   public void testUrlMake() {
+      String validMsrl = "myspace:"+DELEGATE+"#"+PATH+"!"+SERVER;
       try {
          Msrl msrl = new Msrl(new URL(DELEGATE), PATH, SERVER);
          assertEquals(msrl.toString(), validMsrl);
+         assertEquals(NAME, msrl.getName());
+         assertEquals(NAME, msrl.getFilename());
       }
       catch (MalformedURLException mue) {
          fail("Test error: URL in test code is invalid");
@@ -84,6 +93,9 @@ public class MsrlTest extends TestCase
 
 /*
 $Log: MsrlTest.java,v $
+Revision 1.3  2004/03/14 13:44:51  mch
+Increased coverage
+
 Revision 1.2  2004/03/10 00:23:33  mch
 Changed @ to !
 
