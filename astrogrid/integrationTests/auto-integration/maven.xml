@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.121 2004/10/01 13:03:34 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.122 2004/10/12 13:06:08 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -36,6 +36,7 @@
 <property name="tomcat.port" value="8080"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
+<property name="ceaappid" value="testdsa" /><!--this is a property that will be set when installing a single cea application-->
 <property name="existurl" value="${tomcat.url}/exist/servlet/db"/>
 <!--+
     | need to rationalize the use of the astrogrid.iteration - pah
@@ -78,6 +79,7 @@
         <filter token="CENTRALREGISTRY" value="${registry.endpoint}"/>
         <filter token="TOMCATUSER" value="${tomcat.manager.username}"/>
         <filter token="TOMCATPASS" value="${tomcat.manager.password}"/>
+		<filter token="CEAAPPID" value="${ceaappid}"/>
 
 <!-- setup -->
 <goal name="astrogrid-clean" prereqs="clean:clean">
