@@ -296,7 +296,7 @@ public class QueryParser3_0
 		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("curation"))) {
 		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='curation'/>";
 		}
-		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("contents"))) {
+		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("content"))) {
 		  nodeDetails = nodeDetails + "<recordKeyPair item='metadataType' value='content'/>";
 		}
 		if ((type == Node.ELEMENT_NODE)&&(node.getNodeName().equals("serviceMetadataConcept"))) {
@@ -359,3 +359,4 @@ public class QueryParser3_0
 	return registrySource;
  }
 }
+
