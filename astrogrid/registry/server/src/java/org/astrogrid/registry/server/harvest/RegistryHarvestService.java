@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+import org.w3c.dom.NamedNodeMap;
 import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.query.RegistryService;
@@ -83,8 +84,8 @@ public class RegistryHarvestService {
    public Document harvestResource(Document resource,Date dt)  throws RegistryException, IOException {
       log.debug("start harvestResource");
       log.info("update harvestResource");
-      
-      
+
+
       //RegistryAdminService ras = new RegistryAdminService();
 
       //Change this up to look at the Node make sure it is a REgistryType or a Web service
@@ -94,7 +95,7 @@ public class RegistryHarvestService {
       //a nice consistent way.  Because currently the schema espcially version 0.9
       //allows the user to put the xml in a few different ways.
 
-      //Okay update this one resource entry.      
+      //Okay update this one resource entry.
       //ras.updateResource(resource);
       beginHarvest(resource,dt);
       log.info("exiting harvestResource");
@@ -114,17 +115,19 @@ public class RegistryHarvestService {
       Document harvestDoc = null;
       String xqlQuery = null;
       String ident = null;
-            
+
       String versionNumber = conf.getString("org.astrogrid.registry.version");
       String collectionName = "astrogridv" + versionNumber;
       QueryDBService qdb = new QueryDBService();
       try {
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
-             xqlQuery = "//vr:Resource[@xsi:type='RegistryType']";
+             xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
-    
-             NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
+             System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
+             log.info("try just the Resource");
+             NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
+             log.info("Harvest All found this number of resources = " + nl.getLength());
              for(int i = 0; i < nl.getLength();i++) {
                Element elem = (Element) nl.item(i);
                if(useDates) {
@@ -139,10 +142,11 @@ public class RegistryHarvestService {
                }//else
              }//for
           }else {
-            //query for all RegistryTypes or WebService interface
-             xqlQuery = "//vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
+            //query all Registry Types for Webbrowser or WebService interface
+             xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
              harvestDoc = qdb.runQuery(collectionName,xqlQuery);
-             NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
+             //NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
+             NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
              for(int i = 0; i < nl.getLength();i++) {
                Element elem = (Element) nl.item(i);
                if(useDates) {
@@ -160,9 +164,9 @@ public class RegistryHarvestService {
       }catch(ParserConfigurationException pce) {
       	throw new RegistryException(pce);
       }catch(IOException ioe) {
-      	throw new RegistryException(ioe);        
+      	throw new RegistryException(ioe);
       }catch(SAXException sax) {
-         throw new RegistryException(sax); 
+         throw new RegistryException(sax);
       }
    }
 
@@ -185,18 +189,18 @@ private class HarvestThread extends Thread {
     * @param ras The RegistryAdminService class which does updates of Resources
     * @param updateDoc a set of one or more Resources.
     */
-   public HarvestThread(RegistryAdminService ras, Node updateDoc) throws RegistryException {
+   public HarvestThread(RegistryAdminService ras, Node updateNode) throws RegistryException {
       this.ras = ras;
-      if(updateDoc instanceof Element) {
+      if(updateNode instanceof Element) {
         try {
       	updateDoc = DomHelper.newDocument();
-         updateDoc.appendChild(updateDoc);
+         updateDoc.appendChild(updateDoc.importNode(updateNode, true));
         }catch(ParserConfigurationException pce) {
         	throw new RegistryException(pce);
         }
-      }else if(updateDoc instanceof Document) {
-        this.updateDoc = (Document)updateDoc;  
-      }      
+      }else if(updateNode instanceof Document) {
+        this.updateDoc = (Document)updateNode;
+      }
    }
 
    /**
@@ -204,14 +208,16 @@ private class HarvestThread extends Thread {
     * it is assumed the Rewsources have been checked and valid and require no
     * special checking.
     */
-    
+
    public void run() {
+	  Element el = updateDoc.getDocumentElement();
       try {
          ras.updateNoCheck(updateDoc);
-      }catch(MalformedURLException mue) {
-       mue.printStackTrace();   
+  //       ras.Update(updateDoc);
+  //    }catch(MalformedURLException mue) {
+  //       mue.printStackTrace();
       }catch(IOException ioe) {
-         ioe.printStackTrace();   
+         ioe.printStackTrace();
       }
    }
 
@@ -228,175 +234,200 @@ private class HarvestThread extends Thread {
     * @param dt An optional date used to harvest from a particular date
     * @param resources Set of Resources to harvest on, normally a Registry Resource.
     */
-   public void beginHarvest(Node resources,Date dt)  throws RegistryException, IOException  {
+   public void beginHarvest(Node resource, Date dt)  throws RegistryException, IOException  {
       log.debug("start beginHarvest");
       log.info("entered beginharvest");
       String accessURL = null;
       String invocationType = null;
+      boolean isRegistryType;
       Document doc = null;
-      //instantiate the Admin service that has update methods.
+      NodeList nl = null;
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+      //instantiate the Admin service that contains the update methods.
       RegistryAdminService ras = new RegistryAdminService();
-      //log.info("THE FULL RESOURCES IN BEGINHARVEST = " +
-      //         DomHelper.DocumentToString(resources));
-      NodeList resourceList = DomHelper.getNodeListTags(resources,"Resource","vr");
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");            
-      //log.info("the getLength = " + resourceList.getLength());
-      //go through all the resources
-      boolean isRegistryType = false;
-      for(int i = 0; i < resourceList.getLength();i++) {
-         //get the accessurl and invocation type.
-         //invocationtype is either WEbService or WebBrowser.
-         if("RegistryType".equals(DomHelper.getNodeAttrValue((Element)resourceList.item(i),"type","xsi")))  {
-           isRegistryType = true;            
-         }else {
-           isRegistryType = false;
+
+      System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
+
+      NamedNodeMap attributes = resource.getAttributes();
+      // Debug (BKM)
+      for(int i=0; i<attributes.getLength(); i++) {
+		  System.out.println("Attribute " + i + " Name " + attributes.item(i).getNodeName() +
+		                      " value " + attributes.item(i).getNodeValue());
+      }
+
+      //get the accessurl and invocation type.
+      //invocationtype is either WebService or WebBrowser.
+      Node typeAttribute = resource.getAttributes().getNamedItem("xsi:type");
+      isRegistryType = (typeAttribute != null) &&
+                       (typeAttribute.getNodeValue().equals("RegistryType"));
+ //   System.out.println("RegistryType attribute =" + isRegistryType);
+
+      nl = ((Element) resource).getElementsByTagName("AccessURL");
+      if(nl.getLength() == 0) {
+        nl = ((Element) resource).getElementsByTagName("vr:AccessURL");
+      }
+      accessURL = nl.item(0).getFirstChild().getNodeValue();
+
+      nl = ((Element) resource).getElementsByTagName("Invocation");
+      if(nl.getLength() == 0) {
+        nl = ((Element) resource).getElementsByTagName("vr:Invocation");
+      }
+      invocationType = nl.item(0).getFirstChild().getNodeValue();
+
+//    accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
+//    invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
+      log.info("The access URL = " + accessURL + " invocationType = " + invocationType);
+//      System.out.println("The access URL = " + accessURL + " invocationType = " + invocationType);
+
+
+      if("WebService".equals(invocationType)) {
+         //call the service
+         //remember to look at the date
+         Element childElem = null;
+         Element root = null;
+
+         if("?wsdl".indexOf(accessURL) == -1) {
+            accessURL += "?wsdl";
          }
-         accessURL = DomHelper.getNodeTextValue((Element)resourceList.item(i),"AccessURL","vr");
-         invocationType = DomHelper.getNodeTextValue((Element)resourceList.item(i),"Invocation","vr");
-         log.info("The access URL = " + accessURL + " invocationType = " + invocationType);
-         if("WEBSERVICE".equals(invocationType)) {
-            //call the service
-            //remeber to look at the date
-            Element childElem = null;
-            Element root = null;
+         //Read in the wsdl for the endpoint and namespace
+         WSDLBasicInformation wsdlBasic = null;
+         try {
+            wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
+         } catch(RegistryException re) {
+            re.printStackTrace();
+            log.error(re);
+         }
+         if(wsdlBasic != null) {
+            log.info("calling call obj with endpoint = " +
+                     (String)wsdlBasic.getEndPoint().values().iterator().next());
+            //create a call object
+            Call callObj = getCall((String)wsdlBasic.getEndPoint().
+                           values().iterator().next());
 
-            if("?wsdl".indexOf(accessURL) == -1) {
-               accessURL += "?wsdl";
-            }
-            //Read in the wsdl for the endpoint and namespace
-            WSDLBasicInformation wsdlBasic = null;
             try {
-               wsdlBasic = WSDLInformation.
-                           getBasicInformationFromURL(accessURL);
-            }catch(RegistryException re) {
-               re.printStackTrace();
-               log.error(re);
-            }
-            if(wsdlBasic != null) {
-               log.info("calling call obj with endpoint = " +
-                   (String)wsdlBasic.getEndPoint().values().iterator().next());
-               //create a call object
-               Call callObj = getCall((String)wsdlBasic.getEndPoint().
-                              values().iterator().next());
+               doc = DomHelper.newDocument();
+               //set the operation name/interface method to ListResources
+               String interfaceMethod = "getMetaData";
+               if(isRegistryType) interfaceMethod = "ListRecords";
+               String nameSpaceURI = WSDLInformation.
+                                     getNameSpaceFromBinding(
+								        accessURL,interfaceMethod);
 
-               try {
-                  doc = DomHelper.newDocument();
-                  //set the operation name/interface method to ListResources
-                  String interfaceMethod = "GetMetaData";
-                  if(isRegistryType) interfaceMethod = "ListRecords";
-                  String nameSpaceURI = WSDLInformation.
-                            getNameSpaceFromBinding(accessURL,interfaceMethod);
+               root = doc.createElementNS(nameSpaceURI,interfaceMethod);
+               if(dt != null) {
+                  childElem = doc.createElement("from");
+                  childElem.appendChild(doc.createTextNode(sdf.format(dt)));
+                  root.appendChild(childElem);
+               }
+               doc.appendChild(root);
+               log.info("Creating soap request for operation name = " +
+                         interfaceMethod + " with namespaceuri = " +
+                         nameSpaceURI);
 
-                  root = doc.createElementNS(nameSpaceURI,interfaceMethod);
-                  if(dt != null) {
-                  	 childElem = doc.createElement("from");
-                      childElem.appendChild(doc.createTextNode(sdf.format(dt)));
-                      root.appendChild(childElem);
-                  }
-                  doc.appendChild(root);
-                  log.info("Creating soap request for operation name = " +
-                            interfaceMethod + " with namespaceuri = " +
-                            nameSpaceURI);
-
-                  SOAPBodyElement sbeRequest = new SOAPBodyElement(
-                                                   doc.getDocumentElement());
-                  //sbeRequest.setName("harvestAll");
-                  sbeRequest.setName(interfaceMethod);
-                  sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
-                  //invoke the web service call
-                  Vector result = (Vector) callObj.invoke
-                                           (new Object[] {sbeRequest});
-                  //Take the results and harvest.
-                  SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
-                  Document soapDoc = sbe.getAsDocument();
-                  (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
-                  if(isRegistryType) {
-                  	NodeList nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
-                        while(nl.getLength() > 0) {
-                        	Document resumeDoc = DomHelper.newDocument();
-                           root = doc.createElementNS(nameSpaceURI,"ResumeListRecords");
-                           childElem = doc.createElement("resumptionToken");
-                           childElem.appendChild(doc.createTextNode(nl.item(0).getFirstChild().getNodeValue()));                            
-                           sbeRequest = new SOAPBodyElement(resumeDoc.getDocumentElement());
-                           sbeRequest.setName("ResumeListRecords");
-                           sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
-                           //invoke the web service call
-                           result = (Vector) callObj.invoke
-									    (new Object[] {sbeRequest});
-                           soapDoc = sbe.getAsDocument();
-                           (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();                           
+               SOAPBodyElement sbeRequest = new SOAPBodyElement(
+                                                doc.getDocumentElement());
+               //sbeRequest.setName("harvestAll");
+               sbeRequest.setName(interfaceMethod);
+               sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+               //invoke the web service call
+               log.info("Calling invoke on service");
+               Vector result = (Vector) callObj.invoke
+                                        (new Object[] {sbeRequest});
+               //Take the results and harvest.
+               if(result.size() > 0) {
+                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
+                   Document soapDoc = sbe.getAsDocument();
+                   log.info("SOAPDOC RETURNED = " + DomHelper.DocumentToString(soapDoc));
+                   (new HarvestThread(ras,soapDoc.getDocumentElement())).start();
+                   if(isRegistryType) {
+                      nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
+                      while(nl.getLength() > 0) {
+                         Document resumeDoc = DomHelper.newDocument();
+                         root = doc.createElementNS(nameSpaceURI,"ResumeListRecords");
+                          childElem = doc.createElement("resumptionToken");
+                          childElem.appendChild(doc.createTextNode(nl.item(0).getFirstChild().getNodeValue()));
+                          sbeRequest = new SOAPBodyElement(resumeDoc.getDocumentElement());
+                          sbeRequest.setName("ResumeListRecords");
+                          sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+                          //invoke the web service call
+                          result = (Vector) callObj.invoke
+    									    (new Object[] {sbeRequest});
+                          soapDoc = sbe.getAsDocument();
+                          (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
                            nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
-                        }//while
-                  }//if
-               } catch(RemoteException re) {
-                 //log error
-                 re.printStackTrace();
-                 log.error(re);
-               }catch(ParserConfigurationException pce) {
-                  pce.printStackTrace();
-                 log.error(pce);
-               }catch(Exception e) {
-                  e.printStackTrace();
-                 log.error(e);
+                      }//while
+                   }//if
+               }//if
+            } catch(RemoteException re) {
+                //log error
+                re.printStackTrace();
+                log.error(re);
+		    }
+            catch(ParserConfigurationException pce) {
+                pce.printStackTrace();
+                log.error(pce);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                log.error(e);
+            }
+         }
+      }else if("WebBrowser".equals(invocationType)) {
+         //its a web browser so assume for oai.
+         try {
+            String ending = "";
+            //might need to put some oai date stuff on the end.  This is
+            //unknown.
+            log.info("inside the web browser");
+
+            if(accessURL.indexOf("?") == -1) {
+               ending = "?verb=ListRecords&metadataPrefix=ivo_vor"; //&from=" + date;
+               if(dt != null) {
+                  ending += "&from=" + sdf.format(dt);
                }
             }
-         }else if("WebBrowser".equals(invocationType)) {
-            //its a web browser so assume for oai.
-            try {
-               String ending = "";
-               //might need to put some oai date stuff on the end.  This is
-               //unknown.
-               log.info("inside the web browser");
 
-               if(accessURL.indexOf("?") == -1) {
-                  ending = "?verb=ListRecords&metadataPrefix=ivo_vor"; //&from=" + date;
-                  if(dt != null) {
-                  	ending += "&from" + sdf.format(dt);
-                  }
+            log.info("Grabbing Document from this url = " + accessURL + ending);
+            doc = DomHelper.newDocument(new URL(accessURL + ending));
+            log.info("Okay got this far to reading the url doc = " +
+                      DomHelper.DocumentToString(doc));
+            (new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
+            NodeList moreTokens = null;
+            //log.info("resumptionToken length = " +
+            //         doc.getElementsByTagName("resumptionToken").
+            //         getLength());
+            //if there are more paging(next) then keep calling them.
+            while( (moreTokens = doc.getElementsByTagName("resumptionToken")).
+                                     getLength() > 0) {
+               Node nd = moreTokens.item(0);
+               if(accessURL.indexOf("?") != -1) {
+                  accessURL = accessURL.substring(0,accessURL.indexOf("?"));
                }
-
-               log.info("Grabbing Document from this url = " +
-                        accessURL + ending);
-               doc = DomHelper.newDocument(new URL(accessURL + ending));
-               log.info("Okay got this far to reading the url doc = " +
-                        DomHelper.DocumentToString(doc));
-               (new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
-               NodeList moreTokens = null;
-               //log.info("resumptionToken length = " +
-               //         doc.getElementsByTagName("resumptionToken").
-               //         getLength());
-               //if there are more paging(next) then keep calling them.
-               while( (moreTokens = doc.getElementsByTagName(
-                                        "resumptionToken")).getLength() > 0) {
-                  Node nd = moreTokens.item(0);
-                  if(accessURL.indexOf("?") != -1) {
-                     accessURL = accessURL.substring(0,accessURL.indexOf("?"));
-                  }
-                  ending = "?verb=ListRecords&resumptionToken=" +
-                            nd.getFirstChild().getNodeValue();
-                  log.info(
-              "the harvestcallregistry's accessurl inside the token calls = " +
+               ending = "?verb=ListRecords&resumptionToken=" +
+                         nd.getFirstChild().getNodeValue();
+               log.info(
+               "the harvestcallregistry's accessurl inside the token calls = " +
                           accessURL + ending);
-                  doc = DomHelper.newDocument(new URL(accessURL + ending));
-                  log.info("INSIDE THE MORETOKENS = " +
-                           DomHelper.DocumentToString(doc) +
-                           " resumption token length = "   +
-                           doc.getElementsByTagName("resumptionToken").
-                           getLength() );
-                  (new HarvestThread(ras,doc)).start();
-               }//while
-            }catch(ParserConfigurationException pce) {
-               pce.printStackTrace();
-               log.error(pce);
-            }catch(SAXException sax) {
-               sax.printStackTrace();
-               log.error(sax);
-            }catch(IOException ioe){
-               ioe.printStackTrace();
-               log.error(ioe);
-            }
-         }//elseif
-      }//for
+               doc = DomHelper.newDocument(new URL(accessURL + ending));
+               log.info("INSIDE THE MORETOKENS = " +
+                        DomHelper.DocumentToString(doc) +
+                        " resumption token length = "   +
+                        doc.getElementsByTagName("resumptionToken").
+                            getLength() );
+               (new HarvestThread(ras,doc)).start();
+            }//while
+         }catch(ParserConfigurationException pce) {
+            pce.printStackTrace();
+            log.error(pce);
+         }catch(SAXException sax) {
+            sax.printStackTrace();
+            log.error(sax);
+         }catch(IOException ioe){
+            ioe.printStackTrace();
+            log.error(ioe);
+         }
+      }//elseif
       log.info("exiting beginHarvest");
       log.debug("end beginHarvest");
    }//beginHarvest

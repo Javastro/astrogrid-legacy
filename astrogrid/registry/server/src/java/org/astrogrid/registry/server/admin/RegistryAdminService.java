@@ -134,7 +134,7 @@ public class RegistryAdminService {
       long beginUpdate = System.currentTimeMillis();
 
       String authorityID = conf.getString("org.astrogrid.registry.authorityid");
-      
+      log.info("Default AuthorityID for this Registry = " + authorityID);
       // Transform the xml document into a consistent way.
       // xml can come in a few various forms.  This xsl will make it
       // consistent in the db and throughout this registry.
@@ -150,53 +150,60 @@ public class RegistryAdminService {
       //<update><VoResource xmlns:vr=... ><Resource xmlns:vr=...>
       //the vr attribute can live at either or both of those elments and we just need to get the first one.
       //It is possible the <update> element will not be there hence we need to look at the root element
-      String attrVersion = null;
-      attrVersion = DomHelper.getNodeAttrValue((Element)update.getDocumentElement(),"vr","xmlns");
-      if(attrVersion == null || attrVersion.trim().length() == 0) {
-         attrVersion = DomHelper.getNodeAttrValue(
-             (Element)update.getDocumentElement().getFirstChild(),"vr","xmlns");
-         if(attrVersion == null || attrVersion.trim().length() == 0) {
-            attrVersion = DomHelper.getNodeAttrValue(
-                     (Element)update.getDocumentElement().getFirstChild().getFirstChild(),"vr","xmlns");
-         }
-      }
-      if(attrVersion == null || attrVersion.trim().length() == 0) {
-          throw new AxisFault("Could not find version");
-      }
       String defaultNS = null;
-      String vrNS = attrVersion;
-      attrVersion = attrVersion.substring((attrVersion.lastIndexOf("v")+1));
-      String versionNumber = attrVersion.replace('.','_');
-      log.info("grabbed this version number off the xml" + versionNumber);      
+            
       boolean hasStyleSheet = false;
       
       //If there is a stylesheet placed in the astrogrid-registry-common.jar
       //with aparticular name for that version it will perform an XSL
       //translations.  Currently not used.
+      
+      UpdateDBService udbService = new UpdateDBService();
+      
+      
+      //Get all the Resource elements
+      NodeList nl = update.getElementsByTagNameNS("*","Resource");
+      /*
+      try {
+         nl = DomHelper.getNodeListTags(update,"Resource","vr");
+      } catch(IOException ioe) {
+         log.error("IO error trying to find Resources");
+         throw new AxisFault("IO Error when retrieving Resource nodes.");
+      }
+      */
+      if(nl.getLength() == 0) {
+          log.error("No Resources found to be updated");
+          throw new AxisFault("No Resources found to be updated");
+      }
+      String attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0));
+      log.info("Registry Version being updated = " + attrVersion);      
+      String vrNS = "http://www.ivoa.net/xml/VOResource/v" + attrVersion;
+      log.info("Registry namespace being updated = " + vrNS);
+      String versionNumber = attrVersion.replace('.','_');
+      String collectionName = "astrogridv" + versionNumber;
+      log.info("Collection Name = " + collectionName);
+      
+      
+
       hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
       if(hasStyleSheet) {
-          System.out.println("lets call transform update");
-          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
+         System.out.println("lets call transform update");
+         xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
       } else {
          xsDoc = update;
       }
 
-      
-      UpdateDBService udbService = new UpdateDBService();
-      String collectionName = "astrogridv" + versionNumber;
-      log.info("server side update the xsDoc = " + 
-               DomHelper.DocumentToString(xsDoc));
-      
-      //Get all the Resource elements
-      NodeList nl = null;
+      nl = xsDoc.getElementsByTagNameNS("*","Resource");
+      /*
       try {
-         nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
+          nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
       } catch(IOException ioe) {
-         throw new AxisFault("IO Error when retrieving Resource nodes.");
+          throw new AxisFault("IO Error when retrieving Resource nodes.");
       }
-
-      log.info("Collection Name = " + collectionName);
+      */
       log.info("Number of Resources = " + nl.getLength());
+      log.info("server side update the xsDoc = " + 
+              DomHelper.DocumentToString(xsDoc));      
       
       
       //get All the Managed Authorities, the getManagedAutories() does not
@@ -236,6 +243,7 @@ public class RegistryAdminService {
       String resKey = null;
       String tempIdent = null;
       boolean addManageError = false;
+      String manageNodeVal = null;
       
       log.info("here is the nl length = " + nl.getLength() + 
                " and manauths size = " + manageAuths.size() + 
@@ -263,12 +271,16 @@ public class RegistryAdminService {
          //same goes for default namespaces make sure there is one set
          //on the Resource element otherwise we might get XML where elements
          //don't have a defined default namespace.
-         if(defaultNS == null && currentResource.getParentNode() != null) {
+         if(defaultNS == null) {
+             defaultNS = DomHelper.getNodeAttrValue((Element)currentResource,"xmlns");             
+         }//if
+         if((defaultNS == null || defaultNS.trim().length() == 0) && currentResource.getParentNode() != null) {
              defaultNS = DomHelper.getNodeAttrValue((Element)currentResource.getParentNode(),"xmlns");
-         }
+         }//if
          if(defaultNS != null && defaultNS.trim().length() > 0) {
              currentResource.setAttribute("xmlns",defaultNS);
-         }
+         }//if             
+         
          
          //set a temporary identifier.
          tempIdent = ident;
@@ -337,10 +349,23 @@ public class RegistryAdminService {
                         log.error(ioe);
                         throw new AxisFault("IO problem", ioe);
                      }
+                     NodeList manageList = getManagedAuthorities(currentResource);                     
                      if(authorityID.equals(ident)) {
-                        manageAuths.put(ident,null);                        
+                        manageAuths.put(ident,null);
+                        for(int k = 0;k < manageList.getLength();k++) {
+                            manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
+                            if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
+                                manageAuths.put(manageNodeVal,null);
+                            }//if
+                        }//for
                      }else {
                         otherAuths.put(ident,null);
+                        for(int k = 0;k < manageList.getLength();k++) {
+                            manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
+                            if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
+                                otherAuths.put(manageNodeVal,null);
+                            }//if
+                        }//for
                      }
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("AuthorityType") != -1)
@@ -607,9 +632,8 @@ public class RegistryAdminService {
       String resKey = null;
       boolean addManageError = false;
       String tempIdent = null;
-      Document xsDoc = null;
 
-      XSLHelper xs = new XSLHelper();      
+      XSLHelper xs = new XSLHelper();
       
       
       //Okay we need to get the vr attribute namespace.
@@ -621,37 +645,16 @@ public class RegistryAdminService {
       //<update><VoResource xmlns:vr=... ><Resource xmlns:vr=...>
       //the vr attribute can live at either or both of those elments and we just need to get the first one.
       //It is possible the <update> element will not be there hence we need to look at the root element
-      String attrVersion = DomHelper.getNodeAttrValue((Element)update.getDocumentElement(),"vr","xmlns");
-      if(attrVersion == null || attrVersion.trim().length() == 0) {
-          attrVersion = DomHelper.getNodeAttrValue(
-                  (Element)update.getDocumentElement().getFirstChild(),"vr","xmlns");
-          if(attrVersion == null || attrVersion.trim().length() == 0) {
-              attrVersion = DomHelper.getNodeAttrValue(
-                      (Element)update.getDocumentElement().getFirstChild().getFirstChild(),"vr","xmlns");
-          }
-      }
-      if(attrVersion == null || attrVersion.trim().length() == 0) {
-          throw new IOException("Could not find version");
-      }
-      attrVersion = attrVersion.substring((attrVersion.lastIndexOf("v")+1));
-      String versionNumber = attrVersion.replace('.','_');
-
-      
-      NodeList nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");      
+      //NodeList nl = DomHelper.getNodeListTags(update,"Resource","vr");
+      NodeList nl = update.getElementsByTagNameNS("*","Resource");
+      log.info("the nl length of resoruces = " + nl.getLength());
+      String attrVersion = RegistryServerHelper.getRegistryVersionFromNode(nl.item(0));
+      String vrNS = "http://www.ivoa.net/xml/VOResource/v" + attrVersion;
+      String versionNumber = attrVersion.replace('.','_');      
       String collectionName = "astrogridv" + versionNumber;
+      String defaultNS = null;
       log.info("Collection Name = " + collectionName);
       log.info("Number of Resources = " + nl.getLength());
-      boolean hasStyleSheet = false;
-      
-      hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
-      
-      if(hasStyleSheet) {
-          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
-      } else {
-         xsDoc = update;
-      }
-      
-      
       UpdateDBService udbService = new UpdateDBService();
 
       // This does seem a little strange as if an infinte loop,
@@ -665,16 +668,61 @@ public class RegistryAdminService {
 
          tempIdent = ident;
          if(resKey != null) tempIdent += "/" + resKey;
-                  
-         root = xsDoc.createElement("AstrogridResource");
+         
+         if(!"vr".equals(currentResource.getPrefix())) {
+             currentResource.setAttribute("xmlns:vr",vrNS);
+         }
+         if(defaultNS == null) {
+             defaultNS = DomHelper.getNodeAttrValue((Element)currentResource,"xmlns");             
+         }
+         if((defaultNS == null || defaultNS.trim().length() == 0) && currentResource.getParentNode() != null) {
+             defaultNS = DomHelper.getNodeAttrValue((Element)currentResource.getParentNode(),"xmlns");
+         }
+         if(defaultNS != null && defaultNS.trim().length() > 0) {
+             currentResource.setAttribute("xmlns",defaultNS);
+         }             
+         
+
+         root = update.createElement("AstrogridResource");
          root.appendChild(currentResource);
          RegistryServerHelper.
-                          addStatusMessage("Entering new entry: " + tempIdent);
+             addStatusMessage("Entering new entry: " + tempIdent);
          udbService.updateQuery(tempIdent,"xml",collectionName,root);                                                
                           
-        // XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,
-        //                             tempIdent,root);         
-      }//for
+         if(currentResource.hasAttributes()) {
+             NamedNodeMap nnm = currentResource.getAttributes();
+             for(int j = 0;j < nnm.getLength();j++) {
+                 Node attrNode = nnm.item(j);
+                 String nodeVal = attrNode.getNodeValue();
+                 //check if it is a registry type.
+                 if(nodeVal != null && nodeVal.indexOf("RegistryType") != -1)
+                 {
+                    log.info("A RegistryType in updateNoCheck add stats");
+                    //update this registry resource into our registry.
+                    try {
+                       log.info("UPDADING STATS FROM HARVEST = " + tempIdent);
+                       udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+                    } catch(MalformedURLException mue) {
+                       log.error(mue);
+                       throw new AxisFault("Malformed URL on the update", mue);
+                    } catch(IOException ioe) {
+                       log.error(ioe);
+                       throw new AxisFault("IO problem", ioe);
+                    }//try
+                    if(otherAuths != null) {
+                       otherAuths.put(ident,null);
+                       NodeList manageList = getManagedAuthorities(currentResource);
+                       for(int k = 0;k < manageList.getLength();k++) {
+                           String manageNodeVal = manageList.item(k).getFirstChild().getNodeValue();
+                           if(manageNodeVal != null && manageNodeVal.trim().length() > 0) {
+                               otherAuths.put(manageNodeVal,null);
+                           }
+                       }
+                    }//if
+                 }//if                 
+             }//for
+         }//if
+      }//if
       log.debug("end updateNoCheck");
    }
 
@@ -717,17 +765,35 @@ public class RegistryAdminService {
     */
    private Node getManagedAuthorityID(Document doc) {
       log.debug("start getManagedAuthorityID");
-      try {
-          NodeList nl = DomHelper.getNodeListTags(doc,"ManagedAuthority","vg");
+      //try {
+          NodeList nl = doc.getElementsByTagNameNS("*","ManagedAuthority");
+          //NodeList nl = DomHelper.getNodeListTags(doc,"ManagedAuthority","vg");
           if(nl.getLength() > 0)
              return nl.item(0);
           log.debug("end getManagedAuthorityID");
-      }catch(IOException ioe) {
-          ioe.printStackTrace();
-          log.error(ioe);
-      }
+      //}catch(IOException ioe) {
+          //ioe.printStackTrace();
+          //log.error(ioe);
+      //}
       return null;
    }
+   
+   private NodeList getManagedAuthorities(Element regNode) {
+       log.debug("start getManagedAuthorityID");
+       //NodeList nl = null;
+       NodeList nl = regNode.getElementsByTagNameNS("*","ManagedAuthority");
+       /*
+       try {
+           
+           nl = DomHelper.getNodeListTags(regNode,"ManagedAuthority","vg");
+           log.debug("end getManagedAuthorityID");
+       }catch(IOException ioe) {
+           ioe.printStackTrace();
+           log.error(ioe);
+       }*/
+       return nl;
+    }
+   
   
    /**
     * Gets the text out of the First authority id element.
