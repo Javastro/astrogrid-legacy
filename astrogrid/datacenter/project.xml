@@ -158,10 +158,6 @@ See documentation for the PAL project for further build instructions.
 
   <shortDescription>Astrogrid Datacenter</shortDescription>
 
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter</siteDirectory>
-
-
-
   <reports>
     <report>
       maven-changelog-plugin

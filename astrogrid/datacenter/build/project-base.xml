@@ -6,9 +6,6 @@
 
   <shortDescription>AstroGrid DataCenter Components</shortDescription>
 
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter</siteDirectory>
-
-
 
 	<licenses>
 		<license>

@@ -46,7 +46,7 @@
 
   <shortDescription>Client-side delegate and supporting libraries</shortDescription>
 
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter/client</siteDirectory>
+
 
   <repository>
     <connection>

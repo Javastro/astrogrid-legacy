@@ -26,7 +26,7 @@
   <shortDescription>Astrogrid Datacenter Server Implementations</shortDescription>
 
   <url>http://www.astrogrid.org/maven/datacenter/implementations</url>
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter/implementations</siteDirectory>
+
 
   <repository>
     <connection>

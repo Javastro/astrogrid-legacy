@@ -20,7 +20,7 @@
     Datacenter Installation Checker
   </shortDescription>
 
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter/implementations/installation-test</siteDirectory>
+
 
   <!-- the version control repository and http url for online access
        the connection element has the form:

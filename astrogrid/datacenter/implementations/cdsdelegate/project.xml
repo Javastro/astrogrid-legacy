@@ -24,7 +24,7 @@
   ]]></description>
 
   <shortDescription>Astrogrid wrapper around CDS</shortDescription>
-  <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter/implementations/cdsdelegate</siteDirectory>
+
 
   <repository>
     <connection>
