@@ -2,6 +2,7 @@
 <wsdl:definitions targetNamespace="urn:jes/jobscheduler/v1"
                 xmlns="urn:jes/jobscheduler/v1"
                 xmlns:types="urn:jes/types/v1"
+                xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1" 
 
                   xmlns:apachesoap="http://xml.apache.org/xml-soap"
                   xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -12,6 +13,7 @@
          Interface definition for the scheduler web service - unsure if really should be a web service.
  </wsdl:documentation>
  	<wsdl:import location="../schema/JesTypes.xsd" namespace="urn:jes/types/v1" />
+ 		<wsdl:import location="../schema/CEATypes.xsd" namespace="http://www.astrogrid.org/schema/CEATypes/v1" />
    <wsdl:types />
  
    <wsdl:message name="scheduleJobRequest">
@@ -19,7 +21,8 @@
    </wsdl:message>
 
    <wsdl:message name="resumeJobRequest">
-      <wsdl:part type="types:JobInfo" name="jobInfo"/>
+	  <wsdl:part type="ceat:job-identifier-type" name="id" />
+      <wsdl:part type="ceat:message-type" name="feedback"/>
    </wsdl:message>
    
    <wsdl:portType name="JobScheduler">
@@ -30,7 +33,7 @@
          <wsdl:input name="scheduleJobRequest" message="scheduleJobRequest"/>
       </wsdl:operation>
       
-      <wsdl:operation name="resumeJob" parameterOrder="jobInfo">
+      <wsdl:operation name="resumeJob" parameterOrder="id feedback">
       	<wsdl:documentation>
       		call to resume execution of a job, after tool completes.
       	</wsdl:documentation>
