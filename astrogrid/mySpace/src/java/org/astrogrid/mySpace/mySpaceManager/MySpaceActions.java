@@ -456,6 +456,89 @@ public class MySpaceActions
 // -----------------------------------------------------------------
 
 /**
+  * Import a new container.  In Iteration 2 this action is something of
+  * kludge.  The corresponding file is assumed to have already been
+  * placed in the server.  The action merely creates an entry for it in
+  * the MySpace registry.  The MySpace server is not touched.
+  *
+  * @param fileSize is the size of the file in bytes.
+  */
+
+   public DataItemRecord importDataHolder(String userID, String communityID,
+     String jobID, String newDataHolderName, String serverFileName,
+     int fileSize)
+   {  DataItemRecord newDataHolder = new DataItemRecord();
+      newDataHolder = null;
+
+//
+//   Attempt to open the registry and proceed if ok.
+
+      reg = new RegistryManager(registryName);
+      MySpaceStatus status = new MySpaceStatus();
+      if (status.getSuccessStatus())
+      {
+
+//
+//      Assemble the UserAccount from the UserID and CommunityID.
+
+         UserAccount userAcc = new UserAccount(userID, communityID);
+
+//
+//      Check the user's authentication and proceed if ok.
+
+         if (userAcc.checkAuthentication() )
+         {
+
+//
+//         Check that the specified container can be created.
+
+            if(this.checkCanBeCreated(newDataHolderName, userAcc, jobID)
+              == true)
+            {
+
+//
+//            Create a DataItemRecord for the container.
+
+               Date creation = new Date();
+
+               Calendar cal = Calendar.getInstance();
+               cal.setTime(creation);
+               cal.add(Calendar.DATE, reg.getExpiryPeriod() );
+               Date expiry = cal.getTime();
+
+               int newdataItemID = reg.getNextDataItemID();
+               int dataItemType = DataItemRecord.VOT;
+
+               DataItemRecord newDataItem = new DataItemRecord
+                 (newDataHolderName, newdataItemID, serverFileName,
+                 userID, creation, expiry, fileSize, dataItemType,
+                 "permissions");
+
+//
+//            Attempt to add this entry to the registry.
+
+               if (reg.addDataItemRecord(newDataItem) )
+               {  newDataHolder = newDataItem;
+               }
+               else
+               {  status.addCode("MS-E-FCRTDHR",
+                    MySpaceStatusCode.ERROR);
+               }
+            }
+         }
+      }
+
+//
+//   Re-write the registry.
+
+      reg.finalize();
+
+      return newDataHolder;
+   }
+
+// -----------------------------------------------------------------
+
+/**
   * Export a DataHolder from the MySpace system.  In Iteration 2 a
   * DataHolder is exported by returning a URL from which a copy of it
   * can be retrieved.

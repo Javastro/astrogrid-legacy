@@ -394,6 +394,71 @@ public class MySpaceDemo
       );
       fileMenu.add(menuItem);
 
+      menuItem = new JMenuItem("Import DataHolder");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  BufferedReader console = new BufferedReader(
+                 new InputStreamReader(System.in));
+
+               String newDataHolderName;
+               System.out.println("Enter name of new DataHolder:");
+               try
+               {  newDataHolderName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  newDataHolderName = "";
+               }
+
+               String serverFileName;
+               System.out.println("Enter corresponding server file name:");
+               try
+               {  serverFileName = console.readLine();
+               }
+               catch (IOException ioerror)
+               {  System.out.println("Ooops");
+                  serverFileName = "";
+               }
+
+               DataItemRecord newDataHolder = myspace.importDataHolder(
+                 "acd", "roe", "job27", newDataHolderName,
+                 serverFileName, 100 );
+
+               Vector itemRecVector = new Vector();
+               itemRecVector = myspace.lookupDataHoldersDetails(
+                 "acd", "roe", "job27", "*");
+
+               System.out.println("New state of the registry: ");
+
+               int numFound;
+               if (itemRecVector != null)
+               {  numFound = itemRecVector.size();
+               }
+               else
+               {   numFound = 0;
+                   System.out.println("  No entries matched the query");
+               }
+
+               DataItemRecord itemRec = new DataItemRecord();
+
+               for (int loop=0; loop<numFound; loop++)
+               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
+                  System.out.println("[" + itemRec.getDataItemID()
+                    + "]: " + itemRec.toString() );
+               }
+
+               System.out.println("");
+               if (!status.getSuccessStatus())
+               {  System.out.println("Operation failed.");
+               }
+               status.outputCodes();
+               status.reset();
+               System.out.println("");
+            }
+         }
+      );
+      fileMenu.add(menuItem);
+
       menuItem = new JMenuItem("Delete DataHolder");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
