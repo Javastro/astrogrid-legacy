@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.14 2003/09/15 11:34:32 mch Exp $
+ * $Id: SqlQuerier.java,v 1.15 2003/09/15 16:28:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,6 +55,8 @@ public class SqlQuerier extends DatabaseQuerier
    public static final String JDBC_CONNECTION_PROPERTIES_KEY = "DatabaseQuerier.ConnectionProperties";
    /** JDBC Driver(s) - list each one on a separate line */
    public static final String JDBC_DRIVERS_KEY = "DatabaseQuerier.JdbcDrivers";
+   /** Adql -> SQL translator class */
+   public static final String ADQL_SQL_TRANSLATOR = "DatabaseQuerier.AdqlSqlTranslator";
 
    /** Default constructur
     * Looks for JNDI connection, if that fails look for JDBC connection
@@ -229,48 +231,35 @@ public class SqlQuerier extends DatabaseQuerier
       }
 
    }
-   /**
-    * sets up a JDBC connection using a URL
-    * @param url jdbc url to connect to
-    * @param driver classname of database driver to use
-    * @param props map of connection keys (username,password)
-    * @throws DatabaseAccessException
+
+   /** factory method to create the appropriate query translator, which will
+    * be used to translate from an ADQL object model to the correct SQL for
+    * the database.
+    * <p> If no querytranslater specified in the Configuration file, it returns
+    * the default SqlQueryTranslator.
+    * <p> Subclasses can override to create special translators.
     *
-   private void connectTo(String url, Properties connectionProperties) throws DatabaseAccessException
-   {
-      try
-      {
-         startDrivers();
-         jdbcConnection = DriverManager.getConnection(url,connectionProperties);
-      }
-      catch (SQLException se)
-      {
-         throw new DatabaseAccessException(se,"Could not connect to database: " + se.toString());
-      }
-
-   }
-
-   /** sets up JDBC connection using a datasource
-    *
-    * @param ds datasource to take connection from - encapsulates db driver, url, parameters. and may provide caching
-    * @throws DatabaseAccessException
-    *
-   private void connectTo(DataSource ds) throws DatabaseAccessException {
-      try {
-         jdbcConnection = ds.getConnection();
-      } catch (SQLException se) {
-         throw new DatabaseAccessException(se,"Could not connect to database: " + se.toString());
-      }
-
-   }
-    /**/
-
-   /** factory method to create query translator
-    *  - overridable by extending classes
-    * @return query translator appropriate for this daabase flavour
+    * @return adql to sql translator appropriate for this database flavour
     */
-   protected QueryTranslator createQueryTranslator() {
-      return new SqlQueryTranslator();
+   protected QueryTranslator createQueryTranslator()
+   {
+      String translatorClassName = Configuration.getProperty(ADQL_SQL_TRANSLATOR);
+      if (translatorClassName == null)
+      {
+         return new SqlQueryTranslator();
+      }
+      else
+      {
+         try
+         {
+            Constructor constr= Class.forName(translatorClassName).getConstructor(new Class[]{});
+            return (QueryTranslator) constr.newInstance(new Object[]{});
+         }
+         catch (Exception e) //catch all problems with instantiation and rethrow with more info
+         {
+            throw new RuntimeException("Failed to create query translator ("+translatorClassName+") given in config by key "+ADQL_SQL_TRANSLATOR+": "+e, e);
+         }
+      }
    }
 
    /**

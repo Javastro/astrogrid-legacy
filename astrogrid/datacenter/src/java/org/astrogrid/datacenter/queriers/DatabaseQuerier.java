@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.20 2003/09/15 11:34:32 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.21 2003/09/15 16:28:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -65,7 +65,7 @@ public abstract class DatabaseQuerier implements Runnable
 
    /** A handle is used to identify a particular service.  It is also used as the
     * basis for any temporary storage. */
-   String handle = null;
+   private String handle = null;
 
    /** temporary used for generating unique handles - see generateHandle() */
    private static java.util.Random random = new java.util.Random();
@@ -132,9 +132,9 @@ public abstract class DatabaseQuerier implements Runnable
 
    /** Class method that returns the querier instance with the given handle
     */
-   public static DatabaseQuerier getQuerier(String handle)
+   public static DatabaseQuerier getQuerier(String aHandle)
    {
-      return (DatabaseQuerier) queriers.get(handle);
+      return (DatabaseQuerier) queriers.get(aHandle);
    }
 
    /** Class method that returns a list of all the currently running queriers
@@ -157,23 +157,26 @@ public abstract class DatabaseQuerier implements Runnable
 
       if (querierClass == null)
       {
-         throw new DatabaseAccessException("Database Querier key ["+DATABASE_QUERIER_KEY+"] cannot be found in the configuration file(s) '"+Configuration.getLocations()+"'" );
+         throw new DatabaseAccessException(
+            "Database Querier key ["+DATABASE_QUERIER_KEY+"] "+
+            "cannot be found in the configuration file(s) '"+Configuration.getLocations()+"'"
+         );
       }
 
       //create querier implementation
       try
       {
          Class qClass =  Class.forName(querierClass);
-           /* NWW - interesting bug here.
-      original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
-      however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
-      worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for invocationTargetExcetpion - as it thinks it cannot be thrown.
-      this means the exception boils out of the code, and is unstoppable - dodgy
-
-      work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-      // Original Code
-      //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
-        // safe equivalent
+         /* NWW - interesting bug here.
+         original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
+         however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
+         worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
+         invocationTargetExcetpion - as it thinks it cannot be thrown.
+         this means the exception boils out of the code, and is unstoppable - dodgy
+         work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
+         // Original Code
+         //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
+         // safe equivalent
          Constructor constr= qClass.getConstructor(new Class[]{});
          DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{});
 
@@ -187,24 +190,13 @@ public abstract class DatabaseQuerier implements Runnable
       {
          throw new DatabaseAccessException(e,"Could not parse Query: " + e.getMessage());
       }
-      catch (ClassNotFoundException e)
-      {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
-      }
-      catch (IllegalAccessException e)
-      {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
-      }
-      catch (InstantiationException e)
-      {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
-     }
-     catch (NoSuchMethodException e) {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '" + querierClass+"' :" + e.getMessage());
-      }
       catch (InvocationTargetException e) {
           // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
           throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "' :" + e.getCause().getMessage());
+      }
+      catch (Exception e)
+      {
+         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
       }
    }
 
@@ -342,7 +334,7 @@ public abstract class DatabaseQuerier implements Runnable
     * Applies the given query, to the database,
     * returning the results wrapped in QueryResults.
     */
-   public abstract QueryResults queryDatabase(Query query) throws DatabaseAccessException;
+   public abstract QueryResults queryDatabase(Query aQuery) throws DatabaseAccessException;
 
 
    /**

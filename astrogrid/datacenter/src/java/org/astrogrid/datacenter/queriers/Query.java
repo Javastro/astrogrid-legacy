@@ -39,20 +39,24 @@ import org.xml.sax.SAXException;
 public class Query
 {
    /** Original XML query... might be useful for debug */
-   Element queryXml = null;
+   private Element queryXml = null;
 
    /** AstroGrid It02 query */
-   AstroGridQuery agQuery = null;
+   private AstroGridQuery agQuery = null;
 
    /** ADQL object model */
-   QOM adql = null;
+   private QOM adql = null;
 
+   /**
+    * Constructs a query wrapping the given dom.  Also creates an instance
+    * of the correct type - eg adql.QOM or query.AstroGridQuery
+    */
    public Query(Element domContainingQuery) throws SAXException
    {
        // NWW - possible that the root element passed in is the query element
        if (DocMessageHelper.QUERY_TAG.equals(domContainingQuery.getLocalName())) {
            queryXml = domContainingQuery;
-       } else { //search for  
+       } else { //search for
         NodeList queries = domContainingQuery.getElementsByTagName(DocMessageHelper.QUERY_TAG);
 
         Log.affirm(queries.getLength() == 1, "Either no  query tags in dom, or too many query tags to make one query from");
@@ -70,7 +74,7 @@ public class Query
           Log.affirm(adqlRoots.getLength() == 1,"Either no ADQL select tag within query, or too many");
          try
          {
-             
+
             adql = ADQLUtils.unmarshalSelect(adqlRoots.item(0));
          }
          catch (org.exolab.castor.xml.ValidationException e)
@@ -125,6 +129,9 @@ public class Query
 
 /*
 $Log: Query.java,v $
+Revision 1.4  2003/09/15 16:28:19  mch
+Fixes to make maven happy(er)
+
 Revision 1.3  2003/09/11 11:04:49  nw
 improved extraction of query element from document
 (handled case of query element being root element).

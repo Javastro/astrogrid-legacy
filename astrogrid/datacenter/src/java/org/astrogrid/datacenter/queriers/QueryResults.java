@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.3 2003/09/08 16:34:31 mch Exp $
+ * $Id: QueryResults.java,v 1.4 2003/09/15 16:28:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,8 +7,6 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-import java.io.InputStream;
-import org.astrogrid.datacenter.service.Workspace;
 import org.w3c.dom.Document;
 
 /**
