@@ -51,6 +51,8 @@ echo "[ag-build-$PROJECT_NAME] cvs checkout"
 cvs  -d  $CVSROOT export -kv -r $TAG_TO_BUILD astrogrid>> $LOG_FILE 2>&1
 #but we'll have the xdocs though
 cvs -d $CVSROOT export -kv -r $TAG_TO_BUILD astrogrid/xdocs >> $LOG_FILE 2>&1
+#And the base project
+cvs -d $CVSROOT export -kv -r $TAG_TO_BUILD astrogrid/maven-base >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
