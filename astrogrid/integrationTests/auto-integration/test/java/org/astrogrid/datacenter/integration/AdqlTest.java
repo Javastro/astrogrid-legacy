@@ -1,4 +1,4 @@
-/*$Id: AdqlTest.java,v 1.4 2004/08/03 13:41:29 KevinBenson Exp $
+/*$Id: AdqlTest.java,v 1.5 2004/08/30 22:11:46 KevinBenson Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,6 +55,7 @@ public class AdqlTest extends TestCase implements StdKeys {
    
    public void testAdqlSearchForSEC() throws IOException, ServiceException, IOException {
       //load query
+      System.out.println("Start testAdqlSearchForSEC");       
       InputStream is = this.getClass().getResourceAsStream("SimpleSECQuery-adql05.xml");
       assertNotNull(is);
       StringWriter out = new StringWriter();
@@ -67,12 +68,14 @@ public class AdqlTest extends TestCase implements StdKeys {
       InputStream results = delegate.askQuery(query, "VOTABLE");
       assertNotNull(results);
       Piper.pipe(results,System.out);
+      System.out.println("End testAdqlSearchForSEC");      
       //StringWriter outResult = new StringWriter();
       //Piper.pipe(new InputStreamReader(results),System.out);
    }
 
    public void testAdqlSearchForFITS() throws IOException, ServiceException, IOException {
       //load query
+      System.out.println("Start testAdqlSearchForFITS");       
       InputStream is = this.getClass().getResourceAsStream("SimpleFITSQuery-adql073.xml");
       assertNotNull(is);
       StringWriter out = new StringWriter();
@@ -86,9 +89,27 @@ public class AdqlTest extends TestCase implements StdKeys {
       assertNotNull(results);
       //StringWriter outResult = new StringWriter();
       Piper.pipe(results,System.out);
+      System.out.println("End testAdqlSearchForFITS");
    }
    
-   
+   public void testAdqlSearchForVizier() throws IOException, ServiceException, IOException {
+       //load query
+       System.out.println("Start testAdqlSearchForVizier");
+       InputStream is = this.getClass().getResourceAsStream("SimpleVizierCircle-adql05.xml");
+       assertNotNull(is);
+       StringWriter out = new StringWriter();
+       Piper.pipe(new InputStreamReader(is),out);
+       AdqlQuery query = new AdqlQuery(out.toString());
+       
+       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_VIZIER_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+       assertNotNull("delegate was null",delegate);
+
+       InputStream results = delegate.askQuery(query, "VOTABLE");
+       assertNotNull(results);
+       Piper.pipe(results,System.out);
+       System.out.println("End testAdqlSearchForVizier");       
+       //should be empty votable
+    }   
    
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -109,6 +130,9 @@ public class AdqlTest extends TestCase implements StdKeys {
 
 /*
 $Log: AdqlTest.java,v $
+Revision 1.5  2004/08/30 22:11:46  KevinBenson
+added a little more for a vizier test
+
 Revision 1.4  2004/08/03 13:41:29  KevinBenson
 result of a merge with Itn06_case3 to change to using registry-client-lite and add some more int-test for fits and sec datacenter
 
