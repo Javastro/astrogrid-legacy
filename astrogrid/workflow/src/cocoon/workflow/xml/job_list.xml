@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<job-list>
+	<job>  
+		<name>
+			some name here
+		</name>
+		<description>
+			some description here
+		</description>
+	    <time>
+			date and time here
+		</time>
+		<status>
+			overall job status here
+		</status>		
+	</job>
+</job-list>

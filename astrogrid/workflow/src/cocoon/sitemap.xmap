@@ -19,7 +19,8 @@
   <map:serializers default="html"/>
   
   <map:actions>
-  	<map:action name="astrogrid-workflow" src="org.astrogrid.portal.cocoon.workflow.design.DesignAction" />            
+  	<map:action name="astrogrid-workflow" src="org.astrogrid.portal.cocoon.workflow.design.DesignAction" />    
+  	<map:action name="astrogrid-jes" src="org.astrogrid.portal.cocoon.workflow.jes.JesAction" />    	        
   </map:actions>
 
  </map:components>

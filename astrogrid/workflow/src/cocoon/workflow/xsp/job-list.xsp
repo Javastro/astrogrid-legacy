@@ -20,7 +20,7 @@
 		private static final boolean 
         	TRACE_ENABLED = true ;
         	
-		public void list ( Iterator iterator ) throws SAXException {
+		public void jobList ( Iterator iterator ) throws SAXException {
         	if( TRACE_ENABLED ) trace( "job-list-xsp.list() entry") ; 
         	
         	AttributesImpl xspAttr = new AttributesImpl() ;
@@ -30,7 +30,8 @@
         		Job job;
         	
 				while( iterator.hasNext() ) {
-					job = (Job)iterator.next() ;			
+					job = (Job)iterator.next() ;
+					outputJob( job ) ;			
 				}
        
         	}
@@ -49,11 +50,11 @@
 		]]>
 	
 			<content>	
-				<xsp:element name="sequence">
-					<xsp:attribute name="key"><xsp:expr>aSequence.getKey()</xsp:expr></xsp:attribute>
-					
-					<xsp:logic>activityContainer( aSequence, xspAttr ) ;</xsp:logic>
-					
+				<xsp:element name="job">
+					<xsp:element name="name"><xsp:expr>job.getName()</xsp:expr></xsp:element>
+					<xsp:element name="description"><xsp:expr>job.getDescription()</xsp:expr></xsp:element>
+					<xsp:element name="time"><xsp:expr>job.getTimestamp()</xsp:expr></xsp:element>
+					<xsp:element name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:element>															
 				</xsp:element>
 			</content>
 		
@@ -81,7 +82,7 @@
 </xsp:logic>
 
 
-<joblist>
+<job-list>
 
 	<xsp:logic>
 		
@@ -89,7 +90,7 @@
 		<![CDATA[
 		//================================================================================
 		Iterator
-			iterator = (Iterator)request.getAttribute( JesAction. HTTP_JOBLIST_TAG ) ;
+			iterator = (Iterator)request.getAttribute( JesAction.HTTP_JOBLIST_TAG ) ;
 		
 		//================================================================================
 		]]>
@@ -98,7 +99,7 @@
 			<![CDATA[
 			//========================================================================
 			
-			list( iterator ) ;
+			jobList( iterator ) ;
 		
 			//========================================================================
 			]]>
@@ -106,6 +107,6 @@
 				
 	</xsp:logic>
 
-</joblist>
+</job-list>
 
 </xsp:page>
