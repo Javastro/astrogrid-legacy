@@ -1,11 +1,12 @@
 /*
- * $Id: DatacenterStatusListener.java,v 1.4 2003/08/27 22:40:28 mch Exp $
+ * $Id: DatacenterStatusListener.java,v 1.5 2003/08/28 13:08:45 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 
 /**
  * Classes that implement this interface, and register with the
@@ -13,24 +14,11 @@ package org.astrogrid.datacenter.delegate;
  * will be informed when the status of the job changes, rather than having to
  * poll the service.
  *
- * @todo probably need a proper typesafe enumeration of the states.
- *
  * @author M Hill
  */
 
-public interface DatacenterStatusListener
+public interface DatacenterStatusListener extends ServiceStatus
 {
-   /** Service instance is starting, ie initialising... */
-   public static final String STARTING = "Starting";
-   /** Service instance is running, ie query is being processed... */
-   public static final String RUNNING_QUERY = "Querying";
-   /** Service is processing results, eg converting to VOTable */
-   public static final String RUNNING_RESULTS = "Results";
-   /** Service instance has finished/closed/no longer available */
-   public static final String FINISHED = "Finished";
-   /** Service instance is unknown, or cannot provide state */
-   public static final String UNKNOWN = "Unknown";
-
    /** Called by the datacenter delegate when it has been notified of a
     * status change
     */
@@ -39,6 +27,9 @@ public interface DatacenterStatusListener
 
 /*
 $Log: DatacenterStatusListener.java,v $
+Revision 1.5  2003/08/28 13:08:45  mch
+Added service listener placeholders
+
 Revision 1.4  2003/08/27 22:40:28  mch
 todo javadocced
 
