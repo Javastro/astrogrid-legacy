@@ -462,7 +462,7 @@
   </j:catch>
 </goal>
 
-<goal name="apps-deploy" >
+<goal name="apps-deploy"  prereqs="tomcat-declare-tasks" >
         <copy todir="${temporary.dir}/applications" filtering="true">
                 <fileset dir="contexts/applications" />
         </copy>
