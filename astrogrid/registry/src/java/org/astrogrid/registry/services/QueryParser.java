@@ -238,7 +238,7 @@ public class QueryParser
 		return nodeDetails;
 	}
 	
- public static String getRegistrySource(){
+ private static String getRegistrySource(){
 
 	Document parameterDoc = null;
 	DocumentBuilderFactory parameterFactory = DocumentBuilderFactory.newInstance();
