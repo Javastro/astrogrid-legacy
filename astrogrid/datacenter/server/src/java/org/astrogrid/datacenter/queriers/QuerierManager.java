@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.24 2004/09/17 01:26:12 nw Exp $
+/*$Id: QuerierManager.java,v 1.25 2004/09/28 11:45:21 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,10 +85,9 @@ public class QuerierManager implements QuerierListener {
       runningQueriers.put(querier.getId(), querier);
       querier.addListener(this);
       
-      //NWW - replaced with call to threadpool for execution.
-      //Thread qth = new Thread(querier);
-      //qth.start();
-      StaticThreadPool.execute(querier);
+      Thread qth = new Thread(querier);
+      qth.start();
+      //StaticThreadPool.execute(querier);
    }
 
    /**
@@ -128,6 +127,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.25  2004/09/28 11:45:21  mch
+ Removed thread pooling :-)
+
  Revision 1.24  2004/09/17 01:26:12  nw
  altered querier manager to use a threadpool
 
