@@ -97,7 +97,7 @@
          </map:match>         
          
 
-         <map:match pattern="agregistry.html">
+         <map:match pattern="registry.html">
             <map:act type="astrogrid-registry-options">
                <map:generate src="web/style/xsp/regoptions.xsp" type="serverpages" label="000, 001"/>           
               <map:transform src="web/style/xsl/regoptions.xsl" label="002">

@@ -17,12 +17,17 @@
 	    | Match the admin element.
 		+-->
 	<xsl:template match="registryoptions">
+		<!--
 		<page>
-			<!-- Add our page content -->
 			<content>
+			-->
+			<div>
 				<xsl:call-template name="regoptions_form"/>
+			</div>
+			<!--
 			</content>
 		</page>
+		-->
 	</xsl:template>
 
 	<!--+
