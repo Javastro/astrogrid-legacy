@@ -15,8 +15,7 @@ import org.xml.sax.InputSource;
 import ORG.oclc.oai.util.OAIUtil;
 
 public class RecordStringHandler extends DefaultHandler {
-    //private static final boolean debug = false;
-   private static final boolean debug = true;
+    private static final boolean debug = false;
     private static final String OAI_NS = "http://www.openarchives.org/OAI/2.0/";
     private static final String OAI_PREF = "oai";
     private static final String DATABASE_NS = "http://www.oclc.org/pears/";

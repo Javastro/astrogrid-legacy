@@ -231,7 +231,6 @@ public abstract class RecordFactory {
     public String create(Object nativeItem, String schemaURL, String metadataPrefix,
           Iterator setSpecs, Iterator abouts)
    throws IllegalArgumentException, CannotDisseminateFormatException {
-        System.out.println("IN RECORDFACTORY CREATE1 CALLED");
         try {
             if (isDeleted(nativeItem)) {
                 StringBuffer sb = new StringBuffer("<record>");
@@ -290,7 +289,6 @@ public abstract class RecordFactory {
     public String create(Object nativeItem, String schemaURL, String identifier,
           String datestamp, Iterator setSpecs, Iterator abouts, boolean isDeleted)
    throws IllegalArgumentException, CannotDisseminateFormatException, OAIInternalServerError {
-        System.out.println("IN RECORDFACTORY CREATE2 CALLED");        
         if (debug) System.out.println("RecordFactory.create");
    StringBuffer xmlRec = new StringBuffer();
    xmlRec.append("<record><header");
@@ -319,8 +317,7 @@ public abstract class RecordFactory {
        }
    }
    xmlRec.append("</header>");
-        System.out.println("header finished = " + xmlRec.toString());
-        if (debug) System.out.println("RecordFactory.create: header finished");
+      if (debug) System.out.println("RecordFactory.create: header finished");
    if (!isDeleted) {
             if (debug) System.out.println("RecordFactory.create: starting metadata");
        xmlRec.append("<metadata>");
@@ -333,7 +330,7 @@ public abstract class RecordFactory {
                     System.out.println("RecordFactory.create: crosswalk=" + crosswalk);
       if (schemaURL == null
           || crosswalk.getSchemaURL().equals(schemaURL)) {
-          
+
           xmlRec.append(crosswalk.createMetadata(getMetaDataFromMap(nativeItem)));
       }
        }
@@ -383,7 +380,6 @@ public abstract class RecordFactory {
     public String createMetadata(Object nativeItem, String schemaURL, String metadataPrefix,
           Iterator setSpecs, Iterator abouts)
    throws IllegalArgumentException, CannotDisseminateFormatException {
-        System.out.println("IN RECORDFACTORY CREATE3 CALLED");        
         try {
             if (isDeleted(nativeItem)) {
                 throw new CannotDisseminateFormatException("Record is deleted.");
@@ -436,7 +432,6 @@ public abstract class RecordFactory {
      */
     public String createMetadata(Object nativeItem, String schemaURL, boolean isDeleted)
    throws IllegalArgumentException, CannotDisseminateFormatException, OAIInternalServerError {
-        System.out.println("IN RECORDFACTORY CREATE4 CALLED");        
    StringBuffer xmlRec = new StringBuffer();
    if (isDeleted) {
             throw new CannotDisseminateFormatException("Record is deleted");

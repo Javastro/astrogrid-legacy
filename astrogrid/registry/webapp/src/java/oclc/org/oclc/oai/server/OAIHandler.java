@@ -100,6 +100,11 @@ public class OAIHandler extends HttpServlet {
 	super.init(config);
 	String fileName =
 	    config.getServletContext().getInitParameter("properties");
+    System.out.println("inside init trying to get version");
+    String versionNumberTemp =
+        config.getInitParameter("version");
+    
+    System.out.println("the version number in oaihandler = " + versionNumberTemp);
 	try {
 	    ServletContext context = getServletContext();
 	    attributes = new HashMap();
