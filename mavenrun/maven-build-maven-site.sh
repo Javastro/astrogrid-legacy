@@ -9,13 +9,13 @@ OLDDIR=$PWD
 PROJECT_NAME=maven-site
 
 DATE=`date`
-BUILD_HOME=/home/maven/build/snapshot
+BUILD_HOME=/home/maven/build/SNAPSHOT
 SCRIPTHOME=/home/maven/mavenrun
 #needs to be checked out into the root of all the other
 #projects in order for a cumulative changelog report to work.
 PROJECT_HOME=$BUILD_HOME/astrogrid/
 DOC_HOME=/var/www/www/maven/docs
-ASTROGRID_VERSION=snapshot
+ASTROGRID_VERSION=SNAPSHOT
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
 ADMIN_EMAIL=jdt@roe.ac.uk
 
