@@ -10,9 +10,8 @@ package org.astrogrid.community.service.authentication.data;
 public class SecurityToken  implements java.io.Serializable {
     private java.lang.String account;
     private java.util.Calendar expirationDate;
-    private java.lang.String ident;
+    private java.util.Calendar startDate;
     private java.lang.String target;
-    private java.util.Calendar todaysDate;
     private java.lang.String token;
     private java.lang.Boolean used;
 
@@ -35,12 +34,12 @@ public class SecurityToken  implements java.io.Serializable {
         this.expirationDate = expirationDate;
     }
 
-    public java.lang.String getIdent() {
-        return ident;
+    public java.util.Calendar getStartDate() {
+        return startDate;
     }
 
-    public void setIdent(java.lang.String ident) {
-        this.ident = ident;
+    public void setStartDate(java.util.Calendar startDate) {
+        this.startDate = startDate;
     }
 
     public java.lang.String getTarget() {
@@ -49,14 +48,6 @@ public class SecurityToken  implements java.io.Serializable {
 
     public void setTarget(java.lang.String target) {
         this.target = target;
-    }
-
-    public java.util.Calendar getTodaysDate() {
-        return todaysDate;
-    }
-
-    public void setTodaysDate(java.util.Calendar todaysDate) {
-        this.todaysDate = todaysDate;
     }
 
     public java.lang.String getToken() {
@@ -93,15 +84,12 @@ public class SecurityToken  implements java.io.Serializable {
             ((this.expirationDate==null && other.getExpirationDate()==null) || 
              (this.expirationDate!=null &&
               this.expirationDate.equals(other.getExpirationDate()))) &&
-            ((this.ident==null && other.getIdent()==null) || 
-             (this.ident!=null &&
-              this.ident.equals(other.getIdent()))) &&
+            ((this.startDate==null && other.getStartDate()==null) || 
+             (this.startDate!=null &&
+              this.startDate.equals(other.getStartDate()))) &&
             ((this.target==null && other.getTarget()==null) || 
              (this.target!=null &&
               this.target.equals(other.getTarget()))) &&
-            ((this.todaysDate==null && other.getTodaysDate()==null) || 
-             (this.todaysDate!=null &&
-              this.todaysDate.equals(other.getTodaysDate()))) &&
             ((this.token==null && other.getToken()==null) || 
              (this.token!=null &&
               this.token.equals(other.getToken()))) &&
@@ -125,14 +113,11 @@ public class SecurityToken  implements java.io.Serializable {
         if (getExpirationDate() != null) {
             _hashCode += getExpirationDate().hashCode();
         }
-        if (getIdent() != null) {
-            _hashCode += getIdent().hashCode();
+        if (getStartDate() != null) {
+            _hashCode += getStartDate().hashCode();
         }
         if (getTarget() != null) {
             _hashCode += getTarget().hashCode();
-        }
-        if (getTodaysDate() != null) {
-            _hashCode += getTodaysDate().hashCode();
         }
         if (getToken() != null) {
             _hashCode += getToken().hashCode();
@@ -161,19 +146,14 @@ public class SecurityToken  implements java.io.Serializable {
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("ident");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "ident"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setFieldName("startDate");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "startDate"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("target");
         elemField.setXmlName(new javax.xml.namespace.QName("", "target"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
-        typeDesc.addFieldDesc(elemField);
-        elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("todaysDate");
-        elemField.setXmlName(new javax.xml.namespace.QName("", "todaysDate"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "dateTime"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("token");

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/15 06:42:41 $</cvs:date>
-    | <cvs:version>$Revision: 1.30 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/15 21:51:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.31 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.31  2003/09/15 21:51:45  pah
+    |   authentication database backend tested
+    |
     |   Revision 1.30  2003/09/15 06:42:41  pah
     |   added in test config for authentication
     |
@@ -630,6 +633,11 @@
 		<!-- Install our webapp -->
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/xerces-docs" war="file://${xerces.home}/docs"/>
 	</target>
+	
+	<property name="logging.home" value="${basedir}/build/logging"></property>
+	<path id= "logging.classpath">
+	<pathelement location="${logging.home}/commons-logging.jar"/>
+	</path>
 
 	<!-- ================ JConfig tasks ================ -->
 	<!--+
@@ -2904,10 +2912,12 @@ Start of Authentication "auth" tasks
 	
 	<target name="authentication.testSetup" description="moves various config files from the main tree into the test tree prior to testing">
 	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testdir}/java/org/astrogrid/community/common/db/"></copy>
+	    <copy file="${basedir}/src/castor/hsqldb/mapping.xml" todir="${testdir}/config/"></copy>
 	    <echo file="${testdir}/java/org/astrogrid/community/common/Test.properties" append="false">
-org.astrogrid.policy.server.mapping=file://${basedir}/src/castor/hsqldb/mapping.xml
-org.astrogrid.policy.server.database.config=file://${testdir}/config/databaseinmemory.xml
+org.astrogrid.policy.server.mapping=file://${testdir}/config/mapping.xml
+org.astrogrid.policy.server.database.config=file://${testdir}/config/databaseonlocalhost.xml
 org.astrogrid.policy.server.database.name=${hsqldb.database}
+org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			</echo>
 
 	</target>
@@ -2930,6 +2940,8 @@ org.astrogrid.policy.server.database.name=${hsqldb.database}
 			<include name="org/astrogrid/community/authentication/data/*.java"/>
 			<classpath>
 			<path refid="castor.classpath"></path>
+			<path refid="jconfig.classpath"/>
+			<path refid="logging.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -2957,6 +2969,8 @@ org.astrogrid.policy.server.database.name=${hsqldb.database}
 			<!-- The classpath to find the authenticationService classes -->
 			<classpath>
 				<path location="${authentication.base}/classes"/>
+				<path refid="castor.classpath"></path>
+				<path refid="logging.classpath"/>
 			</classpath>
 		</axis.java2wsdl>
 	</target>
@@ -3036,6 +3050,7 @@ org.astrogrid.policy.server.database.name=${hsqldb.database}
 				<path refid="castor.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
+				<path refid="jconfig.classpath"/>
 			</classpath>
 		</javac>
 	</target>

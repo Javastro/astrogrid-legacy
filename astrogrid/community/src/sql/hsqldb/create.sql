@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2003/09/15 14:04:32 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/15 21:51:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.8  2003/09/15 21:51:45  pah
+ *   authentication database backend tested
+ *
  *   Revision 1.7  2003/09/15 14:04:32  pah
  *   using ident as the primary key in the securitytokens table
  *
@@ -120,11 +123,11 @@ CREATE TABLE permissions
 DROP TABLE securitytokens IF EXISTS ;
 CREATE TABLE securitytokens
     (
-    ident       INTEGER IDENTITY,
     token       VARCHAR NOT NULL,
     target      VARCHAR NOT NULL,
     used        BIT DEFAULT 'false',
     expirationdate TIMESTAMP DEFAULT 'now',
     account      VARCHAR NOT NULL,
-    todaysdate  TIMESTAMP DEFAULT 'now'
+    startdate  TIMESTAMP DEFAULT 'now',
+    PRIMARY KEY (token)
     ) ;

@@ -1,5 +1,5 @@
 /*
- * $Id: AuthenticationDelegateTest.java,v 1.1 2003/09/11 13:46:52 pah Exp $
+ * $Id: AuthenticationDelegateTest.java,v 1.2 2003/09/15 21:51:45 pah Exp $
  * 
  * Created on 10-Sep-2003 by pah
  *
@@ -16,9 +16,9 @@ package org.astrogrid.community.delegate.authentication;
 import java.rmi.RemoteException;
 import java.text.DateFormat;
 
-import org.astrogrid.community.service.authentication.data.SecurityToken;
-
 import junit.framework.TestCase;
+
+import org.astrogrid.community.service.authentication.data.SecurityToken;
 
 /**
  * Rudimentaty tests for the Authentication Delegate. This must be run against an external service to work.

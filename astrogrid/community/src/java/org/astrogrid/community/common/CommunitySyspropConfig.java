@@ -1,5 +1,5 @@
 /*
- * $Id: CommunitySyspropConfig.java,v 1.1 2003/09/15 05:45:42 pah Exp $
+ * $Id: CommunitySyspropConfig.java,v 1.2 2003/09/15 21:51:45 pah Exp $
  * 
  * Created on 09-Sep-2003 by pah
  *
@@ -34,7 +34,7 @@ public class CommunitySyspropConfig implements Config {
       return instance;
    }
    public String getProperty(String propertyKey) {
-      return System.getenv(propertyKey); // compatible with Dave's setup for now....
+      return System.getProperty(propertyKey); // compatible with Dave's setup for now....
    }
 
 }

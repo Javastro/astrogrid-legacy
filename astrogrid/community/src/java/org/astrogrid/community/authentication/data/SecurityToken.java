@@ -4,14 +4,19 @@ import java.util.Date;
 import java.util.Calendar;
 import java.sql.Timestamp;
 
+import org.astrogrid.community.policy.data.AccountData;
+
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/authentication/data/Attic/SecurityToken.java,v $</cvs:source>
  * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 20:48:17 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/15 21:51:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityToken.java,v $
+ *   Revision 1.5  2003/09/15 21:51:45  pah
+ *   authentication database backend tested
+ *
  *   Revision 1.4  2003/09/10 20:48:17  pah
  *   Authentication Service without database backend
  *
@@ -37,107 +42,86 @@ import java.sql.Timestamp;
  *
  */
 
-
 public class SecurityToken {
-      /**
-       * Our Account ident.
-       *
-       */
-      private String ident;
 
-      /**
-       * Our Account ident.
-       *
-       */
-      private String token;
-      
-      /**
-       * Our Account ident.
-       *
-       */
-      private String target;
-      
-      /**
-       * Our Account ident.
-       *
-       */
-      private Date expirationDate;
-      
-      /**
-       * Our Account ident.
-       *
-       */
-      private Boolean used = new Boolean(false);
-      
-      /**
-       * Our Account ident.
-       *
-       */
-      private String account;
-
-      /**
-       * Our Account ident.
-       *
-       */
-      private Date todaysDate;
-      
-      private static final int INCREMENT_HOUR = 8;
-      
-      
+   private static SecurityToken invalidToken = new SecurityToken();
    /**
-    * Public constructor.
+    * Our Account ident.
+    *
+    */
+   private String token;
+
+   /**
+    * Our Account ident.
+    *
+    */
+   private String target;
+
+   /**
+    * Our Account ident.
+    *
+    */
+   private Date expirationDate;
+
+   /**
+    * Our Account ident.
+    *
+    */
+   private Boolean used = new Boolean(false);
+
+   /**
+    * Our Account ident.
+    *
+    */
+   private String account;
+
+   /**
+    * Our Account ident.
+    *
+    */
+   private Date startDate;
+
+   private static final int INCREMENT_HOUR = 8;
+
+   /**
+    * Default Public constructor. This will return an invalid security token as a proper security token can only be created with one of the other constructors.
     *
     */
    public SecurityToken() {
-      this(null);
+      this("BAD", "BAD");
+      this.used = Boolean.TRUE;
+      //mark the token as already used to indicate that it is invalid
    }
 
    /**
     * Public constructor.
     *
     */
-   public SecurityToken(String ident) {
-      this.ident = ident;
+   public SecurityToken(SecurityToken securityToken) {
+      this(securityToken.account, securityToken.target);
    }
-   
+
    /**
     * Public constructor.
     * This will most likely be the one used for the creation of new tokens.
     *
     */
-   public SecurityToken(String ident,String account,String target) {
-      this.ident = ident;
+   public SecurityToken(String account, String target) {
       this.account = account;
       this.target = target;
       this.token = account + String.valueOf(System.currentTimeMillis());
       Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.HOUR_OF_DAY,INCREMENT_HOUR);
+      cal.add(Calendar.HOUR_OF_DAY, INCREMENT_HOUR);
       this.expirationDate = new Timestamp(cal.getTimeInMillis());
-      this.todaysDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
-   }   
-
-
-   /**
-    * Access to our Token's ident.
-    *
-    */
-   public String getIdent() {
-      return this.ident;
+      this.startDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
+      this.used = Boolean.FALSE;
    }
 
-   /**
-    * Access to our Token's ident.
-    *
-    */
-   public void setIdent(String ident) {
-      this.ident = ident;
-   }
-      
    /**
     * Access to our Token.
     *
    */
-   public String getToken(){
+   public String getToken() {
       return this.token;
    }
 
@@ -148,13 +132,12 @@ public class SecurityToken {
    public void setToken(String token) {
       this.token = token;
    }
-      
 
    /**
     * Access to our Token.
     *
    */
-   public String getTarget(){
+   public String getTarget() {
       return this.target;
    }
 
@@ -170,7 +153,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public String getAccount(){
+   public String getAccount() {
       return this.account;
    }
 
@@ -181,12 +164,12 @@ public class SecurityToken {
    public void setAccount(String account) {
       this.account = account;
    }
-   
+
    /**
     * Access to our Token.
     *
    */
-   public Date getExpirationDate(){
+   public Date getExpirationDate() {
       return this.expirationDate;
    }
 
@@ -202,23 +185,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public Date getTodaysDate(){
-      return this.todaysDate;
-   }
-
-   /**
-    * Access to our Token.
-    *
-   */
-   public void setTodaysDate(Date todaysDate) {
-      this.todaysDate = todaysDate;
-   }
-   
-   /**
-    * Access to our Token.
-    *
-   */
-   public Boolean getUsed(){
+   public Boolean getUsed() {
       return this.used;
    }
 
@@ -231,7 +198,63 @@ public class SecurityToken {
    }
 
    public String toString() {
-     String val = "Token=" + this.token + ", Target=" + target;
-     return val;
+      String val = "Token=" + this.token + ", Target=" + target;
+      return val;
    }
+   /**
+    * @return
+    */
+   public Date getStartDate() {
+      return startDate;
+   }
+
+   /**
+    * @param date
+    */
+   public void setStartDate(Date date) {
+      startDate = date;
+   }
+
+   /**
+    * Creates an invalid security token. This is a token that has already been used by setting the appropriate field.
+    * @return a static instance of an invalid security token...
+    */
+   public static SecurityToken createInvalidToken() {
+      return invalidToken;
+   }
+   public boolean equals(java.lang.Object obj) {
+      if (!(obj instanceof SecurityToken))
+         return false;
+      SecurityToken other = (SecurityToken)obj;
+      if (obj == null)
+      {
+      
+         return false;
+      }
+      if (this == obj)
+      {
+      
+         return true;
+      }
+      boolean _equals;
+      _equals =
+         true
+            && ((this.account == null && other.getAccount() == null)
+               || (this.account != null
+                  && this.account.equals(other.getAccount())))
+            && ((this.expirationDate == null && other.getExpirationDate() == null)
+               || (this.expirationDate != null
+                  && this.expirationDate.equals(other.getExpirationDate())))
+            && ((this.target == null && other.getTarget() == null)
+               || (this.target != null && this.target.equals(other.getTarget())))
+            && ((this.startDate == null && other.getStartDate() == null)
+               || (this.startDate != null
+                  && this.startDate.equals(other.getStartDate())))
+            && ((this.token == null && other.getToken() == null)
+               || (this.token != null && this.token.equals(other.getToken())))
+            && ((this.used == null && other.getUsed() == null)
+               || (this.used != null && this.used.equals(other.getUsed())));
+      return _equals;
+   }
+
 }

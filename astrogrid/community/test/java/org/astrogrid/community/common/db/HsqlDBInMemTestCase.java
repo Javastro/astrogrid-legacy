@@ -1,5 +1,5 @@
 /*
- * $Id: HsqlDBInMemTestCase.java,v 1.1 2003/09/15 10:13:58 pah Exp $
+ * $Id: HsqlDBInMemTestCase.java,v 1.2 2003/09/15 21:51:45 pah Exp $
  * 
  * Created on 07-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -78,7 +78,7 @@ public abstract class HsqlDBInMemTestCase extends TestCase {
          fail("could not load the db driver" + cnfe.getMessage());
       }
       catch (SQLException sqle) {
-         fail("error in datbase setup" + sqle.getMessage());
+         fail("error in datbase setup - " + sqle.getMessage());
       } catch (IOException ioe) {
          fail("problem reading database intialization scripts" + ioe.getMessage());
       }

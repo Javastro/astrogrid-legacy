@@ -7,9 +7,8 @@
     <sequence>
      <element name="account" nillable="true" type="xsd:string"/>
      <element name="expirationDate" nillable="true" type="xsd:dateTime"/>
-     <element name="ident" nillable="true" type="xsd:string"/>
+     <element name="startDate" nillable="true" type="xsd:dateTime"/>
      <element name="target" nillable="true" type="xsd:string"/>
-     <element name="todaysDate" nillable="true" type="xsd:dateTime"/>
      <element name="token" nillable="true" type="xsd:string"/>
      <element name="used" nillable="true" type="xsd:boolean"/>
     </sequence>

@@ -1,0 +1,44 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from TokenAuthenticatorService WSDL service -->
+
+  <service name="AuthenticationService" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="urn:server.authentication.community.astrogrid.org"/>
+      <parameter name="wsdlServiceElement" value="TokenAuthenticatorService"/>
+      <parameter name="wsdlServicePort" value="AuthenticationService"/>
+      <parameter name="className" value="org.astrogrid.community.service.authentication.AuthenticationServiceSoapBindingImpl"/>
+      <parameter name="wsdlPortType" value="TokenAuthenticator"/>
+      <operation name="authenticateLogin" qname="operNS:authenticateLogin" xmlns:operNS="urn:server.authentication.community.astrogrid.org" returnQName="authenticateLoginReturn" returnType="rtns:SecurityToken" xmlns:rtns="urn:data.authentication.community.astrogrid.org" >
+        <parameter name="account" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter name="password" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <operation name="authenticateToken" qname="operNS:authenticateToken" xmlns:operNS="urn:server.authentication.community.astrogrid.org" returnQName="authenticateTokenReturn" returnType="rtns:SecurityToken" xmlns:rtns="urn:data.authentication.community.astrogrid.org" >
+        <parameter name="token" type="tns:SecurityToken" xmlns:tns="urn:data.authentication.community.astrogrid.org"/>
+      </operation>
+      <operation name="createToken" qname="operNS:createToken" xmlns:operNS="urn:server.authentication.community.astrogrid.org" returnQName="createTokenReturn" returnType="rtns:SecurityToken" xmlns:rtns="urn:data.authentication.community.astrogrid.org" >
+        <parameter name="account" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+        <parameter name="token" type="tns:SecurityToken" xmlns:tns="urn:data.authentication.community.astrogrid.org"/>
+        <parameter name="target" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
+      </operation>
+      <parameter name="allowedMethods" value="createToken authenticateLogin authenticateToken"/>
+
+      <typeMapping
+        xmlns:ns="urn:data.authentication.community.astrogrid.org"
+        qname="ns:SecurityToken"
+        type="java:org.astrogrid.community.service.authentication.data.SecurityToken"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+  </service>
+</deployment>
