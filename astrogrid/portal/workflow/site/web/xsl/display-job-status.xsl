@@ -113,7 +113,7 @@
                                 <xsl:element name="a">
                                     <xsl:attribute name="style">padding-left: 10;</xsl:attribute>
                                     <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-                                    <xsl:attribute name="onMouseOver">this.T_TITLE='Step: <xsl:value-of select="@step-name" /> &lt;br/&gt; Status: <xsl:value-of select="@step-status" />'; this.T_WIDTH=130; this.T_DELAY=500; return escape('Desc: <xsl:value-of select="@step-description"/> &lt;br/&gt; Start: <xsl:value-of select="@step-start-time"/> &lt;br/&gt; Finish: <xsl:value-of select="@step-finish-time"/> &lt;br/&gt; Join: <xsl:value-of select="@step-join-condition"/> &lt;br/&gt; Message: <xsl:value-of select="@step-message"/> ');</xsl:attribute>
+                                    <xsl:attribute name="onMouseOver">this.T_TITLE='Step: <xsl:value-of select="@step-name" /> &lt;br/&gt; Status: <xsl:value-of select="@step-status" />'; this.T_WIDTH=250; this.T_DELAY=500; return escape('Desc: <xsl:value-of select="@step-description"/> &lt;br/&gt; Start: <xsl:value-of select="@step-start-time"/> &lt;br/&gt; Finish: <xsl:value-of select="@step-finish-time"/> &lt;br/&gt; Join: <xsl:value-of select="@step-join-condition"/> &lt;br/&gt; Message: <xsl:value-of select="@step-message"/> ');</xsl:attribute>
                                 </xsl:element>
                                 <small><b>(more)</b></small>
                                 </font>
