@@ -40,7 +40,7 @@ public class MessagingService implements ServiceLifecycle {
    * @see javax.xml.rpc.server.ServiceLifecycle#init(java.lang.Object)
    */
   public void init(Object context) throws ServiceException {
-    assert (context instanceof ServletEndpointContext) : "context object is not ServletEndpointContext";
+   // assert (context instanceof ServletEndpointContext) : "context object is not ServletEndpointContext";
     
     logger.debug("[init] >>>");
     
@@ -69,8 +69,8 @@ public class MessagingService implements ServiceLifecycle {
   }
 
   public Element[] process(Element[] xml) throws ServiceException {
-    assert (xml != null) : "xml is <null>";
-    assert (xml.length == 1) : "xml array is not of length 1";
+    //assert (xml != null) : "xml is <null>";
+    //assert (xml.length == 1) : "xml array is not of length 1";
 
     logger.debug("[process] >>>");
     
@@ -99,7 +99,7 @@ public class MessagingService implements ServiceLifecycle {
   }
 
   private Element process(Element element) throws ServiceException {
-    assert (element != null) : "element is null";
+    //assert (element != null) : "element is null";
   
     Element result = null;
     

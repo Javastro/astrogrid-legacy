@@ -4,7 +4,7 @@
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package astrogrid.registry.src.java.org.astrogrid.registry;
+package org.astrogrid.registry;
 
 import java.sql.SQLException;
 

@@ -95,7 +95,7 @@ public class XmlBlasterUtil {
     HistoryQos historyQos = new HistoryQos(global);
     historyQos.setNumEntries(1);
     
-    QueryQosData queryQosData = new QueryQosData(global);
+    QueryQosData queryQosData = new QueryQosData(global);    
     queryQosData.setHistoryQos(historyQos);
     
     GetQos getQos = new GetQos(global, queryQosData);
