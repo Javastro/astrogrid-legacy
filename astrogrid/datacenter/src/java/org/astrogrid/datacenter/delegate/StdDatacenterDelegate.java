@@ -1,5 +1,5 @@
 /*
- * $Id: StdDatacenterDelegate.java,v 1.1 2003/08/27 23:30:10 mch Exp $
+ * $Id: StdDatacenterDelegate.java,v 1.2 2003/08/31 15:23:08 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -29,8 +29,6 @@ import org.w3c.dom.Element;
 
 public class StdDatacenterDelegate extends DatacenterDelegate
 {
-   private Vector statusListeners = new Vector();
-
    private URL endpoint = null;
    DatasetAgentSoapBindingStub binding;
 
@@ -119,6 +117,9 @@ public class StdDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: StdDatacenterDelegate.java,v $
+Revision 1.2  2003/08/31 15:23:08  mch
+Removed unused listeners
+
 Revision 1.1  2003/08/27 23:30:10  mch
 Introduced DummyDatacenterDelegate, selfcontained package for other workgroups to test with
 
