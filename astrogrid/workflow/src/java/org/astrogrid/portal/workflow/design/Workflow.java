@@ -13,7 +13,8 @@ package org.astrogrid.portal.workflow.design;
 
 import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.jes.delegate.JobController;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.portal.workflow.WKF;
@@ -520,7 +521,7 @@ class Workflow extends Activity implements IWorkflow {
       * @param communitySnippet  userid, community, group and security token details.
       * @param workflow          the workflow to be submitted. 
       * @return A boolean indicating success or failure.
-      * 
+      * @todo work through to new types
       **/         
     public static boolean submitWorkflow( String communitySnippet
                                         , Workflow workflow ) {
@@ -531,19 +532,19 @@ class Workflow extends Activity implements IWorkflow {
             request = null,
             jesLocation = null,
             response = null ;
-        JobControllerDelegate jobController = null ;
+        JobController jobController = null ;
                            
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
             request = workflow.constructJESXML( communitySnippet ) ;
             trace( "jesLocation: " + jesLocation ) ;
-            jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
-            jobController.submitJob( request ) ;
+            jobController = JesDelegateFactory.createJobController(jesLocation ) ;
+            //jobController.submitJob( request ) ;
             retValue = true ;            
-        }
+        }/*
         catch( JesDelegateException jdex ) {
             jdex.printStackTrace() ;
-        }
+        }*/
         catch( Exception ex ) {
             ex.printStackTrace() ;
         }
