@@ -3,11 +3,15 @@
     | Maven project description for the AstroGrid community components.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/07/02 16:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.12  2004/07/02 16:16:00  jdt
+    |   Community now extends the maven-base project,
+    |   allowing us to set the currentVersion in one place.
+    |
     |   Revision 1.11  2004/06/29 22:21:47  dave
     |   Merged development branch, dave-dev-200406291222, into HEAD
     |
@@ -29,7 +33,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ant="jelly:ant"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
+    <extend>${basedir}/../../maven-base/project.xml</extend>
     <!--+
         | Force a load of the version properties file
         | Guess ... didn't work.
@@ -50,15 +54,6 @@
     <groupId>astrogrid-community</groupId>
         +-->
     <groupId>org.astrogrid</groupId>
-
-    <!--+
-        | The current version of the project.
-        | This is used when naming jars and distribution files.
-        | This is also used to resolve the internal dependencies within this project.
-    <currentVersion>SNAPSHOT</currentVersion>
-    <currentVersion>1.5.0</currentVersion>
-        +-->
-    <currentVersion>${astrogrid.iteration}</currentVersion>
 
     <!--+
         | The current versions of other AstroGrid components.
