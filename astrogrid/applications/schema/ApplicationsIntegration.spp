@@ -6,8 +6,10 @@
 	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
 		<File FilePath=".\AGApplicationResource.xsd" HomeFolder="Yes"/>
 		<File FilePath=".\AGApplicationService.xsd" HomeFolder="Yes"/>
-		<File FilePath=".\AGParameter.xsd" HomeFolder="Yes"/>
-		<File FilePath=".\SExtractorParameters.xsd" HomeFolder="Yes"/>
+		<File FilePath=".\AGParameterDefinition.xsd" HomeFolder="Yes"/>
+		<File FilePath=".\sextractor.wsdl" HomeFolder="Yes"/>
+		<File FilePath=".\SExtractorParameters-complex.xsd" HomeFolder="Yes"/>
+		<File FilePath=".\SExtractorParameters-simple.xsd" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>
 </Project>

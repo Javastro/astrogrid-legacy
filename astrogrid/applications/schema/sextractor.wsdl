@@ -1,29 +1,82 @@
-<!-- $Id: sextractor.wsdl,v 1.1 2003/11/23 22:21:43 pah Exp $ -->
+<!-- $Id: sextractor.wsdl,v 1.2 2003/11/24 11:24:25 pah Exp $ -->
+<!-- Created by Paul Harrison 22-Nov-2003 -->
+<!-- This is an AstroGrid parameter specification file - based on WSDL for the SExtractor application. It has been annotated to explain some of the special features-->
 <wsdl:definitions xmlns:intf="urn:interface.sextractor.astrogrid.org" xmlns:sex="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:interface.sextractor.astrogrid.org">
 	<wsdl:types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3">
+			<!-- the import below is for some standard parameter definitions -->
 			<import schemaLocation="AGParameterDefinition.xsd" namespace="http://www.astrogrid.org/schema/AGParameterDefinition"/>
+			<!-- the import below is the schema for the specific types needed to describe SExtractor parameters -->
 			<import schemaLocation="SExtractorParameters-simple.xsd" namespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3"/>
 		</schema>
 	</wsdl:types>
 	<wsdl:message name="allParameters">
-		<!-- note that this section is not yet complete - it does not reference all of the parameters that are possible yet - just a selection -->
-		<wsdl:part name="ANALYSIS_THRESH" type="sex:ANALYSIS_THRESH"/>
+		<!-- note that this section is not yet complete - it does not reference all of the parameters that are possible - just a selection -->
+		<wsdl:part name="ANALYSIS_THRESH" type="sex:ANALYSIS_THRESH">
+			<!-- the new content model that we are adding to standard WSDL is all contained within this WSDL part element which is typically empty in a "normal" WDSL document -->
+			<!-- the UI_Name is what the UI can use as a label for the parameter rather than the name as given in the attribute to the part, as that is the name by which the application knows the parameter and it might not be very "human readable" -->
+			<UI_Name>Analysis Threshold</UI_Name>
+			<!-- the UI_Description allows the UI to supply more detailed help to the user for a particuar parameter if requested -->
+			<UI_Description>Threshold (in surface brightness) at which CLASS STAR and FWHM operate. 1 argument: relative to Background RMS. 2 arguments: mu (mag arcsec -2 ), Zero-point (mag).</UI_Description>
+			<!-- the units can be specified - not very elegantly in this case - ideally this would be standardised as a list -->
+			<Units>mag arcsec -2 </Units>
+		</wsdl:part>
+		<wdsl:part name="ASSOC_TYPE" type="sex:ASSOC_TYPE">
+			<UI_Name>Association Type</UI_Name>
+			<!-- note description below as an XHTML snippet -->
+			<UI_Description> Method for cross-matching in ASSOC:
+			<dl>
+					<dt>FIRST </dt>
+					<dd>keep values corresponding to the first match found,</dd>
+					<dt>NEAREST </dt>
+					<dd>{values corresponding to the nearestmatch found</dd>
+					<dt>MEAN </dt>
+					<dd>weighted-average values</dd>
+					<dt>MAG_MEAN</dt>
+					<dd>exponentialy weighted-average values</dd>
+					<dt>SUM </dt>
+					<dd> sum values</dd>
+					<dt>MAG_SUM</dt>
+					<dd>exponentialy sum values</dd>
+					<dt>MIN</dt>
+					<dd>keep values corresponding to the match with minimum weight</dd>
+					<dt>MAX</dt>
+					<dd> keep values corresponding to the match with maximum weight.</dd>
+				</dl>
+			</UI_Description>
+			<!-- the default value is optionally specified -->
+			<DefaultValue>MAG_SUM</DefaultValue>
+		</wdsl:part>
+		<wsdl:part name="input_image" type="agpd:MySpace_FileReference">
+			<UI_Name>Input image</UI_Name>
+			<UI_Description>The image that SExtractor will work on</UI_Description>
+		</wsdl:part>
 	</wsdl:message>
 	<wsdl:message name="SExtractorResult">
-		<wsdl:part name="catalogue" type="sex:ANALYSIS_THRESH">
-		<UI_name></UI_name>
-		<UI_Description></UI_Description>
-		<DefaultValue></DefaultValue>
+		<wsdl:part name="catalogue" type="agpd:MySpace_VOTableReference">
+			<UI_Name>Output Catalogue</UI_Name>
+			<UI_Description>Where in MySpace the output VOTable is to be stored</UI_Description>
 		</wsdl:part>
 	</wsdl:message>
 	<wsdl:message name="configFiles">
 		<!-- the intention of this part is that configuration files are picked up from MySpace -->
-		<wsdl:part name="mainconfig" type="agpd:MySpace_FileReference"/>
+		<wsdl:part name="mainconfig" type="agpd:MySpace_FileReference">
+			<UI_Name>configuration file</UI_Name>
+			<UI_Description>Where in MySpace the output VOTable is to be stored</UI_Description>
+		</wsdl:part>
+		<wsdl:part name="input_image" type="agpd:MySpace_FileReference">
+			<UI_Name>Input image</UI_Name>
+			<UI_Description>The image that SExtractor will work on</UI_Description>
+		</wsdl:part>
 	</wsdl:message>
 	<wsdl:portType name="SExtractor">
-		<wsdl:operation name="runWithFullParameters" parameterOrder="ANALYSIS_THRESH">
+		<wsdl:operation name="runWithFullParameters" parameterOrder="input_image ANALYSIS_THRESH ASSOC_TYPE">
 			<wsdl:input name="allParameters" message="intf:allParameters"/>
+			<wsdl:output name="SExtractorResult" message="intf:SExtractorResult"/>
+		</wsdl:operation>
+		
+		<wsdl:operation name="runWithConfigurationFile" parameterOrder="input_image mainconfig">
+			<wsdl:input name="configFiles" message="intf:configFiles"/>
 			<wsdl:output name="SExtractorResult" message="intf:SExtractorResult"/>
 		</wsdl:operation>
 	</wsdl:portType>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!-- $Id: SExtractorParameters-simple.xsd,v 1.1 2003/11/23 22:21:43 pah Exp $ -->
+<!-- $Id: SExtractorParameters-simple.xsd,v 1.2 2003/11/24 11:24:25 pah Exp $ -->
 <!-- this is still under construction - derived from the schema that is used in the ACE tool -->
-<schema targetNamespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sex="http://www.astrogrid.org/schema/applications/SExtractorV2.3" elementFormDefault="unqualified">
+<schema targetNamespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns:sex="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="unqualified">
 	<annotation>
 		<documentation xml:lang="en">
             Toplevel schema for SExtractor Service input, intended for
