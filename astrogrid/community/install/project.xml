@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/12/18 18:30:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.19 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/20 11:57:41 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.20  2004/12/20 11:57:41  jdt
+    |   whoopsie...don't allow dashes to creep into comments!
+    |
     |   Revision 1.19  2004/12/18 18:30:16  jdt
     |   KMB's merges:
     |   		Reg_KMB_728 astrogrid/registry
@@ -14,7 +17,7 @@
     |             o Reg_KMB_728 astrogrid/community
     |
     |             o Exist_KMB_613 astrogrid/exist
-    |             o Reg_KMB_605 astrogrid/auto-integration -- only r
+    |             o Reg_KMB_605 astrogrid/auto-integration  only r
     |
     |   Revision 1.18  2004/11/23 18:40:50  jdt
     |   Merges from  BLD_JDT_648.  The long awaited move to versioned jars and wars.  Fingers crossed.  See:
