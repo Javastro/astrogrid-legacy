@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.6 2004/08/17 15:11:50 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.7 2004/08/22 01:33:50 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,7 +57,7 @@ public class JesInstallationTest extends AbstractTestForIntegration {
         softAssertTrue("newly submitted job not in list",found);
         
         //read
-        Thread.sleep(2000); // give it time to process the job.
+        Thread.sleep(10 * 1000); // give it time to process the job.
         Workflow wf1 = delegate.readJob(urn);
         assertNotNull("read workflow is null",wf1);
         softAssertNotNull("read workfow was not executed",wf1.getJobExecutionRecord());
@@ -66,7 +66,7 @@ public class JesInstallationTest extends AbstractTestForIntegration {
     
 
        delegate.deleteJob(urn);
-       Thread.sleep(2000); // wait for the request to be processed
+       Thread.sleep(10 * 1000); // wait for the request to be processed
        try {
             Workflow wf = delegate.readJob(urn);
             softFail("Expected to barf, when reading a deleted job");
@@ -81,6 +81,9 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
+Revision 1.7  2004/08/22 01:33:50  nw
+increased timeouts to give more reliable results.
+
 Revision 1.6  2004/08/17 15:11:50  nw
 updated some tests
 
