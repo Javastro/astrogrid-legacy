@@ -37,31 +37,31 @@
       <Description>Some stars, consisting of many background, a few extra around pleidies.</Description>
       <Column datatype="int" indexed="false" name="ID">
          <Description>A unique ID </Description>
-         <UCD> </UCD>
+         <UCD>META.RECORD</UCD>
          <UcdPlus> </UcdPlus>
       </Column>
       <Column arraysize="*" datatype="char" indexed="false" name="NAME">
          <Description>Generated Name of the object</Description>
-         <UCD> </UCD>
+         <UCD>META.NOTE</UCD>
          <UcdPlus> </UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="RA">
          <Description>Right Ascension of the object</Description>
          <Units>deg</Units>
-         <UCD>POS_RA_MAIN</UCD>
+         <UCD>POS.RA.MAIN</UCD>
          <UcdPlus> </UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="DEC">
          <Description>Declination of the object</Description>
          <Units>deg</Units>
-         <UCD>POS_DEC_MAIN</UCD>
+         <UCD>POS.DEC.MAIN</UCD>
          <UcdPlus> </UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
       <Column datatype="double" indexed="false" name="MAG">
          <Description>Brightness of the object at an unspecified wavelength</Description>
          <Units>mag</Units>
-         <UCD>PHOT_MAG</UCD>
+         <UCD>PHOT.MAG</UCD>
          <UcdPlus> </UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
@@ -71,20 +71,19 @@
       <!-- schema='' -->
       <Column datatype="int" indexed="false" name="ID">
          <Description>IDENTITY </Description>
-         <Units> </Units>
-         <UCD> </UCD>
+         <UCD>META.RECORD </UCD>
          <UcdPlus> </UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="RA">
          <Description>Right Ascension of the object</Description>
          <Units>deg</Units>
-         <UCD>POS_RA_MAIN</UCD>
+         <UCD>POS.RA.MAIN</UCD>
          <UcdPlus> </UcdPlus>
       </Column>
       <Column datatype="double" indexed="true" name="DEC">
          <Description>Declination of the object</Description>
          <Units>deg</Units>
-         <UCD>POS_DEC_MAIN</UCD>
+         <UCD>POS.DEC.MAIN</UCD>
          <UcdPlus> </UcdPlus>
          <ErrorColumn> </ErrorColumn>
       </Column>
