@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseIdentifier.java,v 1.4 2004/03/03 19:54:55 nw Exp $
+ * $Id: BaseIdentifier.java,v 1.5 2004/03/03 21:48:00 nw Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The identifier base class. Contains the name and the community
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/03 19:54:55 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/03 21:48:00 $
  */
 public class BaseIdentifier extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

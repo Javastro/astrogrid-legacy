@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: FlowDescriptor.java,v 1.7 2004/03/03 19:54:55 nw Exp $
+ * $Id: FlowDescriptor.java,v 1.8 2004/03/03 21:48:00 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,9 +19,9 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class FlowDescriptor.
  * 
- * @version $Revision: 1.7 $ $Date: 2004/03/03 19:54:55 $
+ * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
  */
-public class FlowDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
+public class FlowDescriptor extends org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor {
 
 
       //--------------------------/
@@ -55,55 +55,9 @@ public class FlowDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActi
 
     public FlowDescriptor() {
         super();
-        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor());
+        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor());
         nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
         xmlName = "flow";
-        
-        //-- set grouping compositor
-        setCompositorAsSequence();
-        org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
-        org.exolab.castor.xml.XMLFieldHandler              handler        = null;
-        org.exolab.castor.xml.FieldValidator               fieldValidator = null;
-        //-- initialize attribute descriptors
-        
-        //-- initialize element descriptors
-        
-        //-- _activityList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.AbstractActivity.class, "_activityList", "Activity", org.exolab.castor.xml.NodeType.Element);
-        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
-            public java.lang.Object getValue( java.lang.Object object ) 
-                throws IllegalStateException
-            {
-                Flow target = (Flow) object;
-                return target.getActivity();
-            }
-            public void setValue( java.lang.Object object, java.lang.Object value) 
-                throws IllegalStateException, IllegalArgumentException
-            {
-                try {
-                    Flow target = (Flow) object;
-                    target.addActivity( (org.astrogrid.workflow.beans.v1.AbstractActivity) value);
-                }
-                catch (java.lang.Exception ex) {
-                    throw new IllegalStateException(ex.toString());
-                }
-            }
-            public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.workflow.beans.v1.AbstractActivity();
-            }
-        } );
-        desc.setHandler(handler);
-        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
-        desc.setRequired(true);
-        desc.setMultivalued(true);
-        addFieldDescriptor(desc);
-        
-        //-- validation code for: _activityList
-        fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(1);
-        { //-- local scope
-        }
-        desc.setValidator(fieldValidator);
     } //-- org.astrogrid.workflow.beans.v1.FlowDescriptor()
 
 

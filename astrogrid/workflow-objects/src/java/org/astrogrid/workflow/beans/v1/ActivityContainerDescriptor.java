@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: InputDescriptor.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: ActivityContainerDescriptor.java,v 1.1 2004/03/03 21:48:00 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class InputDescriptor.
+ * Class ActivityContainerDescriptor.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/03 21:48:00 $
  */
-public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class ActivityContainerDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 
 
       //--------------------------/
@@ -53,10 +53,11 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
      //- Constructors -/
     //----------------/
 
-    public InputDescriptor() {
+    public ActivityContainerDescriptor() {
         super();
+        setExtendsWithoutFlatten(new org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor());
         nsURI = "http://www.astrogrid.org/schema/AGWorkflow/v1";
-        xmlName = "input";
+        xmlName = "ActivityContainer";
         
         //-- set grouping compositor
         setCompositorAsSequence();
@@ -67,42 +68,43 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
         
         //-- initialize element descriptors
         
-        //-- _parameterList
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.parameters.ParameterValue.class, "_parameterList", "parameter", org.exolab.castor.xml.NodeType.Element);
+        //-- _activityList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.workflow.beans.v1.AbstractActivity.class, "_activityList", "Activity", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                Input target = (Input) object;
-                return target.getParameter();
+                ActivityContainer target = (ActivityContainer) object;
+                return target.getActivity();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    Input target = (Input) object;
-                    target.addParameter( (org.astrogrid.applications.beans.v1.parameters.ParameterValue) value);
+                    ActivityContainer target = (ActivityContainer) object;
+                    target.addActivity( (org.astrogrid.workflow.beans.v1.AbstractActivity) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.applications.beans.v1.parameters.ParameterValue();
+                return new org.astrogrid.workflow.beans.v1.AbstractActivity();
             }
         } );
         desc.setHandler(handler);
         desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGWorkflow/v1");
+        desc.setRequired(true);
         desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _parameterList
+        //-- validation code for: _activityList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(0);
+        fieldValidator.setMinOccurs(1);
         { //-- local scope
         }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.workflow.beans.v1.InputDescriptor()
+    } //-- org.astrogrid.workflow.beans.v1.ActivityContainerDescriptor()
 
 
       //-----------/
@@ -122,7 +124,7 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
      */
     public org.exolab.castor.mapping.ClassDescriptor getExtends()
     {
-        return null;
+        return super.getExtends();
     } //-- org.exolab.castor.mapping.ClassDescriptor getExtends() 
 
     /**
@@ -130,6 +132,8 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
      */
     public org.exolab.castor.mapping.FieldDescriptor getIdentity()
     {
+        if (identity == null)
+            return super.getIdentity();
         return identity;
     } //-- org.exolab.castor.mapping.FieldDescriptor getIdentity() 
 
@@ -138,7 +142,7 @@ public class InputDescriptor extends org.exolab.castor.xml.util.XMLClassDescript
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.workflow.beans.v1.Input.class;
+        return org.astrogrid.workflow.beans.v1.ActivityContainer.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

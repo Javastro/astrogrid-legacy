@@ -23,34 +23,28 @@
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="sequence" substitutionGroup="agwf:Activity">
+	<xsd:element name="sequence" substitutionGroup="agwf:Activity" >
 		<xsd:annotation>
 			<xsd:documentation>a collection of activities to be performed sequentially</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
-				<xsd:extension base="agwf:AbstractActivity">
-					<xsd:sequence>
-						<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
-					</xsd:sequence>
-				</xsd:extension>
+				<xsd:extension base="agwf:ActivityContainer" />
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="flow" substitutionGroup="agwf:Activity">
+	
+	<xsd:element name="flow" substitutionGroup="agwf:Activity" >
 		<xsd:annotation>
 			<xsd:documentation>a collection of activities to be performed potentially in parallel</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:complexContent>
-				<xsd:extension base="agwf:AbstractActivity">
-					<xsd:sequence>
-						<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
-					</xsd:sequence>
-				</xsd:extension>
+				<xsd:extension base="agwf:ActivityContainer" />
 			</xsd:complexContent>
 		</xsd:complexType>
 	</xsd:element>
+	
 	<xsd:element name="step" substitutionGroup="agwf:Activity">
 		<xsd:annotation>
 			<xsd:documentation>an activity to be performed</xsd:documentation>
@@ -111,16 +105,32 @@
 			<xsd:documentation>a parameter that should be based to an CEA tool</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
+	
 	<xsd:element name="Activity" type="agwf:AbstractActivity" abstract="true">
 		<xsd:annotation>
 			<xsd:documentation>The head of the substitution group</xsd:documentation>
 		</xsd:annotation>
 	</xsd:element>
-	<xsd:complexType name="AbstractActivity" mixed="0">
+	
+	<xsd:complexType name="ActivityContainer" mixed="0" abstract="true">
+			<xsd:annotation>
+				<xsd:documentation>Abstract base class of activities that contain other activities</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexContent>
+				<xsd:extension base="agwf:AbstractActivity">
+					<xsd:sequence>
+						<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="AbstractActivity" mixed="0" abstract="true">
 		<xsd:annotation>
 			<xsd:documentation>The abstract base class of all activities that can be performed in a workflow</xsd:documentation>
 		</xsd:annotation>
 	</xsd:complexType>
+	
 	<xsd:simpleType name="join-type">
 							<xsd:restriction base="xsd:string">
 								<xsd:enumeration value="true"/>
