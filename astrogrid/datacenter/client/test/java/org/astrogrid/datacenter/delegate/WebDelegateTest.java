@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.3 2004/01/13 15:50:24 nw Exp $
+ * $Id: WebDelegateTest.java,v 1.4 2004/02/17 03:39:13 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 
 public class WebDelegateTest extends TestCase
@@ -34,7 +34,7 @@ public class WebDelegateTest extends TestCase
     */
    public void testConeSearch() throws IOException
    {
-      WebDelegate delegate = (WebDelegate) DatacenterDelegateFactory.makeConeSearcher(User.ANONYMOUS, ROE_6DF, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      WebDelegate delegate = (WebDelegate) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, ROE_6DF, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
       InputStream results = delegate.coneSearch(308, 60, 12);
 		
@@ -62,6 +62,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.4  2004/02/17 03:39:13  mch
+ * New Datacenter UIs
+ *
  * Revision 1.3  2004/01/13 15:50:24  nw
  * fixed endpoint
  *

@@ -1,0 +1,457 @@
+/* $Id: DatacenterProdder.java,v 1.1 2004/02/17 03:39:13 mch Exp $
+ *
+ * Copyright 2003 AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid Software License,
+ * a copy of which has been included with this distribution in the LICENSE.txt file.
+ *
+ */
+
+package org.astrogrid.datacenter.ui;
+import java.awt.*;
+import java.io.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URL;
+import java.util.Date;
+import java.util.Properties;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.ProgressMonitor;
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.delegate.ApplicationController;
+import org.astrogrid.applications.delegate.beans.ParameterValues;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.ui.EscEnterListener;
+import org.astrogrid.ui.GridBagHelper;
+import org.astrogrid.ui.IconFactory;
+import org.astrogrid.ui.Splash;
+import org.astrogrid.ui.myspace.MySpaceBrowser;
+import org.astrogrid.ui.myspace.VoFileSelector;
+import org.astrogrid.ui.votable.JVotBox;
+import org.astrogrid.vospace.VospaceRL;
+import org.astrogrid.vospace.delegate.VoSpaceClient;
+import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.w3c.dom.Element;
+
+/**
+ * A GUI for users to query datacenters with the convenience of cut and paste, etc
+ *
+ * The portal should eventually take over this function, but it's useful for
+ * testing.
+ *
+ * @author mch
+ */
+
+public class DatacenterProdder extends JFrame
+{
+   /** so we can remember selections from instance to instance without having to type it in every time */
+   Properties storedEntries = new Properties();
+   
+   JButton cancelButton;
+   JButton kickOffSearchButton;
+   JButton blockSearchButton;
+   JButton toolButton;
+   VoFileSelector queryLocator;
+   VoFileSelector resultsLocator;
+   DatacenterSelector datacenterLocator;
+   
+   Account user = Account.ANONYMOUS;
+
+   Log log = LogFactory.getLog(DatacenterProdder.class);
+   
+   /**
+    * Initializes the frame.
+    */
+   public DatacenterProdder()
+   {
+      super("AstroGrid Datacenter Prodder");
+      
+      //query locator
+      JPanel queryPanel = new JPanel(new BorderLayout());
+      queryLocator = new VoFileSelector("Query", MySpaceBrowser.OPEN_ACTION, Account.ANONYMOUS);
+      queryPanel.add(queryLocator, BorderLayout.NORTH);
+      
+      //datacenter locator
+      JPanel datacenterPanel = new JPanel(new BorderLayout());
+      datacenterLocator = new DatacenterSelector();
+      datacenterPanel.add(datacenterLocator, BorderLayout.NORTH);
+      
+      //results locator
+      JPanel resultsPanel = new JPanel(new BorderLayout());
+      resultsLocator = new VoFileSelector("Results", MySpaceBrowser.SAVE_ACTION, Account.ANONYMOUS);
+      resultsPanel.add(resultsLocator, BorderLayout.NORTH);
+      
+      
+      //button panel
+      JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+      blockSearchButton = new JButton("Query (Block)", IconFactory.getIcon("Query"));
+      kickOffSearchButton = new JButton("Query (KickOff)", IconFactory.getIcon("Query"));
+      toolButton = new JButton("Query (Tool)", IconFactory.getIcon("Query"));
+      cancelButton = new JButton("Exit", IconFactory.getIcon("Exit"));
+      buttonPanel.add(kickOffSearchButton);
+      buttonPanel.add(blockSearchButton);
+      buttonPanel.add(toolButton);
+      buttonPanel.add(cancelButton);
+      
+      kickOffSearchButton.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               kickOffSearch();
+            }
+         }
+      );
+      
+      blockSearchButton.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               blockSearch();
+            }
+         }
+      );
+
+      toolButton.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               runTool();
+            }
+         }
+      );
+      
+      cancelButton.addActionListener(
+         new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               System.exit(0);
+            }
+         }
+      );
+
+      JPanel contents = new JPanel();
+      contents.setLayout(new GridBagLayout());
+      GridBagConstraints constraints = new GridBagConstraints();
+      constraints.gridx = 0;
+      constraints.gridy = 0;
+      constraints.fill = GridBagConstraints.BOTH;
+      constraints.weightx = 1;
+      constraints.weighty = 0;
+      constraints.insets = new Insets(5, 5, 5, 5);
+
+      GridBagHelper.setLabelConstraints(constraints);
+      contents.add(queryLocator.getLabel(), constraints);
+      GridBagHelper.setEntryConstraints(constraints);
+      contents.add(queryLocator.getEntryField(), constraints);
+      GridBagHelper.setControlConstraints(constraints);
+      contents.add(queryLocator.getControls(), constraints);
+
+      constraints.gridy++;
+      GridBagHelper.setEntryConstraints(constraints);
+      contents.add(datacenterPanel, constraints);
+
+      constraints.gridy++;
+      GridBagHelper.setLabelConstraints(constraints);
+      contents.add(resultsLocator.getLabel(), constraints);
+      GridBagHelper.setEntryConstraints(constraints);
+      contents.add(resultsLocator.getEntryField(), constraints);
+      GridBagHelper.setControlConstraints(constraints);
+      contents.add(resultsLocator.getControls(), constraints);
+
+      getContentPane().setLayout(new BorderLayout());
+      getContentPane().add(contents, BorderLayout.NORTH);
+      getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+      
+      new EscEnterListener(this, null, cancelButton, true);
+      
+      setUser(new Account("avodemo","test.astrogrid.org","NoGroup","EmptyToken"));
+
+      loadEntries();
+   }
+   
+   /**
+    * Shows the frame.
+    */
+   public void show()
+   {
+      Dimension size = new Dimension(800,400);
+      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+      setBounds
+      (
+         (screenSize.width - size.width) / 2,
+         (screenSize.height - size.height) / 2,
+         size.width,
+         size.height
+      );
+      
+      super.show();
+   }
+
+   private void loadEntries()
+   {
+      try
+      {
+         storedEntries.load(new FileInputStream(new File("DatacenterProdderEntries")));
+         
+         queryLocator.setFileLoc(storedEntries.getProperty("Query",""));
+         resultsLocator.setFileLoc(storedEntries.getProperty("Results",""));
+         datacenterLocator.setText(storedEntries.getProperty("Datacenter",""));
+                                    
+      } catch (IOException ioe) {} //ignore
+   }
+
+   private void storeEntries()
+   {
+      try
+      {
+         storedEntries.put("Query", queryLocator.getFileLoc());
+         storedEntries.put("Results", resultsLocator.getFileLoc());
+         storedEntries.put("Datacenter", datacenterLocator.getText());
+                                    
+         storedEntries.store(new FileOutputStream(new File("DatacenterProdderEntries")), "Datacenter Prodder entries");
+      } catch (IOException ioe) {} //ignore
+   }
+   
+   /**
+    * Sets the user the operations will be carried out under
+    */
+   public void setUser(Account aUser)
+   {
+      user = aUser;
+      queryLocator.setOperator(aUser);
+      resultsLocator.setOperator(aUser);
+   }
+   
+   
+   /**
+    * Starts an asynchronous query as a FullSearcher delegate
+    */
+   public void kickOffSearch()  {
+      
+      storeEntries();
+      
+      try {
+         ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
+         
+         progBox.setMillisToDecideToPopup(0);
+         progBox.setMillisToPopup(0);
+
+         //connect up to the datacenter
+         log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
+         FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+
+         progBox.setProgress(1);
+         progBox.setNote("Connecting to query document");
+
+         InputStream inQuery;
+         if (queryLocator.getFileLoc().startsWith("file")) {
+            inQuery = new URL(queryLocator.getFileLoc()).openStream();
+         } else {
+            inQuery = new VospaceRL(queryLocator.getFileLoc()).openStream();
+         }
+
+         progBox.setProgress(2);
+         progBox.setNote("Loading query document");
+         log.info("Loading query doc");
+
+         //load query
+         Element queryDoc = XMLUtils.newDocument(inQuery).getDocumentElement();
+         
+         progBox.setProgress(3);
+         progBox.setNote("Creating querier on server");
+         log.info("Creating querier on server");
+
+         //if it's a file we'll need to load it and send it
+         DatacenterQuery dcQuery = querier.makeQuery(queryDoc);
+
+         //set the results destination
+         String resultsLoc = resultsLocator.getFileLoc();
+         assert resultsLoc != null : "Need to specify results!";
+         
+         log.info("...with results destination: "+resultsLoc);
+         dcQuery.setResultsDestination(resultsLoc);
+
+         progBox.setProgress(4);
+         progBox.setNote("Starting query");
+
+         //and GO!
+         log.info("Starting query");
+         dcQuery.start();
+        
+         log.info("...query started.");
+         progBox.setProgress(progBox.getMaximum()+1);   //close
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
+
+   }
+
+   /**
+    * Runs a synchronous (blocking query) and displays the results
+    */
+   public void blockSearch() {
+      
+      storeEntries();
+      
+      try {
+         ProgressMonitor progBox = new ProgressMonitor(this, "Running Query","Connecting to datacenter",0,6);
+         
+         progBox.setMillisToDecideToPopup(0);
+         progBox.setMillisToPopup(0);
+
+         //connect up to the datacenter
+         log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
+         FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+
+         progBox.setProgress(1);
+         progBox.setNote("Connecting to query document");
+
+         InputStream inQuery;
+         if (queryLocator.getFileLoc().startsWith("file")) {
+            inQuery = new URL(queryLocator.getFileLoc()).openStream();
+         } else {
+            inQuery = new VospaceRL(queryLocator.getFileLoc()).openStream();
+         }
+
+         progBox.setProgress(2);
+         progBox.setNote("Loading query document");
+         log.info("Loading query doc");
+
+         //load query
+         Element queryDoc = XMLUtils.newDocument(inQuery).getDocumentElement();
+         
+         progBox.setProgress(3);
+         progBox.setNote("Running querier");
+
+         //and GO!
+         log.info("Running Query...");
+         DatacenterResults results = querier.doQuery(querier.VOTABLE, queryDoc);
+         log.info("...Query complete");
+
+         String xml = XMLUtils.ElementToString( (Element) results.getVotable().getElementsByTagName("VOTABLE").item(0) );;
+
+         if (resultsLocator.getFileLoc() != null) {
+
+            progBox.setProgress(4);
+            progBox.setNote("Query complete. Storing Results...");
+         
+            //send results to given location
+            if (resultsLocator.getFileLoc().startsWith("file")) {
+               throw new UnsupportedOperationException("Not yet implemented local file save");
+            } else {
+               log.info("Sending results to myspace...");
+               VospaceRL resultsRL = new VospaceRL(resultsLocator.getFileLoc());
+
+               VoSpaceClient vos = VoSpaceDelegateFactory.createDelegate(user, resultsRL.getDelegateEndpoint().toString());
+               vos.putString(xml, resultsRL.getDelegateFileRef(), false);
+               log.info("...results gone");
+            }
+         }
+            
+         progBox.setProgress(5);
+         progBox.setNote("Displaying Results");
+
+         //Pick out results. Rather painfully the Votable implementation
+         //borrowed from some IVO folks only works with a particular
+         //representation of votable, so we write it to disk first then
+         //load it again... We do it to memory given it must have arrived
+         //that way :-)
+         JVotBox box = new JVotBox(this);
+         box.getVotController().loadVot(new BufferedInputStream(new StringBufferInputStream(xml)));
+         box.show();
+         
+         progBox.setProgress(progBox.getMaximum()+1);   //close
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
+
+   }
+   
+   /**
+    * Runs the query as an ApplicationController (tool) delegate
+    */
+   public void runTool()   {
+      
+      storeEntries();
+      
+      try  {
+         log.info("Querying as ApplicationController tool");
+         ProgressMonitor progBox = new ProgressMonitor(this, "Submitting Query","Connecting to datacenter",0,2);
+         
+         progBox.setMillisToDecideToPopup(0);
+         progBox.setMillisToPopup(0);
+
+         //connect up to the datacenter
+         log.info("Connecting to datacenter at "+datacenterLocator.getDelegateEndPoint());
+         ApplicationController tool = (ApplicationController) DatacenterDelegateFactory.makeFullSearcher(datacenterLocator.getDelegateEndPoint());
+
+         //set up the parameters
+         progBox.setProgress(1);
+         progBox.setNote("Setting up parameters");
+         log.info("Setting up parameters");
+         ParameterValues parameters =  new ParameterValues();
+         parameters.setParameterSpec(
+            "<tool><input>"+
+              "<parameter name='QueryMySpaceReference' type='MySpaceRef'>"+queryLocator.getFileLoc()+"</parameter>"+
+              "<parameter name='ResultsMySpaceReference' type='MySpaceRef'>"+resultsLocator.getFileLoc()+"</parameter>"+
+            "</input></tool>");
+         
+         String localId = "MadeUpLocalId_"+new Date().getSeconds();
+
+         //initialise
+         log.info("Initialising");
+         String runId = tool.initializeApplication("Datacenter", localId, null, null, parameters);
+
+         //and GO!
+         progBox.setProgress(4);
+         progBox.setNote("Starting query");
+         log.info("Starting query");
+         tool.executeApplication(runId);
+        
+         progBox.setProgress(progBox.getMaximum()+1);   //close
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
+      
+   }
+   
+   
+   /**
+    * Runs the box
+    */
+   
+   public static void main(String[] args) {
+
+      
+      Splash s = new Splash("Datacenter Prodder","Desktop Client",
+                            "mch",
+                            Color.white,Color.blue,null,"AstroGrid");
+      
+      DatacenterProdder frame = new DatacenterProdder();
+      frame.pack();
+      s.dispose();
+      frame.show();
+   }
+   
+   
+   
+   
+}
+
+/*
+ $Log: DatacenterProdder.java,v $
+ Revision 1.1  2004/02/17 03:39:13  mch
+ New Datacenter UIs
+
+ */
