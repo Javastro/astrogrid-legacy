@@ -254,8 +254,6 @@ public class DatasetAgent {
 			response = null ;
 		Job
 		    job = null ;
-		Query
-			query = null ;
 		Allocation
 		    allocation = null ;
 			
@@ -279,7 +277,7 @@ public class DatasetAgent {
 			   
 			// Produce VOTable and write it to a temporary file...   
 			VOTable
-			   votable = query.toVOTable( allocation ) ;
+			   votable = job.getJobStep().getQuery().toVOTable( allocation ) ;
 			  
 			// Inform MySpace that file is ready for pickup...   
 			allocation.informMySpace( job ) ;           
@@ -308,7 +306,7 @@ public class DatasetAgent {
     	finally {
 			// Inform JobMonitor within JES of jobstep completion...
 			job.informJobMonitor() ;	
-    		resourceCleanup( query, allocation ) ;
+    		resourceCleanup( job.getJobStep().getQuery(), allocation ) ;
 			if( TRACE_ENABLED ) logger.debug( "runQuery() exit") ;
     	}
     	
