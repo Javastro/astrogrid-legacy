@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.1 2004/04/15 11:48:09 jdt Exp $
+/* $Id: InstallationTest.java,v 1.2 2004/04/20 13:25:19 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -10,6 +10,7 @@ package org.astrogrid.installation.integration;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,7 +62,13 @@ public final class InstallationTest  {
      * @return a collection of keys which might be urls
      */
     private static Collection getURLKeys() {
+        final Collection ignoredURLs = new ArrayList();
+        ignoredURLs.add("java.vendor.url");
+        ignoredURLs.add("java.vendor.url.bug");
+        
         final Collection keys = conf.keySet();
+        keys.removeAll(ignoredURLs);
+        
         final Iterator it = keys.iterator();
         final Collection urlKeys = new HashSet();
         while(it.hasNext()) {
@@ -144,6 +151,9 @@ public final class InstallationTest  {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.2  2004/04/20 13:25:19  jdt
+ *  Removed java.vendor.url and java.vendor.url.bug urls
+ *
  *  Revision 1.1  2004/04/15 11:48:09  jdt
  *  Moved to auto-integration
  *
