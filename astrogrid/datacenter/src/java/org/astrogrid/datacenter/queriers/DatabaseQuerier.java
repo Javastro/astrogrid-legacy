@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.1 2003/08/26 16:40:54 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.2 2003/08/27 17:35:52 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ public interface DatabaseQuerier
     * Applies the given adql to the database, returning an abstract handle
     * to whatever the results are
     */
-   public QueryResults queryDatabase(Query query);
+   public QueryResults queryDatabase(Query query) throws DatabaseAccessException;
 
 }
 
