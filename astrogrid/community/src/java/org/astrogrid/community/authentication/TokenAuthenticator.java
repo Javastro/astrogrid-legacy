@@ -1,5 +1,5 @@
 /*
- * $Id: TokenAuthenticator.java,v 1.1 2003/09/10 20:48:17 pah Exp $
+ * $Id: TokenAuthenticator.java,v 1.2 2003/09/16 22:23:24 pah Exp $
  * 
  * Created on 05-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -42,8 +42,8 @@ public interface TokenAuthenticator {
    
 
    /**
-    * 
-    * @param account
+    * Creates a new token, with a new target - and the old token is not invalidated.
+    * @param account - this argument should be removed from the call - all the information needed is in the token argument.
     * @param token
     * @param target - A way of making the token unique to a particular service
     * @return a new security token

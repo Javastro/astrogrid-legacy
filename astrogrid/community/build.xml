@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/16 11:42:46 $</cvs:date>
-    | <cvs:version>$Revision: 1.33 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/16 22:23:24 $</cvs:date>
+    | <cvs:version>$Revision: 1.34 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.34  2003/09/16 22:23:24  pah
+    |   authentication unit tests working under eclipse server and client
+    |
     |   Revision 1.33  2003/09/16 11:42:46  pah
     |   authentication.BUILD working properly now
     |
@@ -2920,10 +2923,10 @@ Start of Authentication "auth" tasks
 	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testdir}/java/org/astrogrid/community/common/db/"></copy>
 	    <copy file="${basedir}/src/castor/hsqldb/mapping.xml" todir="${testdir}/config/"></copy>
 	    <echo file="${testdir}/java/org/astrogrid/community/common/Test.properties" append="false">
-org.astrogrid.policy.server.mapping=file://${testdir}/config/mapping.xml
-org.astrogrid.policy.server.database.config=file://${testdir}/config/databaseonlocalhost.xml
-org.astrogrid.policy.server.database.name=${hsqldb.database}
-org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
+database.mapping=file://${testdir}/config/mapping.xml
+database.config=file://${testdir}/config/databaseonlocalhost.xml
+database.name=${hsqldb.database}
+database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			</echo>
 
 	</target>
@@ -3062,7 +3065,7 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		</javac>
 	</target>
 
-	<target name="authentication.test.javac" depends="" description="compile all the test case classes related to authentication">
+	<target name="authentication.test.javac" depends="authentication.javac" description="compile all the test case classes related to authentication">
 		<!-- Create our build directory -->
 		<mkdir dir="${authentication.base}/testclasses"/>
 		<!-- Compile the server classes -->
@@ -3075,13 +3078,14 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		       >
 		     <include name="org/astrogrid/community/**"/>
 			<classpath>
-				<pathelement location="${installkitdir}/${authentication.client.jar}"/>
+				<pathelement location="${authentication.base}/classes"/>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
 				<!-- Include the Castor libraries -->
 				<path refid="castor.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
+				<path refid="jconfig.classpath"/>
 				
 				
 			</classpath>
@@ -3322,18 +3326,19 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 	<target name="authentication.client.junit" depends="authentication.test.javac">
 		<!-- Create our reports directory -->
 		<mkdir dir="${authentication.base}/junit"/>
+		<antcall target="authentication.database.showtestdata"></antcall>
 		<!-- Run our JUnitTestCase tests -->
 		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
 			<classpath>
 				<!-- The Policy classes -->
 				<path refid="authentication.client.classpath"/>
-				<pathelement location="${authentication.base}/testclasses"/>
+				<pathelement location="${authentication.base}/testclasses/"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${authentication.base}/junit" haltonfailure="no">
-				<fileset dir="${authentication.base}/testclasses">
+				<fileset dir="${authentication.base}/testclasses/org/astrogrid/community/delegate/authentication">
 								
 				</fileset>
 			</batchtest>
@@ -3350,6 +3355,20 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		     src="${testdir}/java/org/astrogrid/community/common/db/testData.sql"
 			/>
 		
+	</target>
+		<target name="authentication.database.showtestdata" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+			>
+			<![CDATA[
+				SELECT * FROM accounts    ;
+				SELECT * FROM securitytokens;
+			]]>
+		</sql>
 	</target>
 	
 

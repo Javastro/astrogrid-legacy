@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityConstants.java,v 1.1 2003/09/15 05:45:42 pah Exp $
+ * $Id: CommunityConstants.java,v 1.2 2003/09/16 22:23:24 pah Exp $
  * 
  * Created on 12-Sep-2003 by pah
  *
@@ -31,17 +31,17 @@ public final class CommunityConstants {
 /**
  * The property name used to retrieve the castor mapping file.
  */
-  public static final String MAPPING_CONFIG_KEY = "org.astrogrid.policy.server.mapping" ;
+  public static final String MAPPING_CONFIG_KEY = "database.mapping" ;
   
   /**
    * The property key used to retrieve the castor database config.
    */
-  public static final String DATABASE_CONFIG_KEY = "org.astrogrid.policy.server.database.config" ;
+  public static final String DATABASE_CONFIG_KEY = "database.config" ;
   
   /**
    * The property key used to retrieve the castor database name.
    */
-  public static final String DATABASE_NAME_KEY = "org.astrogrid.policy.server.database.name" ;
+  public static final String DATABASE_NAME_KEY = "database.name" ;
 
  
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: AuthenticationServiceSoapBindingImpl.java,v 1.2 2003/09/16 11:07:51 pah Exp $
+ * $Id: AuthenticationServiceSoapBindingImpl.java,v 1.3 2003/09/16 22:23:24 pah Exp $
  * 
  * Created on 08-Sep-2003 by pah
  *
@@ -31,6 +31,7 @@ public class AuthenticationServiceSoapBindingImpl
 
    private static TokenAuthenticationServer server = TokenAuthenticationServer.getInstance();
 
+
    public org.astrogrid.community.service.authentication.data.SecurityToken authenticateLogin(
       java.lang.String account,
       java.lang.String password)
@@ -41,12 +42,13 @@ public class AuthenticationServiceSoapBindingImpl
 
    public org.astrogrid.community.service.authentication.data.SecurityToken authenticateToken(org.astrogrid.community.service.authentication.data.SecurityToken token)
       throws java.rmi.RemoteException {
-         SecurityToken intoken = SecurityToken.createFromSoapToken(token);
+         System.err.println("soap token account" + token.getAccount());
+         SecurityToken intoken = new SecurityToken(token);
+         System.err.println("token account" + token.getAccount());
+      
          SecurityToken outtoken = server.authenticateToken(intoken);
          
          return outtoken.createSoapToken();
-         
- 
    }
 
    public org.astrogrid.community.service.authentication.data.SecurityToken createToken(
@@ -54,7 +56,7 @@ public class AuthenticationServiceSoapBindingImpl
       org.astrogrid.community.service.authentication.data.SecurityToken token,
       java.lang.String target)
       throws java.rmi.RemoteException {
-         SecurityToken intoken = SecurityToken.createFromSoapToken(token);
+         SecurityToken intoken = new SecurityToken(token);
          SecurityToken outoken = server.createToken(account, intoken, target);
          return outoken.createSoapToken();
 

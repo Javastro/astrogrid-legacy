@@ -83,10 +83,32 @@ public class SecurityToken {
       this.target = target;
       this.token = account + String.valueOf(System.currentTimeMillis());
       Calendar cal = Calendar.getInstance();
-      cal.add(Calendar.HOUR_OF_DAY, INCREMENT_HOUR);
-      this.expirationDate = new Timestamp(cal.getTimeInMillis());
-      this.startDate = new Timestamp(Calendar.getInstance().getTimeInMillis());
+      Calendar endcal = (Calendar)cal.clone();
+      endcal.add(Calendar.HOUR_OF_DAY, INCREMENT_HOUR);
+      this.expirationDate = endcal.getTime();
+      this.startDate = cal.getTime();
       this.used = Boolean.FALSE;
+   }
+   /**
+    * Creates a new security token from the security token soap bean. This is slightly inconvenient and perhaps it might be better to use the soap generated object in all cases.
+    * This has not been done in this interation however because
+    * 1. not sure what the implications of the axis generation process changing
+    * 2. there are issues with date conversions
+    * 3. it might be a good idea to have separate objects anyway for security purposes - this (server side) object could potentially had access to secret information that the client side object does not.
+    * @param soapToken
+    * @return
+    */
+   public  SecurityToken(org.astrogrid.community.service.authentication.data.SecurityToken soapToken){
+      
+     
+      
+      this.account = soapToken.getAccount();
+      this.expirationDate = soapToken.getExpirationDate().getTime();
+      this.startDate = soapToken.getStartDate().getTime();
+      this.target = soapToken.getTarget();
+      this.token = soapToken.getToken();
+      this.used = soapToken.getUsed();
+      
    }
 
    /**
@@ -230,30 +252,6 @@ public class SecurityToken {
    }
 
    /**
-    * Creates a new security token from the security token soap bean. This is slightly inconvenient and perhaps it might be better to use the soap generated object in all cases.
-    * This has not been done in this interation however because
-    * 1. not sure what the implications of the axis generation process changing
-    * 2. there are issues with date conversions
-    * 3. it might be a good idea to have separate objects anyway for security purposes - this (server side) object could potentially had access to secret information that the client side object does not.
-    * @param soapToken
-    * @return
-    */
-   public static SecurityToken createFromSoapToken(org.astrogrid.community.service.authentication.data.SecurityToken soapToken){
-      
-      SecurityToken newtoken = new SecurityToken();
-      
-      newtoken.account = soapToken.getAccount();
-      newtoken.expirationDate = soapToken.getExpirationDate().getTime();
-      newtoken.startDate = soapToken.getStartDate().getTime();
-      newtoken.target = soapToken.getTarget();
-      newtoken.token = soapToken.getToken();
-      newtoken.used = soapToken.getUsed();
-      
-      
-      return newtoken;
-      
-   }
-   /**
     * Creates a new security token soap bean from this class.
     * @return
     */
@@ -263,10 +261,12 @@ public class SecurityToken {
       soaptoken.setAccount(account);
       cal.setTime(expirationDate);
       soaptoken.setExpirationDate(cal);
+      cal = Calendar.getInstance();
       cal.setTime(startDate);
       soaptoken.setStartDate(cal);
       soaptoken.setTarget(target);
       soaptoken.setToken(token);
+      soaptoken.setUsed(used);
       return soaptoken;
    }
 }

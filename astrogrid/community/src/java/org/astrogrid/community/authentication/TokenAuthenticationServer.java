@@ -1,5 +1,5 @@
 /*
- * $Id: TokenAuthenticationServer.java,v 1.2 2003/09/15 21:51:45 pah Exp $
+ * $Id: TokenAuthenticationServer.java,v 1.3 2003/09/16 22:23:24 pah Exp $
  * 
  * Created on 08-Sep-2003 by pah
  *
@@ -118,11 +118,42 @@ public class TokenAuthenticationServer implements TokenAuthenticator {
     * @see org.astrogrid.community.authentication.TokenAuthenticator#authenticateToken(org.astrogrid.community.authentication.data.SecurityToken)
     */
    public SecurityToken authenticateToken(SecurityToken token) {
-      SecurityToken newtoken = SecurityToken.createInvalidToken();
+      return authenticateCreateToken(token, token.getTarget(), Boolean.TRUE);
+   }
+   
+   /**
+    * Helper method to do the token creation and authentication
+    * @param token the old token - which should exist in the database
+    * @param newTarget the target that is to be created on the new token
+    * @param setOldUsed whether the old token is to be marked as used.
+    * @return
+    */
+   private SecurityToken authenticateCreateToken(SecurityToken token,String newTarget, Boolean setOldUsed) {
+      SecurityToken newtoken = SecurityToken.createInvalidToken(), oldtoken;
       
       try {
          database.begin();
-         newtoken = authenticateCreateToken(token);    
+         if (simpleTokenCheck(token)) {
+             oldtoken = (SecurityToken)database.load(SecurityToken.class, token.getToken());
+             if(oldtoken.equals(token))
+             {
+                newtoken = createToken(token);
+                newtoken.setTarget(newTarget);
+                oldtoken.setUsed(setOldUsed);
+             }
+             else
+             {
+                //the token has been changed externally in some fashion
+                logger.info("token has been tampered with " + token.toString());
+             }
+            
+         }
+         else
+         {
+            // the input token is already invalid for some reason
+            logger.info("token invalid " + token.toString());
+         }
+         
       }
       catch (PersistenceException e) {
          // TODO Auto-generated catch block
@@ -147,49 +178,6 @@ public class TokenAuthenticationServer implements TokenAuthenticator {
         return newtoken;
    }
 
-   private SecurityToken authenticateCreateToken(SecurityToken token) {
-       SecurityToken newtoken = null, oldtoken;
-         //do some obvious checks without consulting the database
-         if(!simpleTokenCheck(token))
-         {
-            return SecurityToken.createInvalidToken();
-         }
-         // check the token in the database
-         try {
-            oldtoken = (SecurityToken)database.load(SecurityToken.class, token.getToken());
-            if(simpleTokenCheck(oldtoken))
-            {
-               if (oldtoken.equals(token)) {
-                  newtoken = createToken(token);
-               }
-               else {
-                  newtoken = SecurityToken.createInvalidToken();
-               }
-            }
-            else
-            {
-               newtoken = SecurityToken.createInvalidToken();
-            }
-            
-         }
-         catch (TransactionNotInProgressException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-         catch (ObjectNotFoundException e) {
-           newtoken = SecurityToken.createInvalidToken();
-         }
-         catch (LockNotGrantedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-         catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-         return newtoken;
-      
-   }
 
    /* (non-Javadoc)
     * @see org.astrogrid.community.authentication.TokenAuthenticator#createToken(java.lang.String, org.astrogrid.community.authentication.data.SecurityToken, java.lang.String)
@@ -198,42 +186,13 @@ public class TokenAuthenticationServer implements TokenAuthenticator {
       String account,
       SecurityToken token,
       String target) {
-         SecurityToken newtoken = SecurityToken.createInvalidToken();
-         try {
-            database.begin();
-            newtoken = SecurityToken.createInvalidToken();
-            newtoken = authenticateCreateToken(token);
-            newtoken.setTarget(target);
-            token.setUsed(Boolean.TRUE);
-            
-         }
-         catch (PersistenceException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-         }
-         finally
-         {
-            try {
-               if(simpleTokenCheck(newtoken))
-               {
-                  database.commit();
-               }
-               else{
-                  database.rollback();
-               }
-            }
-            catch (TransactionNotInProgressException e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            }
-            catch (TransactionAbortedException e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-            }
-            
-         }
-                 return newtoken;
+                 return authenticateCreateToken(token, target, Boolean.FALSE);
    }
+   /**
+    * Looks up in the database to find the account object with the account name given.
+    * @param account
+    * @return null if the account id not found
+    */
    AccountData loadAccount(String account)
    {
       OQLQuery query;
@@ -242,9 +201,7 @@ public class TokenAuthenticationServer implements TokenAuthenticator {
        AccountData theAccount=null;
       
          try {
-            System.err.println("database transaction ="+ database.isActive());
              database.begin();               
-            System.err.println("database transaction ="+ database.isActive());
              theAccount =(AccountData) database.load(AccountData.class, account) ;
             
          }
@@ -253,8 +210,8 @@ public class TokenAuthenticationServer implements TokenAuthenticator {
             e.printStackTrace();
          }
          catch (ObjectNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+          // do nothing special - account should already be null
+          theAccount = null;
          }
          catch (LockNotGrantedException e) {
             // TODO Auto-generated catch block
@@ -277,11 +234,7 @@ public class TokenAuthenticationServer implements TokenAuthenticator {
                e1.printStackTrace();
             }
          }
-            
-         
-        
-      System.err.println("database transaction after commit ="+ database.isActive());
-
+               
        
        return theAccount;
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityJNDIConfig.java,v 1.1 2003/09/15 05:45:42 pah Exp $
+ * $Id: CommunityJNDIConfig.java,v 1.2 2003/09/16 22:23:24 pah Exp $
  * 
  * Created on 15-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -9,7 +9,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */ 
+ */
 
 package org.astrogrid.community.common;
 
@@ -30,8 +30,14 @@ import org.jconfig.handler.XMLFileHandler;
  * @version $Name:  $
  * @since iteration3
  */
+
 public class CommunityJNDIConfig implements Config {
+   /**
+    * The jConfig configuration.
+    */
    private Configuration config;
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(CommunityJNDIConfig.class);
 
    /**
     * The configuration name to use within jConfig.
@@ -64,47 +70,50 @@ public class CommunityJNDIConfig implements Config {
     * </pre>
     *
     */
-   private static final String DEFAULT_JNDI_NAME = "org.astrogrid.community.config";
+   private static final String DEFAULT_JNDI_NAME =
+      "org.astrogrid.community.config";
 
    /**
     * The default system property name.
     *
     */
-   public static final String DEFAULT_PROPERTY_NAME = "org.astrogrid.community.config";
+   public static final String DEFAULT_PROPERTY_NAME =
+      "org.astrogrid.community.config";
 
-    private ConfigurationManager manager;
+   private ConfigurationManager manager;
 
    private static CommunityJNDIConfig instance = null;
-    
+
    /* (non-Javadoc)
     * @see org.astrogrid.community.common.Config#getProperty(java.lang.String)
     */
    public String getProperty(String key) {
       return config.getProperty(key, "no property specified", DEFAULT_CATEGORY);
    }
-   
-   private CommunityJNDIConfig()
-   {
+
+   private CommunityJNDIConfig() {
       String path;
       try {
          Context initCtx = new InitialContext();
-         Context envCtx = (Context) initCtx.lookup("java:comp/env");
-         path = (String) envCtx.lookup(DEFAULT_JNDI_NAME);
+         Context envCtx = (Context)initCtx.lookup("java:comp/env");
+         path = (String)envCtx.lookup(DEFAULT_JNDI_NAME);
+         logger.info("config path=" + path);
          manager = ConfigurationManager.getInstance();
-         if (path.startsWith("http"))
-            {
+         if (path.startsWith("http")) {
             URLHandler handler = new URLHandler();
             handler.setURL(path);
             manager.load(handler, CONFIG_NAME);
-            }
+         }
          else {
             File file = new File(path);
             XMLFileHandler handler = new XMLFileHandler();
             handler.setFile(file);
             handler.load(file);
             manager.load(handler, CONFIG_NAME);
-            }
+         }
          config = ConfigurationManager.getConfiguration(CONFIG_NAME);
+         logger.info("jconfig=" + config.getXMLAsString());
+         logger.info(CommunityConstants.DATABASE_NAME_KEY +" is " + config.getProperty(CommunityConstants.DATABASE_NAME_KEY,null,DEFAULT_CATEGORY));
       }
       catch (NamingException e) {
          // TODO Auto-generated catch block
@@ -114,7 +123,7 @@ public class CommunityJNDIConfig implements Config {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
-  }
+   }
 
    /**
     * @return
@@ -122,11 +131,9 @@ public class CommunityJNDIConfig implements Config {
    public static CommunityJNDIConfig getInstance() {
       if (instance == null) {
          instance = new CommunityJNDIConfig();
-         
-       
+
       }
 
-      
       return instance;
    }
 

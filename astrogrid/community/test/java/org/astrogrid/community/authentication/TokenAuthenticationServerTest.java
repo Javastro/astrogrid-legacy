@@ -1,5 +1,5 @@
 /*
- * $Id: TokenAuthenticationServerTest.java,v 1.1 2003/09/15 21:51:45 pah Exp $
+ * $Id: TokenAuthenticationServerTest.java,v 1.2 2003/09/16 22:23:24 pah Exp $
  * 
  * Created on 12-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -43,43 +43,50 @@ public class TokenAuthenticationServerTest extends HsqlDBInMemTestCase {
    
 
    final public void testAuthenticateLogin() {
-      outtoken = tokenserver.authenticateLogin("test@nowhere" , "password");
-      assertNotNull(outtoken);
-      assertEquals("account details incorrect", "test@nowhere", outtoken.getAccount()); // test that the account has been set up properly
+      outtoken = tokenserver.authenticateLogin("test@login" , "password");
+      checkToken(outtoken);
+      assertEquals("account details incorrect", "test@login", outtoken.getAccount()); // test that the account has been set up properly
       assertEquals("token already used when it should be new", false, outtoken.getUsed().booleanValue()); // test that the token is usable.
       
       // try again expecting login failure
       
-      outtoken = tokenserver.authenticateLogin("test@nowhere" , "wrongpassword");
-      assertNotNull(outtoken);
+      outtoken = tokenserver.authenticateLogin("test@login" , "wrongpassword");
+      checkToken(outtoken);
       assertEquals(true, outtoken.getUsed().booleanValue()); // check that the token is marked as used....
+      
+      // try again expecting login failure
+      
+      outtoken = tokenserver.authenticateLogin("badaccount" , "password");
+      checkToken(outtoken);
+      assertEquals(true, outtoken.getUsed().booleanValue()); // check that the token is marked as used....
+     
       
     
    }
 
    final public void testAuthenticateToken() {
       // login to get a token
-      outtoken = tokenserver.authenticateLogin("test@nowhere" , "password");
-      assertNotNull(outtoken);
+      outtoken = tokenserver.authenticateLogin("test@authenticate" , "password3");
+      checkToken(outtoken);
       // authenticate the token
       SecurityToken newtoken = tokenserver.authenticateToken(outtoken);
-      assertNotNull(newtoken);
+      checkToken(newtoken);
       assertEquals("token failed to authenticate", false, newtoken.getUsed().booleanValue());
 
    }
    
    public final void testTokenCreation(){
       // login to get a token
-      outtoken = tokenserver.authenticateLogin("test@nowhere" , "password");
-      assertNotNull(outtoken);
-      SecurityToken newtoken = tokenserver.createToken("test@nowhere", outtoken, "target");
-      assertNotNull(newtoken);
+      outtoken = tokenserver.authenticateLogin("test@create" , "password2");
+      checkToken(outtoken);
+      SecurityToken newtoken = tokenserver.createToken("test@create", outtoken, "target");
+      checkToken(newtoken);
       assertEquals("token not valid",false, newtoken.getUsed().booleanValue() );
       assertEquals("target not set properly", "target", newtoken.getTarget());
       
-      // test that the old token has been invalidated
+      // test that the old token has not been invalidated
       newtoken = tokenserver.authenticateToken(outtoken);
-      assertEquals("old token still valid",true, newtoken.getUsed().booleanValue() );
+      assertEquals("login token not still valid",false, newtoken.getUsed().booleanValue() );
      
      
    }
@@ -87,7 +94,7 @@ public class TokenAuthenticationServerTest extends HsqlDBInMemTestCase {
    
    final public void testLoadAccount()
    {
-      AccountData account = tokenserver.loadAccount("test@nowhere");
+      AccountData account = tokenserver.loadAccount("test@login");
       assertNotNull("no account object found", account);
       assertEquals("password string not as expected", "password", account.getPassword());
     
@@ -101,5 +108,15 @@ public class TokenAuthenticationServerTest extends HsqlDBInMemTestCase {
       assertNotNull(tokenserver);
       
    }
+   private void checkToken(SecurityToken intoken) {
+       assertNotNull(intoken);
+         assertNotNull(intoken.getAccount());
+         assertNotNull(intoken.getExpirationDate());
+         assertNotNull(intoken.getStartDate());
+         assertNotNull(intoken.getTarget());
+         assertNotNull(intoken.getToken());
+         assertNotNull(intoken.getUsed());  
+             
+    }
 
 }
