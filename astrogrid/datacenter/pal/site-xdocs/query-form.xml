@@ -6,31 +6,31 @@
 </properties>
 
 <body>
-<section name="Submit an ADQL Query">
-<p>
-<b>Enter your ADQL query here:</b>
-  (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
-  (<a href="adql">Sample queries</a>)<br />
-<form action="process-form.jsp" method="POST">
-<textarea name="query" rows="20" cols="100%"></textarea>
-  <p/>
-  <input type="submit" value="Run Query" />
-</form>
-</p>
-</section>
+  <section name="Submit an ADQL Query">
+    <p>
+      <b>Enter your ADQL query here:</b>
+      (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
+      (<a href="adql">Sample queries</a>)
+      <br />
+      <form action="processQueryForm.jsp" method="POST">
+        <textarea name="query" rows="20" cols="100%"></textarea>
+        <p/>
+        <input type="submit" value="Run Query" />
+      </form>
+    </p>
+  </section>
 
-<section name="Submit a Region Query">
-<p>
-<form action="process-form.jsp" method="POST">
- <p>
-Right Ascension in decimal degrees, J2000 <input type="text" name="ra"/><br />
-Decliniation in decimal degress, J2000 <input type="text" name="dec" /><br />
-Search radius in decimal degrees <input type="text" name="rad" /><br />
- </p>
- <input type="submit" value="Run Query" />
-</form>
-</p>
-</section>
-
+  <section name="Submit a Region Query">
+    <p>
+      <form action="processConeForm.jsp" method="POST">
+       <p>
+         Right Ascension in decimal degrees, J2000 <input type="text" name="ra"/><br />
+         Decliniation in decimal degress, J2000 <input type="text" name="dec" /><br />
+         Search radius in decimal degrees <input type="text" name="rad" /><br />
+       </p>
+       <input type="submit" value="Run Cone" />
+     </form>
+   </p>
+  </section>
 </body>
 </document>
