@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.86 2004/08/27 16:33:12 pah Exp $ -->
+<!-- $Id: maven.xml,v 1.87 2004/08/29 22:46:26 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -100,7 +100,7 @@
         <sleep seconds="4" />
         <attainGoal name="pal-sec-deploy" />
         <sleep seconds="4" />
-	    <attainGoal name="pal-cds-deploy" />
+            <attainGoal name="pal-cds-deploy" />
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
@@ -122,7 +122,7 @@
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
         <attainGoal name="pal-sec-undeploy" />
-		<attainGoal name="pal-cds-undeploy" />	
+                <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
 </goal>
@@ -232,18 +232,18 @@
 </goal>
 
 <goal name="setup-filestore" description="filestore setup">
-	<echo>Configuring test data and repository for filestore one ....</echo>
-	<mkdir dir="${work.dir}/filestore-one/repository"/>
-	<mkdir dir="${work.dir}/filestore-one/data"/>
-	<copy todir="${work.dir}/filestore-one/data">
-		<fileset dir="work/filestore/data"/>
-	</copy>
-	<echo>Configuring test data and repository for filestore two ....</echo>
-	<mkdir dir="${work.dir}/filestore-two/repository"/>
-	<mkdir dir="${work.dir}/filestore-two/data"/>
-	<copy todir="${work.dir}/filestore-two/data">
-		<fileset dir="work/filestore/data"/>
-	</copy>
+        <echo>Configuring test data and repository for filestore one ....</echo>
+        <mkdir dir="${work.dir}/filestore-one/repository"/>
+        <mkdir dir="${work.dir}/filestore-one/data"/>
+        <copy todir="${work.dir}/filestore-one/data">
+                <fileset dir="work/filestore/data"/>
+        </copy>
+        <echo>Configuring test data and repository for filestore two ....</echo>
+        <mkdir dir="${work.dir}/filestore-two/repository"/>
+        <mkdir dir="${work.dir}/filestore-two/data"/>
+        <copy todir="${work.dir}/filestore-two/data">
+                <fileset dir="work/filestore/data"/>
+        </copy>
 </goal>
 
 <goal name="setup-community" description="Community setup">
@@ -495,6 +495,7 @@
                 <fileset dir="${temporary.dir}">
                         <include name="hsql*.jar" />
                         <include name="mail*.jar" />
+                        <include name="activation*.jar" /> <!-- required by mail - dunno why tomcat doesn't ship with these.. -->
                         <!-- may need to add more here later -->
                 </fileset>
         </copy>
@@ -598,57 +599,57 @@
 </goal>
 
 <goal name="filestore-deploy">
-	<!--+
-		| Deploy filestore one.
-		+-->
-	<j:set var="filestore.name" value="filestore-one"/>
-	<attainGoal name="filestore-deploy-sub"/>
-	<!--+
-		| Deploy filestore two.
-		+-->
-	<j:set var="filestore.name" value="filestore-two"/>
-	<attainGoal name="filestore-deploy-sub"/>
+        <!--+
+                | Deploy filestore one.
+                +-->
+        <j:set var="filestore.name" value="filestore-one"/>
+        <attainGoal name="filestore-deploy-sub"/>
+        <!--+
+                | Deploy filestore two.
+                +-->
+        <j:set var="filestore.name" value="filestore-two"/>
+        <attainGoal name="filestore-deploy-sub"/>
 </goal>
 
 <goal name="filestore-deploy-sub">
-	<echo>Deploying ${filestore.name} ....</echo>
-	<!--+
-		| Setup the params.
-		+-->
-	<j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
-	<filter token="FILESTORE_NAME"   value="${filestore.name}"/>
-	<filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
-	<!--+
-		| Make a copy of the war file.
-		+-->
-	<copy filtering="false"
-		file="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"
-		toFile="${temporary.dir}/${filestore.webapp}.war"
-		/>
-	<!--+
-		| Copy the context file.
-		+-->
-	<copy todir="${temporary.dir}/${filestore.name}" filtering="true">
-		<fileset dir="contexts/filestore"/>
-	</copy>
-	<!--+
-		| Update the war file.
-		+-->
-	<war update="true" destfile="${temporary.dir}/${filestore.webapp}.war">
-		<metainf dir="${temporary.dir}/${filestore.name}"/>
-	</war>
-	<!--+
-		| Deploy the war file into Tomcat.
-		+-->
-	<j:catch>
-		<tomcat-deploy
-			url="${tomcat.manager.url}"
-			username="${tomcat.manager.username}"
-			password="${tomcat.manager.password}"
-			path="/${filestore.webapp}"
-			war="file:///${temporary.dir}/${filestore.webapp}.war"
-			/>
-	</j:catch>
+        <echo>Deploying ${filestore.name} ....</echo>
+        <!--+
+                | Setup the params.
+                +-->
+        <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
+        <filter token="FILESTORE_NAME"   value="${filestore.name}"/>
+        <filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
+        <!--+
+                | Make a copy of the war file.
+                +-->
+        <copy filtering="false"
+                file="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"
+                toFile="${temporary.dir}/${filestore.webapp}.war"
+                />
+        <!--+
+                | Copy the context file.
+                +-->
+        <copy todir="${temporary.dir}/${filestore.name}" filtering="true">
+                <fileset dir="contexts/filestore"/>
+        </copy>
+        <!--+
+                | Update the war file.
+                +-->
+        <war update="true" destfile="${temporary.dir}/${filestore.webapp}.war">
+                <metainf dir="${temporary.dir}/${filestore.name}"/>
+        </war>
+        <!--+
+                | Deploy the war file into Tomcat.
+                +-->
+        <j:catch>
+                <tomcat-deploy
+                        url="${tomcat.manager.url}"
+                        username="${tomcat.manager.username}"
+                        password="${tomcat.manager.password}"
+                        path="/${filestore.webapp}"
+                        war="file:///${temporary.dir}/${filestore.webapp}.war"
+                        />
+        </j:catch>
 </goal>
 
 <goal name="pal-deploy" >
@@ -694,22 +695,22 @@
   </j:catch>
 </goal>
 
-	<goal name="pal-cds-deploy" >
-	        <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
-	                      tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
-	        <copy todir="${temporary.dir}/pal_cds" filtering="true">
-	                <fileset dir="contexts/pal_cds" />
-	        </copy>
-	        <war update="true" destfile="${temporary.dir}/pal-cds-${pom.currentVersion}.war">
-	                <metainf dir="${temporary.dir}/pal_cds"/>
-	        </war>
-	  <j:catch>
-	  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-	          path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${pom.currentVersion}.war"/>
-	  </j:catch>
-	</goal>
-	
-	
+        <goal name="pal-cds-deploy" >
+                <copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+                              tofile="${temporary.dir}/pal-cds-${pom.currentVersion}.war" />
+                <copy todir="${temporary.dir}/pal_cds" filtering="true">
+                        <fileset dir="contexts/pal_cds" />
+                </copy>
+                <war update="true" destfile="${temporary.dir}/pal-cds-${pom.currentVersion}.war">
+                        <metainf dir="${temporary.dir}/pal_cds"/>
+                </war>
+          <j:catch>
+          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                  path="/astrogrid-pal-cds-${pom.currentVersion}" war="file:///${temporary.dir}/pal-cds-${pom.currentVersion}.war"/>
+          </j:catch>
+        </goal>
+
+
 <goal name="portal-deploy">
         <copy todir="${temporary.dir}/portal" filtering="true">
                 <fileset dir="contexts/portal" />
@@ -764,14 +765,14 @@
 </goal>
 
 <goal name="filestore-undeploy" >
-	<j:catch>
-	<tomcat-remove
-		url="${tomcat.manager.url}"
-		username="${tomcat.manager.username}"
-		password="${tomcat.manager.password}"
-		path="/${filestore.webapp}"
-		/>
-	</j:catch>
+        <j:catch>
+        <tomcat-remove
+                url="${tomcat.manager.url}"
+                username="${tomcat.manager.username}"
+                password="${tomcat.manager.password}"
+                path="/${filestore.webapp}"
+                />
+        </j:catch>
 </goal>
 
 <goal name="cea-server-undeploy" >
@@ -822,11 +823,11 @@
 </goal>
 
 <goal name="pal-cds-undeploy" >
-	  <j:catch>
-	  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-	          path="/astrogrid-pal-cds-${pom.currentVersion}" />
-	  </j:catch>
-</goal>	
+          <j:catch>
+          <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+                  path="/astrogrid-pal-cds-${pom.currentVersion}" />
+          </j:catch>
+</goal>
 
 <goal name="configuration-undeploy" >
   <j:catch>
