@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.34 2005/02/23 17:55:49 clq2 Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.35 2005/02/23 17:56:59 clq2 Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/02/23 17:55:49 $</cvs:date>
- * <cvs:version>$Revision: 1.34 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/23 17:56:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.35 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -194,9 +194,9 @@ public final class LoginAction extends AbstractAction {
             SessionKeys.CREDENTIAL,
             "guest@is.this.needed?");
         session.setAttribute(SessionKeys.COMMUNITY_ACCOUNT, token.getAccount());
-        session.setAttribute(
-            SessionKeys.COMMUNITY_NAME,
-            CommunityConfig.getCommunityName());
+        //session.setAttribute(
+        //    SessionKeys.COMMUNITY_NAME,
+        //    CommunityConfig.getCommunityName());
         session.setAttribute(SessionKeys.IVORN, accountSpace);
             
         session.setAttribute("community_authority",community);
@@ -250,6 +250,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.35  2005/02/23 17:56:59  clq2
+ * trying to fix the login problem
+ *
  * Revision 1.34  2005/02/23 17:55:49  clq2
  * *** empty log message ***
  *
