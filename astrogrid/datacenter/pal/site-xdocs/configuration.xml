@@ -6,71 +6,115 @@
 </properties>
 
 <body>
-<section name="tempoerary">
-<p>need to restart server after changes to config file</p>
-<subsection name="astrogrid.properties"><p>
+<section name="Configuring your Datacenter">
 
-Configuration parameters for the datacenter server are set in a properties
-file in the <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes</tt> directory.
-This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt> are comments and are ignored by the application.
-Set the <tt>JNDI_SRC</tt> property as follows
-</p><source>
-   JNDI_SRC=jdbc/dataset-connection
-</source><p>
-</p><div class="nw">
-sort this
-</div><p>
-Finally, copy the JAR file containing the JDBC driver for the target RDBMS into the
-<tt>${CATALINA_HOME}/common/lib</tt> directory.
+<p>Datacenters are configured using the same system as most other Astrogrid
+components.
+<p>When initially installed, a datacenter reads its configurations from the
+'default.properties' file in its context's WEB-INF/classes directory.  This file
+is overwritten whenever you upgrade PAL, so it is useful as a template but we
+do not recommend you edit it directly.
+<p>Instead, you can create a new file (or edit the existing one) 'astrogrid.properties'
+and make sure this is in your classpath; a suitable place on Tomcat might be
+the common/classes directory so it is not overwritten on updates.
+<p>If you want to place your configuration file somewhere specific, do so and
+then set the environment variable 'astrogrid.config.filename' to the appropriate path and
+filename.  You can use environment variables in this variable, eg ${catalina.home}/conf/datacenter.properties
+will cause the datacenter to look in tomcat's configuration directory if you are running tomcat.
+<p>If you have several datacenters it will be necessary to do this, and set the
+environment variable under each context to a different properties file.
+<p>If you are using Tomcat, you can change environment variables by editing the 'Environment Entries'
+as a Tomcat Administrator.
+<p>You will need to restart the application after any change to a configuration file.
 
-then edit the properties.
+</section>
 
-</p></subsection>
-<subsection name="Configure the ADQL translator"><p>
-The translation between ADQL and SQL can be configured to specify the dialect of SQL to generate. The dialect to use is given by the </p><tt>Fooble</tt><p> key in </p><tt>AstroGridConfig.properties</tt><p>, and may take the following values
-</p><dl>
-</dl><div class="nw">
- add 'trim' to the configurtion.getProperty method - will fix breaks here
- </div><p>
-If none of these pre-defined translators are suitable, it is possible to write a new translator and plug it in. However, this is beyond the scope of this document. </p><i>Link to mailing list</i></subsection><subsection name="Metadata - Describe the data collection"><p>
-The datacenter server requires a metadata document that describes the contents of the dataset. The metadata document must conform to the following schema <a href="not.yet.written">not.yet.written</a>, which is documented <a href="not.yet.written">here</a>.
-</p><div class="nw">add links to metadata schema and documentation</div><p>
-By default the location of this file is <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes/metadata.xml</tt>, although this may be altered in the configuration file. An example metadata document is provided to get you started.
+<section name="The Configuration File">
 
+This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt>
+are comments and are ignored by the application.
 
-</p></subsection>
+The default file is <a href="WEB-INF/classes/default.properties">here</a>.  This
+configures the datacenter to use a 'test' or 'dummy' dataset, so you can run
+test queries on it before connecting up to a real dataset.
 
+</section>
 
-<subsection name="Configure the Connection"><p>
-The connection between the datacenter server and database can either be specified as a direct connection (simpler)
+<section name="Connecting to an RDBMS">
+
+<subsection name="JDBC">
+<p>Your database must have an ODBC-compatible connection; this will allow PAL to connect
+to it using a special URL and probably a user id and password.  You will need to
+set up the user id and password on the database ODBC connection so that PAL can
+connect to it using the same ones each time.
+<p>The connection between the datacenter server and database can either be specified as a direct connection (simpler)
 or as a server connection (more efficient and robust). We recommend the second method where possible.
-</p></subsection>
-<subsection name="Direct Connection"><p>
-In this configuration the datacenter server manages its own connections to the database.
- The following configuration keys should be set directly in the </p><tt>AstroGridConfig.properties</tt><p> file.
- </p><dl>
- <dt>JDBC_URL</dt>
- <dd>blah.. </dd>
- </dl>
- </subsection>
-</section>
-<section name="JNDI">
+
+<p><b>Direct Connection</b>
+<p>In this configuration the datacenter manages its own connections to the database.
+You add the above url and user and password values to the configuration
+file (see the <a href="WEB-INF/classes/default.properties">example default</a> for
+which keys to use).
+<p>You will also need some JDBC java drivers for the database; these are provided
+by the database vendors as 'jar' files, and will need to be included in the classpath
+(for example, in the common/lib directory of tomcat). You need to add these to the
+configuration file (again, see the example default).
+
+<p><b>Server Connection</b>
+
+<p>Alternatively, you can set up a JNDI datasource using your web service, such
+as the Administrator Tool if you are using Tomcat.
+
+</subsection>
+
+<subsection name="Jdbc Plugins">
+
+<p>You now need to configure PAL to use the JDBC connection above, and to handle
+the right 'flavour' of SQL.
+<p>The 'standard' SQL plugin is JdbcPlugin, and using this will work with most
+ODBC compatible databases. Some however take a particular flavour of SQL, and so
+you may want to use a different translator.  Again, see the example default file
+for the keys to set for this.
+<p>If none of these pre-defined translators are suitable, it is possible to write a new translator and plug it in.
+However, this is beyond the scope of this document.
+</p>
+</subsection>
 
 </section>
-<section name="Datasource" >
+
+<section name="Creating a Warehouse">
 
 </section>
-<section name="Properties file">
 
-<source>
-example properties file.
-</source>
-<a href="AstoGridConfig.properties">Example properties file</a>
+<section name="Publishing FITS files">
 
 </section>
-<section name="Advanced Configuraration">
+
+<section name="Other plugins">
+<p>You can use other plugins by setting the plugin key in the configuration file to
+the class that implements the plugin mechanism, and including that plugin library
+in the classpath.
+<p>Details should be provided with the plugin
 
 </section>
+
+<section name="Writing your own plugins">
+<p>You can <a href="other-back-end.html">write your own</a> plugins for
+specialised datasets, or ones where you want to offer customised access beyond the
+ability of PAL.
+
+</section>
+
+<section name="Metadata - describing your data">
+<p>For your data to be published to the VO, it must be capable of presenting an
+XML document that describes that data.  This allows the VO's automatic tools
+to analyse what is available.
+<p>See <a href='still.waiting.for.IVOA'>here</a> for information on how to write a VODescription
+metadata document.
+<p>Either call this document 'datacenter.metadata.xml' and put it
+on the classpath somewhere, or set an environment variable to its location.
+</section>
+
 
 
 </body>
