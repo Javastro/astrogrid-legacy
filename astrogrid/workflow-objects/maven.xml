@@ -8,7 +8,7 @@
 <!-- goals for nightly build -->
 <goal name="astrogrid-clean" prereqs="clean"/>
 
-<goal name="astrogrid-deploy-site" prereqs="site,site:fsdeploy" />
+<goal name="astrogrid-deploy-site" prereqs="schemadoc,site,site:fsdeploy" />
 
 <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
 
