@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.6 2004/04/19 09:35:24 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.7 2004/04/20 14:47:41 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.scripting.Service;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -80,8 +81,9 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
         
         ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
         assertNotNull(target);
-        Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/test/DatacenterIntegrationTest.votable.xml");
-        target.setValue(targetIvorn.toString());
+       // Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/test/DatacenterIntegrationTest.votable.xml");
+       Agsl targetAgsl = new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager","frog/DatacenterIntegrationTest.votable");
+        target.setValue(targetAgsl.toString());
         descr.validate(tool); 
                 
         JobIdentifierType id = new JobIdentifierType(); // not too bothered about this.
@@ -97,6 +99,9 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.7  2004/04/20 14:47:41  nw
+changed to use an agsl for now
+
 Revision 1.6  2004/04/19 09:35:24  nw
 added constants for ivorns of services.
 added test query
