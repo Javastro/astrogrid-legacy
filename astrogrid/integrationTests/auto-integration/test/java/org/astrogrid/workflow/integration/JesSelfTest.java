@@ -1,4 +1,4 @@
-/*$Id: JesSelfTest.java,v 1.1 2004/04/21 10:57:46 nw Exp $
+/*$Id: JesSelfTest.java,v 1.2 2004/04/23 00:27:56 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.workflow.integration;
 
 import net.sourceforge.jwebunit.WebTestCase;
 
-/**
+/** Call the self-tests of the jes webapp - check that no errors occur there.
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2004
  *
  */
@@ -48,6 +48,9 @@ public class JesSelfTest extends WebTestCase {
 
 /* 
 $Log: JesSelfTest.java,v $
+Revision 1.2  2004/04/23 00:27:56  nw
+reorganized end-to-end tests. added test to verify flows are executed in parallel
+
 Revision 1.1  2004/04/21 10:57:46  nw
 added jes installation test
  

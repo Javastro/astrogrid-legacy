@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.3 2004/04/22 08:58:38 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.4 2004/04/23 00:27:56 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.integration.*;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
@@ -58,6 +59,8 @@ public class JesInstallationTest extends AbstractTestForIntegration {
         //read
         Workflow wf1 = delegate.readJob(urn);
         assertNotNull("read workflow is null",wf1);
+        assertNotNull("read workfow was not executed",wf1.getJobExecutionRecord());
+        assertEquals("read workfow did not complete",ExecutionPhase.COMPLETED,wf1.getJobExecutionRecord().getStatus());
         assertEquals("read workflow does not have expected urn",urn.getContent(),wf1.getJobExecutionRecord().getJobId().getContent());
     
 
@@ -77,6 +80,9 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
+Revision 1.4  2004/04/23 00:27:56  nw
+reorganized end-to-end tests. added test to verify flows are executed in parallel
+
 Revision 1.3  2004/04/22 08:58:38  nw
 improved
 

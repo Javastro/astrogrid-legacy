@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.9 2004/04/22 08:58:38 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.1 2004/04/23 00:27:56 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,12 +39,12 @@ import java.util.Date;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class WorkflowEndToEndTest extends AbstractTestForIntegration {
+public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
     /**
      * Constructor for WorkflowManagerIntegrationTest.
      * @param arg0
      */
-    public WorkflowEndToEndTest(String arg0) {
+    public CompositeWorkflowEndToEndTest(String arg0) {
         super(arg0);
     }
     /*
@@ -62,44 +62,37 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
     protected ApplicationRegistry reg;    
     protected WorkflowStore store;
 
-    public void testSimpleWorkflow() throws Exception {
-        buildSimpleWorkflowDocument();
-        JobURN urn = submitWorkflowDocument();
-        Thread.sleep(10000);
-        // try retreiving the workflow.
-        Workflow w1 = readWorkflowFromJesAndSaveToVoSpace(urn, "WorkflowEndToEndTest-Simple");
-       assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus()); // i.e. its not in error
-              
-    }
+
     /** use case of a complex workflow containing more than one step 
      * @todo add more checking of the final document here.*/
-    public void testComplexWorkflow() throws Exception {
+    public void testCompositeWorkflow() throws Exception {
         buildComplexWorkflowDocument();
-        JobURN urn = submitWorkflowDocument();
+        JobURN urn = jes.submitWorkflow(wf);
+           assertNotNull("submitted workflow produced null urn",urn);
+           //check its in the list.
+           JobSummary summaries[] = jes.readJobList(acc);
+           assertNotNull("null job list returned",summaries);
+           assertTrue("empty job list returned",summaries.length > 0);
+           boolean found = false;
+           for (int i = 0; i < summaries.length; i++) {
+               if (summaries[i].getJobURN().getContent().equals(urn.getContent())) {
+                   found=true;
+               }
+           }
+           assertTrue("job not found in list",found);
         Thread.sleep(20000);
-        Workflow w1 = readWorkflowFromJesAndSaveToVoSpace(urn,"WorkflowEndToEndTest-Complex");
+        Workflow w1 = jes.readJob(urn);
+               assertNotNull("null workflow returned",w1);
+                assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
+            // dump it to myspace store - then we can look at it later.
+           w1.setName("CompositeWorkflowEndToEndTest" + "-" + System.currentTimeMillis());
+           Ivorn ivorn = new Ivorn(MYSPACE,user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
+           store.saveWorkflow(user,ivorn,w1);
         assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus());
     }        
     
 //-------------------------------------------------------------------------------
 
-    /** build a simple one-step workflow */
-    private void buildSimpleWorkflowDocument() throws WorkflowInterfaceException, ToolValidationException {
-        wf.setName("Simple Workflow");
-            // create a tool
-           ApplicationDescription descr = reg.getDescriptionFor(reg.listApplications()[0]);
-           assertNotNull("could not get application description",descr);
-           Tool tool = descr.createToolFromDefaultInterface();
-           assertNotNull("tool is null",tool);
-           descr.validate(tool); // shouold be ready to go, with no further config.
-           // add a step to the workflow.
-           Step step = new Step();
-           step.setDescription("single step");
-           step.setName("test step");
-           step.setTool(tool);
-           wf.getSequence().addActivity(step);
-           assertTrue("workflow is not valid",wf.isValid());
-    }
 
     /** build a multi-step workflow r*/
     private void buildComplexWorkflowDocument() throws Exception {
@@ -146,41 +139,15 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
         
     }    
 
-    /** submit the workflow document to JES */
-    private JobURN submitWorkflowDocument() throws WorkflowInterfaceException, InterruptedException {
-          JobURN urn = jes.submitWorkflow(wf);
-           assertNotNull("submitted workflow produced null urn",urn);
-           //check its in the list.
-           JobSummary summaries[] = jes.readJobList(acc);
-           assertNotNull("null job list returned",summaries);
-           assertTrue("empty job list returned",summaries.length > 0);
-           boolean found = false;
-           for (int i = 0; i < summaries.length; i++) {
-               if (summaries[i].getJobURN().getContent().equals(urn.getContent())) {
-                   found=true;
-               }
-           }
-           assertTrue("job not found in list",found);
-        return urn;
-    }
-    /** read executed workflow document back from jes, save to myspace */
-    private Workflow readWorkflowFromJesAndSaveToVoSpace(JobURN urn, String workflowName) throws WorkflowInterfaceException {        
-           Workflow w1 = jes.readJob(urn);
-           assertNotNull("null workflow returned",w1);
-            assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
-        // dump it to myspace store - then we can look at it later.
-       w1.setName(workflowName + "-" + System.currentTimeMillis());
-       Ivorn ivorn = new Ivorn(MYSPACE,user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
-       store.saveWorkflow(user,ivorn,w1);       
-        return w1;
-    }    
-
     
 }
 
 
 /* 
-$Log: WorkflowEndToEndTest.java,v $
+$Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.1  2004/04/23 00:27:56  nw
+reorganized end-to-end tests. added test to verify flows are executed in parallel
+
 Revision 1.9  2004/04/22 08:58:38  nw
 improved
 

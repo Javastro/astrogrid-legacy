@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.6 2004/04/21 13:43:43 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.7 2004/04/23 00:27:56 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.scripting.Service;
 import org.astrogrid.store.Ivorn;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -58,12 +59,17 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
         }
     }
         
-    /** this is the functionality required by jes */
+    /** this is the functionality required by jes - we get list of application names, then call a backdoor into the jes webapp to exercise te resolver code. */
     public void testResolveApplications() throws Exception {
         String[] appNames = reg.listApplications();
         for (int i = 0; i < appNames.length; i++) {
             URL requestURL = new URL("http://localhost:8080/astrogrid-jes-SNAPSHOT/backdoor?action=locate&name=" + appNames[i]);
-            InputStream is = requestURL.openStream();
+            InputStream is = null;
+            try {
+                is = requestURL.openStream();
+            } catch (IOException e) {
+                fail("failed to resolve location for " + appNames[i] + ": " + e.getMessage());
+            }
             BufferedReader in = new BufferedReader(new InputStreamReader(is));
             String line = in.readLine();
             System.out.println("Application " + appNames[i] + " resolves to " + line);
@@ -74,6 +80,7 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
     }
     
     
+    
 
     
 }
@@ -81,6 +88,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.7  2004/04/23 00:27:56  nw
+reorganized end-to-end tests. added test to verify flows are executed in parallel
+
 Revision 1.6  2004/04/21 13:43:43  nw
 tidied imports
 
