@@ -12,29 +12,29 @@
 <%!
   //prints out a single StoreFile
   String printFile(StoreFile file, StoreClient client) {
-      String line = "<tr>";
+      String line = "";
       if (file.isFolder()) {
-         line = line + "<td>"+file.getName()+"</td>\n";
+         line = line + "<tr><td>"+file.getPath()+"</td></tr>\n";
          for (int i=0;i<file.listFiles().length;i++) {
             line = line +printFile(file.listFiles()[i], client)+"\n";
          }
       }
       else {
          try {
-            line = line +
+            line = line +"<tr>"+
                         "<td><a href='"+ client.getUrl(file.getPath())+"'>"+ file.getPath() + "</a></td>"+
                         "<td>"+ file.getSize() + "</a></td>"+
                         "<td>"+ file.getCreated().toGMTString() + "</a></td>"+
                         "<td>"+
-                           "<a href='viewFile.jsp?file="+ file.getName()+"' target='actions'>View</a> "+
-                           "<a href='deleteFile.jsp?file="+ file.getName()+"' target='actions'>Delete</a>"+
+                           "<a href='viewFile.jsp?file="+ file.getPath()+"' target='actions'>View</a> "+
+                           "<a href='deleteFile.jsp?file="+ file.getPath()+"' target='actions'>Delete</a>"+
                         "</td>";
+            line = line + "</tr>\n";
          }
          catch (IOException ioe) {
-            line = line + "Could  not display file "+file.getPath()+": "+ioe;
+            line = line + "<tr>Could  not display file "+file.getPath()+": "+ioe+"</tr>";
          }
       }
-      line = line + "</tr>\n";
 
       return line;
   }

@@ -28,13 +28,20 @@
          request.getContextPath() + "/services/Manager");
 %>
 
+<p>
+<%
+   StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
+   StoreFile fileEntry = client.getFile(file);
+%>
+<%=fileEntry.getPath()%>, <%=fileEntry.getSize()%>
+
+</p>
 <pre>
 <%
-  StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
+   
+   Reader reader = new InputStreamReader(client.getStream(file));
 
-  Reader reader = new InputStreamReader(client.getStream(file));
-
-  Piper.bufferedPipe(reader, out);
+   Piper.bufferedPipe(reader, out);
 %>
 </pre>
 
