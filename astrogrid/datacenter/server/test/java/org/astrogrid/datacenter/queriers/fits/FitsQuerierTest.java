@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.5 2004/01/14 16:00:13 nw Exp $
+/*$Id: FitsQuerierTest.java,v 1.6 2004/01/23 11:14:09 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -16,27 +16,23 @@ import java.io.IOException;
 import java.net.URL;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Fits processing classes
  */
-public class FitsQuerierTest extends TestCase
+public class FitsQuerierTest extends OptionalTestCase
 {
    
 
    public void testCone() throws IOException
    {
       FitsQuerier querier = new FitsQuerier("DummyId", null);
-      if ("true".equals(System.getProperty("skip.long.tests"))) {
-         System.out.println("Skipping long test");
-         return;
-      }
       setIndex(querier);
       
       querier.coneSearch(300,60,12);
@@ -46,11 +42,7 @@ public class FitsQuerierTest extends TestCase
    public void testLots() throws IOException
    {
       org.astrogrid.log.Log.logToConsole();
-      FitsQuerier querier = new FitsQuerier("test",null);
-      if ("true".equals(System.getProperty("skip.long.tests"))) {
-         System.out.println("Skipping long test");
-         return;
-      }      
+      FitsQuerier querier = new FitsQuerier("test",null);  
       setIndex(querier);
 
       org.astrogrid.log.Log.trace("Starting cone search...");
@@ -119,6 +111,10 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.6  2004/01/23 11:14:09  nw
+ altered to extend org.astrogrid.test.OptionalTestCase -
+ means that these tests can be disabled as needed
+
  Revision 1.5  2004/01/14 16:00:13  nw
  tidied up switching out long tests.
 

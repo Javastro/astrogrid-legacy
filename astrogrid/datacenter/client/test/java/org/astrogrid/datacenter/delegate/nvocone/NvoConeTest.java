@@ -25,13 +25,14 @@ import junit.framework.TestSuite;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.test.OptionalTestCase;
 
 import VOTableUtil.Votable;
 
 import com.tbf.xml.XmlElement;
 import com.tbf.xml.XmlParser;
 
-public class NvoConeTest extends TestCase
+public class NvoConeTest extends OptionalTestCase
 {
    
    /**
@@ -133,6 +134,10 @@ public class NvoConeTest extends TestCase
 
 /*
  $Log: NvoConeTest.java,v $
+ Revision 1.5  2004/01/23 11:12:01  nw
+ altered to extend org.astrogrid.test.OptionalTestCase -
+ means that these tests can be disabled as needed
+
  Revision 1.4  2004/01/14 13:23:30  nw
  re-enabled messier test - service seems to be up again
 

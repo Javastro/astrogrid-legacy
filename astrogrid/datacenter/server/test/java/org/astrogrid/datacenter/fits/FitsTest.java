@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.8 2004/01/14 00:53:44 nw Exp $
+/*$Id: FitsTest.java,v 1.9 2004/01/23 11:14:09 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.net.URL;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
+import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Fits processing classes
  */
-public class FitsTest extends TestCase
+public class FitsTest extends OptionalTestCase
 {
 
    /** Tests reading the header = ie loading and parsing keywords, etc */
@@ -41,10 +41,7 @@ public class FitsTest extends TestCase
     * the full keyword/etc parsing */
    public void testIndexGenerator() throws IOException
    {
-      if ("true".equals(System.getProperty("skip.long.tests"))) {
-         System.out.println("Skipping long test");
-         return;
-      }
+
       URL[] fits = new URL[] {
             new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
             new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
@@ -76,6 +73,10 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.9  2004/01/23 11:14:09  nw
+ altered to extend org.astrogrid.test.OptionalTestCase -
+ means that these tests can be disabled as needed
+
  Revision 1.8  2004/01/14 00:53:44  nw
  added switch to test - now able to skip long tests by setting
  a system property

@@ -36,6 +36,7 @@ import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.test.OptionalTestCase;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
@@ -44,7 +45,7 @@ import VOTableUtil.Votable;
 import com.tbf.xml.XmlElement;
 import com.tbf.xml.XmlParser;
 
-public class AdqlNvoConeTest extends TestCase
+public class AdqlNvoConeTest extends OptionalTestCase
 {
    
    /**
@@ -52,6 +53,7 @@ public class AdqlNvoConeTest extends TestCase
     */
    public void testFactory() throws MalformedURLException, IOException, ServiceException
    {
+
       FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher("http://dummy.nvoconesearch/cone?cat=mycatalogue");
       
       assertTrue(querier instanceof AdqlNvoConeDelegate);
@@ -193,6 +195,10 @@ public class AdqlNvoConeTest extends TestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.7  2004/01/23 11:12:01  nw
+ altered to extend org.astrogrid.test.OptionalTestCase -
+ means that these tests can be disabled as needed
+
  Revision 1.6  2004/01/14 13:23:30  nw
  re-enabled messier test - service seems to be up again
 
