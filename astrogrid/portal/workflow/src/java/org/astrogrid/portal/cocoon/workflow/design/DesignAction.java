@@ -424,11 +424,13 @@ public class DesignAction extends AbstractAction {
                     throw new UnsupportedOperationException( action + " no longer supported");
                 }
                 				
-this.readToolList(); // temp PJN
+				this.readToolList();
                 
                 if (workflow != null ){
 	                // Save the workflow in the session object...
-    	            debug( "about to set session attribute..." ) ;
+					debug( "==========================================" ) ;
+    	            debug( "about to add workflow to session object..." ) ;
+					debug( "Using workflow: " + workflow.getName() ) ;
         	        session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
             	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ); 
                 }
@@ -614,15 +616,18 @@ this.readToolList(); // temp PJN
             finally {
                if( TRACE_ENABLED ) trace( "DesignActionImpl.removeWorkflow() exit" ) ;
             }
-        } // end of removeWorkflow()   
-        
-        
+        } // end of removeWorkflow()  
+       
+         
+              
         private void readWorkflow() throws ConsistencyException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflow() entry" ) ;
               
             String
                  name = request.getParameter( WORKFLOW_NAME_PARAMETER ),
                  ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
+                 debug("workflow name: " + name) ;
+                 debug("ivorn: " + ivornName) ;
             Ivorn ivorn = null;
               
             try {
