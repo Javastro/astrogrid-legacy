@@ -1,13 +1,9 @@
 /* AstroGrid Pfo test Style */
 .agHint {
-/*    padding: 2px 4px 2px 4px;*/
-    font-size: 14px;
-    font-family: arial, verdana, sans-serif;
-/*    background-color: lightblue;*/
-    background-color: yellow;
-    border-color: red;
-/*    border-left: 2px;*/
-/*    border: 2px 2px 2px 2px;*/
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	background-color: yellow;
+	border-color: red;
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 4px;
@@ -16,7 +12,131 @@
 	border-right: solid 3px #990000;
 	border-bottom: solid 3px #990000;
 	border-left: solid 3px #990000;
-/*    width: 800px;*/
+}
+
+.helpButton {
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+	color: #ffffcc;
+	background-color: transparent;
+	text-decoration: none;
+}
+
+.navHelpButton {
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+	color: #ffffcc;
+	background-color: green;
+	text-decoration: none;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 8px;
+	padding-left: 8px;
+	border: solid 1px #FFFFFF;
+	cursor: pointer;
+}
+
+.navigationButton {
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+	color: #ffffcc;
+	background-color: transparent;
+	text-decoration: none;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 8px;
+	padding-left: 8px;
+	border: solid 1px #FFFFFF;
+	cursor: pointer;
+}
+
+.naviButton {
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+	text-decoration: none;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 8px;
+	padding-left: 8px;
+	border: solid 1px #008800;
+	cursor: pointer;
+}
+
+.paddedColumn {
+	padding-right: 8px;
+}
+
+.leftColumn {
+	padding-right: 8px;
+	padding-left: 4px;
+	border-left: solid 1px #ddddff;
+	border-bottom: solid 1px #ddddff;
+	border-top: solid 1px #ddddff;
+}
+
+.rightColumn {
+	padding-left: 8px;
+	border-right: solid 1px #ddddff;
+	border-bottom: solid 1px #ddddff;
+	border-top: solid 1px #ddddff;
+}
+
+.MnaviButton {
+	font-family: helvetica, verdana, sans-serif;
+	background-color: #000044;
+	background: #000044;
+	text-decoration: none;
+	color: #ffff00;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 8px;
+	padding-left: 8px;
+	border: solid 2px #ddddFF;
+	cursor: pointer;
+}
+
+.myTaskButton {
+	font-family: arial, helvetica, verdana, sans-serif;
+	font-size: 12px;
+	background-color: #000044;
+	background: #FFFFFF;
+	text-decoration: none;
+	color: #006600;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border: solid 1px #000000;
+	cursor: pointer;
+}
+
+.kleinNaviButton {
+	font-family: arial, verdana, sans-serif;
+	font-size: 10px;
+	background-color: #ddddff;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 8px;
+	padding-left: 8px;
+	border-left: solid 2px white;
+	border-right: solid 2px white;
+	border-bottom: solid 2px white;
+	cursor: pointer;
+}
+
+.fourteenCourier{
+	font-family: courier, verdana, sans-serif;
+	font-size: 14px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 1px;
+	padding-left: 1px;
 }
 
 .courier {
@@ -28,14 +148,10 @@
 }
 
 .agTip {
-/*    padding: 2px 4px 2px 4px;*/
-    font-size: 14px;
-    font-family: arial, verdana, sans-serif;
-/*    background-color: lightblue;*/
-    background-color: #ffffff;
-    border-color: #000088;
-/*    border-left: 2px;*/
-/*    border: 2px 2px 2px 2px;*/
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	background-color: #ffffff;
+	border-color: #000088;
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 4px;
@@ -44,64 +160,83 @@
 	border-right: solid 2px #000090;
 	border-bottom: solid 2px #000090;
 	border-left: solid 2px #000090;
-/*    width: 800px;*/
+}
+
+.agMouseOver {
+	font-size: 14px;
+	font-family: helvetica, verdana, sans-serif;
+	background-color: #eeffee;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-top: solid 2px #009000;
+	border-right: solid 2px #009000;
+	border-bottom: solid 2px #009000;
+	border-left: solid 2px #009000;
 }
 
 .HintButton {
-    font-size: 10px;
-    font-family: verdana, arial, sans-serif;
-    cursor: pointer;
-    padding: 2px 4px 0 4px;
-/*    background-color: lightblue;*/
-    background-color: transparent;
-    border-color: orange;
+	font-size: 10px;
+	font-family: verdana, arial, sans-serif;
+	cursor: pointer;
+	padding: 2px 4px 0 4px;
+	background-color: transparent;
+	border-color: orange;
 }
 
 
+.agTitle007 {
+	font-size: 18px;
+	font-family: arial, verdana, sans-serif;
+	letter-spacing: 2px;
+	color: #ffffdd;
+	font-style: italic;
+	font-weight: bold;
+	padding-right:	0px;
+	padding-left:	10px;
+}
+
 .agTitle {
-    font-size: 25px;
-    font-family: arial, verdana, sans-serif;
-    letter-spacing: 10px;
-    color: yellow;
-    font-style: italic;
-    font-weight: bold;
-    border-bottom-width:	    2;
-    border-bottom-style:	    solid;
-    border-right-width:	     2;
-    border-right-style:	     solid;
-    padding-right:	40px;
-    padding-left:	20px;
-	    
-    margin-left:		    8%;
-    margin-right:		   15%;
+	font-size: 25px;
+	font-family: arial, verdana, sans-serif;
+	letter-spacing: 10px;
+	color: yellow;
+	font-style: italic;
+	font-weight: bold;
+	border-bottom-width:		2;
+	border-bottom-style:		solid;
+	border-right-width:		2;
+	border-right-style:		solid;
+	padding-right:	40px;
+	padding-left:	20px;
+	margin-left:			8%;
+	margin-right:		   15%;
 }
 
 .agActiveSpan {
-    font-size: 15px;
-    font-family: arial, verdana, sans-serif;
-    color: #000099;
-    font-weight: bold;
-/*    text-decoration: underline;*/
-    cursor: pointer;
+	font-size: 15px;
+	font-family: arial, verdana, sans-serif;
+	color: #000099;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .agActiveSpan2 {
-    font-size: 15px;
-    font-family: arial, verdana, sans-serif;
-    color: black;
-    background-color: white;
-    font-weight: bold;
-/*    text-decoration: underline;*/
-    cursor: pointer;
+	font-size: 15px;
+	font-family: arial, verdana, sans-serif;
+	color: black;
+	background-color: white;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .agInActiveSpan2 {
-    font-size: 15px;
-    font-family: arial, verdana, sans-serif;
-    color: #666666;
-    font-weight: bold;
-/*    text-decoration: underline;*/
-    cursor: pointer;
+	font-size: 15px;
+	font-family: arial, verdana, sans-serif;
+	color: #666666;
+	font-weight: bold;
+	cursor: pointer;
 }
 
 .agWideText10 {
@@ -109,14 +244,36 @@
 	margin-right: 10px;
 }
 
+.linkLike {
+	color: #000088;
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.handy {
+	cursor: pointer;
+}
+
 .agResetButton {
-    font-size: 14px;
-    font-family: arial, verdana, sans-serif;
-    background-color: white;
-    color: #990000;
-    font-weight: bold;
-/*    text-decoration: underline;*/
-    cursor: pointer;
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	background-color: white;
+	color: #990000;
+	font-weight: bold;
+	cursor: pointer;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+}
+
+.deleteButton {
+	font-size: 12px;
+	font-family: helvetica, arial, verdana, sans-serif;
+	background-color: white;
+	color: #990000;
+	font-weight: bold;
+	cursor: cross-hair;
 	border-top: solid 1px #69c;
 	border-right: solid 1px #069;
 	border-bottom: solid 1px #069;
@@ -124,51 +281,62 @@
 }
 
 .agTitleClass {
-    font-size: 15px;
-/*    font-family: arial, verdana, sans-serif;*/
-    color: #000099;
-/*    font-style: italic;*/
-    font-weight: bold;
-    cursor: crosshair;
-    padding-bottom: 3px;
-    /*
-    border-left-width:	    2;
-    border-left-style:	    solid;
-    border-right-width:	     2;
-    border-right-style:	     solid;
-    */
+	font-size: 15px;
+	color: #000099;
+	font-weight: bold;
+	cursor: crosshair;
+	padding-bottom: 3px;
 }
 
 .AGtITLEcLASS {
-    font-size: 15px;
-/*    font-family: arial, verdana, sans-serif;*/
-    color: #000000;
-/*    font-style: italic;*/
-    font-weight: bold;
-    cursor: crosshair;
-    padding-bottom: 3px;
-    /*
-    border-left-width:	    2;
-    border-left-style:	    solid;
-    border-right-width:	     2;
-    border-right-style:	     solid;
-    */
+	font-size: 15px;
+	color: #000000;
+	font-weight: bold;
+	cursor: crosshair;
+	padding-bottom: 3px;
 }
 
 .AGfootsy {
-    font-size: 10px;
-    font-family: arial, verdana, sans-serif;
-    color: orange;
-    font-weight: bold;
-	    
-    margin-left:		    8%;
-    margin-right:		   15px;
+	font-size: 10px;
+	font-family: arial, verdana, sans-serif;
+	color: orange;
+	font-weight: bold;
+	margin-left:			8%;
+	margin-right:		   15px;
 }
 
 .compact {
-    font-size: 12px;
-    font-family: arial, verdana, sans-serif;
-    font-weight: narrow;
+	font-size: 12px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: narrow;
+}
+
+.compactb {
+	font-size: 12px;
+	font-family: helvetica, arial, verdana, sans-serif;
+	font-weight: bold;
+}
+
+.compact14 {
+	font-size: 14px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: narrow;
+}
+
+.compactCourier {
+	font-size: 12px;
+	font-family: courier;
+}
+
+.agunits {
+	color: blue;
+	background-color: white;
+}
+
+.agUcds {
+	color: #008800;
+	font-weight: bold;
+#	background-color: #ccffcc;
 }
 
 .compactT {
@@ -202,6 +370,23 @@
 }
 
 
+.AGRegistryButton {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	text-align: left;
+	color: #000;
+	font-weight: bold;
+	padding: 0px;
+	margin: 1px; 
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	width: 200px;
+}
+
+
 .agActionButton {
 	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
@@ -218,8 +403,6 @@
 	border-bottom: solid 1px #069;
 	border-left: solid 1px #69c;
 	cursor: pointer;
-/*	text-transform: lowercase;*/
-/*	width: 100px;*/
 }
 
 .sc {
@@ -227,15 +410,7 @@
 }
 
 .agInstructions {
-/*	font-variant: small-caps;*/
-/*	font-size: 14px;*/
-/*	font-weight: bold;*/
-/*	font-family: arial, verdana, sans-serif;*/
-/*    background-color: lightblue;*/
 	background-color: #ffffdd;
-/*	border-color: #ffff00;*/
-/*    border-left: 2px;*/
-/*    border: 2px 2px 2px 2px;*/
 	padding-top: 2px;
 	padding-bottom: 2px;
 	padding-right: 4px;
@@ -244,7 +419,6 @@
 	border-right: solid 3px #ffee00;
 	border-bottom: solid 3px #ffff00;
 	border-left: solid 3px #ffff00;
-/*    width: 800px;*/
 }
 
 .agShowUnits {
@@ -314,7 +488,6 @@
 	border-bottom: solid 1px #069;
 	border-left: solid 1px #69c;
 	text-transform: lowercase;
-/*	width: 100px;*/
 }
 
 .AGwTwoEm {
@@ -394,10 +567,26 @@
 	width: 75px;
 }
 
+.metaHint {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: "#ffffcc";
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-top: solid 1px #00ff00;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #0000ff;
+	border-left: solid 1px #69c;
+}
+
 .LargeHint {
 	font-family: verdana, arial, sans-serif;
 	font-size: 12px;
-	background-color: #ffffcc;
+	background-color: "#ffffcc";
 	color: #000;
 	font-weight: bold;
 	padding-top: 0px;
@@ -424,19 +613,51 @@
 	text-decoration: underline;
 }
 
+.agCoolTitle {
+	font-family: 'Helvetica', arial, sans-serif;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #000099;
+	background-color: #FFFFFF;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-right: 1em;
+	padding-left: 1em;
+	border: 1px solid #000099;
+}
+
+.agCoolishTitle {
+	font-family: helvetica, arial, sans-serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #000099;
+	background-color: #FFFFFF;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	padding-right: 1em;
+	padding-left: 1em;
+	border: 1px solid #000099;
+}
+
+.agSectionTitle {
+	font-family: 'Helvetica', arial, sans-serif;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #000099;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 1em;
+}
+
 .agWelcomeTitle {
-/*	font-family: 'Times Roman', arial, sans-serif;*/
 	font-size: larger;
 	font-weight: bold;
 	color: #0000aa;
-/*	cursor: pointer;*/
 	padding-top: 0px;
 	padding-bottom: 0px;
 	padding-right: 4px;
 	padding-left: 20%;
-/*	text-align: center;*/
-/*	align: center;*/
-/*	text-decoration: underline;*/
 }
 
 .agSmaller {
@@ -473,10 +694,12 @@
 	font-weight: bold;
 	background-color: #003300;
 	border-color: lime;
+	cursor: pointer;
 }
 
 .agHnd {
 	cursor: pointer;
+	text-transform: lowercase;
 }
 
 .agHlp {
@@ -488,4 +711,32 @@
 	position: relative;
 	background-color: #ffffff;
 	border:1px solid #000099;
+}
+
+.cellLT {
+	border-left: solid 2px black;
+	border-top: solid 2px black;
+	padding-left: 5px;
+	padding-top: 5px;
+	background-color: #ffffcc;
+}
+
+.cellBT {
+	border-left: solid 2px black;
+	border-bottom: solid 2px black;
+}
+
+.cellLBR {
+	border-left: solid 2px black;
+	border-bottom: solid 2px black;
+	border-right: solid 2px black;
+	padding-left: 5px;
+	padding-top: 2px
+	padding-bottom: 2px;
+	background-color: #ffffcc;
+}
+
+p {
+	padding-left: 5px;
+	padding-right: 5px;
 }

@@ -95,6 +95,9 @@
               domMenu_activate('main-menu');
             </script>
           </div>
+          <div id="ag-profile">
+            <xsl:apply-templates select="//*/ag-profile//ag-div/*"/>
+          </div>
 
           <xsl:apply-templates select="//ag-body/*"/>
         </div>

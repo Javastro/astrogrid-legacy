@@ -191,7 +191,8 @@ public class DesignAction extends AbstractAction {
 	    PARENT_ACTIVITY_KEY_PARAMETER = "parent_activity_key",	    
 	    ACTIVITY_ORDER_PARAMETER = "activity_index_order",
 	    ACTIVITY_TYPE_PARAMETER = "activity_type",
-	    INSERT_ACTIVITY_TYPE_PARAMETER = "insert_activity_type";
+	    INSERT_ACTIVITY_TYPE_PARAMETER = "insert_activity_type",
+	    PARAMATER_SEPARATOR_PARAM = "++" ;
         
     public static final String
         QUERY_NAME_PARAMETER = "query-name",
@@ -712,7 +713,7 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
             
             String ivornName = request.getParameter( WORKFLOW_IVORN_PARAMETER ) ;
-            String submitWorkflowMessage = "Workflow successfully submitted to JES; you can monitor it's progress in the job monitor page.";
+            String submitWorkflowMessage = "Workflow successfully submitted to JES;";
             Ivorn ivorn = null;
                 
             try {
@@ -1126,7 +1127,7 @@ public class DesignAction extends AbstractAction {
 		    ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
 		    ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
 
-            if (parameterValue.indexOf(",") == -1 ) // single parameter value
+            if (parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM) == -1 ) // single parameter value
                 {
 		            WorkflowHelper.insertInputParameterValue( applDescription
 					        							    , tool
@@ -1137,10 +1138,10 @@ public class DesignAction extends AbstractAction {
                 }
             else // multiple parameter values
             {
-            	while (parameterValue.indexOf(",") != -1)
+            	while (parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM) != -1)
             	{
-                    String singleParamValue = parameterValue.substring( 0, parameterValue.indexOf(",") );
-                    parameterValue = parameterValue.substring(singleParamValue.length() + 1 , parameterValue.length() ) ;
+                    String singleParamValue = parameterValue.substring( 0, parameterValue.indexOf(PARAMATER_SEPARATOR_PARAM ) );
+                    parameterValue = parameterValue.substring(singleParamValue.length() + 2 , parameterValue.length() ) ;
 
 					WorkflowHelper.insertInputParameterValue( applDescription
 															, tool

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- CVS $Id: extras.xsl,v 1.4 2004/07/20 13:37:25 jl99 Exp $ -->
+<!-- CVS $Id: extras.xsl,v 1.5 2004/11/26 15:03:25 clq2 Exp $ -->
 
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -9,44 +9,11 @@
     <xsl:param name="ag-js-url" />
 
   <xsl:template match="/">
-  <!--
-<xsl:element name="link">
-<xsl:attribute name="href"><xsl:value-of select="$ag-css-url"/></xsl:attribute>
-<xsl:attribute name="rel">stylesheet</xsl:attribute>
-<xsl:attribute name="type">text/css</xsl:attribute>
-</xsl:element>
--->
-
-
-<!--
-<xsl:element name="link">
-<xsl:attribute name="href"><xsl:value-of select="$ag-js-url"/></xsl:attribute>
-<xsl:attribute name="rel">javascript</xsl:attribute>
-<xsl:attribute name="type">text/javascript</xsl:attribute>
-</xsl:element>
-<xsl:element name="script">
-<xsl:attribute name="src"><xsl:value-of select="$ag-js-url"/></xsl:attribute>
-<xsl:attribute name="type">text/javascript</xsl:attribute>
-<xsl:attribute name="language">javascript</xsl:attribute>
-</xsl:element>
--->
    <xsl:apply-templates/>
    </xsl:template>
 
-  <xsl:template match="agComponentTitle">
 <!--
-
-<xsl:element name="script">
-<xsl:attribute name="type">text/javascript</xsl:attribute>
-<xsl:attribute name="src"><xsl:value-of select="$ag-js-url"/></xsl:attribute>
-</xsl:element>
--->
-  <!--
-<div style="color: red; background-color: darkblue">
-          <xsl:apply-templates/>
-</div>
-background="/AGPortal/sunprom_soho_strip.gif">
--->
+  <xsl:template match="agComponentTitle">
 <xsl:variable name="bugURL">/astrogrid-portal/bare/mount/help/bugsy.bug?item=<xsl:value-of select="."/></xsl:variable>
 <table width="100%" cellpadding="0" cellspacing="0"
 background="/astrogrid-portal/hudf_hst_strip.jpg">
@@ -67,9 +34,25 @@ onClick="popupBrowser('{$bugURL}',400,700)"/>
   <a style="color: #ffff00; padding-right: font-size: 12pt; 20px;" href="/astrogrid-portal/main/mount/login/logout">Log out</a>
   </td></tr></table>
   </xsl:template>
-  <!--
-onClick="popupBrowser('/astrogrid-portal/bare/mount/help/bugsy.bug?item=thisPage',400,700)"/>
   -->
+
+  <xsl:template match="agComponentTitle">
+<xsl:variable
+name="bugURL">/astrogrid-portal/bare/mount/help/bugsy.bug?item=<xsl:value-of
+select="."/></xsl:variable>
+
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eeffff">
+<tr><td align="left" height="20px">
+<span class="agCoolishTitle"><xsl:value-of select="."/></span>
+  </td>
+  <td width="100" align="right">
+  <a style="colour: #000000; padding-right: 20px; font-size: 12pt;" href="/astrogrid-portal/main/mount/login/logout">Log out</a>
+  </td>
+  </tr></table>
+<script language="javascript">
+top.document.title = "<xsl:value-of select="."/>";
+</script>
+  </xsl:template>
 
   <xsl:template match="agComponentMessage">
 <table width="100%" cellpadding="0" cellspacing="0"
@@ -77,6 +60,28 @@ background="/astrogrid-portal/hudf_hst_strip.jpg">
 <tr><td align="left">
 <span style="color: yellow; font-size: 12pt; font-weight: bold;"><xsl:value-of select="."/></span>
   </td></tr></table>
+  </xsl:template>
+
+  <xsl:template match="agOtherWindowTitle">
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eeffff">
+<tr><td align="left" height="20px">
+<span class="agCoolishTitle"><xsl:value-of select="."/></span>
+  </td>
+  <td width="100" align="right">
+  <span onClick="javascript:window.close();" style="background-color: transparent; cursor: pointer; color: #000088; font-variant: small-caps; font-size: 12pt; font-weight: bold; padding-right: 40px">Close</span>
+  </td>
+  </tr></table>
+<script language="javascript">
+top.document.title = "<xsl:value-of select="."/>";
+</script>
+  </xsl:template>
+
+  <xsl:template match="agPageMessage">
+<table width="100%" cellpadding="0" cellspacing="0" bgcolor="#eeffff">
+<tr><td align="left" height="20px">
+<span class="agCoolishTitle"><xsl:value-of select="."/></span>
+  </td>
+  </tr></table>
   </xsl:template>
 
   <xsl:template match="agPUBMessage">
@@ -121,17 +126,13 @@ title="{@title}" style="cursor: pointer" id="{@ID}"/>
   </xsl:template>
 
 
+  <xsl:template match="profile">
+  </xsl:template>
+
   <xsl:template match="agExplain">
 <span class="agExplain" onclick="popupGlossary(this,
 '{@item}')"><xsl:value-of select="@item"/></span>
-<!--
-<br />
-<div style="text-align: right">
-<a href="javascript:window.close()">Close this window</a>
-</div>
--->
   </xsl:template>
-
 
   <xsl:template match="agHint">
       <xsl:variable name="iconWidth">
@@ -140,12 +141,6 @@ title="{@title}" style="cursor: pointer" id="{@ID}"/>
          <xsl:otherwise>20</xsl:otherwise>
       </xsl:choose>
       </xsl:variable>
-  <!--
-<button type="button" id="{@id}" class="HintButton" onClick="hinter(this)"
-title="Click to open or close a Hint"
-value="Hint">Hint</button>
-<div id="{@id}stick" class="agHint" style="display:none; width: {$boxWidth}">
--->
 <img src="/astrogrid-portal/icons/Help3.png"  id="{@id}" class="HintButton"
 onClick="hinter(this)" width="{$iconWidth}" title="Click to open or close a Hint" />
 

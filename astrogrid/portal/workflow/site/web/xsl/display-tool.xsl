@@ -77,7 +77,7 @@
                   <xsl:choose>
                     <xsl:when test="@step-name = 'null'"></xsl:when>
                     <xsl:otherwise>
-                      <xsl:value-of select="normalize-space(@step-name)"/>
+                      <xsl:value-of select="@step-name"/>
                     </xsl:otherwise>
                   </xsl:choose>
                 </xsl:attribute>
@@ -110,7 +110,7 @@
                       <xsl:attribute name="value"></xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@step-var)"/></xsl:attribute>
+                      <xsl:attribute name="value"><xsl:value-of select="@step-var"/></xsl:attribute>
                     </xsl:otherwise>
                   </xsl:choose>
                 </input>                  

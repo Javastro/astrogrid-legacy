@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /devel/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
+    | <cvs:author>$Author: jl99 $</cvs:author>
+    | <cvs:date>$Date: 2004/07/20 13:37:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    +-->
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+<!-- ======================== Components ================================ -->
+   <map:components>
+      <map:generators default="file" />
+
+      <map:transformers default="xslt" />
+
+      <map:readers default="resource" />
+
+      <map:serializers default="html" />
+
+      <map:selectors default="browser" />
+
+      <map:selector name="parameter" logger="sitemap.selector.parameter" src="org.apache.cocoon.selection.ParameterSelector" />
+
+      <map:matchers default="wildcard" />
+
+      <map:actions>
+         <map:action name="astro-login" src="org.astrogrid.portal.cocoon.common.LoginAction" logger="astrogrid.action.astro-login"/>
+         <map:action name="astro-message-admin" src="org.astrogrid.portal.cocoon.common.MessageToAdminAction" logger="astrogrid.action.astro-message-admin"/>
+      </map:actions>
+   </map:components>
+
+<!-- =========================== Views =================================== -->
+<!--+
+        | Views for debugging XSL transforms
+        +-->
+   <map:views>
+<!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml" />
+      </map:view>
+
+<!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+<!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl" />
+
+         <map:serialize type="html" />
+      </map:view>
+
+<!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+<!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl" />
+
+         <map:serialize type="html" />
+      </map:view>
+
+<!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+<!-- Convert into XML/HTML -->
+         <map:transform src="web/style/xsl/xml-html.xsl" />
+
+         <map:serialize type="html" />
+      </map:view>
+   </map:views>
+
+<!-- ========================== Resources ================================= -->
+   <map:resources>
+   </map:resources>
+
+<!-- ========================== Pipelines ================================= -->
+   <map:pipelines>
+   <!--+
+       | Main pipeline.
+       +-->
+      <map:pipeline>
+      <!-- Login page -->
+         <map:match pattern="**">
+            <!--Display holding page  -->
+            <map:generate type="file" src="xml/holding.xml"/>
+            <map:transform type="xslt" src="style/info.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+         
+      </map:pipeline>
+   </map:pipelines>
+</map:sitemap>
+
+<!--+
+    | <cvs:log>
+    | </cvs:log>
+    |
+    +-->
+

@@ -285,7 +285,14 @@
       <!-- xsp -->
       <map:match pattern="**.xsp">
         <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
-        <map:transform src="web/style/xsl/dataQuery.xsl"/>
+        <map:transform src="web/style/xsl/{1}.xsl"/>
+        <map:transform src="cocoon://xml2html.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>
+
+      <map:match pattern="**.hlp">
+        <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
+        <map:transform src="web/style/xsl/{1}.xsl"/>
         <map:transform src="cocoon://xml2html.xsl"/>
         <map:serialize type="xml"/>
       </map:match>

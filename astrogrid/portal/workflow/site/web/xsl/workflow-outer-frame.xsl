@@ -138,10 +138,19 @@
 
       </table>
 
-      <xsl:if test="@workflow-submit-message != 'null'">      
-        <span style="color:red">
-          <xsl:value-of select="@workflow-submit-message"/>
-        </span>      
+      <xsl:if test="@workflow-submit-message != 'null'">
+        <xsl:choose>
+        <xsl:when test="@workflow-submit-message = 'Workflow successfully submitted to JES;'">                                                   
+            <span style="color:green">
+           Workflow successfully submitted to JES; you can view it's status in the <a href="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html?action=read-job-list">job monitor</a> page.      
+           </span>
+        </xsl:when>
+        <xsl:otherwise>
+            <span style="color:red">
+                <xsl:value-of select="@workflow-submit-message" />
+            </span>
+        </xsl:otherwise>
+        </xsl:choose>
       </xsl:if>
         
         <div id="iframeHolder">......</div>

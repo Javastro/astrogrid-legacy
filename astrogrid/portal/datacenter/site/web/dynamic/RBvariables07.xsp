@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar  5 17:29:46 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+
+  
+<AstroGrid>
+
+<agVaribleDisplayFrame>
+<!--
+<agComponentTitle>Table: <xsp-request:get-parameter name="tableID"/></agComponentTitle>
+-->
+
+<DQtableID>Registry</DQtableID>
+
+<OneTableID>Registry</OneTableID>
+<xsp:logic>
+        <util:include-file>
+           <util:name>/data/datoz2k/scratch/registry.xml</util:name>
+        </util:include-file>
+</xsp:logic>
+
+</agVaribleDisplayFrame>
+</AstroGrid>
+
+</xsp:page>

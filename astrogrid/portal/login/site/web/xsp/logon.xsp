@@ -12,7 +12,7 @@
 	
 
     
-    <agComponentTitle>Log On</agComponentTitle>
+    <agPageMessage>Log On</agPageMessage>
     <content>
      <login-form action="login-form" method="post" message="Please enter your username, community and password.">
        <login-input type="text" name="user" size="20" caption="Username:">

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--+
+    +-->
+<page>
+<agComponentTitle>
+	HOLDING PAGE FOR RESOURCES.
+</agComponentTitle>
+<content>
+    <p>
+    This is a holding page for the new resources section.  PLEASE FIX ME!
+    </p>
+
+    <p>
+  There should be some sort of search/browse here.
+    </p>
+</content>
+</page>
+<!--+
+    | <cvs:log>
+    | </cvs:log>
+    |
+    +-->

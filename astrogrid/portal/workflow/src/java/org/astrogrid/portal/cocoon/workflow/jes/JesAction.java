@@ -240,9 +240,11 @@ public class JesAction extends AbstractAction {
                 }  
 				else if( action.equals( ACTION_CANCEL_JOB ) ) {
 					this.cancelJob(); 
+					this.readJobList();
 				}
 				else if( action.equals( ACTION_DELETE_JOB ) ) {
 					this.deleteJob() ;
+					this.readJobList();
 				}                   
                 else if( action.equals( ACTION_READ_JOB_LIST ) ) {
                     this.readJobList(); 
@@ -380,7 +382,15 @@ public class JesAction extends AbstractAction {
                 Workflow[] workflows = new Workflow[ jobSummaries.length ]; 
                 
                 for( int i=0; i<workflows.length; i++ ) {
-                     workflows[i] = jes.readJob( jobSummaries[i].getJobURN() );
+                	try 
+                	{                	
+                        workflows[i] = jes.readJob( jobSummaries[i].getJobURN() );
+                	}
+                	catch(Exception e) 
+                	{
+                		// bug # 673 - ignore error thrown by jes at this point and continue reading list
+						// org.astrogrid.jes.job.NotFoundException:
+                	}
                 }
     
                 this.request.setAttribute( HTTP_JOBLIST_TAG, workflows );

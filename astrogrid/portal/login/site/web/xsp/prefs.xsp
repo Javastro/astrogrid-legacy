@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar  5 17:40:33 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
+  
+  <!--
+  -->
+  <AstroGrid>
+    <!--
+  <title>AstroGrid's <xsp-request:get-parameter name="item"/> FAQ</title>
+    <jpath:param name="topico" select="topico"/>
+    <xsl:variable name="thePage">
+    <jpath:value-of select="topico"/>
+    </xsl:variable>
+    -->
+<!--
+    <content>
+    </content>
+	Insert the page content right here
+-->
+
+	<!--
+	<jpath:value-of select="user/firstName"/> <jpath:value-of select="user/lastName"/>, 
+	   <util:name>/home/pfo/I05/ag03/FAQ/questions.xml</util:name>
+	step = (String) <xsp-request:get-parameter name="step"/>;
+	-->
+<ProducePage>
+<xsp:logic>
+	String profile, user;
+
+	user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
+
+	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + user;
+	<util:include-uri>
+		<util:href><xsp:expr>profile</xsp:expr></util:href>
+	</util:include-uri>
+
+	<!--
+	if(user.equals(nada)){
+		theStep = 1;
+	} else {
+		theStep = Integer.parseInt(step);
+		theStep++;
+	}
+	tomcat = java.lang.System.getProperty("catalina.home");
+	tomcat += "/webapps/astrogrid-portal/mount/help/web/static/FAQ.xml";
+	<util:include-file>
+	<util:name><xsp:expr>tomcat</xsp:expr></util:name>
+	</util:include-file>
+	-->
+<!--
+  <step><xsp:expr>theStep</xsp:expr></step>
+	Before ending the logical part, we use java to produce some code or
+	to communicate with another component before passing the control
+	back to the XSL stylesheet which should produce the GUI.
+	Notice that it might be necessary to extract some of the input
+	paramenters here to be passed onto new forms.
+-->
+
+<userID><xsp:expr>user</xsp:expr></userID>
+
+
+</xsp:logic>
+</ProducePage>
+    <!--
+<link>sextract/step1.scn</link>
+	<util:name>/usr/local/tomcat/webapps/astrogrid-portal/mount/help/web/static/FAQ.xml</util:name>
+<p>Nothing logical</p>
+    <mainArea>
+    </mainArea>
+	-->
+  </AstroGrid>
+</xsp:page>

@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.11 2004/11/11 15:05:18 pjn3 Exp $
+    | CVS $Id: sitemap.xmap,v 1.12 2004/11/26 15:03:25 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -532,6 +532,25 @@
   
       <map:serialize type="javascript"/>
     </map:resource>
+
+    <!-- Added by KEA to prevent unnecessary duplication. -->
+    <map:resource name="commonPageGenerator">
+      <map:transform src="web/style/xsl/error.xsl"/>
+
+      <map:transform src="web/style/xsl/portal-dmm.xsl">
+        <map:parameter name="ag-css-url" value="/astrogrid-portal/portal.css"/>
+        <map:parameter name="ag-title" value="Astrogrid Portal"/>
+      </map:transform>
+
+      <map:transform src="web/style/xsl/extras.xsl">
+        <map:parameter name="ag-css-url" value="/astrogrid-portal/extras.css"/>
+        <map:parameter name="ag-js-url" value="/astrogrid-portal/extras.js"/>
+        <map:parameter name="ag-title" value="Astrogrid Portal"/>
+      </map:transform>
+
+      <map:serialize type="xhtml"/>
+    </map:resource>
+
   </map:resources>
 
 <!-- ========================== Action sets ================================ -->
@@ -612,6 +631,27 @@
      <map:match pattern="icons/*.png">
        <map:read mime-type="images/png" src="web/images/icons/{1}.png"/>
      </map:match>
+
+    <!-- ADDED BY KEA FOR NEW NAVBAR -->
+     <map:match pattern="nav/*.gif">
+       <map:read mime-type="images/gif" src="web/images/nav/{1}.gif"/>
+     </map:match>
+     <map:match pattern="nav/*.jpg">
+       <map:read mime-type="images/jpg" src="web/images/nav/{1}.jpg"/>
+     </map:match>
+     <map:match pattern="nav/on/*.gif">
+       <map:read mime-type="images/gif" src="web/images/nav/on/{1}.gif"/>
+     </map:match>
+     <map:match pattern="nav/off/*.gif">
+       <map:read mime-type="images/gif" src="web/images/nav/off/{1}.gif"/>
+     </map:match>
+     <map:match pattern="nav/on_over/*.gif">
+       <map:read mime-type="images/gif" src="web/images/nav/on_over/{1}.gif"/>
+     </map:match>
+     <map:match pattern="nav/off_over/*.gif">
+       <map:read mime-type="images/gif" src="web/images/nav/off_over/{1}.gif"/>
+     </map:match>
+    <!-- END ADDED BY KEA -->
      
      <map:match pattern="entity-test.xml">
        <map:generate type="file" src="context://web/static/entity-test.xml"/>
@@ -635,28 +675,72 @@
         <map:redirect-to uri="main/mount/login/login-form"/>
       </map:match>
 
-      <map:match pattern="main/**">
+<!--
+      <map:match pattern="main/mount/login/myHome">
         <map:aggregate element="ag-page">
           <map:part element="ag-header" src="cocoon:/test/header.html"/>
-          <map:part element="ag-body" src="cocoon:/{1}"/>
+        </map:aggregate>
+      </map:match>
+-->
+
+  <!-- ADJUSTED BELOW BY KEA FOR NEW NAVBAR -->
+      <!-- These new entries  choose which nav header to use based on the 
+        site section being visited (mount/myspace, mount/login etc etc,
+        and also login status (don't show navbar if not logged in).
+ 
+       The actual navbars are in base/site/web/static/test/header_*.html.
+       -->
+
+      <!-- Need explicit match for logout because user is still set
+      (session not destroyed yet) when header is generated). 
+      -->
+      <map:match pattern="main/mount/login/logout">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-header" src="cocoon:/mount/login/logoutNav"/>
+          <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
+          <map:part element="ag-body" src="cocoon:/mount/login/logout"/>
+          <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
+        </map:aggregate>
+        <map:call resource="commonPageGenerator"/>
+      </map:match>
+
+      <!-- This one chooses to show navbar or not depending on whether
+       user is logged in.  -->
+      <map:match pattern="main/mount/login/**">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-header" src="cocoon:/mount/login/chooseNav"/>
+          <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
+          <map:part element="ag-body" src="cocoon:/mount/login/{1}"/>
+          <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
+        </map:aggregate>
+        <map:call resource="commonPageGenerator"/>
+      </map:match>
+
+      <!-- This one is a hack to make sure that the job monitor stuff ends up
+       in the jobs section (since it currently lives in the workflow directory).
+       -->
+      <map:match pattern="main/*/workflow/agjobmanager-**">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-header" src="cocoon:/test/header_jobs.html"/>
+          <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
+          <map:part element="ag-body" src="cocoon:/{1}/workflow//agjobmanager-{2}"/>
+          <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
+        </map:aggregate>
+        <map:call resource="commonPageGenerator"/>
+      </map:match>
+
+      <!-- General nav chooser based on site section -->
+      <map:match pattern="main/*/*/**">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-header" src="cocoon:/test/header_{2}.html"/>
+          <map:part element="ag-profile" src="cocoon:/mount/login/profile.i07"/>
+          <map:part element="ag-body" src="cocoon:/{1}/{2}/{3}"/>
           <map:part element="ag-footer" src="cocoon:/test/footer.html"/>
         </map:aggregate>
 
-        <map:transform src="web/style/xsl/error.xsl"/>
-
-        <map:transform src="web/style/xsl/portal-dmm.xsl">
-          <map:parameter name="ag-css-url" value="/astrogrid-portal/portal.css"/>
-          <map:parameter name="ag-title" value="Astrogrid Portal"/>
-        </map:transform>
-        
-        <map:transform src="web/style/xsl/extras.xsl">
-          <map:parameter name="ag-css-url" value="/astrogrid-portal/extras.css"/>
-          <map:parameter name="ag-js-url" value="/astrogrid-portal/extras.js"/>
-          <map:parameter name="ag-title" value="Astrogrid Portal"/>
-        </map:transform>
-        
-        <map:serialize type="xhtml"/>
+        <map:call resource="commonPageGenerator"/>
       </map:match>
+  <!-- END ADJUSTED BY KEA FOR NEW NAVBAR -->
     
 <!--
 	Introduced by PFO to handle pages without the menus being imposed
@@ -732,18 +816,23 @@
         | XML content.
         +-->
     <!-- menu -->
+
+<!-- Commented out to remove old nav menu.
+     Comments replaced in /* */ to avoid parse problems. -->
+<!--
       <map:match pattern="*menu.xml">
-      <!-- base menu -->
+      /* base menu */
         <map:generate src="context://WEB-INF/menu/{1}menu.xml" type="file"/>
       
-      <!-- standard menu transformation -->
+      /* standard menu transformation */
         <map:call resource="ag-menu-trans">
           <map:parameter name="ag-menu-stylesheet" value="web/style/xsl/{1}menu.xsl"/>
         </map:call>
       
-      <!-- output the xml -->
+      /* output the xml */
         <map:serialize type="xml"/>
       </map:match>
+-->
 
     <!-- html pages -->
       <map:match pattern="test/*.html">

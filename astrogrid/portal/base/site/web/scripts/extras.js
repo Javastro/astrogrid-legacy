@@ -33,6 +33,8 @@ function getOzSize(){
 			winTop = window.screenTop;
 			winLeft = window.screenLeft;
 		}
+		windowHeight = screen.height;
+		windowWidth = screen.width;
 	}
 }
 
@@ -176,8 +178,6 @@ function hinter(elem){
 		}
 	}
 }
-
-/* ------------------------------------------------*/
 
 function nofooter(){
 	if(document.getElementById("imgfootbar")!= null) {
@@ -381,7 +381,7 @@ function makeADQL(){
 				if(select == ""){
 					select = "T1." + e[i].value;
 				} else {
-					select += " " + "T1." + e[i].value;
+					select += ", " + "T1." + e[i].value;
 				}
 			}
 		}
@@ -411,7 +411,6 @@ function makeADQL(){
 		document.main.adqlQuery.value += " WHERE " + condi;
 	}
 	openLeftTab();
-	
 }
 
 
@@ -512,7 +511,7 @@ function backToParentDC(ref){
 }
 
 function backToRightFrameDC(ref){
-	var url = "/astrogrid-portal/bare/mount/datacenter/variables.xsp?tableID="
+	var url = "/astrogrid-portal/bare/mount/datacenter/variables07.i07?tableID="
 		+ ref;
 /*	alert("URL: " +  url);*/
 	window.close();
@@ -656,16 +655,16 @@ window.status = "Failed to identify " + thisName;
 }
 
     
-      function toggleHelp(id)
-      {
-		if(document.getElementById(id).style.display == "none"){
-		  nofooter(); 
-		  document.getElementById(id).style.display = "";
-		} else {
-		    footer();
-			document.getElementById(id).style.display = "none";
-		}        
-	  }
+function toggleHelp(id)
+{
+	if(document.getElementById(id).style.display == "none"){
+	  nofooter(); 
+	  document.getElementById(id).style.display = "";
+	} else {
+	    footer();
+		document.getElementById(id).style.display = "none";
+	}
+}
     
 
 
@@ -775,4 +774,151 @@ function getSelectionId(authId, resourceKey) {
   }
 }
 
+function getParentSize(){
+	if (parseInt(navigator.appVersion)>3) {
+		if (navigator.appName=="Netscape") {
+			winW = parent.innerWidth;
+			winH = parent.innerHeight;
+			winTop = window.screenY;
+			winLeft = window.screenX;
+		}
+		if (navigator.appName.indexOf("Microsoft")!=-1) {
+			winW = parent.document.body.offsetWidth;
+			winH = parent.document.body.offsetHeight;
+			winTop = window.screenTop;
+			winLeft = window.screenLeft;
+		}
+	}
+}
+
+function naviBright(diese){
+	diese.style.backgroundColor = "black";
+	diese.style.color = "#ffff00";
+	diese.style.borderColor = "#ffff00";
+}
+
+function naviDim(diese){
+	diese.style.backgroundColor = "transparent";
+	diese.style.color = "#ffffcc";
+	diese.style.borderColor = "#ffffcc";
+}
+
+function setHeight(diese, imageID){
+	var refImage = document.getElementById(imageID);
+	var qposy = findPosY(refImage);
+	getOzSize();
+	var ifh = winH - qposy - 40;
+	diese.height = ifh;
+}
+
+
+function setRelHeight(diese, qposy){
+/*	var refImage = document.getElementById(imageID);*/
+/*	var qposy = findPosY(refImage);*/
+	getOzSize();
+	var ifh = winH - qposy - 40;
+	diese.height = ifh;
+}
+
+
+/* ------------------------------------------------*/
+
+function yTEK(i){
+var update, old;
+old = parent.document.main.adqlQuery.value;
+update = old + i ;
+parent.document.main.adqlQuery.value = update;
+parent.document.main.adqlQuery.focus();
+}
+
+function glueButton(where, text){
+	var diva = document.getElementById(where);
+	var span1l = '<span class="buttonBox" onclick="pText(';
+	var span1r = ')">';
+	if(diva != null){
+		diva.innerHTML += span1l + "'" + text + "'" + span1r;
+		diva.innerHTML += '<span class="buttonOrder">' + text;
+		diva.innerHTML += "</span>\n";
+		diva.innerHTML += "</span>\n";
+	}
+
+}
+
+function openTag(name){
+/*
+ *	Arrays D and T should be defined in the page calling this function
+ */
+	var tago, diva;
+	var i, j;
+	for(var i=0; i < dle; i++){
+		diva = document.getElementById(D[i]);
+		tago = document.getElementById(T[i]);
+		if(diva != null){
+			diva.style.display = "none";
+		}
+		if(tago != null){
+			tago.style.backgroundColor = "#cccccc";
+		}
+	}
+	diva = document.getElementById("d"+name);
+	if(diva != null){
+		diva.style.display = "";
+	}
+	tago = document.getElementById("t"+name);
+	if(tago != null){
+		tago.style.backgroundColor = "#ffffcc";
+	}
+}
+
+
+function toggleDiv(diese, diva){
+	var more = document.getElementById(diva);
+	if(more != null){
+		var forMore = diese.firstChild;
+		if(more.style.display == "none"){
+			more.style.display = "";
+			forMore.nodeValue = "less...";
+		} else {
+			more.style.display = "none";
+			forMore.nodeValue = "more...";
+		}
+	}
+}
+
+function newWindow(url, wname, uwidth, uheight, xpos, ypos){
+	var twidth = uwidth;
+	var theight = uheight;
+	getOzSize();
+	var	pubX = winLeft + 20;
+	var	pubY = winTop - 20;
+	if(pubY < 0){ pubY = 0; }
+/*	window.status = "Top,left = " + winTop + ", " + winLeft;*/
+	if(uwidth == null){ twidth = winW - 40; }
+	if(uheight == null){ theight = winH; }
+	if(xpos != null){ pubX = xpos; }
+	if(ypos != null){ pubY = ypos; }
+	var options = "toolbar=no, directories=no, location=no, status=no, ";
+	options += "menubar=no, left=" + pubX + ", top=" + pubY;
+	options += ", resizable=yes, scrollbars=yes, width=";
+	options += twidth + ", height=" + theight;
+	pub = window.open(url, wname, options);
+	pub.focus();
+}
+
+function wipe(diese){
+	diese.onclick = "";
+	diese.value="";
+}
+
+function transparentBody(){
+	if (parseInt(navigator.appVersion)>3) {
+		if (navigator.appName=="Netscape") {
+			document.body.bgcolor = "";
+		}
+		if (navigator.appName.indexOf("Microsoft")!=-1) {
+			document.body.bgcolor = "transparent";
+/*			alert("Yes, it's micros**t");*/
+		}
+	}
+}
 

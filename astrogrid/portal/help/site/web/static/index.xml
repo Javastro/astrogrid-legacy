@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--+
+    +-->
+<page>
+<agComponentTitle>
+	HOLDING PAGE FOR HELP.
+</agComponentTitle>
+<content>
+    <p>
+    This is a holding page for the new HELP section.  PLEASE FIX ME!
+    </p>
+
+    <p>
+    <ul>
+    <li><a href="/astrogrid-portal/bare/mount/help/faq.faq">FAQ</a></li>
+    <li><a href="/astrogrid-portal/bare/mount/help/cookbook.ckb">Cookbook</a></li>
+    <li><a href="/astrogrid-portal/bare/mount/help/glossary.glo">Glossary</a></li>
+    </ul>
+    </p>
+</content>
+</page>
+<!--+
+    | <cvs:log>
+    | </cvs:log>
+    |
+    +-->

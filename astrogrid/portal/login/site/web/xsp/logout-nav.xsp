@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source$</cvs:source>
+    | <cvs:author>$Author$</cvs:author>
+    | <cvs:date>$Date$</cvs:date>
+    | <cvs:version>$Revision$</cvs:version>
+    |
+    +-->
+<xsp:page language="java"
+        create-session="true"
+        xmlns:xsp="http://apache.org/xsp"
+        xmlns:util="http://apache.org/xsp/util/2.0"
+        xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+        xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+        >
+
+    <!--+
+        | Hide nav on logout page (session will not be destroyed at the
+        time header is created).
+        +-->
+  <astrogrid>
+  <xsp:logic>
+    String tomcat, user;
+
+    tomcat = java.lang.System.getProperty("catalina.home");
+    tomcat += "/webapps/astrogrid-portal/web/static/test/header_login_bare.html";
+      <util:include-file>
+        <util:name><xsp:expr>tomcat</xsp:expr></util:name>
+      </util:include-file>
+  </xsp:logic>
+  </astrogrid>
+</xsp:page>
+<!--+
+    | <cvs:log>
+    |   $Log$
+    | </cvs:log>
+    |
+    +-->

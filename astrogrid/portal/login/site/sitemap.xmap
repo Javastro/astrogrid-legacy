@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
-    | <cvs:author>$Author: jl99 $</cvs:author>
-    | <cvs:date>$Date: 2004/07/20 13:37:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2004/11/26 15:03:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -88,6 +88,7 @@
                   <map:transform type="xslt" src="style/info.xsl" />
                   <map:serialize type="xml" />
                </map:act>
+
                <!-- login unsuccessful -->
                <map:generate type="file" src="xml/login-failed.xml"/>
                <map:transform type="xslt" src="style/info.xsl" />
@@ -99,6 +100,22 @@
             <map:serialize type="xml" />
          </map:match>
          
+         <!-- Navigation header chooser, added by KEA.
+              Login is a special case for the nav. header bar, because 
+              we can't show the nav buttons if nobody is logged in yet. 
+              Also, have to explicitly hide them on logout due to timing
+              of session destruction. -->
+         <map:match pattern="chooseNav">
+            <map:generate type="serverpages" src="xsp/choose-nav.xsp" />
+            <map:transform type="xslt" src="style/info.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+         <map:match pattern="logoutNav">
+            <map:generate type="serverpages" src="xsp/logout-nav.xsp" />
+            <map:transform type="xslt" src="style/info.xsl" />
+            <map:serialize type="xml" />
+         </map:match>
+
          <!-- New myHome page, added by PFO -->
          <map:match pattern="myHome">
             <map:generate type="serverpages" src="xsp/login-pass.xsp" />
@@ -110,6 +127,13 @@
             <map:serialize type="xml" />
 	    -->
          </map:match>
+
+          <!-- New Preferences/profile pages, added by PFO -->
+          <map:match pattern="**.i07">
+             <map:generate type="serverpages" src="xsp/{1}.xsp" />
+             <map:transform type="xslt" src="style/{1}.xsl" />
+             <map:serialize type="xml" />
+          </map:match>
 
 				 
          <!-- New Logout page -->
@@ -193,6 +217,15 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.18  2004/11/26 15:03:25  clq2
+    |   POR_KEA_716/POR_KEA_716/portal_pfo_620_697_707_717_718_733_735
+    |
+    |   Revision 1.17.112.1  2004/11/24 14:34:10  pfo
+    |   PFO: upgrading a couple of things here and there: new pipeline
+    |
+    |   Revision 1.17.110.1  2004/11/22 17:08:48  pfo
+    |   PFO: Added functionality to handle profiles and preferences
+    |
     |   Revision 1.17  2004/07/20 13:37:25  jl99
     |   Query Builder changes - Bugzilla 399 - Enhancements.
     |   Iteration 6 covering:

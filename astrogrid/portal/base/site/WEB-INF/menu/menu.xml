@@ -22,8 +22,9 @@
         status-text="AstroGrid BugZilla Installation"/>
   </agp:menu>
 </agp:menu-def>
-	<!-- pfo's junkyard
+	<!-- pfo's junkyard 
         icon="/astrogrid-portal/icons/RedFlag.png"
         icon="/astrogrid-portal/icons/aglogo.png"
       icon="/astrogrid-portal/icons/aglogo.png"
       -->
+     <!-- Jeff's tweak to set a tag for this file -->

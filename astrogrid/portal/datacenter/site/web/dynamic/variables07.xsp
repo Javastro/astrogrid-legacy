@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar  5 17:29:46 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+
+  
+<AstroGrid>
+
+<agVaribleDisplayFrame>
+<!--
+<agComponentTitle>Table: <xsp-request:get-parameter name="tableID"/></agComponentTitle>
+-->
+
+<DQtableID><xsp-request:get-parameter name="tableID"/></DQtableID>
+
+<xsp:logic>
+     String quString, myURL, nada;
+     nada = new String("null");
+     quString = (String) <xsp-request:get-parameter name="tableID"/>;
+     if(quString.equals(nada)){
+<OneTableID>NoSource</OneTableID>
+     } else {
+     myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + quString;
+<OneTableID><xsp:expr>quString</xsp:expr></OneTableID>
+        <util:include-uri>
+           <util:href><xsp:expr>myURL</xsp:expr></util:href>
+        </util:include-uri>
+<!--
+ <responseFromRegistry>
+
+ </responseFromRegistry>
+ -->
+     }
+</xsp:logic>
+
+</agVaribleDisplayFrame>
+</AstroGrid>
+
+</xsp:page>

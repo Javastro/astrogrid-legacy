@@ -35,6 +35,7 @@
       </script>                    
         
       <table border="2" cellpadding="0" cellspacing="0">
+        <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">
         <tr>
           <td align="center" colspan="6">
             <div style="color: blue; background-color: lightblue; text-align: center;">
@@ -60,23 +61,24 @@
           </td>
         </tr>
         <xsl:choose>
-          <xsl:when test="./tool/@tool-name != 'null'">           
-            <tr><td colspan="4">
-              <div style="color: blue; background-color: lightblue; text-align: center;">( input parameters for this task: )</div>
-            </td></tr>                          
-            <form name="parameter_form" id="parameter_form" action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" target="workflowOuterFrame">                                      
+          <xsl:when test="./tool/@tool-name != 'null'">                                    
+            <xsl:if test="./tool/inputParam" >
+              <tr><td colspan="4">
+                <div style="color: blue; background-color: lightblue; text-align: center;">( input parameters for this task: )</div>
+              </td></tr> 
               <xsl:for-each select="./tool/inputParam">
                 <xsl:sort select="@param-name" type="text" order="descending" /> 
                 <xsl:call-template name="parameter">                                     
                   <xsl:with-param name="direction">input</xsl:with-param>
                 </xsl:call-template>                              
               </xsl:for-each>
+            </xsl:if>
 
-              <xsl:if test="./tool/outputParam" >              
+              <xsl:if test="./tool/outputParam" >  <!-- Email tool has no output params, so don't display -->      
                 <tr><td colspan="4">
                   <div style="color: blue; background-color: lightblue; text-align: center;">( location to place ouput from this task: )</div>
                 </td></tr>                
-                <xsl:for-each select="./tool/outputParam">  <!-- Email tool has no output params, so don't display -->
+                <xsl:for-each select="./tool/outputParam">  
                   <xsl:call-template name="parameter">
                     <xsl:with-param name="direction">output</xsl:with-param>
                   </xsl:call-template>
@@ -85,7 +87,8 @@
               <tr>
                 <td colspan="5">
                   <div id="multiParamDiv" style="display: none; color: blue;">
-                    * parameter will accept more than one value, enter as a comma seperated list.
+                    * task may contain more than one occurence of this parameter. <br />
+                      Please enter each value separated by ++.
                   </div>
                 </td>                        
               </tr>              
@@ -100,10 +103,7 @@
             <input type="hidden" name="display_parameter_values"><xsl:attribute name="value">true</xsl:attribute></input> 
             <input type="hidden" name="input_param_count"><xsl:attribute name="value"><xsl:value-of select="count(./tool/inputParam)"/></xsl:attribute></input>
             <input type="hidden" name="output_param_count"><xsl:attribute name="value"><xsl:value-of select="count(./tool/outputParam)"/></xsl:attribute></input>
-            <input type="hidden" name="activity_key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>                        
-          </form>
-             
-         
+            <input type="hidden" name="activity_key"><xsl:attribute name="value"><xsl:value-of select="@key"/></xsl:attribute></input>                                                     
           </xsl:when>
           <xsl:otherwise>
             <tr>
@@ -127,7 +127,8 @@
               </td>
             </tr>                
           </xsl:otherwise>
-        </xsl:choose>                        
+        </xsl:choose> 
+        </form>                       
       </table>
     </xsl:template>
 
@@ -151,8 +152,15 @@
 <!--       ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> ' +   
                                  ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> ' +
                                  ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ' ) -->
-              </xsl:attribute>            
-            <xsl:value-of select="@param-UI-name"/> 
+              </xsl:attribute>
+              <xsl:choose>
+                <xsl:when test="@param-UI-name != ''">
+                  <xsl:value-of select="@param-UI-name"/> 
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="@param-name" />
+                </xsl:otherwise>
+              </xsl:choose>                       
             <xsl:if test="@param-cardinality-max='0'">
               <b> *</b>
               <ag-onload>             
