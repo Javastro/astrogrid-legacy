@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.1 2004/04/16 15:17:14 mch Exp $
+/*$Id: CeaTest.java,v 1.2 2004/05/12 09:17:51 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,30 @@
 **/
 package org.astrogrid.datacenter.integration;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringWriter;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
+import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.io.Piper;
+import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.VoSpaceClient;
+import org.astrogrid.store.delegate.StoreAdminClient;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.store.delegate.StoreException;
+import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -24,12 +43,51 @@ import org.astrogrid.workflow.beans.v1.Tool;
  * @author mch
  */
 
-public class CeaTest  {
+public class CeaTest  extends TestCase {
 
    public static final String STD_PAL = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/CeaDataService";
+   public static final String IVO_MYSPACE = "ivo://org.astrogrid.localhost/myspace";
+   
+   public static final String QUERY_PATH = "CeaTest/query.adql";
+   public static final String RESULTS_PATH = "CeaTest/ceaTestResults.vot";
+
+   public static final String RESULTS_LOC = IVO_MYSPACE+"#"+RESULTS_PATH;
+   public static final String QUERY_LOC = IVO_MYSPACE+"#"+QUERY_PATH;
+   
+   //creates frog user, uploads query and makes sure results location is clear
+   public void prepareMySpace() throws IOException {
+
+      try {
+         StoreAdminClient admin = StoreDelegateFactory.createAdminDelegate(User.ANONYMOUS, new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"));
+         admin.createUser(new User("CeaTest", "org.astrogrid.localhost", ""));
+      }
+      catch (StoreException se) {
+         se.printStackTrace(); //but otherwise ignore - user mihgt already exist
+      }
+      
+      //upload query
+      StoreClient client = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"));
+      OutputStream out = client.putStream(QUERY_PATH, false);
+      InputStream in = this.getClass().getResourceAsStream("Test-sample-adql-0.5.xml");
+      assertNotNull(in);
+      Piper.pipe(in, out);
+      out.close();
+
+      //make sure results file is clear
+      try {
+         client.delete(RESULTS_PATH);
+      }
+      catch (StoreException se) {
+         se.printStackTrace(); //but otherwise ignore - might not exist
+      }
+      
+   
+   }
    
    public void testStdPal() throws Exception {
 
+      prepareMySpace();
+      
       //create 'delegate'
       Tool tool = new Tool();
       tool.setName("Std Datacenter");
@@ -40,7 +98,8 @@ public class CeaTest  {
       ParameterValue param = new ParameterValue();
       param.setName("Query");
       param.setType(ParameterTypes.ADQL);
-      param.setValue("15");
+//      param.setValue(getSampleQuery());
+      param.setValue(QUERY_LOC);
       inputs.addParameter(param);
       
       param = new ParameterValue();
@@ -55,15 +114,34 @@ public class CeaTest  {
       param = new ParameterValue();
       param.setName("Target");
       param.setType(ParameterTypes.STRING);
-      param.setValue("astrogrid:store:myspace:http://Hello World");
+      param.setValue(RESULTS_LOC);
       outputs.addParameter(param);
       
       tool.setInput(inputs);
       tool.setOutput(outputs);
       
-      //make up call
+      //set up delegate
+      CommonExecutionConnectorClient delegate = DelegateFactory.createDelegate(STD_PAL);
+      
+      //do call
+      JobIdentifierType jobId = new JobIdentifierType("CeaTest");
+      delegate.execute(tool, jobId, "");
       
       //check results
+      VoSpaceClient vospace = new VoSpaceClient(User.ANONYMOUS);
+      StoreFile resultsFile = vospace.getFile(new Ivorn(RESULTS_LOC));
+      
+      assertNotNull(resultsFile);
+      
+      
+   }
+   
+   public String getSampleQuery() throws IOException {
+            InputStream is = this.getClass().getResourceAsStream("SimpleStarQuery-adql-0.5.xml");
+            assertNotNull(is);
+            StringWriter out = new StringWriter();
+            Piper.pipe(new InputStreamReader(is),out);
+            return out.toString();
    }
    
     /**
@@ -89,6 +167,9 @@ public class CeaTest  {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.2  2004/05/12 09:17:51  mch
+Various fixes - forgotten whatfors...
+
 Revision 1.1  2004/04/16 15:17:14  mch
 Copied in from integration tests
 

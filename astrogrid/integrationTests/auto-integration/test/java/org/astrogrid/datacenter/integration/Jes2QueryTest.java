@@ -1,4 +1,4 @@
-/*$Id: Jes2QueryTest.java,v 1.2 2004/04/16 15:55:08 mch Exp $
+/*$Id: Jes2QueryTest.java,v 1.3 2004/05/12 09:17:51 mch Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -179,12 +179,18 @@ public class Jes2QueryTest extends TestCase {
         return new TestSuite(Jes2QueryTest.class);
     }
 
+   public static void main(String[] args) {
+      junit.textui.TestRunner.run(suite());
+   }
     
 }
 
 
 /*
 $Log: Jes2QueryTest.java,v $
+Revision 1.3  2004/05/12 09:17:51  mch
+Various fixes - forgotten whatfors...
+
 Revision 1.2  2004/04/16 15:55:08  mch
 added alltests
 

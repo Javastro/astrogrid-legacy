@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.2 2004/04/16 15:55:08 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.3 2004/05/12 09:17:51 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,14 +37,15 @@ public class Query2MySpaceTest extends TestCase {
    private static final Log log = LogFactory.getLog(Query2MySpaceTest.class);
    
    protected QuerySearcher delegate;
-   protected URL myspaceEndpoint;
+   protected final static String MYSPACE = "myspace:http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+   protected final static String DSA = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+
    private static final String resultsPath = "avodemo/autoIntegrationTest.results";
 
    protected void setUp() throws Exception {
-      String datacenterEndpoint = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
       delegate = DatacenterDelegateFactory.makeQuerySearcher(
          Account.ANONYMOUS,
-         datacenterEndpoint,
+         DSA,
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE
       );
       assertNotNull("delegate was null",delegate);
@@ -55,7 +56,7 @@ public class Query2MySpaceTest extends TestCase {
     */
    public void testSubmit() throws Exception {
       
-      Agsl resultsTarget = new Agsl(myspaceEndpoint.toString(), resultsPath);
+      Agsl resultsTarget = new Agsl(MYSPACE, resultsPath);
       
       String queryId = delegate.submitQuery(
          new ConeQuery(30,30,6),
@@ -79,9 +80,6 @@ public class Query2MySpaceTest extends TestCase {
       
    }
    
-   public Query2MySpaceTest(String arg0) {
-      super(arg0);
-   }
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
@@ -101,6 +99,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.3  2004/05/12 09:17:51  mch
+Various fixes - forgotten whatfors...
+
 Revision 1.2  2004/04/16 15:55:08  mch
 added alltests
 

@@ -1,4 +1,4 @@
-/*$Id: ConeTest.java,v 1.3 2004/04/16 15:55:08 mch Exp $
+/*$Id: ConeTest.java,v 1.4 2004/05/12 09:17:51 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,9 +30,9 @@ public class ConeTest extends TestCase {
    private static final Log log = LogFactory.getLog(ConeTest.class);
 
    /**
-    * Run some cone searches on std PAL
+    * Run some cone searches on std PAL it04
     */
-   public void testStdConeSearch() throws IOException {
+   public void testStdConeSearch04() throws IOException {
       
       String endpoint = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
       ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
@@ -49,6 +49,25 @@ public class ConeTest extends TestCase {
    
    }
    
+   /**
+    * Run some cone searches on std PAL it05
+    */
+   public void testStdConeSearch05() throws IOException {
+      
+      String endpoint = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
+      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      assertNotNull("delegate was null",delegate);
+
+      InputStream is = delegate.coneSearch(10,10,2);
+      assertNotNull(is);
+      //should be empty votable
+      
+      is = delegate.coneSearch(30,30,6);
+      assertNotNull(is);
+      //should be some results
+      
+   
+   }
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
@@ -68,6 +87,9 @@ public class ConeTest extends TestCase {
 
 /*
 $Log: ConeTest.java,v $
+Revision 1.4  2004/05/12 09:17:51  mch
+Various fixes - forgotten whatfors...
+
 Revision 1.3  2004/04/16 15:55:08  mch
 added alltests
 

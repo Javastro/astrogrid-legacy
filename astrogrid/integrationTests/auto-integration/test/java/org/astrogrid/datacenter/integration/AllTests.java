@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.4 2004/04/26 12:16:42 nw Exp $
+/* $Id: AllTests.java,v 1.5 2004/05/12 09:17:51 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -6,6 +6,7 @@
  */
 package org.astrogrid.datacenter.integration;
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 /**
  * To change the template for this generated type comment go to
@@ -13,7 +14,7 @@ import junit.framework.TestSuite;
  *
  * @author jdt
  */
-public class AllTests {
+public class AllTests  {
     public static void main(String[] args) {
         junit.textui.TestRunner.run(AllTests.class);
     }
@@ -31,6 +32,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.5  2004/05/12 09:17:51  mch
+ *  Various fixes - forgotten whatfors...
+ *
  *  Revision 1.4  2004/04/26 12:16:42  nw
  *  *** empty log message ***
  *
