@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.6 2004/01/23 19:20:22 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.7 2004/01/26 12:51:17 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -53,6 +53,10 @@ public final static String ApplicationConfigKey="ApplicationConfigFile";
  */
 public final static String WorkingDirectory = "WorkingDirectory";
 
+//FIXME - The myspacemanager reference should be got from the registry....
 public final static String MySpaceManagerKey="MySpaceManager";
-public final static String SMTPServerKey="SMTPServer";
+/**
+ * The name of the session variable for the 
+ */
+public final static String SMTPServerKey="mail/AGMailSession";
 }

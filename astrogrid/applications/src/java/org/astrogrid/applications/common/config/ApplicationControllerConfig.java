@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.10 2004/01/23 19:20:22 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.11 2004/01/26 12:51:17 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,10 @@ package org.astrogrid.applications.common.config;
 import java.io.File;
 import java.io.IOException;
 
+import javax.mail.Session;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.astrogrid.applications.common.ApplicationsConstants;
@@ -113,9 +117,19 @@ public class ApplicationControllerConfig {
    }
    
    
-   public String getSMTPServerName()
+   public Session mailSessionInstance()
    {
-      return config.getProperty(ApplicationsConstants.SMTPServerKey);
+      Session session = null;
+      try {
+         Context initCtxt = new InitialContext();
+         Context envCtxt = (Context)initCtxt.lookup("java:comp/env");
+         session = (Session)envCtxt.lookup(ApplicationsConstants.SMTPServerKey);
+      }
+      catch (NamingException e) {
+         logger.error("cannot get the mail server session", e);
+      }
+      
+      return session;
    }
    public String toHTMLReport()
    {
@@ -148,7 +162,7 @@ public class ApplicationControllerConfig {
       rep.append("</li>");
       
       rep.append("<li>");
-      rep.append("SMTP Host name: ");
+      rep.append(" Mail Session key: ");
       rep.append(config.getProperty(ApplicationsConstants.SMTPServerKey));
       rep.append("</li>");
       
