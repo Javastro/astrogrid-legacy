@@ -136,7 +136,7 @@
 						update = false;
 						while (iter2.hasNext() && !update) {
 							key = (String)iter2.next();
-							if(xml.indexOf(key) != -1) {
+							if(xml.indexOf("<AuthorityID>" + key) != -1) {
 								update = true;
 							}
 						}
