@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!--+
-    | $Id: failed.xml,v 1.2 2004/03/24 18:31:33 jdt Exp $
+    | $Id: failed.xml,v 1.3 2004/04/21 14:42:27 jdt Exp $
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xml/failed.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/24 18:31:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/21 14:42:27 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     +-->
 <page>
-<title>
+<agComponentTitle>
 	Message not sent.
-</title>
+</agComponentTitle>
 <content>
     Unfortunately there has been a problem sending your message.  Please try again later.
 </content>
@@ -17,6 +17,9 @@
 <!--+
     | <cvs:log>
     |   $Log: failed.xml,v $
+    |   Revision 1.3  2004/04/21 14:42:27  jdt
+    |   changed title ->agComponentTitle
+    |
     |   Revision 1.2  2004/03/24 18:31:33  jdt
     |   Merge from PLGN_JDT_bz#201
     |

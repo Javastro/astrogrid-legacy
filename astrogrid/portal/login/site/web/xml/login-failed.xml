@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:id>$Id: login-failed.xml,v 1.4 2004/03/19 13:09:03 jdt Exp $</cvs:id>
+    | <cvs:id>$Id: login-failed.xml,v 1.5 2004/04/21 14:42:27 jdt Exp $</cvs:id>
     | <cvs:author>$Author: jdt $</cvs:author>
     |
     +-->
 <page>
-<title>
+<agComponentTitle>
 		Log On failed.
-</title>
+</agComponentTitle>
 <content>
     Log on has failed.  Please check your username and password and <a href="login-form">try again</a>.
 </content>
@@ -15,6 +15,9 @@
 <!--+
     | <cvs:log>
     |   $Log: login-failed.xml,v $
+    |   Revision 1.5  2004/04/21 14:42:27  jdt
+    |   changed title ->agComponentTitle
+    |
     |   Revision 1.4  2004/03/19 13:09:03  jdt
     |   references to login-jdt -> login-form
     |   ie, new page is now live.

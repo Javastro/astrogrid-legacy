@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!--+
-    | $Id: registered.xml,v 1.3 2004/03/19 13:02:25 jdt Exp $
+    | $Id: registered.xml,v 1.4 2004/04/21 14:42:27 jdt Exp $
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xml/registered.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 13:02:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/21 14:42:27 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     +-->
 <page>
-<title>
+<agComponentTitle>
 	Registration completed.
-</title>
+</agComponentTitle>
 <content>
     Thankyou for registering with Astrogrid.  A message has been sent to the administrator who will contact you in due course.
 </content>
@@ -17,6 +17,9 @@
 <!--+
     | <cvs:log>
     |   $Log: registered.xml,v $
+    |   Revision 1.4  2004/04/21 14:42:27  jdt
+    |   changed title ->agComponentTitle
+    |
     |   Revision 1.3  2004/03/19 13:02:25  jdt
     |   Pruned the log messages - they cause conflicts on merge, 
     |   best just to reduce them to the merge message.

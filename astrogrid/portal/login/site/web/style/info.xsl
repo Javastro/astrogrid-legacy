@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: info.xsl,v 1.4 2004/03/30 13:46:05 jdt Exp $
+    |  $Id: info.xsl,v 1.5 2004/04/21 14:42:27 jdt Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -11,11 +11,7 @@
 		<xsl:apply-templates/>
 	</div>
   </xsl:template>
-    <xsl:template match="title">
-      <div style="color: lightblue; background-color: blue">
-  				<xsl:apply-templates/>
-      </div>
-  </xsl:template>
+
     <xsl:template match="content">
   		<div>
   		    <xsl:apply-templates/>
@@ -34,6 +30,9 @@
 		
 <!--+
     | $Log: info.xsl,v $
+    | Revision 1.5  2004/04/21 14:42:27  jdt
+    | changed title ->agComponentTitle
+    |
     | Revision 1.4  2004/03/30 13:46:05  jdt
     | Merge from PLGN_JDT_bz#275
     |

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--+
-    |  $Id: logon.xsl,v 1.6 2004/04/21 11:22:02 pfo Exp $
+    |  $Id: logon.xsl,v 1.7 2004/04/21 14:42:27 jdt Exp $
     |  Transforms pages which simply display a message
     |
     +-->
@@ -12,11 +12,7 @@
       <xsl:apply-templates/>
     </div>
   </xsl:template>
-  <xsl:template match="title">
-    <div style="color: lightblue; background-color: blue">
-  	  <xsl:apply-templates/>
-    </div>
-  </xsl:template>
+
   <xsl:template match="content">
     <div>
   	  <xsl:apply-templates/>
@@ -70,6 +66,9 @@
 		
 <!--+
     | $Log: logon.xsl,v $
+    | Revision 1.7  2004/04/21 14:42:27  jdt
+    | changed title ->agComponentTitle
+    |
     | Revision 1.6  2004/04/21 11:22:02  pfo
     | pfo: putting the labels closer to the input areas
     |
