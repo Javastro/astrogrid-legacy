@@ -197,18 +197,18 @@ public class MySpaceActions
 //                        report an error.
 
                            reg.deleteDataItemRecord(newdataItemID);
-                           status.addCode("MS-E-FLCRTDH",
+                           status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,
                              MySpaceStatusCode.ERROR);
                         }
                      }
                      else
-                     {  status.addCode("MS-E-FCRTDHR",
+                     {  status.addCode(MySpaceStatusCode.MS_E_FCRTDHR,
                           MySpaceStatusCode.ERROR);
                      }
                   }
                }
                else
-               {  status.addCode("MS-E-CPYDHCN",
+               {  status.addCode(MySpaceStatusCode.MS_E_CPYDHCN,
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -320,13 +320,13 @@ public class MySpaceActions
                         returnedDataItem = newDataItem;
                      }
                      else
-                     {  status.addCode("MS-E-FLMOVDH",
+                     {  status.addCode(MySpaceStatusCode.MS_E_FLMOVDH,
                           MySpaceStatusCode.ERROR);
                      }
                   }
                }
                else
-               {  status.addCode("MS-E-MOVDHCN",
+               {  status.addCode(MySpaceStatusCode.MS_E_MOVDHCN,
                      MySpaceStatusCode.ERROR);
                }
             }
@@ -410,7 +410,7 @@ public class MySpaceActions
                {  newDataHolder = newDataItem;
                }
                else
-               {  status.addCode("MS-E-FCRTDHR",
+               {  status.addCode(MySpaceStatusCode.MS_E_FCRTDHR,
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -513,17 +513,17 @@ public class MySpaceActions
                        serverURI + dataItem.getDataItemFile();
                   }
                   else
-                  {  status.addCode("MS-E-FACCSDH",
+                  {  status.addCode(MySpaceStatusCode.MS_E_FACCSDH,
                        MySpaceStatusCode.ERROR);
                   }
                }
                else
-               {  status.addCode("MS-E-FNTCNDH",
+               {  status.addCode(MySpaceStatusCode.MS_E_FNTCNDH,
                     MySpaceStatusCode.ERROR);
                }
             }
             else
-            {  status.addCode("MS-E-DHNTFND",
+            {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
                  MySpaceStatusCode.ERROR);
             }
          }
@@ -602,7 +602,7 @@ public class MySpaceActions
                {  newContainer = newDataItem;
                }
                else
-               {  status.addCode("MS-E-FLCRTCN",
+               {  status.addCode(MySpaceStatusCode.MS_E_FLCRTCN,
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -675,7 +675,7 @@ public class MySpaceActions
                   if (childrenDataItemVector != null)
                   {  proceedToDelete = false;
 
-                     status.addCode("MS-E-DNEMPCN",
+                     status.addCode(MySpaceStatusCode.MS_E_DNEMPCN,
                        MySpaceStatusCode.ERROR);
                   }
                }
@@ -742,18 +742,18 @@ public class MySpaceActions
                        returnStatus = true;
                      }
                      else
-                     {  status.addCode("MS-E-FLDELDH",
+                     {  status.addCode(MySpaceStatusCode.MS_E_FLDELDH,
                           MySpaceStatusCode.ERROR);
                      }
                   }
                   else
-                  {  status.addCode("MS-E-NTPERDH",
+                  {  status.addCode(MySpaceStatusCode.MS_E_NTPERDH,
                        MySpaceStatusCode.ERROR);
                   }
                }
             }
             else
-            {  status.addCode("MS-E-DHNTFND",
+            {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
                  MySpaceStatusCode.ERROR);
             }
          }
@@ -847,12 +847,12 @@ public class MySpaceActions
                dataItem = dataItemFound;
             }
             else
-            {  status.addCode("MS-E-DHNTFND",
+            {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
                MySpaceStatusCode.ERROR);
             }
          }
          else
-         {  status.addCode("MS-E-DHNTFND",
+         {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
               MySpaceStatusCode.ERROR);
          }
       }
@@ -948,7 +948,7 @@ public class MySpaceActions
 //            privilege to access it.  If not remove it from the list.
 
                for (int loop = 0; loop < dataItemFoundVector.size();
-                                                                   loop++)
+                 loop++)
                {  DataItemRecord currentItem = 
                     (DataItemRecord)dataItemFoundVector.get(loop);
 
@@ -972,12 +972,12 @@ public class MySpaceActions
                {  dataItemVector = dataItemFoundVector;
                }
                else
-               {  status.addCode("MS-I-NDHMTCH",
+               {  status.addCode(MySpaceStatusCode.MS_I_NDHMTCH,
                     MySpaceStatusCode.INFO);
                }
             }
             else
-            {  status.addCode("MS-I-NDHMTCH",
+            {  status.addCode(MySpaceStatusCode.MS_I_NDHMTCH,
                     MySpaceStatusCode.INFO);
             }
          }
@@ -1080,27 +1080,28 @@ public class MySpaceActions
                   {  canBeCreated = true;
                   }
                   else
-                  {  status.addCode("MS-E-NPRWPCN",
+                  {  status.addCode(MySpaceStatusCode.MS_E_NPRWPCN,
                         MySpaceStatusCode.ERROR);
                   }
                }
                else
-               {  status.addCode("MS-E-PCNNTEX",
+               {  status.addCode(MySpaceStatusCode.MS_E_PCNNTEX,
                     MySpaceStatusCode.ERROR);
                }
             }
             else
-            {  status.addCode("MS-E-SRVINVN",
+            {  status.addCode(MySpaceStatusCode.MS_E_SRVINVN,
                  MySpaceStatusCode.ERROR);
             }
          }
          else
-         {  status.addCode("MS-E-ILLSRCN",
+         {  status.addCode(MySpaceStatusCode.MS_E_ILLSRCN,
               MySpaceStatusCode.ERROR);
          }
       }
       else
-      {  status.addCode("MS-E-DHCNAEX", MySpaceStatusCode.ERROR);
+      {  status.addCode(MySpaceStatusCode.MS_E_DHCNAEX,
+           MySpaceStatusCode.ERROR);
       }
 
       return canBeCreated;

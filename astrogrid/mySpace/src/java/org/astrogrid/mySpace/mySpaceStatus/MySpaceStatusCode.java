@@ -18,10 +18,10 @@ package org.astrogrid.mySpace.mySpaceStatus;
  * event to which the code refers, coded as follows:
  * </p>
  * <ul>
- *   <li><code>MySpaceMessage.INFO</code> - information (that is,
+ *   <li><code>MySpaceStatusCode.INFO</code> - information (that is,
 *     nothing is amiss),</li>
- *   <li><code>MySpaceMessage.WARN</code> - warning,</li>
- *   <li><code>MySpaceMessage.ERROR</code> - error.</li>
+ *   <li><code>MySpaceStatusCode.WARN</code> - warning,</li>
+ *   <li><code>MySpaceStatusCode.ERROR</code> - error.</li>
  * </ul>
  * <p>
  * The class has a single constructor to which the code and type are
@@ -42,48 +42,60 @@ public class MySpaceStatusCode
    public static final int INFO  = 1;  // Information (ie. nothing amiss).
    public static final int WARN  = 2;  // Warning.
    public static final int ERROR = 3;  // Error.
-   public static final String MS_E_REGDWRT = "MS_E_REGDWRT"; //"Failed to write registry data file."
-   public static final String MS_E_REGDCRT="MS_E_REGDCRT"; //"Registry data file is corrupt."
-   public static final String MS_E_REGDRED="MS_E_REGDRED"; //"Failed to read registry data file."
-   public static final String MS_E_DHNTFND="MS_E_DHNTFND"; //"Requested Data Holder not found."
-   public static final String MS_I_NDHMTCH="MS_I_NDHMTCH"; //"No Data Holders matched query string."
-   public static final String MS_E_FLCRTDH="MS_E_FLCRTDH"; //"Failed to create Data Holder."
-   public static final String MS_E_FCRTDHR="MS_E_FCRTDHR"; //"Failed to create Data Holder (registry update failure)."
-   public static final String MS_E_CPYDHCN="MS_E_CPYDHCN"; //"Attempt to copy a container instead of a Data Holder."
-   public static final String MS_E_FLMOVDH="MS_E_FLMOVDH"; //"Failed to move Data Holder."
-   public static final String MS_E_MOVDHCN="MS_E_MOVDHCN"; //"Attempt to move a container instead of a Data Holder."
-   public static final String MS_E_FACCSDH="MS_E_FACCSDH"; //"Cannot access Data Holder."
-   public static final String MS_E_FNTCNDH="MS_E_FNTCNDH"; //"Item is neither a container nor a Data Holder."
-   public static final String MS_E_FLCRTCN="MS_E_FLCRTCN"; //"Failed to create container."
-   public static final String MS_E_DNEMPCN="MS_E_DNEMPCN"; //"Attempt to delete a container which is not empty."
-   public static final String MS_E_FLDELDH="MS_E_FLDELDH"; //"Failed to delete Data Holder."
-   public static final String MS_E_NTPERDH="MS_E_NTPERDH"; //"User not permitted to delete this Data Holder or container."
-   public static final String MS_E_NPRWPCN="MS_E_NPRWPCN"; //"User not permitted to write to parent container."
-   public static final String MS_E_PCNNTEX="MS_E_PCNNTEX"; //"The parent container does not exist."
-   public static final String MS_E_DHCNAEX="MS_E_DHCNAEX"; //"Data Holder or container already exists."
-   public static final String NULL_FILE_DELETE="NULL_FILE_DELETE"; //There is no file to delete, check your file path and try again.otherwise this fuction is failed!
-   public static final String NULL_FILE_SAVE="NULL_FILE_SAVE"; //There is no file to save, check file path and try again.
-   public static final String ERROR_READING_FILE="ERROR_READING_FILE"; //Error Reading from file.
-   public static final String PARSE_REQUEST_ERROR="PARSE_REQUEST_ERROR"; //Error parsing xmlRequest in MySpaceUtils.parseRequest.
-   public static final String NUMBER_FORMAT_ERROR="NUMBER_FORMAT_ERROR"; //Error Casting from String to int.
-   public static final String ERROR_CALL_SERVER_MANAGER="ERROR_CALL_SERVER_MANAGER"; //Error Calling MySpace ServerManager.
-   public static final String NULL_POINTER_GETTING_REQUEST="NULL_POINTER_GETTING_REQUEST"; //Null pointer getting one or more of the attributes from request string in MySpace.
-   public static final String ERR_SAVE_DATAHOLDER="ERR_SAVE_DATAHOLDER"; //Error Saving DataHolder.
-   public static final String ERR_MOVE_DATA_HOLDER="ERR_MOVE_DATA_HOLDER"; //Error Moving DataHolder.
-   public static final String DATA_HOLDER_MOVED="DATA_HOLDER_MOVED"; //Data Holder Has Been Moved.
-   public static final String ERR_COPY_DATA_HOLDER="ERR_COPY_DATA_HOLDER"; //Error Copying DataHolder.
-   public static final String DATA_HOLDER_COPIED="DATA_HOLDER_COPIED"; //Data Holder Has Been Copied.
-   public static final String ERR_SECURITY_DELETE_DATA_HOLDER="ERR_SECURITY_DELETE_DATA_HOLDER"; //Can't delete the data holder because of security issues.
-   public static final String ERR_DELETE_DATA_HOLDER="ERR_DELETE_DATA_HOLDER"; //Unkown Error occourd whild deleting data holder.
-   public static final String FILE_NOT_EXIST="FILE_NOT_EXIST";//File not exist!
-   public static final String ERR_IO_BUILD_RESPONS="ERR_IO_BUILD_RESPONS"; //There is an io exception whild building response xml.
-   public static final String MS_E_UPLOAD="MS_E_UPLOAD"; //Error Uploading file from datacentre.
-   public static final String MS_E_LOOKUP_DATAHOLDERS="MS_E_LOOKUP_DATAHOLDERS"; //Error look up dataholderS details.
-   public static final String MS_E_LOOKUP_DATAHOLDER="MS_E_LOOKUP_DATAHOLDER"; //Error look up dataholder details.
-   public static final String MS_E_EXPORT="MS_E_EXPORT"; //Error Exporting Data Holder.
 
-   private String code;    // Code.
-   private int    type;    // Code type code: INFO, WARN or ERROR.
+   public static final int REGISTRYCONF = 0;
+   public static final int TEMPPATHTO = 1;
+   public static final int MYSPACEMANAGER = 2;
+   public static final int SERVERMANAGER = 3;
+   public static final int MS_E_REGDWRT = 4;
+   public static final int MS_E_REGDCRT = 5;
+   public static final int MS_E_REGDRED = 6;
+   public static final int MS_E_DHNTFND = 7;
+   public static final int MS_I_NDHMTCH = 8;
+   public static final int MS_E_FLCRTDH = 9;
+   public static final int MS_E_FCRTDHR = 10;
+   public static final int MS_E_CPYDHCN = 11;
+   public static final int MS_E_FLMOVDH = 12;
+   public static final int MS_E_MOVDHCN = 13;
+   public static final int MS_E_FACCSDH = 14;
+   public static final int MS_E_FNTCNDH = 15;
+   public static final int MS_E_FLCRTCN = 16;
+   public static final int MS_E_DNEMPCN = 17;
+   public static final int MS_E_FLDELDH = 18;
+   public static final int MS_E_NTPERDH = 19;
+   public static final int MS_E_NPRWPCN = 20;
+   public static final int MS_E_PCNNTEX = 21;
+   public static final int MS_E_DHCNAEX = 22;
+   public static final int MS_E_SRVINVN = 23;
+   public static final int MS_E_ILLSRCN = 24;
+   public static final int MS_W_RGCEXPM = 25;
+   public static final int MS_E_RGCSRVM = 26;
+   public static final int MS_W_RGCSRVI = 27;
+   public static final int MS_E_REGDCPT = 28;
+   public static final int NULL_FILE_DELETE = 29;
+   public static final int NULL_FILE_SAVE = 30;
+   public static final int ERROR_READING_FILE = 31;
+   public static final int PARSE_REQUEST_ERROR = 32;
+   public static final int NUMBER_FORMAT_ERROR = 33;
+   public static final int ERROR_CALL_SERVER_MANAGER = 34;
+   public static final int NULL_POINTER_GETTING_REQUEST = 35;
+   public static final int ERR_SAVE_DATAHOLDER = 36;
+   public static final int ERR_MOVE_DATA_HOLDER = 37;
+   public static final int DATA_HOLDER_MOVED = 38;
+   public static final int ERR_COPY_DATA_HOLDER = 39;
+   public static final int DATA_HOLDER_COPIED = 40;
+   public static final int ERR_SECURITY_DELETE_DATA_HOLDER = 41;
+   public static final int ERR_DELETE_DATA_HOLDER = 42;
+   public static final int FILE_NOT_EXIST = 43;
+   public static final int ERR_IO_BUILD_RESPONS = 44;
+   public static final int MS_E_UPLOAD = 45;
+   public static final int MS_E_LOOKUP_DATAHOLDERS = 46;
+   public static final int MS_E_LOOKUP_DATAHOLDER = 47;
+   public static final int MS_E_EXPORT = 48;
+
+
+   private int code;    // Code.
+   private int type;    // Code type code: INFO, WARN or ERROR.
 
 //
 // Constructor.
@@ -92,7 +104,7 @@ public class MySpaceStatusCode
  * Create a <code>MySpaceStatusCode</code>, setting the code and type.
  */
 
-   public MySpaceStatusCode (String code,  int type)
+   public MySpaceStatusCode (int code,  int type)
    {  this.code = code;
       this.type = type;
    }
@@ -107,11 +119,330 @@ public class MySpaceStatusCode
  */
 
    public String getCode()
+   {  String codeString = null;
+
+      if (code == MySpaceStatusCode.REGISTRYCONF)
+      {  codeString = "REGISTRYCONF";
+      }
+      else if (code == MySpaceStatusCode.TEMPPATHTO)
+      {  codeString = "TEMPPATHTO";
+      }
+      else if (code == MySpaceStatusCode.MYSPACEMANAGER)
+      {  codeString = "MYSPACEMANAGER";
+      }
+      else if (code == MySpaceStatusCode.SERVERMANAGER)
+      {  codeString = "SERVERMANAGER";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDWRT)
+      {  codeString = "MS_E_REGDWRT";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDCRT)
+      {  codeString = "MS_E_REGDCRT";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDRED)
+      {  codeString = "MS_E_REGDRED";
+      }
+      else if (code == MySpaceStatusCode.MS_E_DHNTFND)
+      {  codeString = "MS_E_DHNTFND";
+      }
+      else if (code == MySpaceStatusCode.MS_I_NDHMTCH)
+      {  codeString = "MS_I_NDHMTCH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLCRTDH)
+      {  codeString = "MS_E_FLCRTDH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FCRTDHR)
+      {  codeString = "MS_E_FCRTDHR";
+      }
+      else if (code == MySpaceStatusCode.MS_E_CPYDHCN)
+      {  codeString = "MS_E_CPYDHCN";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLMOVDH)
+      {  codeString = "MS_E_FLMOVDH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_MOVDHCN)
+      {  codeString = "MS_E_MOVDHCN";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FACCSDH)
+      {  codeString = "MS_E_FACCSDH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FNTCNDH)
+      {  codeString = "MS_E_FNTCNDH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLCRTCN)
+      {  codeString = "MS_E_FLCRTCN";
+      }
+      else if (code == MySpaceStatusCode.MS_E_DNEMPCN)
+      {  codeString = "MS_E_DNEMPCN";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLDELDH)
+      {  codeString = "MS_E_FLDELDH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_NTPERDH)
+      {  codeString = "MS_E_NTPERDH";
+      }
+      else if (code == MySpaceStatusCode.MS_E_NPRWPCN)
+      {  codeString = "MS_E_NPRWPCN";
+      }
+      else if (code == MySpaceStatusCode.MS_E_PCNNTEX)
+      {  codeString = "MS_E_PCNNTEX";
+      }
+      else if (code == MySpaceStatusCode.MS_E_DHCNAEX)
+      {  codeString = "MS_E_DHCNAEX";
+      }
+      else if (code == MySpaceStatusCode.MS_E_SRVINVN)
+      {  codeString = "MS_E_SRVINVN";
+      }
+      else if (code == MySpaceStatusCode.MS_E_ILLSRCN)
+      {  codeString = "MS_E_ILLSRCN";
+      }
+      else if (code == MySpaceStatusCode.MS_W_RGCEXPM)
+      {  codeString = "MS_W_RGCEXPM";
+      }
+      else if (code == MySpaceStatusCode.MS_E_RGCSRVM)
+      {  codeString = "MS_E_RGCSRVM";
+      }
+      else if (code == MySpaceStatusCode.MS_W_RGCSRVI)
+      {  codeString = "MS_W_RGCSRVI";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDCPT)
+      {  codeString = "MS_E_REGDCPT";
+      }
+      else if (code == MySpaceStatusCode.NULL_FILE_DELETE)
+      {  codeString = "NULL_FILE_DELETE";
+      }
+      else if (code == MySpaceStatusCode.NULL_FILE_SAVE)
+      {  codeString = "NULL_FILE_SAVE";
+      }
+      else if (code == MySpaceStatusCode.ERROR_READING_FILE)
+      {  codeString = "ERROR_READING_FILE";
+      }
+      else if (code == MySpaceStatusCode.PARSE_REQUEST_ERROR)
+      {  codeString = "PARSE_REQUEST_ERROR";
+      }
+      else if (code == MySpaceStatusCode.NUMBER_FORMAT_ERROR)
+      {  codeString = "NUMBER_FORMAT_ERROR";
+      }
+      else if (code == MySpaceStatusCode.ERROR_CALL_SERVER_MANAGER)
+      {  codeString = "ERROR_CALL_SERVER_MANAGER";
+      }
+      else if (code == MySpaceStatusCode.NULL_POINTER_GETTING_REQUEST)
+      {  codeString = "NULL_POINTER_GETTING_REQUEST";
+      }
+      else if (code == MySpaceStatusCode.ERR_SAVE_DATAHOLDER)
+      {  codeString = "ERR_SAVE_DATAHOLDER";
+      }
+      else if (code == MySpaceStatusCode.ERR_MOVE_DATA_HOLDER)
+      {  codeString = "ERR_MOVE_DATA_HOLDER";
+      }
+      else if (code == MySpaceStatusCode.DATA_HOLDER_MOVED)
+      {  codeString = "DATA_HOLDER_MOVED";
+      }
+      else if (code == MySpaceStatusCode.ERR_COPY_DATA_HOLDER)
+      {  codeString = "ERR_COPY_DATA_HOLDER";
+      }
+      else if (code == MySpaceStatusCode.DATA_HOLDER_COPIED)
+      {  codeString = "DATA_HOLDER_COPIED";
+      }
+      else if (code == MySpaceStatusCode.ERR_SECURITY_DELETE_DATA_HOLDER)
+      {  codeString = "ERR_SECURITY_DELETE_DATA_HOLDER";
+      }
+      else if (code == MySpaceStatusCode.ERR_DELETE_DATA_HOLDER)
+      {  codeString = "ERR_DELETE_DATA_HOLDER";
+      }
+      else if (code == MySpaceStatusCode.FILE_NOT_EXIST)
+      {  codeString = "FILE_NOT_EXIST";
+      }
+      else if (code == MySpaceStatusCode.ERR_IO_BUILD_RESPONS)
+      {  codeString = "ERR_IO_BUILD_RESPONS";
+      }
+      else if (code == MySpaceStatusCode.MS_E_UPLOAD)
+      {  codeString = "MS_E_UPLOAD";
+      }
+      else if (code == MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDERS)
+      {  codeString = "MS_E_LOOKUP_DATAHOLDERS";
+      }
+      else if (code == MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDER)
+      {  codeString = "MS_E_LOOKUP_DATAHOLDER";
+      }
+      else if (code == MySpaceStatusCode.MS_E_EXPORT)
+      {  codeString = "MS_E_EXPORT";
+      }
+
+
+      return codeString;
+   }
+
+/**
+ * Return the integer code value associated with the
+ * <code>MySpaceStatusCode</code>.
+ */
+
+   public int getCodeValue()
    {  return code;
    }
 
 /**
- * Return the type associated with the <code>MySpaceMessage</code>.
+ * Return the message associated with the <code>MySpaceStatusCode</code>.
+ */
+
+   public String getCodeMessage()
+   {  String message = null;
+
+      if (code == MySpaceStatusCode.REGISTRYCONF)
+      {  message = "usr/local/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace/exampl";
+      }
+      else if (code == MySpaceStatusCode.TEMPPATHTO)
+      {  message = "tmp/mySpaceTest";
+      }
+      else if (code == MySpaceStatusCode.MYSPACEMANAGER)
+      {  message = "ttp://localhost:8080/axis/services/MySpaceManage";
+      }
+      else if (code == MySpaceStatusCode.SERVERMANAGER)
+      {  message = "ttp://localhost:8080/axis/services/ServerManage";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDWRT)
+      {  message = "Failed to write registry data file.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDCRT)
+      {  message = "Registry data file is corrupt.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDRED)
+      {  message = "Failed to read registry data file.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_DHNTFND)
+      {  message = "Requested Data Holder not found.";
+      }
+      else if (code == MySpaceStatusCode.MS_I_NDHMTCH)
+      {  message = "No Data Holders matched query string.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLCRTDH)
+      {  message = "Failed to create Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FCRTDHR)
+      {  message = "Failed to create Data Holder (registry update failure).";
+      }
+      else if (code == MySpaceStatusCode.MS_E_CPYDHCN)
+      {  message = "Attempt to copy a container instead of a Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLMOVDH)
+      {  message = "Failed to move Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_MOVDHCN)
+      {  message = "Attempt to move a container instead of a Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FACCSDH)
+      {  message = "Cannot access Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FNTCNDH)
+      {  message = "Item is neither a container nor a Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLCRTCN)
+      {  message = "Failed to create container.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_DNEMPCN)
+      {  message = "Attempt to delete a container which is not empty.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_FLDELDH)
+      {  message = "Failed to delete Data Holder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_NTPERDH)
+      {  message = "User not permitted to delete this Data Holder or container.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_NPRWPCN)
+      {  message = "User not permitted to write to parent container.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_PCNNTEX)
+      {  message = "The parent container does not exist.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_DHCNAEX)
+      {  message = "Data Holder or container already exists.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_SRVINVN)
+      {  message = "Unknown server name.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_ILLSRCN)
+      {  message = "Illegal or unknown server or user container.";
+      }
+      else if (code == MySpaceStatusCode.MS_W_RGCEXPM)
+      {  message = "Registry configuration file contains an illegal expiry period.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_RGCSRVM)
+      {  message = "Registry configuration does not contain at least one server.";
+      }
+      else if (code == MySpaceStatusCode.MS_W_RGCSRVI)
+      {  message = "Registry configuration contains an invalid server entry.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_REGDCPT)
+      {  message = "Registry data file is corrupt (contains an unrecognised object).";
+      }
+      else if (code == MySpaceStatusCode.NULL_FILE_DELETE)
+      {  message = "There is no file to delete; check file path and try again.";
+      }
+      else if (code == MySpaceStatusCode.NULL_FILE_SAVE)
+      {  message = "There is no file to save, check file path and try again.";
+      }
+      else if (code == MySpaceStatusCode.ERROR_READING_FILE)
+      {  message = "Error Reading from file.";
+      }
+      else if (code == MySpaceStatusCode.PARSE_REQUEST_ERROR)
+      {  message = "Error parsing xmlRequest in MySpaceUtils.parseRequest.";
+      }
+      else if (code == MySpaceStatusCode.NUMBER_FORMAT_ERROR)
+      {  message = "Error Casting from String to integer.";
+      }
+      else if (code == MySpaceStatusCode.ERROR_CALL_SERVER_MANAGER)
+      {  message = "Error Calling MySpace ServerManager.";
+      }
+      else if (code == MySpaceStatusCode.NULL_POINTER_GETTING_REQUEST)
+      {  message = "Null pointer getting one or more of the attributes from request string.";
+      }
+      else if (code == MySpaceStatusCode.ERR_SAVE_DATAHOLDER)
+      {  message = "Error Saving DataHolder.";
+      }
+      else if (code == MySpaceStatusCode.ERR_MOVE_DATA_HOLDER)
+      {  message = "Error Moving DataHolder.";
+      }
+      else if (code == MySpaceStatusCode.DATA_HOLDER_MOVED)
+      {  message = "Data Holder Has Been Moved.";
+      }
+      else if (code == MySpaceStatusCode.ERR_COPY_DATA_HOLDER)
+      {  message = "Error Copying DataHolder.";
+      }
+      else if (code == MySpaceStatusCode.DATA_HOLDER_COPIED)
+      {  message = "Data Holder Has Been Copied.";
+      }
+      else if (code == MySpaceStatusCode.ERR_SECURITY_DELETE_DATA_HOLDER)
+      {  message = "Cannot delete the dataHolder because of security issues.";
+      }
+      else if (code == MySpaceStatusCode.ERR_DELETE_DATA_HOLDER)
+      {  message = "Unknown error occurred whilst deleting data holder.";
+      }
+      else if (code == MySpaceStatusCode.FILE_NOT_EXIST)
+      {  message = "File does not exist.";
+      }
+      else if (code == MySpaceStatusCode.ERR_IO_BUILD_RESPONS)
+      {  message = "There has been an I/O exception whilst building the response XML.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_UPLOAD)
+      {  message = "Error Uploading file from datacentre.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDERS)
+      {  message = "Error looking up the details of a set of dataholders.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_LOOKUP_DATAHOLDER)
+      {  message = "Error looking up the details of a dataholder.";
+      }
+      else if (code == MySpaceStatusCode.MS_E_EXPORT)
+      {  message = "Error exporting a dataHolder.";
+      }
+
+
+      return message;
+   }
+
+/**
+ * Return the type associated with the <code>MySpaceStatusCode</code>.
  */
 
    public int getType()
@@ -128,17 +459,20 @@ public class MySpaceStatusCode
    public String toString()
    {  String returnString = "";
 
+      String currentCode = this.getCode();
+      String currentMessage = this.getCodeMessage();
+
       if (type == INFO)
-      {  returnString = "!Info: code = " + code;
+      {  returnString = "!Info:    [" + currentCode + "]: " + currentMessage;
       }
       else if (type == WARN)
-      {  returnString = "!Warning: code = " + code;
+      {  returnString = "!Warning: [" + currentCode + "]: " + currentMessage;
       }
       else if (type == ERROR)
-      {  returnString = "!Error: code = " + code;
+      {  returnString = "!Error:   [" + currentCode + "]: " + currentMessage;
       }
       else
-      {  returnString = "!Unknown: code = " + code;
+      {  returnString = "!Unknown: [" + currentCode + "]: " + currentMessage;
       }
 
       return returnString;

@@ -28,24 +28,28 @@ import java.util.*;
  * <code>MySpaceStatus msStatus = new MySpaceStatus();</code>
  * </p>
  * <p>
- * <code>msStatus.addCode("code", MySpaceMessage.ERROR);</code>
+ * <code>
+ *  msStatus.addCode(MySpaceStatusCode.CODE, MySpaceStatusCode.ERROR);
+ * </code>
  * </p>
  * <p>
  * or more conveniently these details can be passed using a constructor:
  * </p>
  * <p>
- * <code>MySpaceStatus msStatus = new MySpaceStatus("code",
- *    MySpaceMessage.ERROR);</code>
+ * <code>
+ *   MySpaceStatus msStatus = new MySpaceStatus(MySpaceStatusCode.CODE,
+ *    MySpaceStatusCode.ERROR);
+ * </code>
  * </p>
  * <p>
  * In both cases the first argument is the code, and the second is the
  * type of event being described, coded as an <code>int</code> as follows:
  * </p>
  * <ul>
- *   <li><code>MySpaceMessage.INFO</code> - information (that is, nothing
+ *   <li><code>MySpaceStatusCode.INFO</code> - information (that is, nothing
  *     is amiss),</li>
- *   <li><code>MySpaceMessage.WARN</code> - warning,</li>
- *   <li><code>MySpaceMessage.ERROR</code> - error.</li>
+ *   <li><code>MySpaceStatusCode.WARN</code> - warning,</li>
+ *   <li><code>MySpaceStatusCode.ERROR</code> - error.</li>
  * </ul>
  * <p>
  * In addition to setting error and warnings there are also methods to
@@ -94,7 +98,7 @@ public class MySpaceStatus
  * and its associated type (information, warning or error, see above).
  */
 
-   public MySpaceStatus (String code, int type)
+   public MySpaceStatus (int code, int type)
    {  this.addCode(code, type);
    }
 
@@ -128,7 +132,7 @@ public class MySpaceStatus
    }
 
 /**
- * Return a Vector of <code>MySpaceMessage</code>s containing any messages
+ * Return a Vector of <code>MySpaceStatusCode</code>s containing any messages
  * that have been set.
  */
 
@@ -143,7 +147,7 @@ public class MySpaceStatus
  * Accumulate a new code in the <code>MySpaceStatus</code>.
  */
 
-   public void addCode(String code,  int type)
+   public void addCode(int code,  int type)
    {  MySpaceStatusCode newCode = new MySpaceStatusCode(code, type);
 
       codes.add(newCode);
@@ -168,23 +172,24 @@ public class MySpaceStatus
            (MySpaceStatusCode)codes.elementAt(loop);
 
          String code = currentCode.getCode();
+         String message = currentCode.getCodeMessage();
          int type = currentCode.getType();
 
          if (type == MySpaceStatusCode.INFO)
          {  System.out.println(
-              "!(" + loop + ") Info:    code = " + code);
+              "!(" + loop + ") Info:    [" + code + "]: " + message);
          }
          else if (type == MySpaceStatusCode.WARN)
          {  System.out.println(
-              "!(" + loop + ") Warning: code = " + code);
+              "!(" + loop + ") Warning: [" + code + "]: " + message);
          }
          else if (type == MySpaceStatusCode.ERROR)
          {  System.out.println(
-              "!(" + loop + ") Error:   code = " + code);
+              "!(" + loop + ") Error:   [" + code + "]: " + message);
          }
          else
          {  System.out.println(
-              "!(" + loop + ") Unknown: code = " + code);
+              "!(" + loop + ") Unknown: [" + code + "]: " + message);
          }
       }
    }

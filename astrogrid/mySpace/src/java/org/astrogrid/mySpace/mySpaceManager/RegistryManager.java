@@ -186,8 +186,8 @@ public class RegistryManager
          oos.close();
       }
       catch (IOException e)
-      {  MySpaceStatus stat1  = new MySpaceStatus("MS-E-REGDWRT",
-           MySpaceStatusCode.ERROR);
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           MySpaceStatusCode.MS_E_REGDWRT, MySpaceStatusCode.ERROR);
       }
    }
 
@@ -242,7 +242,8 @@ public class RegistryManager
             }
             catch (ClassNotFoundException cnfe)
             {  more = false;
-               MySpaceStatus stat1  = new MySpaceStatus("MS-E-REGDCPT",
+               MySpaceStatus stat1  = new MySpaceStatus(
+                 MySpaceStatusCode.MS_E_REGDCPT,
                  MySpaceStatusCode.ERROR);
             }
          }
@@ -255,8 +256,8 @@ public class RegistryManager
          ois.close();
       }
       catch (IOException e)
-      {  MySpaceStatus stat1  = new MySpaceStatus("MS-E-REGDRED",
-           MySpaceStatusCode.ERROR);
+      {  MySpaceStatus stat1  = new MySpaceStatus(
+           MySpaceStatusCode.MS_E_REGDRED, MySpaceStatusCode.ERROR);
       }
    }
 
@@ -359,14 +360,16 @@ public class RegistryManager
                      }
                      else
                      {  MySpaceStatus status  =
-                          new MySpaceStatus("MS-W-RGCEXPM",
-                          MySpaceStatusCode.WARN);
+                          new MySpaceStatus(
+                            MySpaceStatusCode.MS_W_RGCEXPM,
+                            MySpaceStatusCode.WARN);
                      }
                   }
                   else
                   {  MySpaceStatus status  =
-                       new MySpaceStatus("MS-W-RGCEXPM",
-                       MySpaceStatusCode.WARN);
+                       new MySpaceStatus(
+                         MySpaceStatusCode.MS_W_RGCEXPM,
+                         MySpaceStatusCode.WARN);
                   }
                }
 
@@ -388,8 +391,9 @@ public class RegistryManager
                   }
                   else
                   {  MySpaceStatus status  =
-                       new MySpaceStatus("MS-W-RGCSRVI",
-                       MySpaceStatusCode.WARN);
+                       new MySpaceStatus(
+                         MySpaceStatusCode.MS_W_RGCSRVI,
+                         MySpaceStatusCode.WARN);
                   }
                }
             }
@@ -403,8 +407,8 @@ public class RegistryManager
          {  expiryPeriod = 30;
 
             MySpaceStatus status  =
-              new MySpaceStatus("MS-W-RGCEXPM",
-              MySpaceStatusCode.WARN);
+              new MySpaceStatus(MySpaceStatusCode.MS_W_RGCEXPM,
+                MySpaceStatusCode.WARN);
          }
 
 //
@@ -413,15 +417,15 @@ public class RegistryManager
 
          if (serverNames.size() < 1)
          {  MySpaceStatus status  =
-              new MySpaceStatus("MS-E-RGCSRVM",
-              MySpaceStatusCode.ERROR);
+              new MySpaceStatus(MySpaceStatusCode.MS_E_RGCSRVM,
+                MySpaceStatusCode.ERROR);
          }
 
          in.close();
       }
       catch (java.io.IOException ex)
-      {  MySpaceStatus status = new MySpaceStatus("MS-E-RGCSRVM",
-           MySpaceStatusCode.ERROR);
+      {  MySpaceStatus status = new MySpaceStatus(
+           MySpaceStatusCode.MS_E_RGCSRVM, MySpaceStatusCode.ERROR);
 
 //         System.out.println("Cannot read input file.");
 //         ex.printStackTrace();
@@ -731,4 +735,3 @@ public class RegistryManager
       return returnItemRecords;
    }
 }
-
