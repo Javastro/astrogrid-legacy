@@ -240,12 +240,21 @@ public class AdministrationAction extends AbstractAction
          community = (String)session.getAttribute("community_name");
       }
       
+      if(ACTION_INSERT_PERMISSION.equals(action)) {
+         try {
+          ArrayList al = adminDelegate.getGroupList(community);
+          session.setAttribute(PARAM_GROUP_LIST,al);
+         }catch(Exception e) {
+             errorMessage = e.toString();
+             e.printStackTrace();
+         }         
+      }
       
       if(ACTION_REMOVE_GROUP.equals(action) || ACTION_VIEW_GROUPS.equals(action) ||
          ACTION_REMOVE_MEMBER.equals(action) || ACTION_INSERT_MEMBER.equals(action) ||
-         ACTION_INSERT_PERMISSION.equals(action) || ACTION_REMOVE_PERMISSION.equals(action)) {
+         ACTION_REMOVE_PERMISSION.equals(action)) {
         try {
-         ArrayList al = adminDelegate.getGroupList(community);
+         ArrayList al = adminDelegate.getGroupList(community_name);
          session.setAttribute(PARAM_GROUP_LIST,al);
         }catch(Exception e) {
             errorMessage = e.toString();
@@ -269,14 +278,13 @@ public class AdministrationAction extends AbstractAction
         try {
          ArrayList al = adminDelegate.getResourceList();
          session.setAttribute(PARAM_RESOURCE_LIST,al);
-           
         }catch(Exception e) {
             errorMessage = e.toString();
             e.printStackTrace();
         }
       }
       
-      
+
       if(ACTION_REMOVE_ACCOUNT.equals(action) || ACTION_REMOVE_MEMBER.equals(action) 
          || ACTION_INSERT_MEMBER.equals(action) || ACTION_VIEW_ACCOUNTS.equals(action)) {
               try {

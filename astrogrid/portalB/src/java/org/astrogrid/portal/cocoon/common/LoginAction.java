@@ -9,6 +9,8 @@ import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Context;
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+import org.astrogrid.community.delegate.authentication.AuthenticationDelegate;
+import org.astrogrid.community.service.authentication.data.SecurityToken;
 
 
 import org.astrogrid.community.common.CommunityConfig;
@@ -111,7 +113,7 @@ public class LoginAction extends AbstractAction
       String adminEmail = CommunityConfig.getAdministratorEmail();
       
       String user = request.getParameter("Username");
-      
+      String password = request.getParameter("Password");
       
       
       
@@ -121,17 +123,40 @@ public class LoginAction extends AbstractAction
          }else {
             user = user.trim().toLowerCase();
          }
-
-         PolicyServiceDelegate psd = new PolicyServiceDelegate();
-         try {
-            boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
-            if(!authorized) {
-               errorMessage = "You are not authorized to enter the portal site.";  
-            }
-         }catch(Exception e) {
-            errorMessage = e.toString();
-            e.printStackTrace();  
+         if(password == null || password.trim().length() <= 0) {
+            errorMessage = "Password cannot be empty";
+         }else {
+            password = password.trim();
          }
+         /*
+         if(errorMessage == null || errorMessage.trim().length() <= 0) {
+            AuthenticationDelegate ad = new AuthenticationDelegate();
+            try {
+               SecurityToken secToken = ad.authenticateLogin(user,String.valueOf(password.hashCode()));
+               String token = secToken.getToken();
+               System.out.println("the token = " + token);
+               //I think if it starts with the word "BAD" then it he is not authenticated.  Not sure.
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();              
+            }
+         }
+         */
+         
+         if(errorMessage == null || errorMessage.trim().length() <= 0) {         
+            PolicyServiceDelegate psd = new PolicyServiceDelegate();
+            try {
+               boolean authorized = psd.checkPermissions(user,"guest","portalsite","read");
+               if(!authorized) {
+                  errorMessage = "You are not authorized to enter the portal site.";  
+               }
+            }catch(Exception e) {
+               errorMessage = e.toString();
+               e.printStackTrace();  
+            }
+         }
+
+         
          
          //call authenticateLogin()
          //call authorizePortal()
