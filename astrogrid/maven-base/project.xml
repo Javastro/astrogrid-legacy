@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.19 2004/06/14 08:58:43 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.20 2004/06/14 09:51:53 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
     <groupId>org.astrogrid</groupId>
     <name>Astrogrid Master Maven POM</name>
-    <currentVersion>${astrogrid.iteration}</currentVersion>
+    <currentVersion>SNAPSHOT</currentVersion>
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
