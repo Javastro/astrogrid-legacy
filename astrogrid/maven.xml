@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.7 2004/12/08 11:21:46 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.8 2004/12/08 11:54:21 jdt Exp $ -->
 <!-- extension maven script -->
 <project xmlns:maven="jelly:maven">
 	<!-- astrogrid goals for nightly build -->
@@ -41,7 +41,7 @@
 	
 	<goal name="copy-monster-source-tree">
 	    <copy todir="${basedir}/monster">
-	        <mapper type="regexp" from="^(.*).java(.*)\.java$$" to="all/\2\.java"/>
+	        <mapper type="regexp" from="^(.*).java(.*)\.java$$" to="src/\2\.java"/>
 	        <fileset dir="${basedir}">
 	          <include name="**/src/java/org/astrogrid/**/*.java"/>
 	          <!--include name="**/test/java/org/astrogrid/**/*.java"/-->
