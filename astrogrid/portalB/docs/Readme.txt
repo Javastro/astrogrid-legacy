@@ -107,7 +107,7 @@ to your web server's webapps directory such as tomcat/webapps.
 Restart your webserver.  This will install the cocoon directory and all the
 neeeded components for the portal in the webapps directory.  Please verify
 after startup that in the cocoon/WEB-INF/web.xml file that the
-"org.astrogrid.community.config" environment entry is their and is pointing to
+"org.astrogrid.community.config" environment entry is there and is pointing to
 a config file that is in the right location.  Currently it points to a config
 file at cocoon/WEB-INF/config/config.xml, this is what you must edit to point
 to your community.  If desired you may move this config file anywhere on your 
