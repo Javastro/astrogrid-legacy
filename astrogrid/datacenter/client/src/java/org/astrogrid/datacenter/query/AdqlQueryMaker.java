@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.4 2004/10/12 22:46:42 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.5 2004/10/13 01:25:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,7 +45,7 @@ public class AdqlQueryMaker  {
       //yeuch
       StdSqlMaker maker = new StdSqlMaker();
       
-      String sql = maker.getSql(adql);
+      String sql = maker.getAdqlSql(adql);
       
       return SqlQueryMaker.makeQuery(sql);
    }
@@ -89,6 +89,9 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.5  2004/10/13 01:25:46  mch
+ makes ADQL/sql rather than std sql (leave in CIRCLE)
+
  Revision 1.4  2004/10/12 22:46:42  mch
  Introduced typed function arguments
 
