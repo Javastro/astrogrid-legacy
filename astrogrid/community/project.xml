@@ -2,11 +2,14 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/08/31 21:19:16 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.10  2004/08/31 21:19:16  jdt
+    |   Few reports are needed in the base project.
+    |
     |   Revision 1.9  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -58,5 +61,12 @@
             scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community
         </developerConnection>
     </repository>
+    
+    <reports>
+        <report> maven-changelog-plugin </report>
+        <report> maven-developer-activity-plugin </report>
+        <report> maven-file-activity-plugin </report>
+        <report> maven-linkcheck-plugin </report>
+    </reports>
 
 </project>
