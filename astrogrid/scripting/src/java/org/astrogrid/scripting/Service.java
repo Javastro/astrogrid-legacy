@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.7 2004/03/16 13:57:41 nw Exp $
+/*$Id: Service.java,v 1.8 2004/04/15 11:22:47 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,7 +64,7 @@ public class Service {
          return MySpaceDelegateFactory.createDelegate(endpoint);
       }
       if (REGISTRY_SERVICE.equals(type)) {
-         throw new UnsupportedOperationException("Registry currently not building - can't compile against delegate");
+          return RegistryDelegateFactory.createQuery(new URL(endpoint));
       }
       if(APPLICATION_SERVICE.equals(type)) {
          return DelegateFactory.createDelegate(endpoint);
@@ -135,6 +135,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.8  2004/04/15 11:22:47  nw
+added support for registry delegate.
+
 Revision 1.7  2004/03/16 13:57:41  nw
 added in registry delegate
 
