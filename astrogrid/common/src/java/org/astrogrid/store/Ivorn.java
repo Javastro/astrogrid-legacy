@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.3 2004/03/25 12:21:30 mch Exp $
+ * $Id: Ivorn.java,v 1.4 2004/04/01 14:50:07 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,7 +11,7 @@ package org.astrogrid.store;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.StringTokenizer;
+import org.astrogrid.community.User;
 
 /**
  * International Virtual Observatory Resource Name.  A URI used to name specific IVO resources.
@@ -77,11 +77,20 @@ public class Ivorn
       path = uri.getAuthority()+uri.getPath();
       fragment = uri.getFragment();
    }
-
+   
    public Ivorn(String aPath, String aFragment)
    {
       this.path = aPath;
       this.fragment =aFragment;
+   }
+   
+   /** Constructs an IVORN out of a user and an AGSL; ie assumes that
+    * the user has an account on a community server that is resolvable through
+    * a registry
+    */
+   public Ivorn(User user, Agsl agsl) {
+      this.path=user.getCommunity()+"/"+user.getUserId();
+      this.fragment=agsl.getPath();
    }
    
    /** Returns identifier scheme */
@@ -112,6 +121,9 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.4  2004/04/01 14:50:07  mch
+added constructor from user & agsl
+
 Revision 1.3  2004/03/25 12:21:30  mch
 Tidied doc
 
