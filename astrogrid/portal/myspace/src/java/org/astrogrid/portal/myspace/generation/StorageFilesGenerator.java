@@ -79,17 +79,22 @@ public class StorageFilesGenerator extends AbstractGenerator {
     
     // Get the user's storage files.
     StoreFile userFile = getUserFile();
-    
-    // Create the root MySpace element (for the user).
-    Element rootElement = document.createElement(StorageFilesGenerator.MYSPACE_TREE);
-    rootElement.setAttribute(
-        StorageFilesGenerator.MYSPACE_ENDPOINT_ATTR, 
-        context.getAgsl().toIvorn(context.getUser()).toString());
-    document.appendChild(rootElement);
-    
     if(userFile != null) {
-      // Walk the storage file tree.
-      walkFile(userFile, document, rootElement);
+	    // Create the root MySpace element (for the user).
+	    Element rootElement = document.createElement(StorageFilesGenerator.MYSPACE_TREE);
+	    rootElement.setAttribute(
+	        StorageFilesGenerator.MYSPACE_ENDPOINT_ATTR, 
+	        context.getAgsl().toIvorn(context.getUser()).toString());
+	    document.appendChild(rootElement);
+	    
+	    if(userFile != null) {
+	      // Walk the storage file tree.
+	      walkFile(userFile, document, rootElement);
+	    }
+	    else {
+	      this.getLogger().error("cannot find files for user");
+	      // throw new ProcessingException("cannot find files for user");
+	    }
     }
     else {
       this.getLogger().error("cannot find files for user");
@@ -109,13 +114,26 @@ public class StorageFilesGenerator extends AbstractGenerator {
   private StoreFile getUserFile() throws IOException {
     // Make sure we have a valid user.
     User user = context.getUser();
+    if(user == null) {
+      return null;
+    }
+    
     String userId = user.getUserId();
-    if(user == null || userId == null || userId.length() == 0) {
+    if(userId == null || userId.length() == 0) {
       return null;
     }
     
     // Get list of user files.
-    StoreFile root = context.getStoreClient().getFiles(StorageFilesGenerator.FILTER);
+    StoreClient storeClient = context.getStoreClient();
+    if(storeClient == null) {
+      return null;
+    }
+    
+    StoreFile root = storeClient.getFiles(StorageFilesGenerator.FILTER);
+    if(root == null) {
+      return null;
+    }
+    
     StoreFile[] allUsers = root.listFiles();
     
     // Find files for the user we want.

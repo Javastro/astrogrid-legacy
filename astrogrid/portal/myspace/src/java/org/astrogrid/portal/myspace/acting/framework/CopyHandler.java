@@ -31,7 +31,7 @@ public class CopyHandler extends AbstractMySpaceHandler {
     if(src != null && src.length() > 0 &&
         dest != null && dest.length() > 0) {
       // Create a new storage location within the same MySpace store.
-      Agsl destination = new Agsl(context.getEndPoint(), dest);
+      Agsl destination = new Agsl(context.getAgsl(), dest);
       
       // Copy the MySpace entries.
       context.getStoreClient().copy(src, destination);

@@ -28,7 +28,7 @@ public class MoveHandler extends AbstractMySpaceHandler {
     
     if(src != null && src.length() > 0 &&
         dest != null && dest.length() > 0) {
-      context.getStoreClient().move(src, new Agsl(context.getEndPoint(), dest));
+      context.getStoreClient().move(src, new Agsl(context.getAgsl(), dest));
     }
     else {
       throw new MySpaceHandlerException("invalid source or destination");

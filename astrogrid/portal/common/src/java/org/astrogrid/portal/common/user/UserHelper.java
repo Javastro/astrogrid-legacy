@@ -23,7 +23,7 @@ public class UserHelper {
 	public static User getCurrentUser(Parameters params, Request request, Session session) {
 		ActionUtils utils = ActionUtilsFactory.getActionUtils();
 		
-		String fullUserid = (String)session.getAttribute(UserHelper.PARAM_ACCOUNT);
+		String fullUserid = (String)utils.getAnyParameter(UserHelper.PARAM_ACCOUNT, "", params, request, session);
 
 		String account = fullUserid.substring( fullUserid.lastIndexOf('/')+1 );
     String group = fullUserid.substring( fullUserid.indexOf('/')+2, fullUserid.lastIndexOf('/') );
