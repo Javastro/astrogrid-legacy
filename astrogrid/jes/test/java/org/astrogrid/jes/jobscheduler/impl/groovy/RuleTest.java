@@ -1,4 +1,4 @@
-/*$Id: RuleTest.java,v 1.4 2004/08/03 16:32:26 nw Exp $
+/*$Id: RuleTest.java,v 1.5 2004/08/09 17:33:02 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,9 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import junit.framework.TestCase;
 
@@ -30,13 +33,13 @@ public class RuleTest extends TestCase {
         shell = new JesShell();
         shell.setJesInterface(new MockJes());
         store = new ActivityStatusStore();
-        rules = new RuleStore();
-        rules.addRule(rule);
+        rules = new ArrayList();
+        rules.add(rule);
     }
     protected Rule rule;
     protected JesShell shell;
     protected ActivityStatusStore store;
-    protected RuleStore rules;
+    protected List rules;
     
     public void testIsTriggered() throws CompilationFailedException, IOException {
         assertNull(rule.getCompiledTrigger());
@@ -51,17 +54,17 @@ public class RuleTest extends TestCase {
         
     }
 
-    public void testReferences() {
-        assertTrue(rule.references("testEnv"));
-        assertFalse(rule.references("unknownEnv"));
-        assertFalse(rule.references("testEnv1"));
-        assertFalse(rule.references("testE")); // try sub strings, etc.
+    public void testMatches() {
+        assertTrue(rule.matches(Pattern.compile("[\"']testEnv[\"']")));
+        assertFalse(rule.matches(Pattern.compile("[\"']unknownEnv[\"']")));
+        assertFalse(rule.matches(Pattern.compile("[\"']testEnv1[\"']")));
+        assertFalse(rule.matches(Pattern.compile("[\"']testE[\"']"))); // try sub strings, etc.
     }
 
     public void testRewriteAs() {
-        Rule r1 = rule.rewriteAs("testEnv","testEnv1");
-        assertTrue(r1.references("testEnv1"));
-        assertFalse(r1.references("testEnv"));
+        Rule r1 = rule.rewriteAs(Pattern.compile("[\"'](testEnv)[\"']"),"'$1-1'");
+        assertTrue(r1.matches(Pattern.compile("[\"']testEnv-1[\"']")));
+        assertFalse(r1.matches(Pattern.compile("[\"']testEnv[\"']")));
         
     }
     public void testStandardMethods() {
@@ -75,6 +78,9 @@ public class RuleTest extends TestCase {
 
 /* 
 $Log: RuleTest.java,v $
+Revision 1.5  2004/08/09 17:33:02  nw
+optimized string handling - all done via regexps now.
+
 Revision 1.4  2004/08/03 16:32:26  nw
 remove unnecessary envId attrib from rules
 implemented variable propagation into parameter values.

@@ -1,4 +1,4 @@
-/*$Id: Rule.java,v 1.3 2004/08/03 16:32:26 nw Exp $
+/*$Id: Rule.java,v 1.4 2004/08/09 17:32:53 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,10 +17,12 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import groovy.lang.Script;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**   represents a rule that is fired - has a trigger, location of environment, and list of actions to execute
  Written as a bean, for easy serialization.
- @todo make strinig manipulation more efficient.
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
  *
  */
@@ -50,36 +52,27 @@ public class Rule {
     /** execute the body of a rule 
      * @throws IOException
      * @throws CompilationFailedExceptiont*/
-    public void fire(JesShell shell,ActivityStatusStore map, RuleStore store) throws CompilationFailedException, IOException {
+    public void fire(JesShell shell,ActivityStatusStore map, List store) throws CompilationFailedException, IOException {
         shell.executeBody(this,map,store);
     }
     
     /** return true if any trigger, env or body action references this key */
-    public boolean references(String key) {
-
-        return referencesTest(this.trigger,key) || this.referencesTest(this.body,key);
+    public boolean matches(Pattern p) {
+        
+        return p.matcher(this.trigger).find() || p.matcher(this.body).find();
     }
-    
-    private boolean referencesTest(String codeSnippet,String key) {
-        return codeSnippet.indexOf("'" + key + "'") != -1 
-            || codeSnippet.indexOf('"' + key + '"') != -1 ;
-    }
-    
+       
     /** create a copy of this rule, rewritten so that all references to old key reference new key*/
-    public Rule rewriteAs(String oldKey, String newKey) {
+    public Rule rewriteAs(Pattern regexp, String replacement) {
         Rule result = new Rule();
-        result.setName(this.name = " branch " + newKey);
-        result.setTrigger(replace(this.trigger,oldKey,newKey));
-        result.setBody(replace(this.body,oldKey,newKey));
+        result.setName(this.name);
+        result.setTrigger(regexp.matcher(this.trigger).replaceAll(replacement));
+        result.setBody(regexp.matcher(this.body).replaceAll(replacement));
+        logger.debug("generated new rule " + result.toString());
         return result;
     }
 
-    private String replace(String code,String oldKey,String newKey) {
-        return code
-            .replaceAll("'" + oldKey + "'","'" + newKey + "'")
-            .replaceAll('"' + oldKey + '"','"' + newKey + '"');
-    }
-    
+
     
     // getters and setters
     /**
@@ -192,6 +185,9 @@ public class Rule {
 
 /* 
 $Log: Rule.java,v $
+Revision 1.4  2004/08/09 17:32:53  nw
+optimized string handling - all done via regexps now.
+
 Revision 1.3  2004/08/03 16:32:26  nw
 remove unnecessary envId attrib from rules
 implemented variable propagation into parameter values.
