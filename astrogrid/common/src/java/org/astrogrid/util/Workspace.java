@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.1 2003/11/18 11:03:10 mch Exp $
+ * $Id: Workspace.java,v 1.2 2003/12/16 11:30:30 mch Exp $
  */
 
 package org.astrogrid.util;
@@ -78,6 +78,12 @@ public class Workspace
          {
            //if a working root path has been given, create the workspace from that
             File workDir = new File(workRoot);
+            
+            assert workDir.exists() :
+                    "Working root '"+workRoot
+                       +"' given by configuration key '"
+                       +WORKSPACE_DIRECTORY_KEY+"' does not exist";
+
             assert workDir.isDirectory() :
                     "Working root '"+workRoot
                        +"' given by configuration key '"
@@ -92,7 +98,12 @@ public class Workspace
          throw new IllegalArgumentException("Workspace '"+workspaceId+"' already in use");
       }
 
-      workspaceFile.mkdir();
+      boolean createdOK = workspaceFile.mkdir();
+      
+      if (!createdOK) {
+         throw new IOException("Directory "+workspaceFile+" did not create OK - can't tell why");
+      }
+         
 
       if (!PERSIST)
       {
@@ -113,10 +124,10 @@ public class Workspace
       if (!PERSIST) { empty(); }
 
       //attempt at threadsafetying but haven't thought about it properly - MCH
-      File tempFile = workspaceFile;
-      workspaceFile = null;
+//      File tempFile = workspaceFile;
+//      workspaceFile = null;
 
-      if (!PERSIST) { tempFile.delete(); }
+//      if (!PERSIST) { tempFile.delete(); }
    }
 
    /** Returns true if the workspace has been closed down - ie should not
@@ -243,6 +254,16 @@ public class Workspace
       {
          throw new IOException("Couldn't delete '"+fod+"' (don't know why)");
       }
+   }
+   
+   /**
+    * temporary Test harness
+    */
+   public static void main(String[] args) throws IOException {
+      SimpleConfig.load("AstroGrid.properties");
+      Workspace ws = new Workspace("TestId");
+      ws.makeTempDir("wibble");
+      ws.close();
    }
 }
 
