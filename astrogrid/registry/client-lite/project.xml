@@ -37,7 +37,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        The Astrogrid Registry class files bundled into a .jar
+        Registry client area.
     </shortDescription>
 
     <!--+
@@ -54,21 +54,22 @@
 		It determines rather to use a server or local config file by simply determining
 		if the endpoints are in the config file.  It should be noted current 
 		implementation only queries based on identifiers when using the local config
-		cache.
+		cache.  The current client is now associated with the ivoa standard now of
+    	querying via ADQL and is OAI conformed on the web service interface.
 	</p>
 	<section name="Builds">
 		<p>
 			The registry allows you to build at the top level or at it's sub-project level.  
 			Here are the maven goals for building the registry.
 			<ul>
-				<li>clean - cleans out and removes all previous builds.</li>
-				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
 				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
 				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
 			</ul>
 		</p>
 	</section>
-	<section name="Installation">
+	<section name="Deployment/Installation">
 		<p>
 			It is expected that this jar will be bunded with an appropriate
 			war file for use with other components.  There is no seperate 
@@ -81,10 +82,9 @@
 			Current config properties needed to use a server:			
 			<ul>
 				<li>org.astrogrid.registry.admin.endpoint - administration endpoint for updates.</li>
-				<li>org.astrogrid.registry.harvest.endpoint - harvesting endpoint.</li>
 				<li>org.astrogrid.registry.query.endpoint - query endpoint.</li>
 			</ul>
-			<i>just leave the endpoints blank and define an identifier pointing
+			<i>just define no properties and define an identifier pointing
 			   to a xml file of the Resource for that identifier when using the local
 			   config cache.
 			</i>
@@ -115,13 +115,17 @@
 				  Queries the Registry. Examples of the queries can be found in config/junitcache,
 				  but will add a section here soon.
 				  There are various submitQueries that can be used.
-				  	submitQueryDOM - submit a Document DOM object and get a Document DOM object back.<br />
-				  	submitQueryStringDOM - submit a String and get a Document DOM object back.
 				</li>
-				<li>getResourceByIdentifierDOM(String ident) - returns a Document DOM object of this one resource entry.</li>
-				<li>getEndPointByIdentifier(String ident) - returns a string which is a endpoint of a Service entry by looking at the WSDL if it is a Web service.</li>
-				<li>getBasicWSDLInformation(String ident) - returns a WSDLBasicInformation object containting a targetNamespace and endpoints found in a WSDL.</li>
-				<li>loadRegistryDOM(Document) - returns a Document DOM object of just the registry resource entry.</li>
+				<li>getResourceByIdentifier - returns a Document DOM object of this one resource entry.</li>
+				<li>getEndPointByIdentifier - returns a string which is a endpoint of a Service entry by looking at the WSDL if it is a Web service.</li>
+				<li>getBasicWSDLInformation - returns a WSDLBasicInformation object containting a targetNamespace and endpoints found in a WSDL.</li>
+				<li>loadRegistry - returns a Document DOM object of just the registry resource entry.</li>
+    			<li>search - A query based on ADQL.</li>
+    			<li>listRecords - OAI list records.</li>
+    			<li>getRecord - OAI getRecord.</li>
+    			<li>listmetadataprefix - OAI listmetadataprefix.</li>
+    			<li>listidentifiers - OAI listidentifiers.</li>
+    			<li>identify - OAI  identify.</li>
 			</ul>
 			<strong>The Update:</strong>
 			<ul>
@@ -129,17 +133,13 @@
 				<li>updateFromUrl(URL url) - Not yet implemented.</li>
 				<li>updateFromFile(File fi) - Not Yet imnplemented.</li>
 			</ul>
-			<strong>The harvesting:</strong>
-			<ul>
-				<li>harvest() - returns all data in this registry that this registry manages.</li>
-				<li>harvestFrom(date) returns all data from a particular date and the authority id must be managed by this registry.</li>
-				<li>harvestAll() - Not really supposed to be used on the client side it kicks off a harvest of all Registries and services.</li>
-				<li>harvestResource(resource doc) - updates this resource entry in the registry and if it is a Registry kicks off a harvest if it is Service and the registry manages the autority id it kicks off a harvest as well.</li>
-				<li>harvestFromResource(date and resource) - not quite implemented yet.  same as harvestResource, from a particluar date for Registry Resource entries.</li>				
-			</ul>
 		</p>
 	</section>
 	<section name="More on Queries">
+    	<p>
+    		The queries should be done in ADQL now, but current components still use an old style xml, look below on more 
+    		information about that.
+    	</p>
 		<p>
 			Currently the queries conform to an old style xml schema and syntax and will be changed shortly in itn06 to 
 			conform to the IVOA schema.  The schema can be found: <a href="..">Registry ~Query Schema</a>, but look at the

@@ -20,24 +20,43 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.xmldb.eXist.server.QueryDBService;
 import org.apache.axis.AxisFault;
 /**
- * 
+ * Registry Service class for querying the eXist database.
  *  
- * 
- * @see org.astrogrid.registry.common.RegistryInterface
+ * @deprecated Class is now deprecated see RegistryQueryService.
+ * @see org.astrogrid.registry.server.query.RegistryQueryService
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
 public class RegistryService {
 
+   /**
+    * Logging variable for writing information to the logs
+    */
    private static final Log log = LogFactory.getLog(RegistryService.class);
 
+   /**
+    * conf - Config variable to access the configuration for the server normally
+    * jndi to a config file.
+    * @see org.astrogrid.config.Config
+    */
    public static Config conf = null;
    
+   /**
+    * final variable for the default AuthorityID associated to this registry.
+    */
    private static final String AUTHORITYID_PROPERTY = 
                                           "org.astrogrid.registry.authorityid";
-                                          
+
+   /**
+    * variable set to the location of the xml files in the eXist XML database
+    * the eXist database calls them collections
+    */
    private static String collectionName = null;                                          
    
+   /**
+    * Static to be used on the initiatian of this class for the config and
+    * collectionName variables.
+    */
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();

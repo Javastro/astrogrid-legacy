@@ -44,16 +44,15 @@
 		<p>			
 			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
 			<ul>
-				<li>clean - cleans out and removes all previous builds.</li>
-				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-install-artifact - Builds all the necessry jar and war files.</li>    	
 				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
 				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
-				<li>generate-castor - generates the castor objects.  This is automatically done though because it is done
-				as a pre-goal to java:compile.</li>				
 			</ul>
 		</p>
 	</section>
-		]]>        
+		]]>
 </description>
 
     <!--+

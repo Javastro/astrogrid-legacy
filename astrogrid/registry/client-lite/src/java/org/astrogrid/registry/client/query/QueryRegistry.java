@@ -51,11 +51,9 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * 
- * The RegistryService class is a delegate to a web service that submits an XML formatted
+ * The QueryRegistry class is a delegate to a web service that submits an XML formatted
  * registry query to the to the server side web service also named the same RegistryService.
- * This delegate helps the user browse the registry.  Queries should be formatted according to
- * the schema at IVOA schema version 0.9.  This class also uses the common RegistryInterface for
- * knowing the web service methods to call on the server side.
+ * This delegate helps the user browse the registry and also the OAI. 
  * 
  * @see org.astrogrid.registry.common.RegistryInterface
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
@@ -94,8 +92,6 @@ public class QueryRegistry implements RegistryService {
       this(conf.getUrl(org.astrogrid.registry.client.RegistryDelegateFactory.QUERY_URL_PROPERTY,null));
    }
    
-   
-   
 
    /**
     * Main constructor to allocate the endPoint variable.
@@ -133,12 +129,24 @@ public class QueryRegistry implements RegistryService {
       return _call;
    }
 
+   /**
+    * To perform a query with ADQL, using adqls.
+    * @param adql string form of adqls
+    * @return XML DOM of Resources queried from the registry.
+    * @throws RegistryException problem during the query servor or client side.
+    */
    public Document searchFromSADQL(String adql) throws RegistryException {
       //send to sadql->adql parser.
       //call return search(adql);
       return null;
    }
 
+   /**
+    * To perform a query with ADQL, using adql string.
+    * @param adql string form of adqls
+    * @return XML DOM of Resources queried from the registry.
+    * @throws RegistryException problem during the query servor or client side.
+    */   
    public Document search(String xadql) throws RegistryException {
       try {
          return search(DomHelper.newDocument(xadql));
@@ -153,6 +161,12 @@ public class QueryRegistry implements RegistryService {
       }
    }
 
+   /**
+    * To perform a query with ADQL, using adql.
+    * @param adql string form of adqls
+    * @return XML DOM of Resources queried from the registry.
+    * @throws RegistryException problem during the query servor or client side.
+    */   
    public Document search(Document adql) throws RegistryException {
       Element currentRoot = adql.getDocumentElement();
       Element newRoot = adql.createElementNS(NAMESPACE_URI, "Search");
@@ -180,6 +194,11 @@ public class QueryRegistry implements RegistryService {
       return null;
    }
    
+   /**
+    * Performas a query to return all Resources of a type of Registry.
+    * @return XML DOM of Resources queried from the registry.
+    * @throws RegistryException problem during the query servor or client side.
+    */
    public Document getRegistries() throws RegistryException {
        Document doc = null;
        Document resultDoc = null;
@@ -217,6 +236,9 @@ public class QueryRegistry implements RegistryService {
        throw new RegistryException("Error from server it returned nothing");
    }
    
+   /**
+    * Identify - Queryies based on OAI-Identify. 
+    */   
    public Document identify() throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
@@ -254,15 +276,24 @@ public class QueryRegistry implements RegistryService {
       throw new RegistryException("Error from server it returned nothing");
    }
    
-   
+
+   /**
+    * ListRecords - OAI ListRecords query. 
+    */
    public Document listRecords() throws RegistryException {
    	return listRecords(null,null,null);
    }
    
+   /**
+    * ListRecords - OAI ListRecords query based on a fromDate.
+    */
    public Document listRecords(Date fromDate) throws RegistryException {
    	return listRecords(null,fromDate,null);    
    }
    
+   /**
+    * ListRecords - OAI ListRecords query.
+    */
    public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
@@ -318,6 +349,9 @@ public class QueryRegistry implements RegistryService {
       throw new RegistryException("Error from server it returned nothing");
    }
    
+   /**
+    * ListMetadataFormats
+    */
    public Document listMetadataFormats(String identifier) throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
@@ -361,10 +395,16 @@ public class QueryRegistry implements RegistryService {
       throw new RegistryException("Error from server it returned nothing");    
    }
    
+   /**
+    * OAI - Get a specific record.
+    */
    public Document getRecord(String identifier) throws RegistryException {
    	return getRecord(identifier,null);
    }
    
+   /**
+    * OAI - Get a specefic record for an identifier and metadataprefix
+    */
    public Document getRecord(String identifier, String metadataPrefix) throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
@@ -416,10 +456,16 @@ public class QueryRegistry implements RegistryService {
       throw new RegistryException("Error from server it returned nothing");
    }
    
+   /**
+    * OAI - ListIdentifiers
+    */
    public Document listIdentifiers() throws RegistryException {
    	return listIdentifiers(null,null,null);
    }
    
+   /**
+    * OAI - ListIdentifiers
+    */
    public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
       Document doc = null;
       Document resultDoc = null;
@@ -474,6 +520,9 @@ public class QueryRegistry implements RegistryService {
       throw new RegistryException("Error from server it returned nothing");
    }   
 
+   /**
+    * Old style xml in string form to perform a query.
+    */
    public Document submitQuery(String query) throws RegistryException {
       if (DEBUG_FLAG)
          System.out.println("entered submitQueryStringDOM()");
@@ -488,6 +537,9 @@ public class QueryRegistry implements RegistryService {
       }
    }
 
+   /**
+    * Old style form to perform a query.
+    */
    public Document submitQuery(Document query) throws RegistryException {
       if (DEBUG_FLAG)
          System.out.println("entered submitQueryDOM()");
@@ -528,6 +580,9 @@ public class QueryRegistry implements RegistryService {
       return null;
    }
 
+   /**
+    * Loads this registry type for the connected registry.
+    */
    public Document loadRegistry() throws RegistryException {
       if (DEBUG_FLAG)
          System.out.println("loadRegistry");
@@ -567,6 +622,10 @@ public class QueryRegistry implements RegistryService {
       return null;
    }
 
+   /**
+    * Queries for all the authorities managed by this registry.
+    * @return a hashmap of all the managed authority id's.
+    */
    public HashMap managedAuthorities() throws RegistryException {
       if (DEBUG_FLAG)
          System.out.println("entered managedAuthorities");
@@ -588,6 +647,9 @@ public class QueryRegistry implements RegistryService {
       return hm;
    }
 
+   /**
+    * Query for a specific resource.
+    */
    public Document getResourceByIdentifier(Ivorn ident)
       throws RegistryException {
       if (ident == null) {
@@ -596,6 +658,9 @@ public class QueryRegistry implements RegistryService {
       return getResourceByIdentifier(ident.getPath());
    }
 
+   /**
+    * Query for a specific resource.
+    */
    public Document getResourceByIdentifier(String ident)
       throws RegistryException {
       Document doc = null;
@@ -650,11 +715,18 @@ public class QueryRegistry implements RegistryService {
       }
    }
 
+   /**
+    * Query for a specific resources endpoint known from the AccessURL element.
+    * 
+    */
    public String getEndPointByIdentifier(Ivorn ident)
       throws RegistryException {
       return getEndPointByIdentifier(ident.getPath());
    }
 
+   /**
+    * Query for a specific resources endpoint known from the AccessURL element. 
+    */
    public String getEndPointByIdentifier(String ident)
       throws RegistryException {
       if (DEBUG_FLAG)
@@ -687,11 +759,17 @@ public class QueryRegistry implements RegistryService {
       return returnVal;
    }
 
+   /**
+    * Get WSDL information for a Resources endpoint.
+    */
    public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident)
       throws RegistryException {
       return getBasicWSDLInformation(getResourceByIdentifier(ident));
    }
 
+   /**
+    * Get WSDL information for a Resources endpoint.
+    */
    public WSDLBasicInformation getBasicWSDLInformation(Document voDoc)
       throws RegistryException {
       //if(DEBUG_FLAG) System.out.println("entered getBasicWSDLInformation with ident = " + ident);

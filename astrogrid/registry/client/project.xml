@@ -37,7 +37,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-        The Astrogrid Registry class files bundled into a .jar
+        Astrogrid client area (Use client-lite now)
     </shortDescription>
 
     <!--+
@@ -47,6 +47,9 @@
     <description>
         <![CDATA[
 	<p>
+    	<b>**USE CLIEN-LITE VERSION NOW, THIS ONE WILL GO AWAY SOON, IT WAS 
+    	ORIGINALLY AROUND TO HANDLE CASTOR OBJECTS WHICH HAS BEEN DEEMED
+    	NOT NEEDED**</b>
 		The Client area's main purpose is to give the users a delegate to go by
 		and to interact with a Registry server or cache.  The Client section
 		will read in a config file and determine to use a Registry server which

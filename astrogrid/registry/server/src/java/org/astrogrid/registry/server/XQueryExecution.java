@@ -19,27 +19,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * The XQueryExecution class accepts an XML formatted query from the
- * RegistryInterface3_0 web service, converts the XML to an XQL query, 
- * and sends the XQL query to Registry3_0.  XQueryExecution then accepts
- * the XML registry response (formatted to schema registry_v1_1.xsd).
- * If the submitQuery method has been called, the registry response
- * is reformatted as a series of responseRecords with name / value
- * key pairs and returned to the RegistryInterface3_0 web service.
- * If the fullNodeQuery method has been called, the registry response
- * is returned to the web service in its registry schema format.
- * 
- * XQueryExecution also identifies how much metadata a web service user
- * has requested: identity only, identity and curation, identity and
- * content, identity and service metadata concepts, or all metadata.
- * The registry response is filtered accordingly.  This software is 
- * based on the IVOA's Resource Service Metadata document v0.7 - it does
- * not yet conform to the IVOA's VOResource 0.9 schema.
+ * The XQueryExecution class accepts an XML formatted query, conforming
+ * to an older Astrogrid standard to be used temporary while the standards
+ * of IVOA come into play.  Will be used through itn06 and then factored out.
+ * This class takes in the XML and parses the XML to create a XQuery (more
+ * of a XPath) like query for querying the registry.
  * 
  * @author Kevin Benson
- *
+ * @deprecated To be deprecated in Itn07 of Astrogrid, to switch to ADQL
  */
-
 public class XQueryExecution
 {
    private static final Log log = LogFactory.getLog(XQueryExecution.class);
@@ -59,19 +47,9 @@ public class XQueryExecution
    }
    
    /**
-    * Input Document is the XML formatted query from either the parseQuery
-    * or parseFullNodeQuery method in this class. The prepareQuery method 
-    * converts this XML string into an XQL query and sends it to the 
-    * Registry3_0 class.  
-    * 
-    * This method also registers four user-defined comparisons: isgt, isge, 
-    * islt, and isle.  The GMD-IPSI implementation of XQuery only predefines
-    * lexical comparisons for the basic logical operators, so these four 
-    * user-defined comparisons implement numerical comparisons as well.
-    *  
-    * @param query XML document object representing the query language used on the registry.
-    * @return XML docuemnt object representing the result of the query.
-    * @throws ClassNotFoundException
+    * Takes in the XML and creates an Xquery for querying the xml database.
+    * @param query XML document object representing the query language used.
+    * @return Xquery string representation.
     */   
    public static String createXQL (Document query) {
 
@@ -129,12 +107,15 @@ public class XQueryExecution
       //throw an excepiton instead of null.
       return null;
    }
-   
+
+   /**
+    * The xmlToXQL method converts an XML node query to XQL. Input 
+    * node generated from the top level selectionSequence element
+    * 
+    * @param node - All the child nodes of a Selection Sequence.
+    * 
+    */   
    private static String xmlToXQL(Node node) {
-    /**
-     * The xmlToXQL method converts an XML node query to XQL. Input 
-     * node generated from the top level selectionSequence element
-     */
 
       log.debug("start xmlToXQL");
       String response = "";

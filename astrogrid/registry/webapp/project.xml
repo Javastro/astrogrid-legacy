@@ -29,7 +29,7 @@
         | The short description should be limited to a single line.
         +-->
     <shortDescription>
-       The Astrogrid Registry server .jar file bundled into a .war with axis
+       Full War file installtion of the Registry.
     </shortDescription>
 
     <!--+
@@ -39,34 +39,85 @@
     <description>
         <![CDATA[
 	<p>
-		The webapp portion breaks down an axis and registry-server installation war file.  With web services already deployed,
-		which can then be grabbed and placed in the web apps for deployment.
+		This is the main project to build a war file for deployment and that can be just dropped into a server.  It bundles the Axis
+    	web service toolkit along with all the necessary jar file dependencies such as astrogrid-registry-server.jar all into this
+    	war file.  It also bundles together two servlets that handle the OAI and a harvest daemeon.
 	</p>
 	<section name="Builds">
 		<p>			
 			Here are the maven goals for building the registry, it has a one extra goal compared to the other sub-projects.
 			<ul>
-				<li>clean - cleans out and removes all previous builds.</li>
-				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-clean - cleans out and removes all previous builds.</li>
+				<li>astrogrid-install-snapshot - Builds all the necessry jar and war files for the snapshot.</li>
+				<li>astrogrid-install-artifact - Builds all the necessry jar and war files for the artifact.</li>    	
 				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-artifact - Builds and deploys the artifact onto the repository.</li>    	
 				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
 			</ul>
 		</p>
 	</section>
-	<section name="Installation">
+    <section name="More on the Servlets">
+    	<p>
+	    	<b>OAI</b> -- The toolkit used for this is the OAICat toolkit.  
+    	    See the tools section under <a href="http://www.openarchives.org">OAI</a>.  
+    		With a few modifications to this toolkit and extensions, the astrogrid servlet will 
+    	    query the eXist xml database for all the resources managed by this registry.  Then with
+    		xsl will transform it to a OAI xml, where it gives it to the OAICat toolkit for handling
+    	    any of the OAI tasks such as certain verbs.  Modify the oaicat.properties file for the
+    	    Identification verb. Location http://..../OAIHandler
+    		OAI verbs handled by astrogrid:
+    	    <ul>
+    			<li>Identify</li>
+    			<li>ListRecords</li>
+				<li>ResumeListRecords - resumptionTokens can be used, but expect not to</li>    	
+    			<li>GetRecord</li>
+    			<li>ListMetaDataFormats</li>
+    			<li>ListIdentifiers</li>
+    			<li>ResumeListIdentifiers - resumptionTokens can be used, but expect not to</li>
+    		</ul>
+    		<br />
+    		<b>Harvest Daemon</b> -- The harvest daemon will automatically kick off harvests or you may
+    	    go to the servet web site to kick off manual harvests. Location http://..../RegistryHarvest
+    	</p>
+    </section>
+   	<section name="More on eXist XMLDB">
+     	<p>
+    		Registry uses an eXist xml database for storing and querying the resources. 
+    	    See the eXist section for astrogrid on more about eXist, this section 
+    	    lets you install the eXist database as a war file.  But for security purposes,
+    	    it is better to install the eXist as a server installation on another port
+    	    that is not accessible to outise computers, but still accessible to 
+    	    the registry installation.
+    	</p>
+    </section>
+	<section name="Deployment/Installation">
 		<p>			
 			After the builds a war file is produced in the "target" area.  This war file can be dropped into the webapps
 			portion of your java server (servlet container) such as tomcat.			
 			directory. Once installed as a System property or JNDI entry in the web.xml file located in the 
-			astrogrid-registry-webapp/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file.  
-			An example config file is given in
-			cvs under the registry/server/config directory as config.prop.  
-			Currently the config file only requires three properties:
-			<ul>
-			  <li>org.astrogrid.registry.version - a version number of the current main IVOA registry schema.</li>
-			  <li>exist.db.url - eXist url property pointing to the root location of the eXist XML database.</li>
-			  <li>exist.query.returncount - the return count number.</li>
-			</ul>
+			astrogrid-registry-webapp/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file.
+    		Or you may point to a config file with a context.xml in your installations.
+    		Remember to modify the oaicat.properties file under src/oaicat
+    		<i>Below are the properties and examples from the registry-server documentation, which are needed
+    	       for the installation of the registry.</i>
+		Currently the config file only requires properties:
+		<ul>
+		  <li>org.astrogrid.registry.authorityid - required, the main authority id for this registry. Should be the same authorityid used on the main Registry type Resource.</li>
+		  <li>org.astrogrid.registry.version - required, a version number of the current main IVOA registry schema, slowly being factored out.</li>
+		  <li>exist.db.url - required, eXist url property pointing to the root location of the eXist XML database.</li>
+		  <li>exist.query.returncount - optional, the return count number (defaults to 25 if not given).</li>
+		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet.</li>
+    	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required for harvesting other registries, the time intervals for automatic harvests to be started.</li>
+		</ul>
+		Example of config properties:
+		<ul>
+		  <li>org.astrogrid.registry.authorityid=org.astrogrid.leicester</li>
+		  <li>exist.db.url=http://localhost:8080/exist</li>
+		  <li>exist.query.returncount=25</li>
+		  <li>oai.servlet.url=http://localhost:8080/astrogrid-registry-snapshot/OAIHandler</li>
+	      <li>org.astrogrid.registry.version=0_9</li>
+    	  <li>org.astrogrid.registry.harvest.daemon.interval-hours=1</li>
+		</ul>
 		</p>
 	</section>
 		]]>        

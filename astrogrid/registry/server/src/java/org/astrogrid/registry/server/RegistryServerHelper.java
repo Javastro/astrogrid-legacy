@@ -23,44 +23,42 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.xmldb.eXist.server.QueryDBService;
 
 /**
- * RegistryFile Helper class will have some of the methods placed in different
- * classes in the next iteration. The main purpose of this class is to help 
- * with the Registry File.  Currently handles 3 or 4 different purposes and 
- * again will need to have those purposes moved to different classes at a 
- * later stage.
- * It handles update & removals of the registry.  Looking up Registry Nodes, 
- * Replacing and Adding Registry Nodes through the DOM model. Handles loading 
- * and writing the registry file.  And finally does a little bit of a 
- * "workaround" around the translation of prefixes in the DOM model.
+ * RegistryServerHelper Helper class is one to have it's name changed later.
+ * Currently it helps or does some utility work like keep hold of status
+ * messages, and the authority id's managed by this registry and other
+ * registries.
+ * 
  * @author Kevin Benson
- *
  */
 public class RegistryServerHelper {
 
 
-   private static final String REGISTRY_VERSION_PROPERTY = 
-       "org.astrogrid.registry.version";
-   
    /**
-    * The main Registry Document.
-    */   
-   private static Document registryDocument;
-   
-   private static LinkedHashMap registryHash;
-   
+    * contains status information about the registry.
+    */
    private static String statusMessage = "";
    
    private static LinkedList ll = null;
    
    private static HashMap manageAuthorities = null;
    
-   private static Calendar nextWriteTime = null;
-   
+   /**
+    * conf - Config variable to access the configuration for the server normally
+    * jndi to a config file.
+    * @see org.astrogrid.config.Config
+    */      
    public static Config conf = null;
 
+   /**
+    * Logging variable for writing information to the logs
+    */   
    private static final Log log = LogFactory.getLog(RegistryServerHelper.class);
 
    private static String versionNumber = null;
+   
+   /**
+    * Static to be used on the initiatian of this class for the config
+    */   
    static {
       if(conf == null) {        
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -84,12 +82,13 @@ public class RegistryServerHelper {
       return ident;
    }
          
+   /**
+    * 
+    * @throws IOException
+    */
    public static void initStatusMessage() throws IOException {
       log.debug("start initStatusMessage");      
-      statusMessage = "Current Registry Version = ";
-      statusMessage += conf.getString(REGISTRY_VERSION_PROPERTY) + "\r\n";
-      //statusMessage += "Current Registry Size = " + 
-      //                 loadRegistryTable().size() + "\r\n";
+      statusMessage = " ";
       
       RegistryService rs = new RegistryService();
       Document regEntry = null;

@@ -42,24 +42,44 @@ import org.astrogrid.xmldb.eXist.server.UpdateDBService;
 /**
  * Class Name: RegistryAdminService
  * Description: This class represents the web service to the Administration
- * piece of the registry.  This class will handle inserts/updates of
- * data in the registry.
+ * piece of the registry.  This class will handle inserts/updates Ressources
+ * in the registry.
  * 
  * @see org.astrogrid.registry..common.RegistryAdminInterface
  * @author Kevin Benson
- *
  * 
  */
 public class RegistryAdminService {
                           
+    /**
+     * Logging variable for writing information to the logs
+     */
    private static final Log log = 
                                LogFactory.getLog(RegistryAdminService.class);
+
+   /**
+    * conf - Config variable to access the configuration for the server normally
+    * jndi to a config file.
+    * @see org.astrogrid.config.Config
+    */   
    public static Config conf = null;
-   
+
+   /**
+    * final variable for the default AuthorityID associated to this registry.
+    */   
    private static final String AUTHORITYID_PROPERTY = 
                                "org.astrogrid.registry.authorityid";
+
+   /**
+    * Hashmap of the Authories managed by this registry, and the authority
+    * ids managed by other registries. Used for determining if things are valid
+    * for updating to this registry and verify it is not owned by another registry.
+    */   
    private static HashMap manageAuths, otherAuths;
 
+   /**
+    * Static to be used on the initiatian of this class for the config
+    */
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -67,6 +87,7 @@ public class RegistryAdminService {
          otherAuths = new HashMap();
       }      
    }
+   
    
    public Document harvestResource(Document resources)  throws AxisFault {
        RegistryHarvestService rhs = new RegistryHarvestService();
@@ -81,15 +102,19 @@ public class RegistryAdminService {
    }
    
    
-   
+
    /**
-   * Determines what type of xml document it is, such as a Resource entry
-   * a schema file, or a stylesheet and calls the correct update method for
-   * updating to the database.
-   */   
+    * Update Web Service method, performs an update through all the Resources of
+    * a Registry.
+    * 
+    * @param update XML DOM containing Resource XML elements
+    * @return XML of identifiers that did not get updated otherwise nothing
+    * if all were successfull.
+    * @throws AxisFault if an error goes wrong trying to update into the
+    * XML database or parsing XML.
+    */
    public Document Update(Document update) throws AxisFault {
       log.debug("start update");
-      log.info("entered update on server side");
       return updateResource(update);
    }
    
@@ -97,12 +122,8 @@ public class RegistryAdminService {
     * Takes an XML Document and will either update and insert the data in the
     * registry.  If a client wants an insert, but the primarykey (AuthorityID
     * and ResourceKey) are already in the registry an automatic update will 
-    * occur.  This method will only update main pieces of data/elements
-    * conforming to the IVOA schema.
-    * 
-    * Main Pieces: Organisation, Authority, Registry, Resource, Service, 
-    *              SkyService, TabularSkyService, DataCollection 
-    * 
+    * occur.  This method will only update XML Resource elements.
+    *  
     * @param update Document a XML document dom object to be updated on the registry.
     * @return the document updated on the registry is returned.
     * @author Kevin Benson
@@ -149,8 +170,10 @@ public class RegistryAdminService {
       log.info("grabbed this version number off the xml" + versionNumber);      
       boolean hasStyleSheet = false;
       
+      //If there is a stylesheet placed in the astrogrid-registry-common.jar
+      //with aparticular name for that version it will perform an XSL
+      //translations.  Currently not used.
       hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
-      
       if(hasStyleSheet) {
           System.out.println("lets call transform update");
           xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
@@ -158,17 +181,26 @@ public class RegistryAdminService {
          xsDoc = update;
       }
 
+      
       UpdateDBService udbService = new UpdateDBService();
       String collectionName = "astrogridv" + versionNumber;
       log.info("server side update the xsDoc = " + 
                DomHelper.DocumentToString(xsDoc));
+      
+      //Get all the Resource elements
       NodeList nl = null;
       try {
          nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
       } catch(IOException ioe) {
-         throw new AxisFault("No Resources to update");
+         throw new AxisFault("IO Error when retrieving Resource nodes.");
       }
+
+      log.info("Collection Name = " + collectionName);
+      log.info("Number of Resources = " + nl.getLength());
       
+      
+      //get All the Managed Authorities, the getManagedAutories() does not
+      //perform a query every time only once.
       try {
          manageAuths = RegistryServerHelper.getManagedAuthorities();
       }catch(SAXException se) {
@@ -180,6 +212,9 @@ public class RegistryAdminService {
       }catch(IOException ioe) {
        //  throw new AxisFault("IO problem", ioe);   
       }
+
+      //get All the Managed Authorities, the getOtherManagedAutories() does not
+      //perform a query every time only once.
       try {
          otherAuths = RegistryServerHelper.getOtherManagedAuthorities();
       }catch(SAXException se) {
@@ -207,25 +242,35 @@ public class RegistryAdminService {
                " and otherAuths size = " + otherAuths.size());
       
       final int resourceNum = nl.getLength();
-      System.out.println("THE VRns = " + vrNS);
       //go through the various resource entries.
       for(int i = 0;i < resourceNum;i++) {
          long beginQ = System.currentTimeMillis();
+         //Looks sort of odd always getting item at number 0
+         //this is because we append it to another element later
+         //hence the nodelist is like a queue and no longer
+         //has the current resource and moves everything up the queue
+         //get the iden and resource key elements.
          ident = getAuthorityID((Element)nl.item(0));
          resKey = getResourceKey((Element)nl.item(0));
+         //set the currentResource element.
          Element currentResource = (Element)nl.item(0);
+         //Sometimes there are other elements defined above the
+         //Resource element so be sure this Resource element has a
+         //defined vr namespace if it does not have one already. 
          if(!"vr".equals(currentResource.getPrefix())) {
              currentResource.setAttribute("xmlns:vr",vrNS);
          }
+         //same goes for default namespaces make sure there is one set
+         //on the Resource element otherwise we might get XML where elements
+         //don't have a defined default namespace.
          if(defaultNS == null && currentResource.getParentNode() != null) {
              defaultNS = DomHelper.getNodeAttrValue((Element)currentResource.getParentNode(),"xmlns");
-             System.out.println("THE DEFAULTNS = " + defaultNS);
          }
          if(defaultNS != null && defaultNS.trim().length() > 0) {
-             System.out.println("SETTING DEFAULTNS = " + defaultNS);
              currentResource.setAttribute("xmlns",defaultNS);
          }
          
+         //set a temporary identifier.
          tempIdent = ident;
          if(resKey != null) tempIdent += "/" + resKey;
       
@@ -233,15 +278,24 @@ public class RegistryAdminService {
                   resKey + " the nl getlenth here = " + nl.getLength());
                   //see if we manage this authority id
                   //if we do then update it in the db.
-         if(manageAuths.containsKey(ident)) {         
+         //doe we manage this authority id, if so then add the resource.
+         if(manageAuths.containsKey(ident)) {
+            //Essentially chop off other elemens wrapping the Resource element, and put
+            //our own element. Would have been nice just to store the Resource element
+            //at the root level, but it seems the XQueries on the database have problems
+            //with that.
             root = xsDoc.createElement("AstrogridResource");
             root.appendChild(currentResource);
 
             RegistryServerHelper.addStatusMessage("Entering new entry: " + 
                                                 tempIdent);
             try {
+               //update the resource element.
                udbService.updateQuery(tempIdent,"xml",collectionName,root);
-               udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,createStats(tempIdent));
+               //we want to keep a little bit of stats information on the
+               //Resources managed.
+               udbService.updateQuery(tempIdent,"xml","statv" + versionNumber,
+                                      createStats(tempIdent));
             } catch(MalformedURLException mue) {
                log.error(mue);
                throw new AxisFault("Malformed URL on the update", mue);
@@ -378,15 +432,14 @@ public class RegistryAdminService {
                            //                            versionNumber,tempIdent,
                            //                            elem);
                            // reset our hashmap of the managed authorities.
-                           // TODO: this is wrong should just add the new 
-                           // ident to the hashmap and not re-query the db all
-                           // over again.
                            manageAuths.put(ident,null);
                         }else {
+                           log.error("Removing child - but somehow the Registries" +
+                                     " main RegistryType has no ManagedAuthority");
                            // This resource is already owned by another 
                            // Registry.
-                           log.info(
-                           "IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, "+
+                           log.error(
+                           "IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, " +
                            "Removing Resource and not updating this Resource");
                            xsDoc.getDocumentElement().
                                  removeChild(currentResource);
@@ -399,6 +452,7 @@ public class RegistryAdminService {
             if(addManageError) {
                al.add("This AuthorityID is not managed by this Registry: " + 
                       ident);
+               log.info("Found entry not managed by this Registry = " + ident);
                xsDoc.getDocumentElement().removeChild(currentResource);
             }//if
          }//else
@@ -406,30 +460,37 @@ public class RegistryAdminService {
                   (System.currentTimeMillis() - beginQ) +
                   " for ident  = " + tempIdent);
       }//for
-       
+      
+      Document returnDoc = null;      
       // Constructgs a small RegistryError element with all the
-      // errored Resource that was not able to be updated in the db. 
-      if(al != null && al.size() > 0) {
-         try {
-            Document errorDoc = DomHelper.newDocument();
-            Element errorRoot = errorDoc.createElement("RegistryError");
-            errorDoc.appendChild(errorRoot);
-            for(int i = 0;i < al.size();i++) {
-               Element errorElem = errorDoc.createElement("error");
-               errorElem.appendChild(errorDoc.
-                                     createTextNode((String)al.get(i)));
-               errorRoot.appendChild(errorElem);
-            }   
-            return errorDoc;
-         }catch(ParserConfigurationException pce) {
-            pce.printStackTrace();
-            log.error(pce);   
-         }
+      // errored Resource that was not able to be updated in the db.
+      try {      
+          if(al != null && al.size() > 0) {
+             
+                Document errorDoc = DomHelper.newDocument();
+                Element errorRoot = errorDoc.createElement("RegistryError");
+                errorDoc.appendChild(errorRoot);
+                for(int i = 0;i < al.size();i++) {
+                   Element errorElem = errorDoc.createElement("error");
+                   errorElem.appendChild(errorDoc.
+                                         createTextNode((String)al.get(i)));
+                   errorRoot.appendChild(errorElem);
+                }   
+                return errorDoc;
+          } else {
+              returnDoc = DomHelper.newDocument();
+              returnDoc.appendChild(returnDoc.createElement("UpdateResponse"));              
+          }          
+      }catch(ParserConfigurationException pce) {
+          pce.printStackTrace();
+          log.error(pce);   
       }
+      
       log.info("Time taken to complete update on server = " +
                (System.currentTimeMillis() - beginUpdate) + "milliseconds");
       log.debug("end updateResource");
-      return update;
+
+      return returnDoc;
    }
  
    /**
@@ -529,7 +590,7 @@ public class RegistryAdminService {
     * special checking.  This is used internally by harvesting other registries to
     * go ahead and place the Resources into our db.
     * 
-    * @param xsDoc A DOM of XML of  one or more Resources.
+    * @param update A DOM of XML of  one or more Resources.
     */
    public void updateNoCheck(Document update) throws MalformedURLException, IOException {
       log.debug("start updateNoCheck");
@@ -574,11 +635,12 @@ public class RegistryAdminService {
       }
       attrVersion = attrVersion.substring((attrVersion.lastIndexOf("v")+1));
       String versionNumber = attrVersion.replace('.','_');
-      System.out.println("the version number found = " + versionNumber);
+
       
       NodeList nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");      
       String collectionName = "astrogridv" + versionNumber;
-
+      log.info("Collection Name = " + collectionName);
+      log.info("Number of Resources = " + nl.getLength());
       boolean hasStyleSheet = false;
       
       hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
@@ -655,25 +717,15 @@ public class RegistryAdminService {
     */
    private Node getManagedAuthorityID(Document doc) {
       log.debug("start getManagedAuthorityID");
-      
-      NodeList nl = doc.getElementsByTagNameNS("vg","ManagedAuthority" );
-      //Okay for some reason vg seems to pick up the ManagedAuthority.
-      //Lets try to find it by the url namespace.
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagNameNS(
-                                    "http://www.ivoa.net/xml/VORegistry/v0.2",
-                                    "ManagedAuthority" );
+      try {
+          NodeList nl = DomHelper.getNodeListTags(doc,"ManagedAuthority","vg");
+          if(nl.getLength() > 0)
+             return nl.item(0);
+          log.debug("end getManagedAuthorityID");
+      }catch(IOException ioe) {
+          ioe.printStackTrace();
+          log.error(ioe);
       }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName("vg:ManagedAuthority" );
-      }
-      if(nl.getLength() == 0) {
-         nl = doc.getElementsByTagName("ManagedAuthority" );
-      }      
-      if(nl.getLength() > 0)
-         return nl.item(0);
-
-      log.debug("end getManagedAuthorityID");
       return null;
    }
   
@@ -744,38 +796,6 @@ public class RegistryAdminService {
       return null;
    }
   
-   /**
-    * NOT USED ANYMORE.
-    * Leaving in for the moment, and will shortly delete.
-    * 
-    * @param doc
-    * @param ident
-    * @param resKey
-    * @return
-    */
-   private String formUpdateXQLQuery(Element doc,String ident, String resKey) {
-      if(resKey != null) {
-         return ".//*:Identifier/AuthorityID = '" + ident + 
-                "' and .//*:Identifier/ResourceKey = '" + resKey + "'";   
-      } else {
-         return ".//*:Identifier/AuthorityID = '" + ident + "'";
-      }
-   }
-  
-//  private String formInvalidAuthorityIDCheckQuery() {
-//   String regAuthID = conf.getString(AUTHORITYID_PROPERTY);
-//   
-//   return ".//@*:type='RegistryType' and .//*:AuthorityID != '" + 
-//          regAuthID +"'";   
-//  }
-  
-//   private String formInvalidAuthorityIDCheckQuery() {
-//   log.debug("start formInvalidAuthorityIDCheckQuery");
-//   String regAuthID = conf.getString(AUTHORITYID_PROPERTY);
-//   
-//   return ".//@*:type='RegistryType' and .//*:AuthorityID != '" + regAuthID +"'";   
-//  }
-
  /**
    * Takes an XML Document and will either update and insert the data in the
    * registry.  If a client is intending for an insert, but the primarykey 
