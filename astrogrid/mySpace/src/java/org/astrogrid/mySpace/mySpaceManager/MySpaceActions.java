@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 /**
  * @author A C Davenhall (Edinburgh)
  * @version Iteration 4.
+ * @TODO update logging statements to use commons-logging
  */
 
 public class MySpaceActions
@@ -1586,7 +1587,7 @@ public class MySpaceActions
  */
 
    public void setRegistryName(String registryName)
-   {  this.registryName = registryName;
+   {  MySpaceActions.registryName = registryName;
    }
 
 // -----------------------------------------------------------------
