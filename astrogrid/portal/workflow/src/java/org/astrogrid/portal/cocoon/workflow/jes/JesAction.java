@@ -19,6 +19,7 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
@@ -104,6 +105,7 @@ public class JesAction extends AbstractAction {
     
     public static final String HTTP_JOBLIST_TAG = "job-list-tag" ,
 							   JOBURN_PARAMETER = "jobURN" ,
+                               HTTP_WORKFLOW_TAG = "workflow-tag",
                                COMMUNITY_ACCOUNT_TAG = "user" ,
                                COMMUNITY_NAME_TAG = "community_name" ,
                                CREDENTIAL_TAG = "credential" ,
@@ -393,16 +395,20 @@ public class JesAction extends AbstractAction {
 
 		private void readJob() {
 			if( TRACE_ENABLED ) trace( "JesActionImpl.readJob() entry" );
+            
+            Workflow workflow = null;
+            JobURN jobURN = new JobURN();
               
 			try {
 				
-				String jobURN = request.getParameter( JOBURN_PARAMETER ) ;
+				String jobURNString = request.getParameter( JOBURN_PARAMETER ) ;
 				
-				if( jobURN == null ) {
-					debug("jobURN is null") ;
+				if( jobURNString == null ) {
+					debug("jobURN string is null") ;
 					throw new ConsistencyException() ; 
 				}
-				else{		
+				else{
+                    jobURN.setContent( jobURNString );		
 					JobExecutionService jes = workflowManager.getJobExecutionService();							
 					workflow = jes.readJob( jobURN ) ;
 				}                 
