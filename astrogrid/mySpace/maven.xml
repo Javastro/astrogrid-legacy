@@ -34,6 +34,7 @@
 				<include name="*.sh"/>
 			</fileset>
 		</copy>
+		<j:set var="maven.test.dest" value="${pom.getPluginContext('maven-junit-plugin').getVariable('maven.test.dest')}" />
 		<echo message="copying across installation tests from ${maven.test.dest} to ${classes.dir}"/>
 		<copy todir="${classes.dir}" overwrite="yes">
 			<fileset dir="${maven.test.dest}">
