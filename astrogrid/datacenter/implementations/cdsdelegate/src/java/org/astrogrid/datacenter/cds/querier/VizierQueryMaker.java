@@ -1,4 +1,4 @@
-/*$Id: VizierQueryMaker.java,v 1.2 2004/09/07 00:54:20 mch Exp $
+/*$Id: VizierQueryMaker.java,v 1.3 2004/09/10 10:31:17 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ public class VizierQueryMaker  {
                 throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
             }
         } catch (Throwable t) {
-            throw new RuntimeException("Translation phase failed:" + t.getMessage());
+            throw new RuntimeException("Translation phase failed:" + t.getMessage(),t);
         }
         return ((VizierQuery) intermediateRep);
      }
@@ -90,6 +90,9 @@ public class VizierQueryMaker  {
 
 /*
 $Log: VizierQueryMaker.java,v $
+Revision 1.3  2004/09/10 10:31:17  mch
+Added cause to thrown error
+
 Revision 1.2  2004/09/07 00:54:20  mch
 Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
