@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.4 2004/08/03 16:32:26 nw Exp $
+/*$Id: JesShell.java,v 1.5 2004/08/05 07:36:14 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,11 @@ public class JesShell {
         super();
     }
 
-    protected final GroovyShell shell = new GroovyShell();
+    /** for efficiencies sake, only ever create a single, static interpreter.
+     * this will be ok - as we parse-run all code we pass through it.
+     * plus, we know it is being called in a single thread (the scheduler) only.
+     */
+    protected static final GroovyShell shell = new GroovyShell();
     protected JesInterface jes;
     
     public boolean evaluateTrigger(Rule r,ActivityStatusStore map) throws CompilationFailedException, IOException {
@@ -228,6 +232,9 @@ public class JesShell {
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.5  2004/08/05 07:36:14  nw
+made shell static for efficiency.
+
 Revision 1.4  2004/08/03 16:32:26  nw
 remove unnecessary envId attrib from rules
 implemented variable propagation into parameter values.
