@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid Registry Client components.
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-registry-client-lite</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid registry client</name>
+
+    <!--+
+        | The Java package name of the project.
+        | This value is used when generating JavaDoc.
+        +-->
+    <package>org.astrogrid.registry.client</package>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        The Astrogrid Registry class files bundled into a .jar
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+	<p>
+		The Client area's main purpose is to give the users a delegate to go by and to interact with a Registry server or cache.
+		The Client section will read in a config file and determine to use a Registry server which will be the most common or
+		use a a local cache through it's config file.  Able to look up identifiers in a config file to point to a particular xml
+		file for grabbing the necessary information.  This can be used with other Astrogrid components not wishing to use a 
+		Registry server.
+	</p>
+	<section name="Builds">
+		<p>
+			The registry allows you to build at the top level or at it's sub-project level.  
+			Here are the maven goals for building the registry.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+	<section name="Installation">
+		<p>
+			It is expected that this jar will be bunded with an appropriate war file for use with other components.  There
+			is no seperate installation just for the client itself.  After a build a jar file is produced in the "target"
+			directory.  When ever it is bundled with another component, it is expected to have in the System properties or
+			JNDI a key value of "org.astrogrid.config.url" pointing to a config file.  An example config file is given in
+			cvs under the config directory for this client area.
+			<ul>
+				<li>clean - cleans out and removes all previous builds.</li>
+				<li>install-snapshot - Builds all the necessry jar and war files.</li>
+				<li>astrogrid-deploy-snapshot - Builds and deploys the snapshot onto the repository.</li>
+				<li>astrogrid-deploy-site - Generates reports and documents to be deployed on the site repository.</li>
+			</ul>
+		</p>
+	</section>
+	<section name="How to Use for Other Components">
+		<p>
+		Once the configuration is complete and ready for another component to use.  It may use the various delegates with the delegate factory.
+		<br /><strong>The Query:</strong><br />
+		Instantiate with: org.astrogrid.registry.client.query.RegistryService rs = org.astrogrid.registry.client.RegistryDelegateFactory.createQuery()
+		<br />From there you have access to all the delegate methods mentioned below for the Query section.  It is of course advisable to
+		use import statements at the top of your code to make things easier.
+		<strong>Still need to put some examples of the query schema/string here</strong>
+		</p>	
+	</section>
+	<section name="Delegate - Helper methods to the Interface">
+		<p>
+			This section is a quick description of what delegate methods can be used for other components to take advantage of.
+			This is not necessarily the actual web service interface methods on the server side registry.
+			<br />
+			<strong>First the Query:</strong>
+			<ul>
+				<li>submitQuery - 
+				  Queries the Registry. Examples of the queries can be found in config/junitcache, but will add a section here soon.
+				  There are various submitQueries that can be used.
+  				  	submitQuery - Submit a Document DOM object and get a VODescription java bean object back.<br />
+  				  	submitQueryString - Submit a String and get a VODescription java bean object back.<br />
+				  	submitQueryDOM - submit a Document DOM object and get a Document DOM object back.<br />
+				  	submitQueryStringDOM - submit a String and get a Document DOM object back.
+				</li>
+				<li>getResourceByIdentifier(String ident) - returns a VODescription java bean object of this one resource entry.</li>
+				<li>getResourceByIdentifierDOM(String ident) - returns a Document DOM object of this one resource entry.</li>
+				<li>getEndPointByIdentifier(String ident) - returns a string which is a endpoint of a Service entry by looking at the WSDL if it is a Web service.</li>
+				<li>getBasicWSDLInformation(String ident) - returns a WSDLBasicInformation object containting a targetNamespace and endpoints found in a WSDL.</li>
+				<li>loadRegistryDOM(Document) - returns a Document DOM object of just the registry resource entry.</li>
+				<li>loadRegistry(VODescription) - returns a VODescription java bean object of the registry resource entry.</li>
+			</ul>
+			<strong>The Update:</strong>
+			<ul>
+				<li>update(VODescription) - updates a resource entries in the registry given a one or more Resources from a VODescription bean.</li>
+				<li>update(Document) - updates a resource entries in the registry given a one or more Resources from a Document DOM object.</li>
+				<li>add - will put here later about add it may be factored out later.</li>
+				<li>updateFromUrl(URL url) - Not yet implemented.</li>
+				<li>updateFromFile(File fi) - Not Yet imnplemented.</li>
+			</ul>
+			<strong>The harvesting:</strong>
+			<ul>
+				<li>harvest() - returns all data in this registry that this registry manages.</li>
+				<li>harvestFrom(date) returns all data from a particular date and the authority id must be managed by this registry.</li>
+				<li>harvestAll() - Not really supposed to be used on the client side it kicks off a harvest of all Registries and services.</li>
+				<li>harvestResource(resource doc) - updates this resource entry in the registry and if it is a Registry kicks off a harvest if it is Service and the registry manages the autority id it kicks off a harvest as well.</li>
+				<li>harvestFromResource(date and resource) - not quite implemented yet.  same as harvestResource, from a particluar date for Registry Resource entries.</li>				
+			</ul>
+		</p>
+	</section>
+	<section name="More on Queries">
+		<p>
+			Currently the queries conform to an old style xml schema and syntax and will be changed shortly in itn06 to 
+			conform to the IVOA schema.  The schema can be found: <a href="..">Registry ~Query Schema</a>, but look at the
+			examples below to see basic syntax of the queries, it is very SQL like and easy to understand.
+			In the current iteration the parsing looks for all namespaces "*", and the current sectionOp values are "AND|OR".
+			The section items can be set to any text node or attribute, and finally for itemOp is much like the Xquery syntax see the itemOp list.
+			<br />
+			<i>ItemOp List:</i>
+			<ul>
+				<li>CONTAINS - constains or substring</li>
+				<li>EQ - equals</li>
+				<li>NE - not equals</li>
+				<li>GE - greater-than-or-equals</li>
+				<li>LE - less-than-or-equals</li>
+				<li>GT - greater-than</li>
+				<li>LT - less-than</li>
+			</ul>			
+			<br />
+			<i>Examples:</i><br />
+			Load Registry interface is just a convenience interface to query for a particular RegistryType.<br />
+			<i>			
+				<query>
+					<selectionSequence>
+					    <selection item='searchElements' itemOp='EQ' value='Resource'/>
+        		        <selectionOp op='$and$'/> <!-- this is a dummy ob for the searchElements item hoped to be removed soon, but neeed now -->
+						<selection item='AuthorityID' itemOp='EQ' value='" + authorityID + "'/>
+        		        <selectionOp op='AND'/>
+		                <selection item='@type' itemOp='EQ' value='RegistryType'/>
+        	        </selectionSequence>
+        	    </query>
+			</i>
+		</p>
+	</section>
+	
+		]]>        
+    
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry/client
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry/client
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The Registry common components.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+                
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>SNAPSHOT</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        
+        <dependency>
+            <artifactId>commons-logging</artifactId>
+            <groupId>commons-logging</groupId>
+            <version>1.0.3</version>
+        </dependency>
+        
+        <dependency>
+        	<id>xerces</id>
+            <version>2.4.0</version>
+            <properties>
+            	<war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+       		<id>xml-apis</id>
+          	<version>1.0.b2</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>
+        </dependency>
+        
+        <dependency>
+            <artifactId>commons-discovery</artifactId>
+            <groupId>commons-discovery</groupId>
+            <version>20030211.213356</version>
+        </dependency>
+
+        <dependency>
+           <id>axis</id>
+           <version>1.1</version>
+        </dependency>
+        
+        <dependency >
+           <id>wsdl4j</id>
+           <version>1.4</version>
+        </dependency>
+
+        <dependency>
+           <id>jaxrpc</id>
+           <version>unknown</version>
+           <jar>jaxrpc.jar</jar>
+        </dependency>
+
+        <dependency>
+           <id>saaj</id>
+           <version>unknown</version>
+           <jar>saaj.jar</jar>
+        </dependency>
+
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Junit.java</include>
+            </includes>
+            <!--+
+                | The resources for our tests.
+
+            <resources>
+                <resource>
+                </resource>
+            </resources>
+                                +-->
+        </unitTest>
+    </build>
+
+</project>
