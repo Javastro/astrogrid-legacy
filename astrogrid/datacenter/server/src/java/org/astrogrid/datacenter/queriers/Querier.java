@@ -16,7 +16,6 @@ import java.util.Vector;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.Certification;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
@@ -56,7 +55,7 @@ public class Querier implements Runnable {
    
     protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
        
-   public Querier(QuerierSPI spi,_query query, Workspace workspace,_QueryId qid) {
+   public Querier(QuerierSPI spi,_query query, Workspace workspace,String qid) {
        this.spi = spi;
        this.workspace = workspace;
        this.query = query;
@@ -77,7 +76,7 @@ public class Querier implements Runnable {
    protected final Workspace workspace;
    /** A handle is used to identify a particular service.  It is also used as the
     * basis for any temporary storage. */
-   protected final _QueryId qid;
+   protected final String qid;
    /** certification information */
    protected final Certification cert;
       
@@ -109,7 +108,7 @@ public class Querier implements Runnable {
    /**
     * Returns this instances handle
     */
-   public _QueryId getQueryId() {
+   public String getQueryId() {
       return qid;
    }
    
@@ -398,7 +397,7 @@ public class Querier implements Runnable {
       //remove from list
       /* be extra cautious here */
       if (QuerierManager.queriers != null && getQueryId() != null) {
-         QuerierManager.queriers.remove(getQueryId().getId());
+         QuerierManager.queriers.remove(getQueryId());
       }
       if (spi != null) {
           try {
@@ -499,6 +498,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.7  2003/12/01 16:43:52  nw
+ dropped _QueryId, back to string
+
  Revision 1.6  2003/12/01 16:11:30  nw
  removed config interface.
 

@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.1 2003/11/28 16:10:30 nw Exp $
+/*$Id: QuerierManagerTest.java,v 1.2 2003/12/01 16:44:11 nw Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.queriers;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 
 /**
  * test behaviours the querier manager.
@@ -61,7 +60,7 @@ public class QuerierManagerTest extends ServerTestCase {
      public void testCollection() throws Exception {
          int startingSize = QuerierManager.getQueriers().size() ;
          s1 = QuerierManager.createQuerier(QueryHelper.buildMinimalQuery());
-         _QueryId qid = s1.getQueryId();
+         String qid = s1.getQueryId();
          assertNotNull(qid);
          assertEquals(startingSize + 1 ,QuerierManager.getQueriers().size());
          //check we can retreive it.
@@ -82,6 +81,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /* 
 $Log: QuerierManagerTest.java,v $
+Revision 1.2  2003/12/01 16:44:11  nw
+dropped _QueryId, back to string
+
 Revision 1.1  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.5 2003/11/28 16:10:30 nw Exp $
+/*$Id: QuerierManager.java,v 1.6 2003/12/01 16:43:52 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 import org.astrogrid.util.Workspace;
@@ -50,8 +49,8 @@ public class QuerierManager {
    public static final String RESULTS_TARGET_KEY = "DefaultMySpace";
    
 
-   public static Querier getQuerier(_QueryId qid) {
-      return (Querier) queriers.get(qid.getId());
+   public static Querier getQuerier(String qid) {
+      return (Querier) queriers.get(qid);
    }
    
    /** Class method that returns a list of all the currently running queriers
@@ -138,7 +137,7 @@ public class QuerierManager {
     * @throws DatabaseAccessException on error (contains cause exception)
     * @todo - add parsing of results target?
     */
-   public static Querier createQuerier(_query query, _QueryId qid) throws DatabaseAccessException {
+   public static Querier createQuerier(_query query, String qid) throws DatabaseAccessException {
       
       QuerierSPI spi = instantiateQuerierSPI();
       //assigns handle
@@ -147,9 +146,9 @@ public class QuerierManager {
             log.error( "Handle '" + qid + "' already in use");
             throw new IllegalArgumentException("Handle " + qid + "already in use");
          }
-         Workspace workspace = new Workspace(qid.getId());
+         Workspace workspace = new Workspace(qid);
          Querier querier = new Querier(spi,query,workspace,qid);
-         queriers.put(qid.getId(), querier);
+         queriers.put(qid, querier);
 
          return querier;
       }
@@ -219,10 +218,9 @@ public class QuerierManager {
     * see which was the last run). Later we could add service/user information
     * if available
     */
-   static _QueryId generateQueryId() {
+   static String generateQueryId() {
       Date todayNow = new Date();
-      _QueryId qid = new _QueryId();
-      qid.setId(
+       return
          todayNow.getYear()
          + "-"
          + todayNow.getMonth()
@@ -235,9 +233,8 @@ public class QuerierManager {
          + "."
          + todayNow.getSeconds()
          + "_"
-         + (random.nextInt(8999999) + 1000000)
-         );
-       return qid;
+         + (random.nextInt(8999999) + 1000000);
+
       //plus botched bit... not really unique
       
    }
@@ -246,6 +243,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.6  2003/12/01 16:43:52  nw
+ dropped _QueryId, back to string
+
  Revision 1.5  2003/11/28 16:10:30  nw
  finished plugin-rewrite.
  added tests to cover plugin system.

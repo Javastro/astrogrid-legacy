@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.9 2003/11/28 16:10:30 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.10 2003/12/01 16:44:11 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,6 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._language;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -114,12 +113,12 @@ public class DataQueryServiceTest extends ServerTestCase {
     }
     
     public void testMakeQueryWithId() throws Exception {
-        _QueryId qid = server.makeQueryWithId(query,"foo");
-        assertEquals("foo",qid.getId());        
+        String qid = server.makeQueryWithId(query,"foo");
+        assertEquals("foo",qid);        
     }
     
     public void testAbort() throws Exception {
-        _QueryId qid = server.makeQuery(query);
+        String qid = server.makeQuery(query);
         assertNotNull(qid);
         server.abortQuery(qid);
         // should have gone now.. i.e. we can't do this..    
@@ -133,7 +132,7 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 
     public void testDoStagedQueryQuery() throws Exception    {
-             _QueryId qid = server.makeQuery(query);
+             String qid = server.makeQuery(query);
              assertNotNull(qid);
              server.setResultsDestination(qid,new URI(Querier.TEMPORARY_DUMMY));
              assertEquals(QueryStatus.UNKNOWN.toString(),server.getStatus(qid));
@@ -193,6 +192,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.10  2003/12/01 16:44:11  nw
+dropped _QueryId, back to string
+
 Revision 1.9  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.6 2003/11/28 16:10:30 nw Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.7 2003/12/01 16:43:52 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -42,7 +42,7 @@ public class WebNotifyServiceListener implements QuerierListener
    public void queryStatusChanged(Querier querier)
    {
       try {
-         notifier.tellServer(querier.getQueryId().getId(), querier.getStatus());
+         notifier.tellServer(querier.getQueryId(), querier.getStatus());
       }
       catch (ServiceException e) {
          LogFactory.getLog(WebNotifier.class).error("Failed to contact service using "+notifier, e);
@@ -72,6 +72,9 @@ public void setClientListener(String url) {
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.7  2003/12/01 16:43:52  nw
+dropped _QueryId, back to string
+
 Revision 1.6  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

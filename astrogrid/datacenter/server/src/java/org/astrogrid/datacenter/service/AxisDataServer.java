@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.15 2003/11/28 16:10:30 nw Exp $
+ * $Id: AxisDataServer.java,v 1.16 2003/12/01 16:43:52 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,6 @@ import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._language;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
@@ -166,7 +165,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public _QueryId  makeQuery(_query q) throws IOException {
+   public String  makeQuery(_query q) throws IOException {
       
       Querier querier = QuerierManager.createQuerier(q);
         return querier.getQueryId();
@@ -180,14 +179,13 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @todo - add our own prefix to this assigned id before using it internally to ensure its unique?
     * @soap
     */
-   public _QueryId makeQueryWithId(_query q, String assignedId) throws QueryException, IOException, SAXException {
+   public String makeQueryWithId(_query q, String assignedId) throws QueryException, IOException, SAXException {
       
       if (assignedId == null || assignedId.length() == 0)  {
          throw new IllegalArgumentException("Empty assigned id");
       }
-      _QueryId qid = new _QueryId();
-      qid.setId(assignedId);
-      Querier querier = QuerierManager.createQuerier(q, qid);      
+
+      Querier querier = QuerierManager.createQuerier(q, assignedId);      
       return querier.getQueryId();
    }
    
@@ -195,13 +193,13 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * Sets where the results are to be sent
     * @soap
     */
-   public void setResultsDestination(_QueryId queryId, URI resultsDestination) {
+   public void setResultsDestination(String queryId, URI resultsDestination) {
       if (resultsDestination == null )  {
          throw new IllegalArgumentException("Empty results destination");
       }
       Querier querier = getQuerier(queryId);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid: " + queryId.getId());
+          throw new IllegalArgumentException("Unknown qid: " + queryId);
       }
       querier.setResultsDestination(resultsDestination.toString());
    }
@@ -211,10 +209,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * @soap
     * @todo - use a thread pool system here - threads are resource-hungry.
     */
-   public void startQuery(_QueryId id) {
+   public void startQuery(String id) {
       Querier querier = getQuerier(id);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid:" + id.getId());
+          throw new IllegalArgumentException("Unknown qid:" + id);
       }
       Thread queryThread = new Thread(querier);
       queryThread.start();
@@ -226,10 +224,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String getResultsAndClose(_QueryId queryId) {
+   public String getResultsAndClose(String queryId) {
       Querier querier =getQuerier(queryId);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid:" + queryId.getId());
+          throw new IllegalArgumentException("Unknown qid:" + queryId);
       }
       //has querier finished?
       if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {         
@@ -253,7 +251,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public void abortQuery(_QueryId queryId) {
+   public void abortQuery(String queryId) {
       Querier querier = getQuerier(queryId);
       if (querier != null)  {
          querier.abort();
@@ -265,10 +263,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public String getStatus(_QueryId queryId) {
+   public String getStatus(String queryId) {
       Querier querier = getQuerier(queryId);
       if (querier == null) {
-          throw new IllegalArgumentException("Unknown qid:" + queryId.getId());
+          throw new IllegalArgumentException("Unknown qid:" + queryId);
       }
       return querier.getStatus().toString();
    }
@@ -278,13 +276,13 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public void registerWebListener(_QueryId queryId , URI uri) throws RemoteException {
+   public void registerWebListener(String queryId , URI uri) throws RemoteException {
       
       try  {
          URL u = new URL(uri.toString());
          Querier querier = getQuerier(queryId);         
          if (querier == null) {
-             throw new IllegalArgumentException("Unknown qid" + queryId.getId());
+             throw new IllegalArgumentException("Unknown qid" + queryId);
          }
 
          
@@ -300,13 +298,13 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
     * <p>
     * @soap
     */
-   public void registerJobMonitor(_QueryId queryId, URI uri) throws RemoteException  {
+   public void registerJobMonitor(String queryId, URI uri) throws RemoteException  {
       // check we can create an URL first..
       try  {
          URL u = new URL(uri.toString());
          Querier querier = getQuerier(queryId);
          if (querier == null) {
-             throw new IllegalArgumentException("Unknown qid" + queryId.getId());             
+             throw new IllegalArgumentException("Unknown qid" + queryId);             
          }
          
          querier.registerListener(new WebNotifyServiceListener(u));

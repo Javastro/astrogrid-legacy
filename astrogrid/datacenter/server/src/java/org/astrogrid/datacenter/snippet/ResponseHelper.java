@@ -1,5 +1,5 @@
 /*
- * $Id: ResponseHelper.java,v 1.4 2003/11/28 16:10:30 nw Exp $
+ * $Id: ResponseHelper.java,v 1.5 2003/12/01 16:43:52 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,7 +55,7 @@ public class ResponseHelper
 
       String doc =
           "<"+QUERY_STARTED_RESP_TAG+">\n"
-         +"   "+QueryIdHelper.makeQueryIdTag(querier.getQueryId().getId())
+         +"   "+QueryIdHelper.makeQueryIdTag(querier.getQueryId())
          +"   "+StatusHelper.makeStatusTag(querier.getStatus())
          +"</"+QUERY_STARTED_RESP_TAG+">\n";
 
@@ -79,7 +79,7 @@ public class ResponseHelper
 
       String doc =
           "<"+QUERY_CREATED_RESP_TAG+">\n"
-         +"   "+QueryIdHelper.makeQueryIdTag(querier.getQueryId().getId())
+         +"   "+QueryIdHelper.makeQueryIdTag(querier.getQueryId())
          +"   "+StatusHelper.makeStatusTag(querier.getStatus())
          +"</"+QUERY_CREATED_RESP_TAG+">\n";
 
@@ -103,7 +103,7 @@ public class ResponseHelper
       }
 
       String doc =
-         StatusHelper.makeStatusTag(querier.getQueryId().getId(), querier.getStatus());
+         StatusHelper.makeStatusTag(querier.getQueryId(), querier.getStatus());
 
       return DocHelper.wrap(doc);
    }
@@ -139,7 +139,7 @@ public class ResponseHelper
        }
  
       String doc =
-          QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getQueryId().getId())+"\n"
+          QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getQueryId())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
          +"   <"+DocMessageHelper.RESULTS_TAG+" type='votable'>\n"
          +XMLUtils.ElementToString(results)
@@ -164,7 +164,7 @@ public class ResponseHelper
       }
 
       String doc =
-          QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getQueryId().getId())+"\n"
+          QueryIdHelper.makeTagWithQueryIdAttr(DATACENTER_RESULTS_TAG, querier.getQueryId())+"\n"
          +"   <TIME>"+querier.getQueryTimeTaken()+"</TIME>\n"
          +"   <"+DocMessageHelper.RESULTS_TAG+" type='url'>"+results+"</"+DocMessageHelper.RESULTS_TAG+">\n"
          +"</"+DATACENTER_RESULTS_TAG+">\n";

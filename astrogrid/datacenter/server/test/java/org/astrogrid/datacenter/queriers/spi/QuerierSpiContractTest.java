@@ -1,4 +1,4 @@
-/*$Id: QuerierSpiContractTest.java,v 1.3 2003/12/01 16:12:01 nw Exp $
+/*$Id: QuerierSpiContractTest.java,v 1.4 2003/12/01 16:44:11 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.datacenter.queriers.spi;
 import junit.framework.TestCase;
 
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
-import org.astrogrid.datacenter.axisdataserver.types._QueryId;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -39,7 +38,7 @@ public class QuerierSpiContractTest extends TestCase {
     }
     
     protected void setUp() throws Exception {
-        workspace = new Workspace(QID.getId());
+        workspace = new Workspace(QID);
         query = QueryHelper.buildMinimalQuery();
     }
     
@@ -53,10 +52,8 @@ public class QuerierSpiContractTest extends TestCase {
         spi.selfCheck();
     }
     
-    public static final _QueryId QID = new _QueryId();
-    static {
-        QID.setId("handle");
-    }
+    public static final String QID = "handle";
+ 
     protected _query query;
     protected Workspace workspace;
     
@@ -65,7 +62,6 @@ public class QuerierSpiContractTest extends TestCase {
 
         // check that everything is initialized as required.
         public void selfCheck() {
-            assertEquals(1,seenConf);
             assertEquals(1,seenWorkspace);
             assertEquals(1,seenQuery);
             assertEquals(1,seenClose);
@@ -84,7 +80,6 @@ public class QuerierSpiContractTest extends TestCase {
 
 
         
-        private int seenConf;
         private int seenWorkspace;
         private int seenQuery;
         private int seenClose;
@@ -98,7 +93,6 @@ public class QuerierSpiContractTest extends TestCase {
             assertNotNull(o);
             assertEquals(Element.class,type);
             assertTrue(type.isInstance(o));
-            assertEquals(1,seenConf);
             assertEquals(1,seenWorkspace);
             assertEquals(0,seenQuery);
             assertEquals(0,seenClose);
@@ -118,6 +112,9 @@ public class QuerierSpiContractTest extends TestCase {
 
 /* 
 $Log: QuerierSpiContractTest.java,v $
+Revision 1.4  2003/12/01 16:44:11  nw
+dropped _QueryId, back to string
+
 Revision 1.3  2003/12/01 16:12:01  nw
 removed config
 
