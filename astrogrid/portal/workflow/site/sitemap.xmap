@@ -236,6 +236,8 @@
           <!-- Add the action params -->
           <map:parameter name="action"  value="{action}"/>
           <map:parameter name="activity_key"  value="{activity_key}"/>
+          <map:parameter name="display_parameter_values"  value="{display_parameter_values}"/>
+          <map:parameter name="display_tool_values"  value="{display_tool_values}"/>
         </map:transform>
         <!-- Serialize as HTML -->
         <map:serialize type="html" />
