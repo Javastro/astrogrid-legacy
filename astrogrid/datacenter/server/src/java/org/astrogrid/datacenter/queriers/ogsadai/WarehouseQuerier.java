@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.4 2004/03/12 20:04:57 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.5 2004/03/15 17:11:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,7 +72,6 @@ public class WarehouseQuerier extends QuerierPlugin {
   public WarehouseQuerier(Querier querier) throws IOException {
     super(querier);
     log.debug("Constructing WarehouseQuerier");
-    workspace = new Workspace(querier.getId());
   }
 
   /**
@@ -102,9 +101,16 @@ public class WarehouseQuerier extends QuerierPlugin {
     log.info("SQL query is " + sql);
     log.debug("Successfully created SQL query from input ADQL");
 
+    //Set up outputs
+     try {
+       workspace = new Workspace("Warehouse_"+querier.getId());
+     }
+     catch (Exception th) {
+        log.error(th);
+     }
+     
     OutputStream output = null;
     File tempFile = null;
-    //Set up outputs
     if (this.workspace != null) {
       try {
         tempFile = workspace.makeWorkFile(TEMP_RESULTS_FILENAME);
@@ -448,6 +454,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.5  2004/03/15 17:11:14  mch
+'botch' fix for duplicate Workspace id
+
 Revision 1.4  2004/03/12 20:04:57  mch
 It05 Refactor (Client)
 
