@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.6 2004/10/08 14:02:14 mch Exp $
+ * $Id: SqlResults.java,v 1.7 2004/10/08 14:07:02 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,15 +72,10 @@ public class SqlResults extends QueryResults
    {
       assert (out != null);
       
-      long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      long localLimit = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
+      long queryLimit = querier.getQuery().getLimit();
       
-      //if the user has asked for a limit (and it's less than the datacenter-configured limit) then set to that
-      if ( (querier.getQuery().getLimit() != -1) &&
-           (querier.getQuery().getLimit()<maxAllowed))
-      {
-         maxAllowed=querier.getQuery().getLimit();
-      }
-      
+     
       try
       {
          PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
@@ -132,7 +127,7 @@ public class SqlResults extends QueryResults
 //         sqlResults.beforeFirst();
          int row = 0;
          statusToUpdate.newProgress("Processing Row", getCount());
-         while (sqlResults.next())
+         while (sqlResults.next() && ((queryLimit == -1) || (row<=queryLimit)))
          {
             row++;
             statusToUpdate.setProgress(row);
@@ -145,9 +140,10 @@ public class SqlResults extends QueryResults
             }
             printOut.println("  </TR>");
             
-            if ((maxAllowed!=-1) && (row>maxAllowed)) {
-               statusToUpdate.addDetail("Results limited to "+maxAllowed+" rows by datacenter");
-               log.warn("Limiting returned results to "+maxAllowed);
+            if ((localLimit!=-1) && (row>localLimit)) {
+               //deliberately don't finish table properly
+               statusToUpdate.addDetail("Results limited to "+localLimit+" rows by datacenter");
+               log.warn("Limiting returned results to "+localLimit);
                break;
             }
          }
@@ -319,6 +315,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.7  2004/10/08 14:07:02  mch
+ Fixed max limit bug
+
  Revision 1.6  2004/10/08 14:02:14  mch
  Fixed max limit bug
 
@@ -449,6 +448,7 @@ public class SqlResults extends QueryResults
  It03-Close
 
  */
+
 
 
 
