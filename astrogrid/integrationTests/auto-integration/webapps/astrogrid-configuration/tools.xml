@@ -14,7 +14,7 @@
 -->
     <tool
             name="testapp"
-            location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/ApplicationControllerService"
+            location="@TOMCATROOT@/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService"
             interface="I1"
             />
 <!--
