@@ -46,10 +46,10 @@ public class Parameter {
         documentation = null ;
         
     private String
-        location = null ;
+        location = "" ;
         
     private String
-        contents = null ;
+        contents = "" ;
         
     private Cardinality
         cardinality = null ;
@@ -139,13 +139,23 @@ public class Parameter {
 	}
 
 
-	public void setContents(String string) {
-		contents = string;
+	public void setContents( String contents ) {
+		if( contents != null ) {
+            this.contents = contents.trim() ;
+        }
+        else {
+            this.contents = null ;
+        } 
 	}
 
 
 	public void setLocation( String url ) {
-		location = url;
+        if( url != null ) {
+            this.location = url.trim() ;
+        }
+        else {
+            this.location = null ;
+        } 
 	}
     
     
@@ -186,33 +196,55 @@ public class Parameter {
     
     protected String toJESXMLString() {
         if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() entry") ;
-        String 
-         response = null ;
-                                     
+        
+        // Set up default response - return nothing for a given parameter
+        String response = "" ;
+         
+         
+        // This condition requires explanation.
+        // There is a hopefully short-term problem with how the GUI deals with optional parameters.
+        // At present we leave at least one lying around. At least then the user can see that there 
+        // are optional parameters available. 
+        // It is here where they can be "edited" out - at job submission time.
+        // If a parameter is optional, the minimum cardinality will be 0. Then, if there is no
+        // location information and no content information, we assume this is an optional parameter
+        // that has been ignored, and effectively do nothing, ie: return an empty string.
+        // (Of course, this itself may represent an error on the user's part).                          
         try {
             
-            Object []
-                inserts = new Object[3] ;
-            inserts[0] = this.getName() ;
-            inserts[1] = this.getType() ;
-//            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
-//            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
-            
-            if( this.isRemoteReference() ) {
-                inserts[2] = ( this.getLocation() == null ) ? " " :  this.getLocation() ;
+            if( this.getCardinality().getMinimum() == 0 
+                &&
+                ( this.location == null || this.location.length() == 0 ) 
+                &&
+                ( this.contents == null || this.contents.length() == 0 ) ) {
+               
+               ; // Do nothing.        
+                      
             }
             else {
-                inserts[2] = ( this.getContents() == null ) ? " " :  this.getContents() ;
-            }          
+                
+                Object [] inserts = new Object[3] ;
+                inserts[0] = this.getName() ;
+                inserts[1] = this.getType() ;
+            
+                if( this.isRemoteReference() ) {
+                    inserts[2] = ( this.location == null ) ? "" :  this.location ;
+                }
+                else {
+                    inserts[2] = ( this.contents == null ) ? "" :  this.contents ;
+                }          
 
-            response = MessageFormat.format( WorkflowDD.JOBPARAMETER_TEMPLATE, inserts ) ;
+                response = MessageFormat.format( WorkflowDD.JOBPARAMETER_TEMPLATE, inserts ) ;
 
+            }
+            
         }
         finally {
             if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
         }       
         
-        return response ;       
+        return response ;    
+           
     }
     
      
@@ -251,9 +283,9 @@ public class Parameter {
             
         if( this.type != null
             &&
-            ( this.type.indexOf( "MySpace_FileReference") != -1 
+            ( this.type.indexOf( "Space_FileReference") != -1 
               ||
-              this.type.indexOf( "MySpace_VOTableReference") != -1 ) ) {
+              this.type.indexOf( "Space_VOTableReference") != -1 ) ) {
                   
             bRemoteRef = true ;   
              

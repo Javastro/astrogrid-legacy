@@ -32,6 +32,7 @@ import org.astrogrid.community.common.util.CommunityMessage ;
 //import org.astrogrid.i18n.*;
 //import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.delegate.jobController.*;
+import org.astrogrid.jes.delegate.JesDelegateException;
 
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
@@ -166,9 +167,9 @@ public class Workflow extends Activity {
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
-//    private MySpaceManagerDelegate
-//        mySpace ;
-    
+    private static final String
+        MYSPACE_PROTOCOL = "myspace://" ;
+        
     
     public static Workflow createWorkflow(  String communitySnippet
                                           , String name
@@ -414,21 +415,24 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() entry") ; 
 
         boolean
-            retValue = true ;
+            retValue = false ;
         String
             request = null,
             jesLocation = null,
             response = null ;
         JobControllerDelegate
             jobController = null ;
-        
-                    
+                           
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
             request = workflow.constructJESXML( communitySnippet ) ;
             trace( "jesLocation: " + jesLocation ) ;
             jobController = JobControllerDelegate.buildDelegate( jesLocation ) ;
-            jobController.submitJob( request ) ;            
+            jobController.submitJob( request ) ;
+            retValue = true ;            
+        }
+        catch( JesDelegateException jdex ) {
+            jdex.printStackTrace() ;
         }
         catch( Exception ex ) {
             ex.printStackTrace() ;
@@ -1122,9 +1126,7 @@ public class Workflow extends Activity {
     /**
       * Formats some logical URL for a file in MySpace.
       * 
-      * This is a guess at present. The guess involved assuming
-      * for a logical representation that the community info
-      * would not be required.
+      * This is a guess at present. 
       * 
       * @param communitySnippet - Account and Group details.
       * @param logicalDirectoryPath - Path without user details
@@ -1135,25 +1137,43 @@ public class Workflow extends Activity {
     public static String formatMySpaceURL( String communitySnippet
                                          , String logicalDirectoryPath
                                          , String fileName ) {
-        
+        if( TRACE_ENABLED ) trace( "Workflow.formatMySpaceURL() entry") ;  
+               
         StringBuffer
             buffer = new StringBuffer(64) ;
             
-        buffer
-            .append( "myspace://" )
-            .append( CommunityMessage.getAccount( communitySnippet ) )
-            .append( "/")
-            .append( "serv1")
-            .append( "/")
-            .append( logicalDirectoryPath )
-            .append( "/")
-            .append( fileName ) ;
+        try {
+            if( !Workflow.pathContainsAccountDetails( logicalDirectoryPath ) ) {
+                buffer
+                    .append( Workflow.MYSPACE_PROTOCOL )
+                    .append( CommunityMessage.getAccount( communitySnippet ) )
+                    .append( "/")
+                    .append( "serv1")
+                    .append( "/")
+                    .append( logicalDirectoryPath )
+                    .append( "/")
+                    .append( fileName ) ;
+            }
+            else {
+                buffer
+                    .append( Workflow.MYSPACE_PROTOCOL )
+                    .append( logicalDirectoryPath )
+                    .append( "/")
+                    .append( fileName ) ;            
+            }
+                       
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.formatMySpaceURL() exit" ) ;
+        }
+            
+
             
         return buffer.toString() ; 
             
     }
     
-    
+
     public static boolean insertToolIntoStep( String stepActivityKey
                                             , Tool tool
                                             , Workflow workflow ) {
@@ -1195,30 +1215,220 @@ public class Workflow extends Activity {
     } // end of insertToolIntoStep(String,String)    
     
     
+    /** 
+      * A helper method that deletes a parameter from a given tool. 
+      * The array position of the parameter is critical:
+      * this is its position (zero based) within the actual cardinality
+      * of this named parameter. That is, if the parameter named
+      * "votable" has five occurances and the array position is set to
+      * three, then the fourth votable parameter will be deleted.
+      * 
+      * JBL Note: I believe this is too fernickety.
+      * @see deleteParameter based upon value..
+      *  
+      * @param tool - The tool to be executed
+      * @param paramName - the name of the parameter
+      * @param direction - either "input" or "output".
+      * @param arrayPosition - zero based position of parameter
+      * @return - boolean indicating success or failure.
+      * 
+      **/   
+    public static boolean deleteParameter( Tool tool
+                                         , String paramName
+                                         , String direction
+                                         , int arrayPosition ) {
     
-    public static void insertParameterValue( Tool tool
-                                           , String paramName
-                                           , String paramValue
-                                           , String direction
-                                           , int arrayPosition ) {
-    
-        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() entry") ; 
+        if( TRACE_ENABLED ) trace( "Workflow.deleteParameter() entry") ; 
         
-            ListIterator
-                iterator ;
-            int 
-                index = 0 ;
-            Parameter
-                p ;
-   
+            // It is possible we will not delete a parameter, so the default is false...
+            boolean retValue = false ;
             
+            // We need two iterators. The first will be used to count the occurances
+            // of the requested parameter name. The second will be used for deletion.
+            ListIterator it1, it2 ;
+            
+            // index is used to establish the actual parameter to be deleted
+            // count is used to count the actual cardinality
+            // minimumAllowedCardinality is used to hold the minimum allowed cardinality
+            // for deletion purposes.
+            int index = 0, count = 0, minimumAllowedCardinality ;
+            
+            Parameter p ;
+     
+        try {
+            
+            
+            if( direction.equals( "input") ){
+                it1 = tool.getInputParameters() ;
+                it2 = tool.getInputParameters() ;
+            }
+            else  {
+                it1 = tool.getOutputParameters() ;
+                it2 = tool.getOutputParameters() ;
+            }
+            
+            while( it1.hasNext() ) {
+                p = (Parameter)it1.next() ;
+                if( p.getName().equals( paramName ) ) {
+                    count++ ;
+                }
+            }
+            
+            it1 = null ;
+            
+            while( it2.hasNext() ) {
+                p = (Parameter)it2.next() ;
+                if( p.getName().equals( paramName ) ) {
+                    if( index == arrayPosition ) {
+                        // OK. We have established that this
+                        // is the parameter we wish to delete...
+                        
+                        // We do not allow deletion of an optional
+                        // parameter that forces it to have no occurances,
+                        // so we set minimum allowed to 1 in these circumstances.
+                        if( p.getCardinality().getMinimum() == 0 ) {
+                            minimumAllowedCardinality = 1 ;
+                        }
+                        else {
+                            minimumAllowedCardinality = p.getCardinality().getMinimum() ;
+                        }
+                        
+                        if( count > minimumAllowedCardinality ) {
+                            it2.remove() ;
+                            retValue = true ;
+                        }
+                        
+                        break ;
+                    }
+                    index++ ;
+                }
+            }
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.deleteParameter() exit") ; 
+        }
+        
+        return retValue ;
+                                                          
+    } // end of Workflow.deleteParameter()
+    
+
+    /**> 
+      * A helper method that deletes a parameter from the given tool.
+      * The parameter value is used to identify the parameter as target. 
+      * Can be used to delete redundant empty parameters by setting the value
+      * to null or the empty string.
+      * 
+      * This is by far the easiest way of deleting parameters!
+      *  
+      * @param tool - The tool to be executed
+      * @param paramName - the name of the parameter
+      * @param value - the value used to identify the target parameter.
+      * Can be null or the empty string, in which case the first empty 
+      * candidate will be used.
+      * @param direction - either "input" or "output".
+      * @return - boolean indicating success or failure.
+      * 
+      **/      
+    public static boolean deleteParameter( Tool tool
+                                         , String paramName
+                                         , String value
+                                         , String direction ) {
+    
+        if( TRACE_ENABLED ) trace( "Workflow.deleteParameter(tool,paramName,value,direction) entry") ; 
+        
+            boolean retValue = false ;
+            ListIterator iterator = null ;
+            Parameter p ;
+     
         try {
             
             if( direction.equals( "input") ){
                 iterator = tool.getInputParameters() ;
             }
-            else  {
+            else if( direction.equals( "output") ) {
                 iterator = tool.getOutputParameters() ;
+            }
+            else {
+                return retValue ;
+            }
+            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals( paramName ) ) {
+                    if( (value == null || value.equals("") )
+                        &&
+                        (p.getValue() == null || p.getValue().equals("") ) ) {
+                            
+                        iterator.remove() ;
+                        retValue = true ;
+                        break ;
+                    }
+                    else if( value == null ) {
+                        break ;
+                    }
+                    else if( value.equals( p.getValue() ) ) {
+                        iterator.remove() ;
+                        retValue = true ;
+                        break ;
+                    }
+                } // end if
+            } // end while 
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.deleteParameter(tool,paramName,value,direction) exit") ; 
+        }
+        
+        return retValue ;
+                                                          
+    } // end of Workflow.deleteParameter(tool,paramName,value,direction)
+
+
+    
+    
+    /** 
+      * A helper method that inserts a value into a parameter for
+      * a given tool. The array position of the parameter is critical:
+      * this is its position (zero based) within the actual cardinality
+      * of this named parameter. That is, if the parameter named
+      * "votable" has five occurances and the array position is set to
+      * three, then the fourth votable parameter will have its value set.
+      * 
+      * JBL Note: I believe this is too fernickety.
+      * @see insertParameterValue where the arrayPosition is not included.
+      *  
+      * @param tool - The tool to be executed
+      * @param paramName - the name of the parameter
+      * @param paramValue - the value to be inserted. Can be an instream
+      * value or contents. This is detected by introspection.
+      * @param direction - either "input" or "output".
+      * @param arrayPosition - zero based position of parameter
+      * @return - boolean indicating success or failure.
+      * 
+      **/      
+    public static boolean insertParameterValue( Tool tool
+                                              , String paramName
+                                              , String paramValue
+                                              , String direction
+                                              , int arrayPosition ) {
+    
+        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() entry") ; 
+        
+            boolean retValue = false ;
+            ListIterator iterator = null ;
+            int index = 0 ;
+            Parameter p ;
+     
+        try {
+            
+            if( direction.equals( "input") ){
+                iterator = tool.getInputParameters() ;
+            }
+            else if( direction.equals( "output") ) {
+                iterator = tool.getOutputParameters() ;
+            }
+            else {
+                return retValue ;
             }
             
             while( iterator.hasNext() ) {
@@ -1226,6 +1436,8 @@ public class Workflow extends Activity {
                 if( p.getName().equals( paramName ) ) {
                     if( index == arrayPosition ) {
                         p.setValue( paramValue ) ;
+                        retValue = true ;
+                        break ;
                     }
                     index++ ;
                 }
@@ -1233,12 +1445,116 @@ public class Workflow extends Activity {
         }
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue() exit") ; 
-
         }
+        
+        return retValue ;
                                                           
     } // end of Workflow.insertParameterValue()
+    
+    
+    /**> 
+      * A helper method that inserts a value into a parameter for
+      * a given tool. The old parameter value is used to identify the 
+      * suitable parameter as target. This can also be used to establish
+      * new values in a virgin set of new, empty parameters by setting 
+      * the old value to null or the empty string.
+      * 
+      * This is by far the easiest way of setting parameter values!
+      *  
+      * @param tool - The tool to be executed
+      * @param paramName - the name of the parameter
+      * @param oldValue - the value used to identify the target parameter.
+      * Can be null or the empty string, in which case the first empty 
+      * candidate will be used.
+      * @param newValue - the value to be inserted. Can be an instream
+      * value or contents. This is detected by introspection of the parameter
+      * type. 
+      * @param direction - either "input" or "output".
+      * @return - boolean indicating success or failure.
+      * 
+      **/      
+    public static boolean insertParameterValue( Tool tool
+                                              , String paramName
+                                              , String oldValue
+                                              , String newValue
+                                              , String direction ) {
+    
+        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction) entry") ; 
+        
+            boolean retValue = false ;
+            ListIterator iterator = null ;
+            Parameter p ;
+     
+        try {
+            
+            if( direction.equals( "input") ){
+                iterator = tool.getInputParameters() ;
+            }
+            else if( direction.equals( "output") ) {
+                iterator = tool.getOutputParameters() ;
+            }
+            else {
+                return retValue ;
+            }
+            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals( paramName ) ) {
+                    if( (oldValue == null || oldValue.equals("") )
+                        &&
+                        (p.getValue() == null || p.getValue().equals("") ) ) {
+                            
+                        p.setValue( newValue ) ;
+                        retValue = true ;
+                        break ;
+                    }
+                    else if( oldValue == null ) {
+                        break ;
+                    }
+                    else if( oldValue.equals( p.getValue() ) ) {
+                        p.setValue( newValue ) ;
+                        retValue = true ;
+                        break ;
+                    }
+                } // end if
+            } // end while 
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction) exit") ; 
+        }
+        
+        return retValue ;
+                                                          
+    } // end of Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)
+   
                                                
     
+    private static boolean pathContainsAccountDetails( String path ) {
+        if( TRACE_ENABLED ) trace( "Workflow.pathContainsAccountDetails() entry") ;
+        
+        boolean retValue = false ;
+        
+        try {
+            
+            // This test assumes that the @, for example, in "jl99@star.le.ac.uk"
+            // indicates the presence of full path details. This is corroborated
+            // by the serv1 appellation, which is currently required in full path
+            // myspace references. 
+            if( path.indexOf( "@") > 0 
+                && 
+                path.indexOf( "serv1") != -1) {
+                    
+                retValue = true ; 
+                
+            }
+            
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.pathContainsAccountDetails() exit") ;  
+        }
+        
+        return retValue ;
+    }
         
     private static void trace( String traceString ) {
         System.out.println( traceString ) ;

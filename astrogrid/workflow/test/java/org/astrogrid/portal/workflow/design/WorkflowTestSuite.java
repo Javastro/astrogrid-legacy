@@ -11,7 +11,8 @@ import org.apache.log4j.Logger;
 import org.astrogrid.portal.workflow.*;
 import org.astrogrid.community.common.util.CommunityMessage;
 import java.util.Date ;
-import org.astrogrid.portal.workflow.design.activity.*; 
+import org.astrogrid.portal.workflow.design.activity.*;
+import org.astrogrid.portal.workflow.design.Step ; 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 import java.io.StringReader ; 
@@ -442,9 +443,8 @@ public class WorkflowTestSuite extends TestCase {
              assertTrue( true ) ;    
          }
          catch( Exception ex ) {
-             
-             assertTrue( false ) ;
              ex.printStackTrace() ;
+             assertTrue( false ) ;
          }
          finally {
              logger.info( "exit: WorkflowTestSuite.testCreateTool()" );  
@@ -596,9 +596,9 @@ public class WorkflowTestSuite extends TestCase {
                                                       , "query"
                                                       , queryName ) ;
                                                       
-              votableLocation = Workflow.formatMySpaceURL( communitySnippet()
-                                                         , "votables"
-                                                         , "votable_0123.xml" ) ;
+             votableLocation = Workflow.formatMySpaceURL( communitySnippet()
+                                                        , "votables"
+                                                        , "votable_0123.xml" ) ;
              
              listIt = tool.getInputParameters() ;
              Parameter
@@ -652,12 +652,440 @@ public class WorkflowTestSuite extends TestCase {
       } // end of testCreateQueryAndSubmitWorkflow()
    
     
+    public void testFormatMySpaceReference_withoutAccountDetails() {
+        logger.info( "---------------------------------------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testFormatMySpaceReference_withoutAccountDetails()" ); 
+        
+        String logicalDirectoryPath = "ag/votables" ;
+        String fileName = "mySpecialVOTable.xml" ;
+        String formattedRef ;
+        String correctResponse = "myspace://jl99@star.le.ac.uk/serv1/ag/votables/mySpecialVOTable.xml" ;
+        
+        try {
+            
+            formattedRef = Workflow.formatMySpaceURL( communitySnippet()
+                                                    , logicalDirectoryPath
+                                                    , fileName ) ;
+                                                    
+            logger.info( "formattedRef: " + formattedRef ) ;
+            
+            if( formattedRef.equals( correctResponse ) ) {
+                assertTrue( true ) ;
+            }
+            else {
+                assertTrue( false ) ;
+            }
+ 
+        }
+        catch( Exception ex ){
+            assertTrue( false ) ;
+            ex.printStackTrace() ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testFormatMySpaceReference_withoutAccountDetails()" );   
+        }
+        
+    } // end of testFormatMySpaceReference_withoutAccountDetails()
     
+
+    public void testFormatMySpaceReference_withAccountDetails() {
+        logger.info( "------------------------------------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testFormatMySpaceReference_withAccountDetails()" ); 
+        
+        String logicalDirectoryPath = "jl99@star.le.ac.uk/serv1/ag/votables" ;
+        String fileName = "mySpecialVOTable.xml" ;
+        String formattedRef ;
+        String correctResponse = "myspace://jl99@star.le.ac.uk/serv1/ag/votables/mySpecialVOTable.xml" ;
+         
+        try {
+            formattedRef = Workflow.formatMySpaceURL( communitySnippet()
+                                                    , logicalDirectoryPath
+                                                    , fileName ) ;
+                                                    
+            logger.info( "formattedRef: " + formattedRef ) ;
+            
+            if( formattedRef.equals( correctResponse ) ) {
+                assertTrue( true ) ;
+            }
+            else {
+                assertTrue( false ) ;
+            }
+            
+        }
+        catch( Exception ex ){
+            assertTrue( false ) ;
+            ex.printStackTrace() ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testFormatMySpaceReference_withAccountDetails()" );   
+        }
+        
+    } // end of testFormatMySpaceReference_withAccountDetails()
+
+
+    public void testToJesXMLOnEmptyOptionalParameter() {
+        logger.info( "------------------------------------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testToJesXMLOnEmptyOptionalParameter()" ); 
+
+        final Date 
+            date = new Date() ;
+           
+        final String 
+            workflowName = "WorkflowTest_" + date.getTime(),
+            description = "One step DataFederation job created at " + date.toGMTString(),
+            templateName = "OneStepJob"  ; 
+              
+ 
+        final String
+            votableLocation[] = { Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable01.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable02.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable03.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable04.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable05.xml" ) } ;
+        final String
+            votOutputLocation = Workflow.formatMySpaceURL( communitySnippet(), "votables", "outputXS6wf01.xml") ;
+            
+        Workflow
+             workflow = null ;            
+        Sequence
+            sequence = null ;
+        ActivityIterator
+            iterator = null ;
+        Activity
+            activity = null ;
+        Step
+            step = null ;
+        String
+            jesXML = null ;
+            
+        try {
+            
+            workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
+                                                          , workflowName
+                                                          , description
+                                                          , templateName ) ;
+        
+            sequence = (Sequence)workflow.getChild() ;            
+            iterator = sequence.getChildren() ;
+             
+            while( iterator.hasNext() ) {
+                activity = iterator.next() ;
+                if( activity instanceof Step ) {
+                    step = (Step)activity ;
+                    break ;
+                }
+            }
+            
+            this.setUpDataFederationStep( step
+                                        , votableLocation
+                                        , true
+                                        , "some sort of show string here"
+                                        , "some sort of target string here"
+                                        , "some sort of what2show string here"
+                                        , "" // empty optional parameter ("require")
+                                        , "some sort of output string here"
+                                        , 5
+                                        , votOutputLocation ) ;
+ 
+            jesXML = workflow.constructJESXML( communitySnippet() ) ;
+            prettyPrint( "JES string:", jesXML ) ;
+            
+            if( jesXML.indexOf( "name=\"require\"" ) == -1 ) {
+                assertTrue( true ) ;
+            }
+            else {
+                assertTrue( false ) ;
+            }
+            
+        }
+        catch( Exception ex ){
+            assertTrue( false ) ;
+            ex.printStackTrace() ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testToJesXMLOnEmptyOptionalParameter()" );   
+        }
+        
+    } // end of testToJesXMLOnEmptyOptionalParameter()
+
+
+
+
+    public void testDeleteParameter() {
+        logger.info( "----------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testDeleteParameter()" ); 
+
+        final Date 
+            date = new Date() ;
+           
+        final String 
+            workflowName = "WorkflowTest_" + date.getTime(),
+            description = "One step DataFederation job created at " + date.toGMTString(),
+            templateName = "OneStepJob"  ; 
+              
+ 
+        final String
+            votableLocation[] = { Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable01.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable02.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable03.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable04.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable05.xml" ) } ;
+        final String
+            votOutputLocation = Workflow.formatMySpaceURL( communitySnippet(), "votables", "outputXS6wf01.xml") ;
+            
+        Workflow
+             workflow = null ;            
+        Sequence
+            sequence = null ;
+        ActivityIterator
+            iterator = null ;
+        Activity
+            activity = null ;
+        Step
+            step = null ;
+        String
+            jesXML = null ;
+            
+        try {
+            
+            workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
+                                                          , workflowName
+                                                          , description
+                                                          , templateName ) ;
+        
+            sequence = (Sequence)workflow.getChild() ;            
+            iterator = sequence.getChildren() ;
+             
+            while( iterator.hasNext() ) {
+                activity = iterator.next() ;
+                if( activity instanceof Step ) {
+                    step = (Step)activity ;
+                    break ;
+                }
+            }
+            
+            this.setUpDataFederationStep( step
+                                        , votableLocation
+                                        , true
+                                        , "some sort of show string here"
+                                        , "some sort of target string here"
+                                        , "some sort of what2show string here"
+                                        , "" // empty optional parameter ("require")
+                                        , "some sort of output string here"
+                                        , 5
+                                        , votOutputLocation ) ;
+                                        
+            // Here is the test: deletion of the 3rd votable input parameter...
+            Workflow.deleteParameter( step.getTool()
+                                    , "VOTfiles"            // name of parameter
+                                    , votableLocation[2]    // its value is used to find it
+                                    , "input") ;            // an input parameter
+ 
+            jesXML = workflow.constructJESXML( communitySnippet() ) ;
+            prettyPrint( "JES string:", jesXML ) ;
+            
+            if( jesXML.indexOf( votableLocation[2] ) == -1 ) {
+                assertTrue( true ) ;
+            }
+            else {
+                assertTrue( false ) ;
+            }
+            
+        }
+        catch( Exception ex ){
+            assertTrue( false ) ;
+            ex.printStackTrace() ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testDeleteParameter()" );   
+        }
+        
+    } // end of testDeleteParameter()
+
+
+
+    public void testInsertParameterValue() {
+        logger.info( "----------------------------------------------" ); 
+        logger.info( "enter: WorkflowTestSuite.testInsertParameterValue()" ); 
+
+        final Date 
+            date = new Date() ;
+           
+        final String 
+            workflowName = "WorkflowTest_" + date.getTime(),
+            description = "One step DataFederation job created at " + date.toGMTString(),
+            templateName = "OneStepJob"  ; 
+              
+ 
+        final String
+            votableLocation[] = { Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable01.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable02.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable03.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable04.xml" )
+                                , Workflow.formatMySpaceURL( communitySnippet(), "votables", "votable05.xml" ) } ;
+        final String
+            votOutputLocation = Workflow.formatMySpaceURL( communitySnippet(), "votables", "outputXS6wf01.xml") ;
+            
+        Workflow
+             workflow = null ;            
+        Sequence
+            sequence = null ;
+        ActivityIterator
+            iterator = null ;
+        Activity
+            activity = null ;
+        Step
+            step = null ;
+        String
+            jesXML = null ;
+            
+        try {
+            
+            workflow = Workflow.createWorkflowFromTemplate( communitySnippet()
+                                                          , workflowName
+                                                          , description
+                                                          , templateName ) ;
+        
+            sequence = (Sequence)workflow.getChild() ;            
+            iterator = sequence.getChildren() ;
+             
+            while( iterator.hasNext() ) {
+                activity = iterator.next() ;
+                if( activity instanceof Step ) {
+                    step = (Step)activity ;
+                    break ;
+                }
+            }
+            
+            this.setUpDataFederationStep( step
+                                        , votableLocation
+                                        , true
+                                        , "some sort of show string here"
+                                        , "some sort of target string here"
+                                        , "some sort of what2show string here"
+                                        , "" // empty optional parameter ("require")
+                                        , "some sort of output string here"
+                                        , 5
+                                        , votOutputLocation ) ;
+                                        
+            // Here is the test: insertion of value in the empty optional parameter...
+            Workflow.insertParameterValue( step.getTool()
+                                         , "require" // parameter name
+                                         , ""        // empty old value                                           
+                                         , "a suitable require string" // some new value
+                                         , "input" ) ; // input parameter
+ 
+            jesXML = workflow.constructJESXML( communitySnippet() ) ;
+            prettyPrint( "JES string:", jesXML ) ;
+            
+            if( jesXML.indexOf( "a suitable require string" ) > 0 ) {
+                assertTrue( true ) ;
+            }
+            else {
+                assertTrue( false ) ;
+            }
+            
+        }
+        catch( Exception ex ){
+            assertTrue( false ) ;
+            ex.printStackTrace() ;
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.testInsetParameterValue()" );   
+        }
+        
+    } // end of testInsetParameterValue()
+
+
+
+
+
 
     private String communitySnippet(){
         return CommunityMessage.getMessage( "1234", "jl99@star.le.ac.uk", "xray@star.le.ac.uk" ) ;
     }
 
+
+    // 
+    private Step setUpDataFederationStep( Step targetStep
+                                        , String [] votables
+                                        , boolean mergeCols
+                                        , String show
+                                        , String target
+                                        , String what2show
+                                        , String require
+                                        , String output
+                                        , int maxent
+                                        , String merged_output ) {
+        logger.info( "enter: WorkflowTestSuite.setUpDataFederationStep()" );
+       
+        ListIterator iterator ;
+        
+        try {
+            
+            Tool tool = Workflow.createTool( communitySnippet(), "DataFederation" ) ;
+            Parameter p ;
+            int votablesIndex = 0 ;
+            String pName ;
+            
+            iterator = tool.getInputParameters() ;            
+            while( iterator.hasNext() ) {
+                
+                p = (Parameter)iterator.next() ;
+                pName = p.getName() ;
+                if( pName.equals("VOTfiles") ) {
+                    p.setValue( votables[votablesIndex] ) ;
+                    votablesIndex++ ;
+                }
+                else if( pName.equals( "mergeCols") ) {
+                    p.setValue( new Boolean( mergeCols ).toString() ) ;
+                }
+                else if( pName.equals( "show" ) ) {
+                    p.setValue( show ) ;
+                }
+                else if( pName.equals( "target" ) ) {
+                    p.setValue( "target" ) ;
+                }
+                else if( pName.equals( "what2show") ) {
+                    p.setValue( what2show ) ;
+                }
+                else if( pName.equals( "require" ) ) {
+                    p.setValue( require ) ;
+                }
+                else if( pName.equals( "output" ) ) {
+                    p.setValue( "output" ) ;
+                }
+                else if( pName.equals( "maxent" ) ) {
+                    p.setValue( new Integer( maxent ).toString() ) ;
+                }
+
+            }
+            
+            iterator = null ; 
+            
+            for( votablesIndex=2; votablesIndex < votables.length; votablesIndex++ ) {
+                p = tool.newInputParameter( "VOTfiles" ) ;
+                p.setValue( votables[votablesIndex] ) ;
+            }
+            
+            iterator = tool.getOutputParameters() ;            
+            while( iterator.hasNext() ) {
+                p = (Parameter)iterator.next() ;
+                if( p.getName().equals("merged_output") )
+                   p.setValue( merged_output ) ;
+                   break ;
+            }  
+            
+            targetStep.setTool( tool ) ;                                        
+                                                                
+        }
+        finally {
+            logger.info( "exit: WorkflowTestSuite.setUpDataFederationStep()" );  
+        }
+        
+        return targetStep ;
+        
+    } // end of setUpDataFederationStep()
     
     
 	/** 
