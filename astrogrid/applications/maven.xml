@@ -86,8 +86,9 @@
 </preGoal>
 
 <preGoal name="test:test-resources">
+<echo message="creating the test properties file"/>
    <!-- need to generate the Test.properties file to put the correct paths in -->
-<copy file="${basedir}/test/java/${testproppathfrag}/Test.preprop" tofile="${basedir}/test/java/${testproppathfrag}/Test.properties"/>
+<copy file="${basedir}/test/java/${testproppathfrag}/Test.preprop" tofile="${basedir}/test/java/${testproppathfrag}/Test.properties" overwrite="true"/>
 
 
 <echo file="${basedir}/test/java/${testproppathfrag}/Test.properties" append="true">

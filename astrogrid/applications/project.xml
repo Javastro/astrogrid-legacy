@@ -213,11 +213,15 @@ This functionality is provided with the ApplicationController service, of which 
     <artifactId>catalina-ant</artifactId>
 		<version>4.1.24</version>
 	</dependency>
-    <dependency>
-      <groupId>cocoon</groupId>
-<artifactId>cocoon</artifactId>
-      <version>2.0.4</version>
+   
+   <dependency><!-- hsqldb - for testing -->
+        <id>hsqldb</id>
+        <version>1.7.1</version>
+	    <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
     </dependency>
+    
     <dependency>
       <groupId>mmmockobjects</groupId>
 <artifactId>mmmockobjects</artifactId>
