@@ -309,7 +309,7 @@ public class WorkflowTestSuite extends TestCase {
                             trace( "tool input parameters...");
                             for( int i=0; i<pvs.length; i++ ){
                                 trace( "parameterValue name: " + pvs[i].getName() );
-                                trace( "parameterValue type: " + pvs[i].getType().toString() );
+//                                trace( "parameterValue type: " + pvs[i].getType().toString() );
                                 trace( "parameterValue value: " + pvs[i].getValue() );
                                 pr = WorkflowHelper.getParameterRef( description, tool, pvs[i] ) ;
                                 trace( "min occurs: " + pr.getMinoccurs() ) ;
@@ -352,7 +352,7 @@ public class WorkflowTestSuite extends TestCase {
                             trace( "tool output parameters...");
 				            for( int i=0; i<pvs.length; i++ ){
 				                trace( "parameterValue name: " + pvs[i].getName() );
-				                trace( "parameterValue type: " + pvs[i].getType().toString() );
+//				                trace( "parameterValue type: " + pvs[i].getType().toString() );
 				                trace( "parameterValue value: " + pvs[i].getValue() );
                                 pr = WorkflowHelper.getParameterRef( description, tool, pvs[i] ) ;
                                 trace( "min occurs: " + pr.getMinoccurs() ) ;
@@ -398,7 +398,7 @@ public class WorkflowTestSuite extends TestCase {
 			  trace( "tool input parameters...");         
 			  for( int i=0; i<pvs.length; i++ ){
 			     trace( "parameterValue name: " + pvs[i].getName() );
-			     trace( "parameterValue type: " + pvs[i].getType().toString() );
+//			     trace( "parameterValue type: " + pvs[i].getType().toString() );
 			     trace( "parameterValue value: " + pvs[i].getValue() );
 			  }
 		   }
@@ -437,7 +437,7 @@ public class WorkflowTestSuite extends TestCase {
               trace( "tool input parameters...");         
               for( int i=0; i<pvs.length; i++ ){
                  trace( "parameterValue name: " + pvs[i].getName() );
-                 trace( "parameterValue type: " + pvs[i].getType().toString() );
+//                 trace( "parameterValue type: " + pvs[i].getType().toString() );
                  trace( "parameterValue value: " + pvs[i].getValue() );
               }
            }
@@ -481,7 +481,7 @@ public class WorkflowTestSuite extends TestCase {
               trace( "tool input parameters...");         
               for( int i=0; i<pvs.length; i++ ){
                  trace( "parameterValue name: " + pvs[i].getName() );
-                 trace( "parameterValue type: " + pvs[i].getType().toString() );
+//                 trace( "parameterValue type: " + pvs[i].getType().toString() );
                  trace( "parameterValue value: " + pvs[i].getValue() );
               }
            }

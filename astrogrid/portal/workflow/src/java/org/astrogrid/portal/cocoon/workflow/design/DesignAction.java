@@ -797,7 +797,7 @@ public class DesignAction extends AbstractAction {
 					ParameterValue p = (ParameterValue)iterator.nextElement() ;
 					trace("input param: Name " + p.getName()) ;
 //					trace("input param: Documentation " + p.getDocumentation()) ;
-					trace("input param: Type " + p.getType()) ;
+//					trace("input param: Type " + p.getType()) ;
 //					trace("input param: Cardinality " + p.getCardinality()) ;
 					trace("input param: value " + p.getValue()) ;
 					
