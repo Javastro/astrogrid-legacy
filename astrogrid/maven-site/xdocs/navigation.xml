@@ -17,7 +17,7 @@
 			<item name="Portal" href="portal/index.html"/>
 			<item name="Registry" href="registry/index.html"/>
 			<item name="Scripting" href="scripting/index.html" />
-			<item name="Security" href="wsse/index.html" />
+			<item name="Security" href="security/index.html" />
 			<item name="Warehouse" href="warehouse/index.html"/>
 			<item name="Workflow" href="workflow/index.html"/>
 			<item name="Workflow Common Objects" 
