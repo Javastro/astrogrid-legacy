@@ -23,6 +23,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
    boolean harvestOnLoad = false;
    boolean valuesSet = false;
    
+   
    private ServletContext context = null;   
 
    public static final String INTERVAL_HOURS_PROPERTY =
@@ -32,6 +33,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
+        
       }
    }
    
@@ -55,6 +57,7 @@ public class HarvestDaemon extends HttpServlet implements Runnable
        servletInitTime = new Date();
        rhs = new RegistryHarvestService();
        Thread myThread = new Thread(this);
+       //myThread.setDaemon(true);
        myThread.start();
       
       
@@ -85,13 +88,29 @@ public class HarvestDaemon extends HttpServlet implements Runnable
 	  if( nowParam != null ) {
 	     System.out.println("Immediate harvesting will be commenced!");
 	     try {
+           
 	        rhs.harvestAll(true,true);
 	     }
 	     catch(RegistryException e)
 	     {
 		    e.printStackTrace();
-         }
+        }
       }
+      String replicate = req.getParameter("ReplicateNow");
+      if( replicate != null ) {
+         System.out.println("Immediate replicate is beginning!");
+         try {
+                      
+            rhs.harvestAll(true,false);
+         }
+         catch(RegistryException e)
+         {
+            e.printStackTrace();
+         }
+         
+       }
+      
+      
       ServletOutputStream out = res.getOutputStream();
       res.setContentType("text/html");
       out.println("<html><head><title>Astrogrid Registry Harvest</title></head>");
@@ -104,8 +123,10 @@ public class HarvestDaemon extends HttpServlet implements Runnable
                   "<br>Number of Harvests initiated = " + myCounter +
                   "<br>Last harvest time = " + lastHarvestTime +
                   "<form method=\"get\"><input type=\"submit\" " +
-                  " name=\"HarvestNow\" value=\"Harvest now!\"></form>" +
-                  "</h1></body></html>");
+                  " name=\"HarvestNow\" value=\"Harvest now!\">" +
+                  "<br /><strong>Replication can be dangerous replicates all resources not by date</strong><br />" +
+                  "<input type=\"submit\" name=\"ReplicateNow\" value=\"Replicate Now\" /></form>" +
+                  "</h2></body></html>");
    }
 
    public void run()
@@ -117,11 +138,15 @@ public class HarvestDaemon extends HttpServlet implements Runnable
               System.out.println("harvest is enabled");
               valuesSet = true;
               harvestInterval = conf.getInt(INTERVAL_HOURS_PROPERTY);
-              harvestOnLoad = conf.getBoolean("registry.harvest.onload",false);          
+              harvestOnLoad = false;
+              /*
+              harvestOnLoad = conf.getBoolean("registry.harvest.onload",false);
+              */
               if(harvestInterval <= 0) {
-                  System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 1");
-                  harvestInterval = 1;
+                  System.out.println("ERROR CANNOT HAVE A HARVESTINTERVAL LESS THAN 1; DEFAULTING TO 12");
+                  harvestInterval = 12;
               }
+              
           }
        }else {
            System.out.println("harvest not enabled.");
@@ -132,20 +157,20 @@ public class HarvestDaemon extends HttpServlet implements Runnable
 	  while(true) {
          
          lastHarvestTime = new Date();
-
+      
          if(harvestOnLoad) {
-           try {
-                rhs.harvestAll(true,true);
-                myCounter++;
+           try {              
+               rhs.harvestAll(true,true);
+               myCounter++;
     	     }
            catch (RegistryException e)
            {
                e.printStackTrace();
-           }
+           }                      
          }//if
          harvestOnLoad = true;
 
- 		 try{
+ 		 try {
             myThread.sleep(harvestInterval*3600*1000);
 	     }
 	     catch(InterruptedException e)
