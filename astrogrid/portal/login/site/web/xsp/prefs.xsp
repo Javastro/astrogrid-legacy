@@ -36,11 +36,21 @@
 	-->
 <ProducePage>
 <xsp:logic>
-	String profile, user;
+	String profile, uzi, user;
+	int     lastSlash, length;
 
 	user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
 
-	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + user;
+	lastSlash = user.lastIndexOf('/');
+	length = user.length();
+		if(length &lt; 0) {
+		lastSlash = 0;
+	} else {
+		lastSlash++;
+	}
+	uzi = (String) user.substring(lastSlash, length);
+
+	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzi;
 	<util:include-uri>
 		<util:href><xsp:expr>profile</xsp:expr></util:href>
 	</util:include-uri>
@@ -67,7 +77,7 @@
 	paramenters here to be passed onto new forms.
 -->
 
-<userID><xsp:expr>user</xsp:expr></userID>
+<userID><xsp:expr>uzi</xsp:expr></userID>
 
 
 </xsp:logic>
