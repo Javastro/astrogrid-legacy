@@ -49,9 +49,8 @@ public abstract class WebServiceDelegate {
 	
 	protected void addParameter(String paramName,
 	QName xmlType,
-	Class javaType,
 	ParameterMode parameterMode) {
-		this.call.addParameter(paramName,xmlType,javaType,parameterMode);
+		this.call.addParameter(paramName,xmlType,parameterMode);
 	}
 	
 	protected void setOperationStyle(Style opStyle) {
