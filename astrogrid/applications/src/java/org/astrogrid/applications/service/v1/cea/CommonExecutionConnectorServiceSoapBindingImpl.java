@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.3 2004/03/30 22:45:09 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.4 2004/04/20 12:26:42 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -38,6 +38,7 @@ import org.astrogrid.workflow.beans.v1.axis._tool;
  * @author Paul Harrison (pah@jb.man.ac.uk) 25-Mar-2004
  * @version $Name:  $
  * @since iteration5
+ * @TODO look at the exception handling again - had to make each of the method implementations catch general exceptions to get it wrapped...
  */
 public class CommonExecutionConnectorServiceSoapBindingImpl
    implements CommonExecutionConnector {
@@ -70,7 +71,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          try {
             executionId = clec.execute(ctool, jobstepID.toString(), jobMonitorURL);
          }
-         catch (CeaException e) {
+         catch (Exception e) {
            throw _ceaFault.makeFault(e);
          }
          return executionId;
@@ -95,7 +96,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
       try {
          outlist = clec.listApplications();
       }
-      catch (CeaException e) {
+      catch (Exception e) {
          throw _ceaFault.makeFault(e);
       }
       applist = Castor2Axis.convert(outlist);
@@ -112,7 +113,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          try {
             ab = clec.getApplicationDescription(applicationID);
          }
-         catch (CeaException e) {
+         catch (Exception e) {
             throw _ceaFault.makeFault(e);
          }
          result = Castor2Axis.convert(ab);
@@ -129,7 +130,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
             org.astrogrid.applications.beans.v1.cea.castor.MessageType mess = clec.queryExecutionStatus(executionId);
             result = Castor2Axis.convert(mess);
          }
-         catch (CeaException e) {
+         catch (Exception e) {
             throw _ceaFault.makeFault(e);
          }
          return result;
