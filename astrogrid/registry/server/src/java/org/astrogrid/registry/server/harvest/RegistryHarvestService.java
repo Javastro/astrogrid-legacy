@@ -244,7 +244,7 @@ public class RegistryHarvestService {
        * @return XML docuemnt object representing the result of the query.
        * @author Kevin Benson
        */
-   public Document harvestAll(boolean onlyRegistries, boolean useDates)  throws AxisFault  {
+   public Document harvestAll(boolean onlyRegistries, boolean useDates)  {
       log.debug("start harvestAll");
       Document harvestedDoc = null;
       //This next statement will go away with Castor.

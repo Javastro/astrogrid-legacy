@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.7 2004/08/03 12:35:25 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.8 2004/08/09 22:53:29 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
 <!--    <extend>../../maven-base/project.xml</extend> -->
-    <id>auto-integration</id>
+    <extend>${basedir}/../maven/project.xml</extend>
+    <id>auto-registry-integration</id>
     <name>Automated Integration Testing</name>
-    <description>
+	
+	
+	<description>
     Automated integration testing. This project will install the astorgrid registry component
     (someday) to a local tomcat5 server, and set up the required configuration and workfing
     directories.

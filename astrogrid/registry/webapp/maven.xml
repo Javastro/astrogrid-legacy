@@ -11,6 +11,7 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
+	default="astrogrid-install-snapshot"
     >
 
     <!--+
@@ -142,6 +143,10 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building project site ...."/>
     </preGoal>
+	
+	<goal name="tt">
+		<echo>${maven.build.dir}/${pom.artifactId}</echo>
+	</goal>
 
 
     <!--+
@@ -151,31 +156,29 @@
 
     <!--+
         | Initialise the webapp files.
-        +-->
+
     <preGoal name="war:webapp">
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Pre-processing for webapp task"/>
-        <!--+
-            | Initialise the Axis webapp.
-            +-->
         <attainGoal name="init.axis"/>
-        <!--+
-            | Modify the war:webapp property to use our Axis webapp instead.
-            +-->
         <ant:echo message="Modifying war:webapp location"/>
         <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
         <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.webapp.dir', axisDir)}"/>
         <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
     </preGoal>
-
+        +-->
     <!--+
         | Post-process our webapp.
-        +-->
+
     <postGoal name="war:webapp">
+        +-->    
+	<preGoal name="war:webapp">	
+	    <attainGoal name="init.axis"/>	
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Post-processing for webapp task"/>
+
         <!--+
             | Initialise our paths.
             +-->
@@ -249,18 +252,15 @@
             <arg value="server"/>
             <arg value="${wsddDir}/adminquerydeploy.wsdd"/>
         </ant:java>
-        <!--+
-            | Deploy our Registry Harvest WebService.
-            +-->
-        <ant:echo message="Deploying Registry Harvest WebService"/>
-        <ant:java classname="org.apache.axis.utils.Admin"
-            dir="${axisDir}/WEB-INF"
-            classpathref="maven.dependency.classpath"
-            fork="true"
-            >
-            <arg value="server"/>
-            <arg value="${wsddDir}/harvestdeploy.wsdd"/>
-        </ant:java>
+		
+        <ant:copy verbose="false" todir="${maven.build.dir}/${pom.artifactId}" overwrite="false">
+            <ant:fileset dir="${axisDir}">
+            </ant:fileset>
+        </ant:copy>
+		
+	    </preGoal>		
+	<!--
     </postGoal>
+    -->
 
 </project>

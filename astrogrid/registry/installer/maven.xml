@@ -281,7 +281,7 @@
   </j:catch>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-exist-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-exist-SNAPSHOT.war"/>
+          path="/exist" war="file:///${temporary.dir}/astrogrid-exist-SNAPSHOT.war"/>
   </j:catch>
 </goal>
 
