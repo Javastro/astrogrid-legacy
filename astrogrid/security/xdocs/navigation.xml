@@ -4,9 +4,10 @@
   <title>AstroGrid security facade</title>
   <body>
     <menu name="Security facade">
-	<item name="INSTALL" href="INSTALL.html" />
-	<item name="RELEASE" href="RELEASE.html" />
-	<item name="The nonce-token system" href="nonce-token.html" />
+        <item name="Security facade home page" href="index.html"/>
+	<item name="Installation guide" href="INSTALL.html" />
+	<item name="Release notes" href="RELEASE.html" />
+	<item name="Architecture" href="architecture.html" />
 	<item name="Use in a client" href="client-use.html" />
 	<item name="Use in a service" href="service-use.html"/>
     </menu>
@@ -14,7 +15,6 @@
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
        <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
-       <item name="Security facade" href="../../index.html"/>
     </links>
   </body>
 </project>
