@@ -4,9 +4,9 @@
   <part id="general">
     <title>General</title>
 
-    <faq id="whats-foo">
+    <faq id="sample-question">
       <question>
-        What is Foo?
+        A sample question?
       </question>
       <answer>
         <p>some markup goes here</p>
@@ -17,26 +17,6 @@
       </answer>
     </faq>
 
-    <faq id="whats-bar">
-      <question>
-        What is Bar?
-      </question>
-      <answer>
-        <p>some markup goes here</p>
-      </answer>
-    </faq>
   </part>
 
-  <part id="install">
-    <title>Installation</title>
-
-    <faq id="how-install">
-      <question>
-        How do I install Foo?
-      </question>
-      <answer>
-        <p>some markup goes here</p>
-      </answer>
-    </faq>
-  </part>
 </faqs>

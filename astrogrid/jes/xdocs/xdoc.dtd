@@ -1,6 +1,6 @@
 <!ELEMENT table (#PCDATA | thead | tbody)*>
 <!ATTLIST table summary CDATA #IMPLIED>
-<!ELEMENT subsection (#PCDATA | p | table | source | dl | ul | ol)*>
+<!ELEMENT subsection (#PCDATA | p | table | source | dl | ul | ol | blockquote)*>
 <!ATTLIST subsection name CDATA #IMPLIED>
 <!ELEMENT title (#PCDATA)>
 <!ELEMENT author (#PCDATA)>
@@ -12,7 +12,7 @@
 <!ATTLIST th style CDATA #IMPLIED>
 <!ELEMENT td (#PCDATA | a | em | ul | ol | img | br | b | code | acronym | strong)*>
 <!ATTLIST td style CDATA #IMPLIED>
-<!ELEMENT section (#PCDATA | p | table | subsection | source | dl | ul | ol)*>
+<!ELEMENT section (#PCDATA | p | table | subsection | source | dl | ul | ol | blockquote)*>
 <!ATTLIST section name CDATA #IMPLIED>
 <!ELEMENT a (#PCDATA)>
 <!ATTLIST a target CDATA #IMPLIED>
@@ -30,6 +30,7 @@
 <!ELEMENT br (#PCDATA)>
 <!ELEMENT p (#PCDATA | a | em | ul | ol | img | br | b | code | acronym | strong )*>
 <!ATTLIST p ref CDATA #IMPLIED>
+<!ELEMENT blockquote (#PCDATA | a | em | ul | ol | img | br | b | code | acronym | strong )*>
 <!ELEMENT source (#PCDATA)>
 <!ELEMENT b (#PCDATA)>
 <!ELEMENT body (#PCDATA | section)*>

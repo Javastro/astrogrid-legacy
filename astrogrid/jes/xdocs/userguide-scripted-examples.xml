@@ -8,8 +8,22 @@
 <body>
 <section name="Introduction">
 <p>
+	Will have some whole workflow documents here, showing how scripting features can be integrated into workflows.
 </p>
 </section>
+
+<section name="Defining Constants">
+</section>
+
+<section name="Control flow based on results of previous step">
+</section>
+
+<section name="Iteration with variable tool parameters">
+</section>
+
+<section name="Parallel iteration with variables">
+</section>
+
 
 <section name="Self-Modifiying Workflows">
 	<p> Added some methods to allow scripts to easily modify workflow documents 

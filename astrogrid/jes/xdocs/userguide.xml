@@ -10,6 +10,8 @@
   <menu name="Overview">
     <item name="System Architecture" href="userguide-architecture.html" />
 
+
+    <item name="FAQ" href="userguide-faq.html" />
     <item name="Glossary" href="userguide-glossary.html" />
   </menu>
 
@@ -18,17 +20,21 @@
     <item name="JEScript" href="userguide-jescript.html" />
     <item name="JEScript Object Model" href="api-reference.html" />
     <item name="Extensions" href="userguide-extensions.html" />
+	
+	<item name="Execution Results" href="userguide-running.html" />
+    <item name="Workflow Document Schema"
+    href="userguide-workflowschema.html" />	
   </menu>
 
   <menu name="Examples">
     <item name="Simple Workflows" href="userguide-examples.html" />
-
     <item name="Scripted Workflows" href="userguide-scripted-examples.html" />
-
     <item name="JEScript Recipes" href="userguide-recipes.html" />
   </menu>
-
-  <menu name="Workflow Clients">
+  
+<!-- later
+  <menu name="Running Workflows">
+	
     <item name="Portal HTML Interface" href="userguide-portal.html" />
 
     <item name="JES HTML Interface" href="userguide-jes-html.html" />
@@ -39,17 +45,7 @@
 
     <item name="CEA Web Services" href="userguide-cea-ws.html" />
   </menu>
-
-  <menu name="Reference">
-    <item name="Workflow Document Schema"
-    href="userguide-workflowschema.html" />
-
-
-
-    <item name="FAQ" href="userguide-faq.html" />
-
-    <item name="References" href="userguide-references.html" />
-  </menu>
+-->
   </body>
 </project>
 

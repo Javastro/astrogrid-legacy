@@ -8,7 +8,77 @@
 <body>
 <section name="Introduction">
 <p>
+	This document describes snippets of JEScript for performing common tasks.
 </p>
+</section>
+
+<section name="VOTable Parsing">
+	<p>
+	</p>
+	<subsection name="Extract a column">
+		<p> The following example parses the metadata of a votable, to identify 
+			which column has the UCD <code>VOX:Image_AccessReference</code> It 
+			then extracts the contents of that column of the table into a list. 
+			Most of the methods used in this example are part of the STIL table 
+			library</p>
+		<p> The script assumes the votable is already loaded into a variable 
+			named <code>votableString</code> (although it could also be loaded 
+			from an input-stream or external-value. </p>
+		<p>
+			Results is a list of strings - which in this example happen to be urls
+		</p>
+		<source><![CDATA[
+table = astrogrid.starTableBuilder.makeStarTableFromString(votableString, 'votable' )
+col = ( 0 ... table.columnCount ).find{ table.getColumnInfo( it ).getUCD() == 'VOX:Image_AccessReference' }
+urls = ( 0L ... table.rowCount ).collect{ table.getCell( it, col ) }		
+		]]></source>
+		<p>
+			This example uses the internal-iterator style of Groovy programming to acheive very concise code. The equivalent
+			using external looping would be 
+		</p>
+		<source><![CDATA[
+table = astrogird.starTableBuilder.makeStarTableFromString(votableString,'votable')
+col = 0
+for (x in 0 ... table.columnCount) {
+  if (table.getColumnInfo(x).getUCD() == 'VOX:Image_AccessReference') {
+    col = x
+  }
+}
+urls = []
+for (x in 0 ... table.rowCount) {
+  urls.add(table.getCell(x,col));
+}		
+		]]></source>
+	</subsection>
+	</section>
+	
+<section name="Working with VOSpace">
+	<p>
+		
+	</p>
+	<subsection name="Using VOSpaceClient">
+		<p> The following example creates a new date-stamped folder in vospace, 
+			and then loads the contents of a URL into a vospace file in this 
+			new directory. </p>
+		<source><![CDATA[
+vospace = astrogrid.createVoSpaceClient(user)
+newDirIvorn = astrogrid.objectBuilder.newIvorn(homeIvorn,"example-" + astrogrid.ioHelper.dateStamp())
+vospace.newFolder(newDirIvorn)
+target = astrogrid.objectBuilder.newIvorn(newDirIvorn,'slashdot.html')
+vospace.putUrl('http://www.slashdot.org',target,false)
+		]]></source>
+		<p> The first line creates a new vospace client, which will act under 
+			the permissions of the current user - <code>user</code> is a 
+			predefined JEScript object that represents the owner of the current 
+			workfow. </p>
+		<p>An ivorn pointing to a new directory is then created. This is relative to the <code>homeIvorn</code>, which
+			is another predefined JEScript object that is the Ivorn of the homespace of the owner of the current workflow
+		</p>
+		<p>
+			The new folder is created, and then a file ivorn is computed relative to this. Finally, the vospace client is told to
+			fetch the contents of a url and save it to this target ivorn.
+		</p>
+	</subsection>
 </section>
 </body>
 </document>
