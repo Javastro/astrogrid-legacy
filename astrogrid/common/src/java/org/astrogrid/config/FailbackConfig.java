@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.28 2004/10/08 16:33:57 mch Exp $
+ * $Id: FailbackConfig.java,v 1.29 2004/10/08 17:12:26 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -486,7 +486,13 @@ public class FailbackConfig extends Config {
       
       //first look in cache
       if (cache.containsKey(key)) {
-         return new Object[] { cache.get(key) };
+         Object o = cache.get(key);
+         if (o instanceof Object[]) {
+            return (Object[]) o;
+         }
+         else {
+            return new Object[] { o };
+         }
       }
          
       //first look in jndi
@@ -726,6 +732,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.29  2004/10/08 17:12:26  mch
+Fix to getting sets of property when that property has been set to a set thpththh
+
 Revision 1.28  2004/10/08 16:33:57  mch
 Added setProperties() and attempt to make getProperties() work with property files
 
