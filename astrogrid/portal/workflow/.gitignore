@@ -3,3 +3,4 @@ maven.log
 .classpath
 .project
 velocity.log
+target
