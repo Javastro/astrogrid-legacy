@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar  5 17:40:33 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
+  
+  <!--
+  -->
+  <AstroGrid>
+<ProducePage>
+<xsp:logic>
+	String profile, uzi, user;
+	int     lastSlash, length;
+
+	user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
+
+	lastSlash = user.lastIndexOf('/');
+	length = user.length();
+		if(length &lt; 0) {
+		lastSlash = 0;
+	} else {
+		lastSlash++;
+	}
+	uzi = (String) user.substring(lastSlash, length);
+
+	profile = "http://barbara.star.le.ac.uk/datoz-bin/profiler?act=whole&amp;z=" + uzi;
+	<util:include-uri>
+		<util:href><xsp:expr>profile</xsp:expr></util:href>
+	</util:include-uri>
+<userID><xsp:expr>uzi</xsp:expr></userID>
+
+</xsp:logic>
+</ProducePage>
+  </AstroGrid>
+</xsp:page>

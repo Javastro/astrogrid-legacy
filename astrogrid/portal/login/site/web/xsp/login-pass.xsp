@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: jl99 $</cvs:author>
-    | <cvs:date>$Date: 2004/07/20 13:37:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2004/12/03 21:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -21,6 +21,26 @@
         +-->
 
         <page>
+	<!--
+<xsp-session:set-attribute name="user"><xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr></xsp-session:set-attribute>
+-->
+<xsp:logic>
+        String profile, uzi, user;
+        int     lastSlash, length;
+
+        user =(String)<xsp-session:get-attribute default="nadie" name="user"/>;
+
+        lastSlash = user.lastIndexOf('/');
+        length = user.length();
+                if(length &lt; 0) {
+                lastSlash = 0;
+        } else {
+                lastSlash++;
+        }
+        uzi = (String) user.substring(lastSlash, length);
+<xsp-session:set-attribute name="uzer"><xsp:expr>uzi</xsp:expr></xsp-session:set-attribute>
+</xsp:logic>
+
 <agComponentTitle>Welcome to Astrogrid, <xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr></agComponentTitle>
             <content>
 <script language="javascript">
@@ -35,11 +55,123 @@ function toggle(yo, was){
 	nofooter();
 }
 </script>
+<center>
+<table class="agSmaller" width="98%" cellspacing="4" cellpadding="4" border="0">
+<tr valign="top">
+<td width="50%" >
+<table width="100%">
+<tr><td>
+<span class="agCompositeTitle">Help:</span>
+<a href="javascript:newWindow('/astrogrid-portal/bare/mount/help/faq.hlp','HELPW')" class="agCompositeTitle">FAQ</a>
+<span class="agCompositeTitle">-</span>
+<a
+href="javascript:newWindow('/astrogrid-portal/bare/mount/help/cookbook.hlp','HELPW')" class="agCompositeTitle">CookBook</a>
+<span class="agCompositeTitle">-</span>
+<a
+href="javascript:newWindow('/astrogrid-portal/bare/mount/help/howTo.hlp','HELPW')" class="agCompositeTitle">How-to</a>
+<break />
+<table border="0" bgcolor="#ffffcc">
+<tr><td>
+<agHint id="test">
+See? We can put any text to guide you in these boxes.<p />
+Click the button again to close this box.
+</agHint>
+</td><td>
+Click on buttons like this for context-related help
+</td></tr>
+
+<tr><td colspan="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+</td></tr>
+
+<!--
+<tr><td>
+<img src="/astrogrid-portal/SubmitGreen.gif" width="50"
+height="20"/>
+</td><td>
+Green buttons, vertical bars or horizontal bars can be clicked to move
+ahead towards the next step.
+</td></tr>
+
+<tr><td colspan="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+</td></tr>
+
+<tr><td>
+<agExplain item="Glossary" />
+</td><td>
+Text highlighted this way is another way for us to give you short
+explanations.
+</td></tr>
+
+<tr><td colspan="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+</td></tr>
+-->
+<tr><td>
+<a
+href="javascript:popupBrowser('/astrogrid-portal/bare/mount/help/faq.faq',700, 300)" style="text-decoration: none">FAQ</a> &amp;<br />
+<a
+href="javascript:popupBrowser('/astrogrid-portal/lean/mount/help/cookbook.ckb',700, 300)" style="text-decoration: none" >Cookbook</a>
+</td><td>
+Visit these sections for tutorials, examples and tips.
+</td></tr>
+
+</table>
+
+</td></tr>
+<tr>
+<td width="50%">
+<div class="agSectionTitle">Focused Tasks</div><break />
+
+<iframe style="border: solid 0px white; background-color: transparent"
+marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
+allowtransparency="true"
+src="/astrogrid-portal/bare/mount/scenarios/tinyScenarii.scn"
+marginHeight="0px" border="0px" height="120px" width="90%"
+name="scenariiFrame">ag</iframe>
+</td>
+</tr>
+<tr>
+<td width="50%">
+<div class="agSectionTitle">Administration</div><break />
+<iframe style="border: solid 0px white; background-color: transparent"
+marginWidth="0px" scrolling="no" hspace="0px" vspace="0px" frameborder="no"
+allowtransparency="true"
+src="/astrogrid-portal/bare/mount/scenarios/admini.scn"
+marginHeight="0px" border="0px" height="100px" width="90%"
+name="adminiFrame">ag</iframe>
+</td>
+</tr>
+</table>
+
+</td>
+<td rowspan="3" align="center">
+<div class="agSectionTitle">Job monitor</div>
+
+<iframe style="border: solid 0px white; background-color: transparent"
+marginWidth="0px" scrolling="yes" hspace="0px" vspace="0px" frameborder="no"
+allowtransparency="true"
+src="/astrogrid-portal/bare/mount/workflow/agjobmanager-jes.html?action=read-job-list"
+marginHeight="0px" border="0px" height="400px" width="90%"
+name="jobMonitorFrame">ag</iframe>
+</td>
+</tr>
+</table>
+
+<!--
+src="/astrogrid-portal/bare/mount/scenarios/jobMonitor.scn"
+-->
+</center>
+
+<!--
 <table class="agSmaller" width="98%" cellspacing="4" cellpadding="4" border="0">
 <tr>
 <td colspan="3" align="center">
-<span style="font-weight: bold; font-size: 25px">Welcome to Astrogrid!</span>
-<span style="font-weight: normal; font-size: 18px">This is your <b>MyAstroGrid</b> page</span>
+<span  class="linkLike" onclick="newWindow('http://barbara.star.le.ac.uk:8080/astrogrid-portal/bare/mount/login/prefs.i07','newBy', 780, 480, 100, 20);">
+<xsp:value-of select="//*/userID" /> Preferences
+</span> |
+<a href="/astrogrid-portal/P07/mount/scenarios/scenary.xsp">Scenarios</a>
 </td>
 </tr>
 <tr valign="top">
@@ -106,8 +238,9 @@ pages themselves.
 </td>
 <td>
 <span class="agWelcomeTitle">
-Shortcut Alley
+Shortcuts
 </span>
+
 
 <p>Besides using AstroGrid's flexible functionality to build complex
 queries and workflows (or pipelines),  you may find it convenient to
@@ -198,6 +331,7 @@ Locate Spectral data
 </td>
 </tr>
 </table>
+-->
 		<!--
                 You have successfully logged in. <BR/>
                 <a href="logout">Log out</a> again.
@@ -210,14 +344,12 @@ Locate Spectral data
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
-    |   Revision 1.7  2004/07/20 13:37:25  jl99
-    |   Query Builder changes - Bugzilla 399 - Enhancements.
-    |   Iteration 6 covering:
-    |   (1) Query Builder (but using test/dummy registry)
-    |   (2) Help System
+    |   Revision 1.8  2004/12/03 21:16:00  clq2
+    |   pjn3_799, pfo_708_717
     |
-    |   Revision 1.6.24.1  2004/07/09 10:02:33  pfo
-    |   PFO: a warmer (yet crowded) welcome to the portal
+    |   Revision 1.7.124.1  2004/12/03 15:23:08  pfo
+    |   PFO: major portal modification. Registry still has pending issues which
+    |   PFO: sooner or later will make us crash
     |
     |   Revision 1.6  2004/04/20 16:55:16  pfo
     |   pfo: changed <title> for <agComponentTitle>

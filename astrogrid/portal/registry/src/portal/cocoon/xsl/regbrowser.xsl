@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <xsl:stylesheet version="1.0" 
+		xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   
   <xsl:param name="mainelement" />
@@ -37,6 +38,11 @@
 	  <xsl:apply-templates/>
 	</xsl:template>
 
+	<xsl:template match="BrowserBodyC">		    
+	  <xsl:apply-templates/>
+	</xsl:template>
+
+<!-- PFO was here -->
   <xsl:template match="BrowserBody">
     <xsl:if test="$resultlist=''" >
       <xsl:call-template name="browser_form"/>
@@ -46,6 +52,7 @@
     </xsl:if>
   </xsl:template>
 
+<!-- PFO was here -->
   <xsl:template match="ResultsList">
     <page>
       <!-- Add our page content -->
@@ -178,6 +185,12 @@
             </input>
             Select a <xsl:value-of select="$mainelement"/> from the following:
             <br/>
+	<input type="hidden" name="queryregistry" value="Select..." />
+<table width="100%">
+<tr>
+<td bgcolor="green" width="20px" onclick="findSelection()">
+</td>
+<td>
               <table>                    
               <xsl:for-each
                     select="//BrowserQuery/BrowserBody/ResultsList/result">
@@ -189,7 +202,8 @@
                      <em> : <xsl:value-of select="@title"/></em>
                   </td>
                 </tr>
-                <xsl:for-each select="@table">                      
+                <xsl:for-each select="@tableVR">                      
+		   <xsl:if test=". != 'null'">
                    <tr>
                      <td>
                      </td>
@@ -203,9 +217,48 @@
                        <xsl:value-of select="."/>
                      </td>
                    </tr>
+		   </xsl:if>
                 </xsl:for-each>
+                <xsl:for-each select="@tableVS">                      
+		   <xsl:if test=". != 'null'">
+                   <tr>
+                     <td>
+                     </td>
+                     <td>                                           
+                       <input type="radio" name="selektion">
+                         <xsl:attribute name="value">
+                         <xsl:value-of select="../@identifier"/>/<xsl:value-of
+                                                                    select="."/>
+                         </xsl:attribute>
+                       </input>
+                       <xsl:value-of select="."/>
+                     </td>
+                   </tr>
+		  </xsl:if>
+                </xsl:for-each>
+                <xsl:for-each select="@table">                      
+		   <xsl:if test=". != 'null'">
+                   <tr>
+                     <td>
+                     </td>
+                     <td>                                           
+                       <input type="radio" name="selektion">
+                         <xsl:attribute name="value">
+                         <xsl:value-of select="../@identifier"/>/<xsl:value-of
+                                                                    select="."/>
+                         </xsl:attribute>
+                       </input>
+                       <xsl:value-of select="."/>
+                     </td>
+                   </tr>
+		  </xsl:if>
+                </xsl:for-each>
+<!--
+-->
               </xsl:for-each>
            </table>
+</td></tr>
+</table>
             <input class="agActionButton" name="queryregistry" type="button"
                    value="Select..." onclick="findSelection()"/>
             <xsl:text>          </xsl:text>

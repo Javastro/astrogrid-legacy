@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<!-- CVS $Id: extras.xsl,v 1.5 2004/11/26 15:03:25 clq2 Exp $ -->
+<!-- CVS $Id: extras.xsl,v 1.6 2004/12/03 21:16:00 clq2 Exp $ -->
 
 <xsl:stylesheet version="1.0"
  xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -50,7 +50,7 @@ select="."/></xsl:variable>
   </td>
   </tr></table>
 <script language="javascript">
-top.document.title = "<xsl:value-of select="."/>";
+document.title = '<xsl:value-of select="."/>';
 </script>
   </xsl:template>
 

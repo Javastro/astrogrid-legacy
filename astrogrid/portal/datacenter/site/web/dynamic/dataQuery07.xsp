@@ -2,7 +2,7 @@
 
 <!--+
     | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
-    | Date: Fri Mar  5 17:29:46 2004
+    | Date: Tue Nov 30 11:20:17 GMT 2004 
     +-->
 
 <xsp:page language="java"
@@ -13,6 +13,15 @@
 	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
 	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
   
+    <!--+
+        | Import any java classes here.
+        +-->
+
+        <xsp:structure>
+          <xsp:include>org.w3c.dom.Document</xsp:include>
+          <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+        </xsp:structure>
+
   <AstroGrid>
 <xsp:logic>
 	String profile, user;
@@ -25,94 +34,87 @@
 </xsp:logic>
 
 <!--
-<agComponentTitle>Retrieve data from the Virtual Observatory</agComponentTitle>
-The name of the resource to consult is passed to the XSL in the form of a
-variable, which could be used by invoking some xpath way
--->
 <DQtableID><xsp-request:get-parameter default="null" name="tableID"/></DQtableID>
-
-<!--
-	next, I'd like to capture a file, containing a definition of each
-	ADQL word, including examples, so that these things are not part
-	of the XSL page and whoever needs to edit that file doesn't need to
-	alter the XSL filter
-
-	   <util:name>/usr/local/jakarta-tomcat-5.0.18/webapps/astrogrid-portal/mount/datacenter/web/static/ADQLverbs.xml</util:name>
--->
-<!--
-<xsp:logic>
-	String tomcat;
-	tomcat = java.lang.System.getProperty("catalina.home");
-	tomcat += "/webapps/astrogrid-portal/mount/datacenter/web/static/ADQLverbs.xml";
-
-	<util:include-file>
-	   <util:name><xsp:expr>tomcat</xsp:expr></util:name>
-	</util:include-file>
-</xsp:logic>
--->
-
-<!--
-	   <util:name>/usr/local/tomcat/webapps/astrogrid-portal/mount/datacenter/web/static/ADQLverbs.xml</util:name>
-	OK, this is working like a charm :-) :-) :-)
-	Took a while to produce the XML file (ADQLverbs.xml), but now we
-	have nearly everything we need to produce the help
-
-	Next element is then to check the value of the tableID
-	request-parameter, and load the metadata for the table if the table
-	is named other than "null" (which is the case when no argument is
-	passed)
-     quString = (String) <jpath:value-of select="sources"/>;
-     quString = "null";
-     theError = (String) <xsp-request:get-parameter name="Error"/>;
 -->
 
 <mainarea>
+  <friendly>yes</friendly>
   <xsp:logic>
-     String tableID, myURL, nada, theQuery, theError;
-     theQuery = (String) <xsp-request:get-parameter default="null" name="Query"/>;
-     nada = new String("null");
-     tableID = (String) <xsp-request:get-parameter default="null" name="tableID"/>;
-     if(theQuery.equals(nada)){
-       if(tableID.equals(nada)){
+            String DQtableID = "null";
+            String errorMessage = "null";
+            String paramTable, sessionTable = "null";
+            paramTable = (String) <xsp-request:get-parameter default="null" name="tableID"/>;
+	    errorMessage = (String) <xsp-session:get-attribute name="query-builder-adql-error"/>;
+
+            if(paramTable.equals("AGblank")){
+              <DQtableID><xsp:expr>paramTable</xsp:expr></DQtableID>
 <OneTableID>NoSource</OneTableID>
+<ErrorMsg>noError</ErrorMsg>
 <QUERYAREA>
 <textarea name="adqlQuery" onClick="wipe(this);" class="areaInput" id="ag_data-query" cols="55" rows="8">
 This is where the query should go.  Example:
 
 SELECT * FROM server:/table1 as t1 where t1.dec &gt; 50
+
 </textarea>
 </QUERYAREA>
-       } else {	/* tableID is not null */
-       myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + tableID;
-<OneTableID><xsp:expr>tableID</xsp:expr></OneTableID>
-        <util:include-uri>
-           <util:href><xsp:expr>myURL</xsp:expr></util:href>
-        </util:include-uri>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8">FROM <xsp:expr>tableID</xsp:expr> AS T1 </textarea>
-</QUERYAREA>
-       }
-     } else { /* theQuery is not null */
-       if(tableID.equals(nada)){
-<OneTableID>NoSource</OneTableID>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8"><xsp:expr>theQuery</xsp:expr> AS T1 </textarea>
-</QUERYAREA>
-       } else {
-       myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + tableID;
-       <!--
-<OneTableID>NoSource</OneTableID>
-<OneTableID><xsp:expr>tableID</xsp:expr></OneTableID>
-        <util:include-uri>
-           <util:href><xsp:expr>myURL</xsp:expr></util:href>
-        </util:include-uri>
--->
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8"><xsp:expr>theQuery</xsp:expr> </textarea>
-</QUERYAREA>
-       }
+              <resultsFromRegistry></resultsFromRegistry>
+            } else if(paramTable.equals("freshFromMyspace")){
+		String quString = "null";
+	    	quString=(String) <xsp-session:get-attribute name="adqlQuery"/>;
 
-     }
+<OneTableID>NoSource</OneTableID>
+<ErrorMsg>noError</ErrorMsg>
+<QUERYAREA>
+<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50"
+rows="8"><xsp:expr>quString</xsp:expr></textarea>
+</QUERYAREA>
+
+            } else {
+                Object ob = null;
+
+                ob = session.getAttribute("tableID");
+                if (ob != null )
+                {
+                        sessionTable = ob.toString();
+                }
+                <DQtableID><xsp:expr>sessionTable</xsp:expr></DQtableID>
+<OneTableID><xsp:expr>sessionTable</xsp:expr></OneTableID>
+
+                ob = session.getAttribute("resultSingleCatalog");
+                if ((ob != null) &amp;&amp; (ob instanceof Document))
+                {
+                <util:include-expr>
+                  <util:expr>
+                    DomHelper.DocumentToString((Document)ob)
+                  </util:expr>
+                </util:include-expr>
+<QUERYAREA>
+<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8">FROM <xsp:expr>sessionTable</xsp:expr> AS T1 </textarea>
+</QUERYAREA>
+              <resultsFromRegistry>
+              </resultsFromRegistry>
+		if( errorMessage != null ) {
+<ErrorMsg><xsp:expr>errorMessage</xsp:expr></ErrorMsg>
+		}
+
+                }
+                else
+                {
+<OneTableID>NoSource</OneTableID>
+<ErrorMsg>noError</ErrorMsg>
+<QUERYAREA>
+<textarea name="adqlQuery" onClick="wipe(this);" class="areaInput" id="ag_data-query" cols="55" rows="8">
+This is where the query should NOT go.  Example:
+
+SELECT * FROM server:/table1 as t1 where t1.dec &gt; 50
+
+</textarea>
+</QUERYAREA>
+              <resultsFromRegistry></resultsFromRegistry>
+                }
+            }
+
   </xsp:logic>
 
 </mainarea>

@@ -222,18 +222,18 @@ function clearTextArea(areaName){
 
 function TEK(i){
 var update, old;
-old = document.main.adqlQuery.value;
+old = document.qb_form.adqlQuery.value;
 update = old + i ;
-document.main.adqlQuery.value = update;
-document.main.adqlQuery.focus();
+document.qb_form.adqlQuery.value = update;
+document.qb_form.adqlQuery.focus();
 }
 
 function xTEK(i){
 var update, old;
-old = parent.deploy.document.main.adqlQuery.value;
+old = parent.deploy.document.qb_form.adqlQuery.value;
 update = old + i ;
-parent.deploy.document.main.adqlQuery.value = update;
-parent.deploy.document.main.adqlQuery.focus();
+parent.deploy.document.qb_form.adqlQuery.value = update;
+parent.deploy.document.qb_form.adqlQuery.focus();
 }
 
 function cabc(linkObj){
@@ -404,11 +404,15 @@ function makeADQL(){
 		}
 	}
 /*	window.status = "SELECT " + select + " WHERE " + condi;*/
+/*
 	document.main.adqlQuery.value = "FROM " + currentTable +
 		" as T1 SELECT " + select;
+*/
+	document.qb_form.adqlQuery.value = "SELECT " + select + " FROM " + currentTable +
+		" as T1 ";
 
 	if(condi != ""){
-		document.main.adqlQuery.value += " WHERE " + condi;
+		document.qb_form.adqlQuery.value += " WHERE " + condi;
 	}
 	openLeftTab();
 }
@@ -434,6 +438,10 @@ function popupBrowser(url, uwidth, uheight){
 function closeDynamic(moi){
 	var body = document.getElementById(moi);
 	body.style.display = "none";
+}
+
+function displayMeNot(moi){
+	moi.style.display = "none";
 }
 
 function openDynamic(moi){
@@ -723,7 +731,10 @@ function findSelection() {
   }
   if ( !choice ) alert( "Please select a resource" );
   else {
-    var url = "/astrogrid-portal/bare/mount/datacenter/variablesFromMB.html?action=getTable&uniqueID=";
+/*
+    var url = "/astrogrid-portal/main/mount/datacenter/variablesFromMB.html?action=getTable&uniqueID=";
+*/
+    var url = "/astrogrid-portal/main/mount/datacenter/variablesFromMB.html?action=getTable&uniqueID=";
     url = url + identifier;
 	window.close();
 	opener.parent.location.href = url;
@@ -825,10 +836,10 @@ function setRelHeight(diese, qposy){
 
 function yTEK(i){
 var update, old;
-old = parent.document.main.adqlQuery.value;
+old = parent.document.qb_form.adqlQuery.value;
 update = old + i ;
-parent.document.main.adqlQuery.value = update;
-parent.document.main.adqlQuery.focus();
+parent.document.qb_form.adqlQuery.value = update;
+parent.document.qb_form.adqlQuery.focus();
 }
 
 function glueButton(where, text){

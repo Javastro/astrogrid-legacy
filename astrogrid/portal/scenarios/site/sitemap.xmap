@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.2 2004/11/26 15:03:25 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.3 2004/12/03 21:16:00 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -278,19 +278,23 @@
       <!-- xml -->
       <map:match pattern="**.xml">
         <map:generate type="file" src="web/static/{1}.xml"/>
-	<map:transform src="web/style/xsl/basicScenario.xsl"/>
+        <map:transform src="web/style/xsl/basicScenario.xsl"/>
         <map:transform src="cocoon://xml2html.xsl"/>
         <map:serialize type="xml"/>
       </map:match>
 
       <!-- xsp -->
       <map:match pattern="**.xsp">
+	<!--
+        <map:generate type="serverpages" src="{1}/script.xsp"/>
+	-->
         <map:generate type="serverpages" src="{1}/script.xsp"/>
         <map:transform src="{1}/stylesheet.xsl"/>
         <map:transform src="cocoon://xml2html.xsl"/>
         <map:serialize type="xml"/>
       </map:match>
 
+      <!-- vanilla scenary -->
       <map:match pattern="**.scn">
         <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
         <map:transform src="web/style/xsl/{1}.xsl"/>

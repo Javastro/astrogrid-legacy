@@ -88,12 +88,14 @@
                   <xsl:when test="@script-body = 'null'">
                     <textarea name="script_body" cols="120" rows="5">
                       <xsl:attribute name="id">script_body<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('script_body<xsl:value-of select="@key"/>').value='';</xsl:attribute>
+                      <xsl:attribute name="onclick">document.getElementById('script_body<xsl:value-of select="@key"/>').value='';
+                                                    document.getElementById('script_body<xsl:value-of select="@key"/>').onclick='';
+                      </xsl:attribute>
                       ( script statements to execute....)
                     </textarea>                                    
                   </xsl:when>
                   <xsl:otherwise>
-                    <textarea name="script_body" cols="120" rows="2"><xsl:value-of select="@script-body"/></textarea>                
+                    <textarea name="script_body" cols="120" rows="5"><xsl:value-of select="@script-body"/></textarea>                
                   </xsl:otherwise>
                 </xsl:choose>
               </td>

@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/11/26 15:03:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.18 $</cvs:version>
+    | <cvs:date>$Date: 2004/12/03 21:16:00 $</cvs:date>
+    | <cvs:version>$Revision: 1.19 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -84,7 +84,11 @@
                <!--validation succeeded-->
                <map:act type="astro-login">
                   <!--login successful-->
+		  <!--
+         	  <map:match call="myHome"/>
                   <map:generate type="serverpages" src="xsp/login-pass.xsp" />
+		  -->
+                  <map:generate type="serverpages" src="xsp/pseudo-login.xsp" />
                   <map:transform type="xslt" src="style/info.xsl" />
                   <map:serialize type="xml" />
                </map:act>
@@ -217,6 +221,13 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.19  2004/12/03 21:16:00  clq2
+    |   pjn3_799, pfo_708_717
+    |
+    |   Revision 1.18.10.1  2004/12/03 15:23:08  pfo
+    |   PFO: major portal modification. Registry still has pending issues which
+    |   PFO: sooner or later will make us crash
+    |
     |   Revision 1.18  2004/11/26 15:03:25  clq2
     |   POR_KEA_716/POR_KEA_716/portal_pfo_620_697_707_717_718_733_735
     |

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--
+   | Insert the material susceptible to this page in this page. 
+   | avoid using the XSP page unless you really want to do fancy things.
+   | ./stylesheet.xsl should take care of transforming this file
+   | Notice that "thisContent" is invoked in the template stylesheet
+   | created automatically
+   -->
+<thisContent>
+</thisContent>

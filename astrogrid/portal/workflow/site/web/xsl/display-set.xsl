@@ -50,7 +50,7 @@
                       <xsl:attribute name="value"></xsl:attribute>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:attribute name="value"><xsl:value-of select="normalize-space(@set-var)"/></xsl:attribute>
+                      <xsl:attribute name="value"><xsl:value-of select="@set-var"/></xsl:attribute>
                     </xsl:otherwise>
                   </xsl:choose>
                 </input>                                 
@@ -65,10 +65,21 @@
                   <xsl:when test="@set-value = 'null'">
                     <textarea name="set-value" cols="130" rows="3">
                       <xsl:attribute name="id">set-value<xsl:value-of select="@key"/></xsl:attribute>
-                      <xsl:attribute name="onclick">document.getElementById('set-value<xsl:value-of select="@key"/>').value='';</xsl:attribute>
-                      ( the value to set the variable to. May contain embedded expressions in ${..}, which will be evaluated...)
+                      <xsl:attribute name="onclick">document.getElementById('set-value<xsl:value-of select="@key"/>').value='';
+                                                    document.getElementById('set-value<xsl:value-of select="@key"/>').onclick='';
+                      </xsl:attribute>
+                      (Value to set variable to. May contain embedded expressions in ${..}, which will be evaluated...)
                     </textarea>                                    
                   </xsl:when>
+                  <xsl:when test="@set-value = ''">
+                    <textarea name="set-value" cols="130" rows="3">
+                      <xsl:attribute name="id">set-value-empty<xsl:value-of select="@key"/></xsl:attribute>                        
+                      <xsl:attribute name="onclick">document.getElementById('set-value-empty<xsl:value-of select="@key"/>').value='';
+                                                    document.getElementById('set-value-empty<xsl:value-of select="@key"/>').onclick='';
+                       </xsl:attribute>
+                      ...
+                    </textarea>                      
+                  </xsl:when>                  
                   <xsl:otherwise>
                     <textarea name="set-value" cols="130" rows="3"><xsl:value-of select="@set-value"/></textarea>                
                   </xsl:otherwise>
@@ -114,7 +125,14 @@
             <tr>
               <td>Value:</td>
               <td>
-                <textarea name="set-value" cols="130" rows="2" readonly="true"><xsl:value-of select="@set-value"/></textarea>                                  
+                <xsl:choose>
+                  <xsl:when test="@set-value = ''">
+                    <textarea name="set-value" cols="130" rows="2" readonly="true">...</textarea>                       
+                  </xsl:when>                  
+                  <xsl:otherwise>
+                    <textarea name="set-value" cols="130" rows="2" readonly="true"><xsl:value-of select="@set-value"/></textarea>           
+                  </xsl:otherwise>
+                </xsl:choose>                                                 
               </td>
             </tr>
             <tr>

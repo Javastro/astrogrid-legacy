@@ -1486,7 +1486,10 @@ public class DesignAction extends AbstractAction {
              	String defaultItems = "(A sequence or iterator of items - the loop variable will be assigned to each in turn, and then loop body executed...)" ;	
 		        String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 	            String items = request.getParameter( FOR_ITEMS_PARAMETER ).trim() ;
-				String var = request.getParameter( FOR_VAR_PARAMETER ).trim() ;				
+				String var = request.getParameter( FOR_VAR_PARAMETER ).trim() ;	
+				// Bug #799 - temporary fix ...' is used to prevent text area collapsing in xsl
+				if (var.equalsIgnoreCase("..."))
+						var = "" ;
                                 
 	            if ( xpathKey == null) {
 		           debug( "xpathKey is null" ) ;
@@ -1641,7 +1644,10 @@ public class DesignAction extends AbstractAction {
 			try {	
 				String xpathKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 				String val = request.getParameter( SET_VALUE_PARAMETER ) ;
-				String var = request.getParameter( SET_VAR_PARAMETER ) ;
+				String var = request.getParameter( SET_VAR_PARAMETER ).trim() ;
+				// Bug #799 - temporary fix ...' is used to prevent text area collapsing in xsl
+				if (var.equalsIgnoreCase("..."))
+				    var = "" ;
                                 
 				if ( xpathKey == null) {
 					debug( "xpathKey is null" ) ;

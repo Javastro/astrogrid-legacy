@@ -42,7 +42,7 @@
 -->
 
 <script language="javascript">
-var currentTable = "<xsl:value-of select='/AstroGrid/DQtableID'/>";
+var currentTable = "<xsl:value-of select='//*/DQtableID'/>";
 
 function closeMe(){
 	var scar = document.getElementById('scratchArea');
@@ -196,7 +196,7 @@ function openRightTab(){
  <xsl:when test="//*/OneTableID != 'NoSource'">
   <xsl:value-of select="//*/OneTableID"/>
  </xsl:when>
- <xsl:otherwise>null</xsl:otherwise>
+ <xsl:otherwise>AGblank</xsl:otherwise>
 </xsl:choose>
 </xsl:variable>
 
@@ -219,15 +219,17 @@ test
 
 <table width="100%" cellpadding="3" cellspacing="0" bgcolor="white" border="0px">
 <tr>
+<!--
 <xsl:if test="//*/profile/metadataBox = 'Lefty'">
 <td width="250" align="left" id="selMetadata">
 <center>
-<span name="lost" 
-onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton" title="Click to select a table agaisnt which to launch a query">Select a Table</span>
+<span name="lost"
+onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null')" class="agActionButton">Zelect a Table</span>
 </center>
 <img src="/astrogrid-portal/x.gif" id="underSelect" width="1" />
 </td>
 </xsl:if>
+-->
 
 <xsl:variable name="leftClass">
   <xsl:choose>
@@ -264,7 +266,7 @@ href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaVOQL">(s)ADQL</a>)</span><br/>
 <!--
 <xsl:if test="/AstroGrid/DQtableID != 'null'">
 -->
-<xsl:if test="//*/OneTableID != 'NoSource'">
+<xsl:if test="//*/OneTableID != 'NoSource' and //*/friendly != 'no'">
 <td id="vizyTD" class="{$rightClass}">
 <span onClick="openMidTab()" class="AGtITLEcLASS" id="vizyTab">
 User friendly Table-Query Form
@@ -280,13 +282,17 @@ Cone Search<br />
 </xsl:if>
 -->
 </xsl:if>
+
+<!--
 <xsl:if test="//*/profile/metadataBox = 'Righty'">
 <td width="250" align="left" id="selMetadata">
 <center><span name="lost"
-onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton" title="Click to select a table agaisnt which to launch a query">Select a Table</span></center>
+onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton" title="Click to select a table agaisnt which to launch a query">Zelect a Table</span></center>
 <img src="/astrogrid-portal/x.gif" id="underSelect" width="1" />
 </td>
 </xsl:if>
+-->
+
 </tr>
 </table>
 
@@ -304,6 +310,7 @@ show
   </xsl:otherwise>
   </xsl:choose>
 </xsl:variable>
+
 
 
 <div width="100%" id="adqlSection" style="display: {$displayADQL}">
@@ -329,7 +336,7 @@ mu
 </xsl:if>
 <td align="center" valign="top">
 
-<form action="/astrogrid-portal/bare/mount/datacenter/forms/adql" name="main" method="POST" target="_top">
+<form action="/astrogrid-portal/main/mount/datacenter/forms/adql" name="qb_form" method="POST" id="qb_form" target="_top">
 <center>
 <table border="0" cellspacing="1" cellpadding="1" bgcolor="#ffffcc">
 <tr valign="bottom">
@@ -371,16 +378,34 @@ class="agResetButton">Clear</span></td></tr>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td align="left">
 	  <img src="/astrogrid-portal/x.gif" width="1" id="HMarker" />
+<span class="agActionButton"
+onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Load');" >
+Load from MySpace</span>
+<input id="action"  type="hidden" name="action" />
+<input id="myspace-agsl"  type="hidden" name="myspace-name" />
+<input id="myspace-ivorn" type="hidden" name="myspace-name" />
+
+<!--
 <input class="agActionButton" name="action" type="submit" value="Load from MySpace" title="Load an existing query from MySpace"/>
+-->
 </td>
 <td align="left">
+<!--
 <span name="lost" 
-onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton" title="Click to select a table agaisnt which to launch a query">Select a Table</span>
+onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton" title="Click to select a table agaisnt which to launch a query">Zelect a Table</span>
+-->
+<span name="lost"
+onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null')" class="agActionButton">Select a Table</span>
 </td>
 <td width="40">
 </td>
 <td align="right">
+<!--
 <input class="agActionButton" name="action" type="submit" value="Save to MySpace"/>
+-->
+<span class="agActionButton"
+onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Save');" >
+Save to MySpace</span>
 </td>
 <td align="right">
 <span class="agActionButton">Execute Query</span>
@@ -427,13 +452,13 @@ textarea</li>
 </td></tr>
 </table>
 
-<xsl:if test="//*/ErrorMsg != ''">
+<xsl:if test="//*/ErrorMsg != 'noError'">
 <div id="errorArea" class="agHint" style="text-align: left; width: 600px; position: absolute; left: 30px; top: 200">
 <table width="100%">
 <tr><td align="left">
 <b>Syntax Error</b></td>
 <td align="right">
-<img onClick="closeIt();" src="/astrogrid-portal/CloseWindow.gif"/>
+<img onClick="closeDynamic('errorArea');" src="/astrogrid-portal/CloseWindow.gif"/>
 </td>
 </tr></table>
 <xsl:value-of select="//*/ErrorMsg"/>
@@ -596,14 +621,17 @@ none
   </xsl:choose>
 </xsl:variable>
 
+<!--
+<xsl:value-of select="fakeRegistry/IVOA_TABLE/description"/>
+  -->
 
 <div width="100%" id="vizySection" style="display: {$displayFriendly}">
-<xsl:if test="/AstroGrid/DQtableID != 'null'">
+<xsl:if test="//*/DQtableID != 'null'">
 <form name="assisted" action="easyADQL" method="post">
 <table width="95%" class="compact" cellpadding="0" cellspacing="0" border="0">
 <tr style="border-bottom: solid 2px #0000ff; margin: 1px; ">
 <td align="left">
-<xsl:value-of select="fakeRegistry/IVOA_TABLE/description"/>
+D:<xsl:value-of select="//*/agResource/agTitle"/>
 </td>
 <td bgcolor="#ffff00" width="30" align="right">
 <agHint id="FriendlyFire" iconSize="20">
@@ -658,7 +686,55 @@ Show/Name
 <span class="agShowExplanation">Explanation</span>
 </td>
 </tr>
+
+<xsl:variable name="requestedTable"><xsl:value-of select="DQtableID"/></xsl:variable>
+
+<!--
+<derTable><xsl:value-of select="$requestedTable"/></derTable>
+-->
+
+<xsl:for-each select="//*/agResource">
+  <xsl:for-each select="agTable">
+     <xsl:if test="agName = $requestedTable">
+        <xsl:for-each select="agColumn">
+<tr valign="top">
+<td>
+<input type="checkbox"  value="{agName}" name="show" />
+</td>
+<td>
+<xsl:value-of select="agName"/>
+</td>
+<td>
+<input onFocus="focusit(this)" onBlur="defocusit(this)" size="20" name="zelect_{agName}"/>
+</td>
+<td>
+<xsl:choose>
+<xsl:when test="agUnit != ''">
+<span class="agShowUnits"><xsl:value-of select="agUnit"/></span>
+</xsl:when>
+<xsl:otherwise>
+<span class="agShowUnits">_</span>
+</xsl:otherwise>
+</xsl:choose>
+<xsl:choose>
+<xsl:when test="agUCD != ''">
+<span class="agShowUCDs"><xsl:value-of select="agUCD"/></span>
+</xsl:when>
+<xsl:otherwise>
+<span class="agShowUCDs">_</span>
+</xsl:otherwise>
+</xsl:choose>
+<span class="agShowExplanation"><xsl:value-of select="agDescription"/></span>
+</td>
+</tr>
+        </xsl:for-each>
+     </xsl:if>
+  </xsl:for-each>
+</xsl:for-each>
+
+<!--
 <xsl:for-each select="fakeRegistry/IVOA_TABLE/Columns/FIELD">
+<xsl:for-each select="//*/agTable">
 <tr valign="top">
 <td>
 <input type="checkbox" name="show" value="{@name}"/>
@@ -670,10 +746,6 @@ Show/Name
 <input onFocus="focusit(this)" onBlur="defocusit(this)" size="20" name="zelect_{@name}"/>
 </td>
 <td>
-<!--
-</td>
-<td>
--->
 <xsl:choose>
 <xsl:when test="@Units != ''">
 <span class="agShowUnits"><xsl:value-of select="@Units"/></span>
@@ -687,6 +759,7 @@ Show/Name
 </td>
 </tr>
 </xsl:for-each>
+  -->
 <tr><td colspan="4">
 </td></tr>
 </table>
@@ -1077,11 +1150,11 @@ Show/Name
 <!--
   <xsl:template match="profile">
   </xsl:template>
-  -->
 
   <xsl:template match="QUERYAREA">
        <xsl:apply-templates/>
   </xsl:template>
+  -->
 
   <xsl:template match="Action">
   </xsl:template>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar  5 17:40:33 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
+  
+  <!--
+  -->
+  <AstroGrid>
+    <!--
+  <AGScenario>Cone Search</AGScenario>
+  <title>AstroGrid's <xsp-request:get-parameter name="item"/> FAQ</title>
+    <jpath:param name="topico" select="topico"/>
+    <xsl:variable name="thePage">
+    <jpath:value-of select="topico"/>
+    </xsl:variable>
+    -->
+<!--
+    <content>
+    </content>
+	Insert the page content right here
+-->
+
+	<!--
+	<jpath:value-of select="user/firstName"/> <jpath:value-of select="user/lastName"/>, 
+	   <util:name>/home/pfo/I05/ag03/FAQ/questions.xml</util:name>
+	step = (String) <xsp-request:get-parameter name="step"/>;
+	-->
+<xsp:logic>
+	String tomcat, step, nada, user, urlCL, url, urlSex;
+	int	theStep = 0;
+	nada = new String("null");
+
+        user = (String) <xsp-session:get-attribute default="pfo" name="user"/>;
+	url = new
+	String("http://barbara.star.le.ac.uk/datoz-bin/coneSearchStep1?z=");
+	urlCL = new
+	String("http://barbara.star.le.ac.uk/datoz-bin/catalogueLocator1?z=");
+	urlSex = new
+	String("http://barbara.star.le.ac.uk/datoz-bin/gs?what=sourceExtraction1&amp;z=");
+
+	<!--
+	if(user.equals(nada)){
+		theStep = 1;
+	} else {
+		theStep = Integer.parseInt(step);
+		theStep++;
+	}
+	tomcat = java.lang.System.getProperty("catalina.home");
+	tomcat += "/webapps/astrogrid-portal/mount/help/web/static/FAQ.xml";
+	<util:include-file>
+	<util:name><xsp:expr>tomcat</xsp:expr></util:name>
+	</util:include-file>
+	-->
+<!--
+  <step><xsp:expr>theStep</xsp:expr></step>
+	Before ending the logical part, we use java to produce some code or
+	to communicate with another component before passing the control
+	back to the XSL stylesheet which should produce the GUI.
+	Notice that it might be necessary to extract some of the input
+	paramenters here to be passed onto new forms.
+<agComponentTitle>Scenarios or Encapsulated Tasks</agComponentTitle>
+-->
+
+<ProducePage>
+
+<!--
+<p>
+We propose you a number of encapsulated tasks which will take you step
+by step to obtain the results you want.</p>
+
+<p>
+Under no circumstance these Scenarios prevents you from using the full
+flexibility offered by AstroGrid. Using them should only help you to
+climb the learning curve faster.
+</p>
+
+-->
+
+<AGScenarios>
+<userID><xsp:expr>user</xsp:expr></userID>
+
+<AGscenario name="Your Profile">
+<link><xsp:expr>url</xsp:expr><xsp:expr>user</xsp:expr></link>
+<inBrief>
+Change your password, e-mail or other personal data
+</inBrief>
+<inExtenso>
+Perform a search based purely on position around a list of locations using
+a number of resources. If you don't know what resource to use you'll be
+offered the chance to select them.
+</inExtenso>
+</AGscenario>
+
+<AGscenario name="Portal Preferences">
+<link>javascript:newWindow('http://barbara.star.le.ac.uk:8080/astrogrid-portal/bare/mount/login/prefs.i07','newBy', 780, 480, 100, 20);</link>
+<inBrief>
+Modify preferences related to the portal pages
+</inBrief>
+<inExtenso>
+Use the registry to locate catalogues available in the VO which are
+relevant for your research. You will be able to save lists of catalogues to
+your mySpace area for future usage, eg, cross correlation, neighbour
+location, etc.
+</inExtenso>
+</AGscenario>
+
+<!--
+<AGscenario name="Source Extraction">
+<link><xsp:expr>urlSex</xsp:expr><xsp:expr>user</xsp:expr></link>
+<inBrief>
+Extract source information from one or more images
+</inBrief>
+<inExtenso>
+Perform a Source extraction (using some of the algorithms available as
+tools to AstroGrid) in a number of images. If the images are in your
+computer, fine, otherwise you will be given the chance to select images
+from some of the archive sites.
+</inExtenso>
+</AGscenario>
+-->
+
+</AGScenarios>
+</ProducePage>
+
+</xsp:logic>
+    <!--
+<link>sextract/step1.scn</link>
+	<util:name>/usr/local/tomcat/webapps/astrogrid-portal/mount/help/web/static/FAQ.xml</util:name>
+<p>Nothing logical</p>
+    <mainArea>
+    </mainArea>
+	-->
+  </AstroGrid>
+</xsp:page>

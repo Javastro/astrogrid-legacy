@@ -61,6 +61,15 @@
                       (the condition for the loop: an expression (in ${..}) that evaluates to a boolean...)
                     </textarea>                                    
                   </xsl:when>
+                  <xsl:when test="@while-test = ''">
+                    <textarea name="while-test" cols="130" rows="3">
+                      <xsl:attribute name="id">while-test-empty<xsl:value-of select="@key"/></xsl:attribute>                        
+                      <xsl:attribute name="onclick">document.getElementById('while-test-empty<xsl:value-of select="@key"/>').value='';
+                                                    document.getElementById('while-test-empty<xsl:value-of select="@key"/>').onclick='';
+                       </xsl:attribute>
+                      ...
+                    </textarea>                      
+                  </xsl:when>                  
                   <xsl:otherwise>
                     <textarea name="while_test" cols="130" rows="6"><xsl:value-of select="@while-test"/></textarea>                
                   </xsl:otherwise>

@@ -13,12 +13,12 @@
           xmlns:jpath="http://apache.org/xsp/jpath/1.0">
   
   <AstroGrid>
-  <agOtherWindowTitle>AstroGrid's CookBook</agOtherWindowTitle>
+  <agOtherWindowTitle>AstroGrid's How-To</agOtherWindowTitle>
   <laconic><xsp-request:get-parameter name="item"/></laconic>
 <xsp:logic>
 	String tomcat;
 	tomcat = java.lang.System.getProperty("catalina.home");
-	tomcat +="/webapps/astrogrid-portal/mount/help/web/static/cookbook.xml";
+	tomcat +="/webapps/astrogrid-portal/mount/help/web/static/howTo.xml";
 	<util:include-file>
 	<util:name><xsp:expr>tomcat</xsp:expr></util:name>
 	</util:include-file>

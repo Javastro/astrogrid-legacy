@@ -22,25 +22,6 @@ variable, which could be used by invoking some xpath way
 -->
 <DQtableID>Registry</DQtableID>
 
-<!--
-	next, I'd like to capture a file, containing a definition of each
-	ADQL word, including examples, so that these things are not part
-	of the XSL page and whoever needs to edit that file doesn't need to
-	alter the XSL filter
-
-	   <util:name>/usr/local/jakarta-tomcat-5.0.18/webapps/astrogrid-portal/mount/datacenter/web/static/ADQLverbs.xml</util:name>
--->
-<!--
-<xsp:logic>
-	String tomcat;
-	tomcat = java.lang.System.getProperty("catalina.home");
-	tomcat += "/webapps/astrogrid-portal/mount/datacenter/web/static/ADQLverbs.xml";
-
-	<util:include-file>
-	   <util:name><xsp:expr>tomcat</xsp:expr></util:name>
-	</util:include-file>
-</xsp:logic>
--->
 <xsp:logic>
         String profile, user;
         user=(String) <xsp-session:get-attribute default="nadie" name="user"/>;
@@ -51,70 +32,6 @@ variable, which could be used by invoking some xpath way
 </util:include-uri>
 </xsp:logic>
 
-<!--
-	   <util:name>/usr/local/tomcat/webapps/astrogrid-portal/mount/datacenter/web/static/ADQLverbs.xml</util:name>
-	OK, this is working like a charm :-) :-) :-)
-	Took a while to produce the XML file (ADQLverbs.xml), but now we
-	have nearly everything we need to produce the help
-
-	Next element is then to check the value of the tableID
-	request-parameter, and load the metadata for the table if the table
-	is named other than "null" (which is the case when no argument is
-	passed)
-     quString = (String) <jpath:value-of select="sources"/>;
-     quString = "null";
-
-  <xsp:logic>
-     String tableID, myURL, nada, theQuery, theError;
-     theQuery = (String) <xsp-request:get-parameter name="Query"/>;
-     theError = (String) <xsp-request:get-parameter name="Error"/>;
-     nada = new String("null");
-     tableID = (String) <xsp-request:get-parameter name="tableID"/>;
-     if(theQuery.equals(nada)){
-       if(tableID.equals(nada)){
-<OneTableID>Registry</OneTableID>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8">
-SELECT * FROM AstroGreed:/registry as T1 
-</textarea>
-</QUERYAREA>
-       } else {
-       myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + tableID;
-<OneTableID><xsp:expr>tableID</xsp:expr></OneTableID>
-        <util:include-uri>
-           <util:href><xsp:expr>myURL</xsp:expr></util:href>
-        </util:include-uri>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8">FROM <xsp:expr>tableID</xsp:expr> AS T1 </textarea>
-</QUERYAREA>
-       }
-     } else {
-       if(tableID.equals(nada)){
-<OneTableID>NoSource</OneTableID>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8"><xsp:expr>theQuery</xsp:expr> AS T1 </textarea>
-</QUERYAREA>
-       } else {
-       myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + tableID;
-<OneTableID>NoSource</OneTableID>
-<OneTableID><xsp:expr>tableID</xsp:expr></OneTableID>
-        <util:include-uri>
-           <util:href><xsp:expr>myURL</xsp:expr></util:href>
-        </util:include-uri>
-<QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="55" rows="8"><xsp:expr>theQuery</xsp:expr> </textarea>
-</QUERYAREA>
-       }
-
-     }
-     if(theError.equals(nada)){
-     } else {
-<ErrorMsg>
-<xsp:expr>theError</xsp:expr>
-</ErrorMsg>
-     }
-  </xsp:logic>
--->
 
 <mainarea>
 <OneTableID>Registry</OneTableID>
@@ -129,62 +46,5 @@ SELECT * FROM AstroGridHydra/Registry as T1
 	   <util:name>/data/datoz2k/scratch/registry.xml</util:name>
 </util:include-file>
 
-
-  <!--
-<profile>
-<metadataBox>Right</metadataBox>
-</profile>
-  <title>AstroGrid03 DataQuery</title>
-  <page>
-    <resources>
-      <resource type="file" href="prefs.js">Flowscript</resource>
-    </resources>
-    <themenus>
-<xsp:logic>
-	String myPartPath = (String) <jpath:value-of select="projectPath"/>;
-	String projectMenu, localMenu, mainArea;
-	projectMenu = myPartPath + "/menus/framed.xml";
-	localMenu = myPartPath + "/DataQuery/menu.xml";
-	mainArea = myPartPath + "/DataQuery/mainArea.xml";
-</xsp:logic>
-	<util:include-file>
-	   <util:name><xsp:expr>localMenu</xsp:expr></util:name>
-	</util:include-file>
-    </themenus>
-
-    <content>
-    </content>
-    <mainArea>
-  <xsp:logic>
-     String quString, myURL, nada;
-     nada = new String("nothing");
-     quString = (String) <jpath:value-of select="sources"/>;
-     if(quString.equals(nada)){
-<OneTableID>NoSource</OneTableID>
-<QUERYAREA>
-<textarea name="AGinputArea" cols="50" rows="3">
-</textarea>
-</QUERYAREA>
-     } else {
-     myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selOneTab&amp;tableID=" + quString;
-<OneTableID><xsp:expr>quString</xsp:expr></OneTableID>
-        <util:include-uri>
-           <util:href><xsp:expr>myURL</xsp:expr></util:href>
-        </util:include-uri>
-<QUERYAREA>
-<textarea name="AGinputArea" cols="50" rows="3">FROM <xsp:expr>quString</xsp:expr> </textarea>
-</QUERYAREA>
-     }
-  </xsp:logic>
-
-        <util:include-file>
-	<util:name><xsp:expr>mainArea</xsp:expr></util:name>
-        </util:include-file>
-    </mainArea>
-
-  </page>
-  <theFooter>
-  </theFooter>
-  -->
   </AstroGrid>
 </xsp:page>

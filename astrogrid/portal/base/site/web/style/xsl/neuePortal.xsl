@@ -14,8 +14,8 @@
       indent="yes"
       omit-xml-declaration="yes"/>
       
-  <xsl:param name="ag-css-url" value="default.css"/>
-  <xsl:param name="ag-title" value="AstroGrid"/>
+  <xsl:param name="ag-css-url" >default.css</xsl:param>
+  <xsl:param name="ag-title" >AstroGrid</xsl:param>
 
   <xsl:template match="/">
     <html>
@@ -50,9 +50,11 @@
           null;
         </script>
 
+<!--
         <script src="/astrogrid-portal/menu.xml" type="text/javascript">
           null;
         </script>
+-->
 
         <!-- Process <menu/> elements -->
         <xsl:for-each select="//node()[local-name() = 'ag-menu']">

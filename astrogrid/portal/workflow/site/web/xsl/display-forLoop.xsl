@@ -78,6 +78,15 @@
                       (A sequence or iterator of items - the loop variable will be assigned to each in turn, and then loop body executed...)                       
                     </textarea>                                    
                   </xsl:when>
+                  <xsl:when test="@for-item = ''">
+                    <textarea name="for-item" cols="130" rows="3">
+                      <xsl:attribute name="id">for-item-empty<xsl:value-of select="@key"/></xsl:attribute>                        
+                      <xsl:attribute name="onclick">document.getElementById('for-item-empty<xsl:value-of select="@key"/>').value='';
+                                                    document.getElementById('for-item-empty<xsl:value-of select="@key"/>').onclick='';
+                       </xsl:attribute>
+                      ...
+                    </textarea>                      
+                  </xsl:when>                  
                   <xsl:otherwise>
                     <textarea name="for_item" cols="130" rows="2"><xsl:value-of select="@for-item"/></textarea>                
                   </xsl:otherwise>

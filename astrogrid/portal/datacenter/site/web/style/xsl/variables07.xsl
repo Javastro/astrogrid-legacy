@@ -3,8 +3,16 @@
 <xsl:stylesheet version="1.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	xmlns:util="http://apache.org/xsp/util/2.0"
+	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+        xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
 	xmlns:jpath="http://apache.org/xsp/jpath/1.0" >
 
+<!--+
+    |
+    | Page created by PFO, Tue Nov 30 12:58:34 GMT 2004
+    | it uses now a filtered system to handle registry entries
+    |
+    +-->
   <xsl:template match="AstroGrid">
        <xsl:apply-templates/>
   </xsl:template>
@@ -45,19 +53,6 @@ function locateTarget(helpy){
 	var w;
 /*	getOzSize();*/
 	getParentSize();
-	/*
-	if(refImg == null){
-		var riX = 255;
-		var riY = 180;
-		alert("underSelect not found winH = "+ winW);
-		w = winW - riX;
-	} else {
-		var riX = findPosX(refImg);
-		var riY = findPosY(refImg);
-		w = riX;
-	}
-	alert("hand = " + hand);
-	*/
 	if(hand == "right"){
 		riY = 0;
 		w = winW - 250;
@@ -87,21 +82,21 @@ function locateTarget(helpy){
 
 function xTEK(i){
 var update, old, ass;
-old = parent.document.main.adqlQuery.value;
+old = parent.document.qb_form.adqlQuery.value;
 ass = document.getElementById("derriere");
 var	aus = ass.value;
 if(aus == ""){
 	alert("Please give an ALIAS (AS) to the table. eg, T1");
 } else {
 update = old + ass.value + "." + i ;
-parent.document.main.adqlQuery.value = update;
-parent.document.main.adqlQuery.focus();
+parent.document.qb_form.adqlQuery.value = update;
+parent.document.qb_form.adqlQuery.focus();
 }
 }
 
 function xTEK2(i){
 var update, old, ass;
-old = parent.document.main.adqlQuery.value;
+old = parent.document.qb_form.adqlQuery.value;
 ass = document.getElementById("derriere");
 var	aus = ass.value;
 if(aus == ""){
@@ -109,8 +104,8 @@ if(aus == ""){
 } else {
 /*update = old + "FROM " + i + " AS " + ass.value;*/
 update = old + i + " AS " + ass.value + " ";
-parent.document.main.adqlQuery.value = update;
-parent.document.main.adqlQuery.focus();
+parent.document.qb_form.adqlQuery.value = update;
+parent.document.qb_form.adqlQuery.focus();
 }
 }
 
@@ -161,6 +156,8 @@ function defocusit(a){
 
 <xsl:choose>
 <xsl:when test="DQtableID != 'null'">
+<xsl:variable name="requestedTable"><xsl:value-of select="DQtableID"/></xsl:variable>
+
 <body style="font-size: 90%" >
 <script language="javascript">
 locateTarget("MDsummary");
@@ -176,6 +173,7 @@ locateTarget("MDsummary");
 <td align="left">FROM:</td>
 <td align="left" colspan="2">
 <xsl:value-of select="DQtableID"/>
+<xsl:value-of select="DQtableID2"/>
 <!--
 <input name="none" size="20">
 <xsl:attribute name="value">
@@ -198,9 +196,48 @@ C&amp;P
 
 <img width="150px" src="/astrogrid-portal/ClickUndPaste.jpg" border="2" />
 
-<xsl:for-each select="fakeRegistry/IVOA_TABLE/Columns/FIELD">
-<input class="AGwideButton" type="button" onClick="xTEK('{@name}\040')" value=" {@name} " onMouseOver="cabc(this, '{@name}', '{@ucd}', '{@Units}', '{Explanation}')" onMouseOut="cvbc(this)"/>
+
+<xsl:for-each select="//*/agResource">
+  <xsl:for-each select="agTable">
+     <xsl:if test="agName = $requestedTable">
+        <xsl:for-each select="agColumn">
+<input class="AGwideButton" type="button" onClick="xTEK('{agName}\040')" value=" {agName} " onMouseOver="cabc(this, '{agName}', '{agUCD}', '{agUnit}', '{agDescription}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+     </xsl:if>
+  </xsl:for-each>
 </xsl:for-each>
+
+<!--
+<xsl:for-each select="//*/vr:Resource">
+  <xsl:for-each select="vs:Table">
+     <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
+        <xsl:for-each select="vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+        <xsl:for-each select="vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+     </xsl:if>
+  </xsl:for-each>
+
+  <xsl:for-each select="vr:Table">
+     <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
+        <xsl:for-each select="vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+        <xsl:for-each select="vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+     </xsl:if>
+  </xsl:for-each>
+</xsl:for-each>
+-->
+
+
 </form>
 </center>
 
@@ -238,45 +275,6 @@ selecting a table interactively.</li>
 -->
 </ul>
 </div>
-<!--
-<table border="0" width="95%" cellpadding="0" cellspacing="0">
-<tr valign="center">
-<td rowspan="3" width="20">
-<img src="/astrogrid-portal/leftarrow.gif" width="15" /></td>
-<td align="left" style="border-left: solid 2px black">
-<img src="/astrogrid-portal/x.gif" width="0" height="5" />
-</td>
-</tr>
-<tr valign="center">
-<td align="left" style="border-top: solid 2px black; border-bottom: solid 2px
-black; border-right: solid 2px black">
-This is the query area. You are supposed to type in your query in order to
-save it in MySpace and use it in one or more workflows.
-</td>
-</tr>
-<tr valign="center">
-<td style="border-left: solid 2px black"><img src="/astrogrid-portal/x.gif"
-width="0" height="5" /></td>
-</tr>
-</table>
--->
-
-<!--
-Ha Ha Ha
-       <form name="fake">
-<table border="0" cellpadding="1" cellspacing="1">
-<tr><td bgcolor="#ffffcc">
-Load a known table:<br />
-<input name="tableID" size="20"/>
-</td></tr>
-
-<tr><td bgcolor="#ccffff">
-If you don't know which table to use.
-<input type="button" name="lost" class="submitButton" value="Select a Table"/>
-</td></tr>
-</table>
-</form>
--->
        <xsl:apply-templates/>
 </body>
 </xsl:otherwise>
@@ -413,6 +411,10 @@ If you don't know which table to use.
   <xsl:template match="QUERYAREA">
        <xsl:apply-templates/>
   </xsl:template>
+
+  <xsl:template match="resultsFromRegistry">
+  </xsl:template>
+
 
   <xsl:template match="Action">
   </xsl:template>

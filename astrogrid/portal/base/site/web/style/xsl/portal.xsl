@@ -53,9 +53,11 @@
         <script type="text/javascript" src="/astrogrid-portal/domMenu.js">
           null;
         </script>
+	<!--
         <script type="text/javascript" src="/astrogrid-portal/menu.xml">
           null;
         </script>
+	-->
     
         <!-- Process <script/> elements -->
         <xsl:for-each select="//ag-script">

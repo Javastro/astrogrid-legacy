@@ -2,16 +2,16 @@
 .agHint {
 	font-size: 14px;
 	font-family: arial, verdana, sans-serif;
-	background-color: yellow;
-	border-color: red;
+	background-color: #eeffff;
+	border-color: #000088;
 	padding-top: 4px;
 	padding-bottom: 4px;
 	padding-right: 4px;
 	padding-left: 4px;
-	border-top: solid 3px #990000;
-	border-right: solid 3px #990000;
-	border-bottom: solid 3px #990000;
-	border-left: solid 3px #990000;
+	border-top: ridge 3px #000088;
+	border-right: ridge 3px #000088;
+	border-bottom: ridge 3px #000088;
+	border-left: ridge 3px #000088;
 }
 
 .helpButton {
@@ -650,6 +650,20 @@
 	padding-left: 1em;
 }
 
+.agCompositeTitle {
+	font-family: 'Helvetica', arial, sans-serif;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #000099;
+/*	cursor: pointer;*/
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	text-decoration: none;
+}
+
+
 .agWelcomeTitle {
 	font-size: larger;
 	font-weight: bold;
@@ -695,6 +709,11 @@
 	background-color: #003300;
 	border-color: lime;
 	cursor: pointer;
+}
+
+.areaInput2 {
+/*	background-color: black;*/
+	color: blue;
 }
 
 .agHnd {

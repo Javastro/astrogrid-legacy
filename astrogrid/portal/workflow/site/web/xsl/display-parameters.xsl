@@ -67,7 +67,7 @@
                 <div style="color: blue; background-color: lightblue; text-align: center;">( input parameters for this task: )</div>
               </td></tr> 
               <xsl:for-each select="./tool/inputParam">
-                <xsl:sort select="@param-name" type="text" order="descending" /> 
+                <xsl:sort select="@param-name"/> 
                 <xsl:call-template name="parameter">                                     
                   <xsl:with-param name="direction">input</xsl:with-param>
                 </xsl:call-template>                              
@@ -76,7 +76,7 @@
 
               <xsl:if test="./tool/outputParam" >  <!-- Email tool has no output params, so don't display -->      
                 <tr><td colspan="4">
-                  <div style="color: blue; background-color: lightblue; text-align: center;">( location to place ouput from this task: )</div>
+                  <div style="color: blue; background-color: lightblue; text-align: center;">( output parameters for this taskk: )</div>
                 </td></tr>                
                 <xsl:for-each select="./tool/outputParam">  
                   <xsl:call-template name="parameter">

@@ -35,7 +35,7 @@
 
 
 	-->
-<agOtherWindowTitle>Astrogrid's <xsp-request:get-parameter name="item"/> FAQ</agOtherWindowTitle>
+<agPUBMessage>Astrogrid's <xsp-request:get-parameter name="item"/> FAQ</agPUBMessage>
 <xsp:logic>
 	String tomcat;
 	tomcat = java.lang.System.getProperty("catalina.home");

@@ -69,6 +69,7 @@
                 String description = "";
                 String identifier = "";
                 String tablename = "";
+                String tablenameVS = "";
                 String element = null;
                 Node nd = (Node) nl.item(i);
                 if ( nd != null && nd.getNodeType() == Node.ELEMENT_NODE ) {
@@ -86,7 +87,10 @@
                    Element tnode = (Element) nd;
                    NodeList tables =
                            DomHelper.getNodeListTags(tnode,"Table","vr");
+                   NodeList tablesVS =
+                           DomHelper.getNodeListTags(tnode,"Table","vs");
                    int nrtab = tables.getLength();
+                   int nrtabVS = tablesVS.getLength();
                    
                    <xsp:element name="result">
 <xsp:attribute name="title"><xsp:expr>title</xsp:expr></xsp:attribute>
@@ -100,9 +104,20 @@
           ]]>
                      Node tab = (Node) tables.item(j);
                      tablename = DomHelper.getNodeTextValue(tab,"Name","vr");
-
-<xsp:attribute name="table"><xsp:expr>tablename</xsp:expr></xsp:attribute>
+<xsp:attribute name="tableVR"><xsp:expr>tablename</xsp:expr></xsp:attribute>
                    }  // end for loop j (table)
+
+      <![CDATA[
+                   for ( int j=0; j < nrtabVS; j++ ) {
+          ]]>
+                     Node tab = (Node) tablesVS.item(j);
+                     tablenameVS = DomHelper.getNodeTextValue(tab,"Name","vs");
+<xsp:attribute name="tableVS"><xsp:expr>tablenameVS</xsp:expr></xsp:attribute>
+                   }  // end for loop j (table)
+<!--
+                     tablenameVS = DomHelper.getNodeTextValue(tab,"Name","vs");
+<xsp:attribute name="tableVS"><xsp:expr>tablenameVS</xsp:expr></xsp:attribute>
+-->
            </xsp:logic>
                    </xsp:element>
                 }  // end if ELEMENT_NODE

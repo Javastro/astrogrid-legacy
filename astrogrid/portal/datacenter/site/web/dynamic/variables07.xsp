@@ -10,7 +10,18 @@
           xmlns:xsp="http://apache.org/xsp"
 	  xmlns:util="http://apache.org/xsp/util/2.0"
           xmlns:jpath="http://apache.org/xsp/jpath/1.0"
-	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0">
+
+    <!--+
+        | Import any java classes here.
+        +-->
+
+        <xsp:structure>
+          <xsp:include>org.w3c.dom.Document</xsp:include>
+          <xsp:include>org.astrogrid.util.DomHelper</xsp:include>
+        </xsp:structure>
+
 
   
 <AstroGrid>
@@ -18,11 +29,48 @@
 <agVaribleDisplayFrame>
 <!--
 <agComponentTitle>Table: <xsp-request:get-parameter name="tableID"/></agComponentTitle>
+
+<DQtableID><xsp-request:get-parameter default="null" name="tableID"/></DQtableID>
+<TRACEPARAM><xsp:expr>paramTable</xsp:expr></TRACEPARAM>
 -->
 
-<DQtableID><xsp-request:get-parameter name="tableID"/></DQtableID>
-
 <xsp:logic>
+            String DQtableID = "null";
+	    String paramTable, sessionTable = "null";
+	    paramTable = (String) <xsp-request:get-parameter default="null" name="tableID"/>;
+
+	    if(paramTable.equals("AGblank")){
+              <DQtableID><xsp:expr>DQtableID</xsp:expr></DQtableID>
+              <resultsFromRegistry></resultsFromRegistry>
+	    } else {
+            	Object ob = null;
+
+            	ob = session.getAttribute("tableID");
+            	if (ob != null )
+            	{
+			sessionTable = ob.toString();
+            	}
+            	<DQtableID><xsp:expr>sessionTable</xsp:expr></DQtableID>
+
+            	ob = session.getAttribute("resultSingleCatalog");
+            	if ((ob != null) &amp;&amp; (ob instanceof Document))
+            	{
+              <resultsFromRegistry>
+                <util:include-expr>
+                  <util:expr>
+                    DomHelper.DocumentToString((Document)ob)
+                  </util:expr>
+                </util:include-expr>
+              </resultsFromRegistry>
+
+            	}
+            	else
+            	{
+              <resultsFromRegistry></resultsFromRegistry>
+            	}
+	    }
+
+<!--
      String quString, myURL, nada;
      nada = new String("null");
      quString = (String) <xsp-request:get-parameter name="tableID"/>;
@@ -34,12 +82,8 @@
         <util:include-uri>
            <util:href><xsp:expr>myURL</xsp:expr></util:href>
         </util:include-uri>
-<!--
- <responseFromRegistry>
-
- </responseFromRegistry>
- -->
      }
+-->
 </xsp:logic>
 
 </agVaribleDisplayFrame>

@@ -904,10 +904,53 @@ Hi <br />
 Hi! Ho!<br />
 <xsl:for-each select="vs:Table/vs:Column">
 <xsl:for-each select="resultsFromRegistry/exist:result/vr:Resource/vs:Table/vs:Column">
+<xsl:value-of select="." />
 -->
 <br />
+<xsl:for-each select="//*/agResource">
+  <xsl:for-each select="agTABLE">
+     <xsl:if test="agNAME = $requestedTable">
+        <xsl:for-each select="agCOLUMN">
+<input class="AGwideButton" type="button" onClick="xTEK('{agNAME}\040')" value=" {agNAME} " onMouseOver="cabc(this, '{agNAME}', '{agUCD}', '{agUnit}', '{agDescription}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+     </xsl:if>
+  </xsl:for-each>
 
+</xsl:for-each>
+
+<!--
 <xsl:for-each select="//*/vr:Resource">
+  <xsl:for-each select="vs:Table">
+     <xsl:if test="vs:Name = $requestedTable or vr:Name = $requestedTable or Name = $requestedTable">
+        <xsl:for-each select="vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:name}\040')" value=" {vr:name} " onMouseOver="cabc(this, '{vr:name}', '{vr:ucd}', '{vs:unit}', '{vr:description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+        <xsl:for-each select="vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+     </xsl:if>
+  </xsl:for-each>
+
+  <xsl:for-each select="vr:Table">
+     <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
+        <xsl:for-each select="vs:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+        <xsl:for-each select="vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+        </xsl:for-each>
+
+     </xsl:if>
+  </xsl:for-each>
+</xsl:for-each>
+-->
+
+
+<!--
+<xsl:for-each select="//*/Resource">
   <xsl:for-each select="vs:Table">
      <xsl:if test="vr:Name = $requestedTable or Name = $requestedTable">
         <xsl:for-each select="vs:Column">
@@ -934,6 +977,7 @@ Hi! Ho!<br />
      </xsl:if>
   </xsl:for-each>
 </xsl:for-each>
+-->
 
 
 <!-- OLD CODE, does not consider multiple tables within a resource
@@ -1057,11 +1101,13 @@ If you don't know which table to use.
 
   <xsl:template match="resultsFromRegistry">
   </xsl:template>
+<!--
+-->
 
   <xsl:template match="uniqueID">
   </xsl:template>
 
-  <xsl:template match="vodescription">
+  <xsl:template match="agVODescription">
 <!--
 	<xsl:apply-templates/>
 	<xsl:apply-templates/>
@@ -1074,16 +1120,29 @@ HI! <br />
 <input class="AGwideButton" type="button" onClick="xTEK('{Name}\040')" value=" {Name} " onMouseOver="cabc(this, '{Name}', '{vs:UCD}', '{vs:Unit}', '{Description}')" onMouseOut="cvbc(this)"/>
 </xsl:for-each>
 -->
+
+  <xsl:template match="agResource">
+  </xsl:template>
+
+  <xsl:template match="agTABLE">
+  </xsl:template>
+
+  <xsl:template match="agNAME">
+  </xsl:template>
+
+  <xsl:template match="agUCD">
+  </xsl:template>
+
+  <xsl:template match="agUnit">
+  </xsl:template>
+
+  <xsl:template match="agDescription">
+  </xsl:template>
+
+  <xsl:template match="agColumn">
+  </xsl:template>
 <!--
-  <xsl:template match="vr:Resource">
-  </xsl:template>
-
-  <xsl:template match="vs:Table">
 	<xsl:apply-templates/>
-  </xsl:template>
-
-  <xsl:template match="vs:Column">
-  </xsl:template>
 -->
 
   <xsl:template match="IVOA_TABLE">
@@ -1167,6 +1226,8 @@ HI! <br />
 
   <xsl:template match="DQtableID">
   </xsl:template>
+<!--
+-->
 
   <xsl:template match="FIELD">
   </xsl:template>

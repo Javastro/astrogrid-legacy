@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.17 2004/11/26 15:03:25 clq2 Exp $
+    | CVS $Id: sitemap.xmap,v 1.18 2004/12/03 21:16:00 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -251,9 +251,21 @@
 
          <map:match pattern="variablesFromMB.html">
             <map:act type="astrogrid-registry-browser">
+              <map:generate src="web/dynamic/dataQuery07.xsp"
+                            type="serverpages" label="XML, HTML"/>  
+              <map:transform src="web/style/xsl/simplifyRegistry.xsl" />
+              <map:transform src="web/style/xsl/dataQuery07.xsl" label="PAGE">
+<!--
+              <map:transform src="web/style/xsl/vanilla.xsl" label="PAGE" >
+              <map:generate src="dataQuery07.uni" />
+              <map:transform src="web/style/xsl/dataQuery07.xsl" label="PAGE">
+                            type="serverpages" label="XML, HTML"/>  
               <map:generate src="web/dynamic/xscreen.xsp"
                             type="serverpages" label="XML, HTML"/>  
               <map:transform src="web/style/xsl/dataQuery.xsl" label="PAGE">
+-->
+                  <map:parameter name="tableID"
+                                 value="{tableID}"/>
                   <map:parameter name="errormessage"
                                  value="{errormessage}"/>
                   <map:parameter name="mainelement"
@@ -287,8 +299,13 @@
                   <map:parameter name="adql-document" value="{adql-document}"/>
               </map:transform>
 -->              
+<!--
               <map:generate type="serverpages" src="web/dynamic/xscreen.xsp"/>
               <map:transform src="web/style/xsl/dataQuery.xsl"/>
+-->
+              <map:generate type="serverpages"
+		      src="web/dynamic/dataQueryFromMyspace.xsp"/>
+              <map:transform src="web/style/xsl/dataQuery07.xsl"/>
               <map:transform src="cocoon://xml2html.xsl"/>
               <map:serialize type="xml"/>
             </map:act>
@@ -299,8 +316,13 @@
 <!--
               <map:call resource="test-results"/>
 -->
+<!--
               <map:generate type="serverpages" src="web/dynamic/xscreen.xsp"/>
               <map:transform src="web/style/xsl/dataQuery.xsl"/>
+  -->
+              <map:generate type="serverpages"
+		      src="web/dynamic/dataQueryFromMyspace.xsp"/>
+              <map:transform src="web/style/xsl/dataQuery07.xsl"/>
               <map:transform src="cocoon://xml2html.xsl"/>
               <map:serialize type="xml"/>          
             </map:act>
@@ -308,6 +330,12 @@
           
           <map:otherwise>
               <map:call resource="test-results"/>
+	  <!--
+              <map:generate type="serverpages" src="web/dynamic/dataQuery07.xsp"/>
+              <map:transform src="web/style/xsl/dataQuery07.xsl"/>
+              <map:transform src="cocoon://xml2html.xsl"/>
+              <map:serialize type="xml"/>          
+	      -->
           </map:otherwise>
         </map:select>
 
@@ -329,6 +357,13 @@
         <map:serialize type="xml"/>
       </map:match>
 
+      <!-- simplifyRegistry -->
+      <map:match pattern="**.uni">
+        <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
+        <map:transform src="web/style/xsl/simplifyRegistry.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>
+
       <map:match pattern="**.reg">
         <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
         <map:transform src="web/style/xsl/dataQueryFR.xsl"/>
@@ -338,7 +373,11 @@
 
       <map:match pattern="**.i07">
         <map:generate type="serverpages" src="web/dynamic/{1}.xsp"/>
+        <map:transform src="web/style/xsl/simplifyRegistry.xsl" />
         <map:transform src="web/style/xsl/{1}.xsl"/>
+	<!--
+        <map:transform src="web/style/xsl/vanilla.xsl"/>
+	-->
         <map:transform src="cocoon://xml2html.xsl"/>
         <map:serialize type="xml"/>
       </map:match>

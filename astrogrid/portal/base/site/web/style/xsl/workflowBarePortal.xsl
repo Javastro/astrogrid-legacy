@@ -14,7 +14,7 @@
       indent="yes"
       omit-xml-declaration="yes"/>
       
-  <xsl:param name="ag-css-url" value="default.css"/>
+  <xsl:param name="ag-css-url">default.css</xsl:param>
 
   <xsl:template match="/">
     <html>
