@@ -1,10 +1,12 @@
 /*
- * $Id: SelfMonitorBody.java,v 1.1 2004/10/01 18:04:59 mch Exp $
+ * $Id: SelfMonitorBody.java,v 1.2 2004/10/05 15:27:42 mch Exp $
  */
 
 package org.astrogrid.status;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.io.Writer;
 
 /**
  * Serves body-html (to include within the body html element) containing server
@@ -15,8 +17,7 @@ import java.io.StringWriter;
  */
 public class SelfMonitorBody  {
    
-   public static String getHtmlStatus(ServiceStatus status) {
-      StringWriter out = new StringWriter();
+   public static void writeHtmlStatus(Writer out, ServiceStatus status) throws IOException {
       out.write(
          "<p>Started: "+status.getStarted()+"</p>"+
             "<h3>Memory</h3>"+
@@ -39,18 +40,7 @@ public class SelfMonitorBody  {
       out.write("<p>Queries: "+ qStatuses.length+"</p>");
       
       for (int i=0;i<qStatuses.length;i++) {
-         String bg = "#FFFFFF"; //default to background white
-         String fg = "#000000"; //default to foreground black
-         if (qStatuses[i].getStage() == TaskStatus.ABORTED)  { bg = "#FF8800"; } //yellow/orange
-         if (qStatuses[i].getStage() == TaskStatus.ERROR)    { bg = "#FF0000"; } //black on red
-         if (qStatuses[i].getStage() == TaskStatus.COMPLETE) { bg = "#0000FF"; } //blue
-         
-         out.write("<tr bgcolor='"+bg+"' fgcolor='"+fg+"'>");
-         out.write("<td><a href='queryStatus.jsp?ID="+qStatuses[i].getId()+"'>"+qStatuses[i].getId()+"</a></td>");
-         out.write("<td>"+qStatuses[i].getStartTime()+"</td>");
-         out.write("<td>"+qStatuses[i].getOwner()+"</td>");
-         out.write("<td>"+qStatuses[i].getStage()+"</td>");
-         out.write("</tr>");
+         writeTaskStatusRow(out, qStatuses[i]);
       }
       
       out.write(
@@ -60,6 +50,21 @@ public class SelfMonitorBody  {
             "<p>"+
             "</p>");
       
-      return out.toString();
+   }
+   
+   /** Creates HTML for displaying a task in a row in a table */
+   public static void writeTaskStatusRow(Writer out, TaskStatus task) throws IOException {
+         String bg = "#FFFFFF"; //default to background white
+         String fg = "#000000"; //default to foreground black
+         if (task.getStage() == TaskStatus.ABORTED)  { bg = "#FFFFAA"; } //yellow/orange
+         if (task.getStage() == TaskStatus.ERROR)    { bg = "#FFAAAA"; } //black on red
+         if (task.getStage() == TaskStatus.COMPLETE) { bg = "#AAAAFF"; } //blue
+         
+         out.write("<tr bgcolor='"+bg+"' fgcolor='"+fg+"'>");
+         out.write("<td><a href='queryStatus.jsp?ID="+task.getId()+"'>"+task.getId()+"</a></td>");
+         out.write("<td>"+task.getStartTime()+"</td>");
+         out.write("<td>"+task.getOwner()+"</td>");
+         out.write("<td>"+task.getStage()+"</td>");
+         out.write("</tr>");
    }
 }
