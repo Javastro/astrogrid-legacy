@@ -3,31 +3,18 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/15 13:24:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.13  2004/07/15 13:24:28  dave
+    |   Merged development branch, dave-dev-200407141515, into HEAD
+    |
+    |   Revision 1.12.2.1  2004/07/14 23:25:05  dave
+    |   Refactored Community build to use artifact:deploy
+    |
     |   Revision 1.12  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
-    |
-    |   Revision 1.11.4.1  2004/07/13 11:50:43  dave
-    |   Tidied up the file headers
-    |
-    |   Revision 1.11  2004/06/29 22:21:47  dave
-    |   Merged development branch, dave-dev-200406291222, into HEAD
-    |
-    |   Revision 1.10.8.2  2004/06/29 15:38:22  dave
-    |   Removed sub-project site goals
-    |
-    |   Revision 1.10.8.1  2004/06/29 13:31:03  dave
-    |   Removed the extra site goal
-    |
-    |   Revision 1.10  2004/06/18 13:45:20  dave
-    |   Merged development branch, dave-dev-200406081614, into HEAD
-    |
-    |   Revision 1.9.18.1  2004/06/17 13:38:59  dave
-    |   Tidied up old CVS log entries
-    |
     | </cvs:log>
     |
     +-->
@@ -38,9 +25,9 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
-    xmlns:deploy="deploy"
-    xmlns:astro="org.astrogrid.community"
-    xmlns:custom="org.astrogrid.community.resolver"
+    xmlns:artifact="artifact"
+    xmlns:community="org.astrogrid.community"
+    xmlns:resolver="org.astrogrid.community.resolver"
     default="astrogrid-rebuild-snapshot"
     >
 
@@ -138,36 +125,40 @@
     </goal>
 
     <!--+
-        | Build and install our component jar.
+        | Build and install our artifact jar.
         +-->
     <goal name="astrogrid-install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
-            | Build our jar.
+            | Build our artifact jar.
             +-->
         <attainGoal name="jar:jar"/>
         <!--+
-            | Install our jar.
+            | Install our artifact jar.
             +-->
-        <core:set var="astrogrid.artifact.type" value="jar"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="install-local"/>
+		<artifact:install
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
         <!--+
-            | Build our zip file.
+            | Build our artifact zip.
             +-->
         <attainGoal name="build.zipfile"/>
         <!--+
-            | Install our zip file.
+            | Install our artifact zip.
             +-->
-        <core:set var="astrogrid.artifact.type" value="zip"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="install-local"/>
+		<artifact:install
+			artifact="${maven.build.dir}/${maven.final.name}.zip"
+			project="${pom}"
+			type="zip"
+			/>
     </goal>
 
     <!--+
-        | Build and install our snapshot jar.
+        | Build and install our snapshot jar(s).
         +-->
     <goal name="astrogrid-install-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -179,29 +170,33 @@
         <maven:snapshot project="${pom}"/>
         <core:set var="maven.final.name" value="${snapshotSignature}"/>
         <!--+
-            | Build our jar.
+            | Build our snapshot jar.
             +-->
         <attainGoal name="jar:jar"/>
         <!--+
-            | Install our SNAPSHOT jar.
+            | Install our snapshot jar(s).
             +-->
-        <core:set var="astrogrid.artifact.type" value="jar"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="install-local-snapshot"/>
+		<artifact:install-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
         <!--+
-            | Build our zip file.
+            | Build our snapshot zip.
             +-->
         <attainGoal name="build.zipfile"/>
         <!--+
-            | Install our SNAPSHOT zip.
+            | Install our snapshot zip(s).
             +-->
-        <core:set var="astrogrid.artifact.type" value="zip"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="install-local-snapshot"/>
+		<artifact:install-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.zip"
+			project="${pom}"
+			type="zip"
+			/>
     </goal>
 
     <!--+
-        | Build and deploy our component jar.
+        | Build and deploy our artifact jar.
         +-->
     <goal name="astrogrid-deploy-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -212,21 +207,25 @@
             +-->
         <attainGoal name="astrogrid-install-artifact"/>
         <!--+
-            | Deploy our jar.
+            | Deploy our artifact jar.
             +-->
-        <core:set var="astrogrid.artifact.type" value="jar"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="deploy-local"/>
+		<artifact:deploy
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
         <!--+
-            | Deploy our zip.
+            | Deploy our artifact zip.
             +-->
-        <core:set var="astrogrid.artifact.type" value="zip"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="deploy-local"/>
+		<artifact:deploy
+			artifact="${maven.build.dir}/${maven.final.name}.zip"
+			project="${pom}"
+			type="zip"
+			/>
     </goal>
 
     <!--+
-        | Build and deploy our snapshot jar.
+        | Build and deploy our snapshot jar(s).
         +-->
     <goal name="astrogrid-deploy-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -237,17 +236,21 @@
             +-->
         <attainGoal name="astrogrid-install-snapshot"/>
         <!--+
-            | Deploy our SNAPSHOT jar.
+            | Deploy our snapshot jar(s).
             +-->
-        <core:set var="astrogrid.artifact.type" value="jar"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="deploy-local-snapshot"/>
+		<artifact:deploy-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
         <!--+
-            | Deploy our SNAPSHOT zip.
+            | Deploy our snapshot zip(s).
             +-->
-        <core:set var="astrogrid.artifact.type" value="zip"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="deploy-local-snapshot"/>
+		<artifact:deploy-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.zip"
+			project="${pom}"
+			type="zip"
+			/>
     </goal>
 
     <!-- ================ Component goals ================ -->
@@ -348,7 +351,7 @@
         <!--+
             | Generate our DatabaseManager WSDL and stubs.
             +-->
-        <astro:service.generate
+        <community:service.generate
             service.name="DatabaseManager"
             service.wsdd="org/astrogrid/community/common/database/manager/deploy.wsdd"
             service.class="org.astrogrid.community.common.database.manager.DatabaseManagerMock"
@@ -358,7 +361,7 @@
         <!--+
             | Generate our PolicyManager WSDL and stubs.
             +-->
-        <astro:service.generate
+        <community:service.generate
             service.name="PolicyManager"
             service.wsdd="org/astrogrid/community/common/policy/manager/deploy.wsdd"
             service.class="org.astrogrid.community.common.policy.manager.PolicyManagerMock"
@@ -368,7 +371,7 @@
         <!--+
             | Generate our PolicyService WSDL and stubs.
             +-->
-        <astro:service.generate
+        <community:service.generate
             service.name="PolicyService"
             service.wsdd="org/astrogrid/community/common/policy/service/deploy.wsdd"
             service.class="org.astrogrid.community.common.policy.service.PolicyServiceMock"
@@ -378,7 +381,7 @@
         <!--+
             | Generate our SecurityManager WSDL and stubs.
             +-->
-        <astro:service.generate
+        <community:service.generate
             service.name="SecurityManager"
             service.wsdd="org/astrogrid/community/common/security/manager/deploy.wsdd"
             service.class="org.astrogrid.community.common.security.manager.SecurityManagerMock"
@@ -388,7 +391,7 @@
         <!--+
             | Generate our SecurityService WSDL and stubs.
             +-->
-        <astro:service.generate
+        <community:service.generate
             service.name="SecurityService"
             service.wsdd="org/astrogrid/community/common/security/service/deploy.wsdd"
             service.class="org.astrogrid.community.common.security.service.SecurityServiceMock"
@@ -400,66 +403,40 @@
             +-->
         <ant:echo message=""/>
         <ant:echo message="Deploying WebServices ..."/>
-        <astro:service.deploy service.name="DatabaseManager"/>
-        <astro:service.deploy service.name="PolicyManager"/>
-        <astro:service.deploy service.name="PolicyService"/>
-        <astro:service.deploy service.name="SecurityManager"/>
-        <astro:service.deploy service.name="SecurityService"/>
+        <community:service.deploy service.name="DatabaseManager"/>
+        <community:service.deploy service.name="PolicyManager"/>
+        <community:service.deploy service.name="PolicyService"/>
+        <community:service.deploy service.name="SecurityManager"/>
+        <community:service.deploy service.name="SecurityService"/>
         <!--+
             | Register our local services
             +-->
-        <custom:register.service.local
+        <resolver:register.service.local
             service.name="PolicyManager"
             service.class="org.astrogrid.community.common.policy.manager.PolicyManager"
             service.file="org.astrogrid.local.policy.manager.xml"
             />
-        <custom:register.service.local
+        <resolver:register.service.local
             service.name="PolicyService"
             service.class="org.astrogrid.community.common.policy.service.PolicyService"
             service.file="org.astrogrid.local.policy.service.xml"
             />
-        <custom:register.service.local
+        <resolver:register.service.local
             service.name="SecurityManager"
             service.class="org.astrogrid.community.common.security.manager.SecurityManager"
             service.file="org.astrogrid.local.security.manager.xml"
             />
-        <custom:register.service.local
+        <resolver:register.service.local
             service.name="SecurityService"
             service.class="org.astrogrid.community.common.security.service.SecurityService"
             service.file="org.astrogrid.local.security.service.xml"
             />
     </goal>
 
-    <!--+
-        | Initialise our config files.
-        | No longer used ..
-        +-->
-    <goal name="init.config">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Initialising config files ...."/>
-        <!--+
-            | Initialise our paths.
-            +-->
-        <attainGoal name="init.paths"/>
-        <!--+
-            | Create our config directories.
-            +-->
-        <ant:mkdir dir="${maven.build.dir}/config"/>
-        <ant:mkdir dir="${maven.build.dir}/config/registry"/>
-        <ant:mkdir dir="${maven.build.dir}/config/community"/>
-        <!--+
-            | Copy our config files.
-        <ant:copy todir="${maven.build.dir}/config">
-            <fileset dir="src/config"/>
-        </ant:copy>
-            +-->
-    </goal>
-
 <!-- =============== -->
 
     <!--+
-        | Add our Community jars.
+        | Install our Community jars.
         +-->
     <goal name="install.client">
         <ant:echo message="Installing Community client jar ...."/>
@@ -499,7 +476,7 @@
     </goal>
 
     <!--+
-        | Copy our 3rd party libraries.
+        | Install our 3rd party libraries.
         +-->
     <goal name="install.depends">
         <ant:echo message="Installing 3rd party libraries ...."/>
@@ -539,7 +516,7 @@
     </goal>
 
     <!--+
-        | Copy our Axis libraries.
+        | Install our Axis libraries.
         +-->
     <goal name="install.axis">
         <ant:echo message="Installing Axis libraries ...."/>
@@ -559,7 +536,7 @@
     </goal>
 
     <!--+
-        | Copy our ant script and tools.
+        | Install our ant script and tools.
         +-->
     <goal name="install.tools">
         <ant:echo message="Installing Ant script and tools ...."/>

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.11 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/15 13:24:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.12 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.12  2004/07/15 13:24:28  dave
+    |   Merged development branch, dave-dev-200407141515, into HEAD
+    |
+    |   Revision 1.11.2.1  2004/07/14 23:25:05  dave
+    |   Refactored Community build to use artifact:deploy
+    |
     |   Revision 1.11  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -119,19 +125,6 @@
             <includes>
                 <include>**/*TestCase.java</include>
             </includes>
-            <!--+
-                | Which tests to exclude.
-                +-->
-            <excludes>
-                <exclude>**/TestBase.frog</exclude>
-            </excludes>
-            <!--+
-                | The resources for our tests.
-            <resources>
-                <resource>
-                </resource>
-            </resources>
-                +-->
         </unitTest>
     </build>
 

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/15 13:24:28 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/07/15 13:24:28  dave
+    |   Merged development branch, dave-dev-200407141515, into HEAD
+    |
+    |   Revision 1.2.2.1  2004/07/15 11:13:19  dave
+    |   Refactored Filestore build scripts to use the artifact:deploy plugin
+    |
     |   Revision 1.2  2004/07/14 13:50:29  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -23,6 +29,7 @@
     xmlns:util="jelly:util"
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
+    xmlns:artifact="artifact"
     xmlns:filestore="org.astrogrid.filestore"
     default="astrogrid-rebuild-snapshot"
     >
@@ -66,14 +73,14 @@
     </goal>
 
     <!--+
-        | Build and install our component war.
+        | Build and install our artifact war.
         +-->
     <goal name="astrogrid-install-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
-            | Build our war.
+            | Build our artifact war.
             +-->
         <attainGoal name="war:war"/>
         <!--+
@@ -84,15 +91,17 @@
             toFile="${maven.build.dir}/${maven.final.name}.war"
             />
         <!--+
-            | Install our war.
+            | Install our artifact war.
             +-->
-        <core:set var="astrogrid.artifact.type" value="war"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="install-local"/>
+		<artifact:install
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
     </goal>
 
     <!--+
-        | Build and install our snapshot war.
+        | Build and install our snapshot war(s).
         +-->
     <goal name="astrogrid-install-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -100,7 +109,6 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
             | Create our snapshot name.
-            | Need to do this here because the jar:snapshot only sets 'maven.final.name' locally.
             +-->
         <maven:snapshot project="${pom}"/>
         <core:set var="maven.final.name" value="${snapshotSignature}"/>
@@ -116,15 +124,17 @@
             toFile="${maven.build.dir}/${maven.final.name}.war"
             />
         <!--+
-            | Install our SNAPSHOT jar.
+            | Install our snapshot war(s).
             +-->
-        <core:set var="astrogrid.artifact.type" value="war"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.war.final.name}"/>
-        <attainGoal name="install-local-snapshot"/>
+		<artifact:install-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
     </goal>
 
     <!--+
-        | Build and deploy our component war.
+        | Build and deploy our artifact war.
         +-->
     <goal name="astrogrid-deploy-artifact">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
@@ -135,30 +145,34 @@
             +-->
         <attainGoal name="astrogrid-install-artifact"/>
         <!--+
-            | Deploy our war.
+            | Deploy our artifact war.
             +-->
-        <core:set var="astrogrid.artifact.type" value="war"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="deploy-local"/>
+		<artifact:deploy
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
     </goal>
 
     <!--+
-        | Build and deploy our snapshot war.
+        | Build and deploy our snapshot war(s).
         +-->
     <goal name="astrogrid-deploy-snapshot">
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <!--+
-            | Create our artifact jar.
+            | Create our snapshot war.
             +-->
         <attainGoal name="astrogrid-install-snapshot"/>
         <!--+
-            | Deploy our SNAPSHOT war.
+            | Deploy our snapshot war(s).
             +-->
-        <core:set var="astrogrid.artifact.type" value="war"/>
-        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
-        <attainGoal name="deploy-local-snapshot"/>
+		<artifact:deploy-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.war"
+			project="${pom}"
+			type="war"
+			/>
     </goal>
 
     <!-- ================ Component goals ================ -->
