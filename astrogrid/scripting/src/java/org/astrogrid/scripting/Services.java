@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.7 2004/03/05 16:27:28 nw Exp $
+/*$Id: Services.java,v 1.8 2004/03/12 13:50:23 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.scripting;
+
+import org.astrogrid.config.SimpleConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,7 +32,10 @@ public class Services {
 
    
    /** default location of service list document - in this package on the classpath */
-   public static final String SERVICE_LIST= "services.xml";
+   public static final String DEFAULT_SERVICE_LIST= "services.xml";
+   
+   /** key to look in config for a service list */
+   public static final String SERVICE_LIST_URL_KEY = "scripting.service.list.url";
    
    /** constructor, that populates list using the default service list document
     * 
@@ -64,17 +69,14 @@ public class Services {
       dig.addBeanPropertySetter("services/service/type");      
       dig.addSetNext("services/service","addService");
       InputStream is = null;
-      if (serviceListDocument != null){
+      if (serviceListDocument == null){
+          serviceListDocument = SimpleConfig.getSingleton().getUrl(SERVICE_LIST_URL_KEY,this.getClass().getResource(DEFAULT_SERVICE_LIST));
+      }
             is = serviceListDocument.openStream();
             if (is == null) {
                throw new IllegalArgumentException("No Service document present at " + serviceListDocument);
             }
-      } else {
-         is = this.getClass().getResourceAsStream(SERVICE_LIST);
-         if (is == null) {
-            throw new MissingResourceException("Could not load service list document resource from classpath ", this.getClass().getName(),SERVICE_LIST);
-         }
-      }
+
 
       dig.parse(is);
       is.close();
@@ -187,6 +189,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.8  2004/03/12 13:50:23  nw
+improved scripting object
+
 Revision 1.7  2004/03/05 16:27:28  nw
 updated to new jes delegates
 
