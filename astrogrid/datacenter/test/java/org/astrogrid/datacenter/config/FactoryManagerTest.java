@@ -13,7 +13,6 @@ import org.astrogrid.datacenter.FactoryProviderTestSpec;
 import org.astrogrid.datacenter.job.JobFactory;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
-import org.astrogrid.datacenter.votable.VOTableFactory;
 
 /**
  * JUnit test case for FactoryManagerTest
@@ -48,7 +47,6 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
         fac.setDefaultQueryFactory((QueryFactory)createFactory(QueryFactory.class));
         fac.setJobFactory((JobFactory)createFactory(JobFactory.class));
         //fac.setMySpaceFactory((MySpaceFactory)createFactory(MySpaceFactory.class)); no longer used
-        fac.setVOTableFactory((VOTableFactory)createFactory(VOTableFactory.class));
         fac.setQueryFactory(FactoryProviderTestSpec.TEST_QUERY_FACTORY_KEY,(QueryFactory)createFactory(QueryFactory.class));
     }
 
@@ -64,13 +62,6 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
     }
    }
 
-    public void testVOTableFactoryNull() {
-        try {
-            facMan.setVOTableFactory(null);
-            fail("should have barfed");
-        } catch (IllegalArgumentException e) {
-        }
-    }
     public void testDefaultQueryFactoryNull() {
         try {
             facMan.setDefaultQueryFactory(null);
@@ -112,13 +103,6 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
         facMan.setDefaultQueryFactory(q);
         QueryFactory q1 = facMan.getDefaultQueryFactory();
         assertSame(q,q1);
-        assertTrue(setConfigurationSeen);
-   }
-   public void testVOTableFactoryVal() {
-        VOTableFactory v = (VOTableFactory)createFactory(VOTableFactory.class);
-        facMan.setVOTableFactory(v);
-        VOTableFactory v1 = facMan.getVOTableFactory();
-        assertSame(v,v1);
         assertTrue(setConfigurationSeen);
    }
    public void testJobFactoryVal() {

@@ -1,5 +1,5 @@
 /*
- * $Id: DatasetAgent.java,v 1.16 2003/08/25 20:53:08 mch Exp $
+ * $Id: DatasetAgent.java,v 1.17 2003/08/25 21:42:59 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,19 +10,21 @@
  */
 package org.astrogrid.datacenter.datasetagent;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.*;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
+import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.config.ConfigurationDefaultImpl;
 import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.datacenter.job.Job;
-//import org.astrogrid.datacenter.myspace.Allocation; no longer used
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.i18n.AstroGridMessage;
+import org.objectwiz.votable.ResultSetConverter;
+import org.objectwiz.votable.ResultSetToSimpleVOTable;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -175,7 +177,7 @@ public class DatasetAgent {
          checkResources();
 
          // Parse the request and create the necessary Job structures, including Query...
-         Document queryDoc = parseXML( jobXML ) ;
+         Document queryDoc = parseXML( new StringReader(jobXML )) ;
 
          job = fac.getJobFactory().create( queryDoc,fac ) ;
 
@@ -184,21 +186,12 @@ public class DatasetAgent {
          fac.getJobFactory().update( job );
          job.getJobStep().getQuery().execute() ;
 
-         // Acquire some temporary file space...
-//         allocation = fac.getMySpaceFactory().allocateCacheSpace( job.getId() ) ;
-
-         // Produce VOTable and write it to a temporary file...
-         VOTable
-            votable = job.getJobStep().getQuery().toVOTable(fac) ;
-
-         // Inform MySpace that file is ready for pickup...
- //        allocation.informMySpace( job ) ;
+         // convert results to VOTable
+         convertResultsToVotable(job.getJobStep().getQuery(), "tempResults.vot");
+         Document voResults = parseXML( new FileReader("tempResults.vot"));
 
          job.setStatus( Job.STATUS_COMPLETED ) ;
          fac.getJobFactory().update( job );
-
-         // temporary, for testing
-         response = votable.toString() ;
 
          return response ;
       }
@@ -228,6 +221,67 @@ public class DatasetAgent {
 
    } // end runQuery()
 
+
+   /**
+    * Temporarily here until we sort out what to do with results conversions etc
+    */
+   public void convertResultsToVotable( Query query, String filePath) throws AstroGridException
+   {
+    //
+    // JBL Note: For the moment do not know where these settings should be coming from...
+    // (However, these may produce a suitable default pattern for a locale)
+    //
+      String
+         doubleOutputPattern = "",
+         floatOutputPattern = "",
+         dateOutputPattern = "",
+         timeOutputPattern = "",
+         timestampOutputPattern = "" ;
+
+      String
+      ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION = "AGDTCE00130" ;
+
+      ResultSetConverter
+          converter = new ResultSetToSimpleVOTable( doubleOutputPattern
+                                                  , floatOutputPattern
+                                                  , dateOutputPattern
+                                                  , timeOutputPattern
+                                                  , timestampOutputPattern ) ;
+      PrintStream
+         out = null ;
+
+      // JBL Note: When I can get rid of this, I'll be happy...
+      QueryFactoryImpl
+          queryFactoryImpl = (QueryFactoryImpl)query.getFactory().getImplementation() ;
+
+      try{
+         out = new PrintStream( new FileOutputStream(filePath) );
+         converter.serialize( queryFactoryImpl.getResultSet(), out ) ;
+      }
+      catch( Exception ex ) {
+         AstroGridMessage
+            message = new AstroGridMessage( ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION, this.getClass().getName());
+         logger.error( message.toString(), ex ) ;
+         throw new AstroGridException( message, ex );
+      }
+      finally {
+         if( out != null ) {
+             try {
+               out.flush();
+               out.close();
+             }
+             catch( Exception ex ) {
+                // JBL Note: a log entry might be appropriate here...
+               ;
+             }
+         }
+         out = null ;
+         if( TRACE_ENABLED ) logger.debug( "VOTableFactoryImpl.stream(): exit") ;
+      }
+
+    } // end of stream()
+
+
    /** test method - check everything gets initialized correctly */
    public String selfTest() {
       java.io.StringWriter sout = null;
@@ -253,26 +307,17 @@ public class DatasetAgent {
    /**
     * takes the ADQL string and parses it into a DOM.
     */
-   private Document parseXML( String jobXML ) throws IOException, SAXException, ParserConfigurationException
+   private Document parseXML( Reader xmlSource ) throws IOException, SAXException, ParserConfigurationException
    {
       DocumentBuilderFactory  factory = DocumentBuilderFactory.newInstance();
       factory.setValidating( Boolean.getBoolean( config.getProperty( ConfigurationKeys.DATASETAGENT_PARSER_VALIDATION
                                                                        , ConfigurationKeys.DATASETAGENT_CATEGORY )  )  ) ;
 
       DocumentBuilder builder = factory.newDocumentBuilder();
-      logger.debug( jobXML ) ;
-      InputSource jobSource = new InputSource( new StringReader( jobXML ) );
+      logger.debug( xmlSource ) ;
+      InputSource jobSource = new InputSource( xmlSource );
 
       return builder.parse( jobSource );
    }
-
-   /*
-    private void resourceCleanup( Query query, Allocation allocation ) {
-      if( TRACE_ENABLED ) logger.debug( "resourceCleanup() entry") ;
-      if( query != null ) query.close() ;
-      if( allocation != null ) allocation.close() ;
-      if( TRACE_ENABLED ) logger.debug( "resourceCleanup() exit") ;
-    }
-    */
 
 } // end of class DatasetAgent

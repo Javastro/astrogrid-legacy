@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManagerTest.java,v 1.3 2003/08/25 21:05:36 mch Exp $
+/*$Id: DynamicFactoryManagerTest.java,v 1.4 2003/08/25 21:47:57 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.config.FactoryManagerTest;
 import org.astrogrid.datacenter.impl.empty.NullJobFactory;
 import org.astrogrid.datacenter.impl.empty.NullQueryFactory;
-import org.astrogrid.datacenter.impl.empty.NullVOTableFactory;
 import org.astrogrid.datacenter.query.QueryFactory;
 
 /**
@@ -62,7 +61,6 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
 
     protected void populateMap() {
         internalMap.put(JOB_KEY,NullJobFactory.class.getName());
-        internalMap.put(VOTABLE_KEY,NullVOTableFactory.class.getName());
         internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
         internalMap.put(CATALOG_QUERY_KEY,NullQueryFactory.class.getName());
     }
@@ -117,22 +115,6 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
          }
          internalMap.put(QUERY_KEY,NullQueryFactory.class.getName());
          dynFacMan.loadDefaultQueryFactory();
-     }
-    public void testLoadVOTableFactory() throws DatacenterException {
-         try {
-         dynFacMan.loadVOTableFactory();
-         fail("expected to barf");
-         } catch (DatacenterException e) {
-         }
-
-         internalMap.put(VOTABLE_KEY,"unknown.class");
-         try {
-             dynFacMan.loadVOTableFactory();
-             fail("expected to barf");
-         } catch (DatacenterException e) {
-         }
-         internalMap.put(VOTABLE_KEY,NullVOTableFactory.class.getName());
-         dynFacMan.loadVOTableFactory();
      }
 
     public void testGetMissingQueryFactory() throws DatacenterException{
@@ -204,6 +186,9 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
 
 /*
 $Log: DynamicFactoryManagerTest.java,v $
+Revision 1.4  2003/08/25 21:47:57  mch
+Removed VOTable-middleman classes (to replace with more general ResultSet)
+
 Revision 1.3  2003/08/25 21:05:36  mch
 Removed dummy MySpace-related classes
 

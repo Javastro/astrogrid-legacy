@@ -1,5 +1,5 @@
 /*
- * $Id: FactoryProvider.java,v 1.3 2003/08/25 20:59:57 mch Exp $
+ * $Id: FactoryProvider.java,v 1.4 2003/08/25 21:46:38 mch Exp $
  * Created on 20-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -13,7 +13,7 @@ import org.astrogrid.datacenter.job.JobFactory;
 //import org.astrogrid.datacenter.myspace.MySpaceFactory; no longer used
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
-import org.astrogrid.datacenter.votable.VOTableFactory;
+//import org.astrogrid.datacenter.votable.VOTableFactory;
 
 /** interface to a collection of factories
  * describes a container that maintains and configures the various factories used within the data access component.
@@ -32,7 +32,7 @@ public interface FactoryProvider {
     public abstract MySpaceFactory getMySpaceFactory(); no longer used
     */
     /** access the votable factory */
-   public abstract VOTableFactory getVOTableFactory();
+//   public abstract VOTableFactory getVOTableFactory();
     /** Access a query factory
      * @param catalogName name of the catalog to retrieve query factory for.
      * @return the query factory associated with this catalog, or the default query factory if a catalog specific one is not specified.
@@ -56,6 +56,9 @@ public interface FactoryProvider {
 }
 /*
 $Log: FactoryProvider.java,v $
+Revision 1.4  2003/08/25 21:46:38  mch
+Removed VOTable-middleman classes (to replace with more general ResultSet)
+
 Revision 1.3  2003/08/25 20:59:57  mch
 Removed dummy MySpace-related classes
 

@@ -10,16 +10,18 @@
  */
 package org.astrogrid.datacenter.query;
 
+import java.io.PrintStream;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.votable.VOTable;
-import org.astrogrid.datacenter.votable.VOTableException;
+import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.astrogrid.i18n.AstroGridMessage;
+import org.objectwiz.votable.ResultSetConverter;
+import org.objectwiz.votable.ResultSetToSimpleVOTable;
+import org.objectwiz.votable.VOTable;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.io.OutputStream;
 
 public class Query {
 
@@ -146,22 +148,6 @@ public class Query {
     }
 
 
-    public VOTable toVOTable(FactoryProvider facMan ) throws VOTableException {
-      if( TRACE_ENABLED ) logger.debug( "Query.toVOTable(): entry") ;
-
-      VOTable
-         votable =  null ;
-
-      try {
-         votable = facMan.getVOTableFactory().createVOTable( this ) ;
-      }
-      finally {
-         if( TRACE_ENABLED ) logger.debug( "Query.toVOTable(): exit") ;
-      }
-
-      return votable ;
-
-    } // end of toVOTable()
 
 
     public void close() {

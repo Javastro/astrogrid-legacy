@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManager.java,v 1.3 2003/08/25 20:52:40 mch Exp $
+/*$Id: DynamicFactoryManager.java,v 1.4 2003/08/25 21:43:42 mch Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,8 +19,8 @@ import org.astrogrid.datacenter.job.JobException;
 import org.astrogrid.datacenter.job.JobFactory;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryFactory;
-import org.astrogrid.datacenter.votable.VOTableException;
-import org.astrogrid.datacenter.votable.VOTableFactory;
+//import org.astrogrid.datacenter.votable.VOTableException;
+//import org.astrogrid.datacenter.votable.VOTableFactory;
 import org.astrogrid.i18n.AstroGridMessage;
 
 /**
@@ -145,7 +145,7 @@ public class DynamicFactoryManager extends FactoryManager {
      *
      * @throws VOTableException if the otable manager cannot be loaded
      * @see #verify
-     */
+     *
     protected void loadVOTableFactory() throws VOTableException {
 
         String implementationFactoryName = conf.getProperty(  ConfigurationKeys.VOTABLE_FACTORY,ConfigurationKeys.VOTABLE_CATEGORY);
@@ -165,7 +165,7 @@ public class DynamicFactoryManager extends FactoryManager {
     public void verify() throws DatacenterException {
         loadJobFactory();
         //loadMySpaceFactory(); no longer used
-        loadVOTableFactory();
+//        loadVOTableFactory();
         loadDefaultQueryFactory();
         super.verify();
     }
@@ -173,6 +173,9 @@ public class DynamicFactoryManager extends FactoryManager {
 }
 /*
 $Log: DynamicFactoryManager.java,v $
+Revision 1.4  2003/08/25 21:43:42  mch
+Removed VOTable-middleman classes (to replace with more general ResultSet)
+
 Revision 1.3  2003/08/25 20:52:40  mch
 Removed dummy MySpace-related classes
 
