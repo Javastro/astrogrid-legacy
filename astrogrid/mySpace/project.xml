@@ -2,12 +2,11 @@
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
   <pomVersion>3</pomVersion>
   <id>astrogrid-mySpace</id>
   <name>AstroGrid MySpace</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>Iteration3.end</currentVersion>
   
   <organization>
     <name>AstroGrid</name>
@@ -20,16 +19,18 @@
   <logo>http://www.astrogrid.org/images/AGlogo</logo>
 
   <shortDescription>AstroGrid MySpace Components</shortDescription>
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
 
   <siteDirectory>/var/www/www/maven/build/mySpace</siteDirectory>
   
   <repository>
     <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/mySpace
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/myspace
     </connection>
     <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/mySpace
     </developerConnection>
+    <url>http://www.astrogrid.org/viewcvs/</url>
   </repository>
   
   <developers>
