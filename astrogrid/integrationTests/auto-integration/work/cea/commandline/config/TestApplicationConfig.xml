@@ -7,7 +7,7 @@
 		<!-- do not test specific instance app for now -->
 		<!--This is the main test application-->
 		<Parameters>
-			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1">
+			<CmdLineParameterDefn name="P1" type="integer" commandPosition="1" fileRef="false">
 				<agpd:UI_Name>Pause Time</agpd:UI_Name>
 				<agpd:UI_Description>Text
 <!--                                <b>bold bit</b> Castor cannot cope with the any schema element -->
@@ -29,23 +29,23 @@
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword">
+			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword" fileRef="false">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P5" type="VOTable">
+			<CmdLineParameterDefn name="P5" type="VOTable" fileRef="true">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P6" type="RA">
+			<CmdLineParameterDefn name="P6" type="RA" fileRef="false">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P7" type="Dec">
+			<CmdLineParameterDefn name="P7" type="Dec" fileRef="false">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P8" type="ADQL">
+			<CmdLineParameterDefn name="P8" type="ADQL" fileRef="true">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
@@ -53,13 +53,13 @@
 				<agpd:UI_Name/>
 				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P10" type="boolean"/>
-			<CmdLineParameterDefn name="P11" type="anyURI"/>
-			<CmdLineParameterDefn name="P12" type="text" switchType="normal">
+			<CmdLineParameterDefn name="P10" type="boolean" fileRef="false"/>
+			<CmdLineParameterDefn name="P11" type="anyURI" fileRef="true"/>
+			<CmdLineParameterDefn name="P12" type="text" switchType="normal" fileRef="false">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
-			<CmdLineParameterDefn name="P13" type="double"/>
+			<CmdLineParameterDefn name="P13" type="double" fileRef="false"/>
 		</Parameters>
 		<Interfaces>
 			<Interface name="I1">
