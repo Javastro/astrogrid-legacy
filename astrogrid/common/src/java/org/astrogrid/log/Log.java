@@ -1,10 +1,10 @@
 /*
- $Id: Log.java,v 1.7 2003/10/31 16:53:31 mch Exp $
+ $Id: Log.java,v 1.8 2003/12/16 11:29:47 mch Exp $
  */
 
 package org.astrogrid.log;
 
-import java.util.logging.*;
+import org.apache.commons.logging.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -64,26 +64,34 @@ import java.util.Enumeration;
  * This static wrapper assumes errors will be logged to the console by default, and there
  * is also an option for specifying a file to log to.  Any more complex requirements
  * should refer to the implementation using <code>getImplementation()</code>
- *
  * <p>
- * This implementation <b>uses the log4j package from apache
- *
- * @Created          : Sep 2003
+ * This implementation uses the commons-logging package from apache, itself a wrapper
+ * for plugin logging implementations.  It exists as a stop-gap measure for code
+ * that still needs to be converted to use commons-logging. It's also a bit easier
+ * to use as it requires no class instances and provides some handy methods for
+ * doing things like logging to file or console...
+ * <p>
+ * Error types.  There are two types of errors; alarms and errors. Errors apply
+ * to problems with code; alarms to 'expected' problems with the system.  For example, if
+ * the sofware is monitoring equipment and the equipment fails, then an alarm should
+ * be raised.  Similarly there are two levels of trace; trace for reporting routing
+ * through code, debug for reporting extra information about state (eg fine failed connection
+ * details).
+ * <P>
  * @author           : M Hill
  *
- * @deprecated - use commons logging instead
  */
 
 public class Log
 {
    public static boolean traceOn = true;
 
-   private static Logger
-      logger = Logger.getLogger( "Application wide" ) ;
+   private static org.apache.commons.logging.Log
+      logger = LogFactory.getLog( "Application wide" );
 
 
    /**
-    * A simple static method implementing an assertion check.  Renamed to
+    * A simple static method implementing an assertion check.  Named
     * affirm to avoid JDK 1.4s warnings about using assert.  Throws an
     * implementation-specific assertion (runtime) exception if the condition
     * is not true
@@ -99,99 +107,56 @@ public class Log
    /** Convenience method for logging alarms */
    public static void logAlarm( String userMessage )
    {
-      logger.log(Level.SEVERE, userMessage);
+      logger.error(userMessage);
    }
 
    /** Convenience method for logging alarms */
    public static void logAlarm(String userMessage, String detailMessage )
    {
-      logger.log(Level.SEVERE, userMessage+"\n"+detailMessage);
+      logger.error(userMessage+"\n"+detailMessage);
    }
 
    /** Convenience method for logging warnings */
    public static void logWarning( String userMessage )
    {
-      logger.log(Level.WARNING, userMessage);
-   }
-
-   /** Convenience method for logging warnings */
-   public static void logWarning(Object aSource, String userMessage, Throwable th )
-   {
-      Logger.getLogger(aSource.getClass().getName()).log(Level.WARNING, userMessage, th);
-   }
-
-   /** Convenience method for logging warnings */
-   public static void logWarning(Object aSource, String userMessage, String moreInfo )
-   {
-      Logger.getLogger(aSource.getClass().getName()).log(Level.WARNING, userMessage+"\n"+moreInfo);
-   }
-
-   /** Convenience method for logging warnings */
-   public static void logWarning(Object aSource, String userMessage, String moreInfo, Throwable th )
-   {
-      Logger.getLogger(aSource.getClass().getName()).log(Level.WARNING, userMessage+"\n"+moreInfo,th);
+      logger.warn(userMessage);
    }
 
    /** Convenience method for logging info messages */
    public static void logInfo( String userMessage )
    {
-      logger.log(Level.INFO, userMessage);
-   }
-
-   /** Convenience method for logging info messages */
-   public static void logInfo(Object aSource, String userMessage )
-   {
-      Logger.getLogger(aSource.getClass().getName()).log(Level.INFO, userMessage);
+      logger.info(userMessage);
    }
 
    /** Convenience method for logging info messages */
    public static void logInfo(String userMessage, String usefulInfo )
    {
-      logger.log(Level.INFO, userMessage+"\n"+usefulInfo);
+      logger.info(userMessage+"\n"+usefulInfo);
    }
 
    /** Convenience method for logging program errors */
    public static void logError( String userMessage )
    {
-      logger.log(Level.SEVERE, userMessage);
+      logger.error(userMessage);
    }
 
    /** Convenience method for logging program errors */
    public static void logError( String userMessage, Throwable th )
    {
-      logger.log(Level.SEVERE, userMessage, th);
+      logger.error(userMessage, th);
    }
 
    /** Convenience method for logging program errors */
    public static void logError( String userMessage, String usefulInfo, Throwable th )
    {
-      logger.log(Level.SEVERE, userMessage+"\n"+usefulInfo, th);
-   }
-
-   /** Convenience method for logging program errors */
-   public static void logError(Object aSource, String userMessage, Throwable th )
-   {
-      Logger.getLogger(aSource.getClass().getName()).log(Level.SEVERE, userMessage, th);
-   }
-
-   /** Convenience method for logging program errors */
-   public static void logError(Object aSource, String userMessage, String moreInfo, Throwable th )
-   {
-      Logger.getLogger(aSource.getClass().getName()).log(Level.SEVERE, userMessage+"\n"+moreInfo, th);
-   }
-
-   /** Convenience method for logging *program error* messages that
-    * will be reported with some other severity (eg warning)
-   public static void logError(Severity severity, String userMessage, String moreInfo, Throwable th )
-   {
-      net.mchill.log.Log.logEvent(new LogEvent(null,severity, userMessage, moreInfo, th));
+      logger.error(userMessage+"\n"+usefulInfo, th);
    }
 
    /** Convenience method for logging assertion-style debugging info
     * and trace output. */
    public static void logDebug( String userMessage )
    {
-      logDebug(userMessage, null);
+      logger.debug(userMessage);
    }
 
    /** Convenience method for logging assertion-style debugging info.
@@ -200,7 +165,7 @@ public class Log
     * information.*/
    public static void logDebug( String userMessage, Throwable th )
    {
-      logger.log(Level.FINE, userMessage, th);
+      logger.debug(userMessage, th);
    }
 
    /** Convenience method for adding trace code that can be distributed like
@@ -209,13 +174,12 @@ public class Log
    {
       if (traceOn)
       {
-         logger.setLevel(Level.FINEST); //make sure it's available
-         logger.finest(userMessage);
+         logger.trace(userMessage);
       }
    }
 
    /** Switch trace on - ie allow trace messages to be logged */
-   public static void traceOn()     { traceOn = true; }
+   public static void traceOn()     { setLevelFinest(); traceOn = true; }
 
    /** Switch trace off - ie stop trace messages from being logged */
    public static void traceOff()    { traceOn = false; }
@@ -226,18 +190,23 @@ public class Log
     */
    public static void starting(String msg)
    {
-      logger.setLevel(Level.FINEST); //make sure it's available
+      traceOn();
 
       trace("Logging Started "+new Date()+" "+msg+"...");
+   }
+
+   /** Makes sure the logging system will log trace code */
+   public static void setLevelFinest()
+   {
    }
 
    /** Direct output to file (as well)
     */
    public static void logToFile(String filename) throws IOException
    {
-      Handler handler = new FileHandler(filename, true); //append
-      handler.setFormatter(new SimpleFormatter());
-      logger.addHandler(handler);
+     // Handler handler = new FileHandler(filename, true); //append
+     // handler.setFormatter(new SimpleFormatter());
+     // logger.addHandler(handler);
    }
 
    /**
@@ -245,7 +214,7 @@ public class Log
     */
    public static void logToStream(OutputStream out) throws IOException
    {
-      logger.addHandler(new StreamHandler(out, new SimpleFormatter()));
+      //logger.addHandler(new StreamHandler(out, new SimpleFormatter()));
    }
 
    /**
@@ -253,7 +222,7 @@ public class Log
     */
    public static void logXmlToStream(OutputStream out) throws IOException
    {
-      logger.addHandler(new StreamHandler(out, new XMLFormatter()));
+      //logger.addHandler(new StreamHandler(out, new XMLFormatter()));
    }
 
    /**
@@ -264,31 +233,31 @@ public class Log
    public static void logToConsole() throws IOException
    {
       //remove all existing console handlers
-      Enumeration loggerIndex = LogManager.getLogManager().getLoggerNames();
+     // Enumeration loggerIndex = LogManager.getLogManager().getLoggerNames();
 
-      while (loggerIndex.hasMoreElements())
-      {
-         Logger aLogger = LogManager.getLogManager().getLogger((String) loggerIndex.nextElement());
+     // while (loggerIndex.hasMoreElements())
+      //{
+      //   Logger aLogger = LogManager.getLogManager().getLogger((String) loggerIndex.nextElement());
 
          //remove existing console handlers
-         Handler[] handlers = aLogger.getHandlers();
+      //   Handler[] handlers = aLogger.getHandlers();
 
-         for (int i=0;i<handlers.length;i++)
-         {
-            if (handlers[i] instanceof ConsoleHandler)
-            {
-               aLogger.removeHandler(handlers[i]);
-            }
-         }
-      }
+       //  for (int i=0;i<handlers.length;i++)
+        // {
+        //    if (handlers[i] instanceof ConsoleHandler)
+        //    {
+        //       aLogger.removeHandler(handlers[i]);
+        //    }
+        // }
+      //}
 
 
 
-      Handler handler = new ConsoleHandler();
-      handler.setLevel(Level.FINEST);
-      handler.setFilter(null);
-      handler.setFormatter(new ConsoleFormatter());
-      logger.addHandler(handler);
+      //Handler handler = new ConsoleHandler();
+      //handler.setLevel(Level.FINEST);
+      //handler.setFilter(null);
+      //handler.setFormatter(new ConsoleFormatter());
+      //logger.addHandler(handler);
    }
 
    /**
@@ -297,11 +266,13 @@ public class Log
     * the standard methods above.  Hopefully giving us the best of all worlds...
     * <p>Note that this returns the correct class, not some abstract Object,
     * so that code using it is correctly checked at compile time
-    */
+    *
    public static Logger getImplementation()
    {
-      return logger;
+      return LogFactory.getLog("lklk").
+      //return logger;
    }
+	 */
 
    /**
     * Test harness
@@ -319,6 +290,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.8  2003/12/16 11:29:47  mch
+Removed specialist setup methods
+
 Revision 1.7  2003/10/31 16:53:31  mch
 Added deprecated tag
 
