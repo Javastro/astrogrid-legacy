@@ -1,20 +1,21 @@
 /*
- * $Id: WebDelegate.java,v 1.11 2003/12/03 19:37:03 mch Exp $
+ * $Id: WebDelegate.java,v 1.12 2003/12/15 14:30:50 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agws;
 
+import org.astrogrid.datacenter.delegate.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
@@ -23,15 +24,6 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types._query;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
-import org.astrogrid.datacenter.delegate.Certification;
-import org.astrogrid.datacenter.delegate.ConeSearcher;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.DelegateQueryListener;
-import org.astrogrid.datacenter.delegate.Metadata;
-import org.astrogrid.datacenter.delegate.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
@@ -308,22 +300,11 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 //                   "         </TableReference>\n"+
 //                   "      </FromClause>\n"+
                      "    <WhereClause>\n"+
-                     "      <RegionSearch>\n"+
-                     "         <Circle xmlns:q1='urn:nvo-region' xsi:type='q1:circleType'>\n"+
-                     "            <q1:Center>\n"+
-                     "              <Pos2Vector xmlns='urn:nvo-coords'>\n"+
-                     "                <Name>Ra Dec</Name>\n"+
-                     "                <CoordValue>\n"+
-                     "                  <Value>\n"+
-                     "                    <double>"+ra+"</double>\n"+
-                     "                    <double>"+dec+"</double>\n"+
-                     "                  </Value>\n"+
-                     "                </CoordValue>\n"+
-                     "              </Pos2Vector>\n"+
-                     "            </q1:Center>\n"+
-                     "            <q1:Radius>"+sr+"</q1:Radius>\n"+
+                     "         <Circle>\n"+
+                     "            <Ra><Value>"+ra+"</Value></Ra>\n"+
+							"            <Dec><Value>"+dec+"</Value></Dec>\n"+
+            			"            <Radius><Value>"+sr+"</Value></Radius>\n"+
                      "          </Circle>\n"+
-                     "      </RegionSearch>\n"+
                      "    </WhereClause>\n"+
                      "   </TableClause>\n"+
                      "</Select>\n"+
@@ -331,7 +312,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
       
       try
       {
-         Select adql = ADQLUtils.unmarshalSelect(XMLUtils.newDocument(adqlString));
+         Select adql = ADQLUtils.unmarshalSelect(XMLUtils.newDocument(new StringBufferInputStream(adqlString)));
          DatacenterResults results = doQuery(VOTABLE, adql);
          
          //bit of a botch at the moment - converts VOTable back into string/input stream for returning...
@@ -383,6 +364,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.12  2003/12/15 14:30:50  mch
+Fixes to load doc from string not file, and use correct version of adql
+
 Revision 1.11  2003/12/03 19:37:03  mch
 Introduced DirectDelegate, fixed DummyQuerier
 
