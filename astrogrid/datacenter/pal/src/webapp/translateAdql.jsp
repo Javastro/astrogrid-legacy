@@ -2,6 +2,7 @@
        java.net.URL,
        org.w3c.dom.*,
        java.io.*,
+       org.astrogrid.config.SimpleConfig,
        org.astrogrid.datacenter.sqlparser.*,
        org.apache.commons.logging.*,
        org.astrogrid.community.Account,
@@ -38,7 +39,10 @@
 <link rel="stylesheet" href="default.css" type="text/css">
 </head>
 <body>
-  <%=HtmlDataServer.getPageHeader() %>
+
+   <jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.header.html", "header.xml") %>' flush='true'>
+   <jsp:include page='navigation.xml' flush='true'>
+
   <h1>Translate ADQL/sql to ADQL/xml</h1>
   <p>
   <form method="post" onSubmit="
@@ -68,7 +72,7 @@
        <input type='submit' name='AskAdqlx' value='Submit ADQL/xml' onclick='formAction="askAdqlXml.jsp";' />
    </form>
   </p>
-  <%=HtmlDataServer.getPageFooter() %>
+  <jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.footer.html", "footer.xml") %>' flush='true'>
 </body>
 </html>
 

@@ -1,0 +1,32 @@
+<div id='navcolumn'>
+   <div id='menuInstall'>
+      <h5>Install</h5>
+      <ul>
+         <li><a href="INSTALL.html">INSTALL</a>
+         <li><a href="RELEASE.html">RELEASE</a>
+         <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
+         <li><a href="self-test.html">Installation Test</a>
+         <li><a href="fingerpring.jsp">Fingerprint</a>
+      </ul>
+   </div>
+   <div id='menuQuery'>
+      <h5>Query</h5>
+      <ul>
+         <li><a href="cone-form.html" >Cone Search</a>
+         <li><a  href="queryBuilder.jsp" >Build Query</a>
+         <li><a href="adqls-form.html" >Ask Adql/Sql Query</a>
+         <li><a  href="adqlx-form.html" >Ask Adql/Xml Query</a>
+         <li><a  href="translateAdql.jsp" >Translate ADQL/SQL to XML</a>
+         <li><a  href="adql">Examples</a>
+      </ul>
+   </div>
+   <div id='menuServer'>
+      <h5>Server</h5>
+      <ul>
+         <li><a href='index.html'>Index</a>
+         <li><a href="serverStatus.jsp">Status</a>
+         <li><a href="viewMetadata.jsp">Metadata</a>
+      </ul>
+   </div>
+</div>
+

@@ -1,5 +1,5 @@
 <%@ page language="java"
-    import="java.util.*, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
+    import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*, org.astrogrid.datacenter.query.results.*, org.astrogrid.datacenter.query.criteria.*,
     org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer, org.w3c.dom.*, org.astrogrid.util.* " %>
 
 <!-- returns 'checked' if the given value is in the list of values -->
@@ -48,7 +48,9 @@
 
    
 <body>
-<%=HtmlDataServer.getPageHeader() %>
+<jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.header.html", "header.xml") %>' flush='true'>
+<jsp:include page='navigation.xml' flush='true'>
+
 <h1>Query Builder</h1>
 
 This form helps you construct a query without messing about with SQL or ADQL.
@@ -350,10 +352,11 @@ Parameter names in this request:
 %>
 </pre>
 
-<%=HtmlDataServer.getPageFooter() %>
+<jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.footer.html", "footer.xml") %>' flush='true'>
 
 </body>
 </html>
+
 
 
 

@@ -1,6 +1,7 @@
 <%@ page import="java.io.*,
        org.w3c.dom.*,
        org.astrogrid.io.*,
+       org.astrogrid.config.SimpleConfig,
        org.astrogrid.util.DomHelper,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
@@ -12,7 +13,8 @@
 <html>
 <%= HtmlDataServer.getHeadElement("Metadata Viewer") %>
 <body>
-<%= HtmlDataServer.getPageHeader() %>
+<jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.header.html", "header.xml") %>' flush='true'>
+<jsp:include page='navigation.xml' flush='true'>
 
 <h1>Metadata for <%=DataServer.getDatacenterName() %></h1>
 
@@ -76,7 +78,7 @@
 <p>Download the raw metadata document <a href='metadata.jsp'>here</a></p>
 <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p>
 
-<%= HtmlDataServer.getPageFooter() %>
+<jsp:include page='<%=SimpleConfig.getSingleton().getString("datacenter.footer.html", "footer.xml") %>' flush='true'>
 </body>
 </html>
 

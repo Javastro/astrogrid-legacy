@@ -12,7 +12,8 @@
 <html>
 <%= HtmlDataServer.getHeadElement("Metadata Viewer") %>
 <body>
-<%= HtmlDataServer.getPageHeader() %>
+<jsp:include page='../navigation.xml' flush='true'>
+<jsp:include page='../header.xml' flush='true'>
 
 <h1>Metadata for <%=DataServer.getDatacenterName() %></h1>
 
@@ -94,7 +95,7 @@
 %>
 <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p>
 
-<%= HtmlDataServer.getPageFooter() %>
+<jsp:include page='../footer.xml' flush='true'>
 </body>
 </html>
 
