@@ -9,7 +9,7 @@
         | Extend the top level project descriptor.
         +-->
     <extend>${basedir}/../maven-base/project.xml</extend>
-
+	<currentVersion>${astrogrid.xmldb.version}</currentVersion>
  
     <!--+
         | The short name of the project.
