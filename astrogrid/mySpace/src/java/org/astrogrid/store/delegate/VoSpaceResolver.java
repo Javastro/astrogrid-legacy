@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.19 2004/04/21 11:51:58 mch Exp $
+ * $Id: VoSpaceResolver.java,v 1.20 2004/04/21 12:11:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
@@ -23,6 +22,7 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /**
@@ -81,20 +81,21 @@ public class VoSpaceResolver {
 
          //if not found, see if it's an account identifier, and if so get that account's homespace (eg that community's myspace)
          if (agsl == null) {
-            Ivorn homespace = getCommunityMySpace(ivorn);
-   
-            lookedIn += ", Community "+community+ "(->"+homespace+")";
-            if (homespace != null)  {
-               ivorn = homespace;
-               /*
-               try {
-                  //new Ivorn(homespace.toString()+fragment); //now resolve this
+
+            try {
+               Ivorn homespace = getCommunityMySpace(ivorn);
+
+               lookedIn += ", Community "+community+ "(->"+homespace+")";
+               if (homespace != null)  {
+                  ivorn = homespace;
                }
-               catch (URISyntaxException e) {
-                  throw new ResolverException("community resolved "+ivorn+" to myspace "+homespace+", but "+homespace+"#"+fragment+" is not a valid IVORN");
-               }
-                */
             }
+            catch (ResolverException ce) {
+               //log it but carry on so a community that is down doesn't stop
+               //us resolving registry ivorns
+               log.warn(ce+" trying to resolve "+ivorn+" with community "+community,ce);
+            }
+   
          }
          
          //if not found, see if the registry can resolve it
@@ -181,7 +182,7 @@ public class VoSpaceResolver {
             return null;
          }
          else {
-            return new Agsl(endPoint, ivorn.getFragment());
+            return new Agsl(Msrl.SCHEME+":"+endPoint, ivorn.getFragment());
          }
       }
       catch (RegistryException e) {
@@ -391,6 +392,9 @@ public class VoSpaceResolver {
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.20  2004/04/21 12:11:48  mch
+Fix to attempt ivorn resolving even if community is down
+
 Revision 1.19  2004/04/21 11:51:58  mch
 Fix to resolve hardcoded ivorn if registry/community exceptions thrown
 
