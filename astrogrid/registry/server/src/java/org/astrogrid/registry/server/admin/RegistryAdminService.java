@@ -189,17 +189,20 @@ public class RegistryAdminService implements
                         manageAuths = RegistryFileHelper.doManageAuthorities();
                      }else {
                         System.out.println("IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, BUT REMOVING CHILD FOR INFINITE LOOP");
-                        xsDoc.removeChild(currentResource);
+                        //Need to log error as well somehow we could not get to our managed authorities.
+                        xsDoc.getDocumentElement().removeChild(currentResource);
                      }                           
-                  }else {
-                     System.out.println("IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, BUT REMOVING CHILD FOR INFINITE LOOP");
-                     xsDoc.removeChild(currentResource);   
-                  }      
-               }//if   
+                  }//if      
+               }//elseif   
             }//for   
-         }//if
-         if(addManageError)
+         }
+         
+         if(addManageError) {
             al.add("This AuthorityID is not managed by this Registry: " + ident);
+            //System.out.println("IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, BUT REMOVING CHILD FOR INFINITE LOOP");
+            xsDoc.getDocumentElement().removeChild(currentResource);            
+         }
+            
       }//else
     }//for
     
