@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.3 2003/10/07 22:41:10 mch Exp $
+ * $Id: Config.java,v 1.4 2003/11/24 21:01:17 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
@@ -35,13 +38,30 @@ public abstract class Config
    /**
     * loads the properties from the url specified in Jndi by the given Jndi name
     * @return true if load succeeded
+    * @modified nw - improved jndi access.
     */
    public boolean loadJndiUrl(String jndiName) throws IOException {
       
       URL configUrl = null;
       
       try {
-         configUrl = (URL) new InitialContext().lookup(jndiName);
+          Object o = null;
+          Context initCtx = new InitialContext();
+          o = initCtx.lookup(jndiName);
+          if (o == null || o instanceof Context) {
+              Context javaContext = (Context)initCtx.lookup("java:comp/env");
+              o = javaContext.lookup(jndiName);
+          }
+          configUrl = 
+          if (o instanceof URL) {                            
+                configUrl = (URL) o;             
+          } else if (o instanceof String) {
+              configUrl = new URL((String)o);
+          } else {
+              log.debug("Found resource in JNDI, but of incorrect type :" + o.getClass().getName());
+              return false;
+          }
+                    
          addLocation("JNDI ("+jndiName+"->"+configUrl+")");
          loadUrl(configUrl);
          return true;
@@ -57,6 +77,7 @@ public abstract class Config
          nioe.setStackTrace(ioe.getStackTrace());
          throw nioe;
       }
+
    }
 
    /**
