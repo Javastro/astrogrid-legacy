@@ -11,16 +11,16 @@
 package org.astrogrid.datacenter.job;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.datasetagent.RunJobRequestDD;
+import org.astrogrid.datacenter.FactoryProvider;
+import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC ;
+import org.astrogrid.datacenter.query.RunJobRequestDD;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
+/** step of a job. could do with documenting */
 public class JobStep {
 	
 	private static final boolean 
@@ -30,7 +30,7 @@ public class JobStep {
 		logger = Logger.getLogger( JobStep.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( JobStep.class ) ;        
+        SUBCOMPONENT_NAME =  Util.getComponentName( JobStep.class ) ;        
 	
 	private String
 	    name = null,
@@ -39,7 +39,7 @@ public class JobStep {
 	private Query
 	    query = null ;
 	    
-	public JobStep( Element element ) throws QueryException {
+	public JobStep( Element element ,FactoryProvider facManager) throws QueryException {
 		if( TRACE_ENABLED ) logger.debug( "JobStep(): entry") ; 
 		
 		try {
@@ -72,10 +72,13 @@ public class JobStep {
 		   }	
 		
 		   String
-		       keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR ) 
-                            + DTC.CATALOG_DEFAULT_QUERYFACTORY ;		
+		       keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR );
+		       		// TODO : Error - this key has '.QUERYFACTORY' appended to it twice.
+		       		// i've wasted a days weork finding this stupid bug which should have been eliminated during
+		       		// unit testing. 
+                        //    + DTC.CATALOG_DEFAULT_QUERYFACTORY ;		
 		 
-		   query = Query.getFactory( keyToFactory ).createQuery( queryChild ) ;
+		   query = facManager.getQueryFactory( keyToFactory ).createQuery( queryChild ) ;
 		   
 		}
 		finally {

@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.job;
 
 import org.astrogrid.datacenter.DatacenterException;
 import org.astrogrid.i18n.AstroGridMessage;
-
+/** exception type for jobs */
 public class JobException extends DatacenterException {
 
     public JobException( AstroGridMessage message ) {

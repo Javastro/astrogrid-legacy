@@ -10,6 +10,8 @@
  */
 package org.astrogrid.datacenter.job;
 
+import org.astrogrid.datacenter.FactoryProvider;
+import org.astrogrid.datacenter.config.Configurable;
 import org.w3c.dom.Document;
 
 /**
@@ -26,7 +28,7 @@ import org.w3c.dom.Document;
  * @see     org.astrogrid.JobFactoryImpl
  * @since   AstroGrid 1.2
  */
-public interface JobFactory {
+public interface JobFactory  extends Configurable {
 	
 //
 //	JBL Note: The following are still under consideration...
@@ -47,7 +49,7 @@ public interface JobFactory {
    * @return  - newly created job instance.
    * @exception - org.astrogrid.JobException
    */
-	Job create( Document jobDoc ) throws JobException ;
+	Job create( Document jobDoc , FactoryProvider facMan) throws JobException ;
 
 
 	/**

@@ -13,11 +13,12 @@ package org.astrogrid.datacenter.job;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.Configurator ;
-import org.astrogrid.datacenter.DTC;
-import org.astrogrid.i18n.AstroGridMessage;
+import org.astrogrid.datacenter.Util;
+import org.astrogrid.datacenter.config.Configurable;
+import org.astrogrid.datacenter.config.ConfigurableImpl;
 
-public abstract class Job {
+/** some documentation wouldn't go amiss here.. */
+public abstract class Job  extends ConfigurableImpl implements Configurable {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -26,13 +27,9 @@ public abstract class Job {
 		logger = Logger.getLogger( Job.class ) ;
         
     private final static String
-        SUBCOMPONENT_NAME = Configurator.getClassName( Job.class ) ;
+        SUBCOMPONENT_NAME = Util.getComponentName( Job.class ) ;
 		
-	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL = "AGDTCE00140" ;
-	
-	private static JobFactory 
-	   factory ;
+
 	   
 	public static  final String
 	    STATUS_INITIALIZED = "INITIALIZED",  // Newly created but not yet running
@@ -41,41 +38,7 @@ public abstract class Job {
 	    STATUS_IN_ERROR = "ERROR" ;          // Something bad happened
 
 
-    public static JobFactory getFactory() throws JobException  { 
-		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
-    	
-		String
-			implementationFactoryName = DTC.getProperty( DTC.JOB_FACTORY
-                                                       , DTC.JOB_CATEGORY ) ;
-    	
-		try{
-			// Note the double lock strategy				
-			if( factory == null ){
-				synchronized ( Job.class ) {
-					if( factory == null ){
-						Object
-						   obj = Class.forName( implementationFactoryName ).newInstance() ;			    			
-						factory = (JobFactory)obj ;
-					}
-				} // end synchronized
-			}
-		}
-		catch( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL
-                                              , SUBCOMPONENT_NAME
-                                              , implementationFactoryName ) ;
-		    System.out.println( message.toString() ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex );
-		}
-		finally{
-			if( TRACE_ENABLED ) logger.debug( "getFactory(): exit") ; 	
-		}    
-					
-		return factory; 
-	
-	} // end of getFactory()   	
+   
     	
    
     public abstract void informJobMonitor() ;
