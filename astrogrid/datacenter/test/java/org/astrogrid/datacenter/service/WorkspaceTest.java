@@ -32,11 +32,11 @@ public class WorkspaceTest extends TestCase
    public WorkspaceTest(String s) throws IOException
    {
         super(s);
-      
+
         Workspace.PERSIST = false; //make sure they tidy up properly
 
-      String workspaceProperty = Configuration.getProperty(Workspace.WORKSPACE_DIRECTORY);
-      
+      String workspaceProperty = Configuration.getProperty(Workspace.WORKSPACE_DIRECTORY_KEY);
+
       if ( workspaceProperty == null)
       {
         //specify a working directory area - need to do this so we can
@@ -45,16 +45,16 @@ public class WorkspaceTest extends TestCase
         // gah, want a dir, not a file.
         tmpDir.delete();
         tmpDir.mkdir();
-      
+
         //set the configuratio property so Workspace can find it
-        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY,tmpDir.getAbsolutePath());
+        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, tmpDir.getAbsolutePath());
       }
       else
       {
          tmpDir = new File(workspaceProperty);
       }
    }
-    
+
     /** deletes working directory -- otherwise tests are not repeatable
     protected void tearDown() {
         if (tmpDir != null && tmpDir.exists()) {
@@ -66,8 +66,8 @@ public class WorkspaceTest extends TestCase
         }
     }
     */
- 
- 
+
+
    public void testCreateWorkspace() throws Exception {
        Workspace ws = new Workspace("TestCreate");
        assertNotNull(ws);
@@ -76,7 +76,7 @@ public class WorkspaceTest extends TestCase
        assertTrue(wsFile.exists());
 //       assertTrue(wsFile.isDirectory());
    }
-   
+
    public void testDuplicate() throws Exception {
        Workspace ws1 = new Workspace("TestDuplicateWS");
        assertNotNull(ws1);
@@ -105,27 +105,52 @@ public class WorkspaceTest extends TestCase
       File[] contents = workspaceFile.listFiles();
       assertNotNull(contents);
       assertEquals("5 files created but not 5 files in workspace",5,contents.length);
-      
+
       //empty the workspace
       workspace.empty();
-      
+
       //check there 0 files
       contents = workspaceFile.listFiles();
       assertNotNull(contents);
       assertEquals("workspace emptied but not 0 files in workspace",0,contents.length);
 
    }
-   
+
    public void testMakeWorkFile() throws IOException {
        Workspace workspace = new Workspace("TestMakeWork");
        File f = workspace.makeWorkFile("fred");
        assertNotNull(f);
-       //assertFalse(f.exists()); // not created, if impl changes, client code must change too.
-       //assertTrue(f.createNewFile());
        assertTrue(f.exists());
-       
+
+      f = workspace.makeTempFile("prefix");
+      assertNotNull(f);
+      assertTrue(f.exists());
+
+      f = workspace.makeTempFile("prefix","suffix");
+      assertNotNull(f);
+      assertTrue(f.exists());
    }
-   
+
+   /**
+    * Tests that subdirectories are created and removed correctly
+    */
+   public void testSubspace() throws IOException
+   {
+      Workspace parentSpace = new Workspace("TestMakeSubWork");
+      parentSpace.makeWorkFile("fred");
+
+      File subspace = parentSpace.makeTempDir("thelma");
+      File subFile = File.createTempFile("louise", "", subspace);
+      assertNotNull(subFile);
+      assertTrue(subFile.exists());
+
+      parentSpace.close();
+
+      assertFalse("Should have deleted subfile", subFile.exists());
+      assertFalse("Should have deleted subdir", subspace.exists());
+
+   }
+
    public void testMakeDuplicateFile() throws IOException {
        Workspace workspace = new Workspace("TestDuplicateFile");
        File f= workspace.makeWorkFile("fred");
@@ -137,7 +162,7 @@ public class WorkspaceTest extends TestCase
        catch (IllegalArgumentException e) { /* SOK expect a crash */ }
        catch (IOException e) { /* SOK expect a crash */ }
    }
-   
+
    public void testMakeManyFilesAndEmpty() throws IOException {
        Workspace workspace = new Workspace("TestMakeManyAndEmpty");
        String[] fileNames = new String[] {"Fred","Wilma","Barney","Betty","BamBam"};
@@ -154,10 +179,10 @@ public class WorkspaceTest extends TestCase
            assertFalse(files[i].exists());
        }
    }
-   
+
    /**  */
    public void testOpenAndClose() throws Exception {
-      
+
       //test for given id
        Workspace ws = new Workspace("TestOpenClose");
        File f = ws.makeWorkFile("foo");
@@ -166,20 +191,38 @@ public class WorkspaceTest extends TestCase
       //check directory exists where we expect it to (otherwise test below is meaningless)
       File wsf = new File(tmpDir+File.separator+"TestOpenClose");
       assertTrue(wsf.exists());
-      
+
       ws.close();
+
+      // check can't close again
+      try {
+         ws.close();
+         fail("Should not be able to close workspace after its closed");
+      }
+      catch (IllegalStateException e) {  /* ok, it should fail */   }
+
+      // check can't empty
+      try {
+         ws.empty();
+         fail("Should not be able to empty workspace after its closed");
+      }
+      catch (IllegalStateException e) {  /* ok, it should fail */   }
+
       // should also prevent us from creating new files, in one way or another
       try {
-          File g = ws.makeWorkFile("bar");
-          assertNull(g); // retirn null?
+         ws.makeWorkFile("bar");
+         ws.makeTempFile("prefix","suffix");
+         ws.makeTempFile("prefix");
+
+         fail("Should not be able to create workfile after its closed");
       }
       catch (IllegalStateException e) {  /* ok, it should fail */   }
       catch (AssertionError e) {  /* ok, it should fail */    }
-      
+
       //check directory no longer exists
       wsf = new File(tmpDir+File.separator+"TestOpenClose");
       assertFalse(f.exists());
-      
+
       //test for no id
        ws = new Workspace();
        f = ws.makeWorkFile("foo");
@@ -187,7 +230,7 @@ public class WorkspaceTest extends TestCase
        ws.close();
 
    }
-   
+
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
@@ -205,11 +248,14 @@ public class WorkspaceTest extends TestCase
        junit.textui.TestRunner.run(suite());
     }
 
-   
+
 }
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.9  2003/09/15 18:01:45  mch
+Better test coverage
+
 Revision 1.8  2003/09/10 14:48:35  nw
 fixed breaking tests
 
