@@ -218,13 +218,19 @@
 
       <resources>
         <resource>
-          <directory>${basedir}/test/</directory>
+          <directory>${basedir}/test/java</directory>
           <includes>
             <include>**/*.xml</include>
 	    <include>**/*.properties</include>
 	    <include>**/*.sql</include>
-	    <include>**/*.sh</include> <!-- include any test applications -->
-          </includes>
+         </includes>
+        </resource>
+        <resource>
+         <directory>${basedir}/test/app</directory>
+         <includes>
+            <include>**/*.sh</include> <!-- include any test applications -->
+ 
+         </includes>
         </resource>
       </resources>
     </unitTest>

@@ -52,6 +52,11 @@
     <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
   </preGoal>
 
+<!-- set up the test environment -->
+<preGoal name="test">
+   <mkdir dir="${basedir}/build/workdir"/>
+   <!-- need to generate the test file really -->
+</preGoal>
 
 <!-- hook to get my own stuff run before xdocs binds the site together-->
   <preGoal name="xdoc">
