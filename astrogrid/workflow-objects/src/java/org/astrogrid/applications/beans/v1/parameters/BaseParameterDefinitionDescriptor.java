@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinitionDescriptor.java,v 1.30 2004/08/30 17:36:48 jdt Exp $
+ * $Id: BaseParameterDefinitionDescriptor.java,v 1.31 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class BaseParameterDefinitionDescriptor.
  * 
- * @version $Revision: 1.30 $ $Date: 2004/08/30 17:36:48 $
+ * @version $Revision: 1.31 $ $Date: 2004/09/09 10:41:47 $
  */
 public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -137,6 +137,7 @@ public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.uti
         desc.setValidator(fieldValidator);
         //-- _acceptEncodings
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_acceptEncodings", "accept-encodings", org.exolab.castor.xml.NodeType.Attribute);
+        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -149,22 +150,27 @@ public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.uti
             {
                 try {
                     BaseParameterDefinition target = (BaseParameterDefinition) object;
-                    target.addAcceptEncodings( (java.lang.String) value);
+                    target.setAcceptEncodings( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new java.lang.String();
+                return null;
             }
         } );
-        desc.setHandler( new org.exolab.castor.xml.handlers.CollectionFieldHandler(handler, new org.exolab.castor.xml.validators.NameValidator(org.exolab.castor.xml.validators.NameValidator.NMTOKEN)));
+        desc.setHandler(handler);
         addFieldDescriptor(desc);
         
         //-- validation code for: _acceptEncodings
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
-        fieldValidator.setMinOccurs(0);
+        { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
+        }
+        desc.setValidator(fieldValidator);
         //-- _subType
         desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_subType", "sub-type", org.exolab.castor.xml.NodeType.Attribute);
         desc.setImmutable(true);

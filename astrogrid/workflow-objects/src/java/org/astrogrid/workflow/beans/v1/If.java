@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: If.java,v 1.7 2004/08/30 17:36:48 jdt Exp $
+ * $Id: If.java,v 1.8 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * An if statement
  * 
- * @version $Revision: 1.7 $ $Date: 2004/08/30 17:36:48 $
+ * @version $Revision: 1.8 $ $Date: 2004/09/09 10:41:47 $
  */
 public class If extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

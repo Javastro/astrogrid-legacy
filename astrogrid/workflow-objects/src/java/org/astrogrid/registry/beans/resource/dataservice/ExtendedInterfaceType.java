@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExtendedInterfaceType.java,v 1.8 2004/08/30 17:36:48 jdt Exp $
+ * $Id: ExtendedInterfaceType.java,v 1.9 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice;
@@ -28,7 +28,7 @@ import org.xml.sax.ContentHandler;
  *  It simply restricts the value of Invocation to be "Extended".
  *  
  * 
- * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:48 $
+ * @version $Revision: 1.9 $ $Date: 2004/09/09 10:41:47 $
  */
 public class ExtendedInterfaceType extends org.astrogrid.registry.beans.resource.InterfaceType 
 implements java.io.Serializable

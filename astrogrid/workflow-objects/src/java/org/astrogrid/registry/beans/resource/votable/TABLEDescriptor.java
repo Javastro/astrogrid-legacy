@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TABLEDescriptor.java,v 1.8 2004/08/30 17:36:47 jdt Exp $
+ * $Id: TABLEDescriptor.java,v 1.9 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class TABLEDescriptor.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:47 $
+ * @version $Revision: 1.9 $ $Date: 2004/09/09 10:41:47 $
  */
 public class TABLEDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

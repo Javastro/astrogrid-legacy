@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinition.java,v 1.30 2004/08/30 17:36:48 jdt Exp $
+ * $Id: BaseParameterDefinition.java,v 1.31 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -15,8 +15,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -27,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class BaseParameterDefinition.
  * 
- * @version $Revision: 1.30 $ $Date: 2004/08/30 17:36:48 $
+ * @version $Revision: 1.31 $ $Date: 2004/09/09 10:41:47 $
  */
 public class BaseParameterDefinition extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -51,12 +49,12 @@ implements java.io.Serializable
     /**
      * Field _acceptEncodings
      */
-    private java.util.ArrayList _acceptEncodings;
+    private java.lang.String _acceptEncodings = "standard";
 
     /**
      * Field _subType
      */
-    private java.lang.String _subType;
+    private java.lang.String _subType = "none";
 
     /**
      * The name that is to be used to display this parameter in te U
@@ -99,52 +97,14 @@ implements java.io.Serializable
 
     public BaseParameterDefinition() {
         super();
-        _acceptEncodings = new ArrayList();
+        setAcceptEncodings("standard");
+        setSubType("none");
     } //-- org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition()
 
 
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Method addAcceptEncodings
-     * 
-     * @param vAcceptEncodings
-     */
-    public void addAcceptEncodings(java.lang.String vAcceptEncodings)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        _acceptEncodings.add(vAcceptEncodings);
-    } //-- void addAcceptEncodings(java.lang.String) 
-
-    /**
-     * Method addAcceptEncodings
-     * 
-     * @param index
-     * @param vAcceptEncodings
-     */
-    public void addAcceptEncodings(int index, java.lang.String vAcceptEncodings)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        _acceptEncodings.add(index, vAcceptEncodings);
-    } //-- void addAcceptEncodings(int, java.lang.String) 
-
-    /**
-     * Method clearAcceptEncodings
-     */
-    public void clearAcceptEncodings()
-    {
-        _acceptEncodings.clear();
-    } //-- void clearAcceptEncodings() 
-
-    /**
-     * Method enumerateAcceptEncodings
-     */
-    public java.util.Enumeration enumerateAcceptEncodings()
-    {
-        return new org.exolab.castor.util.IteratorEnumeration(_acceptEncodings.iterator());
-    } //-- java.util.Enumeration enumerateAcceptEncodings() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -238,41 +198,14 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Method getAcceptEncodings
+     * Returns the value of field 'acceptEncodings'.
      * 
-     * @param index
+     * @return the value of field 'acceptEncodings'.
      */
-    public java.lang.String getAcceptEncodings(int index)
-        throws java.lang.IndexOutOfBoundsException
+    public java.lang.String getAcceptEncodings()
     {
-        //-- check bounds for index
-        if ((index < 0) || (index > _acceptEncodings.size())) {
-            throw new IndexOutOfBoundsException();
-        }
-        
-        return (String)_acceptEncodings.get(index);
-    } //-- java.lang.String getAcceptEncodings(int) 
-
-    /**
-     * Method getAcceptEncodings
-     */
-    public java.lang.String[] getAcceptEncodings()
-    {
-        int size = _acceptEncodings.size();
-        java.lang.String[] mArray = new java.lang.String[size];
-        for (int index = 0; index < size; index++) {
-            mArray[index] = (String)_acceptEncodings.get(index);
-        }
-        return mArray;
-    } //-- java.lang.String[] getAcceptEncodings() 
-
-    /**
-     * Method getAcceptEncodingsCount
-     */
-    public int getAcceptEncodingsCount()
-    {
-        return _acceptEncodings.size();
-    } //-- int getAcceptEncodingsCount() 
+        return this._acceptEncodings;
+    } //-- java.lang.String getAcceptEncodings() 
 
     /**
      * Returns the value of field 'defaultValue'. The field
@@ -417,44 +350,13 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Method removeAcceptEncodings
+     * Sets the value of field 'acceptEncodings'.
      * 
-     * @param vAcceptEncodings
+     * @param acceptEncodings the value of field 'acceptEncodings'.
      */
-    public boolean removeAcceptEncodings(java.lang.String vAcceptEncodings)
+    public void setAcceptEncodings(java.lang.String acceptEncodings)
     {
-        boolean removed = _acceptEncodings.remove(vAcceptEncodings);
-        return removed;
-    } //-- boolean removeAcceptEncodings(java.lang.String) 
-
-    /**
-     * Method setAcceptEncodings
-     * 
-     * @param index
-     * @param vAcceptEncodings
-     */
-    public void setAcceptEncodings(int index, java.lang.String vAcceptEncodings)
-        throws java.lang.IndexOutOfBoundsException
-    {
-        //-- check bounds for index
-        if ((index < 0) || (index > _acceptEncodings.size())) {
-            throw new IndexOutOfBoundsException();
-        }
-        _acceptEncodings.set(index, vAcceptEncodings);
-    } //-- void setAcceptEncodings(int, java.lang.String) 
-
-    /**
-     * Method setAcceptEncodings
-     * 
-     * @param acceptEncodingsArray
-     */
-    public void setAcceptEncodings(java.lang.String[] acceptEncodingsArray)
-    {
-        //-- copy array
-        _acceptEncodings.clear();
-        for (int i = 0; i < acceptEncodingsArray.length; i++) {
-            _acceptEncodings.add(acceptEncodingsArray[i]);
-        }
+        this._acceptEncodings = acceptEncodings;
     } //-- void setAcceptEncodings(java.lang.String) 
 
     /**

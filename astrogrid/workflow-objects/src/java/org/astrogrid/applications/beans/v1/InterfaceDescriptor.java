@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: InterfaceDescriptor.java,v 1.30 2004/08/30 17:36:47 jdt Exp $
+ * $Id: InterfaceDescriptor.java,v 1.31 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class InterfaceDescriptor.
  * 
- * @version $Revision: 1.30 $ $Date: 2004/08/30 17:36:47 $
+ * @version $Revision: 1.31 $ $Date: 2004/09/09 10:41:47 $
  */
 public class InterfaceDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

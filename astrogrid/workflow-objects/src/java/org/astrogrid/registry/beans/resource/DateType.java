@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DateType.java,v 1.8 2004/08/30 17:36:48 jdt Exp $
+ * $Id: DateType.java,v 1.9 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.registry.beans.resource;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class DateType.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:48 $
+ * @version $Revision: 1.9 $ $Date: 2004/09/09 10:41:47 $
  */
 public class DateType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: COOSYS.java,v 1.8 2004/08/30 17:36:47 jdt Exp $
+ * $Id: COOSYS.java,v 1.9 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -25,7 +25,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class COOSYS.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/08/30 17:36:47 $
+ * @version $Revision: 1.9 $ $Date: 2004/09/09 10:41:47 $
  */
 public class COOSYS extends org.astrogrid.registry.beans.resource.votable.AnyTEXT 
 implements java.io.Serializable

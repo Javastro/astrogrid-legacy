@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: OptionList.java,v 1.2 2004/08/30 17:36:48 jdt Exp $
+ * $Id: OptionList.java,v 1.3 2004/09/09 10:41:47 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * For parameters that can only have one of a list of values
  * 
- * @version $Revision: 1.2 $ $Date: 2004/08/30 17:36:48 $
+ * @version $Revision: 1.3 $ $Date: 2004/09/09 10:41:47 $
  */
 public class OptionList extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
