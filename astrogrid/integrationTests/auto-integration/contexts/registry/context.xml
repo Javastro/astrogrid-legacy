@@ -1,3 +1,4 @@
 <Context path="/astrogrid-registry-SNAPSHOT">
-  <!-- dunno what it needs -->
+   <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
+           value="@CONFIGPATH@/AstroGridConfig.properties"/>
 </Context>
