@@ -1116,6 +1116,7 @@ public class JobFactoryImpl implements JobFactory {
 					
 					table = new Table( catalog ) ; 					
 					table.setName( rs.getString( COL_TABLE_TABLENAME ) ) ;
+					catalog.addTable( table ) ;
 					
 				} // end while 
 
@@ -1178,6 +1179,7 @@ public class JobFactoryImpl implements JobFactory {
 				    service = new Service( catalog ) ; 					
 					service.setName( rs.getString( COL_SERVICE_SERVICENAME ) ) ;
 					service.setUrl( rs.getString( COL_SERVICE_SERVICEURL ) ) ;
+					catalog.addService( service ) ;
 					
 				} // end while 
 

@@ -127,12 +127,12 @@ public class Catalog {
 	public String getName() { return name; }
 
 	public Iterator getTables() { return tables.iterator() ; }
-	public boolean addTable( String tableName ) { return tables.add( tableName ) ; }
-	public boolean removeTable( String tableName ) { return tables.remove( tableName ) ; }
+	public boolean addTable( Table table ) { return tables.add( table ) ; }
+	public boolean removeTable( Table table ) { return tables.remove( table ) ; }
 	
 	public Iterator getServices() { return services.iterator() ; }
-	public boolean addService( String service ) { return services.add( service ) ; }
-	public boolean removeService( String service ) { return services.remove( service ) ; }
+	public boolean addService( Service service ) { return services.add( service ) ; }
+	public boolean removeService( Service service ) { return services.remove( service ) ; }
 
 	public void setParent(Query parent) { this.parent = parent; }
 	public Query getParent() { return parent; }	
