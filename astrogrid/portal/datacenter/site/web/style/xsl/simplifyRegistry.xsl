@@ -69,6 +69,14 @@
 	<agTitle><xsl:apply-templates/></agTitle>
   </xsl:template>
 
+  <xsl:template match="table">
+      <agTable><xsl:apply-templates/></agTable>
+  </xsl:template>
+
+  <xsl:template match="Table">
+      <agTable><xsl:apply-templates/></agTable>
+  </xsl:template>
+
   <xsl:template match="vr:Table">
 	<agTable><xsl:apply-templates/></agTable>
   </xsl:template>
@@ -101,12 +109,24 @@
 	<agName><xsl:apply-templates/></agName>
   </xsl:template>
 
+  <xsl:template match="Column">
+      <agColumn><xsl:apply-templates/></agColumn>
+  </xsl:template>
+
   <xsl:template match="vr:Column">
 	<agColumn><xsl:apply-templates/></agColumn>
   </xsl:template>
 
   <xsl:template match="vs:Column">
 	<agColumn><xsl:apply-templates/></agColumn>
+  </xsl:template>
+
+  <xsl:template match="Unit">
+	<agUnit><xsl:apply-templates/></agUnit>
+  </xsl:template>
+
+  <xsl:template match="unit">
+	<agUnit><xsl:apply-templates/></agUnit>
   </xsl:template>
 
   <xsl:template match="vr:Unit">
@@ -117,11 +137,27 @@
 	<agUnit><xsl:apply-templates/></agUnit>
   </xsl:template>
 
+  <xsl:template match="vr:Units">
+	<agUnit><xsl:apply-templates/></agUnit>
+  </xsl:template>
+
+  <xsl:template match="vs:Units">
+	<agUnit><xsl:apply-templates/></agUnit>
+  </xsl:template>
+
   <xsl:template match="vr:unit">
 	<agUnit><xsl:apply-templates/></agUnit>
   </xsl:template>
 
   <xsl:template match="vs:unit">
+	<agUnit><xsl:apply-templates/></agUnit>
+  </xsl:template>
+
+  <xsl:template match="Unit">
+	<agUnit><xsl:apply-templates/></agUnit>
+  </xsl:template>
+
+  <xsl:template match="Units">
 	<agUnit><xsl:apply-templates/></agUnit>
   </xsl:template>
 
