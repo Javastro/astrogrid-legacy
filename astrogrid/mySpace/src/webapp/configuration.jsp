@@ -269,7 +269,7 @@ if (loadedConfig) {
   <input:text name="msmsUrl" attributesText='size="100"'/><br>
   <button type="submit" name="<%=changeBtn%>" onmouseover="javascript:window.status='Update these values for this session only (will reset to values in config file after server is bounced)';" onmouseout="javascript:window.status='';">Change</button>
   
-  <button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='The items in purple can be guessed from the webapp''s installation location (need to press change to apply the values)';" onmouseout="javascript:window.status='';">Guess URLs</button>
+  <button type="submit" name="<%=guessBtn%>"  onmouseover="javascript:window.status='The items in purple can be guessed from the webapp&#39;s installation location (need to press change to apply the values)';" onmouseout="javascript:window.status='';">Guess URLs</button>
   <BR>
   <button type="submit" name="<%=exportBtn%>" onmouseover="javascript:window.status='Export these values to the named config file.';" onmouseout="javascript:window.status='';">Export</button> to 
 <input:text name="<%=filenameTxt%>" attributesText='size="50"' default="../ASTROGRID_myspacemanagerconfig.export"/>
