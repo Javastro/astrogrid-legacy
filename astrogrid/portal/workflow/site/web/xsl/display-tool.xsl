@@ -91,10 +91,10 @@
 -->                
             </div>
                 <form name="container_insert_form">
-                   <input type="hidden" name="action"/>
-                   <input type="hidden" name="activity_key"/>
-                   <input type="hidden" name="activity_index_key"/>
-                   <input type="submit" value="XXXXXXX"/>
+                   <input type="text" name="activity_key"/>
+                   <input type="text" name="activity_index_key"/>
+                   <input type="hidden"  name="action" value="insert-flow"/>
+                   <input type="submit" value="insert flow"/>                                      
                 </form>            
         </xsl:template>
         
