@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><meta content="text/html; charset=UTF-8" http-equiv="content-type"><title>AstroGrid architecture: general introduction</title></head><body style="direction: ltr;">
+<h1>Introduction</h1>
+<h2>About AstroGrid</h2>
+<p>AstroGrid is the UK's virtual-observatory project. AstroGrid is
+funded (by the Particle Physics and Astronomy Research Council) to
+produce software within which data archives and data-processing
+software can be used. AstroGrid is not itself a producer of
+data-processing software for the UK (other projects, notably Starlink,
+do that), nor is it an operating organization for British parts of the
+virtual observatory (data-centres at British universities do that).
+AstroGrid's product is a software framework that can be deployed by
+other organizations. This document describes that product.</p>
+<p>More information about AstroGrid as an organization is available on <a href="http://www.astrogrid.org/">AstroGrid's main web-site</a>.</p>
+<h2>About the virtual observatory</h2>
+<p>The virtual-observatory (VO) movement started with the aim of
+unifying all the existing on-line archives. During the long gestation
+of the VO, the grid paradigm of distributed processing arose in
+computer science. The early VO workers recognized that distributed
+processing would become as important as access to distributed data in
+the current era of large surveys; data volumes are rising beyond the
+point where all necessary data can be processed on a researcher's
+dekstop. The VO is thus evolving from being a unified set of web-sites
+for interactive querying of archives to being a data grid (i.e. a
+wide-area, distributed filing system) for local applications and
+finally into a computational grid for distributed processing. Regional
+VO projects focus on different stages of this evolution; AstroGrid is
+strongly focussed on the later stages of the evolution and has
+exceptional support for large-scale computation.</p>
+<p>The VO movement is regulated (at least in technical matters) by the
+International Virtual Observatory Alliance. More information about the
+VO movement can be found on <a href="http://www.ivoa.net/">the IVOA web-site</a>.</p>
+<h2>About this document</h2>
+<p>This "document" is a guide to the architecture of AstroGrid's software framework (it is <span style="font-style: italic;">not</span>
+the user manual!) and is intended to inform technical readers who must
+work with that software. As such, it combines short, introductory
+essays with a large volume of detail generated from a UML model; that
+model in turn is largely generated from the code base. Readers with
+different background and with different goals will need to consider
+different parts of the mass of information, so there is no unique path
+through the material.&nbsp; Some recommended paths are shown here.</p>
+<h3>For service providers</h3>
+<p>If you intend to provide a service in the VO by deploying AstroGrid
+components, then you should read the section on service organization;
+this has links to the installations guides for the components.&nbsp;
+Next read the essays on <a href="job-orientation.html">workflow and job orientation</a>, <a href="cea.html">Common Execution Architecture</a>,
+the resource registry and MySpace; these affect all service providers.
+To support deployment of data-processing services, read the description
+of how applications are coupled to the CEA. If you plan to deploy your
+own resource registry, then you should further study the corresponding <a href="generated/use-cases/deploy-registry.html">use-case</a> which supports the installation guide for the registry.<br>
+</p>
+<h3>For end-users</h3>
+<p>This is not the user manual; look on <a href="http://www.astrogrid.org/">AstroGrid's main site</a> for pointers to that. To understand technically what AstroGrid does for you as a researcher you might read the <a href="job-orientation.html">essay</a> and <a href="generated/use-cases/workflow-use-cases.html">use cases</a>
+about workflows, since all data processing in AstroGrid is done via
+workflows. You may also find it useful to read the essays on the
+registry and on MySpace.</p>
+<h3>For software developers inside AstroGrid<br>
+</h3>
+<p>If you already know the architecture, you can ignore the introductory essays and use the reference material. The section on the <a href="maven-projects.html">Maven projects</a>
+lists the artefacts produced by each Maven project and the compile-time
+dependencies. It also includes lists of the packages contained in each
+project. The section on the <a href="generated/org/Package.html">code-base</a>
+presents the code as a unified tree which may sometimes be more useful
+than the fragmented view in the pages produced by Maven during the
+scheduled builds. The section on <a href="generated/webapps/Package.html">web applications</a>
+lists the main interfaces for each sub-system, including the set
+of&nbsp; web services; this information is not readily available from
+the documentation produced by Maven. There is also a section of the
+model containing <a href="generated/patterns/Package.html">design patterns</a>.<br>
+</p>
+<h3>For those with a non-HTML form of the document<br>
+</h3>
+This material isn't properly readable except as hypertext; there's too
+much detail to handle that way. Therefore, the "document" is issued as
+a web site. If you have a serialized copy (e.g. paper or PDF), then I
+suggest that you read only the introductory essays and refer to the
+on-line version for the UML details.</body></html>
