@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowUsingTestCase.java,v 1.5 2004/04/24 10:37:07 pah Exp $
+ * $Id: WorkFlowUsingTestCase.java,v 1.6 2004/04/25 20:41:00 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -105,7 +105,7 @@ public class WorkFlowUsingTestCase extends BaseDBTestCase {
     
   protected Ivorn createIVORN(String path)
   {
-     return new Ivorn(MYSPACE,user.getUserId()+path);
+     return new Ivorn(COMMUNITY+"/"+user.getUserId(),path);
   }
 
    /**

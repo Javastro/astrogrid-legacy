@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.4 2004/04/24 10:37:07 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.5 2004/04/25 20:41:00 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -86,7 +86,6 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
       outIvorn = createIVORN("outfile"); 
       assertNotNull(outIvorn);
       
-      //write out some contents
       
       byte[] cont = TESTCONTENTS.getBytes();
       client.putBytes(cont, 0, cont.length, outIvorn, false);
