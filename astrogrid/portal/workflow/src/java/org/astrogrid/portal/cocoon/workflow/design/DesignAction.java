@@ -141,7 +141,8 @@ public class DesignAction extends AbstractAction {
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
 	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
 	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",
-	    ACTION_RESET_PARAMETER = "reset-parameter",	    
+	    ACTION_RESET_PARAMETER = "reset-parameter",
+	    ACTION_REMOVE_TOOL_FROM_STEP = "remove-tool-from-step",	    
         ACTION_READ_LISTS = "read-lists";
         
     public static final String
@@ -313,6 +314,9 @@ public class DesignAction extends AbstractAction {
 				}
 				else if( action.equals( ACTION_RESET_PARAMETER ) ) {
 				    this.resetParameter();         	
+    			}
+    			else if( action.equals( ACTION_REMOVE_TOOL_FROM_STEP )){
+    				this.removeToolFromStep() ;
     			}
 				else if( action.equals( ACTION_CREATE_TOOL ) ) {
 					this.createTool();                     								
@@ -900,8 +904,37 @@ public class DesignAction extends AbstractAction {
 				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertQueryIntoStep() exit" ) ;
 			}
                     
-		} // end of insertQueryIntoStep() 
+		} // end of insertToolIntoStep() 
 
+           
+        private void removeToolFromStep() throws ConsistencyException {
+           if( TRACE_ENABLED ) trace( "DesignActionImpl.removeToolFromStep() entry" ) ;
+			
+           boolean 
+              response = false;
+              
+           try {		
+          
+              String
+                 stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;					 
+                                
+              if ( stepActivityKey == null) {
+                 debug( "stepActivityKey is null" ) ;
+              }
+              else {                	
+                 response = Workflow.insertToolIntoStep( stepActivityKey, null, workflow ) ;
+              }   
+				
+              if ( response == false ) {
+                 ; // some logging here
+                 throw new ConsistencyException() ;					          
+              }				
+           }
+           finally {
+              if( TRACE_ENABLED ) trace( "DesignActionImpl.removeToolFromStep() exit" ) ;
+            }
+                    
+		} // end of removeToolFromStep() 
 
 
       private void insertInputValue() throws ConsistencyException {
