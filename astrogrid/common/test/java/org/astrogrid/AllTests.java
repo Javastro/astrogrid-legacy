@@ -8,6 +8,7 @@ package org.astrogrid;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.astrogrid.store.IvornTest;
 
 /**
  * @author john
@@ -32,6 +33,7 @@ public class AllTests {
       suite.addTest(org.astrogrid.testutils.naming.AllTests.suite());
       suite.addTest(org.astrogrid.util.AllTests.suite());
       suite.addTest(org.astrogrid.io.PiperTest.suite());
+      suite.addTest(IvornTest.suite());
         //$JUnit-END$
         return suite;
     }

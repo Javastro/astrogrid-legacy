@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.1 2004/03/01 22:35:09 mch Exp $
+/* $Id: AllTests.java,v 1.2 2004/03/12 13:20:28 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,6 +7,7 @@
  *
  */
 package org.astrogrid.store;
+import org.astrogrid.store.*;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -26,7 +27,6 @@ public class AllTests {
       TestSuite suite = new TestSuite("Test for org.astrogrid.store");
 
       suite.addTest(AgslTest.suite());
-      suite.addTest(IvornTest.suite());
       suite.addTest(MsrlTest.suite());
       
       suite.addTest(FactoryTest.suite());
@@ -38,6 +38,9 @@ public class AllTests {
 
 /*
  $Log: AllTests.java,v $
+ Revision 1.2  2004/03/12 13:20:28  mch
+ Moved Ivorn to common
+
  Revision 1.1  2004/03/01 22:35:09  mch
  Tests for StoreClient
 
