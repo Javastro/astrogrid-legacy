@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.7 2003/12/08 22:23:24 pah Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.8 2003/12/08 22:34:36 pah Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
 	</xs:annotation>
@@ -20,6 +20,9 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="tDocumentation" mixed="true">
+		<xs:annotation>
+			<xs:documentation>what documentation can be</xs:documentation>
+		</xs:annotation>
 		<xs:sequence>
 			<xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
@@ -85,6 +88,7 @@
 			<xs:enumeration value="agpd:Dec"/>
 			<xs:enumeration value="agpd:ADQL"/>
 			<xs:enumeration value="xs:boolean"/>
+			<xs:enumeration value="xs:anyURI"/>
 		</xs:restriction>
 		<!--
 	       This type is not yet complete - probably most of the standard 2001 schema types should be supported as well as the specialized types
