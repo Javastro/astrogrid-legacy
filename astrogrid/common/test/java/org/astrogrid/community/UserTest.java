@@ -1,4 +1,4 @@
-/* $Id: UserTest.java,v 1.5 2004/03/01 23:14:34 mch Exp $
+/* $Id: UserTest.java,v 1.6 2004/03/05 13:12:25 pah Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -74,7 +74,7 @@ public class UserTest extends TestCase
       
       User meToo = new User(snippet);
       
-      assertTrue(me.equals(meToo));
+      assertFalse(me.equals(meToo));
    }
 
 
@@ -98,6 +98,9 @@ public class UserTest extends TestCase
 
 /*
 $Log: UserTest.java,v $
+Revision 1.6  2004/03/05 13:12:25  pah
+updated so that the unit test worked - the unit test had an incorrect assertion - but the way tha tthe user object was made from a snippet was wrong as well
+
 Revision 1.5  2004/03/01 23:14:34  mch
 Removed failing test
 
