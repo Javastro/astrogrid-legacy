@@ -4,7 +4,7 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>astrogrid-applicationsintegration</id>
+  <id>astrogrid-applications</id>
   <name>AstroGrid Applications Integration</name>
 
   <currentVersion>HEAD</currentVersion>

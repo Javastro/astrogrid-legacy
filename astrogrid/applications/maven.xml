@@ -8,8 +8,10 @@
      <path id="integration.src" locaton="${basedir}/test/int/java" />
     <maven:addPath id="maven.compile.src.set" refid="generated.src"/>  <!-- declares new src tree to maven -->
     <maven:addPath id="maven.compile.src.set" refid="integration.src" />
+<!-- don't do this for now....
 	<attainGoal name="maybe-regenerate-wsdl" />
-  	<attainGoal name="maybe-regenerate-adql" />
+  	<attainGoal name="maybe-regenerate-adql" /> 
+  	-->
   </preGoal>
 
 
