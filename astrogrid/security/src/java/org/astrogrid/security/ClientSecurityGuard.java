@@ -95,14 +95,23 @@ public class ClientSecurityGuard extends SecurityGuard {
    * @throws Exception if the sign-on fails
    */
   public void signOn () throws Exception {
-    Ivorn accountId = new Ivorn(this.getUsername());
-    SecurityServiceResolver ssr = new SecurityServiceResolver();
-    SecurityServiceDelegate ssd = ssr.resolve(accountId);
     String   u = this.getUsername();
     Password p = this.getPassword();
-    NonceToken t
-        = new NonceToken(ssd.checkPassword(u, p.getPlainPassword()));
-    this.setNonceToken(t);
+    System.out.println("ClientSecurityGuard.signOn(): signing on to the grid"
+                           + " with account name "
+                       + u);
+    try {
+      Ivorn accountId = new Ivorn(this.getUsername());
+      SecurityServiceResolver ssr = new SecurityServiceResolver();
+      SecurityServiceDelegate ssd = ssr.resolve(accountId);
+
+      NonceToken t
+          = new NonceToken(ssd.checkPassword(u, p.getPlainPassword()));
+      this.setNonceToken(t);
+    }
+    catch (Exception e) {
+      throw new Exception("Failed to log on to the grid as " + u, e);
+    }
   }
 
 }
