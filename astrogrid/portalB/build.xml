@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: pjn3 $</cvs:date>
-    | <cvs:author>$Date: 2003/10/02 14:48:27 $</cvs:author>
-    | <cvs:version>$Revision: 1.51 $</cvs:version>
+    | <cvs:date>$Author: bkm $</cvs:date>
+    | <cvs:author>$Date: 2003/10/09 15:48:34 $</cvs:author>
+    | <cvs:version>$Revision: 1.52 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.52  2003/10/09 15:48:34  bkm
+    | Updated build.xml with installkit.BUILD target
+    |
     | Revision 1.51  2003/10/02 14:48:27  pjn3
     | *** empty log message ***
     |
@@ -2428,14 +2431,65 @@
 			toFile="build/release/cocoon/webapp/WEB-INF/web.xml"
 			/>
 
-		<!-- Wrap everything up as a WAR fil -->
+		<!-- Wrap everything up as a WAR file -->
 		<jar destfile="build/release/cocoon/cocoon.war"
 		     manifest="build/release/cocoon/webapp/META-INF/MANIFEST.MF"
 		     >
 			<fileset dir="build/release/cocoon/webapp">
 			</fileset>
 		</jar>
+<!-- BKM -->
+                <!-- Now build an Installkit with the config.xml JNDI entry
+                     set to http://localhost:8080/config.xml   -->
+		<!--+
+			| Modify the Cocoon web.xml, adding our JNDI property
+			+-->
+		<copy verbose="true"
+                    file="build/release/cocoon/webapp/WEB-INF/web.xml"
+                    toFile="build/release/cocoon/webapp/WEB-INF/web.xml.save"/>
+		<xslt style="src/build/config/webapp.xsl"
+		      in="build/release/cocoon/webapp/WEB-INF/web.xml"
+		      out="build/release/cocoon/webapp/WEB-INF/web.new">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="property.name" 
+                            expression="org.astrogrid.community.config"/>
+			<param name="property.value"
+                            expression="http://localhost:8080/config.xml"/>
+		</xslt>
+		<!-- Replace the web.xml with the new one -->
+		<move  verbose="true"
+			file="build/release/cocoon/webapp/WEB-INF/web.new"
+			toFile="build/release/cocoon/webapp/WEB-INF/web.xml"
+			/>
+
+		<!-- Wrap everything up as a WAR file -->
+		<jar destfile="InstallKit3/cocoon.war"
+		     manifest="build/release/cocoon/webapp/META-INF/MANIFEST.MF"
+		     >
+			<fileset dir="build/release/cocoon/webapp">
+			</fileset>
+		</jar>
+		<!-- Replace the web.xml with the previous one -->
+		<move  verbose="true"
+			file="build/release/cocoon/webapp/WEB-INF/web.xml.save"
+			toFile="build/release/cocoon/webapp/WEB-INF/web.xml"
+			/>
+<!-- /BKM -->
 	</target>
+
+<!--+
+    |  Build just cocoon.war from sources (BKM)
+    +-->
+        <target name="installkit.BUILD" depends="init">
+	   <delete dir="build" failonerror="false"/>
+           <antcall target="axis.unzip"/>
+           <antcall target="junit.unzip"/>
+           <antcall target="cocoon.REBUILD"/>
+           <antcall target="portal.REBUILD"/>
+           <antcall target="cocoon.release"/>
+        </target>
 
 	<!--+
 		| Deploy our Cocoon webapp.
