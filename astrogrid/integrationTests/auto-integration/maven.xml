@@ -11,6 +11,7 @@
    deploy, so if you have local changes to a component you will need to rebuild that component separately.
    When the auto builds happen, the astrogrid repository version will become 'newer' and you will need to
    rebuild your locally changed component.
+   Alternatively, run this script with the -o switch which instructs maven to build offline
    -->
 
 <!-- extension maven script -->
