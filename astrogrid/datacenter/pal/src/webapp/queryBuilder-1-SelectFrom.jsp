@@ -36,9 +36,6 @@ empty you will receive all the columns in your results.
       <%
    }
 %>
-<h2>From</h2>
-
-Select which columns you will be using to search:
 <p>
  <form method="get" action='queryBuilder-2-Constraints.jsp'>
 
