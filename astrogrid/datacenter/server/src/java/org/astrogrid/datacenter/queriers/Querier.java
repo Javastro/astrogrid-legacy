@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.22 2004/02/24 16:04:18 mch Exp $
+ * $Id: Querier.java,v 1.23 2004/02/24 16:13:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -107,9 +107,11 @@ public abstract class Querier implements Runnable {
        }
        
        //default results destination
-       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE);
-       IvoRN ivorn = new IvoRN(user.getCommunity(), user.getIndividual(), "/votable/"+queryId+".vot");
-       resultsDestination = new AGSL(defaultMySpace, ivorn);
+       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE, null);
+       if (defaultMySpace != null) {
+          IvoRN ivorn = new IvoRN(user.getCommunity(), user.getIndividual(), "/votable/"+queryId+".vot");
+          resultsDestination = new AGSL(defaultMySpace, ivorn);
+       }
    }
 
    /**
@@ -437,6 +439,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.23  2004/02/24 16:13:23  mch
+ fix to allow no DefaultMySpace
+
  Revision 1.22  2004/02/24 16:04:18  mch
  Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
 
