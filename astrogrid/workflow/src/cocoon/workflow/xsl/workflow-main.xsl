@@ -250,13 +250,14 @@
           | Delete workflow
           +-->   
       <xsl:template name="delete_workflow">
-         <form name="delete_form" action="">               
+         <form name="delete_form" method="get">               
             <table cellpadding="0" cellspacing="0">                      
                <p />                                     
                <tr>
                   <td>Job Name:</td>
-                  <td><input type="text" name="workflow-name" disabled="true" /></td>
+                  <td><input type="text" name="workflow-name" /></td>
                   <td><input type="submit" value="Delete" /></td>
+                  <input type="hidden" name="action" value="delete-workflow"/>
                </tr>                                                              
             </table> 
          </form>
