@@ -3,7 +3,7 @@
     <Resource status="active" update="Thu Oct 21 11:04:43 BST 2004" xmlns="http://www.ivoa.net/xml/VOResource/v0.9" xsi:type="CeaApplicationType">
         <Identifier>
             <AuthorityID>roe.ac.uk</AuthorityID>
-            <ResourceKey>datacenter_SSA-Proxy_ceaApplication</ResourceKey>
+            <ResourceKey>datacenter/SSA-Proxy/ceaApplication</ResourceKey>
         </Identifier>
         <Title>SSA - AstroGrid PAL</Title>
         <ShortName>SSA-PAL</ShortName>
