@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.3 2003/10/29 12:09:17 jdt Exp $
+/* $Id: JESTest.java,v 1.4 2003/11/14 17:24:29 jdt Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,16 +9,19 @@
  */
 package org.astrogrid.jes;
 
-//import java.io.File;
-//import java.io.IOException;
+import junit.framework.TestCase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.AstroGridException;
-
-import junit.framework.TestCase;
 
 /**
  * Test that JES loads up the properties correctly
  * @author jdt
+ * @TODO Would like to test failure of JES when property file doesn't exist,
+ * but don't know how to do this without lots of messing about with classloaders
+ * since JES is a singleton, and once loaded with the properties files, is fine.
+ * Perhaps investigate adding a package visible method to JES to reset it.
  *
  */
 public class JESTest extends TestCase {
@@ -39,10 +42,6 @@ public class JESTest extends TestCase {
   }
 
   /**
-   * The instance of JES under test
-   */
-  private JES jes;
-  /**
    * Load up a JES
    * This will throw an exception if the properties files aren't available, so
    * automatically tests that they're being picked up.
@@ -50,13 +49,11 @@ public class JESTest extends TestCase {
    */
   protected final void setUp() throws Exception {
     super.setUp();
-    jes = JES.getInstance();
-
   }
 
-  //  protected final void tearDown() throws Exception {
-  //    super.tearDown();
-  //  }
+  protected final void tearDown() throws Exception {
+    super.tearDown();
+  }
 
   /**
   * Test that the singleton pattern has been implemented correctly - Don't 
@@ -64,20 +61,27 @@ public class JESTest extends TestCase {
   * Current test is a bit silly - you'd have to really get it wrong to fail 
   * this.  What I really want is a test that fails when double-checked locking
   * is used: see http://www.javaworld.com/jw-02-2001/jw-0209-double.html 
-  * @TODO wonder why JES is a singleton since pretty much all the important
+  * @MINOR wonder why JES is a singleton since pretty much all the important
   * methods are static anyway.
    */
   public final void testSingleton() {
+    JES jes = JES.getInstance();
     assertEquals("Should only ever be one JES", jes, JES.getInstance());
   }
-
+  /**
+   * Test value
+   */
+  private static final String EXPECTED_VERSION_VALUE = "1.2";
   /**
    * Try getting the property "VERSION"
    *
    */
   public final void testGetVersion() {
     String value = JES.getProperty("VERSION", "GENERAL");
-    assertEquals("Property VERSION should be 1.2", "1.2", value);
+    assertEquals(
+      "Property VERSION should be " + EXPECTED_VERSION_VALUE,
+      EXPECTED_VERSION_VALUE,
+      value);
   }
 
   /**
@@ -90,44 +94,81 @@ public class JESTest extends TestCase {
   }
 
   /**
-   * @throws IOException
-   * @throws AstroGridException
-   */
-  //  private final static File TEMP = new File("temp");
-  /**
-   * Make sure that things fall over properly if the config files aren't there.
-   * Currently test won't work, because once the properties are loaded, that's
-   * it - need to see if we can force a reload.
-   */
-  /*
-  public void testNoConfigFile() throws IOException  {
-    //testMissingConfigFile(CONFIG_FILE_1_TO);
-  }
-  private void tryMissingConfigFile(final File file) throws IOException {
-    moveFile(file, TEMP);
-    try {
-      jes.checkPropertiesLoaded();
-      fail("An AstrogGridException should have been thrown due to a missing config file");
-    } catch (AstroGridException aex) {
-      //expect this to happen
-    } finally {
-      moveFile(TEMP, file);
-    }
-  }
-  */
-  /**
    * Make sure that the config files have loaded
    * @throws AstroGridException if the config file isn't loaded
    */
 
   public final void testCanWeFindTheTestConfigFiles()
     throws AstroGridException {
+    JES jes = JES.getInstance();
     jes.checkPropertiesLoaded();
+  }
+
+  /**
+   * We've been having problems with this particular property - check we can
+   * find it:
+   *
+   */
+  public final void testSubmitJobResponseTemplateProperty() {
+    String response =
+      JES.getProperty(
+        JES.CONTROLLER_SUBMIT_JOB_RESPONSE_TEMPLATE,
+        JES.CONTROLLER_CATEGORY);
+    log.debug("Response is " + response);
+    assertNotNull(
+      "This property should be present in the config file",
+      response);
+  }
+  static Log log = LogFactory.getLog(JESTest.class);
+  /**
+   * The configurator has this bizarre API, where if the property you request
+   * begins with  "TEMPLATE.", then instead of returning the property value,
+   * it treats the property value as a file name and attempts to load it and 
+   * return the contents.
+   * This test verifies that should the file not exist then we get some decent
+   * exception or null response.
+   */
+  public final void testNoTemplateFile() {
+    provokeTemplatePropertyProblem("TEMPLATE.TEST1"); //this property exists, but the file doesn't
+  }
+  
+  /**
+   * The configurator has this bizarre API, where if the property you request
+   * begins with  "TEMPLATE.", then instead of returning the property value,
+   * it treats the property value as a file name and attempts to load it and 
+   * return the contents.
+   * This test verifies that should the property not exist then we get some decent
+   * exception or null response (currently you just get a string of garbage back)
+   * @TODO enter this in bugzilla
+   */
+  public final void testNoTemplateFileProperty() {
+    provokeTemplatePropertyProblem("TEMPLATE.TEST2"); //this property does not exist
+  }
+  /**
+   * See testNoTemplateFile and testNoTemplateFileProperty
+   * @param property property (template filename) to look for
+   */
+  private void provokeTemplatePropertyProblem(final String property) {
+    try {
+      String response =
+        JES.getProperty(property, JES.CONTROLLER_CATEGORY);
+      
+      log.debug("Response is " + response);
+      assertNull(
+        "The file does not exist, therefore a null response would be good",
+        response); //but an exception would be better
+    } catch (Exception e) {
+      return; //An exception would be enough to pass this test
+    }
   }
 }
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.4  2003/11/14 17:24:29  jdt
+*A few new tests on TEMPLATE properties, and removed stuff trying to test
+*what happens when there's no config file.  Too difficult for too little gain.
+*
 *Revision 1.3  2003/10/29 12:09:17  jdt
 *Some minor tidying to satisfy the coding standards.
 *
