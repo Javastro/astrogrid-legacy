@@ -1,11 +1,12 @@
 /*
- * $Id: ReturnTable.java,v 1.5 2004/10/06 21:12:16 mch Exp $
+ * $Id: ReturnTable.java,v 1.6 2004/10/08 09:41:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.returns;
 
+import org.astrogrid.datacenter.query.condition.Expression;
 import org.astrogrid.datacenter.query.condition.NumericExpression;
 import org.astrogrid.slinger.TargetIndicator;
 
@@ -21,9 +22,9 @@ public class ReturnTable  extends ReturnSpec {
 
    boolean all = false; //special case similar to SELECT * (SQL)
 
-   NumericExpression[] colDefs = null;  //list of column definitions
+   Expression[] colDefs = null;  //list of column definitions
 
-   NumericExpression[] sortOrder = null;
+   Expression[] sortOrder = null;
    
    /** Another format particular to tables */
    public static final String CSV      = "CSV";
@@ -36,7 +37,7 @@ public class ReturnTable  extends ReturnSpec {
    }
 
    /** Creates a definitiont hat will return all the given columns */
-   public ReturnTable(TargetIndicator aTarget, NumericExpression[] someColDefs) {
+   public ReturnTable(TargetIndicator aTarget, Expression[] someColDefs) {
       this.target = aTarget;
       setColDefs(someColDefs);
    }
@@ -47,9 +48,9 @@ public class ReturnTable  extends ReturnSpec {
       this.format = givenFormat;
    }
 
-   public NumericExpression[] getColDefs() { return colDefs; }
+   public Expression[] getColDefs() { return colDefs; }
 
-   public void setColDefs(NumericExpression[] cols )  {
+   public void setColDefs(Expression[] cols )  {
       if (cols == null) {
          all = true;
          this.colDefs = null;
@@ -64,7 +65,7 @@ public class ReturnTable  extends ReturnSpec {
       }
    }
 
-   public NumericExpression[] getSortOrder() { return sortOrder; }
+   public Expression[] getSortOrder() { return sortOrder; }
 
    public void setSortOrder(NumericExpression[] order )  { this.sortOrder = order; }
    
@@ -88,6 +89,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.6  2004/10/08 09:41:51  mch
+ Returns cols are expressions not nec numeric
+
  Revision 1.5  2004/10/06 21:12:16  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
