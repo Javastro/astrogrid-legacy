@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JoinType.java,v 1.16 2004/04/30 17:57:42 pah Exp $
+ * $Id: JoinType.java,v 1.17 2004/05/06 13:40:02 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class JoinType.
  * 
- * @version $Revision: 1.16 $ $Date: 2004/04/30 17:57:42 $
+ * @version $Revision: 1.17 $ $Date: 2004/05/06 13:40:02 $
  */
 public class JoinType implements java.io.Serializable {
 

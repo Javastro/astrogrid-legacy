@@ -129,9 +129,16 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "InterfacesType");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -143,65 +150,9 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>input");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "DataCentreApplication");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.Interface_input.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "DataCenterParameterDefinition");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.DataCenterParameterDefinition.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.MessageType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "InterfacesType");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CmdLineParameterDefn");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase._CmdLineParameterDefn.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CommandLineApplication");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineApplication.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.DataCentreApplication.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -213,12 +164,19 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "WebServiceParameterDefinition");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "BaseParameterDefinition");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceParameterDefinition.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
 
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase");
             cachedSerQNames.add(qName);
@@ -227,44 +185,16 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "BaseParameterDefinition");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
             cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "output");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "WebServiceParameterDefinition");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.workflow.beans.v1.axis._output.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>output");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.Interface_output.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase>Parameters");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "WebServiceApplication");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceApplication.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "DataCentreApplication");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.DataCentreApplication.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceParameterDefinition.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -276,16 +206,37 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "switchTypes");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>output");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.SwitchTypes.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.Interface_output.class;
             cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "output");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.workflow.beans.v1.axis._output.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.applications.beans.v1.axis.ceabase._interface.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "DataCenterParameterDefinition");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.DataCenterParameterDefinition.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -297,9 +248,37 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CommandLineApplication");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineApplication.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "input");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.workflow.beans.v1.axis._input.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "switchTypes");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.SwitchTypes.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase>Parameters");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationList");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -311,9 +290,30 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationList");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>input");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.Interface_input.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.MessageType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "WebServiceApplication");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceApplication.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CmdLineParameterDefn");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.applications.beans.v1.axis.ceabase._CmdLineParameterDefn.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);

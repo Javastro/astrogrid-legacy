@@ -1,0 +1,105 @@
+/**
+ * ResultsListenerServiceLocator.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis WSDL2Java emitter.
+ */
+
+package org.astrogrid.jes.service.v1.cearesults;
+
+public class ResultsListenerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.jes.service.v1.cearesults.ResultsListenerService {
+
+    // Use to get a proxy class for ResultListener
+    private final java.lang.String ResultListener_address = "http://localhost:8000/ccx/ResultsListenerService";
+
+    public java.lang.String getResultListenerAddress() {
+        return ResultListener_address;
+    }
+
+    // The WSDD service name defaults to the port name.
+    private java.lang.String ResultListenerWSDDServiceName = "ResultListener";
+
+    public java.lang.String getResultListenerWSDDServiceName() {
+        return ResultListenerWSDDServiceName;
+    }
+
+    public void setResultListenerWSDDServiceName(java.lang.String name) {
+        ResultListenerWSDDServiceName = name;
+    }
+
+    public org.astrogrid.jes.service.v1.cearesults.ResultsListener getResultListener() throws javax.xml.rpc.ServiceException {
+       java.net.URL endpoint;
+        try {
+            endpoint = new java.net.URL(ResultListener_address);
+        }
+        catch (java.net.MalformedURLException e) {
+            throw new javax.xml.rpc.ServiceException(e);
+        }
+        return getResultListener(endpoint);
+    }
+
+    public org.astrogrid.jes.service.v1.cearesults.ResultsListener getResultListener(java.net.URL portAddress) throws javax.xml.rpc.ServiceException {
+        try {
+            org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceSoapBindingStub _stub = new org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceSoapBindingStub(portAddress, this);
+            _stub.setPortName(getResultListenerWSDDServiceName());
+            return _stub;
+        }
+        catch (org.apache.axis.AxisFault e) {
+            return null;
+        }
+    }
+
+    /**
+     * For the given interface, get the stub implementation.
+     * If this service has no port for the given interface,
+     * then ServiceException is thrown.
+     */
+    public java.rmi.Remote getPort(Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
+        try {
+            if (org.astrogrid.jes.service.v1.cearesults.ResultsListener.class.isAssignableFrom(serviceEndpointInterface)) {
+                org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceSoapBindingStub _stub = new org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceSoapBindingStub(new java.net.URL(ResultListener_address), this);
+                _stub.setPortName(getResultListenerWSDDServiceName());
+                return _stub;
+            }
+        }
+        catch (java.lang.Throwable t) {
+            throw new javax.xml.rpc.ServiceException(t);
+        }
+        throw new javax.xml.rpc.ServiceException("There is no stub implementation for the interface:  " + (serviceEndpointInterface == null ? "null" : serviceEndpointInterface.getName()));
+    }
+
+    /**
+     * For the given interface, get the stub implementation.
+     * If this service has no port for the given interface,
+     * then ServiceException is thrown.
+     */
+    public java.rmi.Remote getPort(javax.xml.namespace.QName portName, Class serviceEndpointInterface) throws javax.xml.rpc.ServiceException {
+        if (portName == null) {
+            return getPort(serviceEndpointInterface);
+        }
+        String inputPortName = portName.getLocalPart();
+        if ("ResultListener".equals(inputPortName)) {
+            return getResultListener();
+        }
+        else  {
+            java.rmi.Remote _stub = getPort(serviceEndpointInterface);
+            ((org.apache.axis.client.Stub) _stub).setPortName(portName);
+            return _stub;
+        }
+    }
+
+    public javax.xml.namespace.QName getServiceName() {
+        return new javax.xml.namespace.QName("urn:cea/resultslistener/v1", "ResultsListenerService");
+    }
+
+    private java.util.HashSet ports = null;
+
+    public java.util.Iterator getPorts() {
+        if (ports == null) {
+            ports = new java.util.HashSet();
+            ports.add(new javax.xml.namespace.QName("ResultListener"));
+        }
+        return ports.iterator();
+    }
+
+}

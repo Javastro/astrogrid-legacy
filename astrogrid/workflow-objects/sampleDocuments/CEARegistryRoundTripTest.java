@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -29,7 +30,7 @@ import org.astrogrid.registry.beans.resource.VODescription;
 import junit.framework.TestCase;
 
 /*
- * $Id: CEARegistryRoundTripTest.java,v 1.2 2004/03/26 12:31:10 pah Exp $
+ * $Id: CEARegistryRoundTripTest.java,v 1.3 2004/05/06 13:40:02 pah Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -118,10 +119,24 @@ public class CEARegistryRoundTripTest extends TestCase {
       File outfile = new File("/tmp/test.xml");
   
          FileWriter writer = new FileWriter(outfile);
-         Marshaller.marshal(description, writer);
+      Marshaller mar = new Marshaller(writer);
+      mar.setDebug(true);
+      mar.setMarshalExtendedType(true);
+      mar.setSuppressXSIType(false);
+      mar.setLogWriter(new PrintWriter(System.out));
+      mar.setMarshalAsDocument(true);
+      mar.setDoctype("http://www.ivoa.net/xml/CEAService/v0.1", null);
+      
+//    TODO Castor bug? write a castor wiki page about this....      
+      mar.setNamespaceMapping("cea", "http://www.ivoa.net/xml/CEAService/v0.1");
+
+
+      mar.marshal(description);
          
        FileInputStream istream = new FileInputStream(outfile);
        Unmarshaller um = new Unmarshaller(VODescription.class);
+      
+     
        InputSource is = new InputSource(istream);
        VODescription indescr = (VODescription)um.unmarshal(is);
 

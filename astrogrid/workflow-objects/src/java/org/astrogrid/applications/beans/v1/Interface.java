@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Interface.java,v 1.22 2004/04/30 17:57:41 pah Exp $
+ * $Id: Interface.java,v 1.23 2004/05/06 13:40:01 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * description of an interface
  * 
- * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:41 $
+ * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
  */
 public class Interface extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

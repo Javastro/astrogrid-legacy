@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    name="Untitled"
+    targetNamespace="http://www.your-company.com/Untitled.wsdl"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://www.your-company.com/Untitled.wsdl"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsd1="http://www.your-company.com/Untitled.xsd1">
+    <types>
+        <xsd:schema
+            targetNamespace="http://www.your-company.com/Untitled.xsd1"
+            xmlns="http://schemas.xmlsoap.org/wsdl/"
+            xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/"
+            xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+            xmlns:tns="http://www.your-company.com/Untitled.wsdl"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:xsd1="http://www.your-company.com/Untitled.xsd1"> </xsd:schema>
+    </types>
+    <message name="NewMessageRequest">
+        <part name="arg1" type="xsd:string"/>
+    </message>
+    <message name="NewMessageResponse">   </message>
+    <message name="TheFault">
+        <part name="message" type="xsd:string"/>
+    </message>
+    <portType name="UntitledPortType">
+        <operation name="NewOperation">
+            <input message="tns:NewMessageRequest"/>
+            <output message="tns:NewMessageResponse"/>
+            <fault message="tns:TheFault" name="fault1"/>
+        </operation>
+    </portType>
+    <binding name="UntitledBinding" type="tns:UntitledPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="NewOperation">
+            <soap:operation
+                soapAction="capeconnect:Untitled:UntitledPortType#NewOperation"
+                style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+            <fault name="fault1">
+                <soap:fault name="tns:fault1"
+                    encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+                    namespace="http://www.your-company.com/Untitled/binding"
+                    use="literal"/>
+            </fault>
+        </operation>
+    </binding>
+    <service name="Untitled">
+        <port binding="tns:UntitledBinding" name="UntitledPort">
+            <soap:address location="http://localhost:8000/ccx/Untitled"/>
+        </port>
+    </service>
+</definitions>

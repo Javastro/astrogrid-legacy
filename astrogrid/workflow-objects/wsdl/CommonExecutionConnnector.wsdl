@@ -42,7 +42,7 @@
                 namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
                 schemaLocation="../schema/AGApplicationBase.xsd"/>
             <xsd:annotation>
-                <xsd:documentation>Workflow,xsd is needed for the tool element</xsd:documentation>
+                <xsd:documentation>Workflow.xsd is needed for the tool element</xsd:documentation>
             </xsd:annotation>
             <xsd:import
                 namespace="http://www.astrogrid.org/schema/AGWorkflow/v1"
@@ -57,16 +57,15 @@
                 <xsd:documentation>The following types are all needed for the wrapped style of the interface</xsd:documentation>
             </xsd:annotation>
             <xsd:element name="ApplicationNameList">
-                            <xsd:annotation>
-                                <xsd:documentation>This is to be used to return a simple name list</xsd:documentation>
-                            </xsd:annotation>            	
+                <xsd:annotation>
+                    <xsd:documentation>This is to be used to return a simple name list</xsd:documentation>
+                </xsd:annotation>
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element maxOccurs="unbounded" name="ApplicationName" type="xsd:string"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
-           
             <xsd:element name="execute">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -124,7 +123,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element ref="cea:ApplicationList">
-                        	                            <xsd:annotation>
+                            <xsd:annotation>
                                 <xsd:documentation>perhaps this should just be the simple name list</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
@@ -190,6 +189,12 @@
             </xsd:element>
         </xsd:schema>
     </wsdl:types>
+    <wsdl:message name="executeRequest">
+        <wsdl:part element="impl:execute" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="getApplicationDescriptionResponse">
+        <wsdl:part element="impl:getApplicationDescriptionResponse" name="parameters"/>
+    </wsdl:message>
     <wsdl:message name="executeResponse">
         <wsdl:part element="impl:executeResponse" name="parameters"/>
     </wsdl:message>
@@ -208,6 +213,9 @@
     <wsdl:message name="listApplicationsResponse">
         <wsdl:part element="impl:listApplicationsResponse" name="parameters"/>
     </wsdl:message>
+    <wsdl:message name="abortRequest">
+        <wsdl:part element="impl:abort" name="parameters"/>
+    </wsdl:message>
     <wsdl:message name="returnRegistryEntryRequest">
         <wsdl:part element="impl:returnRegistryEntry" name="parameters"/>
     </wsdl:message>
@@ -216,15 +224,6 @@
     </wsdl:message>
     <wsdl:message name="queryExecutionStatusResponse">
         <wsdl:part element="impl:queryExecutionStatusResponse" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="executeRequest">
-        <wsdl:part element="impl:execute" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="getApplicationDescriptionResponse">
-        <wsdl:part element="impl:getApplicationDescriptionResponse" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="abortRequest">
-        <wsdl:part element="impl:abort" name="parameters"/>
     </wsdl:message>
     <wsdl:message name="abortResponse">
         <wsdl:part element="impl:abortResponse" name="parameters"/>
@@ -241,8 +240,12 @@
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
         <wsdl:operation name="listApplications">
-            <wsdl:input message="intf:listApplicationsRequest" name="listApplicationsRequest"/>
-            <wsdl:output message="intf:listApplicationsResponse" name="listApplicationsResponse"/>
+            <wsdl:input
+                message="intf:listApplicationsRequest"
+                name="listApplicationsRequest"/>
+            <wsdl:output
+                message="intf:listApplicationsResponse"
+                name="listApplicationsResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
         <wsdl:operation name="getApplicationDescription" parameterOrder="">
@@ -271,6 +274,7 @@
                 name="returnRegistryEntryResponse"/>
         </wsdl:operation>
     </wsdl:portType>
+<!-- could try removing the namespace attributes -->
     <wsdl:binding
         name="CommonExecutionConnectorServiceSoapBinding"
         type="intf:CommonExecutionConnector">

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WorkflowDescriptor.java,v 1.22 2004/04/30 17:57:42 pah Exp $
+ * $Id: WorkflowDescriptor.java,v 1.23 2004/05/06 13:40:01 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class WorkflowDescriptor.
  * 
- * @version $Revision: 1.22 $ $Date: 2004/04/30 17:57:42 $
+ * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
  */
 public class WorkflowDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AccountDescriptor.java,v 1.19 2004/04/30 17:57:42 pah Exp $
+ * $Id: AccountDescriptor.java,v 1.20 2004/05/06 13:40:02 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class AccountDescriptor.
  * 
- * @version $Revision: 1.19 $ $Date: 2004/04/30 17:57:42 $
+ * @version $Revision: 1.20 $ $Date: 2004/05/06 13:40:02 $
  */
 public class AccountDescriptor extends org.astrogrid.community.beans.v1.BaseIdentifierDescriptor {
 
