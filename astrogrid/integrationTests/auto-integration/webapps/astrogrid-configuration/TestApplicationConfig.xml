@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- @TODO this file should really be dynamically copied from the one that is in the applications project - it is needed as well in the deployment project - too many copies..... -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
@@ -300,7 +301,7 @@
                                 </output>
                         </Interface>
                 </Interfaces>
-                <ExecutionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</ExecutionPath>
+                <ExecutionPath>@TOOLBASEDIR@/ZPHOT/hyperzwrapper.sh</ExecutionPath>
         </Application>
         <Application name="@REGAUTHORITY@/CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
                 <!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
@@ -348,7 +349,7 @@
                                 </output>
                         </Interface>
                 </Interfaces>
-                <ExecutionPath>/home/applications/tools/dft/bin/dft</ExecutionPath>
+                <ExecutionPath>@TOOLBASEDIR@/dft/bin/dft</ExecutionPath>
         </Application>
 
 </CommandLineExecutionControllerConfig>
