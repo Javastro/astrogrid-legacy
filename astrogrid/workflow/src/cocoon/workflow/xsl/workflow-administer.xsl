@@ -140,7 +140,7 @@
        <table border="0">
            <tr>
                <td>
-                   Queries currently strored in your mySpace:
+                   Queries currently stored in your mySpace:
                </td>
            </tr>
            <xsl:for-each select="//query">
