@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityEndpointResolver.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2004/08/03 13:55:22 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityEndpointResolver.java,v $
+ *   Revision 1.8  2004/08/03 13:55:22  KevinBenson
+ *   small change to not print out the stacktrace of an exception
+ *
+ *   Revision 1.7.34.1  2004/08/03 06:55:17  KevinBenson
+ *   small change to not print out the exception
+ *
  *   Revision 1.7  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -195,8 +201,8 @@ public class CommunityEndpointResolver
         catch (Throwable ouch)
             {
             if (DEBUG_FLAG) System.out.println("FAIL : Registry lookup failed")  ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch)  ;
-ouch.printStackTrace() ;
+            //if (DEBUG_FLAG) System.out.println("  Exception : " + ouch)  ;
+            //ouch.printStackTrace() ;
             throw new CommunityResolverException(
                 "Registry lookup failed",
                 ouch
