@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.5 2004/10/08 09:42:58 mch Exp $
+ * $Id: SqlResults.java,v 1.6 2004/10/08 14:02:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -75,7 +75,11 @@ public class SqlResults extends QueryResults
       long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
       
       //if the user has asked for a limit (and it's less than the datacenter-configured limit) then set to that
-      if (querier.getQuery().getLimit()<maxAllowed) { maxAllowed=querier.getQuery().getLimit(); }
+      if ( (querier.getQuery().getLimit() != -1) &&
+           (querier.getQuery().getLimit()<maxAllowed))
+      {
+         maxAllowed=querier.getQuery().getLimit();
+      }
       
       try
       {
@@ -315,6 +319,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.6  2004/10/08 14:02:14  mch
+ Fixed max limit bug
+
  Revision 1.5  2004/10/08 09:42:58  mch
  Added limit checks
 
