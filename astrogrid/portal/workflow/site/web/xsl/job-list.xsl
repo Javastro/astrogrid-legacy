@@ -52,12 +52,19 @@
                   <td><xsl:value-of select="@time"/></td>
                   <td><xsl:value-of select="@status"/></td>
                   <td>
-                     <xsl:element name="a">
-                        <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
-                     </xsl:element>
-                     <xsl:value-of select="@jobid"/>
-                     <xsl:element name="/a">
-                     </xsl:element>                                                                 
+                     <xsl:choose> 
+                        <xsl:when test="@status = 'n/a'">  <!--  EMPLTY LIST -->
+                           n/a
+                        </xsl:when>
+                        <xsl:otherwise>                      
+                           <xsl:element name="a">
+                              <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                           </xsl:element>
+                           <xsl:value-of select="@jobid"/>
+                           <xsl:element name="/a">
+                           </xsl:element>
+                        </xsl:otherwise>                                                                 
+                     </xsl:choose>
                   </td>
                   <td align="center">
                       <xsl:choose>                                      
