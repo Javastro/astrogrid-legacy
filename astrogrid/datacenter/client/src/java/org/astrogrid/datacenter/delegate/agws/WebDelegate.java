@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.25 2004/03/06 19:34:21 mch Exp $
+ * $Id: WebDelegate.java,v 1.26 2004/03/07 21:10:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -18,7 +18,7 @@ import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.AxisFault;
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.util.DomHelper;
 import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
@@ -69,7 +69,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
       String metaD = binding.getMetadata(null);
       ByteArrayInputStream is = new ByteArrayInputStream(metaD.getBytes());
       try {
-         Document doc = XMLUtils.newDocument(is);
+         Document doc = DomHelper.newDocument(is);
          return new Metadata(doc.getDocumentElement());
       } catch (Exception e) {
          throw new RemoteException("Could not parse document",e);
@@ -166,7 +166,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          q.setQueryBody(queryBody);
          String result = binding.doQuery(resultsFormat, q);
          InputStream is = new ByteArrayInputStream(result.getBytes());
-         Document rDoc = XMLUtils.newDocument(is);
+         Document rDoc = DomHelper.newDocument(is);
          
          //extract results to DatacenterResults
          //only one type for It03 servers - votable
@@ -175,9 +175,6 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
       }
       catch (DatacenterException e) {
          throw e;
-      }
-      catch (AxisFault e) {
-         throw new DatacenterException(e.getMessage(), e);
       }
       catch (Exception e) {
          throw new DatacenterException(e.getMessage(), e);
@@ -218,7 +215,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          //bit of a botch at the moment - converts VOTable back into string/input stream for returning...
          //best way to fix is properly to pipe it - still not quite right but less
          //memory
-         String xmlDoc = XMLUtils.DocumentToString(results.getVotable().getOwnerDocument());
+         String xmlDoc = DomHelper.DocumentToString(results.getVotable().getOwnerDocument());
          
          return new ByteArrayInputStream(xmlDoc.getBytes());
       }
@@ -270,7 +267,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          
          //extract query, results etc
          try {
-            doc = XMLUtils.newDocument(new StringBufferInputStream(parameters.getParameterSpec()));
+            doc = DomHelper.newDocument(new StringBufferInputStream(parameters.getParameterSpec()));
          }
          catch (SAXException e) { throw new IllegalArgumentException("Parameters not valid xml: "+e); }
          catch (ParserConfigurationException e) { throw new RuntimeException(e); }
@@ -325,7 +322,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          Select adql = null;
          try {
             //load query
-            Document adqlDoc = XMLUtils.newDocument(queryUri);
+            Document adqlDoc = DomHelper.newDocument(queryUri);
             //validate it really is adql
             adql = ADQLUtils.unmarshalSelect(adqlDoc);
          }
@@ -409,7 +406,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
       try {
          Element voDescription = getMetadata().getVoRegistryMetadata();
          
-         return XMLUtils.ElementToString(voDescription);
+         return DomHelper.ElementToString(voDescription);
       }
       catch (RemoteException re) {
          throw new RuntimeException("Could not getMetadata", re);
@@ -422,6 +419,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.26  2004/03/07 21:10:55  mch
+ Changed apache XMLUtils to implementation-independent DomHelper
+
  Revision 1.25  2004/03/06 19:34:21  mch
  Merged in mostly support code (eg web query form) changes
 
@@ -452,6 +452,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.26  2004/03/07 21:10:55  mch
+Changed apache XMLUtils to implementation-independent DomHelper
+
 Revision 1.25  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 

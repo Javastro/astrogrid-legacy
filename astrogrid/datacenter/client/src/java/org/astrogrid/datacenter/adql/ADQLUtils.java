@@ -1,4 +1,4 @@
-/*$Id: ADQLUtils.java,v 1.3 2004/01/13 00:32:47 nw Exp $
+/*$Id: ADQLUtils.java,v 1.4 2004/03/07 21:09:47 mch Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,11 @@
 package org.astrogrid.datacenter.adql;
 import java.io.IOException;
 import java.io.StringWriter;
-
-import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.ApproxNum;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.adql.generated.SelectChoice;
 import org.astrogrid.datacenter.adql.generated.SelectionAll;
+import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -78,12 +77,12 @@ public class ADQLUtils {
  
     public static Document marshallSelect(Select s) throws ADQLException{
         try {
-            Document doc = XMLUtils.newDocument();
-            Marshaller.marshal(s, doc);                        
-            return doc; 
+            Document doc = DomHelper.newDocument();
+            Marshaller.marshal(s, doc);
+            return doc;
         } catch (Exception e) {
             throw new ADQLException("Failed to marshall select",e);
-        }        
+        }
     }
    
     public static ApproxNum mkApproxNum(double num) {
@@ -92,7 +91,7 @@ public class ADQLUtils {
        return an;
     }
     
-    /** convert a select object to an Element that can be used as the query body in a 
+    /** convert a select object to an Element that can be used as the query body in a
      * {@link org.astrogrid.datacenter.delegate.FullSearcher}
      * @param s
      * @return
@@ -100,12 +99,12 @@ public class ADQLUtils {
      */
    public static Element toQueryBody(Select s) throws ADQLException{
        try {
-           Document doc = XMLUtils.newDocument();
-           Marshaller.marshal(s, doc);            
+           Document doc = DomHelper.newDocument();
+           Marshaller.marshal(s, doc);
            return doc.getDocumentElement();
        } catch (Exception e) {
            throw new ADQLException("Failed to marshall select",e);
-       }        
+       }
    }
     
     
@@ -114,6 +113,9 @@ public class ADQLUtils {
 
 /*
 $Log: ADQLUtils.java,v $
+Revision 1.4  2004/03/07 21:09:47  mch
+Changed apache XMLUtils to implementation-independent DomHelper
+
 Revision 1.3  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through
