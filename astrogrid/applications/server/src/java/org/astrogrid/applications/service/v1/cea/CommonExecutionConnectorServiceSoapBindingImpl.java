@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.9 2004/09/20 16:41:48 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.10 2004/10/29 15:07:21 nw Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -106,8 +106,11 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
        try {
            return cec.execute(arg0);
        } catch (Exception e) {
+        logger.error("execute("+ arg0 + ")", e);
+
            throw CeaFault.makeFault(e);
        } catch (Throwable e) {
+        logger.error("execute("+ arg0 +")", e);
            throw CeaFault.makeFault(new Exception("a throwable occurred in execute",e)); 
        }
    }
@@ -119,8 +122,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
       try {
             return cec.abort(executionId);
       } catch (Exception e) {
+        logger.error("abort(" + executionId + ")", e);
           throw CeaFault.makeFault(e);
       } catch (Throwable t) {
+        logger.error("abort(" + executionId+")", t);
           throw CeaFault.makeFault(new Exception("a throwable occurred in abort",t));
    }
    }
@@ -136,10 +141,12 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
             return  Castor2Axis.convert(mess);
          }
          catch (Exception e) {
+            logger.error("queryExecutionStatus(" + executionId+")", e);
             throw CeaFault.makeFault(e);
          }
          catch(Throwable e)
          {
+            logger.error("queryExecutionStatus(" + executionId+")", e);
             throw CeaFault.makeFault(new Exception("an Throwable occurred in query status", e));
          }
    }
@@ -151,8 +158,10 @@ public boolean registerResultsListener(String arg0, URI arg1) throws RemoteExcep
     try {
         return query.registerResultsListener(arg0,new java.net.URI(arg1.toString()));
     } catch (Exception e) {
+        logger.error("registerResultsListener(" + arg0 + ", " + arg1+")", e);
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
+        logger.error("registerResultsListener(" + arg0 + ", " + arg1 +")", e);
         throw CeaFault.makeFault(new Exception("a throwable occurred in registerResultsListener",e));
     }
 }
@@ -164,8 +173,11 @@ public boolean registerProgressListener(String arg0, URI arg1) throws RemoteExce
     try {
         return query.registerProgressListener(arg0,new java.net.URI(arg1.toString()));
     } catch (Exception e) {
+        logger.error("registerProgressListener(" + arg0 + ", " + arg1+")", e);
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
+        logger.error("registerProgressListener(" + arg0 + ", " + arg1 +")", e);
+
         throw CeaFault.makeFault(new Exception("a throwable occurred in registerProgressListener",e));
     }
 }
@@ -177,14 +189,13 @@ public ExecutionSummaryType getExecutionSummary(String arg0) throws RemoteExcept
     try {
         return Castor2Axis.convert(query.getSummary(arg0));
     } catch (Exception e) {
+        logger.error("getExecutionSummary("+arg0+")", e);
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
+        logger.error("getExecutionSummary("+arg0+")", e);
         throw CeaFault.makeFault(new Exception("a throwable occurred in getExecutionSummary",e));
     }
 }
-
-
-
 /**
  * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#getResults(java.lang.String)
  */
@@ -192,8 +203,11 @@ public ResultListType getResults(String arg0) throws RemoteException, CeaFault {
     try {
         return Castor2Axis.convert(query.getResults(arg0));
     } catch (Exception e) {
+        logger.error("getResults("+arg0+")", e);
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
+        logger.error("getResults("+arg0+")", e);
+
         throw CeaFault.makeFault(new Exception("a throwable occurred in getResults",e));
     }
 }
