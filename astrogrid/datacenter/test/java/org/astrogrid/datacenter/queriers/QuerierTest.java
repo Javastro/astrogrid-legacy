@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.2 2003/09/04 09:24:32 nw Exp $
+ * $Id: QuerierTest.java,v 1.3 2003/09/05 13:44:45 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,28 +38,17 @@ public class QuerierTest extends TestCase
       //and results should produce a valid xml document: this will parse it in
       //into a DOM tree
       Document doc = results.toVotable(null);
-      if ( doc == null)
-      {
-         throw new RuntimeException("results.toVotable() returns null");
-      }
+      assertNotNull("results.toVotable() returns null",doc);
 
       //this gives a visual test but isn't much use for automated testers
 //      System.out.println("...results:");
 //      XMLUtils.DocumentToStream(doc, System.out);
 
       //does a quick check for certain elements
-      if (doc.getElementsByTagName("TR").getLength()<5)
-      {
-         throw new RuntimeException("there are less than 5 rows in the VOtable, there should be more");
-      }
+      assertTrue(doc.getElementsByTagName("TR").getLength() > 5);
 
       //does a quick check for certain elements
-      if (doc.getElementsByTagName("FIELD").getLength()<5)
-      {
-         throw new RuntimeException("there are less than 5 'FIELD' tags in the VOtable, there should be more");
-      }
-
-      System.out.println("...dummy querier test finished");
+       assertTrue("there are less than 5 'FIELD' tags in the VOtable, there should be more",doc.getElementsByTagName("FIELD").getLength() > 5);
 
    }
 
