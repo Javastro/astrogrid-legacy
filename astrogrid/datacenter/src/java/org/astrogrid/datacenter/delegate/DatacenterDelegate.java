@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.2 2003/08/25 22:52:11 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.3 2003/08/27 22:40:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -12,7 +12,6 @@ import java.rmi.RemoteException;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentServiceLocator;
 import org.astrogrid.datacenter.delegate.datasetAgent.DatasetAgentSoapBindingStub;
 import org.w3c.dom.Element;
@@ -127,6 +126,9 @@ public class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.3  2003/08/27 22:40:55  mch
+removed unnecessary import (maven report...!)
+
 Revision 1.2  2003/08/25 22:52:11  mch
 Combined code from DatasetAgentDelegate with DatacenterDelegate
 
