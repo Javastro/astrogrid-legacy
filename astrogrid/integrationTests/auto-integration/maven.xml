@@ -210,12 +210,14 @@
         </pathconvert>
             <util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
           <j:catch>
-            <echo>The regentry: ${entry}</echo>
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
             <ant target="register" antfile="register.xml" >
         `       <property name="registry.entry" value="${temporary.dir}/registry-entries/ARegistry.xml"/>
             </ant>
           </j:catch>            
+		<waitfor maxwait="10" maxwaitunit="second" checkevery="500">
+        	<http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
+		</waitfor>
             
         <j:forEach var="entry" items="${entryList}">
           <j:catch>
