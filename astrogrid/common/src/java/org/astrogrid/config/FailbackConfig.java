@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.16 2004/03/09 16:32:27 mch Exp $
+ * $Id: FailbackConfig.java,v 1.17 2004/03/09 16:34:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -285,10 +285,16 @@ public class FailbackConfig extends Config {
     * it if found.  Returns false if not found.
     * This could probably make use of Config.resolveFile()
     */
-   private boolean lookForConfigFile(String filename)  {
+   private boolean lookForConfigFile(String givenFilename)  {
 
       //replace ${stuff} with sys.env values for stuff
-      filename = resolveEnvironmentVariables(filename);
+      String filename = resolveEnvironmentVariables(givenFilename);
+      
+      //for debugging
+      if (!filename.equals(givenFilename)) {
+         givenFilename = givenFilename + " => "+filename;
+      }
+      
       
       //if it's absolute, look absolutely
       File f = new File(filename);
@@ -303,7 +309,7 @@ public class FailbackConfig extends Config {
       //look for file in classpath.
       //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
       //NB this works via URL as we don't expect to get config files from inside jars
-      log.debug("Looking for '"+filename+"' on classpath");
+      log.debug("Looking for "+givenFilename+" on classpath");
 //      URL configUrl = ClassLoader.getSystemResource(filename);
       URL configUrl = this.getClass().getClassLoader().getResource(filename);
       if (configUrl != null) {
@@ -321,7 +327,7 @@ public class FailbackConfig extends Config {
       
       
       //look for it in the working directory
-      log.debug("Looking for '"+filename+"' in working directory");
+      log.debug("Looking for "+givenFilename+" in working directory");
       if (f.exists()) {
          loadFromFile(f);
          return true;
@@ -547,6 +553,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.17  2004/03/09 16:34:51  mch
+Added sysenv resolver & better error reporting
+
 Revision 1.16  2004/03/09 16:32:27  mch
 Added sysenv resolver
 
@@ -608,6 +617,7 @@ Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
  */
+
 
 
 
