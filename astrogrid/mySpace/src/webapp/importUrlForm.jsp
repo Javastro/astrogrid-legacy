@@ -1,4 +1,5 @@
-<%@ page import="org.astrogrid.mySpace.delegate.*,
+<%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.store.delegate.myspaceItn05.*,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -21,30 +22,15 @@ file in a text box, below.
 <form action="importUrl.jsp" method="POST">
 <table>
   <tr>
-    <td>User Identifier:</td>
-    <td><input name="userId" type="text" value="clq" size=20></td>
-  </tr>
-
-  <tr>
-    <td>Community Identifier:</td>
-    <td><input name="communityId" type="text" value="lei" size=20></td>
-  </tr>
-
-  <tr>
-    <td>Credential:</td>
-    <td><input name="credential" type="text" value="any" size=20></td>
-  </tr>
-
-  <tr>
     <td>File:</td>
     <td><input name="file" type="text"
-      value="/clq@lei/serv1/workflow/webfile" size=40></td>
+      value="/clq/workflow/webfile" size=40></td>
   </tr>
 
   <tr>
     <td>URL:</td>
     <td><input name="url" type="text"
-      value="http://www.roe.ac.uk/acdwww/frequent.html" 
+      value="http://www.google.com" 
       size=60></td>
   </tr>
 
@@ -59,7 +45,7 @@ file in a text box, below.
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
     request.getServerPort(), request.getContextPath() +
-    "/services/MySpaceManager");
+    "/services/Manager");
 %>
 
 <p>
@@ -75,8 +61,8 @@ Return to the <a href="functions.html">MySpace Service Test</a> page.
 <h2>Notes</h2>
 
 <p>
-You should supply the full MySpace name of the destination file or container,
-with a complete container path.
+You should supply the full MySpace name of the destination file, with a
+complete container path.
 
 </p>
 

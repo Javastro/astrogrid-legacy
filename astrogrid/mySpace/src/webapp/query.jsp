@@ -7,26 +7,17 @@
     session="false" %>
 
 <html>
-<head><title>Import URL</title>
+<head><title>Query (Full Form)</title>
 </head>
 
 <body>
-<h1>Import URL</h1>
+<h1>Query (Full Form)</h1>
 
 <%
-  String[] paramNames={"file", "url"};
-  String file = request.getParameter("file");
-  String urlString = request.getParameter("url");
-
-  String query = "";
-  int sep = file.indexOf("/", 1);
-  if (sep > -1)
-  {  query = file.substring(0, sep) + "*";
-  }
-  else
-  {  query = "/*";
-  }
+  String[] paramNames={"query"};
+  String query = request.getParameter("query");
 %>
+
 
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
@@ -38,16 +29,21 @@
 The end point for this service is: <%=serviceURL%>
 </p>
 
+<p>
+The following entries satisfied query <code><%=query%></code>:
+</p>
+
+<pre>
 <%
   User operator = new User();
   MySpaceIt05Delegate manager = new MySpaceIt05Delegate(operator,
-    serviceURL.toString());
-
-  URL url = new URL(urlString);
+     serviceURL.toString());
 
   manager.setThrow(false);
-  manager.putUrl(url, file, false);
+  EntryNode fileRoot = (EntryNode)manager.getFiles(query);
+  out.print(fileRoot.toString() );
 %>
+</pre>
 
 <p>
 The Manager returned the following messages:
@@ -70,18 +66,6 @@ The Manager returned the following messages:
   {  out.print("No messages returned.");
   }
 
-%>
-</pre>
-
-<p>
-The new state of account <%=query%> is:
-</p>
-
-<pre>
-<%
-  EntryNode fileRoot = (EntryNode)manager.getFiles(query);
-
-  out.print(fileRoot.toString() );
 %>
 </pre>
 

@@ -1,5 +1,7 @@
-<%@ page import="org.astrogrid.mySpace.delegate.*,
-                 org.astrogrid.mySpace.delegate.helper.Assist,
+<%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.store.delegate.myspaceItn05.*,
+                 org.astrogrid.community.User,
+                 org.astrogrid.store.Agsl,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -13,21 +15,24 @@
 <h1>Copy File</h1>
 
 <%
-  String[] paramNames={"userId","communityId","credential","oldfile",
-    "newfile"};
-  String userId = request.getParameter("userId");
-  String communityId = request.getParameter("communityId");
-  String credential = request.getParameter("credential");
+  String[] paramNames={"oldfile", "newfile"};
   String oldFile = request.getParameter("oldfile");
   String newFile = request.getParameter("newfile");
 
-  String query = "/" + userId + "@" + communityId + "/*";
+  String query = "";
+  int sep = newFile.indexOf("/", 1);
+  if (sep > -1)
+  {  query = newFile.substring(0, sep) + "*";
+  }
+  else
+  {  query = "/*";
+  }
 %>
 
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
     request.getServerPort(), request.getContextPath() +
-    "/services/MySpaceManager");
+    "/services/Manager");
 %>
 
 <p>
@@ -35,22 +40,37 @@ The end point for this service is: <%=serviceURL%>
 </p>
 
 <%
-  MySpaceClient client = MySpaceDelegateFactory.createDelegate(
+  User operator = new User();
+  MySpaceIt05Delegate manager = new MySpaceIt05Delegate(operator,
     serviceURL.toString());
 
-  String result = client.copyDataHolding(userId, communityId,
-    credential, oldFile, newFile);
+  Agsl someAgsl = new Agsl("http://www.google.com", newFile);
+
+  manager.setThrow(false);
+  manager.copy(oldFile, someAgsl);
 %>
 
 <p>
-The result from copyFile was:
+The Manager returned the following messages:
 </p>
 
 <pre>
 <%
-  Assist assistant = new Assist();
-  String displayString = assistant.formatTree(result);
-  out.print(displayString);
+  ArrayList statusList = manager.getStatusList();
+
+  int numMessages = statusList.size();
+
+  if (numMessages > 0)
+  {  for(int loop=0; loop<numMessages; loop++)
+     {  StatusMessage message =
+          (StatusMessage)statusList.get(loop);
+        out.println(message.toString() );
+     }
+  }
+  else
+  {  out.print("No messages returned.");
+  }
+
 %>
 </pre>
 
@@ -60,26 +80,9 @@ The new state of account <%=query%> is:
 
 <pre>
 <%
-  Vector results = client.listDataHoldingsGen(userId, communityId,
-    credential, query);
+  EntryNode fileRoot = (EntryNode)manager.getFiles(query);
 
-  int resultsSize = results.size();
-
-  if (resultsSize > 0)
-  {  for (int i=0; i<resultsSize; i++)
-     {  String xmlString = (String)results.elementAt(i);
-        Vector summaryList = assistant.getDataItemSummary(xmlString);
-
-        int numEntries = summaryList.size();
-
-        for (int loop = 0; loop < numEntries; loop++)
-        {  out.print((String)summaryList.elementAt(loop) + "\n");
-        }
-     }
-  }
-  else
-  {  out.print("No entries satisfied the query." + "<BR>");
-  }
+  out.print(fileRoot.toString() );
 %>
 </pre>
 

@@ -1,6 +1,6 @@
 <%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.store.delegate.myspaceItn05.*,
                  org.astrogrid.community.User,
-                 org.astrogrid.store.*,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -14,11 +14,19 @@
 <h1>Import Contents</h1>
 
 <%
-  User user = new User(request.getParameter("userId"), request.getParameter("communityId"), "dummyToken");
+  String[] paramNames={"file", "contents"};
+
   String file = request.getParameter("file");
   String contents = request.getParameter("contents");
 
-  String query = "/" + user.getUserId() + "/*";
+  String query = "";
+  int sep = file.indexOf("/", 1);
+  if (sep > -1)
+  {  query = file.substring(0, sep) + "*";
+  }
+  else
+  {  query = "/*";
+  }
 %>
 
 
@@ -33,11 +41,37 @@ The end point for this service is: <%=serviceURL%>
 </p>
 
 <%
-  StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL.toString()));
+  User operator = new User();
+  MySpaceIt05Delegate manager = new MySpaceIt05Delegate(operator,
+    serviceURL.toString());
 
-  client.putString(contents, file, false);
+  manager.setThrow(false);
+  manager.putString(contents, file, false);
+%>
+
+<p>
+The Manager returned the following messages:
+</p>
+
+<pre>
+<%
+  ArrayList statusList = manager.getStatusList();
+
+  int numMessages = statusList.size();
+
+  if (numMessages > 0)
+  {  for(int loop=0; loop<numMessages; loop++)
+     {  StatusMessage message =
+          (StatusMessage)statusList.get(loop);
+        out.println(message.toString() );
+     }
+  }
+  else
+  {  out.print("No messages returned.");
+  }
 
 %>
+</pre>
 
 <p>
 The new state of account <%=query%> is:
@@ -45,20 +79,9 @@ The new state of account <%=query%> is:
 
 <pre>
 <%
-  StoreFile[] files = client.listFiles(query);
+  EntryNode fileRoot = (EntryNode)manager.getFiles(query);
 
-  int resultsSize = files.length;
-
-  if (resultsSize > 0)
-  {  for (int i=0; i<resultsSize; i++)
-     {
-           out.print( files[i].toString() + "\n");
-     }
-  }
-  else
-  {  out.print("No entries satisfied the query." + "<BR>");
-  }
-
+  out.print(fileRoot.toString() );
 %>
 </pre>
 

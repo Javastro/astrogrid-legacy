@@ -7,28 +7,26 @@
 
 <html>
 <head>
-<title>Export Contents</title>
+<title>Create Account</title>
 </head>
 
 <body>
-<h1>Export Contents</h1>
+<h1>Create Account</h1>
 
 <p>
-Use this page to export the contents of a MySpace file.  The contents
-of the file are listed in the page of results.
+Use this page to add a new account to the MySpace service.
 </p>
 
 
-<form action="exportContents.jsp" method="POST">
+<form action="createAccount.jsp" method="POST">
 <table>
   <tr>
-    <td>File:</td>
-    <td><input name="file" type="text"
-      value="/clq/workflow/newfile" size=40></td>
+    <td>User Identifier:</td>
+    <td><input name="accountId" type="text" value="clq" size=20></td>
   </tr>
 
   <tr>
-    <td><INPUT TYPE="submit" NAME="button" VALUE="exportContents"></td>
+    <td><INPUT TYPE="submit" NAME="button" VALUE="createAccount"></td>
     <td></td>
   </tr>
 
@@ -54,8 +52,9 @@ Return to the <a href="functions.html">MySpace Service Test</a> page.
 <h2>Notes</h2>
 
 <p>
-You should supply the full MySpace name of the file, with a complete
-container path.
+This function will fail if the account specified already exists.  If you
+get an unexpected failure use the query function to check whether the 
+account specified already exists.
 </p>
 
 <p>
@@ -64,3 +63,4 @@ Return to the <a href="functions.html">MySpace Service Test</a> page.
 
 </body>
 </html>
+

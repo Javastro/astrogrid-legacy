@@ -1,4 +1,5 @@
-<%@ page import="org.astrogrid.mySpace.delegate.*,
+<%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.store.delegate.myspaceItn05.*,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -19,25 +20,11 @@ Use this page to create a new container.
 
 <form action="createContainer.jsp" method="POST">
 <table>
-  <tr>
-    <td>User Identifier:</td>
-    <td><input name="userId" type="text" value="clq" size=20></td>
-  </tr>
-
-  <tr>
-    <td>Community Identifier:</td>
-    <td><input name="communityId" type="text" value="lei" size=20></td>
-  </tr>
-
-  <tr>
-    <td>Credential:</td>
-    <td><input name="credential" type="text" value="any" size=20></td>
-  </tr>
 
   <tr>
     <td>Container:</td>
     <td><input name="container" type="text"
-      value="/clq@lei/serv1/newcontainer" size=30></td>
+      value="/clq/newcontainer" size=30></td>
   </tr>
 
   <tr>
@@ -51,7 +38,7 @@ Use this page to create a new container.
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
     request.getServerPort(), request.getContextPath() +
-    "/services/MySpaceManager");
+    "/services/Manager");
 %>
 
 <p>
@@ -73,15 +60,14 @@ container.
 
 <p>
 MySpace containers have a hierarchical structure analogous to Unix
-directories.  The top levels of your container hierarchy correspond
-to your MySpace identifier and the servers where you have file space.
-Usually you will be unable to create or delete these containers.  However,
-you can create (and delete) containers further down the hierarchy as you
-wish.  A few containers are created automatically when your MySpace
-account is created (eg. <code>query</code> and <code>workflow</code>).
-Other components of the AstroGrid system use these containers and it is
-unwise to delete them.  Usually you will be unable to create or delete
-containers in another user's MySpace.
+directories.  The top level of your container hierarchy corresponds
+to your MySpace account.  Usually you will be unable to create or delete 
+top level containers.  However, you can create (and delete) containers
+further down the hierarchy as you wish.  A few containers are created 
+automatically when your MySpace account is created (eg. <code>query</code> 
+and <code>workflow</code>).  Other components of the AstroGrid system use 
+these containers and it is unwise to delete them.  Usually you will be
+ unable to create or delete containers in another user's MySpace.
 </p>
 
 <p>

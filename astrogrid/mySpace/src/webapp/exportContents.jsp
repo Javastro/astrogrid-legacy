@@ -1,5 +1,6 @@
-<%@ page import="org.astrogrid.mySpace.delegate.*,
-                 org.astrogrid.mySpace.delegate.helper.Assist,
+<%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.store.delegate.myspaceItn05.*,
+                 org.astrogrid.community.User,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -13,17 +14,23 @@
 <h1>Export Contents</h1>
 
 <%
-  String[] paramNames={"userId","communityId","credential","file"};
-  String userId = request.getParameter("userId");
-  String communityId = request.getParameter("communityId");
-  String credential = request.getParameter("credential");
+  String[] paramNames={"file"};
   String file = request.getParameter("file");
+
+  String query = "";
+  int sep = file.indexOf("/", 1);
+  if (sep > -1)
+  {  query = file.substring(0, sep) + "*";
+  }
+  else
+  {  query = "/*";
+  }
 %>
 
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
     request.getServerPort(), request.getContextPath() +
-    "/services/MySpaceManager");
+    "/services/Manager");
 %>
 
 <p>
@@ -31,11 +38,12 @@ The end point for this service is: <%=serviceURL%>
 </p>
 
 <%
-  MySpaceClient client = MySpaceDelegateFactory.createDelegate(
+  User operator = new User();
+  MySpaceIt05Delegate manager = new MySpaceIt05Delegate(operator,
     serviceURL.toString());
 
-  String result = client.getDataHolding(userId, communityId,
-    credential, file);
+  manager.setThrow(false);
+  String contents = manager.getString(file);
 %>
 
 <p>
@@ -44,7 +52,32 @@ The contents of file <code><%=file%></code> are:
 
 <pre>
 <%
-  out.print(result);
+  out.println(contents);
+%>
+</pre>
+
+
+<p>
+The Manager returned the following messages:
+</p>
+
+<pre>
+<%
+  ArrayList statusList = manager.getStatusList();
+
+  int numMessages = statusList.size();
+
+  if (numMessages > 0)
+  {  for(int loop=0; loop<numMessages; loop++)
+     {  StatusMessage message =
+          (StatusMessage)statusList.get(loop);
+        out.println(message.toString() );
+     }
+  }
+  else
+  {  out.print("No messages returned.");
+  }
+
 %>
 </pre>
 
