@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,12 @@
 **/
 package org.astrogrid.datacenter;
 
-import java.io.*;
-
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.rpc.ServiceException;
 import org.apache.axis.client.Call;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /** Abstract base class that captures commonality between top level unit test and installation test.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -97,8 +92,11 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 18:47:05  mch
+More compile fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

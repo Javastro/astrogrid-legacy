@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,11 +13,11 @@ package org.astrogrid.datacenter.queriers.sql.postgres;
 import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.sql.SqlMaker;
 import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslatorTest;
-import org.astrogrid.datacenter.queriers.sql.postgres.PostgresSqlMaker;
-import org.astrogrid.datacenter.query.adql.AdqlQueryMaker;
-import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.dataservice.queriers.sql.SqlMaker;
+import org.astrogrid.dataservice.queriers.sql.postgres.PostgresSqlMaker;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -104,8 +104,11 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 18:47:05  mch
+More compile fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,17 +18,20 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.out.tables.VoTableWriter;
-import org.astrogrid.datacenter.queriers.sql.JdbcConnections;
-import org.astrogrid.datacenter.queriers.sql.RdbmsResourceGenerator;
-import org.astrogrid.datacenter.queriers.test.PrecannedResults;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.out.tables.VoTableWriter;
+import org.astrogrid.dataservice.queriers.Querier;
+import org.astrogrid.dataservice.queriers.QuerierManager;
+import org.astrogrid.dataservice.queriers.TableResults;
+import org.astrogrid.dataservice.queriers.sql.JdbcConnections;
+import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
+import org.astrogrid.dataservice.queriers.test.PrecannedResults;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.io.NullOutputStream;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.slinger.io.NullOutputStream;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -75,7 +78,7 @@ public class SampleStarsPluginTest extends TestCase {
    /** Test that we can reach the dummy catalogue through the dummy plugin */
    public void testDummyPlugin() throws IOException, SQLException, SAXException, ParserConfigurationException {
       
-      QuerierManager manager = new QuerierManager("DummyTest");
+      QuerierManager manager = QuerierManager.getManager("DummyTest");
 
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);

@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManagerTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: DatacenterCEAComponentManagerTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,8 @@ package org.astrogrid.datacenter.service.v06;
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.JavaClassCEAComponentManagerTest;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.service.cea.DatacenterCEAComponentManager;
 
 /** Test that validates the datacenter component manager - checks that all required components are registered, etc.
  * extends existing test - as requirements are the same for any implementation of the component manager.
@@ -45,8 +46,11 @@ public class DatacenterCEAComponentManagerTest extends JavaClassCEAComponentMana
 
 /*
 $Log: DatacenterCEAComponentManagerTest.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 18:47:05  mch
+More compile fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

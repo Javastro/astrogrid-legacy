@@ -1,4 +1,4 @@
-/*$Id: KeywordMakerTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: KeywordMakerTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.util.Hashtable;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.impl.cds.KeywordMaker;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.query.sql.SqlParser;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.keyword.KeywordMaker;
+import org.astrogrid.query.sql.SqlParser;
 import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Keyword maker from various queries
@@ -92,8 +92,11 @@ public class KeywordMakerTest extends OptionalTestCase
 
 /*
  $Log: KeywordMakerTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

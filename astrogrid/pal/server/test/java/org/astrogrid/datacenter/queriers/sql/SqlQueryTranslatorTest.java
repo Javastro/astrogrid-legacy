@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,12 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.metadata.queryable.ConeConfigQueryableResource;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.adql.AdqlQueryMaker;
+import org.astrogrid.dataservice.metadata.queryable.ConeConfigQueryableResource;
+import org.astrogrid.dataservice.queriers.sql.SqlMaker;
+import org.astrogrid.dataservice.queriers.sql.StdSqlMaker;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.adql.AdqlQueryMaker;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 28-Nov-2003
@@ -101,8 +103,11 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 18:47:05  mch
+More compile fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: FitsTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,11 +11,8 @@ package org.astrogrid.datacenter.fits;
 
 import java.io.IOException;
 import java.net.URL;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
-import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 import org.astrogrid.test.OptionalTestCase;
 
 /** Test the Fits processing classes
@@ -23,19 +20,6 @@ import org.astrogrid.test.OptionalTestCase;
 public class FitsTest extends OptionalTestCase
 {
 
-   /** Tests reading the header = ie loading and parsing keywords, etc */
-   public void testHeader() throws IOException
-   {
-      URL fits1 = getClass().getResource("examples/tst0001.fits");
-      
-      assertNotNull(fits1);
-      
-      FitsReader reader = new FitsStreamReader(fits1);
-      assertNotNull(reader);
-      FitsHeader header = new FitsHeader();
-      reader.readHeaderKeywords(header, null);
-      assertNotNull(header.get("END"));
-   }
 
    /** Returns a list of the test URLS
     * NB These are all the same files at the moment
@@ -73,8 +57,11 @@ public class FitsTest extends OptionalTestCase
 
 /*
  $Log: FitsTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

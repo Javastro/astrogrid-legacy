@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: DataServiceTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,18 +13,17 @@ import java.io.StringWriter;
 import java.security.Principal;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
-import org.astrogrid.datacenter.queriers.status.QuerierAborted;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.adql.AdqlQueryMaker;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.dataservice.queriers.status.QuerierAborted;
+import org.astrogrid.dataservice.queriers.status.QuerierStatus;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.DataServiceStatus;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.status.ServerStatusHtmlRenderer;
 import org.astrogrid.status.TaskStatus;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -106,7 +105,7 @@ public class DataServiceTest extends ServerTestCase {
       TaskStatus[] tasks = status.getTasks();
       assertTrue(tasks.length>1);
       
-      new ServerStatusHtmlRenderer().writeHtmlStatus(new StringWriter(), status.getServiceStatus(), null);
+//      new ServerStatusHtmlRenderer().writeHtmlStatus(new StringWriter(), status.getServiceStatus(), null);
    }
 
    /** Tests the count return */
@@ -159,8 +158,11 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 18:47:05  mch
+More compile fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: MetadataTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,10 +17,14 @@ import java.util.Locale;
 import junit.framework.TestCase;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.DsaDomHelper;
-import org.astrogrid.datacenter.queriers.sql.RdbmsResourceGenerator;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.dataservice.metadata.CeaResourceServer;
+import org.astrogrid.dataservice.metadata.FileResourcePlugin;
+import org.astrogrid.dataservice.metadata.UrlResourcePlugin;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.metadata.VoResourcePlugin;
+import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.xml.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -38,19 +42,19 @@ public class MetadataTest extends TestCase {
    /** Checks that the identifiers are there and valid */
    public void assertIdentifiersOK(Document candidate) {
       
-      Element[] resources = DsaDomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
+      Element[] resources = DomHelper.getChildrenByTagName(candidate.getDocumentElement(), "Resource");
       for (int r = 0; r < resources.length; r++) {
          String xsitype = resources[r].getAttribute("xsi:type");
-         Element[] ids = DsaDomHelper.getChildrenByTagName(resources[r], "Identifier");
+         Element[] ids = DomHelper.getChildrenByTagName(resources[r], "Identifier");
          assertTrue("Should only be one identifier tag", ids.length==1);
 
          for (int i = 0; i < ids.length; i++) {
             Element id = ids[i];
-            String authId = DomHelper.getValue(id, "AuthorityID");
+            String authId = DomHelper.getValueOf(id, "AuthorityID");
             String idConfig = SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY);
             assertEquals("Authority ID incorrect in Resource type "+xsitype, idConfig, authId);
 
-            String resKey = DomHelper.getValue(id, "ResourceKey");
+            String resKey = DomHelper.getValueOf(id, "ResourceKey");
             String resConfig = SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY);
             if (!xsitype.equals("AuthorityType")) {
                assertTrue("Resource Key is "+resKey+", should start with "+resConfig+" in Resource type "+xsitype, resKey.startsWith(resConfig));
@@ -165,8 +169,11 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

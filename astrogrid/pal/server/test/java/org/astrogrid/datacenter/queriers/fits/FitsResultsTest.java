@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -15,7 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.queriers.UrlListResults;
+import org.astrogrid.dataservice.queriers.UrlListResults;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
@@ -76,8 +76,11 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

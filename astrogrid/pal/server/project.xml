@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
     <extend>${basedir}/../../maven-base/project.xml</extend>
-        <id>astrogrid-pal-skyserver</id>
+        <id>astrogrid-pal-server</id>
         <name>Astrogrid Server Library</name>
   <currentVersion>${astrogrid.pal.version}</currentVersion>
   <description>A set of classes to manage queries made through plugins on data</description>

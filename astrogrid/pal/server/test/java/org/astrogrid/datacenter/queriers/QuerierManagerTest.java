@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,11 +9,12 @@
  *
  **/
 package org.astrogrid.datacenter.queriers;
-import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.dataservice.queriers.Querier;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
 
 /**
@@ -66,8 +67,11 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

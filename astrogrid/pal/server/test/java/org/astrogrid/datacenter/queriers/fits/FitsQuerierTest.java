@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -17,13 +17,15 @@ import java.net.URISyntaxException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.account.LoginAccount;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.fits.FitsTest;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.account.LoginAccount;
+import org.astrogrid.dataservice.queriers.Querier;
+import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
+import org.astrogrid.dataservice.queriers.fits.FitsQuerierPlugin;
+import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetMaker;
 
@@ -90,8 +92,11 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: QuerierTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,16 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.status.QuerierComplete;
-import org.astrogrid.datacenter.queriers.status.QuerierError;
-import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.dataservice.queriers.Querier;
+import org.astrogrid.dataservice.queriers.QuerierListener;
+import org.astrogrid.dataservice.queriers.status.QuerierComplete;
+import org.astrogrid.dataservice.queriers.status.QuerierError;
+import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
+import org.astrogrid.dataservice.queriers.status.QuerierQuerying;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.query.QueryState;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;

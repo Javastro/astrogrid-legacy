@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,9 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
-import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.cea.CeaQueuedExecutor;
+import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescriptionLibrary;
 
 /** Test the application description library - not much to do here..
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Jul-2004
@@ -68,8 +70,11 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 }
 /*
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/02/28 18:47:05  mch
+More compile fixes
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:25  mch
 Initial checkin

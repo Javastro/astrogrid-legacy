@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,17 +16,19 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.account.LoginAccount;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
-import org.astrogrid.datacenter.query.adql.AdqlQueryMaker;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.SimpleQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.account.LoginAccount;
+import org.astrogrid.dataservice.metadata.VoDescriptionServer;
+import org.astrogrid.dataservice.queriers.Querier;
+import org.astrogrid.dataservice.queriers.QuerierManager;
+import org.astrogrid.dataservice.queriers.sql.JdbcPlugin;
+import org.astrogrid.dataservice.queriers.sql.RdbmsResourceGenerator;
+import org.astrogrid.dataservice.queriers.test.SampleStarsPlugin;
+import org.astrogrid.query.Query;
+import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.adql.AdqlQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -216,8 +218,11 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin

@@ -1,6 +1,6 @@
 
 /*
- * $Id: DatacenterApplicationTest.java,v 1.1 2005/02/17 18:37:35 mch Exp $
+ * $Id: DatacenterApplicationTest.java,v 1.2 2005/02/28 18:47:05 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,11 +20,13 @@ import java.io.StringWriter;
 import junit.framework.Assert;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.account.LoginAccount;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.observer.AbstractProgressListener;
@@ -33,16 +35,16 @@ import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.queriers.test.PrecannedPlugin;
-import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
+import org.astrogrid.dataservice.queriers.status.QuerierStatus;
+import org.astrogrid.dataservice.queriers.test.PrecannedPlugin;
+import org.astrogrid.dataservice.service.DataServer;
+import org.astrogrid.dataservice.service.cea.DatacenterApplication;
+import org.astrogrid.dataservice.service.cea.DatacenterApplicationDescription;
 import org.astrogrid.io.Piper;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
 
 /** Test whatever we can of the application object.
  * difficult one to test - as its a boundary class between cea and datacenter - and each takes different approaches to interfaces, mocking, etc.
@@ -252,8 +254,11 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /*
  $Log: DatacenterApplicationTest.java,v $
- Revision 1.1  2005/02/17 18:37:35  mch
- *** empty log message ***
+ Revision 1.2  2005/02/28 18:47:05  mch
+ More compile fixes
+
+ Revision 1.1.1.1  2005/02/17 18:37:35  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:25  mch
  Initial checkin
