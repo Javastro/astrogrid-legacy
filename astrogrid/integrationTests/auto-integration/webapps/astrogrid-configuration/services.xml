@@ -14,7 +14,7 @@
         <description>cea http provider</description>
 </service>
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/itn06/CommonExecutionConnectorService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
         <description>cea datacenter provider</description>
 </service>
 <service type="jobcontrol">
