@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.55 2004/03/15 01:29:29 nw Exp $ -->
+<!-- $Id: project.xml,v 1.56 2004/03/16 01:22:27 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -41,13 +41,13 @@
                         <packages>org.astrogrid.jes.delegate.impl</packages>
                 </packageGroup>
                 <packageGroup>
-                	<title>Service Components Configuration</title>
-                	<packages>org.astrogrid.jes.component*</packages>
+                        <title>Service Components Configuration</title>
+                        <packages>org.astrogrid.jes.component*</packages>
                 </packageGroup>
                 <packageGroup>
                         <title>Job Store</title>
                         <packages>org.astrogrid.jes.job:org.astrogrid.jes.impl.workflow</packages>
-                </packageGroup>               
+                </packageGroup>
                 <packageGroup>
                         <title>Scheduler</title>
                         <packages>org.astrogrid.jes.jobscheduler*</packages>
@@ -110,21 +110,27 @@
         <!-- other things we talk to -->
         <!-- registry -->
         <dependency>
-        	<artifactId>astrogrid-registry-client</artifactId>
-        	<groupId>org.astrogrid</groupId>
-        	<version>SNAPSHOT</version>
-        	<properties>
-        		<war.bundle>true</war.bundle>
-        	</properties>        	
+                <artifactId>astrogrid-registry-client</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
         </dependency>
         <dependency>
-        	<artifactId>astrogrid-registry-common</artifactId>
-        	<groupId>org.astrogrid</groupId>
-        	<version>SNAPSHOT</version>
-        	<properties>
-        		<war.bundle>true</war.bundle>
-        	</properties>
+                <artifactId>astrogrid-registry-common</artifactId>
+                <groupId>org.astrogrid</groupId>
+                <version>SNAPSHOT</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
         </dependency>
+        <!--
+                     <dependency >
+                           <id>wsdl4j</id>
+                           <version>1.4</version>
+                </dependency>
+                -->
         <!-- app controller -->
         <dependency>
             <artifactId>astrogrid-applications-client</artifactId>
@@ -192,13 +198,13 @@
 
         <!-- pico container -->
         <dependency>
-        	<id>picocontainer</id>
-        	<version>1.0-RC-1-SNAPSHOT</version>
-        	<properties>
-        		<war.bundle>true</war.bundle>
-        	</properties>
+                <id>picocontainer</id>
+                <version>1.0-RC-1-SNAPSHOT</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
         </dependency>
-        
+
         <!-- concurrency lib - for thread pools, factories, queues, etc. -->
         <dependency>
                 <id>concurrent</id>
