@@ -21,6 +21,9 @@
 <property name="axis.url"     value="${tomcat.url}/${appint.webapp.name}"/>
 <property name="axis.timeout" value="60"/>
 
+
+<filter token="TESTAPPDIR" value="${basedir}/test/app" />
+
 <!-- this classpath comes from the files that are extracted from the axis distro / could this be shortened with a fileset?-->
     <path id="axis.classpath">
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis.jar"/>
@@ -133,9 +136,14 @@
 </preGoal>
 
 <preGoal name="test:test-resources">
+	<attainGoal name="setup-test"/>
+</preGoal>
+<goal name="setup-test" description="setup the necessary resources for the unit tests">
     <!--set up the test environment - need to grab schema and wsdd from the workflow objects and set up any test properties files-->
     <attainGoal name="grab-schema" />
     <echo message="creating the test properties file"/>
+<copy file="${basedir}/test/config/TestApplicationConfig.xml" todir="${working.dir}" overwrite="true" filtering="true" />
+<chmod perm="+x" file="${basedir}/test/app/testapp.sh"/>
    <!-- need to generate the Test.properties file to put the correct paths in -->
 <copy file="${basedir}/test/java/Test.preprop" tofile="${basedir}/test/java/Test.properties" overwrite="true"/>
 
@@ -143,10 +151,11 @@
 <echo file="${basedir}/test/java/Test.properties" append="true">
 DBCreationScript=${basedir}/src/sql/createcontroldb.sql
 WorkingDirectory=${working.dir}/workdir
-ApplicationConfigFile=file://${basedir}/test/config/TestApplicationConfig.xml
+ApplicationConfigFile=file://${working.dir}/TestApplicationConfig.xml
 RegistryTemplate=file://${basedir}/config/CEARegistryTemplate.xml
 </echo>
-</preGoal>
+	
+</goal>
 
 
 <!-- new goals -mainly for wsdl and stub generation-->

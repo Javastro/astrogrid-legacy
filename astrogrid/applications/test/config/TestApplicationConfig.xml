@@ -99,7 +99,7 @@
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools/testapp.sh</ExecutionPath>
+		<ExecutionPath>@TESTAPPDIR@/testapp.sh</ExecutionPath>
 	</Application>
 	<Application name="testap2">
 		<!-- do not test specific instance app for now -->
@@ -198,7 +198,7 @@
 				</output>
 			</Interface>
 		</Interfaces>
-		<ExecutionPath>/home/applications/tools/testapp.sh</ExecutionPath>
+		<ExecutionPath>@TESTAPPDIR@/testapp.sh</ExecutionPath>
 	</Application>
 	<Application name="testap3">
 		<!--This Application does not exist - this is just here to help with testing the description reading modules-->
