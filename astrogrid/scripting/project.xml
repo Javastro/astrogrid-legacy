@@ -159,7 +159,7 @@
         </dependency>
         <dependency>
            <groupId>org.astrogrid</groupId>
-           <artifactId>astrogrid-applications</artifactId>
+           <artifactId>astrogrid-cea-client</artifactId>
            <version>${pom.currentVersion}</version>
         </dependency>
         <dependency>
