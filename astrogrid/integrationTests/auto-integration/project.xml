@@ -1,4 +1,5 @@
 <project>
+    <extend>../maven-base/project.xml</extend>
     <pomVersion>3</pomVersion>
     <artifactId>auto-integration</artifactId>
     <name>Automated Integration Testing</name>
