@@ -95,7 +95,7 @@ public class MySpaceManager {
  */
 
    public MySpaceManager(){  
-   	status.reset();
+	status.reset();
    }
 
 // =================================================================
@@ -126,24 +126,24 @@ public String upLoad(String jobDetails){
 			
 			reg.rewriteRegistryFile();
 			dataitem = msA.importDataHolder(
-			    userID, communityID, jobID, newDataHolderName,
-			    mySpaceFileName, fileSize );
+				userID, communityID, jobID, newDataHolderName,
+				mySpaceFileName, fileSize );
 			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
-			                       +"fileSize"+fileSize);
+								   +"fileSize"+fileSize);
 			if( DEBUG ) logger.debug("UploaderroCode is:" +errCode);
 			if ( errCode!="" )    
 			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
 			else 
 			  errCode = checkStatus("UPLOAStatusCode");
 			if(DEBUG) logger.debug("UPLOAD CHECKING ATTRIBUTES FOR CREATING DATAITEM: userid:"
-			    + userID +"comID"+communityID +"jobID"+jobID +"newDHName"+newDataHolderName
-			    +"serverFileName"+serverFileName +"filesize"+fileSize 
-			    +"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
+				+ userID +"comID"+communityID +"jobID"+jobID +"newDHName"+newDataHolderName
+				+"serverFileName"+serverFileName +"filesize"+fileSize 
+				+"mySpaceFileName"+mySpaceFileName+"registryName:"+registryName);
 			
 			//commented out for testing transfer large files
 			//content = MySpaceUtils.readFromFile(new File(serverFileName));
-            String contentPath = serverFileName;
-            if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
+			String contentPath = serverFileName;
+			if (DEBUG)  logger.debug("ServerFileName = " +serverFileName);
 			call = createServerManagerCall();
 			call.setOperationName( "saveDataHolder" );			
 			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
@@ -296,7 +296,7 @@ public String upLoad(String jobDetails){
   */
 
    public String lookupDataHoldersDetails(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderSDetails ");
+	if ( DEBUG )  logger.debug("MySpaceManager.lookupDataHolderSDetails CATHERINE"+jobDetails);
 	DataItemRecord dataitem = null;
 	Vector itemRecVector = new Vector();
 
@@ -332,15 +332,15 @@ public String upLoad(String jobDetails){
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
-		    String header = "";
-		    String footer = "";
-		    String element = "";
-		    logger.debug("before getting vection size:");
-		    if(itemRecVector!=null){
-		    	header = util.buildMySpaceManagerResponseHeader( MMC.SUCCESS, "");
-		    	footer = util.buildMySpaceManagerResponseFooter();
-			    logger.debug("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
-			    for(int i =0; i<itemRecVector.size();i++){
+			String header = "";
+			String footer = "";
+			String element = "";
+			logger.debug("before getting vection size:");
+			if(itemRecVector!=null){
+				header = util.buildMySpaceManagerResponseHeader( MMC.SUCCESS, "");
+				footer = util.buildMySpaceManagerResponseFooter();
+				logger.debug("DATAITEMRECORD VEC SIZE: "+itemRecVector.size());
+				for(int i =0; i<itemRecVector.size();i++){
 					if(itemRecVector.elementAt(i)!=null){
 						logger.debug("STATUS: "+successStatus +"   "+warningStatus);
 						if (successStatus){
@@ -360,9 +360,9 @@ public String upLoad(String jobDetails){
 						  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode+","+generalMessage.toString(),"");
 						return response;
 					}				
-			    }
-		    }else if(itemRecVector==null){
-		    	element = util.buildMySpaceManagerResponse(null,"WARNING","NO DATAITEMRECORD RETURND FOR YOUR QUERY","");
+				}
+			}else if(itemRecVector==null){
+				element = util.buildMySpaceManagerResponse(null,"WARNING","NO DATAITEMRECORD RETURND FOR YOUR QUERY","");
 			}
 			response = header+element+footer;
 			if( DEBUG ) logger.debug("LOOKUPDATAHOLDERSDETAILS: RESPONSE: "+response); 
@@ -388,7 +388,7 @@ public String upLoad(String jobDetails){
   */
 
    public String copyDataHolder(String jobDetails){
-	if ( DEBUG )  logger.debug("MySpaceManager.copyDataHolder");
+	if ( DEBUG )  logger.debug("MySpaceManager.copyDataHolder "+jobDetails);
 	DataItemRecord dataitem = null;
 
 		try{
@@ -482,7 +482,7 @@ public String upLoad(String jobDetails){
 
 		try{
 			response = getValues(jobDetails);
-
+             
 			msA.setRegistryName(registryName);
 			Vector dataItemRecords = msA.lookupDataHoldersDetails(
 			  userID, communityID, jobID, serverFileName);
@@ -510,7 +510,7 @@ public String upLoad(String jobDetails){
 			boolean warningStatus = status.getWarningStatus();
 	
 			Date currentMySpaceDate = new Date();
-	        if( DEBUG ) logger.debug("SUCCESSSTATUS = "+successStatus);
+			if( DEBUG ) logger.debug("SUCCESSSTATUS = "+successStatus);
 		//   Format and return the results as XML.
 			if (successStatus){
 				if (errCode=="")
@@ -586,7 +586,7 @@ public String upLoad(String jobDetails){
 			if (successStatus){
 				if (errCode=="")
 				  response = util.buildMySpaceManagerResponse(null, MMC.SUCCESS, "",dataHolderURI);
-                else
+				else
 				  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,errCode,"");				 		    	
 			}else {
 				response = getErrorCode();
@@ -769,7 +769,7 @@ public String upLoad(String jobDetails){
 		return call;
 	}
 
-    private String checkStatus(String message){
+	private String checkStatus(String message){
 		MySpaceStatus stat1 = new MySpaceStatus();
 		boolean successStat = stat1.getSuccessStatus();
 		String errCodes = "";
@@ -778,10 +778,10 @@ public String upLoad(String jobDetails){
 			errCodes = getErrorCode(stat1, message);
 		}
 		return errCodes;
-    }
+	}
     
-    private String getErrorCode(MySpaceStatus stat1, String message){
-    	String codeS ="";
+	private String getErrorCode(MySpaceStatus stat1, String message){
+		String codeS ="";
 		Vector err = stat1.getCodes();
 		for (int i =0;i<err.size();i++){
 			MySpaceStatusCode code = (MySpaceStatusCode)err.elementAt(i);
@@ -793,10 +793,10 @@ public String upLoad(String jobDetails){
 				}
 			if (DEBUG)logger.debug("STATUS CODE IS: " +message +"  "+codeS);
 		}    	
-    	return codeS;
-    }
+		return codeS;
+	}
     
-    private String getErrorCode(){
+	private String getErrorCode(){
     	
 			v = status.getCodes();
 			for(int i=0;i<=v.size();i++){
@@ -809,9 +809,9 @@ public String upLoad(String jobDetails){
 			}	
     	
 		return response;
-    }
+	}
     
-    private String getValues(String jobDetails) throws Exception{
+	private String getValues(String jobDetails) throws Exception{
 		//load jConfig file.
 		MMC.getInstance().checkPropertiesLoaded();
 		registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
@@ -824,7 +824,7 @@ public String upLoad(String jobDetails){
 			if(request.get("query")!=null) query = request.get("query").toString();		
 			if(request.get("newDataItemName")!=null) newDataItemName = request.get("newDataItemName").toString();
 			if(request.get("newContainerName")!=null) newContainerName = request.get("newContainerName").toString();	
-			
+			if(request.get("serverFileName")!=null) serverFileName = request.get("serverFileName").toString();
 
 			try{
 				if(request.get("fileSize")!=null) fileSize = Integer.parseInt(request.get("fileSize").toString());
@@ -852,25 +852,50 @@ public String upLoad(String jobDetails){
 				logger.debug("NameSetOfRequest: "+o[i] +request.get(o[i]).toString());
 				}
 		}
-
-		if ( DEBUG )logger.debug("FILE lOCATION: "+request.get("serverFileName"));
-		serverFileName = request.get("serverFileName").toString();
-		if ( (request.containsKey("newDataHolderName")) && (request.get("newDataHolderName").toString().trim().length()>0)){
-			if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
-			newDataHolderName = request.get("newDataHolderName").toString();
+        
+		//if ( DEBUG )logger.debug("FILE lOCATION: "+request.get("serverFileName"));
+		//if((request.containsKey("serverFileName")) &&(request.get("serverFileName")!=null) )serverFileName = request.get("serverFileName").toString();
+		logger.debug("555555555555"+serverFileName);
+		
+		//if ( (request.containsKey("newDataHolderName")) && (request.get("newDataHolderName")!=null)){
+		/*
+		if (request.get("newDataHolderName")!=null){
+			if(request.get("newDataHolderName").toString().trim().length()>0){
+				logger.debug("666666666666666");
+			  if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+			  newDataHolderName = request.get("newDataHolderName").toString();
+			  logger.debug("77777777777");
+			}
 		}else{
+			logger.debug("88888888888888");
 			newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
 			if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
+		}*/
+		
+		if ( request.containsKey("newDataHolderName")){
+			if (request.get("newDataHolderName").toString().trim().length()>0){
+				logger.debug("666666666666666"+newDataHolderName);
+				if ( DEBUG ) logger.debug("newdatraholdernema:"+newDataHolderName+"done");
+				newDataHolderName = request.get("newDataHolderName").toString();
+				logger.debug("777777777777777777");
+			}else{
+				logger.debug("88888888888888888"+serverFileName.length()+"9999"+serverFileName.toString());
+				logger.debug("1010101010101010"+serverFileName.lastIndexOf("/"));
+				newDataHolderName = "/" +userID +"/serv1" +serverFileName.substring(serverFileName.lastIndexOf("/"),serverFileName.length());
+				if ( DEBUG ) logger.debug("newdataholdername:"+newDataHolderName+"done2");
+			}		
 		}
+		
 		if ( DEBUG ) logger.debug(" userid:" +userID+" comID:"+communityID +
-                                  " jobID:"+jobID+" newdataholdername:"+newDataHolderName+
-                                  " filesize:"+fileSize+
-                                  " serverFileName == "+serverFileName+
-                                  " query = "+query+
-                                  " newDataItemName"+newDataItemName+
-                                  " newContainerName"+newContainerName);
-    	return response;
-    }
+								  " jobID:"+jobID+" newdataholdername:"+newDataHolderName+
+								  " filesize:"+fileSize+
+								  " serverFileName == "+serverFileName+
+								  " query = "+query+
+								  " newDataItemName"+newDataItemName+
+								  " newContainerName"+newContainerName);
+		if ( DEBUG ) logger.debug("getValue msManager response :"+response);                              
+		return response;
+	}
     
 	public String importDataHolder(String jobDetails){
 		return "Not Implemented";
