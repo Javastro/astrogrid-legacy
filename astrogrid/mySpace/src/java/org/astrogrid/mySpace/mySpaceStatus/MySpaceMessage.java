@@ -95,12 +95,14 @@ public class MySpaceMessage{
    private Properties buildProperties(String messageFile, String delimiter1, String delimiter2){
    	StringBuffer sb = new StringBuffer(messageFile);
    	String s1, s2 = "";
-   	while( !(sb.length()==0) ){
+   	//while( !(sb.length()==0) ){
+   	if( sb.indexOf("=")!=-1){
+   		if (DEBUG) logger.debug("TRYING to delete sb..."+sb.toString());
    		s1 = sb.substring(0,sb.indexOf(delimiter1)).trim();
    		sb.delete(0,sb.indexOf(delimiter1)+1);
    		s2 = sb.substring(0,sb.indexOf(delimiter2)).trim();
    		sb.delete(0,sb.indexOf(delimiter2)+1);
-   		if (DEBUG)  logger.debug("YYY s1="+s1+", s2="+s2);
+   		if (DEBUG)  logger.debug("YYY s1="+s1+", s2="+s2 +"XXX");
         p.put(s1, s2);
    	}
    	return p;

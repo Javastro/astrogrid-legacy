@@ -109,7 +109,7 @@ public class ServerManager {
 		PrintWriter printWriter = null;
 		try{
 			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder...");			
-			File dataholder = new File(dataHolderPath);
+			DataHolder dataholder = new DataHolder(dataHolderPath);
 			//open file to write into
 			printWriter = new PrintWriter(new FileOutputStream(dataholder));    	    
     	    
