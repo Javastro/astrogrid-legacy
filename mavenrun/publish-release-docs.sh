@@ -36,12 +36,12 @@ echo "Release $TAG Docs Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
 
 # Checkout a rather precise set of files since we don't want to get the whole damn tree:
-#@TODO does this overwrite?  If not, think about delete
+
 if [ -d $CHECKOUTHOME ]; then
    echo
 else
-   echo "Creating $CHECKOUTHOME"
-   mkdir $CHECKOUTHOME
+   echo "Creating $CHECKOUTHOME" >> $LOGFILE
+   mkdir $CHECKOUTHOME >> $LOGFILE 2>&1
 fi
 
 cd $CHECKOUTHOME
