@@ -26,6 +26,8 @@ import org.apache.log4j.Logger ;
 import org.apache.axis.utils.XMLUtils ;
 import org.w3c.dom.* ;
 
+import org.astrogrid.community.common.util.CommunityMessage ;
+
 import org.astrogrid.i18n.*;
 import org.astrogrid.AstroGridException ;
 import org.astrogrid.jes.delegate.jobController.*;
@@ -151,7 +153,10 @@ public class Workflow extends Activity {
         mySpace ;
     
     
-    public static Workflow createWorkflow(  String userid, String community, String name, String description  ) {
+    public static Workflow createWorkflow(  String userid
+                                          , String community
+                                          , String name
+                                          , String description  ) {
         if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
            
         Workflow
@@ -178,6 +183,7 @@ public class Workflow extends Activity {
     } // end createWorkflow()
     
     
+    
     public static Workflow createWorkflowFromTemplate(  String userid
                                                       , String community
                                                       , String name
@@ -193,7 +199,7 @@ public class Workflow extends Activity {
          debug( "userid: " + userid ) ;
          debug( "community: " + community ) ;
          debug( "name: " + name ) ;
-		 debug( "description: " + description ) ;          
+         debug( "description: " + description ) ;          
             
          try {
                        
@@ -219,7 +225,10 @@ public class Workflow extends Activity {
         
      } // end createWorkflowFromTemplate()
     
-          
+    
+    
+    
+    
     public static Workflow readWorkflow( String userid, String community, String name ) {
         if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() entry") ; 
         
@@ -484,6 +493,8 @@ public class Workflow extends Activity {
         description,
         userid,
         community,
+        token,
+        group,
         templateName ;
         
     private ActivityContainer 
@@ -667,18 +678,24 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow.toJESXMLString() entry") ;  
           
         String 
-           response = null ;
+           response = null,
+           communitySnippet = null ;
                                      
         try {
             
+            communitySnippet 
+                = CommunityMessage.getMessage( this.getToken()
+                                             , this.getUserid() + "@" + this.getCommunity()
+                                             , this.getGroup() );
+            
             Object []
-               inserts = new Object[5] ;
+               inserts = new Object[6] ;
             inserts[0] = this.name ;
             inserts[1] = this.userid ;
             inserts[2] = this.community ;
             inserts[3] = this.description ;
-
-            inserts[4] = getChild().toXMLString() ;
+            inserts[4] = communitySnippet;          
+            inserts[5] = getChild().toXMLString() ; // JobSteps come here
             
             response = MessageFormat.format( WorkflowDD.JOB_TEMPLATE, inserts ) ;
 
@@ -803,5 +820,21 @@ public class Workflow extends Activity {
         System.out.println( logString ) ;
         // logger.debug( logString ) ;
     }
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public String getGroup() {
+		return group;
+	}
     
 } // end of class Workflow

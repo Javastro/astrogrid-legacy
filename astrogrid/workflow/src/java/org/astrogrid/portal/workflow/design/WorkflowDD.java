@@ -98,8 +98,8 @@ public class WorkflowDD {
         "<job name=\"{0}\" >" +
         "   <userid>{1}</userid>" +
         "   <community>{2}</community>" +
-        "   <description>{3}</description>" +      
-        "       {4}" +       // variable number of job steps               
+        "   <description>{3}</description>" +        "   {4}" +       // the community snippet      
+        "   {5}" +       // variable number of job steps               
         "</job>" ;        
         
     public static final String

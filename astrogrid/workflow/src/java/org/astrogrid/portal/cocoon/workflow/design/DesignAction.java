@@ -203,7 +203,9 @@ public class DesignAction extends AbstractAction {
             session ;
         private String
             userid,
-            community ;
+            community,
+            group,
+            token ;
         private String
             action ;
         private boolean
@@ -234,15 +236,15 @@ public class DesignAction extends AbstractAction {
                 this.request = ObjectModelHelper.getRequest( objectModel ) ;
                 this.session = request.getSession() ;
             
+                // Load current Workflow - if any - from our HttpSession.
+                this.workflow = (Workflow) session.getAttribute( HTTP_WORKFLOW_TAG ) ;
+            
                 // Get user and community 
                 this.retrieveUserDetails() ;
             
                 this.action = request.getParameter( ACTION_PARAM_TAG ) ;
                 this.bConfirm = new Boolean ( request.getParameter(CONFIRM_PARAM_TAG) ).booleanValue() ;
-                
-                // Load current Workflow - if any - from our HttpSession.
-                this.workflow = (Workflow) session.getAttribute( HTTP_WORKFLOW_TAG ) ;
-                
+                    
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl() exit" ) ; 
@@ -345,12 +347,21 @@ public class DesignAction extends AbstractAction {
                 ampersandIndex ;
 
             try {
-                
+        
                 // JL Note: Iteration 3 way of doing things...
                 useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
                 ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;
                 this.userid = useridCommunity.substring(  0, ampersandIndex ) ;
-                this.community = useridCommunity.substring( ampersandIndex + 1 );   
+                this.community = useridCommunity.substring( ampersandIndex + 1 ); 
+                this.group = (String)session.getAttribute( CREDENTIAL_TAG ) ;
+                this.token = (String)session.getAttribute( COMMUNITY_TOKEN_TAG ) ;
+                
+                if( this.workflow != null ) {
+//                  workflow.setUserid( userid ) ;
+//                  workflow.setCommunity( community ) ;
+                    workflow.setGroup( group ) ;
+                    workflow.setToken( token ) ;  
+                }
  
 /*          
                 JL Note: This is PortalB Iteration 2 way of doing things,...
