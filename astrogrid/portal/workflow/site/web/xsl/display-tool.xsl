@@ -89,7 +89,8 @@
                     </table>
                     <input type="hidden" name="display_tool_values"><xsl:attribute name="value">true</xsl:attribute></input>                    
                 </form>                
-            </div>     
+            </div> 
+<!-- This is not right, and temporary! -->                
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_sequence_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
@@ -111,9 +112,14 @@
                    <input type="hidden"  name="action" value="remove_activity"/>            
                 </form>
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="open_workflow_form">
-                   <input type="hidden" name="workflow-name" id="workflow-agsl"/>
-                   <input type="hidden" name="workflow-ivorn" id="workflow-ivorn"/>
-                   <input type="hidden"  name="action" value="read-workflow"/>            
+                   agsl:<input type="text" name="workflow-name" id="open-workflow-agsl"/>
+                   ivorn:<input type="text" name="workflow-ivorn" id="open-workflow-ivorn"/>
+                   <input type="submit" name="action" value="read-workflow" />
+                </form>
+                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="save_workflow_form">
+                   agsl:<input type="text" name="workflow-name" id="save-workflow-agsl"/>
+                   ivorn:<input type="text" name="workflow-ivorn" id="save-workflow-ivorn"/>
+                   <input type="submit" name="action" value="save-workflow" />                                                       
                 </form>                                                                                              
         </xsl:template>
         
