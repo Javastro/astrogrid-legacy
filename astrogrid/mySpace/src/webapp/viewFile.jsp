@@ -8,10 +8,11 @@
     session="false" %>
 
 <html>
-<head><title>Delete File</title>
+<head><title>View File</title>
 </head>
 
 <%
+//  String[] paramNames={"userId","communityId","credential","file"};
   User user = User.ANONYMOUS; //new user(request.getParameter("userId"),
                //      request.getParameter("communityId"),
                //      request.getParameter("credential"));
@@ -19,23 +20,23 @@
 %>
 
 <body>
-<h1>Deleting File <%=file%></h1>
-
+<h1><%=file%></h1>
 
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
-    request.getServerPort(), request.getContextPath() +
-    "/services/Manager");
-
-  StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
-
-  client.delete(file);
+         request.getServerPort(),
+         request.getContextPath() + "/services/Manager");
 %>
 
-<p>
-Deleted
-</p>
+<pre>
+<%
+  StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
 
+  Reader reader = new InputStreamReader(client.getStream(file));
+
+  Piper.bufferedPipe(reader, out);
+%>
+</pre>
 
 </body>
 </html>

@@ -1,5 +1,6 @@
-<%@ page import="org.astrogrid.mySpace.delegate.*,
-                 org.astrogrid.mySpace.delegate.helper.Assist,
+<%@ page import="org.astrogrid.store.delegate.*,
+                 org.astrogrid.community.User,
+                 org.astrogrid.store.*,
                  java.net.*,
                  java.util.*,
                  java.io.*"
@@ -13,22 +14,18 @@
 <h1>Import Contents</h1>
 
 <%
-  String[] paramNames={"userId","communityId","credential","file",
-    "contents"};
-  String userId = request.getParameter("userId");
-  String communityId = request.getParameter("communityId");
-  String credential = request.getParameter("credential");
+  User user = new User(request.getParameter("userId"), request.getParameter("communityId"), "dummyToken");
   String file = request.getParameter("file");
   String contents = request.getParameter("contents");
 
-  String query = "/" + userId + "@" + communityId + "/*";
+  String query = "/" + user.getUserId() + "/*";
 %>
 
 
 <%
   URL serviceURL = new URL ("http", request.getServerName(),
     request.getServerPort(), request.getContextPath() +
-    "/services/MySpaceManager");
+    "/services/Manager");
 %>
 
 <p>
@@ -36,19 +33,10 @@ The end point for this service is: <%=serviceURL%>
 </p>
 
 <%
-  MySpaceClient client = MySpaceDelegateFactory.createDelegate(
-    serviceURL.toString());
+  StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL.toString()));
 
-  boolean ok = client.saveDataHolding(userId, communityId,
-    credential, file, contents, "workflow", "");
+  client.putString(contents, file, false);
 
-
-  if (ok)
-  {  out.print("File " + file + " created successfully. <BR>");
-  }
-  else
-  {  out.print("Failed to create file " + file + ". <BR>");
-  }
 %>
 
 <p>
@@ -57,22 +45,14 @@ The new state of account <%=query%> is:
 
 <pre>
 <%
-  Vector results = client.listDataHoldingsGen(userId, communityId,
-    credential, query);
+  StoreFile[] files = client.listFiles(query);
 
-  int resultsSize = results.size();
+  int resultsSize = files.length;
 
   if (resultsSize > 0)
   {  for (int i=0; i<resultsSize; i++)
-     {  String xmlString = (String)results.elementAt(i);
-        Assist assistant = new Assist();
-        Vector summaryList = assistant.getDataItemSummary(xmlString);
-
-        int numEntries = summaryList.size();
-
-        for (int loop = 0; loop < numEntries; loop++)
-        {  out.print((String)summaryList.elementAt(loop) + "\n");
-        }
+     {
+           out.print( files[i].toString() + "\n");
      }
   }
   else
