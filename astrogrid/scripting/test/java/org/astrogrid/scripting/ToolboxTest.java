@@ -1,4 +1,4 @@
-/*$Id: ToolboxTest.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
+/*$Id: ToolboxTest.java,v 1.4 2004/12/06 20:03:03 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,11 +40,6 @@ public class ToolboxTest extends TestCase {
         assertNotNull(t.getLogger());
     }
 
-    public void testGetProtocolLibrary() {
-        ProtocolLibrary l = t.getProtocolLibrary();
-        assertNotNull(l);
-        assertTrue(l.listSupportedProtocols().length > 0);
-    }
 
     public void testGetObjectBuilder() {
         assertNotNull(t.getObjectBuilder());
@@ -107,6 +102,12 @@ public class ToolboxTest extends TestCase {
 
 /* 
 $Log: ToolboxTest.java,v $
+Revision 1.4  2004/12/06 20:03:03  clq2
+nww_807a
+
+Revision 1.3.2.1  2004/12/06 13:27:47  nw
+fixes to improvide integration with external values and starTables.
+
 Revision 1.3  2004/11/30 15:39:56  clq2
 scripting-nww-777
 

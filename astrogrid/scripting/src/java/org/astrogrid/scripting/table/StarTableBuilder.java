@@ -1,4 +1,4 @@
-/*$Id: StarTableBuilder.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
+/*$Id: StarTableBuilder.java,v 1.2 2004/12/06 20:03:03 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,14 +8,17 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.scripting;
+package org.astrogrid.scripting.table;
 
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.InaccessibleExternalValueException;
+import org.astrogrid.scripting.Toolbox;
 
+import java.awt.datatransfer.Transferable;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StarTableFactory;
@@ -24,6 +27,8 @@ import uk.ac.starlink.util.DataSource;
 
 /** Extension of the standard StarTableFactory that also allows star tables to be contructed from ExternalValues 
  * encourages factory to build random-access tables by dfault - less surprising then.
+ * <p>
+ * also wraps each returned starTable as a ScriptStarTable - which provides further script-friendly methods.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Nov-2004
  *
  */
@@ -37,6 +42,35 @@ public class StarTableBuilder extends StarTableFactory {
     }
 
    
+    public StarTable makeStarTable(DataSource arg0, String arg1)
+            throws TableFormatException, IOException {
+        return new ScriptStarTable( super.makeStarTable(arg0, arg1));
+    }
+    public StarTable makeStarTable(DataSource arg0)
+            throws TableFormatException, IOException {
+        return new ScriptStarTable (super.makeStarTable(arg0));
+    }
+    public StarTable makeStarTable(String arg0, String arg1)
+            throws TableFormatException, IOException {
+        return new ScriptStarTable (super.makeStarTable(arg0, arg1));
+    }
+    public StarTable makeStarTable(String arg0) throws TableFormatException,
+            IOException {
+        return new ScriptStarTable (super.makeStarTable(arg0));
+    }
+    public StarTable makeStarTable(Transferable arg0) throws IOException {
+        return new ScriptStarTable(super.makeStarTable(arg0));
+    }
+    public StarTable makeStarTable(URL arg0, String arg1)
+            throws TableFormatException, IOException {
+        return new ScriptStarTable(super.makeStarTable(arg0, arg1));
+    }
+    public StarTable makeStarTable(URL arg0) throws IOException {
+        return new ScriptStarTable(super.makeStarTable(arg0));
+    }
+    public StarTable randomTable(StarTable arg0) throws IOException {
+        return new ScriptStarTable(super.randomTable(arg0));
+    }
     /** construct a star table from an external value
      * 
      * @param externalValue reference to a remote location
@@ -46,7 +80,7 @@ public class StarTableBuilder extends StarTableFactory {
      * @see Toolbox#getProtocolLibrary() to create an {@link ExternalValue}     * 
      */
     public StarTable makeStarTable(ExternalValue externalValue) throws TableFormatException, IOException {
-        return makeStarTable(new ExternalValueDataSource(externalValue));
+        return this.makeStarTable(new ExternalValueDataSource(externalValue));
     }
     
     /** construct a star table from an external value
@@ -59,15 +93,15 @@ public class StarTableBuilder extends StarTableFactory {
      * @see Toolbox#getProtocolLibrary() to create an {@link ExternalValue}
      */
     public StarTable makeStarTable(ExternalValue externalValue,String handler) throws TableFormatException, IOException {
-        return makeStarTable(new ExternalValueDataSource(externalValue),handler);
+        return this.makeStarTable(new ExternalValueDataSource(externalValue),handler);
     }
     
     public StarTable makeStarTableFromString(String tableContent,String handler) throws TableFormatException, IOException {
-        return makeStarTable(new InlineDataSource(tableContent),handler);
+        return this.makeStarTable(new InlineDataSource(tableContent),handler);
     }
     
     public StarTable makeStarTableFromString(String tableContent) throws TableFormatException, IOException {
-        return makeStarTable(new InlineDataSource(tableContent));
+        return this.makeStarTable(new InlineDataSource(tableContent));
     }
     
     /** a helper class that wraps a string as a datasource
@@ -118,6 +152,12 @@ public class StarTableBuilder extends StarTableFactory {
 
 /* 
 $Log: StarTableBuilder.java,v $
+Revision 1.2  2004/12/06 20:03:03  clq2
+nww_807a
+
+Revision 1.1.2.1  2004/12/06 13:27:47  nw
+fixes to improvide integration with external values and starTables.
+
 Revision 1.3  2004/11/30 15:39:56  clq2
 scripting-nww-777
 

@@ -1,4 +1,4 @@
-/*$Id: Toolbox.java,v 1.3 2004/11/30 15:39:56 clq2 Exp $
+/*$Id: Toolbox.java,v 1.4 2004/12/06 20:03:03 clq2 Exp $
  * Created on 19-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import org.astrogrid.portal.workflow.intf.WorkflowManagerFactory;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.scripting.table.StarTableBuilder;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.tree.TreeClient;
@@ -39,6 +40,8 @@ import org.astrogrid.store.tree.TreeClientServiceException;
  * 
  * @todo add hook into something for writing out star tables back into myspace - wait for mark to extend the interfaces to allow this.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Nov-2004
+ * @script-summary root scripting object
+ * @script-doc this is the <em>main</em> scripting object
  *
  */
 public class Toolbox {
@@ -58,19 +61,24 @@ public class Toolbox {
     private final ObjectBuilder oHelper = new ObjectBuilder();
     private final XMLHelper xHelper = new XMLHelper();
     private final IOHelper iHelper = new IOHelper();
-    private final StarTableBuilder tBulider = new StarTableBuilder();
+    private final TableHelper tHelper = new TableHelper();
     private final TreeClientFactory treeFactory = new TreeClientFactory();
-    private final ProtocolLibrary protocolLib = (new DefaultProtocolLibraryFactory()).createLibrary();
 
 
     
     // STIL
-    /** access an object for building star tables from strngs, URLs and ExternalValues */
+    /** access an object for building star tables from strngs, URLs and ExternalValues 
+     * @script-doc-exclude
+     * @deprecated
+     * */
     public StarTableBuilder getStarTableBuilder() {
-        return tBulider;
+        return getTableHelper().getBuilder();
     }
     //@todo somehting to output star tables again.
-
+    /** @script-doc access helper object for building, manipulating and writing tables */
+    public TableHelper getTableHelper() {
+        return tHelper;
+    }
     
     // logging
     
@@ -83,10 +91,13 @@ public class Toolbox {
 
     /** access library object that 'knows' about a variety of IO protocols, and can construct {@link ExternalValue} objects to 
      * read / write resources via these protocols.
+     * @deprecated
+     * @script-doc-omit
      */
     public ProtocolLibrary getProtocolLibrary() {
-        return protocolLib;
+        return iHelper.getProtocolLibrary();
     }
+
 
     // objject builders
     /** access helper object for building objects 
@@ -115,10 +126,12 @@ public class Toolbox {
         return "systeminfo";
     }
     
-    /** access the version info for this installation 
+    /** access the version info for this installations's scripting engine
+     * <p>
+     * at present returns a list of bugzilla numbers this engine implements.
      * @todo implement to return richer info*/
     public String getVersion() {
-        return "Iteration 07";
+        return "Iteration 07, scripting-nww-715 scripting-nww-777 scripting-nww-807";
     }
 
     /** accces the system configuration object 
@@ -166,8 +179,8 @@ public class Toolbox {
      * @param u object representing the user for whom to create the client for
      * @return a vospace client which has the permissions of user <tt>u</tt>
      * @see #getObjectBuilder() for how to build a <tt>User</tt> object*/
-    public VoSpaceClient createVoSpaceClient(User u) {
-        return new VoSpaceClient(u);
+    public ScriptVoSpaceClient createVoSpaceClient(User u) {
+        return new ScriptVoSpaceClient(u);
     }
     
     /** create a client to work with the vospace tree-model 
@@ -189,7 +202,7 @@ public class Toolbox {
     
 
     public String toString() {
-          return "Astrogrid Toolbox";
+          return "Astrogrid Toolbox" + "\n" + this.getVersion();
        }
 
 }
@@ -197,6 +210,15 @@ public class Toolbox {
 
 /* 
 $Log: Toolbox.java,v $
+Revision 1.4  2004/12/06 20:03:03  clq2
+nww_807a
+
+Revision 1.3.2.2  2004/12/06 18:10:54  nw
+backwards compatability fix.
+
+Revision 1.3.2.1  2004/12/06 13:27:47  nw
+fixes to improvide integration with external values and starTables.
+
 Revision 1.3  2004/11/30 15:39:56  clq2
 scripting-nww-777
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/11/22 18:26:54 clq2 Exp $
+/*$Id: AllTests.java,v 1.3 2004/12/06 20:03:03 clq2 Exp $
  * Created on 22-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ public class AllTests {
         suite.addTestSuite(ObjectBuilderTest.class);
         suite.addTestSuite(ToolboxTest.class);
         //$JUnit-END$
+        suite.addTest(org.astrogrid.scripting.table.AllTests.suite());
         return suite;
     }
 }
@@ -37,6 +38,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/12/06 20:03:03  clq2
+nww_807a
+
+Revision 1.2.4.1  2004/12/06 13:27:47  nw
+fixes to improvide integration with external values and starTables.
+
 Revision 1.2  2004/11/22 18:26:54  clq2
 scripting-nww-715
 
