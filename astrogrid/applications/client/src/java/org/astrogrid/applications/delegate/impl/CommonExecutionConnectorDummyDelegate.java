@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.3 2004/08/18 12:30:43 nw Exp $
+ * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.4 2004/08/18 12:36:36 nw Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -64,8 +64,7 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
  * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#init(org.astrogrid.workflow.beans.v1.Tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType)
  */
 public String init(Tool tool, JobIdentifierType jobstepID) throws CEADelegateException {
-    // TODO Auto-generated method stub
-     throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.init() not implemented");
+    return "dummy";
  
 }
 
