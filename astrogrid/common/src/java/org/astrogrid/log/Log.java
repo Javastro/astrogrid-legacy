@@ -1,5 +1,5 @@
 /*
- $Id: Log.java,v 1.5 2003/09/15 11:47:14 mch Exp $
+ $Id: Log.java,v 1.6 2003/09/24 19:10:55 mch Exp $
  */
 
 package org.astrogrid.log;
@@ -222,11 +222,11 @@ public class Log
     * and writes out a 'starting' message to the log, which can be very
     * useful when trawling through large log files
     */
-   public static void starting()
+   public static void starting(String msg)
    {
       logger.setLevel(Level.FINEST); //make sure it's available
 
-      trace("Logging Started "+new Date()+"...");
+      trace("Logging Started "+new Date()+" "+msg+"...");
    }
 
    /** Direct output to file (as well)
@@ -317,6 +317,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.6  2003/09/24 19:10:55  mch
+Added message to starting message
+
 Revision 1.5  2003/09/15 11:47:14  mch
 Fixes to handle the built-in loggers hidden console output
 
