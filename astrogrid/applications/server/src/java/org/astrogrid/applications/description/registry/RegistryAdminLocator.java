@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryAdminLocator.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: RegistryAdminLocator.java,v 1.3 2004/07/26 10:21:47 nw Exp $
  * 
  * Created on 29-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,13 +16,17 @@ package org.astrogrid.applications.description.registry;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 
 /**
- * Find the registry Admin service.
+ * Configuration interface to find the registry Admin service.
  * @author Paul Harrison (pah@jb.man.ac.uk) 29-Mar-2004
  * @version $Name:  $
  * @since iteration5
  */
 public interface RegistryAdminLocator {
    
-   public RegistryAdminService getClient() throws Exception;
+   /** find the registry admin service
+ * @return a registry admin delegate for interacting with the service
+ * @throws Exception if anything goes wrong.
+ */
+public RegistryAdminService getClient() throws Exception;
 
 }

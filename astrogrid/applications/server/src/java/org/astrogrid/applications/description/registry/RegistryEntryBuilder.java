@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilder.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: RegistryEntryBuilder.java,v 1.3 2004/07/26 10:21:47 nw Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,29 +51,35 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 
 /**
- * Creates a VODescription for this server, based on the contents of the ApplicationDescriptionLibrary.
+ * Creates a VODescription  based on the contents of an ApplicationDescriptionLibrary.
  * 
- * Requires a template file of the VODescription basic CeaApplication and CeaService entries to fill in.
+ * Requires a template file of the VODescription that contains the basic CeaApplication and CeaService entries to fill in.
+ * @author Noel Winstanley
  * @author Paul Harrison (pah@jb.man.ac.uk) 22-Mar-2004
  * @version $Name:  $
  * @since iteration5
+ * @see org.astrogrid.applications.component.ProvidesVODescription
+ * @todo this could do with a bit of a refactor - its quite messy still. Probably best to wait until the registry schema changes anyway..
  */
 public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDescriptor{
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(RegistryEntryBuilder.class);
-
+   /** configuration settings */
    private URLs urls;
 
-
+  /** library to generate description for */
    private final ApplicationDescriptionLibrary lib;
 
-    /** configuration interface */
+    /** Configuration interface - specifies location of resources required by {@link RegistryEntryBuilder}
+     * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
+     *
+     */
     public interface URLs {
-        /** url of the template to use */
+        /** url of the template registry entry to use */
         URL getRegistryTemplate();
-        /** url of the current service endpoint */
+        /** url of the endpoint of the current cea service */
         URL getServiceEndpoint();
     }
 
@@ -90,7 +96,7 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
 
    /**
     * Create the registry entry....
-    * @return
+    * @return a vodescription.
     */
    public VODescription makeEntry() throws MarshalException, ValidationException, IOException, ApplicationDescriptionNotFoundException {
       VODescription vodesc = new VODescription();
@@ -299,6 +305,10 @@ public Test getInstallationTest() {
     return new InstallationTest("testGetDescription");
 }
 
+/** Installation test - checks that {@link RegistryEntryBuilder#getVODescription()} works correctly 
+ * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
+ *
+ */
 public class InstallationTest extends TestCase {
 
     public InstallationTest(String arg0) {

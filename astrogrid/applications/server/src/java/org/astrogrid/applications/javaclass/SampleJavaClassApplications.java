@@ -1,4 +1,4 @@
-/*$Id: SampleJavaClassApplications.java,v 1.3 2004/07/22 16:32:54 nw Exp $
+/*$Id: SampleJavaClassApplications.java,v 1.4 2004/07/26 10:21:47 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,10 +24,10 @@ public class SampleJavaClassApplications {
     private static final Log logger = LogFactory
         .getLog(SampleJavaClassApplications.class);
 
-    /** Construct a new TestJavaApplication
+    /** Static methods - so no public constructor
      * 
      */
-    public SampleJavaClassApplications() {
+    private SampleJavaClassApplications() {
         super();
     }
     /** the classic */
@@ -50,6 +50,9 @@ public class SampleJavaClassApplications {
 
 /* 
 $Log: SampleJavaClassApplications.java,v $
+Revision 1.4  2004/07/26 10:21:47  nw
+javadoc
+
 Revision 1.3  2004/07/22 16:32:54  nw
 cleaned up application / parameter adapter interface.
 

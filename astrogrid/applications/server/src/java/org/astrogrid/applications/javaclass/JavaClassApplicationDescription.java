@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.3 2004/07/26 10:21:47 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,24 +24,34 @@ import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.lang.reflect.Method;
 
-/** application description for a javaclass application
+/** A description for an application that is implemented as a static java method.
+ * <p>
+ * For a method foo(), this class will create an {@link org.astrogrid.applications.description.ApplicationDescription} for <tt><i>authorityName</i>/foo</tt>,
+ * where the authority name is specified in the constructor.
+ * <p>
+ * Constructs all the metadata for the application via reflection on the static method.
+ * @todo add support for attributes, or something, so that other metadata can be specified (e.g. documentation, UCD).
+ * @todo improve definition of types
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  *
  */
 public class JavaClassApplicationDescription extends AbstractApplicationDescription {
     /** Construct a new JavaClassApplicationDescription
+     * @param method the method that is to be the implementation of this application
+     * @param authorityName the name of the authority under which to add this application
+     * @param env standard container for helper objects.
      * 
      */
-    public JavaClassApplicationDescription(Method method,String communityName,ApplicationDescriptionEnvironment env) {
+    public JavaClassApplicationDescription(Method method,String authorityName,ApplicationDescriptionEnvironment env) {
         super(env);
         this.method = method;
-        createMetadata(communityName);
+        createMetadata(authorityName);
     }
     protected final Method method;
     
-    /** creates parameter descriptions, etc.
-*/
-    /** populates this object with parameterDescriptions by reflecting on application method */
+    /** populates this object with parameterDescriptions by reflecting on application method
+     * @todo improve handling to parameter types
+     *  */
     protected final void createMetadata(String communityName){
         setName(communityName + "/" + method.getName());
         Class[] inputs = method.getParameterTypes();
@@ -50,7 +60,23 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
             Class input = inputs[i];
             JavaClassParameterDescription param = new JavaClassParameterDescription();
             param.setName("parameter-" + i);
-            param.setType(ParameterTypes.TEXT); // set all to string for now. @todo refine this later.
+            ParameterTypes targetType = ParameterTypes.TEXT; // suitable default.
+            // special cases.
+            Class coreType = (input.isArray() ? input.getComponentType() : input); // get the base type, if this is an array.
+            if (coreType.equals(Boolean.class) || coreType.equals(Boolean.TYPE)) {
+                targetType = ParameterTypes.BOOLEAN;
+            } else if (coreType.equals(Byte.TYPE) || coreType.equals(Byte.class)) {
+                targetType = ParameterTypes.BINARY;
+            } else if (coreType.equals(Integer.TYPE) || coreType.equals(Integer.class)) {
+                targetType = ParameterTypes.INTEGER;
+            } else if (coreType.equals(Float.TYPE) || coreType.equals(Float.class)) {
+                targetType = ParameterTypes.REAL;
+            } else if (coreType.equals(Double.TYPE) || coreType.equals(Double.class)) {
+                targetType = ParameterTypes.DOUBLE;
+            }
+            // URI, Document, Node?
+            
+            param.setType(targetType); 
             param.setSubType(input.getName());
             param.setTargetClass(input);
             this.addParameterDescription(param);
@@ -94,6 +120,9 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.3  2004/07/26 10:21:47  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

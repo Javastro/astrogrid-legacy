@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterAdapter.java,v 1.3 2004/07/23 08:03:05 nw Exp $
+/*$Id: JavaClassParameterAdapter.java,v 1.4 2004/07/26 10:21:47 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,11 +18,13 @@ import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
 
 import org.apache.commons.beanutils.ConvertUtils;
 
-/** ParameterAdapter for a javaClassParameter
+/** A {@link org.astrogrid.applications.parameter.ParameterAdapter} for a {@link org.astrogrid.applications.javaclass.JavaClassParameterDescription}
  * 
- * uses the additional information in javaclassParameter to convert the parameter value from a string
+ * <p>uses the additional information in the description to convert the parameter value from a string
  * to an instance of the correct type for the java method parameter.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @see org.apache.commons.beanutils.ConvertUtils
+ * @see org.astrogrid.applications.javaclass.JavaClassParameterDescription
  *
  */
 public class JavaClassParameterAdapter extends DefaultParameterAdapter {
@@ -35,9 +37,11 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
         super(val, description,ipVal);
     }
 
-    /**
-     * @see org.astrogrid.applications.ParameterAdapter#process()
-     */
+/**
+ * Calls the super class implementation (which will always return a string), and then uses beanUtils library to convert to type expected by java method 
+ * @see org.astrogrid.applications.parameter.ParameterAdapter#process()
+ * @todo add handling for other types - e.g. URI / URL / Document / Node.
+ */
     public Object process() throws CeaException {
         String result = (String)super.process(); // we know super always returns a string.
         Class targetClass = ((JavaClassParameterDescription)description).getTargetClass();
@@ -49,6 +53,9 @@ public class JavaClassParameterAdapter extends DefaultParameterAdapter {
 
 /* 
 $Log: JavaClassParameterAdapter.java,v $
+Revision 1.4  2004/07/26 10:21:47  nw
+javadoc
+
 Revision 1.3  2004/07/23 08:03:05  nw
 fixed bug in conversion from string
 

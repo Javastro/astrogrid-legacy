@@ -1,4 +1,4 @@
-/*$Id: JavaClassParameterDescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassParameterDescription.java,v 1.3 2004/07/26 10:21:47 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,17 +12,25 @@ package org.astrogrid.applications.javaclass;
 
 import org.astrogrid.applications.description.base.BaseParameterDescription;
 
-/** JavaClass parameter description. 
- * contains an extra field - the 'target-class' for this parameter - i.e. the true java-class that this parameter
+/** A {@link org.astrogrid.applications.description.ParameterDescription} for a {@link org.astrogrid.applications.javaclass.JavaClassApplication}
+ * <p>
+ * This paramter description extends the base one with  an extra field - the 'target-class' for this parameter - i.e. the true java-class that this parameter
  * has to be converted to when calling the application method.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  *
  */
 public class JavaClassParameterDescription extends BaseParameterDescription {
     protected Class targetClass;
+    
+    /** Access the target class for this parameter
+     * @return the class representing the expected type for this parameter
+     */
     public Class getTargetClass() {
         return targetClass;
     }
+    /** See the targetClass attribute for this parameter
+     * @param c the expected type for this parameter.
+     */
     public void setTargetClass(Class c) {
         this.targetClass = c;
     }
@@ -31,6 +39,9 @@ public class JavaClassParameterDescription extends BaseParameterDescription {
 
 /* 
 $Log: JavaClassParameterDescription.java,v $
+Revision 1.3  2004/07/26 10:21:47  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

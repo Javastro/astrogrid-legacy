@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplication.java,v 1.3 2004/07/22 16:32:54 nw Exp $
+/*$Id: JavaClassApplication.java,v 1.4 2004/07/26 10:21:47 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/** An application that calls a static java method
+/** An application that executes by calling a static java method
+ * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
+ * @see java.lang.reflect.Method
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
  */
 public class JavaClassApplication extends AbstractApplication {
@@ -51,7 +53,8 @@ public class JavaClassApplication extends AbstractApplication {
         super(ids, tool, interf,lib);
     }
     
-    /** 
+    /** Starts the application executing.
+     * standard pattern - processes all input parameters, then starts a background thread to perform the execution itself.
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
     public boolean execute() throws CeaException {
@@ -67,15 +70,19 @@ public class JavaClassApplication extends AbstractApplication {
        task.start();
        return true;       
     }
-     /** worker thread, that performs the computation after {@link #execute} returns */
+     /** A Worker thread, that performs the computation after {@link JavaClassApplication#execute() } returns */
      protected class Exec extends Thread {
-         public Exec(Object[] args, Method m) {
+         /** Construct a new Exec
+         * @param args the arguments to the call 
+         * @param m the method to call
+         */
+        public Exec(Object[] args, Method m) {
              this.args = args;
              this.method =m;
          }
          protected final Object[] args;
          protected final Method method;
-         
+         /** 'executes' the application by calling {@link Method#invoke(java.lang.Object, java.lang.Object[])}*/
          public void run() {   
             setStatus(Status.RUNNING);
             Object resultVal = null;
@@ -101,7 +108,7 @@ public class JavaClassApplication extends AbstractApplication {
          }
     }
     
-    /** overridden to return a JavaClassParameterAdapter.
+    /** overridden to return a {@link JavaClassParameterAdapter}
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue pval,
@@ -113,6 +120,9 @@ public class JavaClassApplication extends AbstractApplication {
 
 /* 
 $Log: JavaClassApplication.java,v $
+Revision 1.4  2004/07/26 10:21:47  nw
+javadoc
+
 Revision 1.3  2004/07/22 16:32:54  nw
 cleaned up application / parameter adapter interface.
 

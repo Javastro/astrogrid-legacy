@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploader.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: RegistryUploader.java,v 1.3 2004/07/26 10:21:47 nw Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -53,6 +53,10 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
       this.adminLocator = adminLocator;
     }
     
+    /** performs the upload of the vodescription to the server.
+     * @throws Exception
+     * @see #start()
+     */
     public void write() throws Exception
     {
        RegistryAdminService delegate = adminLocator.getClient();
@@ -60,7 +64,7 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
        
     }
 
-    /**just calls {@link #write}
+    /**calls {@link #write}, logging errors.
      * @see org.picocontainer.Startable#start()
      */
     public void start() {
@@ -106,6 +110,10 @@ public class RegistryUploader implements Startable, ComponentDescriptor{
         return new InstallationTest("testAdminLocator");
     }
     
+    /**Installation test for {@link RegistryUploader} - tests that the provided admin locator does provide a connection to a valid registry service 
+     * @author Noel Winstanley nw@jb.man.ac.uk 26-Jul-2004
+     *
+     */
     public class InstallationTest extends TestCase {
 
         public InstallationTest(String arg0) {

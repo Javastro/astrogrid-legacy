@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassApplicationDescriptionLibrary.java,v 1.3 2004/07/26 10:21:47 nw Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,13 @@ import org.apache.commons.logging.LogFactory;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-/** library of java class application descriptions.
+/** A library of java class application descriptions.
+ * <p>
+ * This class constructs {@link org.astrogrid.applications.javaclass.JavaClassApplicationDescription} for each static method in its parameter class,
+ * and then collects them as an {@link org.astrogrid.applications.description.ApplicationDescriptionLibrary}
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+ * @see org.astrogrid.applications.javaclass.JavaClassApplicationDescription
+ * @see org.astrogrid.applications.description.ApplicationDescriptionLibrary
  *
  */
 public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescriptionLibrary implements  ComponentDescriptor{
@@ -34,11 +39,17 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
     /** configuration interface - defines the name of the community the applications will be added to. */
     public interface Community {
+        /** access the name of the community to add these applications under
+         * @todo I think this should be named 'authority', not community.
+         * @return
+         */
         String getCommunity();
     }
 
-    /** Construct a new JavaClassApplicationDescriptions, based on methods of parameter class
-     * @param implClass - class of static methods, each of which provides an applications for the library.
+    /** Construct a new JavaClassApplicationDescriptionLibrary, based on static methods of parameter class
+     * @param implClass - class of static methods, each of which will provide an application for the library.
+     * @param community configuration object specifiying under which community (authority?) the applications are to be placed 
+     * @param env standard container object for helper code.
      * 
      */
     public JavaClassApplicationDescriptionLibrary(Class implClass, Community community,ApplicationDescriptionEnvironment env) {
@@ -84,6 +95,9 @@ public class JavaClassApplicationDescriptionLibrary extends BaseApplicationDescr
 
 /* 
 $Log: JavaClassApplicationDescriptionLibrary.java,v $
+Revision 1.3  2004/07/26 10:21:47  nw
+javadoc
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
