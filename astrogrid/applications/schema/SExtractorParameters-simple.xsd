@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!-- $Id: SExtractorParameters-simple.xsd,v 1.1 2003/11/23 22:21:43 pah Exp $ -->
+<!-- this is still under construction - derived from the schema that is used in the ACE tool -->
+<schema targetNamespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sex="http://www.astrogrid.org/schema/applications/SExtractorV2.3" elementFormDefault="unqualified">
+	<annotation>
+		<documentation xml:lang="en">
+            Toplevel schema for SExtractor Service input, intended for
+            AstroGrid Applications Integration  Configured for SExtractor v2.2.2.
+      </documentation>
+	</annotation>
+	<simpleType name="ImageToCatalog">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="ImageToMeasure">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="double_list">
+		<list>
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="-1.0E30"/>
+					<maxInclusive value="1.0E30"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="nonNegativeDouble_list">
+		<list>
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="0"/>
+					<maxInclusive value="1.0E30"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="nonNegativeInteger_list">
+		<list>
+			<simpleType>
+				<restriction base="nonNegativeInteger">
+					<maxInclusive value="1000000"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="positiveInteger_list">
+		<list>
+			<simpleType>
+				<restriction base="positiveInteger">
+					<maxInclusive value="2000000000"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="string_list">
+		<list itemType="string"/>
+	</simpleType>
+	<simpleType name="ANALYSIS_THRESH">
+		<restriction base="sex:double_list">
+			<minLength value="1"/>
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="ASSOC_DATA">
+		<restriction base="sex:nonNegativeInteger_list">
+			<minLength value="1"/>
+			<maxLength value="32"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="ASSOC_NAME">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="ASSOC_PARAMS">
+		<restriction base="sex:nonNegativeInteger_list">
+			<minLength value="2"/>
+			<maxLength value="3"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="ASSOC_RADIUS">
+		<restriction base="double">
+			<minInclusive value="1.0E-10"/>
+			<maxInclusive value="1.0E10"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="ASSOC_TYPE">
+		<restriction base="string">
+			<enumeration value="FIRST"/>
+			<enumeration value="NEAREST"/>
+			<enumeration value="MEAN"/>
+			<enumeration value="MAG_MEAN"/>
+			<enumeration value="SUM"/>
+			<enumeration value="MAG_SUM"/>
+			<enumeration value="MIN"/>
+			<enumeration value="MAX"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="ASSOCSELEC_TYPE">
+		<restriction base="string">
+			<enumeration value="ALL"/>
+			<enumeration value="MATCHED"/>
+			<enumeration value="-MATCHED"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACK_FILTERSIZE_list">
+		<list>
+			<simpleType>
+				<restriction base="positiveInteger">
+					<maxInclusive value="11"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="BACK_FILTERSIZE">
+		<restriction base="sex:BACK_FILTERSIZE_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACK_FILTTHRESH">
+		<restriction base="double">
+			<minInclusive value="0.0"/>
+			<maxInclusive value="1.0E30"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACK_SIZE">
+		<restriction base="sex:positiveInteger_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACK_TYPE_list">
+		<list>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="AUTO"/>
+					<enumeration value="MANUAL"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="BACK_TYPE">
+		<restriction base="sex:BACK_TYPE_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACK_VALUE">
+		<restriction base="sex:double_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACKPHOTO_THICK">
+		<restriction base="positiveInteger">
+			<maxInclusive value="256"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="BACKPHOTO_TYPE">
+		<restriction base="string">
+			<enumeration value="GLOBAL"/>
+			<enumeration value="LOCAL"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CHECKIMAGE_NAME">
+		<restriction base="sex:string_list">
+			<maxLength value="16"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CHECKIMAGE_TYPE_list">
+		<list>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="NONE"/>
+					<enumeration value="IDENTICAL"/>
+					<enumeration value="BACKGROUND"/>
+					<enumeration value="BACKGROUND_RMS"/>
+					<enumeration value="MINIBACKGROUND"/>
+					<enumeration value="MINIBACK_RMS"/>
+					<enumeration value="-BACKGROUND"/>
+					<enumeration value="FILTERED"/>
+					<enumeration value="OBJECTS"/>
+					<enumeration value="-OBJECTS"/>
+					<enumeration value="APERTURES"/>
+					<enumeration value="SEGMENTATION"/>
+					<enumeration value="ASSOC"/>
+					<enumeration value="-PSF_PROTOS"/>
+					<enumeration value="PSF_PROTOS"/>
+					<enumeration value="-PC_CONVPROTOS"/>
+					<enumeration value="PC_CONVPROTOS"/>
+					<enumeration value="PC_PROTOS"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="CHECKIMAGE_TYPE">
+		<restriction base="sex:CHECKIMAGE_TYPE_list">
+			<maxLength value="16"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="CLEAN">
+		<restriction base="boolean"/>
+	</simpleType>
+	<simpleType name="CLEAN_PARAM">
+		<restriction base="double">
+			<minInclusive value="0.1"/>
+			<maxInclusive value="10.0"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DEBLEND_MINCONT">
+		<restriction base="double">
+			<minInclusive value="0.0"/>
+			<maxInclusive value="1.0"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DEBLEND_NTHRESH">
+		<restriction base="positiveInteger">
+			<maxInclusive value="64"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DETECT_MINAREA">
+		<restriction base="positiveInteger">
+			<maxInclusive value="1000000"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DETECT_THRESH">
+		<restriction base="sex:double_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="DETECT_TYPE">
+		<restriction base="string">
+			<enumeration value="CCD"/>
+			<enumeration value="PHOTO"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="FILTER">
+		<restriction base="boolean"/>
+	</simpleType>
+	<simpleType name="FILTER_NAME">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="FILTER_THRESH">
+		<restriction base="sex:double_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="FITS_UNSIGNED">
+		<restriction base="boolean"/>
+	</simpleType>
+	<simpleType name="FLAG_IMAGE">
+		<restriction base="sex:string_list">
+			<maxLength value="4"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="FLAG_TYPE">
+		<restriction base="string">
+			<enumeration value="OR"/>
+			<enumeration value="AND"/>
+			<enumeration value="MIN"/>
+			<enumeration value="MAX"/>
+			<enumeration value="MOST"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="GAIN">
+		<restriction base="double">
+			<minInclusive value="0.0"/>
+			<maxInclusive value="1.0E30"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="INTERP_MAXXLAG">
+		<restriction base="sex:nonNegativeInteger_list">
+			<maxInclusive value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="INTERP_MAXYLAG">
+		<restriction base="sex:nonNegativeInteger_list">
+			<maxInclusive value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="INTERP_TYPE_list">
+		<list>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="NONE"/>
+					<enumeration value="VAR_ONLY"/>
+					<enumeration value="ALL"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="INTERP_TYPE">
+		<restriction base="sex:INTERP_TYPE_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MAG_GAMMA">
+		<restriction base="double">
+			<minInclusive value="1.0E-10"/>
+			<maxInclusive value="1.0E30"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MAG_ZEROPOINT">
+		<restriction base="double">
+			<minInclusive value="-100.0"/>
+			<maxInclusive value="100.0"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MAMA_CORFLEX">
+		<restriction base="double">
+			<minInclusive value="-1.0"/>
+			<maxInclusive value="1.0"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MASK_TYPE">
+		<restriction base="string">
+			<enumeration value="NONE"/>
+			<enumeration value="BLANK"/>
+			<enumeration value="CORRECT"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MEMORY_BUFSIZE">
+		<restriction base="positiveInteger">
+			<minInclusive value="8"/>
+			<maxInclusive value="65534"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MEMORY_OBJSTACK">
+		<restriction base="positiveInteger">
+			<minInclusive value="16"/>
+			<maxInclusive value="65536"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="MEMORY_PIXSTACK">
+		<restriction base="positiveInteger">
+			<minInclusive value="1000"/>
+			<maxInclusive value="10000000"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PHOT_APERTURES_list">
+		<list>
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="0.0"/>
+					<maxInclusive value="2097152"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="PHOT_APERTURES">
+		<restriction base="sex:PHOT_APERTURES_list">
+			<maxLength value="32"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PHOT_AUTOPARAMS_list">
+		<list>
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="0.0"/>
+					<maxInclusive value="10.0"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="PHOT_AUTOPARAMS">
+		<restriction base="sex:PHOT_AUTOPARAMS_list">
+			<minLength value="2"/>
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PHOT_AUTOAPERS_list">
+		<list>
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="0.0"/>
+					<maxInclusive value="1.0E6"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="PHOT_AUTOAPERS">
+		<restriction base="sex:PHOT_AUTOAPERS_list">
+			<minLength value="2"/>
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PHOT_FLUXFRAC_list">
+		<list>
+			<simpleType>
+				<restriction base="double">
+					<minInclusive value="1.0E-6"/>
+					<maxInclusive value="1.0"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="PHOT_FLUXFRAC">
+		<restriction base="sex:PHOT_FLUXFRAC_list">
+			<maxLength value="32"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PIXEL_SCALE">
+		<restriction base="double">
+			<minInclusive value="0.0"/>
+			<maxInclusive value="1.0E10"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PSF_NAME">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="PSF_NMAX">
+		<restriction base="positiveInteger">
+			<maxInclusive value="11"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="PSFDISPLAY_TYPE">
+		<restriction base="string">
+			<enumeration value="SPLIT"/>
+			<enumeration value="VECTOR"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="SATUR_LEVEL">
+		<restriction base="float">
+			<minInclusive value="-1.0E30"/>
+			<maxInclusive value="1.0E30"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="SEEING_FWHM">
+		<restriction base="float">
+			<minInclusive value="1.0E-10"/>
+			<maxInclusive value="1.0E10"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="SOM_NAME">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="STARNNW_NAME">
+		<restriction base="string"/>
+	</simpleType>
+	<simpleType name="THRESH_TYPE_list">
+		<list>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="RELATIVE"/>
+					<enumeration value="ABSOLUTE"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="THRESH_TYPE">
+		<restriction base="sex:THRESH_TYPE_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="VERBOSE_TYPE">
+		<restriction base="string">
+			<enumeration value="QUIET"/>
+			<enumeration value="NORMAL"/>
+			<enumeration value="EXTRA_WARNINGS"/>
+			<enumeration value="FULL"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="WEIGHT_GAIN">
+		<restriction base="boolean"/>
+	</simpleType>
+	<simpleType name="WEIGHT_IMAGE">
+		<restriction base="sex:string_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="WEIGHT_THRESH">
+		<restriction base="sex:nonNegativeDouble_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="WEIGHT_TYPE_list">
+		<list>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="NONE"/>
+					<enumeration value="BACKGROUND"/>
+					<enumeration value="MAP_RMS"/>
+					<enumeration value="MAP_VAR"/>
+					<enumeration value="MAP_WEIGHT"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+	<simpleType name="WEIGHT_TYPE">
+		<restriction base="sex:WEIGHT_TYPE_list">
+			<maxLength value="2"/>
+		</restriction>
+	</simpleType>
+	<simpleType name="OUTPUT_COLUMNS">
+		<list>
+			<simpleType>
+				<restriction base="string">
+					<enumeration value="FLUX_ISO"/>
+					<enumeration value="FLUXERR_ISO"/>
+					<enumeration value="MAG_ISO"/>
+					<enumeration value="MAGERR_ISO"/>
+					<enumeration value="FLUX_ISOCOR"/>
+					<enumeration value="FLUXERR_ISOCOR"/>
+					<enumeration value="MAG_ISOCOR"/>
+					<enumeration value="MAGERR_ISOCOR"/>
+					<enumeration value="FLUX_AUTO"/>
+					<enumeration value="FLUXERR_AUTO"/>
+					<enumeration value="MAG_AUTO"/>
+					<enumeration value="MAGERR_AUTO"/>
+					<enumeration value="FLUX_BEST"/>
+					<enumeration value="FLUXERR_BEST"/>
+					<enumeration value="MAG_BEST"/>
+					<enumeration value="MAGERR_BEST"/>
+					<enumeration value="FLUX_PROFILE"/>
+					<enumeration value="FLUXERR_PROFILE"/>
+					<enumeration value="MAG_PROFILE"/>
+					<enumeration value="MAGERR_PROFILE"/>
+					<enumeration value="FLUX_SOMFIT"/>
+					<enumeration value="FLUXERR_SOMFIT"/>
+					<enumeration value="MAG_SOMFIT"/>
+					<enumeration value="MAGERR_SOMFIT"/>
+					<enumeration value="ERROR_SOMFIT"/>
+					<enumeration value="FLUX_GALFIT"/>
+					<enumeration value="FLUXERR_GALFIT"/>
+					<enumeration value="MAG_GALFIT"/>
+					<enumeration value="MAGERR_GALFIT"/>
+					<enumeration value="ERROR_GALFIT"/>
+					<enumeration value="GALDANG_IMAGE"/>
+					<enumeration value="GALDSCALE_IMAGE"/>
+					<enumeration value="GALDASPEC_IMAGE"/>
+					<enumeration value="GALDE1_IMAGE"/>
+					<enumeration value="GALDE2_IMAGE"/>
+					<enumeration value="GALBRATIO_IMAGE"/>
+					<enumeration value="GALBANG_IMAGE"/>
+					<enumeration value="GALBSCALE_IMAGE"/>
+					<enumeration value="GALBASPEC_IMAGE"/>
+					<enumeration value="KRON_RADIUS"/>
+					<enumeration value="BACKGROUND"/>
+					<enumeration value="THRESHOLD"/>
+					<enumeration value="FLUX_MAX"/>
+					<enumeration value="ISOAREA_IMAGE"/>
+					<enumeration value="ISOAREAF_IMAGE"/>
+					<enumeration value="XMIN_IMAGE"/>
+					<enumeration value="YMIN_IMAGE"/>
+					<enumeration value="XMAX_IMAGE"/>
+					<enumeration value="YMAX_IMAGE"/>
+					<enumeration value="XPEAK_IMAGE"/>
+					<enumeration value="YPEAK_IMAGE"/>
+					<enumeration value="XPEAK_WORLD"/>
+					<enumeration value="YPEAK_WORLD"/>
+					<enumeration value="ALPHAPEAK_SKY"/>
+					<enumeration value="DELTAPEAK_SKY"/>
+					<enumeration value="ALPHAPEAK_J2000"/>
+					<enumeration value="DELTAPEAK_J2000"/>
+					<enumeration value="ALPHAPEAK_B1950"/>
+					<enumeration value="DELTAPEAK_B1950"/>
+					<enumeration value="X_IMAGE"/>
+					<enumeration value="Y_IMAGE"/>
+					<enumeration value="X_IMAGE_DBL"/>
+					<enumeration value="Y_IMAGE_DBL"/>
+					<enumeration value="X_WORLD"/>
+					<enumeration value="Y_WORLD"/>
+					<enumeration value="X_MAMA"/>
+					<enumeration value="Y_MAMA"/>
+					<enumeration value="ALPHA_SKY"/>
+					<enumeration value="DELTA_SKY"/>
+					<enumeration value="ALPHA_J2000"/>
+					<enumeration value="DELTA_J2000"/>
+					<enumeration value="ALPHA_B1950"/>
+					<enumeration value="DELTA_B1950"/>
+					<enumeration value="X2_IMAGE"/>
+					<enumeration value="Y2_IMAGE"/>
+					<enumeration value="XY_IMAGE"/>
+					<enumeration value="X2_WORLD"/>
+					<enumeration value="Y2_WORLD"/>
+					<enumeration value="XY_WORLD"/>
+					<enumeration value="CXX_IMAGE"/>
+					<enumeration value="CYY_IMAGE"/>
+					<enumeration value="CXY_IMAGE"/>
+					<enumeration value="CXX_WORLD"/>
+					<enumeration value="CYY_WORLD"/>
+					<enumeration value="CXY_WORLD"/>
+					<enumeration value="A_IMAGE"/>
+					<enumeration value="B_IMAGE"/>
+					<enumeration value="THETA_IMAGE"/>
+					<enumeration value="A_WORLD"/>
+					<enumeration value="B_WORLD"/>
+					<enumeration value="THETA_WORLD"/>
+					<enumeration value="THETA_SKY"/>
+					<enumeration value="THETA_J2000"/>
+					<enumeration value="THETA_B1950"/>
+					<enumeration value="ERRX2_IMAGE"/>
+					<enumeration value="ERRY2_IMAGE"/>
+					<enumeration value="ERRXY_IMAGE"/>
+					<enumeration value="ERRX2_WORLD"/>
+					<enumeration value="ERRY2_WORLD"/>
+					<enumeration value="ERRXY_WORLD"/>
+					<enumeration value="ERRCXX_IMAGE"/>
+					<enumeration value="ERRCYY_IMAGE"/>
+					<enumeration value="ERRCXY_IMAGE"/>
+					<enumeration value="ERRCXX_WORLD"/>
+					<enumeration value="ERRCYY_WORLD"/>
+					<enumeration value="ERRCXY_WORLD"/>
+					<enumeration value="ERRA_IMAGE"/>
+					<enumeration value="ERRB_IMAGE"/>
+					<enumeration value="ERRTHETA_IMAGE"/>
+					<enumeration value="ERRA_WORLD"/>
+					<enumeration value="ERRB_WORLD"/>
+					<enumeration value="ERRTHETA_WORLD"/>
+					<enumeration value="ERRTHETA_SKY"/>
+					<enumeration value="ERRTHETA_J2000"/>
+					<enumeration value="ERRTHETA_B1950"/>
+					<enumeration value="MU_THRESHOLD"/>
+					<enumeration value="MU_MAX"/>
+					<enumeration value="ISOAREA_WORLD"/>
+					<enumeration value="ISOAREAF_WORLD"/>
+					<enumeration value="ISO0"/>
+					<enumeration value="ISO1"/>
+					<enumeration value="ISO2"/>
+					<enumeration value="ISO3"/>
+					<enumeration value="ISO4"/>
+					<enumeration value="ISO5"/>
+					<enumeration value="ISO6"/>
+					<enumeration value="ISO7"/>
+					<enumeration value="FLAGS"/>
+					<enumeration value="IMAFLAGS_ISO"/>
+					<enumeration value="NIMAFLAGS_ISO"/>
+					<enumeration value="FWHM_IMAGE"/>
+					<enumeration value="FWHM_WORLD"/>
+					<enumeration value="ELONGATION"/>
+					<enumeration value="ELLIPTICITY"/>
+					<enumeration value="CLASS_STAR"/>
+					<enumeration value="NUMBER_ASSOC"/>
+					<enumeration value="THRESHOLDMAX"/>
+					<enumeration value="FLUX_GROWTHSTEP"/>
+					<enumeration value="MAG_GROWTH"/>
+					<enumeration value="MAG_GROWTHSTEP"/>
+					<enumeration value="FLUX_RADIUS"/>
+					<enumeration value="XPSF_IMAGE"/>
+					<enumeration value="YPSF_IMAGE"/>
+					<enumeration value="XPSF_WORLD"/>
+					<enumeration value="YPSF_WORLD"/>
+					<enumeration value="ALPHAPSF_SKY"/>
+					<enumeration value="DELTAPSF_SKY"/>
+					<enumeration value="ALPHAPSF_J2000"/>
+					<enumeration value="DELTAPSF_J2000"/>
+					<enumeration value="ALPHAPSF_B1950"/>
+					<enumeration value="DELTAPSF_B1950"/>
+					<enumeration value="FLUX_PSF"/>
+					<enumeration value="FLUXERR_PSF"/>
+					<enumeration value="MAG_PSF"/>
+					<enumeration value="MAGERR_PSF"/>
+					<enumeration value="NITER_PSF"/>
+					<enumeration value="CHI2_PSF"/>
+					<enumeration value="ERRX2PSF_IMAGE"/>
+					<enumeration value="ERRY2PSF_IMAGE"/>
+					<enumeration value="ERRXYPSF_IMAGE"/>
+					<enumeration value="ERRX2PSF_WORLD"/>
+					<enumeration value="ERRY2PSF_WORLD"/>
+					<enumeration value="ERRXYPSF_WORLD"/>
+					<enumeration value="ERRCXXPSF_IMAGE"/>
+					<enumeration value="ERRCYYPSF_IMAGE"/>
+					<enumeration value="ERRCXYPSF_IMAGE"/>
+					<enumeration value="ERRCXXPSF_WORLD"/>
+					<enumeration value="ERRCYYPSF_WORLD"/>
+					<enumeration value="ERRCXYPSF_WORLD"/>
+					<enumeration value="ERRAPSF_IMAGE"/>
+					<enumeration value="ERRBPSF_IMAGE"/>
+					<enumeration value="ERRTHTPSF_IMAGE"/>
+					<enumeration value="ERRAPSF_WORLD"/>
+					<enumeration value="ERRBPSF_WORLD"/>
+					<enumeration value="ERRTHTPSF_WORLD"/>
+					<enumeration value="ERRTHTPSF_SKY"/>
+					<enumeration value="ERRTHTPSF_J2000"/>
+					<enumeration value="ERRTHTPSF_B1950"/>
+					<enumeration value="X2PC_IMAGE"/>
+					<enumeration value="Y2PC_IMAGE"/>
+					<enumeration value="XYPC_IMAGE"/>
+					<enumeration value="APC_IMAGE"/>
+					<enumeration value="BPC_IMAGE"/>
+					<enumeration value="THETAPC_IMAGE"/>
+					<enumeration value="PC"/>
+					<enumeration value="FLUX_APER"/>
+					<enumeration value="FLUXERR_APER"/>
+					<enumeration value="MAG_APER"/>
+					<enumeration value="MAGERR_APER"/>
+					<enumeration value="VECTOR_SOMFIT"/>
+					<enumeration value="VECTOR_ASSOC"/>
+					<enumeration value="FLUX_GROWTH"/>
+					<enumeration value="VIGNET"/>
+					<enumeration value="VIGNET_SHIFT"/>
+				</restriction>
+			</simpleType>
+		</list>
+	</simpleType>
+</schema>

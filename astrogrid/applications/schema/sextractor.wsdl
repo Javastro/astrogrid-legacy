@@ -1,0 +1,30 @@
+<!-- $Id: sextractor.wsdl,v 1.1 2003/11/23 22:21:43 pah Exp $ -->
+<wsdl:definitions xmlns:intf="urn:interface.sextractor.astrogrid.org" xmlns:sex="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:interface.sextractor.astrogrid.org">
+	<wsdl:types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3">
+			<import schemaLocation="AGParameterDefinition.xsd" namespace="http://www.astrogrid.org/schema/AGParameterDefinition"/>
+			<import schemaLocation="SExtractorParameters-simple.xsd" namespace="http://www.astrogrid.org/schema/applications/SExtractorV2.3"/>
+		</schema>
+	</wsdl:types>
+	<wsdl:message name="allParameters">
+		<!-- note that this section is not yet complete - it does not reference all of the parameters that are possible yet - just a selection -->
+		<wsdl:part name="ANALYSIS_THRESH" type="sex:ANALYSIS_THRESH"/>
+	</wsdl:message>
+	<wsdl:message name="SExtractorResult">
+		<wsdl:part name="catalogue" type="sex:ANALYSIS_THRESH">
+		<UI_name></UI_name>
+		<UI_Description></UI_Description>
+		<DefaultValue></DefaultValue>
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="configFiles">
+		<!-- the intention of this part is that configuration files are picked up from MySpace -->
+		<wsdl:part name="mainconfig" type="agpd:MySpace_FileReference"/>
+	</wsdl:message>
+	<wsdl:portType name="SExtractor">
+		<wsdl:operation name="runWithFullParameters" parameterOrder="ANALYSIS_THRESH">
+			<wsdl:input name="allParameters" message="intf:allParameters"/>
+			<wsdl:output name="SExtractorResult" message="intf:SExtractorResult"/>
+		</wsdl:operation>
+	</wsdl:portType>
+</wsdl:definitions>

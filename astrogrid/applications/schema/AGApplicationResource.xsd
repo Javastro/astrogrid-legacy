@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/ApplicationResource/v0.1" xmlns:agar="http://www.astrogrid.org/schema/ApplicationResource/v0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://www.w3.org/2003/06/wsdl" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation>This schema will be the schema of the wsdl like descripton of the application - abandoning this now, because wsdl1.1 is too old to make this possible and wsdl 1.2 seems to be being superceded by wsdl 2.0, whihc does now have a functioning schema at the moment...</xs:documentation>
+	</xs:annotation>
+	<xs:import namespace="http://www.w3.org/2003/06/wsdl" schemaLocation="wsdl12.xsd"/>
+</xs:schema>
