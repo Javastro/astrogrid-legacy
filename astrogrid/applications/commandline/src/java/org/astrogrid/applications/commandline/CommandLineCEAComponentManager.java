@@ -1,4 +1,4 @@
-/*$Id: CommandLineCEAComponentManager.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: CommandLineCEAComponentManager.java,v 1.3 2004/07/09 11:00:41 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,8 +44,13 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
         // base cea server also needs a provider for vodescription - registry entry builder does the job.        
         EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
         //auto-registration with registry -- appropriate for this cea server.
+        /* temporarily commented out - kevin suspects this causes problems in auto-integration
+         * when server is restarted, as cea-commandline comes up before registry - so can't register.
+         * which sounds fair enought, but kevin thinks this is causing the whole system to hang.
+         * @todo - investigate
+         
         EmptyCEAComponentManager.registerDefaultRegistryUploader(pico);
-        
+        */
         // now need the other side - the cec manager itself.
         EmptyCEAComponentManager.registerDefaultServices(pico);        
         EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
@@ -92,6 +97,9 @@ public class CommandLineCEAComponentManager extends EmptyCEAComponentManager imp
 
 /* 
 $Log: CommandLineCEAComponentManager.java,v $
+Revision 1.3  2004/07/09 11:00:41  nw
+removed auto-registration component for now
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization
