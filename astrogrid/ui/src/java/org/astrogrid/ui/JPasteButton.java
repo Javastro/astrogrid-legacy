@@ -1,5 +1,5 @@
 /*
-   $Id: JPasteButton.java,v 1.3 2002/12/09 22:48:31 mch Exp $
+   $Id: JPasteButton.java,v 1.4 2002/12/18 12:58:19 mch Exp $
 
    Date       Author      Changes
    19 Oct 2002 M Hill      Created

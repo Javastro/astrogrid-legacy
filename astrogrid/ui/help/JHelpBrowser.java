@@ -59,7 +59,7 @@ public class JHelpBrowser extends JFrame implements HelpBrowser, ActionListener
       getContentPane().add(scroller, BorderLayout.CENTER);
       getContentPane().add(controlPanel, BorderLayout.SOUTH);
          
-      new mch.ui.EscEnterListener(this, doneButton, doneButton);
+      new org.astrogrid.ui.EscEnterListener(this, doneButton, doneButton);
 //    textPane.setBackground(Help.getBackground());
 //    textPane.setForeground(Help.getForeground());
    }

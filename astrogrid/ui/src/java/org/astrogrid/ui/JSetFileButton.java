@@ -1,5 +1,5 @@
 /*
-   $Id: JSetFileButton.java,v 1.4 2002/12/13 16:41:15 mch Exp $
+   $Id: JSetFileButton.java,v 1.5 2002/12/18 12:58:19 mch Exp $
 
    Date       Author      Changes
    $date$     M Hill      Created

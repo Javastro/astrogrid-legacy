@@ -12,16 +12,16 @@ public class Angle
 {
    /** Internal representation is degrees */
    private double degs = 0;
-   
+
    /** Ratio of radians to degrees */
    public final static double RAD2DEG = 360/Math.PI;
 
    /** Ratio of degrees to radians */
    public final static double DEG2RAD = Math.PI/360;
-   
+
    /** Ratio of degrees to mils (military units) */
    public final static int DEG2MIL = 20;
-   
+
    /** Blank constructor */
    public Angle() {}
 
@@ -36,7 +36,7 @@ public class Angle
    {
       degs = anAngleInDegrees;
    }
-   
+
    /** Set angle from degrees, minutes and seconds */
    public void setAngle(int aDeg, int aMin, int aSec)
    {
@@ -52,7 +52,7 @@ public class Angle
 
    /** Set angle from angle measured in degrees */
    public void setDegrees(double d)     {  degs = d;   }
-   
+
    /** Sets angle from angle measured in radians */
    public void setRadians(double rad)   {  degs = RAD2DEG * rad;   }
 
@@ -61,7 +61,7 @@ public class Angle
 
    /** Set angle from angle measured in mils (military units) */
    public void setMils(double mils)    {  degs = mils/DEG2MIL; }
-   
+
    /** Set angle from angle measured in minutes of an arc */
    public void setArcMins(double arcmins)    {  degs = arcmins/60; }
 
@@ -73,7 +73,7 @@ public class Angle
 
    /** Return internal representation of angle */
    private double getAngle()              {  return degs;   }
-   
+
    /** Return whole degrees of angle */
    public int getDegrees()                {  return (asSecs() / 3600) % 360;  }
 
@@ -85,19 +85,19 @@ public class Angle
 
    /** Return angle in seconds of an arc */
    public int asSecs()                 {  return (int) (degs * 3600);         }
-   
+
    /** Return angle in radians */
    public double asRadians()              {  return (degs*DEG2RAD);        }
-   
+
    /** Return angle in degrees */
    public double asDegrees()           {  return degs;      }
-   
+
    /** Return angle in mils (military units) */
    public double asMils()              { return degs*DEG2MIL; }
 
    /** Return angle in minutes of an arc */
    public double asArcMins()           { return degs*60; }
-   
+
    /** Return angle in seconds of an arc */
    public double asArcSecs()           { return degs*3600; }
 
@@ -117,7 +117,15 @@ public class Angle
       return padZero(getDegrees())+" "+padZero(getMins())+" "+padZero(getSecs());
    }
 
-   
+   /**
+    * Returns hours mins secs, with secs inc millisecs
+    */
+   public String toHrsMinSec()
+   {
+      return padZero(getDegrees())+" "+padZero(getMins())+" "+padZero(getSecs());
+   }
+
+
    private String padZero(int i)
    {
       if ((i>=0) && (i<10)) return "0"+i; else return ""+i;

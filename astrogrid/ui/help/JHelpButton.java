@@ -1,5 +1,5 @@
 /*
-   $Id: JHelpButton.java,v 1.1 2002/12/13 16:33:22 mch Exp $
+   $Id: JHelpButton.java,v 1.2 2002/12/18 12:58:19 mch Exp $
 
    Date       Author      Changes
    12 Dec 02  M Hill      Created

@@ -4,6 +4,7 @@ import java.util.*;
 import java.awt.Color;
 import java.net.*;
 
+import org.astrogrid.log.Log;
 /**
  * A singleton class providing factory methods for help adaptors to use when
  * creating browsers, etc. There is an option for whether only one browser
@@ -61,7 +62,7 @@ public class Help implements HelpKeys
       }
       catch (MalformedURLException mue)
       {
-         log.Log.logError("Help ("+helpPage+") gives illegal URL ("+dictionary.get(helpPage)+") ",mue);
+         Log.logError("Help ("+helpPage+") gives illegal URL ("+dictionary.get(helpPage)+") ",mue);
       }
       catch (HelpNotFoundException hnfe)
       {
@@ -74,16 +75,16 @@ public class Help implements HelpKeys
             }
             catch (MalformedURLException mue)
             {
-               log.Log.logError("Help ("+helpPage+") gives illegal URL ("+dictionary.get(helpPage)+") ",mue);
+               Log.logError("Help ("+helpPage+") gives illegal URL ("+dictionary.get(helpPage)+") ",mue);
             }
             catch (HelpNotFoundException hnfeAgain)
             {
-               log.Log.logError("Help ("+helpPage+") & Help Fallback page ("+fallbackPage+") Not Found: "+hnfe,hnfe.getCause());
+               Log.logError("Help ("+helpPage+") & Help Fallback page ("+fallbackPage+") Not Found: "+hnfe,hnfe.getCause());
             }
          }
          else
          {
-            log.Log.logError("Help Not Found: "+hnfe,hnfe.getCause());
+            Log.logError("Help Not Found: "+hnfe,hnfe.getCause());
          }
       }
       

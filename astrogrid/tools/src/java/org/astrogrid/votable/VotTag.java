@@ -115,7 +115,7 @@ public class VotTag extends AbstractVotTag
 
       public void writeCooSys(String id, String system, String equinox, String epoch) throws IOException
       {
-         xmlOut.writeIndentedLine("<COOSYS ID=\""+id+"\" system=\""+system+"\" equinox=\""+equinox+"\" epoch=\""+epoch+"\"/>");
+         xmlOut.writeLine("<COOSYS ID=\""+id+"\" system=\""+system+"\" equinox=\""+equinox+"\" epoch=\""+epoch+"\"/>");
       }
    }
 
@@ -134,11 +134,11 @@ public class VotTag extends AbstractVotTag
 
       public void writeParam(String id, String datatype, String value) throws IOException
       {
-         xmlOut.writeIndentedLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" value=\""+value+"\"/>");
+         xmlOut.writeLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" value=\""+value+"\"/>");
       }
       public void writeParam(String id, String datatype, String arraysize, String value) throws IOException
       {
-         xmlOut.writeIndentedLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" arraysize=\""+arraysize+"\" value=\""+value+"\"/>");
+         xmlOut.writeLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" arraysize=\""+arraysize+"\" value=\""+value+"\"/>");
       }
       public TableTag newTableTag() throws IOException
       {
@@ -166,6 +166,10 @@ public class VotTag extends AbstractVotTag
             + " name=\""+fieldDesc.getName()+"\""
             + " datatype=\""+fieldDesc.getDatatype()+"\"";
 
+         if (fieldDesc.getUnits() != null)
+         {
+            line = line + " unit=\""+fieldDesc.getUnits()+"\"";
+         }
          if (fieldDesc.getUcd() != null)
          {
             line = line + " ucd=\""+fieldDesc.getUcd()+"\"";
@@ -177,11 +181,11 @@ public class VotTag extends AbstractVotTag
             else
                line = line + " arraysize=\""+fieldDesc.getArraysize()+"\"";
 
-         xmlOut.writeIndentedLine(line + ">");
+         xmlOut.writeLine(line + ">");
 
-         xmlOut.writeIndentedLine("   "+fieldDesc.getDescription());
+         xmlOut.writeIndentedLine(fieldDesc.getDescription());
 
-         xmlOut.writeIndentedLine("</FIELD>");
+         xmlOut.writeLine("</FIELD>");
 
          addFieldDescriptor(fieldDesc); //so we can validate table cell values
       }

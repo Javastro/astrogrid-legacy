@@ -1,5 +1,5 @@
 /*
-   $Id: VotOutputStream.java,v 1.2 2002/12/13 16:40:32 mch Exp $
+   $Id: VotOutputStream.java,v 1.3 2002/12/18 12:58:19 mch Exp $
 
    Date       Author      Changes
    $date$     M Hill      Created

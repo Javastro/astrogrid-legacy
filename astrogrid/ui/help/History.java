@@ -3,7 +3,7 @@ package org.astrogrid.ui.help;
 import java.util.Vector;
 import javax.swing.tree.*;
 import java.awt.event.*;
-import log.Log;
+import org.astrogrid.log.Log;
 
 /**
  * History (from the navigator package)
