@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.141 2005/04/05 16:40:14 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.142 2005/04/06 10:46:10 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -43,7 +43,19 @@
 <property name="cea.reg.template" value="file://${work.dir}/cea/CEARegistryTemplate.xml"/>
 <property name="toolbasedir" value="${work.dir}/cea/commandline/work/" />
 <property name="registry.exclusions" value="examples/**" />
-	
+
+<!--Context paths--> <!--remove these to a file?-->
+<property name="aginab.jes.contextpath" value="/astrogrid-jes-SNAPSHOT"/>
+<property name="aginab.filestore1.contextpath" value="/astrogrid-filestore-one-SNAPSHOT"/>
+<property name="aginab.filemanager1.contextpath" value="/astrogrid-filemanager-one-SNAPSHOT"/>
+<property name="aginab.portal.contextpath" value="/astrogrid-portal"/> <!--Do not change this one-->
+<property name="aginab.registry.contextpath" value="/astrogrid-registry-SNAPSHOT"/>
+
+
+<!--Component URLs-->
+<property name="aginab.jes.url" value="${tomcat.url}${aginab.jes.contextpath}/"/>
+<property name="aginab.portal.url" value="${tomcat.url}${aginab.portal.contextpath}/"/>
+<property name="aginab.registry.url" value="${tomcat.url}${aginab.registry.contextpath}/"/>
 		
 <!--+
     | need to rationalize the use of the astrogrid.iteration - pah
@@ -691,17 +703,6 @@
 </goal>
 
 <!-- context- driven webapps ////////////////////////////////-->
-<goal name="jes-deploy">
-        <copy todir="${temporary.dir}/jes" filtering="true">
-                <fileset dir="contexts/jes" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="jes" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-jes-${astrogrid.jes.version}.war">
-                <metainf dir="${temporary.dir}/jes"/>
-        </war>
-  <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-jes-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-jes-${astrogrid.jes.version}.war"/>
-</goal>
 
 <goal name="cea-server-deploy"   >
         <copy todir="${temporary.dir}/cea-server" filtering="true">
@@ -953,18 +954,90 @@
         </goal>
 
 
-<goal name="portal-deploy">
-        <copy todir="${temporary.dir}/portal" filtering="true">
-                <fileset dir="contexts/portal" />
-        </copy>
-       <ag:maybe-enable-cougaar webapp="portal" />
-        <war update="true" destfile="${temporary.dir}/astrogrid-portal-${astrogrid.portal.version}.war">
-                <metainf dir="${temporary.dir}/portal" />
-        </war>
+<goal name="override-input-task">
+    <echo>The Input Task in Ant 1.5.3 hangs when a property has already been set...overriding with that from Ant 1.6</echo>
+    <taskdef name="input" classname="org.apache.tools.ant1point6.taskdefs.Input" classpathref="maven.dependency.classpath"/>
+    <property name="input.test" value="foo"/>
+    <input addProperty="input.test">If this has worked, execution should continue at this point</input>
+</goal>
 
-        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal" war="file:///${temporary.dir}/astrogrid-portal-${astrogrid.portal.version}.war" />
 
+<!--
+    Deploy/Undeploy Portal
+    -->
+
+    <!--Portal deploy/undeploy is now handled by a self-contained Ant script in the portal project itself.
+    Please see astrogrid/portal/deployment -->
+<goal name="portal-deploy" prereqs="override-input-task,init,portal-init">
+        <ant dir="${portal.deployment.jar.unpacked}" target="install-portal" >
+            <property name="tasks.already.set" value="yes"/>
+            <property name="input.tomcat.present" value="yes"/>
+            <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.astrogrid.jes.endpoint" value="${aginab.jes.url}"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.mail.admin" value="jdt@roe.ac.uk"/>
+            <property name="input.mail.server" value="127.0.0.1"/>
+            <property name="input.mail.from" value="donotreply@astrogrid.org"/>
+            <property name="input.mail.user" value="astrogrid"/>
+            <property name="input.mail.pass" value=""/>
+      </ant>
+</goal>
+<goal name="portal-undeploy" prereqs="override-input-task,init,portal-init">
+        <ant dir="${portal.deployment.jar.unpacked}" target="uninstall-portal" >
+            <property name="tasks.already.set" value="yes"/>
+            <property name="input.tomcat.present" value="yes"/>
+            <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+          
+        </ant>
+</goal>
+<goal name="portal-init">
+   <property name="portal.deployment.jar.unpacked" value="${temporary.dir}/portal"/>
+   <unjar src="${temporary.dir}/astrogrid-portal-deploy-script-${astrogrid.portal.version}.jar" dest="${portal.deployment.jar.unpacked}"/>
+</goal>
+
+
+<!--
+    Deploy/Undeploy JES
+    -->
+
+    <!--JES deploy/undeploy is now handled by a self-contained Ant script in the jes project itself.
+    Please see astrogrid/jes/deployment -->
+    
+<goal name="jes-deploy" prereqs="override-input-task,init,jes-init">
+        <ant dir="${jes.deployment.jar.unpacked}" target="install-jes" >
+            <property name="tasks.already.set" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.jes.working.dir" value="${work.dir}/jes"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.eraseworking" value="Do it"/>
+            <property name="input.jes.contextpath" value="${aginab.jes.contextpath}"/>
+      </ant>
+</goal>
+
+<goal name="jes-undeploy" >
+        <ant dir="${jes.deployment.jar.unpacked}" target="remove-jes" >
+            <property name="tasks.already.set" value="yes"/>
+            <property name="input.tomcat.present" value="continue"/>
+            <property name="input.tomcat.url" value="${tomcat.manager.url}"/>
+            <property name="input.tomcat.manager.user" value="${tomcat.manager.username}"/>
+            <property name="input.tomcat.manager.pass" value="${tomcat.manager.password}"/>
+            <property name="input.jes.working.dir" value="${work.dir}/jes"/>
+            <property name="input.astrogrid.registry.endpoint" value="${aginab.registry.url}"/>
+            <property name="input.eraseworking" value="Do it"/>
+            <property name="input.jes.contextpath" value="${aginab.jes.contextpath}"/>
+      </ant>
+</goal>
+<goal name="jes-init">
+   <property name="jes.deployment.jar.unpacked" value="${temporary.dir}/jes"/>
+   <unjar src="${temporary.dir}/astrogrid-jes-deploy-script-${astrogrid.jes.version}.jar" 
+    dest="${jes.deployment.jar.unpacked}"/>
 </goal>
 
 
@@ -1075,12 +1148,6 @@
           path="/astrogrid-cea-http-${pom.currentVersion}" />
 
 </goal>
-<goal name="jes-undeploy" >
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-jes-${pom.currentVersion}" />
-
-</goal>
 
 
 <goal name="pal-undeploy" >
@@ -1126,12 +1193,7 @@
 </goal>
 
 
-<goal name="portal-undeploy">
 
-        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-portal" />
-
-</goal>
 
 <goal name="community-undeploy" >
 
