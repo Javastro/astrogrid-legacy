@@ -1,4 +1,4 @@
-/*$Id: TypeStructureTransformer.java,v 1.1 2005/02/22 01:10:31 nw Exp $
+/*$Id: TypeStructureTransformer.java,v 1.2 2005/02/22 13:55:21 nw Exp $
  * Created on 21-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,11 @@ import org.exolab.castor.xml.Marshaller;
 
 import com.sun.rsasign.d;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
@@ -109,6 +113,12 @@ public class TypeStructureTransformer implements Transformer {
             String name = props[i].getName();
             if ("class".equals(name)) { // don't want to persist this one - causes an infinite loop.
                 continue;
+            } // don't want the following either.
+            if (InputStream.class.isAssignableFrom( props[i].getType()) 
+                    || OutputStream.class.isAssignableFrom(props[i].getType() )
+                    || Reader.class.isAssignableFrom(props[i].getType())
+                    || Writer.class.isAssignableFrom(props[i].getType())){
+                continue;
             }
            //@todo handle indexed and mapped properties, if needed.
             Object value = db.get(name);
@@ -129,6 +139,9 @@ public class TypeStructureTransformer implements Transformer {
 
 /* 
 $Log: TypeStructureTransformer.java,v $
+Revision 1.2  2005/02/22 13:55:21  nw
+got vospace ls working.
+
 Revision 1.1  2005/02/22 01:10:31  nw
 enough of a prototype here to do a show-n-tell on.
  

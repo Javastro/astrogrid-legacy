@@ -1,4 +1,4 @@
-/*$Id: Vospace.java,v 1.2 2005/02/22 01:10:31 nw Exp $
+/*$Id: Vospace.java,v 1.3 2005/02/22 13:55:21 nw Exp $
  * Created on 02-Feb-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -240,11 +240,11 @@ public class Vospace implements Observer {
     public void update(Observable o, Object arg) {
         if (community.isLoggedIn()) {
             getVospaceClient(); // initializes objects.
-        } /*else {
+        } else {
             root = null;
             client = null;
             utils = null;
-        }*/
+        }
     }
     
 
@@ -255,6 +255,9 @@ public class Vospace implements Observer {
 
 /* 
 $Log: Vospace.java,v $
+Revision 1.3  2005/02/22 13:55:21  nw
+got vospace ls working.
+
 Revision 1.2  2005/02/22 01:10:31  nw
 enough of a prototype here to do a show-n-tell on.
 
