@@ -1,0 +1,104 @@
+INTEGRATION NOTES FOR IT03 REGISTRY
+
+Elizabeth Auden
+eca@mssl.ucl.ac.uk
+22 October 2003
+Registry It03 WGL
+
+I. Table of Contents
+
+   1. Status of Registry on uml03
+   2. Delegates
+   3. Jar Files
+   4. Dependencies
+   5. Installation Notes
+   6. Test Script
+   7. Testing with Other Components
+   8. Additional Code / Support Required
+
+II. Status Report
+
+1. Status of Registry on uml03
+
+The Registry browser web service, back end java files, and XML registry file are all deployed on uml03.  The Registry Admin web service and back end java files are also deployed on uml03.  Status: both components were up and running as of 5:30 pm on 21/10/03.
+
+The Registry and Registry Admin XSP, XSL, and XML files have been integrated with the portalB GUI on uml02 and are also operating correctly as of 5:30 pm on 21/10/03.
+
+2. Delegates
+
+There are two Registry delegates:
+2.1. CVS/devel/astrogrid/registry/src/java/org/astrogrid/registry/delegate/RegistryDelegate
+2.2. CVS/devel/astrogrid/registry/src/java/org/astrogrid/registry/delegate/RegistryAdmin
+Delegate
+
+RegistryDelegate is version 1.1 and RegistryAdminDelegate is version 1.2.
+   
+3. Jar Files
+
+activation.jar 
+axis.jar 
+commons-cli-1.0.jar 
+commons-discovery.jar 
+commons-logging.jar 
+concurrent.jar 
+jaxrpc.jar 
+jms.jar 
+junit.jar
+log4j-1.2.4.jar 
+mail.jar 
+saaj.jar 
+servlet.jar 
+soap.jar 
+wsdl4j.jar 
+xerces.jar 
+xml4j.jar 
+xmlBlaster.jar 
+xqlpdom_1_0_2.jar 
+
+4. Dependencies
+
+Axis 1.1
+JUnit 3.8
+Tomcat 4.1.24 (or later)
+
+5. Installation Notes
+
+5.1. Change to the $TOMCAT_HOME/webapps directory and create directory org/astrogrid if it does not already exist.  Copy CVS /devel/astrogrid/registry/config/registry_files.zip into this directory.  * Rename the file * to registry.zip  and unzip.  Change to directory /org/astrogrid/registry and open file parameters_v1_0.xml.  Edit the <registryFilename> element to reflect the URL of the registry deployment site.  For example, if the site's Tomcat index page can be seen at http://www.yoursite.com:8080,  change
+
+<registryFilename>http://143.210.36.175:8080/org/astrogrid/registry/registry_v1_1.xml </registryFilename>
+
+to 
+
+<registryFilename>http://www.yoursite.com:8080/org/astrogrid/registry/registry_v1_1.xml</registryFilename>
+
+5.2. Change to the $TOMCAT_HOME/webapps/axis/WEB-INF/classes directory.  Create directory org/astrogrid if it does not already exist.  Copy CVS /devel/astrogrid/registry/config/registry.zip to this directory and unzip.
+
+5.3. View the deploy.wsdd file in the $TOMCAT_HOME/webapps/axis/WEB-INF/classes directory.  Add the following lines to deploy.wsdd:
+
+<service name="RegistryAdminService" provider="java:RPC">
+<parameter name="className" value="org.astrogrid.registry.RegistryAdminService"/>
+<parameter name="allowedMethods" value="adminQuery"/>
+</service>
+
+<service name="RegistryInterface3_0" provider="java:RPC">
+<parameter name="className" value="org.astrogrid.registry.RegistryInterface3_0"/>
+<parameter name="allowedMethods" value="*"/>
+</service>
+
+5.4. Stop and restart Tomcat.  Navigate to the directory holding deploy.wsdd and run the command "java org.apache.axis.client.AdminClient  deploy.wsdd".
+
+5.5. The registry browser and admin web services are now deployed.
+
+6. Test Script
+
+Please see the file "RegistryTestScript.txt".
+
+7. Testing with Other Components
+
+The Registry and Registry Admin GUI pages have been integrated with the Portal B GUI on uml02 and are operating correctly.  The Registry is also used by the Data Query component that sends requests to the Workflow component.  i
+
+8. Additional Code / Support Required
+
+The Registry and Registry Admin GUI pages and web service still need the security code installed.  Currently, both GUI pages and web service can be accessed on http://uml02.astrogrid.org:8080 without having to login at aglogin.html.  I've been told that this is not difficult to fix, but I need someone to point me at the right documentation or code.  The other time constraint is that with meetings / holiday, I will only have 3 - 4 days of coding time between 21/10/03 and 01/12/03.
+
+The Registry and Registry Admin GUI pages both reference agtemplate.xsl instead of astrogrid.xsl.  However, this does not affect either current style or operation.  As the GUIs will be redesigned in iteration 4 anyway, this does not need to be considered a high priority.
