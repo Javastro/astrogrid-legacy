@@ -1,4 +1,4 @@
-/*$Id: SybaseQuerier.java,v 1.1 2003/09/04 09:23:16 nw Exp $
+/*$Id: SybaseQuerier.java,v 1.2 2003/09/04 14:40:37 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,13 +16,14 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 
+
 /** DatabaseQuerier implementation for Sybase.
  * @author Noel Winstanley nw@jb.man.ac.uk 03-Sep-2003
  * @todo fill tis in.
  */
 public class SybaseQuerier extends SqlQuerier {
 
-    public static final String SYBASE_DRIVER = "unknown.class.fill.in";
+    public static final String SYBASE_DRIVER = "com.sybase.jdbc2.jdbc.SybDriver";
 
     /**
      * @param ds
@@ -54,6 +55,9 @@ public class SybaseQuerier extends SqlQuerier {
 
 /* 
 $Log: SybaseQuerier.java,v $
+Revision 1.2  2003/09/04 14:40:37  nw
+fixed db driver name
+
 Revision 1.1  2003/09/04 09:23:16  nw
 added martin's query results implementation
 abstract functionality from mysqlQuerier, places in SqlQuerier.
