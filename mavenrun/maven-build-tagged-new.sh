@@ -7,6 +7,7 @@ DATE=`date`
 BUILD_HOME=/home/maven/build/$TAGNAME
 SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
+DOC_HOME=/var/www/www/maven/docs
 ASTROGRID_VERSION=$TAGNAME
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
 ADMIN_EMAIL=jdt@roe.ac.uk
@@ -73,7 +74,7 @@ fi
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
 echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1 
-if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
+if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-artifact >> $LOG_FILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOG_FILE
 else
