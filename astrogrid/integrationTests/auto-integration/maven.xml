@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.71 2004/08/11 14:37:58 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.72 2004/08/11 17:46:16 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -31,6 +31,8 @@
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
 <property name="existurl" value="${tomcat.url}/exist/servlet/db"/>
 <property name="version" value="SNAPSHOT"/>
+<!-- name of the smtp mail server to use -->
+<property name="mailhost" value="localhost" />
 
 
 <!-- other, non-configurable properties -->
@@ -51,6 +53,7 @@
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
 		<filter token="VERSION" value="${version}"/>
+		<filter token="MAILHOST" value="${mailhost}" />
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">

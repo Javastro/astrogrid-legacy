@@ -2,4 +2,11 @@
   <!-- configuration file for the generic cea server webapp -->
   <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties" />
   <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/java/store" />
+  <Resource name="mail/session" auth="Container" type="javax.mail.Session" />
+  <ResourceParams name="mail/session">
+  	<parameter>
+		<name>mail.smtp.host</name>
+		<value>@MAILHOST@</name>
+	</parameter>
+  </ResourceParams>
 </Context>
