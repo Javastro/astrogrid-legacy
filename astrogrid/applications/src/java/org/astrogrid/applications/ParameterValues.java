@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterValues.java,v 1.1 2003/11/25 12:25:26 pah Exp $
+ * $Id: ParameterValues.java,v 1.2 2003/11/25 12:55:09 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -12,7 +12,8 @@
 package org.astrogrid.applications;
 
 /**
- * This is a container for passing the parameter values to the appication. It is essentially a container for the xml fragment that describes a jobstep parameters. 
+ * This is a container for passing the parameter values to the application. It is essentially a container for the xml fragment that describes a jobstep parameters.
+ * @author pah 
  */
 public class ParameterValues {
    public String getMethodName(){ return methodName; }

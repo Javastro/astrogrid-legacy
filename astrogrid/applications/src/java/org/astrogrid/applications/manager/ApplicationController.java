@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.4 2003/11/25 12:25:26 pah Exp $
+ * $Id: ApplicationController.java,v 1.5 2003/11/25 12:55:09 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -19,6 +19,9 @@ import org.astrogrid.applications.ApplicationDescription;
  * 
  * In addition the application controller is responsible for initializing the application with its parameters and then running the application, as well as returning the application
  * @author pah 
+ * @since Iteration 4
+ * @version $Name:  $
+ * 
  */
 public interface ApplicationController {
    /**
@@ -34,22 +37,31 @@ public interface ApplicationController {
 
    /**
     * Initialize the application environment and set up the parameters.
-    * @return The ID of the particular application execution instance 
+    * @param applicationID the application identifier as returned by a call to @link #listApplications .
+    * @param jobstepID the jobstep that is requesting the execution.
+    * @param jobMonitorURL the jobmonitor service to call to notify of execution completion.
+    * @param parameters the description of the job parameters.
+    * @return an identifier for this particular execution instance.
     */
    int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, org.astrogrid.applications.ParameterValues parameters);
 
    /**
-    * Executes a partiular application asynchronously 
+    * Executes a particular application asynchronously that has previously been intialized by @link #initializeApplication
+    * @param executionId The executionId returned by @link #initializeApplication .
     */
    void executeApplication(int executionId);
 
    /**
     * Query the status of a particular application execution.
-    * @param executionId The executionId returned by @link #initializeApplication
+    * @param executionId The executionId returned by @link #initializeApplication .
     * @return
     */
    String queryApplicationExecutionStatus(int executionId);
 
+   /**
+    * Returns an xml string describing the application service controller and the applications that it controls. This string would be suitable for putting in the registry.
+    * @return
+    */
    String returnRegistryEntry();
 
    /**
