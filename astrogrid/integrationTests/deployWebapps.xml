@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.21 2004/03/29 12:30:24 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.22 2004/03/29 13:13:59 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -71,7 +71,7 @@
     <property name="applications.host.password" value="${servers.a.password}"/>
     
     <property name="community.path" value="/astrogrid-community-night"/>   
-    <property name="community.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-community-SNAPSHOT.war"/>
+    <property name="community.war.url" value="${mavenURL}/org.astrogrid/wars/astrogrid-community-webapp-SNAPSHOT.war"/>
     <property name="community.host.url" value="${servers.a.url}"/>
     <property name="community.host.user" value="${servers.a.user}"/>
     <property name="community.host.password" value="${servers.a.password}"/>
