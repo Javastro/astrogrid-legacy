@@ -1,0 +1,122 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f2 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f3 { font-family: "SansSerif"; font-size: 9pt;  }
+#f4 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 8pt;  }
+#f7 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" BORDERCOLOR="black" WIDTH="96%"><TR BGCOLOR="#FFFFC8"><TD>
+<DIV><FONT ID="f1">Package</FONT> <FONT ID="f2"><U>webapps.Axis</U></FONT></DIV>
+</TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:10pt;"><FONT ID="f3"><h2>The Axis-web-service pattern</h2> <p> AstroGrid web-applications including web services use the J2EE-servlet and Axis frameworks to connect SOAP messages with Java classes. The conceptual-parts diagram shows how these frameworks come together, and the physical-parts diagram shows the implementation chosen by Astrogrid. </p><p>AstroGrid adds to the normal usage of J2EE and Axis internal conventions for interconnecting the WSDL contracts and the Java code. These are shown in the service-interfaces diagram. This diagram also illustrates the use of delegate classes as a refinement of client-side stubs for the services.</p><p> Web applications following this pattern are modelled as specialized examples of the service-interfaces and physical-parts diagrams. </p></FONT></DIV>
+<DIV STYLE="margin-top:18pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Class diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="Conceptual parts.html">Conceptual parts</A></FONT></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="webapps.Axis.html">Axis</A></FONT></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="Service interfaces.html">Service interfaces</A></FONT></DIV>
+<DIV STYLE="margin-top:15pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Component diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:1pt;"><FONT ID="f5"><A HREF="Physical parts.html">Physical parts</A></FONT></DIV>
+<DIV STYLE="margin-top:10pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Interface Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">Binding</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">CompileTimeContract</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">PortType</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">RunTimeContract</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">Service</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">ServiceDefinition</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+</TABLE>
+</DIV>
+<DIV STYLE="margin-top:14pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Class Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">AstroGridConfiguration</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">AxisDeploymentDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">AxisEngine</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">AxisServlet</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ClientStub</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Delegate</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">OtherService</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ServiceImplementation</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ServletDeploymentDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ServletEngine</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WebApplication</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WebService</FONT></TD>
+<TD ALIGN="left" VALIGN="top">&nbsp;</TD>
+</TR>
+</TABLE>
+</DIV>
+</BODY>
+</HTML>

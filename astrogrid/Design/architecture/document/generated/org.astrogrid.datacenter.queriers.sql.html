@@ -1,0 +1,70 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f2 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f3 { font-family: "SansSerif"; font-size: 9pt;  }
+#f4 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 8pt;  }
+#f7 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" BORDERCOLOR="black" WIDTH="96%"><TR BGCOLOR="#FFFFC8"><TD>
+<DIV><FONT ID="f1">Package</FONT> <FONT ID="f2"><U>org.astrogrid.datacenter.queriers.sql</U></FONT></DIV>
+</TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Class diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.datacenter.queriers.sql.html">sql</A></FONT></DIV>
+<DIV STYLE="margin-top:15pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Sub-packages:</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.datacenter.queriers.sql.deprecated.html">org.astrogrid.datacenter.queriers.sql.deprecated</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.datacenter.queriers.sql.postgres.html">org.astrogrid.datacenter.queriers.sql.postgres</A></FONT></DIV>
+<DIV STYLE="margin-top:18pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Class Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">JdbcConnections</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Manages the plugin connections to a JDBC/SQL database.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">JdbcPlugin</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A general purpose SQL Querier that will (hopefully) produce bog standard
+realbasic SQL from the ADQL, throwing an exception if it can't be done
+
+<p>
+forms a basis for oter implementations for different db flavours
+<p>
+NWW: altered to delay creating jdbcConnection until required by {@link #queryDatabase}.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">SqlMaker</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Translates queries into SQL</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">SqlResults</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Implementation of <tt>QueryResults</tt> as a wrapper around a <tt>ResultSet</tt>
+
+<p>Can be used (I believe) for any
+SQL/JDBC query results.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">StdSqlMaker</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A 'standard' translator that creates 'standard' SQL</FONT></TD>
+</TR>
+</TABLE>
+</DIV>
+</BODY>
+</HTML>
+A>Package </FONT><FONT ID="f10"><A HREF="org.astrogrid.datacenter.queriers.sql.postgres.html">org.astrogrid.datacenter.queriers.sql.postgres</A></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:14pt;"><IMG SRC="doc-images/PackageDiagram2.png"> <FONT ID="f11"><A NAME="R1"></A>Package </FONT><FONT ID="f10"><A HREF="org.astrogrid.datacenter.queriers.sql.deprecated.html">org.astrogrid.datacenter.queriers.sql.deprecated</A></FONT></DIV>
+</BODY>
+</HTML>

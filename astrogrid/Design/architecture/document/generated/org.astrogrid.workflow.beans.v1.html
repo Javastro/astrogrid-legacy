@@ -1,0 +1,215 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f2 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f3 { font-family: "SansSerif"; font-size: 9pt;  }
+#f4 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 8pt;  }
+#f7 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" BORDERCOLOR="black" WIDTH="96%"><TR BGCOLOR="#FFFFC8"><TD>
+<DIV><FONT ID="f1">Package</FONT> <FONT ID="f2"><U>org.astrogrid.workflow.beans.v1</U></FONT></DIV>
+</TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Class diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.workflow.beans.v1.html">v1</A></FONT></DIV>
+<DIV STYLE="margin-top:15pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Sub-packages:</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.workflow.beans.v1.axis.html">org.astrogrid.workflow.beans.v1.axis</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.workflow.beans.v1.execution.html">org.astrogrid.workflow.beans.v1.execution</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="org.astrogrid.workflow.beans.v1.types.html">org.astrogrid.workflow.beans.v1.types</A></FONT></DIV>
+<DIV STYLE="margin-top:18pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Class Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">AbstractActivity</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">The abstract base class of all activities that can be performed
+in a workflow</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">AbstractActivityDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class AbstractActivityDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ActivityContainer</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Abstract base class of activities that contain other activities</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ActivityContainerDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ActivityContainerDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Catch</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Action to take when an error occurs in the wrapped try block
+variable specified by 'var' attribute will contain details of
+the error.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">CatchDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class CatchDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Else</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Branch to take when if condition evaluates to false</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ElseDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ElseDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Flow</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">a collection of activities to be performed potentially in
+parallel</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">FlowDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class FlowDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">For</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A for loop construct - iterated over a sequence of items</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ForDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ForDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">If</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">An if statement</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">IfDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class IfDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Input</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">the list of input parameters</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">InputDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class InputDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Output</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">the list of output paramters</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">OutputDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class OutputDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Parfor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A parallel-for loop construct - executes the loop body on each
+element of items in parallel</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ParforDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ParforDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Scope</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">create a new workflow-variable scope for its body.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ScopeDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ScopeDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Script</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">a step in the workflow - execute some script statements.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ScriptDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ScriptDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Sequence</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">a collection of activities to be performed sequentially</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">SequenceDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class SequenceDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Set</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Declare (and optionally initialize) a new workflow variable, or
+update value of existing variable</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">SetDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class SetDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Step</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">a step of the workflow - call to an external CEA application.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">StepDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class StepDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Then</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Branch to take when if condition evaluates to true</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ThenDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ThenDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Tool</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">represents a call to a CEA application</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ToolDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class ToolDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Try</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Error-handling construct.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">TryDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class TryDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Unset</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">forget a previously-declared workflow variable</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">UnsetDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class UnsetDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">While</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A while loop construct</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WhileDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class WhileDescriptor.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Workflow</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Base element of an Astrogird workflow document, conforming to
+the schema
+defined for namespace
+http://www.astrogrid.org/schema/AGWorkflow/v1</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WorkflowDescriptor</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Class WorkflowDescriptor.</FONT></TD>
+</TR>
+</TABLE>
+</DIV>
+</BODY>
+</HTML>

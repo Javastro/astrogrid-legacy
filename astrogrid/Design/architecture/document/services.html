@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+  
+  
+  
+  
+  
+  
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type">
+  <title>AstroGrid services</title>
+
+  
+
+  
+
+  
+  
+  <link rel="stylesheet" type="text/css" href="styles/main.css">
+
+
+</head>
+<body style="direction: ltr;">
+<h1>Organization of services</h1>
+
+
+
+
+
+
+
+<p>AstroGrid's run-time components are grouped into sub-systems.
+Every sub-system provides on-line services; most provide SOAP services;
+some are also clients of of other sub-systems. Currently, there are no
+sub-systems that are desktop clients; the sub-system providing the UI
+is a web portal.</p>
+
+
+
+
+
+
+
+<p>Sub-systems may be independently deployed on a host computer, and
+they are packaged to ease deployment. All the sub-systems are packaged
+as J2EE web-applications. They all require to be deployed into a J2EE
+servlet-engine (but the EJB side of J2EE is not required). In practice,
+the servlet engine must be Jakarta-Tomcat 5. Older versions of Tomcat
+may work but are not supported and other makes of engine have not even
+been tried.</p>
+
+
+
+
+
+
+
+<p>This is the current list of sub-systems.</p>
+<table style="width: 100%; text-align: left;" cellpadding="2" cellspacing="2">
+
+  <tbody>
+    <tr>
+      <th align="left" valign="undefined">Sub-system</th>
+      <th align="left" valign="undefined">Purpose</th>
+      <th align="left" valign="undefined">UML model</th>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">applications</td>
+      <td align="left" valign="undefined">Data-transforming services using the CEA. C.f. data-selection services in PAL.</td>
+      <td align="left" valign="undefined"><a href="generated/webapps.applications.html">astrogrid-applications</a></td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">Community<br>
+      </td>
+      <td align="left" valign="undefined">Registration and management of user accounts. Supports authentication and authorization in use of other services.<br>
+      </td>
+      <td align="left" valign="undefined"><a href="generated/webapps.community.html">astrogrid-community</a><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">Filestore<br>
+      </td>
+      <td align="left" valign="undefined">Virtual storage: one shared directory of files per storage node (c.f. myspace).<br>
+      </td>
+      <td align="left" valign="undefined"><a href="generated/webapps.filestore.html">astrogrid-filestore</a><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">JES<br>
+      </td>
+      <td align="left" valign="undefined">"Job Execution Service". Workflow execution: job managment and monitoring.<br>
+      </td>
+      <td align="left" valign="undefined"><a href="generated/webapps.jes.html">astrogrid-jes</a><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">MySpace<br>
+      </td>
+      <td align="left" valign="undefined">Organization of virtual storage: trees of virtual directories refering to separate storage-nodes (c.f. filestore).<br>
+      </td>
+      <td align="left" valign="undefined"><a href="generated/webapps.myspace.html">astrogrid-myspace</a><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">PAL<br>
+      </td>
+      <td align="left" valign="undefined">"Publishers
+AstroGrid Library". Tools for data publishers; data-selection services.
+C.f. Data-transforming services in Applications.<br>
+      </td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">Portal<br>
+      </td>
+      <td align="left" valign="undefined">User interface: web portal..<br>
+      </td>
+      <td><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="left" valign="undefined">Registry<br>
+      </td>
+      <td align="left" valign="undefined">Resource registry on the IVOA model: used to find other services.<br>
+      </td>
+      <td align="left" valign="undefined"><a href="generated/webapps.registry.html">astrogrid-registry</a><br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+
+
+
+
+<p>The majority of the sub-systems provide web services using the
+Simple Image Access Protocol (SOAP) and are based on Apache Axis. They
+follow a common pattern; it may help to read the <a href="generated/webapps.Axis.html">Axis pattern</a> before
+reading the models of specific packages.</p>
+
+
+
+
+
+
+<img style="width: 801px; height: 535px;" alt="Class diagram showing relationship of sub-systems to frameworks" src="generated/doc-images/webapps_ClassDiagram.gif"><br>
+
+
+
+
+
+<p class="caption">Relationship of sub-systems to frameworks.</p>
+
+
+
+
+
+
+<p>There is no rigorous leveling of the services into tiers. Any
+sub-system may, in principle, call any other. In practice there are
+well-established dependencies between sub-systems. These dependencies
+represent messages (almost always SOAP messages) between clients and
+services.
+</p>
+
+
+
+
+
+
+
+<img style="width: 702px; height: 482px;" alt="Run time dependencies between deployed components." src="generated/doc-images/runtime-component-interdependencies_ComponentDiagram.gif">
+<p class="caption">Run-time dependencies between deployed web applications.</p>
+
+
+
+
+
+
+
+
+<p>Deployment is flexible; the web applications may be dispersed among
+many computers or they may be grouped. The extreme deployment has every
+web application on a separate node.</p>
+
+
+
+<img style="width: 722px; height: 709px;" alt="Deployment diagram showing maximal dispersion of services." src="generated/doc-images/maximal-deployment_DeploymentDiagram.gif"><br>
+
+
+
+
+
+
+
+<p class="caption">Maximal deployment of services: evey sub-system on a separate node.</p>
+
+
+
+
+
+
+
+<p>A more-typical deployment groups sub-systems according to function and the intentions of the operators.</p>
+
+
+
+
+
+ <img style="width: 661px; height: 631px;" alt="Deployment diagram showing typical deployment." src="generated/doc-images/typical-deployment_DeploymentDiagram.gif">
+<p class="caption">Typical deployment of sub-systems: services grouped by intent of operators.</p>
+
+
+
+
+
+<p>The portal site runs sub-systems to support a user community:</p>
+
+
+
+
+
+<ul>
+
+
+
+
+
+  <li>astrogrid-portal to provide the UI;</li>
+  <li>astrogrid-community to register users and to allow them privileged access to other services.</li>
+  <li>astrogrid-myspace to manage the users' grid-attached storage;</li>
+  <li>astrogrid-filestore to provide virtual home-discs for the users;</li>
+  <li>astrogrid-jes to manage jobs submitted by users.</li>
+</ul>
+
+
+
+
+
+<p>The registry site runs astrogrid-registry plus astrogrid-exist to provide the storage for registry metadata.</p>
+
+
+
+
+
+<p>The three archive sites run different mixes of data-selection,
+data-processing and data-storage sub-systems. Archive 3 runs the
+minimum: just PAL, to give stateless access to an archive. Archive 2
+runs PAL with local caching of results. Archive 1 runs both
+data-selection and data-processing services and uses local storage to
+optimize the passing of data between the two. The archive with no local
+storage can send results to other deployments of astrogrid-filestore.</p>
+<p>A plausible AstroGrid would have one registry (registries are
+mirrors of each other, so duplicates are only needed to reduce
+down-time); a handful of portals (at least one is needed; HEIs and
+data-centres may want to operate customized versions); many archives.<br>
+
+</p>
+
+
+
+
+
+
+
+</body></html>
