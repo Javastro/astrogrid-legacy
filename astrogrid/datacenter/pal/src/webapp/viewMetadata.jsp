@@ -40,11 +40,13 @@
       out.write("WARNING: Authority Resource is missing");
    }
    else {
-      Element identity = (Element) authorityResource.getElementsByTagName("Identity").item(0);
-      if (authorityResource != null) {
+      Element identity = (Element) authorityResource.getElementsByTagName("Identifier").item(0);
+      if (identity == null) {
+         out.write("ERROR: 'Identifier' is missing in Authority Resource");
+      } else {
          out.println("Authority ID: "+DomHelper.getValue(identity, "AuthorityID"));
          out.println("Resource Key: "+DomHelper.getValue(identity, "ResourceKey"));
-      } //end if authority resource
+      }
    }
    
    Element rdbmsResource = VoDescriptionServer.getResource("RdbmsMetadata");
