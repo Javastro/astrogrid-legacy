@@ -1,5 +1,5 @@
 /*
- * $Id: FactoryTest.java,v 1.1 2003/12/03 17:39:25 mch Exp $
+ * $Id: FactoryTest.java,v 1.2 2003/12/03 17:41:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -36,13 +36,16 @@ public class FactoryTest extends TestCase {
    }
 
    public static Test suite() {
-      return new TestSuite(MySpaceDelegateTest.class);
+      return new TestSuite(FactoryTest.class);
    }
 
 }
 
 /*
  $Log: FactoryTest.java,v $
+ Revision 1.2  2003/12/03 17:41:10  mch
+ Fix to get correct suite
+
  Revision 1.1  2003/12/03 17:39:25  mch
  New factory/interface based myspace delegates
 
