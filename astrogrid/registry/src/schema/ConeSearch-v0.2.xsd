@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+            xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+            xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
+            xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2"
+            xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0"
+            targetNamespace="http://www.ivoa.net/xml/ConeSearch/v0.2"
+            elementFormDefault="qualified" attributeFormDefault="unqualified"
+	    version="0.1">
+
+   <xs:annotation>
+      <xs:documentation>
+        Implementation of an XML Schema describing a Cone Search Service.
+        Based on "Simple Cone Search: a First Guide for Data Curators",
+        http://www.us-vo.org/metadata/conesearch/.
+      </xs:documentation>
+      <xs:documentation>
+        Diff:
+      </xs:documentation>
+   </xs:annotation>
+
+   <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9"/>
+   <xs:import namespace="http://www.ivoa.net/xml/VODataService/v0.4"/>
+
+   <xs:element name="ConeSearch" type="cs:ConeSearchType" 
+               substitutionGroup="vr:Capability">
+      <xs:annotation>
+         <xs:documentation>
+            The capabilities of a Cone Search implementation.  It includes
+            the listing of the columns that appear in image query
+            output VOTable and Cone Search-specific metadata.
+         </xs:documentation>
+      </xs:annotation>
+   </xs:element>
+   <xs:complexType name="ConeSearchType">
+      <xs:complexContent>
+         <xs:extension base="vr:CapabilityType">
+            <xs:sequence>
+               <xs:element ref="cs:MaxSR" minOccurs="1"
+                            maxOccurs="1" />
+               <xs:element ref="cs:MaxRecords" minOccurs="1"
+                            maxOccurs="1" />
+               <xs:element ref="cs:Verbosity" minOccurs="1"
+                            maxOccurs="1" />
+            </xs:sequence>
+         </xs:extension>
+      </xs:complexContent>
+   </xs:complexType>
+
+   <xs:element name="MaxRecords" type="xs:int">
+      <xs:annotation>
+         <xs:documentation>
+            The largest number of records that the service will return. 
+         </xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="MaxSR" type="xs:float">
+      <xs:annotation>
+         <xs:documentation>
+            The largest search radius, in degrees, that will be
+	    accepted by the service without returning an error condition.
+         </xs:documentation>
+         <xs:documentation>
+	    Use 180.0 if there is no restriction.
+         </xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+   <xs:element name="Verbosity" type="xs:boolean">
+      <xs:annotation>
+         <xs:documentation>
+            True if the service supports the VERB keyword; false, otherwise.
+         </xs:documentation>
+      </xs:annotation>
+   </xs:element>
+
+</xs:schema>

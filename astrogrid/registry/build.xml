@@ -1,46 +1,245 @@
-<project name="astrogrid-registry" basedir="." default="build">
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registry/build.xml,v $</cvs:source>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/11/14 09:27:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:log>
+    |   $Log: build.xml,v $
+    |   Revision 1.4  2003/11/14 09:27:01  KevinBenson
+    |   What you see here is the result of merging 2 branches.  I branched off Registry a week ago and then really changed around directories more than I should.
+    |   Probably should have cleaned up the directories in the HEAD branch, but Oh well.  Anyways then I created some new files.
+    |
+    |   Revision 1.3.2.4  2003/11/11 16:11:43  KevinBenson
+    |   Added to the Build.xml some junit test in their.
+    |   Added to test/java a basic junit test put the other ones int he scratch directory for now.
+    |   Made it where it searches the VODescription conforming to IVOA schema 0.9 still quite rough at the moment.
+    |   Final change made it where it uses the full node query webservic method not the submitQuery
+    |
+    |   Revision 1.3.2.3  2003/11/10 11:26:46  KevinBenson
+    |   some new junit tests.  Removed some unnecessary libraries. a couple of new wsdd files.  And made the AdminInterace I think into a axis-message style
+    |
+    |   Revision 1.3.2.2  2003/11/06 14:27:24  KevinBenson
+    |   new build.xml for compiling
+    |
+    |   Revision 1.3.2.1  2003/11/05 13:45:54  KevinBenson
+    |   again added a build.xml script and removed a couple of fines not needed
+    |
+    |   Revision 1.4  2003/10/30 08:43:02  KevinBenson
+    |   Some new mock stubbs and delegates
+    |
+    |   Revision 1.3  2003/10/29 08:43:11  KevinBenson
+    |   Okay cleaned up a little of the ant tasks and situated out the delegates and service a little more.
+    |
+    |   Revision 1.2  2003/10/28 12:02:09  KevinBenson
+    |   Straiten up the build.xml where it will compile and started on a MockDelegate
+    |
+    |   Revision 1.1  2003/10/28 10:11:52  KevinBenson
+    |   New Registry structure started with RegistryB so we can sort of leave the other one alone for now.
+    |
+    | </cvs:log>
+    |
+    +-->
+<project default="init" basedir="." name="experiment">
 
-    <property name="src.dir" value="${basedir}/src/java"/>
-    <property name="test.dir" value="${basedir}/test/java"/>
-    <property name="classes.dir" value="${basedir}/classes"/>
+    <!-- Project build properties -->
+    <property name="project.home"     value="${basedir}"/>
+    <property name="project.base"     value="${basedir}"/>
+    <property name="project.name"     value="registry"/>
+    <property name="project.version"  value="4.0"/>
+    <property name="project.build"    value="${project.home}/build/project"/>
+    <property name="registry.java"    value="${project.home}/src/java"/>
+    <property name="registry.classes" value="${project.build}/registry/classes"/>
+    <property name="registry.junit.classes"   value="${project.build}/registry/junit/classes"/>
+    <property name="registry.junit.reports"   value="${project.build}/registry/junit/reports"/>
+    <property name="junit.java"       value="${project.home}/test/java"/>    
 
-  <target name="init">
+    <!--+
+        | User preferences.
+        | This is where to put local properties eg.tomcat installation path.
+    <property file="${user.home}/ant.properties"/>
+        +-->
+
+    <!--+
+        | Prefix for system properties.
+        +-->
+    <property environment="env"/>
+
+    <!-- ================ Init tasks ================ -->
+    <target name="init">
+
+        <!-- Create our build timestamp -->
+        <tstamp>
+            <format property="build.time" pattern="yyyy.MM.dd.HH.mm.ss"/>
+            <format property="build.date" pattern="yyyy.MM.dd"/>
+        </tstamp>
+
+        <!-- Generate our build name -->
+        <property name="build.name" value="${project.name}-${project.version}"/>
+
+        <!-- Display the current settings -->
+        <echo message="os.name      : ${os.name}"/>
+        <echo message="os.arch      : ${os.arch}"/>
+        <echo message="os.version   : ${os.version}"/>
+        <echo message=""/>
+
+        <echo message="user.home    : ${user.home}"/>
+        <echo message=""/>
+
+        <echo message="build.file     : ${ant.file}"/>
+        <echo message="build.date     : ${build.date}"/>
+        <echo message="build.time     : ${build.time}"/>
+        <echo message=""/>
+
+        <echo message="java.version : ${java.version}"/>
+        <echo message="java.home    : ${java.home}"/>
+        <echo message="JAVA.HOME    : ${env.JAVA_HOME}"/>
+        <echo message=""/>
+
+        <!-- Initialise our components 
+	        <ant dir="src/xml/ant" target="init" antfile="ant.xml"/>
+    	    <ant dir="src/xml/ant" target="init" antfile="tomcat.xml"/>
+        	<ant dir="src/xml/ant" target="init" antfile="axis.xml"/>
+        -->
+
+    </target>
+
+    <!-- ================ Experimental tasks ================ -->
     
-    <path id="build.class.path">
-      <fileset dir="${basedir}/lib">
-        <include name="*.jar"/>
-        <include name="*.zip"/>
-      </fileset>
-    </path>
+    <target name="registry.classes.clean" depends="">
+		<delete dir="${registry.classes}" failonerror="false"/>
+    </target>
+    
+    <target name="registry.jar.clean" depends="">
+		<delete dir="${project.build}/jar" failonerror="false"/>
+    </target>
+    
+    <target name="registry.junit.clean" depends="">
+		<delete dir="${project.build}/registry/junit" failonerror="false"/>
+    </target>
+    
+    
+	<path id="registry.classpath">
+		<pathelement location="${project.home}/lib/xerces.jar"/>
+		<pathelement location="${project.home}/lib/xml-apis.jar"/>
+		<pathelement location="${project.home}/lib/xercesImpl.jar"/>
+		<pathelement location="${project.home}/lib/saaj.jar"/>
+		<pathelement location="${project.home}/lib/xqlpdom_1_0_2.jar"/>
+		<pathelement location="${project.home}/lib/axis.jar"/>
+		<pathelement location="${project.home}/lib/junit.jar"/>
+		<pathelement location="${project.home}/lib/jaxrpc.jar"/>
+	</path>
+    
+    
+    
+    <!--+
+        | Compile our registry
+        +-->
+    <target name="registry.javac" depends="">
+		<!-- Create our build directory -->
+        <mkdir dir="${registry.classes}"/>
+        <echo message=""/>
+        <echo message="Compiling JavaBeans"/>
+        <!-- Compile the classes -->
+        <javac srcdir="${registry.java}"
+               destdir="${registry.classes}"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <classpath>
+                <!-- No extra libraries required -->
+				<path refid="registry.classpath"/>                
+            </classpath>
+        </javac>
+    </target>
+    
+    
+    
+    
+    
+    <!--+
+        | Compile our registry junit classes
+        +-->
+    <target name="registry.junit.javac" depends="">
+		<!-- Create our build directory -->
+        <mkdir dir="${registry.junit.classes}"/>
+        <echo message=""/>
+        <echo message="Compiling JavaBeans"/>
+        <!-- Compile the classes -->
+        <javac srcdir="${junit.java}"
+               destdir="${registry.junit.classes}"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <classpath>
+                <!-- No extra libraries required -->
+				<path refid="registry.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+    
+	<!--+
+		| Run our server side JUnit tests.
+		+-->
+	<target name="registry.junit.run" depends="">
+		<!-- Create our reports directory -->
+        <mkdir dir="${registry.junit.reports}"/>
+		<!-- Run our JUnitTestCase tests -->
+		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
+			<classpath>
+				<!-- The Policy classes -->
+				<path refid="registry.classpath"/>
+			</classpath>
+			<!-- Generate an XML log file -->
+			<formatter type="xml"/>
+			<!-- Run the target JUnitTestCase tests -->
+			<batchtest todir="${registry.junit.reports}">
+				<fileset dir="${registry.junit.classes}">
+					<include name="*.class"/>
+				</fileset>
+			</batchtest>
+			
+		</junit>
+	</target>
+    
+    
 
-<!--    
-    <path id="full.class.path">
-      <path refid="$(build.class.path)"/>
-      <pathelement location="${classes.dir}"/>
-    </path>
--->
-  </target>
-  
-  <target name="build" depends="init">
-    <mkdir dir="${classes.dir}"/>
-    <javac
-      classpathref="build.class.path"
-      debug="true"
-      destdir="${classes.dir}"
-      fork="true"
-      srcdir="${src.dir}"/>
-  </target>
+	<property name="registry.server.jar"  value="registry-server-${project.version}.jar"/>
+	<property name="registry.client.jar"  value="registry-client-${project.version}.jar"/>
+    
 
-  <target name="build-test" depends="init">
-    <mkdir dir="${classes.dir}"/>
-    <javac
-      classpathref="build.class.path"
-      debug="true"
-      destdir="${classes.dir}"
-      fork="true"
-      srcdir="${test.dir}"/>
-  </target>
-
-  <target name="build-all" depends="build,build-test"/>
-
+    <!--+
+        | Jar up the client information
+        +-->
+    <target name="registry.client.jar" depends="registry.javac">
+		<!-- Create our build directory -->
+        <mkdir dir="${project.build}/jar/client"/>
+        <echo message=""/>
+        <echo message="Jar the Beans"/>
+		<jar destfile="${project.build}/jar/client/${registry.client.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${registry.classes}">
+			    <exclude name="**/server/**" />
+			</fileset>
+		</jar>    
+	</target>
+    
+    <!--+
+        | Jar up the client information
+        +-->
+    <target name="registry.server.jar" depends="registry.javac">
+		<!-- Create our build directory -->
+        <mkdir dir="${project.build}/jar/server"/>
+        <echo message=""/>
+        <echo message="Jar the Beans"/>
+		<jar destfile="${project.build}/jar/server/${registry.server.jar}">
+			<!-- Copy our own Java source -->
+			<fileset dir="${registry.classes}">
+			    <exclude name="**/client/**" />
+			</fileset>
+		</jar>    
+	</target>
+    
 </project>

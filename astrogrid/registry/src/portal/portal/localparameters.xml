@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<parameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <RegistryServers>
+       <server>
+         <name>Testing</name>
+         <uri>rlspc14.bnsc.rl.ac.uk</uri>
+         <service>/axis/services/AstrogridRegistryQuery</service>
+         <port>8080</port>
+       </server>
+       <server>
+         <name>Rutherford</name>
+         <uri>stargrid1.bnsc.rl.ac.uk</uri>
+         <service>/axis/services/AstrogridRegistryQuery</service>
+         <port>8080</port>
+       </server>
+       <server>
+         <name>MSSL</name>
+         <uri>msslxy.mssl.ucl.ac.uk</uri>
+         <service>/soap/servlet/rpcrouter/</service>
+         <urn>urn:org.astrogrid.registry.RegistryInterface</urn>
+         <port>8080</port>
+       </server>
+       <server>
+         <name>Leicester</name>
+         <uri>katatjuta.star.le.ac.uk</uri>
+         <service>/axis/services/RegistryInterface</service>
+         <port>8080</port>
+       </server>
+    </RegistryServers>
+    
+    <RegistryFilename>
+         http://stargrid1.bnsc.rl.ac.uk:8080/org/astrogrid/registry/registry.xml
+    </RegistryFilename>
+    <RegistryStylesheet>
+         http://stargrid1.bnsc.rl.ac.uk:8080/org/astrogrid/registry/registry.xsl
+    </RegistryStylesheet>
+    <RegistryInterfaceStylesheet>
+         http://rlspc14.bnsc.rl.ac.uk:8080/org/astrogrid/registry/registryQuery.xsl
+    </RegistryInterfaceStylesheet>
+
+    <ProxyHost>wwwcache.rl.ac.uk</ProxyHost>
+    <ProxyPort>8080</ProxyPort>
+ </parameters>

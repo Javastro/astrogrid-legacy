@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VODescription
+  xmlns="http://www.ivoa.net/xml/prop/VOResource"
+  xmlns:vor="http://www.ivoa.net/xml/prop/VOResource"
+  xmlns:vos="http://www.ivoa.net/xml/prop/VOStdService"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://rai.ncsa.uiuc.edu/~rplante/schemas/VOResource
+    http://www.ivoa.net/internal/IVOA/IVOARegWp03/VOResource.xsd 
+    http://www.ivoa.net/xml/prop/VOStdService
+    http://www.ivoa.net/internal/IVOA/IVOARegWp03/VOStdService.xsd">
+
+  <Project>
+    <Title>NCSA Radio Astronomy Imaging</Title>
+    <Identifier>http://rai.ncsa.uiuc.edu</Identifier>
+    <Curation>
+      <Publisher>NCSA Radio Astronomy Imaging</Publisher>
+      <Creator>
+         <CreatorName>Dr. Raymond Plante</CreatorName>
+         <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <ReferenceURL>http://rai.ncsa.uiuc.edu/</ReferenceURL>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+    </Curation>
+    <Content>
+      <Description>
+        The Radio Astronomy Imaging Group is focused on applying
+	high-performance computing to astronomical research.  Our
+	projects include the NCSA Astronomy Digital Image Library, 
+	the BIMA Data Archive, the BIMA Image Pipeline, and AIPS++.  
+      </Description>
+      <Subject>
+        <item>radio astronomy</item>
+        <item>data repositories</item>
+        <item>digital libraries</item>
+        <item>grid-based processing</item>
+      </Subject>
+    </Content>
+  </Project>
+
+  <DataCollection managedBy="http://rai.ncsa.uiuc.edu">
+    <Title>NCSA Astronomy Digital Image Library</Title>
+    <Identifier>http://adil.ncsa.uiuc.edu</Identifier>
+    <Curation>
+      <Publisher>NCSA Astronomy Digital Image Library</Publisher>
+      <Creator>
+         <CreatorName>Dr. Raymond Plante</CreatorName>
+         <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+    </Curation>
+    <Content>
+      <Description>
+        The ADIL is a public repository for fully processed astronomical 
+        images in FITS format that have been documented in the
+        professional literature.  The Library contains images from
+	research observatories from all over the world and taken at
+	all wavebands.
+      </Description>
+      <Format>
+        <item>FITS</item>
+        <item>GIF</item>
+        <item>HTML</item>
+      </Format>
+    </Content>
+    <Coverage>
+      <Spectral>
+        <Bandpass>
+          <item>Radio</item>
+          <item>Infrared</item>
+          <item>Optical</item>
+          <item>UV</item>
+          <item>EUV</item>
+        </Bandpass>
+      </Spectral>
+      <Temporal>
+        <Begin>1994</Begin>
+      </Temporal>
+    </Coverage>
+  </DataCollection>
+
+  <Service managedBy="http://adil.ncsa.uiuc.edu/">
+    <Title>NCSA Astronomy Digital Image Library Query Form</Title>
+    <Identifier>http://adil.ncsa.uiuc.edu/QueryPage.html</Identifier>
+    <Curation>
+      <Publisher>NCSA Astronomy Digital Image Library</Publisher>
+      <Creator>
+         <CreatorName>Dr. Raymond Plante</CreatorName>
+         <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/help/help_newquery.html</ReferenceURL>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+    </Curation>
+    <Content>
+      <Description>
+        This Web page allows users to interactively search the
+	contents of the ADIL.
+      </Description>
+      <Format>
+        <item>FITS</item>
+        <item>GIF</item>
+        <item>HTML</item>
+      </Format>
+    </Content>
+    <WebBrowser>
+       <InterfaceURL>http://adil.ncsa.uiuc.edu/QueryPage.html</InterfaceURL>
+    </WebBrowser>
+  </Service>
+
+  <Service managedBy="http://adil.ncsa.uiuc.edu/">
+    <Title>NCSA Astronomy Digital Image Library Simple Image Access</Title>
+    <Identifier>http://adil.ncsa.uiuc.edu/SIA</Identifier>
+    <Curation>
+      <Publisher>NCSA Astronomy Digital Image Library</Publisher>
+      <Creator>
+         <CreatorName>Dr. Raymond Plante</CreatorName>
+         <Logo>http://adil.ncsa.uiuc.edu/gifs/adilfooter.gif</Logo>
+      </Creator>
+      <ReferenceURL>http://adil.ncsa.uiuc.edu/</ReferenceURL>
+      <Contact>
+        <Name>Dr. Raymond Plante</Name>
+	<Email>rplante@ncsa.uiuc.edu</Email>
+      </Contact>
+    </Curation>
+    <Content>
+      <Description>
+         This allows searching for ADIL images via the SIA protocol.
+      </Description>
+      <Format>
+        <item>FITS</item>
+        <item>GIF</item>
+        <item>HTML</item>
+      </Format>
+    </Content>
+    <vos:SimpleImageAccess xmlns="http://www.ivoa.net/xml/prop/VOStdService">
+      <ImageServiceType>Pointed</ImageServiceType>
+      <MaxQueryRegionSize>
+        <ditem>360.0</ditem>
+        <ditem>360.0</ditem>
+      </MaxQueryRegionSize>
+      <MaxImageExtent>
+        <ditem>360.0</ditem>
+        <ditem>360.0</ditem>
+      </MaxImageExtent>
+      <MaxImageSize>
+        <iitem>3600</iitem>
+        <iitem>3600</iitem>
+      </MaxImageSize>
+      <MaxFileSize>500000000</MaxFileSize>
+      <MaxRecords>5000</MaxRecords>
+    </vos:SimpleImageAccess>
+    <vos:ParamHTTPGet>
+       <BaseURL>http://adil.ncsa.uiuc.edu/cgi-bin/voimquery?</BaseURL>
+       <HTTPResults>text/xml</HTTPResults>
+    </vos:ParamHTTPGet>
+  </Service>
+
+</VODescription>
