@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.21 2004/08/24 10:29:34 clq2 Exp $ 
+# $Id: autorun.sh,v 1.22 2004/09/20 16:41:52 clq2 Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -12,7 +12,8 @@ BUILDHOME=$CHECKOUTHOME/$TESTMODULE
 LOGFILE=/home/integration/mavenrun/auto.log
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
-ADMIN_EMAIL="clq2@star.le.ac.uk jdt@roe.ac.uk"
+ADMIN_EMAIL="jdt@roe.ac.uk clq2@star.le.ac.uk"
+TOMLOGS=/usr/local/tomcat/logs
 export CVS_RSH=ssh
 export CVSROOT=:pserver:anoncvs@cvs.astrogrid.org:/devel
 
@@ -53,7 +54,6 @@ $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
 echo "Deploying new apps..." >> $LOGFILE
 
-#delete the olds from working dir
 rm -rf /home/integration/working/*
 
 if maven $MY_OPTS deploy-all >> $LOGFILE 2>&1
@@ -64,10 +64,25 @@ else
    cat $LOGFILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
 
+#restart tomcat before the unit tests...
+echo "Shutting down Tomcat" >> $LOGFILE
+$CATALINA_HOME/bin/shutdown.sh >> $LOGFILE 2>&1
+echo "Waiting for tomcat to shutdown...." >> $LOGFILE
+#sleep 15
+rm -rf $CATALINA_HOME/logs/*
+#too crude to do this but we seem to have problem shutting down catalina at the moment
+killall java
+
+echo "Starting Tomcat" >> $LOGFILE
+$CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
+echo "Waiting for tomcat to startup...." >> $LOGFILE
+sleep 15
+
 #before running tests, backup the previous tests results 
 CURRENT=`pwd`
 echo $CURRENT
-ssh maven@uluru ./mavenrun/backup.sh
+ssh maven@uluru ./mavenrun/backup.sh $TIMESTAMP
+
 
 echo "Running tests..." >> $LOGFILE
 
@@ -81,5 +96,13 @@ fi
 
 scp $LOGFILE maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/log/integration.log
 
+#back up those that logs that will be useful..
+cd $TOMLOGS
+tar -cvzf catalina.logs.tar.gz *
+
+scp catalina.logs.tar.gz maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/backupReports/integrationTests/$TIMESTAMP
+scp /home/integration/mavenrun/auto.log maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/backupReports/integrationTests/$TIMESTAMP
+
+rm catalina.logs.tar.gz
 
 cd $OLDDIR
