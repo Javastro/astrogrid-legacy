@@ -55,6 +55,11 @@
 
 package org.apache.axis.encoding.ser.castor;
 
+import java.io.IOException;
+import java.io.StringWriter;
+
+import javax.xml.namespace.QName;
+
 import org.apache.axis.Constants;
 import org.apache.axis.components.logger.LogFactory;
 import org.apache.axis.encoding.SerializationContext;
@@ -67,10 +72,6 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Element;
 import org.xml.sax.Attributes;
-
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.io.StringWriter;
 
 /**
  * Castor serializer

@@ -7,15 +7,16 @@ package org.astrogrid.datacenter.webnotify;
 
 import java.net.URL;
 import java.util.Date;
+
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
+
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocHelper;
-import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 
 /**
@@ -90,6 +91,10 @@ public class JobMonitorNotifier extends WebNotifier
 
 /*
 $Log: JobMonitorNotifier.java,v $
+Revision 1.5  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.4  2003/11/18 00:34:37  mch
 New Adql-compliant cone search
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.4 2003/11/21 17:30:19 nw Exp $
+ * $Id: DelegateTest.java,v 1.5 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,20 +18,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Vector;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -178,6 +181,10 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
 
 /*
  * $Log: DelegateTest.java,v $
+ * Revision 1.5  2003/11/26 16:31:46  nw
+ * altered transport to accept any query format.
+ * moved back to axis from castor
+ *
  * Revision 1.4  2003/11/21 17:30:19  nw
  * improved WSDL binding - passes more strongly-typed data
  *

@@ -1,24 +1,32 @@
 /*
- * $Id: SocketDelegate.java,v 1.4 2003/11/18 11:02:46 mch Exp $
+ * $Id: SocketDelegate.java,v 1.5 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agss;
-import org.astrogrid.datacenter.snippet.*;
-import org.astrogrid.datacenter.query.*;
-import org.astrogrid.datacenter.delegate.*;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.Hashtable;
+
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.DelegateQueryListener;
+import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
+import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
+import org.astrogrid.datacenter.snippet.QueryIdHelper;
+import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -425,6 +433,10 @@ public class SocketDelegate implements AdqlQuerier
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.5  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.4  2003/11/18 11:02:46  mch
 Removing client dependencies on server
 

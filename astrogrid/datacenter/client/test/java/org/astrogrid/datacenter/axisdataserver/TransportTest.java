@@ -1,4 +1,4 @@
-/*$Id: TransportTest.java,v 1.2 2003/11/18 14:27:39 nw Exp $
+/*$Id: TransportTest.java,v 1.3 2003/11/26 16:31:46 nw Exp $
  * Created on 16-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,6 @@ import java.net.URL;
 import org.apache.axis.client.AdminClient;
 import org.apache.axis.client.Call;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
 
 /** Unit test to verify that transport mechanism (i.e. serializing using Castor, within axis) functions correctly
  *  
@@ -66,6 +65,10 @@ public class TransportTest extends AxisDataServerServiceTestCase {
 
 /* 
 $Log: TransportTest.java,v $
+Revision 1.3  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.2  2003/11/18 14:27:39  nw
 code to test the serialization and deserialization mechanism
 

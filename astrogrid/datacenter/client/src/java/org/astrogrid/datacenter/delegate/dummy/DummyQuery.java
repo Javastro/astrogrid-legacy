@@ -6,11 +6,12 @@
 package org.astrogrid.datacenter.delegate.dummy;
 
 import java.net.URL;
-import org.astrogrid.datacenter.query.QueryStatus;
+
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DelegateQueryListener;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.DelegateQueryListener;
+import org.astrogrid.datacenter.query.QueryStatus;
 
 
 /**
@@ -89,6 +90,10 @@ public class DummyQuery implements DatacenterQuery
 
 /*
 $Log: DummyQuery.java,v $
+Revision 1.3  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.2  2003/11/17 12:32:27  mch
 Moved QueryStatus to query pacakge
 

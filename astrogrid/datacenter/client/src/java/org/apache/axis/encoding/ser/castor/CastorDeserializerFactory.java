@@ -55,9 +55,9 @@
 
 package org.apache.axis.encoding.ser.castor;
 
-import org.apache.axis.encoding.ser.BaseDeserializerFactory;
-
 import javax.xml.namespace.QName;
+
+import org.apache.axis.encoding.ser.BaseDeserializerFactory;
 
 /**
  * A CastorDeserializer Factory

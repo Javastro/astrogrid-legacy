@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.4 2003/11/20 15:43:31 nw Exp $
+/*$Id: ClientTests.java,v 1.5 2003/11/26 16:31:46 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,12 @@
 **/
 package org.astrogrid.datacenter;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.axisdataserver.TransportTest;
 import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeTest;
 import org.astrogrid.datacenter.delegate.nvocone.NvoConeTest;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
@@ -51,6 +51,10 @@ public class ClientTests {
 
 /*
 $Log: ClientTests.java,v $
+Revision 1.5  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.4  2003/11/20 15:43:31  nw
 linked in missing tests
 

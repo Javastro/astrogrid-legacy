@@ -1,18 +1,16 @@
 /*
- * $Id: It03DatacenterDelegateFactory.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: It03DatacenterDelegateFactory.java,v 1.2 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.deprecated;
-import org.astrogrid.datacenter.delegate.*;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
+
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
+
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 
 /**
  * Constructs the right delegate for the given service.  Presents an It03
@@ -45,6 +43,10 @@ public class It03DatacenterDelegateFactory
 
 /*
 $Log: It03DatacenterDelegateFactory.java,v $
+Revision 1.2  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

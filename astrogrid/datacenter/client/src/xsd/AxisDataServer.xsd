@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
      targetNamespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-     xmlns:adql="http://tempuri.org/adql"
      xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
      xmlns:apachesoap="http://xml.apache.org/xml-soap"
      >
-<!--
-     later - tighten up string types - define a subtype for queryId, use Uri where possible
-     -->
-        <xsd:import namespace="http://tempuri.org/adql" schemaLocation="ADQLschema.xsd"/>
+
+        <!--<xsd:import namespace="http://tempuri.org/adql" schemaLocation="ADQLschema.xsd"/>-->
             <xsd:element name="getMetadata">
                 <!-- need to find way of expressing a null service -->
             </xsd:element>
@@ -18,30 +15,25 @@
                     <xsd:sequence>
 		    <!-- want to strengthen this type later
                         <xsd:element name="getMetadataReturn" type="apachesoap:Element" />
-			-->
-                        <!-- could do with a schema for meta data here -->
+                         could do with a schema for meta data here -->
 			<xsd:element name="getMetadataReturn" type="xsd:string" />
                     </xsd:sequence>
                     </xsd:complexType>
             </xsd:element>
 	<!-- thing to hang other attributes off later.. -->
 	<xsd:element name="query">
+		<!-- cant get it / doesn't work - pass outside the query for now as an apachesoap:Element. arse -->
 	  <xsd:complexType>
 	    <xsd:sequence>
-	    	<!-- causes transport to fail - leave for now
-	    	<xsd:element name="type" type="ns:query-type" /> -->
-	    	<xsd:element ref="adql:Select" /> <!-- acessor - will need to provide option here when have more query types. -->
+	    	<!--
+	    	<xsd:any processContents="lax" namespace="##other"/>
+		-->
+		<xsd:element name="query-body" type="apachesoap:Element" />
 	    </xsd:sequence>
 	  </xsd:complexType>
 	</xsd:element>
-	
-	<!-- enumeration of possible query types - will extend later-->
-	<xsd:simpleType name="query-type">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="adql-it04" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
+
+
 	<xsd:element name="QueryId">
 		<xsd:complexType>
 			<xsd:attribute name="id" type="xsd:string" />
@@ -53,6 +45,7 @@
                     <xsd:sequence>
                         <xsd:element name="resultsFormat" type="xsd:string"/>
                          <xsd:element ref="ns:query"/>
+                        <!--<xsd:element name="src" type="apachesoap:Element" /> temporarily for now -->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -72,6 +65,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element ref="ns:query"/>
+                        <!-- <xsd:element name="src" type="apachesoap:Element" />  temporarily for now -->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -80,6 +74,7 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element ref="ns:query" />
+                        <!-- <xsd:element name="src" type="apachesoap:Element" />  temporarily for now -->
                         <xsd:element name="assignedId" type="xsd:string" />
                     </xsd:sequence>
                 </xsd:complexType>

@@ -11,17 +11,21 @@ package org.astrogrid.datacenter.delegate.nvocone;
  * @author M Hill
  */
 
-import java.io.*;
-
-import VOTableUtil.Votable;
-import com.tbf.xml.XmlElement;
-import com.tbf.xml.XmlParser;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+
 import javax.xml.rpc.ServiceException;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
@@ -32,6 +36,11 @@ import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+
+import VOTableUtil.Votable;
+
+import com.tbf.xml.XmlElement;
+import com.tbf.xml.XmlParser;
 
 public class AdqlNvoConeTest extends TestCase
 {
@@ -182,6 +191,10 @@ public class AdqlNvoConeTest extends TestCase
 
 /*
  $Log: AdqlNvoConeTest.java,v $
+ Revision 1.4  2003/11/26 16:31:46  nw
+ altered transport to accept any query format.
+ moved back to axis from castor
+
  Revision 1.3  2003/11/25 15:26:00  nw
  temporarily disabled tests that were halting the build.
  server gone down?

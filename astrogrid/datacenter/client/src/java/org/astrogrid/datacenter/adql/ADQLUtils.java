@@ -1,4 +1,4 @@
-/*$Id: ADQLUtils.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+/*$Id: ADQLUtils.java,v 1.2 2003/11/26 16:31:46 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,13 +12,16 @@ package org.astrogrid.datacenter.adql;
 import java.io.IOException;
 import java.io.StringWriter;
 
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.adql.generated.SelectChoice;
 import org.astrogrid.datacenter.adql.generated.SelectionAll;
 import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /** some static helper methods for working with ADQL object trees.
@@ -65,11 +68,25 @@ public class ADQLUtils {
          throw new ADQLException("Failed to load adql object model",e);
       }
     }
+    
+    public static Document marshallSelect(Select s) throws ADQLException{
+        try {
+            Document doc = XMLUtils.newDocument();
+            Marshaller.marshal(s, doc);
+            return doc; 
+        } catch (Exception e) {
+            throw new ADQLException("Failed to marshall select",e);
+        }        
+    }
 }
 
 
 /*
 $Log: ADQLUtils.java,v $
+Revision 1.2  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

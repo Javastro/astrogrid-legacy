@@ -1,40 +1,41 @@
 /*
- * $Id: WebDelegate.java,v 1.8 2003/11/25 15:47:17 mch Exp $
+ * $Id: WebDelegate.java,v 1.9 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.agws;
 
-import org.apache.axis.types.URI;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.delegate.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+
+import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.AtomExpr;
-import org.astrogrid.datacenter.adql.generated.ColumnExpr;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
-import org.astrogrid.datacenter.axisdataserver.types.QueryId;
-import org.astrogrid.datacenter.axisdataserver.types.types.QueryType;
+import org.astrogrid.datacenter.axisdataserver.types._QueryId;
+import org.astrogrid.datacenter.axisdataserver.types._query;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.delegate.Certification;
+import org.astrogrid.datacenter.delegate.ConeSearcher;
+import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.DelegateQueryListener;
+import org.astrogrid.datacenter.delegate.Metadata;
+import org.astrogrid.datacenter.delegate.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryException;
-import org.w3c.dom.Document;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.w3c.dom.Element;
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
@@ -63,9 +64,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     */
    private class WebQueryDelegate implements DatacenterQuery
    {
-      QueryId queryId = null;
+      _QueryId queryId = null;
       
-      public WebQueryDelegate(QueryId id)
+      public WebQueryDelegate(_QueryId id)
       {
          this.queryId = id;
       }
@@ -220,13 +221,13 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
    {
       try
       {
-          Query q = new Query();
-          q.setSelect(adql);
-          //q.setType(QueryType.VALUE_0);
+          _query q = new _query();
+          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
          return new WebQueryDelegate(binding.makeQueryWithId(q, givenId));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
+      catch (ADQLException e) {throw new DatacenterException("Illegal Query",e); }
    }
    
    /**
@@ -240,13 +241,13 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
    {
       try
       {
-          Query q = new Query();
-          q.setSelect(adql);
-         // q.setType(QueryType.VALUE_0);
+          _query q = new _query();          
+          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
       return new WebQueryDelegate(binding.makeQuery(q));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
+      catch (ADQLException e) {throw new DatacenterException("Illegal Query",e);}
    }
    
    /**
@@ -261,9 +262,8 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
    {
       try {
          //run query on server
-         Query q = new Query();
-         q.setSelect(adql);
-         //q.setType(QueryType.VALUE_0);
+         _query q = new _query();
+         q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
          String result = binding.doQuery(resultsFormat, q);
          InputStream is = new ByteArrayInputStream(result.getBytes());
          Document rDoc = XMLUtils.newDocument(is);
@@ -384,6 +384,10 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.9  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.8  2003/11/25 15:47:17  mch
 Added certification
 

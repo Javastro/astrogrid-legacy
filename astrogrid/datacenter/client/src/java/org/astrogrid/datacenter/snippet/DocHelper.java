@@ -1,5 +1,5 @@
 /*
- * $Id: DocHelper.java,v 1.2 2003/11/18 11:02:46 mch Exp $
+ * $Id: DocHelper.java,v 1.3 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,9 @@ package org.astrogrid.datacenter.snippet;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

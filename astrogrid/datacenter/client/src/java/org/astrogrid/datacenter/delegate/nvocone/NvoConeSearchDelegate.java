@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.4 2003/11/18 00:34:37 mch Exp $
+ * $Id: NvoConeSearchDelegate.java,v 1.5 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,10 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.parsers.ParserConfigurationException;
+
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.xml.sax.SAXException;
 
 /**
  * The National Virtual Observatory, an American effort, defined a simple
@@ -80,6 +79,10 @@ public class NvoConeSearchDelegate implements ConeSearcher
 
 /*
 $Log: NvoConeSearchDelegate.java,v $
+Revision 1.5  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.4  2003/11/18 00:34:37  mch
 New Adql-compliant cone search
 

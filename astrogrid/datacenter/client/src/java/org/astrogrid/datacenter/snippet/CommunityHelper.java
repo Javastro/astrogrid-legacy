@@ -1,14 +1,15 @@
 /*
- * $Id: CommunityHelper.java,v 1.1 2003/11/17 12:53:07 mch Exp $
+ * $Id: CommunityHelper.java,v 1.2 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.snippet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.apache.commons.logging.*;
 /**
  * Class to help extract community information from a dom
  *
@@ -85,6 +86,10 @@ public class CommunityHelper
 
 /*
 $Log: CommunityHelper.java,v $
+Revision 1.2  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.1  2003/11/17 12:53:07  mch
 Moving common to snippet
 

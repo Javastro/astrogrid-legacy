@@ -5,7 +5,6 @@
 
 package org.astrogrid.datacenter.delegate;
 
-import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -102,6 +101,10 @@ public class Metadata
 
 /*
 $Log: Metadata.java,v $
+Revision 1.3  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.2  2003/11/18 14:25:45  nw
 altered types to fit with new wsdl
 

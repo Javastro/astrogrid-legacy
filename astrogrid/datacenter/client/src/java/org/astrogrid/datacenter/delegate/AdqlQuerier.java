@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQuerier.java,v 1.2 2003/11/25 11:54:41 mch Exp $
+ * $Id: AdqlQuerier.java,v 1.3 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,6 +7,7 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
+
 import org.astrogrid.datacenter.adql.generated.Select;
 
 /**
@@ -67,6 +68,10 @@ public interface AdqlQuerier
 
 /*
 $Log: AdqlQuerier.java,v $
+Revision 1.3  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.2  2003/11/25 11:54:41  mch
 Added framework for SQL-passthrough queries
 

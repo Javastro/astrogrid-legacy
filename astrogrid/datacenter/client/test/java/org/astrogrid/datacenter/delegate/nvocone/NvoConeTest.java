@@ -11,21 +11,25 @@ package org.astrogrid.datacenter.delegate.nvocone;
  * @author M Hill
  */
 
-import VOTableUtil.Votable;
-import com.tbf.xml.XmlElement;
-import com.tbf.xml.XmlParser;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.Vector;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+
+import VOTableUtil.Votable;
+
+import com.tbf.xml.XmlElement;
+import com.tbf.xml.XmlParser;
 
 public class NvoConeTest extends TestCase
 {
@@ -131,6 +135,10 @@ public class NvoConeTest extends TestCase
 
 /*
  $Log: NvoConeTest.java,v $
+ Revision 1.3  2003/11/26 16:31:46  nw
+ altered transport to accept any query format.
+ moved back to axis from castor
+
  Revision 1.2  2003/11/25 15:26:00  nw
  temporarily disabled tests that were halting the build.
  server gone down?

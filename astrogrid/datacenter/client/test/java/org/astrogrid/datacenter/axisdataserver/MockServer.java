@@ -1,4 +1,4 @@
-/*$Id: MockServer.java,v 1.3 2003/11/19 18:48:47 nw Exp $
+/*$Id: MockServer.java,v 1.4 2003/11/26 16:31:46 nw Exp $
  * Created on 16-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,14 +9,16 @@
  *
 **/
 package org.astrogrid.datacenter.axisdataserver;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.rmi.RemoteException;
+
+import junit.framework.Assert;
 
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import junit.framework.Assert;
 
 /** Mock Server implementation
  * Given an interface, will provide an implementation that checks parameters passed in are non-null,
@@ -55,7 +57,18 @@ public class MockServer implements InvocationHandler {
                     + args[i].getClass().getName() 
                     + ", " + formalParams[i].getName() 
                     + " " + formalParams[i].getClass().getName());
-            }                                 
+            }  
+            /* check xmlns attribs get through - they do
+           if (args[i].getClass().equals(_query.class)) {
+               System.out.println("Found _query");
+               _query q = (_query)args[i];
+               Element e = q.getQueryBody();
+              // XMLUtils.PrettyElementToStream(e,System.out);
+              System.out.println(e.getNamespaceURI());
+              System.out.println(e.getFirstChild().getNamespaceURI());
+               
+           }                               
+           */
         }
         Class retType = method.getReturnType();
         if (retType.equals(Void.TYPE)) {
@@ -78,6 +91,10 @@ public class MockServer implements InvocationHandler {
 
 /* 
 $Log: MockServer.java,v $
+Revision 1.4  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.3  2003/11/19 18:48:47  nw
 fixed transport bug
 

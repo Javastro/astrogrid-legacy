@@ -1,23 +1,27 @@
 /*
- * $Id: DummyDelegate.java,v 1.6 2003/11/25 15:47:47 mch Exp $
+ * $Id: DummyDelegate.java,v 1.7 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.dummy;
 
-import org.astrogrid.datacenter.delegate.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.rmi.RemoteException;
+
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.delegate.AdqlQuerier;
+import org.astrogrid.datacenter.delegate.ConeSearcher;
+import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.Metadata;
+import org.astrogrid.datacenter.delegate.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.datacenter.snippet.DocHelper;
-import org.astrogrid.datacenter.snippet.QueryIdHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -217,6 +221,10 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.7  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.6  2003/11/25 15:47:47  mch
 Tidied up and added SqlQuerier implementation
 

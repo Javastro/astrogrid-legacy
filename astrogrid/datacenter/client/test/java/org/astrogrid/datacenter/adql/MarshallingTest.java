@@ -1,4 +1,4 @@
-/*$Id: MarshallingTest.java,v 1.3 2003/11/21 17:30:19 nw Exp $
+/*$Id: MarshallingTest.java,v 1.4 2003/11/26 16:31:46 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,6 @@ package org.astrogrid.datacenter.adql;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
-
-import junit.framework.TestCase;
 
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.custommonkey.xmlunit.XMLTestCase;
@@ -113,6 +111,10 @@ public class MarshallingTest extends XMLTestCase {
 
 /* 
 $Log: MarshallingTest.java,v $
+Revision 1.4  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.3  2003/11/21 17:30:19  nw
 improved WSDL binding - passes more strongly-typed data
 

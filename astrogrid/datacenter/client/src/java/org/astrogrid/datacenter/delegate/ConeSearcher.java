@@ -5,8 +5,8 @@
 
 package org.astrogrid.datacenter.delegate;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -34,6 +34,10 @@ public interface ConeSearcher
 
 /*
 $Log: ConeSearcher.java,v $
+Revision 1.5  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.4  2003/11/17 20:47:57  mch
 Adding Adql-like access to Nvo cone searches
 

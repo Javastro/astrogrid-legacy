@@ -1,4 +1,4 @@
-/*$Id: SimpleQuerier.java,v 1.1 2003/11/24 21:06:01 nw Exp $
+/*$Id: SimpleQuerier.java,v 1.2 2003/11/26 16:31:46 nw Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,10 +24,10 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.Element;
 
 /** Simple tool to fire a query at a server, and print out the response.
  * Usage: java org.astrogrid.datacenter.tools.SimpleQuerier <i>service URL</i> <i>adql file</i>
@@ -40,6 +40,7 @@ public class SimpleQuerier {
         (new SimpleQuerier(args)).doIt();
         
     }
+    Element e = null;
     
     public SimpleQuerier() {
     }
@@ -98,6 +99,10 @@ public class SimpleQuerier {
 
 /* 
 $Log: SimpleQuerier.java,v $
+Revision 1.2  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.1  2003/11/24 21:06:01  nw
 added little command-line tool to query datacenter
  

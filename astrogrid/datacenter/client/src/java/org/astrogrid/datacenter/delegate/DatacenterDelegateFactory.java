@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.6 2003/11/25 15:59:55 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.7 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,12 +8,14 @@ package org.astrogrid.datacenter.delegate;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.rpc.ServiceException;
+
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate;
 import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
-import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
 import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
+import org.astrogrid.datacenter.delegate.nvocone.NvoConeSearchDelegate;
 
 /**
  * Constructs the right delegate for the given service
@@ -158,6 +160,10 @@ public class DatacenterDelegateFactory {
 
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.7  2003/11/26 16:31:46  nw
+ altered transport to accept any query format.
+ moved back to axis from castor
+
  Revision 1.6  2003/11/25 15:59:55  mch
  Added doc
 

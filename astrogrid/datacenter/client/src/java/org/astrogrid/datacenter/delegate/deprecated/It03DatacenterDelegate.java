@@ -1,5 +1,5 @@
 /*
- * $Id: It03DatacenterDelegate.java,v 1.3 2003/11/17 12:46:15 mch Exp $
+ * $Id: It03DatacenterDelegate.java,v 1.4 2003/11/26 16:31:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,15 +9,16 @@ package org.astrogrid.datacenter.delegate.deprecated;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
+
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.snippet.DocMessageHelper;
-import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -211,6 +212,10 @@ public class It03DatacenterDelegate
 
 /*
 $Log: It03DatacenterDelegate.java,v $
+Revision 1.4  2003/11/26 16:31:46  nw
+altered transport to accept any query format.
+moved back to axis from castor
+
 Revision 1.3  2003/11/17 12:46:15  mch
 Moving common to snippet
 

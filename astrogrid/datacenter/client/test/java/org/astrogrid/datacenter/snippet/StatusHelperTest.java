@@ -3,8 +3,8 @@ package org.astrogrid.datacenter.snippet;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.datacenter.query.QueryStatus;
 
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 
 
