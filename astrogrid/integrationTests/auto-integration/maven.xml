@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.97 2004/09/09 11:46:05 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.98 2004/09/09 15:53:03 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -30,20 +30,21 @@
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
 <property name="existurl" value="${tomcat.url}/exist/servlet/db"/>
-<!-- need to rationalize the use of the astrogrid.iteration - pah
-	better name would be astrogrid.release - i.e. it is intended to be SNAPSHOT for the current iteration and the iteration TAG for preious ones
-	-->
+<!--+
+    | need to rationalize the use of the astrogrid.iteration - pah
+    | better name would be astrogrid.release - i.e. it is intended to be SNAPSHOT for the current iteration and the iteration TAG for preious ones
+    +-->
         <j:if test="${context.getVariable('astrogrid.iteration') == null}">
                 <j:set var="astrogrid.iteration" value="SNAPSHOT"/>
         </j:if>
+<!--+
+    | Please avoid using 'version' it is already set by the Java VM.
 <property name="version" value="${astrogrid.iteration}"/>
+    +-->
 <!-- name of the smtp mail server to use -->
 <property name="mailhost" value="localhost" />
 <!-- where the root to the registry services is -->
-<property name="registry.root" value="http://${tomcat.url}/astrogrid-registry-${version}/services/Registry"/>
-
-
-
+<property name="registry.root" value="http://${tomcat.url}/astrogrid-registry-${astrogrid.iteration}/services/Registry"/>
 <!-- other, non-configurable properties -->
 
 <!-- temp dir - used for mangling files, etc -->
@@ -61,7 +62,7 @@
         <filter token="TOMCATLOC" value="${tomcat.location}" />
         <filter token="REGAUTHORITY" value="${registry.authorityid}" />
         <filter token="TOMCATPORT" value="${tomcat.port}"/>
-        <filter token="VERSION" value="${version}"/>
+        <filter token="VERSION" value="${astrogrid.iteration}"/>
         <filter token="MAILHOST" value="${mailhost}" />
         <filter token="TOOLBASEDIR" value="${work.dir}/cea/commandline/work/"/> <!--this is the directory that is the root of CEA command line applications set it to the workdir for autointegration purposes-->
         <filter token="CENTRALREGISTRY" value="${registry.location}"/>

@@ -3,10 +3,13 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/src/ant/tomcat.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/09 15:53:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: tomcat.xml,v $
+    |   Revision 1.5  2004/09/09 15:53:03  dave
+    |   Merged fixes to maven.xml into HEAD
+    |
     |   Revision 1.4  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -79,6 +82,9 @@
         <echo message="ant.home     : ${ant.home}"/>
         <echo message=""/>
 
+        <echo message="maven.opts   : ${env.MAVEN_OPTS}"/>
+        <echo message=""/>
+
         <echo message="build.home     : ${basedir}"/>
         <echo message="build.file     : ${ant.file}"/>
         <echo message="build.date     : ${build.date}"/>
@@ -142,6 +148,8 @@
             <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
             <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
             <!-- <jvmarg value="-server"/> -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- <jvmarg value="-Xmx512M"/> -->
             <!-- Args for the Tomcat Bootstrap class -->
             <arg value="start"/>
         </java>
@@ -164,6 +172,7 @@
             <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
             <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
             <!-- <jvmarg value="-server"/> -->
+            <jvmarg value="${env.MAVEN_OPTS}"/>
             <!-- Args for the Tomcat Bootstrap class -->
             <arg value="stop"/>
         </java>
