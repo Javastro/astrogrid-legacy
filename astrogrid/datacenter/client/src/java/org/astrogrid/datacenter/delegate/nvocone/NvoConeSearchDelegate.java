@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.6 2004/03/12 20:00:11 mch Exp $
+ * $Id: NvoConeSearchDelegate.java,v 1.7 2004/04/05 10:09:18 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -26,16 +26,18 @@ import org.astrogrid.datacenter.query.QueryState;
 
 public class NvoConeSearchDelegate implements ConeSearcher
 {
-   
    protected String serverUrl = null;
+
+   private int timeout = 0;
    
    public NvoConeSearchDelegate(String baseUrl)
    {
       this.serverUrl = baseUrl;
    }
    
+   /** Sets the timeout in seconds.  Set before doing search */
    public void setTimeout(int newTimeout) {
-      //@todo don't know how to implement that here
+      this.timeout = newTimeout;
    }
    
    /**
@@ -90,6 +92,9 @@ public class NvoConeSearchDelegate implements ConeSearcher
 
 /*
 $Log: NvoConeSearchDelegate.java,v $
+Revision 1.7  2004/04/05 10:09:18  mch
+Added setTimeout
+
 Revision 1.6  2004/03/12 20:00:11  mch
 It05 Refactor (Client)
 
