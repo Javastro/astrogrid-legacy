@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2004/08/12 13:33:34 nw Exp $
+/*$Id: AllTests.java,v 1.2 2004/08/17 13:36:18 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
  **/
 package org.astrogrid.workflow.integration.itn6.solarevent;
+import org.astrogrid.workflow.externaldep.itn6.solarevent.CompositeFitsVotableParsingConcatWorkflowTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -24,16 +25,18 @@ public class AllTests {
             "Test for org.astrogrid.workflow.integration.itn6.case4");
         //$JUnit-BEGIN$
         suite.addTestSuite(ExampleVOTableParsingWorkflowTest.class);
-        suite.addTestSuite(SimpleSECWorkflowTest.class);
         suite.addTestSuite(SimpleFitsWorkflowTest.class);
-        suite.addTestSuite(CompositeFitsVotableParsingMpegWorkflowTest.class);
-        suite.addTestSuite(SimpleMpegToolWorkflowTest.class);
+        suite.addTestSuite(SimpleSECWorkflowTest.class);
+        suite.addTestSuite(SimpleConcatToolWorkflowTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
  $Log: AllTests.java,v $
+ Revision 1.2  2004/08/17 13:36:18  nw
+ regenerated
+
  Revision 1.1  2004/08/12 13:33:34  nw
  added framework of classes for testing the solar event science case.
  
