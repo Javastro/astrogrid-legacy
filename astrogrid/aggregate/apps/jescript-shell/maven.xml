@@ -69,11 +69,11 @@
                 <jsl:template match="resources">
                         <jxml:copy>
                                 <jxml:element name="extension">
-                                        <jxml:attribute name="name">Astrogrid Workflow CDK</jxml:attribute>
-                                        <!--
+                                        <jxml:attribute name="name">Astrogrid Workflow CDK</jxml:attribute>                                        
                                         <jxml:attribute name="href">http://software.astrogrid.org/jnlp/astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
-                                        -->
+                                        <!-- for dev only 
                                         <jxml:attribute name="href">http://localhost:8080/astrogrid-cdk-workflow/astrogrid-cdk-workflow.jnlp</jxml:attribute>
+                                        -->
                                 </jxml:element>
                                 <jsl:applyTemplates select="@* | node()" />
                         </jxml:copy>
