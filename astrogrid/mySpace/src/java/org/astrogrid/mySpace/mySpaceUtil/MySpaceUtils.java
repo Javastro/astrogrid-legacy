@@ -3,8 +3,8 @@ package org.astrogrid.mySpace.mySpaceUtil;
 import java.io.File;
 import java.io.FileReader;
 //import java.io.IOException;
-//import java.util.Properties;
-//import java.io.InputStream;
+import java.util.Properties;
+import java.io.InputStream;
 //import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.io.StringReader ;
@@ -41,7 +41,7 @@ public class MySpaceUtils {
 	/////private static String requestResponseTemplate = "MSManagerRequestResponse.properties";
 	//private static String requestResponseTemplate = "MSManagerRequestResponse.properties";
 	//private static String requestResponseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MSManagerRequestResponse.properties";
-   // private static Properties conProperties = new Properties();
+    private static Properties conProperties = new Properties();
     //private static final String RESPONSE = "TEMPLATE.RESPONSE";
     //private static final String D_RESPONSE_HEAD ="TEMPLATE.RESPONSEHEAD";
     //private static final String D_RESPONSE_ELEMENT ="TEMPLATE.RESPONSEELEMENT";
@@ -384,7 +384,7 @@ public class MySpaceUtils {
 		} 		
 		return doc ;	
 	}
-	/*
+	
 	
 	public Properties loadProperties(String propertiesTempl){
 
@@ -403,7 +403,7 @@ public class MySpaceUtils {
 	//	}
 		return conProperties;
 	}
-	
+	/*
 	public static void main( String [] args ) {
 	   }
 	*/

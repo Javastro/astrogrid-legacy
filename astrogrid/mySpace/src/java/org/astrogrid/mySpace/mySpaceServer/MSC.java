@@ -8,70 +8,59 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.mySpace.mySpaceManager;
+package org.astrogrid.mySpace.mySpaceServer;
 
 import org.astrogrid.Configurator;
 
 /**
- * The <code>MMC</code> class represents 
+ * The <code>MSC</code> class represents 
  *
  * @author  CLQ
- * @version 1.0 17-Jul-2003
+ * @version 1.0 24-Jul-2003
  * @see     
  * @see     
  * @since   AstroGrid 1.2
  */
-public class MMC extends Configurator {
+public class MSC extends Configurator {
 	
 	public static final String 
 	/** Three letter acronym for this subsystem within the overall AstroGrid system... 
-	 *  "MMC" stands for MySpaceManagerComponent  */  
-		SUBSYSTEM_ACRONYM = "MMC" ; 
+	 *  "MSC" stands for MySpaceServerComponent  */  
+		SUBSYSTEM_ACRONYM = "MSC" ; 
 			
 	public static final String 
 	/** Configuration file for this component. */  
-		CONFIG_FILENAME = "ASTROGRID_myspacemanagerconfig.xml" ;
+		CONFIG_FILENAME = "ASTROGRID_myspaceserverconfig.xml" ;
 		
-    public static final String
-	/** Catalog name for mySpaceServer, required for jConfig.*/
-		CATLOG = "MYSPACEMANAGER";
-		
+	public static final String
+	/** Catalog name for mySpaceServer, required for jConfig. */
+		CATLOG = "MYSPACESERVER";
 		
 	public static String 
-	/** Location of MySpace Registry files */  
-		REGISTRYCONF = "REGISTRYCONF" ,	
-	/** URL Location of MySpaceManager. */
-	    mySpaceManagerLoc = "MYSPACEMANAGERURL",
-	/** URL Location of MySpaceServer. */
-		serverManagerLoc = "MYSPACESERVERURL";
-
-    public static String
-	/** response template*/
-	    RESPONSE = "TEMPLATE.RESPONSE",
-	/** response header template*/
-		D_RESPONSE_HEAD ="TEMPLATE.RESPONSEHEAD",
-    /** response element template*/
-		D_RESPONSE_ELEMENT ="TEMPLATE.RESPONSEELEMENT",
-    /** response footer template*/
-		D_RESPONSE_FOOT ="TEMPLATE.RESPONSEFOOT";
-		
-    public static String
-    /** response string if SUCCESS*/
-	    SUCCESS = "SUCCESS",
+	/** location on MySpaceServer where dataholders are stroed.*/
+	    dataHolderFolder = "DATAHOLDERFOLDER",
+	/** copy command when transfering large files.*/ 
+	    copyCommand = "COPY_COMMAND",
+	/** upper limit to NOT user copy command to transfer file.*/
+	    sizeLimit = "SIZELIMIT";
+	
+	public static String
+	/** response string if SUCCESS*/
+		SUCCESS = "SUCCESS",
 	/** response string if fail*/
-	    FAULT = "FAULT";
+		FAULT = "FAULT";
 
         
-	private static MMC
-		singletonMMC = new MMC() ;
+	private static MSC
+		singletonMMC = new MSC() ;
         
         
-	private MMC(){
+	private MSC(){
 		super() ;
 	}
     
     
-	public static MMC getInstance() {
+	public static MSC getInstance() {
 		return singletonMMC ;
 	}
         

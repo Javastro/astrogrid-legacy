@@ -89,7 +89,7 @@ public class MySpaceManager {
 	private static final String TEMPPATHTO ="TEMPPATHTO"; // should be in ServerManager
 	//private static String regPathTemp = AxisProperties.getProperty("catalina.home")+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
 	private static String regPathTemp = "statuscodes.lis"; //delete this file since already loaded from jConfig
-	private static String serverManagerLoc = "SERVERMANAGER"; //move into MMC.serverManagerLoc
+	private static String serverManagerLoc = "SERVERMANAGER";
 	private String errCode="";
 	private Vector v = new Vector();
 	private String registryName = " ";
@@ -130,9 +130,9 @@ public String upLoad(String jobDetails){
 		try{
 			//load jConfig file.
 			MMC.getInstance().checkPropertiesLoaded();
-			registryName = MMC.getProperty("REGISTRYCONF","MYSPACEMANAGER");
+			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
 			//String XXX = MMC.getProperty("TEMPLATE.RESPONSE", "MYSPACEMANAGER"); //assuming this will get the template
-			//logger.debug("registryName = "+registryName);
+			if ( DEBUG )logger.debug("registryName = "+registryName);
 			//logger.debug("XXXXXX"+XXX);
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -187,11 +187,13 @@ public String upLoad(String jobDetails){
 			msA.setRegistryName(registryName);
 			RegistryManager reg = new RegistryManager(registryName);
 			String mySpaceFileName = "f" + reg.getNextDataItemID();
+			logger.debug("mySpacefilenae:"+mySpaceFileName);
 			reg.rewriteRegistryFile();
 			dataitem = msA.importDataHolder(
 			    userID, communityID, jobID, newDataHolderName,
 			    mySpaceFileName, fileSize );
-			
+			if ( DEBUG ) logger.debug("userid:"+userID+"comID"+communityID+"jobid"+jobID+"newDataHN"+newDataHolderName+"filenm:"+mySpaceFileName
+			                       +"fileSize"+fileSize);
 			if(DEBUG) logger.debug("UploaderroCode is:" +errCode);
 			if ( errCode!="" )    
 			  errCode = errCode +"," +checkStatus("UPLOADStatusCode");
@@ -212,8 +214,8 @@ public String upLoad(String jobDetails){
 			call.addParameter("arg1", XMLType.XSD_STRING, ParameterMode.IN);
 		
 			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
-			path = path+mySpaceFileName; //SHOULD BE DONE IN SERVERMANAGER
-			String serverResponse = (String)call.invoke( new Object[] {contentPath,path} );
+			//path = path+mySpaceFileName; //SHOULD BE DONE IN SERVERMANAGER
+			String serverResponse = (String)call.invoke( new Object[] {contentPath,mySpaceFileName} );
 			if ( DEBUG )  logger.debug("GOT SERVERRESPONSE: "+serverResponse);
 			
 			//use serverResponse to build returnStatus and details for datacentre/portal
@@ -967,8 +969,9 @@ public String upLoad(String jobDetails){
 //
 // The followng methods are provided to access a MySpace server.
 private Call createServerManagerCall(){
-	loadProperties();
-	String servermanagerloc = conProperties.getProperty(serverManagerLoc);
+	//loadProperties();
+	//String servermanagerloc = conProperties.getProperty(serverManagerLoc);
+	String servermanagerloc = MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG);
 	Call call = null;
 	try{
 		//String endpoint  = "http://localhost:8080/axis/services/ServerManager";

@@ -17,6 +17,9 @@ import java.util.Properties;
 //log4j
 import org.apache.log4j.Logger;
 
+import org.astrogrid.Configurator;
+import org.astrogrid.i18n.*;
+
 /**
  * @WebService
  * 
@@ -29,8 +32,8 @@ public class ServerManager {
     private static boolean DEBUG = true;
 	private static MySpaceStatus status = new MySpaceStatus();
     private String response = ""; //this would be a xml response contains info match portal/datacentre xml schema.
-    private static final String SUCCESS = "SUCCESS";
-    private static final String FAULT = "FAULT";
+    //private static final String SUCCESS = "SUCCESS";
+   //private static final String FAULT = "FAULT";
 	//private static String catalinaHome = AxisProperties.getProperty("catalina.home");
 	//private static String mySpaceProperties = catalinaHome+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
 	private static String mySpaceProperties = "statuscodes.lis";
@@ -52,19 +55,19 @@ public class ServerManager {
 				if (DEBUG)  logger.debug("File not exist! can't delete.");
 				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
 				status.addCode(MySpaceStatusCode.AGMSCE00031,MySpaceStatusCode.ERROR);
-			    response = FAULT+MySpaceStatusCode.AGMSCE00031;
+			    response = MSC.FAULT+MySpaceStatusCode.AGMSCE00031;
 				return response;
     		}else{
 	    		try{
 	    			boolean isDeleted = file.delete();
 					if (DEBUG) logger.debug("ServerManager deleteDataHolder "+dataHolderPath);
-					if (isDeleted)  response = SUCCESS+"File Deleted.";
-					else response = FAULT+"File Not Deleted";
+					if (isDeleted)  response = MSC.SUCCESS+"File Deleted.";
+					else response = MSC.FAULT+"File Not Deleted";
 					return response;
 	    		}catch(SecurityException se){
 					MySpaceMessage msMessage = new MySpaceMessage("ERR_SECURITY_DELETE_DATA_HOLDER");
 					status.addCode(MySpaceStatusCode.AGMSCE00045,MySpaceStatusCode.ERROR);
-					response = FAULT+MySpaceStatusCode.AGMSCE00045;
+					response = MSC.FAULT+MySpaceStatusCode.AGMSCE00045;
 					return response;
 	    		}
     		}
@@ -72,7 +75,7 @@ public class ServerManager {
     	catch(Exception e){
 			MySpaceMessage msMessage = new MySpaceMessage("ERR_DELETE_DATA_HOLDER");
 			status.addCode(MySpaceStatusCode.AGMSCE00046,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.AGMSCE00046;
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00046;
 			return response;
 			}
     }
@@ -81,55 +84,63 @@ public class ServerManager {
 
         return "";
     }
-
-    public String copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+/*
+    public String copyDataHolder(String dataHolderPath){//, String destinationDataHolderPath) {
 		try{
 			File oldFile = new File(dataHolderPath);
 			String content = MySpaceUtils.readFromFile(oldFile);
-			response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00044;
+			//response = MSC.SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00044;
+			response = MSC.SUCCESS +saveDataHolder(content)+MySpaceStatusCode.AGMSCE00044;
 			return response;
 		}catch(Exception e){
 			MySpaceMessage message = new MySpaceMessage("ERR_COPY_DATA_HOLDER");
 			status.addCode(MySpaceStatusCode.AGMSCE00043,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.AGMSCE00043;	
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00043;	
 			return response;
 		}
     }
 
-    public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+    public String moveDataHolder(String dataHolderPath){//, String destinationDataHolderPath) {
     	try{
 	    	File oldFile = new File(dataHolderPath);
 	    	String content = MySpaceUtils.readFromFile(oldFile);
 			deleteDataHolder(dataHolderPath);
-	    	response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00042;
+	    	//response = MSC.SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00042;
+			response = MSC.SUCCESS +saveDataHolder(content)+MySpaceStatusCode.AGMSCE00042;
 	    	return response;
     	}catch(Exception e){
 			MySpaceMessage message = new MySpaceMessage("AGMSCE00041");
 			status.addCode(MySpaceStatusCode.AGMSCE00041,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.AGMSCE00041;	
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00041;	
     		return response;
     	}
     }
-
+*/
 /**
  * 
  * @param contentPath: path of the file need to get from
  * @param dataHolderPath: the file path ServerManager will save the file to.
  * @return
  */
-    public String saveDataHolder(String contentPath, String dataHolderPath) {
+    public String saveDataHolder(String contentPath, String mySpaceFileName) {
 		PrintWriter printWriter = null;
 		try{
-			
-			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder...");
+			MSC.getInstance().checkPropertiesLoaded();
+			String path = MSC.getProperty(MSC.dataHolderFolder, MSC.CATLOG);
+			String dataHolderPath = path + mySpaceFileName;
+			//registryName = MSC.getProperty("REGISTRYCONF",MSC.CATLOG);
+			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder..."+dataHolderPath+"contentPath="+contentPath);
 			long fileSize = (new File(contentPath)).length();
 			if (DEBUG)  logger.debug("saveDataHolder.saveDataHolder.fileSize: "+fileSize);
 			
-			MySpaceUtils msutil = new MySpaceUtils();
-			conProperties = msutil.loadProperties(mySpaceProperties);
-			if(DEBUG) logger.debug("COPY_COMMAND: " +conProperties.getProperty( "COPY_COMMAND" ) +"SIZELIMIT: " +conProperties.getProperty( "SIZELIMIT" ));
-			String command = conProperties.getProperty( "COPY_COMMAND" )+" "+contentPath+" "+dataHolderPath;
-			long sizeLimit = Long.parseLong(conProperties.getProperty( "SIZELIMIT" ));
+			String command = MSC.getProperty(MSC.copyCommand, MSC.CATLOG);
+			long sizeLimit = Long.parseLong(MSC.getProperty(MSC.sizeLimit, MSC.CATLOG));
+			
+			//MySpaceUtils msutil = new MySpaceUtils();
+			//conProperties = msutil.loadProperties(mySpaceProperties);
+			if(DEBUG) logger.debug("COPY_COMMAND: " +command+"SIZELIMIT: " +sizeLimit);
+			//String command = conProperties.getProperty( "COPY_COMMAND" )+" "+contentPath+" "+dataHolderPath;
+			//long sizeLimit = Long.parseLong(conProperties.getProperty( "SIZELIMIT" ));
 			if (fileSize>=sizeLimit){
 				if (DEBUG)  logger.debug("command = "+command);
 			    try{
@@ -140,20 +151,21 @@ public class ServerManager {
 			}else{
 				String content = MySpaceUtils.readFromFile(new File(contentPath));
 				//open file to write into
-			printWriter = new PrintWriter(new FileOutputStream(new File(dataHolderPath)));    	    
+			    printWriter = new PrintWriter(new FileOutputStream(new File(dataHolderPath)));    	    
     	    
 			//write to file
-			printWriter.println(content);
+			    printWriter.println(content);
 			}
 
-		    response = SUCCESS +" File Saved.";
+		    response = MSC.SUCCESS +" File Saved.";
 			return response;		    
 				    
 		}catch (Exception e) {//catch unexpected Exception
 			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e);
-			MySpaceMessage message = new MySpaceMessage("ERR_SAVE_DATAHOLDER");
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE00040", this.getComponentName()) ;
+			//MySpaceMessage message = new MySpaceMessage("ERR_SAVE_DATAHOLDER");
 			status.addCode(MySpaceStatusCode.AGMSCE00040,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.AGMSCE00040+"::"+e.toString();			
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE00040+"::"+generalMessage.toString();			
 			return response; //temp code for now, should catch the exception and return proper error message
 		}finally{
 			//close file
@@ -202,4 +214,6 @@ public class ServerManager {
      * @supplierCardinality 0..*
      */
     private DataHolder lnkDataRecord;
+    
+	protected String getComponentName() { return Configurator.getClassName( ServerManager.class) ; }
 }
