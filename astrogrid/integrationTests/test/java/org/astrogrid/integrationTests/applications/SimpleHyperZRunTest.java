@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplication.java,v 1.5 2004/01/19 17:11:06 jdt Exp $
+ * $Id: SimpleHyperZRunTest.java,v 1.1 2004/02/12 18:43:53 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,12 +19,10 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
-
 import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.community.User;
 import org.astrogrid.community.common.util.CommunityMessage;
-import org.astrogrid.integrationTests.common.ConfManager;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
@@ -37,14 +35,12 @@ import org.astrogrid.portal.workflow.design.Step;
 import org.astrogrid.portal.workflow.design.Tool;
 import org.astrogrid.portal.workflow.design.Workflow;
 
-
-
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
  */
-public class WorkFlowToApplication extends TestCase {
+public class SimpleHyperZRunTest extends TestCase {
    private static final String TESTCONTAINER = "testdata";
    private boolean rc;
 
@@ -57,19 +53,19 @@ public class WorkFlowToApplication extends TestCase {
    private MySpaceClient mySpaceManager;
 
    static private org.apache.commons.logging.Log logger =
-      org.apache.commons.logging.LogFactory.getLog(WorkFlowToApplication.class);
+      org.apache.commons.logging.LogFactory.getLog(SimpleHyperZRunTest.class);
    private final Date runDate = new Date();
-   
+
    /**
-    * Constructor for WorkFlowToApplication.
+    * Constructor for WorkFlowToApplicationTest.
     * @param arg0
     */
-   public WorkFlowToApplication(String arg0) {
+   public SimpleHyperZRunTest(String arg0) {
       super(arg0);
    }
 
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(WorkFlowToApplication.class);
+      junit.textui.TestRunner.run(SimpleHyperZRunTest.class);
    }
 
    /*
@@ -89,8 +85,10 @@ public class WorkFlowToApplication extends TestCase {
       servers.add("serv1");
 
       try {
-         //load properties
-         mySpaceManager = MySpaceDelegateFactory.createDelegate(ConfManager.getInstance().getMySpaceEndPoint());
+         
+
+         //TODO get a better way of getting the mySpaceManager than this....
+         mySpaceManager = MySpaceDelegateFactory.createDelegate("http://localhost:8080/astrogrid-mySpace/services/MySpaceManager");
          user = new User();
          String userId = user.getUserId();
          String communityId = user.getCommunity();
@@ -109,7 +107,7 @@ public class WorkFlowToApplication extends TestCase {
             infileName,
             "This is some test contents for myspace",
             TESTCONTAINER, // this should not be the container, but a "type" referece
-            MySpaceClient.OVERWRITE);
+            mySpaceManager.OVERWRITE);
             mySpaceManager.deleteDataHolding(userId, communityId, credential, outFilename);
       }
       catch (IOException e) {

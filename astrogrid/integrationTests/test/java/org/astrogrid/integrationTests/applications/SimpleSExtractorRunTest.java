@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleSExtractorRun.java,v 1.1 2004/01/27 13:46:27 pah Exp $
+ * $Id: SimpleSExtractorRunTest.java,v 1.1 2004/02/12 18:43:53 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -40,7 +40,7 @@ import org.astrogrid.portal.workflow.design.Workflow;
  * @version $Name:  $
  * @since iteration4
  */
-public class SimpleSExtractorRun extends TestCase {
+public class SimpleSExtractorRunTest extends TestCase {
    private static final String TESTCONTAINER = "testdata";
    private boolean rc;
 
@@ -53,19 +53,19 @@ public class SimpleSExtractorRun extends TestCase {
    private MySpaceClient mySpaceManager;
 
    static private org.apache.commons.logging.Log logger =
-      org.apache.commons.logging.LogFactory.getLog(SimpleSExtractorRun.class);
+      org.apache.commons.logging.LogFactory.getLog(SimpleSExtractorRunTest.class);
    private final Date runDate = new Date();
 
    /**
-    * Constructor for WorkFlowToApplication.
+    * Constructor for WorkFlowToApplicationTest.
     * @param arg0
     */
-   public SimpleSExtractorRun(String arg0) {
+   public SimpleSExtractorRunTest(String arg0) {
       super(arg0);
    }
 
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(SimpleSExtractorRun.class);
+      junit.textui.TestRunner.run(SimpleSExtractorRunTest.class);
    }
 
    /*
