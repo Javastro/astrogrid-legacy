@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.4 2004/01/14 15:56:15 nw Exp $
+ * $Id: Workspace.java,v 1.5 2004/02/17 03:54:35 mch Exp $
  */
 
 package org.astrogrid.util;
@@ -7,7 +7,7 @@ package org.astrogrid.util;
 import java.io.File;
 import java.io.IOException;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 
 /**
  * A temporary filespace manager for
@@ -56,7 +56,7 @@ public class Workspace
    public Workspace(String workspaceId) throws IOException
    {
       //see if a working root has been specified
-      File workRoot = new File (SimpleConfig.getProperty( WORKSPACE_DIRECTORY_KEY, DEFAULT_WORKSPACE_DIRECTORY  ));
+      File workRoot = new File (AttomConfig.getString( WORKSPACE_DIRECTORY_KEY, DEFAULT_WORKSPACE_DIRECTORY  ));
                  
       // check working root exists, create if necessary
       if (!workRoot.exists()) {
@@ -65,12 +65,12 @@ public class Workspace
       assert workRoot.exists() :
               "Working root '"+workRoot.getAbsolutePath()
                  +"' given by configuration key '"
-                 +WORKSPACE_DIRECTORY_KEY+"' does not exist, and could not be created";      
+                 +WORKSPACE_DIRECTORY_KEY+"' does not exist, and could not be created";
       
       assert workRoot.isDirectory() :
               "Working root '"+workRoot.getAbsolutePath()
                  +"' given by configuration key '"
-                 +WORKSPACE_DIRECTORY_KEY+"' is not a directory";      
+                 +WORKSPACE_DIRECTORY_KEY+"' is not a directory";
       
       if (workspaceId == null)
       {
@@ -250,7 +250,6 @@ public class Workspace
     * temporary Test harness
     */
    public static void main(String[] args) throws IOException {
-      SimpleConfig.load("AstroGrid.properties");
       Workspace ws = new Workspace("TestId");
       ws.makeTempDir("wibble");
       ws.close();

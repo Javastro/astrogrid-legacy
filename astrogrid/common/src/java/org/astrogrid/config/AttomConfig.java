@@ -1,5 +1,5 @@
 /*
- * $Id: AttomConfig.java,v 1.1 2004/02/16 22:27:49 mch Exp $
+ * $Id: AttomConfig.java,v 1.2 2004/02/17 03:54:35 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -276,7 +276,7 @@ public class AttomConfig {
          if (!jndiInitialised) initialiseJndi();
       
          if (jndiContext != null) {
-            lookedIn = lookedIn + ", JNDI  ";
+            lookedIn = lookedIn + ", JNDI";
             return jndiContext.lookup(jndiPrefix+key);
          }
          else {
@@ -366,6 +366,24 @@ public class AttomConfig {
    }
    
    /**
+    * Typed getProperty - returns URL.  If property is not a valid url, throws
+    * a wrapping ConfigException as a runtime error
+    */
+   public static URL getUrl(String key, URL defaultValue) {
+      
+      String value = getProperty(key).toString();
+      try {
+         return new URL(value);
+      }
+      catch (MalformedURLException mue) {
+         throw new ConfigException("Key '"+key+"' returns invalid URL '"+value+"'", mue);
+      }
+      catch (PropertyNotFoundException nfe) {
+         return defaultValue;
+      }
+   }
+
+   /**
     * Typed getProperty - returns integer.  If property is not a valid int, throws
     * a wrapping ConfigException as a runtime error
     */
@@ -400,5 +418,12 @@ public class AttomConfig {
    }
    
 }
+/*
+$Log: AttomConfig.java,v $
+Revision 1.2  2004/02/17 03:54:35  mch
+Nughtily large number of fixes for demo
+
+ */
+
 
 
