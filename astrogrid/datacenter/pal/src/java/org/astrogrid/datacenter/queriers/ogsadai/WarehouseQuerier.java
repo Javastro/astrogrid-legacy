@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.5 2004/11/17 13:06:43 jdt Exp $
+ * $Id: WarehouseQuerier.java,v 1.6 2004/11/22 14:43:21 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -351,11 +351,21 @@ public class WarehouseQuerier extends DefaultPlugin {
   private final String TEMP_RESULTS_FILENAME = "warehouseResults.xml";
 //================================================================
 
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return VotableInResults.getFormats();
+   }
+   
+   
+   
 }
 /*
 $Log: WarehouseQuerier.java,v $
-Revision 1.5  2004/11/17 13:06:43  jdt
-Rolled back to 20041115ish, see bugzilla 705
+Revision 1.6  2004/11/22 14:43:21  jdt
+Restored Martin's changes from PAL_MCHJDT_705
+
+Revision 1.4  2004/11/12 13:49:12  mch
+Fix where keyword maker might not have had keywords made
 
 Revision 1.3  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge

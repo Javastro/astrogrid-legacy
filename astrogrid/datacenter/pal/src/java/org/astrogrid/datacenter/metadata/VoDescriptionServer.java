@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.15 2004/11/17 13:06:43 jdt Exp $
+ * $Id: VoDescriptionServer.java,v 1.16 2004/11/22 14:43:21 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -192,14 +192,6 @@ public class VoDescriptionServer {
             plugins = new String[] { s };
          }
       }
-      //if they are not specified, assume one AuthorityConfigPlugin and a FileResourcePlugin
-      if ((plugins == null) || (plugins.length==0)) {
-         plugins = new String[] {
-            AuthorityConfigPlugin.class.getName(),
-            FileResourcePlugin.class.getName(),
-            CeaResourceServer.class.getName(),
-         };
-      }
 
       //start the vodescription document
       StringBuffer vod = new StringBuffer();
@@ -207,13 +199,15 @@ public class VoDescriptionServer {
       boolean ceaDone = false; //backwards compatiblity marker to see if CeaResource has been done
       
       //loop through plugins adding each one's list of resources
-      for (int p = 0; p < plugins.length; p++) {
-         //make plugin
-         VoResourcePlugin plugin = createPlugin(plugins[p].toString());
-         //get resources from plugin
-         addResources(vod, plugin);
-         
-         if (plugin instanceof CeaResourceServer) { ceaDone = true; }
+      if (plugins != null) {
+         for (int p = 0; p < plugins.length; p++) {
+            //make plugin
+            VoResourcePlugin plugin = createPlugin(plugins[p].toString());
+            //get resources from plugin
+            addResources(vod, plugin);
+            
+            if (plugin instanceof CeaResourceServer) { ceaDone = true; }
+         }
       }
 
       //add the standard ones - cea, cone etc
@@ -316,6 +310,7 @@ public class VoDescriptionServer {
       StringWriter sw = new StringWriter();
       XmlPrinter xp = new XmlPrinter(sw, false);
       writeSummary(xp);
+      xp.close(); //make sure all tags are closed
       buffer.append(sw.toString());
    }
 
@@ -323,6 +318,7 @@ public class VoDescriptionServer {
       StringWriter sw = new StringWriter();
       XmlPrinter xp = new XmlPrinter(sw, false);
       writeIdentifier(xp, resourceKeyEnd);
+      xp.close(); //make sure all tags are closed
       buffer.append(sw.toString());
    }
 
@@ -330,6 +326,7 @@ public class VoDescriptionServer {
       StringWriter sw = new StringWriter();
       XmlPrinter xp = new XmlPrinter(sw, false);
       writeCuration(xp);
+      xp.close(); //make sure all tags are closed
       buffer.append(sw.toString());
    }
    
@@ -397,6 +394,7 @@ public class VoDescriptionServer {
    }
    
 }
+
 
 
 

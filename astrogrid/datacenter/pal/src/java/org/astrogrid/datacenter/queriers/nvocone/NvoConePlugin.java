@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConePlugin.java,v 1.8 2004/11/17 13:06:43 jdt Exp $
+ * $Id: NvoConePlugin.java,v 1.9 2004/11/22 14:43:21 jdt Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -76,8 +76,7 @@ public class NvoConePlugin extends DefaultPlugin
 
       if (tableUrls == null) initialise();
 
-      KeywordMaker maker = new KeywordMaker();
-      maker.makeKeywords(query);
+      KeywordMaker maker = new KeywordMaker(query);
       
       Angle ra = Angle.parseAngle(maker.getRequiredValue(maker.RA_KEYWORD).toString());
       Angle dec = Angle.parseAngle(maker.getRequiredValue(maker.DEC_KEYWORD).toString());
@@ -119,12 +118,20 @@ public class NvoConePlugin extends DefaultPlugin
        return getCountFromResults(user, query, querier);
    }
    
+   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
+   public String[] getFormats() {
+      return VotableInResults.getFormats();
+   }
+   
 }
 
 /*
 $Log: NvoConePlugin.java,v $
-Revision 1.8  2004/11/17 13:06:43  jdt
-Rolled back to 20041115ish, see bugzilla 705
+Revision 1.9  2004/11/22 14:43:21  jdt
+Restored Martin's changes from PAL_MCHJDT_705
+
+Revision 1.7  2004/11/12 13:49:12  mch
+Fix where keyword maker might not have had keywords made
 
 Revision 1.6  2004/11/12 10:44:54  mch
 More resources, siap stuff, ssap stuff, SSS
