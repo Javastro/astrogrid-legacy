@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.4 2003/11/25 11:54:41 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.5 2003/11/25 15:46:25 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -21,52 +21,87 @@ import org.astrogrid.datacenter.delegate.nvocone.AdqlNvoConeDelegate;
  * @author M Hill
  */
 
-public class DatacenterDelegateFactory
-{
-  
+public class DatacenterDelegateFactory {
+   
+   public final static String ASTROGRID_WEB_SERVICE = "AstroGrid Web Service";
+   public final static String NVO_CONE_SERVICE = "NVO Cone Service";
+   public final static String DUMMY_SERVICE = "Dummy";
+   public final static String ASTROGRID_SOCKET_SERVICE = "AstroGrid Socket Service";
+   
+   /**
+    * For backwards compatibility - call without user & type info.  It makes
+    * best attempt to work out type but it's not safe
+    * @deprecated
+    */
+   public static ConeSearcher makeConeSearcher(String givenEndPoint)
+      throws MalformedURLException, DatacenterException {
+
+      //there are three server types -> three delegate implementations - dummies,
+      // nvo cone-search servers, and astrogrid datacenter servers (agds).
+      // The urls of nvo cone-search servers and adql servers may be similar.
+      // only adql servers return metadata.
+      
+      if (givenEndPoint.equals(null)) {
+         return makeConeSearcher(Certification.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
+      }
+      else if (givenEndPoint.toUpperCase().indexOf("?CAT=") >-1) {
+         //if the url includes ?CAT it's an nvo-server
+         return makeConeSearcher(Certification.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+      }
+      else
+      {
+         //pants, should really now query the service...
+         return makeConeSearcher(Certification.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+      }
+   }
+   
    /** Creates a ConeSearcher-implementing delegate given an endpoint
     * (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
     * @todo make CatalogDelegate implement ConeSearcher and add here
     */
-   public static ConeSearcher makeConeSearcher(String givenEndPoint)
-         throws MalformedURLException, DatacenterException
-   {
+   public static ConeSearcher makeConeSearcher(Certification user, String givenEndPoint, String serviceType)
+      throws MalformedURLException, DatacenterException {
+      
+      if (serviceType.equals(DUMMY_SERVICE)) {
+         //easy one, return a dummy
+         return new DummyDelegate();
+      }
+      
+      if (serviceType.equals(NVO_CONE_SERVICE)) {
+         return new NvoConeSearchDelegate(givenEndPoint);
+      }
+      
+      throw new IllegalArgumentException("Service Type '"+serviceType+"' unknown");
+   }
+   
+   
+   /**
+    * For backwards compatibility - call without user & type info.  It makes
+    * best attempt to work out type but it's not safe
+    * @deprecated
+    */
+   public static AdqlQuerier makeAdqlQuerier(String givenEndPoint) throws ServiceException, MalformedURLException, IOException {
+
       //there are three server types -> three delegate implementations - dummies,
       // nvo cone-search servers, and astrogrid datacenter servers (agds).
       // The urls of nvo cone-search servers and adql servers may be similar.
       // only adql servers return metadata.
       
-      if (givenEndPoint == null)
-      {
-         //easy one, return a dummy
-         return new DummyDelegate();
+      if (givenEndPoint.equals(null)) {
+         return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
       }
-
       //if the url includes ?CAT it's an nvo-server
-      if (givenEndPoint.toUpperCase().indexOf("?CAT=") >-1)
-      {
-         return new NvoConeSearchDelegate(givenEndPoint);
+      if (givenEndPoint.indexOf("?") >-1) {
+         return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       }
-
-      //pants.  Lets make a CatalogDelegate and if it fails (as it makes
-      // the connection), assume we got it wrong and make a ConeSearch one...
-      /* haven't implemented a ConeSearcher-compatible catalogdelegate yet
-      try
-      {
-         return (ConeSearcher) makeCatalogDelegate(givenEndPoint);
-      }
-      catch (ServiceException se){ } //couldn't connect - never mind
-      catch (ClassCastException se)
-       {
-      //delegate for that server type does not implement ConeSearcher
-      throw new DatacenterException("Cannot provide cone search to service at "+givenEndPoint+".  Try another query type");
-       }
-       */
       
-      //resort to a conesearch delegate
-      return new NvoConeSearchDelegate(givenEndPoint);
+      if (givenEndPoint.startsWith("socket")) {
+         return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
+      }
+      
+         return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
    }
 
 
@@ -75,58 +110,69 @@ public class DatacenterDelegateFactory
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
     */
-   public static AdqlQuerier makeAdqlQuerier(String givenEndPoint) throws ServiceException, MalformedURLException, IOException
-   {
-      if (givenEndPoint == null)
-      {
+   public static AdqlQuerier makeAdqlQuerier(Certification user, String givenEndPoint, String serviceType) throws ServiceException, MalformedURLException, IOException {
+
+      if (serviceType.equals(DUMMY_SERVICE)) {
          //easy one, return a dummy
          return new DummyDelegate();
       }
-
-      //at some point, we ought to be able to make an AdqlQuerier-implementation
-      //that runs on conesearches....
-      //if the url includes ?CAT it's an nvo-server
-      if (givenEndPoint.indexOf("?") >-1)
-      {
+      
+      if (serviceType.equals(NVO_CONE_SERVICE)) {
          return new AdqlNvoConeDelegate(givenEndPoint);
       }
-
-      if (givenEndPoint.startsWith("socket")) {
+      
+      if (serviceType.equals(ASTROGRID_SOCKET_SERVICE)) {
          return new SocketDelegate(givenEndPoint, null);
       }
       
-      return new WebDelegate(new URL(givenEndPoint));
+      if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
+         return new WebDelegate(user, new URL(givenEndPoint));
+      }
+      
+      throw new IllegalArgumentException("Service Type '"+serviceType+"' unknown");
    }
-
+   
    /**
     * Creates a SQL-passthrough-implementing delegate given an endpoint (a
     * url to the service).
     */
-   public static SqlQuerier makeSqlQuerier(String givenEndPoint) throws ServiceException, MalformedURLException, IOException
-   {
-      return new WebDelegate(new URL(givenEndPoint));
+   public static SqlQuerier makeSqlQuerier(Certification user, String givenEndPoint, String serviceType) throws ServiceException, MalformedURLException, IOException {
+
+      if (serviceType.equals(DUMMY_SERVICE)) {
+         //easy one, return a dummy
+         return new DummyDelegate();
+      }
+
+      if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
+         return new WebDelegate(user, new URL(givenEndPoint));
+      }
+      
+      throw new IllegalArgumentException("Service Type '"+serviceType+"' unknown for making SQL Queriers");
    }
 }
 
 /*
-$Log: DatacenterDelegateFactory.java,v $
-Revision 1.4  2003/11/25 11:54:41  mch
-Added framework for SQL-passthrough queries
+ $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.5  2003/11/25 15:46:25  mch
+ Added certification and service types; deprecated older methods
 
-Revision 1.3  2003/11/18 00:34:37  mch
-New Adql-compliant cone search
+ Revision 1.4  2003/11/25 11:54:41  mch
+ Added framework for SQL-passthrough queries
 
-Revision 1.2  2003/11/17 20:47:57  mch
-Adding Adql-like access to Nvo cone searches
+ Revision 1.3  2003/11/18 00:34:37  mch
+ New Adql-compliant cone search
 
-Revision 1.1  2003/11/14 00:36:40  mch
-Code restructure
+ Revision 1.2  2003/11/17 20:47:57  mch
+ Adding Adql-like access to Nvo cone searches
 
-Revision 1.1  2003/10/06 18:55:21  mch
-Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+ Revision 1.1  2003/11/14 00:36:40  mch
+ Code restructure
+
+ Revision 1.1  2003/10/06 18:55:21  mch
+ Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 
 
 
-*/
+ */
 
 
