@@ -174,6 +174,9 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    public String copyDataHolding(String userid, String communityid, String credentials, String sourceFileName, String destFileName)
       throws IOException {
 
+      sourceFileName = makeSafeFilename(sourceFileName);
+      destFileName = makeSafeFilename(destFileName);
+
       File source = new File(getPath(userid, communityid)+sourceFileName);
       File dest = new File(getPath(userid, communityid)+destFileName);
 
@@ -212,6 +215,10 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
    public String renameDataHolding(String userid, String communityid, String credentials, String oldFileName, String newFileName)  throws IOException {
 
+      oldFileName = makeSafeFilename(oldFileName);
+      newFileName = makeSafeFilename(newFileName);
+
+      
       File file = new File(getPath(userid, communityid)+oldFileName);
       File dest = new File(getPath(userid, communityid)+newFileName);
 
@@ -238,6 +245,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     * @throws Exception
     */
    public String deleteDataHolding(String userid, String communityid, String credentials, String serverFileName)  throws IOException {
+
+      serverFileName = makeSafeFilename(serverFileName);
 
       File file = new File(getPath(userid, communityid)+serverFileName);
 
@@ -280,6 +289,9 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
          throw new IllegalArgumentException("Illegal Action '"+action+"'");
       }
 
+      //remove colons, spaces and slashes from filename
+      fileName = makeSafeFilename(fileName);
+
       File dest = new File(getPath(userid, communityid)+fileName);
       OutputStream out = new FileOutputStream(dest, append);
       out.write(fileContent.getBytes());
@@ -316,6 +328,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
          throw new IllegalArgumentException("Illegal Action '"+action+"'");
       }
 
+      fileName = makeSafeFilename(fileName);
+
       URL source = new URL(importURL);
       File dest = new File(getPath(userid, communityid)+fileName);
 
@@ -337,6 +351,19 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
       return true;
    }
 
+   protected String makeSafeFilename(String fileName)
+   {
+      //remove colons, spaces and slashes from filename
+      fileName = fileName.replace(':','_');
+      fileName = fileName.replaceAll("\\\\","_");
+      fileName = fileName.replace(' ','_');
+      fileName = fileName.replace('?','_');
+      fileName = fileName.replace('&','_');
+      fileName = fileName.replace('=','_');
+      
+      return fileName;
+   }
+   
    /**
     * Returns the URL of the given file name
     *
@@ -347,6 +374,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    */
    public String getDataHoldingUrl(String userid, String communityid, String credentials, String fullFileName) throws IOException {
 
+      fullFileName = makeSafeFilename(fullFileName);
+      
       File file = new File(getPath(userid, communityid)+fullFileName);
 
   //    Log.affirm(file.exists(), "File '"+fullFileName+"' not found");
@@ -366,6 +395,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    */
    public InputStream getDataHoldingStream(String userid, String communityid, String credentials, String fullFileName) throws IOException {
 
+      fullFileName = makeSafeFilename(fullFileName);
+
       URL url = new URL( getDataHoldingUrl(userid, communityid, credentials, fullFileName));
 
       return url.openStream();
@@ -382,6 +413,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
    */
    public String getDataHoldingContents(String userid, String communityid, String credentials, String fullFileName) throws IOException {
 
+      fullFileName = makeSafeFilename(fullFileName);
+      
       InputStream in = new BufferedInputStream(getDataHoldingStream(userid, communityid, credentials, fullFileName));
       ByteArrayOutputStream out = new ByteArrayOutputStream();
 
