@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 16:44:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.51 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 10:26:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.52 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.52  2003/12/17 10:26:45  dave
+    |   Tidied up the webapp deployment script
+    |
     |   Revision 1.51  2003/12/16 16:44:29  dave
     |   Added deployment test data
     |
@@ -3171,9 +3174,9 @@ To repeat
         <!-- Build our jar files -->
         <antcall target="policy.BUILD"/>
         <antcall target="authentication.BUILD"/>
-        <!-- Install the 3rd party jars -->
+        <!-- Add the 3rd party jars -->
         <antcall target="axis.external.install"/>
-        <!-- Copy our community jars -->
+        <!-- Add our community jars -->
         <copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
             <fileset dir="${policy.base}/jar">
                 <include name="${policy.client.jar}"/>
@@ -3184,17 +3187,21 @@ To repeat
                 <include name="${authentication.server.jar}"/>
             </fileset>
         </copy>
-        <!-- Install our services -->
+        <!-- Install our services into Axis -->
         <antcall target="auth.server.deploy.static"/>
         <antcall target="policy.server.deploy.static"/>
-        <!-- Create our release directories -->
+        <!-- Create the release directories -->
         <mkdir dir="release/webapp"/>
         <mkdir dir="release/webapp/war"/>
         <mkdir dir="release/webapp/config"/>
+        <mkdir dir="release/webapp/config/xsl"/>
+        <mkdir dir="release/webapp/config/xml"/>
+        <mkdir dir="release/webapp/config/jar"/>
+        <mkdir dir="release/webapp/config/sql"/>
         <!-- Jar the whole lot as a war file -->
         <jar destfile="release/webapp/war/${project.name}-${project.version}.war" basedir="${axis.webapp}"/>
 
-        <!-- Copy our database mapping files -->
+        <!-- Copy our database config files -->
         <copy verbose="false" overwrite="true"
             file="src/castor/hsqldb/astrogrid-community-database.xml"
             toFile="release/webapp/config/${project.name}-database-${project.version}.xml"/>
@@ -3206,49 +3213,59 @@ To repeat
             file="src/config/astrogrid-community-config.xml"
             toFile="release/webapp/config/${project.name}-config-${project.version}.xml"/>
 
-        <!-- Copy our ant deploy script -->
+		<!--+
+			| Add the Ant install script.
+			+-->
         <copy verbose="false" overwrite="true"
-            file="src/ant/build.xml"
+            file="src/ant/deploy.xml"
             toFile="release/webapp/build.xml"/>
-
-        <!-- Copy our webapp jndi transform -->
+		<!--+
+			| Add the xslt transforms required by the install script.
+			+-->
+        <!-- The config file xsl -->
+        <copy verbose="false" overwrite="true"
+            file="src/xsl/build/config/xsl/config.xsl"
+            toFile="release/webapp/config/xsl/config.xsl"/>
+        <!-- The webapp jndi xsl -->
         <copy verbose="false" overwrite="true"
             file="src/xsl/build/config/webapp.xsl"
-            toFile="release/webapp/config/webapp.xsl"/>
-
-        <!-- Copy our config xsl transform -->
-        <copy verbose="false" overwrite="true"
-            file="src/xsl/build/config/config.xsl"
-            toFile="release/webapp/config/config.xsl"/>
-        <!-- Copy our database xsl transform -->
+            toFile="release/webapp/config/xsl/webapp.xsl"/>
+        <!-- The database config xsl -->
         <copy verbose="false" overwrite="true"
             file="src/xsl/build/config/database.xsl"
-            toFile="release/webapp/config/database.xsl"/>
-        <!-- Copy our database table definitions -->
+            toFile="release/webapp/config/xsl/database.xsl"/>
+        <!-- The database table definitions -->
         <copy verbose="false" overwrite="true"
             file="src/sql/hsqldb/create.sql"
-            toFile="release/webapp/config/create.sql"/>
-        <!-- Copy the hsqldb jar -->
+            toFile="release/webapp/config/sql/create.sql"/>
+		<!--+
+			| Add the jars required by the install script.
+			| These can be deleted once the install is done.
+			+-->
         <copy verbose="false" overwrite="true"
             file="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"
-            toDir="release/webapp/config/jars"/>
-        <!-- Copy the axis jar -->
+            toDir="release/webapp/config/jar"/>
         <copy verbose="false" overwrite="true"
             file="${axis.webapp}/WEB-INF/lib/axis.jar"
-            toDir="release/webapp/config/jars"/>
-        <!-- Copy our server jar -->
+            toDir="release/webapp/config/jar"/>
         <copy verbose="false" overwrite="true"
             file="${policy.base}/jar/${policy.server.jar}"
             toDir="release/webapp/config/jars/"/>
-        <!-- Copy our client jar -->
         <copy verbose="false" overwrite="true"
             file="${policy.base}/jar/${policy.client.jar}"
-            toDir="release/webapp/config/jars/"/>
+            toDir="release/webapp/config/jar"/>
+		<!--+
+			| Add the community test data.
+			+-->
+        <copy verbose="false" overwrite="true" toDir="release/webapp/config/xml">
+            <fileset dir="src/xml/policy/data">
+				<include name="*.xml"/>
+			</fileset>
+		</copy>
 
-        <!-- Copy our test community data -->
-        <copy verbose="false" overwrite="true"
-            file="src/xml/policy/data/test.astrogrid.org.xml"
-            toFile="release/webapp/config/test.astrogrid.org.xml"/>
+		<!--+
+			| Wrap the whole lot up as a zip file
+			+-->
 
     </target>
 

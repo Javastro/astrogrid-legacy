@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/ant/Attic/build.xml,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/ant/Attic/deploy.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 16:44:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/17 10:26:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
-    |   $Log: build.xml,v $
+    |   $Log: deploy.xml,v $
+    |   Revision 1.4  2003/12/17 10:26:45  dave
+    |   Tidied up the webapp deployment script
+    |
     |   Revision 1.2  2003/12/16 16:44:30  dave
     |   Added deployment test data
     |
@@ -20,11 +23,16 @@
     |
     | </cvs:log>
     |
+    | Webapp deployment script.
+	| Adds all of the components in the right places and sets up the configuration files.
+    |
+    |
     +-->
 <project default="init" basedir="." name="Community">
 
     <!--+
         | Configuration properties.
+        | TODO - Default to env.CATALINA_HOME ?
         +-->
     <!--+
     <property name="tomcat.home"    value="/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14"/>
@@ -69,17 +77,10 @@
     <property name="hsqldb.pass"     value=""/>
 
     <!--+
-        | The Hsqldb library classpath.
-        +-->
-    <path id="hsqldb.classpath">
-        <pathelement location="${project.home}/config/jars/hsqldb-${hsqldb.version}.jar"/>
-    </path>
-
-    <!--+
-        | The config library classpath.
+        | The config tools classpath.
         +-->
     <path id="config.classpath">
-        <fileset dir="${project.home}/config/jars/">
+        <fileset dir="${project.home}/config/jar/">
             <include name="*.jar"/>
         </fileset>
     </path>
@@ -96,10 +97,10 @@
 
     <!--+
         | Tomcat manager properties.
-        +-->
     <property name="tomcat.manager.url"      value="${tomcat.url}/manager"/>
     <property name="tomcat.manager.username" value="astrogrid"/>
     <property name="tomcat.manager.password" value="please"/>
+        +-->
 
     <!--+
         | Bootstrap classpath for Tomcat
@@ -227,7 +228,7 @@
         <!-- Patch the web.xml to fix the DTD -->
         <replace file="${webapp.home}/WEB-INF/web.xml" token="web-app_2.2.dtd" value="web-app_2_2.dtd"/>
         <!-- Transform the target web.xml, adding our JNDI property -->
-        <xslt style="${project.home}/config/webapp.xsl"
+        <xslt style="${project.home}/config/xsl/webapp.xsl"
               in="${webapp.home}/WEB-INF/web.xml"
               out="${webapp.home}/WEB-INF/web.xml.new">
             <outputproperty name="method" value="xml"/>
@@ -250,7 +251,7 @@
         <echo message="  Property name  : ${property.name}"/>
         <echo message="  Property value : ${property.value}"/>
         <!-- Transform our config file, filling in the specified value -->
-        <xslt style="${project.home}/config/config.xsl"
+        <xslt style="${project.home}/config/xsl/config.xsl"
               in="${config.file}"
               out="${config.file}.new">
             <outputproperty name="method" value="xml"/>
@@ -273,7 +274,7 @@
         <echo message="  Database pass : ${hsqldb.pass}"/>
         <!-- Create our database data directory -->
         <mkdir dir="${hsqldb.location}"/>
-        <!-- Transform our config files, filling in the correct values -->
+        <!-- Update our config file, filling in the correct values -->
         <antcall target="config.xslt">
             <param name="config.file"    value="${server.config.home}/${project.name}-config.xml"/>
             <param name="property.name"  value="database.name"/>
@@ -292,7 +293,7 @@
         <!-- Copy the existing config to a backup file -->
         <copy file="${server.config.home}/${project.name}-database.xml" tofile="${server.config.home}/${project.name}-database.xml.old" overwrite="true" failonerror="false"/>
         <!-- Transform the database config -->
-        <xslt style="${project.home}/config/database.xsl"
+        <xslt style="${project.home}/config/xsl/database.xsl"
               in="${server.config.home}/${project.name}-database.xml"
               out="${server.config.home}/${project.name}-database.xml.new">
             <outputproperty name="method" value="xml"/>
@@ -314,12 +315,12 @@
         <echo message="Creating Hqsldb tables ...."/>
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="config.classpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
             >
-            <transaction src="${project.home}/config/create.sql"/>
+            <transaction src="${project.home}/config/sql/create.sql"/>
         </sql>
     </target>
 
@@ -329,7 +330,7 @@
     <target name="database.select" depends="">
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="config.classpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
@@ -351,7 +352,7 @@
     <target name="database.delete" depends="">
         <sql driver="org.hsqldb.jdbcDriver"
              url="${hsqldb.url}"
-             classpathref="hsqldb.classpath"
+             classpathref="config.classpath"
              userid="${hsqldb.user}"
              password="${hsqldb.pass}"
              print="true"
@@ -380,7 +381,7 @@
         </taskdef>
         <!-- Process our data files -->
         <policy.loader>
-            <fileset dir="${project.home}/config">
+            <fileset dir="${project.home}/xml/config">
                 <include name="${community.name}.xml"/>
             </fileset>
         </policy.loader>
