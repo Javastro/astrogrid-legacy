@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions targetNamespace="mySpace:MySpaceManager" xmlns:impl="mySpace:MySpaceManager" xmlns:intf="mySpace:MySpaceManager" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
 
+   <wsdl:message name="upLoadResponse">
+
+      <wsdl:part name="upLoadReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="lookupDataHoldersDetailsResponse">
 
       <wsdl:part name="lookupDataHoldersDetailsReturn" type="xsd:string"/>
@@ -73,6 +79,12 @@
 
    </wsdl:message>
 
+   <wsdl:message name="upLoadRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="createContainerRequest">
 
       <wsdl:part name="jobDetails" type="xsd:string"/>
@@ -86,6 +98,14 @@
    </wsdl:message>
 
    <wsdl:portType name="MySpaceManager">
+
+      <wsdl:operation name="upLoad" parameterOrder="jobDetails">
+
+         <wsdl:input name="upLoadRequest" message="impl:upLoadRequest"/>
+
+         <wsdl:output name="upLoadResponse" message="impl:upLoadResponse"/>
+
+      </wsdl:operation>
 
       <wsdl:operation name="lookupDataHolderDetails" parameterOrder="jobDetails">
 
@@ -148,6 +168,24 @@
    <wsdl:binding name="MySpaceManagerSoapBinding" type="impl:MySpaceManager">
 
       <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="upLoad">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="upLoadRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="upLoadResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
 
       <wsdl:operation name="lookupDataHolderDetails">
 
@@ -281,7 +319,7 @@
 
       <wsdl:port name="MySpaceManager" binding="impl:MySpaceManagerSoapBinding">
 
-         <wsdlsoap:address location="http://143.210.36.131:8080/services/MySpaceManager"/>
+         <wsdlsoap:address location="http://143.210.36.131:8080/axis/services/MySpaceManager"/>
 
       </wsdl:port>
 
