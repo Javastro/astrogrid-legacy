@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xsp/Attic/login-form.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 10:34:03 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 11:17:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: login-form.xsp,v $
+    |   Revision 1.8  2004/01/09 11:17:50  dave
+    |   Tidying up ... converted tabs to spaces
+    |
     |   Revision 1.7  2004/01/09 10:34:03  dave
     |   Changed form method to post to hide params
     |
@@ -34,72 +37,72 @@
     |
     +-->
 <xsp:page language="java"
-		create-session="true"
-		xmlns:xsp="http://apache.org/xsp"
-		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
-		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
-		>
+        create-session="true"
+        xmlns:xsp="http://apache.org/xsp"
+        xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+        xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+        >
 
-	<!--+
-	    | Import any java classes here.
-	    +-->
-	<xsp:structure>
-		<xsp:include>org.astrogrid.portal.cocoon.common.LoginAction</xsp:include>
-	</xsp:structure>
+    <!--+
+        | Import any java classes here.
+        +-->
+    <xsp:structure>
+        <xsp:include>org.astrogrid.portal.cocoon.common.LoginAction</xsp:include>
+    </xsp:structure>
 
-	<!--+
-	    | Class level Java code goes here.
-	    +-->
-	<xsp:logic>
-		<![CDATA[
-			private static final String LOGIN_MESSAGE = "Please login" ;
-		]]>
-	</xsp:logic>
+    <!--+
+        | Class level Java code goes here.
+        +-->
+    <xsp:logic>
+        <![CDATA[
+            private static final String LOGIN_MESSAGE = "Please login" ;
+        ]]>
+    </xsp:logic>
 
-	<!--+
-	    | The page content element.
-	    +-->
-	<div>
-		<xsp:logic>
-			<![CDATA[
-				String message = (String) request.getAttribute(LoginAction.MESSAGE_PARAM) ;
-				String name    = (String) request.getParameter(LoginAction.NAME_PARAM) ;
-			]]>
-		</xsp:logic>
-		<form method="post" action="login-form">
-			<input type="hidden" name="action" value="login"/>
-			<table border="1">
-				<tr>
-					<td colspan="2">
-						<xsp:expr>(null != message) ? message : LOGIN_MESSAGE</xsp:expr>
-					</td>
-				</tr>
-				<tr>
-					<td>Name :</td>
-					<td>
-						<xsp:element name="input">
-							<xsp:attribute name="type">text</xsp:attribute>
-							<xsp:attribute name="name">name</xsp:attribute>
-							<xsp:attribute name="value"><xsp:expr>(null != name) ? name : ""</xsp:expr></xsp:attribute>
-						</xsp:element>
-					</td>
-				</tr>
-				<tr>
-					<td>Pass :</td>
-					<td>
-						<xsp:element name="input">
-							<xsp:attribute name="type">password</xsp:attribute>
-							<xsp:attribute name="name">pass</xsp:attribute>
-							<xsp:attribute name="value"></xsp:attribute>
-						</xsp:element>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2">
-						<input type="submit" value="Login"/>
-					</td>
-				</tr>
-			</table>
-		</form>
-	</div>
+    <!--+
+        | The page content element.
+        +-->
+    <div>
+        <xsp:logic>
+            <![CDATA[
+                String message = (String) request.getAttribute(LoginAction.MESSAGE_PARAM) ;
+                String name    = (String) request.getParameter(LoginAction.NAME_PARAM) ;
+            ]]>
+        </xsp:logic>
+        <form method="post" action="login-form">
+            <input type="hidden" name="action" value="login"/>
+            <table border="1">
+                <tr>
+                    <td colspan="2">
+                        <xsp:expr>(null != message) ? message : LOGIN_MESSAGE</xsp:expr>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Name :</td>
+                    <td>
+                        <xsp:element name="input">
+                            <xsp:attribute name="type">text</xsp:attribute>
+                            <xsp:attribute name="name">name</xsp:attribute>
+                            <xsp:attribute name="value"><xsp:expr>(null != name) ? name : ""</xsp:expr></xsp:attribute>
+                        </xsp:element>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pass :</td>
+                    <td>
+                        <xsp:element name="input">
+                            <xsp:attribute name="type">password</xsp:attribute>
+                            <xsp:attribute name="name">pass</xsp:attribute>
+                            <xsp:attribute name="value"></xsp:attribute>
+                        </xsp:element>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="Login"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </xsp:page>

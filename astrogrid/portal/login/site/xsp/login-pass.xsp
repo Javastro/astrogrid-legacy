@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xsp/Attic/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 10:13:42 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 11:17:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.5  2004/01/09 11:17:50  dave
+    |   Tidying up ... converted tabs to spaces
+    |
     |   Revision 1.4  2004/01/09 10:13:42  dave
     |   Added message to login page
     |
@@ -25,36 +28,36 @@
     |
     +-->
 <xsp:page language="java"
-		create-session="true"
-		xmlns:xsp="http://apache.org/xsp"
-		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
-		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
-		>
+        create-session="true"
+        xmlns:xsp="http://apache.org/xsp"
+        xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+        xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+        >
 
-	<!--+
-	    | Import any java classes here.
-	    +-->
-	<xsp:structure>
-		<xsp:include>org.astrogrid.portal.cocoon.common.LoginAction</xsp:include>
-	</xsp:structure>
+    <!--+
+        | Import any java classes here.
+        +-->
+    <xsp:structure>
+        <xsp:include>org.astrogrid.portal.cocoon.common.LoginAction</xsp:include>
+    </xsp:structure>
 
-	<!--+
-	    | Class level Java code goes here.
-	    +-->
-	<xsp:logic>
-		<![CDATA[
-		]]>
-	</xsp:logic>
+    <!--+
+        | Class level Java code goes here.
+        +-->
+    <xsp:logic>
+        <![CDATA[
+        ]]>
+    </xsp:logic>
 
-	<!--+
-	    | The page content element.
-	    +-->
-	<div>
-		<xsp:logic>
-			<![CDATA[
-				String account = (String) request.getAttribute(LoginAction.ACCOUNT_PARAM) ;
-			]]>
-		</xsp:logic>
-		Welcome to astrogrid <xsp:expr>(null != account) ? account : ""</xsp:expr>
-		</div>
+    <!--+
+        | The page content element.
+        +-->
+    <div>
+        <xsp:logic>
+            <![CDATA[
+                String account = (String) request.getAttribute(LoginAction.ACCOUNT_PARAM) ;
+            ]]>
+        </xsp:logic>
+        Welcome to astrogrid <xsp:expr>(null != account) ? account : ""</xsp:expr>
+        </div>
 </xsp:page>

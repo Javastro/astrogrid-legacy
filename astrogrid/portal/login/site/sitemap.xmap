@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 10:07:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 11:17:50 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.8  2004/01/09 11:17:50  dave
+    |   Tidying up ... converted tabs to spaces
+    |
     |   Revision 1.7  2004/01/09 10:07:39  dave
     |   Fixed reference to login-pass XSP page
     |
@@ -25,90 +28,90 @@
 
 <!-- ======================== Components ================================ -->
 
-	<map:components>
-		<map:generators default="file"/>
-		<map:transformers default="xslt"/>
-		<map:readers default="resource"/>
-		<map:serializers default="html"/>
-		<map:selectors default="browser"/>
+    <map:components>
+        <map:generators default="file"/>
+        <map:transformers default="xslt"/>
+        <map:readers default="resource"/>
+        <map:serializers default="html"/>
+        <map:selectors default="browser"/>
 
-		<map:selector
-			name="parameter"
-			logger="sitemap.selector.parameter"
-			src="org.apache.cocoon.selection.ParameterSelector"/>
+        <map:selector
+            name="parameter"
+            logger="sitemap.selector.parameter"
+            src="org.apache.cocoon.selection.ParameterSelector"/>
 
-		<map:matchers default="wildcard"/>
-		<map:actions>
-			<map:action
-				name="astro-login" 
-				src="org.astrogrid.portal.cocoon.common.LoginAction"/>
-		</map:actions>
-	</map:components>
+        <map:matchers default="wildcard"/>
+        <map:actions>
+            <map:action
+                name="astro-login" 
+                src="org.astrogrid.portal.cocoon.common.LoginAction"/>
+        </map:actions>
+    </map:components>
 
 <!-- =========================== Views =================================== -->
 
-	<!--+
-		| Views for debugging XSL transforms
-		+-->
-	<map:views>
-		<!-- Original XML displayed as XML -->
-		<map:view name="000" from-label="000">
-			<map:serialize type="xml"/>
-		</map:view>
-		<!-- Original XML, displayed as XML/HTML -->
-		<map:view name="001" from-label="001">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="web/style/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-		<!-- XML processed into a page, displayed as XML/HTML -->
-		<map:view name="002" from-label="002">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="web/style/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-		<!-- Page wrapped in our template, displayed as XML/HTML -->
-		<map:view name="003" from-label="003">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="web/style/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-	</map:views>
+    <!--+
+        | Views for debugging XSL transforms
+        +-->
+    <map:views>
+        <!-- Original XML displayed as XML -->
+        <map:view name="000" from-label="000">
+            <map:serialize type="xml"/>
+        </map:view>
+        <!-- Original XML, displayed as XML/HTML -->
+        <map:view name="001" from-label="001">
+            <!-- Convert into XML/HTML -->
+            <map:transform src="web/style/xsl/xml-html.xsl"/>
+            <map:serialize type="html"/>
+        </map:view>
+        <!-- XML processed into a page, displayed as XML/HTML -->
+        <map:view name="002" from-label="002">
+            <!-- Convert into XML/HTML -->
+            <map:transform src="web/style/xsl/xml-html.xsl"/>
+            <map:serialize type="html"/>
+        </map:view>
+        <!-- Page wrapped in our template, displayed as XML/HTML -->
+        <map:view name="003" from-label="003">
+            <!-- Convert into XML/HTML -->
+            <map:transform src="web/style/xsl/xml-html.xsl"/>
+            <map:serialize type="html"/>
+        </map:view>
+    </map:views>
 
 <!-- ========================== Resources ================================= -->
 
-	<map:resources>
-	</map:resources>
+    <map:resources>
+    </map:resources>
 
 <!-- ========================== Pipelines ================================= -->
 
-	<map:pipelines>
-		<!--+
-			| Main pipeline.
-			+-->
-		<map:pipeline>
+    <map:pipelines>
+        <!--+
+            | Main pipeline.
+            +-->
+        <map:pipeline>
 
-			<!-- Login page -->
-			<map:match pattern="login-form">
-				<!--+
-					| Call the LoginAction to validate the name and password.
-					+-->
-				<map:act type="astro-login">
-					<!--+
-						| If we are logged in, display a nice page.
-						| We can't do a redirect, because this page is requested indirectly
-						| via the map:aggregate in the main site map.
-						+-->
-					<map:generate type="serverpages" src="xsp/login-pass.xsp"/>
-					<map:serialize type="xml"/>
-				</map:act>
-				<!--+
-					| If we are not logged in, display the login form.
-					+-->
-				<map:generate type="serverpages" src="xsp/login-form.xsp"/>
-				<map:serialize type="xml"/>
-			</map:match>
+            <!-- Login page -->
+            <map:match pattern="login-form">
+                <!--+
+                    | Call the LoginAction to validate the name and password.
+                    +-->
+                <map:act type="astro-login">
+                    <!--+
+                        | If we are logged in, display a nice page.
+                        | We can't do a redirect, because this page is requested indirectly
+                        | via the map:aggregate in the main site map.
+                        +-->
+                    <map:generate type="serverpages" src="xsp/login-pass.xsp"/>
+                    <map:serialize type="xml"/>
+                </map:act>
+                <!--+
+                    | If we are not logged in, display the login form.
+                    +-->
+                <map:generate type="serverpages" src="xsp/login-form.xsp"/>
+                <map:serialize type="xml"/>
+            </map:match>
 
-		</map:pipeline>
-	</map:pipelines>
+        </map:pipeline>
+    </map:pipelines>
 </map:sitemap>
