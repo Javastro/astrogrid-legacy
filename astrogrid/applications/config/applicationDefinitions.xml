@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.11 2004/03/23 12:51:25 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.12 2004/04/30 18:01:07 pah Exp $-->
 <!--This is the configuration file for the Iteration5 application controller-->
 <!-- \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
-\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
+\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd">
 	<Application name="SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<Parameters>
