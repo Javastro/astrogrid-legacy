@@ -1,10 +1,11 @@
 /*
- * $Id: QuerierPlugin.java,v 1.12 2004/04/01 17:15:21 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.13 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
+import org.astrogrid.datacenter.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -175,6 +176,9 @@ public abstract class QuerierPlugin  {
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.13  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.12  2004/04/01 17:15:21  mch
  Attempt to remove plugin on close
 

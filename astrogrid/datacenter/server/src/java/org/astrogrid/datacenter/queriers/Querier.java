@@ -1,10 +1,11 @@
 /*
- * $Id: Querier.java,v 1.54 2004/07/06 18:48:34 mch Exp $
+ * $Id: Querier.java,v 1.55 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
+import org.astrogrid.datacenter.*;
 
 import org.astrogrid.datacenter.queriers.status.*;
 
@@ -414,6 +415,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.55  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.54  2004/07/06 18:48:34  mch
  Series of unit test fixes
 

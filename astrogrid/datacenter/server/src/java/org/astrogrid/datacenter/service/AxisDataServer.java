@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.41 2004/03/18 20:43:07 mch Exp $
+ * $Id: AxisDataServer.java,v 1.42 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.io.Piper;
@@ -174,6 +174,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.42  2004/08/17 20:19:36  mch
+Moved TargetIndicator to client
+
 Revision 1.41  2004/03/18 20:43:07  mch
 Context test cpde
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.23 2004/03/18 11:46:53 mch Exp $
+ * $Id: DataServer.java,v 1.24 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;

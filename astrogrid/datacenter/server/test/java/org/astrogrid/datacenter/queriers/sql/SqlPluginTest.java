@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.9 2004/08/05 10:56:35 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.10 2004/08/17 20:19:36 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -195,6 +195,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.10  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.9  2004/08/05 10:56:35  mch
  Removed ADQL 073 tests (no longer used)
 

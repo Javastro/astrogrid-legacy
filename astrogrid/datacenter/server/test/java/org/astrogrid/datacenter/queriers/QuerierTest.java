@@ -1,10 +1,11 @@
 /*
- * $Id: QuerierTest.java,v 1.7 2004/03/15 19:16:12 mch Exp $
+ * $Id: QuerierTest.java,v 1.8 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
+import org.astrogrid.datacenter.*;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;

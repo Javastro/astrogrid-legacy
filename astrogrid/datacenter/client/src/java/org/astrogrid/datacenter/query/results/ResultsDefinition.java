@@ -1,12 +1,12 @@
 /*
- * $Id: ResultsDefinition.java,v 1.1 2004/08/13 08:52:23 mch Exp $
+ * $Id: ResultsDefinition.java,v 1.2 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.query.results;
 
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 
 
 /**
@@ -27,6 +27,9 @@ public abstract class ResultsDefinition  {
 }
 /*
  $Log: ResultsDefinition.java,v $
+ Revision 1.2  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.1  2004/08/13 08:52:23  mch
  Added SQL Parser and suitable JSP pages
 

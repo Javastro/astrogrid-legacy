@@ -1,4 +1,4 @@
-/*$Id: CEATargetIndicator.java,v 1.2 2004/07/20 02:14:48 nw Exp $
+/*$Id: CEATargetIndicator.java,v 1.3 2004/08/17 20:19:36 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +51,9 @@ public class CEATargetIndicator extends TargetIndicator {
 
 /* 
 $Log: CEATargetIndicator.java,v $
+Revision 1.3  2004/08/17 20:19:36  mch
+Moved TargetIndicator to client
+
 Revision 1.2  2004/07/20 02:14:48  nw
 final implementaiton of itn06 Datacenter CEA interface
 

@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.1 2004/08/04 07:49:24 KevinBenson Exp $
+/*$Id: FitsResultsTest.java,v 1.2 2004/08/17 20:19:36 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 
@@ -76,6 +76,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.2  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.1  2004/08/04 07:49:24  KevinBenson
  small unit test on the fitsresult class
 

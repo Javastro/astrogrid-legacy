@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.2 2004/04/05 15:59:36 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.3 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServer_v05_Port;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -127,6 +127,9 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.3  2004/08/17 20:19:36  mch
+Moved TargetIndicator to client
+
 Revision 1.2  2004/04/05 15:59:36  mch
 Introduced multiple services to one deployment
 

@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.3 2004/08/14 14:38:30 acd Exp $
+/*$Id: VizierQuerierTest.java,v 1.4 2004/08/17 20:19:36 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.queriers.spi.TranslatorMap;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
@@ -201,6 +201,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.4  2004/08/17 20:19:36  mch
+Moved TargetIndicator to client
+
 Revision 1.3  2004/08/14 14:38:30  acd
 Test for the revised Vizier Proxy cone search.
 

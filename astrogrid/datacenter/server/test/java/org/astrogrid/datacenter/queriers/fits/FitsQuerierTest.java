@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.15 2004/03/14 04:13:16 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.16 2004/08/17 20:19:36 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -22,7 +22,7 @@ import org.astrogrid.datacenter.fits.FitsTest;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.query.ConeQuery;
 
 /** Test the Fits processing classes
@@ -79,6 +79,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.16  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.15  2004/03/14 04:13:16  mch
  Wrapped output target in TargetIndicator
 

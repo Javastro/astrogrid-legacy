@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.4 2004/07/27 13:48:33 nw Exp $
+/*$Id: DatacenterApplication.java,v 1.5 2004/08/17 20:19:36 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.datacenter.queriers.TargetIndicator;
+import org.astrogrid.datacenter.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
@@ -215,6 +215,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /* 
 $Log: DatacenterApplication.java,v $
+Revision 1.5  2004/08/17 20:19:36  mch
+Moved TargetIndicator to client
+
 Revision 1.4  2004/07/27 13:48:33  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

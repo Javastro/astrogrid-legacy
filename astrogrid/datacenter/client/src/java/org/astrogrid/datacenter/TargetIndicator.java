@@ -1,10 +1,10 @@
 /*
- * $Id: TargetIndicator.java,v 1.5 2004/07/15 17:07:23 mch Exp $
+ * $Id: TargetIndicator.java,v 1.1 2004/08/17 20:19:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.queriers;
+package org.astrogrid.datacenter;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -134,6 +134,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.1  2004/08/17 20:19:36  mch
+ Moved TargetIndicator to client
+
  Revision 1.5  2004/07/15 17:07:23  mch
  Added factory method to make from a string
 
