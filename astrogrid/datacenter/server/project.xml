@@ -33,7 +33,7 @@
    <!-- must be on a single line -->
    <shortDescription>Datacenter server framework</shortDescription>
 
-   <siteDirectory>/var/www/www/maven/build/datacenter/server</siteDirectory>
+   <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/datacenter/server</siteDirectory>
 
    <repository>
       <connection>
