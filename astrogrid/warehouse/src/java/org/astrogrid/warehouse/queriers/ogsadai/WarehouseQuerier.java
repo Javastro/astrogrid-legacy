@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.16 2004/01/16 12:19:09 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.17 2004/01/19 12:47:54 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-//import java.util.Properties;
 import org.astrogrid.config.SimpleConfig; 
 
 /**
@@ -59,11 +58,10 @@ import org.astrogrid.config.SimpleConfig;
  * @TOFIX The conversion from XML RowSet to VOTable perhaps involves
  * too many different intermediate IO/stream classes;  can it be made
  * simpler?
- * 
- * @TOFIX  XSLT conversion currently uses the same stylesheet for
- * all datasets in the warehouse, and thus may be lying about what
- * the COOSYS is.  
  *
+ * @TOFIX Loading results as a DOM (using default OGSA-DAI data return
+ * mechanism) is a Bad Idea.  Hope to get GridFTP transfers working soon.
+ * 
  * @author K Andrews
  * @version 1.0
  * @see GdsQueryDelegate
@@ -71,24 +69,9 @@ import org.astrogrid.config.SimpleConfig;
 public class WarehouseQuerier extends Querier
 {
   /**
-   * Configuration properties for this service.
-   * These are found in the 'WarehouseQuerier.properties' file,
-   * which provides the following properties:
-   *
-   *   - DatabaseQuerierClass: Fully qualified classname for this class
-   *   - WarehouseJvm: Full path to Java JRE for shelled-out call 
-   *   - WarehouseQuerier: Fully qualified classname of GdsQueryDelegate
-   *   - WarehouseClasspath: 
-   *       Classpath to be used by GdsQueryDelegate (if any)
-   *   - WarehouseJarDir: Directory containing jars needed by
-   *       GdsQueryDelegate (if any)
-   */
-  //protected Properties serviceProperties = null;
-
-  /**
-   * Default constructor initialises parent with query data and 
-   * loads run-time, installation-specific configuration properties 
-   * (which must be supplied in a 'WarehouseQuerier.properties' file).
+   * Default constructor initialises parent with query data.
+   * Datacenter infrastructure takes care of loading config parameters
+   * from toplevel AstroGridConfig.properties file.
    * 
    * @param queryId  String identifier for tracking this query
    * @param query  Query representation in datacenter internal format
@@ -100,30 +83,6 @@ public class WarehouseQuerier extends Querier
       throws DatabaseAccessException, IOException, SAXException {
     super(queryId, query);
     log.debug("Constructing WarehouseQuerier");
-
-    /*
-    try {
-      // Load installation-specific runtime properties
-      serviceProperties = new Properties();
-      InputStream s = WarehouseQuerier.class.getResourceAsStream(
-            "WarehouseQuerier.properties"); 
-      if (s == null) {
-        log.error("WarehouseQuerier couldn't find " +
-          "properties file 'WarehouseQuerier.properties'");
-        throw new DatabaseAccessException(
-          "Couldn't find properties file WarehouseQuerier.properties");
-      }
-      serviceProperties.load(s);
-    }
-    catch (IOException e) {
-      log.error("WarehouseQuerier couldn't load properties from " +
-          "properties file 'WarehouseQuerier.properties'");
-      throw new DatabaseAccessException(
-          "Couldn't load properties from WarehouseQuerier.properties: " + 
-           e.getMessage());
-    }
-    log.debug("Successfully loaded WarehouseQuerier properties");
-    */
   }
 
   /**
@@ -134,13 +93,12 @@ public class WarehouseQuerier extends Querier
    * GdsQueryDelegate, and converts GdsQueryDelegate's XML RowSet
    * results into the VOTable expected by the datacenter.
    *
-   * @TOFIX  XSLT conversion currently uses the same stylesheet for
-   * all datasets in the warehouse, and thus may be lying about what
-   * the COOSYS is.  
-   * 
    * @TOFIX The conversion from XML RowSet to VOTable perhaps involves
    * too many different intermediate IO/stream classes;  can it be made
    * simpler?
+   *
+   * @TOFIX  We really need customised ADQL->SQL translation customised
+   * for our DBMS / table indices.
    *
    * @return a QueryResults object wrapping the VOTable Document results.
    * @throws DatabaseAccessException
@@ -251,9 +209,8 @@ public class WarehouseQuerier extends Querier
     try {
       tFactory = TransformerFactory.newInstance();
       transformer = tFactory.newTransformer(
-           //new StreamSource(serviceProperties.getProperty(
            new StreamSource(SimpleConfig.getProperty(
-              "XslTransform", DEFAULT_XSL_TRANSFORM)));
+              "WAREHOUSE_XslTransform", DEFAULT_XSL_TRANSFORM)));
     }
     catch (Exception e){
       String errorMessage = 
@@ -337,21 +294,19 @@ public class WarehouseQuerier extends Querier
    * @throws DatabaseAccessException
    */
   protected String getOgsaDaiRegistryString() throws DatabaseAccessException {
-    //String host = serviceProperties.getProperty("OgsaDaiHostString");
-    String host = SimpleConfig.getProperty("OgsaDaiHostString");
+    String host = SimpleConfig.getProperty("WAREHOUSE_OgsaDaiHostString");
     if (host == null) {
       String errorMessage = 
-        "Fatal error: Property 'OgsaDaiHostString' not found in file " +
-        "'WarehouseQuerier.properties'";
+        "Fatal error: Property 'WAREHOUSE_OgsaDaiHostString' not found " +
+        " in file 'AstroGridConfig.properties'";
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
     }
-    //String registry = serviceProperties.getProperty("OgsaDaiRegistryString");
-    String registry = SimpleConfig.getProperty("OgsaDaiRegistryString");
+    String registry = SimpleConfig.getProperty("WAREHOUSE_OgsaDaiRegistryString");
     if (registry == null) {
       String errorMessage = 
-        "Fatal error: Property 'OgsaDaiRegistryString' not found in file " +
-        "'WarehouseQuerier.properties'";
+        "Fatal error: Property 'WAREHOUSE_OgsaDaiRegistryString' not found" +
+        " in file 'WarehouseQuerier.properties'";
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
     }
@@ -373,8 +328,7 @@ public class WarehouseQuerier extends Querier
   protected String getJavaBinary() throws DatabaseAccessException {
     // First, check if user has customised the JVM location 
     //  in the WarehouseQuerier.properties file
-    //String customJVM = serviceProperties.getProperty("WarehouseJvm");
-    String customJVM = SimpleConfig.getProperty("WarehouseJvm");
+    String customJVM = SimpleConfig.getProperty("WAREHOUSE_WarehouseJvm");
     if (customJVM != null) {
       return customJVM;  // Use customised JVM if it exists
     }
@@ -384,8 +338,8 @@ public class WarehouseQuerier extends Querier
       if (javaHome == null) {  //Shouldn't happen
         String errorMessage = 
           "Fatal error: System property 'java.home' not defined! "+
-             "Please set WarehouseJvm property in " +
-             "'WarehouseQuerier.properties' file";
+             "Please set WAREHOUSE_WarehouseJvm property in " +
+             "'AstroGridConfig.properties' file";
         log.error(errorMessage);
         throw new DatabaseAccessException(errorMessage);
       }
@@ -403,8 +357,8 @@ public class WarehouseQuerier extends Querier
         if (!(testFile.exists())) {
           String errorMessage = 
             "Fatal error: Java binary '" + fullPath + "[.exe]' not found! "+
-               "Please set WarehouseJvm property in " +
-               "'WarehouseQuerier.properties' file";
+               "Please set WAREHOUSE_WarehouseJvm property in " +
+               "'AstroGridConfig.properties' file";
           log.error(errorMessage);
           throw new DatabaseAccessException(errorMessage);
         }
@@ -428,18 +382,18 @@ public class WarehouseQuerier extends Querier
    */
   protected String getExecutableJar() throws DatabaseAccessException {
     // Extract path to directory containing executable jar 
-    //String jarPath = serviceProperties.getProperty("ExecutableJarPath");
-    String jarPath = SimpleConfig.getProperty("ExecutableJarPath");
+    String jarPath = SimpleConfig.getProperty("WAREHOUSE_ExecutableJarPath");
     if (jarPath == null) {
-      String errorMessage = "Property 'ExecutableJarPath' not set in " +
-          "properties file 'WarehouseQuerier.properties'";
+      String errorMessage = "Property 'WAREHOUSE_ExecutableJarPath' not set" +
+      " in properties file 'AstroGridConfig.properties'";
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
     }
     String sep = System.getProperty("file.separator");
     if (sep == null) {
       log.warn("Warning, couldn't get system file.separator, assuming " +
-          "ExecutableJarPath is properly terminated with file separator");
+          "WAREHOUSE_ExecutableJarPath is properly terminated " +
+          "with file separator");
     }
     else {
       int pathlen = jarPath.length();
@@ -449,18 +403,22 @@ public class WarehouseQuerier extends Querier
       }
     }
     // Extract name of executable jar
-    //String jarName = serviceProperties.getProperty("ExecutableJarName");
-    String jarName = SimpleConfig.getProperty("ExecutableJarName");
+    String jarName = SimpleConfig.getProperty("WAREHOUSE_ExecutableJarName");
     if (jarName == null) {
-      String errorMessage = "Property 'ExecutableJarName' not set in " +
-          "properties file 'WarehouseQuerier.properties'";
+      String errorMessage = 
+          "Property 'WAREHOUSE_ExecutableJarName' not set in " +
+          "properties file 'AstroGridConfig.properties'";
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
     }
     return jarPath + jarName;
   }
 
-  //Kludge to get around datacenter hardwiring of DEC (we need DECL)
+  /**
+   * Adjust SQL query (temporary kludge): datacenter default ADQL->SQL 
+   * translator produces DEC as column name where we need DECL.
+   * @return  String holding adjusted SQL query
+   */
   protected String convertDecToDecl(String inString) {
     String sqlString = inString;
     while (true) {
@@ -489,7 +447,11 @@ public class WarehouseQuerier extends Querier
     return sqlString;
   }
 
-  //A minimal set of special chars to be escaped
+  /**
+   * Adjust input string (SQL query) to escape XML special characters
+   * likely to cause problems.
+   * @return  Version of string with escaped XML special characters
+   */
   protected String escapeXmlSpecialChars(String inString) {        
     String outString = "";
     for (int i = 0; i < inString.length(); i++) {
@@ -527,6 +489,10 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.17  2004/01/19 12:47:54  kea
+Giving proper WAREHOUSE_ prefix to toplevel warehouse config properties
+in AstroGridConfig.properties file.
+
 Revision 1.16  2004/01/16 12:19:09  kea
 Fixing broken Javadoc comments.
 

@@ -1,6 +1,7 @@
 package org.astrogrid.warehouse.queriers.ogsadai;
 
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.config.SimpleConfig;
 import java.io.File;
 import org.w3c.dom.Document;
 import org.w3c.dom.Document;
@@ -19,6 +20,8 @@ import org.w3c.dom.NamedNodeMap;
 public class WarehouseQuerierClient
 {
   public static void main(String args[]) throws Exception {
+
+    SimpleConfig.autoLoad();
 
     String errorString = 
       "Usage: java WarehouseQuerierClient sql_query";
