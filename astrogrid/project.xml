@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.9 2004/12/01 22:34:23 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.10 2004/12/08 00:17:36 jdt Exp $ -->
 <project>
     <extend>${basedir}/maven-base/project.xml</extend>
     <id>astrogrid</id>
     <name>AstroGrid</name>
     <shortDescription>AstroGrid Projects</shortDescription>
     <siteDirectory>${astrogrid.docs.root}</siteDirectory>
+    <build>
+    	<sourceDirectory>${basedir}/monster/all</sourceDirectory>
+    </build>
+    
     <dependencies/>
     <repository>
         <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid 
@@ -16,6 +20,7 @@
         <url> http://www.astrogrid.org/viewcvs/astrogrid/ </url>
     </repository>
     <reports>
+        <report> maven-javadoc-plugin </report>
         <report> maven-changelog-plugin </report>
         <report> maven-developer-activity-plugin </report>
         <report> maven-file-activity-plugin </report>
