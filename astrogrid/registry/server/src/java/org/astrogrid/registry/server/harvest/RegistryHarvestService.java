@@ -177,6 +177,7 @@ public class RegistryHarvestService {
              for(int i = 0; i < nl.getLength();i++) {
                Element elem = (Element) nl.item(i);
                versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
+               versionNumber = versionNumber.replace('.','_');               
                if(useDates) {
                   Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
                   String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
@@ -207,6 +208,7 @@ public class RegistryHarvestService {
              for(int i = 0; i < nl.getLength();i++) {
                Element elem = (Element) nl.item(i);
                versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
+               versionNumber = versionNumber.replace('.','_');
                if(useDates) {
                   Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
                   String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
