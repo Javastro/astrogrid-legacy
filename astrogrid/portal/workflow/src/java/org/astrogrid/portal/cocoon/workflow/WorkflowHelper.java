@@ -153,7 +153,7 @@ public class WorkflowHelper {
                 
                 ParameterRef pRef = WorkflowHelper.getParameterRef(applDescription,tool,savedNewInsertTarget);                 
                 
-                if( pRef.getMaxoccurs() <= -1) {
+                if( pRef.getMaxoccurs() <= 0) { // Bug # 417: max cardinality of 0 now indicates unbounded parameter
                   
                     // First, count up the empty parameters of this type still left...
                      while( iterator.hasMoreElements() ) {
