@@ -163,31 +163,24 @@ public class EntryRecord implements StoreFile
  * files or folders.
  */
    public boolean isFolder()
-   {  boolean isContainer;
-
-      if (type == EntryCodes.CON)
-      {  isContainer = true;
-      }
-      else
-      {  isContainer = false;
-      }
-
-      return isContainer;
+   {
+      return (type == EntryCodes.CON);
    }
    
 /**
  * Return true if this EntryRecord is a self-contained file.  For
  * example, a database table might be represented as a StoreFile but it
- * is not a file.  A value of false is always returned because currently
- * MySpace cannot handle database tables.
+ * is not a file.
+ * <p>Returns true if it's not a container
  */
    public boolean isFile()
-   {  return false;
+   {  return !(type == EntryCodes.CON);
    }
    
 /**
  * If the EntryRecord is a container then list all its children.  If it
- * is not a container then return null.  Note that here a value of
+ * is not a container then return null.
+ * @todo Note that here a value of
  * null is always returned, even if the EntryRecord is a container.
  */
 
@@ -205,17 +198,12 @@ public class EntryRecord implements StoreFile
 /**
  * Return where to find this file using an AStrogrid Store Locator.
  *
- * [TODO] Hmmm.  The following may or may not be correct!
+ * @todo not implemented
 
  */
    public Agsl toAgsl()
-   {  try
-      {  Agsl agsl = new Agsl( new java.net.URL(entryUri) );
-         return agsl;
-      }
-      catch (Exception e)
-      {  return null;
-      }
+   {
+      return null;
    }
    
 /**

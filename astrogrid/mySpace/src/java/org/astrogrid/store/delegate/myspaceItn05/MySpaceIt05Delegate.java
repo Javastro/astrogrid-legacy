@@ -334,7 +334,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public StoreFile getFile(String path) throws IOException
    {
 
-      KernelResults results = innerDelegate.getEntriesList(path,
+      KernelResults results = innerDelegate.getEntriesList("/"+path,
         isTest);
 
 //
@@ -363,6 +363,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void putBytes(byte[] bytes, int offset, int length,
      String targetPath, boolean append) throws IOException
    {
+
+      targetPath = "/"+targetPath;
 //
 //   Determine how a pre-existing file with the specified name is
 //   to be dispatched.
@@ -416,6 +418,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void putString(String contents, String targetPath,
      boolean append) throws IOException
    {
+
+      targetPath = "/"+targetPath;
 //
 //   Determine how a pre-existing file with the specified name is
 //   to be dispatched.
@@ -460,6 +464,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void putUrl(URL source, String targetPath, boolean append)
      throws IOException
    {
+
+      targetPath = "/"+targetPath;
 //
 //   Determine how a pre-existing file with the specified name is
 //   to be dispatched.
@@ -505,7 +511,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public OutputStream putStream(String targetPath, boolean append)
      throws IOException
-   {  return new MySpaceOutputStream(targetPath, append);
+   {  return new MySpaceOutputStream("/"+targetPath, append);
    }
 
 
@@ -563,7 +569,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void delete(String deletePath) throws IOException
-   {  KernelResults results = innerDelegate.deleteFile(deletePath,
+   {  KernelResults results = innerDelegate.deleteFile("/"+deletePath,
         isTest);
 
 //
@@ -578,12 +584,13 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
 /**
  * Copy a file to a target Agsl.
- */
+    * @todo won't work between myspaces
+    */
 
    public void copy(String sourcePath, Agsl targetPath) throws IOException
    {  String targetFile = targetPath.getPath();
-      KernelResults results = innerDelegate.copyFile(sourcePath,
-        targetFile, isTest);
+      KernelResults results = innerDelegate.copyFile("/"+sourcePath,
+        "/"+targetFile, isTest);
 
 //
 //   Append and check any status messages.
@@ -601,8 +608,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public void copy(Agsl source, String targetPath) throws IOException
    {  String sourcePath = source.getPath();
-      KernelResults results = innerDelegate.copyFile(sourcePath,
-        targetPath, isTest);
+      KernelResults results = innerDelegate.copyFile("/"+sourcePath,
+        "/"+targetPath, isTest);
 
 //
 //   Append and check any status messages.
@@ -620,8 +627,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
    public void move(String sourcePath, Agsl targetPath) throws IOException
    {  String targetFile = targetPath.getPath();
       
-      KernelResults results = innerDelegate.moveFile(sourcePath,
-        targetFile, isTest);
+      KernelResults results = innerDelegate.moveFile("/"+sourcePath,
+        "/"+targetFile, isTest);
 
 //
 //   Append and check any status messages.
@@ -639,8 +646,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public void move(Agsl source, String targetPath) throws IOException
    {  String sourcePath = source.getPath();
-      KernelResults results = innerDelegate.moveFile(sourcePath,
-        targetPath, isTest);
+      KernelResults results = innerDelegate.moveFile("/"+sourcePath,
+        "/"+targetPath, isTest);
 
 //
 //   Append and check any status messages.
@@ -658,7 +665,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
    public void newFolder(String targetPath) throws IOException
    {  KernelResults results = innerDelegate.createContainer(
-        targetPath, isTest);
+        "/"+targetPath, isTest);
 
 //
 //   Append and check any status messages.
@@ -774,7 +781,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //
 //   Attempt to retrieve the contents of the file as a String.
 
-      KernelResults results = innerDelegate.getString(targetPath,
+      KernelResults results = innerDelegate.getString("/"+targetPath,
         isTest);
 
 //
@@ -808,7 +815,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //
 //   Attempt to retrieve the contents of the file as a String.
 
-      KernelResults results = innerDelegate.getBytes(targetPath,
+      KernelResults results = innerDelegate.getBytes("/"+targetPath,
         isTest);
 
 //
