@@ -1,4 +1,4 @@
-/* $Id: RegistryQuerierImpl.java,v 1.4 2004/09/01 15:42:26 jdt Exp $
+/* $Id: RegistryQuerierImpl.java,v 1.5 2004/09/03 13:48:58 jdt Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -32,6 +32,7 @@ import org.astrogrid.registry.beans.cea.CeaHttpApplicationType;
 import org.astrogrid.registry.beans.resource.IdentifierType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
@@ -251,13 +252,18 @@ public class RegistryQuerierImpl implements RegistryQuerier {
                     + elementName + ") - start");
         }
 
+        if (log.isDebugEnabled()) {
+        	log.debug("Unmarshalling document:");
+        	log.debug(DomHelper.DocumentToString(doc));
+        	log.debug("=======================");
+        }
         //      navigate down to the bit we're interested in.
         final NodeList nls = doc.getElementsByTagNameNS("*", elementName);
         if (nls.getLength() == 0) {
             throw new RegistryException("Registry entry has no " + elementName + " Element");
         }
         final Element ns = (Element) nls.item(0);
-        // ns.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); bug-fix work around.
+        ns.setAttribute("xmlns:xsi","http://www.w3.org/2001/XMLSchema-instance"); //bug-fix work around.
         Object returnObject = Unmarshaller.unmarshal(clazz, ns);
         if (log.isTraceEnabled()) {
             log.trace("unmarshal(Document, Class, String) - end - return value = " + returnObject);

@@ -51,7 +51,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
-			<URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</URL>
+			<cea:HttpURLType>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</cea:HttpURLType>
 		</cea:CeaHttpAdapterSetup>
     </Resource>
     <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
@@ -139,7 +139,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
-			<URL method="get">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/adder.jsp</URL>
+			<cea:HttpURLType method="get">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/adder.jsp</cea:HttpURLType>
 		</cea:CeaHttpAdapterSetup>
     </Resource>
 	<!--A Genuine SIAP service - Guy's recently announced INT WFS service at Cambridge-->
@@ -219,7 +219,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
-			<URL>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</URL>
+			<cea:HttpURLType>http://archive.ast.cam.ac.uk/cgi-bin/wfs-siap/queryImage</cea:HttpURLType>
 		</cea:CeaHttpAdapterSetup>
     </Resource>
     <Resource status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
@@ -273,7 +273,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
-			<URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</URL>
+			<cea:HttpURLType>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</cea:HttpURLType>
 		</cea:CeaHttpAdapterSetup>
     </Resource>
 	<!--The point of the next entry is make sure that a single duff entry doesn't screw up the entire application server-->
@@ -328,7 +328,7 @@
             </cea:Interfaces>
         </cea:ApplicationDefinition>
 		<cea:CeaHttpAdapterSetup>
-			<URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</URL>
+			<cea:HttpURLType>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</cea:HttpURLType>
 		</cea:CeaHttpAdapterSetup>
     </Resource>	
 	<Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType" status="active">
