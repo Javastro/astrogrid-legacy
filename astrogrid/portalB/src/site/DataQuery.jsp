@@ -75,6 +75,8 @@ if (errorMessage != null) {
 
 <h1>Query Chooser</h1>
 <Form action="/DataQuery/DataQuery" name="DataQueryForm" method="post">
+
+<b>Information you want returned:</b>
 <select name="DataSetName" <%if(dataSets != null && dataSets.size() > 0) {%>onChange="updateCols(document.DataQueryForm.DataSetName.selectedIndex,document.DataQueryForm.ReturnColumn)"<%}%>>
 	<%
 	  if(dataSets != null) {
@@ -86,13 +88,11 @@ if (errorMessage != null) {
 	<%}}%>	
 </select>
 
-<!---<input type="text" name="ReturnColumn" />--->
-
 <select name="ReturnColumn">
 	<option value="COLUMN-ID">COLUMN-ID</option>
 	<option value="COLUMN-ID">COLUMN-ID</option>
 </select>
-
+<br />
 <input type="submit" name="AddSelection" value="Add Selection" />
 <input type="submit" name="RemoveSelection" value="Remove Selection" />
 <HR />
@@ -102,19 +102,25 @@ if (errorMessage != null) {
   Integer criteriaNumber = (Integer)session.getAttribute("CriteriaNumber");
   if(criteriaNumber != null && criteriaNumber.intValue() > 0) {
 %>
-<select name="JoinType">
-	<option value="AND">AND</option>
-	<option value="OR">OR</option>
-</select>
+Use to place a criteria inside a parenthesis place inside the {?}:
 <select name="LinkTo">
 	<option value="-1">NONE</option>
 	<%for(int k = 0;k < criteriaNumber.intValue();k++) {%>
 		<option value="<%=k%>"><%=k%></option>
 	<%}%>
 </select>
+<i>* this is required when removing a criteria</i>
+<br />
+<b>Choose the join operation for you next criteria:</b>
+<select name="JoinType">
+	<option value="AND">AND</option>
+	<option value="OR">OR</option>
+</select>
 <%
 }//if
 %>
+<br />
+<b>Choose a Data set name that matches with your Selection:</b>
 <select name="DataSetNameCriteria" <%if(dataSets != null && dataSets.size() > 0) {%>onChange="updateCols(document.DataQueryForm.DataSetNameCriteria.selectedIndex,document.DataQueryForm.FilterColumn)"<%}%>>
 	<%
 	  if(dataSets != null) {
@@ -125,17 +131,16 @@ if (errorMessage != null) {
 	<option value="<%=dsInfo.getName()%>"><%=dsInfo.getName()%></option>
 	<%}}%>	
 </select>
-
+<br />
+<b>Choose a Column, UCD, Function to filter on:</b>
 <select name="FilterColumn">
 	<option value="Fi1">FilterColumn1</option>
 	<option value="Fi2">FilterColumn2</option>
 </select>
 
-<input type="text" name="FunctionValues" VALUE="Only for Functions" />
-
 <br />
 
-
+<b>Pick a Operator you desire to filter against the value:</b>
 <select name="Operator">
 	<option value="EQUALS">EQUALS</option>
 	<option value="LESS_THAN">Less Than</option>
@@ -145,23 +150,36 @@ if (errorMessage != null) {
 	<option value="LESS_THAN">Less Than</option>	
 	<option value="NONE">NONE</option>
 </select>
+<i>* A NONE is provided in case certain functions do not require an operator</i>
+
+<br />
+Only to be used for Functions, this is a comma seperated values list:
+<input type="text" name="FunctionValues" />
+<i>* ex:  44,56.98,22.33</i>
+
+<br />
+
+Please input the value to filter against:
 <input type="text" name="Value" />
+<br />
 <input type="submit" name="AddCriteria" value="Add Criteria" />
 <input type="submit" name="RemoveCriteria" value="Remove Criteria" />
-
-<HR />
-<h1>The Query</h1>
 
 <% 
 	String queryString = (String)session.getAttribute("QueryString");
 	if(queryString != null) {
 %>
+
+<hr />
+<h1>The Query</h1>
+
 <%=queryString%>
-<%}%>
+
 
 <br />
 <input type="submit" name="ClearQuery" value="Clear Query" />
 <input type="submit" name="SubmitQuery" value="Send Query" />
+<%}%>
 <br />
 <%
 	String sentQueryString = (String)session.getAttribute("QueryStringSent");

@@ -11,7 +11,8 @@ import org.astrogrid.portal.generated.jobcontroller.client.*;
 public class DataQueryServlet extends HttpServlet {
 
 
-	public void init(ServletConfig conf) {
+	public void init(ServletConfig conf) throws ServletException {
+		super.init(conf);
 		ServletContext sc = conf.getServletContext();
 		ArrayList dsInfo = (ArrayList)sc.getAttribute("DataSetArrayList");
 		if(dsInfo == null || dsInfo.size() <= 0) {
@@ -47,15 +48,18 @@ public class DataQueryServlet extends HttpServlet {
 		System.out.println(reqXmlString);
 		String respXmlString = QueryRegistryInformation.sendRegistryQuery(reqXmlString);
 		System.out.println(respXmlString);
-		Object []items = QueryRegistryInformation.getItemsFromRegistryResponse(respXmlString);
-		if(items.length > 0) {
-			System.out.println("The item = " + items[0]);
+		Object []dsItems = QueryRegistryInformation.getDataSetItemsFromRegistryResponse(respXmlString);
+		Object []contentItems = QueryRegistryInformation.getItemsFromRegistryResponse(respXmlString);
+		if(dsItems.length > 0) {
+			System.out.println("The item = " + dsItems[0]);
 		}
-		ArrayList ds = new ArrayList(items.length);
+		ArrayList ds = new ArrayList(dsItems.length);
 
-		for(int i=0;i< items.length;i++) {
-			DataSetInformation dsInfo = new DataSetInformation((String)items[i]);
-			dsInfo.addDataSetColumn("test","COLUMN");
+		for(int i=0;i< dsItems.length;i++) {
+			DataSetInformation dsInfo = new DataSetInformation((String)dsItems[i]);
+			for(int j=0;j < contentItems.length;j++) {
+				dsInfo.addDataSetColumn((String)contentItems[j],"COLUMN");
+			}
 			ds.add(dsInfo);
 		}
 		return ds;
@@ -68,6 +72,7 @@ public class DataQueryServlet extends HttpServlet {
 		String queryString = (String)session.getAttribute("QueryStringSent");
 		String errorMessage = null;
 		String []reqTemp;
+		int iTemp = -1;
 		if(qb == null) {
 			System.out.println("QueryBuilder was null");
 			qb = new QueryBuilder("JObTest");
@@ -122,7 +127,6 @@ public class DataQueryServlet extends HttpServlet {
 				DataSetInformation dsInfo = null;
 				reqTemp = request.getParameter("FilterColumn").split("-");
 				if( (dsInfo = qb.getDataSetInformation(request.getParameter("DataSetNameCriteria"))) != null) {
-					int iTemp = -1;
 					if(validParameter(request.getParameter("LinkTo")) ) {iTemp = new Integer(request.getParameter("LinkTo")).intValue();}
 					if(iTemp >= 0) {
 						CriteriaInformation ci = new CriteriaInformation(new DataSetColumn(reqTemp[1],reqTemp[0]),request.getParameter("Operator"),request.getParameter("Value"),request.getParameter("JoinType"),request.getParameter("FunctionValues"));
@@ -140,17 +144,19 @@ public class DataQueryServlet extends HttpServlet {
 		}else if(validParameter(request.getParameter("RemoveCriteria"))) {
 			if(validParameter(request.getParameter("DataSetNameCriteria")) &&
 			   validParameter(request.getParameter("FilterColumn")) &&
-			   validParameter(request.getParameter("Operator")) ) {
+			   validParameter(request.getParameter("Operator")) &&
+			   validParameter(request.getParameter("LinkTo")) ) {
 				DataSetInformation dsInfo = null;
+				iTemp = new Integer(request.getParameter("LinkTo")).intValue();
 				reqTemp = request.getParameter("FilterColumn").split("-");
 				if( (dsInfo = qb.getDataSetInformation(request.getParameter("DataSetNameCriteria"))) != null) {
-					dsInfo.removeCriteriaInformation(reqTemp[1],reqTemp[0],request.getParameter("Operator"),request.getParameter("Value"));
+					dsInfo.removeCriteriaInformation(reqTemp[1],reqTemp[0],request.getParameter("Operator"),request.getParameter("Value"),iTemp);
 					session.setAttribute("CriteriaNumber",new Integer(dsInfo.getCriteriaInformation().size()));
 				}else {
 					errorMessage = "Could not find a Data Set Query to remove any Criteria, be sure to fill in the above section first";
 				}
 			}else {
-				errorMessage = "Tried to Remove a criteria with no datasetname and/or other parameters this is not allowed";
+				errorMessage = "Tried to Remove a criteria with no datasetname and/or other parameters this is not allowed. Be sure to select a Link Number {?}";
 			}
 		}else if(validParameter(request.getParameter("ClearQuery"))) {
 			qb.clear();

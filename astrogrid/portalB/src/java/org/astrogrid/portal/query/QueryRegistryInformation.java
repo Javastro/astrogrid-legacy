@@ -29,7 +29,8 @@ public class QueryRegistryInformation {
 			Element seq = doc.createElement(SELECTIONSEQ_ELEMENT);
 			doc.getDocumentElement().appendChild(seq);
 			Element sel = doc.createElement(SELECTION_ELEMENT);
-			sel.setAttribute(ITEM_ATTR,"resourceType");
+			//sel.setAttribute(ITEM_ATTR,"resourceType");
+			sel.setAttribute(ITEM_ATTR,"type");
 			sel.setAttribute(ITEMOP_ATTR,"EQ");
 			sel.setAttribute(VALUE_ATTR,"archive");
 			//sel.setAttribute(ITEM_ATTR,"id");
@@ -77,18 +78,36 @@ public class QueryRegistryInformation {
 		return null;
 	}
 
+	public static Object[] getDataSetItemsFromRegistryResponse(String response) {
+		//okay lets cheat instead of examining the xml with a sax parser lets just substring this thing.
+		ArrayList items = new ArrayList();
+		int start = 0,end = 0;
+		String temp = "";
+		while( (end = response.indexOf("item='id'",end)) != -1) {
+//			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
+			start = response.indexOf("value=",end) + 7;
+			end = response.indexOf("\"",start+1);
+			if(end <= 0) { end = response.indexOf("'",start+1); }
+			items.add( (temp = response.substring(start,end)));
+//			System.out.println("The substring added = " + temp);
+			end++;
+		}
+		return items.toArray();
+	}
+
+
 	public static Object[] getItemsFromRegistryResponse(String response) {
 		//okay lets cheat instead of examining the xml with a sax parser lets just substring this thing.
 		ArrayList items = new ArrayList();
 		int start = 0,end = 0;
 		String temp = "";
 		while(response.indexOf("item=",end) != -1) {
-			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
+//			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
 			start = response.indexOf("item=",end) + 6;
 			end = response.indexOf("\"",start+1);
 			if(end <= 0) { end = response.indexOf("'",start+1); }
 			items.add( (temp = response.substring(start,end)));
-			System.out.println("The substring added = " + temp);
+//			System.out.println("The substring added = " + temp);
 			end++;
 		}
 		return items.toArray();

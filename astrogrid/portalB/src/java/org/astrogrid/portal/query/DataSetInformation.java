@@ -78,6 +78,7 @@ public class DataSetInformation {
 		}
   	}
 
+
   	public ArrayList getDataSetColumns(){
   		return this.dataSetColumns;
   	}
@@ -103,6 +104,39 @@ public class DataSetInformation {
 	public void removeCriteriaInformation(String columnName,String type,String filterType,String value) {
 		removeCriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
 	}
+
+	public void removeCriteriaInformation(String columnName,String type,String filterType,String value,int link) {
+		CriteriaInformation ci = (CriteriaInformation)criteriaInfo.get(link);
+		CriteriaInformation rem = new CriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
+		if(rem.equals(ci)) {
+			if(ci.getLinkedCriteria() != null) {
+				criteriaInfo.set(link,ci.getLinkedCriteria());
+			}else {
+				criteriaInfo.remove(link);
+			}
+		}
+		findAndRemoveCriteria(ci,ci,rem);
+	}
+
+	private void findAndRemoveCriteria(CriteriaInformation parent,CriteriaInformation src,CriteriaInformation target) {
+		boolean found = false;
+		if(target.equals(src)) {
+		  found = true;
+		}
+		if(found) {
+			if(src.getLinkedCriteria() != null) {
+				parent.setLinkedCriteria(src.getLinkedCriteria());
+			}else {
+				parent.setLinkedCriteria(null);
+			}
+			return;
+		}
+
+		if(src.getLinkedCriteria() != null) {
+			findAndRemoveCriteria(src,src.getLinkedCriteria(),target);
+		}
+	}
+
 
 	public void removeCriteriaInformation(DataSetColumn dsColumn,String filterType,String value) {
 		CriteriaInformation ci = new CriteriaInformation(dsColumn,filterType,value);
