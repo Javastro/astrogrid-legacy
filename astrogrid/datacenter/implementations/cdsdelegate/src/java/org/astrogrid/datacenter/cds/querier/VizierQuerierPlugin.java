@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.3 2004/08/14 14:28:37 acd Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.4 2004/08/14 14:35:42 acd Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,8 +61,8 @@ public class VizierQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
- Revision 1.3  2004/08/14 14:28:37  acd
- Fix the Vizier proxy to correctly perform cone searches.
+ Revision 1.4  2004/08/14 14:35:42  acd
+ Fix the cone search in the Vizier Proxy.
 
  Revision 1.4  2004/08/13 16:50:00  acd
  Added static final String METADATA.
