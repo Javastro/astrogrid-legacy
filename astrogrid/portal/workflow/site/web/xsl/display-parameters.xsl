@@ -65,7 +65,17 @@
                         <font size="-1">
                             <xsl:element name="a">                                    
                                 <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-                                <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; return escape(' &lt;b&gt;Description: &lt;/b&gt; <xsl:value-of select="@param-UI-description" /> &lt;br/&gt; &lt;b&gt;Type:&lt;/b&gt; <xsl:value-of select="@param-type" /> &lt;br/&gt; &lt;b&gt;Subtype:&lt;/b&gt; <xsl:value-of select="@param-subtype"/> &lt;br/&gt; &lt;b&gt;Units:&lt;/b&gt; <xsl:value-of select="@param-units"/> &lt;br/&gt; &lt;b&gt;UCD:&lt;/b&gt; <xsl:value-of select="@param-ucd"/> &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ');</xsl:attribute>
+                                <xsl:attribute name="onMouseOver">this.T_TITLE='Parameter: <xsl:value-of select="@param-UI-name" /> '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +
+                                                    ' &lt;b&gt;Description: &lt;/b&gt; <xsl:value-of select="@param-UI-description" /> ' +
+                                                    ' &lt;br/&gt; &lt;b&gt;Type:&lt;/b&gt; <xsl:value-of select="@param-type" /> ' +
+                                                    ' &lt;br/&gt; &lt;b&gt;Subtype:&lt;/b&gt; <xsl:value-of select="@param-subtype"/> ' +
+                                                    ' &lt;br/&gt; &lt;b&gt;Units:&lt;/b&gt; <xsl:value-of select="@param-units"/> ' +
+                                                    ' &lt;br/&gt; &lt;b&gt;UCD:&lt;/b&gt; <xsl:value-of select="@param-ucd"/> ' +
+                                                    ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ' +
+                                                    ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> ' +
+                                                    ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> ' +
+                                                    ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ');
+                                </xsl:attribute>
                             </xsl:element>
                             <small><b>(more)</b></small>
                         </font>
