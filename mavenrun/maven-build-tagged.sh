@@ -33,8 +33,8 @@ cd $BUILD_HOME >> $LOG_FILE 2>&1
 
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
-rm -fr $PROJECT_HOME >> $LOG_FILE 2 > &1
-rm -fr $BUILD_HOME/astrogrid/maven* >> $LOG_FILE 2 > &1
+rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
+rm -fr $BUILD_HOME/astrogrid/maven* >> $LOG_FILE 2>&1
 
 
 
