@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.67 2004/08/04 17:46:03 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.68 2004/08/05 14:52:22 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -26,7 +26,7 @@
 
 
 <property name="tomcat.host" value="localhost"/>
-<property name="tomcat.port" value="${tomcat.port}"/>
+<property name="tomcat.port" value="8080"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
 <property name="existurl" value="${tomcat.url}/exist/servlet/db"/>
@@ -70,6 +70,7 @@
 
 <goal name="deploy-all" prereqs="init" description="deploy all webapps, setup environment.">
         <echo>*** Deploying all webapps...</echo>
+
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
         <sleep seconds="2" />
@@ -625,28 +626,32 @@
 </goal>
 
 <goal name="pal-fits-deploy" >
-        <copy todir="${temporary.dir}/pal" filtering="true">
+		<copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+		      tofile="${temporary.dir}/pal-fits-${pom.currentVersion}.war" />
+        <copy todir="${temporary.dir}/pal_fits" filtering="true">
                 <fileset dir="contexts/pal_fits" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/pal-${pom.currentVersion}.war">
-                <metainf dir="${temporary.dir}/pal"/>
+        <war update="true" destfile="${temporary.dir}/pal-fits-${pom.currentVersion}.war">
+                <metainf dir="${temporary.dir}/pal_fits"/>
         </war>        
   <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${pom.currentVersion}.war"/>
+          path="/astrogrid-pal-fits-${pom.currentVersion}" war="file:///${temporary.dir}/pal-fits-${pom.currentVersion}.war"/>
   </j:catch>
 </goal>
 
 <goal name="pal-sec-deploy" >
-        <copy todir="${temporary.dir}/pal" filtering="true">
+		<copy file="${temporary.dir}/pal-${pom.currentVersion}.war"
+		      tofile="${temporary.dir}/pal-sec-${pom.currentVersion}.war" />
+        <copy todir="${temporary.dir}/pal_sec" filtering="true">
                 <fileset dir="contexts/pal_sec" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/pal-${pom.currentVersion}.war">
-                <metainf dir="${temporary.dir}/pal"/>
+        <war update="true" destfile="${temporary.dir}/pal-sec-${pom.currentVersion}.war">
+                <metainf dir="${temporary.dir}/pal_sec"/>
         </war>        
   <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-${pom.currentVersion}.war"/>
+          path="/astrogrid-pal-sec-${pom.currentVersion}" war="file:///${temporary.dir}/pal-sec-${pom.currentVersion}.war"/>
   </j:catch>
 </goal>
 
