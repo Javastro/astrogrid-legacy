@@ -14,12 +14,10 @@ package org.astrogrid.util;
 
 import java.io.File;
 import java.io.IOException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-//import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 
 public class WorkspaceTest extends TestCase
 {
@@ -29,7 +27,221 @@ public class WorkspaceTest extends TestCase
    {
         super(s);
    }
-//@TODO restore me - temporary delete
+
+   /** Makes a temporary directory to create all our test workspaces in.
+    */
+   public static File setUpWorkspaceArea() throws IOException {
+
+      Workspace.PERSIST = false; //make sure they tidy up properly
+      String workspaceProperty = SimpleConfig.getSingleton().getString(Workspace.WORKSPACE_DIRECTORY_KEY, null);
+      File dir = null;
+      if ( workspaceProperty == null)
+      {
+        //specify a working directory area - need to do this so we can
+         //find the workspace to examine the contents
+        dir = File.createTempFile("workspace-test","");
+        // gah, want a dir, not a file.
+        dir.delete();
+        dir.mkdir();
+    
+      }
+      else
+      {
+         dir = new File(workspaceProperty);
+      }
+      return dir;
+   }
+
+   /** Set up the workspace area that we are going to create our temporary
+    * workspaces in...  We specify this explicitly so that we can look inside
+    * the workspace using ordinary java file handling to check the operations
+    * have completed correctly
+    *<p>
+    * Using this method ensures that the space is only set up once per test.
+    * Doing this in the constructor can be difficult as exceptions are not properly caught.
+    */
+
+    protected void setUp() throws Exception{
+        this.tmpDir = setUpWorkspaceArea();
+        //set the configuratio property so Workspace can find it
+        SimpleConfig.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, tmpDir.getAbsolutePath());
+    }
+
+    /** deletes working directory -- otherwise tests are not repeatable
+    protected void tearDown() {
+        if (tmpDir != null && tmpDir.exists()) {
+            File[] files = tmpDir.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                files[i].delete();
+            }
+            tmpDir.delete();
+        }
+    }
+    */
+
+
+   public void testCreateWorkspace() throws Exception {
+       Workspace ws = new Workspace("TestCreate");
+       assertNotNull(ws);
+       File wsFile = ws.makeWorkFile("Test");
+       assertNotNull(wsFile);
+       assertTrue(wsFile.exists());
+//       assertTrue(wsFile.isDirectory());
+   }
+
+   public void testDuplicate() throws Exception {
+       Workspace ws1 = new Workspace("TestDuplicateWS");
+       assertNotNull(ws1);
+       try {
+          Workspace ws2 = new Workspace("TestDuplicateWS");
+          fail("Expected workspace to prevent duplicates");
+       } catch (IllegalArgumentException e) {}
+   }
+   /**
+    * Tests the workspace functions
+    */
+   public void testEmptying() throws IOException
+   {
+      Workspace workspace = new Workspace("TestEmptying");
+      File workspaceFile = new File(tmpDir+File.separator+"TestEmptying");
+
+      //make some random files in it
+      assertNotNull(workspace);
+      File temp1 = workspace.makeWorkFile("wibble");
+      File temp2 = workspace.makeWorkFile("wobble");
+      File temp3 = workspace.makeTempFile("test");
+      File temp4 = workspace.makeTempFile("test");
+      File temp5 = workspace.makeTempFile("test");
+
+      //check there are 5 files in there
+      File[] contents = workspaceFile.listFiles();
+      assertNotNull(contents);
+      assertEquals("5 files created but not 5 files in workspace",5,contents.length);
+
+      //empty the workspace
+      workspace.empty();
+
+      //check there 0 files
+      contents = workspaceFile.listFiles();
+      assertNotNull(contents);
+      assertEquals("workspace emptied but not 0 files in workspace",0,contents.length);
+
+   }
+
+   public void testMakeWorkFile() throws IOException {
+       Workspace workspace = new Workspace("TestMakeWork");
+       File f = workspace.makeWorkFile("fred");
+       assertNotNull(f);
+       assertTrue(f.exists());
+
+      f = workspace.makeTempFile("prefix");
+      assertNotNull(f);
+      assertTrue(f.exists());
+
+      f = workspace.makeTempFile("prefix","suffix");
+      assertNotNull(f);
+      assertTrue(f.exists());
+   }
+
+   /**
+    * Tests that subdirectories are created and removed correctly
+    */
+   public void testSubspace() throws IOException
+   {
+      Workspace parentSpace = new Workspace("TestMakeSubWork");
+      parentSpace.makeWorkFile("fred");
+
+      File subspace = parentSpace.makeTempDir("thelma");
+      File subFile = File.createTempFile("louise", "", subspace);
+      assertNotNull(subFile);
+      assertTrue(subFile.exists());
+
+      parentSpace.close();
+
+      assertFalse("Should have deleted subfile", subFile.exists());
+      assertFalse("Should have deleted subdir", subspace.exists());
+
+   }
+
+   public void testMakeDuplicateFile() throws IOException {
+       Workspace workspace = new Workspace("TestDuplicateFile");
+       File f= workspace.makeWorkFile("fred");
+       assertNotNull(f);
+       try {
+       File g = workspace.makeWorkFile("fred");
+       fail("Created duplicate files");
+       }
+       catch (IllegalArgumentException e) { /* SOK expect a crash */ }
+       catch (IOException e) { /* SOK expect a crash */ }
+   }
+
+   public void testMakeManyFilesAndEmpty() throws IOException {
+       Workspace workspace = new Workspace("TestMakeManyAndEmpty");
+       String[] fileNames = new String[] {"Fred","Wilma","Barney","Betty","BamBam"};
+       File[] files = new File[5];
+       for (int i = 0; i < fileNames.length; i++) {
+           File f = workspace.makeWorkFile(fileNames[i]);
+           assertNotNull(f);
+           //assertTrue(f.createNewFile());
+           assertTrue(f.exists());
+           files[i] = f;
+       }
+       workspace.empty();
+       for (int i = 0; i < files.length; i++) {
+           assertFalse(files[i].exists());
+       }
+   }
+
+   /**  */
+   public void testOpenAndClose() throws Exception {
+
+      //test for given id
+       Workspace ws = new Workspace("TestOpenClose");
+       File f = ws.makeWorkFile("foo");
+       assertTrue(f != null && f.exists() && f.isFile());
+
+      //check directory exists where we expect it to (otherwise test below is meaningless)
+      File wsf = new File(tmpDir+File.separator+"TestOpenClose");
+      assertTrue(wsf.exists());
+
+      ws.close();
+
+      // check can't close again
+      try {
+         ws.close();
+         fail("Should not be able to close workspace after its closed");
+      }
+      catch (IllegalStateException e) {  /* ok, it should fail */   }
+
+      // check can't empty
+      try {
+         ws.empty();
+         fail("Should not be able to empty workspace after its closed");
+      }
+      catch (IllegalStateException e) {  /* ok, it should fail */   }
+
+      // should also prevent us from creating new files, in one way or another
+      try {
+         ws.makeWorkFile("bar");
+         ws.makeTempFile("prefix","suffix");
+         ws.makeTempFile("prefix");
+
+         fail("Should not be able to create workfile after its closed");
+      }
+      catch (IllegalStateException e) {  /* ok, it should fail */   }
+      catch (AssertionError e) {  /* ok, it should fail */    }
+
+      //check directory no longer exists
+      wsf = new File(tmpDir+File.separator+"TestOpenClose");
+      assertFalse(f.exists());
+
+      //test for no id
+       ws = new Workspace();
+       f = ws.makeWorkFile("foo");
+       assertTrue(f != null && f.exists() && f.isFile());
+       ws.close();
+
+   }
 
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
@@ -53,8 +265,8 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
-Revision 1.4  2004/02/25 17:00:55  jdt
-temp removal of build breaking tests (see bug 151)
+Revision 1.5  2004/03/01 14:18:35  mch
+Fixed test following new Failback config
 
 Revision 1.3  2004/02/17 14:59:14  mch
 Fix for new AttomConfig getString throwing exception
