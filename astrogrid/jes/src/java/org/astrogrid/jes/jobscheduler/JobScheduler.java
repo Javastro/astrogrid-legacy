@@ -247,137 +247,44 @@ public class JobScheduler {
     } // end of dispatchOneStep()
     
 	
-    private String formatRunRequest( JobStep step, Document doc, boolean bAdqlType ) throws JesException {
-        if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
-        
-        String
-            request = null,
-            extendedJobURN ; // Includes step number (suitable only for iteration 3)
-               
-        try {
-               
-            Element
-               element = null ,
-               jobElement = doc.getDocumentElement() ;   // This should pick up the "job" element
-              
-            // set the Job id (i.e. its job URN)...
-            // JBL: stepNumber added to make a single resource (VOTable in this instance)
-            //      unique. This is in case multiple jobsteps for the same job get 
-            //      submitted to the same datacenter. This will be inadequate when
-            //      a single jobstep generates multiple resources... 
-            extendedJobURN = step.getParent().getId() + ":" + step.getStepNumber() ;
-            jobElement.setAttribute( SubmissionRequestDD.JOB_URN_ATTR, extendedJobURN ) ;
-         
-            // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
-            jobElement.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
-                                   , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_CATEGORY ) ) ; 
-                         
-            NodeList
-               nodeList = jobElement.getChildNodes() ; 
-            ArrayList
-               stepsToBeEliminated = new ArrayList() ; 
-            Integer
-               stepNumber = null ;   
-               
-            // identify jobsteps to be eliminated...
-            for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-                           
-                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                   
-                    element = (Element) nodeList.item(i) ;  
-                    
-                    logger.debug( "element.getTagName(): " + element.getTagName() );                
-
-                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {                      
-                       
-                        stepNumber = new Integer( element.getAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR).trim() ) ;
-
-                        if( !stepNumber.equals( step.getStepNumber() ) ) {
-                            stepsToBeEliminated.add( element ) ;
-                        }
-                        
-                    }
-                    else if( element.getTagName().equals( "AssignID" ) ) {
-                        element.getFirstChild().setNodeValue( extendedJobURN ) ;
-                    }
-                
-                } // end if
-                
-            } // end for
-            
-            Iterator
-                iterator = stepsToBeEliminated.iterator() ;
-                
-            while ( iterator.hasNext() ) {           	
-                element = (Element)iterator.next() ;
-                jobElement.removeChild( element ) ;
-            }
-                     
-            request = this.runRequestToString( doc, bAdqlType ) ;
-              
-        }
-        catch ( Exception ex ) {
-            AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST
-                                              , this.getComponentName() ) ; 
-            logger.error( message.toString(), ex ) ;
-            throw new JesException( message ) ;
-        } 
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;  
-        }       
-        
-        return request ;
-        
-    } // end of formatRunRequest()
-    
-    
-    private String runRequestToString( Document doc, boolean bAdqlType ){
-        if( TRACE_ENABLED ) logger.debug( "runRequestToString() entry") ;
-        
-        String
-            docString = null ;
-        Element
-            element = null ;
-        String
-            queryType = null ;
-        
-        try {
-            
-            docString = XMLUtils.DocumentToString( doc ) ;
-                
-            if( bAdqlType == true ) {
-                logger.debug( "This is an ADQL query") ;
-                docString =
-                    docString.replaceAll( SubmissionRequestDD.JOB_URN_ATTR
-                                        , SubmissionRequestDD.JOB_ASSIGNID_ATTR ) ;
-                logger.debug( "docString: " + docString ) ;                                        
-            }
-            else {
-                logger.debug( "This is an Iteration 2 query") ;
-            }
-    
-        }
-        catch( Exception ex ) {
-            if( TRACE_ENABLED ) ex.printStackTrace() ;
-        }
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "runRequestToString() exit") ;
-        }
-        
-        return docString ;
-        
-    } // end of runRequestToString()
-    
-	
 	private String extractJobURN( Document jobDoc ) { 
 		return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
 	} 
     
     
     private String extractCommunitySnippet( Document jobDoc ) { 
+        if( TRACE_ENABLED ) logger.debug( "JobScheduler.extractCommunitySnippet(): entry") ;
+
+        String
+            communitySnippet = null ;
+        Element 
+            element ;
         
-        return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;  
+        try {
+                       
+           NodeList
+              nodeList = jobDoc.getDocumentElement().getChildNodes() ;
+               
+           for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+                        
+               if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {  
+               
+                   element = (Element) nodeList.item(i) ;
+                   if( element.getTagName().equals( SubmissionRequestDD.TOOL_ELEMENT ) ) {
+                       // JBL: Where is the CommunitySnippet  ?????
+                   }
+                                      
+               }
+               
+           } // end for
+           
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "JobScheduler.extractCommunitySnippet(): exit") ;           
+        }
+        
+        return communitySnippet ;
+          
     } 
     
 	 

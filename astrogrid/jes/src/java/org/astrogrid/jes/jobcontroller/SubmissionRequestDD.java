@@ -22,7 +22,7 @@ public final class SubmissionRequestDD {
 	    
 	public static final String
 	    USERID_ELEMENT = "userid",
-	    COMMUNITY_ELEMENT = "jes_community",
+	    COMMUNITY_ELEMENT = "community",
         DESCRIPTION_ELEMENT = "description" ;
 	    
 	public static final String
