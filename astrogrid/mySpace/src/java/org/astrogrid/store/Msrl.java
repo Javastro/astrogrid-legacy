@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.3 2004/03/01 22:38:46 mch Exp $
+ * $Id: Msrl.java,v 1.4 2004/03/10 00:20:22 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -23,7 +23,7 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
  * file (or the location to create a file) completely in MySpace
  * <p>
  * It is of the form:
- *    myspace:<delegateendpoint>[#<myspacepath>[@<serverId>]]
+ *    myspace:<delegateendpoint>[#<myspacepath>[!<serverId>]]
  *
  * If the path fragment is empty, the MSRL refers to a myspace store service
  *
@@ -39,7 +39,7 @@ public class Msrl
    public static final String SCHEME = "myspace";
    
    //for error messages
-   public static final String FORM = "myspace:<delegateEndPoint>[#<MySpacePath>[@<Server>]]";
+   public static final String FORM = "myspace:<delegateEndPoint>[#<MySpacePath>[!<Server>]]";
    
    /** Make a single myspace:// reference string out of a delegate endpoint */
    public Msrl(URL aDelegateEndpoint)
@@ -79,7 +79,7 @@ public class Msrl
          msrl = msrl.substring(0,hashPos);
          
          //look for server id
-         int atPos = fragment.indexOf("@");
+         int atPos = fragment.indexOf("!");
          if (atPos > -1) {
             String givenServer = fragment.substring(atPos+1);
             fragment = fragment.substring(0,atPos);
@@ -101,7 +101,7 @@ public class Msrl
    public String toString() {
       String msrl = SCHEME+":"+delegateEndpoint;
       if (filepath != null) { msrl = msrl +"#"+filepath; }
-      if (serverId != null) { msrl = msrl +"@"+serverId; }
+      if (serverId != null) { msrl = msrl +"!"+serverId; }
       return msrl;
    }
 
@@ -192,6 +192,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.4  2004/03/10 00:20:22  mch
+Changed @ to ! in MSRL to be compatible with existing individaul@community myspace servers
+
 Revision 1.3  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 
