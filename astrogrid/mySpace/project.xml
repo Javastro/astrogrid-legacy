@@ -108,6 +108,11 @@
       <id>wsdl4j</id>
       <jar>wsdl4j.jar</jar>
     </dependency>
+    
+    <dependency>
+    	<id>hsqldb</id>
+    	<version>1.7.1</version>
+    </dependency>
   </dependencies>
   
   <build>
