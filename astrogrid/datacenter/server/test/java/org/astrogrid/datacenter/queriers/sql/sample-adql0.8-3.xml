@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SQL equivalent
+SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER BY t.g - b.g, b.h
+-->
+
+<Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://adql.ivoa.net/v0.8">
+
+  <SelectionList>
+    <ColumnExpr>
+      <AllColumnReference>
+        <TableName>t</TableName>
+      </AllColumnReference>
+    </ColumnExpr>
+    <ColumnExpr>
+      <AllColumnReference>
+        <TableName>b</TableName>
+      </AllColumnReference>
+    </ColumnExpr>
+  </SelectionList>
+  <TableClause>
+    <FromClause>
+      <TableReference>
+        <Table>
+          <Name>Tab</Name>
+          <AliasName>t</AliasName>
+        </Table>
+        <Table>
+          <Name>Bob</Name>
+          <AliasName>b</AliasName>
+        </Table>
+      </TableReference>
+    </FromClause>
+    <WhereClause>
+      <IntersectionSearch>
+        <FirstCondition xsi:type="PredicateSearch">
+          <ComparisonPred>
+            <FirstExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>t</TableName>
+                <Name>g</Name>
+              </SingleColumnReference>
+            </FirstExpr>
+            <Compare>&lt;&gt;</Compare>
+            <SecondExpr xsi:type="ColumnExpr">
+              <SingleColumnReference>
+                <TableName>b</TableName>
+                <Name>g</Name>
+              </SingleColumnReference>
+            </SecondExpr>
+          </ComparisonPred>
+        </FirstCondition>
+        <SecondCondition xsi:type="regionSearchType">
+        <Region xmlns:q1="urn:nvo-region" xsi:type="q1:circleType" coord_system_id="">
+          <q1:Center ID="" coord_system_id="">
+            <Pos2Vector xmlns="urn:nvo-coords">
+              <Name>Ra Dec</Name>
+              <CoordValue>
+                <Value>
+                  <double>1.2</double>
+                  <double>2.4</double>
+                </Value>
+              </CoordValue>
+            </Pos2Vector>
+          </q1:Center>
+          <q1:Radius>0.2</q1:Radius>
+        </Region>
+        </SecondCondition>
+      </IntersectionSearch>
+    </WhereClause>
+  </TableClause>
+  <OrderBy>
+    <OrderList>
+      <Order>
+        <Expr xsi:type="BinaryExpr">
+          <FirstExpr xsi:type="ColumnExpr">
+            <SingleColumnReference>
+              <TableName>t</TableName>
+              <Name>g</Name>
+            </SingleColumnReference>
+          </FirstExpr>
+          <Operator>-</Operator>
+          <SecondExpr xsi:type="ColumnExpr">
+            <SingleColumnReference>
+              <TableName>b</TableName>
+              <Name>g</Name>
+            </SingleColumnReference>
+          </SecondExpr>
+        </Expr>
+      </Order>
+      <Order>
+        <Expr xsi:type="ColumnExpr">
+          <SingleColumnReference>
+            <TableName>b</TableName>
+            <Name>h</Name>
+          </SingleColumnReference>
+        </Expr>
+      </Order>
+    </OrderList>
+  </OrderBy>
+
+
+
+</Select>
