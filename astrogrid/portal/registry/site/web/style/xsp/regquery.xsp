@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+			<!--+
+	    | Import any java classes here.
+	    +-->
+
+	<xsp:structure>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.LinkedHashMap</xsp:include>
+		<xsp:include>java.util.Map</xsp:include>		
+		<xsp:include>java.util.HashMap</xsp:include>		
+		<xsp:include>java.util.ArrayList</xsp:include>		
+		<xsp:include>java.util.Set</xsp:include>
+		<xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
+		<xsp:include>org.w3c.dom.Node</xsp:include>
+		<xsp:include>org.w3c.dom.Element</xsp:include>		
+	</xsp:structure>	    
+	
+	<registryquery>
+	
+		<comparisons>
+			<xsp:logic>
+			<![CDATA[
+				Iterator iter = null;
+				String key = null;
+				String val = null;
+				Set st = null;				
+				LinkedHashMap compareList = (LinkedHashMap)request.getAttribute("Comparisons");
+
+				if(compareList != null && compareList.size() > 0 ) {
+				st = compareList.keySet();
+				iter = st.iterator();
+				while (iter.hasNext()) {
+					key = (String)iter.next();
+					val = (String)compareList.get(key);
+			]]>
+					<xsp:element name="comparison">
+						<xsp:attribute name="name"><xsp:expr>key</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>val</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</comparisons>
+
+		<jointypes>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList joinList = (ArrayList)request.getAttribute("JoinTypes");
+				String joinValue = null;
+				if(joinList != null && joinList.size() > 0 ) {
+				iter = joinList.iterator();				
+				while (iter.hasNext()) {
+					joinValue = (String)iter.next();
+			]]>
+					<xsp:element name="jointype">
+						<xsp:attribute name="name"><xsp:expr>joinValue</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>joinValue</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</jointypes>
+		
+		<selectitems>
+			<xsp:logic>
+			<![CDATA[
+				Map selectList = (Map)request.getAttribute("selectitems");
+				st = selectList.keySet();
+				iter = null;
+				key = null;
+				val = null;
+				if(selectList != null && selectList.size() > 0 ) {
+				System.out.println("in xsp size of selectlist = " + selectList.size());
+				iter = st.iterator();
+				while (iter.hasNext()) {
+					key = (String)iter.next();					
+					val = (String)selectList.get(key);
+			]]>
+					<xsp:element name="selectitem">
+						<xsp:attribute name="name"><xsp:expr>key</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>val</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</selectitems>
+
+
+		<criteria_number>
+			<xsp:logic>
+			<![CDATA[
+				String crit_number_str = (String)request.getAttribute("criteria_number");
+				int crit_number = 0;
+				if(crit_number_str != null && crit_number_str.length() > 0) {
+			    	crit_number = Integer.parseInt(crit_number_str.trim());
+      			}
+      			if(crit_number <= 0) {
+      				crit_number = 1;
+      			}
+				for(int i = 1;i < crit_number;i++) {					
+			]]>
+					<xsp:element name="criteria_option">
+						<xsp:attribute name="num"><xsp:expr>i</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+			]]>
+			</xsp:logic>
+		</criteria_number>	
+
+		<xmlresults>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList xmlresult = (ArrayList)request.getAttribute("resultxml");
+				HashMap manageList = (HashMap)session.getAttribute("ManageAuthorities");
+				String xml = null;
+				if(xmlresult != null && xmlresult.size() > 0 ) {
+				iter = xmlresult.iterator();				
+				boolean update = false;
+				while (iter.hasNext()) {
+					xml = (String)iter.next();
+					if(manageList != null && manageList.size() > 0 ) {
+						st = manageList.keySet();
+						Iterator iter2 = st.iterator();
+						update = false;
+						while (iter2.hasNext() && !update) {
+							key = (String)iter2.next();
+							if(xml.indexOf("<AuthorityID>" + key) != -1) {
+								update = true;
+							}
+						}
+					}
+			]]>
+					<xsp:element name="xmlresult">
+						<xsp:attribute name="val"><xsp:expr>xml</xsp:expr></xsp:attribute>
+						<xsp:attribute name="update"><xsp:expr>update</xsp:expr></xsp:attribute>
+					</xsp:element>
+					<xsp:element name="testtry">
+						<xsp:expr>xml</xsp:expr>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</xmlresults>
+		
+		<xmlresultnodes>
+			<xsp:logic>
+			<![CDATA[
+				System.out.println("checking xmlresultnodes");
+				ArrayList xmlresultNodes = (ArrayList)request.getAttribute("resultNodes");
+				if(xmlresultNodes != null && xmlresultNodes.size() > 0 ) {
+					iter = xmlresultNodes.iterator();	
+					System.out.println("the size of xmlresultnodes = " + xmlresultNodes.size());			
+					Node nd = null;
+					while (iter.hasNext()) {
+						nd = (Node)iter.next();
+						System.out.println("in the xsp page = " + XMLUtils.ElementToString((Element)nd));
+				]]>
+						<element><xsp:expr>nd</xsp:expr></element>
+				<![CDATA[
+					}
+				}
+			]]>
+			</xsp:logic>
+		</xmlresultnodes>
+		
+		
+		
+	</registryquery>
+	
+</xsp:page>
