@@ -40,7 +40,7 @@
                 </vr:Capability>
                 <vr:Interface>
                         <vr:Invocation>WebService</vr:Invocation>
-                        <vr:AccessURL use="base">http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService05</vr:AccessURL>
+                        <vr:AccessURL use="base">http://grendel12.roe.ac.uk:8080/pal-6df/services/CommonExecutionConnectorService</vr:AccessURL>
                 </vr:Interface>
                 <ManagedApplications>
                         <ApplicationReference>
