@@ -1,4 +1,4 @@
-/*$Id: FullSearcherTest.java,v 1.4 2004/02/16 18:02:14 jdt Exp $
+/*$Id: FullSearcherTest.java,v 1.5 2004/02/17 23:59:17 jdt Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,20 +16,22 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.community.User;
+import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.*;
+import org.astrogrid.datacenter.delegate.DatacenterQuery;
+import org.astrogrid.datacenter.delegate.DatacenterResults;
+import org.astrogrid.datacenter.delegate.FullSearcher;
+import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.integrationTests.common.ConfManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
 /** Exercises methods of the full searcher delegate interface.
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Jan-2004
- *
+ * @TODO fix this test
  */
 public class FullSearcherTest extends TestCase {
    /**
@@ -47,7 +49,7 @@ public class FullSearcherTest extends TestCase {
    
    protected void setUp() throws Exception {
       String endpoint = ConfManager.getInstance().getMerlinDatacenterEndPoint();
-      delegate = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+//@TODO JDTfixme      delegate = DatacenterDelegateFactory.makeFullSearcher(User.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
       
       InputStream is = this.getClass().getResourceAsStream("query-merlin.xml");
@@ -147,6 +149,10 @@ public class FullSearcherTest extends TestCase {
 
 /* 
 $Log: FullSearcherTest.java,v $
+Revision 1.5  2004/02/17 23:59:17  jdt
+commented out lines killing the build, and made to conform to 
+coding stds
+
 Revision 1.4  2004/02/16 18:02:14  jdt
 removed a line that was breaking the build
 

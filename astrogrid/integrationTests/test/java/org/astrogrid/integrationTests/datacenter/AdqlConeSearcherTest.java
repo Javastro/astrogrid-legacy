@@ -1,4 +1,4 @@
-/*$Id: AdqlConeSearcherTest.java,v 1.1 2004/01/23 09:08:09 nw Exp $
+/*$Id: AdqlConeSearcherTest.java,v 1.2 2004/02/17 23:59:17 jdt Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,23 +11,17 @@
 package org.astrogrid.integrationTests.datacenter;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.User;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.ConeSearcher;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.integrationTests.common.ConfManager;
-import org.w3c.dom.Element;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.delegate.ConeSearcher;
+import org.astrogrid.integrationTests.common.ConfManager;
+
 /** Test the cone-search delegate against an astrogrid datacenter containing the merlin archive.
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jan-2004
+ * @TODO fix this test
  *
  */
 public class AdqlConeSearcherTest extends TestCase {
@@ -45,7 +39,7 @@ public class AdqlConeSearcherTest extends TestCase {
    
    protected void setUp() throws Exception {
       String endpoint = ConfManager.getInstance().getMerlinDatacenterEndPoint();
-      delegate = DatacenterDelegateFactory.makeConeSearcher(User.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+ //@TODO fixme     delegate = DatacenterDelegateFactory.makeConeSearcher(User.ANONYMOUS,endpoint,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
             
    }
@@ -79,6 +73,10 @@ public class AdqlConeSearcherTest extends TestCase {
 
 /* 
 $Log: AdqlConeSearcherTest.java,v $
+Revision 1.2  2004/02/17 23:59:17  jdt
+commented out lines killing the build, and made to conform to 
+coding stds
+
 Revision 1.1  2004/01/23 09:08:09  nw
 added cone searcher test too
  

@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleSExtractorRunTest.java,v 1.1 2004/02/12 18:43:53 jdt Exp $
+ * $Id: SimpleSExtractorRunTest.java,v 1.2 2004/02/17 23:59:17 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,10 +19,8 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.community.User;
-import org.astrogrid.community.common.util.CommunityMessage;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
@@ -107,7 +105,7 @@ public class SimpleSExtractorRunTest extends TestCase {
             infileName,
             "This is some test contents for myspace",
             TESTCONTAINER, // this should not be the container, but a "type" referece
-            mySpaceManager.OVERWRITE);
+            MySpaceClient.OVERWRITE);
             mySpaceManager.deleteDataHolding(userId, communityId, credential, outFilename);
       }
       catch (IOException e) {

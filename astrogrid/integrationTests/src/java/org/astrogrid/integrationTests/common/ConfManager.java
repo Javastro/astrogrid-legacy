@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.2 2004/02/17 15:21:17 jdt Exp $ Created on
+ * $Id: ConfManager.java,v 1.3 2004/02/17 23:59:17 jdt Exp $ Created on
  * 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,8 +18,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * @author jdt
  * 
- * Deal with properties common to all the tests @TODO tidy up once Eclipse is
- * working properly again
+ * Deal with properties common to all the tests 
  */
 public final class ConfManager {
   /**
@@ -125,6 +124,10 @@ public final class ConfManager {
 
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.3  2004/02/17 23:59:17  jdt
+ * commented out lines killing the build, and made to conform to 
+ * coding stds
+ *
  * Revision 1.2  2004/02/17 15:21:17  jdt
  * formatted to remove tags (cf coding standards)
  *
