@@ -57,7 +57,7 @@
           <ns17:UI_Name xmlns:ns17="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Format</ns17:UI_Name>
           <ns18:UI_Description xmlns:ns18="http://www.astrogrid.org/schema/AGParameterDefinition/v1">How the results are to be returned. VOTABLE or CSV for now</ns18:UI_Description>
           <ns19:UCD xmlns:ns19="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns19:UCD>
-          <ns20:DefaultValue xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns20:DefaultValue>
+          <ns20:DefaultValue xmlns:ns20="http://www.astrogrid.org/schema/AGParameterDefinition/v1">VOTABLE</ns20:DefaultValue>
           <ns21:Units xmlns:ns21="http://www.astrogrid.org/schema/AGParameterDefinition/v1"></ns21:Units>
         </ns1:ParameterDefinition>
         <ns1:ParameterDefinition name="RA" type="RA" accept-encodings="" sub-type="">
