@@ -3,31 +3,40 @@
 
     <xsl:param name="image_path">/astrogrid-portal/mount/workflow/</xsl:param>  <!-- path to images -->
     
-    <xsl:template match="/*">
+    <xsl:template match="workflow">
     <ag-div>        
-      <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
-      <link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>   
-        
-            <body>
-                <table width="100%" align="center" border="0">
-                    <tr>
-                        <td>Name:
-                            <b><xsl:value-of select="@workflow-name"/></b>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Description:
-                            <b><xsl:value-of select="@workflow-description"/></b>
-                        </td>
-                    </tr>                    
-                </table>
-                <table border="0" cellpadding="0" cellspacing="0">  
-                    <tr>
-                        <xsl:apply-templates select="*"/>
-                    </tr>
-                </table>
-                <xsl:call-template name="tool-details"/>
-            </body>
+        <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
+        <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>           
+            <table border="1">
+                <tr>
+                    <td width="30">Name:</td>
+                    <td>                        
+                        <xsl:element name="input">
+                            <xsl:attribute name="type">text</xsl:attribute>
+                            <xsl:attribute name="size">40</xsl:attribute>
+                            <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
+                        </xsl:element>           
+                    </td>             
+                </tr>
+                <tr>
+                    <td width="30">Description:</td><td>
+                        <xsl:element name="input">
+                            <xsl:attribute name="type">text</xsl:attribute>
+                            <xsl:attribute name="size">40</xsl:attribute>
+                            <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
+                        </xsl:element>                  
+                    </td>       
+                </tr>                    
+            </table>
+            <ag-div>
+                <ag-menu name="main-menu"/>
+            </ag-div>            
+            <table border="0" cellpadding="0" cellspacing="0">  
+                <tr>
+                    <xsl:apply-templates select="*"/>
+                </tr>
+            </table>
+        <xsl:call-template name="tool-details"/>
         </ag-div>
     </xsl:template>
 
@@ -50,7 +59,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">sequence</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>
                         </xsl:element>
                     </xsl:when>
                             
@@ -62,7 +71,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">flow</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>
                         </xsl:element>                                                                                        
                     </xsl:when>
                             
@@ -76,7 +85,7 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
-                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@name"/>','<xsl:value-of select="./tool/documentation"/>'); show_select('step_tool_details');populate_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
+                            <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@name"/>','<xsl:value-of select="./tool/documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>             
                             <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
                         </xsl:element>
                         <td>
@@ -208,10 +217,21 @@
           +-->
     <xsl:template match="tool"></xsl:template>    
  
+
  
     <xsl:include href="display-tool.xsl"/>
     <xsl:include href="display-parameters.xsl"/>
 
 
+    <!-- Default, copy all and apply templates -->
+    <xsl:template match="@*|node()" priority="-2">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    <xsl:template match="text()" priority="-1">
+        <xsl:value-of select="."/>
+    </xsl:template>
+     
     
 </xsl:stylesheet>
