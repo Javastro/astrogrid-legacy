@@ -53,8 +53,7 @@ class reference17 {
 }}/**
 
 @__tags
-@shapeType DeploymentDiagram 
-*/
+@shapeType DeploymentDiagram */
 class __tags {
 }/**
 @__options 
@@ -72,7 +71,7 @@ class __options {
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node50.link:oiref>=1292,181,1164,181:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51:oiref>=600,80,160,60,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node14.link:oiref>=160,880,160,845:oigroup>
-<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link8:oiref>=335,141,59,15,0,-0.108297825,0.99411845:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link8:oiref>=335,141,67,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node12:oiref>=513,925,537,95,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link61:oiref>=680,140,680,190:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node16.link:oiref>=1589,680,1540,680:oigroup>
@@ -80,7 +79,7 @@ class __options {
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node1.link:oiref>=670,790,670,755:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link:oiref>=1350,580,1350,560:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node14:oiref>=1569,254,261,146,0:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node7:oiref>=70,157,172,45,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node7:oiref>=70,157,0,0,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1:oiref>=920,40,620,760,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node14:oiref>=60,880,178,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15:oiref>=30,470,400,520,0:oigroup>
@@ -90,48 +89,48 @@ class __options {
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node16:oiref>=1589,600,221,160,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link3:oiref>=653,140,176,550:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link:oiref>=1362,259,1362,219:oigroup>
-<oigroup:Composite#label#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=673,639,25,15,0,-1.0,0.0:oigroup>
-<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link:oiref>=907,153,59,15,0,-0.17402747,-0.9847408:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=673,639,33,15,0:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link:oiref>=907,153,67,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link4:oiref>=720,140,1056,510:oigroup>
-<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=956,678,22,15,0,-0.17888544,0.98386997:oigroup>
+<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=956,678,30,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node.link:oiref>=156,227,156,202:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node9.link:oiref>=280,60,280,90:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node17:oiref>=80,550,172,45,1:oigroup>
-<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=1391,652,104,15,0,0.17888544,-0.98386997:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node17:oiref>=80,550,0,0,1:oigroup>
+<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=1391,652,112,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40:oiref>=610,280,138,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node2:oiref>=90,800,141,45,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node1:oiref>=570,790,178,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52:oiref>=1162,259,324,60,0:oigroup>
-<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=950,347,22,15,0,-0.14601944,0.9892817:oigroup>
+<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=950,347,30,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5:oiref>=40,90,270,277,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node48:oiref>=942,359,207,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19.link:oiref>=170,720,170,690:oigroup>
-<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=1417,331,104,15,0,0.14601944,-0.9892817:oigroup>
+<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=1417,331,112,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node18:oiref>=100,630,138,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40.link:oiref>=679,280,679,235:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node49:oiref>=992,159,172,45,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=696,440,696,710:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node50:oiref>=1280,500,138,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node50:oiref>=1280,500,100,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node:oiref>=520,20,330,510,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19:oiref>=70,720,166,60,1:oigroup>
-<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link3:oiref>=375,348,59,15,0,-0.6518382,0.75835806:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link3:oiref>=375,348,67,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46:oiref>=922,109,590,330,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node14.link:oiref>=1569,289,1486,289:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19.link4:oiref>=166,780,166,800:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref>=590,190,172,45,1:oigroup>
-<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link4:oiref>=892,363,59,15,0,-0.7403021,-0.67227435:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref>=590,190,0,0,1:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link4:oiref>=892,363,67,15,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link8:oiref>=600,128,242,167:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node:oiref>=250,810,134,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link:oiref>=685,380,685,340:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node50.link:oiref>=1280,532,1132,532:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52:oiref>=1170,580,293,60,0:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node48:oiref>=930,690,207,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node48:oiref>=930,690,100,60,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75:oiref>=922,447,600,333,0:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node18.link:oiref>=169,630,169,595:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node9:oiref>=250,20,197,40,1:oigroup>
 <oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19.link6:oiref>=205,780,321,810:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node49:oiref>=960,510,172,45,1:oigroup>
-<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=673,606,59,15,0,-1.0,0.0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node49:oiref>=960,510,0,0,1:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=673,606,67,15,0:oigroup>
 */
 class __positions {
 }/**
@@ -158,6 +157,7 @@ class link {
 @shapeType Interface
 @__modelType node
 @name CommonExecutionConnector 
+@backgroundColor 255,102,102
 */
 class node43 {
 }/**
@@ -262,6 +262,7 @@ class link {
 @shapeType Interface
 @__modelType node
 @name CommonExecutionConnector 
+@backgroundColor 255,102,102
 */
 class node49 {
 }/**
@@ -319,6 +320,7 @@ class link {
 @shapeType Interface
 @__modelType node
 @name CommonExecutionConnector 
+@backgroundColor 255,102,102
 */
 class node49 {
 }/**
@@ -354,6 +356,7 @@ class node5 {
 @shapeType Interface
 @__modelType node
 @name CommonExecutionConnector 
+@backgroundColor 255,102,102
 */
 class node7 {
 }/**
@@ -430,6 +433,7 @@ class link6 {
 @shapeType Interface
 @__modelType node
 @name CommonExecutionConnector 
+@backgroundColor 255,102,102
 */
 class node17 {
 }/**

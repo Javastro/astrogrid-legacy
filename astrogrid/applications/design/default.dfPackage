@@ -29,7 +29,15 @@ class reference74 {
 @__fqn <oiref:#Package#:oiref> 
 */
 class reference90 {
-}}/**
+}
+/**
+@__ref <oiref:design#Class#id35996dxoxp5d9dxoxpboj.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#jes:oiref> 
+*/
+class reference49 {
+}
+}/**
 @__tags
 @shapeType ClassDiagram 
 */

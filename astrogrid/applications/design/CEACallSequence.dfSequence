@@ -78,7 +78,7 @@ class __options {
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node28:oiref>=560,778,14,299,0:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link31:oiref>=584,997,400,60,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node8:oiref>=560,1220,14,20,1:oigroup>
-<oigroup:Composite#sendTime#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link:oiref>=781,518,68,15,0,0.0,-1.0:oigroup>
+<oigroup:Composite#sendTime#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link:oiref>=700,513,76,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node23.node:oiref>=971,650,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link29:oiref>=574,860,1224,860:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node56:oiref>=560,162,14,20,1:oigroup>
@@ -92,14 +92,14 @@ class __options {
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node1:oiref>=1483,970,147,99,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.node:oiref>=786,402,14,386,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link63:oiref>=574,950,1418,950:oigroup>
-<oigroup:Composite#sendTime#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link27:oiref>=781,793,149,15,0,0.0,-1.0:oigroup>
+<oigroup:Composite#sendTime#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link27:oiref>=619,788,157,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref>=419,30,297,1290,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2:oiref>=739,367,108,429,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link61:oiref>=220,280,560,280:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node44:oiref>=1350,30,150,1290,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node59:oiref>=560,220,14,20,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link64:oiref>=:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3:oiref>=1485,654,145,186,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3:oiref>=1570,630,145,186,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link1:oiref>=:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link55:oiref>=230,107,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link63:oiref>=584,895,400,45,1:oigroup>
@@ -107,16 +107,16 @@ class __options {
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link:oiref>=584,377,58,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link58:oiref>=220,220,560,220:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4:oiref>=1160,30,143,1290,0:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link61:oiref>=230,225,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link5:oiref>=230,1062,400,45,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link61:oiref>=230,225,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref>=230,325,276,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref>=220,350,560,350:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node23:oiref>=560,503,14,157,1:oigroup>
-<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3.link:oiref>=1485,811,1238,870:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node3.link:oiref>=1642,816,1231,860:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link4:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node:oiref>=560,350,14,82,0:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link58:oiref>=230,165,400,45,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link7:oiref>=230,1165,400,45,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link58:oiref>=230,165,400,45,1:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4.node:oiref>=1224,860,14,20,1:oigroup>
 <oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node2.link:oiref>=635,478,141,15,0:oigroup>
 <oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link5:oiref>=220,1117,560,1117:oigroup>
@@ -141,7 +141,8 @@ class __positions {
 @__modelType node
 @name Common Execution Controller 
 @persistence static
-@stereotype control*/
+@stereotype control
+@backgroundColor 255,102,102*/
 class node21 {
 /**
 @shapeType Activation
@@ -299,7 +300,8 @@ class node8 {
 }}/**
 @shapeType Object
 @__modelType node
-@name Monitor Service*/
+@name Monitor Service
+@backgroundColor 102,255,102*/
 class node23 {
 /**
 @shapeType DependencyLink
@@ -429,6 +431,7 @@ class link7 {
 @__modelType node
 @name StorageService 
 @multipleInstance
+@backgroundColor 51,255,204
 */
 class node4 {
 /**
@@ -446,7 +449,8 @@ class node {
 @persistence static
 @state Running
 @stereotype worker
-@destroyed true*/
+@destroyed true
+@backgroundColor 255,102,102*/
 class node2 {
 /**
 @shapeType Activation
@@ -545,6 +549,7 @@ class __positions33 {
 @shapeType Object
 @__modelType node
 @name ResultsService 
+@backgroundColor 255,102,255
 */
 class node44 {
 /**
@@ -565,6 +570,7 @@ class node {
 @__modelType node
 @name Note1
 @text If a results listener has been registered then the results can be passed "in message" back to the listener 
+@backgroundColor 255,102,255
 */
 class node1 {
 /**
@@ -578,6 +584,7 @@ class link {
 @__modelType node
 @name Note2
 @text If there are any "indirect" output parameters the controller will handle writing these back to any storage services - may include MySpace, ftp, etc. 
+@backgroundColor 51,255,204
 */
 class node3 {
 /**
