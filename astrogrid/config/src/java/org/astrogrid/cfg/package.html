@@ -1,0 +1,32 @@
+<html>
+<body>
+[NB this package in the PAL project is a development of the one that was in common.  It's here to
+avoid causing problems with dependent code, because the way we do our dependencies makes it easier
+to copy something like this elsewhere, grumble grumble grumble]
+
+Configuration package; provides a simple set of methods for application-wide
+access to properties, using both traditional key/value pairs and XPath querying.
+<p>
+<h3>Background</h3>
+The configuration package has to be able to:<p>
+<li>Provide simple, backward-compatible access to key/value properties
+<li>Run without any configuration file present, with values set by the code, for unit tests
+<li>Load from several files (eg user-entered values, plus programmer-entered values)
+<li>Provide a getproperty(XPath) returning XML nodes (implies a load from XML) for structured properties
+<p>
+
+<h3>Simple</h3>
+For the most simplest of configurations, use the 'common' config provided by
+the ConfigFactory, which is a singleton instance:
+<p>
+<b>Using Properties:</b>
+<pre><code>
+String fruit = ConfigFactory.getCommonConfig().getString("GlobalFruit");
+</pre></code>
+
+<h3>Implementation</h3>
+The ConfigFactory returns FailbackConfig instances - see the class doc for how it
+works.
+
+</body>
+</html>
