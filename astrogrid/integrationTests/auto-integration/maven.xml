@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.55 2004/06/23 10:11:07 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.56 2004/07/01 11:43:03 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -15,7 +15,7 @@
    -->
 
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:util="jelly:util" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core" xmlns:jsl="jelly:jsl" xmlns:jxml="jelly:xml" xmlns:maven="jelly:maven" xmlns:util="jelly:util" xmlns:deploy="deploy" default="jar:jar">
 
 
 <property name="tomcat.host" value="localhost"/>
@@ -68,7 +68,11 @@
         <sleep seconds="4" />
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
-        <attainGoal name="apps-deploy" />
+        <attainGoal name="cea-server-deploy" />
+        <sleep seconds="2" />
+        <attainGoal name="cea-commandline-deploy" />
+        <sleep seconds="2" />
+        <attainGoal name="cea-http-deploy" />
         <sleep seconds="2" />
         <attainGoal name="myspace-deploy" />
         <sleep seconds="2" />
@@ -86,7 +90,9 @@
         <attainGoal name="configuration-undeploy" />
         <attainGoal name="myspace-store-undeploy" />
         <attainGoal name="jes-undeploy" />
-        <attainGoal name="apps-undeploy" />
+        <attainGoal name="cea-server-undeploy" />
+        <attainGoal name="cea-commandline-undeploy" />
+        <attainGoal name="cea-http-undeploy" />
         <attainGoal name="reg-undeploy" />
         <attainGoal name="myspace-undeploy" />
         <attainGoal name="pal-undeploy" />
@@ -118,10 +124,12 @@
     | This pregoal takes any simple html docs in the xdocs folder and turns them into xdoc xml,
     | before they are turned back into maven-style html docs.  Why?  html is easier to write in
     | a WYSIWIG editor than xdoc xml
+    |
+    | I think using this means that the  documents all turn out in the same maven style (plus navigation bars, etc)
     +-->
 <preGoal name="xdoc:jelly-transform">
     <attainGoal name="html2xdoc"/>
-</preGoal>  
+</preGoal>
 
 <goal name="ui-int-test"  description="run integration tests in ui runner">
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="test:ui" />
@@ -146,11 +154,10 @@
         <attainGoal name="setup-registry" />
         <attainGoal name="community-database"/>
         <attainGoal name="community-register"/>
-        <attainGoal name="setup-applications" />
+        <attainGoal name="setup-cea-server" />
+        <attainGoal name="setup-cea-commandline" />
+        <attainGoal name="setup-cea-http" />
         <attainGoal name="setup-myspace" />
-        <!--Finally kick the CommonExecutionController to register itself-->
-        <http url="${tomcat.url}/astrogrid-applications-SNAPSHOT/servlet/initForRegistry"/>
-
 </goal>
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
@@ -160,7 +167,10 @@
                 <fileset dir="work" />
         </copy>
         <!-- make everything world-accessible - necessary as tomcat may be running as different user to
-        whoever is executing this script -->
+        whoever is executing this script
+
+        hmm - dunno if this is necessary really.
+         -->
         <chmod file="${work.dir}" perm="a+rwx" type="dir"/>
         <chmod dir="${work.dir}" perm="a+rwx" type="dir">
                 <include name="**/*" />
@@ -170,29 +180,19 @@
         </chmod>
 </goal>
 
-<goal name="setup-applications" description="setup specific to applications">
-        <echo>Configuring Applications</echo>
-        <!-- make all scripts executable -->
-        <chmod dir="${work.dir}/applications" perm="a+x">
+<goal name="setup-cea-server">
+        <mkdir dir="${work.dir}/cea/java/store" />
+</goal>
+
+<goal name="setup-cea-http">
+        <mkdir dir="${work.dir}/cea/http/store" />
+</goal>
+
+<goal name="setup-cea-commandline" description="setup specific to commandline cea server">
+        <mkdir dir="${work.dir}/cea/commandline/store" />
+        <chmod dir="${work.dir}/cea/commandline/work" perm="a+x">
                 <include name="*.sh" />
         </chmod>
-        <!-- initialize database : no need, db contents should be stored as a template really.-->
-        <sql driver="org.hsqldb.jdbcDriver" url="jdbc:hsqldb:${work.dir}/applications/application-db"
-             classpathref="maven.dependency.classpath"
-             userid="sa" password="" print="true"
-            ><![CDATA[
-        DROP TABLE exestat IF EXISTS ;
-        CREATE TABLE exestat
-                    (
-    executionId      INTEGER IDENTITY,
-    jobstepId    VARCHAR ,
-    program      VARCHAR ,
-    starttime        DATETIME DEFAULT 'now',
-    params         VARCHAR,
-    endtime TIMESTAMP,
-    status  VARCHAR
-            ) ;
-           ]]></sql>
 </goal>
 
 <goal name="setup-myspace" description="myspace setup">
@@ -222,11 +222,11 @@
             <ant target="register" antfile="register.xml" >
         `       <property name="registry.entry" value="${temporary.dir}/registry-entries/ARegistry.xml"/>
             </ant>
-          </j:catch>            
-		<waitfor maxwait="10" maxwaitunit="second" checkevery="500">
-        	<http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
-		</waitfor>
-            
+          </j:catch>
+                <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
+                <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
+                </waitfor>
+
         <j:forEach var="entry" items="${entryList}">
           <j:catch>
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
@@ -394,19 +394,7 @@
         </java>
 </goal>
 
-<postGoal name="maven-junit-report-plugin:report">
-        <attainGoal name="full-junit-report" />
-</postGoal>
-<goal name="full-junit-report">
-        <mkdir dir="${basedir}/target/docs/junit-full" />
-       ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-        <junitreport todir="${basedir}/target">
-                <fileset dir="${basedir}/target/test-reports">
-                        <include name="TEST-*.xml" />
-                </fileset>
-                <report format="frames" styledir="${basedir}/build" todir="${basedir}/target/docs/junit-full" />
-        </junitreport>
-</goal>
+
 
 
 <!-- deployment //////////////////////////////////////////////////////////////////////// -->
@@ -461,18 +449,45 @@
   </j:catch>
 </goal>
 
-<goal name="apps-deploy"  prereqs="tomcat-declare-tasks" >
-        <copy todir="${temporary.dir}/applications" filtering="true">
-                <fileset dir="contexts/applications" />
+<goal name="cea-server-deploy"  prereqs="tomcat-declare-tasks" >
+        <copy todir="${temporary.dir}/cea-server" filtering="true">
+                <fileset dir="contexts/cea-server" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-applications-SNAPSHOT.war">
-                <metainf dir="${temporary.dir}/applications"/>
+        <war update="true" destfile="${temporary.dir}/astrogrid-cea-server-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/cea-server"/>
         </war>
    <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-applications-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-applications-SNAPSHOT.war"/>
+          path="/astrogrid-cea-server-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-cea-server-SNAPSHOT.war"/>
    </j:catch>
 </goal>
+
+<goal name="cea-commandline-deploy"  prereqs="tomcat-declare-tasks" >
+        <copy todir="${temporary.dir}/cea-commandline" filtering="true">
+                <fileset dir="contexts/cea-commandline" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/cea-commandline"/>
+        </war>
+   <j:catch>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-cea-commandline-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-cea-commandline-SNAPSHOT.war"/>
+   </j:catch>
+</goal>
+
+<goal name="cea-http-deploy"  prereqs="tomcat-declare-tasks" >
+        <copy todir="${temporary.dir}/cea-http" filtering="true">
+                <fileset dir="contexts/cea-http" />
+        </copy>
+        <war update="true" destfile="${temporary.dir}/astrogrid-cea-http-SNAPSHOT.war">
+                <metainf dir="${temporary.dir}/cea-http"/>
+        </war>
+   <j:catch>
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-cea-http-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-cea-http-SNAPSHOT.war"/>
+   </j:catch>
+</goal>
+
 
 <goal name="reg-deploy" >
         <copy todir="${temporary.dir}/registry" filtering="true">
@@ -570,13 +585,24 @@
   </j:catch>
 </goal>
 
-<goal name="apps-undeploy" >
+<goal name="cea-server-undeploy" >
   <j:catch>
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-applications-SNAPSHOT" />
+          path="/astrogrid-cea-server-SNAPSHOT" />
   </j:catch>
 </goal>
-
+<goal name="cea-commandline-undeploy" >
+  <j:catch>
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-cea-commandline-SNAPSHOT" />
+  </j:catch>
+</goal>
+<goal name="cea-http-undeploy" >
+  <j:catch>
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="/astrogrid-cea-http-SNAPSHOT" />
+  </j:catch>
+</goal>
 <goal name="jes-undeploy" >
   <j:catch>
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
@@ -625,21 +651,117 @@
 
 
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running">
-	<delete includeEmptyDirs="true" defaultexcludes="false" >
-		<fileset dir="${tomcat.location}/webapps" >
-			<include name="astrogrid-*/**"/>
-			<include name="exist*/**"/>
-	   </fileset>
-		<fileset dir="${tomcat.location}/work/Catalina/localhost" >
-			<include name="*/**"/>
-	   </fileset>
-		<fileset dir="${tomcat.location}/conf/Catalina/localhost" >
-			<include name="astrogrid-*.xml"/>
-	   </fileset>
-		<fileset dir="${tomcat.location}/logs" >
-			<include name="*"/>
-	   </fileset>	   
-	</delete>
+        <delete includeEmptyDirs="true" defaultexcludes="false" >
+                <fileset dir="${tomcat.location}/webapps" >
+                        <include name="astrogrid-*/**"/>
+                        <include name="exist*/**"/>
+           </fileset>
+                <fileset dir="${tomcat.location}/work/Catalina/localhost" >
+                        <include name="*/**"/>
+           </fileset>
+                <fileset dir="${tomcat.location}/conf/Catalina/localhost" >
+                        <include name="astrogrid-*.xml"/>
+           </fileset>
+                <fileset dir="${tomcat.location}/logs" >
+                        <include name="*"/>
+           </fileset>
+        </delete>
+</goal>
+
+
+<!-- extra reports - full junit report, annotated with regression info.-->
+<postGoal name="maven-junit-report-plugin:report">
+        <attainGoal name="full-junit-report" />
+        <!--
+          still under development
+        <attainGoal name="produce-baseline-summary" />
+        <attainGoal name="acquire-baselines"/>
+        <attainGoal name="annotate-report" />-->
+        <attainGoal name="style-full-report" />
+</postGoal>
+<goal name="full-junit-report">
+        <mkdir dir="${basedir}/target/docs/junit-full" />
+       ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <junitreport todir="${basedir}/target">
+                <fileset dir="${basedir}/target/test-reports">
+                        <include name="TEST-*.xml" />
+                </fileset>
+        </junitreport>
+</goal>
+
+<goal name="style-full-report">
+       ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <style basedir="${basedir}/target/" destdir="${basedir}/target/docs/junit-full" style="${basedir}/build/junit-frames.xsl">
+                <include name="TESTS-TestSuites.xml" />
+                <param name="output.dir" expression="${basedir}/target/docs/junit-full" />
+        </style>
+
+</goal>
+
+
+<goal name="produce-baseline-summary" description="generate summary test report, which could be used as a baseline for future tests">
+       ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+       <!-- define summarizing stylesheet -->
+        <jsl:stylesheet var="summarize" >
+                <jsl:template match="/">
+                        <testsuites builddate="new java.util.Date()}">
+                        <jsl:applyTemplates />
+                        </testsuites>
+                </jsl:template>
+
+                <jsl:template match="testsuite">
+                        <jxml:element name="testsuite">
+                              <jxml:attribute name="name"><jxml:expr select="@name"/></jxml:attribute>
+                             <jxml:attribute name="package"><jxml:expr select="@package"/></jxml:attribute>
+                             <jxml:attribute name="tests"><jxml:expr select="@tests"/></jxml:attribute>
+                             <jxml:attribute name="errors"><jxml:expr select="@errors"/></jxml:attribute>
+                             <jxml:attribute name="failures"><jxml:expr select="@failures"/></jxml:attribute>
+                             <jsl:applyTemplates />
+                        </jxml:element>
+                </jsl:template>
+
+                <jsl:template match="testcase">
+                        <jxml:element name="testcase">
+                                <jxml:attribute name="name"><jxml:expr select="@name" /></jxml:attribute>
+                                <!-- error is a child element. dunno how failures are represented yet -->
+                        </jxml:element>
+                </jsl:template>
+        </jsl:stylesheet>
+        <!-- read in input file -->
+        <jxml:parse var="allSuites">
+          <j:import file="${regression.dir}/TESTS-TestSuites.xml"/>
+        </jxml:parse>
+        <!-- apply stylesheet -->
+        <j:file name="${regression.dir}/summary.xml">
+         <jsl:style stylesheet="${summarize}" select="$allSuites" />
+        </j:file>
+</goal>
+
+
+<goal name="annotate-report">
+        <j:set var="regression.dir" value="${basedir}/target/regression" />
+        <mkdir dir="${regression.dir}" />
+        <echo>summarizing this build</echo>
+        <junitreport todir="${regression.dir}">
+                <fileset dir="${basedir}/target/test-reports">
+                        <include name="TEST-*.xml" />
+                </fileset>
+        </junitreport>
+
+
+        <echo>merging current build summary with previous</echo>
+
+        <j:file name="${regression.dir}/merge.xml">
+          <merge>
+            <current>
+             <j:import file="${regression.dir}/summary.xml" />
+            </current>
+            <previous>
+            <!--for now -->
+             <j:import file="${regression.dir}/summary.xml" />
+            </previous>
+          </merge>
+        </j:file>
 </goal>
 
 <!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
