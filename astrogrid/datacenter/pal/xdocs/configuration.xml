@@ -47,13 +47,13 @@ test queries on it before connecting up to a real dataset.</p>
 <p>Many datasets are stored in Relational Database Management Systems (RDBMSs) such as SQL
 Server, Postgres, etc.  PAL includes mechanisms to connect to any RDBMS that provides a
     <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following
-	<ul>
-		<li><a href="http://www.mysql.com/">MySQL</a> - the MM-MySQL JDBC 
-			Driver </li>
-		<li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java 
-			RDBMS. For testing purposes or serving small databases based on 
-			textfiles. </li>
-	</ul>
+   <ul>
+      <li><a href="http://www.mysql.com/">MySQL</a> - the MM-MySQL JDBC
+         Driver </li>
+      <li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java
+         RDBMS. For testing purposes or serving small databases based on
+         textfiles. </li>
+   </ul>
    </p>
 
 <subsection name="Preparing your database">
@@ -122,6 +122,31 @@ Server, Postgres, etc.  PAL includes mechanisms to connect to any RDBMS that pro
 
 <section name="Publishing FITS files">
 <p>TBD</p>
+</section>
+
+<section name="Multiple PALs">
+<p>
+You can add many contexts to Tomcat, for example, by defining contexts that
+point to a single webapp context.  This means you can have many contexts with
+their own configuration files, with one update point.
+</p>
+<p>
+For example:
+<source>
+    &lt;Context path="/pal-rave"
+             docBase="/usr/bin/tomcat/webapps/pal-SNAPSHOT"
+               debug="9" reloadable="true"&gt;
+
+       &lt;Environment name="org.astrogrid.config.filename"
+                      value="/usr/bin/tomcat/conf/pal-rave.properties"
+                        type="java.lang.String" /&gt;
+        &lt;/Context&gt;
+</source>
+</p>
+(More to come)
+<p>
+
+</p>
 </section>
 
 <section name="Other plugins">
