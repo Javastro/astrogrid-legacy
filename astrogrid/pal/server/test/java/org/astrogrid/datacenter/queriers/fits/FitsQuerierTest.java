@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.5 2005/03/10 13:49:53 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.6 2005/03/10 14:01:35 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -25,25 +25,63 @@ import org.astrogrid.dataservice.queriers.QuerierPluginFactory;
 import org.astrogrid.dataservice.queriers.fits.FitsQuerierPlugin;
 import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
 import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.adql.AdqlQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
 import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.xmldb.client.XMLDBFactory;
+import org.w3c.dom.Document;
+import org.astrogrid.util.DomHelper;
+import java.io.*;
 
 /** Test the Fits processing classes
  */
 public class FitsQuerierTest extends TestCase
 {
-   private static File indexFile = null;
+   private static boolean uploadedFiles = false;
+   private static boolean registeredDB = false;
    
-   protected void setUp() throws Exception{
+   public FitsQuerierTest() {
+       
+   }
+   
+   public void setUp() throws Exception {
+       super.setUp();
+       System.out.println("Try to find exist.xml");
+       SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
+       SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+       SimpleConfig.setProperty("xmldb.query.service", "XQueryService");
+       SimpleConfig.setProperty("xmldb.admin.user", "admin");
+       SimpleConfig.setProperty("xmldb.admin.password", "");
+       if(!registeredDB) {
+           File fi = new File("target/test-classes/exist.xml");
+           System.out.println("Got the File now try to register the db");
+           if(fi != null) {
+               XMLDBFactory.registerDB(fi.getAbsolutePath());
+           }
+           System.out.println("database registered now set the query plugin");
+           registeredDB = true;
+       }//if
+       SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+       
+
+       if(!uploadedFiles) {
+           System.out.println("plug in set now try out upload sample fits file");
+           Document fitsFile = askQueryFromFile("SampleFits.xml");
+           System.out.println("Got xml sample document now upload to exist db");
+           System.out.println("the fitsFile = " + DomHelper.DocumentToString(fitsFile));
+           FitsQuerierPlugin.upload("CDSDataTest",fitsFile);
+           uploadedFiles = true;
+       }
+       
        /*
+        *     SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
         * xmldb.uri=xmldb:exist://
 xmldb.driver=org.exist.xmldb.DatabaseImpl
 xmldb.query.service=XQueryService
 xmldb.admin.user=admin
 xmldb.admin.password=
-      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+      
         File fi = new File("target/test-classes/exist.xml");
         if(fi != null) {
           XMLDBFactory.registerDB(fi.getAbsolutePath());
@@ -62,28 +100,41 @@ xmldb.admin.password=
       
       SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, indexFile.getCanonicalPath());
       */
-      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
    }
 
    /** Check to see the right plugin is made */
    public void testPluginClass() throws IOException, IOException, URISyntaxException {
-      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE), this);
+      System.out.println("entered testPlugin");
+      //Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE), this);
       
-      assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
+      //assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
    
-   public void testQuery() throws IOException
+   public void testQuery() throws Exception
    {
-      /*
-      StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
+      System.out.println("entered testQuery");
       
+      Document doc = askQueryFromFile("ADQLQueryForFits1.xml");
+      StringWriter sw = new StringWriter();
+      Querier querier = Querier.makeQuerier(LoginAccount.ANONYMOUS, AdqlQueryMaker.makeQuery(doc.getDocumentElement(), TargetMaker.makeTarget(sw), ReturnTable.VOTABLE), this);
       querier.ask();
-
-      //have a look in sw for results
       String results = sw.toString();
-      */
+      System.out.println("THE RESULTS OF QUERY = " +  results);
   }
+   
+   protected Document askQueryFromFile(String queryFile) throws Exception {
+       System.out.println("entered askQueryFromFile");
+
+       assertNotNull(queryFile);
+       InputStream is = this.getClass().getResourceAsStream(queryFile);
+       
+       assertNotNull("Could not open query file :" + queryFile,is);
+       Document queryDoc = DomHelper.newDocument(is);
+       
+       //Document queryDoc = DomHelper.newDocument(new File(queryFile));
+       return queryDoc;
+   }    
+
 
    
    public static Test suite()
@@ -96,19 +147,21 @@ xmldb.admin.password=
    /**
     * Runs the test case.
     */
+
    public static void main(String args[]) throws IOException
    {
       org.astrogrid.log.Log.logToConsole();
       junit.textui.TestRunner.run(suite());
    }
+
    
 }
 
 
 /*
  $Log: FitsQuerierTest.java,v $
- Revision 1.5  2005/03/10 13:49:53  mch
- Updating metadata
+ Revision 1.6  2005/03/10 14:01:35  KevinBenson
+ new test for FitsQuerier
 
  Revision 1.4  2005/03/08 15:03:24  KevinBenson
  new stuff for Fits querier to work with an internal xml database
