@@ -6,6 +6,7 @@
   <id>astrogrid-datawarehouse</id>
   <name>Astrogrid Data Warehouse</name>
 	<description><![CDATA[
+  <!--
 	<p>
 	Links will follow shortly on the left for GDW subproject information:
 	<ul>
@@ -14,8 +15,9 @@
 	  <li>datasets</li>
 	</ul>
 	</p>
+  -->
 
-<section name="Installation"><p> 
+<section name="Introduction"><p> 
 
 This documentation refers to the Iteration 5 release of the
 AstroGrid Grid Data Warehouse.
@@ -27,9 +29,11 @@ DataCenter</a>.  All required GDW front-end components are distributed as
 part of the AstroGrid DataCenter package, distributed as PAL-{version}.war.
 After installation, this package will need certain minor reconfigurations 
 to run as a GDW (see below).
-</p><p>
-<strong>Preliminaries</strong>
-</p><p>
+</p>
+</section>
+
+<section name="Installation">
+<p>
 To supply its actual database access, the GDW requires an installation of 
 the <a href="http://www.ogsadai.org.uk">OGSA-DAI</a> grid middleware.
 The Iteration 4.1 release of GDW assumed OGSA-DAI 3.0;  the Iteration 5
@@ -54,10 +58,8 @@ used for delivery of results from OGSA-DAI.  Future releases of the GDW will
 not have this limitation. 
 </p><p>
 
-</p><p>
-<strong>DataCenter installation</strong>
-</p><p>
-Download and install a standard AstroGrid DataCenter component;  the 
+To install a GDW, first download and install a standard AstroGrid DataCenter 
+component;  the 
 DataCenter component provides comprehensive installation and post-install
 test instructions in its 
 <a href="../datacenter/multiproject/pal/INSTALL.html">PAL install 
