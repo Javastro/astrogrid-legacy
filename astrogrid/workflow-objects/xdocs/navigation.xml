@@ -6,7 +6,7 @@
   <body>
     <menu name="Schema">
     	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/"/>
-    		
+    	<item name="documentation"  href="schema/"/>    		
     </menu>
     <menu name="WSDL">
     	<item name="cvs location"  href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/wsdl/"/>
