@@ -391,7 +391,7 @@ public class WorkflowTestSuite extends TestCase {
 			  trace( "tool name: " + tool.getName() );
 			  trace( "tool interface: " + tool.getInterface() );
                             
-              WorkflowHelper.insertInputParameterValue( description, tool, "P2", "Text", "3.1415926535" ) ;
+              WorkflowHelper.insertInputParameterValue( description, tool, "P2", "Text", "3.1415926535", false ) ;
                                         
 			  ParameterValue[] pvs = tool.getInput().getParameter();
 			  ParameterRef pr = null;
@@ -474,7 +474,7 @@ public class WorkflowTestSuite extends TestCase {
               trace( "tool name: " + tool.getName() );
               trace( "tool interface: " + tool.getInterface() );
                             
-              WorkflowHelper.insertInputParameterValue( description, tool, "P2", "", "4.56789" ) ;
+              WorkflowHelper.insertInputParameterValue( description, tool, "P2", "", "4.56789", false ) ;
                                         
               ParameterValue[] pvs = tool.getInput().getParameter();
               ParameterRef pr = null;
