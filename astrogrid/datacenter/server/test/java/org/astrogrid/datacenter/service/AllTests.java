@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+/*$Id: AllTests.java,v 1.2 2003/11/18 11:08:55 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  *
 **/
 package org.astrogrid.datacenter.service;
+import org.astrogrid.util.*;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -44,6 +45,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.2  2003/11/18 11:08:55  mch
+Removed client dependencies on server
+
 Revision 1.1  2003/11/14 00:38:29  mch
 Code restructure
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: SqlResults.java,v 1.2 2003/11/18 11:10:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,7 @@ import java.sql.Types;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.service.Workspace;
+import org.astrogrid.util.Workspace;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -189,6 +189,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.2  2003/11/18 11:10:16  mch
+ Removed client dependencies on server
+
  Revision 1.1  2003/11/14 00:38:29  mch
  Code restructure
 

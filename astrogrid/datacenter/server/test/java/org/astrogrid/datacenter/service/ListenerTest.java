@@ -4,6 +4,7 @@
  */
 
 package org.astrogrid.datacenter.service;
+import org.astrogrid.util.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -97,6 +98,9 @@ public class ListenerTest extends TestCase implements DelegateQueryListener
 
 /*
 $Log: ListenerTest.java,v $
+Revision 1.3  2003/11/18 11:08:55  mch
+Removed client dependencies on server
+
 Revision 1.2  2003/11/17 15:42:03  mch
 Package movements
 

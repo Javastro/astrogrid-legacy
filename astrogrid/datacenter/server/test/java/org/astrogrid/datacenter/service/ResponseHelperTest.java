@@ -15,13 +15,13 @@ import org.astrogrid.datacenter.queriers.DummyQueryResults;
  * JUnit test case for DocHelperTest2
  */
 
-public class ServiceResponseHelperTest extends TestCase
+public class ResponseHelperTest extends TestCase
 {
    public static void main(String[] args) {
       junit.textui.TestRunner.run(suite());
    }
    public static Test suite() {
-      return new TestSuite(ServiceResponseHelperTest.class);
+      return new TestSuite(ResponseHelperTest.class);
    }
 
    /**
@@ -32,16 +32,16 @@ public class ServiceResponseHelperTest extends TestCase
    {
       DummyQuerier querier = new DummyQuerier();
 
-      ServiceResponseHelper.makeQueryCreatedResponse(querier);
+      ResponseHelper.makeQueryCreatedResponse(querier);
 
-      ServiceResponseHelper.makeQueryStartedResponse(querier);
+      ResponseHelper.makeQueryStartedResponse(querier);
 
-      ServiceResponseHelper.makeStatusResponse(querier);
+      ResponseHelper.makeStatusResponse(querier);
 
-      ServiceResponseHelper.makeUnknownIdResponse("UnknownId");
+      ResponseHelper.makeUnknownIdResponse("UnknownId");
 
       DummyQueryResults results = new DummyQueryResults("ResponseHelperTest");
-      ServiceResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
+      ResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
    }
 
    /**
@@ -54,26 +54,26 @@ public class ServiceResponseHelperTest extends TestCase
       querier.setErrorStatus(new IOException("Test error"));
 
       try {
-         ServiceResponseHelper.makeQueryCreatedResponse(querier);
+         ResponseHelper.makeQueryCreatedResponse(querier);
          fail("Didn't throw error exception");
       }
       catch (IOException e) {}
 
       try {
-         ServiceResponseHelper.makeQueryStartedResponse(querier);
+         ResponseHelper.makeQueryStartedResponse(querier);
          fail("Didn't throw error exception");
       }
       catch (IOException e) {}
 
       try {
-         ServiceResponseHelper.makeStatusResponse(querier);
+         ResponseHelper.makeStatusResponse(querier);
          fail("Didn't throw error exception");
       }
       catch (IOException e) {}
 
       try {
          DummyQueryResults results = new DummyQueryResults("ResponseHelperTest");
-         ServiceResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
+         ResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
 //isn't supposed to any more...         fail("Didn't throw error exception");
       }
       catch (IOException e) {}

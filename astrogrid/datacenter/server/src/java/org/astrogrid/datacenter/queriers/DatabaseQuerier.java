@@ -19,7 +19,7 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
-import org.astrogrid.datacenter.service.Workspace;
+import org.astrogrid.util.Workspace;
 import org.astrogrid.log.Log;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManager;
@@ -483,6 +483,9 @@ public abstract class DatabaseQuerier implements Runnable
 }
 /*
 $Log: DatabaseQuerier.java,v $
+Revision 1.4  2003/11/18 11:10:16  mch
+Removed client dependencies on server
+
 Revision 1.3  2003/11/17 15:41:48  mch
 Package movements
 

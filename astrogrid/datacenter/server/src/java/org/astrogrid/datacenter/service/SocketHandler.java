@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.4 2003/11/17 18:55:16 mch Exp $
+ * $Id: SocketHandler.java,v 1.5 2003/11/18 11:10:16 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -129,7 +129,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Creating a query");
                DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(docRequest.getDocumentElement());
-               out.writeDoc(ServiceResponseHelper.makeQueryCreatedResponse(querier));
+               out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
             {
@@ -139,14 +139,14 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
                Thread queryThread = new Thread(querier);
                queryThread.start();
 
-               out.writeDoc(ServiceResponseHelper.makeQueryStartedResponse(querier));
+               out.writeDoc(ResponseHelper.makeQueryStartedResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REGISTER_LISTENER_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Registering listeners");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
                querier.registerWebListeners(docRequest.getDocumentElement());
-               out.writeDoc(ServiceResponseHelper.makeStatusResponse(querier));
+               out.writeDoc(ResponseHelper.makeStatusResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.ABORT_QUERY_TAG).getLength() > 0)
             {
@@ -156,14 +156,14 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Results Requested");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
-               Document response = ServiceResponseHelper.makeResultsResponse(querier, new URL(querier.getResultsLoc()));
+               Document response = ResponseHelper.makeResultsResponse(querier, new URL(querier.getResultsLoc()));
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.REQ_STATUS_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Status Requested");
                DatabaseQuerier querier = getQuerierFromDoc(docRequest);
-               Document response = ServiceResponseHelper.makeStatusResponse(querier);
+               Document response = ResponseHelper.makeStatusResponse(querier);
                out.writeDoc(response);
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
@@ -175,7 +175,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
                querier.setStatus(QueryStatus.RUNNING_RESULTS);
 
-               Document response = ServiceResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
+               Document response = ResponseHelper.makeResultsResponse(querier, results.toVotable().getDocumentElement());
 
                out.writeAsDoc(response.getDocumentElement());
             }
@@ -241,7 +241,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
    {
       try
       {
-         out.writeAsDoc("<"+ResponseHelper.ERROR_TAG+">"+s+" ["+th+"]"+"</"+ResponseHelper.ERROR_TAG+">");
+         out.writeAsDoc("<"+DocMessageHelper.ERROR_TAG+">"+s+" ["+th+"]"+"</"+DocMessageHelper.ERROR_TAG+">");
       }
       catch (IOException ioe) {}
    }
@@ -250,6 +250,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.5  2003/11/18 11:10:16  mch
+Removed client dependencies on server
+
 Revision 1.4  2003/11/17 18:55:16  mch
 Moved to snippet package
 

@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.2 2003/11/17 12:16:33 nw Exp $
+/*$Id: DatacenterTest.java,v 1.3 2003/11/18 11:08:55 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,7 @@ import org.apache.axis.client.AdminClient;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.service.ServiceServer;
-import org.astrogrid.datacenter.service.WorkspaceTest;
+import org.astrogrid.util.WorkspaceTest;
 
 /**
  * Unit test that exercises the entire server application.
@@ -108,6 +108,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.3  2003/11/18 11:08:55  mch
+Removed client dependencies on server
+
 Revision 1.2  2003/11/17 12:16:33  nw
 first stab at mavenizing the subprojects.
 

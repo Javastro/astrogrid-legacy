@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.4 2003/11/17 18:55:16 mch Exp $
+ * $Id: ServiceServer.java,v 1.5 2003/11/18 11:10:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -146,7 +146,7 @@ public abstract class ServiceServer
     */
    public Element getQuerierStatus(String queryId) throws Throwable
    {
-      return ServiceResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
+      return ResponseHelper.makeStatusResponse(getQuerier(queryId)).getDocumentElement();
    }
 
    /**
