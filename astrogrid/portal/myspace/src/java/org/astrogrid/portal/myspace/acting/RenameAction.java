@@ -9,6 +9,7 @@ import org.apache.cocoon.acting.AbstractAction;
 import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.Request;
+import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
@@ -27,11 +28,13 @@ public class RenameAction extends AbstractAction {
     ActionUtils utils = ActionUtilsFactory.getActionUtils();
 
     Request request = ObjectModelHelper.getRequest(objectModel);
+    Session session = request.getSession(true);
     
     logger.debug("[act] params:  " + params);
     logger.debug("[act] request: " + request);
+    logger.debug("[act] session: " + session);
     
-    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request);
+    String endPoint = utils.getAnyParameter("myspace-end-point", "http://localhost:8080/myspace", params, request, session);
     logger.debug("[act] endPoint: " + endPoint);
 
     String renameResult = null;
@@ -40,19 +43,19 @@ public class RenameAction extends AbstractAction {
     
       logger.debug("[act] myspace-delegate-class: " + delegate.getClass().getName());
 
-      String userId = utils.getAnyParameter("username", params, request);
+      String userId = utils.getAnyParameter("username", params, request, session);
       logger.debug("[act] userId: " + userId);
 
-      String communityId = utils.getAnyParameter("community-id", params, request);
+      String communityId = utils.getAnyParameter("community-id", params, request, session);
       logger.debug("[act] communityId: " + communityId);
 
-      String credential = utils.getAnyParameter("credential", params, request);
+      String credential = utils.getAnyParameter("credential", params, request, session);
       logger.debug("[act] credential: " + credential);
 
-      String oldMySpaceName = utils.getAnyParameter("myspace-old-name", params, request);
+      String oldMySpaceName = utils.getAnyParameter("myspace-old-name", params, request, session);
       logger.debug("[act] oldMySpaceName: " + oldMySpaceName);
 
-      String newMySpaceName = utils.getAnyParameter("myspace-new-name", params, request);
+      String newMySpaceName = utils.getAnyParameter("myspace-new-name", params, request, session);
       logger.debug("[act] newMySpaceName: " + newMySpaceName);
       
       renameResult = delegate.renameDataHolding(userId, communityId, credential, oldMySpaceName, newMySpaceName);
