@@ -234,7 +234,7 @@
         <propertyfile
             file="${temporary.dir}/community/install.properties">
             <entry key="org.astrogrid.community.ident"
-                value="org.astrogrid.localhost"/>
+                value="${registry.authorityid}"/>
         </propertyfile>
 </goal>
 
@@ -312,7 +312,7 @@
         <propertyfile
             file="${temporary.dir}/community/install.properties">
             <entry key="service.host"
-                value="localhost"/>
+                value="${tomcat.host}"/>
         </propertyfile>
         <!--+
             | Wait for our service to respond.
@@ -336,7 +336,7 @@
     <echo message="Waiting for Community webapp .."/>
     <echo message="  URL : ${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
     <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
-        <http url="${tomcat.url}/astrogrid-community/happyaxis.jsp"/>
+        <http url="${tomcat.url}/astrogrid-community"/>
     </waitfor>
 </goal>
 
