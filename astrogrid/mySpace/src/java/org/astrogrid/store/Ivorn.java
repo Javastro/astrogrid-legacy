@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.2 2004/03/02 16:31:30 mch Exp $
+ * $Id: Ivorn.java,v 1.3 2004/03/08 14:24:36 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -98,11 +98,19 @@ public class Ivorn
       return SCHEME+"://"+path+"#"+getFragment();
    }
 
+   /** Representation to be used when submitting the IVORN to a registry
+    * to be resolved */
+   public String toRegistryString() {
+      return SCHEME+"://"+path;
+   }
    
 }
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.3  2004/03/08 14:24:36  mch
+Added toRegistryString()
+
 Revision 1.2  2004/03/02 16:31:30  mch
 Fixed case change
 
