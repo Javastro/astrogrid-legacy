@@ -58,6 +58,7 @@
                 <item name="Workflow" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-0.?-b*.jar"/>
                 <item name="Workflow Common Objects" 
                     href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-workflow-objects-0.?-b*.jar" />
+                <item name="Xmldb" href="http://www.astrogrid.org/maven/org.astrogrid/jars/?P=astrogrid-xmldb-0.?-b*.jar"/>    
             </item>
             <!--item name="Distributions" href="/downloaddocs/distributions.html" collapse="true">
 				<item name="Community - complete me" href=""/>
@@ -86,6 +87,7 @@
             <item name="Workflow" href="workflow/index.html"/>
             <item name="Workflow Common Objects" 
                 href="astrogrid-workflow-objects/index.html" />
+            <item name="XmlDb" href="xmldb/index.html"/>    
         </menu>
         <menu name="Integration">
             <item name="Integration Testing" 
@@ -123,6 +125,7 @@
                 <item name="Workflow" href="log/maven-build-workflow.log" />
                 <item name="Workflow Common Objects" 
                     href="log/maven-build-workflow-objects.log" />
+                <item name="XmlDb" href="log/maven-build-xmldb.log" />    
                 <item name="Integration Tests" 
                     href="log/integration.log" />
             </item>

@@ -5,6 +5,17 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="kmb" type="add">
+            New xmldb project for Registry.
+        </action>
+        <action dev="pah" type="fix" issue="910">
+            Added some logging to myspace and community
+        </action> 
+        <action dev="gtr" type="add" >
+            Created some jsp pages to allow admins to edit web.xmls when our components are deployed in Tomcat containers.
+            JSP pages have been put into the common project, but will need to be copied out by anyone that wants to 
+            use them in their wars.
+        </action>                    
         <action dev="jdt" type="fix" issue="936">
             Community now builds under Maven 1.0.2
         </action>
@@ -20,6 +31,8 @@
         <action dev="jdt" type="fix" issue="909"> 
             All config properties are now set in web.xml.  Obsolete properties removed.
         </action>
+   </release>
+   <release version="0.8.0">     
         <action dev="pah" type="fix" issue="540"> 
             some very small config changes for the AVO demo
         </action>          
