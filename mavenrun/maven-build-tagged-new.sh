@@ -61,7 +61,7 @@ cvs -d $CVSROOT export -kv -r $TAGNAME astrogrid/$PROJECT_NAME >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
-echo "[ag-build-$PROJECT_NAME] generate and deploy SNAPSHOT"
+echo "[ag-build-$PROJECT_NAME] generate and deploy $TAGNAME"
 echo "Executing astrogrid-deploy-artifact" >> $LOG_FILE 2>&1 
 #Note that unit tests are (not) skipped at this stage, since they have already
 #been run for the site docs
