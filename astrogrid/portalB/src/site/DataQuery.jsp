@@ -167,6 +167,19 @@ if (errorMessage != null) {
 <%=sentQueryString%>
 <% } %>
 </Form>
+
+<hr />
+<br />
+<br />
+<i>A look at the last XML string sent to the webservice. Can be seen by doing a "View Source" and looking at the bottom.</i>
+<%
+  sentQueryString = (String)session.getAttribute("LastWebServiceXML");
+  if(sentQueryString != null) {
+  %>
+  <!---<%=sentQueryString%>--->
+  <%}%>
+
+
 </body>
 
 </html>
