@@ -56,7 +56,7 @@ public class RegistryQueryService {
    /**
    * Logging variable for writing information to the logs
    */
-   private static final Log log = LogFactory.getLog(RegistryService.class);
+   private static final Log log = LogFactory.getLog(RegistryQueryService.class);
 
    /**
     * conf - Config variable to access the configuration for the server normally
