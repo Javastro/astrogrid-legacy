@@ -132,7 +132,7 @@ public class IndexGenerator
       String key = null;
       String val = null;
 
-      if (header.getNumAxis() != null && header.getNumAxis() >= 2) {      
+      if (header != null && header.getNumAxis() >= 2) {      
          //return "";
       
          //work out coverage.  This is not a straightforward rectangle, as the
@@ -327,6 +327,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.10  2004/07/29 11:15:22  KevinBenson
+*** empty log message ***
+
 Revision 1.9  2004/07/29 11:05:45  KevinBenson
 small change to make sure the header is not null
 
