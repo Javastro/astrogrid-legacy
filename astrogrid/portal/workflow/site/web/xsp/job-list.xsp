@@ -64,7 +64,8 @@
 					        <xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>
 					        <xsp:attribute name="time"><xsp:expr>job.getStartTime()</xsp:expr></xsp:attribute>
 					        <xsp:attribute name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:attribute>	
-					        <xsp:attribute name="jobid"><xsp:expr>job.getJobId().getContent()</xsp:expr></xsp:attribute>															
+					        <xsp:attribute name="jobid"><xsp:expr>job.getJobId().getContent()</xsp:expr></xsp:attribute>
+					        <xsp:attribute name="jobid-short"><xsp:expr>job.getJobId().getContent().substring((job.getJobId().getContent().lastIndexOf(":") + 2),(job.getJobId().getContent().length()))</xsp:expr></xsp:attribute>															
 	    			     </xsp:element>
 			          </content>
 
