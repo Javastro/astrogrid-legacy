@@ -14,7 +14,12 @@
                     astrogrid-portal-base.war to Tomcat in the usual way.</li> 
                     <li>Stop tomcat</li> <li>Then take each subcomponent 
                     astrogrid-portal-*.war in turn and unzip it over the top of 
-                    the webapp's folder in Tomcat. </li> <li>Restart 
+                    the webapp's folder in Tomcat. </li> 
+                    <li>
+                        Alternatively, deploy astrogrid-portal.war instead.  This consists of the base project
+                        and all of the sub-pages.
+                    </li>
+                            <li>Restart 
                     Tomcat</li> </ul> *NOTE* As of today (30/3/04) the portal 
                     <em>must</em> be deployed to a webapp named 
                     "astrogrid-portal". It is anticipated that this restriction 
