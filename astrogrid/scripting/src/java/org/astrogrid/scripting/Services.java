@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.5 2004/02/02 18:43:14 nw Exp $
+/*$Id: Services.java,v 1.6 2004/02/27 00:51:32 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,16 +65,22 @@ public class Services {
       dig.addSetNext("services/service","addService");
       InputStream is = null;
       if (serviceListDocument != null){
-            System.out.println("Loading service list from " + serviceListDocument.toString()); 
             is = serviceListDocument.openStream();
+            if (is == null) {
+               throw new IllegalArgumentException("No Service document present at " + serviceListDocument);
+            }
       } else {
-         System.out.println("Loading default service list");
          is = this.getClass().getResourceAsStream(SERVICE_LIST);
+         if (is == null) {
+            throw new MissingResourceException("Could not load service list document resource from classpath ", this.getClass().getName(),SERVICE_LIST);
+         }
       }
+
       dig.parse(is);
       is.close();
       
    }
+   
    
    protected List myspaces = new ArrayList();
    protected List datacenters = new ArrayList();
@@ -182,6 +188,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.6  2004/02/27 00:51:32  nw
+improved loading
+
 Revision 1.5  2004/02/02 18:43:14  nw
 improved constructors
 
