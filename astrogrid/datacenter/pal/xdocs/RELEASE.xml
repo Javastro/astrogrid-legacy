@@ -4,17 +4,21 @@
 	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
 	<title>Iteration 4 Datacenter Release</title>
 </properties>
-
-<body>
-<section name="Iteration 4 Datacenter Release">
-<p>
-To put in here:
-<code>
+<!--
 1 RELEASE document per component, to include:
 Functionality supported 
 Known bugs and ommissions, with workarounds where possible 
 How to report bugs (BugZilla, content etc) 
-</code>
-</p>
-</body>
+-->
+<body>
+<section name="Iteration 4 Datacenter Release"><p>
+
+<subsection name="Functionality Supported"><p>
+fill in
+</p></subsection>
+<subsection name="Known bugs and Omissions"><p>
+fill in
+</p></subsection>
+
+</p></body>
 </document>

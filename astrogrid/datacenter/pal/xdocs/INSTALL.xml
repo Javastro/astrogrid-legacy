@@ -175,7 +175,7 @@ Download the sample configuration file <a href="AstroGridConfig.properties">here
 the file location pointed to by the <tt>org.astrogrid.config.url</tt> setting.
 <p/>
 The sample configuration file is commented, and contains sensible default values for parameters. You may wish to alter the settings
-for default myspace server and  querier plugin.
+for default myspace server and  querier plugin - by default a dummy querier is used.
 </p>
 </subsection>
 
@@ -222,13 +222,16 @@ errors should appear on the output.
 </p>
 <subsection name="Running test queries">
 <p>
-In the client delegate jar there's a simple command-line tool that will fire a adql query at the server and display the VOTABLE response. You need
+The datacenter web application contains a simple web form that submits a query to the datacenter service.
+
+<p />
+In addition, the client delegate jar contains simple command-line tool that will fire a adql query at the server and display the VOTABLE response. You need
 to write an adql query that conforms to the adql schema (downloadable from the web application) and save it to a file.
 
 <source>
 $ java org.astrogrid.datacenter.tools.SimpleQuerier <i>url-endpoint</i> <i>query-xml-file</i>
 </source>
-<b>Need to make a shell script to set up the classpath and start this.</b>
+
 </p>
 </subsection>
 </section>
