@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.13 2004/09/08 15:39:34 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.14 2004/09/28 15:07:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.delegate.agws.WebDelegate_v041;
 import org.astrogrid.datacenter.delegate.agws.WebDelegate_v05;
 import javax.xml.rpc.ServiceException;
 
@@ -28,7 +27,7 @@ public class WebDelegateTest extends TestCase
 {
 
    //an astrogrid web service
-   private static String TEST_PAL_041 = "http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+//   private static String TEST_PAL_041 = "http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
 
       //an astrogrid web service
    private static String TEST_PAL_05 = "http://twmbarlwm.star.le.ac.uk:8888/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
@@ -61,16 +60,16 @@ public class WebDelegateTest extends TestCase
     */
    public void testDelegateFactory() throws IOException, ServiceException
    {
-      ConeSearcher client = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v041);
+//      ConeSearcher client = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+//      assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v041);
 
-      client = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      ConeSearcher client = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertTrue("Wrong type of delegate created", client instanceof WebDelegate_v05);
 
-      QuerySearcher queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertTrue("Wrong type of delegate created", queryClient instanceof WebDelegate_v041);
+//      QuerySearcher queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataServer", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+//      assertTrue("Wrong type of delegate created", queryClient instanceof WebDelegate_v041);
 
-      queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher queryClient = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, "http://madeuphost/context/services/AxisDataService05", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertTrue("Wrong type of delegate created", queryClient instanceof WebDelegate_v05);
    }
       
@@ -94,6 +93,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.14  2004/09/28 15:07:23  mch
+ * Removed ADQL 0.5 object model & 4.1 interface
+ *
  * Revision 1.13  2004/09/08 15:39:34  mch
  * Fixed test
  *

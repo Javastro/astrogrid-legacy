@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.9 2004/09/07 02:28:29 mch Exp $
+/*$Id: ClientTests.java,v 1.10 2004/09/28 15:07:23 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ public class ClientTests {
       //suite.addTest(QueryTestSuite.suite());
       //$JUnit-END$
       // and add other suites too.
-      suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
+//      suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
       suite.addTest(new TestSuite(TransportTest.class));
       suite.addTest(NvoConeTest.suite());
       suite.addTest(XmlPrinterTest.suite());
@@ -49,6 +49,9 @@ public class ClientTests {
 
 /*
  $Log: ClientTests.java,v $
+ Revision 1.10  2004/09/28 15:07:23  mch
+ Removed ADQL 0.5 object model & 4.1 interface
+
  Revision 1.9  2004/09/07 02:28:29  mch
  Removed ADQL 0.5 tests
 
