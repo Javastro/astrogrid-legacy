@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.8 2004/02/14 20:20:52 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.9 2004/02/16 15:53:17 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,7 +9,11 @@
  * LICENSE.txt file.
  */
 package org.astrogrid.integrationTests.mySpace;
+import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.net.URL;
 import java.util.Vector;
 
 import junit.framework.TestCase;
@@ -26,7 +30,7 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  * 
  * @author john taylor
  */
-public class SimpleMySpaceTest extends TestCase {
+public final class SimpleMySpaceTest extends TestCase {
 	/**
 	 * Constructor for SimpleMySpaceTest.
 	 * 
@@ -42,10 +46,10 @@ public class SimpleMySpaceTest extends TestCase {
 	 * @param args
 	 *            ignored
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		junit.textui.TestRunner.run(SimpleMySpaceTest.class);
 	}
-	private static Log log = LogFactory.getLog(SimpleMySpaceTest.class);
+	private final static Log log = LogFactory.getLog(SimpleMySpaceTest.class);
 
 	/**
 	 * Location of MySpace webservice property file
@@ -54,7 +58,7 @@ public class SimpleMySpaceTest extends TestCase {
 	/**
 	 * most tests will require a user
 	 */
-	private String defaultUser = "JonathanAitken";
+	private String defaultUser = "NeilHamilton";
 	/**
 	 * mosts tests will also require a community
 	 */
@@ -133,9 +137,9 @@ public class SimpleMySpaceTest extends TestCase {
 	 *  
 	 */
 	private boolean deleteUser(
-		String userID,
-		String communityID,
-		String endPoint)
+		final String userID,
+		final String communityID,
+		final String endPoint)
 		throws Exception {
 
 		MySpaceClient client = getDelegate(endPoint);
@@ -165,9 +169,9 @@ public class SimpleMySpaceTest extends TestCase {
 	 *  
 	 */
 	private boolean createUser(
-		String userID,
-		String communityID,
-		String endPoint)
+		final String userID,
+		final String communityID,
+		final String endPoint)
 		throws Exception {
 		
 		MySpaceClient client = getDelegate(endPoint);
@@ -197,7 +201,7 @@ public class SimpleMySpaceTest extends TestCase {
 	 * @return a mySpace delegate
 	 * @throws IOException on failure to obtain delegate
 	 */
-	private MySpaceClient getDelegate(String endPoint) throws IOException {
+	private MySpaceClient getDelegate(final String endPoint) throws IOException {
 		assert endPoint != null;
 		MySpaceClient client = null;
 		try {
@@ -215,8 +219,11 @@ public class SimpleMySpaceTest extends TestCase {
 	 * @throws Exception no idea
 	 */
 	public void testImportExportDeleteSimpleText() throws Exception {
-		String name="foo"+Long.toString(System.currentTimeMillis());
-		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), "argle");
+		for (int i =0;i<10;++i) {
+			String name="foo_"+Integer.toString(i)+"_"+Long.toString(System.currentTimeMillis());
+			String string = "argle"+Integer.toString(i);
+			importExportDelete(getFullPath(defaultUser, defaultCommunity, name), string);
+		}
 	}
 	
 	/**
@@ -224,7 +231,7 @@ public class SimpleMySpaceTest extends TestCase {
 	 * @throws Exception no idea
 	 */
 	public void testImportExportDeleteXMLTextAgain() throws Exception {
-		String name="foo"+Long.toString(System.currentTimeMillis());
+		String name="bar"+Long.toString(System.currentTimeMillis());
 		String xml="<?xml version=\"1.0\"?><properties><title>Integration Tests</title><author email=\"jdt@roe.ac.uk\">John Taylor</author></properties>";
 		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
 	}
@@ -257,14 +264,14 @@ public class SimpleMySpaceTest extends TestCase {
 	 * @param file filename
 	 * @return full path
 	 */
-	private String getFullPath(String user, String community, String file) {
+	private String getFullPath(final String user, final String community, final String file) {
 		return "/"+user+"@"+community+"/"+defaultServer+"/"+file;
 	}
 	/**
 	 * Utility method extracting the commonality of the saveDataHolding tests
 	 * @throws Exception who knows
 	 */
-	private void importExportDelete(String name, String text) throws  Exception {
+	private void importExportDelete(final String name, final String text) throws  Exception {
 		MySpaceClient client = getDelegate(mySpaceEndPoint);
 		boolean ok = client.saveDataHolding(defaultUser, defaultCommunity, defaultCredential, name,text,"any",MySpaceClient.OVERWRITE);
 		assertTrue("saveDataHolding problem - note test database may now be corrupt", ok);
@@ -272,8 +279,41 @@ public class SimpleMySpaceTest extends TestCase {
 		assertNotNull("Returned result from getDataHolding was null", result);
 		log.debug("Attempted to save '"+text+"' under name "+name);
 		log.debug("Received back '" + result+"'");
+		String testText = text +"\n"; //@TODO see bug 119
+		assertEquals("data returned from myspace not same as saved",result,testText);
+		String ok2 = client.deleteDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
+		assertTrue("deleteDataHolding should return success ", ok2.indexOf("SUCCESS")!=-1);
+	}
+	
+	/**
+	 * Utility method extracting the commonality of the saveDataHolding tests
+	 * @throws Exception who knows
+	 */
+	private void importURLExportDelete(final String name, final String urlTxt) throws  Exception {
+		MySpaceClient client = getDelegate(mySpaceEndPoint);
+		boolean ok = client.saveDataHoldingURL(defaultUser, defaultCommunity, defaultCredential, name, urlTxt, "any", MySpaceClient.OVERWRITE);
+		assertTrue("saveDataHolding problem - note test database may now be corrupt", ok);
+		String result = client.getDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
+		assertNotNull("Returned result from getDataHolding was null", result);
+		URL url = new URL(urlTxt);
+		InputStream is = url.openStream();
+		DataInputStream dis = new DataInputStream(is);
+		String text = dis.readLine(); 
+		
+		log.debug("Attempted to save from'"+url+"' under name "+name);
+		log.debug("Received back '" + result+"'");
+		log.debug("Expected: " + text);
 		assertEquals("data returned from myspace not same as saved",result,text);
 		String ok2 = client.deleteDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
 		log.debug("What is this returning?"+ok2);
+	}
+	/**
+	 * test reading from url
+	 * @throws Exception no idea
+	 */
+	public void testImportExportDeleteURL() throws Exception {
+		String name="foo"+Long.toString(System.currentTimeMillis());
+		String url = "http://www.google.com";
+		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), url);
 	}
 }
