@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.7 2003/09/15 22:38:42 mch Exp $
+ * $Id: WebDelegate.java,v 1.8 2003/09/15 23:04:13 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -172,7 +172,7 @@ public class WebDelegate extends DatacenterDelegate
    {
       if (listener instanceof WebNotifyServiceListener)
       {
-         return binding.registerWebListener( queryId, (WebNotifyServiceListener) listener);
+         binding.registerWebListener( queryId, (WebNotifyServiceListener) listener);
       }
       else
       {
@@ -186,6 +186,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.8  2003/09/15 23:04:13  mch
+Fix to registerListener (removed return)
+
 Revision 1.7  2003/09/15 22:38:42  mch
 Split spawnQuery into make and start, so we can add listeners in between
 
