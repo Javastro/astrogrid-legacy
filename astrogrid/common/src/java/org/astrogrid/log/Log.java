@@ -1,5 +1,5 @@
 /*
- $Id: Log.java,v 1.3 2003/09/11 16:33:59 mch Exp $
+ $Id: Log.java,v 1.4 2003/09/11 17:53:54 mch Exp $
  */
 
 package org.astrogrid.log;
@@ -8,6 +8,7 @@ import java.util.logging.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
 /**
  * A covenience singleton, providing easy to use access to logging facilities,
@@ -205,6 +206,7 @@ public class Log
    {
       if (traceOn)
       {
+         logger.setLevel(Level.FINEST); //make sure it's available
          logger.finest(userMessage);
       }
    }
@@ -215,11 +217,24 @@ public class Log
    /** Switch trace off - ie stop trace messages from being logged */
    public static void traceOff()    { traceOn = false; }
 
+   /** Not strictly necessary, but makes sure that trace code can be logged,
+    * and writes out a 'starting' message to the log, which can be very
+    * useful when trawling through large log files
+    */
+   public static void starting()
+   {
+      logger.setLevel(Level.FINEST); //make sure it's available
+      
+      trace("Logging Started "+new Date()+"...");
+   }
+   
    /** Direct output to file (as well)
     */
    public static void logToFile(String filename) throws IOException
    {
-      logger.addHandler(new FileHandler(filename));
+      Handler handler = new FileHandler(filename, true); //append
+      handler.setFormatter(new SimpleFormatter());
+      logger.addHandler(handler);
    }
 
    /**
@@ -243,7 +258,22 @@ public class Log
     */
    public static void logToConsole() throws IOException
    {
-      logger.addHandler(new ConsoleHandler());
+      //remove existing console handlers
+      Handler[] handlers = logger.getHandlers();
+      
+      for (int i=0;i<handlers.length;i++)
+      {
+         if (handlers[i] instanceof ConsoleHandler)
+         {
+            logger.removeHandler(handlers[i]);
+         }
+      }
+      
+      Handler handler = new ConsoleHandler();
+      handler.setLevel(Level.FINEST);
+      handler.setFilter(null);
+      handler.setFormatter(new ConsoleFormatter());
+      logger.addHandler(handler);
    }
    
    /**
@@ -274,6 +304,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.4  2003/09/11 17:53:54  mch
+Added logTo() methods and made sure trace can go to console
+
 Revision 1.3  2003/09/11 16:33:59  mch
 Added logToXxxx methods
 
