@@ -1,4 +1,4 @@
-/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.4 2004/08/04 16:49:32 nw Exp $
+/*$Id: SimpleDSAWorkflowEndToEndTest.java,v 1.5 2004/08/27 13:17:57 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.ServerInfo;
@@ -27,6 +28,7 @@ import org.astrogrid.portal.workflow.intf.WorkflowStore;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -62,13 +64,13 @@ public class SimpleDSAWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow
     protected void configureToolParameters(Tool tool) {
         info.populateDirectTool(tool);
     }
-    /** @todo add more result checking */
     public void checkExecutionResults(Workflow wf) throws Exception {
     super.checkExecutionResults(wf);
-    // get the result, check its what we expect.
-    String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
-    softAssertNotNull(value);
-    
+    Step s= (Step)wf.getSequence().getActivity(0);
+    assertStepCompleted(s);
+    ResultListType res = getResultOfStep(s);
+    softAssertEquals("expected 1 result",1,res.getResultCount());
+    AstrogridAssert.assertVotable(res.getResult(0).getValue());    
     }
  
 
@@ -77,6 +79,9 @@ public class SimpleDSAWorkflowEndToEndTest extends AbstractTestForSimpleWorkflow
 
 /* 
 $Log: SimpleDSAWorkflowEndToEndTest.java,v $
+Revision 1.5  2004/08/27 13:17:57  nw
+fixed - was looking at the wrong thing.
+
 Revision 1.4  2004/08/04 16:49:32  nw
 added test for scripting extensions to workflow
 
