@@ -106,6 +106,19 @@ public class UserAccount
    {  return communityID;
    }
 
+/**
+ * Return the User's base container.
+ *
+ * The base container starts with a leading `/'.  It then comprises
+ * the user's userID concatenated with the his communityID.  The
+ * combination of userID and communityID should be unique throughout
+ * the AstroGrid system.
+ */
+
+   public String getBaseContainer()
+   {  return "/" +  userID + communityID;
+   }
+
 //
 // Authentication and Authorisation methods.
 // 

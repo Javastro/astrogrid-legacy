@@ -742,7 +742,7 @@ public class MySpaceDemo
       );
       fileMenu.add(menuItem);
 
-      menuItem = new JMenuItem("Add new user");
+      menuItem = new JMenuItem("Create new user");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
             {  BufferedReader console = new BufferedReader(
@@ -771,7 +771,7 @@ public class MySpaceDemo
                Vector servers = new Vector();
                servers.add(serverList);
 
-               boolean addOk = myspace.addUser(userID, "roe",
+               boolean addOk = myspace.createUser(userID, "roe",
                  "job27", servers);
 
                if (addOk)

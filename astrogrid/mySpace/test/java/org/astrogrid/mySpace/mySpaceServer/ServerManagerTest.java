@@ -54,10 +54,16 @@ public class ServerManagerTest extends TestCase
       Assert.assertEquals(response, "SUCCESS File up-loaded.");
 
 //
-//   Test importing a file from a remote URL.
+//   Test importing a file from a remote URL.  Both local(ish) and
+//   remote URLs are tried (well, local to Edinburgh).
 
       response = server.importDataHolder(
-        "http://www.roe.ac.uk/acdwww/frequent.html", "testfile2");
+        "http://www.roe.ac.uk/acdwww/index.html", "testfile2");
+      System.out.println("Import: " + response);
+      Assert.assertEquals(response, "SUCCESS File imported.");
+
+      response = server.importDataHolder(
+        "http://www.google.com/", "testfile3");
       System.out.println("Import: " + response);
       Assert.assertEquals(response, "SUCCESS File imported.");
 
@@ -65,15 +71,15 @@ public class ServerManagerTest extends TestCase
 //   Test attempting to import a bad (ie. non-existent) URL.
 
       response = server.importDataHolder(
-        "http://www.bluenowhere/", "testfile2");
-      System.out.println("Attempt import from non-existent URL: "
-        + response);
+        "http://www.bluenowhere/", "testfilebad");
+      System.out.println("Deliberate attempt to import from " +
+        "non-existent URL: " + response);
       Assert.assertEquals(response, "FAULT AGMSCE01040");
 
 //
 //   Test copying a file.
 
-      response = server.copyDataHolder("testfile1", "testfile3");
+      response = server.copyDataHolder("testfile1", "testfile4");
       System.out.println("Copy: " + response);
       Assert.assertEquals(response, "SUCCESS File copied.");
 
@@ -92,11 +98,16 @@ public class ServerManagerTest extends TestCase
       System.out.println("Delete: " + response);
       Assert.assertEquals(response, "SUCCESS File deleted.");
 
+      response = server.deleteDataHolder("testfile4");
+      System.out.println("Delete: " + response);
+      Assert.assertEquals(response, "SUCCESS File deleted.");
+
 //
 //   Test attempting to delete a file which does not exist.
 
       response = server.deleteDataHolder("testfile4");
-      System.out.println("Attempt delete non-existent file: " + response);
+      System.out.println("Deliberate attempt to delete non-existent file: "
+        + response);
       Assert.assertEquals(response, "FAULT AGMSCE01046");
    }
 

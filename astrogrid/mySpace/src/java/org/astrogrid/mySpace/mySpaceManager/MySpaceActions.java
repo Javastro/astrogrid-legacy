@@ -693,6 +693,15 @@ public class MySpaceActions
       return returnedDataItem;
    }
 
+
+
+
+
+
+
+
+
+
 // -----------------------------------------------------------------
 
 /**
@@ -1482,7 +1491,7 @@ public class MySpaceActions
   * has been allocated.
   */
 
-   public boolean addUser(String userID, String communityID, String jobID,
+   public boolean createUser(String userID, String communityID, String jobID,
      Vector servers)
    {  boolean returnStatus = true;
 
@@ -1520,14 +1529,14 @@ public class MySpaceActions
 //               Create a container name for the top-level container
 //               of the new user.
 
-                  String containerName = "/" + userID;
+                  String containerName = userAcc.getBaseContainer();
                   containerNames.add(containerName);
 
 //
 //               Create the container name for every server.
 
                   for (int loop = 0; loop < servers.size(); loop++)
-                  {  containerName = "/" + userID +  "/" + 
+                  {  containerName = userAcc.getBaseContainer() +  "/" + 
                        (String)servers.get(loop);
                      containerNames.add(containerName);
                   }
