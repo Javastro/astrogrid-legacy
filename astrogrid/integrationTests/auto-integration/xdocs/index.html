@@ -1,13 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
 <HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.1  (Win32)">
-	<META NAME="AUTHOR" CONTENT="John Taylor">
-	<META NAME="CREATED" CONTENT="20040617;9345219">
-	<META NAME="CHANGEDBY" CONTENT="John Taylor">
-	<META NAME="CHANGED" CONTENT="20040617;16425750">
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252"/>
+	<TITLE>Astrogrid auto-integratiohn</TITLE>
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
 <H1>Installing Astrogrid using auto-integration</H1>
@@ -18,59 +13,60 @@ reinstall it frequently. Note that as of 17/6/04 auto-integration
 does not work correctly on Windows machines.</P>
 <H2>Prerequisites</H2>
 <UL>
-	<LI><P>JDK 1.4.x</P>
-	<LI><P>Maven RC1 or better</P>
-	<LI><P>Tomcat 5.x with a user of role manager enabled</P>
+	<LI><P>JDK 1.4.x</P></LI>
+	<LI><P>Maven RC1 or better</P></LI>
+	<LI><P>Tomcat 5.x with a user of role manager enabled</P></LI>
 </UL>
 <H2>Procedure to install the latest snapshot</H2>
 <UL>
-	<LI><P>Checkout astrogrid/integrationTests/auto-integration from CVS
+	<LI><P>Checkout <a href="http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/">astrogrid/integrationTests/auto-integration</a> from CVS
 	and cd to the root directory</P>
 	<LI><P>create a file build.properties and edit the following
 	properties to be appropriate for your local set up:</P>
+	<UL><P>
+		<LI><FONT FACE="Courier, monospace">tomcat.manager.username=manager_username</FONT></LI>
+		<LI><FONT FACE="Courier, monospace">tomcat.manager.password=manager_password</FONT></LI>
+		<LI><FONT FACE="Courier, monospace">work.dir=</FONT><A HREF="../../../../ag-integration-work"><FONT FACE="Courier, monospace">C:/Java/ag-integration-work</FONT></A></LI>
+		<LI><FONT FACE="Courier, monospace">tomcat.location=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">C:/Java/ApacheSoftwareFoundation/Tomcat5.0</FONT></A></FONT></LI>
+		<LI><FONT FACE="Courier, monospace">tomcat.common.lib.dir=${tomcat.location}/common/lib</FONT></LI>
+	</UL></P>
+	<LI><P>If you have previously installed Astrogrid execute:</P></LI>
 	<UL>
-		<LI><P><FONT FACE="Courier, monospace">tomcat.manager.username=manager_username</FONT></P>
-		<LI><P><FONT FACE="Courier, monospace">tomcat.manager.password=manager_password</FONT></P>
-		<LI><P><FONT FACE="Courier, monospace">work.dir=</FONT><A HREF="../../../../ag-integration-work"><FONT FACE="Courier, monospace">C:/Java/ag-integration-work</FONT></A></P>
-		<LI><P><FONT SIZE=2><FONT FACE="Courier, monospace">tomcat.location=</FONT><A HREF="../../../../ApacheSoftwareFoundation/Tomcat5.0"><FONT FACE="Courier, monospace">C:/Java/ApacheSoftwareFoundation/Tomcat5.0</FONT></A></FONT></P>
-		<LI><P><FONT FACE="Courier, monospace">tomcat.common.lib.dir=${tomcat.location}/common/lib</FONT></P>
+		<LI><P><FONT FACE="Courier, monospace">maven undeploy-all</FONT></P></LI>
 	</UL>
-	<LI><P>If you have previously installed Astrogrid execute:</P>
+	<LI><P>To install a new set of components execute:</P></LI>
 	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven undeploy-all</FONT></P>
+		<LI><P><FONT FACE="Courier, monospace">maven deploy-all</FONT></P></LI>
 	</UL>
-	<LI><P>To install a new set of components execute:</P>
+	<LI><P>To test the installation execute:</P></LI>
 	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven deploy-all</FONT></P>
-	</UL>
-	<LI><P>To test the installation execute:</P>
-	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven astrogrid-build-site</FONT></P>
+		<LI><P><FONT FACE="Courier, monospace">maven astrogrid-build-site</FONT></P></LI>
 	</UL>
 	<LI><P>Compare the documentation generated in your <A HREF="junit-report.html">target/docs</A>
 	directory with that published on the <A HREF="http://www.astrogrid.org/maven/docs/snapshot/integrationTests/junit-report.html">Astrogrid
-	site</A>.</P>
+	site</A>.</P></LI>
 	<LI><P>You can access your installed portal at
 	<A HREF="http://127.0.0.1:8080/astrogrid-portal/">http://127.0.0.1:8080/astrogrid-portal/</A>
 	and use the pre-installed user &quot;frog&quot;, pw &quot;qwerty&quot;,
-	community &ldquo;org.astrogrid.localhost&rdquo;</P>
+	community &quot;org.astrogrid.localhost&quot;</P></LI>
 </UL>
 <H2>Tips</H2>
 <UL>
 	<LI><P>auto-integration downloads a number of large files. Make sure
-	you're on a fast network the first time you run it</P>
+	you're on a fast network the first time you run it</P></LI>
 	<LI><P>If you have installed Astrogrid once and wish to reinstall it
-	without a new set of downloads then execute maven with the -o switch</P>
-	<LI><P>To install a single component such as the portal, execute</P>
+	without a new set of downloads then execute maven with the -o switch</P></LI>
+	<LI><P>To install a single component such as the portal, execute</P></LI>
 	<UL>
-		<LI><P><FONT FACE="Courier, monospace">maven init portal-deploy</FONT></P>
+		<LI><P><FONT FACE="Courier, monospace">maven init portal-deploy</FONT></P></LI>
 	</UL>
 	<LI><P>Configuration properties you may wish to play with can be
 	found in webapps/astrogrid-configuration/AstroGridConfig.properties
 	. These should be edited <I>before</I> auto-integration is run (you
 	may edit them afterwards by tracking down the deployed properties
-	file in your Tomcat installation.)</P>
+	file in your Tomcat installation.)</P></LI>
 </UL>
+<hr/>
 <P>This documentation was generated using maven's <A HREF="http://maven.apache.org/reference/plugins/html2xdoc/">html2xdoc</A>
 goal.</P>
 <P>John Taylor</P>
