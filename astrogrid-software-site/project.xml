@@ -58,6 +58,12 @@
     		<groupId>org.astrogrid</groupId>
     		<type>war</type>
     		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>
+    	<dependency>
+    		<artifactId>astrogrid-desktop</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.desktop.version}</version>
     	</dependency>  
     </dependencies>
     <reports>
