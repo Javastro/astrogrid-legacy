@@ -1,5 +1,5 @@
 /*
- $Id: JVot.java,v 1.4 2002/12/18 12:58:19 mch Exp $
+ $Id: JVot.java,v 1.5 2003/01/13 18:18:15 mch Exp $
 
  Date       Author      Changes
  $date$     M Hill      Created
@@ -32,20 +32,21 @@ import org.astrogrid.tools.xml.DomDumper;
 
 public class JVot extends JTable
 {
-   private VOTableUtil.Table votModel = null;
+   private VOTableUtil.Votable votModel = null;
 
    public JVot()
    {
    }
 
-   public void setVotModel(VOTableUtil.Table givenVot)
+   public void setVotModel(VOTableUtil.Votable givenVot)
    {
       votModel = givenVot;
 
       DefaultTableModel model = (DefaultTableModel) getModel();
-      for(int i=0; i<votModel.getFieldCount(); i++)
+      VOTableUtil.Table table = votModel.getResourceAt(0).getTableAt(0);
+      for(int i=0; i<table.getFieldCount(); i++)
       {
-         VOTableUtil.Field field = (VOTableUtil.Field)votModel.getFieldAt(i);
+         VOTableUtil.Field field = (VOTableUtil.Field)table.getFieldAt(i);
 
          String ucd = "";
          if (field.getUcd() != null)
@@ -56,7 +57,7 @@ public class JVot extends JTable
          model.addColumn(field.getName()+ucd);
       }
 
-      VOTableUtil.Tabledata data = votModel.getData().getTabledata();
+      VOTableUtil.Tabledata data = table.getData().getTabledata();
 
       for (int r=0; r<data.getTrCount(); r++)
       {
@@ -73,7 +74,7 @@ public class JVot extends JTable
    }
 
 
-   public VOTableUtil.Table getVotModel()
+   public VOTableUtil.Votable getVotModel()
    {
       return votModel;
    }

@@ -1,5 +1,5 @@
 /*
- $Id: JVotController.java,v 1.2 2002/12/18 12:58:19 mch Exp $
+ $Id: JVotController.java,v 1.3 2003/01/13 18:18:08 mch Exp $
 
  Date       Author      Changes
  $date$     M Hill      Created
@@ -68,13 +68,13 @@ public class JVotController implements ActionListener
          {
             throw new IOException("Table has no Resource");
          }
-         Resource resource = votable.getResourceAt(0);
-         throwValidationErrors(resource.getValidationErrors());
+//         Resource resource = votable.getResourceAt(0);
+//         throwValidationErrors(resource.getValidationErrors());
 
-         Table table = resource.getTableAt(0);
-         throwValidationErrors(table.getValidationErrors());
+//         Table table = resource.getTableAt(0);
+//         throwValidationErrors(table.getValidationErrors());
 
-         votView.setVotModel(table);
+         votView.setVotModel(votable);
 
    }
 
