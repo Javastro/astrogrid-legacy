@@ -8,7 +8,7 @@
 <!-- goals for nightly build -->
 <goal name="astrogrid-clean" prereqs="clean"/>
 
-<goal name="astrogrid-deploy-site" prereqs="schemadoc,site,site:fsdeploy" />
+<goal name="astrogrid-deploy-site" prereqs="site,site:fsdeploy" />
 
 <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
 
@@ -310,13 +310,21 @@
         <mkdir dir="${basedir}/xdocs/schema"/>
             <!--declare the transformer factory to use -->
         ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-
-        <xslt basedir="${basedir}/schema"
-              includes="**/*.xsd" style="${basedir}/build/xs3p.xsl"
-              destdir="${basedir}/xdocs/schema" extension=".html">
+<!-- suddenly this has stopped working!! xslt processor seems to get its base dir wrong - now takes the xslt location as base...-->
+        <xslt basedir="schema"
+              includes="*.xsd" style="${basedir}/build/xs3p.xsl"
+              destdir="xdocs/schema" extension=".html">
               <param name="searchIncludedSchemas" expression="true" />
               <param name="searchImportedSchemas" expression="true" />
-              <param name="linksFile" expression="${basedir}/build/links.xml" />
+              <param name="linksFile" expression="build/links.xml" />
+             
+        </xslt>
+         <xslt basedir="${basedir}/schema/externalSchema"
+              includes="*.xsd" style="${basedir}/build/xs3p.xsl"
+              destdir="${basedir}/xdocs/schema/externalSchema" extension=".html">
+              <param name="searchIncludedSchemas" expression="true" />
+              <param name="searchImportedSchemas" expression="true" />
+              <param name="linksFile" expression="${basedir}/build/linkse.xml" />
              
         </xslt>
       
