@@ -2,9 +2,10 @@ package org.astrogrid.mySpace.mySpaceServer;
 
 // AstroGrid.
 
+import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
-
+import org.astrogrid.mySpace.mySpaceUtil.FileTransferFake;
 
 // Java.
 
@@ -18,7 +19,7 @@ import java.io.File;
 import org.apache.log4j.Logger;
 
 import org.astrogrid.Configurator;
-import org.astrogrid.mySpace.mySpaceUtil.*;
+import org.astrogrid.i18n.*;
 
 /**
  * @WebService
@@ -38,8 +39,7 @@ public class ServerManager
    private static MySpaceStatus status = new MySpaceStatus();
 
    private String response = ""; // Response returned by all the methods.
-   private String dataholderpath = " ";
-   
+
 // -----------------------------------------------------------------
 
 /**
@@ -107,19 +107,13 @@ public class ServerManager
    public String importDataHolder(String importURI, 
      String newDataHolderFileName)
    {  
-    
+
 //
 //   Attempt to retrieve the file from the specified URL.
 
       try
-      {  
-      	
-		setUp();
-      	//FileTransfer fetch = new FileTransfer(importURI,
-          // newDataHolderFileName);
-        String fullPath=dataholderpath+newDataHolderFileName;
-		FileTransfer fetch = new FileTransfer(importURI, fullPath);
-        if (DEBUG) logger.debug("inside ServerManager.. importURI: "+importURI +"  dataholderpath = "+dataholderpath+"newDataHolderFileName : "+newDataHolderFileName);
+      {  FileTransferFake fetch = new FileTransferFake(importURI,
+           newDataHolderFileName);
          fetch.transfer();
          if (fetch.getChosenUrl() != null)
          {  response = MSC.SUCCESS + " File imported.";
@@ -230,7 +224,7 @@ public class ServerManager
 
    public String deleteDataHolder(String dataHolderFileName)
    {  
-    
+
 //
 //   Attempt to delete the file.
 
@@ -284,10 +278,5 @@ public class ServerManager
 
      return name;
    }
-   private void setUp()throws Exception{
-	   MSC.getInstance().checkPropertiesLoaded();
-	   dataholderpath = MSC.getProperty(MSC.dataHolderFolder, MSC.CATLOG);	
-   }
-		
-   protected String getComponentName() { return Configurator.getClassName( ServerManager.class) ; }
+
 }

@@ -12,12 +12,17 @@ import java.net.*;
  * transfer.  The source and destination of the data are set when
  * the FileTransfer is created.
  *
+ * <p>
  * This version is a simple fake for the real FileTransfer class.  It
- * a simple retrieval from a single URL.
+ * performs a simple retrieval from a single URL.
  * 
+ * <p>
+ * Note that this version of the class no longer has the same name as
+ * as the real version.
+ *
  * @author A C Davenhall
  */
-public class FileTransfer
+public class FileTransferFake
 {  private String  importUrl;  // The URL to be retrieved.
    private String  fileName;   // The name of the file to be written.
 
@@ -32,7 +37,7 @@ public class FileTransfer
  * @param destination the name of the file in which to put the data.
  */
 
-  public FileTransfer (final String source, final String destination)
+  public FileTransferFake (final String source, final String destination)
   {  importUrl = source;
      fileName = destination;
   }
