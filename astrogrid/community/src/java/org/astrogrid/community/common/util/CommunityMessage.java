@@ -19,7 +19,7 @@ public class CommunityMessage {
     */
    public static String getMessage(String token,String account,String credential)  {
       StringBuffer buff = new StringBuffer(100);
-      buff.append("<community");
+      buff.append("<community>");
          buff.append("<token>");
             buff.append(token);
          buff.append("</token>");
@@ -37,16 +37,29 @@ public class CommunityMessage {
    }   
    
    public static String getToken(String xmlMessage) {
-      return xmlMessage.substring(xmlMessage.indexOf("<token>") + "<token>".length(),xmlMessage.indexOf("</token>"));
+      int index = -1;
+      index = xmlMessage.indexOf("<token>");
+      if(index != -1) {
+         return xmlMessage.substring(index + "<token>".length(),xmlMessage.indexOf("</token>"));
+      }
+      return null;
    }
 
    public static String getAccount(String xmlMessage) {
-      return xmlMessage.substring(xmlMessage.indexOf("<account>") + "<account>".length(),xmlMessage.indexOf("</accout>"));
+      int index = -1;
+      index = xmlMessage.indexOf("<account>");
+      if(index != -1) {
+         return xmlMessage.substring(index + "<account>".length(),xmlMessage.indexOf("</account>"));
+      }
+      return null;
    }
 
    public static String getGroup(String xmlMessage) {
-      return xmlMessage.substring(xmlMessage.indexOf("<group>") + "<group>".length(),xmlMessage.indexOf("</group>"));
-   }
-
-   
+      int index = -1;
+      index = xmlMessage.indexOf("<group>");
+      if(index != -1) {
+         return xmlMessage.substring(index + "<group>".length(),xmlMessage.indexOf("</group>"));
+      }
+      return null;
+   }   
 }
