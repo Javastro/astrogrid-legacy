@@ -1,5 +1,5 @@
 /*
- * $Id: TestSchemaValid.java,v 1.1 2004/10/13 08:11:30 pah Exp $
+ * $Id: TestXMLValid.java,v 1.1 2004/10/13 08:14:16 pah Exp $
  * 
  * Created on 13-Oct-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -28,12 +28,12 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration6
  */
-public class TestSchemaValid extends TestCase {
+public class TestXMLValid extends TestCase {
 
    private static File xmlFile;
    public static void main(String[] args) {
       xmlFile = new File(args[0]);
-      junit.textui.TestRunner.run(TestSchemaValid.class);
+      junit.textui.TestRunner.run(TestXMLValid.class);
    }
    
    public void testValid() throws FileNotFoundException
