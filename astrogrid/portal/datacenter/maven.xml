@@ -51,7 +51,7 @@
   
     <!--Copy myself into parent project to create uberwar-->
   <postGoal name="war:war">
-        <jelly:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
+        <j:set var="webapp.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.webapp.dir')}"/>
         <echo message="${webapp.dir}"/>
         <copy todir="../target/astrogrid-portal" overwrite="yes">
             <fileset dir="${webapp.dir}" />
