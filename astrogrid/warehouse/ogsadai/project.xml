@@ -61,12 +61,14 @@
   
     <!-- This is used to build the executable JAR that is the final
          product of this sub-project. -->
+         <!--
     <dependency>
       <groupId>maven</groupId>
       <type>plugin</type>
       <artifactId>maven-javaapp-plugin</artifactId>
       <version>1.2</version>
     </dependency>
+    -->
 
     <dependency>
       <id>wsdl4j</id>
@@ -165,10 +167,11 @@
 
     <resources>
     	<resource><!-- config files -->
-		<directory>${basedir}/src/java</directory>
+		<directory>${basedir}/src</directory>
 		<includes>
 			<include>**/*.xml</include>
 			<include>**/*.properties</include>
+			<include>config/*</include>
 		</includes>
 	</resource>
 	<resource> <!-- schemas  - may be needed for validation -->
