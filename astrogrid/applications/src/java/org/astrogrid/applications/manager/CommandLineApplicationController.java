@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.20 2004/03/29 12:32:11 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.21 2004/03/29 21:41:26 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -33,10 +33,12 @@ import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ParameterLoader;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
-import org.astrogrid.applications.manager.externalservices.*;
 import org.astrogrid.applications.manager.externalservices.MySpaceFromConfig;
+import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminFromConfig;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
 import org.astrogrid.applications.manager.externalservices.RegistryFromConfig;
-import org.astrogrid.applications.service.v1.cea.CeaFault;
+import org.astrogrid.applications.manager.externalservices.RegistryQueryLocator;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -88,15 +90,16 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     * @param desc
     */
    public CommandLineApplicationController(
-      CeaControllerConfig config,
-      RegistryQueryLocator registryQueryLocator,
-      RegistryAdminLocator registryAdminLocator,
-      MySpaceLocator mySpaceLocator, ServiceDesc desc) {
-      super(config, registryQueryLocator,registryAdminLocator, mySpaceLocator, desc);
+      CeaControllerConfig iconfig,
+      RegistryQueryLocator iregistryQueryLocator,
+      RegistryAdminLocator iregistryAdminLocator,
+      MySpaceLocator imySpaceLocator,
+      ServiceDesc idesc) {
+         
+      super(iconfig, iregistryQueryLocator,iregistryAdminLocator, imySpaceLocator, idesc);
 
       runningApplications = new HashMap();
       //REFACTORME this should be part of the scheduler
-      // TODO Auto-generated constructor stub
    }
 
    /* (non-Javadoc)

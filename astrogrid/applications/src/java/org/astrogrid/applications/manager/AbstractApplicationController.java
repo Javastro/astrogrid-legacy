@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.16 2004/03/29 12:32:11 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.17 2004/03/29 21:41:26 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,26 +21,24 @@ import javax.sql.DataSource;
 
 import org.apache.axis.description.ServiceDesc;
 import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.beans.v1.ApplicationBase;
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.CommandLineExecutionControllerConfig;
-import org.astrogrid.applications.beans.v1.CommandLineApplication;
 import org.astrogrid.applications.common.config.CeaControllerConfig;
 import org.astrogrid.applications.description.ApplicationDescriptionNotLoadedException;
 import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.SimpleDescriptionLoader;
-import org.astrogrid.applications.description.registry.RegEntryBaseTestCase;
 import org.astrogrid.applications.description.registry.RegistryEntryBuilder;
 import org.astrogrid.applications.description.registry.RegistryUploader;
-import org.astrogrid.applications.manager.externalservices.*;
+import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryQueryLocator;
+import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
 import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.VODescription;
@@ -73,7 +71,7 @@ public abstract class AbstractApplicationController
 
    protected CommandLineExecutionControllerConfig clconf;
    //REFACTORME - should use the base type of all of the ControllerConfigs? should be initialized in the subclass
-   AbstractApplicationController(
+   public AbstractApplicationController(
       CeaControllerConfig config,
       RegistryQueryLocator registryQueryLocator,
       RegistryAdminLocator registryAdminLocator,

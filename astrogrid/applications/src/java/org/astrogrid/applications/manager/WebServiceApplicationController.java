@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplicationController.java,v 1.4 2004/03/29 12:32:11 pah Exp $
+ * $Id: WebServiceApplicationController.java,v 1.5 2004/03/29 21:41:26 pah Exp $
  *
  * Created on 09 February 2004 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,20 +11,14 @@
 
 package org.astrogrid.applications.manager;
 
-import java.rmi.RemoteException;
-
 import org.apache.axis.description.ServiceDesc;
 
 import org.astrogrid.applications.CeaException;
-import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.common.config.CeaControllerConfig;
-import org.astrogrid.applications.manager.externalservices.*;
-import org.astrogrid.applications.service.v1.cea.CeaFault;
-import org.astrogrid.community.User;
-import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryQueryLocator;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.axis._tool;
 
 public class WebServiceApplicationController extends AbstractApplicationController {
 
