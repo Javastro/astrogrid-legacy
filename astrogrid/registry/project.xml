@@ -15,18 +15,24 @@
   <organization>
     <name>AstroGrid</name>
     <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
   </organization>
   
   <inceptionYear>2002</inceptionYear>
   <package>org.astrogrid</package>
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
   
   <shortDescription>AstroGrid Registry Components</shortDescription>
 
+  <issueTrackingUrl>http://www.astrogrid.org/bugzilla</issueTrackingUrl>
   <siteDirectory>/var/www/www/maven/build/registry</siteDirectory>
   
   <repository>
-    <connection>
+    <developerConnection>
       scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+    </developerConnection>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
     </connection>
   </repository>
   
