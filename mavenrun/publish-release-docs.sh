@@ -16,19 +16,13 @@
 # These scripts need to be on your path!
 
 # Some reminders
-if [ -z "$CHECKOUTHOME" ]; then
-	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
-	exit 1
-fi
-if [ -z "$DOCLOCATION" ]; then
-	echo "Value of DOCLOCATION (ie where documents should be published) must be set"
-	exit 1
-fi
+${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
+${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"}
 
 OLDDIR=$PWD
 
 TAG=$1
-TAG=${TAG:-HEAD}
+${TAG:=HEAD}
 
 echo "Going to deploy docs for this release $TAG to $DOCLOCATION - hit ctrl-c if this isn't what you want"
 
@@ -36,7 +30,7 @@ echo "Going to deploy docs for this release $TAG to $DOCLOCATION - hit ctrl-c if
 BUILDHOME=$CHECKOUTHOME/astrogrid
 LOGFILE=/tmp/releasedocs.log
 DATE=`date`
-ADMIN_EMAIL="jdt@roe.ac.uk clq2@star.le.ac.uk"
+${ADMIN_EMAIL:="jdt@roe.ac.uk clq2@star.le.ac.uk"}
 
 # Processing Starts Here
 rm $LOGFILE
