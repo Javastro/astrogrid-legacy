@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/mapping.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/09 13:48:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:author>$Author: KevinBenson $</cvs:author>
+    | <cvs:date>$Date: 2003/09/09 16:42:48 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
+    |   Revision 1.10  2003/09/09 16:42:48  KevinBenson
+    |   added password field
+    |
     |   Revision 1.9  2003/09/09 13:48:09  dave
     |   Added addGroupMember - only local accounts and groups to start with.
     |
@@ -71,6 +74,10 @@
 			<sql name="ident" type="char"/>
 			<bind-xml node="attribute"/>
 		</field>
+		<field name="password" type="string">
+			<sql name="password" type="char"/>
+			<bind-xml node="element"/>
+		</field>		
 		<field name="description" type="string">
 			<sql name="description" type="char"/>
 			<bind-xml node="element"/>
