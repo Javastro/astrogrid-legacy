@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.1 2003/11/14 00:38:29 mch Exp $
+ * $Id: Workspace.java,v 1.2 2003/11/18 10:29:21 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.log.Log;
 
 /**
  * A temporary filespace manager for
@@ -79,11 +78,10 @@ public class Workspace
          {
            //if a working root path has been given, create the workspace from that
             File workDir = new File(workRoot);
-            Log.affirm(workDir.isDirectory(),
+            assert workDir.isDirectory() :
                     "Working root '"+workRoot
                        +"' given by configuration key '"
-                       +WORKSPACE_DIRECTORY_KEY+"' is not a directory"
-                   );
+                       +WORKSPACE_DIRECTORY_KEY+"' is not a directory";
 
             workspaceFile = new File(workRoot + File.separator + workspaceId);
          }
@@ -207,7 +205,7 @@ public class Workspace
     */
    public static void emptyDirectory(File dir) throws IOException
    {
-      Log.affirm(dir != null, "Null File given as directory");
+      assert dir != null : "Null File given as directory";
 
       if (!dir.exists())
       {
