@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.1 2004/04/23 00:27:56 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.2 2004/04/26 12:17:33 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -104,7 +104,7 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
 
         ParameterValue query= (ParameterValue)datacenterTool.findXPathValue("input/parameter[name='Query']");
         assertNotNull(query);
-        InputStream is = this.getClass().getResourceAsStream("WorkflowEndToEndTest-query.xml");
+        InputStream is = this.getClass().getResourceAsStream("simple-query.xml");
         assertNotNull(is);
         StringWriter out = new StringWriter();
         Piper.pipe(new InputStreamReader(is),out); 
@@ -145,6 +145,9 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.2  2004/04/26 12:17:33  nw
+fixed query name
+
 Revision 1.1  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
 
