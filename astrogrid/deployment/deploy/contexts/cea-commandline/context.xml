@@ -1,6 +1,6 @@
-<Context path="/astrogrid-cea-commandline-Itn06_case3-SNAPSHOT">
+<Context path="/astrogrid-cea-commandline-@RELEASE@">
   <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/commandline/store" />
-  <Environment description="properties file" name="org.astrogrid.config.url" override="true" type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties" />
+  <Environment description="properties file" name="org.astrogrid.config.url" override="true" type="java.lang.String" value="file://@WORKDIR@/cea/config/astrogrid.properties" />
 
   <Resource name="jdbc/AstrogridACDatasource" scope="Shareable" type="javax.sql.DataSource" />
   <Resource name="mail/AGMailSession" scope="Shareable" type="javax.mail.Session" />
