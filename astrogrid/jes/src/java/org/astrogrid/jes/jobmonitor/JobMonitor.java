@@ -428,9 +428,18 @@ public class JobMonitor {
 	} // end of formatScheduleRequest()
 	
 	
-	private String extractJobURN( Document jobDoc ) { 
-          return jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
+	private String extractJobURN( Document jobDoc ) {  
+        String jobURN = jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
+        jobURN = jobURN.substring( 0, jobURN.lastIndexOf(':') ) ;
+        return jobURN ;    
 	} 
+    
+    
+    private String extractStepNumber( Document jobDoc ) { 
+        String jobURN = jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
+        String stepNumber = jobURN.substring( jobURN.lastIndexOf(':')+1 ) ;
+        return stepNumber ;        
+    } 
 	
 	
 	private void informAstroGridMessageLog( JobStep jobStep ) {

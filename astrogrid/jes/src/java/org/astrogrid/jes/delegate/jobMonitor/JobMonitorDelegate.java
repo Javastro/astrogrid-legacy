@@ -11,6 +11,7 @@ import java.util.Date ;
  *
  * @author  Jeff Lusted
  * @version 1.0 19-Dec-2003
+ * @version 1.1 05-Jan-2004 - removed dependency on step number
  * @since   AstroGrid 1.4
  */
 public abstract class JobMonitorDelegate {
@@ -100,13 +101,11 @@ public abstract class JobMonitorDelegate {
     
     
     public abstract void monitorJob( String jobURN
-                                   , int stepNumber
                                    , Status status
                                    , String comment ) throws JesDelegateException ;
     
     
     public static String formatMonitorRequest( String jobURN
-                                             , int stepNumber
                                              , Status status
                                              , String comment ) {
         
@@ -121,7 +120,7 @@ public abstract class JobMonitorDelegate {
        inserts[3] = "" ;        // community
        inserts[4] = new Timestamp( new Date().getTime() ).toString() ; // time
        inserts[5] = "" ;        // step name
-       inserts[6] = new Integer( stepNumber ).toString() ;
+       inserts[6] = jobURN.substring( jobURN.lastIndexOf(':')+1 ) ;
        inserts[7] = status ;    // step status
        inserts[8] = comment ;   // any optional comment
        

@@ -8,7 +8,8 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
  *
  * @author  Jeff Lusted
  * @version 1.0 19-Dec-2003
- * @since   AstroGrid 1.
+ * @version 1.1 05-Jan-2004 - removed dependency on step number
+ * @since   AstroGrid 1.4
  */
 public class TestDelegateImpl extends JobMonitorDelegate {
     
@@ -24,14 +25,12 @@ public class TestDelegateImpl extends JobMonitorDelegate {
     }
     
     public void monitorJob( String jobURN
-                           , int stepNumber
-                           , Status status ) throws JesDelegateException {
-        this.monitorJob( jobURN, stepNumber, status, "" ) ;                           
+                          , Status status ) throws JesDelegateException {
+        this.monitorJob( jobURN, status, "" ) ;                           
     }
     
     
     public void monitorJob( String jobURN
-                          , int stepNumber
                           , Status status
                           , String comment ) throws JesDelegateException {
         if(TRACE_ENABLED) trace( "TestDelegateImpl.monitorJob() entry" ) ;
@@ -39,7 +38,6 @@ public class TestDelegateImpl extends JobMonitorDelegate {
             
         try {
             debug( "jobURN: " + jobURN ) ;
-            debug( "stepNumber: " + stepNumber ) ;
             debug( "status: " + status ) ;
             debug( "comment: " + comment ) ;
         }

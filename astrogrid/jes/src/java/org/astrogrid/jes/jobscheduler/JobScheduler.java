@@ -242,8 +242,13 @@ public class JobScheduler {
             // This conditional is for short-term testing purposes only (JBL - Dec 2003)
             if( (toolLocation != null) && (!toolLocation.equals("")) ) { 
                 
-                applicationID = applicationController.initializeApplication( step.getParent().getId()
-                                                                           , step.getStepNumber().toString()
+                //JBL Note: the jobURN has had step number concatinated to it to effectively eliminate 
+                // the application controller (and data centers) needing to know anything regarding steps.
+                // This needs to be followed up in the JobMonitor delegate at some point, with
+                // rationalization of the xml flowing to the JobMonitor, which is now dealing with a lot
+                // of redundant information.
+                applicationID = applicationController.initializeApplication( toolInterface 
+                                                                           , step.getParent().getId() + ":" + step.getStepNumber().toString()
                                                                            , jobMonitorURL
                                                                            , user
                                                                            , parameterValues ) ;
@@ -283,7 +288,7 @@ public class JobScheduler {
 	} 
     
     
-    private String extractCommunitySnippet( Document jobDoc ) { 
+    private String _extractCommunitySnippet( Document jobDoc ) { 
         if( TRACE_ENABLED ) logger.debug( "JobScheduler.extractCommunitySnippet(): entry") ;
 
         String
@@ -359,7 +364,7 @@ public class JobScheduler {
         try {
         
             toolInterface = JES.getProperty( JES.TOOLS_INTERFACE + toolName
-                                          , JES.TOOLS_CATEGORY ) ;
+                                           , JES.TOOLS_CATEGORY ) ;
 
         }
         finally {

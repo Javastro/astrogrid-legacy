@@ -1,5 +1,5 @@
 /*
- * @(#)JobMonitorDelegateImpl.java   1.0
+ * @(#)JobMonitorDelegateImpl.java   1.1
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -27,6 +27,7 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
  *
  * @author  Jeff Lusted
  * @version 1.0 19-Dec-2003
+ * @version 1.1 05-Jan-2004 - removed dependency on step number
  * @see     
  * @see     
  * @since   AstroGrid 1.4
@@ -43,14 +44,12 @@ public class JobMonitorDelegateImpl extends JobMonitorDelegate {
     
     
     public void monitorJob( String jobURN
-                          , int stepNumber
                           , Status status ) throws JesDelegateException {  
-        this.monitorJob( jobURN, stepNumber, status, "" ) ;
+        this.monitorJob( jobURN, status, "" ) ;
     }  
     
     
     public void monitorJob( String jobURN
-                          , int stepNumber
                           , Status status
                           , String comment ) throws JesDelegateException {
         if(TRACE_ENABLED) trace( "JobMonitorDelegate.monitorJob() entry" ) ;
@@ -59,7 +58,6 @@ public class JobMonitorDelegateImpl extends JobMonitorDelegate {
             binding = null ;
         String 
             request = JobMonitorDelegate.formatMonitorRequest( jobURN
-                                                             , stepNumber
                                                              , status
                                                              , comment ) ;           
             
