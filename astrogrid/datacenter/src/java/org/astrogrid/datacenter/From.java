@@ -52,8 +52,8 @@ public class From {
 			setCatalogs(new Catalog[ nodeList.getLength() ]);
 						   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
-				catalogElement = (Element) nodeList.item(i) ;
-				if( catalogElement.getTagName().equals( JobDocDescriptor.OP_ELEMENT ) ) {
+				catalogElement = (Element) nodeList.item(i) ;				
+				if( catalogElement.getTagName().equals( JobDocDescriptor.CATALOG_ELEMENT ) ) {
 					getCatalogs() [i]= new Catalog( catalogElement ) ;
 				}
 				else  {
@@ -80,15 +80,39 @@ public class From {
     	
 		StringBuffer
 		   buffer = new StringBuffer(64) ;
-    	   
-		buffer
-		  .append( "" )
-		  .append( "" );
+        Catalog 
+            catalog[] = this.catalogs;
+        
+        for (int i=0; i < catalog.length; i++) {		    
+        	
+        	Table 
+        	    table[] = catalog[i].getTables();
+        	
+        	if (table.length <= 0) {  // no table specified assume master and table name are same
+        		buffer.append(catalog[i].getName());
+        		buffer.append("..");
+        		buffer.append(catalog[i].getName());
+        	}
+        	
+        	else {
+        		
+			    for (int j=0; j < table.length; j++) {
+			    	
+				    buffer.append(catalog[i].getName());
+				    buffer.append("..");
+				    buffer.append(table[j].getName());				
+				    buffer.append(",");
+			           		
+				} // end of for (int j=0; j < table.length; j++)
+					
+				buffer.deleteCharAt(buffer.length()-1); // remove final ","
+        	}
+    	} // end of for (int i=0; i < catalog.length; i++)
     	   
 		return buffer.toString() ;
     	
-	} // end of toSQLString()	
-
+	} // end of toSQLString()
+	
 
 	public void setCatalogs(Catalog[] catalogs) {
 		this.catalogs = catalogs;
