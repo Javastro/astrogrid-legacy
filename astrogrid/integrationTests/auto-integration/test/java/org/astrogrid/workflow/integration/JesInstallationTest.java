@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.1 2004/04/15 23:11:20 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.2 2004/04/21 13:43:43 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.integration.*;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
@@ -77,6 +78,9 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
+Revision 1.2  2004/04/21 13:43:43  nw
+tidied imports
+
 Revision 1.1  2004/04/15 23:11:20  nw
 tweaks
 

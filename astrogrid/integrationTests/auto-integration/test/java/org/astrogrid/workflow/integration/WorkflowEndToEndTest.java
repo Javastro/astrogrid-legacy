@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.7 2004/04/20 14:48:21 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.8 2004/04/21 13:43:43 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.workflow.integration;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.integration.*;
 import org.astrogrid.io.Piper;
 import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
@@ -118,7 +119,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
                        
         ParameterValue target = (ParameterValue)datacenterTool.findXPathValue("output/parameter[name='Target']");
         assertNotNull(target);
-        Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/WorkflowEndToEnd-complexDocument.votable.xml");
+        Ivorn targetIvorn = new Ivorn(MYSPACE,user.getUserId() + "/WorkflowEndToEnd-complexDocument-votable.xml");
         target.setValue(targetIvorn.toString());
         
         
@@ -169,7 +170,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
             assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
         // dump it to myspace store - then we can look at it later.
        w1.setName(workflowName + "-" + System.currentTimeMillis());
-       Ivorn ivorn = new Ivorn(MYSPACE,"/" + user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
+       Ivorn ivorn = new Ivorn(MYSPACE,user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
        store.saveWorkflow(user,ivorn,w1);       
         return w1;
     }    
@@ -180,6 +181,9 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.8  2004/04/21 13:43:43  nw
+tidied imports
+
 Revision 1.7  2004/04/20 14:48:21  nw
 simplified myspace storepoint.
 

@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.5 2004/04/21 10:43:46 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.6 2004/04/21 13:43:43 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.integration.*;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.registry.client.query.RegistryService;
@@ -80,6 +81,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.6  2004/04/21 13:43:43  nw
+tidied imports
+
 Revision 1.5  2004/04/21 10:43:46  nw
 exercises resolver code
 
