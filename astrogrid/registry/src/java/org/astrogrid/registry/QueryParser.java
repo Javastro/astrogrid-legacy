@@ -18,6 +18,8 @@ import java.io.Reader;
  */
 public class QueryParser
  {
+ 	static boolean xmlQuery = true;
+ 	static boolean dbQuery = false;
 
 	public static String parseQuery (String query) {
 
@@ -43,13 +45,24 @@ public class QueryParser
 	  try{
 		Element docElement = doc.getDocumentElement();		
 		if (docElement.getFirstChild().getNodeName().equals("selectionSequence")){
+			if (dbQuery == true){
+				queryResponse = xmlToSQL(docElement.getFirstChild());
+			}
+			/*
+			if (xmlQuery == true){
+				queryResponse = xmlToXML(docElement.getFirstChild());
+			}
+			*/
+
 			queryResponse = xmlToSQL(docElement.getFirstChild());
 		}	  	  
 	  }
 	  catch (Exception e) {
 		queryResponse = "";
 	  }
-	  return sqlQuery+ queryResponse;
+	  String response = "<queryResponse><responseRecord><recordKeyPair item='title' value='Oke (1990) Spectrophotometric Standards'/><recordKeyPair item='publication date' value='1990'/><recordKeyPair item='tableRows' value='25'/><recordKeyPair item='keyword' value='optical'/><recordKeyPair item='Vmax' value='16.14'/><recordKeyPair item='Vmin' value='7.04'/></responseRecord><responseRecord><recordKeyPair item='title' value='HST Spectrophotometric Standards'/><recordKeyPair item='publication date' value='1996'/><recordKeyPair item='tableRows' value='26'/><recordKeyPair item='keyword' value='uv'/><recordKeyPair item='keyword' value='optical'/><recordKeyPair item='flux' value='*'/></responseRecord></queryResponse>";
+	  //return sqlQuery+ queryResponse;
+	  return response;
 	}
 
 	private static String xmlToSQL(Node node) {
