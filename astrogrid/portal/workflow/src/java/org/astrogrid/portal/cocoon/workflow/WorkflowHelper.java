@@ -33,7 +33,7 @@ import java.util.Enumeration;
  * The class... 
  * 
  *
- * @author  Jeff Lusted
+ * @author  Jeff Lusted, Phil Nicolson
  * @version 1.0 12-Mar-2004
  * @see     
  * @see     
@@ -427,6 +427,36 @@ public class WorkflowHelper {
 	    return pRef;
         
 	}
+
+	/**> 
+		* A helper method that returns a parameter definition for a parameter value.
+		* The parameter value is used to identify the parameter as target.
+		*  
+		* @param applDescription the application description
+		* @param tool       the tool that owns the relevant parameter
+		* @param paramName  the name of the parameter
+		* @return pDef      the BaseParameterDefinition
+		* 
+		**/	
+	public static BaseParameterDefinition getParameterDef( ApplicationDescription applDescription, Tool tool, ParameterValue pv ) {
+		if( TRACE_ENABLED ) trace( "entry: WorkflowHelper.getParameterDef()") ;      
+	    
+			Interface[] intfs = applDescription.getInterfaces().get_interface();
+			Interface intf = null;
+			for (int i = 0; i < intfs.length; i++) {
+					if (intfs[i].getName().equals(tool.getInterface())) {
+							intf = intfs[i];
+							break;
+					}            
+			}
+	            
+		    BaseParameterDefinition pDef = applDescription.getDefinitionForValue( pv, intf );
+
+		    
+		    if( TRACE_ENABLED ) trace( "exit: WorkflowHelper.getParameterDef()") ;
+			return pDef;
+		
+	}		
 
                                 
     private static void trace( String traceString ) {
