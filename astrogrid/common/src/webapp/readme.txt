@@ -1,0 +1,1 @@
+These files don't get bundled into the jar, but can be copied into any war that wishes to use them.
