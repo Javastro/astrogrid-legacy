@@ -288,7 +288,7 @@
         <propertyfile
             file="${temporary.dir}/community/install.properties">
             <entry key="org.astrogrid.community.ident"
-                value="org.astrogrid.localhost"/>
+                value="${registry.authorityid}"/>
         </propertyfile>
         <!--+
             | Set the registry endpoint.
