@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.51 2004/06/17 15:54:42 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.52 2004/06/19 10:19:01 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -495,12 +495,12 @@
         <copy todir="${temporary.dir}/myspace" filtering="true">
                 <fileset dir="contexts/myspace" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-server-SNAPSHOT.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war">
                 <metainf dir="${temporary.dir}/myspace"/>
         </war>
   <j:catch>
   <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-mySpace-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-mySpace-server-SNAPSHOT.war"/>
+          path="/astrogrid-mySpace-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-mySpace-SNAPSHOT.war"/>
   </j:catch>
 </goal>
 
@@ -626,17 +626,17 @@
 
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running">
 	<delete includeEmptyDirs="true" defaultexcludes="false" >
-		<fileset dir="${tomcat.home}/webapps" >
+		<fileset dir="${tomcat.location}/webapps" >
 			<include name="astrogrid-*/**"/>
 			<include name="exist*/**"/>
 	   </fileset>
-		<fileset dir="${tomcat.home}/work/Catalina/localhost" >
+		<fileset dir="${tomcat.location}/work/Catalina/localhost" >
 			<include name="*/**"/>
 	   </fileset>
-		<fileset dir="${tomcat.home}/conf/Catalina/localhost" >
+		<fileset dir="${tomcat.location}/conf/Catalina/localhost" >
 			<include name="astrogrid-*.xml"/>
 	   </fileset>
-		<fileset dir="${tomcat.home}/logs" >
+		<fileset dir="${tomcat.location}/logs" >
 			<include name="*"/>
 	   </fileset>	   
 	</delete>
