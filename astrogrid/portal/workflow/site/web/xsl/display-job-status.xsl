@@ -29,6 +29,12 @@
                         <xsl:attribute name="READONLY">true</xsl:attribute>
                     </xsl:element>                  
                 </td>
+<!--                <td rowspan="2" valign="middle">
+                    <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="printer_form" id="printer_form">
+                  <input class="agActionButton" type="submit" name="action" value="printer-friendly"/>
+                  <input type="hidden" name="jobURN" id="jobURN"/>
+                  </form>
+-->                </td>
             </tr>            
             <tr>
                 <td>Description:</td>
@@ -144,7 +150,22 @@
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">script</xsl:attribute>
-                        </xsl:element>                                                                                        
+                        </xsl:element>
+                        
+                        <td colspan="30" valign="middle" style="color: blue;">
+                            <font size="-1">
+                                <xsl:element name="a">
+                                    <xsl:attribute name="style">padding-left: 10;</xsl:attribute>
+                                    <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+                                    <xsl:attribute name="onMouseOver">this.T_TITLE='' +
+                                    ' Script: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +
+                                    ' Desc: <xsl:value-of select="@script-desc"/> &lt;br/&gt; ' + 
+                                    ' Message: <xsl:value-of select="@script-message"/> ');</xsl:attribute>
+                                </xsl:element>
+                                <small><b>(more)</b></small>
+                                </font>
+                            <xsl:element name="/a"></xsl:element>                                                       
+                        </td>                                                                                                                                        
                     </xsl:when>                                                                                                
                 </xsl:choose>
             </td>
@@ -224,7 +245,6 @@
             </td>
         </xsl:if>
     </xsl:template>
-
 
 <!-- 
     <xsl:include href="display-tool.xsl"/>
