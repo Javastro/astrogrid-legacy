@@ -39,7 +39,7 @@ public class ResolverServlet extends HttpServlet
    public void doGet(HttpServletRequest request,
                      HttpServletResponse response) throws ServletException, IOException {
       
-      String sourceUri = request.getParameter("sourceUri");
+      String sourceUri = request.getParameter("SourceUri");
       if (sourceUri != null) {
          try
          {
@@ -53,7 +53,7 @@ public class ResolverServlet extends HttpServlet
             
          }
          catch (URISyntaxException e) {
-            throw new ServletException(e+", sourceUri="+sourceUri);
+            throw new ServletException(e+", SourceUri="+sourceUri);
          }
       }
    }

@@ -41,7 +41,7 @@
 
   <servlet-mapping>
     <servlet-name>Sender</servlet-name>
-    <url-pattern>/Send</url-pattern>
+    <url-pattern>/SendText</url-pattern>
   </servlet-mapping>
 
 

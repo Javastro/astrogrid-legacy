@@ -40,13 +40,17 @@ public class SendServlet extends HttpServlet
    public void doGet(HttpServletRequest request,
                      HttpServletResponse response) throws ServletException, IOException {
       
-      String targetUri = request.getParameter("targetUri");
+      String targetUri = request.getParameter("TargetUri");
       
       if ( (targetUri == null) || (targetUri.trim().length() == 0) ) {
-         response.sendError(response.SC_BAD_REQUEST, "targetUri  empty");
+         response.sendError(response.SC_BAD_REQUEST, "TargetUri  empty");
       }
       
-      String text = request.getParameter("text");
+      String text = request.getParameter("Text");
+      if (text == null) {
+         response.sendError(response.SC_BAD_REQUEST, "'Text' is  empty");
+      }
+      
       Principal user = getUser(request);
       
       response.setContentType(MimeTypes.PLAINTEXT);

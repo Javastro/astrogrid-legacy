@@ -45,13 +45,13 @@ public class CopyServlet extends HttpServlet
    public void doGet(HttpServletRequest request,
                      final HttpServletResponse response) throws ServletException, IOException {
       
-      String sourceUri = request.getParameter("sourceUri");
-      String targetUri = request.getParameter("targetUri");
+      String sourceUri = request.getParameter("SourceUri");
+      String targetUri = request.getParameter("TargetUri");
       
       if ((sourceUri == null) || (targetUri == null) || (sourceUri.trim().length() ==0)
          || (targetUri.trim().length() == 0) ) {
          
-         response.sendError(response.SC_BAD_REQUEST, "targetUri or sourceUri empty");
+         response.sendError(response.SC_BAD_REQUEST, "TargetUri or SourceUri empty");
       }
       
       try
@@ -93,7 +93,7 @@ public class CopyServlet extends HttpServlet
          
       }
       catch (URISyntaxException e) {
-         throw new ServletException(e+", sourceUri="+sourceUri+", targetUri="+targetUri, e);
+         throw new ServletException(e+", SourceUri="+sourceUri+", TargetUri="+targetUri, e);
       }
    }
 }
