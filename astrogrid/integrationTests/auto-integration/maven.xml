@@ -3,20 +3,12 @@
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 
 
-<!-- edit these properties to fit your own installation
-        maybe should be loaded from a separate properties file??
-
--->
 <property name="tomcat.host" value="localhost"/>
 <property name="tomcat.port" value="8080"/>
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
 
-<!-- location of tomcat common library -->
-<property name="tomcat.common.lib.dir" location="/var/lib/tomcat5/common/lib" />
 
-<!-- location of where to place the working directory -->
-<property name="work.dir" location="/home/noel/integration-work" />
 
 <!-- other, non-configurable properties -->
 
@@ -76,6 +68,12 @@
 
 <goal name="scripting-gui"  description="run javascript gui">
         <maven:maven descriptor="${basedir}/tests-project.xml" goals="run-scripting-gui" />
+</goal>
+
+<goal name="style-workflows" description="apply presentation stylesheet to all workflows">
+                  <!--declare the transformer factory to use -->
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <xslt style="workflow.xsl" destdir="${work.dir}/styled-workflows" basedir="${work.dir}/jes" />
 </goal>
 
 <!-- Working direcotry //////////////////////////////////////////////////////////////////////////////////////////////// -->
