@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.1 2004/04/05 15:55:06 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.2 2004/04/05 15:59:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,7 +32,7 @@ import org.astrogrid.store.Agsl;
  *
  */
 
-public class AxisDataServer_v0_5 extends AxisDataServer implements AxisDataServer_v05_Port  {
+public class AxisDataService_v05 extends AxisDataServer implements AxisDataServer_v05_Port  {
    
 
    /**
@@ -127,6 +127,9 @@ public class AxisDataServer_v0_5 extends AxisDataServer implements AxisDataServe
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.2  2004/04/05 15:59:36  mch
+Introduced multiple services to one deployment
+
 Revision 1.1  2004/04/05 15:55:06  mch
 Renamed it05 axis data service
 
