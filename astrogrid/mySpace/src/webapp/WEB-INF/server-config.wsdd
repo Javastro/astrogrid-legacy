@@ -38,7 +38,7 @@
   <parameter name="allowedMethods" value="*"/>
   <parameter name="wsdlPortType" value="Manager"/>
   <parameter name="scope" value="Session"/>
-  <parameter name="className" value="org.astrogrid.myspace.delegate.AstrogridMyspaceSoapBindingSkeleton"/>
+  <parameter name="className" value="org.astrogrid.store.delegate.myspaceItn05.AstrogridMyspaceSoapBindingSkeleton"/>
   <parameter name="wsdlServicePort" value="Manager"/>
   <parameter name="wsdlTargetNamespace" value="urn:Kernel"/>
   <parameter name="wsdlServiceElement" value="ManagerService"/>
@@ -46,7 +46,7 @@
       <typeMapping
         xmlns:ns="urn:Kernel"
         qname="ns:KernelResults"
-        type="java:org.astrogrid.myspace.delegate.KernelResults"
+        type="java:org.astrogrid.store.delegate.myspaceItn05.KernelResults"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -54,7 +54,7 @@
       <typeMapping
         xmlns:ns="urn:Kernel"
         qname="ns:StatusResults"
-        type="java:org.astrogrid.myspace.delegate.StatusResults"
+        type="java:org.astrogrid.store.delegate.myspaceItn05.StatusResults"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
@@ -70,7 +70,7 @@
       <typeMapping
         xmlns:ns="urn:Kernel"
         qname="ns:EntryResults"
-        type="java:org.astrogrid.myspace.delegate.EntryResults"
+        type="java:org.astrogrid.store.delegate.myspaceItn05.EntryResults"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
