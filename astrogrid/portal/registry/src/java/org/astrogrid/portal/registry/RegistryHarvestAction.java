@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 //import org.apache.cocoon.components.request.multipart.FilePart;
 //import org.apache.cocoon.components.request.multipart.FilePartFile;
+import org.apache.cocoon.servlet.multipart.*;
 import java.io.File;
 
 
@@ -112,7 +113,7 @@ public class RegistryHarvestAction extends AbstractAction
                      
                      //ras.harvestFromUrl(accessURL);
                      resultDoc = ras.update(harvestDoc);
-                     ras.validateDocument(harvestDoc);
+                     //ras.validateDocument(harvestDoc);
                      //Now see if their is a error element in the resultDoc
                      //ras.addRegistryEntries(harvestDoc);
                      //message = "A harvest has begun for url = " + accessURL;
@@ -121,6 +122,16 @@ public class RegistryHarvestAction extends AbstractAction
                } else if(request.getParameter("addmetadatafromfile") != null) {
                   //request.ge
   //                FilePart filePart = (FilePart) request.get("metadata_file");
+                     Part part = (Part) request.get("metadata_file");
+                     if (part != null) {
+                        harvestDoc = registryBuilder.parse(part.getInputStream());
+                        resultDoc = ras.update(harvestDoc);
+                        //ras.validateDocument(harvestDoc);
+                        // do something with it
+                     } else {
+                        // parameter not found
+                     }
+  
   //                File file = ((FilePartFile)filePart).getFile();
   //                ras = RegistryDelegateFactory.createAdmin();
   //                harvestDoc = registryBuilder.parse(file);
