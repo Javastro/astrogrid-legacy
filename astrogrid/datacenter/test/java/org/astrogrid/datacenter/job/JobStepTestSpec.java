@@ -1,4 +1,4 @@
-/*$Id: JobStepTestSpec.java,v 1.1 2003/08/22 10:37:48 nw Exp $
+/*$Id: JobStepTestSpec.java,v 1.2 2003/08/22 15:50:31 nw Exp $
  * Created on 22-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.datacenter.job;
 
 import junit.framework.TestCase;
-import org.astrogrid.datacenter.job.JobStep;
+
 import org.astrogrid.datacenter.query.Query;
 
 /** test specification for the job step interface.
@@ -68,6 +68,9 @@ public abstract class JobStepTestSpec extends TestCase {
 
 /* 
 $Log: JobStepTestSpec.java,v $
+Revision 1.2  2003/08/22 15:50:31  nw
+tidied imports
+
 Revision 1.1  2003/08/22 10:37:48  nw
 added test hierarchy for Job / JobStep
  

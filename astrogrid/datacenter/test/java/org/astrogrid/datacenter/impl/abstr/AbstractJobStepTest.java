@@ -1,4 +1,4 @@
-/*$Id: AbstractJobStepTest.java,v 1.1 2003/08/22 10:37:48 nw Exp $
+/*$Id: AbstractJobStepTest.java,v 1.2 2003/08/22 15:50:31 nw Exp $
  * Created on 22-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,13 @@
 **/
 package org.astrogrid.datacenter.impl.abstr;
 
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
 import org.astrogrid.datacenter.job.JobStep;
 import org.astrogrid.datacenter.job.JobStepTestSpec;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import junit.framework.*;
 
 /** tests the abstract implementation of a job step
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Aug-2003
@@ -62,6 +64,9 @@ public class AbstractJobStepTest extends JobStepTestSpec {
 
 /* 
 $Log: AbstractJobStepTest.java,v $
+Revision 1.2  2003/08/22 15:50:31  nw
+tidied imports
+
 Revision 1.1  2003/08/22 10:37:48  nw
 added test hierarchy for Job / JobStep
  
