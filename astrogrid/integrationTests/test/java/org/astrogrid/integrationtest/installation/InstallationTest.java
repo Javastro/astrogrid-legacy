@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.5 2004/03/31 01:11:56 jdt Exp $
+/* $Id: InstallationTest.java,v 1.6 2004/03/31 01:17:35 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -69,6 +69,7 @@ public final class InstallationTest  {
         keys.add("registry.harvest.endpoint");
                   
         keys.add("appController.endPoint");
+        
         keys.add("community.securityservice.endPoint");
         keys.add("community.securitymanager.endPoint");
         keys.add("community.policyservice.endPoint");
@@ -78,7 +79,11 @@ public final class InstallationTest  {
      
         keys.add("mySpaceEndPoint");
         keys.add("portalWebSite");
-        keys.add("jobControlerEndPoint");
+        
+        keys.add("jobControlerEndPoint");//@TODO not sure about this
+        keys.add("jes.controller.endpoint");
+        keys.add("jes.monitor.endpoint");
+         
         keys.add("stdDatacenterEndPoint");
         return keys;
     }
@@ -153,6 +158,9 @@ public final class InstallationTest  {
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.6  2004/03/31 01:17:35  jdt
+ *  added jes
+ *
  *  Revision 1.5  2004/03/31 01:11:56  jdt
  *  now adds test dynamically, one for each url
  *
