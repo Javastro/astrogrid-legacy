@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.34 2004/03/09 23:17:01 mch Exp $ -->
+<!-- $Id: project.xml,v 1.35 2004/03/09 23:23:08 mch Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -17,7 +17,7 @@
     <dependencies>
     
     
-      <!-- for VoSpaceClient resolver - not needed when this is removed -->
+      <!-- for VoSpaceClient resolver - not needed when that is removed
         <dependency>
             <artifactId>astrogrid-registry-client</artifactId>
             <groupId>astrogrid-registry-client</groupId>
@@ -34,7 +34,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-
+         -->
     
     
         <dependency>
