@@ -1,12 +1,18 @@
 /*
  *
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/Attic/database.sql,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-database.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: database.sql,v $
+ *   $Log: astrogrid-community-database.sql,v $
+ *   Revision 1.2  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.1.2.1  2004/02/19 14:51:00  dave
+ *   Changed DatabaseManager to DatabaseConfigurationFactory.
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *

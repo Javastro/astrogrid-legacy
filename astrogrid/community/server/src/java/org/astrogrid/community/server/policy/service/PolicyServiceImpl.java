@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/service/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -89,11 +100,11 @@ import org.astrogrid.community.server.policy.manager.GroupManagerImpl ;
 import org.astrogrid.community.server.policy.manager.CommunityManagerImpl ;
 import org.astrogrid.community.server.policy.manager.PermissionManagerImpl ;
 
-import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.common.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class PolicyServiceImpl
-	extends CommunityServer
+    extends CommunityServiceImpl
     implements PolicyService
     {
     /**
@@ -126,56 +137,65 @@ public class PolicyServiceImpl
      */
     public PolicyServiceImpl()
         {
-		super() ;
-		//
-		// Configure our local managers.
-		configLocalManagers() ;
+        super() ;
+        //
+        // Configure our local managers.
+        configLocalManagers() ;
         }
 
     /**
      * Public constructor, using specific database configuration.
      *
      */
-	public PolicyServiceImpl(DatabaseConfiguration config)
-		{
-		super(config) ;
-		//
-		// Configure our local managers.
-		configLocalManagers() ;
-		}
+    public PolicyServiceImpl(DatabaseConfiguration config)
+        {
+        super(config) ;
+        //
+        // Configure our local managers.
+        configLocalManagers() ;
+        }
 
-	/**
-	 * Set our database configuration.
-	 * This makes it easier to run JUnit tests with a different database configurations.
-	 * This calls our base class method and then updates all of our local managers.
-	 *
-	 */
-	public void setDatabaseConfiguration(DatabaseConfiguration config)
-		{
-		//
-		// Call our base class method.
-		super.setDatabaseConfiguration(config) ;
-		//
-		// Configure our local managers.
-		configLocalManagers() ;
-		}
+    /**
+     * Public constructor, using a parent service.
+     *
+     */
+    public PolicyServiceImpl(CommunityServiceImpl parent)
+        {
+        super(parent) ;
+        }
 
-	/**
-	 * Configure our local managers.
-	 * This calls setDatabaseConfiguration on all of our local managers.
-	 * We need this in a separate method to initialise the local managers after they are created.
-	 *
-	 */
-	private void configLocalManagers()
-		{
-		//
-		// Configure our local managers.
-		if (null != groupManager) groupManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-//		if (null != accountManager) accountManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-//		if (null != resourceManager) resourceManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		if (null != communityManager) communityManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		if (null != permissionManager) permissionManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		}
+    /**
+     * Set our database configuration.
+     * This makes it easier to run JUnit tests with a different database configurations.
+     * This calls our base class method and then updates all of our local managers.
+     *
+     */
+    public void setDatabaseConfiguration(DatabaseConfiguration config)
+        {
+        //
+        // Call our base class method.
+        super.setDatabaseConfiguration(config) ;
+        //
+        // Configure our local managers.
+        configLocalManagers() ;
+        }
+
+    /**
+     * Configure our local managers.
+     * This calls setDatabaseConfiguration on all of our local managers.
+     * We need this in a separate method to initialise the local managers after they are created.
+     *
+     */
+    private void configLocalManagers()
+        {
+        //
+        // Configure our local managers.
+        if (null != groupManager) groupManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+//        if (null != accountManager) accountManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+//        if (null != resourceManager) resourceManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+        if (null != communityManager) communityManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+        if (null != permissionManager) permissionManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
+        }
 
     /**
      * Confirm access permissions
@@ -186,27 +206,27 @@ public class PolicyServiceImpl
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.checkPermissions()") ;
-		//
-		// Check for null params.
-		if (null == credentials) return null ;
-		if (null == resource) return null ;
-		if (null == action) return null ;
-		//
-		// Trim spaces.
-		resource = resource.trim() ;
-		action = action.trim() ;
-		//
-		// Check for empty params.
-		if (resource.length() == 0) return null ;
-		if (action.length() == 0) return null ;
-		//
-		// Get the credential details.
+        //
+        // Check for null params.
+        if (null == credentials) return null ;
+        if (null == resource) return null ;
+        if (null == action) return null ;
+        //
+        // Trim spaces.
+        resource = resource.trim() ;
+        action = action.trim() ;
+        //
+        // Check for empty params.
+        if (resource.length() == 0) return null ;
+        if (action.length() == 0) return null ;
+        //
+        // Get the credential details.
         String group   = credentials.getGroup() ;
         String account = credentials.getAccount() ;
-		//
-		// Check for null params.
-		if (null == group) return null ;
-		if (null == account) return null ;
+        //
+        // Check for null params.
+        if (null == group) return null ;
+        if (null == account) return null ;
 
         if (DEBUG_FLAG) System.out.println("  Credentials") ;
         if (DEBUG_FLAG) System.out.println("    Group   : " + group)   ;

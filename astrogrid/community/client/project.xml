@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.4.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -107,6 +113,26 @@
             <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | Ant library for the tasks.
+            +-->
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.5.3-1</version>
+            <type>jar</type>
+            <url>http://ant.apache.org/</url>
+        </dependency>
+        <!--+
+            | The JConfig jars.
+            +-->
+        <dependency>
+            <groupId>jconfig</groupId>
+            <artifactId>jconfig</artifactId>
+            <version>2.2</version>
+            <type>jar</type>
+            <url>http://www.jconfig.org/</url>
         </dependency>
     </dependencies>
 

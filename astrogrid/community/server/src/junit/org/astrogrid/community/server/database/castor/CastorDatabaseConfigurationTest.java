@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/database/castor/Attic/CastorDatabaseConfigurationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CastorDatabaseConfigurationTest.java,v $
+ *   Revision 1.3  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.2.2.2  2004/02/19 14:51:00  dave
+ *   Changed DatabaseManager to DatabaseConfigurationFactory.
+ *
+ *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -61,16 +70,16 @@ public class CastorDatabaseConfigurationTest
         // Create a new database configuration.
         DatabaseConfiguration config = new CastorDatabaseConfiguration() ;
         assertNotNull(
-        	"Null configuration",
-        	config
-        	) ;
+            "Null configuration",
+            config
+            ) ;
         //
         // Check the database name.
         assertEquals(
-        	"Wrong database name",
-        	config.getName(),
-        	CastorDatabaseConfiguration.DEFAULT_DATABASE_NAME
-        	) ;
+            "Wrong database name",
+            config.getDatabaseName(),
+            CastorDatabaseConfiguration.DEFAULT_DATABASE_NAME
+            ) ;
         }
 
     /**
@@ -84,9 +93,9 @@ public class CastorDatabaseConfigurationTest
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testCreateUnknownConfig()") ;
         //
-        // Try creating a CastorDatabaseConfiguration with a non-existient config file.
+        // Try creating a database with a non-existient config file.
         try {
-            DatabaseConfiguration config = new CastorDatabaseConfiguration("unknown-database", "unknown-database.xml") ;
+            DatabaseConfiguration config = new CastorDatabaseConfiguration("unknown-database") ;
             fail("FAIL : Should have thrown a FileNotFoundException") ;
             }
         //
@@ -110,10 +119,15 @@ public class CastorDatabaseConfigurationTest
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new CastorDatabaseConfiguration("test-database-001") ;
-        assertNotNull("Null configuration", config) ;
+        assertNotNull(
+        	"Null configuration",
+        	config) ;
         //
         // Check the database name.
-        assertEquals("Wrong database name", config.getName(), "test-database-001") ;
+        assertEquals(
+        	"Wrong database name",
+        	config.getDatabaseName(),
+        	"test-database-001") ;
         }
 
     /**
@@ -128,8 +142,10 @@ public class CastorDatabaseConfigurationTest
         if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testInvalidName()") ;
         //
         // Create a new database configuration with an invalid name.
-        DatabaseConfiguration config = new CastorDatabaseConfiguration("INVALID-NAME", "test-database-001.xml") ;
-        assertNotNull("Null configuration", config) ;
+        DatabaseConfiguration config = new CastorDatabaseConfiguration("INVALID-NAME", "test-database-001.xml", null) ;
+        assertNotNull(
+        	"Null configuration",
+        	config) ;
         //
         // Try to create a new database connection.
         try {
@@ -155,12 +171,15 @@ public class CastorDatabaseConfigurationTest
         //
         // Create a new database configuration.
         DatabaseConfiguration config = new CastorDatabaseConfiguration("test-database-001") ;
-        assertNotNull("Null configuration", config) ;
+        assertNotNull(
+        	"Null configuration",
+        	config) ;
         //
         // Create a new database connection.
-        assertNotNull("Null JDO database connection",
-        	config.getDatabase()
-        	) ;
+        assertNotNull(
+        	"Null JDO database connection",
+            config.getDatabase()
+            ) ;
         }
 
     /**
@@ -176,71 +195,37 @@ public class CastorDatabaseConfigurationTest
         //
         // Create a new database configuration.
         CastorDatabaseConfiguration config = new CastorDatabaseConfiguration("test-database-001") ;
-        assertNotNull("Null configuration", config) ;
+        assertNotNull(
+        	"Null configuration",
+        	config) ;
         //
         // Check our database engine.
         JDO engine = config.getDatabaseEngine() ;
-        assertNotNull("Null JDO database engine", engine) ;
+        assertNotNull(
+        	"Null JDO database engine",
+        	engine) ;
         }
 
     /**
      * Try checking the database test data.
      *
      */
-    public void testDatabaseData()
+    public void testDatabaseTables()
         throws Exception
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testDatabaseData()") ;
+        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testDatabaseTables()") ;
         //
         // Create a new database configuration.
         CastorDatabaseConfiguration config = new CastorDatabaseConfiguration("test-database-001") ;
         assertNotNull("Null configuration", config) ;
         //
-        // Try checking the database data.
-        assertTrue("Check database data returned false",
-        	config.checkDatabaseTables()
-        	) ;
-        }
-
-    /**
-     * Try loading two database engines.
-     *
-     */
-    public void testMultipleDatabases()
-        throws Exception
-        {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testMultipleDatabases()") ;
-        //
-        // Create a new database configuration.
-        CastorDatabaseConfiguration alpha = new CastorDatabaseConfiguration("test-database-001") ;
-        assertNotNull("Null configuration", alpha) ;
-        //
-        // Create a new database connection.
-        assertNotNull("Null JDO database connection",
-        	alpha.getDatabase()
-        	) ;
-        //
-        // Try checking the database data.
-        assertTrue("Check database data returned false",
-        	alpha.checkDatabaseTables()
-        	) ;
-        //
-        // Create a new database configuration.
-        CastorDatabaseConfiguration beta = new CastorDatabaseConfiguration("test-database-002") ;
-        //
-        // Create a new database connection.
-        assertNotNull("Null JDO database connection",
-        	beta.getDatabase()
-        	) ;
-        //
-        // Try checking the database data.
-        assertTrue("Check database data returned false",
-        	beta.checkDatabaseTables()
-        	) ;
+        // Try checking the database tables.
+        assertTrue(
+        	"Check database data returned false",
+            config.checkDatabaseTables()
+            ) ;
         }
 
     /**
@@ -255,17 +240,88 @@ public class CastorDatabaseConfigurationTest
         if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testCreateTables()") ;
         //
         // Create a new database configuration.
-        CastorDatabaseConfiguration config = new CastorDatabaseConfiguration("test-database-003") ;
-        assertNotNull("Null configuration", config) ;
+        CastorDatabaseConfiguration config = new CastorDatabaseConfiguration("test-database-002") ;
+        assertNotNull(
+        	"Null configuration",
+        	config) ;
+        //
+        // Try checking the database data.
+        assertFalse(
+        	"Check database tables returned true",
+            config.checkDatabaseTables()
+            ) ;
         //
         // Try creating the database tables.
         config.createDatabaseTables() ;
         //
-        // Try checking the database data.
-        assertTrue("Check database data returned false",
-        	config.checkDatabaseTables()
-        	) ;
+        // Try checking the database tables.
+        assertTrue(
+        	"Check database tables returned false",
+            config.checkDatabaseTables()
+            ) ;
         }
 
+    /**
+     * Try loading two database engines.
+     *
+     */
+    public void testMultipleDatabases()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationTest:testMultipleDatabases()") ;
+        //
+        // Create a new database configuration.
+        CastorDatabaseConfiguration alpha = new CastorDatabaseConfiguration("test-database-003") ;
+        assertNotNull(
+        	"Null configuration",
+        	alpha) ;
+        //
+        // Create a new database connection.
+        assertNotNull(
+        	"Null JDO database connection",
+            alpha.getDatabase()
+            ) ;
+        //
+        // Check the database tables.
+        assertFalse(
+        	"Check database tables returned true",
+            alpha.checkDatabaseTables()
+            ) ;
+        //
+        // Create the database tables.
+        alpha.createDatabaseTables() ;
+        //
+        // Check the database tables.
+        assertTrue(
+        	"Check database tables returned false",
+            alpha.checkDatabaseTables()
+            ) ;
 
+        //
+        // Create a new database configuration.
+        CastorDatabaseConfiguration beta = new CastorDatabaseConfiguration("test-database-004") ;
+        //
+        // Create a new database connection.
+        assertNotNull(
+        	"Null JDO database connection",
+            beta.getDatabase()
+            ) ;
+        //
+        // Try checking the database tables.
+        assertFalse(
+        	"Check database tables returned true",
+            beta.checkDatabaseTables()
+            ) ;
+        //
+        // Create the database tables.
+        beta.createDatabaseTables() ;
+        //
+        // Try checking the database tables.
+        assertTrue(
+        	"Check database tables returned false",
+            beta.checkDatabaseTables()
+            ) ;
+        }
     }

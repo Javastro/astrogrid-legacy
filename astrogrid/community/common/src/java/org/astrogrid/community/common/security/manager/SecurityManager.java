@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/manager/SecurityManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityManager.java,v $
+ *   Revision 1.3  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.2.2.2  2004/02/19 21:09:26  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -30,28 +41,21 @@ package org.astrogrid.community.common.security.manager ;
 import java.rmi.Remote ;
 import java.rmi.RemoteException ;
 
-import org.astrogrid.community.common.policy.data.ServiceData ;
+import org.astrogrid.community.common.service.CommunityService ;
 
 /**
  * Interface for our SecurityManager service.
  *
  */
 public interface SecurityManager
-    extends Remote
+    extends Remote, CommunityService
     {
 
     /**
-     * Service health check.
+     * Set an account password.
      *
      */
-    public ServiceData getServiceStatus()
-        throws RemoteException ;
-
-	/**
-	 * Set an account password.
-	 *
-	 */
-	public boolean setPassword(String ident, String value)
+    public boolean setPassword(String ident, String value)
         throws RemoteException ;
 
     }

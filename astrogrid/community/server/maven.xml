@@ -4,10 +4,30 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.4.2.5  2004/02/20 01:02:38  dave
+    |   Added database config files to webapp.
+    |
+    |   Revision 1.4.2.4  2004/02/19 21:09:26  dave
+    |   Refactored ServiceStatusData into a common package.
+    |   Refactored CommunityServiceImpl constructor to take a parent service.
+    |   Refactored default database for CommunityServiceImpl
+    |
+    |   Revision 1.4.2.3  2004/02/19 14:51:00  dave
+    |   Changed DatabaseManager to DatabaseConfigurationFactory.
+    |
+    |   Revision 1.4.2.2  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.4.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -234,10 +254,6 @@
             >
         </ant:axis.wsdl2java>
         <!--+
-            | Fix the jaxp properties.
-            +-->
-        <core:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-        <!--+
             | Modify our PolicyManager WSDD to use our implementation classes.
             +-->
         <ant:xslt style="src/xsl/wsdd-impl.xsl"
@@ -259,6 +275,11 @@
             <param name="service"   expression="PolicyService"/>
             <param name="classname" expression="org.astrogrid.community.server.policy.service.PolicyServiceImpl"/>
         </ant:xslt>
+
+<!--+
+    | TODO Deploy the rest of our services ...
+    +-->
+
         <!--+
             | Copy the generated Java files we want to use.
             +-->
@@ -282,6 +303,7 @@
     <!--+
         | Prepare the files for the jar goal.
         | Adds the generated WSDL and WSDD files into the jar META-INF.
+        | Adds the database configuration files to the classpath.
         +-->
     <preGoal name="jar:jar">
         <ant:echo message=""/>
@@ -313,6 +335,16 @@
                 <include name="**/*.wsdd"/>
             </ant:fileset>
         </ant:copy>
+        <!--+
+            | Copy our database configuration files.
+            +-->
+        <ant:copy verbose="false" todir="${maven.build.dest}">
+            <ant:fileset dir="src/config/database">
+                <include name="astrogrid-community-mapping.xml"/>
+                <include name="astrogrid-community-database.xml"/>
+                <include name="astrogrid-community-database.sql"/>
+            </ant:fileset>
+        </ant:copy>
     </preGoal>
 
     <!--+
@@ -335,7 +367,7 @@
         <!--+
             | Copy our database mapping file.
             | Not required at the moment, the standard mapping.xml is included as a test resource.
-			| However, we may need custom mapping files for some of the error condition testing.
+            | However, we may need custom mapping files for some of the error condition testing.
         <ant:copy overwrite="true" file="src/config/database/mapping.xml" toDir="${database.config}"/>
             +-->
         <!--+
@@ -343,34 +375,38 @@
             +-->
         <ant:mkdir dir="${database.data}"/>
         <!--+
-            | Fix the jaxp properties.
+            | Copy our default database configuration.
             +-->
-        <ant:echo message=""/>
-        <ant:echo message="Fixing Maven JAXP properties"/>
-        <core:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-        <ant:echo message=""/>
+        <ant:copy overwrite="true" file="src/config/database/astrogrid-community-database.xml" toFile="${database.config}/database.xml"/>
+        <ant:copy overwrite="true" file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/astrogrid-community-mapping.xml"/>
         <!--+
-            | Create our config for test-database-001.
-            | A local in-process database, with file storage and tables already created.
+            | Create a Castor JDO config for test database 001.
             +-->
         <ant:echo message=""/>
         <ant:echo message="Creating Castor config for test-database-001"/>
         <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/database.xml"
+            in="src/config/database/astrogrid-community-database.xml"
             out="${database.config}/test-database-001.xml">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
             <param name="name"    expression="test-database-001"/>
             <param name="engine"  expression="hsql"/>
             <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-001"/>
-            <param name="mapping" expression="mapping.xml"/>
+            <param name="mapping" expression="test-mapping-001.xml"/>
             <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
             <param name="user"    expression="sa"/>
             <param name="pass"    expression=""/>
         </ant:xslt>
         <!--+
-            | Create our the database tables for test-database-001.
+            | Copy the Castor JDO mapping file for test database 001.
             +-->
+        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-001.xml"/>
+        <!--+
+            | Copy the SQL script for test database 001.
+            +-->
+        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-001.sql"/>
+        <!--+
+            | Create our the database tables for test-database-001.
         <ant:echo message=""/>
         <ant:echo message="Creating database tables for test-database-001"/>
         <ant:sql driver="org.hsqldb.jdbcDriver"
@@ -380,89 +416,100 @@
              password=""
              print="true"
             >
-            <transaction src="src/config/database/database.sql"/>
+            <transaction src="src/config/database/astrogrid-community-database.sql"/>
         </ant:sql>
+            +-->
+
         <!--+
             | Create our config for test-database-002.
-            | A local in-process database, with file storage and tables already created.
             +-->
         <ant:echo message=""/>
         <ant:echo message="Creating Castor config for test-database-002"/>
         <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/database.xml"
+            in="src/config/database/astrogrid-community-database.xml"
             out="${database.config}/test-database-002.xml">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
             <param name="name"    expression="test-database-002"/>
             <param name="engine"  expression="hsql"/>
             <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-002"/>
-            <param name="mapping" expression="mapping.xml"/>
+            <param name="mapping" expression="test-mapping-002.xml"/>
             <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
             <param name="user"    expression="sa"/>
             <param name="pass"    expression=""/>
         </ant:xslt>
         <!--+
-            | Create our the database tables for test-database-002.
+            | Copy the Castor JDO mapping file for test database 002.
             +-->
-        <ant:echo message=""/>
-        <ant:echo message="Creating database tables for test-database-002"/>
-        <ant:sql driver="org.hsqldb.jdbcDriver"
-             url="jdbc:hsqldb:${database.data}/test-database-002"
-             classpathref="maven.dependency.classpath"
-             userid="sa"
-             password=""
-             print="true"
-            >
-            <transaction src="src/config/database/database.sql"/>
-        </ant:sql>
+        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-002.xml"/>
+        <!--+
+            | Copy the SQL script for test database 002.
+            +-->
+        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-002.sql"/>
+
         <!--+
             | Create our config for test-database-003.
-            | A local in-process database, with file storage.
             +-->
         <ant:echo message=""/>
         <ant:echo message="Creating Castor config for test-database-003"/>
         <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/database.xml"
+            in="src/config/database/astrogrid-community-database.xml"
             out="${database.config}/test-database-003.xml">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
             <param name="name"    expression="test-database-003"/>
             <param name="engine"  expression="hsql"/>
             <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-003"/>
-            <param name="mapping" expression="mapping.xml"/>
+            <param name="mapping" expression="test-mapping-003.xml"/>
             <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
             <param name="user"    expression="sa"/>
             <param name="pass"    expression=""/>
         </ant:xslt>
         <!--+
+            | Copy the Castor JDO mapping file for test database 003.
+            +-->
+        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-003.xml"/>
+        <!--+
+            | Copy the SQL script for test database 003.
+            +-->
+        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-003.sql"/>
+
+        <!--+
             | Create our config for test-database-004.
-            | A local in-process database, with file storage.
             +-->
         <ant:echo message=""/>
         <ant:echo message="Creating Castor config for test-database-004"/>
         <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/database.xml"
+            in="src/config/database/astrogrid-community-database.xml"
             out="${database.config}/test-database-004.xml">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
             <param name="name"    expression="test-database-004"/>
             <param name="engine"  expression="hsql"/>
             <param name="url"     expression="jdbc:hsqldb:${database.data}/test-database-004"/>
-            <param name="mapping" expression="mapping.xml"/>
+            <param name="mapping" expression="test-mapping-004.xml"/>
             <param name="driver"  expression="org.hsqldb.jdbcDriver"/>
             <param name="user"    expression="sa"/>
             <param name="pass"    expression=""/>
         </ant:xslt>
         <!--+
+            | Copy the Castor JDO mapping file for test database 004.
+            +-->
+        <ant:copy file="src/config/database/astrogrid-community-mapping.xml"  toFile="${database.config}/test-mapping-004.xml"/>
+        <!--+
+            | Copy the SQL script for test database 004.
+            +-->
+        <ant:copy file="src/config/database/astrogrid-community-database.sql"  toFile="${database.config}/test-database-004.sql"/>
+
+        <!--+
             | Create a config for an in-memory-database.
             | At the moment, this fails many of the tests.
             | I suspect that this may be because it drops the data as soon as the JDBC connection is closed.
             | Need to look at this one in more detail though.
-            +-->
         <ant:echo message=""/>
         <ant:echo message="Creating Castor config for memory-database-test"/>
         <ant:xslt style="src/xsl/database-config.xsl"
-            in="src/config/database/database.xml"
+            in="src/config/database/astrogrid-community-database.xml"
             out="${database.config}/memory-database-test.xml">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
@@ -474,14 +521,15 @@
             <param name="user"    expression="sa"/>
             <param name="pass"    expression=""/>
         </ant:xslt>
+            +-->
     </preGoal>
 
     <!--+
         | Deploy our WebServices into our local Axis WebApp.
-		| At the moment, this isn't used in the tests.
-		| The JUnit tests explicitly deploy each service by calling the AdminClient.
-		| Eventually, I want to find a way of telling the in-process Axis service
-		| to load the server-config.wsdd file from the Axis WebApplication.
+        | At the moment, this isn't used in the tests.
+        | The JUnit tests explicitly deploy each service by calling the AdminClient.
+        | Eventually, I want to find a way of telling the in-process Axis service
+        | to load the server-config.wsdd file from the Axis WebApplication.
         +-->
     <preGoal name="test:test">
         <ant:echo message=""/>

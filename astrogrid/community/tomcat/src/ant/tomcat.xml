@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/src/ant/tomcat.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: tomcat.xml,v $
+    |   Revision 1.2  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.1.2.3  2004/02/19 21:09:27  dave
+    |   Refactored ServiceStatusData into a common package.
+    |   Refactored CommunityServiceImpl constructor to take a parent service.
+    |   Refactored default database for CommunityServiceImpl
+    |
+    |   Revision 1.1.2.2  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.1.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
+    | </cvs:log>
+    |
+    | Tomcat installation script.
+    |
+    +-->
+<project default="init" basedir="." name="community-install">
+
+    <!--+
+        | Prefix for system properties.
+        +-->
+    <property environment="env"/>
+
+    <!--+
+        | Load our local properties file.
+        +-->
+    <property file="${basedir}/tomcat.properties"/>
+
+    <!-- ================ Tomcat properties ================ -->
+    <!--+
+        | Server properties.
+        +-->
+    <property name="tomcat.home"    value="${env.CATALINA_HOME}"/>
+    <property name="tomcat.host"    value="localhost"/>
+    <property name="tomcat.port"    value="8080"/>
+    <property name="tomcat.url"     value="http://${tomcat.host}:${tomcat.port}"/>
+    <property name="tomcat.timeout" value="60"/>
+
+    <!--+
+        | Manager properties.
+        +-->
+    <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
+
+    <!--+
+        | Display our build settings.
+        +-->
+    <target name="init">
+        <echo message=""/>
+
+        <!-- Build timestamp -->
+        <tstamp>
+            <format property="build.time" pattern="yyyy.MM.dd.HH.mm.ss"/>
+            <format property="build.date" pattern="yyyy.MM.dd"/>
+        </tstamp>
+
+        <!-- Display the current settings -->
+        <echo message="os.name      : ${os.name}"/>
+        <echo message="os.arch      : ${os.arch}"/>
+        <echo message="os.version   : ${os.version}"/>
+        <echo message=""/>
+
+        <echo message="user.home    : ${user.home}"/>
+        <echo message=""/>
+
+        <echo message="java.version : ${java.version}"/>
+        <echo message="java.home    : ${java.home}"/>
+        <echo message="JAVA.HOME    : ${env.JAVA_HOME}"/>
+        <echo message=""/>
+
+        <echo message="ant.version  : ${ant.version}"/>
+        <echo message="ant.home     : ${ant.home}"/>
+        <echo message=""/>
+
+        <echo message="build.home     : ${basedir}"/>
+        <echo message="build.file     : ${ant.file}"/>
+        <echo message="build.date     : ${build.date}"/>
+        <echo message="build.time     : ${build.time}"/>
+        <echo message=""/>
+
+        <echo message="tomcat.home    : ${tomcat.home}"/>
+        <echo message="tomcat.host    : ${tomcat.host}"/>
+        <echo message="tomcat.port    : ${tomcat.port}"/>
+        <echo message="tomcat.url     : ${tomcat.url}"/>
+        <echo message="tomcat.timeout : ${tomcat.timeout}"/>
+        <echo message=""/>
+
+        <echo message="manager.url    : ${tomcat.manager.url}"/>
+        <echo message="manager.name   : ${tomcat.manager.name}"/>
+        <echo message="manager.pass   : ${tomcat.manager.pass}"/>
+        <echo message=""/>
+
+        <echo message=""/>
+    </target>
+
+    <!-- ================ Tomcat classpaths ================ -->
+    <!--+
+        | Bootstrap classpath for Tomcat
+        +-->
+    <path id="tomcat.classpath.bootstrap">
+        <pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+        <pathelement location="${tomcat.home}/bin/bootstrap.jar"/>
+    </path>
+
+    <!--+
+        | Endorsed libraries for Tomcat.
+        +-->
+    <path id="tomcat.classpath.endorsed">
+        <pathelement path="${tomcat.home}/bin"/>
+        <pathelement path="${tomcat.home}/common/endorsed"/>
+    </path>
+
+    <!--+
+        | Tomcat servlet libraries.
+        +-->
+    <path id="tomcat.classpath.servlet">
+        <pathelement location="${tomcat.home}/common/lib/servlet.jar"/>
+    </path>
+
+    <!-- ================ Tomcat server tasks ================ -->
+    <!--+
+        | Start Tomcat in a separate VM.
+        +-->
+    <target name="tomcat.start" depends="">
+        <echo message=""/>
+        <echo message="Starting Tomcat server ...."/>
+        <!-- Start Tomcat in a separate VM -->
+        <java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true" dir="${tomcat.home}/bin">
+            <!-- Use the bootstrap classpath -->
+            <classpath refid="tomcat.classpath.bootstrap"/>
+            <!-- These replace the -D command line arguments -->
+            <sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+            <sysproperty key="catalina.base"      path="${tomcat.home}"/>
+            <sysproperty key="catalina.home"      path="${tomcat.home}"/>
+            <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+            <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- Args for the Tomcat Bootstrap class -->
+            <arg value="start"/>
+        </java>
+    </target>
+
+    <!--+
+        | Stop Tomcat.
+        +-->
+    <target name="tomcat.stop" depends="">
+        <echo message=""/>
+        <echo message="Stopping Tomcat server ...."/>
+        <!-- Stop Tomcat -->
+        <java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true">
+            <!-- Use the bootstrap classpath -->
+            <classpath refid="tomcat.classpath.bootstrap"/>
+            <!-- These replace the -D command line arguments -->
+            <sysproperty key="java.endorsed.dirs" path="${tomcat.classpath.endorsed}"/>
+            <sysproperty key="catalina.base"      path="${tomcat.home}"/>
+            <sysproperty key="catalina.home"      path="${tomcat.home}"/>
+            <sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
+            <!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
+            <!-- <jvmarg value="-server"/> -->
+            <!-- Args for the Tomcat Bootstrap class -->
+            <arg value="stop"/>
+        </java>
+    </target>
+
+    <!--+
+        | Wait for Tomcat to respond.
+        +-->
+    <target name="tomcat.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Tomcat ...."/>
+        <echo message="URL : ${tomcat.url}/"/>
+        <waitfor maxwait="60" maxwaitunit="second" checkevery="500">
+            <http url="${tomcat.url}/"/>
+        </waitfor>
+    </target>
+
+    <!-- ================ Tomcat init tasks ================ -->
+    <!--+
+        | Clean the Tomcat log files.
+        +-->
+    <target name="tomcat.clean.log" depends="">
+        <echo message=""/>
+        <echo message="Cleaning Tomcat log files ...."/>
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${tomcat.home}/logs" includes="*"/>
+        </delete>
+    </target>
+
+    <!--+
+        | Clean the Tomcat work files.
+        +-->
+    <target name="tomcat.clean.work" depends="">
+        <echo message=""/>
+        <echo message="Cleaning Tomcat work files ...."/>
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${tomcat.home}/work" includes="**"/>
+        </delete>
+    </target>
+
+    <!--+
+        | Clean the Tomcat endorsed libraries.
+        +-->
+    <target name="tomcat.clean.endorsed" depends="">
+        <echo message=""/>
+        <echo message="Cleaning Tomcat endorsed libraries ...."/>
+        <delete verbose="false" failonerror="false">
+            <fileset dir="${tomcat.home}/common/endorsed">
+                <include name="*.jar"/>
+                <include name="**.jar"/>
+                <include name="**/*.jar"/>
+                <include name="**/**.jar"/>
+            </fileset>
+        </delete>
+    </target>
+
+    <!--+
+        | Clean all the Tomcat temp files.
+        +-->
+    <target name="tomcat.clean" depends="">
+        <antcall target="tomcat.clean.log"/>
+        <antcall target="tomcat.clean.work"/>
+    </target>
+
+    <!-- ================ Tomcat manager tasks ================ -->
+    <!--+
+        | Define the Tomcat manager tasks
+        +-->
+    <target name="tomcat.tasks" depends="">
+        <taskdef name="tomcat.deploy"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.DeployTask"/>
+        <taskdef name="tomcat.install"   classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.InstallTask"/>
+        <taskdef name="tomcat.list"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ListTask"/>
+        <taskdef name="tomcat.reload"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ReloadTask"/>
+        <taskdef name="tomcat.remove"    classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RemoveTask"/>
+        <taskdef name="tomcat.resources" classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.ResourcesTask"/>
+        <taskdef name="tomcat.roles"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.RolesTask"/>
+        <taskdef name="tomcat.start"     classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StartTask"/>
+        <taskdef name="tomcat.stop"      classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.StopTask"/>
+        <taskdef name="tomcat.undeploy"  classpath="${tomcat.home}/server/lib/catalina-ant.jar" classname="org.apache.catalina.ant.UndeployTask"/>
+    </target>
+
+    <!--+
+        | Configure the Tomcat manager password
+        +-->
+    <target name="tomcat.manager.config" depends="">
+        <echo message=""/>
+        <echo message="Configuring Tomcat manager account ...."/>
+        <!--+
+            | Update the tomcat users with our name and password.
+            +-->
+        <xslt
+            style="${basedir}/xsl/tomcat-users.xsl"
+            in="${tomcat.home}/conf/tomcat-users.xml"
+            out="${tomcat.home}/conf/tomcat-users.tmp">
+            <!-- Set the XSL output -->
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="account.name" expression="${tomcat.manager.name}"/>
+            <param name="account.pass" expression="${tomcat.manager.pass}"/>
+            <param name="account.role" expression="manager"/>
+        </xslt>
+        <!--+
+            | Replace the existing file with the new one.
+            + -->
+        <move overwrite="true" failonerror="false"
+            file="${tomcat.home}/conf/tomcat-users.tmp"
+            tofile="${tomcat.home}/conf/tomcat-users.xml"/>
+    </target>
+
+    <!--+
+        | Wait for the Tomcat manager to respond.
+        +-->
+    <target name="tomcat.manager.wait" depends="">
+        <echo message=""/>
+        <echo message="Waiting for Tomcat manager ...."/>
+        <echo message="URL : ${tomcat.manager.url}/"/>
+        <waitfor maxwait="${tomcat.timeout}" maxwaitunit="second" checkevery="500">
+            <http url="${tomcat.manager.url}/"/>
+        </waitfor>
+    </target>
+
+    <!-- ================ Tomcat config tasks ================ -->
+
+
+</project>
+
+

@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/common/policy/manager/Attic/PolicyManagerServiceTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerServiceTest.java,v $
+ *   Revision 1.3  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.2.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -39,7 +50,7 @@ import java.net.URL ;
 import org.apache.axis.client.Call ;
 import org.apache.axis.client.AdminClient ;
 
-import org.astrogrid.community.server.common.CommunityServerTest ;
+import org.astrogrid.community.server.common.CommunityServiceTest ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
@@ -60,7 +71,7 @@ import org.astrogrid.community.common.policy.manager.PolicyManager ;
  *
  */
 public class PolicyManagerServiceTest
-    extends CommunityServerTest
+    extends CommunityServiceTest
     {
     /**
      * Switch for our debug statements.
@@ -68,75 +79,75 @@ public class PolicyManagerServiceTest
      */
     private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Setup our test.
-	 *
-	 */
-	public void setUp()
+    /**
+     * Setup our test.
+     *
+     */
+    public void setUp()
         throws Exception
-		{
-		super.setUp() ;
+        {
+        super.setUp() ;
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("PolicyManagerServiceTest:setup()") ;
-		//
-		// Not sure what we need yet ...
-		//
+        //
+        // Not sure what we need yet ...
+        //
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-		}
+        }
 
-	/**
-	 * Test we can create a local service.
-	 *
-	 */
-	public void testCreateDefaultService()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("PolicyManagerServiceTest:testCreateDefaultService()") ;
+    /**
+     * Test we can create a local service.
+     *
+     */
+    public void testCreateDefaultService()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("PolicyManagerServiceTest:testCreateDefaultService()") ;
 
-		//
-		// Initialise the Axis 'local:' URL protocol.
-		Call.initialize() ;
-		//
-		// Create our local endpoint address.
-		URL endpoint = new URL("local:///PolicyManager") ;
+        //
+        // Initialise the Axis 'local:' URL protocol.
+        Call.initialize() ;
+        //
+        // Create our local endpoint address.
+        URL endpoint = new URL("local:///PolicyManager") ;
 
-		//
-		// Deploy our local service.
-		String[] args = {
-			"-l",
-			"local:///AdminService",
-			"target/generated/wsdd/PolicyManager.wsdd"
-			} ;
-		AdminClient.main(args);
+        //
+        // Deploy our local service.
+        String[] args = {
+            "-l",
+            "local:///AdminService",
+            "target/generated/wsdd/PolicyManager.wsdd"
+            } ;
+        AdminClient.main(args);
 
-		//
-		// Try creating a PolicyManagerServiceLocator.
-		PolicyManagerService locator = new PolicyManagerServiceLocator() ;
-		assertNotNull(
-			"Null PolicyManagerService locator",
-			locator) ;
-		//
-		// Try getting a local PolicyManager service.
-		PolicyManager service = locator.getPolicyManager(endpoint) ;
-		assertNotNull(
-			"Null PolicyManager service",
-			service) ;
+        //
+        // Try creating a PolicyManagerServiceLocator.
+        PolicyManagerService locator = new PolicyManagerServiceLocator() ;
+        assertNotNull(
+            "Null PolicyManagerService locator",
+            locator) ;
+        //
+        // Try getting a local PolicyManager service.
+        PolicyManager service = locator.getPolicyManager(endpoint) ;
+        assertNotNull(
+            "Null PolicyManager service",
+            service) ;
 /*
  * TODO
  * Remove this until I get the test database config fixed.
-		//
-		// Try using the service.
-		assertNotNull(
-			"Null Account",
-			service.addAccount("frog")
-			) ;
+        //
+        // Try using the service.
+        assertNotNull(
+            "Null Account",
+            service.addAccount("frog")
+            ) ;
  *
  */
 
-		}
-	}
+        }
+    }
 
 

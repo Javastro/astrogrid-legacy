@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/AccountManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/02/19 21:09:26  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -28,24 +39,6 @@
  *   Revision 1.2.4.1  2004/01/17 13:54:18  dave
  *   Removed password from AccountData
  *
-=======
- *   Revision 1.2.4.5  2004/02/06 16:19:04  dave
- *   Replaced import java.rmi.Remote
- *   Replaced import java.rmi.RemoteException
- *
- *   Revision 1.2.4.4  2004/02/06 16:15:49  dave
- *   Removed import java.rmi.RemoteException
- *
- *   Revision 1.2.4.3  2004/02/06 16:14:17  dave
- *   Removed import java.rmi.Remote
- *
- *   Revision 1.2.4.2  2004/02/06 16:06:05  dave
- *   Commented out Remote import
- *
- *   Revision 1.2.4.1  2004/01/17 13:54:18  dave
- *   Removed password from AccountData
- *
->>>>>>> 1.2.4.5
  *   Revision 1.2  2004/01/07 10:45:38  dave
  *   Merged development branch, dave-dev-20031224, back into HEAD
  *
@@ -86,8 +79,10 @@ import java.rmi.RemoteException ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 
+import org.astrogrid.community.common.service.CommunityService ;
+
 public interface AccountManager
-    extends Remote
+    extends Remote, CommunityService
     {
     /**
      * Create a new Account, given the Account name.
@@ -99,20 +94,20 @@ public interface AccountManager
     /**
      * Request a password for an account
      * Removed for refactoring.
-	 *
-	public String getPassword(String name) throws RemoteException;
-	 *
-	 */
+     *
+    public String getPassword(String name) throws RemoteException;
+     *
+     */
 
     /**
      * Update an Account password.
      *
      * Removed for refactoring.
-	 *
+     *
     public AccountData setPassword(String account, String password)
         throws RemoteException ;
-	 *
-	 */
+     *
+     */
 
     /**
      * Request an Account data, given the Account name.

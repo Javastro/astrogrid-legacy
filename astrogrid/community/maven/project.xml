@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.6  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.5.2.2  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.5.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
     |   Revision 1.5  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -42,13 +51,13 @@
     | </cvs:log>
     +-->
 <project
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:ant="jelly:ant"
-	xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ant="jelly:ant"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
     <!--+
         | Force a load of the version properties file
-		| Guess ... didn't work.
+        | Guess ... didn't work.
     <ant:property file="versions.properties"/>
     <ant:echo message="astrogrid.community.version : ${astrogrid.community.version}"/>
         +-->
@@ -61,7 +70,7 @@
     <!--+
         | The short name of the project group.
         | This value is used to group all jars for a project in one directory.
-		| TODO - This should come from the top level master project.
+        | TODO - This should come from the top level master project.
     <groupId>org.astrogrid</groupId>
     <groupId>astrogrid-community</groupId>
         +-->
@@ -78,10 +87,10 @@
 
     <!--+
         | The current versions of other AstroGrid components.
-		| Guess ... didn't work.
+        | Guess ... didn't work.
     <astrogridVersions>
-		<community>SNAPSHOT</community>
-		<myspace>SNAPSHOT</myspace>
+        <community>SNAPSHOT</community>
+        <myspace>SNAPSHOT</myspace>
     </astrogridVersions>
         +-->
 
@@ -100,49 +109,49 @@
     <!--+
         | Bugzilla URL.
         +-->
-	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
 
     <!--+
         | The project developers.
         +-->
-	<developers>
-	    <!--+
-	        | Kevin Benson
-	        +-->
-		<developer>
-			<name>Kevin Benson</name>
-			<id>KevinBenson</id>
-			<email>kmb@mssl.ucl.ac.uk</email>
-			<organization>MSSL</organization>
-			<roles>
-				<role>Work group leader</role>
-			</roles>
-		</developer>
-	    <!--+
-	        | Brian McIlwrath
-	        +-->
-		<developer>
-			<name>Brian McIlwrath</name>
-			<id>bkm</id>
-			<email>bkm@star.rl.ac.uk</email>
-			<organization>CCLRC/RAL/SSTD/Astrogrid</organization>
-			<roles>
-				<role>Software developer</role>
-			</roles>
-		</developer>
-	    <!--+
-	        | Dave Morris
-	        +-->
-		<developer>
-			<name>Dave Morris</name>
-			<id>dave</id>
-			<email>maven-report@codon.demon.co.uk</email>
-			<organization>IoA Cambridge</organization>
-			<roles>
-				<role>Software developer</role>
-			</roles>
-		</developer>
-	</developers>
+    <developers>
+        <!--+
+            | Kevin Benson
+            +-->
+        <developer>
+            <name>Kevin Benson</name>
+            <id>KevinBenson</id>
+            <email>kmb@mssl.ucl.ac.uk</email>
+            <organization>MSSL</organization>
+            <roles>
+                <role>Work group leader</role>
+            </roles>
+        </developer>
+        <!--+
+            | Brian McIlwrath
+            +-->
+        <developer>
+            <name>Brian McIlwrath</name>
+            <id>bkm</id>
+            <email>bkm@star.rl.ac.uk</email>
+            <organization>CCLRC/RAL/SSTD/Astrogrid</organization>
+            <roles>
+                <role>Software developer</role>
+            </roles>
+        </developer>
+        <!--+
+            | Dave Morris
+            +-->
+        <developer>
+            <name>Dave Morris</name>
+            <id>dave</id>
+            <email>maven-report@codon.demon.co.uk</email>
+            <organization>IoA Cambridge</organization>
+            <roles>
+                <role>Software developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <!--+
         | Describes the licenses for this project.
@@ -166,27 +175,13 @@
         </dependency>
         <!--+
             | The 3rd party jars that Axis depends on.
-            +-->
         <dependency>
             <groupId>jaf</groupId>
             <artifactId>jaf</artifactId>
             <version>1.0.2</version>
             <type>jar</type>
         </dependency>
-        <!--+
-            | The JConfig jars.
-            | Soon to be replaced by the AstroGrid common tools.
             +-->
-        <dependency>
-            <groupId>jconfig</groupId>
-            <artifactId>jconfig</artifactId>
-            <version>2.2</version>
-            <type>jar</type>
-            <url>http://www.jconfig.org/</url>
-            <properties>
-                <dist.zip>true</dist.zip>
-            </properties>
-        </dependency>
     </dependencies>
 
     <!--+

@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -99,11 +110,11 @@ import org.astrogrid.community.common.policy.data.CommunityIdent ;
 
 import org.astrogrid.community.common.policy.manager.GroupManager ;
 
-import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.common.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class GroupManagerImpl
-	extends CommunityServer
+    extends CommunityServiceImpl
     implements GroupManager
     {
     /**
@@ -118,7 +129,7 @@ public class GroupManagerImpl
      */
     public GroupManagerImpl()
         {
-		super() ;
+        super() ;
         }
 
     /**
@@ -127,7 +138,16 @@ public class GroupManagerImpl
      */
     public GroupManagerImpl(DatabaseConfiguration config)
         {
-		super(config) ;
+        super(config) ;
+        }
+
+    /**
+     * Public constructor, using a parent service.
+     *
+     */
+    public GroupManagerImpl(CommunityServiceImpl parent)
+        {
+        super(parent) ;
         }
 
     /**
@@ -162,23 +182,23 @@ public class GroupManagerImpl
                 {
                 //
                 // Create our new Group object.
-				group = new GroupData() ;
-				group.setIdent(ident.toString()) ;
+                group = new GroupData() ;
+                group.setIdent(ident.toString()) ;
                 //
                 // Try performing our transaction.
                 try {
-					//
-					// Open our database connection.
-					database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
                     //
                     // Try creating the group in the database.
                     database.create(group);
-					//
-					// Commit the transaction.
-					database.commit() ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we already have an object with that ident.
@@ -186,35 +206,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (DuplicateIdentityException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.addGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.addGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.addGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.addGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -246,9 +266,9 @@ public class GroupManagerImpl
      */
     public GroupData getGroup(String name)
         {
-		//CommunityIdent ident = new CommunityIdent(name) ;
-		//ident.setIdent(name) ;
-		return this.getGroup(new CommunityIdent(name)) ;
+        //CommunityIdent ident = new CommunityIdent(name) ;
+        //ident.setIdent(name) ;
+        return this.getGroup(new CommunityIdent(name)) ;
         }
 
     /**
@@ -273,18 +293,18 @@ public class GroupManagerImpl
             if (ident.isLocal())
                 {
                 try {
-					//
-					// Open our database connection.
-					database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
                     //
                     // Load the Group from the database.
                     group = (GroupData) database.load(GroupData.class, ident.toString()) ;
-					//
-					// Commit the transaction.
-					database.commit() ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
@@ -292,35 +312,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.getGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.getGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.getGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.getGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -375,9 +395,9 @@ public class GroupManagerImpl
                 //
                 // Try update the database.
                 try {
-					//
-					// Open our database connection.
-					database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -389,10 +409,10 @@ public class GroupManagerImpl
                     data.setDescription(group.getDescription()) ;
 //
 // Should not be able to modify the type.
-//					data.setType(group.getType()) ;
-					//
-					// Commit the transaction.
-					database.commit() ;
+//                    data.setType(group.getType()) ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
@@ -400,35 +420,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.setGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.setGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.setGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.setGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -460,9 +480,9 @@ public class GroupManagerImpl
      */
     public GroupData delGroup(String name)
         {
-		//CommunityIdent ident = new CommunityIdent() ;
-		//ident.setIdent(name) ;
-		return this.delGroup(new CommunityIdent(name)) ;
+        //CommunityIdent ident = new CommunityIdent() ;
+        //ident.setIdent(name) ;
+        return this.delGroup(new CommunityIdent(name)) ;
         }
 
     /**
@@ -492,9 +512,9 @@ public class GroupManagerImpl
                 //
                 // Try update the database.
                 try {
-					//
-					// Open our database connection.
-					database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -504,9 +524,9 @@ public class GroupManagerImpl
                     //
                     // Delete the Group.
                     database.remove(group) ;
-					//
-					// Commit the transaction.
-					database.commit() ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
@@ -514,35 +534,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.delGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.delGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "GroupManagerImpl.delGroup()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "GroupManagerImpl.delGroup()") ;
                     //
                     // Set the response to null.
                     group = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -583,9 +603,9 @@ public class GroupManagerImpl
         Object[] array = null ;
         Database database = null ;
         try {
-			//
-			// Open our database connection.
-			database = this.getDatabase() ;
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -611,29 +631,29 @@ public class GroupManagerImpl
             //
             // Convert it into an array.
             array = collection.toArray() ;
-			//
-			// Commit the transaction.
-			database.commit() ;
+            //
+            // Commit the transaction.
+            database.commit() ;
             }
         //
         // If anything went bang.
         catch (Exception ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.getLocalGroups()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.getLocalGroups()") ;
             //
             // Set the response to null.
             array = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // Close our database connection.
         finally
             {
-			closeConnection(database) ;
+            closeConnection(database) ;
             }
         // TODO
         // Need to return something to the client.
@@ -697,18 +717,18 @@ public class GroupManagerImpl
         // Try performing our transaction.
         Database database = null ;
         try {
-			//
-			// Open our database connection.
-			database = this.getDatabase() ;
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
             //
             // Try creating the record in the database.
             database.create(member);
-			//
-			// Commit the transaction.
-			database.commit() ;
+            //
+            // Commit the transaction.
+            database.commit() ;
             }
         //
         // If the account is already a member of this group.
@@ -716,35 +736,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (DuplicateIdentityException ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.addGroupMember()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.addGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.addGroupMember()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.addGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // Close our database connection.
         finally
             {
-			closeConnection(database) ;
+            closeConnection(database) ;
             }
         //
         // TODO
@@ -786,9 +806,9 @@ public class GroupManagerImpl
         GroupMemberData member   = null ;
         Database        database = null ;
         try {
-			//
-			// Open our database connection.
-			database = this.getDatabase() ;
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -807,9 +827,9 @@ public class GroupManagerImpl
             //
             // Delete the record.
             database.remove(member) ;
-			//
-			// Commit the transaction.
-			database.commit() ;
+            //
+            // Commit the transaction.
+            database.commit() ;
             }
         //
         // If we couldn't find the object.
@@ -817,35 +837,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.delGroupMember()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.delGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.delGroupMember()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.delGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // Close our database connection.
         finally
             {
-			closeConnection(database) ;
+            closeConnection(database) ;
             }
         //
         // TODO
@@ -870,9 +890,9 @@ public class GroupManagerImpl
         GroupMemberData member   = null ;
         Database        database = null ;
         try {
-			//
-			// Open our database connection.
-			database = this.getDatabase() ;
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -888,9 +908,9 @@ public class GroupManagerImpl
             //
             // Load the GroupMember from the database.
             member = (GroupMemberData) database.load(GroupMemberData.class, key) ;
-			//
-			// Commit the transaction.
-			database.commit() ;
+            //
+            // Commit the transaction.
+            database.commit() ;
             }
         //
         // If we couldn't find the object.
@@ -898,35 +918,35 @@ public class GroupManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
         catch (ObjectNotFoundException ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.getGroupMember()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.getGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // If anything else went bang.
         catch (Exception ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "GroupManagerImpl.getGroupMember()") ;
+            //
+            // Log the exception.
+            logException(ouch, "GroupManagerImpl.getGroupMember()") ;
             //
             // Set the response to null.
             member = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // Close our database connection.
         finally
             {
-			closeConnection(database) ;
+            closeConnection(database) ;
             }
         //
         // TODO
@@ -956,9 +976,9 @@ public class GroupManagerImpl
             //
             // Try to query the database.
             try {
-				//
-				// Open our database connection.
-				database = this.getDatabase() ;
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
                 //
                 // Begin a new database transaction.
                 database.begin();
@@ -983,30 +1003,30 @@ public class GroupManagerImpl
                 // 
                 // Convert it into an array.
                 array = collection.toArray() ;
-				//
-				// Commit the transaction.
-				database.commit() ;
+                //
+                // Commit the transaction.
+                database.commit() ;
                 }
             //
             // If anything went bang.
             catch (Exception ouch)
                 {
-				//
-				// Log the exception.
-				logException(ouch, "GroupManagerImpl.getGroupList()") ;
+                //
+                // Log the exception.
+                logException(ouch, "GroupManagerImpl.getGroupList()") ;
                 //
                 // Set the response to null.
                 array = null ;
-				//
-				// Cancel the database transaction.
-				rollbackTransaction(database) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 }
-	        //
-	        // Close our database connection.
-	        finally
-	            {
-				closeConnection(database) ;
-	            }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
             }
         //
         // If the Group is not local.
@@ -1027,9 +1047,9 @@ public class GroupManagerImpl
      */
     public Object[] getLocalAccountGroups(String account)
         {
-		//CommunityIdent ident = new CommunityIdent() ;
-		//ident.setIdent(account) ;
-		return this.getLocalAccountGroups(new CommunityIdent(account)) ;
+        //CommunityIdent ident = new CommunityIdent() ;
+        //ident.setIdent(account) ;
+        return this.getLocalAccountGroups(new CommunityIdent(account)) ;
         }
 
     /**
@@ -1052,9 +1072,9 @@ public class GroupManagerImpl
             //
             // Try to query the database.
             try {
-				//
-				// Open our database connection.
-				database = this.getDatabase() ;
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
                 //
                 // Begin a new database transaction.
                 database.begin();
@@ -1079,30 +1099,30 @@ public class GroupManagerImpl
                 // 
                 // Convert it into an array.
                 array = collection.toArray() ;
-				//
-				// Commit the transaction.
-				database.commit() ;
+                //
+                // Commit the transaction.
+                database.commit() ;
                 }
             //
             // If anything went bang.
             catch (Exception ouch)
                 {
-				//
-				// Log the exception.
-				logException(ouch, "GroupManagerImpl.getLocalAccountGroups()") ;
+                //
+                // Log the exception.
+                logException(ouch, "GroupManagerImpl.getLocalAccountGroups()") ;
                 //
                 // Set the response to null.
                 array = null ;
-				//
-				// Cancel the database transaction.
-				rollbackTransaction(database) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
                 }
-	        //
-	        // Close our database connection.
-	        finally
-	            {
-				closeConnection(database) ;
-	            }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
             }
         //
         // If the Account ident is not valid.

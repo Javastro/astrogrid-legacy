@@ -1,11 +1,20 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/database/castor/Attic/CastorDatabaseManagerTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/database/castor/Attic/CastorDatabaseConfigurationFactoryTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
  * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: CastorDatabaseManagerTest.java,v $
+ *   $Log: CastorDatabaseConfigurationFactoryTest.java,v $
+ *   Revision 1.2  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.1.2.1  2004/02/19 14:51:00  dave
+ *   Changed DatabaseManager to DatabaseConfigurationFactory.
+ *
+ *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -23,8 +32,8 @@
  */
 package org.astrogrid.community.server.database.castor ;
 
-import org.astrogrid.community.server.database.DatabaseManager ;
 import org.astrogrid.community.server.database.DatabaseConfiguration ;
+import org.astrogrid.community.server.database.DatabaseConfigurationFactory ;
 
 import junit.framework.TestCase ;
 
@@ -38,7 +47,7 @@ import java.io.FileNotFoundException ;
  * Test cases for our DatabaseConfiguration.
  *
  */
-public class CastorDatabaseManagerTest
+public class CastorDatabaseConfigurationFactoryTest
     extends TestCase
     {
     /**
@@ -48,7 +57,7 @@ public class CastorDatabaseManagerTest
     private static boolean DEBUG_FLAG = true ;
 
     /**
-     * Try creating a CastorDatabaseManager.
+     * Try creating a CastorDatabaseConfigurationFactory.
      *
      */
     public void testCreateManager()
@@ -56,12 +65,12 @@ public class CastorDatabaseManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CastorDatabaseManagerTest:testCreateManager()") ;
+        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationFactoryTest:testCreateManager()") ;
         //
         // Create our database manager.
         assertNotNull("Null manager",
-        	new CastorDatabaseManager()
-			) ;
+            new CastorDatabaseConfigurationFactory()
+            ) ;
         }
 
     /**
@@ -73,70 +82,70 @@ public class CastorDatabaseManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CastorDatabaseManagerTest:testCreateConfiguration()") ;
+        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationFactoryTest:testCreateConfiguration()") ;
         //
         // Create our database manager.
-        CastorDatabaseManager manager = new CastorDatabaseManager() ;
+        CastorDatabaseConfigurationFactory manager = new CastorDatabaseConfigurationFactory() ;
         assertNotNull("Null manager", manager) ;
         //
-        // Create our database.
-        manager.initConfiguration("test-database-001") ;
+        // Load our database configuration.
+        manager.loadDatabaseConfiguration("test-database-001") ;
         //
         // Check we got a valid configuration
         assertNotNull("Null database configuration",
-        	manager.getConfiguration("test-database-001")
-        	) ;
+            manager.getDatabaseConfiguration("test-database-001")
+            ) ;
         //
         // Check we can get a database connection.
         assertNotNull("Null database connection",
-        	manager.getDatabase("test-database-001")
-        	) ;
+            manager.getDatabase("test-database-001")
+            ) ;
         }
 
     /**
      * Try initialising two different database configurations.
      *
      * TODO Need to use different resource files.
-     * Using same resource files CastorDatabaseManager does not load the configuration again.
+     * Using same resource files CastorDatabaseConfigurationFactory does not load the configuration again.
      */
     public void testInitDifferent()
         throws Exception
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CastorDatabaseManagerTest:testInitDifferent()") ;
+        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationFactoryTest:testInitDifferent()") ;
         //
         // Create our database manager.
-        CastorDatabaseManager manager = new CastorDatabaseManager() ;
+        CastorDatabaseConfigurationFactory manager = new CastorDatabaseConfigurationFactory() ;
         assertNotNull("Null manager", manager) ;
 
         //
         // Create a new database configuration.
-        manager.initConfiguration("test-database-002") ;
+        manager.loadDatabaseConfiguration("test-database-002") ;
         //
         // Check we got a valid configuration
         assertNotNull("Null database configuration",
-			manager.getConfiguration("test-database-002")
-			) ;
+            manager.getDatabaseConfiguration("test-database-002")
+            ) ;
         //
         // Check we can get a database connection.
         assertNotNull("Null database connection",
-			manager.getDatabase("test-database-002")
-			) ;
+            manager.getDatabase("test-database-002")
+            ) ;
 
         //
         // Create a new database configuration.
-        manager.initConfiguration("test-database-003") ;
+        manager.loadDatabaseConfiguration("test-database-003") ;
         //
         // Check we got a valid configuration
         assertNotNull("Null database configuration",
-        	manager.getConfiguration("test-database-003")
-        	) ;
+            manager.getDatabaseConfiguration("test-database-003")
+            ) ;
         //
         // Check we can get a database connection.
         assertNotNull("Null database connection",
-	        manager.getDatabase("test-database-003")
-	        ) ;
+            manager.getDatabase("test-database-003")
+            ) ;
         }
 
     /**
@@ -148,22 +157,22 @@ public class CastorDatabaseManagerTest
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("CastorDatabaseManagerTest:testInitResource()") ;
+        if (DEBUG_FLAG) System.out.println("CastorDatabaseConfigurationFactoryTest:testInitResource()") ;
         //
         // Create our database manager.
-        CastorDatabaseManager manager = new CastorDatabaseManager() ;
+        CastorDatabaseConfigurationFactory manager = new CastorDatabaseConfigurationFactory() ;
         //
         // Create a new database configuration.
-        manager.initConfiguration("test-database-004", "test-database-004.xml") ;
+        manager.loadDatabaseConfiguration("test-database-004", "test-database-004.xml", null) ;
         //
         // Check we got a valid configuration
         assertNotNull("Null database configuration",
-        	manager.getConfiguration("test-database-004")
-        	) ;
+            manager.getDatabaseConfiguration("test-database-004")
+            ) ;
         //
         // Check we can get a database connection.
         assertNotNull("Null database connection",
-        	manager.getDatabase("test-database-004")
-        	) ;
+            manager.getDatabase("test-database-004")
+            ) ;
         }
     }

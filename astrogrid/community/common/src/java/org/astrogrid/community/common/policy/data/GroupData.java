@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/GroupData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupData.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -166,61 +172,61 @@ public class GroupData
         this.type = value ;
         }
 
-	/*
-	 * Compare this with another GroupData.
-	 * All we want to check is the Group ident.
-	 * TODO This needs to refactored to check for local community in the ident.
-	 *
-	 */
-	public synchronized boolean equals(Object that)
-		{
-		//
-		// If that is null.
-		if (null == that)
-			{
-			return false ;
-			}
-		//
-		// If that is not null.
-		else {
-			//
-			// If that is an GroupData
-			if (that instanceof GroupData)
-				{
-				GroupData group = (GroupData) that ;
-				//
-				// If our ident is null
-				if (null == this.getIdent())
-					{
-					//
-					// Check that ident is null.
-					return (null == group.getIdent()) ;
-					}
-				//
-				// If our ident is not null.
-				else {
-					//
-					// Check that ident is the same.
-					return (this.getIdent().equals(group.getIdent())) ;
-					}
-				}
-			//
-			// If that is not an GroupData
-			else {
-				return false ;
-				}
-			}
-		}
+    /*
+     * Compare this with another GroupData.
+     * All we want to check is the Group ident.
+     * TODO This needs to refactored to check for local community in the ident.
+     *
+     */
+    public synchronized boolean equals(Object that)
+        {
+        //
+        // If that is null.
+        if (null == that)
+            {
+            return false ;
+            }
+        //
+        // If that is not null.
+        else {
+            //
+            // If that is an GroupData
+            if (that instanceof GroupData)
+                {
+                GroupData group = (GroupData) that ;
+                //
+                // If our ident is null
+                if (null == this.getIdent())
+                    {
+                    //
+                    // Check that ident is null.
+                    return (null == group.getIdent()) ;
+                    }
+                //
+                // If our ident is not null.
+                else {
+                    //
+                    // Check that ident is the same.
+                    return (this.getIdent().equals(group.getIdent())) ;
+                    }
+                }
+            //
+            // If that is not an GroupData
+            else {
+                return false ;
+                }
+            }
+        }
 
-	/**
-	 * Generate a hash code for comparison tests.
-	 * Just uses the ident.hashCode().
-	 * TODO This needs to refactored to check for local community in the ident.
-	 *
-	 */
-	public synchronized int hashCode()
-		{
-		return (null != this.ident) ? this.ident.hashCode() : 0 ;
-		}
+    /**
+     * Generate a hash code for comparison tests.
+     * Just uses the ident.hashCode().
+     * TODO This needs to refactored to check for local community in the ident.
+     *
+     */
+    public synchronized int hashCode()
+        {
+        return (null != this.ident) ? this.ident.hashCode() : 0 ;
+        }
 
     }

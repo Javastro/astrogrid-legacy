@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.4.2.2  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.4.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -60,14 +69,6 @@
         +-->
 
     <!--+
-        | Primary goals are :
-        |     clean
-        |     install-artifact
-        |     install-snapshot
-        |     site
-        +-->
-
-    <!--+
         | Debug info ....
         +-->
     <goal name="info">
@@ -76,10 +77,7 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
 
-    <!--+
-        | Reactor goals.
-        | These are just placeholder targets for the reactor to call.
-        +-->
+    <!-- ================ Reactor goals ================ -->
 
     <!--+
         | Clean our build target.
@@ -106,22 +104,22 @@
             | Build our zip file ....
             +-->
         <attainGoal name="build.zipfile"/>
-		<!--+
-			| The rest is basically copy-paste from jar:install-snapshot,
-			| with 'jar' crossed out and 'zip' written in in crayon..
-			+-->
-		<ant:property name="zipdir__" value="${maven.repo.local}/${pom.artifactDirectory}/zips"/>
-		<ant:mkdir dir="${zipdir__}"/>
-		<ant:copy
-			file="${maven.build.dir}/${maven.final.name}.zip"
-			tofile="${zipdir__}/${pom.artifactId}-SNAPSHOT.zip"
-			overwrite="true"
-			/>
-		<ant:copy
-			file="${maven.build.dir}/${maven.final.name}.zip"
-			tofile="${zipdir__}/${maven.final.name}.zip"
-			overwrite="true"
-			/>
+        <!--+
+            | The rest is basically copy-paste from jar:install-snapshot,
+            | with 'jar' crossed out and 'zip' written in in crayon..
+            +-->
+        <ant:property name="zipdir__" value="${maven.repo.local}/${pom.artifactDirectory}/zips"/>
+        <ant:mkdir dir="${zipdir__}"/>
+        <ant:copy
+            file="${maven.build.dir}/${maven.final.name}.zip"
+            tofile="${zipdir__}/${pom.artifactId}-SNAPSHOT.zip"
+            overwrite="true"
+            />
+        <ant:copy
+            file="${maven.build.dir}/${maven.final.name}.zip"
+            tofile="${zipdir__}/${maven.final.name}.zip"
+            overwrite="true"
+            />
     </goal>
 
     <!--+
@@ -133,31 +131,31 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building install toolkit ...."/>
-		<!--+
-			| Set the SNAPSHOT name.
-			+-->
-		<maven:snapshot project="${pom}"/>    
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Set the SNAPSHOT name.
+            +-->
+        <maven:snapshot project="${pom}"/>    
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
         <!--+
             | Build our zip file ....
             +-->
         <attainGoal name="build.zipfile"/>
-		<!--+
-			| The rest is basically copy-paste from jar:install-snapshot,
-			| with 'jar' crossed out and 'zip' written in in crayon..
-			+-->
-		<ant:property name="zipdir__" value="${maven.repo.local}/${pom.artifactDirectory}/zips"/>
-		<ant:mkdir dir="${zipdir__}"/>
-		<ant:copy
-			file="${maven.build.dir}/${maven.final.name}.zip"
-			tofile="${zipdir__}/${pom.artifactId}-SNAPSHOT.zip"
-			overwrite="true"
-			/>
-		<ant:copy
-			file="${maven.build.dir}/${maven.final.name}.zip"
-			tofile="${zipdir__}/${maven.final.name}.zip"
-			overwrite="true"
-			/>
+        <!--+
+            | The rest is basically copy-paste from jar:install-snapshot,
+            | with 'jar' crossed out and 'zip' written in in crayon..
+            +-->
+        <ant:property name="zipdir__" value="${maven.repo.local}/${pom.artifactDirectory}/zips"/>
+        <ant:mkdir dir="${zipdir__}"/>
+        <ant:copy
+            file="${maven.build.dir}/${maven.final.name}.zip"
+            tofile="${zipdir__}/${pom.artifactId}-SNAPSHOT.zip"
+            overwrite="true"
+            />
+        <ant:copy
+            file="${maven.build.dir}/${maven.final.name}.zip"
+            tofile="${zipdir__}/${maven.final.name}.zip"
+            overwrite="true"
+            />
     </goal>
 
     <!--+
@@ -175,16 +173,13 @@
             +-->
     </goal>
 
-    <!--+
-        | Project goals.
-        | These are the main project goals.
-        +-->
+    <!-- ================ Project goals ================ -->
 
     <!--+
         | Copy our Community WebApp war file.
         +-->
     <goal name="install.webapp">
-        <ant:echo message="Locating Community webapp war ...."/>
+        <ant:echo message="Installing Community webapp war ...."/>
         <!--+
             | Check if we have already done this.
             +-->
@@ -194,7 +189,7 @@
             <!--+
                 | Create our target directory.
                 +-->
-			<ant:mkdir dir="${maven.build.dir}/install/war"/>
+            <ant:mkdir dir="${maven.build.dir}/install/war"/>
             <!--+
                 | Project.getDependencyPath() only works for jar and ejb files.
                 | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
@@ -213,7 +208,7 @@
                     <!--+
                         | Copy the war file to our target directory.
                         +-->
-					<ant:copy file="${artifact.getPath()}" toDir="${maven.build.dir}/install/war"/>
+                    <ant:copy file="${artifact.getPath()}" toDir="${maven.build.dir}/install/war"/>
                 </core:if>
             </core:forEach>
         </core:if>
@@ -223,7 +218,7 @@
         | Copy our Community client jar file.
         +-->
     <goal name="install.client">
-        <ant:echo message="Locating Community client jar ...."/>
+        <ant:echo message="Installing Community client jar ...."/>
         <!--+
             | Check if we have already done this.
             +-->
@@ -233,7 +228,7 @@
             <!--+
                 | Create our target directory.
                 +-->
-			<ant:mkdir dir="${maven.build.dir}/install/lib"/>
+            <ant:mkdir dir="${maven.build.dir}/install/lib"/>
             <!--+
                 | Project.getDependencyPath() only works for jar and ejb files.
                 | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
@@ -246,13 +241,14 @@
                 <core:if test="${artifact.dependency.getProperty('jar.fileset')=='true'}">
                     <ant:echo message="Found Community jar"/>
                     <ant:echo message="  Ident    : ${artifact.getDependency().getId()}"/>
+                    <ant:echo message="  Version  : ${artifact.getDependency().getVersion()}"/>
                     <ant:echo message="  Type     : ${artifact.getDependency().getType()}"/>
                     <ant:echo message="  Name     : ${artifact.getName()}"/>
                     <ant:echo message="  Path     : ${artifact.getPath()}"/>
                     <!--+
                         | Copy the jar file to our target directory.
                         +-->
-					<ant:copy file="${artifact.getPath()}" toDir="${maven.build.dir}/install/jar"/>
+                    <ant:copy file="${artifact.getPath()}" toDir="${maven.build.dir}/install/jar"/>
                 </core:if>
             </core:forEach>
         </core:if>
@@ -262,7 +258,7 @@
         | Copy our 3rd party libraries.
         +-->
     <goal name="install.depends">
-        <ant:echo message="Locating 3rd party libraries ...."/>
+        <ant:echo message="Installing 3rd party libraries ...."/>
         <!--+
             | Check if we have already done this.
             +-->
@@ -272,7 +268,7 @@
             <!--+
                 | Create our target directory.
                 +-->
-			<ant:mkdir dir="${maven.build.dir}/install/lib"/>
+            <ant:mkdir dir="${maven.build.dir}/install/lib"/>
             <!--+
                 | Project.getDependencyPath() only works for jar and ejb files.
                 | See : http://maven.apache.org/xref/org/apache/maven/DependencyClasspathBuilder.html#100
@@ -285,16 +281,37 @@
                 <core:if test="${artifact.dependency.getProperty('lib.fileset')=='true'}">
                     <ant:echo message="Found 3rd party library"/>
                     <ant:echo message="  Ident    : ${artifact.getDependency().getId()}"/>
+                    <ant:echo message="  Version  : ${artifact.getDependency().getVersion()}"/>
                     <ant:echo message="  Type     : ${artifact.getDependency().getType()}"/>
                     <ant:echo message="  Name     : ${artifact.getName()}"/>
                     <ant:echo message="  Path     : ${artifact.getPath()}"/>
                     <!--+
                         | Copy the jar file to our target directory.
                         +-->
-					<ant:copy file="${artifact.getPath()}" toFile="${maven.build.dir}/install/lib/${artifact.getName()}"/>
+                    <ant:copy file="${artifact.getPath()}" toFile="${maven.build.dir}/install/lib/${artifact.getName()}"/>
                 </core:if>
             </core:forEach>
         </core:if>
+    </goal>
+
+    <!--+
+        | Copy our Axis libraries.
+        +-->
+    <goal name="install.axis">
+        <ant:echo message="Installing Axis libraries ...."/>
+        <!--+
+            | Initialise our Axis libraries
+            +-->
+        <attainGoal name="init.paths"/>
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Copy all the jars from the Axis lib directory.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/install/lib">
+            <fileset dir="${axisDir}/WEB-INF/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </ant:copy>
     </goal>
 
     <!--+
@@ -302,31 +319,36 @@
         +-->
     <goal name="install.tools">
         <ant:echo message="Installing Ant script and tools ...."/>
-	    <!--+
-	        | Create our directories.
-	        +-->
-		<ant:mkdir dir="${maven.build.dir}/install/xsl"/>
-		<ant:mkdir dir="${maven.build.dir}/install/xml"/>
-	    <!--+
-	        | Copy our Ant script.
-	        +-->
-		<ant:copy file="src/ant/deploy.xml" toFile="${maven.build.dir}/install/build.xml"/>
-	    <!--+
-	        | Copy our xsl transforms.
-	        +-->
-		<ant:copy toDir="${maven.build.dir}/install/xsl">
-			<fileset dir="src/xsl">
-				<include name="*.xsl"/>
-			</fileset>
-		</ant:copy>
-	    <!--+
-	        | Copy our configuration data.
-	        +-->
-		<ant:copy toDir="${maven.build.dir}/install/xml">
-			<fileset dir="src/xml">
-				<include name="**/*.xml"/>
-			</fileset>
-		</ant:copy>
+        <!--+
+            | Create our directories.
+            +-->
+        <ant:mkdir dir="${maven.build.dir}/install/xsl"/>
+        <ant:mkdir dir="${maven.build.dir}/install/xml"/>
+        <!--+
+            | Copy our Ant script and properties.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/install">
+            <fileset dir="src/ant">
+                <include name="*.xml"/>
+                <include name="*.properties"/>
+            </fileset>
+        </ant:copy>
+        <!--+
+            | Copy our xsl transforms.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/install/xsl">
+            <fileset dir="src/xsl">
+                <include name="**/*.xsl"/>
+            </fileset>
+        </ant:copy>
+        <!--+
+            | Copy our configuration data.
+            +-->
+        <ant:copy toDir="${maven.build.dir}/install/xml">
+            <fileset dir="src/xml">
+                <include name="**/*.xml"/>
+            </fileset>
+        </ant:copy>
     </goal>
 
     <!--+
@@ -334,21 +356,22 @@
         | We could use the Maven dist plugin, but quite frankly, I'm tired of suprises.
         +-->
     <goal name="build.zipfile">
-	    <!--+
-	        | Install the zipfile components.
-	        +-->
+        <!--+
+            | Install the zipfile components.
+            +-->
         <attainGoal name="install.webapp"/>
         <attainGoal name="install.client"/>
         <attainGoal name="install.depends"/>
+        <attainGoal name="install.axis"/>
         <attainGoal name="install.tools"/>
-	    <!--+
-	        | Create our zip file.
-	        +-->
-		<ant:zip
-			zipfile="${maven.build.dir}/${maven.final.name}.zip"
-			compress="true"
-			basedir="${maven.build.dir}/install"
-			/>
+        <!--+
+            | Create our zip file.
+            +-->
+        <ant:zip
+            zipfile="${maven.build.dir}/${maven.final.name}.zip"
+            compress="true"
+            basedir="${maven.build.dir}/install"
+            />
     </goal>
 
 </project>

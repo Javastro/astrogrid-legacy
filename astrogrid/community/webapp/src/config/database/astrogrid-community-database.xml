@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/src/config/database/astrogrid-community-database.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: astrogrid-community-database.xml,v $
+    |   Revision 1.2  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.1.2.2  2004/02/20 12:44:23  dave
+    |   Adding JNDI DataSource reference.
+    |
+    |   Revision 1.1.2.1  2004/02/20 01:02:38  dave
+    |   Added database config files to webapp.
+    |
+    |   Revision 1.1.2.1  2004/02/19 14:51:00  dave
+    |   Changed DatabaseManager to DatabaseConfigurationFactory.
+    |
+    |   Revision 1.2.2.2  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.2.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
+    |   Revision 1.2  2004/02/12 08:12:13  dave
+    |   Merged development branch, dave-dev-200401131047, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/01/26 13:18:08  dave
+    |   Added new DatabaseManager to enable local JUnit testing
+    |
+    | </cvs:log>
+    |
+    +-->
+<!DOCTYPE databases PUBLIC
+    "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+    "http://castor.exolab.org/jdo-conf.dtd">
+<!--+
+    | Template for our JNDI database configuration.
+    | This refers to datasource defined in the Tomcat config.
+    +-->
+<database name="org.astrogrid.community.database" engine="hsql">
+    <!--+
+        | This refers to a javax.sql.DataSource defined in the Tomcat config.
+        +-->
+    <jndi name="java:comp/env/jdbc/org.astrogrid.community.database"/>
+    <!--+
+        | This refers to a local mapping file, in the same directory.
+        +-->
+    <mapping href="astrogrid-community-mapping.xml"/>
+</database>

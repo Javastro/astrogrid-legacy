@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/manager/Attic/ResourceManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerTest.java,v $
+ *   Revision 1.3  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.2.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -41,7 +52,7 @@
  */
 package org.astrogrid.community.server.policy.manager ;
 
-import org.astrogrid.community.server.common.CommunityServerTest ;
+import org.astrogrid.community.server.common.CommunityServiceTest ;
 
 import org.astrogrid.community.common.policy.data.ResourceData ;
 import org.astrogrid.community.common.policy.manager.ResourceManager ;
@@ -51,7 +62,7 @@ import org.astrogrid.community.common.policy.manager.ResourceManager ;
  *
  */
 public class ResourceManagerTest
-    extends CommunityServerTest
+    extends CommunityServiceTest
     {
     /**
      * Switch for our debug statements.
@@ -59,99 +70,99 @@ public class ResourceManagerTest
      */
     private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Check we can create a manager, using default database configuration.
-	 *
-	 */
-	public void testCreateDefaultManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testCreateDefaultManager()") ;
-		//
-		// Try creating our manager.
-		assertNotNull("Null manager",
-			new ResourceManagerImpl()
-			) ;
-		}
+    /**
+     * Check we can create a manager, using default database configuration.
+     *
+     */
+    public void testCreateDefaultManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testCreateDefaultManager()") ;
+        //
+        // Try creating our manager.
+        assertNotNull("Null manager",
+            new ResourceManagerImpl()
+            ) ;
+        }
 
-	/**
-	 * Check we can create a manager, using test database configuration.
-	 *
-	 */
-	public void testCreateTestManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testCreateTestManager()") ;
-		//
-		// Try creating our manager.
-		assertNotNull("Null manager",
-			new ResourceManagerImpl(
-				this.getDatabaseConfiguration()
-				)
-			) ;
-		}
+    /**
+     * Check we can create a manager, using test database configuration.
+     *
+     */
+    public void testCreateTestManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testCreateTestManager()") ;
+        //
+        // Try creating our manager.
+        assertNotNull("Null manager",
+            new ResourceManagerImpl(
+                this.getDatabaseConfiguration()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we can create a new Resource.
-	 *
-	 */
-	public void testCreateResource()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testCreateResource()") ;
-		//
-		// Try creating our manager.
-		ResourceManagerImpl manager = new ResourceManagerImpl(
-			this.getDatabaseConfiguration()
-			) ;
-		assertNotNull("Null manager", manager) ;
-		//
-		// Try creating a resource entry.
-		ResourceData resource = manager.addResource("test-resource") ;
-		assertNotNull("Null resource", resource) ;
-		}
+    /**
+     * Check we can create a new Resource.
+     *
+     */
+    public void testCreateResource()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testCreateResource()") ;
+        //
+        // Try creating our manager.
+        ResourceManagerImpl manager = new ResourceManagerImpl(
+            this.getDatabaseConfiguration()
+            ) ;
+        assertNotNull("Null manager", manager) ;
+        //
+        // Try creating a resource entry.
+        ResourceData resource = manager.addResource("test-resource") ;
+        assertNotNull("Null resource", resource) ;
+        }
 
-	/**
-	 * Check we can delete a resource entry.
-	 *
-	 */
-	public void testDeleteResource()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testDeleteResource()") ;
-		//
-		// Try creating our manager.
-		ResourceManager manager = new ResourceManagerImpl(
-			this.getDatabaseConfiguration()
-			) ;
-		assertNotNull("Null manager", manager) ;
-		//
-		// Try creating a resource entry.
-		ResourceData created = manager.addResource("other-resource") ;
-		assertNotNull("Null resource", created) ;
+    /**
+     * Check we can delete a resource entry.
+     *
+     */
+    public void testDeleteResource()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceManagerTest:testDeleteResource()") ;
+        //
+        // Try creating our manager.
+        ResourceManager manager = new ResourceManagerImpl(
+            this.getDatabaseConfiguration()
+            ) ;
+        assertNotNull("Null manager", manager) ;
+        //
+        // Try creating a resource entry.
+        ResourceData created = manager.addResource("other-resource") ;
+        assertNotNull("Null resource", created) ;
 //
 // TODO Broken API, should return the deleted object.
-		boolean result = manager.delResource("other-resource") ;
-		assertTrue("Delete resource returned false", result) ;
+        boolean result = manager.delResource("other-resource") ;
+        assertTrue("Delete resource returned false", result) ;
 /*
  *
-		//
-		// Try deleting the resource entry.
-		ResourceData deleted = resourceManager.delResource("other-resource") ;
-		assertNotNull("Null resource", deleted) ;
-		//
-		// Check that the two results represent the same resource.
-		assertEquals("Different resource objects", created, deleted) ;
+        //
+        // Try deleting the resource entry.
+        ResourceData deleted = resourceManager.delResource("other-resource") ;
+        assertNotNull("Null resource", deleted) ;
+        //
+        // Check that the two results represent the same resource.
+        assertEquals("Different resource objects", created, deleted) ;
  *
  */
-		}
+        }
 
-	}
+    }

@@ -1,11 +1,26 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.3  2004/02/20 19:34:11  dave
+ *   Added JNDI Resource for community database.
+ *   Removed multiple calls to loadDatabaseConfiguration .
+ *
+ *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -145,11 +160,11 @@ import org.astrogrid.community.common.config.CommunityConfig ;
 
 import org.astrogrid.community.common.policy.manager.PolicyManager ;
 
-import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.common.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class PolicyManagerImpl
-	extends CommunityServer
+    extends CommunityServiceImpl
     implements PolicyManager
     {
     /**
@@ -164,92 +179,119 @@ public class PolicyManagerImpl
      */
     public PolicyManagerImpl()
         {
-		super() ;
-		//
-		// Configure our local managers.
-		configLocalManagers() ;
+        super() ;
+        //
+        // Initialise our local managers.
+        initManagers() ;
         }
 
     /**
      * Public constructor, using specific database configuration.
      *
      */
-	public PolicyManagerImpl(DatabaseConfiguration config)
-		{
-		super(config) ;
-		//
-		// Configure our local managers.
-		configLocalManagers() ;
-		}
-
-	/**
-	 * Set our database configuration.
-	 * This makes it easier to run JUnit tests with a different database configurations.
-	 * This calls our base class method and then updates all of our local managers.
-	 *
-	 */
-	public void setDatabaseConfiguration(DatabaseConfiguration config)
-		{
-		//
-		// Call our base class method.
-		super.setDatabaseConfiguration(config) ;
-		//
-		// Configure our local managers.
-		configLocalManagers() ;
-		}
-
-	/**
-	 * Configure our local managers.
-	 * This calls setDatabaseConfiguration on all of our local managers.
-	 * We need this in a separate method to initialise the local managers after they are created.
-	 *
-	 */
-	private void configLocalManagers()
-		{
-		//
-		// Configure our local managers.
-		if (null != groupManager) groupManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		if (null != accountManager) accountManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		if (null != resourceManager) resourceManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		if (null != communityManager) communityManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		if (null != permissionManager) permissionManager.setDatabaseConfiguration(this.getDatabaseConfiguration()) ;
-		}
+    public PolicyManagerImpl(DatabaseConfiguration config)
+        {
+        super(config) ;
+        //
+        // Initialise our local managers.
+        initManagers() ;
+        }
 
     /**
-     * Our AccountManager.
+     * Public constructor, using a parent service.
      *
      */
-    private AccountManagerImpl accountManager = new AccountManagerImpl() ; 
+    public PolicyManagerImpl(CommunityServiceImpl parent)
+        {
+        super(parent) ;
+        //
+        // Initialise our local managers.
+        initManagers() ;
+        }
+
+    /**
+     * Set our database configuration.
+     * This makes it easier to run JUnit tests with a different database configurations.
+     * This calls our base class method and then updates all of our local managers.
+     *
+    public void setDatabaseConfiguration(DatabaseConfiguration config)
+        {
+        //
+        // Call our base class method.
+        super.setDatabaseConfiguration(config) ;
+        //
+        // Notify our local managers.
+		if (null != groupManager)
+			{
+			groupManager.setDatabaseConfiguration(config) ;
+			}
+		if (null != accountManager)
+			{
+			accountManager.setDatabaseConfiguration(config) ;
+			}
+		if (null != resourceManager)
+			{
+			resourceManager.setDatabaseConfiguration(config) ;
+			}
+		if (null != communityManager)
+			{
+			communityManager.setDatabaseConfiguration(config) ;
+			}
+		if (null != permissionManager)
+			{
+			permissionManager.setDatabaseConfiguration(config) ;
+			}
+        }
+     */
+
+    /**
+     * Initialise our local managers, passing a reference to 'this' as their parent.
+     *
+     */
+    private void initManagers()
+        {
+		groupManager = new GroupManagerImpl(this) ;
+		accountManager = new AccountManagerImpl(this) ; 
+		resourceManager = new ResourceManagerImpl(this) ;
+		communityManager = new CommunityManagerImpl(this) ;
+		permissionManager = new PermissionManagerImpl(this) ;
+        }
 
     /**
      * Our GroupManager.
      *
      */
-    private GroupManagerImpl groupManager = new GroupManagerImpl() ;
+    private GroupManagerImpl groupManager ;
 
     /**
-     * Our CommunityManager.
+     * Our AccountManager.
      *
      */
-    private CommunityManagerImpl communityManager = new CommunityManagerImpl() ;
+    private AccountManagerImpl accountManager ;
 
     /**
      * Our ResourceManager
      *
      */
-    private ResourceManagerImpl resourceManager = new ResourceManagerImpl() ;
+    private ResourceManagerImpl resourceManager ;
+
+    /**
+     * Our CommunityManager.
+     *
+     */
+    private CommunityManagerImpl communityManager ;
 
     /**
      * Our PermissionManager
      *
      */
-    private PermissionManagerImpl permissionManager = new PermissionManagerImpl() ;
+    private PermissionManagerImpl permissionManager ;
 
     /**
      * Get the password for an Account.
      * This should only be available via an encrypted connection.
      *
-	 * Removed for refactoring.
+     * Removed for refactoring.
     public String getPassword(String name)
         {
         return this.accountManager.getPassword(name);
@@ -260,7 +302,7 @@ public class PolicyManagerImpl
      * Set the password for an Account.
      * This should only be available via an encrypted connection.
      *
-	 * Removed for refactoring.
+     * Removed for refactoring.
     public AccountData setPassword(String ident, String password)
         {
         return this.accountManager.setPassword(ident, password);

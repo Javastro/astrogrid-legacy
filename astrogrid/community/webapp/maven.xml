@@ -4,10 +4,27 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.4.2.4  2004/02/20 12:44:23  dave
+    |   Adding JNDI DataSource reference.
+    |
+    |   Revision 1.4.2.3  2004/02/20 01:02:38  dave
+    |   Added database config files to webapp.
+    |
+    |   Revision 1.4.2.2  2004/02/19 21:09:27  dave
+    |   Refactored ServiceStatusData into a common package.
+    |   Refactored CommunityServiceImpl constructor to take a parent service.
+    |   Refactored default database for CommunityServiceImpl
+    |
+    |   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
     |   Revision 1.4  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -134,28 +151,28 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building snapshot artifact ...."/>
         <attainGoal name="war:install-snapshot"/>
-		<!--+
-			| Create the war file.
-		<attainGoal name="war:war"/>
-			+-->
-		<!--+
-			| The rest is basically copy-paste from jar:deploy-snapshot.
-		<maven:snapshot project="${pom}"/>
-		<core:set var="artifactFile" value="${pom.groupId}.war"/>
-		<core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
-		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
-		<ant:property name="jardir__" value="${maven.repo.local}/${pom.artifactDirectory}/jars"/>
-		<ant:mkdir dir="${jardir__}"/>
-		<ant:copy
-			file="${maven.build.dir}/${artifactFile}"
-			tofile="${jardir__}/${pom.artifactId}-SNAPSHOT.jar"
-			overwrite="true"
-			/>
-		<ant:copy
-			file="${maven.build.dir}/${artifactFile}"
-			tofile="${jardir__}/${maven.final.name}.jar"
-			/>
-			+-->
+        <!--+
+            | Create the war file.
+        <attainGoal name="war:war"/>
+            +-->
+        <!--+
+            | The rest is basically copy-paste from jar:deploy-snapshot.
+        <maven:snapshot project="${pom}"/>
+        <core:set var="artifactFile" value="${pom.groupId}.war"/>
+        <core:set var="snapshotFile" value="${pom.groupId}-${snapshotVersion}.war"/>
+        <ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+        <ant:property name="jardir__" value="${maven.repo.local}/${pom.artifactDirectory}/jars"/>
+        <ant:mkdir dir="${jardir__}"/>
+        <ant:copy
+            file="${maven.build.dir}/${artifactFile}"
+            tofile="${jardir__}/${pom.artifactId}-SNAPSHOT.jar"
+            overwrite="true"
+            />
+        <ant:copy
+            file="${maven.build.dir}/${artifactFile}"
+            tofile="${jardir__}/${maven.final.name}.jar"
+            />
+            +-->
     </goal>
 
     <!--+
@@ -168,36 +185,32 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Deploying snapshot artifact ...."/>
-		<!--+
-			| Create the war file.
-			+-->
-		<attainGoal name="war:war"/>
-		<!--+
-			| The rest is basically copy-paste from jar:deploy-snapshot.
-			+-->
-		<maven:snapshot project="${pom}"/>
-		<core:set var="artifactFile" value="${pom.artifactId}.war"/>
-		<core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
-		<ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
-		<!--
-		<core:set var="maven.final.name" value="${snapshotSignature}"/>
-        <core:set var="maven.war.final.name" value="${pom.artifactId}.war"/>
-		-->
-		<maven:user-check user="${maven.username}"/>
-		<ant:property name="maven.war.to.deploy" value="${snapshotFile}"/>
-		<ant:property name="dir" value="${maven.repo.central.directory}/${pom.artifactDirectory}/wars"/>
-		<util:replace var="warToDeploy" oldChar="\" newChar="/">${maven.build.dir}/${maven.war.to.deploy}</util:replace>
-		<util:replace var="forwardSlashBaseDir" oldChar="\" newChar="/" value="${basedir}"/>
-		<core:if test="${!forwardSlashBaseDir.endsWith('/')}">
-			<core:set var="base" value="${forwardSlashBaseDir}/" />
-		</core:if>
-		<core:set var="relativePath">${warToDeploy.substring(base.length())}</core:set>
-		<deploy:artifact
-			artifact="${relativePath}"
-			type="wars"
-			assureDirectoryCommand="mkdir -p"
-			siteCommand="cd @deployDirectory@; chmod g+w ${maven.war.to.deploy}; chgrp ${maven.remote.group} ${maven.war.to.deploy}; ln -sf ${maven.war.to.deploy} ${pom.groupId}-SNAPSHOT.war; echo ${snapshotVersion} > ${pom.groupId}-snapshot-version"
-		/>
+        <!--+
+            | Create the war file.
+            +-->
+        <attainGoal name="war:war"/>
+        <!--+
+            | The rest is basically copy-paste from jar:deploy-snapshot.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="artifactFile" value="${pom.artifactId}.war"/>
+        <core:set var="snapshotFile" value="${pom.artifactId}-${snapshotVersion}.war"/>
+        <ant:move file="${maven.build.dir}/${artifactFile}" toFile="${maven.build.dir}/${snapshotFile}"/>
+        <maven:user-check user="${maven.username}"/>
+        <ant:property name="maven.war.to.deploy" value="${snapshotFile}"/>
+        <ant:property name="dir" value="${maven.repo.central.directory}/${pom.artifactDirectory}/wars"/>
+        <util:replace var="warToDeploy" oldChar="\" newChar="/">${maven.build.dir}/${maven.war.to.deploy}</util:replace>
+        <util:replace var="forwardSlashBaseDir" oldChar="\" newChar="/" value="${basedir}"/>
+        <core:if test="${!forwardSlashBaseDir.endsWith('/')}">
+            <core:set var="base" value="${forwardSlashBaseDir}/" />
+        </core:if>
+        <core:set var="relativePath">${warToDeploy.substring(base.length())}</core:set>
+        <deploy:artifact
+            artifact="${relativePath}"
+            type="wars"
+            assureDirectoryCommand="mkdir -p"
+            siteCommand="cd @deployDirectory@; chmod g+w ${maven.war.to.deploy}; chgrp ${maven.remote.group} ${maven.war.to.deploy}; ln -sf ${maven.war.to.deploy} ${pom.groupId}-SNAPSHOT.war; echo ${snapshotVersion} > ${pom.groupId}-snapshot-version"
+        />
     </goal>
 
     <!--+
@@ -304,22 +317,21 @@
             <arg value="server"/>
             <arg value="${wsddDir}/PolicyService.wsdd"/>
         </ant:java>
+
+<!--+
+    | TODO Deploy the rest of our services ...
+    +-->
+
+        <!--+
+            | Copy our database configuration file into WEB-INF/classes.
+            | This should override the database configuration in the server jar.
+            +-->
+        <ant:copy verbose="true" todir="${axisDir}/WEB-INF/classes">
+            <ant:fileset dir="src/config/database">
+                <include name="astrogrid-community-mapping.xml"/>
+                <include name="astrogrid-community-database.xml"/>
+                <include name="astrogrid-community-database.sql"/>
+            </ant:fileset>
+        </ant:copy>
     </postGoal>
-
-    <!--+
-        | Prepare for the war war task
-        | Modify the war file name to use just our group name.
-        | This don't work ....
-    <preGoal name="war:war">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Modifying war file name"/>
-        <ant:echo message="  Before : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
-        <core:set var="warName" value="${pom.groupId}.war"/>
-        <core:expr value="${pom.getPluginContext('maven-war-plugin').setVariable('maven.war.final.name', warName)}"/>
-        <ant:echo message="  After  : ${pom.getPluginContext('maven-war-plugin').getVariable('maven.war.final.name')}"/>
-        <core:set var="maven.war.final.name" value="${pom.groupId}.war"/>
-    </preGoal>
-        +-->
-
 </project>

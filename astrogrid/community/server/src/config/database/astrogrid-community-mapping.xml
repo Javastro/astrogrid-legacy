@@ -1,11 +1,20 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/Attic/mapping.xml,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
     | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
-    |   $Log: mapping.xml,v $
+    |   $Log: astrogrid-community-mapping.xml,v $
+    |   Revision 1.2  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/02/19 14:51:00  dave
+    |   Changed DatabaseManager to DatabaseConfigurationFactory.
+    |
+    |   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
     |   Revision 1.2  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -21,10 +30,10 @@
 <mapping>
 
     <!--+
-    	| JDO Mapping for DatabaseTestData.
-    	| This is used as an empty data object for CREATE TABLE statements.
-    	| This may grow to contain our service configuration data.
-    	+-->
+        | JDO Mapping for DatabaseTestData.
+        | This is used as an empty data object for CREATE TABLE statements.
+        | This may grow to contain our service configuration data.
+        +-->
     <class name="org.astrogrid.community.server.database.castor.CastorDatabaseTestData" identity="ident">
         <map-to table="testdata"/>
         <field name="ident" type="string">
@@ -33,8 +42,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for CommunityData.
-    	+-->
+        | JDO Mapping for CommunityData.
+        +-->
     <class name="org.astrogrid.community.common.policy.data.CommunityData" identity="ident">
         <map-to table="communities"/>
         <field name="ident" type="string">
@@ -55,8 +64,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for AccountData.
-    	+-->
+        | JDO Mapping for AccountData.
+        +-->
     <class name="org.astrogrid.community.common.policy.data.AccountData" identity="ident">
         <map-to table="accounts"/>
         <field name="ident" type="string">
@@ -68,8 +77,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for PasswordData.
-    	+-->
+        | JDO Mapping for PasswordData.
+        +-->
     <class name="org.astrogrid.community.common.security.data.PasswordData" identity="account">
         <map-to table="passwords"/>
         <field name="account" type="string">
@@ -84,8 +93,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for GroupData.
-    	+-->
+        | JDO Mapping for GroupData.
+        +-->
     <class name="org.astrogrid.community.common.policy.data.GroupData" identity="ident">
         <map-to table="groups"/>
         <field name="ident" type="string">
@@ -100,8 +109,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for ResourceData.
-    	+-->
+        | JDO Mapping for ResourceData.
+        +-->
     <class name="org.astrogrid.community.common.policy.data.ResourceData" identity="ident">
         <map-to table="resources"/>
         <field name="ident" type="string">
@@ -113,8 +122,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for GroupMemberData.
-    	+-->
+        | JDO Mapping for GroupMemberData.
+        +-->
     <class name="org.astrogrid.community.common.policy.data.GroupMemberData" identity="account group">
         <map-to table="members"/>
         <field name="account" type="string">
@@ -126,8 +135,8 @@
     </class>
 
     <!--+
-    	| JDO Mapping for PolicyPermission.
-    	+-->
+        | JDO Mapping for PolicyPermission.
+        +-->
     <class name="org.astrogrid.community.common.policy.data.PolicyPermission" identity="resource group action">
         <map-to table="permissions"/>
         <field name="resource" type="string">
@@ -147,8 +156,8 @@
         </field>
     </class>
 
-	<!--+
-	    | JDO Mapping for SecurityToken.
+    <!--+
+        | JDO Mapping for SecurityToken.
     <class name="org.astrogrid.community.common.policy.data.SecurityToken" identity="token">
         <map-to table="securitytokens"/>
         <field name="token" type="string">
@@ -170,6 +179,6 @@
             <sql name="startdate" type="timestamp"/>
         </field>
     </class>
-	    +-->
+        +-->
 
 </mapping>

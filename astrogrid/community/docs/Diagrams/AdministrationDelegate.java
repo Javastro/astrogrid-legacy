@@ -11,12 +11,12 @@ public class AdministrationDelegate {
     }
 
 
-	public boolean changeOwner(String me, String group, String resource) {
+    public boolean changeOwner(String me, String group, String resource) {
 
     }
 
     public ArrayList getMembersFromGroup(GroupDataObject gdo) {
-		MembersDataObject mdo = new MembersDataObject();
+        MembersDataObject mdo = new MembersDataObject();
         mdo.setGroup(gdo);
         return mdo.getDataObjects(conn);
     }

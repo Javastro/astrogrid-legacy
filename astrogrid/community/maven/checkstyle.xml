@@ -30,12 +30,12 @@
         <!-- ************************************************************** -->
         <!-- Checks that are different from the sun coding conventions ones -->
         <!-- ************************************************************** -->
-	<!-- we're including a reference to this instead
+    <!-- we're including a reference to this instead
         <module name="Header">
             <property name="headerFile" value="${basedir}/LICENSE.txt"/>
             <property name="ignoreLines" value="1,2,3,4,5,6"/>
         </module>
-	-->
+    -->
         <property name="tabWidth" value="4"/>
 
 
@@ -122,7 +122,7 @@
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField">
-        	<property name="tokens" value="VARIABLE_DEF" />
+            <property name="tokens" value="VARIABLE_DEF" />
         </module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>

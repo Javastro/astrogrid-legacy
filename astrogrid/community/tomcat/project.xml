@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid community tomcat tools.
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/02/20 21:11:05  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.1.2.4  2004/02/16 23:27:45  dave
+    |   Tested with the following Tomcat versions :
+    |       4.1.24
+    |       4.1.24-LE-jdk14
+    |       4.1.26
+    |       4.1.26-LE-jdk14
+    |       4.1.27
+    |       4.1.27-LE-jdk14
+    |       4.1.29
+    |       4.1.29-LE-jdk14
+    |       4.1.30
+    |       4.1.30-LE-jdk14
+    |       5.0.16 **
+    |       5.0.18 **
+    |
+    |   ** Target directory for the local context file has moved in tomcat-5.0.xx
+    |
+    |   Revision 1.1.2.3  2004/02/16 15:58:47  dave
+    |   Tested with Tomcat 4.1.24-le
+    |
+    |   Revision 1.1.2.2  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.1.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
+    | </cvs:log>
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-community-tomcat</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid community tomcat toolkit</name>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        <![CDATA[
+            A toolkit for testing the Community webapp in a live Tomcat server.
+        ]]>
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+            A toolkit for testing the Community webapp in a live Tomcat server.
+        ]]>
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/community/tomcat
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/community/tomcat
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The Community install toolkit.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-install</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>zip</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <installkit>true</installkit>
+            </properties>
+        </dependency>
+        <!--+
+            | The Tomcat server
+            +-->
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>jakarta-tomcat</artifactId>
+            <!--+
+                | Tested versions ....
+            <version>4.1.24</version>
+            <version>4.1.24-LE-jdk14</version>
+            <version>4.1.26</version>
+            <version>4.1.26-LE-jdk14</version>
+            <version>4.1.27</version>
+            <version>4.1.27-LE-jdk14</version>
+            <version>4.1.29</version>
+            <version>4.1.29-LE-jdk14</version>
+            <version>4.1.30</version>
+            <version>4.1.30-LE-jdk14</version>
+            <version>5.0.16</version> **
+            <version>5.0.18</version> **
+            ** Target directory for the local context file has moved in tomcat-5.0.xx.
+                +-->
+            <version>4.1.24</version>
+            <type>zip</type>
+            <url>http://jakarta.apache.org/tomcat/index.html</url>
+            <properties>
+                <tomcat>true</tomcat>
+            </properties>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <!--+
+                | Which tests to exclude.
+                +-->
+            <excludes>
+                <exclude>**/*Test.frog</exclude>
+            </excludes>
+            <!--+
+                | The resources for our tests.
+            <resources>
+                <resource>
+                </resource>
+            </resources>
+                +-->
+        </unitTest>
+    </build>
+</project>
+
+
+
+
+
+

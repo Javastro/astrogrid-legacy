@@ -1,11 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/manager/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/02/19 21:09:26  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -89,7 +97,8 @@ package org.astrogrid.community.common.policy.manager ;
 import java.rmi.Remote ;
 import java.rmi.RemoteException ;
 
-import org.astrogrid.community.common.policy.data.ServiceData ;
+import org.astrogrid.community.common.service.CommunityService ;
+
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 
 /**
@@ -97,15 +106,8 @@ import org.astrogrid.community.common.policy.data.GroupMemberData ;
  *
  */
 public interface PolicyManager
-    extends Remote, AccountManager, GroupManager, CommunityManager, ResourceManager, PermissionManager
+    extends Remote, CommunityService, AccountManager, GroupManager, CommunityManager, ResourceManager, PermissionManager
     {
-
-    /**
-     * Service health check.
-     *
-     */
-    public ServiceData getServiceStatus()
-        throws RemoteException ;
 
     /**
      * Request a list of local Accounts.

@@ -4,10 +4,25 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/02/20 21:11:04 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/02/20 21:11:04  dave
+    |   Merged development branch, dave-dev-200402120832, into HEAD
+    |
+    |   Revision 1.5.2.4  2004/02/20 20:09:13  dave
+    |   Added tomcat project to the clean
+    |
+    |   Revision 1.5.2.3  2004/02/16 15:20:54  dave
+    |   Changed tabs to spaces
+    |
+    |   Revision 1.5.2.2  2004/02/16 14:13:20  dave
+    |   Fixed JNDI install scripts to use different methods
+    |
+    |   Revision 1.5.2.1  2004/02/14 22:24:09  dave
+    |   Test toolkit for the install and tomcat sub-projects
+    |
     |   Revision 1.5  2004/02/12 08:12:13  dave
     |   Merged development branch, dave-dev-200401131047, into HEAD
     |
@@ -100,13 +115,13 @@
         <ant:echo message="${pom.artifactId} - site:fsdeploy"/>
         <ant:echo message=" build  location : ${maven.docs.dest}"/>
         <ant:echo message=" deploy location : ${site.deploy.directory}"/>
-		<!--+
-			| Fix to check if we have defined an alternative location in our build.properties.
-			+-->
-		<core:set var="deployLocation" value="${site.deploy.directory}"/>
-		<core:if test="${!empty(deployLocation)}">
-	        <core:expr value="${pom.setSiteDirectory(deployLocation)}"/>
-		</core:if>
+        <!--+
+            | Fix to check if we have defined an alternative location in our build.properties.
+            +-->
+        <core:set var="deployLocation" value="${site.deploy.directory}"/>
+        <core:if test="${!empty(deployLocation)}">
+            <core:expr value="${pom.setSiteDirectory(deployLocation)}"/>
+        </core:if>
     </preGoal>
 
     <!--+
@@ -124,17 +139,17 @@
         | Delete the extra jar file.
         +-->
     <postGoal name="jar:deploy-snapshot">
-		<ant:echo message=""/>
-		<ant:echo message="Post processing jar:deploy-snapshot"/>
-		<core:set var="snapshotVersion" value="${pom.getPluginContext('maven-jar-plugin').getVariable('snapshotVersion')}"/>
-		<core:set var="snapshotRemove"  value="cd ${maven.repo.central.directory}/${pom.artifactDirectory}/jars ; rm astrogrid-community-SNAPSHOT.jar ; rm astrogrid-community-${snapshotVersion}.jar"/>
-		<ant:echo message="  Command  : ${maven.ssh.executable}"/>
-		<ant:echo message="  Username : ${maven.username}"/>
-		<ant:echo message="  Server   : ${maven.repo.central}"/>
-		<ant:echo message="  Command  : ${snapshotRemove}"/>
-		<ant:exec dir="." executable="${maven.ssh.executable}">
-			<ant:arg line="-l ${maven.username} ${maven.repo.central} '${snapshotRemove}'"/>
-		</ant:exec>
+        <ant:echo message=""/>
+        <ant:echo message="Post processing jar:deploy-snapshot"/>
+        <core:set var="snapshotVersion" value="${pom.getPluginContext('maven-jar-plugin').getVariable('snapshotVersion')}"/>
+        <core:set var="snapshotRemove"  value="cd ${maven.repo.central.directory}/${pom.artifactDirectory}/jars ; rm astrogrid-community-SNAPSHOT.jar ; rm astrogrid-community-${snapshotVersion}.jar"/>
+        <ant:echo message="  Command  : ${maven.ssh.executable}"/>
+        <ant:echo message="  Username : ${maven.username}"/>
+        <ant:echo message="  Server   : ${maven.repo.central}"/>
+        <ant:echo message="  Command  : ${snapshotRemove}"/>
+        <ant:exec dir="." executable="${maven.ssh.executable}">
+            <ant:arg line="-l ${maven.username} ${maven.repo.central} '${snapshotRemove}'"/>
+        </ant:exec>
     </postGoal>
 
     <!--+
@@ -172,7 +187,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml"
+            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,install/project.xml,tomcat/project.xml"
             goals="clean"
             banner="Cleaning build targets : "
             ignoreFailures="false"

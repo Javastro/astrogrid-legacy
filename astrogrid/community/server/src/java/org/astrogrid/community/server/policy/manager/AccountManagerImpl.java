@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/02/19 21:09:26  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -125,11 +136,10 @@ import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 import org.astrogrid.community.common.policy.data.CommunityIdent ;
 
-import org.astrogrid.community.common.config.CommunityConfig;
-
 import org.astrogrid.community.common.policy.manager.AccountManager ;
 
-import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.common.config.CommunityConfig;
+import org.astrogrid.community.server.common.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 /**
@@ -138,7 +148,7 @@ import org.astrogrid.community.server.database.DatabaseConfiguration ;
  *
  */
 public class AccountManagerImpl
-	extends CommunityServer
+    extends CommunityServiceImpl
     implements AccountManager
     {
     /**
@@ -147,12 +157,12 @@ public class AccountManagerImpl
      */
     protected static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * The default public group.
-	 * This should be moved to the GroupManager.
-	 *
-	 */
-	private static String DEFAULT_GROUP = "everyone" ;
+    /**
+     * The default public group.
+     * This should be moved to the GroupManager.
+     *
+     */
+    private static String DEFAULT_GROUP = "everyone" ;
 
     /**
      * Public constructor, using default database configuration.
@@ -160,7 +170,7 @@ public class AccountManagerImpl
      */
     public AccountManagerImpl()
         {
-		super() ;
+        super() ;
         }
 
     /**
@@ -169,7 +179,16 @@ public class AccountManagerImpl
      */
     public AccountManagerImpl(DatabaseConfiguration config)
         {
-		super(config) ;
+        super(config) ;
+        }
+
+    /**
+     * Public constructor, using a parent service.
+     *
+     */
+    public AccountManagerImpl(CommunityServiceImpl parent)
+        {
+        super(parent) ;
         }
 
     /**
@@ -183,12 +202,12 @@ public class AccountManagerImpl
 
     /**
      * Create a new Account, given the Account ident.
-	 * This needs refactoring to make it more robust.
-	 * TODO 1) If the 'everyone' group does not exist, then create it.
-	 * TODO 2) If the account group already exists (as an AccountGroup) then don't throw a duplicate exception.
-	 * TODO 3) If the account already belongs to the account group then don't throw a duplicate exception.
-	 * TODO 4) If the account already belongs to the 'everyone' group then don't throw a duplicate exception.
-	 * TODO 5) If the MySpace call adds the Account, store the MySpace server and Account details.
+     * This needs refactoring to make it more robust.
+     * TODO 1) If the 'everyone' group does not exist, then create it.
+     * TODO 2) If the account group already exists (as an AccountGroup) then don't throw a duplicate exception.
+     * TODO 3) If the account already belongs to the account group then don't throw a duplicate exception.
+     * TODO 4) If the account already belongs to the 'everyone' group then don't throw a duplicate exception.
+     * TODO 5) If the MySpace call adds the Account, store the MySpace server and Account details.
      *
      * If fragments of the account data already exist, e.g. groups, membership and permissions,
      * should we tidy them up before creating the new account or leave them as-is ?
@@ -215,31 +234,31 @@ public class AccountManagerImpl
                 //
                 // Create our new Account object.
                 account = new AccountData() ;
-				account.setIdent(ident.toString()) ;
+                account.setIdent(ident.toString()) ;
                 //
                 // Create the corresponding Group object.
                 group = new GroupData() ;
-				group.setIdent(ident.toString()) ;
+                group.setIdent(ident.toString()) ;
                 group.setType(GroupData.SINGLE_TYPE) ;
                 //
                 // Add the account to the group.
-				GroupMemberData groupmember = new GroupMemberData() ;
-				groupmember.setAccount(ident.toString()) ;
-				groupmember.setGroup(ident.toString()) ;
-				//
-				// Add the account to the guest group.
+                GroupMemberData groupmember = new GroupMemberData() ;
+                groupmember.setAccount(ident.toString()) ;
+                groupmember.setGroup(ident.toString()) ;
+                //
+                // Add the account to the guest group.
 //
 // TODO Need better 'default' group handling.
 //
-				GroupMemberData guestmember = new GroupMemberData() ;
-				guestmember.setAccount(ident.toString()) ;
-				guestmember.setGroup(new CommunityIdent(DEFAULT_GROUP)) ;
+                GroupMemberData guestmember = new GroupMemberData() ;
+                guestmember.setAccount(ident.toString()) ;
+                guestmember.setGroup(new CommunityIdent(DEFAULT_GROUP)) ;
                 //
                 // Try performing our transaction.
                 try {
-					//
-					// Open our database connection.
-					database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -255,10 +274,10 @@ public class AccountManagerImpl
 // TODO BUG
 // Not sure why this one fails the tests.
 // Something about invalid primary key.
-//	                    database.create(guestmember);
-					//
-					// Commit the transaction.
-					database.commit() ;
+//                        database.create(guestmember);
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we already have an object with that ident.
@@ -266,37 +285,37 @@ public class AccountManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (DuplicateIdentityException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.addAccount()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.addAccount()") ;
                     //
                     // Set the response to null.
                     group   = null ;
                     account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.addAccount()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.addAccount()") ;
                     //
                     // Set the response to null.
                     group   = null ;
                     account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -381,18 +400,18 @@ public class AccountManagerImpl
             if (ident.isLocal())
                 {
                 try {
-					//
-					// Open our database connection.
-			        database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
                     //
                     // Load the Account from the database.
                     account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-					//
-					// Commit the transaction.
-					database.commit() ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
@@ -400,35 +419,35 @@ public class AccountManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.getAccount()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.getAccount()") ;
                     //
                     // Set the response to null.
                     account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.getAccount()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.getAccount()") ;
                     //
                     // Set the response to null.
                     account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -468,7 +487,7 @@ public class AccountManagerImpl
         //
         // Create a CommunityIdent from the account.
         CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
-		Database database = null ;
+        Database database = null ;
         //
         // If the ident is valid.
         if (ident.isValid())
@@ -480,9 +499,9 @@ public class AccountManagerImpl
                 //
                 // Try update the database.
                 try {
-					//
-					// Open our database connection.
-			        database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -492,9 +511,9 @@ public class AccountManagerImpl
                     //
                     // Update the account data.
                     data.setDescription(account.getDescription()) ;
-					//
-					// Commit the transaction.
-					database.commit() ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
@@ -502,35 +521,35 @@ public class AccountManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.setAccount()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.setAccount()") ;
                     //
                     // Set the response to null.
                     account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.setAccount()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.setAccount()") ;
                     //
                     // Set the response to null.
                     account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
@@ -575,7 +594,7 @@ public class AccountManagerImpl
         if (DEBUG_FLAG) System.out.println("----\"----") ;
         if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
         if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-	    Database    database = null ;
+        Database    database = null ;
         AccountData account  = null ;
         //
         // If the ident is valid.
@@ -590,9 +609,9 @@ public class AccountManagerImpl
                 //
                 // Try update the database.
                 try {
-					//
-					// Open our database connection.
-			        database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -693,29 +712,29 @@ public class AccountManagerImpl
                 // If anything went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "AccountManagerImpl.delAccount()") ;
-					//
-					// Set the response to null.
-					account = null ;
-					//
-					// Cancel the database transaction.
-					rollbackTransaction(database) ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.delAccount()") ;
+                    //
+                    // Set the response to null.
+                    account = null ;
+                    //
+                    // Cancel the database transaction.
+                    rollbackTransaction(database) ;
                     }
                 //
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
             // If the ident is not local.
             else {
-				//
-				// Set the response to null.
-				account = null ;
+                //
+                // Set the response to null.
+                account = null ;
 //
 // TODO
 // Actually, this could be a call from a remote community to tell us that it is deleting an Account.
@@ -778,9 +797,9 @@ public class AccountManagerImpl
         Object[] array    = null ;
         Database database = null ;
         try {
-			//
-			// Open our database connection.
-	        database = this.getDatabase() ;
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
             //
             // Begin a new database transaction.
             database.begin();
@@ -803,29 +822,29 @@ public class AccountManagerImpl
             //
             // Convert it into an array.
             array = collection.toArray() ;
-			//
-			// Commit the transaction.
-			database.commit() ;
+            //
+            // Commit the transaction.
+            database.commit() ;
             }
         //
         // If anything went bang.
         catch (Exception ouch)
             {
-			//
-			// Log the exception.
-			logException(ouch, "AccountManagerImpl.getLocalAccounts()") ;
+            //
+            // Log the exception.
+            logException(ouch, "AccountManagerImpl.getLocalAccounts()") ;
             //
             // Set the response to null.
             array = null ;
-			//
-			// Cancel the database transaction.
-			rollbackTransaction(database) ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
             }
         //
         // Close our database connection.
         finally
             {
-			closeConnection(database) ;
+            closeConnection(database) ;
             }
         // TODO
         // Need to return something to the client.

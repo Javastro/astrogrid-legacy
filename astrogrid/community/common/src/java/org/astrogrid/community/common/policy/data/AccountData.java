@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/AccountData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -63,126 +69,126 @@ package org.astrogrid.community.common.policy.data ;
 
 public class AccountData
     {
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public AccountData()
-		{
-		this(null) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public AccountData()
+        {
+        this(null) ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public AccountData(String value)
-		{
-		this.setIdent(value) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public AccountData(String value)
+        {
+        this.setIdent(value) ;
+        }
 
-	/**
-	 * Our Account ident.
-	 *
-	 */
-	private String ident ;
+    /**
+     * Our Account ident.
+     *
+     */
+    private String ident ;
 
-	/**
-	 * Access to our Account ident.
-	 *
-	 */
-	public String getIdent()
-		{
-		return this.ident ;
-		}
+    /**
+     * Access to our Account ident.
+     *
+     */
+    public String getIdent()
+        {
+        return this.ident ;
+        }
 
-	/**
-	 * Access to our Account ident.
-	 *
-	 */
-	public void setIdent(String value)
-		{
-		this.ident = value ;
-		}
+    /**
+     * Access to our Account ident.
+     *
+     */
+    public void setIdent(String value)
+        {
+        this.ident = value ;
+        }
 
-	/**
-	 * Our Account description.
-	 *
-	 */
-	private String description ;
+    /**
+     * Our Account description.
+     *
+     */
+    private String description ;
 
-	/**
-	 * Access to our Account description.
-	 *
-	 */
-	public String getDescription()
-		{
-		return this.description ;
-		}
+    /**
+     * Access to our Account description.
+     *
+     */
+    public String getDescription()
+        {
+        return this.description ;
+        }
 
-	/**
-	 * Access to our Account description.
-	 *
-	 */
-	public void setDescription(String value)
-		{
-		this.description = value ;
-		}
+    /**
+     * Access to our Account description.
+     *
+     */
+    public void setDescription(String value)
+        {
+        this.description = value ;
+        }
 
-	/*
-	 * Compare this with another AccountData.
-	 * All we want to check is the Account ident.
-	 * TODO This needs to refactored to check for local community in the ident.
-	 *
-	 */
-	public synchronized boolean equals(Object object)
-		{
-		//
-		// If the object is null.
-		if (null == object)
-			{
-			return false ;
-			}
-		//
-		// If the object is not null.
-		else {
-			//
-			// If the object is an AccountData
-			if (object instanceof AccountData)
-				{
-				AccountData that = (AccountData) object ;
-				//
-				// If our ident is null
-				if (null == this.ident)
-					{
-					//
-					// Check that ident is null.
-					return (null == that.getIdent()) ;
-					}
-				//
-				// If our ident is not null.
-				else {
-					//
-					// Check that ident is the same.
-					return (this.ident.equals(that.getIdent())) ;
-					}
-				}
-			//
-			// If that is not an AccountData
-			else {
-				return false ;
-				}
-			}
-		}
+    /*
+     * Compare this with another AccountData.
+     * All we want to check is the Account ident.
+     * TODO This needs to refactored to check for local community in the ident.
+     *
+     */
+    public synchronized boolean equals(Object object)
+        {
+        //
+        // If the object is null.
+        if (null == object)
+            {
+            return false ;
+            }
+        //
+        // If the object is not null.
+        else {
+            //
+            // If the object is an AccountData
+            if (object instanceof AccountData)
+                {
+                AccountData that = (AccountData) object ;
+                //
+                // If our ident is null
+                if (null == this.ident)
+                    {
+                    //
+                    // Check that ident is null.
+                    return (null == that.getIdent()) ;
+                    }
+                //
+                // If our ident is not null.
+                else {
+                    //
+                    // Check that ident is the same.
+                    return (this.ident.equals(that.getIdent())) ;
+                    }
+                }
+            //
+            // If that is not an AccountData
+            else {
+                return false ;
+                }
+            }
+        }
 
-	/**
-	 * Generate a hash code for comparison tests.
-	 * Just uses the ident.hashCode().
-	 * TODO This needs to refactored to check for local community in the ident.
-	 *
-	 */
-	public synchronized int hashCode()
-		{
-		return (null != this.ident) ? this.ident.hashCode() : 0 ;
-		}
+    /**
+     * Generate a hash code for comparison tests.
+     * Just uses the ident.hashCode().
+     * TODO This needs to refactored to check for local community in the ident.
+     *
+     */
+    public synchronized int hashCode()
+        {
+        return (null != this.ident) ? this.ident.hashCode() : 0 ;
+        }
     }

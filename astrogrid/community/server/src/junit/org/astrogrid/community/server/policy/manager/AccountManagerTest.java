@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/junit/org/astrogrid/community/server/policy/manager/Attic/AccountManagerTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerTest.java,v $
+ *   Revision 1.3  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.2.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.2.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.2  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -77,7 +88,7 @@
  */
 package org.astrogrid.community.server.policy.manager ;
 
-import org.astrogrid.community.server.common.CommunityServerTest ;
+import org.astrogrid.community.server.common.CommunityServiceTest ;
 
 import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.manager.AccountManager ;
@@ -87,7 +98,7 @@ import org.astrogrid.community.common.policy.manager.AccountManager ;
  *
  */
 public class AccountManagerTest
-    extends CommunityServerTest
+    extends CommunityServiceTest
     {
     /**
      * Switch for our debug statements.
@@ -95,148 +106,148 @@ public class AccountManagerTest
      */
     private static boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Check we can create an AccountManager, using default database configuration.
-	 *
-	 */
-	public void testCreateDefaultManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateDefaultManager()") ;
-		//
-		// Try creating our manager.
-		assertNotNull("Null manager",
-			new AccountManagerImpl()
-			) ;
-		}
+    /**
+     * Check we can create an AccountManager, using default database configuration.
+     *
+     */
+    public void testCreateDefaultManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateDefaultManager()") ;
+        //
+        // Try creating our manager.
+        assertNotNull("Null manager",
+            new AccountManagerImpl()
+            ) ;
+        }
 
-	/**
-	 * Check we can create an AccountManager, with test database configuration.
-	 *
-	 */
-	public void testCreateTestManager()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateTestManager()") ;
-		//
-		// Try creating our manager.
-		assertNotNull("Null manager",
-			new AccountManagerImpl(
-				this.getDatabaseConfiguration()
-				)
-			) ;
-		}
+    /**
+     * Check we can create an AccountManager, with test database configuration.
+     *
+     */
+    public void testCreateTestManager()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateTestManager()") ;
+        //
+        // Try creating our manager.
+        assertNotNull("Null manager",
+            new AccountManagerImpl(
+                this.getDatabaseConfiguration()
+                )
+            ) ;
+        }
 
-	/**
-	 * Check we can create an Account.
-	 *
-	 */
-	public void testCreateAccount()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateAccount()") ;
-		//
-		// Try creating our manager.
-		AccountManager manager = new AccountManagerImpl(
-			this.getDatabaseConfiguration()
-			) ;
-		assertNotNull("Null manager", manager) ;
-		//
-		// Try creating an Account.
-		AccountData created = manager.addAccount("test-account") ;
-		assertNotNull("Null account", created) ;
-		//
-		// Try getting the details.
-		AccountData found = manager.getAccount("test-account") ;
-		assertNotNull("Null account", found) ;
-		//
-		// Check that they refer to the same account.
-		assertEquals("Different accounts", created, found) ;
-		}
+    /**
+     * Check we can create an Account.
+     *
+     */
+    public void testCreateAccount()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testCreateAccount()") ;
+        //
+        // Try creating our manager.
+        AccountManager manager = new AccountManagerImpl(
+            this.getDatabaseConfiguration()
+            ) ;
+        assertNotNull("Null manager", manager) ;
+        //
+        // Try creating an Account.
+        AccountData created = manager.addAccount("test-account") ;
+        assertNotNull("Null account", created) ;
+        //
+        // Try getting the details.
+        AccountData found = manager.getAccount("test-account") ;
+        assertNotNull("Null account", found) ;
+        //
+        // Check that they refer to the same account.
+        assertEquals("Different accounts", created, found) ;
+        }
 
-	/**
-	 * Check we can delete an Account.
-	 *
-	 */
-	public void testDeleteAccount()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteAccount()") ;
-		//
-		// Try creating our manager.
-		AccountManager manager = new AccountManagerImpl(
-			this.getDatabaseConfiguration()
-			) ;
-		assertNotNull("Null manager", manager) ;
-		//
-		// Try creating the Account.
-		AccountData created = manager.addAccount("test-account") ;
-		assertNotNull("Null account", created) ;
-		//
-		// Try deleting the Account.
-		AccountData deleted = manager.delAccount("test-account") ;
-		assertNotNull("Null account", deleted) ;
-		//
-		// Check that the two objects represent the same Account.
-		assertEquals("Different accounts", created, deleted) ;
-		}
+    /**
+     * Check we can delete an Account.
+     *
+     */
+    public void testDeleteAccount()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDeleteAccount()") ;
+        //
+        // Try creating our manager.
+        AccountManager manager = new AccountManagerImpl(
+            this.getDatabaseConfiguration()
+            ) ;
+        assertNotNull("Null manager", manager) ;
+        //
+        // Try creating the Account.
+        AccountData created = manager.addAccount("test-account") ;
+        assertNotNull("Null account", created) ;
+        //
+        // Try deleting the Account.
+        AccountData deleted = manager.delAccount("test-account") ;
+        assertNotNull("Null account", deleted) ;
+        //
+        // Check that the two objects represent the same Account.
+        assertEquals("Different accounts", created, deleted) ;
+        }
 
-	/**
-	 * Check we can prevent a duplicate Account.
-	 *
-	 */
-	public void testDuplicateAccount()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDuplicateAccount()") ;
-		//
-		// Try creating our manager.
-		AccountManager manager = new AccountManagerImpl(
-			this.getDatabaseConfiguration()
-			) ;
-		assertNotNull("Null manager", manager) ;
-		//
-		// Try creating an Account.
-		assertNotNull("Null account",
-			manager.addAccount("test-account")
-			) ;
-		//
-		// Try creating the same Account.
-		assertNull("Duplicate account",
-			manager.addAccount("test-account")
-			) ;
-		}
+    /**
+     * Check we can prevent a duplicate Account.
+     *
+     */
+    public void testDuplicateAccount()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testDuplicateAccount()") ;
+        //
+        // Try creating our manager.
+        AccountManager manager = new AccountManagerImpl(
+            this.getDatabaseConfiguration()
+            ) ;
+        assertNotNull("Null manager", manager) ;
+        //
+        // Try creating an Account.
+        assertNotNull("Null account",
+            manager.addAccount("test-account")
+            ) ;
+        //
+        // Try creating the same Account.
+        assertNull("Duplicate account",
+            manager.addAccount("test-account")
+            ) ;
+        }
 
-	/**
-	 * Try getting an unknown Account.
-	 *
-	 */
-	public void testGetUnknownAccount()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerTest:testGetUnknownAccount()") ;
-		//
-		// Try creating our manager.
-		AccountManager manager = new AccountManagerImpl(
-			this.getDatabaseConfiguration()
-			) ;
-		assertNotNull("Null manager", manager) ;
-		//
-		// Try getting the details.
-		AccountData found = manager.getAccount("unknown-account") ;
-		assertNull("Found unknown account", found) ;
-		}
+    /**
+     * Try getting an unknown Account.
+     *
+     */
+    public void testGetUnknownAccount()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerTest:testGetUnknownAccount()") ;
+        //
+        // Try creating our manager.
+        AccountManager manager = new AccountManagerImpl(
+            this.getDatabaseConfiguration()
+            ) ;
+        assertNotNull("Null manager", manager) ;
+        //
+        // Try getting the details.
+        AccountData found = manager.getAccount("unknown-account") ;
+        assertNull("Found unknown account", found) ;
+        }
 
-	}
+    }

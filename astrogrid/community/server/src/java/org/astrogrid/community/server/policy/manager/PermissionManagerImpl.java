@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/PermissionManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/02/12 08:12:13 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/02/20 21:11:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PermissionManagerImpl.java,v $
+ *   Revision 1.5  2004/02/20 21:11:05  dave
+ *   Merged development branch, dave-dev-200402120832, into HEAD
+ *
+ *   Revision 1.4.2.2  2004/02/19 21:09:27  dave
+ *   Refactored ServiceStatusData into a common package.
+ *   Refactored CommunityServiceImpl constructor to take a parent service.
+ *   Refactored default database for CommunityServiceImpl
+ *
+ *   Revision 1.4.2.1  2004/02/16 15:20:54  dave
+ *   Changed tabs to spaces
+ *
  *   Revision 1.4  2004/02/12 08:12:13  dave
  *   Merged development branch, dave-dev-200401131047, into HEAD
  *
@@ -63,11 +74,11 @@ import org.astrogrid.community.common.policy.data.CommunityIdent ;
 
 import org.astrogrid.community.common.policy.manager.PermissionManager ;
 
-import org.astrogrid.community.server.common.CommunityServer ;
+import org.astrogrid.community.server.common.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.DatabaseConfiguration ;
 
 public class PermissionManagerImpl
-	extends CommunityServer
+    extends CommunityServiceImpl
     implements PermissionManager
     {
     /**
@@ -82,7 +93,7 @@ public class PermissionManagerImpl
      */
     public PermissionManagerImpl()
         {
-		super() ;
+        super() ;
         }
 
     /**
@@ -91,7 +102,16 @@ public class PermissionManagerImpl
      */
     public PermissionManagerImpl(DatabaseConfiguration config)
         {
-		super(config) ;
+        super(config) ;
+        }
+
+    /**
+     * Public constructor, using a parent service.
+     *
+     */
+    public PermissionManagerImpl(CommunityServiceImpl parent)
+        {
+        super(parent) ;
         }
 
     /**
@@ -131,26 +151,26 @@ public class PermissionManagerImpl
                     {
                     //
                     // Create our new PolicyPermission.
-					permission = new PolicyPermission() ;
-					permission.setResource(resourceIdent.toString()) ;
-					permission.setGroup(groupIdent.toString()) ;
-					permission.setAction(action) ;
-					permission.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
+                    permission = new PolicyPermission() ;
+                    permission.setResource(resourceIdent.toString()) ;
+                    permission.setGroup(groupIdent.toString()) ;
+                    permission.setAction(action) ;
+                    permission.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
                     //
                     // Try adding it to the database.
                     try {
-						//
-						// Open our database connection.
-						database = this.getDatabase() ;
+                        //
+                        // Open our database connection.
+                        database = this.getDatabase() ;
                         //
                         // Begin a new database transaction.
                         database.begin();
                         //
                         // Try creating the permission.
                         database.create(permission);
-						//
-						// Commit the transaction.
-						database.commit() ;
+                        //
+                        // Commit the transaction.
+                        database.commit() ;
                         }
                     //
                     // If we already have an object with that ident.
@@ -158,9 +178,9 @@ public class PermissionManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                     catch (DuplicateIdentityException ouch)
                         {
-						//
-						// Log the exception.
-						logException(ouch, "PermissionManagerImpl.addPermission()") ;
+                        //
+                        // Log the exception.
+                        logException(ouch, "PermissionManagerImpl.addPermission()") ;
                         //
                         // Set the response to null.
                         permission = null ;
@@ -171,21 +191,21 @@ public class PermissionManagerImpl
                     // If anything else went bang.
                     catch (Exception ouch)
                         {
-						//
-						// Log the exception.
-						logException(ouch, "PermissionManagerImpl.addPermission()") ;
+                        //
+                        // Log the exception.
+                        logException(ouch, "PermissionManagerImpl.addPermission()") ;
                         //
                         // Set the response to null.
                         permission = null ;
 // TODO
 // Need to rollback transaction
                         }
-	                //
-	                // Close our database connection.
-	                finally
-	                    {
-						closeConnection(database) ;
-	                    }
+                    //
+                    // Close our database connection.
+                    finally
+                        {
+                        closeConnection(database) ;
+                        }
                     }
                 //
                 // If the group ident is not valid.
@@ -267,18 +287,18 @@ public class PermissionManagerImpl
                     //
                     // Try loading the PolicyPermission from the database.
                     try {
-						//
-						// Open our database connection.
-						database = this.getDatabase() ;
+                        //
+                        // Open our database connection.
+                        database = this.getDatabase() ;
                         //
                         // Begin a new database transaction.
                         database.begin();
                         //
                         // Load the PolicyPermission from the database.
                         result = (PolicyPermission) database.load(PolicyPermission.class, key) ;
-						//
-						// Commit the transaction.
-						database.commit() ;
+                        //
+                        // Commit the transaction.
+                        database.commit() ;
                         }
                     //
                     // If we couldn't find the object.
@@ -286,9 +306,9 @@ public class PermissionManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                     catch (ObjectNotFoundException ouch)
                         {
-						//
-						// Log the exception.
-						logException(ouch, "PermissionManagerImpl.getPermission()") ;
+                        //
+                        // Log the exception.
+                        logException(ouch, "PermissionManagerImpl.getPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
@@ -299,21 +319,21 @@ public class PermissionManagerImpl
                     // If anything else went bang.
                     catch (Exception ouch)
                         {
-						//
-						// Log the exception.
-						logException(ouch, "PermissionManagerImpl.getPermission()") ;
+                        //
+                        // Log the exception.
+                        logException(ouch, "PermissionManagerImpl.getPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
 // TODO
 // Need to rollback transaction
                         }
-	                //
-	                // Close our database connection.
-	                finally
-	                    {
-						closeConnection(database) ;
-	                    }
+                    //
+                    // Close our database connection.
+                    finally
+                        {
+                        closeConnection(database) ;
+                        }
                     }
                 //
                 // If the group ident is not valid.
@@ -395,9 +415,9 @@ public class PermissionManagerImpl
                     //
                     // Try update the database.
                     try {
-						//
-						// Open our database connection.
-						database = this.getDatabase() ;
+                        //
+                        // Open our database connection.
+                        database = this.getDatabase() ;
                         //
                         // Begin a new database transaction.
                         database.begin();
@@ -408,9 +428,9 @@ public class PermissionManagerImpl
                         // Update the PolicyPermission data.
                         result.setStatus(permission.getStatus()) ;
                         result.setReason(permission.getReason()) ;
-						//
-						// Commit the transaction.
-						database.commit() ;
+                        //
+                        // Commit the transaction.
+                        database.commit() ;
                         }
                     //
                     // If we couldn't find the object.
@@ -418,9 +438,9 @@ public class PermissionManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                     catch (ObjectNotFoundException ouch)
                         {
-						//
-						// Log the exception.
-						logException(ouch, "PermissionManagerImpl.setPermission()") ;
+                        //
+                        // Log the exception.
+                        logException(ouch, "PermissionManagerImpl.setPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
@@ -431,21 +451,21 @@ public class PermissionManagerImpl
                     // If anything else went bang.
                     catch (Exception ouch)
                         {
-						//
-						// Log the exception.
-						logException(ouch, "PermissionManagerImpl.setPermission()") ;
+                        //
+                        // Log the exception.
+                        logException(ouch, "PermissionManagerImpl.setPermission()") ;
                         //
                         // Set the response to null.
                         result = null ;
 // TODO
 // Need to rollback transaction
                         }
-	                //
-	                // Close our database connection.
-	                finally
-	                    {
-						closeConnection(database) ;
-	                    }
+                    //
+                    // Close our database connection.
+                    finally
+                        {
+                        closeConnection(database) ;
+                        }
                     }
                 //
                 // If the group ident is not valid.
@@ -523,9 +543,9 @@ public class PermissionManagerImpl
                 //
                 // Try update the database.
                 try {
-					//
-					// Open our database connection.
-					database = this.getDatabase() ;
+                    //
+                    // Open our database connection.
+                    database = this.getDatabase() ;
                     //
                     // Begin a new database transaction.
                     database.begin();
@@ -535,9 +555,9 @@ public class PermissionManagerImpl
                     //
                     // Dete the PolicyPermission data.
                     database.remove(result) ;
-					//
-					// Commit the transaction.
-					database.commit() ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
                     }
                 //
                 // If we couldn't find the object.
@@ -545,9 +565,9 @@ public class PermissionManagerImpl
 // The only reason to treat this differently is that we might one day report it differently to the client.
                 catch (ObjectNotFoundException ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "PermissionManagerImpl.delPermission()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "PermissionManagerImpl.delPermission()") ;
                     //
                     // Set the response to null.
                     result = null ;
@@ -558,9 +578,9 @@ public class PermissionManagerImpl
                 // If anything else went bang.
                 catch (Exception ouch)
                     {
-					//
-					// Log the exception.
-					logException(ouch, "PermissionManagerImpl.delPermission()") ;
+                    //
+                    // Log the exception.
+                    logException(ouch, "PermissionManagerImpl.delPermission()") ;
                     //
                     // Set the response to null.
                     result = null ;
@@ -571,7 +591,7 @@ public class PermissionManagerImpl
                 // Close our database connection.
                 finally
                     {
-					closeConnection(database) ;
+                    closeConnection(database) ;
                     }
                 }
             //
