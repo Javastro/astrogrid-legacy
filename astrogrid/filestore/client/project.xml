@@ -2,11 +2,17 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2004/07/25 08:58:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.6  2004/07/27 13:41:17  dave
+    |   Merged development branch, dave-dev-200407261230, into HEAD
+    |
+    |   Revision 1.5.2.1  2004/07/27 13:27:07  dave
+    |   Added registry entry and resolver to integtation tests
+    |
     |   Revision 1.5  2004/07/25 08:58:25  KevinBenson
     |   Now using the registry-client-lite the lighter version of the registry
     |
@@ -140,7 +146,6 @@
         </dependency>
         <!--+
             | The JXpath library - required for Registry delegate.
-            +-->
        <dependency>
             <artifactId>commons-jxpath</artifactId>
             <groupId>commons-jxpath</groupId>
@@ -151,9 +156,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Jakarta Regexp library - required for Registry delegate.
-            +-->
        <dependency>
             <artifactId>jakarta-regexp</artifactId>
             <groupId>jakarta-regexp</groupId>
@@ -164,9 +169,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Castor XML library - required for Registry delegate.
-            +-->
         <dependency>
             <groupId>castor</groupId>
             <artifactId>castor-xml</artifactId>
@@ -178,9 +183,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Xerces library that Castor relies on.
-            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -191,9 +196,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The XML library that Xerces relies on.
-            +-->
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
@@ -204,6 +209,7 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
     </dependencies>
 
     <!--+

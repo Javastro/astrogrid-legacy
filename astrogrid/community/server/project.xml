@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.17  2004/07/27 13:41:17  dave
+    |   Merged development branch, dave-dev-200407261230, into HEAD
+    |
+    |   Revision 1.16.20.1  2004/07/27 13:27:07  dave
+    |   Added registry entry and resolver to integtation tests
+    |
     |   Revision 1.16  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -116,7 +122,6 @@
         </dependency>
         <!--+
             | The Castor XML library - required for Registry delegate.
-            +-->
         <dependency>
             <groupId>castor</groupId>
             <artifactId>castor-xml</artifactId>
@@ -125,6 +130,7 @@
             <type>jar</type>
             <url>http://www.castor.org/</url>
         </dependency>
+            +-->
         <!--+
             | The JTA library that Castor relies on.
             +-->
@@ -136,7 +142,6 @@
         </dependency>
         <!--+
             | The Xerces library that Castor relies on.
-            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -144,9 +149,9 @@
             <type>jar</type>
             <url>http://xml.apache.org/</url>
         </dependency>
+            +-->
         <!--+
             | The XML library that Xerces relies on.
-            +-->
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
@@ -154,6 +159,7 @@
             <type>jar</type>
             <url>http://xml.apache.org/</url>
         </dependency>
+            +-->
         <!--+
             | The Hsqldb jars.
             +-->

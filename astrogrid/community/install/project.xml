@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.17  2004/07/27 13:41:17  dave
+    |   Merged development branch, dave-dev-200407261230, into HEAD
+    |
+    |   Revision 1.16.20.1  2004/07/27 13:27:07  dave
+    |   Added registry entry and resolver to integtation tests
+    |
     |   Revision 1.16  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -202,7 +208,6 @@
         </dependency>
         <!--+
             | The Castor XML library.
-            +-->
         <dependency>
             <groupId>castor</groupId>
             <artifactId>castor-xml</artifactId>
@@ -214,9 +219,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Xerces library that Castor relies on.
-            +-->
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xerces</artifactId>
@@ -227,9 +232,9 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The XML library that Xerces relies on.
-            +-->
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
@@ -240,6 +245,7 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
+            +-->
         <!--+
             | The Hsqldb library.
             +-->

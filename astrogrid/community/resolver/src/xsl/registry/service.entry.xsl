@@ -2,10 +2,16 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/xsl/registry/service.entry.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: service.entry.xsl,v $
+    |   Revision 1.5  2004/07/27 13:41:17  dave
+    |   Merged development branch, dave-dev-200407261230, into HEAD
+    |
+    |   Revision 1.4.32.1  2004/07/27 13:27:07  dave
+    |   Added registry entry and resolver to integtation tests
+    |
     |   Revision 1.4  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -27,7 +33,7 @@
         +-->
     <xsl:param name="service.authority"/>
     <xsl:param name="service.resource"/>
-    <xsl:param name="service.wsdl"/>
+    <xsl:param name="service.endpoint"/>
 
     <!--+
         | Process the Identifier element.
@@ -62,7 +68,7 @@
                 <xsl:attribute name="use">
                     <xsl:text>base</xsl:text>
                 </xsl:attribute>
-                <xsl:value-of select="$service.wsdl"/>
+                <xsl:value-of select="$service.endpoint"/>
             </xsl:element>
         </xsl:element>
     </xsl:template>

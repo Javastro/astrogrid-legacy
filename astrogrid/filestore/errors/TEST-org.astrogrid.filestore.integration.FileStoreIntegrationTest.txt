@@ -1,0 +1,1169 @@
+Testsuite: org.astrogrid.filestore.integration.FileStoreIntegrationTest
+Tests run: 47, Failures: 0, Errors: 3, Time elapsed: 243.669 sec
+
+------------- Standard Output ---------------
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testGetServiceIdentifier()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportNullString()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : null
+  >>>>
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  >>>>
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.filestoreException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportString()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportStringInfo()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testExportNullString()
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : null
+  ---- catch ----
+  Exception : class org.apache.axis.AxisFault
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.identifierException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testExportUnknownString()
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : unknown
+  ---- catch ----
+  Exception : class org.apache.axis.AxisFault
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportStringExportString()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7ffe
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportStringExportBytes()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportNullBytes()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.filestoreException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportBytes()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportBytesInfo()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testExportNullBytes()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.identifierException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testExportUnknownBytes()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportBytesExportBytes()
+--------
+[0] 41:41
+[1] 20:20
+[2] 73:73
+[3] 68:68
+[4] 6f:6f
+[5] 72:72
+[6] 74:74
+[7] 20:20
+[8] 62:62
+[9] 79:79
+[10] 74:74
+[11] 65:65
+[12] 20:20
+[13] 61:61
+[14] 72:72
+[15] 72:72
+[16] 61:61
+[17] 79:79
+[18] 20:20
+[19] 2e:2e
+[20] 2e:2e
+[21] 2e:2e
+[22] 2e:2e
+--------
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportBytesExportString()
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7ff9
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testRequestNullInfo()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.identifierException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testRequestUnknownInfo()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testRequestStringInfo()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testRequestBytesInfo()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDeleteNull()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.identifierException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDeleteUnknown()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDeleteString()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDeleteBytes()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testInfoDeleted()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff4
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff4'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff4
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff4'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testExportDeleted()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7ff3
+  ---- catch ----
+  Exception : class org.apache.axis.AxisFault
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff3
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff3'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff3
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : 1dd9891.fdfc316932.7ff3'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testAppendNullString()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.filestoreException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreException: Null data
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreException: Null data'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testAppendStringNullIdent()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.filestoreException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreException: '
+  Not handled
+----
+FileStoreCoreDelegate.identifierException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testAppendStringUnknownIdent()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportStringAppendString()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7ff2
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportStringAppendBytes()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7ff1
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDuplicateNullIdent()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Not handled
+----
+FileStoreCoreDelegate.identifierException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: Null identifier'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreIdentifierException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDuplicateUnknownIdent()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.notfoundException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: Unable to locate file : unknown'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreNotFoundException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDuplicateIdent()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDuplicateString()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7fed
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDuplicateInfo()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testDuplicateAppend()
+
+----"----
+FileStoreCoreDelegate.importString()
+  Data : A short test string ....
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7fea
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7fe9
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testCreateNullUrlGetTransfer()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testCreateUrlGetTransfer()
+--------
+file:///var/projects/astrogrid/dave-dev-200407261230/integrationTests/auto-integration/target/work/filestore/data/text.txt
+--------
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportNullTransfer()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreTransferException: Null transfer properties
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreTransferException: Null transfer properties'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.transferException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreTransferException: Null transfer properties
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreTransferException: Null transfer properties'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreTransferException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportMissing()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreTransferException: Unable to open URL source
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreTransferException: Unable to open URL source'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreServiceException: '
+  Not handled
+----
+FileStoreCoreDelegate.transferException
+  Exception : org.astrogrid.filestore.common.exception.FileStoreTransferException: Unable to open URL source
+  Type      : class org.apache.axis.AxisFault
+  Cause     : null
+  Null cause
+  Message  : 'org.astrogrid.filestore.common.exception.FileStoreTransferException: Unable to open URL source'
+  Template : 'org.astrogrid.filestore.common.exception.FileStoreTransferException: '
+  Matches template
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportFile()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportHttp()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : java.net.SocketTimeoutException: Read timed out
+  Type      : class org.apache.axis.AxisFault
+  Cause     : java.net.SocketTimeoutException: Read timed out
+  Got cause
+  Not handled
+----
+FileStoreCoreDelegate.transferException
+  Exception : java.net.SocketTimeoutException: Read timed out
+  Type      : class org.apache.axis.AxisFault
+  Cause     : java.net.SocketTimeoutException: Read timed out
+  Got cause
+  Not handled
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportProperties()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportContent()
+
+----"----
+FileStoreCoreDelegate.exportString()
+  Ident : 1dd9891.fdfc316932.7fe4
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportTypeHtml()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : java.net.SocketTimeoutException: Read timed out
+  Type      : class org.apache.axis.AxisFault
+  Cause     : java.net.SocketTimeoutException: Read timed out
+  Got cause
+  Not handled
+----
+FileStoreCoreDelegate.transferException
+  Exception : java.net.SocketTimeoutException: Read timed out
+  Type      : class org.apache.axis.AxisFault
+  Cause     : java.net.SocketTimeoutException: Read timed out
+  Got cause
+  Not handled
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportTypeJar()
+
+----"----
+FileStoreCoreDelegate()
+
+----"----
+FileStoreSoapDelegate()
+  URL : 'http://localhost:8080/astrogrid-filestore-SNAPSHOT/services/FileStore'
+
+----"----
+FileStoreTest.testImportSource()
+----
+FileStoreCoreDelegate.serviceException
+  Exception : java.net.SocketTimeoutException: Read timed out
+  Type      : class org.apache.axis.AxisFault
+  Cause     : java.net.SocketTimeoutException: Read timed out
+  Got cause
+  Not handled
+----
+FileStoreCoreDelegate.transferException
+  Exception : java.net.SocketTimeoutException: Read timed out
+  Type      : class org.apache.axis.AxisFault
+  Cause     : java.net.SocketTimeoutException: Read timed out
+  Got cause
+  Not handled
+------------- ---------------- ---------------
+Testcase: testImportHttp(org.astrogrid.filestore.integration.FileStoreIntegrationTest):	Caused an ERROR
+WebService call failed - java.net.SocketTimeoutException: Read timed out
+org.astrogrid.filestore.common.exception.FileStoreServiceException: WebService call failed - java.net.SocketTimeoutException: Read timed out
+	at org.astrogrid.filestore.client.FileStoreCoreDelegate.importData(FileStoreCoreDelegate.java:578)
+	at org.astrogrid.filestore.common.FileStoreTest.testImportHttp(FileStoreTest.java:1773)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at org.apache.axis.AxisFault.makeFault(AxisFault.java:129)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:131)
+	at org.apache.axis.strategies.InvocationStrategy.visit(InvocationStrategy.java:71)
+	at org.apache.axis.SimpleChain.doVisiting(SimpleChain.java:150)
+	at org.apache.axis.SimpleChain.invoke(SimpleChain.java:120)
+	at org.apache.axis.client.AxisClient.invoke(AxisClient.java:180)
+	at org.apache.axis.client.Call.invokeEngine(Call.java:2564)
+	at org.apache.axis.client.Call.invoke(Call.java:2553)
+	at org.apache.axis.client.Call.invoke(Call.java:2248)
+	at org.apache.axis.client.Call.invoke(Call.java:2171)
+	at org.apache.axis.client.Call.invoke(Call.java:1691)
+	at org.astrogrid.filestore.common.FileStoreSoapBindingStub.importData(FileStoreSoapBindingStub.java:844)
+	at org.astrogrid.filestore.client.FileStoreCoreDelegate.importData(FileStoreCoreDelegate.java:568)
+	... 15 more
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:183)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:201)
+	at org.apache.axis.transport.http.HTTPSender.readHeadersFromSocket(HTTPSender.java:506)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:127)
+	... 26 more
+
+
+Testcase: testImportTypeHtml(org.astrogrid.filestore.integration.FileStoreIntegrationTest):	Caused an ERROR
+WebService call failed - java.net.SocketTimeoutException: Read timed out
+org.astrogrid.filestore.common.exception.FileStoreServiceException: WebService call failed - java.net.SocketTimeoutException: Read timed out
+	at org.astrogrid.filestore.client.FileStoreCoreDelegate.importData(FileStoreCoreDelegate.java:578)
+	at org.astrogrid.filestore.common.FileStoreTest.testImportTypeHtml(FileStoreTest.java:1886)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at org.apache.axis.AxisFault.makeFault(AxisFault.java:129)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:131)
+	at org.apache.axis.strategies.InvocationStrategy.visit(InvocationStrategy.java:71)
+	at org.apache.axis.SimpleChain.doVisiting(SimpleChain.java:150)
+	at org.apache.axis.SimpleChain.invoke(SimpleChain.java:120)
+	at org.apache.axis.client.AxisClient.invoke(AxisClient.java:180)
+	at org.apache.axis.client.Call.invokeEngine(Call.java:2564)
+	at org.apache.axis.client.Call.invoke(Call.java:2553)
+	at org.apache.axis.client.Call.invoke(Call.java:2248)
+	at org.apache.axis.client.Call.invoke(Call.java:2171)
+	at org.apache.axis.client.Call.invoke(Call.java:1691)
+	at org.astrogrid.filestore.common.FileStoreSoapBindingStub.importData(FileStoreSoapBindingStub.java:844)
+	at org.astrogrid.filestore.client.FileStoreCoreDelegate.importData(FileStoreCoreDelegate.java:568)
+	... 15 more
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:183)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:201)
+	at org.apache.axis.transport.http.HTTPSender.readHeadersFromSocket(HTTPSender.java:506)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:127)
+	... 26 more
+
+
+Testcase: testImportSource(org.astrogrid.filestore.integration.FileStoreIntegrationTest):	Caused an ERROR
+WebService call failed - java.net.SocketTimeoutException: Read timed out
+org.astrogrid.filestore.common.exception.FileStoreServiceException: WebService call failed - java.net.SocketTimeoutException: Read timed out
+	at org.astrogrid.filestore.client.FileStoreCoreDelegate.importData(FileStoreCoreDelegate.java:578)
+	at org.astrogrid.filestore.common.FileStoreTest.testImportSource(FileStoreTest.java:1958)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at org.apache.axis.AxisFault.makeFault(AxisFault.java:129)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:131)
+	at org.apache.axis.strategies.InvocationStrategy.visit(InvocationStrategy.java:71)
+	at org.apache.axis.SimpleChain.doVisiting(SimpleChain.java:150)
+	at org.apache.axis.SimpleChain.invoke(SimpleChain.java:120)
+	at org.apache.axis.client.AxisClient.invoke(AxisClient.java:180)
+	at org.apache.axis.client.Call.invokeEngine(Call.java:2564)
+	at org.apache.axis.client.Call.invoke(Call.java:2553)
+	at org.apache.axis.client.Call.invoke(Call.java:2248)
+	at org.apache.axis.client.Call.invoke(Call.java:2171)
+	at org.apache.axis.client.Call.invoke(Call.java:1691)
+	at org.astrogrid.filestore.common.FileStoreSoapBindingStub.importData(FileStoreSoapBindingStub.java:844)
+	at org.astrogrid.filestore.client.FileStoreCoreDelegate.importData(FileStoreCoreDelegate.java:568)
+	... 15 more
+Caused by: java.net.SocketTimeoutException: Read timed out
+	at java.net.SocketInputStream.socketRead0(Native Method)
+	at java.net.SocketInputStream.read(SocketInputStream.java:129)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:183)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:201)
+	at org.apache.axis.transport.http.HTTPSender.readHeadersFromSocket(HTTPSender.java:506)
+	at org.apache.axis.transport.http.HTTPSender.invoke(HTTPSender.java:127)
+	... 26 more
+
+
