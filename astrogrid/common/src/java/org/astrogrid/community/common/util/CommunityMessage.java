@@ -13,14 +13,11 @@ public class CommunityMessage {
    /**
     * returns a snippet of xml.
     * @param token
-    * @param account in vo reference form - ie individual@community
+    * @param account
     * @param credential
     * @return
     */
-   public static String getMessage(String token,String account,String group)  {
-      
-      assert account.indexOf('@')>0 : "Account '"+account+"' not a valid vo reference - should be of the form individual@community";
-      
+   public static String getMessage(String token,String account,String credential)  {
       StringBuffer buff = new StringBuffer(100);
       buff.append("<community>");
          buff.append("<token>");
@@ -31,13 +28,13 @@ public class CommunityMessage {
                buff.append(account);
             buff.append("</account>");
             buff.append("<group>");
-               buff.append(group);
+               buff.append(credential);
             buff.append("</group>");
         buff.append("</credentials>");
       buff.append("</community>");
 
       return buff.toString();
-   }
+   }   
    
    public static String getToken(String xmlMessage) {
       int index = -1;
@@ -57,23 +54,6 @@ public class CommunityMessage {
       return null;
    }
 
-   public static String getIndividual(String xmlMessage) {
-      String voRef = getAccount(xmlMessage);
-      int at = voRef.indexOf('@');
-      assert at != -1 : "Account not valid VO Reference - no '@' in '"+voRef+"'";
-      assert at > 0 : "No individual account given in '"+voRef+"'";
-      return voRef.substring(0,at);
-   }
-
-   public static String getCommunity(String xmlMessage) {
-      String voRef = getAccount(xmlMessage);
-      int at = voRef.indexOf('@');
-      assert at != -1 : "Account not valid VO Reference - no '@' in '"+voRef+"'";
-      assert at > 0 : "No individual account given in '"+voRef+"'";
-      return voRef.substring(at+1);
-   }
-   
-   
    public static String getGroup(String xmlMessage) {
       int index = -1;
       index = xmlMessage.indexOf("<group>");
@@ -81,5 +61,5 @@ public class CommunityMessage {
          return xmlMessage.substring(index + "<group>".length(),xmlMessage.indexOf("</group>"));
       }
       return null;
-   }
+   }   
 }
