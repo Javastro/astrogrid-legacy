@@ -5,3 +5,4 @@ bin
 build.properties
 cvs.log
 maven.log
+target

@@ -3,6 +3,7 @@ build
 .project
 bin
 build.properties
+target
 cvs.log
 maven.log
 *.log
