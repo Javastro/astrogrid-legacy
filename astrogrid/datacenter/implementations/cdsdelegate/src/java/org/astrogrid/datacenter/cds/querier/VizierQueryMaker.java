@@ -1,4 +1,4 @@
-/*$Id: VizierQueryMaker.java,v 1.3 2004/09/10 10:31:17 mch Exp $
+/*$Id: VizierQueryMaker.java,v 1.4 2004/09/28 15:05:27 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,27 +61,7 @@ public class VizierQueryMaker  {
     */
    public VizierQuery fromAdql(AdqlQuery query) {
       //should use appropriate xslt, but use deprecated stuff for now
-
-      try {
-        Element queryBody = query.toDom().getDocumentElement();
-        AdqlVizierTranslator trans = new AdqlVizierTranslator();
-        // do the translation
-        Object intermediateRep = null;
-        Class expectedType = null;
-        try { // don't trust it.
-            intermediateRep = trans.translate(queryBody);
-            expectedType = trans.getResultType();
-            if (! expectedType.isInstance(intermediateRep)) { // checks result is non-null and the right type.
-                throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
-            }
-        } catch (Throwable t) {
-            throw new RuntimeException("Translation phase failed:" + t.getMessage(),t);
-        }
-        return ((VizierQuery) intermediateRep);
-     }
-     catch (QueryException se) {
-        throw new IllegalArgumentException("Bad ADQL/XML"+se);
-     }
+      throw new UnsupportedOperationException("Need to write the ADQL -> Vizier Cone translator for ADQL 0.7.4+");
 
    }
 
@@ -90,6 +70,9 @@ public class VizierQueryMaker  {
 
 /*
 $Log: VizierQueryMaker.java,v $
+Revision 1.4  2004/09/28 15:05:27  mch
+Temporary compile-only fix for removing obsolete ADQL 0.5
+
 Revision 1.3  2004/09/10 10:31:17  mch
 Added cause to thrown error
 
