@@ -17,8 +17,10 @@ import java.sql.SQLException ;
 import java.sql.Timestamp ;
 import java.text.MessageFormat ;
 import java.util.Date ;
+import java.util.HashSet ;
 import java.util.Iterator ;
 import java.lang.Math ;
+
 
 
 public class JobFactoryImpl implements JobFactory {
@@ -42,8 +44,9 @@ public class JobFactoryImpl implements JobFactory {
 	public static final String
 	    JOB_INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, STATUS, SUBMITTIMESTAMP, USERID, COMMUNITY, JOBXML ) " +
 	                          "VALUES ( '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}' )" ,
-	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET RUNTIMESTAMP = ?, STATUS = ?, COMMENT = ? WHERE JOBURN = ?" ,
+	    JOB_UPDATE_TEMPLATE = "UPDATE {0} SET STATUS = ? WHERE JOBURN = ?" ,
 	    JOB_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
+	    JOB_GENERAL_SELECT_TEMPLATE = "SELECT * FROM {0} WHERE {1}" ,	    
 	    JOB_DELETE_TEMPLATE = "DELETE FROM {0} WHERE JOBURN = {1}" ;
 	    
 	private static final int
@@ -226,7 +229,7 @@ public class JobFactoryImpl implements JobFactory {
     } // end of updateJob()
 
 
-    public Job findJob( String jobURN ) {
+    public Job findJob( String jobURN ) throws JobNotFoundException, DuplicateJobFoundException, JobException {
 		if( TRACE_ENABLED ) logger.debug( "findJob(): entry") ;  
 		 	
 		JobImpl
@@ -237,37 +240,49 @@ public class JobFactoryImpl implements JobFactory {
 		   rs = null ;
     	   
 		try {
-/*
+
 			Object []
 			   inserts = new Object[2] ;
-			inserts[0] = DatasetAgent.getProperty( JOB_TABLENAME ) ;
-			inserts[1] = job.getId() ;
+			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[1] = jobURN ;
 
 			String
-			   selectString = MessageFormat.format( SELECT_TEMPLATE, inserts ) ; 			
-			statement = job.getConnection().createStatement() ;
+			   selectString = MessageFormat.format( JOB_SELECT_TEMPLATE, inserts ) ; 			
+			statement = this.getConnection().createStatement() ;
 			rs = statement.executeQuery( selectString );
-			if( rs.first() ){
-				; //JBL Note: Job not found
+			
+			if( !rs.isBeforeFirst() ) {
+				// Whoops! Job not found when it should have been...
+				Message
+				   message = new Message( "" ) ;
+				throw new JobNotFoundException( message ) ;
 			}
 			else {
+				rs.next() ; // position on the first job found (hopefully the only one!)
+				
 				job.setId( rs.getString( COL_JOBURN ) ) ;
 				job.setName( rs.getString( COL_JOBNAME ) ) ;
-				job.setDate( rs.getTimestamp( COL_RUNTIMESTAMP ) ) ;
+				job.setDate( rs.getTimestamp( COL_SUBMITTIMESTAMP ) ) ;
 				job.setUserId( rs.getString( COL_USERID ) ) ;
 				job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
-				job.setStatus( rs.getString( COL_STATUS ) ) ;
-				job.setComment( rs.getString( COL_COMMENT ) ) ;
-				
+				job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
 				job.setDirty( false ) ;
+				
+				if( rs.next() == true ) {
+					// We have a duplicate Job!!! This should be impossible...
+					Message
+					   message = new Message( "" ) ;
+					throw new DuplicateJobFoundException( message ) ;
+				}
 
-			}
-*/			   
+			} // end else
+						   
 		}
-		catch( Exception ex ) {
+		catch( SQLException ex ) {
 			Message
 				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
-			logger.error( message.toString(), ex ) ;   		
+			logger.error( message.toString(), ex ) ;
+			throw new JobException( message, ex ) ;   		
 		}
 		finally {
 			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
@@ -280,13 +295,73 @@ public class JobFactoryImpl implements JobFactory {
     } // end of findJob()
 
 
+	public Iterator findJobsWhere( String criteriaString ) throws JobNotFoundException, JobException  {
+		if( TRACE_ENABLED ) logger.debug( "findJobsWhere(): entry") ;  
+		 		 	
+		HashSet
+			set = null  ;
+		Statement   
+		   statement = null ;
+		ResultSet
+		   rs = null ;
+    	   
+		try {
 
+			Object []
+			   inserts = new Object[2] ;
+			inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
+			inserts[1] = criteriaString ;
 
-
-	public Iterator findJobsWhere( String queryString ) throws JobException  {
+			String
+			   selectString = MessageFormat.format( JOB_GENERAL_SELECT_TEMPLATE, inserts ) ; 			
+			statement = this.getConnection().createStatement() ;
+			rs = statement.executeQuery( selectString );
+			
+			if( !rs.isBeforeFirst() ) {
+				// Whoops! No Jobs found when perhaps there should have been...
+				Message
+				   message = new Message( "" ) ; 
+				throw new JobNotFoundException( message ) ;
+			}
+			else {
+				
+				set = new HashSet() ;
+				
+				while( rs.next() ) {
+					
+					JobImpl
+					   job = new JobImpl() ;
+				
+				    job.setId( rs.getString( COL_JOBURN ) ) ;
+				    job.setName( rs.getString( COL_JOBNAME ) ) ;
+				    job.setDate( rs.getTimestamp( COL_SUBMITTIMESTAMP ) ) ;
+				    job.setUserId( rs.getString( COL_USERID ) ) ;
+				    job.setCommunity( rs.getString( COL_COMMUNITY ) ) ;
+				    job.setDocumentXML( rs.getString( COL_JOBXML ) ) ;
+				    job.setDirty( false ) ;
+				    
+				    set.add( job ) ;
+				    
+				} // end while
+				
+			} // end else
+						   
+		}
+		catch( SQLException ex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			logger.error( message.toString(), ex ) ; 
+			throw new JobException( message, ex ) ;  		
+		}
+		finally {
+			if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
+			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+			if( TRACE_ENABLED ) logger.debug( "findJobsWhere(): exit") ;   	
+		}  		
 		
+		return set.iterator() ;
 
-	}
+	} // end of findJobsWhere()
 
 
     public String deleteJob( Job job )  { 

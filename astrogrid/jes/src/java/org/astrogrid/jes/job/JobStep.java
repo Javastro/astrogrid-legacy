@@ -43,7 +43,7 @@ public class JobStep {
 		
 		try {
 		 
-		   setName(element.getAttribute( JobDocDescriptor.JOBSTEP_NAME_ATTR )) ;
+		   setName(element.getAttribute( SubmissionRequestDD.JOBSTEP_NAME_ATTR )) ;
 		
 		   NodeList
 			  nodeList = element.getChildNodes() ;
@@ -56,7 +56,7 @@ public class JobStep {
 		   	   if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {	
 		   	   
 			       queryChild = (Element) nodeList.item(i) ;
-			       if( queryChild.getTagName().equals( JobDocDescriptor.QUERY_ELEMENT ) ) 
+			       if( queryChild.getTagName().equals( SubmissionRequestDD.QUERY_ELEMENT ) ) 
 			           query = new Query( this, queryChild ) ;
 			           
 			   }

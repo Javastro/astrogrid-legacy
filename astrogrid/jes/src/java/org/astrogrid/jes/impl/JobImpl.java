@@ -8,7 +8,7 @@ package org.astrogrid.jes.impl;
 
 import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobStep ;
-import org.astrogrid.jes.job.JobDocDescriptor ;
+import org.astrogrid.jes.job.SubmissionRequestDD ;
 import org.astrogrid.jes.job.JobException ;
 import org.astrogrid.jes.i18n.*;
 import org.apache.log4j.Logger;
@@ -74,8 +74,8 @@ public class JobImpl extends Job {
 					
 					element = (Element) nodeList.item(i) ;
 					
-					if ( element.getTagName().equals( JobDocDescriptor.JOB_ELEMENT ) ) {
-						name = element.getAttribute( JobDocDescriptor.JOB_NAME_ATTR ).trim() ;
+					if ( element.getTagName().equals( SubmissionRequestDD.JOB_ELEMENT ) ) {
+						name = element.getAttribute( SubmissionRequestDD.JOB_NAME_ATTR ).trim() ;
 					}
 					
 				} // end if
@@ -90,13 +90,13 @@ public class JobImpl extends Job {
 					
 					element = (Element) nodeList.item(i) ;
 					
-				    if( element.getTagName().equals( JobDocDescriptor.USERID_ELEMENT ) ) {
+				    if( element.getTagName().equals( SubmissionRequestDD.USERID_ELEMENT ) ) {
 					    userId = element.getNodeValue().trim() ;
 				    }
-				    else if( element.getTagName().equals( JobDocDescriptor.COMMUNITY_ELEMENT ) ) {
+				    else if( element.getTagName().equals( SubmissionRequestDD.COMMUNITY_ELEMENT ) ) {
 					    community = element.getNodeValue().trim() ;
 				    }
-				    else if( element.getTagName().equals( JobDocDescriptor.JOBSTEP_ELEMENT ) ) {
+				    else if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {
 				        jobSteps.add( new JobStep( this, element ) ) ;   
 				    }
 				

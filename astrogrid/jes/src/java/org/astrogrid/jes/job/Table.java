@@ -48,7 +48,7 @@ public class Table {
 		setParent(parent) ;  
 				
 		try {
-			setName(tableElement.getAttribute( JobDocDescriptor.TABLE_NAME_ATTR )) ;			
+			setName(tableElement.getAttribute( SubmissionRequestDD.TABLE_NAME_ATTR )) ;			
 		}
 		catch( Exception ex ) {
 			Message

@@ -60,13 +60,13 @@ public class Catalog {
 		   		
 		try {
 			
-			setName(catalogElement.getAttribute( JobDocDescriptor.CATALOG_NAME_ATTR )) ;
+			setName(catalogElement.getAttribute( SubmissionRequestDD.CATALOG_NAME_ATTR )) ;
 			   
 			Element
 				element ;
 				
 			NodeList
-			   nodeList = catalogElement.getElementsByTagName( JobDocDescriptor.TABLE_ELEMENT ) ;
+			   nodeList = catalogElement.getElementsByTagName( SubmissionRequestDD.TABLE_ELEMENT ) ;
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 				
@@ -74,7 +74,7 @@ public class Catalog {
 				
 				    element = (Element) nodeList.item(i) ;
 				
-				    if( element.getTagName().equals( JobDocDescriptor.TABLE_ELEMENT ) ) {
+				    if( element.getTagName().equals( SubmissionRequestDD.TABLE_ELEMENT ) ) {
                         tables.add( new Table( this, element ) ) ;
 				    }
 
@@ -83,7 +83,7 @@ public class Catalog {
 				
 			} // end for		
 			
-			nodeList = catalogElement.getElementsByTagName( JobDocDescriptor.SERVICE_ELEMENT ) ;
+			nodeList = catalogElement.getElementsByTagName( SubmissionRequestDD.SERVICE_ELEMENT ) ;
 
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 				
@@ -91,7 +91,7 @@ public class Catalog {
 				
 					element = (Element) nodeList.item(i) ;
 				
-					if( element.getTagName().equals( JobDocDescriptor.SERVICE_ELEMENT ) ) {
+					if( element.getTagName().equals( SubmissionRequestDD.SERVICE_ELEMENT ) ) {
 						services.add( new Service( this, element ) ) ;
 					}
 

@@ -49,8 +49,8 @@ public class Service {
 		setParent(parent) ;
 		 		
 		try {
-			setName(serviceElement.getAttribute( JobDocDescriptor.SERVICE_NAME_ATTR )) ;
-			setUrl(serviceElement.getAttribute( JobDocDescriptor.SERVICE_URL_ATTR )) ;			
+			setName(serviceElement.getAttribute( SubmissionRequestDD.SERVICE_NAME_ATTR )) ;
+			setUrl(serviceElement.getAttribute( SubmissionRequestDD.SERVICE_URL_ATTR )) ;			
 		}
 		catch( Exception ex ) {
 			Message

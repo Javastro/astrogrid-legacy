@@ -50,7 +50,7 @@ public class Query {
 										
 				    element = (Element) nodeList.item(i) ;
 				
-                    if( element.getTagName().equals( JobDocDescriptor.FROM_ELEMENT ) ) {
+                    if( element.getTagName().equals( SubmissionRequestDD.FROM_ELEMENT ) ) {
 	                     fixupCatalogs( element ) ;
 				    }
 				
@@ -88,7 +88,7 @@ public class Query {
 										
 					element = (Element) nodeList.item(i) ;
 				
-					if( element.getTagName().equals( JobDocDescriptor.CATALOG_ELEMENT ) ) {
+					if( element.getTagName().equals( SubmissionRequestDD.CATALOG_ELEMENT ) ) {
 						 catalogs.add( new Catalog( this, element ) ) ;
 					}
 				

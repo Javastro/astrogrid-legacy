@@ -1,10 +1,10 @@
-/*
- * @(#)JobController.java   1.0
+/* 
+ * @(#)JobScheduler.java   1.0
  *
  * AstroGrid Copyright notice.
  * 
  */
-package org.astrogrid.jes.jobcontroller ;
+package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.jes.i18n.* ;
 import org.astrogrid.jes.job.Job ;
@@ -33,46 +33,18 @@ import java.net.URL;
 
 
 /**
- * The <code>JobController</code> class represents one of the top level
- * components in the AstroGrid Job Entry System (JES), the other components
- * being the <code>JobScheduler</code> and the <code>JobMonitor</code>. 
+ * The <code>JobScheduler</code> class represents ...
  * <p>
- * The <code>JobController</code> accepts a request for job submission and
- * creates 
- * usually a query against an astronomical catalog. The catalog is likely held 
- * within an SQL/RDBMS style database that is JDBC compliant. However, this is
- * not an absolute restriction, and other sources can be utilized at the cost
- * of the datacenter writing an implementation factory to support their own
- * special query processing.
- * <p>
- * The mainline argument (the workflow) is held within the method runQuery(),
- * which should be referred to for further detail. The basic workflow is:
- *      1. Load the datacenter properties (if not already loaded).
- *      2. Analyse the query and create appropriate structures.
- *      3  Execute the query.
- *      4. Allocate temporary file space within the local file system.
- *      5. Convert the query into VOTable format and stream it to
- *         the allocated file.
- *      6. Inform the MySpace facility that there is a file to
- *         pick up, and give it the file location.
- *      7. Inform the JobMonitor of successful completion.
- * <p>	
- * The above does not cover use cases where errors occur.
- * <p>
- * An instance of a DatasetAgent is stateless, with some provisos:
- * 1. The datacenter is driven by a properties file, held at class level.
- * 2. AstroGrid messages are held in a manner amenable to internationalization.
- * These are also loaded from a properties file, held at class level.
- * 3. Finally, and importantly, the DatasetAgent utilizes an entity which does
- * contain state - the Job entity, which currently represents one table held in any suitable
- * JDBC compliant database. However, again this is not an absolute restriction.
- *
+ * .... For example:
+ * <p><blockquote><pre>
+ *     
+ * </pre></blockquote><p>
  *
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
  * @since   AstroGrid 1.2
  */
-public class JobController {
+public class JobScheduler {
 	
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -98,12 +70,9 @@ public class JobController {
 	private static final String 
 		SUBMIT_JOB_RESPONSE_TEMPLATE = "SUBMIT_JOB_RESPONSE.TEMPLATE",
 	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE" ;
-		
-    private static final String 
-	    SCHEDULER_URL = "SCHEDULER.URL" ;
 	    			
 	private static Logger 
-		logger = Logger.getLogger( JobController.class ) ;
+		logger = Logger.getLogger( JobScheduler.class ) ;
 		
 	private static Properties
 		configurationProperties = null ;
@@ -198,7 +167,7 @@ public class JobController {
 	} // end of getProperty()
 
 
-	private void checkPropertiesLoaded() throws JobControllerException {
+	private void checkPropertiesLoaded() throws JobSchedulerException {
 		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
 		if( configurationProperties == null ) {
 			Message
@@ -209,7 +178,7 @@ public class JobController {
 	} // end checkPropertiesLoaded()
 	
 	
-	private Document parseRequest( String jobXML ) throws JobControllerException {  	
+	private Document parseRequest( String jobXML ) throws JobSchedulerException {  	
 		if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
 		
 		Document 
@@ -231,7 +200,7 @@ public class JobController {
 			Message
 				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST ) ; 
 			logger.error( message.toString(), ex ) ;
-			throw new JobControllerException( message, ex );
+			throw new JobSchedulerException( message, ex );
 		} 
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "parseRequest() exit") ;	
@@ -242,8 +211,8 @@ public class JobController {
 	} // end parseRequest()
 	
 	
-    public String submitJob( String jobXML ) {
-		if( TRACE_ENABLED ) logger.debug( "submitJob() entry") ;
+    public void scheduleJob( Document scheduleJobDocument ) {
+		if( TRACE_ENABLED ) logger.debug( "scheduleJob() entry") ;
     	
         String
 	        response = null ;
@@ -258,23 +227,21 @@ public class JobController {
 	        // If properties file is not loaded, we bail out...
 	        // Each JES MUST be properly initialized! 
 	        checkPropertiesLoaded() ;
-    		
-	        // Parse the request... 
-	        Document
-	           submitDoc = parseRequest( jobXML ) ;
 	           
 			// Create the necessary Job structures.
-			// This involves persistence, so we bracket the transaction before creating...
+			// This involves persistence, so we bracket the transaction 
+			// before finding, running and updating the Job...
 	        factory = Job.getFactory() ;
 	        factory.begin() ;
-	        job = factory.createJob( submitDoc, jobXML ) ;
+	        job = factory.findJob( this.extractJobURN( scheduleJobDocument ) ) ;
+	        
+	        // Locate appropriate datacenter, using the Registry...
+	        locateDatacenter( job ) ;
+	        
+			// Prod the datacenter into life...
+			startJob( job ) ;
                     		
 			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
-                    			
-	        // Inform JobScheduler (within JES) that job requires scheduling...
-	        informJobScheduler( job ) ;
-
-            response = formatGoodResponse( job ) ;
 
         }
         catch( JesException jex ) {
@@ -284,9 +251,6 @@ public class JobController {
 		       generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE ) ;
 	        logger.error( detailMessage.toString(), jex ) ;
 	        logger.error( generalMessage.toString() ) ;
-					
-	        // Format our error response here...
-			formatBadResponse( job, detailMessage ) ;
 	        
         }
         finally {
@@ -294,12 +258,10 @@ public class JobController {
 				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
         	}
 	        logger.debug( response.toString() );
-	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
-        }
-    	
-        return response ;  
+	        if( TRACE_ENABLED ) logger.debug( "scheduleJob() exit") ;
+        } 
          	
-    } // end of submitJob()
+    } // end of scheduleJob()
     
     
     private String formatGoodResponse( Job job ) {
@@ -345,25 +307,25 @@ public class JobController {
 	} // end of formatResponse()
 	
 	  	
-	private void informJobScheduler( Job job ) throws JesException { 
-		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;
+	private void startJob( Job job ) throws JesException { 
+		if( TRACE_ENABLED ) logger.debug( "startJob() exit") ;
 		
 		try {
 			
 			  Call
 			     call = new Service().createCall() ;
 
-			  call.setTargetEndpointAddress( new URL( getProperty( SCHEDULER_URL ) ) );
+			  // call.setTargetEndpointAddress( new URL( job.get ) );
+			  
+			  SOAPBodyElement[] 
+			     input = new SOAPBodyElement[1];
 			     
 			  InputSource
-			     jobSource = new InputSource( new StringReader( formatScheduleRequest( job ) ) ) ;
+			     jobSource = new InputSource( new StringReader( this.formatRunRequest( job ) ) ) ; 
 
 			  DocumentBuilder 
 			     builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		
-			  SOAPBodyElement[] 
-			     input = new SOAPBodyElement[1];
-			     
 			  input[0] = new SOAPBodyElement( builder.parse( jobSource ) ) ;
         
               // JBL Note: Axis documentation states "the return immediately part isn't implemented yet"!
@@ -376,14 +338,14 @@ public class JobController {
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;	
+			if( TRACE_ENABLED ) logger.debug( "startJob() exit") ;	
 		}					
 		
-	} // end informJobScheduler()
+	} // end startJob()
 	
 	
-	private String formatScheduleRequest( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() exit") ;
+	private String formatRunRequest( Job job ) {
+		if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;
 		
 		String 
 		   response = getProperty( SCHEDULE_JOB_REQUEST_TEMPLATE ) ;
@@ -407,12 +369,51 @@ public class JobController {
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() exit") ;	
+			if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;	
 		}		
 		
 		return response ;
 		
-	} // end of formatScheduleRequest()
+	} // end of formatRunRequest()
+	
+	
+	private String extractJobURN( Document jobDoc ) { 
+		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): entry") ;	
+		
+		String
+		   jobURN = null ;
+		
+		try { 	
+		
+		   Element
+		      element = null ;			   
+		   NodeList
+		      nodeList = submitDoc.getChildNodes() ;  
+			   
+		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				
+			   if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
+					
+				   element = (Element) nodeList.item(i) ;
+					
+				   if ( element.getTagName().equals( MonitorRequestDD.JOB_ELEMENT ) ) {
+					   jobURN = element.getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
+				   }
+					
+			   } // end if
+								
+		    } // end for
+		
+		} catch( Exception ex ) {
+			
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ;	
+		}
+					
+		return jobURN ;
+		
+	} // end of extractJobURN()
 	
 
-} // end of class JobController
+} // end of class JobScheduler
