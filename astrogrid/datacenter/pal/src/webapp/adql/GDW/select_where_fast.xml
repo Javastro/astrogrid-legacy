@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- SQL equivalent
-SELECT f.ra, x.decl FROM first AS f, xmm1 AS x WHERE f.ra > x.ra AND f.decl < x.decl ORDER BY f.phot_flux_peak , x.M1_FLUX
-
-WARNING: THE "ORDER BY" STATEMENT MAKES THIS QUERY *VERY SLOW*.
-USE SELECT_WHERE_FAST INSTEAD! 
+SELECT f.ra, x.decl FROM first AS f, xmm1 AS x WHERE f.ra > x.ra AND f.decl < x.decl 
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
     <Selection>
@@ -76,24 +73,4 @@ USE SELECT_WHERE_FAST INSTEAD!
             </IntersectionSearch>
         </WhereClause>
     </TableClause>
-    <OrderBy>
-        <OrderList>
-            <Order>
-                <Expr xsi:type="ColumnExpr">
-                    <SingleColumnReference>
-                        <TableName>f</TableName>
-                        <Name>phot_flux_peak</Name>
-                    </SingleColumnReference>
-                </Expr>
-            </Order>
-            <Order>
-                <Expr xsi:type="ColumnExpr">
-                    <SingleColumnReference>
-                        <TableName>x</TableName>
-                        <Name>M1_FLUX</Name>
-                    </SingleColumnReference>
-                </Expr>
-            </Order>
-        </OrderList>
-    </OrderBy>
 </Select>

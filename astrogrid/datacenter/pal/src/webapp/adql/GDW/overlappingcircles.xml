@@ -3,7 +3,7 @@
 SELECT f.ra, f.decl, x.ra, x.decl FROM first AS f, xmm1 AS x WHERE f.errbox 
 && x.errbox AND DEGREES(7200 * ASIN( SQRT(POW(SIN(RADIANS((f.decl-x.decl)/2)), 2)
  + COS(RADIANS(x.decl)) * COS(RADIANS(f.decl)) * POW(SIN(RADIANS((x.ra-f.ra)/2),2)
- ))) <0.01
+ )))) <0.01
 
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
