@@ -18,8 +18,6 @@
 		<xsp:include>java.util.Enumeration</xsp:include>
 		<xsp:include>org.astrogrid.portal.query.DataSetColumn</xsp:include>
 		<xsp:include>org.astrogrid.portal.query.DataSetInformation</xsp:include>
-		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNode</xsp:include>
-		<xsp:include>org.astrogrid.portal.services.myspace.client.data.DataNodeWalker</xsp:include>
 	</xsp:structure>
 	
 	<!--+
@@ -34,8 +32,8 @@
 		    +-->
 		<xsp:logic>
 			<![CDATA[
-				ArrayList dsInfoArrayList = (ArrayList)request.getAttribute("DataSetArrayList");
-				Hashtable dsUrlList = (Hashtable)request.getAttribute("DataSetAgents");
+				ArrayList dsInfoArrayList = (ArrayList)session.getAttribute("DataSetArrayList");
+				Hashtable dsUrlList = (Hashtable)session.getAttribute("DataSetAgents");
 				Integer criteriaNumber = (Integer)request.getAttribute("CriteriaNumber");
 				DataSetInformation dsInfo = null;
 				DataSetColumn dsCol = null;

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/07/24 15:31:23 $</cvs:author>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/25 08:13:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.9  2003/07/25 08:13:56  KevinBenson
+    | Okay DataQuery is now under cocoon.  Yeah.
+    |
     | Revision 1.8  2003/07/24 15:31:23  KevinBenson
     | a few bugs fixed on this integration of dataquery to cocoon
     |
@@ -117,6 +120,7 @@
                <map:parameter name="votable-page"  value="agvotable.html"/>
                <!-- Add the rest of the page names -->
                <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="current-page"  value="agmyspace.html"/>               
                <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
                <map:parameter name="query-page"    value="agdataquery.html"/>
@@ -140,21 +144,21 @@
                <map:transform src="query/xsl/query.xsl" label="002">
                   <!-- Add the action params -->
                   <map:parameter name="QueryString" value="{QueryString}"/>
+                  <map:parameter name="Script" value="{Script}"/>
                   <map:parameter name="QueryStringSent" value="{QueryStringSent}"/>
                   <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
                   <map:parameter name="LastWebCall" value="{LastWebServiceXML}"/>
                </map:transform>
             </map:act>
             <!-- Wrap the page in our HTML template -->
-            <map:transform src="query/xsl/astrogrid.xsl" label="003">
-               <!-- Add the explorer page names -->
-               <map:parameter name="explorer-page" value="agmyspace.html"/>
-               <map:parameter name="votable-page"  value="agvotable.html"/>
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
                <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agdataquery.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
-               <map:parameter name="query-page"    value="agdataquery.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="logout-page"   value="aglogout.html"/>

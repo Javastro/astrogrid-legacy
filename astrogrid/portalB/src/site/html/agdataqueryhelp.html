@@ -3,7 +3,7 @@
    <head>
       <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
       <title>
-         AstroGrid Portal - Data Query Help
+         AstroGrid Portal - Data Query
       </title>
    </head>
    <body>
@@ -23,7 +23,7 @@
                      </font> 
                   <br>
                      <font size="+3" face="arial, helvetica, sans-serif">
-                     	Data Query Help
+                     	Data Query
                      </font>
                   <br>
                </td>
@@ -48,19 +48,19 @@
                <td style="background-color: rgb(204,204,204); width: 140px;">
                	<br>
                   <a href="index.html"><b>Home</b></a>
-                  <br><br>
+                  <br /><br />
                   <a href="agregistry.html"><b>Browse Registry</b></a>
-                  <br><br>
+                  <br /><br />
                   <i><b>Data Query</b></i>
-                  <br><br>
+                  <br /><br />
                   <a href="agmyspace.html"><b>Browse MySpace</b></a>
-                  <br><br>
+                  <br /><br />
                   <a href="agjobmonitor.html"><b>Job Monitor</b></a>
-                  <br><br>
+                  <br /><br />
                   <a href="agtools.html"><b>Tools</b></a>
-                  <br><br>
+                  <br /><br />
                   <a href="aglogout.html"><b>Logout</b></a>
-                  <br><br>
+                  <br /><br />
                </td>
                <!-- Main page -->
                <td style="vertical-align: top;" rowspan="2">
@@ -70,12 +70,12 @@
                         <tr align="center" valign="middle" bgcolor="#000000">
                            <td width="0" height="0" colspan="0" rowspan="0" 
                            	 style="color: white; font-family: arial, helvetica, sans-serif; 
-                           	 font-size-adjust: +2; font-weight: bold; height: 30px; width: 200px; ">
+                           	 font-size-adjust: -2; font-weight: bold; height: 30px; width: 200px; ">
                                  <a href="agdataquery.html" style="color: #FFFFFF; ">Data Query</a>
                            </td>
                            <td width="0" height="0" colspan="0" rowspan="0" 
                            	 style="color: white; font-family: arial, helvetica, sans-serif; 
-                           	 font-size-adjust: +2; font-weight: bold; height: 30px; width: 200px; ">
+                           	 font-size-adjust: -2; font-weight: bold; height: 30px; width: 200px; ">
                                  Help
                            </td>
                            <td>
@@ -83,7 +83,59 @@
                         </tr>
                         <tr align="left" valign="top">
                            <td style="rowspan="1" colspan="3">
-                              Real  pages go here 
+                           		<b></b>
+								<p>
+								<i>General Description</i><br />
+								Data Query is the starting point for getting your data.  This page allows you to build a
+								SQL like query to get at the data you require from a particular DataSet.  
+								A DataSet is a particular location with specefic astronomical data.
+								You can form simple and complex queries,
+								once your query has been formed to your specefications, you may then send the query to
+								a job process which will then begin work on your job.
+								</p>
+								<p>
+								<i>Query Chooser Section:</i><br />
+								This section is the starting point for building your SQL like query. This is the area that
+								you select what you want returned in your query.  Simply choose a Dataset and a
+								corresponding Column or UCD and hit the button "Add Selection".  You can add as many
+								selections as you desire.  This current version requires that all selections come from
+								the same Dataset.  As you add selections you will notice a query is formulated at the
+								bottom of the screen, this is your SQL Like query.  Not only can you "Add Selection", but
+								you may "Remove Selections" by selecting the DataSet and Column/UCD from the drop down
+								boxes that match exactly the ones in your SQL query and hit "Remove Selection" button.								
+								</p>
+								<p>
+								<i>Query Filter</i><br />
+								This section allows you to choose criteria's or filters to constrain the results of 
+								your query to exactly your specefications. To constrain your query begin by choosing your
+								DataSet that was used in your "Selections".  Then again choose a Column/UCD/Function from
+								the drop down list. Now comes the actually filtering, by choosing an operator such as
+								Equals,Greater Than, and others.  Then place a Value to filter against.  Finally hit the
+								"Add Criteria" button.  After hitting the "Add Criteria" button the first time you will
+								notice extra drop down boxes appear.  These are for making more complex queries by adding
+								a join type such as "AND/OR" also placing your criteria inside other criteria's parenthesis.
+								This will allow to forming very complex SQL like queries.  Much like the Query Chooser section
+								their is a "Remove Criteria" button for removing your filters.
+								</p>
+								<br />
+								<b>F.A.Q</b>
+								<ul>
+								  <li>
+								  	<i>What if I want to query on multiple DataSet's?</i><br />
+								  	This current version it is not allowed, but is scheduled to come very soon in the future.
+								  </li>
+								  <li>
+								  	<i>Is their a limit to how big the query can be?</i><br />
+								  	No their is currently no limit you may choose as many return Column's and UCD's as you like.  And may have as
+								  	many criteria's as you desire.  But the more criteria's you add the more likely you will constrain it to much
+								  	resulting in no results.
+								  </li>
+								  <li>
+								  	<i>What kind of functions can I use?</i><br />
+								  	In this current version only a CONE function can be used in the "Query Filter" section
+								  </li>
+								</ul>
+								
                            </td>
                         </tr>
                      </tbody>

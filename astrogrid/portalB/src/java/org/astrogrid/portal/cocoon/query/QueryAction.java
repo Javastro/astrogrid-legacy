@@ -17,7 +17,7 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
-
+import java.lang.StringBuffer;
 import java.util.Map;
 import java.util.HashMap;
 import org.astrogrid.portal.query.*;
@@ -196,7 +196,7 @@ public class QueryAction extends AbstractAction
 			dsUrl = prop.getProperty(DS_URL_PROPERTY + iTemp);
 			dsName = prop.getProperty(DS_NAME_PROPERTY + iTemp);
 		}
-		request.setAttribute(DS_AGENT_LIST,dsUrlHash);
+		session.setAttribute(DS_AGENT_LIST,dsUrlHash);
 				
 
 		
@@ -254,8 +254,10 @@ public class QueryAction extends AbstractAction
 			dsInfoFromRegistry = getDataSetsFromRegistry();
 			session.setAttribute(REQUEST_DATASET_LIST,dsInfoFromRegistry);
 		}
-		request.setAttribute(REQUEST_DATASET_LIST,dsInfoFromRegistry);		
-		
+	
+		String script = makeJavaScript(dsInfoFromRegistry);
+		results.put("Script", script);
+	
 		tempStr = (String)request.getAttribute(REQUEST_QUERY_STRING_SENT);
 		if(!validParameter(tempStr)) {
 			tempStr = "";
@@ -515,6 +517,53 @@ public class QueryAction extends AbstractAction
 
 	}
 
+	private String makeJavaScript(ArrayList dataSets) {
+		StringBuffer sb = new StringBuffer(500);
+		int tempIncrement = 0;
+		int tempColIncrement = 0;
+		String val = null;
+		//sb.append("<script>");
+		sb.append("\n");
+		//sb.append("<![CDATA[");
+		if(dataSets != null && dataSets.size() > 0) {
+			sb.append("var dsColArray = new Array(" + String.valueOf(dataSets.size()) + ");");
+			sb.append("\n");
+			for(int i = 0;i < dataSets.size();i++) {
+				tempIncrement = i;
+				DataSetInformation dsVal = (DataSetInformation)dataSets.get(i);
+				sb.append("dsColArray[" + String.valueOf(i) + "] = new Array(" + String.valueOf(dsVal.getDataSetColumns().size()) + ");");
+				sb.append("\n");
+				for(int j = 0;j < dsVal.getDataSetColumns().size(); j++) {
+				  tempColIncrement = j;
+				  DataSetColumn dsCol = (DataSetColumn)dsVal.getDataSetColumns().get(j);
+				  val = dsCol.getType();
+				  if(validParameter(val)) {
+				  	val += "-" + dsCol.getName();
+				  }
+				  else{
+				  	val = dsCol.getName();
+				  }
+				  sb.append("dsColArray[" + String.valueOf(tempIncrement) + "][" + String.valueOf(tempColIncrement) + "] = \"" +
+				  dsCol.getType() + "-" + dsCol.getName() + "\";");
+				  sb.append("\n");				  
+				}//for
+			}//for			
+		}//if
+		
+	
+		sb.append("function updateCols(sIndex,colObj) {");
+		sb.append("\n");
+		sb.append("while(colObj.length > 0) { colObj.options[colObj.length-1] = null; }");
+		sb.append("\n");
+		sb.append("for(var i = 0;i < dsColArray[sIndex].length;i++) {");
+		sb.append("\n");
+		sb.append("colObj.options[colObj.length] = new Option(dsColArray[sIndex][i],dsColArray[sIndex][i],false,false);");
+		sb.append("\n");
+		sb.append("} }");
+		sb.append("\n");		
+		//sb.append("</script>");
+		return sb.toString();
+	}
 
 	/**
 	 * A generic method to call a webservice.  Used for the Registry and JES.

@@ -1,11 +1,17 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/07/03 16:43:45 $</cvs:author>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/07/25 08:13:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.4  2003/07/25 08:13:56  KevinBenson
+    | Okay DataQuery is now under cocoon.  Yeah.
+    |
+    | Revision 1.1  2003/07/23 15:31:46  KevinBenson
+    | These files are not ready yet, but they are getting their.
+    |
     | Revision 1.3  2003/07/03 16:43:45  dave
     | Fixed styles in page navigation
     |
@@ -47,6 +53,8 @@
 	    | The sitemap page names, set from the Cocoon sitemap.
 	    +-->
 	<xsl:param name="home-page">index.html</xsl:param>
+	<xsl:param name="current-page">test.html</xsl:param>
+	<xsl:param name="myspace-page">agmyspace.html</xsl:param>
 	<xsl:param name="help-page">agmyspacehelp.html</xsl:param>
 	<xsl:param name="registry-page">agregistry.html</xsl:param>
 	<xsl:param name="query-page">agdataquery.html</xsl:param>
@@ -58,7 +66,7 @@
 		<html>
 			<head>
 				<title>
-					AstroGrid Portal - MySpace Browser
+					AstroGrid Portal
 				</title>
 				<style>
 					<xsl:text>
@@ -110,7 +118,12 @@
 							</font> 
 							<br/>
 							<font size="+3" face="arial, helvetica, sans-serif">
-								MySpace Browser
+								<xsl:if test="$current-page = 'agdataquery.html'" >
+									Data Query
+								</xsl:if>
+								<xsl:if test="$current-page = 'agmyspace.html'" >
+									MySpace Browser
+								</xsl:if>
 							</font>
 							<br/>
 						</td>
@@ -150,16 +163,29 @@
 								</a>
 								<br/>
 								<br/>
-								<a class="menu">
-									<xsl:attribute name="href">
-										<xsl:value-of select="$query-page"/>
-									</xsl:attribute>
-									Data Query
-								</a>
-								<br/>
-								<br/>
-								<!-- Add the MySpace menu links -->
-								<xsl:apply-templates select="menu"/>
+								<xsl:if test="$current-page = 'agdataquery.html'" >
+										Data Query
+									<br/>
+									<br/>
+									<a class="menu">
+										<xsl:attribute name="href">
+											<xsl:value-of select="$myspace-page"/>
+										</xsl:attribute>
+										Browse MySpace
+									</a>
+								</xsl:if>
+								<xsl:if test="$current-page = 'agmyspace.html'" >
+									<a class="menu">
+										<xsl:attribute name="href">
+											<xsl:value-of select="$query-page"/>
+										</xsl:attribute>
+										Data Query
+									</a>
+									<br/>
+									<br/>
+									<!-- Add the MySpace menu links -->
+									<xsl:apply-templates select="menu"/>
+								</xsl:if>
 								<br/>
 								<br/>
 								<a class="menu">
@@ -193,7 +219,12 @@
 									<tbody>
 										<tr align="center" valign="middle" bgcolor="#000000">
 											<td width="0" height="0" colspan="0" rowspan="0" style="color: white; font-family: arial, helvetica, sans-serif; font-weight: bold; height: 30px; width: 200px; ">
-												MySpace Browser
+												<xsl:if test="$current-page = 'agdataquery.html'" >
+													Data Query
+												</xsl:if>
+												<xsl:if test="$current-page = 'agmyspace.html'" >
+													MySpace Browser
+												</xsl:if>
 											</td>
 											<td width="0" height="0" colspan="0" rowspan="0" style="color: white; font-family: arial, helvetica, sans-serif; font-weight: bold; height: 30px; width: 200px; ">
 												<a style="color: #FFFFFF; ">

@@ -8,6 +8,7 @@
 	    | The current action, set from the Cocoon action.
 	    +-->
 	<xsl:param name="QueryString" />
+	<xsl:param name="Script" />
 	<xsl:param name="QueryStringSent" />	
 	<xsl:param name="ErrorMessage" />
 	<xsl:param name="LastWebCall" />
@@ -46,7 +47,14 @@
 				<xsl:value-of select="$ErrorMessage" />
 			</font>	
 		</xsl:if>
-		<form method="get">
+		<xsl:if test="$Script != ''">	
+		<SCRIPT language="javascript">
+				<xsl:comment>
+				<xsl:value-of select="$Script" />
+				</xsl:comment>
+		</SCRIPT>
+		</xsl:if>
+		<form method="get" name="DataQueryForm">
 			<strong>DataSetAgent Server</strong>
 			<select name="DataSetAgent">
 				<xsl:for-each select="//query/options/dsagents/dsagent">
@@ -66,7 +74,7 @@
 			<br />
 			
 			<strong>Information you want returned:</strong>
-			<select name="DataSetName">
+			<select name="DataSetName" onChange="updateCols(document.DataQueryForm.DataSetName.selectedIndex,document.DataQueryForm.ReturnColumn)">
 				<xsl:for-each select="//query/options/datasets/datasetname">
 					<xsl:element name="option">
 						<xsl:attribute name="value">
@@ -102,6 +110,8 @@
 			<hr />
 			<h1>Query Filter</h1>
 			<xsl:if test="//query/options/joins">
+				<br />
+				<strong>Choose the join operation for your next criteria:</strong>
 				<select name="JoinType">
 					<xsl:for-each select="//query/options/joins/jointype">
 						<xsl:element name="option">
@@ -120,7 +130,7 @@
 			</xsl:if>
 			<br />
 			<strong>Choose a Data set name that matches with your Selection:</strong>
-			<select name="DataSetNameCriteria">
+			<select name="DataSetNameCriteria" onChange="updateCols(document.DataQueryForm.DataSetNameCriteria.selectedIndex,document.DataQueryForm.FilterColumn)">
 				<xsl:for-each select="//query/options/datasets/datasetname">
 					<xsl:element name="option">
 						<xsl:attribute name="value">
