@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- XML equiuvalent
-SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT -MAX(b.dd ) &lt; 4.56 GROUP BY t.b HAVING b.x LIKE 'wibble%' OR b.z BETWEEN 4 AND 5 ORDER BY b.dd DESC
+SELECT DISTINCT t.b, b.* FROM Tab AS t, Bob AS b WHERE NOT (-(MAX(b.dd ) ) < 4.56 ) GROUP BY t.b HAVING b.x LIKE 'wibble%' OR b.z BETWEEN 4 AND 5 ORDER BY b.dd DESC
 -->
 <Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="file:/home/noel/.eclipse/datacenter/schema/ADQLschema.xsd"
 > 
     <OptionalAllOrDistinct>
        <Option>DISTINCT</Option>
