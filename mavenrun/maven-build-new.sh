@@ -10,6 +10,7 @@ PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
 DOC_HOME=/var/www/www/maven/docs
 ASTROGRID_VERSION=SNAPSHOT
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
+#Unfortunately comma separated lists of email addresses don't work at the moment...so we can only have one
 ADMIN_EMAIL=jdt@roe.ac.uk
 
 echo
