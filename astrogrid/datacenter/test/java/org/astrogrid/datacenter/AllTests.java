@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2003/08/27 23:57:55 mch Exp $
+/*$Id: AllTests.java,v 1.5 2003/08/28 13:20:59 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.TestDummies.suite());
         suite.addTest(org.astrogrid.datacenter.service.TestWorkspace.suite());
+        suite.addTest(org.astrogrid.datacenter.service.TestServer.suite());
         suite.addTest(org.astrogrid.datacenter.delegate.TestDelegate.suite());
         return suite;
     }
@@ -48,6 +49,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.5  2003/08/28 13:20:59  mch
+Added service test
+
 Revision 1.4  2003/08/27 23:57:55  mch
 added workspace and delegate tests
 
