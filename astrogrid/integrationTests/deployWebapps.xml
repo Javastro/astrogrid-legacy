@@ -1,0 +1,132 @@
+<!-- $Id: deployWebapps.xml,v 1.1 2004/01/08 18:23:40 jdt Exp $ -->
+<!--
+	Example Deploy Script for Astrogrid War files
+	This script uses the Tomcat Manager to deploy war files built nightly by Maven
+	This could also be run nightly following the maven run.
+	Note that these ant tasks require the catalina-ant.jar (found in your tomcat download) to be placed in
+	your ant lib folder.  If you're running ant from Eclipse this is likely to be something like:
+	C:\Java\eclipse\plugins\org.apache.ant_1.5.3
+	To run it from maven, you will need to pop the catalina-ant.jar into maven's lib directory AND
+	modify forehead.conf to pick it up.
+	You'll need to set the urls, Tomcat Manager usernames and passwords below.
+	-->
+	
+
+
+<project name="DeployWars" default="RedeployTheLot" basedir=".">
+  
+
+
+<!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
+
+  <target name="loadServersProperties">
+    <xmlproperty file="tomcatServers.xml"  keepRoot="false" />
+    <!-- URLs of the wars-->
+    <property name="mavenURL" value="http://www.astrogrid.org/maven/"/>
+  
+    <property name="mySpace.path"    value="/mySpace-argle"/>
+    <property name="mySpace.war.url"  value="${mavenURL}/astrogrid-mySpace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
+    <property name="mySpace.host.url"    value="${servers.a.url}"/>
+    <property name="mySpace.host.user"    value="${servers.a.user}"/>
+    <property name="mySpace.host.password"    value="${servers.a.password}"/> <!-- would be nice if this could be assigned as an "array".  Might be possible in Ant 1.6...-->
+  
+    <property name="jes.path"     value="/jes-jdt"/>   
+    <property name="jes.war.url"     value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
+    <property name="jes.host.url"    value="${servers.a.url}"/>
+    <property name="jes.host.user"    value="${servers.a.user}"/>
+    <property name="jes.host.password"    value="${servers.a.password}"/> 
+  </target>
+
+<!--==================================================================================-->
+
+	<target name="RedeployTheLot" depends="RedeployMySpace,RedeployJES"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- JES-->
+
+    <target name="DeployJES" depends="loadServersProperties" description="Obtain the latest jes war and deploy it to tomcat">
+    	<echo message="Deploying JES from ${jes.war.url} to ${jes.host.url} at ${jes.path}"/>
+		<deploy url="${jes.host.url}" path="${jes.path}"
+		    war="${jes.war.url}"
+		    username="${jes.host.user}" password="${jes.host.password}" />
+    </target>
+    
+    <target name="UndeployJES" depends="loadServersProperties">
+		<remove url="${jes.host.url}" path="${jes.path}"
+		    username="${jes.host.user}" password="${jes.host.password}" />
+	</target>
+	
+    <target name="RedeployJES" depends="UndeployJES, DeployJES"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- MySpace-->
+
+    <target name="DeployMySpace" depends="loadServersProperties" description="Obtain the latest MySpace war and deploy it to tomcat">
+    	<echo message="Deploying MySpace from ${mySpace.war.url} to ${mySpace.host.url} at ${mySpace.path}"/>
+		<deploy url="${mySpace.host.url}" path="${mySpace.path}"
+		    war="${mySpace.war.url}"
+		    username="${mySpace.host.user}" password="${mySpace.host.password}" />
+    </target>
+    
+    <target depends="loadServersProperties" name="UndeployMySpace">
+		<remove url="${mySpace.host.url}" path="${mySpace.path}"
+		    username="${mySpace.host.user}" password="${mySpace.host.password}" />
+	</target>
+	
+    <target name="RedeployMySpace" depends="UndeployMySpace, DeployMySpace"/>
+
+<!--==================================================================================-->
+
+
+<!--following two are out of date -->
+<!--==================================================================================-->
+  <!-- PAL/Vizier-->
+  <!-- need to copy across cds delegate too?-->
+    <property name="PALVizierPath"     value="/pal-SNAPSHOT"/>
+    <target name="DeployPALVizier">
+		<deploy url="${url3}" path="${PALVizierPath}"
+		    war="${PALwarURL}"
+		    username="${username3}" password="${password3}" />
+    </target>
+    
+    <target name="UndeployPALVizier">
+		<remove url="${url3}" path="${PALVizierPath}"
+		    username="${username3}" password="${password3}" />
+	</target>
+	
+    <target name="RedeployPALVizer" depends="UndeployPALVizier, DeployPALVizier"/>
+
+<!--==================================================================================-->
+
+  <!-- PAL/Merlin-->
+    <property name="PALMerlinpath"     value="/pal-SNAPSHOT"/>
+    <target name="DeployPALMerlin" description="Obtain the latest PAL war and deploy it to tomcat">
+		<deploy url="${url4}" path="${PALMerlinpath}"
+		    war="${PALwarURL}"
+		    username="${username4}" password="${password4}" />
+    </target>
+    
+    <target name="UndeployPALMerlin">
+		<remove url="${url4}" path="${PALMerlinpath}"
+		    username="${username4}" password="${password4}" />
+	</target>
+	
+    <target name="RedeployPALMerlin" depends="UndeployPALMerlin, DeployPALMerlin"/>
+    
+<!--==================================================================================-->
+
+  <!-- Configure the custom Ant tasks for the Manager application -->
+  <taskdef name="deploy"    classname="org.apache.catalina.ant.DeployTask"/>
+  <taskdef name="list"      classname="org.apache.catalina.ant.ListTask"/>
+  <taskdef name="reload"    classname="org.apache.catalina.ant.ReloadTask"/>
+  <taskdef name="resources" classname="org.apache.catalina.ant.ResourcesTask"/>
+  <taskdef name="roles"     classname="org.apache.catalina.ant.RolesTask"/>
+  <taskdef name="start"     classname="org.apache.catalina.ant.StartTask"/>
+  <taskdef name="stop"      classname="org.apache.catalina.ant.StopTask"/>
+  <taskdef name="undeploy"  classname="org.apache.catalina.ant.UndeployTask"/>
+  <taskdef name="remove"  classname="org.apache.catalina.ant.RemoveTask"/>
+</project>

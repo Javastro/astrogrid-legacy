@@ -1,0 +1,26 @@
+<!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
+<!--For use by deployWebapps.xml ant script-->
+<root>
+   <servers>
+      <a>
+        <url>http://vm05.astrogrid.org:8080/manager/</url>
+        <user>tomcat</user>
+        <password>gandalf</password>
+      </a>
+      <b>
+        <url>vm06.astrogrid.org:8080/manager/</url>
+        <user>tomcat</user>
+        <password>gandalf</password>
+      </b>
+      <c>
+        <url>vm07.astrogrid.org:8080/manager/</url>
+        <user>tomcat</user>
+        <password>gandalf</password>
+      </c>
+      <d>
+        <url>vm08.astrogrid.org:8080/manager/</url>
+        <user>tomcat</user>
+        <password>gandalf</password>
+      </d>
+   </servers>
+</root>
