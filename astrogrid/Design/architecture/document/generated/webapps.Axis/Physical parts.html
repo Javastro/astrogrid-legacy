@@ -1,0 +1,119 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 8pt;  }
+#f2 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f3 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f6 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f13 { font-family: "SansSerif"; font-size: 9pt;  }
+#f14 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f15 { font-family: "monospace"; font-size: 9pt;  }
+#f16 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f17 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:5pt;"><IMG SRC="doc-images/ComponentDiagram.png"> <FONT ID="f5">Component Diagram</FONT> <FONT ID="f4"><U>Physical parts</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f1">package:</FONT> <FONT ID="f6"><A HREF="Package.html">webapps.Axis</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/Physical parts_ComponentDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="554,430,647,446" HREF="Physical parts.html#R1"><AREA SHAPE="rect" COORDS="443,575,538,591" HREF="Physical parts.html#R2"><AREA SHAPE="rect" COORDS="558,635,653,651" HREF="Physical parts.html#R3"><AREA SHAPE="rect" COORDS="558,715,613,731" HREF="Physical parts.html#R4"><AREA SHAPE="rect" COORDS="474,485,529,501" HREF="Physical parts.html#R5"><AREA SHAPE="rect" COORDS="564,785,657,801" HREF="Physical parts.html#R6"><AREA SHAPE="rect" COORDS="253,246,308,262" HREF="Physical parts.html#R7"><AREA SHAPE="rect" COORDS="424,210,520,226" HREF="Physical parts.html#R8"><AREA SHAPE="rect" COORDS="558,246,653,262" HREF="Physical parts.html#R9"><AREA SHAPE="rect" COORDS="554,60,649,76" HREF="Physical parts.html#R10"><AREA SHAPE="rect" COORDS="385,122,440,138" HREF="Physical parts.html#R11"><AREA SHAPE="rect" COORDS="100,167,155,183" HREF="Physical parts.html#R12"><AREA SHAPE="rect" COORDS="30,48,493,115" HREF="Physical parts.html#R13"><AREA SHAPE="rect" COORDS="330,240,510,292" HREF="Physical parts.html#R14"><AREA SHAPE="rect" COORDS="270,150,510,200" HREF="Physical parts.html#R15"><AREA SHAPE="rect" COORDS="30,240,230,293" HREF="Physical parts.html#R16"><AREA SHAPE="rect" COORDS="20,10,540,308" HREF="Physical parts.html#R17"><AREA SHAPE="rect" COORDS="50,780,410,830" HREF="Physical parts.html#R18"><AREA SHAPE="rect" COORDS="50,500,410,550" HREF="Physical parts.html#R19"><AREA SHAPE="rect" COORDS="50,710,410,760" HREF="Physical parts.html#R20"><AREA SHAPE="rect" COORDS="50,640,410,690" HREF="Physical parts.html#R21"><AREA SHAPE="rect" COORDS="50,570,410,620" HREF="Physical parts.html#R22"><AREA SHAPE="rect" COORDS="50,430,410,480" HREF="Physical parts.html#R23"><AREA SHAPE="rect" COORDS="20,360,540,840" HREF="Physical parts.html#R24"></MAP></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f1"><h2>Physical parts of an Axis service and its server</h2><p>The server infrastructure must be installed first on the host computer. The web application is then deployed into the server infrastructure.  
+</p><p>AstroGrid services are only supported on Jakarta-Tomcat 5.  They would probably work in Jakarta-Tomcat 4; earlier versions of the services ran with this engine, but current versions may have problems and back-porting is not intended. No attempt has been made to run the services in any other engine.</p><p>The common configuration must be set up in the server infrastructure. Several methods are possible, but the normal method is to write the properties into a file (as name-value pairs, in the usual way for properties of Java programmes) and to put that file in the /conf sub-directory of the Jakarta-Tomcat installation. The location of the properties file is then advertized to the web applications by setting the property org.astrogrid.config in Tomcat's JNDI engine. Web applications consume the properties file using library code in the org.astrogrid.commons.config package (not shown in this diagram.</p><p>The web application itself contains the Axis engine in axis.jar, plus subordinate jars (not shown), and the service implementation in one jar plus subordinate  jars (not shown). There will typically be 3rd-party jars which are not supplied with Axis or produced by AstroGrid. All the jars live in the lib directory of the web application. The service implementation and its supporting classes may, in some services, be stored as loose .class files in the classes directory of the web application. This is an alternative to packaging them in a jar, and the choice depends on the build system for the web application, not the process of deploying the web application into the server.  
+</p><p>The Axis servlet is executable only inside the servlet engine.</p><p>The web application may contain the WSDL contract as a .wsdl file which the Axis engine reads in and adjusts. However, most AstroGrid sub-systems set the Axis engine to generate the contract on demand from the compiled implementation-class. Some of these sub-systems include a .wsdl file which is not used at run time; others omit the .wsdl file.</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><FONT ID="f7" STYLE="background-color:#DCDCDC;">Diagram Contents Summary</FONT></DIV>
+<DIV STYLE="margin-left:11pt;margin-top:8pt;"><IMG SRC="doc-images/tv-subsystem.png"> <FONT ID="f6">Subsystem </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R17">Server infrastructure</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R16">$CATALINA_HOME/conf</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R14">astrogrid.properties</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R13">Jakarta-Tomcat</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R15">JNDI-service</A></U></FONT></DIV>
+<DIV STYLE="margin-left:11pt;margin-top:4pt;"><IMG SRC="doc-images/tv-subsystem.png"> <FONT ID="f6">Subsystem </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R24">web application</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R18">(service-name).wsdl</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R20">(web-app-name).jar</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R19">axis.jar</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R23">AxisServlet</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R21">server-config.wsdd</A></U></FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:4pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f6">Component </FONT><FONT ID="f1"><U><A HREF="Physical parts.html#R22">web.xml</A></U></FONT></DIV>
+<DIV STYLE="margin-top:15pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Shortcuts to Elements</FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f6">Class </FONT><FONT ID="f1"><U>webapps.Axis.AstroGridConfiguration</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f6">Class </FONT><FONT ID="f1"><U>webapps.Axis.AxisDeploymentDescriptor</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f6">Class </FONT><FONT ID="f1"><U>webapps.Axis.AxisEngine</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-interface.png"> <FONT ID="f6">Interface </FONT><FONT ID="f1"><U>webapps.Axis.RunTimeContract</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f6">Class </FONT><FONT ID="f1"><U>webapps.Axis.ServiceImplementation</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f6">Class </FONT><FONT ID="f1"><U>patterns.Axis.ServletDeploymentDescriptor</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:9pt;"><IMG SRC="doc-images/icon_s4.png"> <FONT ID="f12">of</FONT> <FONT ID="f17">ClassDiagram</FONT> <FONT ID="f12"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:13pt;margin-top:6pt;"><IMG SRC="doc-images/tv-class.png"> <FONT ID="f6">Class </FONT><FONT ID="f1"><U>webapps.Axis.ServletEngine</U></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f8">Subsystem Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/Package.png"> <FONT ID="f11"><A NAME="R17"></A>Subsystem </FONT><FONT ID="f10">Server infrastructure</FONT></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:17pt;"><FONT ID="f7" STYLE="background-color:#C0C0C0;">Contained Elements</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R16"></A>Component </FONT><FONT ID="f10">$CATALINA_HOME/conf</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">file</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R7"></A><U>contains</U></FONT><FONT ID="f13"> </FONT><FONT ID="f13">to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Component</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U><A HREF="Physical parts.html#R14">astrogrid.properties</A></U></FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R14"></A>Component </FONT><FONT ID="f10">astrogrid.properties</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">file</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R9"></A>to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Class</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>AstroGridConfiguration</U></FONT></DIV>
+<DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f1">instanceOf</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:19pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R13"></A>Component </FONT><FONT ID="f10">Jakarta-Tomcat</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">executable</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R10"></A>to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Class</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>ServletEngine</U></FONT></DIV>
+<DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f1">instanceOf</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:16pt;"><FONT ID="f13"><A NAME="R11"></A><U>contains</U></FONT><FONT ID="f13"> </FONT><FONT ID="f13">to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Component</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U><A HREF="Physical parts.html#R15">JNDI-service</A></U></FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:13pt;"><FONT ID="f13"><A NAME="R12"></A><U>contains</U></FONT><FONT ID="f13"> </FONT><FONT ID="f13">to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Component</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U><A HREF="Physical parts.html#R16">$CATALINA_HOME/conf</A></U></FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R15"></A>Component </FONT><FONT ID="f10">JNDI-service</FONT></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R8"></A><U>gives location of</U></FONT><FONT ID="f13"> </FONT><FONT ID="f13">to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Component</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U><A HREF="Physical parts.html#R14">astrogrid.properties</A></U></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:16pt;"><IMG SRC="doc-images/Package.png"> <FONT ID="f11"><A NAME="R24"></A>Subsystem </FONT><FONT ID="f10">web application</FONT></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:17pt;"><FONT ID="f7" STYLE="background-color:#C0C0C0;">Contained Elements</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:11pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R18"></A>Component </FONT><FONT ID="f10">(service-name).wsdl</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">file</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R6"></A>to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Interface</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>RunTimeContract</U></FONT></DIV>
+<DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f1">instantiate</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:19pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R20"></A>Component </FONT><FONT ID="f10">(web-app-name).jar</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">library</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R4"></A><U>contains</U></FONT><FONT ID="f13"> </FONT><FONT ID="f13">to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Class</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>ServiceImplementation</U></FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R19"></A>Component </FONT><FONT ID="f10">axis.jar</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">library</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R5"></A><U>contains</U></FONT><FONT ID="f13"> </FONT><FONT ID="f13">to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Component</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U><A HREF="Physical parts.html#R23">AxisServlet</A></U></FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:16pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R23"></A>Component </FONT><FONT ID="f10">AxisServlet</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">executable</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R1"></A>to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Class</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>AxisEngine</U></FONT></DIV>
+<DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f1">instantiate</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:19pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R21"></A>Component </FONT><FONT ID="f10">server-config.wsdd</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">file</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R3"></A>to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Class</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>AxisDeploymentDescriptor</U></FONT></DIV>
+<DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f1">instanceOf</FONT></DIV>
+<DIV STYLE="margin-left:17pt;margin-top:19pt;"><IMG SRC="doc-images/Component.png"> <FONT ID="f11"><A NAME="R22"></A>Component </FONT><FONT ID="f10">web.xml</FONT></DIV>
+<DIV STYLE="margin-left:31pt;margin-top:3pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT> <FONT ID="f1">file</FONT></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:31pt;"><FONT ID="f9" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:37pt;margin-top:8pt;"><FONT ID="f13"><A NAME="R2"></A>to</FONT><FONT ID="f13"> </FONT><FONT ID="f14">Class</FONT><FONT ID="f13"> </FONT><FONT ID="f13"><U>ServletDeploymentDescriptor</U></FONT></DIV>
+<DIV STYLE="margin-left:51pt;margin-top:6pt;"><FONT ID="f6">Stereotype</FONT><FONT ID="f6">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:60pt;"><FONT ID="f1">instanceOf</FONT></DIV>
+</BODY>
+</HTML>

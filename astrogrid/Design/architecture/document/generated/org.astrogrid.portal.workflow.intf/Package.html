@@ -1,0 +1,92 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f2 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f3 { font-family: "SansSerif"; font-size: 9pt;  }
+#f4 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 8pt;  }
+#f7 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" BORDERCOLOR="black" WIDTH="96%"><TR BGCOLOR="#FFFFC8"><TD>
+<DIV><FONT ID="f1">Package</FONT> <FONT ID="f2"><U>org.astrogrid.portal.workflow.intf</U></FONT></DIV>
+</TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Class diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="intf.html">intf</A></FONT></DIV>
+<DIV STYLE="margin-top:17pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Interface Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">ApplicationRegistry</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A component that queries a registry for information about applications.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">JobExecutionService</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A component that can execute and manage jobs</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">WorkflowBuilder</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A component of methods to help build workflow documents</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">WorkflowStore</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A component that can store and retreive workflow documents
+(i.e.</FONT></TD>
+</TR>
+</TABLE>
+</DIV>
+<DIV STYLE="margin-top:14pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Class Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ActivityKey</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Implementation of activity keys for the new workflow object model</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ApplicationDescription</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Description of an application 
+<p>
+This class provides access to the descriptor of an application - by wrapping a {@link org.astrogrid.applications.beans.v1.ApplicationBase} object.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">ToolValidationException</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Thrown when a tool instance does not match the definition given in an application description.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WorkflowInterfaceException</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Catch all exception type for things that go wrong with the workflow interface.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WorkflowManager</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Container object that collects the various components used to interact with workflows.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">WorkflowManagerFactory</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Factory that creates a new workflow manager
+<p>
+After creation, a factory instance maintains a single instance of the manager
+<p>
+The composition of the created workflow manager depends on the keys set in the {@link org.astrogrid.config.Config} system.</FONT></TD>
+</TR>
+</TABLE>
+</DIV>
+</BODY>
+</HTML>

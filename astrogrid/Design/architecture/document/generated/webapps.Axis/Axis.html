@@ -1,0 +1,54 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "monospace"; font-size: 9pt;  }
+#f14 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f15 { font-family: "SansSerif"; font-size: 9pt;  }
+#f16 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:6pt;"><IMG SRC="doc-images/ClassDiagram.png"> <FONT ID="f6">Class Diagram</FONT> <FONT ID="f5"><U>Axis</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">webapps.Axis</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/Axis_ClassDiagram.gif" USEMAP="#M1"><MAP NAME="M1"></MAP></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f2"><h2>The Axis-web-service pattern</h2> <p> AstroGrid web-applications including web services use the J2EE-servlet and Axis frameworks to connect SOAP messages with Java classes. The conceptual-parts diagram shows how these frameworks come together, and the physical-parts diagram shows the implementation chosen by Astrogrid. </p><p>AstroGrid adds to the normal usage of J2EE and Axis internal conventions for interconnecting the WSDL contracts and the Java code. These are shown in the service-interfaces diagram. This diagram also illustrates the use of delegate classes as a refinement of client-side stubs for the services.</p><p> Web applications following this pattern are modelled as specialized examples of the service-interfaces and physical-parts diagrams. </p></FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:11pt;"><FONT ID="f2">framework</FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><FONT ID="f8">Class Nodes</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:11pt;"><FONT ID="f2">AstroGridConfiguration</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">AxisDeploymentDescriptor</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">AxisEngine</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">AxisServlet</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">ClientStub</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">Delegate</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">OtherService</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">ServiceImplementation</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">ServletDeploymentDescriptor</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">ServletEngine</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">WebApplication</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">WebService</FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:2pt;"><FONT ID="f8">Interface Nodes</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:11pt;"><FONT ID="f2">Binding</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">CompileTimeContract</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">PortType</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">RunTimeContract</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">Service</FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2">ServiceDefinition</FONT></DIV>
+</BODY>
+</HTML>

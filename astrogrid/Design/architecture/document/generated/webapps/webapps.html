@@ -1,0 +1,92 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 10pt;  }
+#f2 { font-family: "SansSerif"; font-size: 8pt;  }
+#f3 { font-family: "SansSerif"; font-size: 14pt; font-style: italic; font-weight: bold; color: #FFFFFF;  }
+#f4 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold; color: #FFFFFF;  }
+#f5 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f7 { font-family: "SansSerif"; font-size: 8pt; font-weight: bold;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; font-weight: bold;  }
+#f9 { font-family: "SansSerif"; font-size: 11pt; font-style: italic; font-weight: bold;  }
+#f10 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f11 { font-family: "SansSerif"; font-size: 10pt; font-weight: bold;  }
+#f12 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f13 { font-family: "monospace"; font-size: 9pt;  }
+#f14 { font-family: "SansSerif"; font-size: 8pt; font-style: italic;  }
+#f15 { font-family: "SansSerif"; font-size: 9pt;  }
+#f16 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold;  }
+#f17 { font-family: "SansSerif"; font-size: 9pt; font-weight: bold; color: #800080;  }
+#f18 { font-family: "SansSerif"; font-size: 8pt; font-style: italic; font-weight: bold;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV STYLE="margin-left:2pt;margin-top:6pt;"><IMG SRC="doc-images/ClassDiagram.png"> <FONT ID="f6">Class Diagram</FONT> <FONT ID="f5"><U>webapps</U></FONT></DIV>
+<DIV STYLE="margin-left:3pt;margin-top:4pt;"><FONT ID="f2">package:</FONT> <FONT ID="f7"><A HREF="Package.html">webapps</A></FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:2pt;"><IMG SRC="doc-images/webapps_ClassDiagram.gif" USEMAP="#M1"><MAP NAME="M1"><AREA SHAPE="rect" COORDS="230,200,335,301" HREF="../webapps.Axis/Axis.html"><AREA SHAPE="rect" COORDS="452,110,579,126" HREF="../webapps.filestore.FileStore/FileStore.html"><AREA SHAPE="rect" COORDS="450,30,583,140" HREF="../webapps.filestore/filestore.html"><AREA SHAPE="rect" COORDS="202,450,355,466" HREF="../webapps.applications.CommonExecutorService/CommonExecutorService.html"><AREA SHAPE="rect" COORDS="200,370,359,480" HREF="../webapps.applications/applications.html"><AREA SHAPE="rect" COORDS="32,514,159,530" HREF="../webapps.community.SecurityService/SecurityService.html"><AREA SHAPE="rect" COORDS="32,498,159,514" HREF="../webapps.community.SecurityManager/SecurityManager.html"><AREA SHAPE="rect" COORDS="32,482,159,498" HREF="../webapps.community.PolicyService/PolicyService.html"><AREA SHAPE="rect" COORDS="32,466,159,482" HREF="../webapps.community.PolicyManager/PolicyManager.html"><AREA SHAPE="rect" COORDS="32,450,159,466" HREF="../webapps.community.DatabaseManager/DatabaseManager.html"><AREA SHAPE="rect" COORDS="30,370,163,544" HREF="../webapps.community/community.html"><AREA SHAPE="rect" COORDS="650,210,790,311" HREF="../webapps.portal/portal.html"><AREA SHAPE="rect" COORDS="22,126,149,142" HREF="../webapps.jes.JobMonitor/JobMonitor.html"><AREA SHAPE="rect" COORDS="22,110,149,126" HREF="../webapps.jes.JobController/JobController.html"><AREA SHAPE="rect" COORDS="20,30,153,156" HREF="../webapps.jes/jes.html"><AREA SHAPE="rect" COORDS="422,514,568,530" HREF="../webapps.registry.RegistryAdmin/RegistryAdmin.html"><AREA SHAPE="rect" COORDS="422,498,568,514" HREF="../webapps.registry.Registry/Registry.html"><AREA SHAPE="rect" COORDS="422,482,568,498" HREF="../webapps.registry.RegistryQuery/RegistryQuery.html"><AREA SHAPE="rect" COORDS="422,466,568,482" HREF="../webapps.registry.QueryRegistrySOAPPort/QueryRegistrySOAPPort.html"><AREA SHAPE="rect" COORDS="422,450,568,466" HREF="../webapps.registry.RegistryUpdate/RegistryUpdate.html"><AREA SHAPE="rect" COORDS="420,370,572,544" HREF="../webapps.registry/registry.html"><AREA SHAPE="rect" COORDS="192,110,395,126" HREF="../webapps.myspace.Manager/Manager.html"><AREA SHAPE="rect" COORDS="190,30,399,143" HREF="../webapps.myspace/myspace.html"><AREA SHAPE="rect" COORDS="234,161,294,177" HREF="webapps.html#R1"><AREA SHAPE="rect" COORDS="404,315,464,331" HREF="webapps.html#R2"><AREA SHAPE="rect" COORDS="183,158,243,174" HREF="webapps.html#R3"><AREA SHAPE="rect" COORDS="120,315,180,331" HREF="webapps.html#R4"><AREA SHAPE="rect" COORDS="229,325,289,341" HREF="webapps.html#R5"><AREA SHAPE="rect" COORDS="341,153,401,169" HREF="webapps.html#R6"></MAP></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:2pt;"><FONT ID="f2"><h2>Web-applications within the AstroGrid system</h2><p>This tree of UML packages groups the diagrams related to each web-application. Non-code-generating classes and interfaces (e.g. those describing the WSDL contracts) are stored in this tree; code-generating classes and interfaces are stored in the sibling tree "org".</p><p>Many of the web-applications contain web services using Apache Axis. The Axis web-application in this package describes the patterns for using Axis and J2EE-servlets in AstroGrid services. Most of the descriptions of web services are simply detaoiled variations on these patterns.</p></FONT></DIV>
+<DIV STYLE="margin-top:13pt;margin-left:2pt;"><FONT ID="f8">Package Nodes</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R7">applications</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R8">Axis</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R9">community</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R10">filestore</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R11">jes</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R12">myspace</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R13">portal</A></FONT></DIV>
+<DIV STYLE="margin-left:11pt;"><FONT ID="f2"><A HREF="webapps.html#R14">registry</A></FONT></DIV>
+<DIV STYLE="margin-top:11pt;margin-left:10pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="98%"><TR BGCOLOR="#C0C0C0"><TD><FONT ID="f9">Package Node Detail</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:11pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R7"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.applications/Package.html">webapps.applications</A></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web application</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f15"><A NAME="R5"></A>to</FONT><FONT ID="f15"> </FONT><FONT ID="f16">ClassDiagram</FONT><FONT ID="f15"> </FONT><FONT ID="f15"><U><A HREF="../webapps.Axis/Axis.html">Axis</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">bind</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R9"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.community/Package.html">webapps.community</A></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web application</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f15"><A NAME="R4"></A>to</FONT><FONT ID="f15"> </FONT><FONT ID="f16">ClassDiagram</FONT><FONT ID="f15"> </FONT><FONT ID="f15"><U><A HREF="../webapps.Axis/Axis.html">Axis</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">bind</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R8"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.Axis/Package.html">webapps.Axis</A></FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2"><h2>The Axis-web-service pattern</h2> <p> AstroGrid web-applications including web services use the J2EE-servlet and Axis frameworks to connect SOAP messages with Java classes. The conceptual-parts diagram shows how these frameworks come together, and the physical-parts diagram shows the implementation chosen by Astrogrid. </p><p>AstroGrid adds to the normal usage of J2EE and Axis internal conventions for interconnecting the WSDL contracts and the Java code. These are shown in the service-interfaces diagram. This diagram also illustrates the use of delegate classes as a refinement of client-side stubs for the services.</p><p> Web applications following this pattern are modelled as specialized examples of the service-interfaces and physical-parts diagrams. </p></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">framework</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R10"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.filestore/Package.html">webapps.filestore</A></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web application</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f15"><A NAME="R6"></A>to</FONT><FONT ID="f15"> </FONT><FONT ID="f16">ClassDiagram</FONT><FONT ID="f15"> </FONT><FONT ID="f15"><U><A HREF="../webapps.Axis/Axis.html">Axis</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">bind</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R14"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.registry/Package.html">webapps.registry</A></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web application</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f15"><A NAME="R2"></A>to</FONT><FONT ID="f15"> </FONT><FONT ID="f16">ClassDiagram</FONT><FONT ID="f15"> </FONT><FONT ID="f15"><U><A HREF="../webapps.Axis/Axis.html">Axis</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">bind</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R12"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.myspace/Package.html">webapps.myspace</A></FONT></DIV>
+<DIV STYLE="margin-top:8pt;margin-left:17pt;"><FONT ID="f2">WSDL contracts and service implementation for the Manager web-service.</FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web application</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f15"><A NAME="R1"></A>to</FONT><FONT ID="f15"> </FONT><FONT ID="f16">ClassDiagram</FONT><FONT ID="f15"> </FONT><FONT ID="f15"><U><A HREF="../webapps.Axis/Axis.html">Axis</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">bind</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R13"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.portal/Package.html">webapps.portal</A></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web applications</FONT></DIV>
+<DIV STYLE="margin-left:2pt;margin-top:19pt;"><IMG SRC="doc-images/PackageDiagram.png"> <FONT ID="f11"><A NAME="R11"></A>Package </FONT><FONT ID="f10"><A HREF="../webapps.jes/Package.html">webapps.jes</A></FONT></DIV>
+<DIV STYLE="margin-left:16pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:25pt;"><FONT ID="f2">web application</FONT></DIV>
+<DIV STYLE="margin-top:16pt;margin-left:17pt;"><FONT ID="f8" STYLE="background-color:#DCDCDC;">Dependency Links</FONT></DIV>
+<DIV STYLE="margin-left:23pt;margin-top:8pt;"><FONT ID="f15"><A NAME="R3"></A>to</FONT><FONT ID="f15"> </FONT><FONT ID="f16">ClassDiagram</FONT><FONT ID="f15"> </FONT><FONT ID="f15"><U><A HREF="../webapps.Axis/Axis.html">Axis</A></U></FONT></DIV>
+<DIV STYLE="margin-left:36pt;margin-top:6pt;"><FONT ID="f7">Stereotype</FONT><FONT ID="f7">:</FONT></DIV>
+<DIV STYLE="margin-top:2pt;margin-left:45pt;"><FONT ID="f2">bind</FONT></DIV>
+</BODY>
+</HTML>

@@ -1,0 +1,101 @@
+<HTML>
+<STYLE>
+A:link {text-decoration: underline; color: darkmagenta;}
+A:visited {text-decoration: underline; color: darkmagenta;}
+#f0 { font-family: "Helvetica"; font-size: 10pt;  }
+#f1 { font-family: "SansSerif"; font-size: 12pt; font-weight: bold;  }
+#f2 { font-family: "SansSerif"; font-size: 12pt; font-style: italic;  }
+#f3 { font-family: "SansSerif"; font-size: 9pt;  }
+#f4 { font-family: "SansSerif"; font-size: 10pt; font-style: italic; font-weight: bold;  }
+#f5 { font-family: "SansSerif"; font-size: 10pt; font-style: italic;  }
+#f6 { font-family: "SansSerif"; font-size: 8pt;  }
+#f7 { font-family: "SansSerif"; font-size: 9pt; font-style: italic; color: #800080;  }
+#f8 { font-family: "SansSerif"; font-size: 9pt; color: #800080;  }
+</STYLE>
+<BODY BGCOLOR="white">
+<BASEFONT ID="f0">
+<DIV><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" BORDERCOLOR="black" WIDTH="96%"><TR BGCOLOR="#FFFFC8"><TD>
+<DIV><FONT ID="f1">Package</FONT> <FONT ID="f2"><U>org.astrogrid.datacenter.queriers</U></FONT></DIV>
+</TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:10pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Class diagrams</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:6pt;margin-left:1pt;"><FONT ID="f5"><A HREF="queriers.html">queriers</A></FONT></DIV>
+<DIV STYLE="margin-top:15pt;margin-left:1pt;"><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="96%"><TR BGCOLOR="#DCDCDC"><TD><FONT ID="f4">Sub-packages:</FONT></TD></TR></TABLE></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.cutout/Package.html">org.astrogrid.datacenter.queriers.cutout</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.fits/Package.html">org.astrogrid.datacenter.queriers.fits</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.nvocone/Package.html">org.astrogrid.datacenter.queriers.nvocone</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.ogsadai/Package.html">org.astrogrid.datacenter.queriers.ogsadai</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.query/Package.html">org.astrogrid.datacenter.queriers.query</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.spi/Package.html">org.astrogrid.datacenter.queriers.spi</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.sql/Package.html">org.astrogrid.datacenter.queriers.sql</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.status/Package.html">org.astrogrid.datacenter.queriers.status</A></FONT></DIV>
+<DIV STYLE="margin-top:5pt;margin-left:1pt;"><FONT ID="f5"><A HREF="../org.astrogrid.datacenter.queriers.test/Package.html">org.astrogrid.datacenter.queriers.test</A></FONT></DIV>
+<DIV STYLE="margin-top:18pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Interface Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f7">QuerierListener</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">An interface to listen to status changes
+on a running querier</FONT></TD>
+</TR>
+</TABLE>
+</DIV>
+<DIV STYLE="margin-top:14pt;">
+<TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="96%">
+<COLGROUP>
+<COL WIDTH="32%">
+<COL WIDTH="67%">
+</COLGROUP>
+<TR>
+<TH COLSPAN="2" BGCOLOR="#DCDCDC" ALIGN="left" VALIGN="center"><FONT ID="f4">Class Summary</FONT></TH>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">DatabaseAccessException</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A generalised Exception for wrapping whatever specific exception is thrown
+in the database access (the querier) layer.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">Querier</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Represents a single running query.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">QuerierManager</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Manages the construction and initialization of Queriers, and maintains a
+collection of current Queriers.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">QuerierPlugin</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Querier Plugins are used to carry out all the database specific backend
+tasks.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">QuerierPluginException</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">An exception for generation by plugins
+<p>
+The original exception should wherever possible be preserved as the cause
+<p>
+I would have much rather used IOException directly instead of making a new one,
+but for some reason IOException has no easy constructor that takes a cause.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">QuerierPluginFactory</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Manages a single query; this is the root for a chain of possible chain
+of plugins, translators, etc.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">QueryResults</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">A container interface that holds the results of a query until needed.</FONT></TD>
+</TR>
+<TR>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f8">TargetIndicator</FONT></TD>
+<TD ALIGN="left" VALIGN="top"><FONT ID="f6">Used to indicate the target where the results are to be sent.</FONT></TD>
+</TR>
+</TABLE>
+</DIV>
+</BODY>
+</HTML>
