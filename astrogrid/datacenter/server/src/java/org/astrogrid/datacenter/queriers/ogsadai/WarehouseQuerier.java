@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.9 2004/03/17 18:24:15 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.10 2004/03/24 15:57:31 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,17 +34,31 @@ import org.xml.sax.SAXException;
  *
  * Instead, it shells out to the command-line and invokes a
  * {@link GdsQueryDelegate} (running in a new JVM) to perform
- * the query and produce XML RowSet results.
- * This <code>WarehouseQuerier</code> then converts these results to
- * VOTable for passing back up into the datacenter.
+ * the query.  The results supplied by the OGSA-DAI service 
+ * in VOTable format.
  *
  * Communication between this <code>WarehouseQuerier</code> and
- * a {@link GdsQueryDelegate} is via temporary workspace files if available,
- * or via process input and output streams otherwise.
- * I suspect this will have poor speed and scalability implications.
+ * a {@link GdsQueryDelegate} is via process input and output streams.
+ * This version of the WarehouseQuerier requests OGSA-DAI to deliver
+ * its results to a local file. The implications of this are:
+ * <ul>
+ * <li> The tomcat instances hosting the OGSA-DAI service and the 
+ * Datacenter service <strong>must be running on the same host</strong>.
+ *
+ * <li>The tomcat instances hosting the OGSA-DAI service and the 
+ * Datacenter service should probably be running as the same user 
+ * (because the latter must create, and the former must write to,
+ * the same temporary file).
+ * </ul>
+ *
+ * Delivery to a GridFTP URL is also supported by the It5 OGSA-DAI client
+ * code, but requires additional support at the datacenter end in terms 
+ * of X.509 authentication etc. It is not explicitly supported in this
+ * Iteration 5 version of the WarehouseQuerier, which relies on 
+ * deliver-to-file instead.
  *
  * @author K Andrews
- * @version 1.0
+ * @version 1.1
  * @see GdsQueryDelegate
  */
 public class WarehouseQuerier extends QuerierPlugin {
@@ -72,31 +86,28 @@ public class WarehouseQuerier extends QuerierPlugin {
    * GdsQueryDelegate running in a separate JVM).
    *
    * Converts input ADQL query into the SQL expected by the
-   * GdsQueryDelegate. and converts GdsQueryDelegate's XML RowSet
-   * results into the VOTable expected by the datacenter.
+   * GdsQueryDelegate, using a custom Postgres-flavoured translator. 
    *
-   * @TOFIX  We really need customised ADQL->SQL translation customised
-   * for our DBMS / table indices.
-   *
-   * @return a QueryResults object wrapping the VOTable Document results.
-   * @throws DatabaseAccessException
+   * @throws IOException, DatabaseAccessException
    */
-  public void askQuery() throws IOException {
+  public void askQuery() throws IOException, DatabaseAccessException {
 
-    //convert to SQL - throws QueryException out of this method if a problem with it
+    //Convert to SQL 
     PostgresSqlMaker sqlMaker = new PostgresSqlMaker();
     String sql = escapeXmlSpecialChars(sqlMaker.getSql(querier.getQuery()));
      
-    log.info("SQL query is " + sql);
     log.debug("Successfully created SQL query from input ADQL");
 
     // Get temp file to pass to Query delegate
-     try {
+    try {
        workspace = new Workspace("Warehouse_"+querier.getId());
-     }
-     catch (Exception th) {
-        log.error(th);
-     }
+    }
+    catch (Exception th) {
+       log.error(th);
+       throw new IOException(
+          "Couldn't create temporary workspace: " +
+          th.getMessage());
+    }
      
     File tempFile = null;
     //Set up outputs
@@ -121,7 +132,10 @@ public class WarehouseQuerier extends QuerierPlugin {
     workspace.close();
   }
 
-   /** Abort - if this is called, try and top the query and tidy up */
+   /** Abort - if this is called, try and kill the query and tidy up.
+    * Currently not implemented.  I don't know how we're going to
+    * do this using the shelled-out query method, yuk!
+    */
    public void abort()  {
       //don't forget to workspace.close();
       // TODO
@@ -132,11 +146,10 @@ public class WarehouseQuerier extends QuerierPlugin {
    * a GdsQueryDelegate running in a separate JVM.
    *
    * The GdsQueryDelegate accepts SQL, performs the actual query via
-   * OGSA-DAI, and returns XML RowSet results.
+   * OGSA-DAI, and returns VOTable results.
    *
    * @param sql  String containing the SQL query to be performed
-   * @param tempFile  File to hold the GdsQueryDelegate's (XML RowSet) results
-   * @return Document containing VOTable-ised query results
+   * @param tempFile  File to hold the GdsQueryDelegate's VOTable results
    * @throws DatabaseAccessException
    */
   protected void doShelledOutQuery(String sql, File tempFile)
@@ -169,11 +182,9 @@ public class WarehouseQuerier extends QuerierPlugin {
     cmdArgs[3] = sql;
     cmdArgs[4] = getOgsaDaiRegistryString();
     cmdArgs[5] = "file://" + tempFile.getAbsolutePath();
+    // FUTURE: We can use gsiftp urls here too
     //cmdArgs[5] = "gsiftp://" + tempFile.getAbsolutePath();
     log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
-          " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
-    // TOFIX REMOVE
-    System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] +
           " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
 
     // Use utility helper to perform call
@@ -347,8 +358,7 @@ public class WarehouseQuerier extends QuerierPlugin {
   // ----------------------------------------------------------
   // Fallback defaults for values that should be configured on a
   // per-installation basis in the WarehouseServiceImpl.properties
-  private final String DEFAULT_WAREHOUSE_JVM =
-        "/usr/bin/java";
+  private final String DEFAULT_WAREHOUSE_JVM = "/usr/bin/java";
 
   private final String TEMP_RESULTS_FILENAME = "warehouseResults.xml";
 //================================================================
@@ -356,6 +366,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.10  2004/03/24 15:57:31  kea
+Updated Javadocs etc.
+
 Revision 1.9  2004/03/17 18:24:15  kea
 Integrating new javaapp using del-to-file, del-to-gridftp.
 

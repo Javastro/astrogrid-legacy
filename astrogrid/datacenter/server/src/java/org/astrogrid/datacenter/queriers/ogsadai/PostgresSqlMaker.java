@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.4 2004/03/12 20:04:57 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.5 2004/03/24 15:57:31 kea Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -95,6 +95,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.5  2004/03/24 15:57:31  kea
+Updated Javadocs etc.
+
 Revision 1.4  2004/03/12 20:04:57  mch
 It05 Refactor (Client)
 
@@ -106,7 +109,6 @@ Changed doc
 
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
-
  
 */
 
