@@ -3,7 +3,29 @@
 <!-- run a loop of 20 times querying a cds entry on exist -->
 <WebServiceTest name="CDSeXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
 		<Runnable type="junit">
+			<TestCase name="testStress" loop="3"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="CDSeXist3BasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXist3Stress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress3" loop="3"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<!-- run a loop of 20 times querying a cds entry on exist -->
+<WebServiceTest name="CDSeXistBasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXistStress" threadstyle="sequential">
+		<Runnable type="junit">
 			<TestCase name="testStress" loop="20"  threadstyle="sequential">
+				<Thread number="1"  loop="1" threadstyle="sequential" />
+			</TestCase>
+		</Runnable>
+</WebServiceTest>
+<WebServiceTest name="CDSeXist3BasicTest" fullclassname="org.astrogrid.registry.stress.QueryeXist3Stress" threadstyle="sequential">
+		<Runnable type="junit">
+			<TestCase name="testStress3" loop="20"  threadstyle="sequential">
 				<Thread number="1"  loop="1" threadstyle="sequential" />
 			</TestCase>
 		</Runnable>
@@ -31,5 +53,5 @@
 				<Thread number="5"  loop="1" threadstyle="synchroneous" />
 			</TestCase>
 		</Runnable>
-	</WebServiceTest>
+	</WebServiceTest
 </TestWebServices>
