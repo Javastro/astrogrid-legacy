@@ -1113,6 +1113,11 @@ public class DesignAction extends AbstractAction {
 			
 		       if (request.getParameter( PARAM_INDIRECT+"#input#"+paramCount ).equalsIgnoreCase("on") )
 			     parameterIndirect = true;
+		       
+		       // Bug # 1047 - if param is indirect we need to manually add the ivo://
+		       if (parameterIndirect) {
+		       	  ivornValue = "ivo://" + ivornValue ;
+		       }
 
 		debug( "multi: ivornValue: " + i + ": " + ivornValue );
 		debug( "multi: parameterName:" + i + ": " + parameterName ) ;
@@ -1263,6 +1268,11 @@ public class DesignAction extends AbstractAction {
 			String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER+"#output#"+paramCount ) ;
 			if (request.getParameter( PARAM_INDIRECT+"#output#"+paramCount ).equalsIgnoreCase("on") )
 				parameterIndirect = true;
+			
+		       // Bug # 1047 - if param is indirect we need to manually add the ivo://
+		       if (parameterIndirect) {
+		       	  ivornValue = "ivo://" + ivornValue ;
+		       }			
 
 				debug( "multi: ivornValue: " + i + ": " + ivornValue );
 				debug( "multi: parameterName:" + i + ": " + parameterName ) ;
