@@ -29,7 +29,6 @@ This is a quicker way to fill in the majority of known values that change.
 
 <form action="selfRegisterCheck.jsp" method="post">
 <p>
-<input type="text" name="version" value="0.10" />
 <table>
  <tr><td>Authority ID <td> <input type="text" name="AuthorityID">
  <tr><td>Title        <td> <input type="text" name="Title">

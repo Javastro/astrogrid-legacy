@@ -1,5 +1,4 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
-				 org.astrogrid.registry.server.query.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -9,10 +8,6 @@
                   org.apache.axis.utils.XMLUtils,                 
                  java.io.*"
     session="false" %>
-<%
-      RegistryQueryService server = new RegistryQueryService();
-      ArrayList al = server.getAstrogridVersions();
-%>
 
 <html>
 <head>
@@ -43,11 +38,6 @@ Please enter the URL for a registry to be harvested.
 A default registry in AstroGrid is pre-set.
 </p>
 <p>
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
-   <%}%>
-</select>
 <input name="getregs" value="http://hydra.star.le.ac.uk:8080/astrogrid-registry" size="64" type="text">
 <input name="getregsubmit" value="Set up harvesting" type="submit">
 </p>

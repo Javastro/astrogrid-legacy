@@ -11,8 +11,7 @@
 %>
 <%@ page language="java" %><%
    RegistryQueryService server = new RegistryQueryService();
-   String version = request.getParameter("version");
-   Document entry = server.getRegistriesQuery(version);
+   Document entry = server.GetRegistries(DomHelper.newDocument());
    
    if (entry == null) {
       out.write("<Error>No entry returned</Error>");

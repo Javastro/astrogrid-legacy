@@ -38,16 +38,7 @@
 <input type="checkbox" name="validate" value="true">Validate</input>
 <input type="hidden" name="addFromText" value="true" />
 
-<textarea name="Resource" cols='60' rows='20'>
-<%
-String version = request.getParameter("version");
-if(version == null || version.trim().length() <= 0 || version.equals("null") ||  version.equals("0.9")) {
-%>
-<%@ include file="makeRegistryType0.9.jsp" %>
-<%}else if(version.equals("0.10")) { %>
-<%@ include file="makeRegistryType0.10.jsp" %>
-<%}%>
-</textarea>
+<textarea name="Resource" cols='60' rows='20'><%@ include file="makeRegistryType.jsp" %></textarea>
 <p>
 Press this button and if all goes OK then restart the registry service:
 <input name="button" value="Register" type="submit">

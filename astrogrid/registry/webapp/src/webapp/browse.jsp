@@ -1,5 +1,4 @@
 <%@ page import="org.astrogrid.registry.server.query.*,
-				 org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.w3c.dom.Element,
@@ -25,10 +24,6 @@
 <div id='bodyColumn'>
 
 <%
-
-   RegistryQueryService server = new RegistryQueryService();
-   ArrayList al = server.getAstrogridVersions();
-
    long offset = 0;
    String off = request.getParameter("Index");
    if (off != null) {
@@ -57,33 +52,12 @@
 </table>
 -->
 
-<form method='get'>
+<form action='browse.jsp' method='get'>
 <p>
-Version: 
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
-   <%}%>
-</select>
-<br/>
-Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart %>'/>
+Find IVORNs including <input name="IvornPart" type="text" value='<%= ivornpart %>'/>
 <input type="submit" name="button" value='List'/>
-</p>
 </form>
-
-<form method='get'>
-<p>
-Browse for another version
-<select name="version">
-   <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
-   <%}%>
-</select>
-<input type="submit" name="button" value='List'/>
 </p>
-</form>
-
-
 <p>
    
 <!--
@@ -94,20 +68,33 @@ Browse for another version
 </td>
 -->
 <%
+   RegistryQueryService server = new RegistryQueryService();
+
    //out.write("*"+ivornpart+"*:<br/");
    
    Document entries = null;
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-   	version = RegistryServerHelper.getDefaultVersionNumber();
-   }
-   System.out.println("version in browse.jsp=" + version);
    
-   if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
-   		 entries = server.getResourcesByAnyIdentifier(ivornpart,version);
+   if ( (ivornpart != null) && (ivornpart.length()>0) ) {
+         String selectQuery = "<query><selectionSequence>" +
+             "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+             "<selectionOp op='$and$'/>" +
+             "<selectionSequence>"+
+               "<selection item='vr:Identifier/vr:AuthorityID' itemOp='CONTAINS' value='" + ivornpart + "'/>"+
+               "<selectionOp op='OR'/>" +
+               "<selection item='vr:Identifier/vr:ResourceKey' itemOp='CONTAINS' value='" + ivornpart + "'/>"+
+             "</selectionSequence>"+
+           "</selectionSequence></query>";
+   
+         entries = server.submitQuery(DomHelper.newDocument(selectQuery));
    }
    else {
-   		 entries = server.getAll(version);
+         String selectQuery = "<query><selectionSequence>" +
+         "<selection item='searchElements' itemOp='EQ' value='all'/>" +
+         "<selectionOp op='$and$'/>" +
+         "<selection item='vr:Identifier/vr:AuthorityID' itemOp='NE' value=' '/>"+
+         "</selectionSequence></query>";
+   
+         entries = server.submitQuery(DomHelper.newDocument(selectQuery));
    }
    
    if (entries == null) {
@@ -119,17 +106,14 @@ Browse for another version
       out.write("<tr><th>Title</th><th>Type</th><th>AuthorityID</th><th>ResourceKey</th><th>Updated</th><th>Actions</th></tr>");
       
       NodeList resources = entries.getElementsByTagNameNS("*","Resource");
-
+      
       for (int n=0;n<resources.getLength();n++) {
          Element resourceElement = (Element) resources.item(n);
 
-	     boolean deleted = false; 
-	     if(resourceElement.getAttribute("status") != null)
-		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");
+         boolean deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");
          
          String bgColour = "#FFFFFF";
          String fgColour = "#000000";
-         
          if (deleted) {
             bgColour = "#FFFFFF";
             fgColour = "#AAAAAA";
@@ -138,53 +122,59 @@ Browse for another version
          String endFG = "</font>";
          
          out.write("<tr bgcolor='"+bgColour+"'>\n");
-
-			if("0_10".equals(version)) {         
-	         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "title")+endFG+"</td>");
-	      }else {
-	         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
-	      }
+         
+         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
          
          //type
          out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
 
+         NodeList identifiers = resourceElement.getElementsByTagNameNS("*", "Identifier");
+         if (identifiers.getLength() == 0) {
+            out.write("<td>ERROR: Resource has no 'Identifier' element</td>");
+         }
+         else {
             
             //authr
-//            Element resource = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","ResourceKey").item(0);
-//            Element authority = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","AuthorityID").item(0);
-			String authority = RegistryServerHelper.getAuthorityID(resourceElement);
-			String resource = RegistryServerHelper.getResourceKey(resourceElement);
+            Element resource = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","ResourceKey").item(0);
+            Element authority = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","AuthorityID").item(0);
    
             String ivoStr = null;
-            if (authority == null || authority.trim().length() <= 0) {
+            if (authority == null) {
                out.write("<td>null?!</td>");
             } else {
-               out.write("<td><a href='browse.jsp?version="+version+"&IvornPart="+authority+"'>"+authority+"</a></td>\n");
-               ivoStr = authority;
+               String t = DomHelper.getValue(authority);
+               out.write("<td><a href='browse.jsp?IvornPart="+t+"'>"+t+"</a></td>\n");
+               ivoStr = t;
             }
    
-            if (resource == null || resource.trim().length() <= 0) {
+            if (resource == null) {
                out.write("<td>null?!</td>");
-            } else { 
-               out.write("<td>"+setFG+resource+endFG+"</td>\n");
-               ivoStr = ivoStr+"/"+resource;
+            } else {
+               String t = DomHelper.getValue(resource);
+               out.write("<td>"+setFG+t+endFG+"</td>\n");
+               ivoStr = ivoStr+"/"+t;
             }
    
             //last update date
             out.write("<td>"+setFG+resourceElement.getAttribute("updated")+endFG+"</td>");
             
             out.write("<td>");
-   
-            out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">XML</a>,  ");
 
-            out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit</a>");
+            //links to do stuff
+            out.write("<a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View</a>, ");
+   
+            out.write("<a href=viewEntryXml.jsp?IVORN="+ivoStr+">XML</a>,  ");
+
+            out.write("<a href=editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
 
 			/*
             if (!deleted) {
                out.write(", <a href=admin/deleteResource.jsp?IVORN="+ivoStr+">Delete</a>");
             }
         	*/
+            
             out.write("</td>");
+         }
          out.write("</font></tr>\n");
       }
       out.write("</table>");

@@ -22,7 +22,6 @@ import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.QueryHelper;
 import org.astrogrid.registry.server.admin.RegistryAdminService;
-import org.astrogrid.registry.server.query.RegistryQueryService;
 import java.net.URL;
 import java.io.Reader;
 import java.io.StringReader;
@@ -124,7 +123,7 @@ public class RegistryHarvestService {
               beginHarvest(elem,null);
           }//else
           */   
-          //beginHarvest(elem,null,null);          
+          beginHarvest(elem,null);          
       }
       log.info("exiting harvestResource");
       log.debug("end harvestResource");
@@ -154,7 +153,7 @@ public class RegistryHarvestService {
       //String collectionName = "astrogridv" + versionNumber;
       String collectionName = "";
       QueryDBService qdb = new QueryDBService();
-      //instantiate the Admin service that contains the update methods.c
+      //instantiate the Admin service that contains the update methods.
       RegistryAdminService ras = new RegistryAdminService();
       Document tempDoc = null;
       try {
@@ -162,55 +161,84 @@ public class RegistryHarvestService {
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
+             xqlQuery = QueryHelper.getAllRegistryQuery();
+             log.info("the xqlQuery = " + xqlQuery);
+             harvestDoc = qdb.runQuery(collectionName,xqlQuery);
              //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
-             RegistryQueryService rqs = new RegistryQueryService();
-             ArrayList versions = rqs.getAstrogridVersions();
-             System.out.println("the number of versions = " + versions);
-             for(int k = 0;k < versions.size();k++) {
-                 try {
-                 System.out.println("begin work on version = " + (String)versions.get(k));
-                 harvestDoc = rqs.getRegistriesQuery((String)versions.get(k));
-                 //tempDoc.appendChild(
-                 //        tempDoc.importNode(harvestDoc.getDocumentElement(),true));
-                 //ras.updateResource(harvestDoc);
-                 ras.updateNoCheck(harvestDoc,(String)versions.get(k));                 
-
-                 //log.info("try just the Resource");
-                 NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
-                 log.info("Harvest All found this number of resources = " + nl.getLength());
-                 for(int i = 0; i < nl.getLength();i++) {
-                   Element elem = (Element) nl.item(i);
-                   versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
-                   versionNumber = versionNumber.replace('.','_');               
-                   if(useDates) {
-                      String dateString = null;
-                      try {
-                          Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
-                          dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
-                      }catch(Exception e) {
-                         log.warn("ignore for now: could not find a stat/date for element using no date.");
-                      }                      
-                      Date dt = null;
-                      if(dateString != null && dateString.trim().length() > 0) {
-                          dt = new Date(Long.parseLong(dateString));
-                      }
-                      //harvestResource(elem,dt);
-                      beginHarvest(elem,dt,(String)versions.get(k));
-                   }else {
-                    //harvestResource(elem,null);
-                    beginHarvest(elem,null,(String)versions.get(k));
-                   }//else
-                 }//for
-                 }catch(Exception e) {
-                     log.error("Found exception, but still need to harvest other versions:" + e.getMessage());
-                 }
+             if(harvestDoc != null && tempDoc != null) {
+                 tempDoc.appendChild(
+                         tempDoc.importNode(harvestDoc.getDocumentElement(),true));
+                 ras.updateNoCheck(tempDoc);
+             }               
+             //log.info("try just the Resource");
+             NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
+             log.info("Harvest All found this number of resources = " + nl.getLength());
+             for(int i = 0; i < nl.getLength();i++) {
+               Element elem = (Element) nl.item(i);
+               versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
+               versionNumber = versionNumber.replace('.','_');               
+               if(useDates) {
+                  String dateString = null;
+                  try {
+                      Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+                      dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                  }catch(Exception e) {
+                     log.warn("ignore for now: could not find a stat/date for element using no date.");
+                  }
+                  
+                  Date dt = null;
+                  if(dateString != null && dateString.trim().length() > 0) {
+                      dt = new Date(Long.parseLong(dateString));
+                  }
+                  //harvestResource(elem,dt);
+                  beginHarvest(elem,dt);
+               }else {
+                //harvestResource(elem,null);
+                beginHarvest(elem,null);
+               }//else
              }//for
           }
+          /*
+          else {
+            //query all Registry Types for Webbrowser or WebService interface
+             //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[vr:Interface/vr:Invocation='WebBrowser' or vr:Interface/vr:Invocation='WebService']";
+             xqlQuery = "//*:Resource[*:/Interface/*:AccessURL or *:/interface/*:accessURL]";
+             harvestDoc = qdb.runQuery(collectionName,xqlQuery);
+             if(harvestDoc != null) {
+                 tempDoc.appendChild(
+                         tempDoc.importNode(harvestDoc.getDocumentElement(),true));
+                 ras.updateNoCheck(tempDoc);
+             }             
+             //NodeList nl = DomHelper.getNodeListTags(harvestDoc,"Resource","vr");
+             NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
+             for(int i = 0; i < nl.getLength();i++) {
+               Element elem = (Element) nl.item(i);
+               versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
+               versionNumber = versionNumber.replace('.','_');
+               if(useDates) {
+                  Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+                  String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                  Date dt = null;
+                  if(dateString != null && dateString.trim().length() > 0) {
+                      dt = new Date(Long.parseLong(dateString));
+                  }
+                  //harvestResource(elem,dt);
+                  beginHarvest(elem,dt);
+               }else {
+               	//harvestResource(elem,null);
+                beginHarvest(elem,null);
+               }//else
+             }//for
+          }
+          */
+
       }catch(ParserConfigurationException pce) {
       	throw new RegistryException(pce);
-      }//catch(IOException ioe) {
-      	//throw new RegistryException(ioe);
-      //}
+      }catch(IOException ioe) {
+      	throw new RegistryException(ioe);
+      }catch(SAXException sax) {
+         throw new RegistryException(sax);
+      }
    }
 
 /**
@@ -253,11 +281,9 @@ private class HarvestThread extends Thread {
     */
 
    public void run() {
-	  //Element el = updateDoc.getDocumentElement();
+	  Element el = updateDoc.getDocumentElement();
       try {
-         ras.updateNoCheck(updateDoc,null);
-         //updateDoc = null;
-         //System.gc();
+         ras.updateNoCheck(updateDoc);
   //       ras.Update(updateDoc);
   //    }catch(MalformedURLException mue) {
   //       mue.printStackTrace();
@@ -279,11 +305,9 @@ private class HarvestThread extends Thread {
     * @param dt An optional date used to harvest from a particular date
     * @param resources Set of Resources to harvest on, normally a Registry Resource.
     */
-   public void beginHarvest(Node resource, Date dt, String version)  throws RegistryException, IOException  {
+   public void beginHarvest(Node resource, Date dt)  throws RegistryException, IOException  {
       log.debug("start beginHarvest");
       log.info("entered beginharvest");
-      int failureCount = 0;
-      boolean resumptionSuccess = false;      
       String accessURL = null;
       String invocationType = null;
       boolean isRegistryType;
@@ -321,9 +345,11 @@ private class HarvestThread extends Thread {
       }
       accessURL = nl.item(0).getFirstChild().getNodeValue();
 
+
       nl = ((Element) resource).getElementsByTagNameNS("*","Invocation");
       if(nl.getLength() == 0) {
           //Need to look for interface here.
+        //nl = ((Element) resource).getElementsByTagName("vr:Invocation");
           nl = ((Element) resource).getElementsByTagNameNS("*","interface");
           if(nl.getLength() > 0) { 
               typeAttribute = ((Element)nl.item(0)).getAttributes().getNamedItem("xsi:type");
@@ -409,24 +435,22 @@ private class HarvestThread extends Thread {
                    SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
                    Document soapDoc = sbe.getAsDocument();
                    log.info("SOAPDOC RETURNED = " + DomHelper.DocumentToString(soapDoc));
-                   //(new HarvestThread(ras,soapDoc.getDocumentElement())).start();
-                   ras.updateNoCheck(soapDoc,version);
+                   (new HarvestThread(ras,soapDoc.getDocumentElement())).start();
                    if(isRegistryType) {
                       nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                       while(nl.getLength() > 0) {
                          Document resumeDoc = DomHelper.newDocument();
-                         root = doc.createElementNS(nameSpaceURI,"ListRecords");
+                         root = doc.createElementNS(nameSpaceURI,"ResumeListRecords");
                           childElem = doc.createElement("resumptionToken");
                           childElem.appendChild(doc.createTextNode(nl.item(0).getFirstChild().getNodeValue()));
                           sbeRequest = new SOAPBodyElement(resumeDoc.getDocumentElement());
-                          sbeRequest.setName("ListRecords");
+                          sbeRequest.setName("ResumeListRecords");
                           sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
                           //invoke the web service call
                           result = (Vector) callObj.invoke
     									    (new Object[] {sbeRequest});
                           soapDoc = sbe.getAsDocument();
-                          //(new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
-                          ras.updateNoCheck(soapDoc,version);
+                          (new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
                            nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                            threadCount++;                           
                            if(threadCount > 19) {
@@ -475,14 +499,13 @@ private class HarvestThread extends Thread {
             doc = DomHelper.newDocument(new URL(accessURL + ending));
             log.info("Okay got this far to reading the url doc = " +
                       DomHelper.DocumentToString(doc));
-            //(new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
-            ras.updateNoCheck(doc,version);
+            (new HarvestThread(ras,doc.getDocumentElement().cloneNode(true))).start();
             NodeList moreTokens = null;
             //log.info("resumptionToken length = " +
             //         doc.getElementsByTagName("resumptionToken").
             //         getLength());
             //if there are more paging(next) then keep calling them.
-            while( doc != null && (moreTokens = doc.getElementsByTagName("resumptionToken")).
+            while( (moreTokens = doc.getElementsByTagName("resumptionToken")).
                                      getLength() > 0 && moreTokens.item(0).hasChildNodes()) {
                Node nd = moreTokens.item(0);
                if(accessURL.indexOf("?") != -1) {
@@ -493,39 +516,26 @@ private class HarvestThread extends Thread {
                log.info(
                "the harvestcallregistry's with resumptionToken accessurl inside the token calls = " +
                           accessURL + ending);
-               while(failureCount <= 2 && !resumptionSuccess) {
-               try {
-                   doc = DomHelper.newDocument(new URL(accessURL + ending));
-                   resumptionSuccess = true;
-               }catch(Exception e) {
-                   log.error("Seemed to fail for = " + accessURL + ending);
-                   log.error("Exception: " + e.getMessage());
-                   log.info("try another in case web server has not caught up");
-                   failureCount++;
-                   resumptionSuccess = false;
-               }
-               }//while
-               if(resumptionSuccess) {
-                   //(new HarvestThread(ras,doc)).start();
-                   ras.updateNoCheck(doc,version);
-                   /*
-                   threadCount++;                           
-                   if(threadCount > 6) {
-                       log.info("5 harvest threads have started recently, sleeping for 5 seconds. ");
-                       log.info("The activethread count = " + Thread.activeCount());
-                       try {
-                           Thread.sleep(5000);
-                       }catch(InterruptedException ie) {
-                           log.info("Possible interruption in the middle of harvest");
-                       }
-                       threadCount = 0;
-                   }//if
-                   */
-               }else {
-                   doc = null;
-               }//else
-               failureCount = 0;
-               resumptionSuccess = false;
+               doc = DomHelper.newDocument(new URL(accessURL + ending));
+               /*
+               log.info("INSIDE THE MORETOKENS = " +
+                        DomHelper.DocumentToString(doc) +
+                        " resumption token length = "   +
+                        doc.getElementsByTagName("resumptionToken").
+                            getLength() );
+               */
+               (new HarvestThread(ras,doc)).start();
+               threadCount++;                           
+               if(threadCount > 19) {
+                   log.info("20 harvest threads have started recently, sleeping for 5 seconds. ");
+                   log.info("The activethread count = " + Thread.activeCount());
+                   try {
+                       Thread.sleep(5000);
+                   }catch(InterruptedException ie) {
+                       log.info("Possible interruption in the middle of harvest");
+                   }
+                   threadCount = 0;
+               }//if
             }//while
          }catch(ParserConfigurationException pce) {
             pce.printStackTrace();

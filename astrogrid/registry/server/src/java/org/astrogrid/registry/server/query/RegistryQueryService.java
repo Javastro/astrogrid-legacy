@@ -31,8 +31,6 @@ import org.astrogrid.registry.server.harvest.RegistryHarvestService;
 import org.astrogrid.registry.server.RegistryServerHelper;
 import org.astrogrid.registry.server.QueryHelper;
 
-import java.util.ArrayList;
-
 /**
  *
  *
@@ -84,15 +82,14 @@ public class RegistryQueryService {
       log.debug("start Search");
       long beginQ = System.currentTimeMillis();
       XSLHelper xslHelper = new XSLHelper();
-
+      
+      //transform the ADQL to an XQuery for the registry.
+      String xqlQuery = getQuery(query);
+      log.info("The XQLQuery = " + xqlQuery);
+      
       //get the version of Resources we are querying on.
       String attrVersion = getRegistryVersion(query);
       String versionNumber = attrVersion.replace('.','_');
-
-      //transform the ADQL to an XQuery for the registry.
-      String xqlQuery = getQuery(query,versionNumber);
-      log.info("The XQLQuery = " + xqlQuery);
-      
       //the location in the eXist db to be queries on.
       String collectionName = "astrogridv" + versionNumber;
       log.info("Collection Name for query = " + collectionName);
@@ -276,41 +273,12 @@ public class RegistryQueryService {
       return qdb.query(collectionName,xqlString);
    }
    
-   public ArrayList getAstrogridVersions() {
-       QueryDBService qdb = new QueryDBService();
-       ArrayList al = new ArrayList();
-       try {
-           Document doc = qdb.getCollection("");
-           String xml = DomHelper.DocumentToString(doc);
-           int index = -1;
-           int temp = 0;
-           
-           while((index = xml.indexOf("astrogridv",temp)) != -1) {
-               temp = xml.indexOf("\"", index+10);
-               System.out.println("adding to the arraylist = " + ((String)xml.substring(index+10,temp)));
-               al.add(((String)xml.substring(index+10,temp)));
-           }
-       }catch(MalformedURLException mue) {
-           mue.printStackTrace();
-       }catch(ParserConfigurationException pce) {
-           pce.printStackTrace();
-       }catch(IOException ioe) {
-           ioe.printStackTrace();
-       }catch(SAXException sax) {
-           sax.printStackTrace();
-       }
-       return al;
-   }
-   
    public Document keywordQuery(String keywords, boolean orKeywords) throws AxisFault {
        return keywordQuery(keywords,orKeywords,RegistryServerHelper.getDefaultVersionNumber());
    }
    
    public Document keywordQuery(String keywords, boolean orKeywords, String version) throws AxisFault {
        long beginQ = System.currentTimeMillis();
-       if(version == null || version.trim().length() <= 0) {
-           version = RegistryServerHelper.getDefaultVersionNumber();
-       }       
        String versionNumber = version.replace('.','_');
        String []keyword = keywords.split(" ");
        String xqlPaths = conf.getString("keyword.query.path." + versionNumber);
@@ -321,7 +289,7 @@ public class RegistryQueryService {
        for(int i = 0;i < xqlPath.length;i++) {
            xqlString += "(";
            for(int j = 0;j < keyword.length;j++) {
-             xqlString += xqlPath[i] + " &= '*" + keyword[j] + "*'";
+             xqlString += xqlPath[i] + " |= '*" + keyword[j] + "*'";
              if(j != (keyword.length - 1)) {
                  if(orKeywords) { 
                      xqlString += " or ";
@@ -354,76 +322,7 @@ public class RegistryQueryService {
                                              versionNumber,"KeywordSearchResponse");
    }
    
-   public Document getAll(String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
-       if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
-       }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       log.info("collname=" + collectionName);
-       String xqlString = QueryHelper.getAllQuery(queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetAllResponse");
-   }
-   
-   public Document GetResourcesByIdentifier(Document query) throws AxisFault {
-       log.debug("start GetResourcesByIdentifier");                   
-       String ident = null;
-       try {
-           ident = DomHelper.getNodeTextValue(query,"identifier");
-           log.info("found identifier in web service request = " + ident);
-       }catch(IOException ioe) {
-           throw new AxisFault("IO problem trying to get identifier");
-       }
-       String attrVersion = getRegistryVersion(query);
-       return getResourcesByIdentifier(ident,attrVersion);
- }
-   
-   public Document getResourcesByIdentifier(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
-       if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
-       }
-       if(ivorn == null || ivorn.trim().length() <= 0) {
-           throw new AxisFault("Cannot have empty or null identifier");
-       }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       String xqlString = QueryHelper.queryForResource(ivorn,queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetResourceByIdentifier");
-   }
-   
-   public Document getResourcesByAnyIdentifier(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
-       if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
-       }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       String xqlString = QueryHelper.queryForAllResource(ivorn,queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetResourceByIdentifier");
-   }
-      
-   public Document getResourcesByAuthority(String ivorn, String versionNumber) throws AxisFault {
-       XSLHelper xslHelper = new XSLHelper();
-       if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
-       }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       String xqlString = QueryHelper.queryForResourceByAuthority(ivorn,queryVersion);
-       Document resultDoc = queryExist(xqlString,collectionName);
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetResourceByAuthroity");
-   }
-   
-      
+
    public Document KeywordSearch(Document query) throws AxisFault {
          log.debug("start keywordsearch");                   
          String keywords = null;
@@ -453,32 +352,24 @@ public class RegistryQueryService {
     */
    public Document GetRegistries(Document query) throws AxisFault {
       //DomHelper.DocumentToStream(query,System.out);
-
+      long beginQ = System.currentTimeMillis();
       String attrVersion = getRegistryVersion(query);
       String versionNumber = attrVersion.replace('.','_');
-      return getRegistriesQuery(versionNumber);
-   }
-   
-   public Document getRegistriesQuery(String versionNumber) throws AxisFault {
-       long beginQ = System.currentTimeMillis();
-       if(versionNumber == null || versionNumber.trim().length() <= 0) {
-           versionNumber = RegistryServerHelper.getDefaultVersionNumber();
-       }
-       String queryVersion = versionNumber.replace('.','_');
-       String collectionName = "astrogridv" + queryVersion;
-       log.info("Collection Name for query = " + collectionName);
-       
-       //Should declare namespaces, but it is not required so will leave out for now.
-       String xqlString = QueryHelper.queryForRegistries(queryVersion);
-       log.info("XQL String = " + xqlString);      
-       Document resultDoc = queryExist(xqlString,collectionName);
-       XSLHelper xslHelper = new XSLHelper();
-       log.info("Time taken to complete GetRegistries on server = " +
-       (System.currentTimeMillis() - beginQ));
-       log.debug("end loadRegistry");
-       
-       return xslHelper.transformExistResult((Node)resultDoc,
-               queryVersion,"GetRegistriesResponse");       
+      
+      String collectionName = "astrogridv" + versionNumber;
+      log.info("Collection Name for query = " + collectionName);
+      
+      //Should declare namespaces, but it is not required so will leave out for now.
+      String xqlString = QueryHelper.queryForRegistries(versionNumber);
+      log.info("XQL String = " + xqlString);      
+      Document resultDoc = queryExist(xqlString,collectionName);
+      XSLHelper xslHelper = new XSLHelper();
+      log.info("Time taken to complete GetRegistries on server = " +
+      (System.currentTimeMillis() - beginQ));
+      log.debug("end loadRegistry");
+      
+      return xslHelper.transformExistResult((Node)resultDoc,
+              versionNumber,"GetRegistriesResponse");      
    }
    
    /**
@@ -724,26 +615,18 @@ public class RegistryQueryService {
     * @throws - AxisFault containing exceptions that might have occurred
     *  calling the servlet/url.
     */   
-   private String getQuery(Document query,String resourceVersion) throws AxisFault {
+   private String getQuery(Document query) throws AxisFault {
        XSLHelper xslHelper = new XSLHelper();       
        NodeList nl = query.getElementsByTagNameNS("*","Select");
        //Get the main root element Select
-       if(nl.getLength() == 0) 
-           nl = query.getElementsByTagNameNS("*","Where");
-           
        
        //find the namespace.
        String adqlVersion = null;
-       log.info("the adql in getquery nl.getLenth = " + nl.getLength());
-       if(nl.getLength() > 0) {
-           log.info("the namespaceuri for element = " + ((Element)nl.item(0)).getNamespaceURI());
-           adqlVersion = ((Element)nl.item(0)).getNamespaceURI();
-           /*
+       if(nl != null && nl.getLength() > 0) {
            adqlVersion = DomHelper.getNodeAttrValue((Element)nl.item(0),"ad","xmlns");
            if(adqlVersion == null || adqlVersion.trim().length() == 0) {
                adqlVersion = DomHelper.getNodeAttrValue((Element)nl.item(0),"xmlns");
            }//if
-           */
        }//if
        
        //throw an error if no version was found.
@@ -752,11 +635,8 @@ public class RegistryQueryService {
        }
        //get only the actual version number.
        adqlVersion = adqlVersion.substring(adqlVersion.lastIndexOf("v")+1);
-       adqlVersion = adqlVersion.replace('.','_');
        //make the transformation using an xsl stylesheet.
-       return xslHelper.transformADQLToXQL(query, adqlVersion, 
-                        RegistryServerHelper.getRootNodeName(resourceVersion),
-                        RegistryServerHelper.getXQLDeclarations(resourceVersion));
+       return xslHelper.transformADQLToXQL(query, adqlVersion.replace('.','_'));
    }
    
    /**

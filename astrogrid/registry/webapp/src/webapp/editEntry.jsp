@@ -1,5 +1,4 @@
 <%@ page import="org.astrogrid.registry.server.JspHelper,
-				 org.astrogrid.registry.server.query.*,
                  org.w3c.dom.Document,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
@@ -24,15 +23,10 @@
 
 <%
    String resource = "";
-   Document resourceDoc = null;
-   if(request.getParameter("IVORN") != null && request.getParameter("IVORN").trim().length() > 0) {
-   	  RegistryQueryService server = new RegistryQueryService();
-	  resourceDoc = server.getResourcesByIdentifier(request.getParameter("IVORN"),
-                                                    request.getParameter("version"));
-	   if (resourceDoc != null) {
-    	  resource = DomHelper.DocumentToString(resourceDoc);
-	   }
-	}
+   Document resourceDoc = JspHelper.getResource(request.getParameter("IVORN"));
+   if (resourceDoc != null) {
+      resource = DomHelper.DocumentToString(resourceDoc);
+   }
 %>
 
 <h1>Add/Update Entry</h1>
@@ -61,7 +55,7 @@ if(SimpleConfig.getSingleton().getBoolean("registry.validate.onupdates",false)) 
 </p>
 
 <p>
-<a href="reg_xml_samples/updates">Sample area of xml for updates</a>
+<a href="reg_xml_samples">Sample area of xml to enter</a>
 </p>
 
 Upload from a local file:
