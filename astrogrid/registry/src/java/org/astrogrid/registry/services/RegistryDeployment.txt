@@ -1,7 +1,7 @@
 ******************************************************
 Deployment Description
 Astrogrid Registry Iteration 01
-12/03/03
+14/03/03
 Elizabeth Auden
 ******************************************************
 
@@ -14,7 +14,7 @@ Elizabeth Auden
 	import org.w3c.dom.*;
 
 4. Run RegistryService.java from the command line: 
-	java org.astrogrid.registry.RegistryService <methodName>
+	java org.astrogrid.registry.RegistryService <methodName> <queryElement> <queryElementValue>
 
 	where method name is one of:
 
@@ -23,3 +23,9 @@ Elizabeth Auden
 		listServiceMetadata
 		listRegistryMetadata
 		listServiceMetadataFormat
+
+	where queryElement and queryElementValue are pairs such as:
+
+		id		ThisRegistry
+		master		http://www.astrogrid.org/8080
+		publisher	Clive Page

@@ -1,4 +1,5 @@
-package org.astrogrid.registry.services;
+package org.astrogrid.registry;
+import java.io.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
@@ -19,8 +20,13 @@ public class RegistryService {
   String serviceMetadataFormat = "";
   String basicMetadata = "";
   String curationMetadata = "";
+  String nodeDetails = "";
 
-    public String generateResponse(RegistryHandler dom, String queryElement, String queryElementValue, String returnMetadata){
+
+  boolean queryElementMatch = false;
+  boolean queryMatch = false;
+
+  public String generateResponse(RegistryHandler dom, String queryElement, String queryElementValue, String returnMetadata){
 
     Document doc = null;
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -37,6 +43,7 @@ public class RegistryService {
     }
 
       String response = "";
+      String queryResponse = "";
       String metadataFormatResponse = "";
       String basicMetadataResponse = "";
       String curationMetadataResponse = "";
@@ -51,225 +58,192 @@ public class RegistryService {
       for( int i=1;i<nl.getLength();i=i+2){
         
         Element serviceNodesParent = (Element)serviceNodes.item(i).getParentNode();
-        Node node =serviceNodesParent;
+        Node node = serviceNodesParent;
 
-        if(node.hasChildNodes()) {
+        String matchElementValue = docElement.getElementsByTagName(queryElement).item(0).getFirstChild().getNodeValue();
 
-          // get the child nodes, if they exist
-          NodeList children = node.getChildNodes();
-          if (children != null) {
+         if(node.hasChildNodes()) {
 
-
-           for (int k=1; k< children.getLength(); k=k+2) {
-             if(children.item(k).hasChildNodes()) {
-
-               NodeList childrenOfchildren = children.item(k).getChildNodes();
-
-               if (childrenOfchildren != null) {
+            // get the child nodes, if they exist
+            NodeList children = node.getChildNodes();
+            if (children != null) {
  
-                 for (int j=1; j< childrenOfchildren.getLength();j=j+2) {
-                   String childNodeName = childrenOfchildren.item(j).getNodeName();
-                   String childNodeValue = childrenOfchildren.item(j).getNodeValue();
+              boolean match = false;
+              for (int k=1; k< children.getLength(); k=k+2) {
 
-                   if ((childNodeName.equals("serviceType")) && (childrenOfchildren.item(j).getChildNodes() !=null)){
-                     metadataFormatResponse = getServiceTypeNodeDetails(childrenOfchildren.item(j));
-                   }
+                if(children.item(k).hasChildNodes()) {
+
+                  NodeList childrenOfchildren = children.item(k).getChildNodes();
+
+                  if (childrenOfchildren != null) {
+ 
+                    for (int j=1; j< childrenOfchildren.getLength();j=j+2) {
+
+                      // int queryInt = 0;
+                      String childNodeName = childrenOfchildren.item(j).getNodeName();
+                      String childNodeValue = childrenOfchildren.item(j).getNodeValue();
+
+                      if ((childNodeName.equals("serviceType")) && (childrenOfchildren.item(j).getChildNodes() !=null)){
+                        nodeDetails = "";
+                        metadataFormatResponse = metadataFormatResponse 
+                          + getNodeDetails(childrenOfchildren.item(j), queryElement, queryElementValue, matchElementValue);
+                        nodeDetails = null;
+                      }
+
   
-                   else if ((childNodeName.equals("id")) || (childNodeName.equals("title"))){
-                     basicMetadataResponse = getBasicMetadata(childrenOfchildren.item(j));
-                   }
+                      else if ((childNodeName.equals("id")) || (childNodeName.equals("title"))){
+                        nodeDetails = "";
+                        basicMetadataResponse = basicMetadataResponse
+                          + getNodeDetails(childrenOfchildren.item(j), queryElement, queryElementValue, matchElementValue);
+                        nodeDetails = null;
+                      }
 
-                   else if (!(childNodeName.equals("id")) && !(childNodeName.equals("title")) && !                     (childNodeName.equals("serviceType"))){
+                      else if (!(childNodeName.equals("id")) && !(childNodeName.equals("title")) && !                                                 (childNodeName.equals("serviceType"))){
+                        nodeDetails = "";
+                        curationMetadataResponse = curationMetadataResponse
+                          + getNodeDetails(childrenOfchildren.item(j), queryElement, queryElementValue, matchElementValue);
+                        nodeDetails = null;
+                      }
+                    }
 
-                     curationMetadataResponse = getCurationMetadata(childrenOfchildren.item(j));
-                   }
-                 }
-                 if(returnMetadata.equals("basic")) {
-                   response = response + "Basic metadata: \n" + basicMetadataResponse + "\n";
-                 }
-                 else if(returnMetadata.equals("curation")) {
-                   response = response +  "Basic metadata: \n" +basicMetadataResponse + "\n Curation metadata: \n"                                 + curationMetadataResponse + "\n";
-                 }
-                 else if(returnMetadata.equals("metadataFormat")) {
-                   response = response + "Basic metadata: \n" + basicMetadataResponse + "\n MetadataFormat: \n"                                    + metadataFormatResponse + "\n";
-                 }
 
-                 metadataFormatResponse = null;
-                 basicMetadataResponse = null;
-                 curationMetadataResponse = null;
-               }
-             }
-           }
-         }
-       }
-    }
-    return response;
-  }
+                    if(returnMetadata.equals("basic")) {
+                      response = response + "Basic metadata: \n" + basicMetadataResponse + "\n";
+                    }
+                    else if(returnMetadata.equals("curation")) {
+                      response = response +  "Basic metadata: \n" +basicMetadataResponse + "\nCuration metadata: \n"                                 + curationMetadataResponse + "\n";
+                    }
+                    else if(returnMetadata.equals("metadataFormat")) {
+                      response = response + "Basic metadata: \n" + basicMetadataResponse + "\nMetadataFormat: \n"                                    + metadataFormatResponse + "\n";
+                    }
 
-  private String getServiceTypeNodeDetails (Node node) {
+                    if (queryMatch == false) {
+                      response = "";
+                    }
 
-    String content = "";
-    int type = node.getNodeType();
+                    queryResponse = queryResponse + response; 
+                    response = "";       
+                    queryElementMatch = false;
+                    queryMatch = false;
 
-    // check if node is type element
-    if (type == Node.ELEMENT_NODE) {
-      serviceMetadataFormat = serviceMetadataFormat + "<" + node.getNodeName() + ">";
-
-    } else if (type == Node.TEXT_NODE) {
-      // check if text node and print value
-      content = node.getNodeValue();
- 
-      if (!content.trim().equals("")){
-        serviceMetadataFormat = serviceMetadataFormat + content;
+                    metadataFormatResponse = "";
+                    basicMetadataResponse = "";
+                    curationMetadataResponse = "";
+                  }
+                }
+              }
+            }
+          }
       }
-    } else if (type == Node.COMMENT_NODE) {
-      // check if comment node and print value
-      content = node.getNodeValue();
-      if (!content.trim().equals("")){
-        serviceMetadataFormat = serviceMetadataFormat + content;
-      }
+      return queryResponse;
     }
 
-    // check if current node has any children
-    NodeList children = node.getChildNodes();
-    if (children != null) {
+    private String getNodeDetails (Node node, String queryElement, String queryElementValue, String matchElementValue) {
 
-      // if it does, iterate through the collection
-      for (int m=0; m< children.getLength(); m++) {
-        TabCounter++;
-        // recursively call function to proceed to next level
-        getServiceTypeNodeDetails(children.item(m));
-        TabCounter--;
+      String content = "";
+      int type = node.getNodeType();
+
+      // check if node is type element
+      if (type == Node.ELEMENT_NODE) {
+        if ((node.getNodeName()).equals(queryElement)) {
+          queryElementMatch = true;
+        } 
+        nodeDetails = nodeDetails + "<" + node.getNodeName() + ">";
+
+      } else if (type == Node.TEXT_NODE) {
+        // check if text node and print value
+        content = node.getNodeValue();
+
+        if (!content.trim().equals("")){
+          if ((queryElementMatch == true) && ((queryElementValue.equals("all")) || (content.equals(queryElementValue)))) {
+            queryMatch = true;
+          } 
+
+          nodeDetails = nodeDetails + content;
+        }
+      } else if (type == Node.COMMENT_NODE) {
+        // check if comment node and print value
+        content = node.getNodeValue();
+        if (!content.trim().equals("")){
+          nodeDetails = nodeDetails + content;
+        }
       }
-    } 
+
+      // check if current node has any children
+      NodeList children = node.getChildNodes();
+      if (children != null) {
+
+        // if it does, iterate through the collection
+        for (int m=0; m< children.getLength(); m++) {
+          TabCounter++;
+          // recursively call function to proceed to next level
+          getNodeDetails(children.item(m), queryElement, queryElementValue, matchElementValue);
+          TabCounter--;
+        }
+      } 
     
-    if (type == Node.ELEMENT_NODE) {
-      serviceMetadataFormat = serviceMetadataFormat + "</" + node.getNodeName() + ">";
-    }     
-    return serviceMetadataFormat;
-  }
-
-private String getBasicMetadata (Node node) {
-
-    String content = "";
-    int type = node.getNodeType();
-
-    // check if node is type element
-    if (type == Node.ELEMENT_NODE) {
-      basicMetadata = basicMetadata + "<" + node.getNodeName() + ">";
-
-    } else if (type == Node.TEXT_NODE) {
-      // check if text node and print value
-      content = node.getNodeValue();
- 
-      if (!content.trim().equals("")){
-        basicMetadata = basicMetadata + content;
-      }
-    } else if (type == Node.COMMENT_NODE) {
-      // check if comment node and print value
-      content = node.getNodeValue();
-      if (!content.trim().equals("")){
-        basicMetadata = basicMetadata + content;
-      }
+      if (type == Node.ELEMENT_NODE) {
+        nodeDetails = nodeDetails + "</" + node.getNodeName() + ">";
+      }     
+      return nodeDetails;
     }
-
-    // check if current node has any children
-    NodeList children = node.getChildNodes();
-    if (children != null) {
-
-      // if it does, iterate through the collection
-      for (int m=0; m< children.getLength(); m++) {
-        TabCounter++;
-        // recursively call function to proceed to next level
-        getBasicMetadata(children.item(m));
-        TabCounter--;
-      }
-    } 
-  
-    if (type == Node.ELEMENT_NODE) {
-      basicMetadata = basicMetadata + "</" + node.getNodeName() + ">";
-    }     
-    return basicMetadata;
-  }
-private String getCurationMetadata (Node node) {
-
-    String content = "";
-    int type = node.getNodeType();
-
-    // check if node is type element
-    if (type == Node.ELEMENT_NODE) {
-      curationMetadata = curationMetadata + "<" + node.getNodeName() + ">";
-
-    } else if (type == Node.TEXT_NODE) {
-      // check if text node and print value
-      content = node.getNodeValue();
- 
-      if (!content.trim().equals("")){
-        curationMetadata = curationMetadata + content;
-      }
-    } else if (type == Node.COMMENT_NODE) {
-      // check if comment node and print value
-      content = node.getNodeValue();
-      if (!content.trim().equals("")){
-        curationMetadata = curationMetadata + content;
-      }
-    }
-
-    // check if current node has any children
-    NodeList children = node.getChildNodes();
-    if (children != null) {
-
-      // if it does, iterate through the collection
-      for (int m=0; m< children.getLength(); m++) {
-        TabCounter++;
-        // recursively call function to proceed to next level
-        getCurationMetadata(children.item(m));
-        TabCounter--;
-      }
-    } 
-  
-    if (type == Node.ELEMENT_NODE) {
-      curationMetadata = curationMetadata + "</" + node.getNodeName() + ">";
-    }     
-    return curationMetadata;
+   
   }
 
-}
+  public String serviceMethod(String query) {
 
-  public static void main(String args[]) {
 
-    if (args.length != 1){
-      System.out.println("Usage: java org.astrogrid.registry.services.RegistryService <methodName>");
+    System.out.println("Got to service Method!  \n\n");
+
+  //public static void main(String args[]) {
+
+/*
+    if (args.length != 3){
+      System.out.println("Usage: java org.astrogrid.registry.services.RegistryService <methodName> <queryElement> "
+        + "<queryElementValue>");
       System.exit(0);
     }
-
-    String queryElement = "id";
-    String queryElementValue = "all";
-    String response = "";
+*/
+/*
     String methodName = args[0];
+    String queryElement = args[1];
+    String queryElementValue = args[2];
+    String response = "";
+*/
 
-    RegistryService rs2 = new RegistryService();
+    String methodName = query.substring(query.indexOf("*"), query.indexOf("|"));
+    String queryElement = query.substring(query.indexOf("|"), query.indexOf("$"));
+    String queryElementValue = query.substring(query.indexOf("$"), query.indexOf("!"));
+    String response = "";
+
+    System.out.println("methodName: "+methodName + "\n\n");
+    System.out.println("queryElement: "+queryElement + "\n\n");
+    System.out.println("queryValue: "+queryElementValue + "\n\n");
+
+
+    RegistryService rs = new RegistryService();
     
     if (methodName.equals("queryServices")){
-      response = rs2.queryServices(queryElement, queryElementValue);
+      response = rs.queryServices(queryElement, queryElementValue);
     }
     else if (methodName.equals("listRegistryMetadata")){
-      response = rs2.listRegistryMetadata();
+      response = rs.listRegistryMetadata(queryElement, queryElementValue);
     }
     else if (methodName.equals("listAllServices")){
-      response = rs2.listAllServices();
+      response = rs.listAllServices(queryElement, queryElementValue);
     }
     else if (methodName.equals("listServiceMetadata")){
-      response = rs2.listServiceMetadata(queryElement, queryElementValue);
+      response = rs.listServiceMetadata(queryElement, queryElementValue);
     }
     else if (methodName.equals("listServiceMetadataFormat")){
-      response = rs2.listServiceMetadataFormat(queryElement, queryElementValue);
+      response = rs.listServiceMetadataFormat(queryElement, queryElementValue);
     }
     else {
       response = "Usage: java org.astrogrid.registry.services.RegistryService <methodName>";
     }
 
-    System.out.println("\n\n" + response);
+    // System.out.println(response);
+    return response;
   }
  
 
@@ -285,9 +259,7 @@ private String getCurationMetadata (Node node) {
 
   /** Method listRegistryMetadata finds the service entry for this registry. Searches can be done for a registry whose             service entry contains an element that matches a specific value.  The method returns curation service metadata.  **/
 
-  public String listRegistryMetadata() {
-    String queryElement = "id";
-    String queryElementValue = "all";
+  public String listRegistryMetadata(String queryElement, String queryElementValue) {
     String returnMetadata = "curation";
     RegistryHandler dom = new RegistryHandler();
     String response = dom.generateResponse(dom, queryElement, queryElementValue, returnMetadata);
@@ -296,9 +268,7 @@ private String getCurationMetadata (Node node) {
 
   /** Method listAllServices finds all services with a registry entry.  The method returns basic service metadata.  **/
 
-  public String listAllServices() {
-    String queryElement = "id";
-    String queryElementValue = "all";
+  public String listAllServices(String queryElement, String queryElementValue) {
     String returnMetadata = "basic";
     RegistryHandler dom = new RegistryHandler();
     String response = dom.generateResponse(dom, queryElement, queryElementValue, returnMetadata);
