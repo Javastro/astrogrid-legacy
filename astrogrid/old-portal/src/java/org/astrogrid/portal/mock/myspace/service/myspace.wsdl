@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+	targetNamespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"
+	xmlns:impl="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"
+	xmlns:intf="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"
+	xmlns:apachesoap="http://xml.apache.org/xml-soap"
+	xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:tns2="http://www.w3.org/2002/12/soap-encoding"
+	xmlns:tns1="http://service.myspace.mock.portal.astrogrid.org"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/"
+	>
+	<wsdl:types>
+		<schema
+			xmlns="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://service.myspace.mock.portal.astrogrid.org"
+			>
+			<import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+			<complexType name="MySpaceItem">
+				<sequence>
+					<element name="ident" nillable="true" type="xsd:string"/>
+					<element name="name" nillable="true" type="xsd:string"/>
+					<element name="path" nillable="true" type="xsd:string"/>
+				</sequence>
+			</complexType>
+		</schema>
+		<schema
+			xmlns="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://www.w3.org/2002/12/soap-encoding"
+			>
+			<import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+			<complexType name="Array">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType=""/>
+					</restriction>
+				</complexContent>
+			</complexType>
+		</schema>
+	</wsdl:types>
+
+	<wsdl:message name="doNothingResponse">
+	</wsdl:message>
+
+	<wsdl:message name="getItemRequest">
+		<wsdl:part name="ident" type="xsd:string"/>
+	</wsdl:message>
+
+	<wsdl:message name="findItemsResponse">
+		<wsdl:part name="findItemsReturn" type="tns2:Array"/>
+	</wsdl:message>
+
+	<wsdl:message name="doNothingRequest">
+	</wsdl:message>
+
+	<wsdl:message name="findItemsRequest">
+		<wsdl:part name="path" type="xsd:string"/>
+	</wsdl:message>
+
+	<wsdl:message name="getItemResponse">
+		<wsdl:part name="getItemReturn" type="tns1:MySpaceItem"/>
+	</wsdl:message>
+
+	<wsdl:portType name="MySpaceService">
+		<wsdl:operation name="getItem" parameterOrder="ident">
+			<wsdl:input name="getItemRequest" message="impl:getItemRequest"/>
+			<wsdl:output name="getItemResponse" message="impl:getItemResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="doNothing">
+			<wsdl:input name="doNothingRequest" message="impl:doNothingRequest"/>
+			<wsdl:output name="doNothingResponse" message="impl:doNothingResponse"/>
+		</wsdl:operation>
+		<wsdl:operation name="findItems" parameterOrder="path">
+			<wsdl:input name="findItemsRequest" message="impl:findItemsRequest"/>
+			<wsdl:output name="findItemsResponse" message="impl:findItemsResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+
+<wsdl:binding name="myspaceSoapBinding" type="impl:MySpaceService">
+	<wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="getItem">
+			<wsdlsoap:operation soapAction=""/>
+				<wsdl:input name="getItemRequest">
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+			</wsdl:input>
+			<wsdl:output name="getItemResponse">
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="doNothing">
+			<wsdlsoap:operation soapAction=""/>
+				<wsdl:input name="doNothingRequest">
+					<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+				</wsdl:input>
+			<wsdl:output name="doNothingResponse">
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="findItems">
+			<wsdlsoap:operation soapAction=""/>
+			<wsdl:input name="findItemsRequest">
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+			</wsdl:input>
+			<wsdl:output name="findItemsResponse">
+				<wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="MySpaceServiceService">
+		<wsdl:port name="myspace" binding="impl:myspaceSoapBinding">
+			<wsdlsoap:address location="http://methionine.codon.demon.co.uk:8080/axis/services/myspace"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

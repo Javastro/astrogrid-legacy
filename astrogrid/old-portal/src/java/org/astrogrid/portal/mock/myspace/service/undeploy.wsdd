@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!--
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/src/java/org/astrogrid/portal/mock/myspace/service/Attic/undeploy.wsdd,v $</cvs:source>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/06/09 13:33:33 $</cvs:author>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    | $Log: undeploy.wsdd,v $
+    | Revision 1.1  2003/06/09 13:33:33  dave
+    | Fixed bad directory structure
+    |
+    | Revision 1.1  2003/06/09 10:20:50  dave
+    | Added Axis integration tests
+    |
+    | </cvs:log>
+    |
+    |
+    +-->
+
+<undeployment name="test"
+	xmlns="http://xml.apache.org/axis/wsdd/"
+	>
+	<service name="myspace"/>
+</undeployment>
