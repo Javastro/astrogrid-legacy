@@ -234,13 +234,14 @@
           | View workflow
           +-->   
       <xsl:template name="view_workflow">
-         <form name="view_form" action="">               
+         <form name="view_form" method="get">               
             <table cellpadding="0" cellspacing="0">                      
                <p />                                     
                <tr>
                   <td>Job Name:</td>
-                  <td><input type="text" name="workflow-name" disabled="true" /></td>
+                  <td><input type="text" name="workflow-name" /></td>
                   <td><input type="submit" value="View" /></td>
+                  <input type="hidden" name="action" value="read-workflow" />
                </tr>                                                              
             </table> 
          </form>
@@ -257,7 +258,7 @@
                   <td>Job Name:</td>
                   <td><input type="text" name="workflow-name" /></td>
                   <td><input type="submit" value="Delete" /></td>
-                  <input type="hidden" name="action" value="delete-workflow"/>
+                  <input type="hidden" name="action" value="delete-workflow" />
                </tr>                                                              
             </table> 
          </form>
