@@ -57,7 +57,7 @@ public class MySpaceManagerClient
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			System.err.println("Exception caught: " + e);
+			System.err.println("Exception caught in main: " + e);
 		}
 	}
 	private static String invokeUpload(){
@@ -66,23 +66,23 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
-					"<mySpaceAction>upLoad</mySpaceAction>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //
+					"<mySpaceAction>upLoad</mySpaceAction>" + 
 					"<dataItemID></dataItemID>" +
-					"<oldDataItemID>10</oldDataItemID>" +
-					"<newDataItemName>xx</newDataItemName>" +
-					"<newContainerName>x</newContainerName>" +
-					"<query>x</query>" +
-					"<newDataHolderName>/clq/serv2/table100</newDataHolderName>" +
-					"<serverFileName>/tmp/test</serverFileName>" +
-					"<fileSize>1</fileSize>" +
+					"<oldDataItemID></oldDataItemID>" +
+					"<newDataItemName></newDataItemName>" +
+					"<newContainerName</newContainerName>" +
+					"<query></query>" +
+					"<newDataHolderName>/clq/serv2/tablexx</newDataHolderName>" + //Mandatory
+					"<serverFileName>/tmp/test</serverFileName>" + //Mandatory
+					"<fileSize>1</fileSize>" + //Mandatory
 				"</elements>" +
 			"</request>"; 
-			call = createcall();
-			call.setOperationName( "upLoad" );
 			
+			call = createcall();
+			call.setOperationName( "upLoad" );		
 			call.addParameter("arg0", XMLType.XSD_STRING, ParameterMode.IN);
 			
 			call.setReturnType( org.apache.axis.encoding.XMLType.XSD_STRING);
@@ -96,8 +96,8 @@ public class MySpaceManagerClient
 
 		catch (Exception e)
 		{
-			e.printStackTrace();
-			System.err.println("Exception caught: " + e);
+			//e.printStackTrace();
+			System.err.println("Exception caught upload: " + e);
 		}
 		return b;
 	}
@@ -108,15 +108,15 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
-					"<mySpaceAction>upLoad</mySpaceAction>" +
-					"<dataItemID>10</dataItemID>" +
-					"<oldDataItemID>10</oldDataItemID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //Mandatory
+					"<mySpaceAction>lookupDataHoldersDetails</mySpaceAction>" + 
+					"<dataItemID></dataItemID>" +
+					"<oldDataItemID></oldDataItemID>" +
 					"<newDataItemName>xx</newDataItemName>" +
 					"<newContainerName>x</newContainerName>" +
-					"<query>/clq*</query>" +
+					"<query>*</query>" + //Mandatory
 					"<newDataHolderName>x</newDataHolderName>" +
 					"<serverFileName>x</serverFileName>" +
 					"<fileSize>x</fileSize>" +
@@ -140,23 +140,6 @@ public class MySpaceManagerClient
 		}
 		return b;
 	}
-		
-	
-	private static Call createcall(){
-		org.apache.axis.client.Call call = null;
-		try{
-			//String endpoint  = "http://localhost:8080/axis/services/MySpaceManager";
-			String endpoint  = "http://hydra:8080/axis/services/MySpaceManager";
-			
-			Service service = new Service();
-			call = (Call)service.createCall();
-			call.setTargetEndpointAddress( new java.net.URL(endpoint) );
-		}catch(Exception e){
-			e.printStackTrace();
-			System.err.println("Exception caught: " + e);
-		}
-		return call;		
-	}
 	
 	private static String invokeCopy(){
 		String b = "";
@@ -164,17 +147,17 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //Mandatory
 					"<mySpaceAction>copyDataHolder</mySpaceAction>" +
 					"<dataItemID> </dataItemID>" +
 					"<oldDataItemID>0</oldDataItemID>" +
-					"<newDataItemName>/clq/serv2/table37</newDataItemName>" + //destenation of copying eg./clq/serv2/table23
+					"<newDataItemName>/clq/serv2/table37</newDataItemName>" + //Mandatory //destenation of copying eg./clq/serv2/table23
 					"<newContainerName>x</newContainerName>" +
 					"<query>x</query>" +
 					"<newDataHolderName>xx</newDataHolderName>" +
-					"<serverFileName>/clq/serv1/table5</serverFileName>" +
+					"<serverFileName>/clq/serv1/table5</serverFileName>" + //Mandatory //copy from directory
 					"<fileSize>1</fileSize>" +
 				"</elements>" +
 			"</request>"; 
@@ -203,9 +186,9 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt10</jobID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt10</jobID>" + //Mandatory
 					"<mySpaceAction>deleteDataHolder</mySpaceAction>" +
 					"<dataItemID></dataItemID>" +
 					"<oldDataItemID></oldDataItemID>" +
@@ -213,8 +196,8 @@ public class MySpaceManagerClient
 					"<newContainerName>x</newContainerName>" +
 					"<query>x</query>" +
 					"<newDataHolderName>xx</newDataHolderName>" +
-					"<serverFileName>/clq/serv2/table26</serverFileName>" + //file that will be deleted
-					"<fileSize>1</fileSize>" +
+					"<serverFileName>/clq/serv2/table26</serverFileName>" + //Mandatory //file that will be deleted
+					"<fileSize></fileSize>" +
 				"</elements>" +
 			"</request>"; 
 			call = createcall();
@@ -245,17 +228,17 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //Mandatory
 					"<mySpaceAction>copyDataHolder</mySpaceAction>" +
 					"<dataItemID> </dataItemID>" +
 					"<oldDataItemID>0</oldDataItemID>" +
-					"<newDataItemName>/clq/serv2/table304</newDataItemName>" + //destenation of moving eg./clq/serv2/table23
+					"<newDataItemName>/clq/serv2/table304</newDataItemName>" + //Mandatory //destenation of moving eg./clq/serv2/table23
 					"<newContainerName>x</newContainerName>" +
 					"<query>x</query>" +
 					"<newDataHolderName>xx</newDataHolderName>" +
-					"<serverFileName>/clq/serv2/table303</serverFileName>" + // from
+					"<serverFileName>/clq/serv2/table303</serverFileName>" + //Mandatory // move from
 					"<fileSize>1</fileSize>" +
 				"</elements>" +
 			"</request>"; 
@@ -285,9 +268,9 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //Mandatory
 					"<mySpaceAction>lookupDataHolderDetails</mySpaceAction>" +
 					"<dataItemID></dataItemID>" +
 					"<oldDataItemID></oldDataItemID>" +
@@ -295,7 +278,7 @@ public class MySpaceManagerClient
 					"<newContainerName>x</newContainerName>" +
 					"<query>x</query>" +
 					"<newDataHolderName>xx</newDataHolderName>" +
-					"<serverFileName>/clq/serv2/</serverFileName>" + // dataholer need to look up
+					"<serverFileName>/clq/serv2/</serverFileName>" + //Mandatory // dataholer need to look up
 					"<fileSize></fileSize>" +
 				"</elements>" +
 			"</request>"; 
@@ -324,9 +307,9 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //Mandatory
 					"<mySpaceAction>exportDataHolder</mySpaceAction>" +
 					"<dataItemID></dataItemID>" +
 					"<oldDataItemID></oldDataItemID>" +
@@ -334,7 +317,7 @@ public class MySpaceManagerClient
 					"<newContainerName>x</newContainerName>" +
 					"<query>x</query>" +
 					"<newDataHolderName>xx</newDataHolderName>" +
-					"<serverFileName>/clq/serv2/table100</serverFileName>" + // dataholer need to export
+					"<serverFileName>/clq/serv2/tablex</serverFileName>" + //Mandatory // dataholer need to export
 					"<fileSize></fileSize>" +
 				"</elements>" +
 			"</request>"; 
@@ -362,14 +345,14 @@ public class MySpaceManagerClient
 			String request ="<?xml version='1.0' encoding='UTF-8'?>" +
 			"<request>" +
 				"<elements>" +
-					"<userID>clq</userID>" +
-					"<communityID>Leicester</communityID>" +
-					"<jobID>testIDIt2</jobID>" +
+					"<userID>clq</userID>" + //Mandatory
+					"<communityID>Leicester</communityID>" + //Mandatory
+					"<jobID>testIDIt2</jobID>" + //Mandatory
 					"<mySpaceAction>createContainer</mySpaceAction>" +
 					"<dataItemID></dataItemID>" +
 					"<oldDataItemID></oldDataItemID>" +
 					"<newDataItemName></newDataItemName>" + 
-					"<newContainerName>/clq/serv1/aaa</newContainerName>" +
+					"<newContainerName>/clq/serv1/aaa</newContainerName>" + //Mandatory
 					"<query>x</query>" +
 					"<newDataHolderName>xx</newDataHolderName>" +
 					"<serverFileName></serverFileName>" + 
@@ -392,5 +375,21 @@ public class MySpaceManagerClient
 			System.err.println("Exception caught: " + e);
 		}
 		return b;		
+	}	
+
+	private static Call createcall(){
+		org.apache.axis.client.Call call = null;
+		try{
+			String endpoint  = "http://localhost:8080/axis/services/MySpaceManager";
+			//String endpoint  = "http://hydra:8080/axis/services/MySpaceManager";
+			
+			Service service = new Service();
+			call = (Call)service.createCall();
+			call.setTargetEndpointAddress( new java.net.URL(endpoint) );
+		}catch(Exception e){
+			//e.printStackTrace();
+			System.err.println("Exception caught in create call: " + e);
+		}
+		return call;		
 	}	
 }
