@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
-    | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2004/08/27 12:35:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.xml,v $
+    |   Revision 1.9  2004/09/02 10:25:41  dave
+    |   Updated FileStore and MySpace to handle mime type and file size.
+    |   Updated Community deployment script.
+    |
+    |   Revision 1.8.2.1  2004/09/01 03:03:13  dave
+    |   Removed beta test account from localhost data.
+    |
     |   Revision 1.8  2004/08/27 12:35:15  clq2
     |   added guy
     |
@@ -73,12 +80,6 @@
             <description>Astrogrid demonstrator</description>
             <email>nic@mail.astrogrid.org</email>
         </account>
-		<account ident="ivo://org.astrogrid.betatest/guyrixon">
-            <display>Guy Rixon</display>
-            <description>Astrogrid demonstrator</description>
-            <email>guyrixon@mail.astrogrid.org</email>
-        </account>
-
     </accounts>
     <!--+
         | The community Groups.
@@ -119,7 +120,6 @@
         <password account="ivo://org.astrogrid.localhost/andy"   password="qwerty"/>
         <password account="ivo://org.astrogrid.localhost/tony"   password="qwerty"/>
         <password account="ivo://org.astrogrid.localhost/nic"    password="qwerty"/>
-		<password account="ivo://org.astrogrid.betatest/guyrixon"  password="qwerty"/>
     </passwords>
 
 </community>

@@ -229,6 +229,7 @@ public class Actions
                          dataItemFileName,
                          null,
                          null,
+                         null,
                          account,
                          creation,
                          creation,
@@ -528,6 +529,7 @@ ouch.printStackTrace() ;
                          newDataItemName,
                          newdataItemID,
                          dataItemFileName,
+                         null,
                          null,
                          null,
                          account,
@@ -1024,6 +1026,7 @@ ouch.printStackTrace() ;
                       dataItemFileName,
                       null,
                       null,
+                      null,
                       account,
                       creation,
                       creation,
@@ -1124,8 +1127,9 @@ ouch.printStackTrace() ;
                         int newdataItemID = -1;
                         String dataItemFileName = "";
 
-                        int  dataItemType = oldDataItem.getType();
-                        long dataItemSize = oldDataItem.getSize();
+                        String dataItemMime = oldDataItem.getDataItemMime();
+                        int    dataItemType = oldDataItem.getType();
+                        long   dataItemSize = oldDataItem.getSize();
 
                         DataItemRecord newDataItem = new DataItemRecord(
                             newDataItemName,
@@ -1133,6 +1137,7 @@ ouch.printStackTrace() ;
                             dataItemFileName,
                             null,
                             null,
+                            dataItemMime,
                             account,
                             creation,
                             creation,
@@ -1408,6 +1413,7 @@ System.out.println("FROG : Exception - " + ouch) ;
 
                         String dataItemUrl   = oldDataItem.getDataItemUri();
                         String dataItemIvorn = oldDataItem.getDataItemIvorn();
+                        String dataItemMime  = oldDataItem.getDataItemMime();
 
 
                         DataItemRecord newDataItem = new DataItemRecord(
@@ -1416,6 +1422,7 @@ System.out.println("FROG : Exception - " + ouch) ;
                             dataItemFileName,
                             dataItemUrl,
                             dataItemIvorn,
+                            dataItemMime,
                             account,
                             creation,
                             expiry,
@@ -1804,6 +1811,7 @@ System.out.println("Done ....") ;
                             dataItemID,
                             "none",
                             "sysadmin",
+                            null,
                             null,
                             null,
                             creation,

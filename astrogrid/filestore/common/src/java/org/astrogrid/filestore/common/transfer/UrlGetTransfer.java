@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/transfer/UrlGetTransfer.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: UrlGetTransfer.java,v $
+ *   Revision 1.3  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.2.46.1  2004/09/01 02:58:07  dave
+ *   Updated to use external mime type for imported files.
+ *
  *   Revision 1.2  2004/07/21 18:11:55  dave
  *   Merged development branch, dave-dev-200407201059, into HEAD
  *
@@ -23,6 +30,9 @@
 package org.astrogrid.filestore.common.transfer ;
 
 import java.net.URL ;
+
+import org.astrogrid.filestore.common.file.FileProperty ;
+import org.astrogrid.filestore.common.file.FileProperties ;
 
 import org.astrogrid.filestore.common.identifier.UniqueIdentifier ;
 
@@ -47,10 +57,36 @@ public class UrlGetTransfer
 	 */
 	public UrlGetTransfer(URL url)
 		{
+		this(url, (FileProperty[]) null) ;
+		}
+
+	/**
+	 * Create a new URL transfer.
+	 * @param url The transfer source.
+	 * @param properties The properties for the file to transfer
+	 *
+	 */
+	public UrlGetTransfer(URL url, FileProperties properties)
+		{
+		this(
+			url,
+			(null != properties) ? properties.toArray() : (FileProperty[]) null
+			) ;
+		}
+
+	/**
+	 * Create a new URL transfer.
+	 * @param url The transfer source.
+	 * @param properties The properties for the file to transfer
+	 *
+	 */
+	public UrlGetTransfer(URL url, FileProperty[] properties)
+		{
 		//
-		// Initialise our ident.
+		// Initialise our base class.
 		super(
-			new UniqueIdentifier()
+			new UniqueIdentifier(),
+			properties
 			) ;
 		//
 		// Check for a null url.
@@ -61,7 +97,7 @@ public class UrlGetTransfer
 				) ;
 			}
 		//
-		// Set our properties.
+		// Set our transfer properties.
 		this.setSource(url.toString()) ;
 		this.setMethod(TRANSFER_METHOD) ;
 		this.setProtocol(url.getProtocol()) ;

@@ -65,6 +65,7 @@ public class DataItemRecord implements Serializable
    private String dataItemFile;     // Corresponding server file name.
    private String dataItemUri;      // URI to access the file.
    private String dataItemIvorn;    // Ivorn to access the file.
+   private String dataItemMime;     // The file mime type.
    private String ownerID;          // Owner's identifier.
    private Date   creationDate;     // Creation date.
    private Date   expiryDate;       // Expiry date.
@@ -105,6 +106,7 @@ public class DataItemRecord implements Serializable
 		String dataItemFile,
 		String dataItemUri,
 		String dataItemIvorn,
+		String dataItemMime,
 		String ownerID,
 		Date creationDate,
 		Date expiryDate,
@@ -117,6 +119,7 @@ public class DataItemRecord implements Serializable
 		this.dataItemFile = dataItemFile;
 		this.dataItemUri = dataItemUri;
 		this.dataItemIvorn = dataItemIvorn;
+		this.dataItemMime = dataItemMime;
 		this.ownerID = ownerID;
 		this.creationDate = creationDate;
 		this.expiryDate = expiryDate;
@@ -145,6 +148,14 @@ public class DataItemRecord implements Serializable
 		}
 
 // ----------------------------------------------------------------------
+
+/**
+ * Set the data item name.
+ *
+ */
+   public void setDataItemName(String name)
+   {  this.dataItemName = name;
+   }
 
 /**
  * Set the URI name corresponding to the <code>DataHolder</code>
@@ -194,6 +205,15 @@ public class DataItemRecord implements Serializable
  */
    protected void setSize(long size)
    {  this.size = size;
+   }
+
+/**
+ * Set the data item mime type.
+ *
+ */
+   public void setDataItemMime(String mime)
+   {
+   this.dataItemMime = mime ;
    }
 
 // ----------------------------------------------------------------------
@@ -317,6 +337,16 @@ public class DataItemRecord implements Serializable
    }
 
 /**
+ * Get the data item mime type.
+ *
+ */
+   public String getDataItemMime()
+   {
+   return this.dataItemMime;
+   }
+
+
+/**
  * Return an EntryResults object constructed from the DataItemRecord.
  */
 
@@ -335,6 +365,7 @@ public class DataItemRecord implements Serializable
       entryResult.setPermissionsMask(permissionsMask);
       entryResult.setSize(size);
       entryResult.setType(type);
+      entryResult.setMime(dataItemMime);
 
       return entryResult;
    }

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.88 2004/09/01 11:49:04 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.89 2004/09/02 10:25:41 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -100,7 +100,7 @@
         <sleep seconds="4" />
         <attainGoal name="pal-sec-deploy" />
         <sleep seconds="4" />
-            <attainGoal name="pal-cds-deploy" />
+        <attainGoal name="pal-cds-deploy" />
         <sleep seconds="2" />
         <attainGoal name="community-deploy"/>
         <sleep seconds="2" />
@@ -122,7 +122,7 @@
         <attainGoal name="pal-undeploy" />
         <attainGoal name="pal-fits-undeploy" />
         <attainGoal name="pal-sec-undeploy" />
-                <attainGoal name="pal-cds-undeploy" />
+        <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
 </goal>
@@ -232,18 +232,18 @@
 </goal>
 
 <goal name="setup-filestore" description="filestore setup">
-        <echo>Configuring test data and repository for filestore one ....</echo>
-        <mkdir dir="${work.dir}/filestore-one/repository"/>
-        <mkdir dir="${work.dir}/filestore-one/data"/>
-        <copy todir="${work.dir}/filestore-one/data">
-                <fileset dir="work/filestore/data"/>
-        </copy>
-        <echo>Configuring test data and repository for filestore two ....</echo>
-        <mkdir dir="${work.dir}/filestore-two/repository"/>
-        <mkdir dir="${work.dir}/filestore-two/data"/>
-        <copy todir="${work.dir}/filestore-two/data">
-                <fileset dir="work/filestore/data"/>
-        </copy>
+    <echo>Configuring test data and repository for filestore one ....</echo>
+    <mkdir dir="${work.dir}/filestore-one/repository"/>
+    <mkdir dir="${work.dir}/filestore-one/data"/>
+    <copy todir="${work.dir}/filestore-one/data">
+        <fileset dir="work/filestore/data"/>
+    </copy>
+    <echo>Configuring test data and repository for filestore two ....</echo>
+    <mkdir dir="${work.dir}/filestore-two/repository"/>
+    <mkdir dir="${work.dir}/filestore-two/data"/>
+    <copy todir="${work.dir}/filestore-two/data">
+        <fileset dir="work/filestore/data"/>
+    </copy>
 </goal>
 
 <goal name="setup-community" description="Community setup">
@@ -326,108 +326,109 @@
     | Unpack our Community install toolkit.
     +-->
 <goal name="community-toolkit">
-        <echo message=""/>
-        <echo message="Installing community toolkit ...."/>
-        <!--+
-            | Unpack our toolkit.
-            +-->
-        <unzip src="${temporary.dir}/astrogrid-community-install-${pom.currentVersion}.zip" dest="${temporary.dir}/community"/>
-        <!--+
-            | Set the community ident.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.community.ident"
-                value="${registry.authorityid}"/>
-        </propertyfile>
+    <echo message=""/>
+    <echo message="Installing community toolkit ...."/>
+    <!--+
+        | Create our toolkit directory.
+        +-->
+    <mkdir dir="${temporary.dir}/community"/>
+    <mkdir dir="${temporary.dir}/community/toolkit"/>
+    <!--+
+        | Unpack our toolkit.
+        +-->
+    <unzip src="${temporary.dir}/astrogrid-community-install-${pom.currentVersion}.zip" dest="${temporary.dir}/community/toolkit"/>
+    <!--+
+        | Set the community ident.
+        +-->
+    <propertyfile
+        file="${temporary.dir}/community/toolkit/install.properties">
+        <entry key="org.astrogrid.community.ident"
+            value="${registry.authorityid}"/>
+    </propertyfile>
 </goal>
 
 <!--+
     | Initialise our Community database.
     +-->
 <goal name="community-database">
-        <echo message=""/>
-        <echo message="Installing community database ...."/>
-        <!--+
-            | Wait for our service to respond.
-            +-->
-        <attainGoal name="community-wait"/>
-        <!--+
-            | Reset our database tables.
-            +-->
-        <j:catch>
-        <ant
-            target="database.reset"
-            dir="${temporary.dir}/community"
-            antfile="${temporary.dir}/community/install.xml"
-            />
-        </j:catch>
-        <!--+
-            | Load our database tables.
-            +-->
-        <j:catch>
-        <ant
-            target="database.load"
-            dir="${temporary.dir}/community"
-            antfile="${temporary.dir}/community/install.xml"
-            />
-         </j:catch>
+    <echo message=""/>
+    <echo message="Installing community database ...."/>
+    <!--+
+        | Wait for our service to respond.
+        +-->
+    <attainGoal name="community-wait"/>
+    <!--+
+        | Reset our database tables.
+        +-->
+    <ant
+        target="database.reset"
+        dir="${temporary.dir}/community/toolkit"
+        antfile="${temporary.dir}/community/toolkit/install.xml"
+        />
+    <!--+
+        | Load our database tables.
+        +-->
+    <ant
+        target="database.load"
+        dir="${temporary.dir}/community/toolkit"
+        antfile="${temporary.dir}/community/toolkit/install.xml"
+        />
 </goal>
 
 <!--+
     | Register the Community.
     +-->
 <goal name="community-register">
-        <echo message=""/>
-        <echo message="Registering community service ...."/>
-        <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-        <echo message=""/>
-        <!--+
-            | Set the community ident.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.community.ident"
-                value="${registry.authorityid}"/>
-        </propertyfile>
-        <!--+
-            | Set the registry endpoint.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.registry.url"
-                value="${tomcat.url}//astrogrid-registry-${pom.currentVersion}/services/Registry"/>
-        </propertyfile>
-        <!--+
-            | Set the registry admin endpoint.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="org.astrogrid.registry.admin"
-                value="${tomcat.url}//astrogrid-registry-${pom.currentVersion}/services/RegistryUpdate"/>
-        </propertyfile>
-        <!--+
-            | Set the local hostname.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/install.properties">
-            <entry key="service.host"
-                value="${tomcat.host}"/>
-        </propertyfile>
-        <!--+
-            | Wait for our service to respond.
-            +-->
-        <attainGoal name="community-wait"/>
-        <!--+
-            | Register our service.
-            +-->
-        <j:catch>
-        <ant
-            target="service.register"
-            dir="${temporary.dir}/community"
-            antfile="${temporary.dir}/community/install.xml"
-            />
-         </j:catch>
+    <echo message=""/>
+    <echo message="Registering community service ...."/>
+    <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+    <echo message=""/>
+    <!--+
+        | Set the community ident.
+        +-->
+    <propertyfile
+        file="${temporary.dir}/community/toolkit/install.properties">
+        <entry key="org.astrogrid.community.ident"
+            value="${registry.authorityid}"/>
+    </propertyfile>
+    <!--+
+        | Set the registry endpoint.
+        +-->
+    <propertyfile
+        file="${temporary.dir}/community/toolkit/install.properties">
+        <entry key="org.astrogrid.registry.url"
+            value="${tomcat.url}//astrogrid-registry-${pom.currentVersion}/services/Registry"/>
+    </propertyfile>
+    <!--+
+        | Set the registry admin endpoint.
+        +-->
+    <propertyfile
+        file="${temporary.dir}/community/toolkit/install.properties">
+        <entry key="org.astrogrid.registry.admin"
+            value="${tomcat.url}//astrogrid-registry-${pom.currentVersion}/services/RegistryUpdate"/>
+    </propertyfile>
+    <!--+
+        | Set the local hostname.
+        +-->
+    <propertyfile
+        file="${temporary.dir}/community/toolkit/install.properties">
+        <entry key="service.host"
+            value="${tomcat.host}"/>
+    </propertyfile>
+    <!--+
+        | Wait for our service to respond.
+        +-->
+    <attainGoal name="community-wait"/>
+    <!--+
+        | Register our service.
+        +-->
+    <j:catch>
+	    <ant
+	        target="service.register"
+	        dir="${temporary.dir}/community/toolkit"
+	        antfile="${temporary.dir}/community/toolkit/install.xml"
+	        />
+    </j:catch>
 </goal>
 <!--+
     | Wait for the Community service to respond.
@@ -599,57 +600,55 @@
 </goal>
 
 <goal name="filestore-deploy">
-        <!--+
-                | Deploy filestore one.
-                +-->
-        <j:set var="filestore.name" value="filestore-one"/>
-        <attainGoal name="filestore-deploy-sub"/>
-        <!--+
-                | Deploy filestore two.
-                +-->
-        <j:set var="filestore.name" value="filestore-two"/>
-        <attainGoal name="filestore-deploy-sub"/>
+    <!--+
+        | Deploy filestore one.
+        +-->
+    <j:set var="filestore.name" value="filestore-one"/>
+    <attainGoal name="filestore-deploy-sub"/>
+    <!--+
+        | Deploy filestore two.
+        +-->
+    <j:set var="filestore.name" value="filestore-two"/>
+    <attainGoal name="filestore-deploy-sub"/>
 </goal>
 
 <goal name="filestore-deploy-sub">
-        <echo>Deploying ${filestore.name} ....</echo>
-        <!--+
-                | Setup the params.
-                +-->
-        <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
-        <filter token="FILESTORE_NAME"   value="${filestore.name}"/>
-        <filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
-        <!--+
-                | Make a copy of the war file.
-                +-->
-        <copy filtering="false"
-                file="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"
-                toFile="${temporary.dir}/${filestore.webapp}.war"
-                />
-        <!--+
-                | Copy the context file.
-                +-->
-        <copy todir="${temporary.dir}/${filestore.name}" filtering="true">
-                <fileset dir="contexts/filestore"/>
-        </copy>
-        <!--+
-                | Update the war file.
-                +-->
-        <war update="true" destfile="${temporary.dir}/${filestore.webapp}.war">
-                <metainf dir="${temporary.dir}/${filestore.name}"/>
-        </war>
-        <!--+
-                | Deploy the war file into Tomcat.
-                +-->
-        <j:catch>
-                <tomcat-deploy
-                        url="${tomcat.manager.url}"
-                        username="${tomcat.manager.username}"
-                        password="${tomcat.manager.password}"
-                        path="/${filestore.webapp}"
-                        war="file:///${temporary.dir}/${filestore.webapp}.war"
-                        />
-        </j:catch>
+    <echo>Deploying ${filestore.name} ....</echo>
+    <!--+
+        | Setup the params.
+        +-->
+    <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
+    <filter token="FILESTORE_NAME"   value="${filestore.name}"/>
+    <filter token="FILESTORE_WEBAPP" value="${filestore.webapp}"/>
+    <!--+
+        | Make a copy of the war file.
+        +-->
+    <copy filtering="false"
+        file="${temporary.dir}/astrogrid-filestore-${pom.currentVersion}.war"
+        toFile="${temporary.dir}/${filestore.webapp}.war"
+        />
+    <!--+
+        | Copy the context file.
+        +-->
+    <copy todir="${temporary.dir}/${filestore.name}" filtering="true">
+        <fileset dir="contexts/filestore"/>
+    </copy>
+    <!--+
+        | Update the war file.
+        +-->
+    <war update="true" destfile="${temporary.dir}/${filestore.webapp}.war">
+        <metainf dir="${temporary.dir}/${filestore.name}"/>
+    </war>
+    <!--+
+        | Deploy the war file into Tomcat.
+        +-->
+    <tomcat-deploy
+        url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/${filestore.webapp}"
+        war="file:///${temporary.dir}/${filestore.webapp}.war"
+        />
 </goal>
 
 <goal name="pal-deploy" >
@@ -726,24 +725,20 @@
 
 
 <goal name="community-deploy">
-        <copy todir="${temporary.dir}/community" filtering="true">
-                <fileset dir="contexts/community" />
-        </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war">
-                <metainf dir="${temporary.dir}/community"/>
-        </war>
-    <j:catch>
-        <tomcat-deploy
-            url="${tomcat.manager.url}"
-            username="${tomcat.manager.username}"
-            password="${tomcat.manager.password}"
-            path="/astrogrid-community-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"/>
-    </j:catch>
+    <copy todir="${temporary.dir}/community/webapp" filtering="true">
+        <fileset dir="contexts/community" />
+    </copy>
+    <war update="true" destfile="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war">
+        <metainf dir="${temporary.dir}/community/webapp"/>
+    </war>
+    <tomcat-deploy
+        url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/astrogrid-community-${pom.currentVersion}"
+        war="file:///${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"
+        />
 </goal>
-
-
-
-
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
@@ -1056,10 +1051,12 @@
 
 
     <goal name="frog">
+
         <!--+
             | Clean out the target directory.
             +-->
         <attainGoal name="clean:clean"/>
+        <delete dir="${temporary.dir}"/>
         <!--+
             | Initialise the integration env.
             +-->
@@ -1088,6 +1085,7 @@
             | Clean out the target directory.
             +-->
         <attainGoal name="clean:clean"/>
+        <delete dir="${temporary.dir}"/>
         <!--+
             | Initialise the integration env.
             +-->
@@ -1101,6 +1099,5 @@
         <attainGoal name="int-test"/>
         <attainGoal name="astrogrid-build-site"/>
             +-->
-        <attainGoal name="int-test"/>
     </goal>
 </project>

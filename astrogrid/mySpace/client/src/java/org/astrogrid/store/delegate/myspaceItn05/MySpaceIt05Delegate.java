@@ -1217,7 +1217,8 @@ System.out.println("Done");
       long size = -1;
       String permissions = null;
       URL url = null;
-      
+
+      String mime = null ;
       MySpaceFileType type = null;
       MySpaceFolder parentFolder = null;
 
@@ -1239,6 +1240,7 @@ System.out.println("Done");
          this.expires = new Date(bindingEntry.getExpiryDate());
          this.size = bindingEntry.getSize();
          this.permissions = bindingEntry.getPermissionsMask();
+         this.mime = bindingEntry.getMime() ;
          this.type = MySpaceFileType.getForManagerRef(bindingEntry.getType());
          try {
             this.url = new URL(bindingEntry.getEntryUri());
@@ -1265,7 +1267,7 @@ System.out.println("Done");
       public String getPermissions() { return permissions; }
    
       /** Returns the mime type (null if unknown) */
-      public String getMimeType() {    return type.getMimeType(); }
+      public String getMimeType() {    return mime ; }
       
       /** Returns the date the file was last modified (null if unknown) */
       public Date getModified() {      return null;  }
@@ -1416,6 +1418,13 @@ System.out.println("Done");
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.9  2004/09/02 10:25:41  dave
+Updated FileStore and MySpace to handle mime type and file size.
+Updated Community deployment script.
+
+Revision 1.8.2.1  2004/09/02 00:01:45  dave
+Extended EntryResults and delegate MySpaceFile to handle mime type.
+
 Revision 1.8  2004/08/27 22:43:15  dave
 Updated filestore and myspace to report file size correctly.
 

@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.9  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.8.2.1  2004/09/01 02:58:07  dave
+ *   Updated to use external mime type for imported files.
+ *
  *   Revision 1.8  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -370,15 +377,11 @@ public class FileStoreTest
 	 * Set the type properties.
 	 *
 	 */
-	protected void configTypeProperties(FileProperties properties, String mime, String ivoa)
+	protected void configTypeProperties(FileProperties properties, String mime)
 		{
 		properties.setProperty(
 			FileProperties.MIME_TYPE_PROPERTY,
 			mime
-			) ;
-		properties.setProperty(
-			FileProperties.IVOA_TYPE_PROPERTY,
-			ivoa
 			) ;
 		}
 
@@ -386,7 +389,7 @@ public class FileStoreTest
 	 * Check the type properties.
 	 *
 	 */
-	protected void checkTypeProperties(FileProperties properties, String mime, String ivoa)
+	protected void checkTypeProperties(FileProperties properties, String mime)
 		throws Exception
 		{
 		//
@@ -402,15 +405,6 @@ public class FileStoreTest
 			mime,
 			properties.getProperty(
 				FileProperties.MIME_TYPE_PROPERTY
-				)
-			) ;
-		//
-		// Check the ivoa type.
-		assertEquals(
-			"Wrong ivoa type property",
-			ivoa,
-			properties.getProperty(
-				FileProperties.IVOA_TYPE_PROPERTY
 				)
 			) ;
 		}
@@ -499,7 +493,6 @@ public class FileStoreTest
 		// Check the type properties.
 		checkTypeProperties(
 			properties,
-			null,
 			null
 			) ;
 		//
@@ -527,8 +520,7 @@ public class FileStoreTest
 		// Set the type properties.
 		configTypeProperties(
 			properties,
-			FileProperties.MIME_TYPE_XML,
-			FileProperties.IVOA_TYPE_VOTABLE
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Set the test properties.
@@ -553,8 +545,7 @@ public class FileStoreTest
 		// Check the type properties.
 		checkTypeProperties(
 			imported,
-			FileProperties.MIME_TYPE_XML,
-			FileProperties.IVOA_TYPE_VOTABLE
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Check the test properties.
@@ -563,10 +554,6 @@ public class FileStoreTest
 			TEST_PROPERTY_VALUE
 			) ;
 		}
-
-//
-// Export strings.
-//
 
 	/**
 	 * Check we get the right Exception for a null ident.
@@ -734,7 +721,6 @@ public class FileStoreTest
 		// Check the type properties.
 		checkTypeProperties(
 			imported,
-			null,
 			null
 			) ;
 		//
@@ -762,8 +748,7 @@ public class FileStoreTest
 		// Set the type properties.
 		configTypeProperties(
 			properties,
-			FileProperties.MIME_TYPE_XML,
-			FileProperties.IVOA_TYPE_VOTABLE
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Set the test properties.
@@ -788,8 +773,7 @@ public class FileStoreTest
 		// Check the type properties.
 		checkTypeProperties(
 			imported,
-			FileProperties.MIME_TYPE_XML,
-			FileProperties.IVOA_TYPE_VOTABLE
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Check the test properties.
@@ -1547,8 +1531,7 @@ public class FileStoreTest
 		// Set the type properties.
 		configTypeProperties(
 			properties,
-			FileProperties.MIME_TYPE_XML,
-			FileProperties.IVOA_TYPE_VOTABLE
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Set the test properties.
@@ -1583,8 +1566,7 @@ public class FileStoreTest
 		// Check the type properties.
 		checkTypeProperties(
 			duplicate,
-			FileProperties.MIME_TYPE_XML,
-			FileProperties.IVOA_TYPE_VOTABLE
+			FileProperties.MIME_TYPE_XML
 			) ;
 		//
 		// Check the test properties.
@@ -1851,7 +1833,7 @@ public class FileStoreTest
 //
 
 	/**
-	 * Check that an imported file contains the right data.
+	 * Check that an imported file contains the right content.
 	 *
 	 */
 	public void testImportContent()
@@ -1891,7 +1873,7 @@ public class FileStoreTest
 		}
 
 	/**
-	 * Check that an imported properties has the right type.
+	 * Check that imported HTML has the right type.
 	 *
 	 */
 	public void testImportTypeHtml()
@@ -1921,13 +1903,12 @@ public class FileStoreTest
 		// Check the imported data has the right type.
 		checkTypeProperties(
 			imported,
-			"text/html; charset=ISO-8859-1",
-			null
+			"text/html; charset=ISO-8859-1"
 			) ;
 		}
 
 	/**
-	 * Check that an imported properties has the right type.
+	 * Check that an imported jar has the right type.
 	 *
 	 */
 	public void testImportTypeJar()
@@ -1957,8 +1938,7 @@ public class FileStoreTest
 		// Check the imported data has the right type.
 		checkTypeProperties(
 			imported,
-			"text/plain; charset=ISO-8859-1",
-			null
+			"text/plain; charset=ISO-8859-1"
 			) ;
 		}
 
@@ -2146,7 +2126,7 @@ public class FileStoreTest
 				)
 			) ;
 		//
-		// Import some bytes.
+		// Import the data.
 		TransferProperties transfer = 
 			target.importData(
 				new UrlGetTransfer(
@@ -2166,9 +2146,152 @@ public class FileStoreTest
 			) ;
 		}
 
-//
-// Check that setting the mime type before a url import
-// overrides the url mime type.
-// ....
+	/**
+	 * Check that imported string has the right type.
+	 *
+	 */
+	public void testImportStringAsXmlVotable()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportStringAsXmlVotable()") ;
+		//
+		// Create our data info.
+		FileProperties properties = new FileProperties() ;
+		//
+		// Set the mime type property.
+		properties.setProperty(
+			FileProperties.MIME_TYPE_PROPERTY,
+			FileProperties.MIME_TYPE_VOTABLE
+			) ;
+		//
+		// Import the test string.
+		FileProperties imported = new FileProperties(
+			target.importString(
+				properties.toArray(),
+				TEST_STRING
+				)
+			) ;
+		//
+		// Get the file properties.
+		FileProperties requested = new FileProperties(
+			target.properties(
+				imported.getProperty(
+					FileProperties.STORE_RESOURCE_IDENT
+					)
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			requested.getProperty(
+				FileProperties.MIME_TYPE_PROPERTY
+				)
+			) ;
+		}
 
+	/**
+	 * Check that appended string has the right type.
+	 *
+	 */
+	public void testAppendStringAsXmlVotable()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testAppendStringAsXmlVotable()") ;
+		//
+		// Create our file properties.
+		FileProperties properties = new FileProperties() ;
+		//
+		// Set the mime type property.
+		properties.setProperty(
+			FileProperties.MIME_TYPE_PROPERTY,
+			FileProperties.MIME_TYPE_VOTABLE
+			) ;
+		//
+		// Import the test string.
+		FileProperties imported = new FileProperties(
+			target.importString(
+				properties.toArray(),
+				TEST_STRING
+				)
+			) ;
+		//
+		// Append the extra string.
+		FileProperties modified = new FileProperties(
+			target.appendString(
+				imported.getProperty(
+					FileProperties.STORE_RESOURCE_IDENT
+					),
+				EXTRA_STRING
+				)
+			) ;
+		//
+		// Get the file properties.
+		FileProperties requested = new FileProperties(
+			target.properties(
+				imported.getProperty(
+					FileProperties.STORE_RESOURCE_IDENT
+					)
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			requested.getProperty(
+				FileProperties.MIME_TYPE_PROPERTY
+				)
+			) ;
+		}
+
+	/**
+	 * Check that an imported URL has the right type.
+	 *
+	 */
+	public void testImportUrlAsVotable()
+		throws Exception
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreTest.testImportUrlAsVotable()") ;
+		//
+		// Create our file properties.
+		FileProperties properties = new FileProperties() ;
+		//
+		// Set the mime type property.
+		properties.setProperty(
+			FileProperties.MIME_TYPE_PROPERTY,
+			FileProperties.MIME_TYPE_VOTABLE
+			) ;
+		//
+		// Transfer the data.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.http.jar"
+							)
+						),
+					properties
+					)
+				) ;
+		//
+		// Get the file properties.
+		FileProperties requested = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			requested.getProperty(
+				FileProperties.MIME_TYPE_PROPERTY
+				)
+			) ;
+		}
 	}

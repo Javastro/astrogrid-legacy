@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/src/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriver.java,v $
+ *   Revision 1.4  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.3.2.1  2004/09/01 03:01:48  dave
+ *   Updated to pass mime type to filestore.
+ *
  *   Revision 1.3  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -94,6 +101,18 @@ public class FileStoreDriver
 	 *
 	 */
 	protected static final boolean DEBUG_FLAG = true ;
+
+	/**
+	 * Property key for the myspace file name.
+	 *
+	 */
+	public static final String MYSPACE_NAME_PROPERTY = "org.astrogrid.myspace.name" ;
+
+	/**
+	 * Property key for the myspace file ident.
+	 *
+	 */
+	public static final String MYSPACE_IDENT_PROPERTY = "org.astrogrid.myspace.ident" ;
 
 	/**
 	 * A reference to our FileStore delegate.
@@ -268,7 +287,7 @@ public class FileStoreDriver
 		updateDataItem(
 			item,
 			filestore.importString(
-				null,
+				initProperties(item),
 				data
 				)
 			) ;
@@ -293,7 +312,7 @@ public class FileStoreDriver
 		updateDataItem(
 			item,
 			filestore.importBytes(
-				null,
+				initProperties(item),
 				data
 				)
 			) ;
@@ -373,7 +392,8 @@ public class FileStoreDriver
 			item,
 			filestore.importData(
 				new UrlGetTransfer(
-					source
+					source,
+					initProperties(item)
 					)
 				)
 				.getFileProperties()
@@ -510,6 +530,78 @@ public class FileStoreDriver
 		item.setSize(
 			properties.getContentSize()
 			) ;
+		//
+		// Update the data item mime type.
+		item.setDataItemMime(
+			properties.getContentType()
+			) ;
+		}
+
+	/**
+	 * Create an initial set of properties for an item.
+	 * This includes the temp-fix guess for the mime type, based on the file name.
+	 * @param item The data item record.
+	 * @return An array of properties for the item.
+	 *
+	 */
+	private FileProperty[] initProperties(DataItemRecord item)
+		{
+		//
+		// Create our file properties.
+		FileProperties properties = new FileProperties() ;
+		//
+		// Set the myspace properties.
+		properties.setProperty(
+			MYSPACE_NAME_PROPERTY,
+			item.getDataItemName()
+			) ;
+		properties.setProperty(
+			MYSPACE_IDENT_PROPERTY,
+			String.valueOf(item.getDataItemID())
+			) ;
+		//
+		// Get the item file name.
+		String name = item.getDataItemName() ;
+		//
+		// If we have a file name.
+		if (null != name)
+			{
+			//
+			// Find the last '.' in the name.
+			int index = name.lastIndexOf('.') ;
+			//
+			// If we found a '.' in the name.
+			if (index != -1)
+				{
+				String mime = null ;
+				String type = name.substring(
+					index
+					) ;
+				//
+				// Check for recognised types.
+				if (".xml".equals(type))
+					{
+					mime = FileProperties.MIME_TYPE_XML ;
+					}
+				if (".vot".equals(type))
+					{
+					mime = FileProperties.MIME_TYPE_VOTABLE ;
+					}
+				if (".vol".equals(type))
+					{
+					mime = FileProperties.MIME_TYPE_VOLIST ;
+					}
+				//
+				// Set the mime property.
+				properties.setProperty(
+					FileProperties.MIME_TYPE_PROPERTY,
+					mime
+					) ;
+				}
+			}
+		//
+		// Return the new properties as an array.
+		return properties.toArray() ;
 		}
 	}
 

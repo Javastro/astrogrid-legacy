@@ -1,10 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/server/test/java/org/astrogrid/mySpace/mySpaceManager/FileStoreDriverTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDriverTest.java,v $
+ *   Revision 1.4  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.3.2.2  2004/09/01 23:41:15  dave
+ *   Extended DataItemRecord and database table to contain mime type.
+ *
+ *   Revision 1.3.2.1  2004/09/01 03:01:48  dave
+ *   Updated to pass mime type to filestore.
+ *
  *   Revision 1.3  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -26,10 +36,13 @@
  */
 package org.astrogrid.mySpace.mySpaceManager;
 
+import java.net.URL ;
 import junit.framework.TestCase;
 
 import org.astrogrid.mySpace.mySpaceStatus.Logger ;
 import org.astrogrid.mySpace.mySpaceManager.FileStoreDriver ;
+
+import org.astrogrid.filestore.common.file.FileProperties ;
 
 /**
  * Junit tests for the <code>FileStoreDriverTest</code> class.
@@ -227,13 +240,108 @@ public class FileStoreDriverTest
 		}
 
 	/**
-	 * Test that an imported string returns the right type.
+	 * Test that a '.xml' name returns the right type.
 	 *
 	 */
-	public void testImportStringType()
+	public void testImportNameXml()
 		throws Exception
 		{
-		fail("Test not implemented yet ...") ;
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.xml"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_XML,
+			item.getDataItemMime()
+			) ;
 		}
 
+	/**
+	 * Test that a '.vot' name returns the right type.
+	 *
+	 */
+	public void testImportNameVot()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.vot"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOTABLE,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that a '.vol' name returns the right type.
+	 *
+	 */
+	public void testImportNameVol()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.vol"
+			) ;
+		//
+		// Import some data ....
+		driver.importString(
+			item,
+			TEST_STRING
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_VOLIST,
+			item.getDataItemMime()
+			) ;
+		}
+
+	/**
+	 * Test that a '.xml' name returns the right type.
+	 *
+	 */
+	public void testImportXmlUrl()
+		throws Exception
+		{
+		//
+		// Set the item name.
+		item.setDataItemName(
+			"test.xml"
+			) ;
+		//
+		// Import some data ....
+		driver.importUrl(
+			item,
+			new URL(
+				"http://www.astrogrid.org/maven/"
+				)
+			) ;
+		//
+		// Check the mime type.
+		assertEquals(
+			FileProperties.MIME_TYPE_XML,
+			item.getDataItemMime()
+			) ;
+		}
 	}

@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
+ *   Revision 1.6  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.5.2.1  2004/09/01 02:58:07  dave
+ *   Updated to use external mime type for imported files.
+ *
  *   Revision 1.5  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -132,18 +139,21 @@ public class FileProperties
 	public static final String MIME_TYPE_XML  = "text/xml"  ;
 	public static final String MIME_TYPE_HTML = "text/html" ;
 
+	public static final String MIME_TYPE_VOLIST  = "text/xml +VOLIST"   ;
+	public static final String MIME_TYPE_VOTABLE = "text/xml +VOTABLE"  ;
+
 	/**
 	 * The property key for IVOA type.
 	 *
-	 */
 	public static final String IVOA_TYPE_PROPERTY  = "ivoa.type" ;
+	 */
 
 	/**
 	 * Known IVOA type values.
 	 *
-	 */
 	public static final String IVOA_TYPE_VOLIST   = "ivo.volist"  ;
 	public static final String IVOA_TYPE_VOTABLE  = "ivo.votable" ;
+	 */
 
 	/**
 	 * Public constructor.
@@ -400,6 +410,17 @@ public class FileProperties
 		else {
 			return -1L ;
 			}
+		}
+
+	/**
+	 * Get the content mime type.
+	 *
+	 */
+	public String getContentType()
+		{
+		return getProperty(
+			FileProperties.MIME_TYPE_PROPERTY
+			) ;
 		}
 
 	/**

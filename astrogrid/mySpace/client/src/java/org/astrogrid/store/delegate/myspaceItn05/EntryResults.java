@@ -17,6 +17,7 @@ public class EntryResults  implements java.io.Serializable {
     private java.lang.String permissionsMask;
     private long size;
     private int type;
+    private java.lang.String mime ;
 
     public EntryResults() {
     }
@@ -91,6 +92,14 @@ public class EntryResults  implements java.io.Serializable {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public String getMime() {
+        return mime;
+    }
+
+    public void setMime(String mime) {
+        this.mime = mime;
     }
 
     private java.lang.Object __equalsCalc = null;
@@ -205,6 +214,13 @@ public class EntryResults  implements java.io.Serializable {
         elemField.setXmlName(new javax.xml.namespace.QName("", "type"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
         typeDesc.addFieldDesc(elemField);
+
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("mime");
+        elemField.setXmlName(new javax.xml.namespace.QName("", "mime"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        typeDesc.addFieldDesc(elemField);
+
     }
 
     /**

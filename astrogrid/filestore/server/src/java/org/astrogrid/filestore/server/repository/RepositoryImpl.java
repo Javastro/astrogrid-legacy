@@ -2,10 +2,17 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.8  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.7.2.1  2004/09/01 23:05:16  dave
+ *   Updated filestore server to handle mime type correctly.
+ *
  *   Revision 1.7  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -639,19 +646,35 @@ public class RepositoryImpl
 				// Open a connection to the URL.
 				URLConnection connection = url.openConnection() ;
 				//
-				// Set our propeties from the URL headers.
+				// Set the source URL.
 				this.properties.setProperty(
 					FileProperties.TRANSFER_SOURCE_URL,
 					url.toString()
 					) ;
-				this.properties.setProperty(
-					FileProperties.MIME_TYPE_PROPERTY,
-					connection.getContentType()
-					) ;
-				this.properties.setProperty(
-					FileProperties.MIME_ENCODING_PROPERTY,
-					connection.getContentEncoding()
-					) ;
+				//
+				// If the content type type hasn't been set yet.
+				// Set it from the URL connection.
+				if (null == this.properties.getProperty(
+					FileProperties.MIME_TYPE_PROPERTY)
+					)
+					{
+					this.properties.setProperty(
+						FileProperties.MIME_TYPE_PROPERTY,
+						connection.getContentType()
+						) ;
+					}
+				//
+				// If the content encoding hasn't been set yet.
+				// Set it from the URL connection.
+				if (null == this.properties.getProperty(
+					FileProperties.MIME_ENCODING_PROPERTY)
+					)
+					{
+					this.properties.setProperty(
+						FileProperties.MIME_ENCODING_PROPERTY,
+						connection.getContentEncoding()
+						) ;
+					}
 				//
 				// Transfer the data from the URL.
 				this.importData(

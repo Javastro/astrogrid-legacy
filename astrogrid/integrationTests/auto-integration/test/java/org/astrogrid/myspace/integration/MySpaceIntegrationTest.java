@@ -1,10 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/myspace/integration/Attic/MySpaceIntegrationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: MySpaceIntegrationTest.java,v $
+ *   Revision 1.5  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.4.2.3  2004/09/02 00:29:05  dave
+ *   Fixed typo and changed tabs to spaces.
+ *
+ *   Revision 1.4.2.2  2004/09/02 00:25:38  dave
+ *   Fixed typo.
+ *
+ *   Revision 1.4.2.1  2004/09/02 00:12:47  dave
+ *   Added tests for mime type.
+ *
  *   Revision 1.4  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -60,6 +73,8 @@ import org.astrogrid.store.delegate.StoreException ;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate ;
 
 import org.astrogrid.community.User;
+
+import org.astrogrid.filestore.common.file.FileProperties ;
 
 import junit.framework.TestCase;
 
@@ -896,13 +911,13 @@ public class MySpaceIntegrationTest
             ) ;
         }
 
-	/**
-	 * Check that an imported string has the right size.
-	 *
-	 */
-	public void testImportStringSize()
-		throws Exception
-		{
+    /**
+     * Check that an imported string has the right size.
+     *
+     */
+    public void testImportStringSize()
+        throws Exception
+        {
         //
         // Create our delegate.
         MySpaceIt05Delegate myspace = delegate() ;
@@ -920,28 +935,28 @@ public class MySpaceIntegrationTest
                 ),
             false
             );
-		//
-		// Get the file info.
-		StoreFile file = myspace.getFile(
-			this.getUserPath(
-				"imported-string"
-				)
-			) ;
-		//
-		// Check the file size.
-		assertEquals(
-			(long) TEST_STRING.length(),
-			file.getSize()
-			) ;
-		}
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported-string"
+                )
+            ) ;
+        //
+        // Check the file size.
+        assertEquals(
+            (long) TEST_STRING.length(),
+            file.getSize()
+            ) ;
+        }
 
-	/**
-	 * Check that an imported URL has the right size.
-	 *
-	 */
-	public void testImportUrlSize()
-		throws Exception
-		{
+    /**
+     * Check that an imported URL has the right size.
+     *
+     */
+    public void testImportUrlSize()
+        throws Exception
+        {
         //
         // Create our delegate.
         MySpaceIt05Delegate myspace = delegate() ;
@@ -966,22 +981,22 @@ public class MySpaceIntegrationTest
                 ),
             false
             );
-		//
-		// Get the original file size.
-		long size = source.openConnection().getContentLength() ;
-		//
-		// Get the file info.
-		StoreFile file = myspace.getFile(
-			this.getUserPath(
-				"imported.jar"
-				)
-			) ;
-		//
-		// Check the file info size.
-		assertEquals(
-			size,
-			file.getSize()
-			) ;
+        //
+        // Get the original file size.
+        long size = source.openConnection().getContentLength() ;
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.jar"
+                )
+            ) ;
+        //
+        // Check the file info size.
+        assertEquals(
+            size,
+            file.getSize()
+            ) ;
         //
         // Get the file URL from the manager.
         URL stored = myspace.getUrl(
@@ -989,13 +1004,111 @@ public class MySpaceIntegrationTest
                 "imported.jar"
                 )
             ) ;
-		//
-		// Check the stored file size.
-//		assertEquals(
-//			size,
-//			stored.openConnection().getContentLength()
-//			) ;
-		}
+        //
+        // Check the stored file size.
+//        assertEquals(
+//            size,
+//            stored.openConnection().getContentLength()
+//            ) ;
+        }
+
+    /**
+     * Check that an imported string has the right mime type.
+     *
+     */
+    public void testImportStringMime()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Import some data.
+        myspace.putString(
+            TEST_STRING,
+            this.getUserPath(
+                "imported.vot"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.vot"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOTABLE,
+            file.getMimeType()
+            ) ;
+        }
+
+    /**
+     * Check that an imported URL has the right mime type.
+     *
+     */
+    public void testImportUrlMime()
+        throws Exception
+        {
+        //
+        // Create our delegate.
+        MySpaceIt05Delegate myspace = delegate() ;
+        //
+        // Create the user space.
+        myspace.createUser(
+            this.getUserObject()
+            );
+        //
+        // Get the URL from our config.
+        URL source = new URL(
+            getTestProperty(
+                "data.http.html"
+                )
+            ) ;
+        //
+        // Import some data.
+        myspace.putUrl(
+            source,
+            this.getUserPath(
+                "imported.vol"
+                ),
+            false
+            );
+        //
+        // Get the file info.
+        StoreFile file = myspace.getFile(
+            this.getUserPath(
+                "imported.vol"
+                )
+            ) ;
+        //
+        // Check the mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOLIST,
+            file.getMimeType()
+            ) ;
+        //
+        // Get the file URL from the manager.
+        URL stored = myspace.getUrl(
+            this.getUserPath(
+                "imported.vol"
+                )
+            ) ;
+        //
+        // Check the stored mime type.
+        assertEquals(
+            FileProperties.MIME_TYPE_VOLIST,
+            stored.openConnection().getContentType()
+            ) ;
+        }
 
 //
 // What happens is we overwrite an existing file ?

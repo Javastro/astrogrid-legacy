@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/transfer/TransferProperties.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: TransferProperties.java,v $
+ *   Revision 1.3  2004/09/02 10:25:41  dave
+ *   Updated FileStore and MySpace to handle mime type and file size.
+ *   Updated Community deployment script.
+ *
+ *   Revision 1.2.46.1  2004/09/01 02:58:07  dave
+ *   Updated to use external mime type for imported files.
+ *
  *   Revision 1.2  2004/07/21 18:11:55  dave
  *   Merged development branch, dave-dev-200407201059, into HEAD
  *
@@ -23,6 +30,7 @@
 package org.astrogrid.filestore.common.transfer ;
 
 import org.astrogrid.filestore.common.file.FileProperty ;
+import org.astrogrid.filestore.common.file.FileProperties ;
 
 import org.astrogrid.filestore.common.identifier.UniqueIdentifier ;
 
@@ -49,16 +57,33 @@ public class TransferProperties
 	 */
 	public TransferProperties(UniqueIdentifier ident)
 		{
-		this(ident, null) ;
+		this(
+			ident,
+			(FileProperty[]) null
+			) ;
 		}
 
 	/**
 	 * Public constructor.
 	 * @param ident A unique identifier for the transfer.
-	 * @param file  The properties for the file to transfer
+	 * @param properties The properties for the file to transfer
 	 *
 	 */
-	public TransferProperties(UniqueIdentifier ident, FileProperty[] file)
+	public TransferProperties(UniqueIdentifier ident, FileProperties properties)
+		{
+		this(
+			ident,
+			(null != properties) ? properties.toArray() : (FileProperty[]) null
+			) ;
+		}
+
+	/**
+	 * Public constructor.
+	 * @param ident A unique identifier for the transfer.
+	 * @param properties The properties for the file to transfer
+	 *
+	 */
+	public TransferProperties(UniqueIdentifier ident, FileProperty[] properties)
 		{
 		//
 		// Check for a null url.
@@ -74,7 +99,7 @@ public class TransferProperties
 			ident.toString()
 			) ;
 		this.setFileProperties(
-			file
+			properties
 			) ;
 		}
 

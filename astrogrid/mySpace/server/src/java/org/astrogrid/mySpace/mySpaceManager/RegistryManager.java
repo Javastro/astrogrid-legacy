@@ -118,6 +118,7 @@ public class RegistryManager
            "dataItemFile VARCHAR(150), " +
            "dataItemUri VARCHAR(150), " +
            "dataItemIvorn VARCHAR(150), " +
+           "dataItemMime VARCHAR(20), " +
            "ownerID VARCHAR(20), " +
            "creationDate DATE, " +
            "expiryDate DATE, " +
@@ -258,6 +259,7 @@ public class RegistryManager
            "dataItemFile," + 
            "dataItemUri," + 
            "dataItemIvorn," + 
+           "dataItemMime," + 
            "ownerID, " +
            "creationDate, expiryDate, " +
            "size, type, permissionsMask) " +
@@ -267,6 +269,7 @@ public class RegistryManager
             "'" + dataItemRecord.getDataItemFile() + "', " +
             "'" + dataItemRecord.getDataItemUri() + "', " +
             "'" + dataItemRecord.getDataItemIvorn() + "', " +
+            "'" + dataItemRecord.getDataItemMime() + "', " +
             "'" + dataItemRecord.getOwnerID() + "', " +
             "'" + sqlCreation + "', " +
             "'" + sqlExpiry + "', " +
@@ -401,6 +404,7 @@ System.out.println("  Size  : " + dataItemRecord.getSize());
            "dataItemFile = '" + dataItemRecord.getDataItemFile() + "', " +
            "dataItemUri = '" + dataItemRecord.getDataItemUri() + "', " +
            "dataItemIvorn = '" + dataItemRecord.getDataItemIvorn() + "', " +
+           "dataItemMime = '" + dataItemRecord.getDataItemMime() + "', " +
            "ownerID = '" + dataItemRecord.getOwnerID() + "', " +
            "creationDate = '" + sqlCreation + "', " +
            "expiryDate = '" + sqlExpiry + "', " +
@@ -984,6 +988,7 @@ System.out.println("  Size  : " + currRec.getSize());
                     sqlResults.getString("dataItemFile"),
                     sqlResults.getString("dataItemUri"),
                     sqlResults.getString("dataItemIvorn"),
+                    sqlResults.getString("dataItemMime"),
                     sqlResults.getString("ownerID"),
                     creation,
                     expiry,
