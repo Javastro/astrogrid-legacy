@@ -29,14 +29,20 @@
 <property name="temporary.dir" location="${basedir}/tmp" />
 <property name="config.webapp.name" value="astrogrid-configuration" />
 
+        <j:if test="${context.getVariable('registry.authorityid') == null}">
+	        <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>        
+        </j:if>
+
         <!-- tokens to subst into config files -->
         <filter token="WORKDIR" value="${work.dir}" />
         <filter token="CONFIGPATH" value="${tomcat.url}/${config.webapp.name}" />
         <filter token="TOMCATROOT" value="${tomcat.url}" />
         <filter token="TOMCATLOC" value="${tomcat.location}" />
-
+        <filter token="REGAUTHORITY" value="${registry.authorityid}" />
+        
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
+		<echo>AuthorityID used: ${registry.authorityid}</echo>
         <delete dir="${temporary.dir}" />
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
