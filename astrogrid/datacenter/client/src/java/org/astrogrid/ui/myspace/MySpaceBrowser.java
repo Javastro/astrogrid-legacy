@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceBrowser.java,v 1.3 2004/03/06 19:34:21 mch Exp $
+ * $Id: MySpaceBrowser.java,v 1.4 2004/03/09 11:00:39 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,8 +25,8 @@ import org.astrogrid.community.Account;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
-import org.astrogrid.store.delegate.MySpaceFolder;
 import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.myspace.MySpaceFolder;
 import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
@@ -663,6 +663,9 @@ public class MySpaceBrowser extends JDialog
 
 /*
 $Log: MySpaceBrowser.java,v $
+Revision 1.4  2004/03/09 11:00:39  mch
+Fixed for moved myspace delegates
+
 Revision 1.3  2004/03/06 19:34:21  mch
 Merged in mostly support code (eg web query form) changes
 
