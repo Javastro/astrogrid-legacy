@@ -10,7 +10,7 @@
         <dependency>
             <artifactId>astrogrid-slinger-api</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>${astrogrid.common.version}</version>
+            <version>${astrogrid.slinger.version}</version>
         </dependency>
     </dependencies>
 </project>
