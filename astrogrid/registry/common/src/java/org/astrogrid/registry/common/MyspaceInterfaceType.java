@@ -7,7 +7,7 @@ package org.astrogrid.registry.common;
  */
 public class MyspaceInterfaceType implements InterfaceType {
     
-    private static final String INTERFACE_NAME = "MySpaceKind";
+    private static final String INTERFACE_NAME = "Myspace";
     
     public String getInterfaceType() {
         return INTERFACE_NAME;

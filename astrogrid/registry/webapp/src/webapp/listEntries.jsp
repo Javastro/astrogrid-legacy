@@ -54,24 +54,26 @@
          if (authority == null) {
             out.write("<td>null?!</td>");
          } else {
-         	if(authority.getFirstChild() != null) {
-	            out.write("<td>"+authority.getFirstChild().getNodeValue()+"</td>\n");
-	            ivoStr = authority.getFirstChild().getNodeValue();
-	        }
+            if(authority.getFirstChild() != null) {
+               out.write("<td>"+authority.getFirstChild().getNodeValue()+"</td>\n");
+               ivoStr = authority.getFirstChild().getNodeValue();
+           }
          }
 
          if (resource == null) {
             out.write("<td>null?!</td>");
          } else {
-         	if(resource.getFirstChild() != null) {
-	            out.write("<td>"+resource.getFirstChild().getNodeValue()+"</td>\n");
-	            ivoStr += "/" + resource.getFirstChild().getNodeValue();
-	        }else {
-		        out.write("<td>null!</td>");
-	        }
+            if(resource.getFirstChild() != null) {
+               out.write("<td>"+resource.getFirstChild().getNodeValue()+"</td>\n");
+               ivoStr += "/" + resource.getFirstChild().getNodeValue();
+           }else {
+              out.write("<td>null!</td>");
+           }
          }
 
          out.write("<td><a href=viewResourceEntry.jsp?IVORN="+ivoStr+">View</a></td>\n");
+
+         out.write("<td><a href=viewEntryXml.jsp?IVORN="+ivoStr+">XML</a></td>\n");
          
          out.write("</tr>\n");
          
@@ -85,11 +87,7 @@
 Use your browser's 'view source' to view the XML:
 <pre>
 <%
-      out.write("The xml<br />");
-      String testxml = DomHelper.DocumentToString(entry);
-      testxml = testxml.replaceAll("<","&lt;");
-      testxml = testxml.replaceAll(">","&gt;");
-      out.write(testxml);
+      DomHelper.DocumentToWriter(entry, out);
     }
 %>
 </pre>

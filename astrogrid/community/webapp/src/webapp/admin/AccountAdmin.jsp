@@ -1,6 +1,4 @@
 <%@ page import="org.astrogrid.community.common.policy.data.AccountData,
-                 org.astrogrid.community.common.ivorn.CommunityIvornParser,
-                 org.astrogrid.store.Ivorn,                 
                  org.astrogrid.community.server.policy.manager.AccountManagerImpl"
     session="false" %>
 
@@ -15,7 +13,6 @@ AccountManagerImpl ami = new AccountManagerImpl();
 String removeAccount = request.getParameter("RemoveAccount");
 String addAccount = request.getParameter("AddAccount");
 String editAccount = request.getParameter("EditAccount");
-String currentCommunity = Ivorn.SCHEME + "://" + CommunityIvornParser.getLocalIdent();
 String info = "";
 String ident = null;
 AccountData changeAccount = null;
@@ -26,13 +23,11 @@ if(removeAccount != null && removeAccount.trim().length() > 0) {
 	info = "Account was deleted for id = " + ident;	
 }else if(addAccount != null && addAccount.trim().length() > 0) {
 	ident = request.getParameter("ident");
-	if(ident == null || ident.trim().length() <= 0 ||
- 	    request.getParameter("displayName") == null || 
- 	    request.getParameter("displayName").trim().length() <= 0) {	
-		info = "Could not add an account no username or display name was provided.";
+	if(ident == null || ident.trim().length() <= 0) {
+		info = "Could not add an account no identifier was provided.";
 	}else {
 		ident = ident.trim();
-		changeAccount = new AccountData(currentCommunity + "/" + ident);
+		changeAccount = new AccountData(ident);
 		changeAccount.setEmailAddress(request.getParameter("email"));		
 		changeAccount.setDisplayName(request.getParameter("displayName"));
 		changeAccount.setDescription(request.getParameter("description"));
@@ -71,14 +66,10 @@ else
 		<table>
 			<tr>
 				<td>
-					<strong>
-					Username
-					</strong>
+					Identifier and Username
 				</td>
 				<td>
-					<strong>
 					Display Name
-					</strong>
 				</td>
 				<td>
 					Description
@@ -118,14 +109,12 @@ else
 			</tr>
 		</table>		
 		<br />
-		<%
-		if(accounts != null && accounts.length > 0) {
-		%>
+		<hr />
 		List of accounts:<br />
 		<table>
 			<tr>
 				<td>
-					Username
+					Identifier and Username
 				</td>
 				<td>
 					Display Name
@@ -146,17 +135,16 @@ else
 					Remove
 				</td>
 			</tr>
-		<% 
-		    }
+		<%
 			AccountData ad = null;
-			if(accounts != null && accounts.length > 0)
+			if(accounts != null)
 			for(int i = 0;i < accounts.length;i++) {
 				ad = (AccountData)accounts[i];
 		%>
 			<tr>
 				<form method="get">
 					<td>
-						<%=ad.getIdent().substring((currentCommunity.length()+1))%>
+						<%=ad.getIdent()%>
 					</td>
 					<td>
 						<input type="text" name="displayName" value="<%=ad.getDisplayName()%>" />

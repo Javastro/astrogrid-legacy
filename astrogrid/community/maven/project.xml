@@ -3,15 +3,12 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/02 21:47:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.18 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/02 22:53:37 $</cvs:date>
+    | <cvs:version>$Revision: 1.19 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.18  2004/11/02 21:47:39  jdt
-    |   Merge of Comm_KMB_583
-    |
-    |   Revision 1.17.20.1  2004/10/26 17:23:41  KevinBenson
-    |   Got rid of the <report> tags let the higher level maven base define it
+    |   Revision 1.19  2004/11/02 22:53:37  jdt
+    |   Rolled back merged changes to BLLatest
     |
     |   Revision 1.17  2004/09/16 23:18:08  dave
     |   Replaced debug logging in Community.
@@ -200,7 +197,7 @@
 
     <!--+
         | The list of reports to generate for each component.
-
+        +-->
     <reports>
         <report>
             maven-changelog-plugin
@@ -242,5 +239,5 @@
             maven-simian-plugin
         </report>
     </reports>
-        +-->
+
 </project>

@@ -18,7 +18,7 @@
   String authID = request.getParameter("IVORN");
   String resKey = null;
   int temp = 0;
-  if((temp = authID.indexOf("/")) != -1) {
+  if((temp = authID.lastIndexOf("/")) != -1) {
   	resKey = authID.substring((temp+1));
   	authID = authID.substring(0,temp);
   }
@@ -50,11 +50,7 @@
       out.write("<p>No entry returned</p>");
    }
    else {
-      out.write("The xml<br />");
-      String testxml = DomHelper.DocumentToString(entry);
-      testxml = testxml.replaceAll("<","&lt;");
-      testxml = testxml.replaceAll(">","&gt;");
-      out.write(testxml);
+     DomHelper.DocumentToWriter(entry, out);
    }
 %>
 </pre>

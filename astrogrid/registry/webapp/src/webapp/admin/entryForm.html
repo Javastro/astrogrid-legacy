@@ -15,23 +15,8 @@ Enter the VOResource in the text area below and press the [Submit] button to add
 already exists, it will be updated.
 </p>
 
-Upload from a local file:
-<form enctype="multipart/form-data" method="post" action="addResourceEntry.jsp">
-<input type="file" name="docfile" />
-<input type="hidden" name="addFromFile" value="true" />
-<input type="submit" name="uploadFromFile" value="upload" />
-</form>
-<br />
-Upload from a url:
-<form method="post" action="addResourceEntry.jsp">
-<input type="text" name="docurl" />
-<input type="hidden" name="addFromURL" value="true" />
-<input type="submit" name="uploadFromURL" value="upload" />
-</form>
 
-Upload from text:<br />
 <form action="addResourceEntry.jsp" method="post">
-<input type="hidden" name="addFromText" value="true" />
 <p>
 <textarea name="Resource" rows="30" cols="90"></textarea>
 </p>
@@ -39,7 +24,9 @@ Upload from text:<br />
 <input type="submit" name="button" value="Submit"/>
 </p>
 </form>
+
 <hr/>
+
 <p>
 Here are example templates that you can download and place into the text area above.
 These templates follow v0.9 of the IVOA's specification for resource metadata.

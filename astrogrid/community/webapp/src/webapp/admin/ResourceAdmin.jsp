@@ -68,9 +68,6 @@ if(resources != null)
 			</tr>
 		</table>		
 		<br />
-		<%
-		if(resources != null && resources.length > 0) {
-		%>
 		List of resources:<br />
 		<table>
 			<tr>
@@ -88,9 +85,8 @@ if(resources != null)
 				</td>
 			</tr>
 		<%
-			}
 			ResourceData rd = null;
-			if(resources != null && resources.length > 0)
+			if(resources != null)
 			for(int i = 0;i < resources.length;i++) {
 				rd = (ResourceData)resources[i];
 		%>

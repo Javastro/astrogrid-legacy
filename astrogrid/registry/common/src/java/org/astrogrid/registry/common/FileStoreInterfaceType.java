@@ -7,7 +7,7 @@ package org.astrogrid.registry.common;
  */
 public class FileStoreInterfaceType implements InterfaceType {
     
-    private static final String INTERFACE_NAME = "FileStoreKind";
+    private static final String INTERFACE_NAME = "FileStore";
     
     public String getInterfaceType() {
         return INTERFACE_NAME;

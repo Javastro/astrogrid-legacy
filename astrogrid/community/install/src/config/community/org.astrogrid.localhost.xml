@@ -3,15 +3,12 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/config/community/org.astrogrid.localhost.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/02 21:47:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/02 22:53:37 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: org.astrogrid.localhost.xml,v $
-    |   Revision 1.12  2004/11/02 21:47:39  jdt
-    |   Merge of Comm_KMB_583
-    |
-    |   Revision 1.11.14.1  2004/10/26 17:24:20  KevinBenson
-    |   Try adding a group display name on the install piece.
+    |   Revision 1.13  2004/11/02 22:53:37  jdt
+    |   Rolled back merged changes to BLLatest
     |
     |   Revision 1.11  2004/09/20 14:59:34  clq2
     |   added David Barnes
@@ -113,19 +110,15 @@
         +-->
     <groups>
         <group ident="ivo://org.astrogrid.localhost/public">
-			<display>Public</display>
             <description>Public group</description>
         </group>
         <group ident="ivo://org.astrogrid.localhost/users">
-			<display>General</display>
             <description>General users group</description>
         </group>
         <group ident="ivo://org.astrogrid.localhost/java">
-			<display>Java</display>
             <description>Java developers group</description>
         </group>
         <group ident="ivo://org.astrogrid.localhost/astro">
-			<display>Astronomers</display>
             <description>Astronomers group</description>
         </group>
     </groups>

@@ -104,13 +104,11 @@ public interface RegistryService  {
    
    public Document getResourceByIdentifier(String ident) throws RegistryException;
    
-   public ServiceData[] getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException;   
+   public Document getResourcesByInterfaceType(InterfaceType interfaceType) throws RegistryException;   
          
    public String getEndPointByIdentifier(Ivorn ident) throws RegistryException;
    
    public String getEndPointByIdentifier(String ident) throws RegistryException;
-   
-   public URL[] getEndPointByInterfaceType(InterfaceType interfaceType) throws RegistryException;    
 
    public WSDLBasicInformation getBasicWSDLInformation(Ivorn ident) throws RegistryException;
    

@@ -1,6 +1,4 @@
 <%@ page import="org.astrogrid.community.common.policy.data.GroupData,
-				 org.astrogrid.community.common.ivorn.CommunityIvornParser,
-                 org.astrogrid.store.Ivorn,				 
                  org.astrogrid.community.server.policy.manager.GroupManagerImpl"
     session="false" %>
 
@@ -17,7 +15,6 @@ String editGroup = request.getParameter("EditGroup");
 String info = "";
 String ident = null;
 GroupData changeGroup = null;
-String currentCommunity = Ivorn.SCHEME + "://" + CommunityIvornParser.getLocalIdent();
 if(removeGroup != null && removeGroup.trim().length() > 0) {
 	ident = request.getParameter("ident");
 	ident = ident.trim();		
@@ -25,23 +22,16 @@ if(removeGroup != null && removeGroup.trim().length() > 0) {
 	info = "Group was deleted for id = " + ident;	
 }else if(addGroup != null && addGroup.trim().length() > 0) {
 	ident = request.getParameter("ident");
-	if(ident == null || ident.trim().length() <= 0 ||
-	   request.getParameter("displayName") == null || 
-	   request.getParameter("displayName").trim().length() <= 0) {
-		info = "Could not add a group no username or display name was provided.";
+	if(ident == null || ident.trim().length() <= 0) {
+		info = "Could not add a group no identifier was provided.";
 	}else {
 		ident = ident.trim();
-		if(request.getParameter("displayName") == null || 
-	   		request.getParameter("displayName").trim().length() <= 0) {
-			info = "Could not add a group no username or display name was provided.";
-		}else {
-			changeGroup = new GroupData(currentCommunity + "/" + ident);
-			changeGroup.setDisplayName(request.getParameter("displayName"));
-			changeGroup.setDescription(request.getParameter("description"));
-			changeGroup.setType(GroupData.MULTI_TYPE);		
-			gmi.addGroup(changeGroup);
-			info = "Group was added for id = " + ident;		
-		}
+		changeGroup = new GroupData(ident);
+		changeGroup.setDisplayName(request.getParameter("displayName"));
+		changeGroup.setDescription(request.getParameter("description"));
+		changeGroup.setType(GroupData.MULTI_TYPE);		
+		gmi.addGroup(changeGroup);
+		info = "Group was added for id = " + ident;		
 	}
 }else if(editGroup != null && editGroup.trim().length() > 0) {
 	ident = request.getParameter("ident");
@@ -70,14 +60,10 @@ if(groups != null)
 		<table>
 			<tr>
 				<td>
-					<strong>
-					Username
-					</strong>
+					Identifier and Username
 				</td>
 				<td>
-					<strong>
 					Display Name
-					</strong>
 				</td>
 				<td>
 					Description
@@ -105,14 +91,11 @@ if(groups != null)
 			</tr>
 		</table>		
 		<br />
-		<%
- 		  if(groups != null && groups.length > 0) {
- 		%>
 		List of groups:<br />
 		<table>
 			<tr>
 				<td>
-					Username
+					Identifier and Username
 				</td>
 				<td>
 					Display Name
@@ -128,9 +111,8 @@ if(groups != null)
 				</td>
 			</tr>
 		<%
-		    }
 			GroupData gd = null;
-			if(groups != null && groups.length > 0)
+			if(groups != null)
 			for(int i = 0;i < groups.length;i++) {
 				gd = (GroupData)groups[i];
 				if(GroupData.MULTI_TYPE.equals(gd.getType())) {
@@ -138,7 +120,7 @@ if(groups != null)
 			<tr>
 				<form method="get">
 					<td>
-						<%=gd.getIdent().substring((currentCommunity.length()+1))%>
+						<%=gd.getIdent()%>
 					</td>
 					<td>
 						<input type="text" name="displayName" value="<%=gd.getDisplayName()%>" />

@@ -30,7 +30,6 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
        "org.astrogrid.registry.harvest.daemon.interval-hours";
    public static Config conf = null;
    private Timer timer = null;
-   private Timer scheduleTimer = null;
 
    static {
       if(conf == null) {
@@ -39,17 +38,14 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
       }
    }
    
-
+   /*
    public void destroy() {
        super.destroy();
-       System.out.println("exiting HarvestDaemon; trying to destroy timers");
-       if(timer != null) {
-           timer.cancel();
+       if(myThread != null && myThread.isAlive()) {
+           myThread.interrupt();
        }//if
-       if(scheduleTimer != null) {
-           scheduleTimer.cancel();
-       }
    }
+   */
    
    public void init(ServletConfig config)
                 throws ServletException
@@ -60,13 +56,13 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
        
        servletInitTime = new Date();
        rhs = new RegistryHarvestService();
-       if(scheduleTimer != null) {
+       if(timer != null) {
            //hmmm just in case the servlet container decides to re-initialize
            //this servlet.
-           scheduleTimer.cancel();
-           scheduleTimer = null;
+           timer.cancel();
+           timer = null;
        }
-       scheduleTimer = new Timer();
+       timer = new Timer();
        boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
        if(harvestEnabled) {
           if(!valuesSet) {
@@ -82,7 +78,7 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
           }
           System.out.println("in init of harvestDaemon and starting thread.");
           
-          scheduleTimer.scheduleAtFixedRate(new HarvestTimer("HarvestNow"),
+          timer.scheduleAtFixedRate(new HarvestTimer("HarvestNow"),
                        harvestInterval*3600*1000,
                        harvestInterval*3600*1000);          
           //Thread myThread = new Thread(this);
@@ -100,13 +96,9 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
                 throws IOException, ServletException
    {
 	  String nowParam = req.getParameter("HarvestNow");
-     if(timer != null) {
-         //hmmm just in case the servlet container decides to re-initialize
-         //this servlet.
-         timer.cancel();
-         timer = null;
-     }
-     timer = new Timer();
+      if(timer == null) {
+          timer = new Timer();
+      }
      
 	  if( nowParam != null && !harvestStarted ) {
         //start the harvest in 5 seconds
@@ -142,6 +134,35 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
                   out.println("</h2></body></html>");
    }
 
+   /*
+   public void run()
+   {
+       try {
+           while(true) {
+               lastHarvestTime = new Date();
+
+               if(harvestOnLoad) {
+                   try {              
+                       rhs.harvestAll(true,true);
+                       myCounter++;
+                   }
+                   catch (RegistryException e)
+                   {
+                       e.printStackTrace();
+                   }                      
+               }//if
+               harvestOnLoad = true;
+               myThread.sleep(harvestInterval*3600*1000);
+           }//while
+       } catch(InterruptedException e) {
+           System.out.println("Interupting a thread, now exiting run normally");
+           //e.printStackTrace();
+       }
+           
+   }
+   */
+   
+   
    class HarvestTimer extends TimerTask {
        private String task = null;
        
@@ -153,22 +174,27 @@ public class HarvestDaemon extends HttpServlet //implements Runnable
 
            try {
                if("HarvestNow".equals(task)) {
-                   System.out.println("Immediate harvesting will be commenced!");
-                   try {
-                       rhs.harvestAll(true,true);
-                   }catch(RegistryException e) {
+                     System.out.println("Immediate harvesting will be commenced!");
+                     try {
+                        rhs.harvestAll(true,true);
+                     }
+                     catch(RegistryException e)
+                     {
                         e.printStackTrace();
-                   }
+                    }
                }
                if("ReplicateNow".equals(task)) {
                    System.out.println("Immediate replicate is beginning!");
                    try {
+                                
                       rhs.harvestAll(true,false);
-                   }catch(RegistryException e) {
+                   }
+                   catch(RegistryException e)
+                   {
                       e.printStackTrace();
                    }
                }//if
-           } finally {
+           }finally {
                //turn off
                HarvestDaemon.harvestStarted = false;
            }

@@ -3,15 +3,12 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/castor/mapping.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/02 21:47:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/02 22:53:37 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: mapping.xml,v $
-    |   Revision 1.6  2004/11/02 21:47:39  jdt
-    |   Merge of Comm_KMB_583
-    |
-    |   Revision 1.5.102.1  2004/10/26 17:24:20  KevinBenson
-    |   Try adding a group display name on the install piece.
+    |   Revision 1.7  2004/11/02 22:53:37  jdt
+    |   Rolled back merged changes to BLLatest
     |
     |   Revision 1.5  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
@@ -75,9 +72,6 @@
         <map-to xml="group"/>
         <field name="ident" type="java.lang.String">
             <bind-xml name="ident" node="attribute"/>
-        </field>
-        <field name="displayName" type="java.lang.String">
-            <bind-xml name="display" node="element"/>
         </field>
         <field name="description" type="java.lang.String">
             <bind-xml name="description" node="element"/>

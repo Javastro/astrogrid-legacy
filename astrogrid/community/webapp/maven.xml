@@ -3,12 +3,12 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/02 21:47:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.19 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/02 22:53:37 $</cvs:date>
+    | <cvs:version>$Revision: 1.20 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.19  2004/11/02 21:47:39  jdt
-    |   Merge of Comm_KMB_583
+    |   Revision 1.20  2004/11/02 22:53:37  jdt
+    |   Rolled back merged changes to BLLatest
     |
     |   Revision 1.18  2004/10/29 15:50:05  jdt
     |   merges from Community_AdminInterface (bug 579)
@@ -302,13 +302,12 @@
         </ant:copy>
         <!--+
             | Copy our log4j configuration file into WEB-INF/classes.
-            
+            +-->
         <ant:copy verbose="true" todir="${axisDir}/WEB-INF/classes">
             <ant:fileset dir="src/config">
                 <include name="log4j.properties"/>
             </ant:fileset>
         </ant:copy>
-        +-->
         <!--+
             | Patch the web.xml to fix the DTD
 			Now gets replaced anyways

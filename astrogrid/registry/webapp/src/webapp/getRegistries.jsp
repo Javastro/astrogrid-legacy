@@ -77,11 +77,7 @@
 Use your browser's 'view source' to view the XML:
 <pre>
 <%
-      out.write("The xml<br />");
-      String testxml = DomHelper.DocumentToString(entry);
-      testxml = testxml.replaceAll("<","&lt;");
-      testxml = testxml.replaceAll(">","&gt;");
-      out.write(testxml);
+      DomHelper.DocumentToWriter(entry, out);
     }
 %>
 </pre>
