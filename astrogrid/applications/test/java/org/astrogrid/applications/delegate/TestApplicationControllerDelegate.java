@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerDelegate.java,v 1.6 2004/03/25 11:28:28 pah Exp $
+ * $Id: TestApplicationControllerDelegate.java,v 1.7 2004/04/14 13:19:48 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,7 +28,7 @@ public class TestApplicationControllerDelegate extends AbstractDelegateTestCase 
     */
 
    private static String localendpoint =
-      "http://localhost:8080/astrogrid-applications/services/ApplicationControllerService";
+      "http://localhost:8080/astrogrid-applications/services/CommonExecutionConnectorService";
 
    public TestApplicationControllerDelegate(String arg0) {
       super(arg0);

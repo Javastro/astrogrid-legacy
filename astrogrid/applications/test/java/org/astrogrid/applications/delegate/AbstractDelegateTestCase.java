@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTestCase.java,v 1.1 2004/03/25 11:28:28 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.2 2004/04/14 13:19:48 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -46,7 +46,7 @@ public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
        * Constructor for ApplicationControllerDelegateTest.
        * @param arg0
        */
-   protected JobIdentifierType jobstepID;
+   protected JobIdentifierType jobstepID = new JobIdentifierType("dummyjob");
 
    protected String executionid;
 
