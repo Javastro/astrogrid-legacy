@@ -1557,6 +1557,10 @@ public class MySpaceActions
                   containerName = userAcc.getBaseContainer() +  "/" +
                     (String)servers.elementAt(0) +  "/workflow";
                   containerNames.add(containerName);
+                  
+				containerName = userAcc.getBaseContainer() +  "/" +
+					(String)servers.elementAt(0) +  "/votable";
+				  containerNames.add(containerName);
 
 //
 //               Add entries corresponding to these container names
