@@ -5,6 +5,8 @@
 
 package org.astrogrid.datacenter.delegate.nvocone;
 
+import org.astrogrid.datacenter.delegate.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,26 +14,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.delegate.AdqlQuerier;
-import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.delegate.DatacenterQuery;
-import org.astrogrid.datacenter.delegate.DatacenterResults;
-import org.astrogrid.datacenter.delegate.DelegateQueryListener;
-import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.io.Piper;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.util.Workspace;
 import org.xml.sax.SAXException;
@@ -397,6 +391,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements AdqlQu
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.5  2003/12/02 17:55:29  mch
+Moved MySpaceDummy
+
 Revision 1.4  2003/11/26 16:31:46  nw
 altered transport to accept any query format.
 moved back to axis from castor
