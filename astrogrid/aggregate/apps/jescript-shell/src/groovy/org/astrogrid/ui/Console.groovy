@@ -71,7 +71,7 @@ class Console extends ConsoleSupport {
         // now attempt to login to community.
         try {
             security = new CommunityPasswordResolver();
-            creds.setSecurityToken(security.checkPassword("ivo://" + acc.community +"/" +  acc.name,password))
+            creds.setSecurityToken(security.checkPassword("ivo://" + acc.community +"/" +  acc.name,password).toString())
 	        } catch (Exception e) {
 		        e.printStackTrace();
 		        // display swing dialog.
