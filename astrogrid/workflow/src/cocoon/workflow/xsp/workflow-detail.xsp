@@ -185,12 +185,12 @@
 	
 	
 		<xsp:attribute name="type">onestep-sequence</xsp:attribute>
-		<xsp:element name="workflow-name">
+		<xsp:attribute name="workflow-name">
 			<xsp:expr>workflow.getName()</xsp:expr>
-		</xsp:element> 
-		<xsp:element name="workflow-description">
+		</xsp:attribute> 
+		<xsp:attribute name="workflow-description">
 			<xsp:expr>workflow.getDescription()</xsp:expr>
-		</xsp:element> 
+		</xsp:attribute> 
 		
 		<xsp:logic>
 			<![CDATA[
