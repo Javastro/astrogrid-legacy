@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.9 2004/04/22 14:22:12 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.10 2004/04/27 10:51:00 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -192,8 +192,8 @@
   <map:resources>
     <map:resource name="myspace-action-submit">
       <map:act type="myspace-action">
-        <map:parameter name="username" value="anonymous"/>
-        <map:parameter name="group" value="roe.ac.uk"/>
+        <map:parameter name="user" value="anonymous"/>
+        <map:parameter name="community_account" value="roe.ac.uk"/>
         <map:parameter name="token" value="mytoken"/>
       </map:act>
     </map:resource>
@@ -375,8 +375,8 @@
       <map:match pattern="myspace-micro">
 
         <map:generate type="myspace-holding-gen">
-          <map:parameter name="username" value="anonymous"/>
-          <map:parameter name="group" value="roe.ac.uk"/>
+          <map:parameter name="user" value="anonymous"/>
+          <map:parameter name="community_account" value="roe.ac.uk"/>
           <map:parameter name="token" value="mytoken"/>
         </map:generate>
         
@@ -391,8 +391,8 @@
         <map:call resource="myspace-action-submit"/>
         
         <map:generate type="myspace-holding-gen">
-          <map:parameter name="username" value="anonymous"/>
-          <map:parameter name="group" value="roe.ac.uk"/>
+          <map:parameter name="user" value="anonymous"/>
+          <map:parameter name="community_account" value="roe.ac.uk"/>
           <map:parameter name="token" value="mytoken"/>
         </map:generate>
         
