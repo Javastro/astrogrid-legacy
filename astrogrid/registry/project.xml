@@ -29,10 +29,7 @@
     <name>AstroGrid registry</name>
 
     
-    <!--+
-        | The location of our deployed web site.
-        +-->
-    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/registry</siteDirectory>
+
 
     <!--+
         | Our cvs repository location.
@@ -48,11 +45,7 @@
             </url>
     </repository>
 
-    <!--+
-        | Various other stuff copied from the mySpace project.xml
-        | which neatens up the maven reports
-        +-->
-        <currentVersion>$Name:  $</currentVersion>
+
 	<organization>
 		<name>AstroGrid</name>
 		<url>http://www.astrogrid.org</url>
