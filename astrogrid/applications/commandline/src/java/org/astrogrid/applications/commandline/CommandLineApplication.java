@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.8 2004/09/15 11:37:00 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.9 2004/09/16 09:50:10 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -198,34 +198,42 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      */
     public void run() {
         try {
-            setupParameters();
-        }
-        catch (CeaException e) {
-            reportError("problem setting up parameters", e);
-            return;
-        }
-        reportMessage("Calling preRunHook");
-        preRunHook();
-        reportMessage("PreRunHook - completed");
-        try {
-            startApplication();
-           
-        }
-        catch (ApplicationExecutionException e1) {
-            reportError("problem running application", e1);
-            return;
-        }
+            try {
+                setupParameters();
+            }
+            catch (CeaException e) {
+                reportError("problem setting up parameters", e);
+                return;
+            }
+            reportMessage("Calling preRunHook");
+            preRunHook();
+            reportMessage("PreRunHook - completed");
+            try {
+                startApplication();
 
-       reportMessage("waiting for " +this.toString()+ " to finish....");
-       try {
-          exitStatus = process.waitFor();
-          reportMessage(this.toString() + "finished");
-          endApplication();
-       }
-       catch (InterruptedException e) {
-          // TODO need to work out if it was interrupted on purpose and do something appropriate...
-          reportError("application "+this.toString()+" was interrupted", e);
-       } 
+            }
+            catch (ApplicationExecutionException e1) {
+                reportError("problem running application", e1);
+                return;
+            }
+
+            reportMessage("waiting for " + this.toString() + " to finish....");
+            try {
+                exitStatus = process.waitFor();
+                reportMessage(this.toString() + "finished");
+                endApplication();
+            }
+            catch (InterruptedException e) {
+                // TODO need to work out if it was interrupted on purpose and do
+                // something appropriate...
+                reportError("application " + this.toString()
+                        + " was interrupted", e);
+            }
+        }
+        catch (Throwable e) {
+            reportError("unexpected runtime error in application"
+                    + this.toString() +" "+ ids.getId()+" "+ids.getJobStepId() , e);
+        }
     }
 
 /**
