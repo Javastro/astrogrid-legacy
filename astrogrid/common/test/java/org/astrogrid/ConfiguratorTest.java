@@ -1,4 +1,4 @@
-/* $Id: ConfiguratorTest.java,v 1.3 2004/01/06 16:24:11 jdt Exp $
+/* $Id: ConfiguratorTest.java,v 1.4 2004/01/20 17:23:45 jdt Exp $
  * Created on 11-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,7 @@
  */
 package org.astrogrid;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -17,6 +18,9 @@ import java.net.URL;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.NamingManager;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import junit.framework.TestCase;
 
@@ -28,6 +32,7 @@ import org.astrogrid.testutils.naming.SimpleContextFactoryBuilder;
  *
  */
 public final class ConfiguratorTest extends TestCase {
+  private static Log log = LogFactory.getLog(ConfiguratorTest.class);
 
   /**
    * Constructor for ConfiguratorTest.
@@ -44,20 +49,20 @@ public final class ConfiguratorTest extends TestCase {
   public static void main(final String[] args) {
     junit.textui.TestRunner.run(ConfiguratorTest.class);
   }
-  
+
   /**
     * Set up the SimpleContextFactoryBuilder
     * @throws Exception 
     * @see TestCase#setUp()
     */
-   protected final void setUp() throws Exception {
-     super.setUp();
-     if (!NamingManager.hasInitialContextFactoryBuilder()) {
-       NamingManager.setInitialContextFactoryBuilder(
-         new SimpleContextFactoryBuilder());
-     }
+  protected final void setUp() throws Exception {
+    super.setUp();
+    if (!NamingManager.hasInitialContextFactoryBuilder()) {
+      NamingManager.setInitialContextFactoryBuilder(
+        new SimpleContextFactoryBuilder());
+    }
 
-   }
+  }
   /**
    * Check that the properties file can be loaded by DummyFileConfigurator
    * @throws AstroGridException if it can't be
@@ -98,33 +103,56 @@ public final class ConfiguratorTest extends TestCase {
         category));
   }
 
-  
+  /**
+   *  Check the fileTestConfigNoMessages.xml 
+   *  There's no messages property file, so an exception will be thrown,
+   *  however, it gets caught and logged and execution just continues.  Not
+   * sure if this is really what we want...
+   * 
+   */
+  public void testGetAPropertyFromFileConfiguratorNoMessages() {
+    log.trace("entering testGetAPropertyFromFileConfiguratorNoMessages ");
+    final String expect = "fdsa";
+    final String key = "BAR";
+    final String category = "FOO";
+    Configurator configurator = new DummyFileConfiguratorNoMessages();
+    assertEquals(
+      "Property didn't match",
+      expect,
+      DummyFileConfigurator.getProperty(
+        configurator.getSubsystemAcronym(),
+        key,
+        category));
+    log.trace("leaving testGetAPropertyFromFileConfiguratorNoMessages");
+  }
 
   /**
    * Tests a configurator that loads its properties from a URL stored in JNDI
    * @throws NamingException if there's problems with the naming service
    * @throws IOException if the URL isn't working
    */
-  public void testGetAPropertyFromURLConfigurator() throws NamingException, IOException, AstroGridException   {
+  public void testGetAPropertyFromURLConfigurator()
+    throws NamingException, IOException, AstroGridException {
     final String expect = "asdf";
     final String key = "BAR";
     final String category = "FOO";
-    
+
     // url for testing the DummyURLConfigurator
-    URL url = new URL("http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml");
+    URL url =
+      new URL("http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml");
     // check the URL exists OK    
     InputStream is = url.openStream();
     is.close();
-    
+
     Configurator configurator = new DummyURLConfigurator();
     String jndiName = configurator.getJNDIName();
 
     Context ctx = NamingManager.getInitialContext(null);
     ctx.bind(jndiName, url.toString());
     assertEquals("Object bound OK", url.toString(), ctx.lookup(jndiName));
-    
-    configurator.checkPropertiesLoaded();    
-       
+
+    configurator.checkPropertiesLoaded();
+
     assertEquals(
       "Property didn't match",
       expect,
@@ -133,18 +161,18 @@ public final class ConfiguratorTest extends TestCase {
         key,
         category));
   }
-  
+
   /**
    * Tests a configurator which is using a bad URL.  We want an exception here
    * since by placing the URL in the naming service the user clearly wanted to use it.
    * @throws NamingException problem with the naming service
    * @throws MalformedURLException our test URL is malformed
    */
-  public void testBadURL() throws NamingException, MalformedURLException   {
+  public void testBadURL() throws NamingException, MalformedURLException {
     final String expect = "asdf";
     final String key = "BAR";
     final String category = "FOO";
-    
+
     Configurator configurator = new DummyCrapURLConfigurator();
     String jndiName = configurator.getJNDIName();
 
@@ -152,14 +180,15 @@ public final class ConfiguratorTest extends TestCase {
     URL crapURL = new URL("file://C:/bollox");
     try {
       crapURL.openStream().read();
-      fail("If this URL "+crapURL+" exists then this test ain't gonna work");
-    } catch (IOException expected ) {
+      fail(
+        "If this URL " + crapURL + " exists then this test ain't gonna work");
+    } catch (IOException expected) {
       // expected 
     }
-    
+
     ctx.bind(jndiName, crapURL.toString());
     assertEquals("Object bound OK", crapURL.toString(), ctx.lookup(jndiName));
-        
+
     try {
       new DummyCrapURLConfigurator().checkPropertiesLoaded();
       fail("Expected an AstroGridException because there is no config file at the URL supplied");
@@ -168,18 +197,19 @@ public final class ConfiguratorTest extends TestCase {
       return;
     }
   }
-  
+
   /**
    * If the configurator supplied a JNDI name for a URL, but that name doesn't
    * exist in the naming service, then it falls back to looking for a local file on the classpath.
    * This allows the user the choice of where to put the properties file.
    * @throws NamingException if there's a problem storing the URL in the naming service
    */
-  public void testGetAPropertyFromURLConfiguratorButURLDontExistInJNDI() throws NamingException   {
+  public void testGetAPropertyFromURLConfiguratorButURLDontExistInJNDI()
+    throws NamingException {
     final String expect = "asdf";
     final String key = "BAR";
     final String category = "FOO";
-    
+
     Configurator configurator = new DummyCrapJNDINameConfigurator();
     String jndiName = configurator.getJNDIName();
 
@@ -187,10 +217,10 @@ public final class ConfiguratorTest extends TestCase {
     try {
       System.out.println(ctx.lookup(jndiName));
       fail("Expect an exception because the name shouldn't be bound in the InitialContext");
-    } catch(NamingException expected) {
+    } catch (NamingException expected) {
       //OK
     }
-            
+
     assertEquals(
       "Property didn't match",
       expect,
@@ -200,10 +230,140 @@ public final class ConfiguratorTest extends TestCase {
         category));
   }
 
+  /**
+   *  Can we set a property in the configuration?
+   */
+  public void testSetAProperty() {
+    final String expect = "summit else";
+    final String key = "BAR";
+    final String category = "FOO";
+    Configurator configurator = new DummyFileConfigurator();
+
+    final String oldValue =
+      Configurator.getProperty(
+        configurator.getSubsystemAcronym(),
+        key,
+        category);
+
+    Configurator.setProperty(
+      configurator.getSubsystemAcronym(),
+      key,
+      category,
+      expect);
+
+    assertNotEqual(
+      "Property hasn't been changed",
+      oldValue,
+      Configurator.getProperty(
+        configurator.getSubsystemAcronym(),
+        key,
+        category));
+
+    assertEquals(
+      "Property didn't match",
+      expect,
+      DummyFileConfigurator.getProperty(
+        configurator.getSubsystemAcronym(),
+        key,
+        category));
+  }
+
+  /**
+   *  Get a template property - should return "" as no template file supplied
+   */
+  public void testGetATemplateProperty() {
+    
+    final String key = "TEMPLATE.BLURGH";
+    final String category = "FOO";
+    Configurator configurator = new DummyFileConfigurator();
+
+    
+    final String result =  Configurator.getProperty(
+        configurator.getSubsystemAcronym(),
+        key,
+        category);
+      
+    assertEquals(result,"foo");  
+
+  }
+  
+  /**
+   *  Set a template property should result in a fail, since it's not currently supported.
+   */
+  public void testSetATemplateProperty() {
+    final String expect = "summit else";
+    final String key = "TEMPLATE.BAR";
+    final String category = "FOO";
+    Configurator configurator = new DummyFileConfigurator();
+
+    try {
+      Configurator.setProperty(
+        configurator.getSubsystemAcronym(),
+        key,
+        category,
+        expect);
+      fail("Excepted an UnsupportedOperationException");
+    } catch (UnsupportedOperationException uoe) {
+      return; //expected 
+    }
+  }
+
+  /**
+   * Try to export the file
+   * @throws AstroGridException on IO problems
+   */
+  public void testSave() throws AstroGridException {
+    Configurator configurator = new DummyFileConfigurator();
+    configurator.save();
+    File file = new File("fileTestConfig.xml");
+    assertTrue("saved file doesn't exist", file.exists());
+    assertTrue("failed to delete file", file.delete());
+  }
+
+  /**
+   *  Try saving to some stupid file name in the hope of provoking an exception
+   */
+  public void testFailedToSave() {
+    Configurator configurator = new DummyFileConfigurator();
+    String fileName = "***** &^£%$hope this is an impossible filename";
+    File file = new File(fileName);
+    try {
+      configurator.save(fileName);
+      file.delete();
+      fail("Expected an exception");
+    } catch (AstroGridException e) {
+      return; //expected
+    }
+  }
+
+  /**
+   * A method I'd like to have in TestCase
+   * @param msg error msg 
+   * @param string1 to compare with...
+   * @param string2 ...this
+   */
+  public static void assertNotEqual(
+    final String msg,
+    final String string1,
+    final String string2) {
+    assertFalse(msg, string1.equals(string2));
+  }
+
+  /**
+   *  Simple that the DummyFileConfigurator used in other tests initialises correctly.
+   */
+  public void testDummyFileConfigurator() {
+    Configurator configurator = new DummyFileConfigurator();
+    assertEquals("fileTestConfig.xml", configurator.getConfigFileName());
+  }
+
 }
 
 /*
 *$Log: ConfiguratorTest.java,v $
+*Revision 1.4  2004/01/20 17:23:45  jdt
+*Added unit tests for full clover coverage and fixed bugs.
+*
 *Revision 1.3  2004/01/06 16:24:11  jdt
 *updated a broken URL
 *

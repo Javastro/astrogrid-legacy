@@ -318,7 +318,7 @@ public abstract class Configurator {
       }
 
       configuration = ConfigurationManager.getConfiguration(subsystemAcronym);
-    } catch (ConfigurationManagerException cme) {
+    } catch (Exception cme) {
       Log.logError(
         "Could not get config subsystem '"
           + subsystemAcronym
