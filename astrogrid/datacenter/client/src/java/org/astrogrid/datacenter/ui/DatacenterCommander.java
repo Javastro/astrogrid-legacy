@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.6 2004/03/13 16:26:25 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.7 2004/09/28 14:59:35 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,9 +16,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.adql.ADQLUtils;
-import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
@@ -101,7 +98,7 @@ public class DatacenterCommander {
       System.out.println("   cone: do cone search; give serviceurl as base?RA=20;DEC=30;SR=4 as normal NVO");
    }
    
-   public static void doAdql(String endpoint, String[] args) throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
+   public static void doAdql(String endpoint, String[] args) throws ServiceException, MarshalException, ValidationException, IOException {
       
       if (args.length<3) {
          System.out.println("No ADQL file given");
@@ -117,12 +114,15 @@ public class DatacenterCommander {
       System.out.println("Connecting to server...");
       QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(endpoint.toString());
       System.out.println("Reading query...");
+      System.out.println("...FAIL: need to update this bit of code");
+      /*
       Select select = Select.unmarshalSelect(new InputStreamReader ( new FileInputStream(queryFile)));
       Element queryBody = ADQLUtils.toQueryBody(select);
       System.out.println("Asking query...");
       InputStream results = del.askQuery(new AdqlQuery(queryBody), QuerySearcher.VOTABLE);
       System.out.println("Results:");
       Piper.bufferedPipe(results, System.out);
+       */
    }
    
    
@@ -140,7 +140,7 @@ public class DatacenterCommander {
             
 
    
-   public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException, ADQLException{
+   public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException {
       
       System.out.println("Connecting to server...");
       QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(endpoint.toString());
@@ -155,6 +155,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.7  2004/09/28 14:59:35  mch
+ Removed obsolete ADQL 0.5 object model
+
  Revision 1.6  2004/03/13 16:26:25  mch
  Changed makeFullSearcher to makeQuerySearcher
 
