@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.3 2004/08/12 15:15:55 nw Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.4 2004/08/12 15:54:22 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -66,7 +66,7 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         query.setIndirect(false); 
         query.setValue(out.toString());
                        
-        ParameterValue result = (ParameterValue)fitsTool.findXPathValue("output/parameter[name='Result']");
+        ParameterValue result = (ParameterValue)fitsTool.findXPathValue("output/parameter[name='Target']");
         assertNotNull(result);
         result.setIndirect(false); // want to get result straight back.
                 
@@ -93,6 +93,9 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
+Revision 1.4  2004/08/12 15:54:22  nw
+fixed faulty parameter name.
+
 Revision 1.3  2004/08/12 15:15:55  nw
 getting there
 
