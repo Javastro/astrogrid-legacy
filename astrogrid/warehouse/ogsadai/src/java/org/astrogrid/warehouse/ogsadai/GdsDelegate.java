@@ -254,7 +254,7 @@ public class GdsDelegate extends GridServiceDelegate {
   String chooseFactoryFromRegistry (ExtensibilityType queryResult)
       throws Exception {
 
-    String factoryURLString = "";
+    String factoryURLString = null;
     boolean haveFoundFactoryUrl = false;
     try {
       Object[] entries = AnyHelper.getAsObject(queryResult, EntryType.class);
@@ -278,7 +278,9 @@ public class GdsDelegate extends GridServiceDelegate {
                 logger.error("No handles.");
                 throw new Exception("No handles.");
             }
-
+            else {
+               factoryURLString = handles[0].toString();
+            }
 
             // Check to see if finished looking for factory URLs
             if ( factoryURLString.toUpperCase().indexOf( "SECURE") >= 0 ) {
