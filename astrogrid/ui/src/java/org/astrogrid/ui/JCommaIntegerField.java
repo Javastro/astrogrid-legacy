@@ -48,37 +48,7 @@ import org.astrogrid.ui.NumberChecker;
 
 public class JCommaIntegerField extends JTextField
 {
-
-   /**
-    * A text document which will reject any characters that are not
-    * digits.
-    */
-   public class NumberDocument extends PlainDocument
-   {
-      public void insertString(int offs, String str, AttributeSet atts)
-                                                   throws BadLocationException
-      {
-        // Get the existing text, and do a 'test' insert of new string...
-        StringBuffer testText = new StringBuffer(getText(0, getLength()));
-        testText.insert(offs, str);
-
-        StringTokenizer testTokens = new StringTokenizer(testText.toString());
-
-        boolean areValidInts = true;
-        while ( (areValidInts == true) && (testTokens.hasMoreTokens()) )
-        {
-          areValidInts = 
-            (areValidInts) &&
-            (NumberChecker.isPotentialInt(testTokens.nextToken(",").trim()));
-        };
-        
-        if ( areValidInts == true )
-        {
-          super.insertString(offs, str, atts);
-        };
-      }
-   }
-   
+  
    /**
     * Constructs field
     */
@@ -155,3 +125,32 @@ public class JCommaIntegerField extends JTextField
    }
 }
 
+/**
+ * A text document which will reject any characters that are not
+ * digits.
+ */
+class NumberDocument extends PlainDocument
+{
+   public void insertString(int offs, String str, AttributeSet atts)
+												throws BadLocationException
+   {
+	 // Get the existing text, and do a 'test' insert of new string...
+	 StringBuffer testText = new StringBuffer(getText(0, getLength()));
+	 testText.insert(offs, str);
+
+	 StringTokenizer testTokens = new StringTokenizer(testText.toString());
+
+	 boolean areValidInts = true;
+	 while ( (areValidInts == true) && (testTokens.hasMoreTokens()) )
+	 {
+	   areValidInts = 
+		 (areValidInts) &&
+		 (NumberChecker.isPotentialInt(testTokens.nextToken(",").trim()));
+	 };
+        
+	 if ( areValidInts == true )
+	 {
+	   super.insertString(offs, str, atts);
+	 };
+   }
+}

@@ -48,35 +48,6 @@ import org.astrogrid.ui.NumberChecker;
 public class JCommaDoubleField extends JTextField
 {
 
-   /**
-    * A text document which will reject any characters that are not
-    * numerical digits or a '.'
-    */
-   public class DoubleNumberDocument extends PlainDocument
-   {
-      public void insertString(int offs, String str, AttributeSet atts)
-                                                   throws BadLocationException
-      {
-        // Get the existing text, and do a 'test' insert of new string...
-        StringBuffer testText = new StringBuffer(getText(0, getLength()));
-        testText.insert(offs, str);
-
-        StringTokenizer testTokens = new StringTokenizer(testText.toString());
-
-        boolean areValidDoubles = true;
-        while ( (areValidDoubles == true) && (testTokens.hasMoreTokens()) )
-        {
-          areValidDoubles = 
-            (areValidDoubles) &&
-            (NumberChecker.isPotentialDouble(testTokens.nextToken(",").trim()));
-        };
-        
-        if ( areValidDoubles == true )
-        {
-          super.insertString(offs, str, atts);
-        };
-      }
-   }
    
    /**
     * Constructs field
@@ -151,5 +122,35 @@ public class JCommaDoubleField extends JTextField
       // Calls superclass directly as there is no need to for the double
       // check in setText(String);
       super.setText("" + value);
+   }
+}
+
+/**
+ * A text document which will reject any characters that are not
+ * numerical digits or a '.'
+ */
+class DoubleNumberDocument extends PlainDocument
+{
+   public void insertString(int offs, String str, AttributeSet atts)
+												throws BadLocationException
+   {
+	 // Get the existing text, and do a 'test' insert of new string...
+	 StringBuffer testText = new StringBuffer(getText(0, getLength()));
+	 testText.insert(offs, str);
+
+	 StringTokenizer testTokens = new StringTokenizer(testText.toString());
+
+	 boolean areValidDoubles = true;
+	 while ( (areValidDoubles == true) && (testTokens.hasMoreTokens()) )
+	 {
+	   areValidDoubles = 
+		 (areValidDoubles) &&
+		 (NumberChecker.isPotentialDouble(testTokens.nextToken(",").trim()));
+	 };
+        
+	 if ( areValidDoubles == true )
+	 {
+	   super.insertString(offs, str, atts);
+	 };
    }
 }
