@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.1 2004/02/20 18:35:40 nw Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.2 2004/02/23 16:47:00 pah Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) this is a small conflicting change -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/v2" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v2" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
 	</xs:annotation>
@@ -219,8 +219,6 @@
 		<xs:complexType>
 			<xs:complexContent>
 				<xs:restriction base="agpd:parameterRef">
-					<!-- NWW - altered to load in editor
-					<xs:attribute name="ref" type="xs:string" /> -->
 					<xs:attribute name="ref" type="xs:IDREF" use="required"/>
 				</xs:restriction>
 			</xs:complexContent>
