@@ -4,7 +4,7 @@
     xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
     xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"    
     xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
-    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+    <vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>HelloWorldHttpApp</vr:ResourceKey>
@@ -56,7 +56,7 @@
 			<ceab:URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>
-    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+    <vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>AdderHttpGetApp</vr:ResourceKey>
@@ -144,7 +144,7 @@
 			<ceab:URL method="get">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/adder.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>
-   <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+   <vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>AdderHttpPostApp</vr:ResourceKey>
@@ -232,7 +232,7 @@
 			<ceab:URL method="post">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/adder.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>    
-    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+    <vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>HelloYouXMLHttpApp</vr:ResourceKey>
@@ -295,7 +295,7 @@
 			<ceab:URL method="get">@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloYou.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>    
-    <vr:Resource  updated="2004-11-20T15:34:22Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
+    <vr:Resource  updated="2004-11-20Z" status="active" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaHttpApplicationType">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>InvalidHttpApp</vr:ResourceKey>
@@ -349,7 +349,7 @@
 			<ceab:URL>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/testapps/helloWorld.jsp</ceab:URL>
 		</cea:CeaHttpAdapterSetup>
     </vr:Resource>
-		<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType"  updated="2004-11-20T15:34:22Z" status="active">
+		<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CeaServiceType"  updated="2004-11-20Z" status="active">
         <vr:Identifier>
             <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
             <vr:ResourceKey>TestHttpCEC</vr:ResourceKey>
