@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationCEAServerTest.java,v 1.5 2004/09/01 16:36:50 jdt Exp $
+/*$Id: HttpApplicationCEAServerTest.java,v 1.6 2004/09/07 08:13:20 pah Exp $
  * Created on 30-July-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import junit.framework.TestCase;
 
 import org.astrogrid.applications.component.CEAComponentManager;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
-import org.astrogrid.applications.component.HttpApplicationCEAComponentManager;
 import org.astrogrid.applications.component.JavaClassCEAComponentManager;
 import org.astrogrid.applications.http.registry.RegistryQuerier;
 import org.astrogrid.applications.http.test.TestRegistryQuerier;
@@ -73,6 +72,9 @@ public class HttpApplicationCEAServerTest extends TestCase {
 
 /* 
 $Log: HttpApplicationCEAServerTest.java,v $
+Revision 1.6  2004/09/07 08:13:20  pah
+remove incorrect import
+
 Revision 1.5  2004/09/01 16:36:50  jdt
 Was failing....perhaps a change in the server code since we branched?
 
