@@ -1,5 +1,5 @@
 /*
- $Id: XmlPrinterTest.java,v 1.2 2004/07/03 11:51:53 mch Exp $
+ $Id: XmlPrinterTest.java,v 1.3 2004/07/05 13:49:23 mch Exp $
 
  (c) Copyright...
  */
@@ -23,7 +23,7 @@ public class XmlPrinterTest {
    
    /** Test harness method - writes out a simple table
     */
-   public static void testWrite() throws IOException, ParserConfigurationException, SAXException {
+   public void testWrite() throws IOException, ParserConfigurationException, SAXException {
       StringWriter sw = new StringWriter();
       
       XmlPrinter xOut = new XmlPrinter(sw);
@@ -68,6 +68,9 @@ public class XmlPrinterTest {
 
 /*
  $Log: XmlPrinterTest.java,v $
+ Revision 1.3  2004/07/05 13:49:23  mch
+ Fixed static testWrite method
+
  Revision 1.2  2004/07/03 11:51:53  mch
  Added validation test
 
