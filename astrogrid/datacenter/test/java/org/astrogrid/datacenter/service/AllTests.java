@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2003/09/05 01:03:27 nw Exp $
+/*$Id: AllTests.java,v 1.2 2003/09/05 13:25:29 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,6 +25,7 @@ public class AllTests {
         //$JUnit-BEGIN$
         suite.addTest(ServerTest.suite());
         suite.addTest(WorkspaceTest.suite());
+        suite.addTest(DataQueryServiceTest.suite());
         //$JUnit-END$
         return suite;
     }
@@ -33,6 +34,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2003/09/05 13:25:29  nw
+added end-to-end test of DataQueryService
+
 Revision 1.1  2003/09/05 01:03:27  nw
 bind things together
  
