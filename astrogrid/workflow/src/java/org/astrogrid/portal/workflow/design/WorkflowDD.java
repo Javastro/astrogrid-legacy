@@ -94,8 +94,8 @@ public class WorkflowDD {
         
     public static final String
         PARAMETER_TEMPLATE =
-        "<parameter name=\"{0}\" type=\"{1}\" min=\"{2}\" max=\"{3}\" >" +        "<documentation>" +        "{5}" +        "</documentation>"+
-        "{6}" +                           // possible instream data OR remote reference
+        "<parameter name=\"{0}\" type=\"{1}\" min=\"{2}\" max=\"{3}\" >" +        "<documentation>" +        "{4}" +        "</documentation>"+
+        "{5}" +                           // possible instream data OR remote reference
         "</parameter>" ;        
         
     public static final String
