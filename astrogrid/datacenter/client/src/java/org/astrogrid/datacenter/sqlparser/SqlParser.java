@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.6 2004/08/25 23:38:34 mch Exp $
+ * $Id: SqlParser.java,v 1.7 2004/08/26 11:47:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,7 +31,11 @@ public class SqlParser  {
    
    ReturnSpec resultsDef = null;
    
-   Vector scope = new Vector(); // the 'from' cluase - the list of tables to search
+   // the 'from' cluase - the list of tables to search
+   Vector scope = new Vector();
+
+   //the 'order by' clause
+   Vector orderBy = new Vector();
    
    /**
     * Parse where clause
@@ -239,10 +243,19 @@ public class SqlParser  {
     */
    private ColumnReference parseColumnRef(String colRef) {
       int stop = colRef.indexOf(".");
+      String tableName = "";
       if (stop == -1) {
-         throw new IllegalArgumentException("There is no '.' in expected column reference '"+colRef+"'");
+         if (scope.size() == 1) {
+            //if there is only one FROM then we can assume the table name is that
+            tableName = scope.get(0).toString();
+         }
+         else {
+            throw new IllegalArgumentException("There is no '.' in expected column reference '"+colRef+"'");
+         }
       }
-      String tableName = colRef.substring(0,stop);
+      else {
+         tableName = colRef.substring(0,stop);
+      }
       String colName = colRef.substring(stop+1);
       if (colAlias.get(tableName) != null) {
          tableName = (String) colAlias.get(tableName);
@@ -415,6 +428,24 @@ public class SqlParser  {
       }
    }
    
+   /*
+    * The values that define the sort order are defined by NumericExpressions (so you can return
+    * LOG(Table.MAG) ) but for the moment we are going to assume that they are
+    * all columns.
+    */
+   public void parseOrderBy(String orderBySql) {
+      
+      //go through list separated by commas
+      StringTokenizer tokenizer = new StringTokenizer(orderBySql, ",");
+      
+      while (tokenizer.hasMoreTokens()) {
+         //each token is a column definition for the results
+         String colDef = tokenizer.nextToken().trim();
+    
+         orderBy.add(parseNumeric((colDef)));
+      }
+   }
+   
    /**
     * Parses a full SQL statement, building up the alias list from the FROM
     * and/or SELECT statements, then creating a table results definition from the
@@ -422,43 +453,51 @@ public class SqlParser  {
     */
    public void parseStatement(String sql) {
 
+      //prepare string
+      sql = sql.replace('\n', ' ').trim().toUpperCase();
+      
       scope = new Vector(); //clear scope
-      
-      sql = sql.trim().toUpperCase();
-      
+
+      //break down into SELECT ...  FROM ... WHERE ... ORDER BY in that order
       if (!sql.startsWith("SELECT")) {
          throw new IllegalArgumentException("SQL doesn't start with SELECT - Can't cope");
       }
       
       int fromIdx = sql.indexOf("FROM");
       int whereIdx = sql.indexOf("WHERE");
+      int orderByIdx = sql.indexOf("ORDER BY");
 
-      //parse the from bit if it exists
-      if (fromIdx > -1) {
-         if (whereIdx > -1) {
-            parseFrom(sql.substring(fromIdx+4, whereIdx-1));
-         }
-         else {
-            parseFrom(sql.substring(fromIdx+4));
-         }
-      }
-      
-      //parse the select bit
-      String select;
+      //start with FROM so we get the scope and aliases
       if (fromIdx == -1) {
-         select = sql.substring(6, whereIdx);
+         throw new IllegalArgumentException("No FROM in SQL statement");
       }
       else {
-         select = sql.substring(6, fromIdx);
+         int end = whereIdx;
+         if (end == -1) end = orderByIdx;
+         if (end == -1) {
+            parseFrom(sql.substring(fromIdx+4));
+         }
+         else {
+            parseFrom(sql.substring(fromIdx+4, end-1));
+         }
       }
-      parseSelect(select);
       
-      //parse the where clause
-      if (whereIdx >-1) {
-         String whereSql = sql.substring(whereIdx+5);
       
-         parseWhere(whereSql);
+      if (orderByIdx > -1) {
+         parseOrderBy(sql.substring(orderByIdx+8));
+         sql = sql.substring(0, orderByIdx-1);
       }
+
+      if (whereIdx > -1) {
+         parseWhere(sql.substring(whereIdx+5));
+         sql = sql.substring(0, whereIdx-1);
+      }
+
+      //remove from
+      sql = sql.substring(0, fromIdx-1);
+      
+      parseSelect(sql.substring(6));//remove 'SELECT'
+      
    }
    
    /**
@@ -545,6 +584,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.7  2004/08/26 11:47:16  mch
+ Added tests based on Patricios errors and other SQl statements, and subsequent fixes...
+
  Revision 1.6  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.5 2004/08/25 23:38:33 mch Exp $
+ * $Id: Query2Adql074.java,v 1.6 2004/08/26 11:47:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -60,7 +60,7 @@ public class Query2Adql074  {
                selectListTag.writeTag("Item", "xsi:type='columnReferenceType' Table='"+colRef.getTableName()+"' Name='"+colRef.getColName()+"'", "");
             }
             else {
-               throw new UnsupportedOperationException("Specify only column references for results table columns (for now)");
+               throw new UnsupportedOperationException("Thicky Writer: Can't handle '"+colDefs[i]+"' for returned table column. Specify only column references for now");
             }
          }
       }
@@ -112,8 +112,8 @@ public class Query2Adql074  {
          if (operator.startsWith("<")) { operator = "&lt;"+operator.substring(1); }
          
          XmlTagPrinter comparisonTag = tag.newTag("Condition", "xsi:type='comparisonPredType' Comparison='"+operator+"'");
-         writeNumeric(comparisonTag, ((NumericComparison) expression).getLHS());
-         writeNumeric(comparisonTag, ((NumericComparison) expression).getRHS());
+         writeNumeric(comparisonTag, "Arg", ((NumericComparison) expression).getLHS());
+         writeNumeric(comparisonTag, "Arg", ((NumericComparison) expression).getRHS());
       }
       else if (expression instanceof Function) {
          //can only be a circle.. I think...
@@ -129,9 +129,9 @@ public class Query2Adql074  {
       }
    }
 
-   private static void writeNumeric(XmlTagPrinter tag, NumericExpression expression) throws IOException {
+   private static void writeNumeric(XmlTagPrinter parentTag, String elementName, NumericExpression expression) throws IOException {
       if (expression instanceof LiteralNumber) {
-         XmlTagPrinter argTag=tag.newTag("Arg", "xsi:type='atomType'");
+         XmlTagPrinter argTag=parentTag.newTag(elementName, "xsi:type='atomType'");
          
          int type = ((LiteralNumber) expression).getType();
          String xsiType = "";
@@ -146,16 +146,16 @@ public class Query2Adql074  {
       }
       else if (expression instanceof ColumnReference) {
    
-         writeColRef(tag, "Arg", (ColumnReference) expression);
+         writeColRef(parentTag, elementName, (ColumnReference) expression);
       }
       else if (expression instanceof MathExpression) {
          
-         XmlTagPrinter argTag = tag.newTag("Arg", "xsi:type='closedExprType'").newTag("Arg", "xsi:type='binaryExprType' Oper='"+((MathExpression) expression).getOperator().toString()+"'");
-         writeNumeric(argTag, ((MathExpression) expression).getLHS());
-         writeNumeric(argTag, ((MathExpression) expression).getRHS());
+         XmlTagPrinter argTag = parentTag.newTag(elementName, "xsi:type='closedExprType'").newTag("Arg", "xsi:type='binaryExprType' Oper='"+((MathExpression) expression).getOperator().toString()+"'");
+         writeNumeric(argTag, "Arg", ((MathExpression) expression).getLHS());
+         writeNumeric(argTag, "Arg", ((MathExpression) expression).getRHS());
       }
       else if (expression instanceof Function) {
-         writeFunction(tag, "Arg", (Function) expression);
+         writeFunction(parentTag, "Arg", (Function) expression);
       }
       else {
          throw new UnsupportedOperationException("Unknown Numeric Expression type "+
@@ -207,6 +207,9 @@ public class Query2Adql074  {
          if (function.getArg(i) instanceof ColumnReference) {
             writeColRef(funcTag, "Arg", (ColumnReference) function.getArg(i));
          }
+         else if (function.getArg(i) instanceof NumericExpression) {
+            writeNumeric(funcTag, "Arg", (NumericExpression) function.getArg(i));
+         }
          else {
             throw new UnsupportedOperationException("Thicky writer: can't handle expression '"+function.getArg(i)+"' as parameter to "+function);
          }
@@ -227,6 +230,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.6  2004/08/26 11:47:16  mch
+ Added tests based on Patricios errors and other SQl statements, and subsequent fixes...
+
  Revision 1.5  2004/08/25 23:38:33  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

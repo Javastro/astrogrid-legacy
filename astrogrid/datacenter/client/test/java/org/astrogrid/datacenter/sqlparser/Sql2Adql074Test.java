@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.1 2004/08/25 23:38:34 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.2 2004/08/26 11:47:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,7 +58,7 @@ public class Sql2Adql074Test extends TestCase   {
    }
    
    public void testCircle() throws IOException, ParserConfigurationException {
-      String s = "SELECT * WHERE CIRCLE(J2000, 25, 35, 6)";
+      String s = "SELECT * FROM table WHERE CIRCLE(J2000, 25, 35, 6)";
       assertValidXml(Sql2Adql074.translate(s));
    }
 
@@ -107,8 +107,23 @@ public class Sql2Adql074Test extends TestCase   {
       ));
    }
 
+   public void testSsa() throws IOException, ParserConfigurationException {
+      assertValidXml(Sql2Adql074.translate(
+         "SELECT ra,dec, sCorMagB, sCorMagR1, sCorMagR2, sCorMagI\n"+
+         "FROM Source\n"+
+         "WHERE\n"+
+         "ellipR1 < 0.33 AND qualR1 < 2048 AND (prfstatR1 > -5 AND prfstatR1 < +5) AND\n"+
+         "ellipR2 < 0.33 AND qualR2 < 2048 AND (prfstatR2 > -5 AND prfstatR2 < +5) AND\n"+
+         "ABS(0 + sCorMagR1 - sCorMagR2) > 3 AND scorMagR1 > 0.0 AND sCorMagR2 > 0.0\n"+
+         "ORDER BY ra,dec"));
+   }
    
-   public static Test suite() {
+   public void testPat1() throws IOException, ParserConfigurationException {
+      assertValidXml(Sql2Adql074.translate(
+         "SELECT * from IX/35/xmm1obs AS p where p.RA > 10"));
+   }
+      
+      public static Test suite() {
       // Reflection is used here to add all the testXXX() methods to the suite.
       return new TestSuite(Sql2Adql074Test.class);
    }
@@ -124,6 +139,9 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.2  2004/08/26 11:47:16  mch
+ Added tests based on Patricios errors and other SQl statements, and subsequent fixes...
+
  Revision 1.1  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 
