@@ -1,4 +1,4 @@
-/*$Id: SQLUtils.java,v 1.2 2004/01/13 00:32:47 nw Exp $
+/*$Id: SQLUtils.java,v 1.3 2004/01/14 11:15:12 nw Exp $
  * Created on 07-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 
@@ -29,7 +30,7 @@ import org.xml.sax.SAXException;
 public class SQLUtils {
 
    /** namespace used within astrogrid to identify the sql query language */
-   public static String SQL_XMLNS = "urn:sql";
+   public static final String SQL_XMLNS = "urn:sql";
 
    private SQLUtils() {
    }
@@ -40,6 +41,19 @@ public class SQLUtils {
     * @return
     */
    public static Element toQueryBody(String sql) throws IOException {
+      try {
+         Document doc = XMLUtils.newDocument();
+         Element root = doc.createElementNS(SQL_XMLNS,"sql:sql");
+         doc.appendChild(root);
+         Text text = doc.createTextNode(sql);
+         root.appendChild(text);
+         return root;
+      } catch (ParserConfigurationException pe) {
+         throw new IOException("Parser Configuration failed:" + pe.getMessage());
+      }
+   }
+   
+   public static Element toQueryBodyOld(String sql) throws IOException {
       String docString = "<sql xmlns='" + SQL_XMLNS + "'>"
          + sql
          + "</sql>";
@@ -60,6 +74,9 @@ public class SQLUtils {
 
 /* 
 $Log: SQLUtils.java,v $
+Revision 1.3  2004/01/14 11:15:12  nw
+changed constant to final.
+
 Revision 1.2  2004/01/13 00:32:47  nw
 Merged in branch providing
 * sql pass-through
