@@ -83,7 +83,10 @@
          </xsl:if>
          <xsl:if test="$action = 'insert-output-value'">
             <xsl:call-template name="insert_parameter"/>             
-         </xsl:if>                  
+         </xsl:if>   
+         <xsl:if test="$action = 'reset-parameter'">
+            <xsl:call-template name="insert_parameter"/>             
+         </xsl:if>                        
          <xsl:if test="$action = 'parameters-complete'">
             <xsl:call-template name="create_workflow"/>             
          </xsl:if>         
@@ -450,7 +453,7 @@
                         <td>
                            <table cellpadding="0" cellspacing="0" border="1">
                               <xsl:for-each select="inputParam">
-                                 <xsl:call-template name="insert_input_parameter" />
+                                 <xsl:call-template name="display_input_parameter" />
                               </xsl:for-each><!-- end of inputParam -->
                            </table>                                  
                         </td>                  
@@ -463,7 +466,7 @@
                         <td>
                            <table cellpadding="0" cellspacing="0" border="1">
                               <xsl:for-each select="outputParam">  
-                                 <xsl:call-template name="insert_output_parameter" />
+                                 <xsl:call-template name="display_output_parameter" />
                               </xsl:for-each><!-- end of outputParam -->  
                            </table>
                         </td>                  
@@ -479,22 +482,25 @@
       </xsl:template>
     
       <!--+
-          | Insert Input Parameter
+          | Display Input Parameter
           +-->   
-      <xsl:template name="insert_input_parameter" method="get">
-            <form name="input_query_tool_from" >               
-               <xsl:if test="@param-value = ''">
+      <xsl:template name="display_input_parameter" method="get">
+            <xsl:if test="@param-value = ''">
+               <form name="input_parameter_form" >               
                   <tr> 
                      <td>Name: <xsl:value-of select="@param-name" /></td>
                      <td>Type: <xsl:value-of select="@param-type" /></td>
                      <xsl:if test="@param-type != 'boolean'">
-                        <td>Value: <input type="text" name="param-value" /><input type="submit" value="Submit" /></td>
+                        <td>Value: <input type="text" name="param-value" /></td>
+                        <td><input type="submit" value="Submit" /></td>
                      </xsl:if>
                      <xsl:if test="@param-type = 'boolean'">
                         <td>
                            Value:  
-                            - true - <input type="radio" name="param-value" value="true" />
-                            - false - <input type="radio" name="param-value" value="false" />   
+                            true <input type="radio" name="param-value" value="true" />
+                            false <input type="radio" name="param-value" value="false" />
+                         </td>
+                         <td>
                            <input type="submit" value="Submit" />
                         </td>
                      </xsl:if>
@@ -504,47 +510,68 @@
                   <input type="hidden" name="action" value="insert-input-value" />
                   <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
                   <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
-               </xsl:if>
-               <xsl:if test="@param-value != ''">
+               </form>                  
+            </xsl:if>
+            <xsl:if test="@param-value != ''">
+               <form name="reset_parameter_form">
                   <tr> 
                      <td>Name: <xsl:value-of select="@param-name" /></td>
                      <td>Type: <xsl:value-of select="@param-type" /></td>
-                     <td>Value: <xsl:value-of select="@param-value" /></td>
+                     <td>Value: 
+                        <xsl:value-of select="@param-value" />
+                     </td>
+                     <td>
+                        <input type="submit" value="Delete" />
+                     </td>
                      <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
                      <td>(min): <xsl:value-of select="@param-cardinality-min" /></td>
-                  </tr>                                        
-               </xsl:if>
-            </form>
+                  </tr>                  
+                  <input type="hidden" name="action" value="reset-parameter" />
+                  <input type="hidden" name="direction" value="input" />
+                  <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
+                  <input type="hidden" name="param-value"><xsl:attribute name="value"><xsl:value-of select="@param-value"/></xsl:attribute></input>
+                  <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
+               </form>                      
+            </xsl:if>
       </xsl:template>
 
 
       <!--+
-          | Insert Output Parameter
+          | Display Output Parameter
           +-->   
-      <xsl:template name="insert_output_parameter" method="get">
-         <form name="input_query_tool_from" >
-            <xsl:if test="@param-location = ''">
+      <xsl:template name="display_output_parameter" method="get">
+         <xsl:if test="@param-location = ''">
+            <form name="output_parameter_form" >                
                <tr> 
                   <td>Name: <xsl:value-of select="@param-name" /></td>
                   <td>Type: <xsl:value-of select="@param-type" /></td>
-                  <td>Value: <input type="text" name="param-value" /><input type="submit" value="Submit" /></td>
+                  <td>Value: <input type="text" name="param-value" /></td>
+                  <td><input type="submit" value="Submit" /></td>
                   <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
                   <td>(min): <xsl:value-of select="@param-cardinality-min" /></td>
                </tr>                                        
                <input type="hidden" name="action" value="insert-output-value" />
                <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>            
                <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
-            </xsl:if>
-            <xsl:if test="@param-location != ''">
+            </form>
+         </xsl:if>
+         <xsl:if test="@param-location != ''">
+            <form name="reset_parameter_form" > 
                <tr> 
                   <td>Name: <xsl:value-of select="@param-name" /></td>
                   <td>Type: <xsl:value-of select="@param-type" /></td>
                   <td>Value: <xsl:value-of select="@param-location" /></td>
+                  <td><input type="submit" value="Delete" /></td>
                   <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
                   <td>(min): <xsl:value-of select="@param-cardinality-min" /></td>
-               </tr>                                        
-            </xsl:if>
-         </form>
+               </tr>                         
+                  <input type="hidden" name="action" value="reset-parameter" />
+                  <input type="hidden" name="direction" value="output" />
+                  <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
+                  <input type="hidden" name="param-value"><xsl:attribute name="value"><xsl:value-of select="@param-location"/></xsl:attribute></input>
+                  <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
+            </form>               
+         </xsl:if>
       </xsl:template>
     
     
