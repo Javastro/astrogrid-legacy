@@ -17,29 +17,31 @@
   <xsl:param name="field_name" select="field_name"/>
   <xsl:param name="field_value" select="field_value"/>
 
-  <xsl:template match="/">
-    <html>
-      <head>
-        <link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
-        <link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
-        <script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js">
-          null;
-        </script>
-        <script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js">
-          null;
-        </script>
-      </head>
+  <xsl:template match="/">      
+	  <ag-div>	      
+	    <!-- Add our page content -->
+		<content>
+		  <agPUBMessage>
+            MySpace Microbrowser
+          </agPUBMessage> 
+          <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
+          <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+          <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
+          <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
 
-      <body>
+      
+
 <!--
         <p>
           ivorn: <xsl:value-of select="$ivorn"/><br/>
           agsl: <xsl:value-of select="$agsl"/>
         </p>
 -->
+<!--
         <script type="text/javascript">
           window.document.title = "MySpace MicroBrowser";
         </script>
+-->
 
         <form id="myspace-explorer-form" action=".">
         	<input name="myspace-endpoint" id="myspace-endpoint" type="hidden">
@@ -60,7 +62,7 @@
             Item Name: <input name="myspace-item" id="myspace-item" type="text"/>
           </p>
           
-          <input type="button" value="OK">
+          <input class="agActionButton" type="button" value="OK">
             <xsl:attribute name="onclick">
               setNewIvorn();
               setParentIVORNAgsl('<xsl:value-of select="$ivorn"/>', '<xsl:value-of select="$agsl"/>');
@@ -69,12 +71,12 @@
             </xsl:attribute>
           </input>
 
-          <input type="button" value="Cancel" onclick="window.close();"/>
+          <input class="agActionButton" type="button" value="Cancel" onclick="window.close();"/>
         </form>
 
         <xsl:apply-templates/>
-      </body>
-    </html>
+		</content>
+	  </ag-div>
   </xsl:template>
 
   <xsl:template match="myspace-tree">
