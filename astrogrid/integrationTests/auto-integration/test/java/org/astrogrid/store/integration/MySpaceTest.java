@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.2 2004/04/15 14:32:34 jdt Exp $
+/*$Id: MySpaceTest.java,v 1.3 2004/04/15 14:54:57 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,28 +11,21 @@
 package org.astrogrid.store.integration;
 
 import java.io.IOException;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.astrogrid.community.User;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreAdminClient;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.local.LocalFileStore;
 
-/** Tests the automatically deployed myspace 
+/** Tests the automatically deployed myspace on VM07
  *
- * @author mch 
+ * @author mch
  */
 
-public final class MySpaceTest extends StoreClientTestHelper {
-    /**
-     * Commons logger
-     */
-    private static final org.apache.commons.logging.Log log =
-        org.apache.commons.logging.LogFactory.getLog(MySpaceTest.class);
+public class MySpaceTest extends StoreClientTestHelper {
 
    private static User testUser;
 
@@ -44,26 +37,29 @@ public final class MySpaceTest extends StoreClientTestHelper {
    }
 
    public void setUp() throws IOException {
-      final String myspaceServiceEndPoint = SimpleConfig.getSingleton().getString("org.astrogrid.myspace.endpoint");
-      MYSPACE= new Agsl("myspace:"+myspaceServiceEndPoint);
-      log.debug("MYSPACE: " +MYSPACE);  
-      testUser = new User("avodemo", "test.astrogrid.org", "Loony");
+      MYSPACE= new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager/services/Manager");
+      //MYSPACE = ConfManager.getInstance().getMySpaceEndPoint();
       
+      //MYSPACE = new Agsl("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager");
+      //MYSPACE = new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager_v041/services/MySpaceManager");
+      
+      path = "/avodemo/";
+      testUser = new User("avodemo", "test.astrogrid.org", "Loony");
+
+      //make sure user exists
       try {
          StoreDelegateFactory.createAdminDelegate(testUser, MYSPACE).createUser(testUser);
       }
       catch (IOException ioe) {
-         ioe.printStackTrace();
+ //ignore        ioe.printStackTrace();
       }
       try {
-         StoreClient client = StoreDelegateFactory.createDelegate(testUser, MYSPACE);
-//         client.newFolder("avodemo@test.astrogrid.org");
-//         client.newFolder("avodemo@test.astrogrid.org/serv1");
-         client.newFolder("avodemo@test.astrogrid.org/serv1/mch");
+         new LocalFileStore().newFolder(path);
       }
       catch (IOException ioe) {
-         ioe.printStackTrace();
+ //ignore        ioe.printStackTrace();
       }
+   
    }
    
    public void testStoreAccess() throws IOException
@@ -117,8 +113,6 @@ public final class MySpaceTest extends StoreClientTestHelper {
      */
     public static void main(String args[])
     {
-       path = "avodemo@test.astrogrid.org/serv1/mch/";
-       
        junit.textui.TestRunner.run(suite());
     }
 
@@ -127,15 +121,8 @@ public final class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
-Revision 1.2  2004/04/15 14:32:34  jdt
-Now picks up location of local myspace
-
-Revision 1.1  2004/04/15 13:39:39  jdt
-Moved from integrationTests to auto-integration
-
-Revision 1.1  2004/04/15 13:35:38  jdt
-Moved from integrationTests to auto-integration
-They'll break the build momentarily....
+Revision 1.3  2004/04/15 14:54:57  mch
+Fixed some tests
 
 Revision 1.4  2004/04/14 14:26:36  mch
 Switched to factory not explicit delegate creation
