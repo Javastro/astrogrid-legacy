@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- -->
+<!DOCTYPE project [
+  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
+]>
+<!-- -->
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
+  <extend>../project.xml</extend>
+  
+  <id>astrogrid-portal-myspace</id>
+  <name>AstroGrid Portal MySpace Project</name>
+
+  <dependencies>
+    <!-- Common -->
+    <dependency>
+      <groupId>astrogrid-common</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- Portal Common -->
+    <dependency>
+      <groupId>astrogrid-portal</groupId>
+      <artifactId>astrogrid-portal-common</artifactId>
+      <version>SNAPSHOT</version>
+    </dependency>
+    
+    <!-- MySpace -->
+    <dependency>
+      <groupId>astrogrid-mySpace</groupId>
+      <artifactId>astrogrid-mySpace</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>saaj-api</groupId>
+      <artifactId>saaj-api</artifactId>
+      <version>1.1.1</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
+    &cocoon-deps;
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+  </build>
+</project>

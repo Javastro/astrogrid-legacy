@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <status>
+    <status>SUCCESS</status>
+    <details></details>
+    <currentDate>1/6/04 9:08 AM</currentDate>
+  </status>
+  <dataItemRecords>
+    <dataItemRecord>
+      <dataItemName>/clq@lei</dataItemName>
+      <dataItemID>0</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/5/04 12:00 AM</creationDate>
+      <expiryDate>1/5/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/clq@lei/serv1</dataItemName>
+      <dataItemID>1</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/5/04 12:00 AM</creationDate>
+      <expiryDate>1/5/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/clq@lei/serv1/query</dataItemName>
+      <dataItemID>2</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/5/04 12:00 AM</creationDate>
+      <expiryDate>1/28/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/clq@lei/serv1/votable</dataItemName>
+      <dataItemID>4</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/5/04 12:00 AM</creationDate>
+      <expiryDate>1/28/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/clq@lei/serv1/workflow</dataItemName>
+      <dataItemID>3</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/5/04 12:00 AM</creationDate>
+      <expiryDate>1/28/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/clq@lei/serv1/workflow/newfile</dataItemName>
+      <dataItemID>5</dataItemID>
+      <ownerID>clq</ownerID>
+      <creationDate>1/5/04 12:00 AM</creationDate>
+      <expiryDate>1/28/04 12:00 AM</expiryDate>
+      <size>32</size>
+      <type>0</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/gps@lei</dataItemName>
+      <dataItemID>6</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/6/04 12:00 AM</creationDate>
+      <expiryDate>1/6/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/gps@lei/serv1</dataItemName>
+      <dataItemID>7</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/6/04 12:00 AM</creationDate>
+      <expiryDate>1/6/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/gps@lei/serv1/query</dataItemName>
+      <dataItemID>8</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/6/04 12:00 AM</creationDate>
+      <expiryDate>1/29/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/gps@lei/serv1/votable</dataItemName>
+      <dataItemID>10</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/6/04 12:00 AM</creationDate>
+      <expiryDate>1/29/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+    <dataItemRecord>
+      <dataItemName>/gps@lei/serv1/workflow</dataItemName>
+      <dataItemID>9</dataItemID>
+      <ownerID>sysadmin</ownerID>
+      <creationDate>1/6/04 12:00 AM</creationDate>
+      <expiryDate>1/29/04 12:00 AM</expiryDate>
+      <size>0</size>
+      <type>1</type>
+      <permissionsMask>permissions</permissionsMask>
+      <dataHolderURI>{8}</dataHolderURI>
+    </dataItemRecord>
+  </dataItemRecords>
+</results>

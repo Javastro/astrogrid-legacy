@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="myspace-holdings.xsl"?>
+<myspace-tree>
+  <myspace-item creation-date="1/5/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/5/04 12:00 AM" full-name="/clq@lei" id="0" item-name="clq@lei" owner-id="sysadmin" parent-name="" permission-mask="permissions" size="0" type="1">
+    <myspace-item creation-date="1/5/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/5/04 12:00 AM" full-name="/clq@lei/serv1" id="1" item-name="serv1" owner-id="sysadmin" parent-name="/clq@lei" permission-mask="permissions" size="0" type="1">
+      <myspace-item creation-date="1/5/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/28/04 12:00 AM" full-name="/clq@lei/serv1/query" id="2" item-name="query" owner-id="sysadmin" parent-name="/clq@lei/serv1" permission-mask="permissions" size="0" type="1"/>
+      <myspace-item creation-date="1/5/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/28/04 12:00 AM" full-name="/clq@lei/serv1/votable" id="4" item-name="votable" owner-id="sysadmin" parent-name="/clq@lei/serv1" permission-mask="permissions" size="0" type="1"/>
+      <myspace-item creation-date="1/5/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/28/04 12:00 AM" full-name="/clq@lei/serv1/workflow" id="3" item-name="workflow" owner-id="sysadmin" parent-name="/clq@lei/serv1" permission-mask="permissions" size="0" type="1">
+        <myspace-item creation-date="1/5/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/28/04 12:00 AM" full-name="/clq@lei/serv1/workflow/newfile" id="5" item-name="newfile" owner-id="clq" parent-name="/clq@lei/serv1/workflow" permission-mask="permissions" size="32" type="0"/>
+      </myspace-item>
+    </myspace-item>
+  </myspace-item>
+  <myspace-item creation-date="1/6/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/6/04 12:00 AM" full-name="/gps@lei" id="6" item-name="gps@lei" owner-id="sysadmin" parent-name="" permission-mask="permissions" size="0" type="1">
+    <myspace-item creation-date="1/6/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/6/04 12:00 AM" full-name="/gps@lei/serv1" id="7" item-name="serv1" owner-id="sysadmin" parent-name="/gps@lei" permission-mask="permissions" size="0" type="1">
+      <myspace-item creation-date="1/6/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/29/04 12:00 AM" full-name="/gps@lei/serv1/query" id="8" item-name="query" owner-id="sysadmin" parent-name="/gps@lei/serv1" permission-mask="permissions" size="0" type="1"/>
+      <myspace-item creation-date="1/6/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/29/04 12:00 AM" full-name="/gps@lei/serv1/votable" id="10" item-name="votable" owner-id="sysadmin" parent-name="/gps@lei/serv1" permission-mask="permissions" size="0" type="1"/>
+      <myspace-item creation-date="1/6/04 12:00 AM" data-holder-uri="{8}" expiry-date="1/29/04 12:00 AM" full-name="/gps@lei/serv1/workflow" id="9" item-name="workflow" owner-id="sysadmin" parent-name="/gps@lei/serv1" permission-mask="permissions" size="0" type="1"/>
+    </myspace-item>
+  </myspace-item>
+</myspace-tree>
+
