@@ -1,5 +1,5 @@
 /**
- * $Id: SizeWarningListener.java,v 1.1 2005/03/22 16:17:33 mch Exp $
+ * $Id: SizeWarningListener.java,v 1.2 2005/04/01 01:29:54 mch Exp $
  *
  */
 
@@ -32,7 +32,9 @@ public class SizeWarningListener implements PiperProgressListener {
           step++;
       }
    }
-
+   
+   /** Does nothing */
+   public void pipeComplete() {}
    
 }
 

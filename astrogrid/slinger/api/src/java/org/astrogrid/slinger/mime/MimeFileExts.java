@@ -1,5 +1,5 @@
 /*
- * $Id: MimeFileExts.java,v 1.3 2005/04/01 01:01:50 mch Exp $
+ * $Id: MimeFileExts.java,v 1.4 2005/04/01 01:29:54 mch Exp $
  *
  */
 
@@ -52,6 +52,7 @@ public class MimeFileExts implements MimeTypes  {
       addLookup(WORKFLOW, "flow");
       addLookup(ADQL, "adql");
       addLookup(ADQL, "query");
+      addLookup(ADQL, "qry");
    }
       
    /**

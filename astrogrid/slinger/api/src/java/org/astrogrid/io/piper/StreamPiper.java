@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.2 2005/03/28 01:48:09 mch Exp $
+ * $Id: StreamPiper.java,v 1.3 2005/04/01 01:29:54 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,6 +10,8 @@
 
 package org.astrogrid.io.piper;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -87,6 +89,19 @@ public class StreamPiper
                      listener.throwable(th);
                   }
                }
+               finally {
+                  try {
+                     in.close();
+                  } catch (IOException e) {
+                     listener.ioException(e);
+                  }
+                  try {
+                     out.close();
+                  } catch (IOException e) {
+                     listener.ioException(e);
+                  }
+               }
+               listener.pipeComplete();
             }
          }
       );
@@ -95,13 +110,17 @@ public class StreamPiper
       
       return piper;
    }
+
    
 }
 
 /* $Log: StreamPiper.java,v $
- * Revision 1.2  2005/03/28 01:48:09  mch
- * Added socket source/target, and makeFile instead of outputChild
+ * Revision 1.3  2005/04/01 01:29:54  mch
+ * Extended pipe listeners, and added new extensions for guessing mime types
  *
+/* Revision 1.2  2005/03/28 01:48:09  mch
+/* Added socket source/target, and makeFile instead of outputChild
+/*
 /* Revision 1.1  2005/03/22 16:17:33  mch
 /* Extended Piper to a package that has listening, thread spawning, etc
 /*
