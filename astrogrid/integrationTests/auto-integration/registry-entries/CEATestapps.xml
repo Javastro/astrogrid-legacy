@@ -37,7 +37,7 @@
                 <cea:ParameterDefinition name="P9d" type="text"
                     accept-encodings="" sub-type="">
                     <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
+                    <ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
                     <ceapd:UCD></ceapd:UCD>
                     <ceapd:DefaultValue></ceapd:DefaultValue>
                     <ceapd:Units></ceapd:Units>
@@ -84,11 +84,12 @@
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P1" type="integer"
                     accept-encodings="" sub-type="">
-                    <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
-                    <ceapd:UCD></ceapd:UCD>
-                    <ceapd:DefaultValue></ceapd:DefaultValue>
-                    <ceapd:Units></ceapd:Units>
+                    <ceapd:UI_Name>Pause Time</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text
+                                        this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...</ceapd:UI_Description>
+                    <ceapd:UCD>AAD</ceapd:UCD>
+                    <ceapd:DefaultValue>1.0</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P8" type="ADQL"
                     accept-encodings="" sub-type="">
@@ -101,18 +102,18 @@
                 <cea:ParameterDefinition name="P9" type="text"
                     accept-encodings="" sub-type="">
                     <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
+                    <ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
                     <ceapd:UCD></ceapd:UCD>
                     <ceapd:DefaultValue></ceapd:DefaultValue>
                     <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P2" type="double"
                     accept-encodings="" sub-type="">
-                    <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
-                    <ceapd:UCD></ceapd:UCD>
-                    <ceapd:DefaultValue></ceapd:DefaultValue>
-                    <ceapd:Units></ceapd:Units>
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text This can be anything</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P11" type="anyURI"
                     accept-encodings="" sub-type="">
@@ -255,11 +256,12 @@
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P1" type="integer"
                     accept-encodings="" sub-type="">
-                    <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
-                    <ceapd:UCD></ceapd:UCD>
-                    <ceapd:DefaultValue></ceapd:DefaultValue>
-                    <ceapd:Units></ceapd:Units>
+                    <ceapd:UI_Name>Pause Time</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text
+                                        this is the time tha the application will pause in seconds before continuing to give the appearance of doing something...</ceapd:UI_Description>
+                    <ceapd:UCD>AAD</ceapd:UCD>
+                    <ceapd:DefaultValue>1.0</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P13" type="double"
                     accept-encodings="" sub-type="">
@@ -280,18 +282,18 @@
                 <cea:ParameterDefinition name="P9" type="text"
                     accept-encodings="" sub-type="">
                     <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
+                    <ceapd:UI_Description>The contents of this file will be copied to the output</ceapd:UI_Description>
                     <ceapd:UCD></ceapd:UCD>
                     <ceapd:DefaultValue></ceapd:DefaultValue>
                     <ceapd:Units></ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P2" type="binary"
                     accept-encodings="" sub-type="">
-                    <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
-                    <ceapd:UCD></ceapd:UCD>
-                    <ceapd:DefaultValue></ceapd:DefaultValue>
-                    <ceapd:Units></ceapd:Units>
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+                    <ceapd:UI_Description>This is the file to which the parameters will be written</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="P11" type="anyURI"
                     accept-encodings="" sub-type="">
@@ -386,19 +388,19 @@
             <cea:Parameters>
                 <cea:ParameterDefinition name="p1" type="integer"
                     accept-encodings="" sub-type="">
-                    <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
-                    <ceapd:UCD></ceapd:UCD>
-                    <ceapd:DefaultValue></ceapd:DefaultValue>
-                    <ceapd:Units></ceapd:Units>
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
                 </cea:ParameterDefinition>
                 <cea:ParameterDefinition name="p2" type="integer"
                     accept-encodings="" sub-type="">
-                    <ceapd:UI_Name></ceapd:UI_Name>
-                    <ceapd:UI_Description/>
-                    <ceapd:UCD></ceapd:UCD>
-                    <ceapd:DefaultValue></ceapd:DefaultValue>
-                    <ceapd:Units></ceapd:Units>
+                    <ceapd:UI_Name>String</ceapd:UI_Name>
+                    <ceapd:UI_Description>Text</ceapd:UI_Description>
+                    <ceapd:UCD>String</ceapd:UCD>
+                    <ceapd:DefaultValue>Text</ceapd:DefaultValue>
+                    <ceapd:Units>String</ceapd:Units>
                 </cea:ParameterDefinition>
             </cea:Parameters>
             <cea:Interfaces>
