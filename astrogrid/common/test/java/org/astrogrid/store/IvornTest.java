@@ -1,5 +1,5 @@
 /*
- * $Id: IvornTest.java,v 1.3 2004/06/17 17:34:08 jdt Exp $
+ * $Id: IvornTest.java,v 1.4 2004/07/06 19:19:53 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,75 +14,32 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * IVO Resource Name.  A URI used to name specific IVO resources.
- * I think there's some plugin mechanism to register this wuth URIs but not sure
- * what it is... and anyway in the meantime we want to pass around things that
- * are definitely IVORNs not any other URI.
- *
- * They act as keys to VO Registries; give the registry an IVORN and it will
- * return some value (that might be another IVORN...)
- *
- * IVORNs are of the form:
- *
- * ivo://something/anything/athing/etc#somethingwithmeaningtothiscontext
- *
- * For example:
- *
- * ivo://roe.ac.uk#mch
- *
- * might resolve to an Community web service endpoint, that takes 'mch' to return
- * an account, which <i>might</i> be of the form:
- *
- * ivo://roe.ac.uk/mch/
- *
- * Or:
- *
- * ivo://roe.ac.uk#mch/myspace
- *
- * might resolve to a Community web service as above, that takes 'mch/myspace' to
- * return that accounts myspace, probably as another ivo identifier:
- *
- * ivo://roe.ac.uk/myspace
- *
- * that resolves to a myspace delegate endpoint through the registry.
- *
- * So from the above:
- *
- * ivo://roe.ac.uk/myspace#roe.ac.uk/mch/famousData/BestResults.vot
- *
- * would resolve to a myspace delegate endpoint and a path to give it - ie
- * it refers to a file in myspace
- *
- * IVORNs are immutable - ie once created, they cannot be changed.  You can
- * make new ones out of old ones.
- *
- *
- * @author MCH, KMB, KTN, DM, ACD
+ * Tests IVORNs
  */
 
 public class IvornTest extends TestCase
 {
 
    /**
-    * Basic tests
+    * Basic tests to/from string representations
     */
-   public void testIvorn()  {
+   public void testIvornStrings()  {
       
       String validirn = "ivo://test.astrogrid.org/avodemo#serv1/query/mch-6dF-query.xml";
       
       try {
          Ivorn irn = new Ivorn(validirn);
 
-         assertEquals(irn.toString(), validirn);
+         assertEquals(validirn, irn.toString());
          
-         assertEquals(irn.getPath(), "test.astrogrid.org/avodemo");
-         assertEquals(irn.getFragment(), "serv1/query/mch-6dF-query.xml");
+         assertEquals("test.astrogrid.org/avodemo", irn.getPath());
+         assertEquals("serv1/query/mch-6dF-query.xml", irn.getFragment());
       }
       catch (URISyntaxException use) {
          fail("Couldn't cope with valid irn "+validirn);
       }
       
-      Ivorn irn = new Ivorn("test.astrogrid.org/avodemo", "serv1/query/mch-6dF-query.xml");
+      Ivorn irn = new Ivorn("test.astrogrid.org", "avodemo", "serv1/query/mch-6dF-query.xml");
       assert irn.toString().equals(validirn);
 
    }
@@ -108,6 +65,9 @@ public class IvornTest extends TestCase
 
 /*
 $Log: IvornTest.java,v $
+Revision 1.4  2004/07/06 19:19:53  mch
+Switched assertEquals around so 'expected' works ok for failures
+
 Revision 1.3  2004/06/17 17:34:08  jdt
 Miscellaneous coding standards issues.
 
@@ -129,4 +89,5 @@ Revision 1.1  2004/02/16 23:31:47  mch
 IVO Resource Name representation
 
  */
+
 
