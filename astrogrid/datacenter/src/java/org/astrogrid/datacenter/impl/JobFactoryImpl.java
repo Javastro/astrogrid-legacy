@@ -70,7 +70,7 @@ public class JobFactoryImpl implements JobFactory {
 	    
 	public static final String
 	    INSERT_TEMPLATE = "INSERT INTO {0} ( JOBURN, JOBNAME, RUNTIMESTAMP, USERID, COMMUNITY, STATUS, COMMENT ) " +
-	                      "VALUES ( '''{1}''', '''{2}''', '''{3}''', '''{4}''', '''{5}''', '''{6}''', '''{7}''' )" ,              
+	                      "VALUES ( ''{1}'', ''{2}'', ''{3}'', ''{4}'', ''{5}'', ''{6}'', ''{7}'' )" ,              
 	    UPDATE_TEMPLATE = "UPDATE {0} SET RUNTIMESTAMP = ?, STATUS = ?, COMMENT = ? WHERE JOBURN = ?" ,
 	    SELECT_TEMPLATE = "SELECT * FROM {0} WHERE JOBURN = {1}" ,
 	    DELETE_TEMPLATE = "DELETE FROM {0} WHERE JOBURN = {1}" ;
@@ -205,7 +205,8 @@ public class JobFactoryImpl implements JobFactory {
 			inserts[7] = job.getComment() ;
 
 			String
-			   updateString = MessageFormat.format( INSERT_TEMPLATE, inserts ) ; 			
+			   updateString = MessageFormat.format( INSERT_TEMPLATE, inserts ) ;
+			logger.debug("JobFactoryImpl.create(): updateString: " + updateString);			    			
 			statement = job.getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
 			
