@@ -69,78 +69,157 @@
   
   <!-- TOOLS LIST CATEGORY ========================================================== -->
   <category name="TOOLS_LIST">
-    <property name="TOTAL" value="3" />
+    <property name="TOTAL" value="4" />
     <property name="NAME.0" value="QueryTool" />  
-    <property name="NAME.1" value="VOTableMerge" /> 
-    <property name="NAME.2" value="Sextractor" /> 
+    <property name="NAME.1" value="DataFederation" /> 
+    <property name="NAME.2" value="SExtractor" /> 
+    <property name="NAME.3" value="HyperZ" />     
   </category>
   
   <!-- QueryTool CATEGORY ========================================================== -->
   <category name="QueryTool">
     <property name="DOCUMENTATION" value="QueryTool documentation goes here" />
+    
     <property name="INPUT_PARAMS.TOTAL" value="1" />
+    
     <property name="INPUT_PARAM.NAME.0" value="query" />  
-    <property name="INPUT_PARAM.DOCUMENTATION.query" value="Paremeter query documentation goes here" />  
-    <property name="INPUT_PARAM.TYPE.query" value="MySpaceADQLReference" />
+    <property name="INPUT_PARAM.DOCUMENTATION.query" value="Query in ADQL format" />  
+    <property name="INPUT_PARAM.TYPE.query" value="MySpace_FileReference" />
     <property name="INPUT_PARAM.CARDINALITY.MIN.query" value="1" />  
-    <property name="INPUT_PARAM.CARDINALITY.MAX.query" value="1" />     
+    <property name="INPUT_PARAM.CARDINALITY.MAX.query" value="1" /> 
+        
     <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    
     <property name="OUTPUT_PARAM.NAME.0" value="result" />  
-    <property name="OUTPUT_PARAM.DOCUMENTATION.result" value="Paremeter result documentation goes here" />    
-    <property name="OUTPUT_PARAM.TYPE.result" value="MySpaceVOTableReference" />       
+    <property name="OUTPUT_PARAM.DOCUMENTATION.result" value="Results table in VOTable format" />    
+    <property name="OUTPUT_PARAM.TYPE.result" value="MySpace_VOTableReference" />       
     <property name="OUTPUT_PARAM.CARDINALITY.MIN.result" value="1" />  
     <property name="OUTPUT_PARAM.CARDINALITY.MAX.result" value="1" />     
   </category>
   
   <!-- VOTableMerge CATEGORY ========================================================== -->
-  <category name="VOTableMerge">
-    <property name="DOCUMENTATION" value="VOTableMerge documentation goes here" />  
-    <property name="INPUT_PARAMS.TOTAL" value="1" />
-    <property name="INPUT_PARAM.NAME.0" value="in" />  
-    <property name="INPUT_PARAM.DOCUMENTATION.in" value="Paremeter in documentation goes here" />  
-    <property name="INPUT_PARAM.TYPE.in" value="MySpaceVOTableReference" />   
-    <property name="INPUT_PARAM.CARDINALITY.MIN.in" value="2" />  
-    <property name="INPUT_PARAM.CARDINALITY.MAX.in" value="-1" />     
+  <category name="DataFederation">
+    <property name="DOCUMENTATION" value="A VOTable merge tool" />  
+    
+    <property name="INPUT_PARAMS.TOTAL" value="8" />
+    
+    <property name="INPUT_PARAM.NAME.0" value="VOTfiles" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.VOTfiles" value="The input VOTables" />  
+    <property name="INPUT_PARAM.TYPE.VOTfiles" value="MySpace_VOTableReference" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.VOTfiles" value="2" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.VOTfiles" value="-1" />  
+       
+    <property name="INPUT_PARAM.NAME.1" value="mergeCols" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.mergeCols" value="Whether to merge UCDs in one column" />  
+    <property name="INPUT_PARAM.TYPE.mergeCols" value="boolean" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.mergeCols" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.mergeCols" value="1" />  
+    
+    <property name="INPUT_PARAM.NAME.2" value="show" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.show" value="| delimited list of UCDs to display. The order is critical. Use of (or) denoted merging" />  
+    <property name="INPUT_PARAM.TYPE.show" value="string" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.show" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.show" value="1" />    
+    
+    <property name="INPUT_PARAM.NAME.3" value="target" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.target" value="target position/searchDiametet/Unit (split on / to obtain 3 components)" />  
+    <property name="INPUT_PARAM.TYPE.target" value="string" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.target" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.target" value="1" />    
+    
+    <property name="INPUT_PARAM.NAME.4" value="what2show" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.what2show" value="Encoded string telling us which columns are to be shown UCD|colName|colUnits. show and what2show act together.." />  
+    <property name="INPUT_PARAM.TYPE.what2show" value="string" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.what2show" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.what2show" value="1" />                        
+       
+    <property name="INPUT_PARAM.NAME.5" value="require" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.require" value="Optional file containing pre-digested information about the VOTables." />  
+    <property name="INPUT_PARAM.TYPE.require" value="string" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.require" value="0" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.require" value="1" />   
+    
+    <property name="INPUT_PARAM.NAME.6" value="output" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.output" value="Output typt: can be one of HTML VOTable or Ascii, with the default being VOTable." />  
+    <property name="INPUT_PARAM.TYPE.output" value="string" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.output" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.output" value="1" />  
+    
+    <property name="INPUT_PARAM.NAME.7" value="maxent" />  
+    <property name="INPUT_PARAM.DOCUMENTATION.maxent" value="Maximum number of entries in VOTable" />  
+    <property name="INPUT_PARAM.TYPE.maxent" value="integer" />   
+    <property name="INPUT_PARAM.CARDINALITY.MIN.maxent" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.maxent" value="1" />                                                     
+              
+       
     <property name="OUTPUT_PARAMS.TOTAL" value="1" />
-    <property name="OUTPUT_PARAM.NAME.0" value="out" /> 
-    <property name="OUTPUT_PARAM.DOCUMENTATION.out" value="Paremeter out documentation goes here" />  
-    <property name="OUTPUT_PARAM.TYPE.out" value="MySpaceVOTableReference" /> 
-    <property name="OUTPUT_PARAM.CARDINALITY.MIN.out" value="1" />  
-    <property name="OUTPUT_PARAM.CARDINALITY.MAX.out" value="1" />     
+    
+    <property name="OUTPUT_PARAM.NAME.0" value="merged_output" /> 
+    <property name="OUTPUT_PARAM.DOCUMENTATION.merged_output" value="The merged VOTable" />  
+    <property name="OUTPUT_PARAM.TYPE.merged_output" value="MySpace_VOTableReference" /> 
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.merged_output" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.merged_output" value="1" />     
   </category>
   
   
   <!-- sextractor CATEGORY ========================================================== -->
-  <category name="Sextractor">
-    <property name="DOCUMENTATION" value="Sextractor tools documentation goes here." /> 
+  <category name="SExtractor">
+    <property name="DOCUMENTATION" value="Builds a catalogue of objects from an astronomical image. Oriented towards reduction of large scale galaxy-survey data, but also performs well on moderately crowded star fields." /> 
      
     <property name="INPUT_PARAMS.TOTAL" value="3" />
     
-    <property name="INPUT_PARAM.NAME.0" value="image1" /> 
-    <property name="INPUT_PARAM.TYPE.image1" value="MySpaceFileReference" /> 
-    <property name="INPUT_PARAM.DOCUMENTATION.image1" value="Paremeter image1 documentation goes here" />  
-    <property name="INPUT_PARAM.CARDINALITY.MIN.image1" value="1" />  
-    <property name="INPUT_PARAM.CARDINALITY.MAX.image1" value="1" />         
+    <property name="INPUT_PARAM.NAME.0" value="DetectionImage" /> 
+    <property name="INPUT_PARAM.TYPE.DetectionImage" value="MySpace_FileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.DetectionImage" value="The image used to detect sources. Basic position, shape and size informtaion is derived from this image" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.DetectionImage" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.DetectionImage" value="1" />         
 
     <property name="INPUT_PARAM.NAME.1" value="config_file" />  
-    <property name="INPUT_PARAM.TYPE.config_file" value="MySpaceFileReference" /> 
-    <property name="INPUT_PARAM.DOCUMENTATION.config_file" value="Paremeter config_file documentation goes here" />  
+    <property name="INPUT_PARAM.TYPE.config_file" value="MySpace_FileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.config_file" value="Config file containing the main configuration parameters for SExtractor" />  
     <property name="INPUT_PARAM.CARDINALITY.MIN.config_file" value="1" />  
     <property name="INPUT_PARAM.CARDINALITY.MAX.config_file" value="1" />  
     
-    <property name="INPUT_PARAM.NAME.2" value="config_parameters" /> 
-    <property name="INPUT_PARAM.TYPE.config_parameters" value="MySpaceFileReference" /> 
-    <property name="INPUT_PARAM.DOCUMENTATION.config_parameters" value="Paremeter config_parameters documentation goes here" />  
-    <property name="INPUT_PARAM.CARDINALITY.MIN.config_parameters" value="1" />  
-    <property name="INPUT_PARAM.CARDINALITY.MAX.config_parameters" value="1" />  
+    <property name="INPUT_PARAM.NAME.2" value="PARAMETERS_NAME" /> 
+    <property name="INPUT_PARAM.TYPE.PARAMETERS_NAME" value="MySpace_FileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.PARAMETERS_NAME" value="Parameter file containing the list of catalogue parameters that should be computed" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.PARAMETERS_NAME" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.PARAMETERS_NAME" value="1" />  
                
     <property name="OUTPUT_PARAMS.TOTAL" value="1" />
     
-    <property name="OUTPUT_PARAM.NAME.0" value="output" /> 
-    <property name="OUTPUT_PARAM.TYPE.output" value="MySpaceVOTableReference" />    
-    <property name="OUTPUT_PARAM.DOCUMENTATION.output" value="Paremeter output documentation goes here" />  
-    <property name="OUTPUT_PARAM.CARDINALITY.MIN.output" value="1" />  
-    <property name="OUTPUT_PARAM.CARDINALITY.MAX.output" value="1" />     
+    <property name="OUTPUT_PARAM.NAME.0" value="CATALOG_NAME" /> 
+    <property name="OUTPUT_PARAM.TYPE.CATALOG_NAME" value="MySpace_FileReference" />    
+    <property name="OUTPUT_PARAM.DOCUMENTATION.CATALOG_NAME" value="The catalogue of images derived from the input images" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.CATALOG_NAME" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.CATALOG_NAME" value="1" />     
+  </category>
+  
+  <!-- HyperZ CATEGORY ========================================================== -->
+  <category name="HyperZ">
+    <property name="DOCUMENTATION" value="" /> 
+     
+    <property name="INPUT_PARAMS.TOTAL" value="2" />
+    
+    <property name="INPUT_PARAM.NAME.0" value="config_file" /> 
+    <property name="INPUT_PARAM.TYPE.config_file" value="MySpace_FileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.config_file" value="A HyperZ configuration file" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.config_file" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.config_file" value="1" />         
+
+    <property name="INPUT_PARAM.NAME.1" value="input_catalog" />  
+    <property name="INPUT_PARAM.TYPE.input_catalog" value="MySpace_FileReference" /> 
+    <property name="INPUT_PARAM.DOCUMENTATION.input_catalog" value="The input catalogue of measured magnitude" />  
+    <property name="INPUT_PARAM.CARDINALITY.MIN.input_catalog" value="1" />  
+    <property name="INPUT_PARAM.CARDINALITY.MAX.input_catalog" value="1" />  
+               
+    <property name="OUTPUT_PARAMS.TOTAL" value="1" />
+    
+    <property name="OUTPUT_PARAM.NAME.0" value="output_catalog" /> 
+    <property name="OUTPUT_PARAM.TYPE.output_catalog" value="MySpace_FileReference" />    
+    <property name="OUTPUT_PARAM.DOCUMENTATION.output_catalog" value="The catalogue of estimated redshifts" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MIN.output_catalog" value="1" />  
+    <property name="OUTPUT_PARAM.CARDINALITY.MAX.output_catalog" value="1" />     
   </category>
 
 </properties>
