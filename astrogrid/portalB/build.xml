@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/09/29 23:28:55 $</cvs:author>
-    | <cvs:version>$Revision: 1.47 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/29 23:32:36 $</cvs:author>
+    | <cvs:version>$Revision: 1.48 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.48  2003/09/29 23:32:36  dave
+    | Updated some comments in the release build
+    |
     | Revision 1.47  2003/09/29 23:28:55  dave
     | Updated the release build script
     |
@@ -2402,7 +2405,7 @@
 	<target name="cocoon.deploy" depends="tomcat.tasks">
 		<!-- Wait for the Tomcat manager -->
 		<antcall target="tomcat.manager.wait"/>
-		<!-- Install our web-app -->
+		<!-- Deploy our webapp -->
 		<echo message=""/>
 		<echo message="Deploying Cocoon ...."/>
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/build/release/cocoon/webapp"/>
@@ -2415,9 +2418,12 @@
 		| This installs the Cocoon webapp by copying the war file into the Tomcat webapps directory.
 		+-->
 	<target name="cocoon.install" depends="">
-		<antcall target="cocoon.release"/>
+		<!-- Install our webapp -->
+		<echo message=""/>
 		<echo message="Installing Cocoon webapp ...."/>
 		<copy verbose="false" file="build/release/cocoon/cocoon.war" toFile="${tomcat.home}/webapps/cocoon.war"/>
+		<!-- Wait for Cocoon to load -->
+		<antcall target="cocoon.wait"/>
 	</target>
 
 	<!--+
@@ -2425,6 +2431,7 @@
 		| This deploys the Cocoon webapp in place, using the Tomcat Manager to reference the Cocoon webapp in our build tree.
 		+-->
 	<target name="release.DEPLOY" depends="">
+		<!-- Build our webapp -->
 		<antcall target="cocoon.release"/>
 		<antcall target="cocoon.deploy"/>
 	</target>
