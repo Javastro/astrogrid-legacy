@@ -5,7 +5,9 @@
 
 package org.astrogrid.datacenter.delegate;
 
-import org.w3c.dom.Element;
+import java.io.InputStream;
+import java.io.IOException;
+
 
 /**
  * Interface defining the simplest of delegates - being able to run a cone
@@ -23,17 +25,19 @@ public interface ConeSearcher
     * Simple cone-search call.
     * @param ra Right Ascension in decimal degrees, J2000
     * @param dec Decliniation in decimal degress, J2000
-    * @param sr search radius in ???.
-    * @return VOTable
+    * @param sr search radius in decimal degrees.
+    * @return InputStream to results document, including votable
     * @todo return VOTable instance not Element
-    * @todo what are the sr units?
     */
-   public Element coneSearch(double ra, double dec, double sr) throws DatacenterException;
+   public InputStream coneSearch(double ra, double dec, double sr) throws IOException;
 
 }
 
 /*
 $Log: ConeSearcher.java,v $
+Revision 1.3  2003/11/17 16:59:12  mch
+ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
+
 Revision 1.2  2003/11/17 12:32:26  mch
 Moved QueryStatus to query pacakge
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.3 2003/11/17 12:46:15 mch Exp $
+ * $Id: DummyDelegate.java,v 1.4 2003/11/17 16:59:12 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,14 +9,15 @@ package org.astrogrid.datacenter.delegate.dummy;
 import org.astrogrid.datacenter.delegate.*;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.datacenter.snippet.QueryIdHelper;
-import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -83,10 +84,11 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher
     * @return VOTable
     * @todo returns set example results, not those in the given ra/dec
     */
-   public Element coneSearch(double ra, double dec, double sr) throws DatacenterException
+   public InputStream coneSearch(double ra, double dec, double sr) throws IOException
    {
       //hmmm needs to do more than this if the results are going to be realistic...
-      return getSampleResults();
+      URL  url = DummyDelegate.class.getResource(RESULTSFILENAME);
+      return url.openConnection().getInputStream();
    }
    
    
@@ -342,6 +344,9 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.4  2003/11/17 16:59:12  mch
+ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
+
 Revision 1.3  2003/11/17 12:46:15  mch
 Moving common to snippet
 

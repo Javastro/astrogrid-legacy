@@ -1,21 +1,17 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.2 2003/11/17 12:32:27 mch Exp $
+ * $Id: NvoConeSearchDelegate.java,v 1.3 2003/11/17 16:59:12 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate.nvocone;
-import org.astrogrid.datacenter.delegate.*;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.query.QueryStatus;
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
+import org.astrogrid.datacenter.delegate.ConeSearcher;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.xml.sax.SAXException;
 
 /**
@@ -43,11 +39,10 @@ public class NvoConeSearchDelegate implements ConeSearcher
     * Simple cone-search http call.
     * @param ra Right Ascension in decimal degrees, J2000
     * @param dec Decliniation in decimal degress, J2000
-    * @param sr search radius.
-    * @return VOTable
-    * @todo return VOTable instance not Element
+    * @param sr search radius in decimal degrees
+    * @return input stream to results, which will be a VOTable document
     */
-   public Element coneSearch(double ra, double dec, double sr) throws DatacenterException
+   public InputStream coneSearch(double ra, double dec, double sr) throws IOException
    {
       String queryUrl = serverUrl;
       
@@ -67,19 +62,11 @@ public class NvoConeSearchDelegate implements ConeSearcher
          URL url = new URL(queryUrl);
          
          //run query
-            return XMLUtils.newDocument(url.openStream()).getDocumentElement();
+         return url.openStream();
       }
       catch (MalformedURLException mue)
       {
          throw new DatacenterException("server URL invalid: '"+queryUrl+"'",mue);
-      }
-      catch (ParserConfigurationException e)
-      {
-         throw new DatacenterException("Invalid setup",e);
-      }
-      catch (SAXException e)
-      {
-         throw new DatacenterException("Results are invalid XML",e);
       }
       catch (IOException e)
       {
@@ -93,6 +80,9 @@ public class NvoConeSearchDelegate implements ConeSearcher
 
 /*
 $Log: NvoConeSearchDelegate.java,v $
+Revision 1.3  2003/11/17 16:59:12  mch
+ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
+
 Revision 1.2  2003/11/17 12:32:27  mch
 Moved QueryStatus to query pacakge
 
