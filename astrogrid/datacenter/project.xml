@@ -163,7 +163,6 @@ See documentation for the PAL project for further build instructions.
 
 
   <reports>
-      <report> maven-dashboard-plugin </report>    
     <report>
       maven-changelog-plugin
     </report>
