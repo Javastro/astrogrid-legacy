@@ -6,6 +6,18 @@
             <item name="AstroGrid" href="http://www.astrogrid.org"/>
             <item name="Projects" href="index.html"/>
         </links>
+        <menu name="Astrogrid Maven Repository">
+			<!--+
+				| The following links use pattern matching, 
+				| and rely on deploying to Apache 2.x 
+				+ --> 
+            <item name="jars" 
+                href="http://www.astrogrid.org/maven/org.astrogrid/jar/?P=*SNAPSHOT*"/>
+            <item name="wars" 
+                href="http://www.astrogrid.org/maven/org.astrogrid/war/?P=*SNAPSHOT*"/>
+            <item name="zips" 
+                href="http://www.astrogrid.org/maven/org.astrogrid/zip/?P=*SNAPSHOT*"/>
+        </menu>
         <menu name="Astrogrid Components">
             <item name="Applications Integration" 
                 href="applications/index.html"/>
@@ -27,7 +39,7 @@
         <menu name="Integration">
             <item name="Integration Testing" 
                 href="integrationTests/index.html"/>
-            <item name="Integration Test Results" 
+            <item name="Test Results" 
                 href="integrationTests/junit-report.html"/>    
         </menu>
         <menu name="Logs">
@@ -52,11 +64,7 @@
                     href="log/integration.log" />
             </item>
         </menu>
-        <menu name="Releases">
-            <item name="Astrogrid Maven Repository" 
-                href="http://www.astrogrid.org/maven/org.astrogrid"/>
-        </menu>
-        <menu name="Overall"/>
+        <menu name="Global"/>
         <!--overall project docs will be substituted here-->
     </body>
 </project>
