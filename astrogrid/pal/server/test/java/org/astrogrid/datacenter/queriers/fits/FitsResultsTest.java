@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.4 2005/03/21 18:45:55 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.5 2005/03/31 09:43:09 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -20,7 +20,10 @@ import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.UrlListResults;
 import org.astrogrid.dataservice.queriers.status.QuerierProcessingResults;
 import org.astrogrid.query.SimpleQueryMaker;
+import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.slinger.targets.WriterTarget;
 import org.astrogrid.xml.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -40,11 +43,11 @@ public class FitsResultsTest extends TestCase
        testQuerier.setStatus(new QuerierProcessingResults(testQuerier.getStatus()));
       fixedResults = new UrlListResults(testQuerier, exampleUrls);
    }
-                            
+
    public void testToVotable() throws IOException, SAXException, ParserConfigurationException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.writeVotable(TargetMaker.makeTarget(sw), (QuerierProcessingResults) testQuerier.getStatus());
+      fixedResults.sendTable(new ReturnTable(new WriterTarget(sw), MimeTypes.VOTABLE), LoginAccount.ANONYMOUS);
       
       //check results
       DomHelper.newDocument(sw.toString());
@@ -52,6 +55,7 @@ public class FitsResultsTest extends TestCase
       //doesn't compile on mch's PC AstrogridAssert.assertVotable(sw.toString());
    }
 
+   /*
    public void testToHtml() throws IOException, SAXException, ParserConfigurationException
    {
       StringWriter sw = new StringWriter();
@@ -66,7 +70,7 @@ public class FitsResultsTest extends TestCase
       StringWriter sw = new StringWriter();
       fixedResults.writeCSV(TargetMaker.makeTarget(sw), (QuerierProcessingResults) testQuerier.getStatus());
    }
-
+    */
    
    // Reflection is used here to add all the testXXX() methods to the suite.
    public static Test suite()
@@ -87,6 +91,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.5  2005/03/31 09:43:09  mch
+ Some fixes
+
  Revision 1.4  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

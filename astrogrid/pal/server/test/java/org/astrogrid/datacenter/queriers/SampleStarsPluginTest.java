@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.5 2005/03/21 18:45:55 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.6 2005/03/31 09:43:09 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,6 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -23,9 +22,9 @@ import org.astrogrid.dataservice.metadata.VoDescriptionServer;
 import org.astrogrid.dataservice.queriers.Querier;
 import org.astrogrid.dataservice.queriers.QuerierManager;
 import org.astrogrid.dataservice.queriers.TableResults;
-import org.astrogrid.io.NullOutputStream;
 import org.astrogrid.query.SimpleQueryMaker;
 import org.astrogrid.query.returns.ReturnTable;
+import org.astrogrid.slinger.targets.NullTarget;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.tableserver.jdbc.JdbcConnections;
 import org.astrogrid.tableserver.jdbc.RdbmsTableMetaDocGenerator;
@@ -53,7 +52,7 @@ public class SampleStarsPluginTest extends TestCase {
       
       //test the fixed example ones
       TableResults results = new PrecannedResults(null, "test");
-      results.writeTable(new VoTableWriter(new OutputStreamWriter(new NullOutputStream()), "Test"), null);
+      results.writeTable(new VoTableWriter(new NullTarget(), "Test", LoginAccount.ANONYMOUS), null);
    }
 
    /** Test that we can connect to the dummy database */
