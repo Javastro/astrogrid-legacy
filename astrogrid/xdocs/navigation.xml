@@ -4,11 +4,13 @@
     <body>
         <links>
             <item name="AstroGrid" href="http://www.astrogrid.org"/>
+            <item name="Software" href="http://software.astrogrid.org"/>
             <item name="Projects" href="index.html"/>
         </links>
 	    <menu name="Overview">
-		  <item name="Information for Users" 
-                href="install.html"/>
+          <item name="AstroGrid Software" href="http://software.astrogrid.org"/>
+		  <item name="Other Releases" 
+                href="http://www.astrogrid.org/maven/build/"/>
 		  <item name="Latest news" 
                 href="http://news.astrogrid.org/"/>				
           <item name="About this documentation" 
