@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.4 2004/07/13 15:07:55 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.5 2004/08/03 14:04:34 KevinBenson Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
     <!--will eventually extend from /base when Maven RC3 installed-->
@@ -14,9 +14,9 @@
     
       <!-- for VoSpaceResolver -->
         <dependency>
-            <artifactId>astrogrid-registry-client</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -24,7 +24,7 @@
         <dependency>
             <artifactId>astrogrid-registry-common</artifactId>
          <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -34,7 +34,7 @@
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -43,7 +43,7 @@
         <!-- mch why is this in?! dependency>
             <artifactId>astrogrid-datacenter-client</artifactId>
             <groupId>astrogrid-datacenter</groupId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -179,7 +179,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
-            <version>SNAPSHOT</version>
+	        <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -188,7 +188,7 @@
     <dependency>
       <artifactId>astrogrid-ui</artifactId>
       <groupId>org.astrogrid</groupId>
-      <version>SNAPSHOT</version>
+        <version>${pom.currentVersion}</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -210,7 +210,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-common</artifactId>
-            <version>SNAPSHOT</version>
+        	<version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -220,7 +220,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-client</artifactId>
-            <version>SNAPSHOT</version>
+    	    <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
@@ -231,7 +231,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-resolver</artifactId>
-            <version>SNAPSHOT</version>
+	        <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
