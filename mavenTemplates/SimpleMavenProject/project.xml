@@ -14,7 +14,7 @@
 	<!-- a short description of what the project does -->
 	<shortDescription> How to set up Maven. </shortDescription>
 	<!-- Override values in the parent POM-->
-	<!-- Location on Uluru to deploy the site -->
+	<!-- Location on Uluru to deploy the site documentation -->
 	<siteDirectory>/var/www/www/maven/build/SimpleMavenProject</siteDirectory>
 	<!-- Connections to CVS -->
 	<repository>
@@ -28,7 +28,6 @@
 			http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject 
 			</url>
 	</repository>
-	<!-- end of overrides -->
 	<!-- build information for the project -->
 	<build>
 		<nagEmailAddress>jdt@roe.ac.uk</nagEmailAddress>
@@ -42,15 +41,17 @@
 				<exclude>**/NaughtyTest.java</exclude>
 			</excludes>
 		</unitTest>
-		<resources>
+		<resources> <!--these are bundled into the jar -->
+
 			<resource>
-				<directory>src/conf</directory>
+				<directory>conf</directory>
 				<includes>
-					<include>*.properties</include>
+					<include>app.properties</include>
 				</includes>
 			</resource>
 		</resources>
 	</build>
+    <!-- end of overrides -->
 	<!-- jar files the project is dependent on -->
 	<dependencies>
 		<dependency>

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<document>
+	<properties>
+		<title>Simple Maven Project Layout</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Project Layout">
+			<subsection name="Source files">
+				<P> This project differs slightly from the layout in typical 
+					Astrogrid projects. Usually, we place our source code in 
+					/src/java and our JUnit code in test/java. However, the 
+					layout for this project was generated automatically using 
+					the Maven goal </P>
+				<P> maven genapp </P>
+				<P> which puts the source code under src/java and the test code 
+					under src/test, with configuration files under /conf. 
+					Although this seems to be the layout favoured by Maven 
+					perhaps it would be better to stick to the uniform layout 
+					we have already? Comments? </P>
+			</subsection>
+		</section>
+		<section name="Documentation">
+			<p> Any xml documents placed in the xdocs folder are automatically 
+				processed into html when the site is built. Note the &lt;P&gt; 
+				tags surrounding the text - it's easy to forget these and 
+				wonder why your text hasn't rendered!</p>
+		</section>
+		<section name="Navigation">
+			<p> A special file xdocs/navigation.xml can be added to place extra 
+				links on the left hand side and header of the page. </p>
+		</section>
+		<section name="War files">
+			<P>Coming soon....</P>
+		</section>
+	</body>
+</document>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+	<title>AstroGrid Project</title>
+	<body>
+		<links>
+			<!-- These items become links in the header of the page-->
+			<item name="AstroGrid" href="http://www.astrogrid.org"/>
+			<item name="Maven" href="http://www.maven.org"/>
+		</links>
+		<menu name="Build and install">
+			<!-- These items become links on the left hand side of the page -->
+			<item name="Build" href="buildInst.html"/>
+			<item name="Install" href="install.html"/>
+			<item name="README" href="README"/>
+		</menu>
+		<menu name="Simple Maven Projects">
+			<item name="Project Layout" href="layout.html"/>
+			<!-- items can be nested to produce collapsable menus -->
+			<item name="Astrogrid Goals" href="/astrogridgoals.html" 
+				collapse="true">
+				<item name="Summary of astrogrid goals" 
+					href="goalsSummary.html" />
+				<item name="The nightly build" href="http://www.astrogrid.org/" 
+					/>
+			</item>
+		</menu>
+	</body>
+</project>

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<document>
+	<properties>
+		<title>Astrogrid Custom Goals</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<P> All Astrogrid components should implement the following goals. A 
+			simple example of how to do this may be found <a 
+			href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/maven.xml">here.</a> 
+			</P>
+		<section name="Astrogrid Custom Goals">
+			<subsection name="Cleanup">
+				<P> astrogrid-clean === delete all local build products </P>
+			</subsection>
+			<subsection name="Documentation">
+				<P> astrogrid-build-site === generate this documentation<BR/> 
+					astrogrid-deploy-site === generate this documentation and 
+					copy it across to our webserver<BR/> </P>
+			</subsection>
+			<subsection name="Build artifacts">
+				<P> astrogrid-build-artifact === build all jars and wars 
+					locally <BR/> astrogrid-install-artifact === as above but 
+					install the artifacts in your local repository (useful if 
+					you're working offline using Maven's -o switch) <BR/> 
+					astrogrid-deploy-artifact === as above but install the 
+					artifacts in the astrogrid repository on Uluru for other 
+					components to use </P>
+				<P> astrogrid-build-snapshot ===] <BR/> 
+					astrogrid-install-snapshot ===]== as above but create 
+					snapshots <BR/> 
+					astrogrid-deploy-snapshot ===] </P>
+			</subsection>
+		</section>
+		<section name="Snapshot builds - what is the difference?">
+			<P> An ordinary build produces artifacts of the form {artifact 
+				Id}-{current Version}.jar, e.g. astrogrid-jes-Itn04_1.jar, that 
+				is intended for release. A snapshot build on the other hand 
+				produces timestamped artifacts of the form {artifact 
+				Id}-{yyyymmdd.hhmmss}.jar, e.g. 
+				astrogrid-jes-20040227.001934.jar and (usually) creates a 
+				symbolic link {artifact Id}-SNAPSHOT.jar to it. </P>
+			<P> If you include dependencies on SNAPSHOT jars on your POM, then 
+				they are downloaded from the remote repository to your local 
+				repository each time Maven is run, to ensure you get the latest 
+				version. </P>
+		</section>
+	</body>
+</document>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<document>
+	<properties>
+		<title>Simple Maven Project Build Instructions</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Prerequisites">
+			<P>
+				<UL>
+				<LI> A cvs client </LI>
+				<LI> Maven </LI>
+				</UL>
+			</P>
+		</section>
+		<section name="Build procedure">
+			<P> Execute </P>
+			<P> maven astrogrid-build-snapshot</P>
+			<P> to build a SNAPSHOT jar astrogrid-simple-SNAPSHOT.jar and war 
+				astrogrid-simple-SNAPSHOT.war. </P>
+			<P> Execute </P>
+			<P> maven astrogrid-build-artifact </P>
+			<P>to build non-snapshot jars and wars. </P>
+		</section>
+	</body>
+</document>
+ 

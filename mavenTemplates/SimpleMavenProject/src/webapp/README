@@ -1,0 +1,2 @@
+Put files that you wish to go into your webapp's root directory in here.  You might even like to add
+a maven.xml preGoal to insert the generated maven docs, if any.

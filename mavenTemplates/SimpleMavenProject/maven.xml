@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- extension maven script -->
+<project default="astrogrid-build-site" xmlns:j="jelly:core">
+	<!-- custom astrogrid goals for nightly build -->
+	<goal name="astrogrid-clean" prereqs="clean"/>
+	<goal name="astrogrid-deploy-site" 
+		prereqs="astrogrid-build-site,site:fsdeploy" />
+	<goal name="astrogrid-build-site" prereqs="site"/>
+	<goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot"/>
+	<goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war:war"/>
+	<goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot"/>
+	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
+	<goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
+	<goal name="astrogrid-install-artifact" prereqs="jar:install,war:install"/>
+	
+	
+	<preGoal name="java:compile">
+		<mkdir dir="${basedir}/target/classes"/>
+		<!-- JDepend fails if this dir is not present.  This is a hack to fix it. -->
+	</preGoal>
+
+	<!-- If you wish to add any other things to the webapp before it is jared up, such
+		 as the generated Maven docs, now is a good time to do it.  It relies on astrogrid-site having already been run tho' -->
+	<postGoal name="war:webapp">
+		<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.build.dir}/${pom.artifactId}"/>
+		<copy todir="${maven.build.dir}/${pom.artifactId}" overwrite="yes">
+			<fileset dir="${maven.docs.dest}"/>
+		</copy>
+</postGoal>
+	
+</project>

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+
+<document>
+	<properties>
+		<title>Simple Maven Project</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Introduction">
+			<p> This project provides an example of how to set up a simple 
+				project that can be built by Maven during our automatic build 
+				process. Please send comments and suggestions to <a 
+				href="mailto:jdt@roe.ac.uk">John Taylor</a>. </p>
+		</section>
+		<section name="Building using Maven">
+			<p> From Itn05 onwards Astrogrid components are to be built using 
+				Maven via a number of custom goals. These may be executed from 
+				the command line by typing <BR/> maven {goal} <BR/> while in 
+				the project's root directory. The Astrogrid custom goals are 
+				described <a href="astrogridgoals.html">here.</a> </p>
+			<subsection name="Automatic Builds">
+				<P> Components are built automatically by a cron job on Uluru 
+					that executes scripts that are stored in CVS under 
+					/mavenrun. These scripts do a number of housekeeping 
+					chores, check out a fresh copy of the code from CVS and 
+					execute Maven. To see which Maven goals are executed by 
+					these scripts see <a href="astrogridgoals.html">Astrogrid 
+					Maven Goals</a>. If you create a new component and wish to 
+					add it to the automatic build please contact <a 
+					href="mailto:jdt@roe.ac.uk">John Taylor</a>. </P>
+			</subsection>
+		</section>
+		<section name="Using Maven - files you should know about">
+			<P> This is not a tutorial on Maven - see the <a 
+				href="http://www.maven.org">Maven site</a> if you're interested 
+				in the nitty gritty. </P>
+			<subsection name="project.xml">
+				<P> Project.xml, otherwise know as the Project Object Model 
+					(POM) describes the project: who wrote it, which jars and 
+					resources it depends on, where its CVS repositories are, 
+					etc. Since much of the POM is common to all projects, we 
+					have factored out the commonallity into a base POM, stored 
+					in CVS under maven-base. You are advised to inherit from 
+					this POM using the &lt;extend&gt; tag to keep your POM 
+					simple, and make future maintenance easier. You may 
+					override any settings in the base POM that are not 
+					appropriate with your own values, that is, your POM takes 
+					precedence. </P>
+			</subsection>
+			<subsection name="project.properties">
+				<P> This file contains various Maven properties that seem to 
+					have been thrown together as an afterthought. It is 
+					optional, and contains such diverse things as alternative 
+					locations for the jar repository , whether to allow asserts 
+					in java code, and whether to place the date and time on the 
+					website! Third-party Maven plug-ins usually set their 
+					properties here. Be warned, that unlike project.xml it is 
+					not inherited by the &lt;extend&gt; tag. There seem to be 
+					moves afoot chez Maven to tidy this file up and put many of 
+					the properties into the POM instead. </P>
+			</subsection>
+			<subsection name="maven.xml">
+				<P> If project.xml describes the "what" about a project, 
+					maven.xml describes the "how". It is an optional file that 
+					allows you to add extra processing before or after a goal, 
+					or indeed create new goals. maven.xml grants you a great 
+					deal of power, allowing you to write scripts and access any 
+					Ant tags. While this is often necessary, it is tempting to 
+					overcomplicate maven.xml and accidentally recreate an Ant 
+					build by the back door. Although maven.xml is optional for 
+					Maven, all Astrogrid components will need to use it to 
+					define the custom Astrogrid goals executed by our automatic 
+					build process. </P>
+			</subsection>
+			<subsection name="checkstyle.xml">
+				<P> Describes the coding rules that are used to produce the 
+					CheckStyle coding standards reports. The location of this 
+					file is set in project.properties and it is recommended 
+					that you link to the checkstyle.xml in maven-base so that 
+					we can agree on a common set of Coding Standards. </P>
+			</subsection>
+		</section>
+	</body>
+</document>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<document>
+	<properties>
+		<title>Astrogrid Custom Goals</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Why have custom goals?">
+			<P> Some of our components do not easily fit into the simple layout 
+				of this project. Furthermore, some of Maven's built-in goals 
+				are "works in progress" and do not do quite what they should. 
+				In previous iterations we have got around this by adding extra 
+				processing hanging on the front or end of existing built-in 
+				goals. However, this had the side effect that often we would be 
+				forced to run goals for a project which were not appropriate, 
+				and we would then often get build failure errors which we had 
+				to know it was OK to ignore. Furthermore, sometimes unintended jars and 
+				wars were built as a by-product of the hacked build process 
+				 and this caused confusion for users. 
+				Hence, we have created custom goals that every component owner 
+				should implement. In many cases (as for this simple project), 
+				these goals will simply map directly onto existing Maven goals, 
+				but they give us the power and flexibility to vary the build if 
+				we need to. </P>
+		</section>
+	</body>
+</document>

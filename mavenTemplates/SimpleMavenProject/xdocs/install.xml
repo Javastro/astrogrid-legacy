@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<document>
+	<properties>
+		<title>Simple Maven Project Install Info</title>
+		<author email="jdt@roe.ac.uk">John Taylor</author>
+	</properties>
+	<body>
+		<section name="Install Instructions">
+			<P> Drop the <a 
+				href="http://www.astrogrid.org/maven/org.astrogrid/astrogrid-simple-SNAPSHOT.war">war</a> 
+				file into your Tomcat's root directory. </P>
+		</section>
+	</body>
+</document>
