@@ -186,7 +186,7 @@ public class SecurityGuard {
    *
    * @param word the password
    */
-  public void setSsoPassword (String word) {
+  protected void setSsoPassword (String word) {
     try {
       this.setPassword(new Password(word, false));
     }
