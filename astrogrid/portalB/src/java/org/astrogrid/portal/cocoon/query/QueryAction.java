@@ -242,7 +242,7 @@ public class QueryAction extends AbstractAction
 		if(qb == null) {
 			qb = new QueryBuilder("JobTest");
 			qb.setUserName(user);
-			qb.setCommunity(user); //change this.
+			qb.setCommunity((String)session.getAttribute("community")); //change this.
 		}
 
 		
@@ -412,7 +412,7 @@ public class QueryAction extends AbstractAction
 				tempStr = "";
 			}
 				
-			tempStr = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + tempStr;
+			tempStr = qb.formulateQuery() + "- JobID= " + jobIDStr + " " + tempStr;
 			results.put(REQUEST_QUERY_STRING_SENT,"\nSent Query:" + tempStr);
 			request.setAttribute(REQUEST_QUERY_STRING_SENT,tempStr);
 			qb.clear();
