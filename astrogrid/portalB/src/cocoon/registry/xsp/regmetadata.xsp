@@ -7,28 +7,26 @@
 		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
 		>
 		
-		<!--+
+			<!--+
 	    | Import any java classes here.
 	    +-->
 
 	<xsp:structure>
-
+		<xsp:include>org.w3c.dom.Node</xsp:include>
+		<xsp:include>org.w3c.dom.Element</xsp:include>		
 	</xsp:structure>	    
-<registrystatus>	
+	<xml>
 			<xsp:logic>
 			<![CDATA[
-				String status = (String)request.getAttribute("Status");
-				String []statusSplit = status.split("\\|");
-				
-				for(int i = 0;i < statusSplit.length;i++) {
-				System.out.println("the status is = " + statusSplit[i]);
+//				System.out.println("checking xmlresultnodes");
+				Element elem = (Element)request.getAttribute("resultXML");
+                if(elem != null) {
+					Node nd = (Node)elem;
+				]]>
+						<element><xsp:expr>nd</xsp:expr></element>
+				<![CDATA[
+					}
 			]]>
-					<xsp:element name="status">
-						<xsp:expr>statusSplit[i]</xsp:expr>
-					</xsp:element>
-			<![CDATA[
-				}
-				]]>				
 			</xsp:logic>
-</registrystatus>
+	</xml>
 </xsp:page>

@@ -2,6 +2,13 @@
 <xsl:stylesheet
 	version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+	  xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9"
+  xmlns:vc="http://www.ivoa.net/xml/VOCommunity/v0.2"
+  xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.2"
+  xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.4"
+  xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
+  xmlns:cs="http://www.ivoa.net/xml/ConeSearch/v0.2"
+  xmlns:sia="http://www.ivoa.net/xml/SIA/v0.6"
 	>
 	
 	<xsl:param name="mainelement" />
@@ -35,7 +42,7 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="regquery_form">
-		<form method="get" action="registryquery.html" name="RegistryQuery">
+		<form method="post" action="registryquery.html" name="RegistryQuery">
 			<input type="hidden" name="action" value="selectquery" />
 			<input type="hidden" name="mainelement">
 				<xsl:attribute name="value"><xsl:value-of select="$mainelement"/></xsl:attribute>
@@ -101,7 +108,7 @@
 		</form>
 		<br />
 		<br />
-		<form method="get" action="registryquery.html" name="RegistryQuery">
+		<form method="post" action="registryquery.html" name="RegistryQuery">
 			<input type="hidden" name="action" value="addcriteria" />
 			<input type="hidden" name="criteria_number">
 				<xsl:attribute name="value"><xsl:value-of select="$criteria_number"/></xsl:attribute>
@@ -148,6 +155,33 @@
 
 <hr />
 <hr />
+		<xsl:if test="//registryquery/xmlresultnodes/element/">
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td>Actions</td>
+					<td>Identifier</td>
+					<td>Title</td>
+					<td>Description</td>
+				</tr>
+			<xsl:for-each select="//registryquery/xmlresultnodes/element/*/*">
+				<tr>
+					<td><xsl:value-of select="name()"/></td>
+					<td><xsl:value-of select="vc:Title/text()" /></td>
+                    <td>
+                        <xsl:value-of select="local-name()"/>
+                    </td>
+					<td><xsl:value-of select="Title/text()" /></td>                    
+
+					<td> </td>
+					<!--
+					<td><xsl:value-of select="Identifier/AuthorityID/text()" />/<xsl:value-of select="./Identifier/ResourceKey" /></td>
+					<td><xsl:value-of select="self::node()/Title" /></td>					
+					<td><xsl:value-of select="Summary/Description/text()" /></td>
+					-->
+				</tr>
+			</xsl:for-each>
+			</table>
+		</xsl:if>
 
 	</xsl:template>
 

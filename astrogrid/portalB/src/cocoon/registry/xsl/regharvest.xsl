@@ -52,7 +52,7 @@
 		</xsl:if>
 		<xsl:if test="$addregistry != 'true'">
 			<xsl:if test="$errorMessage != ''" >
-				<form method="get" action="registryharvest.html" name="RegistryUpdate">
+				<form method="post" action="registryharvest.html" name="RegistryUpdate">
 					<input type="hidden" name="registryXML">
 						<xsl:attribute name="value"><xsl:value-of select="$registryXML" /></xsl:attribute>
 					</input>
