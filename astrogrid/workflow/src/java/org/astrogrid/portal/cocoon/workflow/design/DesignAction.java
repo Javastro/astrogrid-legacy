@@ -30,6 +30,7 @@ import org.astrogrid.portal.workflow.design.activity.*;
 
 import org.astrogrid.community.common.util.CommunityMessage;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -100,6 +101,7 @@ public class DesignAction extends AbstractAction {
     
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag" ,
+        HTTP_TOOL_TAG = "tool-tag" ,
         COMMUNITY_ACCOUNT_TAG = "community_account" ,
         COMMUNITY_NAME_TAG = "community_name" ,
         CREDENTIAL_TAG = "credential",
@@ -215,7 +217,9 @@ public class DesignAction extends AbstractAction {
         private Workflow
             workflow ;
 		private String
-			template ;            
+			template ;
+		private Tool
+		    tool ;            
         
         public DesignActionImpl( Redirector redirector
                                , SourceResolver resolver
@@ -320,7 +324,7 @@ public class DesignAction extends AbstractAction {
 	                // Save the workflow in the session object...
     	            debug( "about to set session attribute..." ) ;
         	        session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
-            	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ) ;
+            	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ) ;            	    
                 }
                 
 				this.readLists() ; // Ensure request object contains latest Workflow/Query
@@ -598,6 +602,18 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.submitWorkflow() entry" ) ;
 
             try {
+            	
+               String
+                  name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
+
+               if( name == null ) {
+                  ; // some logging here
+                  throw new ConsistencyException() ;
+               }
+
+			   if( workflow == null ) {
+			      workflow = Workflow.readWorkflow( communitySnippet(), name ) ;
+			   }
 
                 if( workflow == null ) {
                     ; // some logging here
@@ -713,7 +729,7 @@ public class DesignAction extends AbstractAction {
 
 
         private void createTool() throws ConsistencyException {
-		   if( TRACE_ENABLED ) trace( "DesignActionImpl.createToo() entry" ) ;
+		   if( TRACE_ENABLED ) trace( "DesignActionImpl.createTool() entry" ) ;
 		   try {
 		   	
               String
@@ -726,11 +742,26 @@ public class DesignAction extends AbstractAction {
 			     tool = Workflow.createTool( communitySnippet()
 				                           , toolName ) ;
 				                           
-		   
-		   	  
+			  this.request.setAttribute( HTTP_TOOL_TAG, tool ) ;
+				trace("-----------------------------------------") ;
+				trace("tool put into request object") ;
+				trace("Name:" + tool.getName() ) ;
+				trace("Documentation: " + tool.getDocumentation() ) ;
+				trace("Input parameters:") ;
+				ListIterator li = tool.getInputParameters() ;
+				while(li.hasNext()) {
+					Parameter p = (Parameter)li.next() ;
+					trace("input param: Name " + p.getName()) ;
+					trace("input param: Documentation " + p.getDocumentation()) ;
+					trace("input param: Type " + p.getType()) ;
+					trace("input param: Cardinality " + p.getCardinality()) ;
+					trace("input param: Contents " + p.getContents()) ;
+					
+				}
+				trace("-----------------------------------------") ;			                            	   	  
 		   }
 	       finally {
-		      if( TRACE_ENABLED ) trace( "DesignActionImpl.readWorkflowList() exit" ) ;
+		      if( TRACE_ENABLED ) trace( "DesignActionImpl.createTool() exit" ) ;
 		   }					         
         } // end of createTool()
            
@@ -832,25 +863,28 @@ public class DesignAction extends AbstractAction {
 				response = false;
               
 			try {
+				// Load current Tool - if any - from our HttpSession.
+				this.tool = (Tool) request.getAttribute( HTTP_TOOL_TAG ) ;
+									
 				String
-					queryName = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
-					
-				String
-					stepKey = request.getParameter( STEP_KEY_PARAMETER ) ;
+				   stepActivityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;					
                 
-                if ( queryName == null ) {
-                	debug( "queryName is null" ) ;
+                if ( stepActivityKey == null) {
+                	debug( "stepActivityKey is null" ) ;
                 }
-                else if ( stepKey == null) {
-                	debug( "stepKey is null" ) ;
+                else if ( tool == null ) {
+                	debug( "tool is null" ) ;
                 }
-                else {
-//				    response = Workflow.insertQueryIntoStep( stepKey, queryName, workflow ) ;
+                else {                	
+				    response = Workflow.insertToolIntoStep( stepActivityKey, tool, workflow ) ;
                 }   
 				
 				if ( response == false ) {
 					; // some logging here
 					throw new ConsistencyException() ;					          
+				}
+				if ( response == true ) {
+					request.removeAttribute( HTTP_TOOL_TAG ) ;
 				}
 			}
 			finally {
