@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.2 2004/09/01 12:09:59 mch Exp $
+ * $Id: SubmitAdqlXml.java,v 1.1 2004/09/01 12:09:59 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
@@ -26,7 +25,7 @@ import org.astrogrid.datacenter.service.ServletHelper;
  *
  * @author mch
  */
-public class SubmitCone extends HttpServlet {
+public class SubmitAdqlXml extends HttpServlet {
    
    DataServer server = new DataServer();
  
@@ -35,20 +34,15 @@ public class SubmitCone extends HttpServlet {
 
       ReturnSpec tableDef = ServletHelper.makeReturnSpec(request);
 
-      String param_ra = request.getParameter("RA");
-      String param_dec = request.getParameter("DEC");
-      String param_sr = request.getParameter("SR");
+      String adqlXml = request.getParameter("AdqlXml");
 
       try {
-         double ra = Double.parseDouble(param_ra);
-         double dec = Double.parseDouble(param_dec);
-         double sr = Double.parseDouble(param_sr);
 
          //if a target is not given, we do an asynchronous (ask) Query to the response
          //stream.
          if (tableDef.getTarget() == null) {
             tableDef.setTarget(new TargetIndicator(response.getWriter()));
-            server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), tableDef);
+            server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), tableDef);
          }
          else {
             response.setContentType("text/html");
@@ -57,11 +51,11 @@ public class SubmitCone extends HttpServlet {
                "<head><title>Submitting Query</title></head>"+
                "<body>");
 
-            String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), tableDef);
+            String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), tableDef);
       
             URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
             //indicate status
-            response.getWriter().println("Cone Query has been submitted, and assigned ID "+id+"."+
+            response.getWriter().println("ADQL Query has been submitted, and assigned ID "+id+"."+
                                           "<a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
             //redirect to status
             response.getWriter().write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>"+
@@ -70,7 +64,7 @@ public class SubmitCone extends HttpServlet {
       }
       catch (Throwable th) {
          LogFactory.getLog(request.getContextPath()).error(th);
-         doError(response, "Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+tableDef,th);
+         doError(response, "Searching ADQL: "+adqlXml+" -> "+tableDef,th);
       }
    }
 
