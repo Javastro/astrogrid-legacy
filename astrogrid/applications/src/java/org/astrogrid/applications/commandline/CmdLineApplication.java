@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.17 2004/03/04 01:36:59 nw Exp $
+ * $Id: CmdLineApplication.java,v 1.18 2004/03/05 16:08:22 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -147,7 +147,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
          try {
              MessageType ack = new MessageType();
-             ack.setValue("comment");
+             ack.setContent("comment");
              ack.setLevel(LogLevel.info);
              ack.setPhase(ExecutionPhase.COMPLETED);
              ack.setSource("CmdLineApplication");
