@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerFactory.java,v 1.4 2004/03/03 11:15:23 nw Exp $
+/*$Id: WorkflowManagerFactory.java,v 1.5 2004/03/11 13:53:36 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,31 +10,213 @@
 **/
 package org.astrogrid.portal.workflow.intf;
 
+import org.astrogrid.config.Config;
+import org.astrogrid.config.PropertyNotFoundException;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.portal.workflow.impl.BasicWorkflowBuilder;
+import org.astrogrid.portal.workflow.impl.FileApplicationRegistry;
+import org.astrogrid.portal.workflow.impl.FileWorkflowStore;
+import org.astrogrid.portal.workflow.impl.JesJobExecutionService;
+import org.astrogrid.portal.workflow.impl.MySpaceWorkflowStore;
+import org.astrogrid.portal.workflow.impl.RegistryApplicationRegistry;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
 /** Factory that creates a new workflow manager
+ * <p>
+ * After creation, a factory instance maintains a single instance of the manager
+ * <p>
+ * The composition of the created workflow manager depends on the keys set in the {@link org.astrogrid.config.Config} system. Refer to the documentation
+ * for this package for how to set keys.
+ * <p>
+ * The keys that control the configuration of the workflow manager are all defined in this class:
+ * <h2>Workflow Store</h2>
+ * <ul>
+ * <li>{@link #WORKFLOW_STORE_KEY}
+ * <li>{@link #WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY}
+ * <li>{@link #WORKFLOW_FILE_STORE_BASEDIR_KEY}
+ * </ul>
+ * <h2>Application Registry</h2>
+ * <li>
+ * <li>{@link #WORKFLOW_APPLIST_KEY}
+ * <li>{@link #WORKFLOW_APPLIST_REGISTRY_ENDPOINT_KEY}
+ * <li>{@link #WORKFLOW_APPLIST_XML_URL_KEY}
+ * </ul>
+ * <h2>Job Execution Service</h2>
+ * <ul>
+ * <li>{@link #WORKFLOW_JES_ENDPOINT_KEY}
+ * 
+ * </ul>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
  *
  */
 public class WorkflowManagerFactory {
+    private static Log log = LogFactory.getLog(WorkflowManagerFactory.class);
     /** Construct a new WorkflowManagerFactory
-     * 
+     * will use default configuration object from {@link SimpleConfig}
      */
     public WorkflowManagerFactory() {
-        super();
+        this(SimpleConfig.getSingleton());
     }
-    /** @todo implement */
-    public synchronized WorkflowManager getManager() {
+    
+    /** construct a workflow manager factory, which will use the passed in configuration object */
+    public WorkflowManagerFactory(Config conf) {
+        this.conf = conf;
+    }
+    private final Config conf;
+    
+    /** access the manager instance */
+    public synchronized WorkflowManager getManager() throws WorkflowInterfaceException{
         if (theInstance == null) {
-            throw new UnsupportedOperationException("No implementation provided yet");
+           theInstance = createManager();           
         }
+        assert theInstance != null;
         return theInstance;
     }
     
-    private static WorkflowManager theInstance; 
+    private WorkflowManager theInstance;
+    
+    /** key to look under to determine implementation of workflow store to use.
+     * <p>
+     * possible values: <tt>file</tt> | <tt>myspace</tt> | <tt><i>java.class.name</i></tt>
+     * <br> default value: <tt>myspace</tt>
+     * 
+     */
+    public static final String WORKFLOW_STORE_KEY = "workflow.store";
+    /** key to look under to determine base directory to use for file-based workflow store 
+     * <br>default value: <tt>System.getProperty("java.io.tmpdir")</tt>*/
+    public static final String WORKFLOW_FILE_STORE_BASEDIR_KEY = "workflow.store.file.basedir";
+    /** key to look under to determine endpoint of myspace-based workflow store */
+    public static final String WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY = "workflow.store.myspace.endpoint";
+    /** key to look under to determin implmenetation of workflow applicationRegistry to use
+     * <p>possible values: <tt>xml</tt> | <tt>registry</tt> | <tt><i>java.class.name</i></tt>
+     * <br> default value: <tt>registry</tt>
+     */
+    public static final String WORKFLOW_APPLIST_KEY = "workflow.applist";
+    /** key to look under to determine url of xml file to use for xml-based application registry 
+     * <p> default value: <tt>/application-list.xml</tt> on classpath*/
+    public static final String WORKFLOW_APPLIST_XML_URL_KEY = "workflow.applist.xml.url";
+    /** default location to look for xml file for xml-based application registry */
+    public static final String WORKFLOW_APPLIST_XML_DEFAULT = "/application-list.xml";
+    private static final URL WORKFLOW_APPLIST_XML_DEFAULT_URL = WorkflowManagerFactory.class.getResource(WORKFLOW_APPLIST_XML_DEFAULT);
+    /** key to look under to determine endpoint of registry-based application registry */
+    public static final String WORKFLOW_APPLIST_REGISTRY_ENDPOINT_KEY = "workflow.applist.registry.endpoint";
+    /** key to look under to determine endpoint of jes controller service */
+    public static final String WORKFLOW_JES_ENDPOINT_KEY = "workflow.jes.endpoint";
+    
+    /** create workflow manager, based on properties in config */
+    private WorkflowManager createManager() throws WorkflowInterfaceException{
+        try {
+        WorkflowBuilder builder = new BasicWorkflowBuilder();
+        WorkflowStore store = buildStore();
+        ApplicationRegistry reg = buildAppReg();
+        JobExecutionService jes = buildJes();
+        return new WorkflowManager(builder,store,reg,jes);
+        } catch (Exception e) {
+            log.fatal("Failed to create Workflow Manager",e);
+            throw new WorkflowInterfaceException(e);       
+        }        
+    }
+
+    /**
+     * @return
+     */
+    private JobExecutionService buildJes() {
+        try {
+            URL url = conf.getUrl(WORKFLOW_JES_ENDPOINT_KEY);
+            log.info(WORKFLOW_JES_ENDPOINT_KEY + " := " + url.toString());
+             return new JesJobExecutionService(url);
+        } catch (PropertyNotFoundException e) {
+            log.info("no url found under " + WORKFLOW_JES_ENDPOINT_KEY + ", trying letting delegate configure itself");
+            return new JesJobExecutionService();
+        }
+    }
+
+    /**
+     * @return
+     */
+    private ApplicationRegistry buildAppReg() throws Exception {
+        try {
+            String option = conf.getString(WORKFLOW_APPLIST_KEY).trim();            
+            log.info(WORKFLOW_APPLIST_KEY + " := " + option);
+            if ("xml".equalsIgnoreCase(option)) {
+                log.info("Creating xml-file backed application list");
+                URL applicationListDocument= conf.getUrl(WORKFLOW_APPLIST_XML_URL_KEY,WORKFLOW_APPLIST_XML_DEFAULT_URL);
+                log.info(WORKFLOW_APPLIST_XML_URL_KEY + " := " + applicationListDocument.toString());
+                return new FileApplicationRegistry(applicationListDocument);
+            } else if ("registry".equalsIgnoreCase(option)) {
+                return buildDefaultAppReg();
+            } else { // assume its a class name;
+                log.info("option unrecognized - assuming its a java classname. attempting to instantiate..");
+                 Class clazz = Class.forName(option);
+                 return (ApplicationRegistry)clazz.newInstance();
+            }
+        } catch (PropertyNotFoundException e) {
+            log.warn("no value for " + WORKFLOW_APPLIST_KEY + " falling back to default");
+            return buildDefaultAppReg();
+        }
+    }
+    /** build default, astorgrid-registry based implementation */
+    private ApplicationRegistry buildDefaultAppReg() {
+        log.info("Creating registry backed application list");
+        try {
+            URL endpoint = conf.getUrl(WORKFLOW_APPLIST_REGISTRY_ENDPOINT_KEY);
+            log.info(WORKFLOW_APPLIST_REGISTRY_ENDPOINT_KEY + " := " + endpoint.toString());
+            return new RegistryApplicationRegistry(endpoint);
+        }catch (PropertyNotFoundException e) {
+            log.info("No registry endpoint specified, attempting to let registry delegate configure itself");
+            return new RegistryApplicationRegistry();
+        }
+    }
+
+    /**
+     * @return
+     */
+    private WorkflowStore buildStore() throws Exception {
+        try {
+            String option = conf.getString(WORKFLOW_STORE_KEY).trim();            
+            log.info(WORKFLOW_STORE_KEY + " := " + option);
+            if ("file".equalsIgnoreCase(option)) {
+                log.info("Creating file-backed workflow store");
+                String filepath = conf.getString(WORKFLOW_FILE_STORE_BASEDIR_KEY,System.getProperty("java.io.tmpdir"));
+                File f = new File(filepath);
+                log.info(WORKFLOW_FILE_STORE_BASEDIR_KEY + " := " + f.getAbsolutePath());
+                return new FileWorkflowStore(f);
+            } else if ("myspace".equalsIgnoreCase(option)) {
+                return buildDefaultStore();
+            } else {
+                log.info("option unrecognized - assuming its a java classname. attempting to instantiate..");
+                 Class clazz = Class.forName(option);
+                 return (WorkflowStore)clazz.newInstance();                
+            }
+        } catch (PropertyNotFoundException e) {
+            log.warn("no value for " + WORKFLOW_STORE_KEY + " falling back to default");
+            return buildDefaultStore();
+        }
+    }
+    /** build default myspace-based implementation */  
+    private WorkflowStore buildDefaultStore() throws PropertyNotFoundException, IOException{
+        log.info("Creating myspace-backed workflow store");
+        URL endpoint = conf.getUrl(WORKFLOW_MYSPACE_STORE_ENDPOINT_KEY);
+        return new MySpaceWorkflowStore(endpoint);
+        
+    }
 }
 
 
 /* 
 $Log: WorkflowManagerFactory.java,v $
+Revision 1.5  2004/03/11 13:53:36  nw
+merged in branch bz#236 - implementation of interfaces
+
+Revision 1.4.4.1  2004/03/11 13:36:46  nw
+tidied up interfaces, documented
+
 Revision 1.4  2004/03/03 11:15:23  nw
 tarted up javadocs, reviewed types
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/02/25 10:58:05 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/03/11 13:53:51 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,12 +26,14 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.portal.workflow");
+        TestSuite suite = new TestSuite("Test for Workflow System");
         //$JUnit-BEGIN$
         //$JUnit-END$
-        suite.addTest(CardinalityTestSuite.suite());
-        suite.addTest(WorkflowTestSuite.suite());
-        suite.addTest(JesTestSuite.suite());
+        //suite.addTest(CardinalityTestSuite.suite());
+       // suite.addTest(WorkflowTestSuite.suite());
+       // suite.addTest(JesTestSuite.suite());
+        suite.addTest(org.astrogrid.portal.workflow.impl.AllTests.suite());
+        suite.addTest(org.astrogrid.portal.workflow.intf.AllTests.suite());
         return suite;
     }
 }
@@ -39,6 +41,12 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/03/11 13:53:51  nw
+merged in branch bz#236 - implementation of interfaces
+
+Revision 1.2.6.1  2004/03/11 13:37:52  nw
+tests for impls
+
 Revision 1.2  2004/02/25 10:58:05  nw
 merged in branch nww-itn05-bz#140 (refactor in preparation for changing object model)
 

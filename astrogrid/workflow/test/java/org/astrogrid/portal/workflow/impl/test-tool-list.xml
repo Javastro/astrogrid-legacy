@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
+<!--$Id: test-tool-list.xml,v 1.2 2004/03/11 13:53:51 nw Exp $-->
+<!--This is the configuration file for the Iteration5 application controller-->
+<!-- \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd -->
+<ApplicationList
+   xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+>
+        <ApplicationDefn name="SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
+                <!--This is the application to concentrate on for the end of this iteration-->
+                <Parameters>
+                        <!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
+                        <Parameter xsi:type="CmdLineParameterDefn" name="DetectionImage" type="FileReference" commandPosition="1">
+                                <agpd:UI_Name>Detection Image</agpd:UI_Name>
+                                <agpd:UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</agpd:UI_Description>
+                        </Parameter>                       
+                        <CmdLineParameterDefn name="PhotoImage" type="FileReference" commandPosition="2">
+                                <agpd:UI_Name>Measurement Image</agpd:UI_Name>
+                                <agpd:UI_Description>The Image that is used to measure photometric parameters</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="config_file" type="FileReference" commandSwitch="c">
+                                <agpd:UI_Name>Configuration File</agpd:UI_Name>
+                                <agpd:UI_Description>File containing the main configuration parameters for SExtractor</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="PARAMETERS_NAME" type="FileReference">
+                                <agpd:UI_Name>Parameter File</agpd:UI_Name>
+                                <agpd:UI_Description>A File containing the list of catalogue paramters that should be computed</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="CATALOG_NAME" type="MySpace_FileReference">
+                                <agpd:UI_Name>Derived output catalogue</agpd:UI_Name>
+                                <agpd:UI_Description>The catalogue of images derived from the input images</agpd:UI_Description>
+                        </CmdLineParameterDefn>                       
+                </Parameters>
+                <Interfaces>
+                        <Interface name="Simple">
+                                <input>
+                                        <pref ref="DetectionImage"/>
+                                        <pref ref="PhotoImage"/>
+                                        <pref ref="config_file"/>
+                                        <pref ref="PARAMETERS_NAME"/>
+                                </input>
+                                <output>
+                                        <pref ref="CATALOG_NAME"/>
+                                </output>
+                        </Interface>
+                </Interfaces>
+        </ApplicationDefn>
+        <ApplicationDefn name="HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
+                <Parameters>
+                        <CmdLineParameterDefn name="config_file" type="FileReference" commandPosition="1">
+                                <agpd:UI_Name>Configuration File</agpd:UI_Name>
+                                <agpd:UI_Description>A HyperZ configuration file</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="input_catalog" type="MySpace_FileReference" commandSwitch="CATALOG_FILE">
+                                <agpd:UI_Name>Magnitude Catalogue</agpd:UI_Name>
+                                <agpd:UI_Description>The input catalogue of measured magnitude</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="output_catalog" type="MySpace_FileReference" commandSwitch="OUTPUT_CATALOG">
+                                <agpd:UI_Name>Redshift Catalogue</agpd:UI_Name>
+                                <agpd:UI_Description>The catalogue of estimated redshifts</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                </Parameters>
+                <Interfaces>
+                        <Interface name="simple">
+                                <input>
+                                        <pref ref="config_file"/>
+                                        <pref ref="input_catalog"/>
+                                </input>
+                                <output>
+                                        <pref ref="output_catalog"/>
+                                </output>
+                        </Interface>
+                </Interfaces>
+        </ApplicationDefn>
+        <ApplicationDefn name="CrossMatcher" instanceClass="org.astrogrid.applications.commandline.dft.Dft">
+
+                <Parameters>
+                        <CmdLineParameterDefn name="targets" type="MySpace_VOTableReference" switchType="keyword">
+                                <agpd:UI_Name>Target votable</agpd:UI_Name>
+                                <agpd:UI_Description>The VOTable file containing the target sources</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="matches" type="MySpace_VOTableReference" switchType="keyword">
+                                <agpd:UI_Name>Match VOTable</agpd:UI_Name>
+                                <agpd:UI_Description>The VOTable file containing the sources to match</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="merged_output" type="MySpace_VOTableReference" commandPosition="1">
+                                <agpd:UI_Name>Resulting VOTable</agpd:UI_Name>
+                                <agpd:UI_Description>The VOTable file containing result of the match</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="matchRadius" type="double" commandSwitch="String">
+                                <agpd:UI_Name>Match Radius</agpd:UI_Name>
+                                <agpd:UI_Description>??</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="radMax" type="double" commandSwitch="String">
+                                <agpd:UI_Name>Maximum search radius</agpd:UI_Name>
+                                <agpd:UI_Description>??</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="output" type="string" commandSwitch="String">
+                                <agpd:UI_Name>output type</agpd:UI_Name>
+                                <agpd:UI_Description>This can be one of HTML VOTable of Ascii, with the default being VOTable</agpd:UI_Description>
+                                <agpd:DefaultValue>VOTable</agpd:DefaultValue>
+                        </CmdLineParameterDefn>
+                        <CmdLineParameterDefn name="maxMatches" type="integer">
+                                <agpd:UI_Name>maximum number of matches per target</agpd:UI_Name>
+                                <agpd:UI_Description>maximum number of matches per target</agpd:UI_Description>
+                        </CmdLineParameterDefn>
+                </Parameters>
+                <Interfaces>
+                        <Interface name="simple">
+                                <input>
+                                        <pref ref="targets" maxoccurs="0"/>
+                                        <pref ref="matches" maxoccurs="0"/>
+                                </input>
+                                <output>
+                                        <pref ref="merged_output"/>
+                                </output>
+                        </Interface>
+                </Interfaces>
+        </ApplicationDefn>
+</ApplicationList>

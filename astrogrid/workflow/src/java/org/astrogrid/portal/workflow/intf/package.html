@@ -2,18 +2,26 @@
 	<body>
 		<h1>Public interface to the workflow system</h1>
 		<b>Replaces classes in the {@link org.astrogrid.portal.workflow.jes} and {@link org.astrogrid.portal.workflow.design} packages.</b>
-		<h2>Usage</h2>
+		<h2>Workflow Manager</h2>
 		Create a {@link org.astrogrid.portal.workflow.intf.WorkflowManagerFactory}, use this to create a 
 		{@link org.astrogrid.portal.workflow.intf.WorkflowManager}. This object provides components to 
 		<ul>
-			<li>Create new workflow objects</li>
-			<li>Query tool registy</li>
-			<li>Work with a myspace store</li>
-			<li>Submit and manage jobs</li>
+			<li>Create new workflow objects - {@link org.astrogrid.portal.workflow.intf.WorkflowBuilder}</li>
+			<li>Query application registy - {@link org.astrogrid.portal.workflow.intf.ApplicationRegistry}</li>
+			<li>Work with a myspace store - {@link org.astrogrid.portal.workflow.intf.WorkflowStore}</li>
+			<li>Submit and manage jobs - {@link org.astrogrid.portal.workflow.intf.JobExecutionService}</li>
 		</ul>
 		<h2>Activity Keys</h2>
-		The {@link org.astrogrid.portal.workflow.intf.ActivityKey} provides an implementation of activity keys based on the underlying JXPath methods
-		of the object model.
+		@link org.astrogrid.portal.workflow.intf.ActivityKey} provides an implementation of activity keys based on the underlying JXPath methods
+		of the object model. They can be used to record position in any object model whose objects extend {@link org.astrogrid.common.bean.BaseBean}
+		(e.g. Workflow, Applicaton Descriptions).
+		<h2>Application Description</h2>
+		The {@link org.astrogrid.portal.workflow.intf.ApplicationDescription} class represents a single application. It provides methods that: 
+		<ul>			
+		<li/>create and populate new {@link org.astrogrid.workflow.beans.v1.Tool} objects
+			<li/>query for descriptions of parameters (types, cardinality, documentation)
+				<li/>validate tool objects contain correct parameters for an application.
+		</ul>
 	</body>
 	
 </html>

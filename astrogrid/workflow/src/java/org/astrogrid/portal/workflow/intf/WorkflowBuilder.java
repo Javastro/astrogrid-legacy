@@ -1,4 +1,4 @@
-/*$Id: WorkflowBuilder.java,v 1.4 2004/03/09 15:33:27 nw Exp $
+/*$Id: WorkflowBuilder.java,v 1.5 2004/03/11 13:53:36 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ public interface WorkflowBuilder {
      * @param creds credentials for this workflow - contains account, group and authentication token for the user this workflow is going to run as.
      * @param name name of the new workflow
      * @param description a textual description of the workflow
-     * @return a new workflow document object. never null
+     * @return a new workflow document object, that is schema-valid. never null
      */
     Workflow createWorkflow(Credentials creds,String name,String description) throws WorkflowInterfaceException;
 
@@ -32,6 +32,12 @@ public interface WorkflowBuilder {
 
 /* 
 $Log: WorkflowBuilder.java,v $
+Revision 1.5  2004/03/11 13:53:36  nw
+merged in branch bz#236 - implementation of interfaces
+
+Revision 1.4.2.1  2004/03/11 13:36:46  nw
+tidied up interfaces, documented
+
 Revision 1.4  2004/03/09 15:33:27  nw
 tidied imports
 

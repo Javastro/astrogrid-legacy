@@ -1,4 +1,4 @@
-/*$Id: ActivityKey.java,v 1.2 2004/03/03 01:36:38 nw Exp $
+/*$Id: ActivityKey.java,v 1.3 2004/03/11 13:53:36 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,16 +15,15 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 
 /** Implementation of activity keys for the new workflow object model
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
- *@todo refactor into workflow-objects, as may be generally useful.
  */
 public class ActivityKey {
     /** no public constructor
      * 
      */
-    protected ActivityKey(String xpath) {
+    private ActivityKey(String xpath) {
         this.xpath = xpath;
     }
-    protected final String xpath;
+    private final String xpath;
     
     /** create a key for the current position in a workflow 
      * 
@@ -100,6 +99,12 @@ public class ActivityKey {
 
 /* 
 $Log: ActivityKey.java,v $
+Revision 1.3  2004/03/11 13:53:36  nw
+merged in branch bz#236 - implementation of interfaces
+
+Revision 1.2.4.1  2004/03/11 13:36:46  nw
+tidied up interfaces, documented
+
 Revision 1.2  2004/03/03 01:36:38  nw
 merged interfaces in from branch nww-int05-bz#146
 

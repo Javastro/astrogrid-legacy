@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ name="">
+
+  <sequence>
+    <step name="a" sequenceNumber="1" stepNumber="1">
+      <tool interface="a" name="a"/>
+
+    </step>
+    <flow>
+      <step name="b" sequenceNumber="1" stepNumber="2">
+        <tool interface="b" name="b"/>
+
+      </step>
+      <sequence>
+        <step name="c" sequenceNumber="1" stepNumber="3">
+          <tool interface="b" name="b"/>
+
+        </step>
+        <step name="d" sequenceNumber="2" stepNumber="4">
+          <tool interface="b" name="c"/>
+
+        </step>
+      </sequence>
+      <sequence>
+        <step name="e" sequenceNumber="1" stepNumber="5">
+          <tool interface="d" name="d"/>
+
+        </step>
+        <flow>
+          <step name="f" sequenceNumber="1" stepNumber="6">
+            <tool interface="e" name="ee"/>
+
+          </step>
+          <step name="g" sequenceNumber="2" stepNumber="7">
+            <tool interface="f" name="f"/>
+
+          </step>
+        </flow>
+        <step name="h" sequenceNumber="2" stepNumber="8">
+          <tool interface="g" name="g"/>
+
+        </step>
+      </sequence>
+    </flow>
+    <step name="i" sequenceNumber="2" stepNumber="9">
+      <tool interface="y" name="y"/>
+
+    </step>
+  </sequence>
+  <description
+    xmlns="">complex workflow of sequential and parallel jobs. </description>
+ <Credentials   xmlns:cred="http://www.astrogrid.org/schema/Credentials/v1"> 	
+      <cred:Account>
+      		<cred:Name>nww74</cred:Name>
+      		<cred:Community>jodrell</cred:Community>
+      	</cred:Account>
+      <cred:Group>
+      	 <cred:Name>developers</cred:Name>
+      	 <cred:Community>jodrell</cred:Community>
+      </cred:Group>
+      <cred:SecurityToken></cred:SecurityToken>      
+    </Credentials>     
+</workflow>

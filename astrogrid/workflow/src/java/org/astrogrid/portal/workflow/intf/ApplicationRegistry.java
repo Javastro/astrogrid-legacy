@@ -1,4 +1,4 @@
-/*$Id: ApplicationRegistry.java,v 1.1 2004/03/09 15:33:00 nw Exp $
+/*$Id: ApplicationRegistry.java,v 1.2 2004/03/11 13:53:36 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,9 @@ public interface ApplicationRegistry {
      * 
      * @param applicationName name of the application.
      * @return an description of the application
-     * @throws WorkfactInterfaceException if an error occurs - i.e. if the application is not found
+     * @throws WorkflowtInterfaceException if an error occurs - i.e. if the application is not found
      */
-    ApplicationDescription getDescriptionFor(String applicationName);
+    ApplicationDescription getDescriptionFor(String applicationName) throws WorkflowInterfaceException;
 
     
     
@@ -41,6 +41,12 @@ public interface ApplicationRegistry {
 
 /* 
 $Log: ApplicationRegistry.java,v $
+Revision 1.2  2004/03/11 13:53:36  nw
+merged in branch bz#236 - implementation of interfaces
+
+Revision 1.1.2.1  2004/03/09 17:42:50  nw
+getting there..
+
 Revision 1.1  2004/03/09 15:33:00  nw
 renamed toolRegistry to ApplicationRegistry
 

@@ -1,4 +1,4 @@
-/*$Id: WorkflowManager.java,v 1.6 2004/03/09 15:33:00 nw Exp $
+/*$Id: WorkflowManager.java,v 1.7 2004/03/11 13:53:36 nw Exp $
  * Created on 24-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,22 +15,52 @@ package org.astrogrid.portal.workflow.intf;
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Feb-2004
  *
  */
-public interface WorkflowManager{
+public class  WorkflowManager{
+
+    WorkflowManager(WorkflowBuilder builder, WorkflowStore store, ApplicationRegistry reg,JobExecutionService jes) {
+        assert  builder != null && store != null && reg != null && jes != null; 
+        this.builder = builder;
+        this.store = store;
+        this.reg = reg;
+        this.jes = jes;
+        
+    }
+    private final WorkflowBuilder builder;
+    private final WorkflowStore store;
+    private final ApplicationRegistry reg;
+    private final JobExecutionService jes;
 
     /** get a component to build workflows. never null*/
-    public WorkflowBuilder getWorkflowBuilder();
+    public WorkflowBuilder getWorkflowBuilder() {
+        return builder;
+    }
     /** get a component to access a store. never null */
-    public WorkflowStore getWorkflowStore();
+    public WorkflowStore getWorkflowStore(){ 
+        return store;
+    }
     /** get a component to query a registry. never null */
-    public ApplicationRegistry getToolRegistry();
+    public ApplicationRegistry getToolRegistry(){
+        return reg;
+    }
     /** get a component to manage jobs - executoions of workflows. never null */
-    public JobExecutionService getJobExecutionService();
+    public JobExecutionService getJobExecutionService(){
+        return jes;
+    }
     
 }
 
 
 /* 
 $Log: WorkflowManager.java,v $
+Revision 1.7  2004/03/11 13:53:36  nw
+merged in branch bz#236 - implementation of interfaces
+
+Revision 1.6.2.2  2004/03/11 13:36:46  nw
+tidied up interfaces, documented
+
+Revision 1.6.2.1  2004/03/09 17:42:50  nw
+getting there..
+
 Revision 1.6  2004/03/09 15:33:00  nw
 renamed toolRegistry to ApplicationRegistry
 
