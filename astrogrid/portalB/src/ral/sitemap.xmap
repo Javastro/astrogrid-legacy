@@ -102,6 +102,7 @@
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="title-name"  value="Login"/>               
@@ -152,6 +153,7 @@
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="title-name"  value="Administration"/>               
@@ -190,27 +192,23 @@
     	       <map:read type="votable" mime-type="image/png" src="{1}.vot"/>
         	 </map:match>
 
-
-            <map:match pattern="agregistry.xsp">
-               <map:generate type="serverpages" src="xsp/agregistry.xsp"/>
-               <map:transform src="xsl/agregistry.xsl"/> 
-               <map:serialize type="html"/>
-            </map:match>
-
             <map:match pattern="agtemplate.xsl">
                <map:redirect-to uri="xsl/agtemplate.xsl"/>
             </map:match>
 
-            <map:match pattern="registryquery">
-               <map:generate type="serverpages" src="xsp/registryquery.xsp"/>
+            <map:match pattern="action">
+               <map:generate type="serverpages" src="registry/xsp/action.xsp"/>
                <map:serialize type="xml"/>
             </map:match>
-
-            <map:match pattern="agregistry.xml">
-               <map:generate type="file" src="xml/agregistry.xml"/>
-               <map:transform src="xsl/agtemplate.xsl"/> 
-               <map:serialize type="html"/>
+            <map:match pattern="adminaction">
+               <map:generate type="serverpages" src="registry/xsp/adminaction.xsp"/>
+               <map:serialize type="xml"/>
             </map:match>
+            <map:match pattern="update">
+               <map:generate type="serverpages" src="registry/xsp/update.xsp"/>
+               <map:serialize type="xml"/>
+            </map:match>
+                        
 
             <!-- DataQuery page -->
             <map:match pattern="agdataquery.html">
@@ -243,6 +241,7 @@
 		              <map:parameter name="admin-page"    value="agadministration.html"/>
 		              <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
 		              <map:parameter name="registry-page" value="agregistry.html"/>
+		              <map:parameter name="regadmin-page" value="agregadmin.html"/>
 		              <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
 		              <map:parameter name="tools-page"    value="agtools.html"/>
 		              <map:parameter name="logout-page"   value="aglogout.html"/>
@@ -273,8 +272,9 @@
                <map:parameter name="myspace-page"  value="agmyspace.html"/>
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
-              <map:parameter name="title-name"  value="Credentials"/>               
+               <map:parameter name="title-name"  value="Credentials"/>               
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="admin-page"    value="agadministration.html"/>
@@ -324,6 +324,7 @@
                   <map:parameter name="title-name"  value="Myspace"/>
                   <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                   <map:parameter name="registry-page" value="agregistry.html"/>
+                  <map:parameter name="regadmin-page" value="agregadmin.html"/>
                   <map:parameter name="query-page"    value="agdataquery.html"/>
                   <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                   <map:parameter name="tools-page"    value="agtools.html"/>
@@ -360,6 +361,7 @@
                    <map:parameter name="home-page"     value="agindex.html"/>
                    <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                    <map:parameter name="registry-page" value="agregistry.html"/>
+                   <map:parameter name="regadmin-page" value="agregadmin.html"/>
                    <map:parameter name="query-page"    value="agdataquery.html"/>
                    <map:parameter name="title-name"  value="MySpace"/>                   
                    <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
@@ -397,6 +399,7 @@
                    <map:parameter name="home-page"     value="agindex.html"/>
                    <map:parameter name="help-page"     value="agjobmonitorhelp.html"/>
                    <map:parameter name="registry-page" value="agregistry.html"/>
+                   <map:parameter name="regadmin-page" value="agregadmin.html"/>
                    <map:parameter name="query-page"    value="agdataquery.html"/>
                    <map:parameter name="title-name"    value="Job Monitor"/>                   
                    <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
