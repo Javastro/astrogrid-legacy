@@ -1,5 +1,9 @@
 package org.astrogrid.registry;
-
+/**
+ * 
+ *@todo introduce a fuller tree of registry exception subtypes?
+ *@todo remove print stack traces - will just clutter up output - code that catches the (wrapped) exceptioin should decide what to do with it.
+ */
 public class RegistryException extends Exception {
 
    public RegistryException() {

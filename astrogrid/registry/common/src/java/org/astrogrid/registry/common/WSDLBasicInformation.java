@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-
+/** @todo javadoc */
 public class WSDLBasicInformation {
     /**
      * Commons Logger for this class

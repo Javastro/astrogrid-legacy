@@ -18,7 +18,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory; 
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.util.DomHelper;
-
+/** @todo javadoc 
+ * @todo fix exception handling
+ * @todo factor commonality of methods into a private helper method*/
 public class XSLHelper {
     /**
      * Commons Logger for this class
@@ -102,6 +104,7 @@ public class XSLHelper {
       }catch(TransformerException te) {
         logger.error("transformADQLToXQL(Node, String)", te);
       }
+      //@todo never return null on error
       return null;
    }
    
@@ -136,6 +139,7 @@ public class XSLHelper {
       }catch(TransformerException te) {
         logger.error("transformToOAI(Node, String)", te);
       }
+      //@todo never return null on error.
       return resultDoc;
    }
    

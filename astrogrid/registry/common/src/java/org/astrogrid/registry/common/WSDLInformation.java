@@ -17,7 +17,7 @@ import javax.wsdl.factory.WSDLFactory;
 import org.astrogrid.registry.RegistryException;
 
 
-
+/** @todo javadoc */
 public class WSDLInformation {
     /**
      * Commons Logger for this class
