@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 
-
 <xsp:page language="java"
    xmlns:xsp="http://apache.org/xsp"
-   xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+   xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+   xmlns:util="http://apache.org/xsp/util/2.0">
      
-<xsp:comment>
+   <xsp:comment>
 
-   Astrogrid Registry Update Portal using Cocoon.
+       Astrogrid Registry Update Portal using Cocoon.
+       Author: Roy Platon, Astrogrid, RAL.
+       Author: Elizabeth Auden, Astrogrid, MSSL
 
-   Author: Roy Platon, Astrogrid, RAL.
-
-</xsp:comment>
+   </xsp:comment>
 
    <xsp:structure>
 
@@ -21,40 +21,53 @@
       <xsp:include>org.apache.axis.encoding.XMLType</xsp:include>
       <xsp:include>javax.xml.namespace.QName</xsp:include>
       <xsp:include>javax.xml.rpc.ParameterMode</xsp:include>
+      <xsp:include>java.util.regex.Pattern</xsp:include>
+
    <xsp:comment>Cocoon stuff</xsp:comment>
-      <xsp:include>org.apache.cocoon.components.language.markup.xsp.XSPUtil
-      </xsp:include>
+      <xsp:include>org.apache.cocoon.components.url.URLFactory</xsp:include>      
+      <xsp:include>org.apache.cocoon.components.language.markup.xsp.XSPUtil</xsp:include>
+
+   <xsp:comment>Java IO stuff</xsp:comment>
+      <xsp:include>java.net.URL</xsp:include>
+      <xsp:include>java.net.URLConnection</xsp:include>
+      <xsp:include>java.net.MalformedURLException</xsp:include>
+      <xsp:include>java.io.IOException</xsp:include>
+      <xsp:include>java.io.InputStream</xsp:include>
 
    </xsp:structure>
 
    <xsp:logic>
 
-// Web service stuff
+   // Web service stuff
 
-//  Global variables
-   String querytype = null;
-   String webserver = null;
-   String username = null;
-   String certificate = null;
+   // Global variables
+      String querytype = null;
+      String webserver = null;
+      String username = null;
+      String certificate = null;
 
-//  Query parameters
-   String element1 = null;
-   String op1 = null;
-   String value1 = null;
-   String seperator = null;
-   String element2 = null;
-   String op2 = null;
-   String value2 = null;
+   // Query parameters
+      String element1 = null;
+      String op1 = null;
+      String value1 = null;
+      String seperator = null;
+      String element2 = null;
+      String op2 = null;
+      String value2 = null;
 
-   String site = null;
-   String service = null;
-   String webservice = "RegistryInterface3_0";
-   String soapservice = null;
-   String actiontype = null;
-   final String METHOD = "submitQuery";
+      String site = null;
+      String service = null;
+      String webservice = "RegistryInterface3_0";
+      String soapservice = null;
+      String actiontype = null;
+      final String METHOD = "fullNodeQuery";
 
-   String query = null;   
-   String results = null;   
+      String query = null;   
+      String adminQuery = null;   
+      String results = null;
+
+      String template = null;   
+
    </xsp:logic>
 
 <agtemplate title="Registry Administration Service" help="agregistryhelp.html">
@@ -63,7 +76,6 @@
       webserver = <xsp-request:get-parameter name='WebServer' as='string'/>;
       username = <xsp-request:get-parameter name='User' as='string'/>;
       certificate = <xsp-request:get-parameter name='Certificate' as='string'/>;
-      certificate = "********";
       String add = <xsp-request:get-parameter name='Add' as='string'/>;
       if ( add != null ) actiontype = add;
       String edit = <xsp-request:get-parameter name='Edit' as='string'/>;
@@ -71,6 +83,13 @@
       String delete = <xsp-request:get-parameter name='Delete' as='string'/>;
       if ( delete != null ) actiontype = delete;
       
+
+   int approved = 0;
+   if (username.equals("guest")) approved = approved + 1;
+   if (certificate.equals("guest")) approved = approved + 1;
+
+   if (approved == 2 ){
+
       site = webserver;
       soapservice = null;
 
@@ -80,51 +99,38 @@
       } else {
         service = "http:" + site.substring(5) + "/axis/services/"+ webservice;
       }
+
       site = site.substring(7);
 
-      <p>User Name: <strong><xsp:expr>username</xsp:expr> </strong></p>
-      <p>Certificate: <strong><xsp:expr>certificate</xsp:expr> </strong></p>
       <p>Web Server: <strong><xsp:expr>site</xsp:expr> </strong></p>
 
-      <hr/>
+            XSPUtil util2 =  new XSPUtil();
+ 
+            String address = "http://msslxy.mssl.ucl.ac.uk:8080/cocoon/astrogrid/registry/registry_template.xml";
+            String contents = null;
 
-      <xsp:logic>
-      if ( actiontype.equals( "Add" ) ) {
-      <form method='POST' action='agregistryhelp.html'>
+            if ( actiontype.equals( "Add" ) ) {
 
-         <input type='SUBMIT' name='Add' value='Add this resource'/>
-         <input type='RESET'/>
-      <h2> IDENTITY </h2>
-         <table>
-         <tr><td> title: </td>
-             <td><input name='title' type='TEXT'/></td></tr>
-         <tr><td> shortName: </td>
-             <td><input name='shortName' type='TEXT'/></td></tr>
-         <tr><td> Identifier: </td>
-             <td><input name='Identifier' type='TEXT'/></td></tr>
-         </table>
-      <h2> CURATION </h2>
-         <table>
-         <tr><td>publisher: </td>
-             <td><input name='publisher' type='TEXT'/></td></tr>
-         <tr><td>publisherID: </td>
-             <td><input name='publisherID' type='TEXT'/></td></tr>
-         <tr><td>creator: </td>
-             <td><input name='creator' type='TEXT'/></td></tr>
-         <tr><td>creatorLogo: </td>
-             <td><input name='creatorLogo' type='TEXT'/></td></tr>
-         <tr><td>creator: </td>
-             <td><input name='creator' type='TEXT'/></td></tr>
-         <tr><td><strong>Subject</strong></td></tr>
-         <tr><td>keywords: </td>
-             <td><input name='keywords' type='TEXT'/></td></tr>
-         <tr><td><strong>Description</strong></td></tr>
-         <tr><td>abstract: </td>
-             <td><input name='abstact' type='TEXT'/></td></tr>
-         <tr><td>README: </td>
-             <td><input name='readme' type='TEXT'/></td></tr>
-         </table>
-      </form>
+            try {
+                URL url = new URL(address);
+                URLConnection connection = url.openConnection();
+                connection.connect();
+                InputStream in = connection.getInputStream();
+                contents = XSPUtil.getContents(in);
+                
+                <![CDATA[
+                String contents2 = contents.replaceAll("<service>", "<add><webserver>" + site + "</webserver><service>");
+                String contents3 = contents2.replaceAll("</service>", "</service></add>");
+                ]]>                
+
+                util2.includeString( contents3, manager, contentHandler );
+            }catch (MalformedURLException e){
+                <p>ERROR: <xsp:expr>e</xsp:expr></p>
+            }
+            catch (IOException e){
+                <p>ERROR: <xsp:expr>e</xsp:expr></p>
+            }
+
       } else {
 // Get parameters from form
          querytype = <xsp-request:get-parameter name="QueryType"/>;
@@ -143,14 +149,13 @@
 // Construct the Query
          query = constructQuery( querytype, element1, op1, value1,
                                  seperator, element2, op2, value2 );   
+         adminQuery = constructAdminQuery(certificate, actiontype, query);
 
 // Call the Webserver
 
          try {
            Service axis = new Service();
            Call call = (Call) axis.createCall();
-
-
            call.setTargetEndpointAddress( new java.net.URL( service ) );
            if ( soapservice == null ) {
               call.setOperationName( METHOD );
@@ -172,23 +177,31 @@
    
          if ( actiontype.equals( "Edit" ) ) {
             <![CDATA[
-            results = "<edit>" + results + "</edit>";
+            String results2 = results.replaceAll("<service>", "<edit><webserver>" + site + "</webserver><service>");
+            String results3 = results2.replaceAll("</service>", "</service></edit>");
             ]]>
 // Now print thte results to the output
             XSPUtil util =  new XSPUtil();
-            util.includeString( results, manager, contentHandler );
+            util.includeString( results3, manager, contentHandler );
+
          } else if ( actiontype.equals( "Delete" ) ) {
             <![CDATA[
-            results = "<delete>" + results + "</delete>";
-            ]]>
-// Now print thte results to the output
+            String results2 = results.replaceAll("<service>", "<delete><webserver>" + site + "</webserver><service>");
+            String results3 = results2.replaceAll("</service>", "</service></delete>");
+            ]]> 
+// Now print the results to the output
             XSPUtil util =  new XSPUtil();
-            util.includeString( results, manager, contentHandler );
+            util.includeString( results3, manager, contentHandler );
          } else {
             <p>Invalid Function</p>
          }
-      }
-      </xsp:logic>
+       }
+    } else {
+         <p><b>Warning: </b> You have not been authorized to update this registry.  Please
+         return to the registry administration page and log in.</p>
+    }
+
+
    </xsp:logic>
 
 </agtemplate>
@@ -223,5 +236,25 @@
 //     util.includeString( out, manager, contentHandler );
      return out;
    }
+
+   private String constructAdminQuery( String certificate,
+                 String actiontype, String query) {
+
+     <![CDATA[
+     if ( query == null || query.equals( "" ) ) return null;
+     if ( certificate == null || certificate.equals( "" ) ) return null;
+     if ( actiontype == null || actiontype.equals( "" ) ) return null;
+
+     String out = "<registryAdminQuery><certificate>";
+     out = out + certificate + "</certificate>";
+     out = out + "<adminAction>" + actiontype + "</adminAction>";
+     out = out + query + "</registryAdminQuery>";
+     ]]>
+// Uncomment this to print the Query to the Screen
+//     XSPUtil util =  new XSPUtil();
+//     util.includeString( out, manager, contentHandler );
+     return out;
+   }
+
    </xsp:logic>
 </xsp:page>

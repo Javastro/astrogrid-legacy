@@ -23,10 +23,7 @@
    <xsp:logic>
       String out = null;
       String servers[][] = {
-         { "Testing", "axis://rlspc14.bnsc.rl.ac.uk:8080"},
-         { "MSSL", "axis://msslxy.mssl.ucl.ac.uk:8080" },
-         { "RAL", "axis://stargrid1.bnsc.rl.ac.uk:8080" },
-         { "Leicester", "axis://katatjuta.star.le.ac.uk:8080" }
+         { "MSSL", "axis://msslxy.mssl.ucl.ac.uk:8080" }
       };
 
    <h2>Registry Administration Service</h2>
@@ -43,19 +40,9 @@
       <input type='RESET'/>
 
       <hr/>
-      <p> Select Registry Query Criteria (for Edit or Delete): </p>
-      <input type='RADIO' name='QueryType' value='all'/>
-      List All Metadata <br/>
-      <input type='RADIO' name='QueryType' value='identity'/>
-      List Identity Metadata <br/>
-      <input type='RADIO' name='QueryType' value='curation' checked='checked'/>
-      List Identity and Curation Metadata <br/>
-      <input type='RADIO' name='QueryType' value='content'/>
-      List Identity and Contents Metadata <br/>
-      <input type='RADIO' name='QueryType' value='serviceMetadataConcepts'/>
-      List Identity and Service Metadata Concepts Metadata
+      <input type='hidden' name='QueryType' value='all'/>
       <p>
-      And enter other query details below: <br/>
+      Enter query details below: <br/>
       <input name='Element1' type='TEXT' value='shortName'/> 
       <select name='Operator1' value='EQ'>
       <optgroup>

@@ -1,0 +1,209 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java"
+   xmlns:xsp="http://apache.org/xsp"
+   xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+<xsp:comment>
+   Astrogrid Registry Update Portal using Cocoon.
+   Author: Elizabeth Auden, Astrogrid, RAL.
+</xsp:comment>
+
+<xsp:structure>
+
+   <xsp:comment>Axis SOAP stuff</xsp:comment>
+      <xsp:include>org.apache.axis.client.Call</xsp:include>
+      <xsp:include>org.apache.axis.client.Service</xsp:include>
+      <xsp:include>org.apache.axis.encoding.XMLType</xsp:include>
+      <xsp:include>javax.xml.namespace.QName</xsp:include>
+      <xsp:include>javax.xml.rpc.ParameterMode</xsp:include>
+      <xsp:include>javax.xml.soap.Node</xsp:include>
+
+   <xsp:comment>Cocoon stuff</xsp:comment>
+      <xsp:include>org.apache.cocoon.components.language.markup.xsp.XSPUtil</xsp:include>
+
+   <xsp:comment>Java stuff</xsp:comment>
+      <xsp:include>java.util.Enumeration</xsp:include>
+      <xsp:include>java.util.Vector</xsp:include>
+
+</xsp:structure>
+
+<agtemplate title="Registry Administration Service" help="agregistryhelp.html">
+   <xsp:logic>
+      String adminQuery = "";
+      String webserver = null;
+      String service = "RegistryAdminService";
+      String actionType = null;
+      String actionTypeCaps = null;
+      String METHOD = "adminQuery";
+      String adminResults = "";
+      String site = null;
+      String webservice = null;
+      webserver = <xsp-request:get-parameter name="webserver"/>;
+      webservice = "http://" + webserver + "/axis/services/"+ service;
+
+      Enumeration parameterNames = request.getParameterNames();
+      Enumeration parameterNames2 = request.getParameterNames();
+      int names = 0;
+
+      while (parameterNames.hasMoreElements()){
+        String parameterName = (String) parameterNames.nextElement();
+        if (parameterName.equals("webserver")) {
+           names--;
+        }
+        if (parameterName.equals("Add")) {
+           names--;
+           actionType = "add";
+           actionTypeCaps = "Add";
+        }
+        if (parameterName.equals("Edit")) {
+           names--;
+           actionType = "edit";
+           actionTypeCaps = "Edit";
+        }
+        if (parameterName.equals("Delete")) {
+           names--;
+           actionType = "delete";
+           actionTypeCaps = "Delete";
+        }
+        parameterName = null;
+        names++;
+      }
+      <p><h1><xsp:expr>actionTypeCaps</xsp:expr> resource description: </h1></p>
+
+      int i = 0;
+      String[][] parameters = new String[names][4];
+
+      while (parameterNames2.hasMoreElements()){
+        String parameterName = (String) parameterNames2.nextElement();
+        if (parameterName.equals("webserver")) {
+           parameterName = null;
+           parameterName = (String) parameterNames2.nextElement();
+        }
+        if (parameterName.equals("Add")) {
+           parameterName = null;
+           parameterName = (String) parameterNames2.nextElement();
+        }
+        if (parameterName.equals("Edit")) {
+           parameterName = null;
+           parameterName = (String) parameterNames2.nextElement();
+        }
+        if (parameterName.equals("Delete")) {
+           parameterName = null;
+           parameterName = (String) parameterNames2.nextElement();
+        }
+        String[] values = request.getParameterValues(parameterName);
+
+        parameters[i][0] = parameterName.substring(parameterName.indexOf("key_")+4, parameterName.indexOf("children_"));
+        parameters[i][1] = parameterName.substring(parameterName.indexOf("children_")+9, parameterName.indexOf("name_"));
+        parameters[i][2] = parameterName.substring(parameterName.indexOf("name_")+5, parameterName.length());
+        parameters[i][3] = values[0];
+
+        i++;
+      }
+
+        <![CDATA[
+        String[][] sortedParameters = sortParameters(parameters);
+        ]]>
+
+        
+        int sortedParams = sortedParameters.length;
+
+        <![CDATA[
+
+        String[] nodeParams = { "", "0"};
+        String[] serviceString = constructAdminQuery(sortedParameters, nodeParams);
+        String adminquery = "<registryAdminQuery><adminAction>";
+        adminquery = adminquery + actionType + "</adminAction>";
+        adminquery = adminquery + "<query>" + serviceString[0] + "</query><registryAdminQuery>";
+        ]]>
+
+
+// Call the Webserver
+
+         try {
+           Service axis = new Service();
+           Call call = (Call) axis.createCall();
+           call.setTargetEndpointAddress( new java.net.URL( webservice ) );
+           call.setOperationName( METHOD );
+
+           call.removeAllParameters( );
+           call.addParameter( "usecase", XMLType.XSD_STRING, ParameterMode.IN );
+           call.setReturnType( XMLType.XSD_STRING );
+           adminResults = (String) call.invoke( new Object [] { adminquery } );
+           XSPUtil util =  new XSPUtil(); 
+           util.includeString( adminResults, manager, contentHandler );
+         }
+         catch ( Exception e ) {
+           <queryException>
+           <xsp:expr> e </xsp:expr>
+           </queryException>
+         }
+
+         
+   </xsp:logic>
+
+</agtemplate>
+
+
+<xsp:logic>
+     <![CDATA[
+   private String[][] sortParameters(String[][] parameters){
+        for (int i=0; i < parameters.length; i++){
+           int min = i;
+           for (int j=i; j < parameters.length; j++){
+             if (parameters[j][0].compareTo(parameters[min][0]) < 0 ) min = j;
+           }
+           String[] tmp = new String[4];
+           tmp = parameters[i];
+           parameters[i] = parameters[min];
+           parameters[min] = tmp;
+        }
+        return parameters;
+   }
+     ]]>
+
+
+<![CDATA[
+   private static String[] constructAdminQuery(String[][] sortedParameters, String[] nodeParams){
+
+     int i = Integer.parseInt(nodeParams[1]);
+     int children = Integer.parseInt(sortedParameters[i][1]);
+     nodeParams[0] = nodeParams[0] + "<" + sortedParameters[i][2] + ">";
+     String elementName = "</" + sortedParameters[i][2] + ">";
+     for (int j=0; j < children; j++){
+        i = Integer.parseInt(nodeParams[1]);
+        i++;
+        nodeParams[1] = null;
+        nodeParams[1] = Integer.toString(i);
+
+        if (Integer.parseInt(sortedParameters[i][1]) > 0) {
+           nodeParams = constructAdminQuery(sortedParameters, nodeParams);
+        }
+        else {
+           if (!(sortedParameters[i][3].equals("NO_TEXT_NODE"))){
+              nodeParams[0] = nodeParams[0] + "<" + sortedParameters[i][2] + ">";
+              nodeParams[0] = nodeParams[0] + sortedParameters[i][3];
+              nodeParams[0] = nodeParams[0] + "</" + sortedParameters[i][2] + ">";
+           } else if (sortedParameters[i][3].equals("NO_TEXT_NODE")){
+              nodeParams[0] = nodeParams[0] + "<" + sortedParameters[i][2] + ">";
+              nodeParams[0] = nodeParams[0] + "</" + sortedParameters[i][2] + ">";
+           }
+        }
+     }
+     nodeParams[0] = nodeParams[0] + elementName;
+     return nodeParams;
+   }
+]]>
+
+
+// Uncomment this to print the Query to the Screen
+//     XSPUtil util =  new XSPUtil();
+//     util.includeString( serviceNode, manager, contentHandler );
+
+
+
+
+</xsp:logic>
+
+
+</xsp:page>

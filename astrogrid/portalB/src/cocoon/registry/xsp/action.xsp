@@ -77,6 +77,8 @@
      service = "http:" + site.substring(5) + "/axis/services/"+ webservice;
    }
 
+
+
 // Construct the Query
    query = constructQuery( querytype, element1, op1, value1,
                            seperator, element2, op2, value2 );   
@@ -87,7 +89,6 @@
      Service axis = new Service();
      Call call = (Call) axis.createCall();
      
-
      call.setTargetEndpointAddress( new java.net.URL( service ) );
      if ( soapservice == null ) {
         call.setOperationName( METHOD );
@@ -100,7 +101,7 @@
      call.addParameter( "usecase", XMLType.XSD_STRING, ParameterMode.IN );
      call.setReturnType( XMLType.XSD_STRING );
      results = (String) call.invoke( new Object [] { query } );
-
+  
 // Now print thte results to the output
      XSPUtil util =  new XSPUtil();
      util.includeString( results, manager, contentHandler );

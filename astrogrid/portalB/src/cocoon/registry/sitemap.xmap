@@ -20,13 +20,31 @@
          <!-- Registry Browser -->
          <map:match pattern="browse">
             <map:generate type="serverpages" src="xsp/browse.xsp"/>
-            <map:transform src="../common/xsl/agtemplate.xsl"/> 
+            <map:transform src="../common/xsl/browse.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="action">
+            <map:generate type="serverpages" src="xsp/action.xsp"/>
+            <map:transform src="../common/xsl/action.xsl"/> 
             <map:serialize type="html"/>
          </map:match>
 
          <!-- Registry Update -->
          <map:match pattern="admin">
             <map:generate type="serverpages" src="xsp/admin.xsp"/>
+            <map:transform src="xsl/admin.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="adminaction">
+            <map:generate type="serverpages" src="xsp/adminaction.xsp"/>
+            <map:transform src="xsl/adminaction.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <map:match pattern="update">
+            <map:generate type="serverpages" src="xsp/update.xsp"/>
             <map:transform src="xsl/update.xsl"/> 
             <map:serialize type="html"/>
          </map:match>
@@ -38,7 +56,7 @@
 
          <map:match pattern="*.xml">
             <map:generate type="file" src="xml/{1}.xml"/>
-            <map:transform src="../common/xsl/agtemplate.xsl"/> 
+            <map:transform src="../common/xsl/astrogrid.xsl"/> 
             <map:serialize type="html"/>
          </map:match>
 

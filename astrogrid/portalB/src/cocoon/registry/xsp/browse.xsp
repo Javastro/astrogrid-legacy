@@ -23,10 +23,10 @@
    <xsp:logic>
       String out = null;
       String servers[][] = {
-         { "Testing", "axis://rlspc14.bnsc.rl.ac.uk:8080"},
          { "MSSL", "axis://msslxy.mssl.ucl.ac.uk:8080" },
          { "RAL", "axis://stargrid1.bnsc.rl.ac.uk:8080" },
-         { "Leicester", "axis://katatjuta.star.le.ac.uk:8080" }
+         { "Leicester", "axis://katatjuta.star.le.ac.uk:8080" },
+         { "Testing", "axis://rlspc14.bnsc.rl.ac.uk:8080"}
       };
       String webservice = "RegistryInterface3_0";
 

@@ -1,95 +1,105 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="html"/>
+<xsl:strip-space elements="testNode//*"/>
 
-   <xsl:include href="../../common/xsl/agtemplate.xsl"/>
-   <xsl:param name="type">Unknown</xsl:param>
+   <xsl:include href="../../common/xsl/astrogrid.xsl"/>
+ 
+   <xsl:template match="registry">
+        <xsl:apply-templates/>
+   </xsl:template>
 
    <xsl:template match="edit">
-       <xsl:param name="type">Edit</xsl:param>
-       <form method="POST" action="agregistryhelp.html">
+       <hr/>
+       <form method="POST" action="adminaction.xsp">
        <input type='SUBMIT' name='Edit' value='Edit This Resource'/>
        <input type='RESET' name='Reset' value='Reset'/>
+       <p/>
        <table>
-         <xsl:apply-templates mode="Edit"/>
+        <xsl:apply-templates/>
        </table>
        </form>
    </xsl:template>
 
    <xsl:template match="delete">
-       <xsl:param name="type">Delete</xsl:param>
-       <form method="POST" action="agregistryhelp.html">
+       <hr/>
+       <form method="POST" action="adminaction.xsp">
        <input type='SUBMIT' name='Delete' value='Delete This Resource'/>
        <input type='RESET' name='Reset' value='Reset'/>
+       <p/>
        <table>
-          <xsl:apply-templates mode="Delete"/>
+          <xsl:apply-templates/>
        </table>
        </form>
    </xsl:template>
 
-   <xsl:template match="queryResponse">
-      <xsl:choose>
-        <xsl:when test="text() = 'java.lang.NullPointerException'">
-           <strong>No Records selected</strong>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:apply-templates/>
-        </xsl:otherwise>
-      </xsl:choose>
+   <xsl:template match="add">
+       <hr/>
+       <form method="POST" action="adminaction.xsp">
+       <input type='SUBMIT' name='Add' value='Add This Resource'/>
+       <input type='RESET' name='Reset' value='Reset'/>
+       <p/>
+       <table>
+         <xsl:apply-templates />
+       </table>
+       </form>
    </xsl:template>
 
-   <xsl:template match="recordKeyPair" mode="Edit">
-     <xsl:call-template name="display-values">
-        <xsl:with-param name="type">Edit</xsl:with-param>
-        <xsl:with-param name="item">
-           <xsl:value-of select="@item"/>
-        </xsl:with-param>
-        <xsl:with-param name="value">
-           <xsl:value-of select="@value"/>
-        </xsl:with-param>
-     </xsl:call-template>
+
+
+   <xsl:template name="service" match="service//*">
+      <xsl:if test="not(*)">
+         <tr><td><xsl:value-of select="name()"/>: </td>
+         <td> 
+            <input size="40" type="text">
+               <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="0"/>name_<xsl:value-of select="name()"/></xsl:attribute>
+               <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+            </input>
+         </td></tr>
+      </xsl:if>
+      <xsl:if test="*">
+         <tr><td><xsl:value-of select="name()"/>: </td>
+         <td>
+            <input type="hidden">
+               <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_<xsl:value-of select="name()"/></xsl:attribute>
+               <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+            </input>
+         </td></tr>
+         <xsl:apply-templates/>
+      </xsl:if>
    </xsl:template>
 
-   <xsl:template match="recordKeyPair" mode="Delete">
-     <xsl:call-template name="display-values">
-        <xsl:with-param name="type">Delete</xsl:with-param>
-        <xsl:with-param name="item">
-          <xsl:value-of select="@item"/>
-        </xsl:with-param>
-        <xsl:with-param name="value">
-          <xsl:value-of select="@value"/>
-        </xsl:with-param>
-     </xsl:call-template>
+   <xsl:template match="webserver">
+         <tr><td></td>
+         <td>
+            <input type="hidden">
+               <xsl:attribute name="name">webserver</xsl:attribute>
+               <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+            </input>
+         </td></tr>
    </xsl:template>
 
-   <xsl:template name="display-values">
-     <xsl:param name="type"/>
-     <xsl:param name="item"/>
-     <xsl:param name="value"/>
-     <tr>
-       <xsl:choose> 
-         <xsl:when test="$item = 'metadataType'"/>
-         <xsl:when test="$item = 'ERROR:'">
-           <td>
-           <strong>ERROR: </strong> <xsl:value-of select="$value" />
-           </td>
-         </xsl:when>
-         <xsl:otherwise>
-           <td> <em> <xsl:value-of select="$item" /> </em> </td>
-           <td>
-           <xsl:if test="$type = 'Edit'">
-             <input size="80">
-   <xsl:attribute name="name"><xsl:value-of select="$item"/></xsl:attribute>
-   <xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
-             </input>
-           </xsl:if>
-           <xsl:if test="$type = 'Delete'">
-             <strong><xsl:value-of select="$value"/></strong>
-           </xsl:if>
-           </td>
-         </xsl:otherwise>
-       </xsl:choose>
-     </tr>
+   <xsl:template match="delete/service//*">
+      <xsl:if test="not(*)">
+         <tr><td><xsl:value-of select="name()"/>: </td>
+         <td>
+            <input size="40" type="hidden">
+               <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="0"/>name_<xsl:value-of select="name()"/></xsl:attribute>
+               <xsl:attribute name="value"><xsl:value-of select="current()"/></xsl:attribute>
+            </input>
+            <xsl:value-of select="current()"/>
+         </td></tr>
+      </xsl:if>
+      <xsl:if test="*">
+         <tr><td><xsl:value-of select="name()"/>: </td>
+         <td>
+            <input type="hidden">
+               <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_<xsl:value-of select="name()"/></xsl:attribute>
+               <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+            </input>
+         </td></tr>
+         <xsl:apply-templates/>
+      </xsl:if>
    </xsl:template>
 
    <xsl:template match="queryException">
@@ -99,11 +109,84 @@
          </strong>
    </xsl:template>
 
-   <xsl:template match="service">
-         <em>Service:</em>
-         <strong>
+   <xsl:template match="add/service">
+         <tr><td colspan="2" bgcolor="#DDDDDD">
+         <table>
+         <tr>
+         <td valign="bottom"><strong><u>SERVICE</u></strong>
+         <input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_service</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+         </input></td>
+         </tr></table>
+         </td></tr>
          <xsl:apply-templates/>
-         </strong>
+   </xsl:template>
+
+   <xsl:template match="edit/service">
+         <tr><td colspan="2" bgcolor="#DDDDDD">
+         <table>
+         <tr>
+         <td valign="bottom" colspan="2"><strong><u>SERVICE</u>: 
+         <font color="blue"><xsl:value-of select="identity/shortName"/></font></strong>
+         <input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_service</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+        </input></td>
+         </tr></table>
+         </td></tr>
+         <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="delete/service">
+         <tr><td colspan="2" bgcolor="#DDDDDD">
+         <table>
+         <tr>
+         <td valign="bottom" colspan="2"><strong><u>SERVICE</u>: 
+         <font color="blue"><xsl:value-of select="identity/shortName"/></font></strong>
+         <input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_service</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+         </input></td>
+         </tr></table>
+         </td></tr>
+         <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="//*/identity">
+         <tr><td><strong><u>Identity</u></strong></td>
+         <td><input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_identity</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+         </input></td></tr>
+         <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="//*/curation">
+         <tr><td><strong><u>Curation</u></strong></td>
+         <td><input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_curation</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+         </input></td></tr>
+         <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="//*/content">
+         <tr><td><strong><u>Content</u></strong></td>
+         <td><input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_content</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+         </input></td></tr>
+         <xsl:apply-templates/>
+   </xsl:template>
+
+   <xsl:template match="//*/serviceMetadataConcept">
+         <tr><td><strong><u>Service Metadata Concepts</u></strong></td>
+         <td><input type="hidden">
+            <xsl:attribute name="name">key_<xsl:value-of select="generate-id(.)"/>children_<xsl:value-of select="count(*)"/>name_serviceMetadataConcept</xsl:attribute>
+            <xsl:attribute name="value">NO_TEXT_NODE</xsl:attribute>
+         </input></td></tr>
+         <xsl:apply-templates/>
    </xsl:template>
 
    <xsl:template match="debug">
@@ -113,30 +196,5 @@
          </strong>
    </xsl:template>
 
-   <xsl:template match="query">
-         <p><em>Registry Query Selection: </em><br/>
-         <strong> &lt;query&gt;
-         <xsl:apply-templates/>
-         &lt;/query&gt; </strong>
-         </p>
-   </xsl:template>
 
-   <xsl:template match="selectionSequence">
-         &lt;selectionSequence&gt;<br/>
-         <xsl:apply-templates/>
-         &lt;/selectionSequence&gt;
-   </xsl:template>
-
-   <xsl:template match="selection">
-         &lt;selection<xsl:text> </xsl:text>
-         item='<xsl:value-of select="@item"/>'<xsl:text> </xsl:text>
-         itemOp='<xsl:value-of select="@itemOp"/>'<xsl:text> </xsl:text>
-         value='<xsl:value-of select="@value"/>'&gt;<br/>
-   </xsl:template>
-
-   <xsl:template match="selectionOp">
-         &lt;selectionOp<xsl:text> </xsl:text>
-         op='<xsl:value-of select="@op"/><xsl:text> </xsl:text>'&gt;<br/>
-   </xsl:template>
-   
 </xsl:stylesheet> 
