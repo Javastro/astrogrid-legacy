@@ -70,11 +70,12 @@
 			namespace="http://localhost:8080/axis/services/AxisDataServer"
 			package="org.astrogrid.datacenter.delegate.axisdataserver" />
 	</axis-wsdl2java>
-	<!-- this generates a little too much - now have overlapping classes. lets delete the cruft -->
+	<!-- this generates a little too much - now have overlapping classes. lets delete the rest -->
 	<delete>
 		<fileset dir="${basedir}/generated/java">
-		    <exclude name="**/axisdataserver/*" />
+		    <include name="**/WebNotifyServiceListener.java" />
 			<include name="**/*Exception.java" />
+			<exclude name="**/DatabaseAccessException.java" />
 		</fileset>
 	</delete>
   </goal>
