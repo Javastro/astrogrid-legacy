@@ -63,6 +63,7 @@ import org.xml.sax.InputSource ;
  * However, and again, this is not an absolute restriction.
  *
  * @author  Jeff Lusted
+ * @author  Phil Nicolson
  * @version 1.0 28-May-2003
  * @since   AstroGrid 1.2
  */
