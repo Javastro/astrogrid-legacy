@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.1 2003/11/18 12:14:14 nw Exp $
+/*$Id: TestInstallation.java,v 1.2 2003/11/24 21:03:44 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.AbstractTestInstallation;
-import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 /** integration test for validating an installation
@@ -66,7 +65,7 @@ public class TestInstallation extends AbstractTestInstallation {
     public void testTomcatInstallation() {
         try {
             System.out.println("Connecting to " + tomcatURL.toString());
-            String frontPage = HsqlTestCase.streamToString(tomcatURL.openConnection().getInputStream());
+            String frontPage = streamToString(tomcatURL.openConnection().getInputStream());
             assertNotNull("Tomcat front page is null",frontPage);
             assertTrue("Tomcat front page is empty",frontPage.trim().length() > 0);
             assertEquals("Tomcat front page contains string 'error'",-1,frontPage.toLowerCase().indexOf("error"));
@@ -82,7 +81,7 @@ public class TestInstallation extends AbstractTestInstallation {
         try {
             URL axisURL = new URL(tomcatURL,"axis");
         System.out.println("Connecting to " + axisURL.toString());
-        String frontPage = HsqlTestCase.streamToString( axisURL.openConnection().getInputStream() );
+        String frontPage = streamToString( axisURL.openConnection().getInputStream() );
         assertNotNull("Axis front page is null",frontPage);
         assertTrue("Axis front page is empty",frontPage.trim().length() > 0);
         assertEquals("Axis front page contains string 'error'",-1,frontPage.toLowerCase().indexOf("error"));
@@ -95,7 +94,7 @@ public class TestInstallation extends AbstractTestInstallation {
         try {
         URL checkURL =  new URL(tomcatURL,"axis/happyaxis.jsp");
         System.out.println("Connecting to " + checkURL.toString());
-        String checkPage = HsqlTestCase.streamToString(checkURL.openConnection().getInputStream() );
+        String checkPage = streamToString(checkURL.openConnection().getInputStream() );
         assertNotNull("Axis configuration checking page is null",checkPage);
         assertTrue("Axis configuration checking page is empty",checkPage.trim().length() > 0);
         assertEquals("Axis configuration checking page contains string 'error'",-1,checkPage.toLowerCase().indexOf("error"));
@@ -139,6 +138,9 @@ public class TestInstallation extends AbstractTestInstallation {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.2  2003/11/24 21:03:44  nw
+got compiling again
+
 Revision 1.1  2003/11/18 12:14:14  nw
 mavenized installation-test
 
