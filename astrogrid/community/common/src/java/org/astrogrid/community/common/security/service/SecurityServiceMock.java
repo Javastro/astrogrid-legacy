@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/security/service/SecurityServiceMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/24 16:56:25 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 17:43:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceMock.java,v $
+ *   Revision 1.6  2004/03/24 17:43:59  dave
+ *   Fixed side effects of changes to unit tests
+ *
  *   Revision 1.5  2004/03/24 16:56:25  dave
  *   Merged development branch, dave-dev-200403231641, into HEAD
  *
@@ -311,6 +314,9 @@ public class SecurityServiceMock
         if (DEBUG_FLAG) System.out.println("SecurityServiceMock.splitToken()") ;
         if (DEBUG_FLAG) System.out.println("  Token : " + original) ;
         if (DEBUG_FLAG) System.out.println("  Count : " + count) ;
+		//
+		// Mark the original as invalid.
+		original.setStatus(SecurityToken.INVALID_TOKEN) ;
         //
         // See if we still have the orginal
         SecurityToken match = (SecurityToken) map.get(original.getToken()) ;

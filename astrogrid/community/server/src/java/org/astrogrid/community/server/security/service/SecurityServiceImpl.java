@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/03/23 16:34:08 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/24 17:43:59 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
+ *   Revision 1.7  2004/03/24 17:43:59  dave
+ *   Fixed side effects of changes to unit tests
+ *
  *   Revision 1.6  2004/03/23 16:34:08  dave
  *   Merged development branch, dave-dev-200403191458, into HEAD
  *
@@ -371,6 +374,9 @@ public class SecurityServiceImpl
                 "Null token"
                 ) ;
             }
+		//
+		// Mark the original as invalid.
+		original.setStatus(SecurityToken.INVALID_TOKEN) ;
         //
         // Get the token value.
         CommunityIvornParser token = new CommunityIvornParser(
@@ -508,6 +514,9 @@ public class SecurityServiceImpl
                 "Null token"
                 ) ;
             }
+		//
+		// Mark the original as invalid.
+		original.setStatus(SecurityToken.INVALID_TOKEN) ;
         //
         // Get the token value.
         CommunityIvornParser token = new CommunityIvornParser(
