@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.7 2004/03/09 22:56:26 mch Exp $
+ * $Id: DataServer.java,v 1.8 2004/03/10 00:46:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierStatus;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.datacenter.query.QueryState;
 import org.xml.sax.SAXException;
 
 /**
@@ -97,6 +97,7 @@ public class DataServer
          StringWriter sw = new StringWriter();
          askAdql(user, s, sw);
          
+         log.debug("Returning: "+sw.toString());
          return sw.toString();
    }
    
@@ -110,6 +111,8 @@ public class DataServer
       
       Querier querier =  QuerierManager.createQuerier(q);
       QueryResults results = querier.doQuery();
+      log.debug("Found "+results.getCount()+" matches");
+      querier.setState(QueryState.RUNNING_RESULTS);
       results.toVotable(out);
       QuerierManager.closeQuerier(querier);
       return querier.getStatus();
@@ -225,9 +228,9 @@ public class DataServer
          "<body>\n"+
          "<h1>ERROR REPORT</h1>\n"+
          "<b>"+title+"</b>\n"+
-         "<p><b>"+e.getMessage()+"</b>\n"+
-         "<p><pre>"+sw.toString()+"</pre>"+
-         "<p>"+details+"\n"+
+         "<p><b>"+e.getMessage()+"</b></p>\n"+
+         "<p><pre>"+sw.toString()+"</pre></p>"+
+         "<p>"+details+"</p>\n"+
          "</body>\n"+
          "</html>\n";
    }
