@@ -3,6 +3,9 @@ package org.astrogrid.config;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -12,20 +15,19 @@ import junit.framework.TestSuite;
  * - extend to test implementations of Configurable.
  */
 
-public class FactoryTest extends TestCase
-{
-
+public class FactoryTest extends TestCase {
+	/** Logger */
+	private static Log log = LogFactory.getLog(FactoryTest.class);
    /**
     * Tests property creation
     */
-   public void testPropertyMaker() throws IOException
-   {
+   public void testPropertyMaker() throws IOException {
       PropertyConfig configA = ConfigFactory.getPropertyConfig("Arthur");
-      
+      log.debug("Got Arthur "+configA);
       assertNotNull(configA);
       
       PropertyConfig configB = ConfigFactory.getPropertyConfig("Bernard");
-      
+      log.debug("Got Bernard "+ configB);
       assertNotNull(configB);
       assertNotSame(configA, configB);
 
@@ -34,39 +36,52 @@ public class FactoryTest extends TestCase
       assertNotSame(configA.getProperty("Fruit"), configB.getProperty("Fruit"));
       
       PropertyConfig configC = ConfigFactory.getPropertyConfig("Arthur");
-      
+      log.debug("Got Charlie "+configC);
       assertNotNull(configC);
       assertEquals(configA, configC);
 
       //make sure xml ones are not mixed in with property ones
-      XmlConfig configXml = ConfigFactory.getXmlConfig("Arthur");
-      assertNotSame(configA, configXml);
-   }
+      try {
+         XmlConfig configXml = ConfigFactory.getXmlConfig("Arthur");
+		 assertNotSame(configA, configXml);
+      }
+      catch(RuntimeException elloelloello) { //yes, i know, i know, but I need to debug this remotely, so every bit of logging helps
+      	log.error("Exception from ConfigFactory.getXmlConfig ", elloelloello);
+      	throw elloelloello;
+      }
+      
+   };
 
    /**
     * Tests xml config creation
     */
    public void testXmlMaker() throws IOException
    {
-      XmlConfig configA = ConfigFactory.getXmlConfig("Arthur");
-      
-      assertNotNull(configA);
-      
-      XmlConfig configB = ConfigFactory.getXmlConfig("Bernard");
-      
-      assertNotNull(configB);
-      assertNotSame(configA, configB);
-      
-      XmlConfig configC = ConfigFactory.getXmlConfig("Arthur");
-      
-      assertNotNull(configC);
-      assertEquals(configA, configC);
-      
-      //make sure property ones are not mixed in with xml ones
-
-      PropertyConfig configP = ConfigFactory.getPropertyConfig("Arthur");
-      assertNotSame(configA, configP);
-      
+    try {
+          log.trace("testXmlMaker");
+          XmlConfig configA = ConfigFactory.getXmlConfig("Arthur");
+          log.debug("Arthur "+configA);
+          assertNotNull(configA);
+        
+          XmlConfig configB = ConfigFactory.getXmlConfig("Bernard");
+          log.debug("Bernard "+configB);
+          assertNotNull(configB);
+          assertNotSame(configA, configB);
+        
+          XmlConfig configC = ConfigFactory.getXmlConfig("Arthur");
+          log.debug("Charlie "+configA);
+          assertNotNull(configC);
+          assertEquals(configA, configC);
+        
+          //make sure property ones are not mixed in with xml ones
+        
+          PropertyConfig configP = ConfigFactory.getPropertyConfig("Arthur");
+          log.debug("Paul "+configP);
+          assertNotSame(configA, configP);
+    } catch (RuntimeException e) {
+        log.error("Exception caught in testXmlMaker", e);
+        throw e;
+	}       
    }
 
     /**

@@ -1,4 +1,4 @@
-/* $Id: ConfiguratorTest.java,v 1.4 2004/01/20 17:23:45 jdt Exp $
+/* $Id: ConfiguratorTest.java,v 1.5 2004/01/27 16:21:54 jdt Exp $
  * Created on 11-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -325,7 +325,7 @@ public final class ConfiguratorTest extends TestCase {
    */
   public void testFailedToSave() {
     Configurator configurator = new DummyFileConfigurator();
-    String fileName = "***** &^£%$hope this is an impossible filename";
+    String fileName = "";//duff filename
     File file = new File(fileName);
     try {
       configurator.save(fileName);
@@ -361,6 +361,9 @@ public final class ConfiguratorTest extends TestCase {
 
 /*
 *$Log: ConfiguratorTest.java,v $
+*Revision 1.5  2004/01/27 16:21:54  jdt
+*fixes to tests and some logging.  Switched logging off by default.
+*
 *Revision 1.4  2004/01/20 17:23:45  jdt
 *Added unit tests for full clover coverage and fixed bugs.
 *
