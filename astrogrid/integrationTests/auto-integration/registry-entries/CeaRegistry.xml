@@ -179,8 +179,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                 </Capability>
                 <Interface>
                         <Invocation>WebService</Invocation>
-                        <AccessURL use="base">
-                                @TOMCATROOT@/astrogrid-applications-@RELEASE@/services/CommonExecutionConnectorService</AccessURL>
+                        <!-- nww set to localhost commandline for now - needs to  be set to mssl as an external service really -->
+                        <AccessURL use="base">@TOMCATROOT@/astrogrid-cea-commandline-@VERSION@/services/CommonExecutionConnectorService</AccessURL>
                 </Interface>
                 <cea:ManagedApplications>
                         <cea:ApplicationReference>
