@@ -119,7 +119,7 @@
                 <div>                                                
                   <select size="1">
                     <xsl:attribute name="id">select<xsl:value-of select="@key"/></xsl:attribute>
-                    <xsl:attribute name="onChange">if(document.getElementById('select<xsl:value-of select="@key"/>').value=='browse') popupBrowser('/astrogrid-portal/lean/mount/resources/agresourcesMB.html?mainelement=Task&amp;parent_authId=tool_name<xsl:value-of select="@key"/>'); 
+                    <xsl:attribute name="onChange">if(document.getElementById('select<xsl:value-of select="@key"/>').value=='browse') popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Tool&amp;parent_authId=tool_name<xsl:value-of select="@key"/>'); 
                                                    else if (document.getElementById('select<xsl:value-of select="@key"/>').value=='none') alert('Please select....');
                                                    else document.getElementById('tool_name<xsl:value-of select="@key"/>').value = document.getElementById('select<xsl:value-of select="@key"/>').value;
                     </xsl:attribute>

@@ -756,7 +756,8 @@
                <xsp:attribute name="workflow-description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>
                <xsp:attribute name="workflow-submit-message"><xsp:expr>(String)session.getAttribute("workflow_submit_message")</xsp:expr></xsp:attribute>
                <xsp-session:set-attribute name="workflow_submit_message" value="null"/>
-                              
+               <xsp:attribute name="orig-tool-name"><xsp:expr>(String)session.getAttribute("orig_tool_name")</xsp:expr></xsp:attribute>
+               <xsp-session:set-attribute name="orig-tool-name" value="null"/>                              
             } 
          }
          catch(Exception e) {
