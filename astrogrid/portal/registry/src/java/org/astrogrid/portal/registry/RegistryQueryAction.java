@@ -216,17 +216,14 @@ public class RegistryQueryAction extends AbstractAction
                query += "<selection item='" + selItem + "' itemOp='" + selItemOperation + "' value='" + selItemValue + "'/>";
             }
             query += "</selectionSequence></query>";
-            System.out.println("inside the queryaction the query = " + query);
             try {
                //Now lets query.
                String url = null;
                url = RegistryConfig.getProperty("search.registry.query.url");
-               System.out.println("the resulting url = " + url);
+               
                RegistryService rs = new RegistryService(url);
-               System.out.println("Okay established a registry service now submitquerystring");
                Document doc = rs.submitQueryString(query);
-               System.out.println("the result doc = " + XMLUtils.DocumentToString(doc));
-               errorMessage = getResultMessage(doc);               
+               errorMessage = getResultMessage(doc);
                if(errorMessage == null) {
                   //create the results and put it in the request.
                   resultXML = createFormResults(doc,mainElem);
@@ -254,7 +251,6 @@ public class RegistryQueryAction extends AbstractAction
                   }//if
                }//if
             }catch(Exception e) {
-               System.out.println("exception = " + e.toString());
                e.printStackTrace();
             }
          }//else doing a query

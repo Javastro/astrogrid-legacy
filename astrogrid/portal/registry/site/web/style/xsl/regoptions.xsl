@@ -17,17 +17,12 @@
 	    | Match the admin element.
 		+-->
 	<xsl:template match="registryoptions">
-		<!--
 		<page>
+			<!-- Add our page content -->
 			<content>
-			-->
-			<div>
 				<xsl:call-template name="regoptions_form"/>
-			</div>
-			<!--
 			</content>
 		</page>
-		-->
 	</xsl:template>
 
 	<!--+
@@ -42,7 +37,7 @@
 		<p>
 			Do you Wish to do a Query?
 		</p>
-		<form method="get" action="registryquery.html" name="RegistryQuery">
+		<form method="post" action="registryquery.html" name="RegistryQuery">
 				<select name="mainelement">		
 				<xsl:for-each select="//registryoptions/regoptions/regoption">
 					<xsl:element name="option">
@@ -57,7 +52,7 @@
 		<p>
 			Or Do you wish to do an Add?
 		</p>
-		<form method="get" action="registryupdate.html" name="RegistryUpdate">
+		<form method="post" action="registryupdate.html" name="RegistryUpdate">
 			Main Elements: <br />
 				<select name="mainelement">
 				<xsl:for-each select="//registryoptions/regoptions/regoption">				

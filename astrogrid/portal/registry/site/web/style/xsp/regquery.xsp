@@ -121,6 +121,28 @@
 			]]>
 			</xsp:logic>
 		</criteria_number>	
+		
+		<authorities>
+			<xsp:logic>
+			<![CDATA[
+		
+		HashMap authList = (HashMap)session.getAttribute("ManageAuthorities");
+		if(authList != null && authList.size() > 0 ) {
+			st = authList.keySet();
+			Iterator iter3 = st.iterator();
+			while (iter3.hasNext()) {
+			key = (String)iter3.next();
+			]]>			
+				<xsp:element name="authority">
+					<xsp:attribute name="val"><xsp:expr>key</xsp:expr></xsp:attribute>
+				</xsp:element>		
+				
+			<![CDATA[				
+			}
+		}
+			]]>			
+			</xsp:logic>
+		</authorities>
 
 		<xmlresults>
 			<xsp:logic>

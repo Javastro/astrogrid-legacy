@@ -21,9 +21,12 @@
 	    | Match the admin element.
 		+-->
 	<xsl:template match="registryquery">
-		<div>
+		<page>
+			<!-- Add our page content -->
+			<content>
 				<xsl:call-template name="regadmin_form"/>
-		</div>
+			</content>
+		</page>
 	</xsl:template>
 
 	<!--+
@@ -35,7 +38,7 @@
 		</xsl:if>	
 		<br />
 		<i>Updated and Created attributes will automatically be set when submitted.</i>
-		<form method="get" action="registryupdate.html" name="RegistryUpdate">
+		<form method="post" action="registryupdate.html" name="RegistryUpdate">
 			<xsl:if test="$action = 'add'" >
 				<input type="hidden" name="action" value="add" />
 			</xsl:if>
