@@ -1,0 +1,21 @@
+Job Submission System Use Case Text
+===================================
+
+Submit Job
+----------
+Analyse submission details.
+Generate job identifier.
+Create job entry.	
+Create one or more job steps.
+Wake up Job Scheduler.
+Insert log message (AstroML).
+Return job identifier.
+
+[Alternate Flow]
+Submission details invalid.
+Return exception.
+
+
+
+
+ 

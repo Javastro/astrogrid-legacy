@@ -1,0 +1,316 @@
+package id9lpudece64eldecq3c19;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node3:oiref><oihard>
+@__modelType reference 
+*/
+class reference4 {
+}/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27:oiref><oihard>
+@__modelType reference 
+*/
+class reference28 {
+}/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node35:oiref><oihard>
+@__modelType reference 
+*/
+class reference36 {
+}/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node1:oiref><oihard>
+@__modelType reference 
+*/
+class reference3 {
+}/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node22:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference8 {
+}/**
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node13:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}}/**
+@__tags
+@shapeType UseCaseDiagram 
+*/
+class __tags {
+}/**
+@__options option.controlbars = false
+*/
+class __options {
+}/**
+@__positions 
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node1:oiref>=280,50,95,77,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node2.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node30.node11.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node1.link17:oiref>=339,127,450,170,510,200:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node15:oiref>=510,70,110,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node56.link:oiref>=639,470,880,468:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27:oiref>=410,0,640,660,0:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node3:oiref>=280,240,93,77,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node16:oiref>=510,190,108,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node42.link61:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node2:oiref>=710,520,230,90,0:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node25.link:oiref>=625,368,730,380:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link23:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node1.link:oiref>=375,110,400,100,510,88:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node11.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link24:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node13:oiref>=1080,310,153,40,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node23:oiref>=470,280,191,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node35:oiref>=290,430,81,77,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node46.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link25:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node1.link53:oiref>=375,118,510,140:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node15.link:oiref>=620,80,970,80,970,450:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node.link:oiref>=172,530,330,507:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link26:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node41.link55:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node26.link27:oiref>=793,212,618,208:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node25:oiref>=490,350,135,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node52:oiref>=510,130,115,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node35.link:oiref>=371,474,500,474:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node42.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link27:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node26:oiref>=793,202,136,40,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node:oiref>=730,370,154,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node41.link57:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node60.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node13.link:oiref>=1156,350,989,450:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node3.link:oiref>=373,300,400,300,470,298:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22:oiref>=40,250,150,260,0:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link:oiref>=115,250,303,127:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link6:oiref>=190,283,280,283:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node12:oiref>=880,450,129,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node56:oiref>=500,460,139,28,1:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node41.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node22.link7:oiref>=190,468,290,468:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node3.link34:oiref>=373,308,430,340,490,360:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node:oiref>=130,530,265,80,0:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node2.link:oiref>=825,520,569,488:oigroup>
+<oigroup:<oiref:design#Class#id9lpudece64eldecq3c19.node27.node26.link:oiref>=861,202,567,158:oigroup>
+
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Job Controller
+*/
+class node1 {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node15:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node52:oiref><oihard> 
+*/
+class link53 {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node16:oiref><oihard> 
+*/
+class link17 {
+}}/**
+@shapeType Actor
+@__modelType node
+@name Job Scheduler 
+*/
+class node3 {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node23:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node25:oiref><oihard>*/
+class link34 {
+}}/**
+@shapeType SystemBoundary
+@__modelType node
+@name Job Entry Subsystem
+@backgroundColor 200,200,200
+*/
+class node27 {
+/**
+An astronomer (via a software agent) submits a job which consists of a query to be run against one or more datasets.
+@shapeType UseCase
+@__modelType node
+@name Submit Job*/
+class node15 {
+/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node12:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Select Next Job Step
+*/
+class node23 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Submit Query
+*/
+class node25 {
+/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Identify Dataset 
+*/
+class node {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Job Enquiry
+*/
+class node52 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Get Job Status
+*/
+class node56 {
+/**
+@shapeType IncludesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node12:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType UseCase
+@__modelType node
+@name Cancel Job 
+*/
+class node16 {
+}/**
+@shapeType UseCase
+@__modelType node
+@name Log Message 
+*/
+class node12 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note7
+@text Empty at present 
+*/
+class node26 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node52:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node16:oiref><oihard> 
+*/
+class link27 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2 
+@text The updating and monitoring of job status are the end points of communication between Dataset Agent and Job Monitor.
+*/
+class node2 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node56:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Actor
+@__modelType node
+@name Job Monitor 
+*/
+class node35 {
+/**
+@shapeType CommunicatesLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node56:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text These need to hold job data in some shared and persistent form in order to control and track the submission and running of jobs.
+Suggest a Job Control database.
+*/
+class node22 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node1:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node3:oiref><oihard> 
+*/
+class link6 {
+}/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node35:oiref><oihard> 
+*/
+class link7 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text Non-availability of Job Monitor should not impact the working of DatasetAgent (within the DataCenter subsystem), and vice versa.
+*/
+class node {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node35:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note5
+@text Astro Message Log. 
+*/
+class node13 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id9lpudece64eldecq3c19.node27.node12:oiref><oihard> 
+*/
+class link {
+}}

@@ -1,0 +1,77 @@
+package id43g8ydjhc32ahdji31iaz;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+@roots /home/jl99/tmp/tjModels/ag_jes/astrogrid_jes.jar
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4faxcdjhc32ahdji31idv.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3vwp7djhc32ahdji31jm8.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobmonitor:oiref> 
+*/
+class reference5 {
+}/**
+@__ref <oiref:design#Class#id2ixukdjhc32ahdji31jfg.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.job:oiref> 
+*/
+class reference6 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.JesException:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:design#Class#id3lbe4djhc32ahdji31jr6.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler:oiref> 
+*/
+class reference8 {
+}/**
+@__ref <oiref:design#Class#id8428djhc32ahdji31jjg.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobcontroller:oiref> 
+*/
+class reference9 {
+}/**
+@__ref <oiref:design#Class#id4fc99djhc32ahdji31j9z.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.impl:oiref> 
+*/
+class reference10 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.jes.JES:oiref><oihard>
+@__modelType reference 
+*/
+class reference11 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:java#Class#org.astrogrid.jes.JES:oiref>=10,10,200,814,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.jes.JesException:oiref>=475,10,200,125,1:oigroup>
+<oigroup:<oiref:design#Class#id3lbe4djhc32ahdji31jr6.diagram:oiref>=504,330,167,104,1:oigroup>
+<oigroup:<oiref:design#Class#id8428djhc32ahdji31jjg.diagram:oiref>=504,470,169,104,1:oigroup>
+<oigroup:<oiref:design#Class#id3vwp7djhc32ahdji31jm8.diagram:oiref>=300,10,155,121,1:oigroup>
+<oigroup:<oiref:design#Class#id2ixukdjhc32ahdji31jfg.diagram:oiref>=300,330,184,223,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.jes.JES#singletonJES:oiref>=170,824,170,874,260,874,260,784,210,784:oigroup>
+<oigroup:<oiref:design#Class#id4fc99djhc32ahdji31j9z.diagram:oiref>=300,170,118,87,1:oigroup>
+<oigroup:<oiref:design#Class#id4faxcdjhc32ahdji31idv.diagram:oiref>=438,170,158,124,1:oigroup> 
+*/
+class __positions {
+}

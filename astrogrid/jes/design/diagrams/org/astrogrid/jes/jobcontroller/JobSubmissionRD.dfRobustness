@@ -1,0 +1,101 @@
+package id2eux2dfm3as5tdfmbq03p;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2eux2dfm3as5tdfmbq03p.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#JobControl:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference82 {
+}/**
+@__ref <oiref:java#Class#Job:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference83 {
+}/**
+@__ref <oiref:java#Class#JobStep:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference88 {
+}/**
+@__ref <oiref:java#Class#Query:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference91 {
+}/**
+@__ref <oiref:java#Class#AstroML:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference99 {
+}/**
+@__ref <oiref:java#Class#JobFactory:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference114 {
+}/**
+@__ref <oiref:java#Class#JobControlDB:oiref><oihard>
+@__modelType reference
+@__imported 
+*/
+class reference117 {
+}}/**
+
+@__tags
+@shapeType RobustnessDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:MemberLink#<oiref:java#Member#JobFactory#lnkJobControlDB:oiref>=470,568,331,568:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobControl#attribute2:oiref>=367,228,283,67:oigroup>
+<oigroup:<oiref:design#Class#id2eux2dfm3as5tdfmbq03p.node.link:oiref>=87,265,325,265:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobControl#lnkAstroML:oiref>=410,228,806,84:oigroup>
+<oigroup:<oiref:java#Class#Query:oiref>=894,540,45,57,1:oigroup>
+<oigroup:<oiref:java#Class#JobControlDB:oiref>=240,540,91,57,1:oigroup>
+<oigroup:<oiref:java#Class#Job:oiref>=722,228,107,74,1:oigroup>
+<oigroup:<oiref:java#Class#JobFactory:oiref>=470,540,103,74,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobFactory#attribute1:oiref>=538,540,757,302:oigroup>
+<oigroup:<oiref:design#Class#id2eux2dfm3as5tdfmbq03p.node:oiref>=20,228,67,77,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobStep#lnkQuery:oiref>=760,568,894,568:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobControl#attribute3:oiref>=378,302,504,540:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobControl#attribute1:oiref>=388,228,482,67:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#JobControl#lnkJobSchedule:oiref>=346,228,82,84:oigroup>
+<oigroup:<oiref:java#Class#AstroML:oiref>=753,10,107,74,1:oigroup>
+<oigroup:<oiref:java#Class#JobControl:oiref>=325,228,107,74,1:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#Job#lnkJobStep:oiref>=793,302,732,540:oigroup>
+<oigroup:<oiref:java#Class#JobStep:oiref>=705,540,55,57,1:oigroup>
+
+
+*/
+class __positions {
+}/**
+@shapeType Actor
+@__modelType node
+@name Workflow 
+*/
+class node {
+/**
+@shapeType AssociatesLink
+@__modelType link
+@__ref <oiref:java#Class#JobControl:oiref><oihard> 
+@label submit job
+*/
+class link {
+}}

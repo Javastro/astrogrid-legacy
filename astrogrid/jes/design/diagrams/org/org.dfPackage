@@ -1,0 +1,29 @@
+package id28lbadjhc32ahdji31hou;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+@roots /home/jl99/tmp/tjModels/ag_jes/astrogrid_jes.jar
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id4f95rdjhc32ahdji31hxy.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid:oiref> 
+*/
+class reference {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

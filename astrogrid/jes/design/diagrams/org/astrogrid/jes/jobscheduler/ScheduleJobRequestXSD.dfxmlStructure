@@ -1,0 +1,150 @@
+package idt36bdgg6rmsidgg6yn9s;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#idt36bdgg6rmsidgg6yn9s.node58:oiref><oihard>
+@__modelType reference 
+*/
+class reference59 {
+}}/**
+
+@__tags
+@shapeType xmlStructureDiagram
+@__update.extended
+@format XSD Schema
+@filename /usr/local/TogetherSoft/Together6.0.1/myprojects/jes/other/ScheduleJobRequest.xsd
+@encoding UTF-8
+@version 1.0
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+<oigroup:<oiref:design#Class#idt36bdgg6rmsidgg6yn9s.node58.node13:oiref>=232,317,0,0,1:oigroup>
+<oigroup:<oiref:design#Class#idt36bdgg6rmsidgg6yn9s.node58.node12:oiref>=249,265,0,0,1:oigroup>
+<oigroup:<oiref:design#Class#idt36bdgg6rmsidgg6yn9s.node58.node11:oiref>=199,280,0,0,1:oigroup>
+<oigroup:<oiref:design#Class#idt36bdgg6rmsidgg6yn9s.node58.node10:oiref>=188,204,0,0,1:oigroup>
+<oigroup:<oiref:design#Class#idt36bdgg6rmsidgg6yn9s.node58:oiref>=121,141,129,139,0:oigroup>
+
+
+
+
+
+
+*/
+class __positions {
+}/**
+@shapeType xmlElement
+@__modelType node
+@name job
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node35:oiref>
+@derivationType restriction
+@content element only
+@compositor sequence
+@occurs <none>
+@block <none>
+@final <none>
+@subst*/
+class node58 {
+/**
+@shapeType xmlAttribute
+@__modelType node
+@name name
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node2:oiref>
+@derivationType restriction
+@occurs optional
+*/
+class node16 {
+}/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef1
+@ref <oiref:design#Class#:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 1*/
+class node {
+}/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef2
+@ref <oiref:design#Class#:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 2*/
+class node72 {
+}/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef4
+@ref <oiref:design#Class#:oiref>
+@minoccurs 1
+@maxoccurs 1
+@index 3*/
+class node78 {
+}/**
+@shapeType xmlElementRef
+@__modelType node
+@name xmlElementRef3
+@ref <oiref:design#Class#:oiref>
+@minoccurs 0
+@maxoccurs 1
+@index 4*/
+class node80 {
+}/**
+@shapeType xmlAttribute
+@__modelType node
+@name userid
+@form unqualified
+@id
+@ref <oiref:design#Class#id1e9yecgw0vkwvcgw111yy.node1:oiref>
+@derivationType restriction
+@occurs optional 
+*/
+class node10 {
+}/**
+@shapeType xmlAttribute
+@__modelType node
+@name time
+@form unqualified
+@id
+@ref <oiref:design#Class#id4x27acgvzg7thcgvzgsqi.node9:oiref>
+@derivationType restriction
+@occurs required 
+*/
+class node11 {
+}/**
+@shapeType xmlAttribute
+@__modelType node
+@name jobURN
+@form unqualified
+@id
+@ref <oiref:design#Class#id1e9yecgw0vkwvcgw111yy.node1:oiref>
+@derivationType restriction
+@occurs required 
+*/
+class node12 {
+}/**
+@shapeType xmlAttribute
+@__modelType node
+@name community
+@form unqualified
+@id
+@ref <oiref:design#Class#id1e9yecgw0vkwvcgw111yy.node1:oiref>
+@derivationType restriction
+@occurs optional 
+*/
+class node13 {
+}}
