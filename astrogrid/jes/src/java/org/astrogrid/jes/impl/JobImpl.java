@@ -1,8 +1,12 @@
 /*
  * @(#)JobImpl.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.jes.impl;
 
@@ -146,9 +150,6 @@ public class JobImpl extends Job {
 */
 
 
-	/* (non-Javadoc)
-	 * @see org.astrogrid.datacenter.Job#getId()
-	 */
 	public String getId() {	return jobURN ;	}
 	public void setId( String jobURN ) { this.jobURN = jobURN ;}
 	
@@ -168,6 +169,8 @@ public class JobImpl extends Job {
 	public String getUserId() { return userId; } 
 	
 	public Iterator getJobSteps() { return this.jobSteps.iterator() ; }
+	public boolean addJobStep( JobStep jobStep ) { return jobSteps.add( jobStep ); }
+	public boolean removeJobStep( JobStep jobStep ) { return jobSteps.remove( jobStep ) ; }
 	
 	public Object getImplementation() { return this ; }
 

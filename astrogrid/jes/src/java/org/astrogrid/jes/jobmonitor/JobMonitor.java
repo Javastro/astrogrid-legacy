@@ -69,19 +69,17 @@ public class JobMonitor {
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:Monitor: Could not read my configuration file",
 		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:Monitor: Not initialized. Perhaps my configuration file is missing.",
-		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
-		ASTROGRIDERROR_ULTIMATE_MONITORFAILURE      = "AGJESE00040",
-		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
-	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
-	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420";
+		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00540",
+		ASTROGRIDERROR_ULTIMATE_MONITORFAILURE      = "AGJESE00530",
+	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00440",
+	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00430",
+	    ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00550" ;
 	        			
 	private static final String
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
 	    
 	private static final String 
 	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE",
-		MONITOR_JOB_RESPONSE_TEMPLATE = "MONITOR_JOB_RESPONSE.TEMPLATE",
-	    MONITOR_JOB_REQUEST_TEMPLATE  = "MONITOR_JOB_REQUEST.TEMPLATE",
 	    MESSAGE_LOG_REQUEST_TEMPLATE  = "ASTROGRID_MESSAGE_LOG_REQUEST.TEMPLATE" ;
 	    
 	private static final String
@@ -187,12 +185,19 @@ public class JobMonitor {
 
 	private void checkPropertiesLoaded() throws JobMonitorException {
 		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
-		if( configurationProperties == null ) {
-			Message
-				message = new Message( ASTROGRIDERROR_JES_NOT_INITIALIZED ) ;
-			logger.error( message.toString() ) ;
+	
+		try {
+			if( configurationProperties == null ) {
+				Message
+					message = new Message( ASTROGRIDERROR_JES_NOT_INITIALIZED ) ;
+				logger.error( message.toString() ) ;
+			    throw new JobMonitorException( message ) ;	
+			}
 		}
-		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
+		finally {
+		    if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
+		}
+		
 	} // end checkPropertiesLoaded()
 	
 	
@@ -492,7 +497,7 @@ public class JobMonitor {
 			inserts[0] = JobMonitor.getProperty( MONITOR_URL ) ;            // source
 			//JBL Note: what should this be...
 			inserts[1] = JobMonitor.getProperty( MONITOR_URL ) ;            // destination
-			inserts[2] = new Timestamp( new Date().getTime() ).toString() ; // timestamp
+			inserts[2] = new Timestamp( new Date().getTime() ).toString() ; // timestamp - is this OK?
 			inserts[3] = "JobStep Completion" ;                             // subject
 			
 			//JBL Note: this requires elucidation...
@@ -512,6 +517,9 @@ public class JobMonitor {
     
 		}
 		catch( Exception ex ) {
+			Message
+			   message = new Message( ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG ) ;
+			logger.debug( message.toString(), ex ) ;
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): exit") ;	

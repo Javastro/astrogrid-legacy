@@ -108,7 +108,9 @@ public class Query {
 	public void setParent(JobStep parent) {	this.parent = parent; }
 	public JobStep getParent() { return parent; }
 
-	public Iterator getCatalogs() { return catalogs.iterator() ;	}
+	public Iterator getCatalogs() { return catalogs.iterator() ; }
+	public boolean addCatalog( Catalog catalog ) { return catalogs.add( catalog ) ; }
+	public boolean removeCatalog( Catalog catalog ) { return catalogs.remove( catalog ); }
 	
 
 } // end of class Query

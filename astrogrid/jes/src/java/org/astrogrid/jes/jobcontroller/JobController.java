@@ -66,8 +66,8 @@ import java.net.URL;
  * 3. Finally, and importantly, the JobController utilizes an entity which does
  * contain state - the Job entity, which currently represents a number of tables 
  * held in any suitable JDBC compliant database. However, again this is not 
- * an absolute restriction.
- *
+ * an absolute restriction. Note well: the JobController does not hold Job
+ * as an instance variable.
  *
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
@@ -282,7 +282,16 @@ public class JobController {
 	} // end parseRequest()
 	
 	
-	
+	/**
+	  * <p> 
+	  * Represents the mainline workflow argument for the JobController. 
+	  * <p>
+	  * Shows the JobController to be a "pristine" component with no state.
+	  * It neither uses nor creates instance variables. In the EJB model 
+	  * it would be considered a stateless session bean.
+	  * 
+	  * 
+	  **/     
     public String submitJob( String jobXML ) {
 		if( TRACE_ENABLED ) logger.debug( "submitJob() entry") ;
     	

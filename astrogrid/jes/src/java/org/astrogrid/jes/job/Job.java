@@ -1,5 +1,13 @@
-
-
+/*
+ * @(#)Job.java   1.0
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */
 package org.astrogrid.jes.job;
 
 import java.util.Iterator;
@@ -8,10 +16,7 @@ import org.astrogrid.jes.i18n.*;
 import org.astrogrid.jes.jobcontroller.*;
 import java.util.Date ;
 
-/**
- * @persistent
- * @stereotype container 
- */
+
 public abstract class Job {
 	
 	private static final boolean 
@@ -41,6 +46,11 @@ public abstract class Job {
     	
 		String
 			implementationFactoryName = JobController.getProperty( JOBFACTORY_KEY ) ;
+			
+		// JBL Note: We are holding txn state (the Connection) within JobFactoryImpl
+		// and therefore we must return a new factory for each invocation! 
+		// We may be able to get around this later and have the factory as basically
+		// a single-instance object.
 		JobFactory
 		    factory = null ;
     	
@@ -87,6 +97,8 @@ public abstract class Job {
 	public abstract Object getImplementation() ;
 	
 	public abstract Iterator getJobSteps() ;
+	public abstract boolean addJobStep( JobStep jobStep ) ;
+	public abstract boolean removeJobStep( JobStep jobStep ) ;
 	
 	public abstract void setDocumentXML( String docXML ) ; 
 	public abstract String getDocumentXML() ;

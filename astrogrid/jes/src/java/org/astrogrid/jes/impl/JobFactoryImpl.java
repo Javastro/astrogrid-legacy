@@ -1,3 +1,13 @@
+/*
+ * @(#)JobFactoryImpl.java   1.0
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+ */
 package org.astrogrid.jes.impl;
 
 import org.apache.log4j.Logger;
@@ -20,7 +30,6 @@ import java.util.Date ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.lang.Math ;
-
 
 
 public class JobFactoryImpl implements JobFactory {

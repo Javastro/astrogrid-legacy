@@ -1,10 +1,13 @@
 /*
  * @(#)Catalog.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
-
 package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
@@ -39,7 +42,7 @@ public class Catalog {
 		logger = Logger.getLogger( Catalog.class ) ;
 		
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_dosomething = "AGJESE00???" ;	
+		ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA = "AGJESE00600" ;
 		
     private String
         name ;
@@ -104,7 +107,7 @@ public class Catalog {
 		}
 		catch( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CRITERIA ) ;
 			logger.error( message.toString(), ex ) ;
 			throw new JobException( message, ex );    		
 		}
@@ -119,8 +122,12 @@ public class Catalog {
 	public String getName() { return name; }
 
 	public Iterator getTables() { return tables.iterator() ; }
-
+	public boolean addTable( String tableName ) { return tables.add( tableName ) ; }
+	public boolean removeTable( String tableName ) { return tables.remove( tableName ) ; }
+	
 	public Iterator getServices() { return services.iterator() ; }
+	public boolean addService( String service ) { return services.add( service ) ; }
+	public boolean removeService( String service ) { return services.remove( service ) ; }
 
 	public void setParent(Query parent) { this.parent = parent; }
 	public Query getParent() { return parent; }	
