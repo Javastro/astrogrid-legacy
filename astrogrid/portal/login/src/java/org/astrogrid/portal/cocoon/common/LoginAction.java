@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/01/09 10:07:39 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2004/01/09 10:13:42 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: LoginAction.java,v $
+ *   Revision 1.11  2004/01/09 10:13:42  dave
+ *   Added message to login page
+ *
  *   Revision 1.10  2004/01/09 10:07:39  dave
  *   Fixed reference to login-pass XSP page
  *
@@ -51,6 +54,7 @@ public class LoginAction extends AbstractAction
 
 	public static final String NAME_PARAM = "name" ;
 	public static final String PASS_PARAM = "pass" ;
+	public static final String ACCOUNT_PARAM = "message" ;
 	public static final String MESSAGE_PARAM = "message" ;
 
 	public static final String POLICY_GROUP    = "guest" ;
@@ -224,9 +228,12 @@ public class LoginAction extends AbstractAction
 			if ((null != token) && (authorized))
 				{
 				//
-				// Set the current account info.
+				// Set the current account info in our session.
 				session.setAttribute("user", name) ;
 				session.setAttribute("community_account", token.getAccount()) ;
+				//
+				// Set the current account info in our request.
+				request.setAttribute(ACCOUNT_PARAM, token.getAccount());
 				//
 				// Add our results.
 				results = new HashMap() ;

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xsp/Attic/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 07:54:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 10:13:42 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.4  2004/01/09 10:13:42  dave
+    |   Added message to login page
+    |
     |   Revision 1.3  2004/01/09 07:54:33  dave
     |   Added cvs logs
     |
@@ -32,8 +35,7 @@
 	    | Import any java classes here.
 	    +-->
 	<xsp:structure>
-		<xsp:include>java.io.IOException</xsp:include>
-		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>org.astrogrid.portal.cocoon.common.LoginAction</xsp:include>
 	</xsp:structure>
 
 	<!--+
@@ -50,9 +52,9 @@
 	<div>
 		<xsp:logic>
 			<![CDATA[
-				String message = (String) request.getAttribute() ;
+				String account = (String) request.getAttribute(LoginAction.ACCOUNT_PARAM) ;
 			]]>
 		</xsp:logic>
-		Welcome to astrogrid.
-	</div>
+		Welcome to astrogrid <xsp:expr>(null != account) ? account : ""</xsp:expr>
+		</div>
 </xsp:page>
