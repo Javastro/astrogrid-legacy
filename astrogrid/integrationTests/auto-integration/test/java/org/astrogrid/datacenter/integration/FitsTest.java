@@ -1,4 +1,4 @@
-/*$Id: SecTest.java,v 1.2 2004/09/08 13:58:48 mch Exp $
+/*$Id: FitsTest.java,v 1.1 2004/09/08 13:58:48 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,62 +12,52 @@ package org.astrogrid.datacenter.integration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import junit.framework.Test;
-import junit.framework.TestCase;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
+import javax.xml.transform.TransformerException;
 import junit.framework.TestSuite;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.io.Piper;
-import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
-import javax.xml.transform.TransformerException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
- * Test the SEC proxy/installation
+ * Test querying using ADQL against std PAL
  *
  */
-public class SecTest extends DatacenterTestCase implements StdKeys {
+public class FitsTest extends DatacenterTestCase implements StdKeys {
 
-   public void testAdqlSearchForSEC() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
-      System.out.println("Start testAdqlSearchForSEC");
-      AdqlQuery query = loadSampleQuery(SecTest.class, "SimpleSECQuery-adql05.xml");
+
+   public void testAdql() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
+      System.out.println("Start testAdqlSearchForFITS");
+      AdqlQuery query = loadSampleQuery(FitsTest.class, "SimpleFITSQuery-adql073.xml");
       
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_SEC_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_FITS_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
       InputStream results = delegate.askQuery(query, "VOTABLE");
       Document doc = assertVotable(results);
       DomHelper.DocumentToStream(doc,System.out);
-      System.out.println("End testAdqlSearchForSEC");
-      //StringWriter outResult = new StringWriter();
-      //Piper.pipe(new InputStreamReader(results),System.out);
+      System.out.println("End testAdqlSearchForFITS");
    }
-
+   
+    /**/
 
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(new TestSuite(SecTest.class));
+      junit.textui.TestRunner.run(new TestSuite(FitsTest.class));
    }
 }
 
 
 /*
-$Log: SecTest.java,v $
-Revision 1.2  2004/09/08 13:58:48  mch
+$Log: FitsTest.java,v $
+Revision 1.1  2004/09/08 13:58:48  mch
 Separated out tests by datacenter and added some
 
-Revision 1.1  2004/09/02 12:33:49  mch
+Revision 1.7  2004/09/02 12:33:49  mch
 Added better tests and reporting
 
 Revision 1.6  2004/09/02 01:33:48  nw

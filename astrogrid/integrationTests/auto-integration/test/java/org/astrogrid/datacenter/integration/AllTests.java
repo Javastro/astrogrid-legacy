@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.10 2004/09/02 12:33:49 mch Exp $
+/* $Id: AllTests.java,v 1.11 2004/09/08 13:58:48 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -21,17 +21,20 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Datacenter");
         //$JUnit-BEGIN$
-        suite.addTest(AdqlTest.suite());
-        suite.addTest(SecTest.suite());
-        suite.addTest(VizierTest.suite());
-        suite.addTest(ConeTest.suite());
-        suite.addTest(Query2MySpaceTest.suite());
+        suite.addTest(new TestSuite(RdbmsTest.class));
+        suite.addTest(new TestSuite(FitsTest.class));
+        suite.addTest(new TestSuite(SecTest.class));
+        suite.addTest(new TestSuite(VizierTest.class));
+        suite.addTest(new TestSuite(Query2MySpaceTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.11  2004/09/08 13:58:48  mch
+ *  Separated out tests by datacenter and added some
+ *
  *  Revision 1.10  2004/09/02 12:33:49  mch
  *  Added better tests and reporting
  *

@@ -1,4 +1,4 @@
-/*$Id: SecTest.java,v 1.2 2004/09/08 13:58:48 mch Exp $
+/*$Id: DatacenterTestCase.java,v 1.1 2004/09/08 13:58:48 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,60 +14,65 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.io.Piper;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
-import javax.xml.transform.TransformerException;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
- * Test the SEC proxy/installation
+ * methods for helping test datacenters
  *
  */
-public class SecTest extends DatacenterTestCase implements StdKeys {
+public class DatacenterTestCase extends TestCase implements StdKeys {
 
-   public void testAdqlSearchForSEC() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
-      System.out.println("Start testAdqlSearchForSEC");
-      AdqlQuery query = loadSampleQuery(SecTest.class, "SimpleSECQuery-adql05.xml");
-      
-      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_SEC_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
-      assertNotNull("delegate was null",delegate);
-
-      InputStream results = delegate.askQuery(query, "VOTABLE");
-      Document doc = assertVotable(results);
-      DomHelper.DocumentToStream(doc,System.out);
-      System.out.println("End testAdqlSearchForSEC");
-      //StringWriter outResult = new StringWriter();
-      //Piper.pipe(new InputStreamReader(results),System.out);
+   /**
+    * Checks the given inputstream is aVOTable, returning it as a DOM
+    */
+   public Document assertVotable(InputStream results) throws SAXException, IOException, ParserConfigurationException {
+      assertNotNull(results);
+      Document votDoc = DomHelper.newDocument(results);
+      AstrogridAssert.assertVotable(votDoc);
+      return votDoc;
+   }
+   
+   /**
+    * Run sample query on std PAL
+    */
+   public AdqlQuery loadSampleQuery(Class testingClass, String filename) throws IOException  {
+      //load query
+      InputStream is = testingClass.getResourceAsStream(filename);
+      assertNotNull(is);
+      StringWriter out = new StringWriter();
+      Piper.pipe(new InputStreamReader(is),out);
+      AdqlQuery query = new AdqlQuery(out.toString());
+      return query;
    }
 
-
-   public static void main(String[] args) {
-      junit.textui.TestRunner.run(new TestSuite(SecTest.class));
+   /**
+    * Checks the metadata is ok, returning it
+    */
+   public Document assertMetadata(InputStream is) throws SAXException, IOException, ParserConfigurationException  {
+      Document metaDoc = DomHelper.newDocument(is);
+      assertNotNull(metaDoc);
+      return metaDoc;
    }
+   
+   
 }
 
 
 /*
-$Log: SecTest.java,v $
-Revision 1.2  2004/09/08 13:58:48  mch
+$Log: DatacenterTestCase.java,v $
+Revision 1.1  2004/09/08 13:58:48  mch
 Separated out tests by datacenter and added some
 
-Revision 1.1  2004/09/02 12:33:49  mch
+Revision 1.7  2004/09/02 12:33:49  mch
 Added better tests and reporting
 
 Revision 1.6  2004/09/02 01:33:48  nw
