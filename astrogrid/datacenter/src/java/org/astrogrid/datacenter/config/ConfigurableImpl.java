@@ -1,4 +1,4 @@
-/* $Id: ConfigurableImpl.java,v 1.1 2003/08/20 14:42:59 nw Exp $
+/* $Id: ConfigurableImpl.java,v 1.2 2003/08/22 10:32:33 nw Exp $
  * Created on 19-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,9 +15,7 @@ package org.astrogrid.datacenter.config;
  * <p>
  * Any classes tha wish to be configurable may simply extend this class.
  * <p>
- * configuration is stored in a private field <code>conf</code>. all methods in this abstract class
- * are final, to prevent accidental overriding. If a class wishes to provide a different implementation of the <tt>Configurable</tt>
- * interface, writing out in full shouldn't be to inconvenient.
+ * configuration is stored in a private field <code>conf</code>. 
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Aug-2003
  *
  */
@@ -26,12 +24,12 @@ public abstract class  ConfigurableImpl implements Configurable {
 	/* (non-Javadoc)
 	 * @see org.astrogrid.datacenter.Configurable#setConfiguration(org.astrogrid.datacenter.Configuration)
 	 */
-	public final void setConfiguration(Configuration conf) {
+	public void setConfiguration(Configuration conf) {
 		this.conf = conf;
 	}
 	private Configuration conf;
 	
-	public final Configuration getConfiguration(){
+	public  Configuration getConfiguration(){
 		return conf;
 	}
 	
@@ -39,6 +37,9 @@ public abstract class  ConfigurableImpl implements Configurable {
 }
 /*
  * $Log: ConfigurableImpl.java,v $
+ * Revision 1.2  2003/08/22 10:32:33  nw
+ * removed final modifiers from implementation - seemd over restrictive
+ *
  * Revision 1.1  2003/08/20 14:42:59  nw
  * added a configuration package -
  * wraps the existing DTC class, and provides somewhere to
