@@ -4,7 +4,7 @@ package org.astrogrid.datacenter.impl;
 import org.astrogrid.datacenter.impl.QueryFactoryImpl ;
 
 import org.apache.log4j.Logger;
-import org.astrogrid.i18n.*;
+import org.astrogrid.datacenter.i18n.*;
 
 import org.astrogrid.datacenter.VOTableFactory;
 import org.astrogrid.datacenter.VOTable;
@@ -13,8 +13,6 @@ import org.astrogrid.datacenter.VOTableException;
 import org.astrogrid.datacenter.Allocation;
 
 import java.io.PrintStream;
-import java.io.IOException ;
-//import java.sql.ResultSet ;
 import org.objectwiz.votable.*;
 
 public class VOTableFactoryImpl implements VOTableFactory {
@@ -36,7 +34,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 		timestampOutputPattern = "" ;
 		
 	private static final String
-		ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION = "Could not create myspace cache allocation" ;
+		ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION = "AGDTCE00130" ;
 		
 			
     public VOTable createVOTable(Query query) throws VOTableException {    	
@@ -68,7 +66,7 @@ public class VOTableFactoryImpl implements VOTableFactory {
 			Message
 				message = new Message( ASTROGRIDERROR_VOTABLE_CONVERSION_EXCEPTION ) ;
 			logger.error( message.toString(), ex ) ;
-			throw new VOTableException( message.toString(), ex );			
+			throw new VOTableException( message, ex );			
 		}
 		finally {
 			if( out != null ) {  

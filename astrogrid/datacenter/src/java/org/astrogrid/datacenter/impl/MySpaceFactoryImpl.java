@@ -4,7 +4,7 @@ package org.astrogrid.datacenter.impl;
 import org.apache.log4j.Logger;
 
 import org.astrogrid.datacenter.*;
-import org.astrogrid.i18n.*;
+import org.astrogrid.datacenter.i18n.*;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -37,15 +37,15 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 	    MYSPACECACHE_DIRECTORY = "MYSPACECACHE_DIRECTORY" ;
 		
 	private static String
-		ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION = "Could not create myspace cache allocation", 
-	    ASTROGRIDERROR_COULD_NOT_DESTROY_COMPRESSED_STREAM = "Could not destroy compressed stream";	
+		ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION = "AGDTCE00100", 
+	    ASTROGRIDERROR_COULD_NOT_DESTROY_COMPRESSED_STREAM = "AGDTCE00110";	
 	
 	// Compression constants.
 	private static final String GZIP_COMPRESSION = "gzip";
 	private static final String ZIP_COMPRESSION = "zip";
 	
 	
-    public Allocation allocateCacheSpace( String jobID, int size ) throws AllocationException { 
+    public Allocation allocateCacheSpace( String jobID ) throws AllocationException { 
 		if( TRACE_ENABLED ) logger.debug( "allocateCacheSpace(): entry") ;  
 		
 		Allocation
@@ -65,7 +65,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION, jobID ) ;
 			logger.error( message.toString(), ex ) ;
-			throw new AllocationException( message.toString(), ex );
+			throw new AllocationException( message, ex );
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "allocateCacheSpace(): exit") ;			
@@ -86,7 +86,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_DESTROY_COMPRESSED_STREAM ) ;
 			logger.error( message.toString(), ex ) ;
-			throw new AllocationException( message.toString(), ex );
+			throw new AllocationException( message, ex );
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "close(): exit") ;			
@@ -103,7 +103,7 @@ public class MySpaceFactoryImpl implements MySpaceFactory {
 		buffer
 		    .append( DatasetAgent.getProperty( MYSPACECACHE_DIRECTORY ) ) 
 		    .append( System.getProperty( "file.separator" ) )
-		    .append( jobID.replace( '/', '.' ) ) ;
+		    .append( jobID.replace( ':', '.' ) ) ;
     	
     	return buffer.toString() ;
     	
