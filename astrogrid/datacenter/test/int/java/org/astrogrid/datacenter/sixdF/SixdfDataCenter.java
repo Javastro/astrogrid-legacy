@@ -43,7 +43,7 @@ public class SixdfDataCenter extends SocketServer
       //start logging
       Log.logToConsole();
       Log.logToFile("error.log");
-      Log.starting(" $Id: SixdfDataCenter.java,v 1.6 2003/09/24 21:05:06 nw Exp $ ");
+      Log.starting(" $Id: SixdfDataCenter.java,v 1.7 2003/10/31 16:45:17 mch Exp $ ");
       
       //tell it the metadata file can be found here where the class is
       Log.logInfo("Initialising...");
@@ -88,6 +88,7 @@ public class SixdfDataCenter extends SocketServer
       
       DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(doc.getDocumentElement());
       QueryResults results = querier.doQuery();
+      //converts results to document and writes them out again
       XMLUtils.DocumentToStream(results.toVotable(), new FileOutputStream("testResults.vot"));
       Log.logInfo("...test Query complete");
       
@@ -149,6 +150,9 @@ public class SixdfDataCenter extends SocketServer
 
 /*
  $Log: SixdfDataCenter.java,v $
+ Revision 1.7  2003/10/31 16:45:17  mch
+ Added comment
+
  Revision 1.6  2003/09/24 21:05:06  nw
  altered to use DatabaseQuerierManager
 
@@ -168,3 +172,4 @@ public class SixdfDataCenter extends SocketServer
  New 6dF data service & integration test
 
  */
+
