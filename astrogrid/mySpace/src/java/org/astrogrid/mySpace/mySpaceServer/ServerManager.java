@@ -57,7 +57,11 @@ public class ServerManager
 
    public String upLoadString(String contents,
      String newDataHolderFileName)
-   {  
+   {  if (DEBUG)
+      {  logger.debug("ServerManager.upLoadString:-");
+         logger.debug("  contents: " + contents);
+         logger.debug("  newDataHolderFileName: " + newDataHolderFileName);
+      }
 
 //
 //   Attempt to write the file from the given string.
@@ -106,7 +110,11 @@ public class ServerManager
 
    public String importDataHolder(String importURI, 
      String newDataHolderFileName)
-   {  
+   {  if (DEBUG)
+      {  logger.debug("ServerManager.importDataHolder:-");
+         logger.debug("  importURI: " + importURI);
+         logger.debug("  newDataHolderFileName: " + newDataHolderFileName);
+      }
 
 //
 //   Attempt to retrieve the file from the specified URL.
@@ -155,7 +163,13 @@ public class ServerManager
 
    public String copyDataHolder(String oldDataHolderFileName, 
      String newDataHolderFileName)
-   {  try
+   {  if (DEBUG)
+      {  logger.debug("ServerManager.copyDataHolder:-");
+         logger.debug("  oldDataHolderFileName: " + oldDataHolderFileName);
+         logger.debug("  newDataHolderFileName: " + newDataHolderFileName);
+      }
+
+      try
       {  File oldDataHolderFile  = new File(oldDataHolderFileName);
          File newDataHolderFile  = new File(newDataHolderFileName);
 
@@ -223,7 +237,10 @@ public class ServerManager
   */
 
    public String deleteDataHolder(String dataHolderFileName)
-   {  
+   {  if (DEBUG)
+      {  logger.debug("ServerManager.deleteDataHolder:-");
+         logger.debug("  dataHolderFileName: " + dataHolderFileName);
+      }
 
 //
 //   Attempt to delete the file.
