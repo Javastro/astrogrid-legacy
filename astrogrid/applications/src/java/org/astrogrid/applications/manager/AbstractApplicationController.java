@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.24 2004/04/30 18:02:21 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.25 2004/05/04 08:59:10 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -37,7 +37,6 @@ import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.SimpleDescriptionLoader;
-import org.astrogrid.applications.description.registry.RegEntryBaseTestCase;
 import org.astrogrid.applications.description.registry.RegistryEntryBuilder;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
