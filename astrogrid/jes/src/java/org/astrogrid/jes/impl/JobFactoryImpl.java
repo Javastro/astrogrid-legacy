@@ -157,8 +157,8 @@ public class JobFactoryImpl implements JobFactory {
         ASTROGRIDERROR_PASSTHRU                                   = "AGJESE01010";
         
     private static final String
-        AUTHORIZATION_RESOURCE = "job",
-        AUTHORIZATION_ACTION = "edit" ;
+        AUTHORIZATION_RESOURCE_JOB = "job",
+        AUTHORIZATION_ACTION_EDIT = "edit" ;
     
 	private static DataSource
 		datasource = null ;
@@ -276,7 +276,7 @@ public class JobFactoryImpl implements JobFactory {
 
             logger.debug( "communitySnippet: " + communitySnippet ) ;
             
-            this.checkPermissions( AUTHORIZATION_RESOURCE, AUTHORIZATION_ACTION, communitySnippet ) ;
+            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
 
 			pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
 			
@@ -420,7 +420,7 @@ public class JobFactoryImpl implements JobFactory {
     } // end of findJob()
 
 
-    public ListIterator findUserJobs( String userid, String community ) throws JobException  {
+    public ListIterator findUserJobs( String userid, String community, String jobXML ) throws JobException  {
         if( TRACE_ENABLED ) logger.debug( "findUserJobs(): entry") ;  
                     
         ArrayList
@@ -429,8 +429,21 @@ public class JobFactoryImpl implements JobFactory {
            statement = null ;
         ResultSet
            rs = null ;
+        String
+           communitySnippet = null ;
            
         try {
+                      
+            //
+            // JL: this is probably the place to check authorization (at present: Sept 2003)...
+            //
+            communitySnippet = jobXML.substring( jobXML.indexOf( SubmissionRequestDD.COMMUNITY_TAG )
+                                               + SubmissionRequestDD.COMMUNITY_TAG.length()
+                                               , jobXML.indexOf( SubmissionRequestDD.COMMUNITY_ENDTAG ) ) ;
+
+            logger.debug( "communitySnippet: " + communitySnippet ) ;
+            
+            this.checkPermissions( AUTHORIZATION_RESOURCE_JOB, AUTHORIZATION_ACTION_EDIT, communitySnippet ) ;
 
             Object []
                inserts = new Object[3] ;

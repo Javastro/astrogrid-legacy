@@ -14,7 +14,7 @@ public interface JobFactory {
 
 	Iterator findJobsWhere( String queryString ) throws JobException ;
 	Job findJob( String jobURN ) throws JobException ;
-    public ListIterator findUserJobs( String userid, String community ) throws JobException  ;
+    public ListIterator findUserJobs( String userid, String community, String jobListXML ) throws JobException  ;
 	
     String deleteJob( Job job ) throws JobException ;
     

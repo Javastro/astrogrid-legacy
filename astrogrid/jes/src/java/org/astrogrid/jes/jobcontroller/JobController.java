@@ -372,7 +372,7 @@ public class JobController {
             userid = extractUserid( listRequestDocument ) ;
             community = extractCommunity( listRequestDocument ) ;
             factory = Job.getFactory() ;
-            iterator = factory.findUserJobs( userid, community ) ;
+            iterator = factory.findUserJobs( userid, community, jobListXML ) ; 
             response = formatListGoodResponse( userid, community, iterator ) ;
 
         }
