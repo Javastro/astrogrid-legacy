@@ -1,4 +1,4 @@
-/*$Id: RegistryIntegrationTest.java,v 1.4 2004/04/19 09:35:24 nw Exp $
+/*$Id: RegistryIntegrationTest.java,v 1.5 2004/04/21 10:43:46 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,9 @@ import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.scripting.Service;
 import org.astrogrid.store.Ivorn;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -46,7 +49,6 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
         assertTrue("no application names",appNames.length > 0);
         for (int i = 0; i < appNames.length; i++) {           
             String name = appNames[i];
-            System.out.println("***" + name);
             assertNotNull("name is null",name);
             assertTrue("empty name",name.trim().length() > 0);
             ApplicationDescription descr = reg.getDescriptionFor(name);
@@ -55,21 +57,18 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
         }
     }
         
-    
     /** this is the functionality required by jes */
     public void testResolveApplications() throws Exception {
         String[] appNames = reg.listApplications();
-        assertTrue("no application names",appNames.length > 0);
-        RegistryService regService = (RegistryService)((Service)ag.getRegistries().get(0)).createDelegate();
-        for (int i = 0; i < appNames.length ; i++) {
-            String endpoint = regService.getEndPointByIdentifier(new Ivorn(appNames[i]));
-            assertNotNull("Registry failed to resolve "+ appNames[i] + " to an endpoint - it returned null",endpoint);
-            try {
-                URL endpointURL = new URL(endpoint);
-            } catch (MalformedURLException e) {
-                fail("registry resolved " + appNames[i] + " to endpoint " + endpoint + " which isn't a valid url");
-            }
-            System.out.println(endpoint);
+        for (int i = 0; i < appNames.length; i++) {
+            URL requestURL = new URL("http://localhost:8080/astrogrid-jes-SNAPSHOT/backdoor?action=locate&name=" + appNames[i]);
+            InputStream is = requestURL.openStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(is));
+            String line = in.readLine();
+            System.out.println("Application " + appNames[i] + " resolves to " + line);
+            assertNotNull(line);
+            URL endpoint = new URL(line); // checks its a valid url.
+            
         }
     }
     
@@ -81,6 +80,9 @@ public class RegistryIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: RegistryIntegrationTest.java,v $
+Revision 1.5  2004/04/21 10:43:46  nw
+exercises resolver code
+
 Revision 1.4  2004/04/19 09:35:24  nw
 added constants for ivorns of services.
 added test query
