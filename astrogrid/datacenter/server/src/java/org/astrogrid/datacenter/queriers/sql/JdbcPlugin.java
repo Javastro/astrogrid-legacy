@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.5 2004/03/16 16:19:23 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.6 2004/03/16 17:14:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,6 +18,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 
@@ -89,6 +90,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          
       }
       catch (SQLException e) {
+         querier.setStatus(new QuerierError(querier, "JDBC Query Failed",e));
          //we don't really need to store stack info for the SQL exception, which saves logging...
          throw new DatabaseAccessException("Could not query database using '" + sql + "': "+e);
       }
