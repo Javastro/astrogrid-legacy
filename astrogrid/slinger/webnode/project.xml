@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.1 2005/02/14 20:47:39 mch Exp $ -->
+<!-- $Id: project.xml,v 1.2 2005/02/15 18:31:57 mch Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -21,61 +21,23 @@
     <shortDescription>AstroGrid Slinger Webapp</shortDescription>
 
     <dependencies>
+
         <dependency>
             <artifactId>astrogrid-common</artifactId>
             <groupId>org.astrogrid</groupId>
             <version>${astrogrid.common.version}</version>
-            <properties>
-               <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
-
-       <!-- JavaMail for TargetIndicators -->
-       <dependency>
-         <id>JavaMail</id>
-         <version>UNKNOWN</version>
-         <jar>JavaMail.jar</jar>
-       </dependency>
-
-
-       <!-- for VoSpaceResolver -->
-       <dependency>
-          <artifactId>astrogrid-registry-client-lite</artifactId>
-          <groupId>org.astrogrid</groupId>
-          <version>${astrogrid.registry.version}</version>
-       </dependency>
-
-       <dependency>
-         <artifactId>astrogrid-registry-common</artifactId>
-         <groupId>org.astrogrid</groupId>
-         <version>${astrogrid.registry.version}</version>
-       </dependency>
-    
-
-        <!-- Community resolving components.-->
-        <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-common</artifactId>
-            <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
         </dependency>
 
         <dependency>
+            <artifactId>astrogrid-slinger-api</artifactId>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-client</artifactId>
-             <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <version>${astrogrid.slinger.version}</version>
         </dependency>
 
         <dependency>
+            <artifactId>astrogrid-slinger-xml</artifactId>
             <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-community-resolver</artifactId>
-           <version>${astrogrid.community.version}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
+            <version>${astrogrid.slinger.version}</version>
         </dependency>
 
 
@@ -92,14 +54,11 @@
             <version>1.0.3</version>
         </dependency>
 
-    <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
-    <dependency>
-      <id>servletapi</id>
-      <version>2.3</version>
-      <properties>
-        <war.bundle>false</war.bundle>
-      </properties>
-    </dependency>
+       <!-- servlet support -->
+       <dependency>
+         <id>servletapi</id>
+         <version>2.3</version>
+       </dependency>
 
 
     </dependencies>

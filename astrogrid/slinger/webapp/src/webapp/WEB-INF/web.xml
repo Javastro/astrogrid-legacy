@@ -8,7 +8,7 @@
 
   <display-name>Slinger WebNode</display-name>
   <description>
-    servlets for resolving and routing data
+    Servlets and pages for resolving and routing data
   </description>
 
   <servlet>
@@ -25,8 +25,8 @@
 
 
   <welcome-file-list id="WelcomeFileList">
-    <welcome-file>index.html</welcome-file>
     <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.html</welcome-file>
   </welcome-file-list>
 
 </web-app>
