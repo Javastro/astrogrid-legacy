@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.10  2004/06/29 22:21:47  dave
+    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |
+    |   Revision 1.9.8.2  2004/06/29 15:38:22  dave
+    |   Removed sub-project site goals
+    |
+    |   Revision 1.9.8.1  2004/06/29 13:31:03  dave
+    |   Removed the extra site goal
+    |
     |   Revision 1.9  2004/06/18 13:45:19  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -147,17 +156,6 @@
         <attainGoal name="deploy-local-snapshot"/>
     </goal>
 
-    <!--+
-        | Build our component site.
-        +-->
-    <goal name="site">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building project site ...."/>
-        <attainGoal name="site:generate"/>
-    </goal>
-
     <!-- ================ Component goals ================ -->
 
     <!--+
@@ -270,12 +268,6 @@
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Cleaning up after JUnit tests"/>
-        <!--+
-            | Remove the server_config.wsdd from the project directory..
-        <ant:echo message=""/>
-        <ant:echo message="PATCH - Deleting server-config.wsdd from project root."/>
-        <ant:delete file="./server-config.wsdd"/>
-            +-->
     </postGoal>
 
     <!--+

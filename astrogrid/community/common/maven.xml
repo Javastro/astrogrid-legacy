@@ -4,10 +4,22 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.11  2004/06/29 22:21:47  dave
+    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |
+    |   Revision 1.10.8.3  2004/06/29 15:38:22  dave
+    |   Removed sub-project site goals
+    |
+    |   Revision 1.10.8.2  2004/06/29 13:31:03  dave
+    |   Removed the extra site goal
+    |
+    |   Revision 1.10.8.1  2004/06/29 13:02:15  dave
+    |   Removed extra namespace
+    |
     |   Revision 1.10  2004/06/18 13:45:19  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -24,7 +36,6 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
-    xmlns:astro="org.astrogrid.maven"
     default="astrogrid-rebuild-snapshot"
     >
 
@@ -145,16 +156,6 @@
         <core:set var="astrogrid.artifact.type" value="jar"/>
         <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
         <attainGoal name="deploy-local-snapshot"/>
-    </goal>
-
-    <!--+
-        | Build our component site.
-        +-->
-    <goal name="site">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <attainGoal name="site:generate"/>
     </goal>
 
     <!-- ================ Component goals ================ -->

@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:19 $</cvs:date>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.11  2004/06/29 22:21:47  dave
+    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |
+    |   Revision 1.10.8.2  2004/06/29 15:25:47  dave
+    |   Restored cvs anon
+    |
+    |   Revision 1.10.8.1  2004/06/29 14:30:42  dave
+    |   Patched cvs anon for changelog plugin
+    |
     |   Revision 1.10  2004/06/18 13:45:19  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |

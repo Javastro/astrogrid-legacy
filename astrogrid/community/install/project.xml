@@ -3,11 +3,20 @@
     | Maven project description for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2004/06/21 09:41:27 $</cvs:date>
-    | <cvs:version>$Revision: 1.14 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.15 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.15  2004/06/29 22:21:47  dave
+    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |
+    |   Revision 1.14.6.2  2004/06/29 15:25:47  dave
+    |   Restored cvs anon
+    |
+    |   Revision 1.14.6.1  2004/06/29 14:30:42  dave
+    |   Patched cvs anon for changelog plugin
+    |
     |   Revision 1.14  2004/06/21 09:41:27  KevinBenson
     |   made it use the registry-client-lite version
     |

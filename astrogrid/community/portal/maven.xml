@@ -4,10 +4,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/portal/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.10  2004/06/29 22:21:47  dave
+    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |
+    |   Revision 1.9.8.1  2004/06/29 15:38:22  dave
+    |   Removed sub-project site goals
+    |
     |   Revision 1.9  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -89,25 +95,5 @@
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <attainGoal name="jar:deploy-snapshot"/>
     </goal>
-
-    <!--+
-        | Build our project website.
-        +-->
-    <goal name="site">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building project site ...."/>
-        <attainGoal name="site:generate"/>
-        <!--+
-            | Add stuff here to put together the install instructions ....
-            +-->
-    </goal>
-
-    <!--+
-        | Project goals.
-        | These are the main project goals.
-        +-->
-
 
 </project>
