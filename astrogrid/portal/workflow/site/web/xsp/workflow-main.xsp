@@ -274,6 +274,8 @@
         	try {
                  <xsp:element name="script">
                     <xsp:attribute name="key"><xsp:expr>getXPathKey( script )</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="script-desc"><xsp:expr>script.getDescription()</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="script-body"><xsp:expr>script.getBody()</xsp:expr></xsp:attribute>
                  </xsp:element>
         	}
             catch(Exception e) {
