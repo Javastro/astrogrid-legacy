@@ -1006,6 +1006,7 @@ public class DesignAction extends AbstractAction {
          Step step = null;
          Tool tool = null ;
          ParameterValue p = null ;
+         boolean parameterIndirect = false;
               
          try {
             // Tool should already have been inserted into step
@@ -1015,7 +1016,10 @@ public class DesignAction extends AbstractAction {
 			String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 			String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
-			boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;
+//		Bug #560: PARAM_INDIRECT is now a radio button			
+			if (request.getParameter( PARAM_INDIRECT ).equalsIgnoreCase("on") )
+				parameterIndirect = true;
+//			boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;			
 			debug( "ivornValue: " + ivornValue );
 			debug( "parameterName:" + parameterName ) ;
 			debug( "parameterValue: " + parameterValue ) ;
@@ -1067,6 +1071,7 @@ public class DesignAction extends AbstractAction {
 		   Step step = null;
 		   Tool tool = null ;
 		   ParameterValue p = null ;
+		   boolean parameterIndirect = false;
               
 	       try {
 				 // Tool should already have been inserted into step
@@ -1076,7 +1081,10 @@ public class DesignAction extends AbstractAction {
 					parameterName = request.getParameter( PARAM_NAME_PARAMETER ),			  
 					parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 					String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
-					boolean parameterIndirect = new Boolean( request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;
+//				Bug #560: PARAM_INDIRECT is now a radio button			
+					if (request.getParameter( PARAM_INDIRECT ).equalsIgnoreCase("on") )
+						parameterIndirect = true;
+//					boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;										
 					debug( "ivornValue: " + ivornValue );					
                             
 			     if ( parameterName == null) {
