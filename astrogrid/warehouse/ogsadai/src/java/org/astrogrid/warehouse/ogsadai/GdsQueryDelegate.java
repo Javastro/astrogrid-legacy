@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.4 2003/12/11 16:17:54 eca Exp $
+ * $Id: GdsQueryDelegate.java,v 1.5 2003/12/12 13:44:01 gtr Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,14 +20,6 @@ import org.apache.xerces.parsers.DOMParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-/*
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.dom.DOMResult;
-*/
-
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -40,25 +32,24 @@ import org.globus.ogsa.GridServiceException;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.apache.axis.AxisFault;
 
-/**
- * The following imports are declared but not used:
- * import java.io.FileNotFoundException;
- * import java.io.File;
- * import java.io.FileWriter;
- * import java.io.FileReader;
- * import java.net.URL;
- * import org.xml.sax.SAXException;
- * import org.gridforum.ogsi.HandleType;
- * import org.apache.axis.client.Stub;
- */
-
-
 
 /**
+ * Executes a query on a grid-enabled database using the
+ * OGSA-DAI interface.
+ * Locates a GDS Factory in a registry of OGSA-DAI installations,
+ * instantiates a GDS and sends it one query, the results of
+ * which are returned to the caller.
  *
- * @author K Andrews
+ * This class has a main method and is intended to be invoked
+ * through this method.  It takes the query from the command line
+ * and writes the results of the query to standard output.
+ *
+ * The query is given in SQL. The results are returned in 
+ * web-rowset format.
+ * 
+ * @author K. Andrews
+ * @author G. Rixon
  */
-
 public class GdsQueryDelegate 
 {
   /**
@@ -69,6 +60,8 @@ public class GdsQueryDelegate
    */
   protected Properties serviceProperties = null;
 
+  static Logger logger = Logger.getLogger("GdsQueryLogger");
+
   /**
    * Default constructor, which loads run-time installation-specific
    * configuration properties (which must be supplied in the co-located
@@ -77,10 +70,7 @@ public class GdsQueryDelegate
    * @throws Exception
    * @throws IOException
    * @throws SAXException
-   */
-  
-  static Logger logger = Logger.getLogger("GdsQueryLogger");
-  
+   */  
   public GdsQueryDelegate() 
       throws Exception, IOException, SAXException {
     super();    //Can throw IOException and SAXException
@@ -126,20 +116,13 @@ public class GdsQueryDelegate
     // Do a synchronous query using the GDS.
     try {
 
-      // Look at the registry to get the factory URL
-      String factoryURLString = 
-          GdsDelegate.getFactoryUrlFromRegistry(registryURLString,timeout);
-      //System.out.println("GDSF is " + factoryURLString);
-      logger.info("GDSF is " + factoryURLString);
-    
       // Create a grid-service delegate for the GDS.  This handles the
       // awkward semantics of the grid-service, including creating
       // the grid-service instance.
-      //System.out.println("Creating the GDS delegate...");
+      // Get the handle of the factory from the registry.
       logger.info("Creating the GDS delegate...");
       GdsDelegate gds = new GdsDelegate();
-      gds.setFactoryHandle(factoryURLString);
-      //System.out.println("Connecting to the GDS...");
+      gds.setFactoryGshFromRegistry(registryURLString, timeout);
       logger.info("Connecting to the GDS...");
       gds.connect();
 
@@ -154,14 +137,12 @@ public class GdsQueryDelegate
       xmlString = cdataNode.getNodeValue();
 
       // Print this to stdout just in case we're shipping results via stdout
-      //System.out.println(WAREHOUSE_RESULT_START);
       logger.info(WAREHOUSE_RESULT_START);
 
       //Print byte stream to output stream
       output.write(xmlString.getBytes());
 
       // Print this to stdout just in case we're shipping results via stdout
-      //System.out.println(WAREHOUSE_RESULT_END);
       logger.info(WAREHOUSE_RESULT_END);
     }
     catch (AxisFault e) {
@@ -381,6 +362,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.5  2003/12/12 13:44:01  gtr
+Uses GdsDelegate.setFactoryGshFromRegistry.
+
 Revision 1.4  2003/12/11 16:17:54  eca
 Logging comments for System.out.println and in conjunction with 
 thrown exceptions now in GdsDelegate, GdsQueryDelegate, and 
