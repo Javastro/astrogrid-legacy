@@ -6,6 +6,22 @@
          xmlns:ant="jelly:ant" 
          default="war:war">
 
+ <!-- custom astrogrid goals for nightly build -->
+  <goal name="astrogrid-clean" prereqs="clean"/>
+  <goal name="astrogrid-deploy-site"
+    prereqs="astrogrid-build-site,site:fsdeploy" />
+  <goal name="astrogrid-build-site" prereqs="site"/>
+  <goal name="astrogrid-deploy-snapshot"
+prereqs="jar:deploy-snapshot,war:deploy-snapshot"/>
+  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war:war"/>
+  <goal name="astrogrid-install-snapshot"
+prereqs="jar:install-snapshot,war:install-snapshot"/>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy"/>
+  <goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
+  <goal name="astrogrid-install-artifact"
+prereqs="jar:install,war:install"/>
+
+
   <!-- Clean the sub-project when the parent project is cleaned. -->
   <preGoal name="clean:clean">
     <attainGoal name="multiproject:clean"/>
