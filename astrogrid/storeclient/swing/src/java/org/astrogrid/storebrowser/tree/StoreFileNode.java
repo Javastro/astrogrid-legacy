@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileNode.java,v 1.2 2005/03/28 03:06:09 mch Exp $
+ * $Id: StoreFileNode.java,v 1.3 2005/03/29 20:13:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,10 +13,10 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +50,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       this.parent = givenParent;
       this.file = aFile;
       this.user = aUser;
-      this.children = new Vector(); //empty
+      this.children = null; //means not loaded yet
       this.model = givenModel;
    }
    
@@ -89,20 +89,29 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
     * contains.
     */
    public int getChildCount() {
+      if (children == null) {
+         loadChildren();
+      }
       return children.size();
    }
 
+   /** Refresh = clears the children and reloads them */
+   public void refresh() {
+      loadChildren();
+   }
+   
    /** Refresh - clears the children and file's children. Synchronised as this
-    * should be the only method that modifies the 'loading' flag*/
-   public synchronized void refresh() {
+    * should be the only public method that modifies the 'loading' flag*/
+   public synchronized void loadChildren() {
+
+      clearError();
+      children = new Vector();
       
       if (loading != null) {
          loading.abort(); //so we can stop it and start it again
       }
       else {
          if ((file != null) && (file.isFolder())) {
-            clearError();
-            children = new Vector();
             loading = new ChildrenLoader(this);
             Thread loadingThread = new Thread(loading);
             loadingThread.start();
@@ -114,7 +123,7 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
     * this TreeNode wrapper with new data from the remote server, so it must also
     * update any suitable model listeners.
     * At the moment just adds to the children
-    */
+    *
    protected void loadChild(StoreFile newFile) throws IOException {
       log.debug("Adding "+newFile+" to "+this);
       children.add(new StoreFileNode(model, this, newFile, user));
@@ -131,27 +140,33 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       public ChildrenLoader(StoreFileNode givenNode) {
          this.node = givenNode;
       }
+      
       public void run() {
          try {
-            node.getFile().refresh();
-            StoreFile[] childFiles = node.getFile().listFiles(node.getUser());
-            if (childFiles != null) {
-               for (int i = 0; i < childFiles.length; i++) {
-                  try {
-                     node.loadChild(childFiles[i]);
+            if (node.file != null) {
+               log.debug("Reading file list for "+node.file.getPath()+"...");
+               //this is the bit that might take some time
+               node.getFile().refresh();
+               StoreFile[] childFiles = node.getFile().listFiles(node.getUser());
+               if (childFiles != null) {
+                  log.debug("...found "+childFiles.length+" files for "+node.file.getPath());
+                  //so we have the results, now add them in to the model/node
+                  if (!aborted) {
+                     SwingUtilities.invokeLater(new NodeFileAdder(node, childFiles, node.model, user));
                   }
-                  catch (IOException e) {
-                     log.error(e+" loading "+childFiles[i]);
-                  }
-                  if (aborted) break;
+               }
+               else {
+                  log.debug("...found no files for "+node.file.getPath());
                }
             }
          }
-         catch (IOException e) {
+         catch (Throwable e) {
             node.setError(e+" loading children of "+this, e);
          }
          node.loading = null; //disengage from node
-         if (node.model != null) node.model.nodeChanged(node);
+         if (node.model != null) {
+            SwingUtilities.invokeLater(new NodeChanger(node, node.model));
+         }
       }
       
       /** Call to abort the update */
@@ -161,6 +176,32 @@ public class StoreFileNode extends DefaultMutableTreeNode implements TreeNode {
       }
    }
 
+
+   /** Simple class that makes the appropriate Swing component calls to update the
+    * display as files come in.  Use SwingUtilities.invokeLater() to call it, so
+    * that it's run from the GUI thread, as Swing components are not threadsafe */
+   public class NodeChanger implements Runnable {
+
+      TreeNode node;
+      DefaultTreeModel model;
+      
+      public NodeChanger(TreeNode givenNode, DefaultTreeModel givenModel) {
+         this.node = givenNode;
+         this.model = givenModel;
+         
+         assert (node != null) : "Node is null";
+         assert (model != null) : "Model is null";
+      }
+      
+      public void run() {
+         model.nodeChanged(node);
+      }
+      
+   }
+   
+   
+   
+   
    /** When we close down this object, we also want to close down any
     * updating that might be going on.  We could make this more explicit...
     */

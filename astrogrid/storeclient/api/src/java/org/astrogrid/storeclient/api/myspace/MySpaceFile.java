@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.2 2005/03/28 02:06:35 mch Exp $
+ * $Id: MySpaceFile.java,v 1.3 2005/03/29 20:13:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -172,6 +172,8 @@ public class MySpaceFile implements StoreFile {
    }
 
 
+   public String toString() { return getPath(); }
+   
    /** Refreshes from the server; generally just clears any caches so forcing a
     * reload next time the properties are accessed */
    public void refresh() throws IOException {
@@ -342,6 +344,9 @@ public class MySpaceFile implements StoreFile {
 
 /*
 $Log: MySpaceFile.java,v $
+Revision 1.3  2005/03/29 20:13:51  mch
+Got threading working safely at last
+
 Revision 1.2  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

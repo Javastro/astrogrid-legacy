@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.4 2005/03/28 02:06:35 mch Exp $
+ * $Id: StoreBrowser.java,v 1.5 2005/03/29 20:13:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -306,7 +306,7 @@ public class StoreBrowser extends JDialog
          
             node.refresh();
             
-            treeView.reload(node);
+            treeView.review(node);
             
             //refresh content pane
             setContentPane();
@@ -554,6 +554,9 @@ public class StoreBrowser extends JDialog
 
 /*
 $Log: StoreBrowser.java,v $
+Revision 1.5  2005/03/29 20:13:51  mch
+Got threading working safely at last
+
 Revision 1.4  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

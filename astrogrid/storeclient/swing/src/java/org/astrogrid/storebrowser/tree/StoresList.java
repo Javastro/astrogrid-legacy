@@ -1,5 +1,5 @@
 /*
- * $Id: StoresList.java,v 1.2 2005/03/28 03:06:09 mch Exp $
+ * $Id: StoresList.java,v 1.3 2005/03/29 20:13:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -53,6 +53,7 @@ public class StoresList extends DefaultMutableTreeNode {
          addStore("LocalDisk", "file://");
       }
       
+      /*
       try {
          //load user options
          ConfigFactory.getUserOptions("Stores");
@@ -62,6 +63,7 @@ public class StoresList extends DefaultMutableTreeNode {
          //to stop the constructor...
          LogFactory.getLog(StoresList.class).error(e+" loading User Options",e);
       }
+       */
    }
    
    /**

@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerFile.java,v 1.3 2005/03/28 02:06:35 mch Exp $
+ * $Id: FileManagerFile.java,v 1.4 2005/03/29 20:13:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.Date;
+import org.astrogrid.account.LoginAccount;
 import org.astrogrid.community.common.exception.CommunityException;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
@@ -208,11 +209,18 @@ public class FileManagerFile implements StoreFile {
       return getPath().equals(anotherFile.getPath());
    }
    
-   
+   /** For testing */
+   public static void main(String[] args) throws IOException, IOException, URISyntaxException {
+      FileManagerFile f = new FileManagerFile(new IVOSRN("ivo://uk.ac.le.star/DSATEST1"), LoginAccount.ANONYMOUS);
+      f.listFiles(LoginAccount.ANONYMOUS);
+   }
 }
 
 /*
 $Log: FileManagerFile.java,v $
+Revision 1.4  2005/03/29 20:13:51  mch
+Got threading working safely at last
+
 Revision 1.3  2005/03/28 02:06:35  mch
 Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StorePicker.java,v 1.2 2005/03/28 03:28:49 mch Exp $
+ * $Id: StorePicker.java,v 1.3 2005/03/29 20:13:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -15,6 +15,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.security.Principal;
 import javax.swing.event.TreeSelectionEvent;
@@ -94,7 +96,7 @@ public class StorePicker extends JDialog
          picker.setSize(DEF_SIZE_X, DEF_SIZE_Y);
 
          ((StoresList) picker.treeView.getModel().getRoot()).addTestStores();
-         picker.treeView.reload((TreeNode) picker.treeView.getModel().getRoot());
+         picker.treeView.review((TreeNode) picker.treeView.getModel().getRoot());
       }
 
       picker.actBtn.setLabel(action);
@@ -125,7 +127,7 @@ public class StorePicker extends JDialog
       addressPicker.addItem(""); //empty one to start with
       
       //toolbar
-      refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
+      refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads selected file/folder from server");
       newFolderBtn = IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
       deleteBtn = IconButtonHelper.makeIconButton("Del","Delete", "Deletes selected item");
 
@@ -248,6 +250,18 @@ public class StorePicker extends JDialog
          }
       );
       
+      treeView.addMouseListener(
+         new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+               if (e.getClickCount()>1) {
+                  if (treeView.getSelectedFile().isFile()) {
+                     hide(); //item already selected on first click
+                  }
+               }
+            }
+         }
+         );
+      
       
       new EscEnterListener(this, actBtn, cancelBtn, true);
       
@@ -268,8 +282,8 @@ public class StorePicker extends JDialog
             path = path.getParentPath();
          }
          
-            node.refresh();
-            treeView.reload(node);
+         node.refresh();
+         treeView.review(node);
       }
    }
    
@@ -347,7 +361,7 @@ public class StorePicker extends JDialog
    public StoreFile getSelectedFile() {
       StoreFile file = treeView.getSelectedFile();
       
-      if (file.isFolder()) {
+      if ((file != null) && (file.isFolder())) {
          if ((filenameField.getText() != null) && (filenameField.getText().trim().length()>0)) {
             try {
                file = file.makeFile(filenameField.getText().trim(), operator);
@@ -388,6 +402,9 @@ public class StorePicker extends JDialog
 
 /*
 $Log: StorePicker.java,v $
+Revision 1.3  2005/03/29 20:13:51  mch
+Got threading working safely at last
+
 Revision 1.2  2005/03/28 03:28:49  mch
 Some fixes for threadsafety
 

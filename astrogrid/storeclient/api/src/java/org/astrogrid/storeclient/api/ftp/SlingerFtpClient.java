@@ -1,5 +1,5 @@
 /*
- $Id: SlingerFtpClient.java,v 1.2 2005/03/28 03:06:09 mch Exp $
+ $Id: SlingerFtpClient.java,v 1.3 2005/03/29 20:13:51 mch Exp $
 
  (c) Copyright...
  */
@@ -64,8 +64,8 @@ public class SlingerFtpClient extends FTPClient {
          //get rid of final '/' so that listFiles only returns one match for directories, not the list of children
       if (!path.equals("/") && path.endsWith("/")) { path = path.substring(0, path.length()-1);}
       FTPFile[] files = listFiles(path);
-      if (files == null) {
-         throw new FileNotFoundException(path+" not found on "+getUrl());
+      if ((files == null) || (files.length==0)) {
+         throw new FileNotFoundException(path+" not found (or unavailable) on "+getUrl());
       }
       return files[0];
    }

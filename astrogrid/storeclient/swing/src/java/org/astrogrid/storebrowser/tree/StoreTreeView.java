@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.2 2005/03/28 03:28:49 mch Exp $
+ * $Id: StoreTreeView.java,v 1.3 2005/03/29 20:13:51 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.storeclient.api.StoreFile;
 
 /**
- * Shows a store file tree.
+ * A Tree view compnonent for displaying and exploring store file trees
  *
  */
 
@@ -57,11 +57,12 @@ public class StoreTreeView extends JTree {
       }
    }
 
-   /** 'Reloads' - actually reorganises the tree after the node has been modified- called when eg files are added/deleted */
-   public void reload(TreeNode node) {
+   /** Redisplays the given node after the node has been modified- called when eg files are added/deleted */
+   public void review(TreeNode node) {
       ((DefaultTreeModel) getModel()).reload(node);
    }
-   
+
+   /** Convenience routine - returns the currently selected node as a StoreFileNode */
    public StoreFileNode getSelectedNode() {
       if (getSelectionPath() == null)  {
          return null;
@@ -74,48 +75,13 @@ public class StoreTreeView extends JTree {
       }
    }
    
-   /** Not the right way to do this, but we want to check to see if a node has
-    * been expanded and if so refresh all items in it */
-   public void fireTreeExpanded(TreePath path) {
-      super.fireTreeExpanded(path);
-      StoreFileNode node = (StoreFileNode) path.getLastPathComponent();
-      for (int i = 0; i < node.getChildCount(); i++) {
-         StoreFileNode child = (StoreFileNode) node.getChildAt(i);
-         if (!child.isLeaf()) child.refresh();
-      }
-   }
-      
-   /*
-   public String convertValueToText(Object value, boolean selected,
-                                    boolean expanded, boolean leaf, int row,
-                                    boolean hasFocus) {
-      
-      //remember that StoreNode subclases StoreFileNode so we must check it first...
-      if (value instanceof StoreNode) {
-         return ((StoreNode) value).getName();
-      }
-      else if (value instanceof StoreFileNode) {
-//         try {
-            return ((StoreFileNode) value).getName();
-//         }
-//         catch (URISyntaxException use) {
-//            ((StoreFileNode) value).setError(use);
-//            return use.getMessage();
-//         }
-//         catch (IOException ioe) {
-//            ((StoreFileNode) value).setError(ioe);
-//            return ioe.getMessage();
-//         }
-      }
-      else {
-         return value.toString();
-      }
-   }
-    */
 }
 
 /*
  $Log: StoreTreeView.java,v $
+ Revision 1.3  2005/03/29 20:13:51  mch
+ Got threading working safely at last
+
  Revision 1.2  2005/03/28 03:28:49  mch
  Some fixes for threadsafety
 
