@@ -27,6 +27,17 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="topcat_form">
+			<xsl:if test="//topcat/warningmessage">
+				<font color="blue">
+					<xsl:value-of select="//topcat/warningmessage/@val" />
+				</font>				
+			</xsl:if>
+			<xsl:if test="//topcat/errormessage">
+				<font color="red">
+					<xsl:value-of select="//topcat/errormessage/@val" />
+				</font>
+			</xsl:if>
+			<xsl:if test="not(//topcat/errormessage)">
 			<strong>Image Plot<br /></strong>
 			<xsl:choose>
 				<xsl:when test="//topcat/url">
@@ -84,6 +95,7 @@
 			<br />
 			<input type="submit" name="replot" value="Plot it" />
 		</form>
+		</xsl:if>
 	</xsl:template>
 
 	<!--+

@@ -119,7 +119,6 @@ public class VotableReader extends AbstractReader {
 			url = url.trim();
          xaxis = xaxis.trim();
          yaxis = yaxis.trim();
-         System.out.println("the xaxlis = " + xaxis + "the yaxis = " + yaxis);
          			
 			
 			try {
@@ -138,7 +137,6 @@ public class VotableReader extends AbstractReader {
                if(yaxis != null && yaxis.equals(cinfo.getName().trim())) {
                         pw.yColBox.setSelectedIndex(j);
                }
-               
             }
 			   BufferedImage bi = pw.lastPlot.exportImage();
 			   javax.imageio.ImageIO.write(bi,"png",out);

@@ -234,6 +234,7 @@
                         value="agmyspace.html"/>
                      <map:parameter name="votable-page"
                         value="agvotable.html"/>
+					<map:parameter name="plot-page" value="agtopcat.html"/>
                   </map:transform>
                </map:act>
                <!-- Wrap the page in our HTML template -->
@@ -265,6 +266,7 @@
                   <map:transform src="explorer/xsl/votable.xsl">
                     <map:parameter name="explorer-page" value="agmyspace.html"/>
                     <map:parameter name="votable-page"  value="agvotable.html"/>
+					<map:parameter name="plot-page" value="agtopcat.html"/>                    
                   </map:transform>
                   <!-- Wrap the page in our HTML template -->
                   <map:transform src="common/xsl/astrogrid.xsl" label="003">

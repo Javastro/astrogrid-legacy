@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 14:23:15 $</cvs:author>
-    | <cvs:version>$Revision: 1.8 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/09/03 07:47:56 $</cvs:author>
+    | <cvs:version>$Revision: 1.9 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.9  2003/09/03 07:47:56  KevinBenson
+    | Finishing up the topcat plugin, still needs a few more testing and has one snag that needs to be resolved, but it is about 90-95% there.
+    |
     | Revision 1.8  2003/06/30 14:23:15  dave
     | Disabled access to root node in the tree
     |
@@ -48,6 +51,7 @@
 	    +-->
 	<xsl:param name="explorer-page">explorer</xsl:param>
 	<xsl:param name="votable-page">votable</xsl:param>
+	<xsl:param name="plot-page">plot</xsl:param>
 
 	<!--+
 	    | Match the root element.
@@ -217,6 +221,18 @@
 								</param>
 							</href>
 						</link>
+						<xsl:text> </xsl:text>
+						<link type="action">
+							<display>Plot</display>
+							<href>
+								<base>
+									<xsl:value-of select="$plot-page"/>
+								</base>
+								<param name="url">
+									<xsl:value-of select="current/@uri"/>
+								</param>
+							</href>
+						</link>						
 					</xsl:if>
 				</td>
 			</tr>

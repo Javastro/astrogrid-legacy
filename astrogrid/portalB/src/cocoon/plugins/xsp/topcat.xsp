@@ -39,9 +39,14 @@
 						<xsp:attribute name="val"><xsp:expr>url</xsp:expr></xsp:attribute>
 					</xsp:element>
 			<![CDATA[
-				}
+				} else {
 			]]>
+					<xsp:element name="errormessage">
+						<xsp:attribute name="val">No url was given for the VOTable.</xsp:attribute>
+					</xsp:element>
 			<![CDATA[
+					return;
+				}
 				if ((xaxis = (String)request.getParameter("xaxis")) != null && ((String)request.getParameter("xaxis")).length() > 0) {
 					xaxis = xaxis.trim();
 			]]>
@@ -63,36 +68,87 @@
 		
 			<xsp:logic>
 				<![CDATA[
-					VOTableBuilder vot = new VOTableBuilder();
-				    URLDataSource urlds = new URLDataSource(new URL(url));
-					StarTable st = vot.makeStarTable(urlds);
+					StarTable st = null;
+					try {
+						VOTableBuilder vot = new VOTableBuilder();
+				    	URLDataSource urlds = new URLDataSource(new URL(url));
+						st = vot.makeStarTable(urlds);
+					}catch(Exception e) {
+				]]>
+					<xsp:element name="errormessage">
+						<xsp:attribute name="val"><xsp:expr>e.toString()</xsp:expr></xsp:attribute>
+					</xsp:element>
+				<![CDATA[
+						return;
+					}
 			   		ColumnRandomWrapperStarTable wst = new ColumnRandomWrapperStarTable(st);
 			   		ColumnInfo cinfo = null;
+			   		boolean xaxismatch = false;
+			   		boolean yaxismatch = false;
+			   		int iCount = 0;
 				   	for(int i = 0;i < wst.getColumnCount();i++) {
 						cinfo = wst.getColumnInfo( i );
 						if(Number.class.isAssignableFrom(cinfo.getContentClass()) || 
 						   Date.class.isAssignableFrom(cinfo.getContentClass()) ) {
+						    iCount ++;
 							if(xaxis == null || xaxis.length() <= 0 ) {
 							   	xaxis = cinfo.getName().trim();
-				]]>
-								<xsp:element name="xaxis">
-									<xsp:attribute name="val"><xsp:expr>xaxis</xsp:expr></xsp:attribute>
-								</xsp:element>
-				<![CDATA[
 							}//if
 							if(!cinfo.getName().trim().equals(xaxis) && (yaxis == null || yaxis.length() <= 0)) {
 								yaxis = cinfo.getName().trim();
-				]]>
-								<xsp:element name="yaxis">
-									<xsp:attribute name="val"><xsp:expr>yaxis</xsp:expr></xsp:attribute>
-								</xsp:element>				
-				<![CDATA[
 							}//if
-							if(xaxis != null && yaxis != null) {
+							if(cinfo.getName().trim().equals(xaxis)) {
+								xaxismatch = true;
+							}//if
+							if(cinfo.getName().trim().equals(yaxis)) {
+								yaxismatch = true;
+							}//if
+							if(xaxismatch && yaxismatch) {
 								i = wst.getColumnCount();
 							}//if
 						}//if
 					}//for
+					if(!xaxismatch && !yaxismatch && iCount >= 2) {
+					   	for(int i = 0;i < wst.getColumnCount();i++) {
+							cinfo = wst.getColumnInfo( i );
+							if(Number.class.isAssignableFrom(cinfo.getContentClass()) || 
+							   Date.class.isAssignableFrom(cinfo.getContentClass()) ) {
+								if(xaxismatch && !yaxismatch) {
+								   yaxis = cinfo.getName();
+								   yaxismatch = true;
+								}
+							    if(!xaxismatch) {
+									xaxis = cinfo.getName();
+									xaxismatch = true;
+								}
+							}//if
+							if(xaxismatch && yaxismatch) {
+								i = wst.getColumnCount();
+							}//if
+						}//for
+				]]>
+					<xsp:element name="warningmessage">
+						<xsp:attribute name="val">Your and x and y axis has been reset to the first 2 plottable columns, the original x and y axis did not match any columns specefied in the votable.</xsp:attribute>
+					</xsp:element>
+				<![CDATA[
+					}//if
+					if(iCount < 2) {
+				]]>
+					<xsp:element name="errormessage">
+						<xsp:attribute name="val">You must have at least 2 columns defined in the Number or Date area.</xsp:attribute>
+					</xsp:element>
+				<![CDATA[
+					}
+					if(xaxismatch && yaxismatch && iCount >= 2) {
+				]]>
+						<xsp:element name="xaxis">
+							<xsp:attribute name="val"><xsp:expr>xaxis</xsp:expr></xsp:attribute>
+						</xsp:element>
+						<xsp:element name="yaxis">
+							<xsp:attribute name="val"><xsp:expr>yaxis</xsp:expr></xsp:attribute>
+						</xsp:element>
+				<![CDATA[
+					}
 				]]>
 				</xsp:logic>
 			<axislist>
