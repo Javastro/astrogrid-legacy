@@ -35,7 +35,7 @@ $SCRIPTHOME/maven-build-tagged-new.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG
 $SCRIPTHOME/maven-build-tagged-new.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh ui $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #Index pages for this release
-$SCRIPTHOME/maven-build-tagged-new.sh maven-site $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-maven-site-tagged.sh maven-site $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #index page for all releases
 $SCRIPTHOME/maven-build-new.sh maven-site-releases >> $BUILD_DIR/$LOG_FILE 2>&1
 
