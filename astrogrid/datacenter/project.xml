@@ -40,14 +40,19 @@
   
   <dependencies>
     <dependency>
-      <id>breezetk</id>
-      <version>UNKNOWN</version>
-      <jar>breezetk.jar</jar>
+      <id>astrogrid-common</id>
+      <version>SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <id>axis</id>
       <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>breezetk</id>
+      <version>UNKNOWN</version>
+      <jar>breezetk.jar</jar>
     </dependency>
 
     <dependency>
