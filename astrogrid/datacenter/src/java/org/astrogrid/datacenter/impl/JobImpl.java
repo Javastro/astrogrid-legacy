@@ -29,10 +29,11 @@ import org.apache.axis.encoding.XMLType;
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.Util;
-import org.astrogrid.datacenter.config.*;
+import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.impl.abstr.AbstractJob;
 import org.astrogrid.datacenter.job.Job;
 import org.astrogrid.datacenter.job.JobException;
-import org.astrogrid.datacenter.job.JobStep;
+import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.RunJobRequestDD;
 import org.astrogrid.i18n.AstroGridMessage;
 import org.w3c.dom.Element;
@@ -42,7 +43,7 @@ import org.w3c.dom.NodeList;
  *
  */
 
-public class JobImpl extends ConfigurableImpl implements Job {
+public class JobImpl extends AbstractJob implements Job {
 
 	private static final boolean 
 		TRACE_ENABLED = true ;
@@ -71,25 +72,6 @@ public class JobImpl extends ConfigurableImpl implements Job {
 	private ResultSet 
 		resultSet = null ;	   
 			
-	private boolean
-	   dirty = false ;
-	
-	private String
-	   status = "",
-	   jobURN = "",
-	   name = "",
-	   community = "",
-	   userId = "",
-	   jobMonitorURL = "",
-	   comment = "";
-	   
-	private Date
-	   date ;
-	   
-	private JobStep
-	   jobStep ;
-
-	  
 	public JobImpl() {
         subsystemAcronym = "DTC" ;
     }
@@ -107,30 +89,12 @@ public class JobImpl extends ConfigurableImpl implements Job {
 			jobURN = jobElement.getAttribute( RunJobRequestDD.JOB_URN_ATTR ).trim() ;
 			jobMonitorURL = jobElement.getAttribute( RunJobRequestDD.JOB_MONITOR_URL_ATTR ).trim() ;
 			
-			NodeList
-			   nodeList = jobElement.getChildNodes() ;
-			Element
-			   element ;
+			NodeList  nodeList = jobElement.getChildNodes() ;
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
 				
-				if ( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {		
-					element = (Element) nodeList.item(i) ;
-				 				 	
-				 	if(element.getTagName().equals( RunJobRequestDD.USERID_ELEMENT ) ) {
-					    //userId = element.getNodeValue().trim() ;
-					    userId = element.getFirstChild().getNodeValue().trim() ;  //toString().trim();
-					}
-					
-					else if( element.getTagName().equals( RunJobRequestDD.COMMUNITY_ELEMENT ) ) {
-						//community = element.getNodeValue().trim() ;
-						community = element.getFirstChild().getNodeValue().trim() ;  //toString().trim();
-					}
-					
-					else if( element.getTagName().equals( RunJobRequestDD.JOBSTEP_ELEMENT ) ) {
-				    	jobStep = new JobStep( element,facMan ) ; 
-					} 
-					 
+				if ( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {						 				 	
+                    scanElement((Element) nodeList.item(i), facMan);					 
 				 } // end if
 				 
 			} // end for
@@ -154,7 +118,25 @@ public class JobImpl extends ConfigurableImpl implements Job {
 			if( TRACE_ENABLED ) logger.debug( "JobImpl(): exit") ;   	
 		}
 		
-	} // end of JobImpl()
+	}
+
+    /** scan an element, extract information depending on the kind of element */
+    private void scanElement(Element element, FactoryProvider facMan)
+        throws QueryException {
+        if(element.getTagName().equals( RunJobRequestDD.USERID_ELEMENT ) ) {
+            //userId = element.getNodeValue().trim() ;
+            userId = element.getFirstChild().getNodeValue().trim() ;  //toString().trim();
+        }
+        
+        else if( element.getTagName().equals( RunJobRequestDD.COMMUNITY_ELEMENT ) ) {
+        	//community = element.getNodeValue().trim() ;
+        	community = element.getFirstChild().getNodeValue().trim() ;  //toString().trim();
+        }
+        
+        else if( element.getTagName().equals( RunJobRequestDD.JOBSTEP_ELEMENT ) ) {
+        	jobStep = new JobStepImpl( element,facMan ) ; 
+        } 
+    } // end of JobImpl()
 	
 
 	/* (non-Javadoc)
@@ -332,55 +314,13 @@ public class JobImpl extends ConfigurableImpl implements Job {
 	}// end of getPreparedStatement()
 
 
-	/* (non-Javadoc)
-	 * @see org.astrogrid.datacenter.Job#getStatus()
-	 */
-	public String getStatus() {
-		return this.status;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.astrogrid.datacenter.Job#setStatus(java.lang.String)
-	 */
-	public void setStatus(String status) {
-		if( this.status != null )
-		    dirty = true ;
-        this.status = status ;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.astrogrid.datacenter.Job#getId()
-	 */
-	public String getId() {	return jobURN ;	}
-	public void setId( String jobURN ) { this.jobURN = jobURN ;}
-	
-	public void setDirty( boolean dirty ) { this.dirty = dirty ; }
-	public boolean isDirty() {return this.dirty ; }
-
-	public void setName( String name ) { this.name = name; }
-	public String getName() { return this.name; }
-	
-	public Date getDate() { return this.date ; }
-	public void setDate( Date date ) { this.date = date ; }
-
-	public void setCommunity( String community ) { this.community = community; }
-	public String getCommunity() { return community; }
-
-	public void setUserId( String userId ) { this.userId = userId; }
-	public String getUserId() { return userId; } 
-
-	public void setJobMonitorURL( String jobMonitorURL ) { this.jobMonitorURL = jobMonitorURL; }
-	public String getJobMonitorURL() { return jobMonitorURL; }
-
-	public void setJobStep( JobStep jobStep ) { this.jobStep = jobStep; }
-	public JobStep getJobStep() { return jobStep; }
-	
-	public String getComment() { return comment ; }
-	public void setComment( String comment ) { this.comment = comment ; }
-	
-	public Object getImplementation() { return this ; }
-
 	public static void setFactoryImpl(JobFactoryImpl someFactoryImpl) { factoryImpl = someFactoryImpl ; }
 	public static JobFactoryImpl getFactoryImpl() { return factoryImpl ; }
+
+
+    public void setDirty(boolean dirty) { this.dirty = dirty ; }
+
+
+    public boolean isDirty() {return this.dirty ; }
 
 } // end of class JobImpl

@@ -187,7 +187,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 		try {
 			
 	        PreparedStatement
-	           pStatement = ((JobImpl)job.getImplementation()).getPreparedStatement() ;
+	           pStatement = ((JobImpl)job).getPreparedStatement() ;
 	           
 	        job.setDate( new Date() ) ;
 	        
@@ -198,7 +198,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 	
 			pStatement.executeUpdate();
 			
-			( (JobImpl) job.getImplementation() ).setDirty( false ) ;
+			( (JobImpl) job ).setDirty( false ) ;
 		}
 		catch( SQLException ex ) {
 			AstroGridMessage
@@ -231,34 +231,26 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
     public Job find( String jobURN ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "JobFactoryImpl.findJob(): entry") ;  
 		 	
-		JobImpl
-		   job = new JobImpl() ;
-		Statement   
-		   statement = null ;
-		ResultSet
-		   rs = null ;
+		JobImpl job = new JobImpl() ;
+		Statement  statement = null ;
+		ResultSet    rs = null ;
     	   
 		try {
+			Object [] inserts = new Object[] {
+			     getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) 
+			     , job.getId()
+            };
 
-			Object []
-			   inserts = new Object[2] ;
-			inserts[0] = getConfiguration().getProperty( ConfigurationKeys.JOB_TABLENAME, ConfigurationKeys.JOB_CATEGORY ) ;
-			inserts[1] = job.getId() ;
-
-			String
-			   selectString = MessageFormat.format( SELECT_TEMPLATE, inserts ) ; 			
+			String  selectString = MessageFormat.format( SELECT_TEMPLATE, inserts ) ; 			
 			statement = job.getConnection().createStatement() ;
 			rs = statement.executeQuery( selectString );
 			if( !rs.first() ){
 				//Job not found...
-				AstroGridMessage
-					message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID
-                                                  , SUBCOMPONENT_NAME
-                                                  , jobURN ) ;
+				AstroGridMessage message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID
+                                                  , SUBCOMPONENT_NAME , jobURN ) ;
 				logger.error( message.toString() ) ;   	
 				throw new JobException( message ) ;	
-			}
-			else {
+			} else {
 				rs.next() ;
 				job.setId( rs.getString( COL_JOBURN ) ) ;
 				job.setName( rs.getString( COL_JOBNAME ) ) ;
@@ -268,17 +260,15 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 				job.setStatus( rs.getString( COL_STATUS ) ) ;
 				job.setComment( rs.getString( COL_COMMENT ) ) ;			
 				job.setDirty( false ) ;
-			}
-			if( rs.next() ) {
+			}if( rs.next() ) {
+                // TODO - fix this.
 				// JBL Note: Whoops! More than one job found when only one was expected...
 				// New exception required here...
 			}
 		}
 		catch( SQLException ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID
-                                              , SUBCOMPONENT_NAME
-                                              , jobURN ) ;
+			AstroGridMessage message = new AstroGridMessage( ASTROGRIDERROR_UNABLE_TO_FIND_JOB_GIVEN_JOBID
+                                              , SUBCOMPONENT_NAME, jobURN ) ;
 			logger.error( message.toString(), ex ) ;   	
 			throw new JobException( message, ex ) ;	
 		}
@@ -318,7 +308,7 @@ public class JobFactoryImpl  extends ConfigurableImpl implements JobFactory{
 
 			String
 			   deleteString = MessageFormat.format( DELETE_TEMPLATE, inserts ) ; 			
-			statement = ((JobImpl)job.getImplementation()).getConnection().createStatement() ;
+			statement = ((JobImpl)job).getConnection().createStatement() ;
 			statement.executeUpdate( deleteString );
 			   
 		}

@@ -1,4 +1,4 @@
-/*$Id: Job.java,v 1.6 2003/08/21 14:55:15 nw Exp $
+/*$Id: Job.java,v 1.7 2003/08/22 10:35:02 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.job;
 
 import java.util.Date;
+
 import org.astrogrid.datacenter.config.Configurable;
 
 /**
@@ -44,11 +45,14 @@ public interface Job extends Configurable {
     public abstract void setJobStep(JobStep jobStep);
     public abstract String getComment();
     public abstract void setComment(String comment);
-    public abstract Object getImplementation();
+   // public abstract Object getImplementation();
 }
 
 /* 
 $Log: Job.java,v $
+Revision 1.7  2003/08/22 10:35:02  nw
+refactored job and job step into interface, abstract base class and implementation
+
 Revision 1.6  2003/08/21 14:55:15  nw
 refactored Job abstract class into an interface - didn't contain anything but abstract methods and constants,
 and allows implementor to use own choice of base type.

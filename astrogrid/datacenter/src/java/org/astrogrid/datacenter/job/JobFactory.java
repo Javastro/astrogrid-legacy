@@ -22,7 +22,7 @@ import org.w3c.dom.Document;
  * this interface. That means inserting, updating, finding and 
  * deleting in, for example, a suitable RDBMS.
  * <p>
- *
+ * <B>NW<b> candidate for refactoring?
  * @author  Jeff Lusted
  * @version 1.0 08-Jun-2003
  * @see     org.astrogrid.JobFactoryImpl

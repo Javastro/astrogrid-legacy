@@ -1,5 +1,5 @@
-/*
- * @(#)JobStep.java   1.0
+/*$Id: JobStep.java,v 1.6 2003/08/22 10:35:02 nw Exp $
+ * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -7,95 +7,29 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
+**/
 package org.astrogrid.datacenter.job;
 
-import org.apache.log4j.Logger;
-import org.astrogrid.datacenter.FactoryProvider;
-import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.RunJobRequestDD;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
-/** step of a job. could do with documenting */
-public class JobStep {
-	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-	
-	private static Logger 
-		logger = Logger.getLogger( JobStep.class ) ;
-        
-    private final static String
-        SUBCOMPONENT_NAME =  Util.getComponentName( JobStep.class ) ;        
-	
-	private String
-	    name = null,
-        stepNumber = null ;
+/**
+ * interface describing a step of a job.
+ * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
+ *
+ */
+public interface JobStep {
+    public abstract String getName();
+    public abstract void setName(String name);
+    public abstract Query getQuery();
+    public abstract void setQuery(Query query);
+    /** would this make more sense as an int ? */
+    public abstract void setStepNumber(String stepNumber);
+    public abstract String getStepNumber();
+}
 
-	private Query
-	    query = null ;
-	    
-	public JobStep( Element element ,FactoryProvider facManager) throws QueryException {
-		if( TRACE_ENABLED ) logger.debug( "JobStep(): entry") ; 
-		
-		try {
-		 
-		   name = element.getAttribute( RunJobRequestDD.JOBSTEP_NAME_ATTR ).trim() ;
-		   stepNumber = element.getAttribute( RunJobRequestDD.JOBSTEP_STEPNUMBER_ATTR ).trim() ;
-		   
-		   NodeList
-		      nodeList = element.getChildNodes() ;
-		   Element
-		      queryChild = null,
-		      catalogChild = null ;
-			   
-		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-		   	   if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
-		   	       continue ;				
-			   queryChild = (Element) nodeList.item(i) ;
-			   if( queryChild.getTagName().equals( RunJobRequestDD.QUERY_ELEMENT ) ) 
-			       break ;
-		   }
-		
-		   nodeList = queryChild.getElementsByTagName( RunJobRequestDD.CATALOG_ELEMENT ) ;
-		
-		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-			   if( nodeList.item(i).getNodeType() != Node.ELEMENT_NODE )
-			       continue ;								
-			   catalogChild = (Element) nodeList.item(i) ;
-			   if( catalogChild.getTagName().equals( RunJobRequestDD.CATALOG_ELEMENT ) ) 
-				   break ;
-		   }	
-		
-		   String
-		       keyToFactory = catalogChild.getAttribute( RunJobRequestDD.CATALOG_NAME_ATTR );
-		       		// TODO : Error - this key has '.QUERYFACTORY' appended to it twice.
-		       		// i've wasted a days weork finding this stupid bug which should have been eliminated during
-		       		// unit testing. 
-                        //    + DTC.CATALOG_DEFAULT_QUERYFACTORY ;		
-		 
-		   query = facManager.getQueryFactory( keyToFactory ).createQuery( queryChild ) ;
-		   
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "JobStep(): exit") ; 			 
-		}
-
-	} // end of constructor JobStep(Element)
-	
-	    
-	public String getName() { return this.name ; }
-	public void setName( String name ) { this.name = name ; }
-	
-	public Query getQuery() { return this.query ; }
-	public void setQuery( Query query ) { this.query = query ; }
-
-	public void setStepNumber(String stepNumber) { this.stepNumber = stepNumber ; }
-	public String getStepNumber() { return stepNumber; }
-	
-	
-} // end of class JobStep
+/* 
+$Log: JobStep.java,v $
+Revision 1.6  2003/08/22 10:35:02  nw
+refactored job and job step into interface, abstract base class and implementation
+ 
+*/
