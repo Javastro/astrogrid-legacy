@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.15 2004/09/29 12:56:48 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.16 2004/09/29 16:28:45 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -233,7 +233,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
             reportMessage("waiting for " + this.toString() + " to finish....");
             try {
                 exitStatus = process.waitFor();
-                reportMessage(this.toString() + "finished");
+                reportMessage(this.toString() + " finished");
                 endApplication();
             }
             catch (InterruptedException e) {
@@ -255,10 +255,13 @@ public class CommandLineApplication extends AbstractApplication implements Runna
  * @throws CeaException
  */
 private final void endApplication()  {
-      reportMessage("Ending application");
+      reportMessage("Execution post application processes");
       errPiper.terminate();
       outPiper.terminate();
       process = null;
+      if (exitStatus != 0) {
+         reportStandardError();// send the stderr output as well
+      }
       
       setStatus(Status.WRITINGBACK);
       // call the hook to allow manipulation by subclasses
@@ -280,7 +283,7 @@ private final void endApplication()  {
 
       reportMessage("The application has completed with exit status="+exitStatus);
       if (exitStatus != 0) {
-          reportStandardError();// send the stderr output as well
+         
           setStatus(Status.ERROR); 
       } else {
           setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
