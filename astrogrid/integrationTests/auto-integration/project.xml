@@ -3,7 +3,7 @@
     <artifactId>auto-integration</artifactId>
     <name>Automated Integration Testing</name>
     <groupId>auto-integration</groupId>
-    <currentVersion>SNAPSHOT</currentVersion>
+    <currentVersion>${pom.currentVersion}</currentVersion>
     <description> Automated integration testing. This project will install all 
         the astrogrid components (someday) to a local tomcat5 server, and set 
         up the required configuration and workfing directories. Then a batch of 
@@ -13,42 +13,42 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-jes</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-server</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>        
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-commandline</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-http</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-mySpace</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-registry</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
@@ -62,14 +62,14 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>pal</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-portal</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
         </dependency>
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
             <properties/>
@@ -104,7 +104,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>zip</type>
             <url>http://www.astrogrid.org/</url>
             <properties/>
@@ -112,7 +112,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-community-install</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties/>
@@ -136,7 +136,7 @@
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore</artifactId>
-            <version>SNAPSHOT</version>
+            <version>${pom.currentVersion}</version>
             <type>war</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
