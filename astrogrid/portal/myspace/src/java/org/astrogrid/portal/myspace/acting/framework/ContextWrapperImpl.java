@@ -7,7 +7,6 @@ import java.net.MalformedURLException;
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
-import org.apache.cocoon.servlet.multipart.MultipartHttpServletRequest;
 import org.apache.cocoon.servlet.multipart.Part;
 import org.astrogrid.community.User;
 import org.astrogrid.portal.common.user.UserHelper;
@@ -16,7 +15,6 @@ import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
