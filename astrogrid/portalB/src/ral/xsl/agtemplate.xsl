@@ -15,7 +15,7 @@
          <tbody>
             <tr align="center" valign="middle">
                <td style="height: 100px; width: 140px;">
-                  <a href="www.astrogrid.org">
+                  <a href="http://www.astrogrid.org">
                   	<img src="aglogo.png" title="AstroGrid Home" alt="AstroGrid" 
                   style="border: 0px solid ; width: 140px; height: 100px;"/> 
                   </a>
@@ -104,7 +104,7 @@
                          font-size-adjust: -2; width: 140px;">
                   	Member of the
                   <br/>
-                  <a href="www.ivoa.net">
+                  <a href="http://www.ivoa.net">
                   	<img src="ivoalogo.png" title="IVOA Alliance"
                       alt="IVOA Alliance" 
                       style="border: 0px solid ; width: 140px; height: 77px;"/> 
