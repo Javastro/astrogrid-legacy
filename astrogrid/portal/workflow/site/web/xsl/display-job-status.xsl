@@ -158,8 +158,8 @@
                                     <xsl:attribute name="style">padding-left: 10;</xsl:attribute>
                                     <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
                                     <xsl:attribute name="onMouseOver">this.T_TITLE='' +
-                                    ' Script: '; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +
-                                    ' Desc: <xsl:value-of select="@script-desc"/> &lt;br/&gt; ' + 
+                                    ' Script: <xsl:value-of select="@script-desc"/>'; this.T_WIDTH=250; this.T_DELAY=500; return escape('' +
+                                    ' Body: <xsl:value-of select="@script-body"/> &lt;br/&gt; &lt;br/&gt; ' + 
                                     ' Message: <xsl:value-of select="@script-message"/> ');</xsl:attribute>
                                 </xsl:element>
                                 <small><b>(more)</b></small>
