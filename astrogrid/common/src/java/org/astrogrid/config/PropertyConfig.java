@@ -1,5 +1,5 @@
 /*
- * $Id: PropertyConfig.java,v 1.5 2003/12/16 13:13:12 mch Exp $
+ * $Id: PropertyConfig.java,v 1.6 2003/12/16 13:43:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,7 +34,7 @@ public class PropertyConfig extends Config
    protected String getDefaultFilename() { return "AstroGrid.cfg"; }
    
    /** Returns the jndi key used to find the url of the configuration file */
-   protected String getJndiKey()         { return "org.astrogrid.config.url"; }
+   protected String getJndiKey()         { return "java:comp/env/org.astrogrid.config.url"; }
    
    /** Returns the System Environment variable used to find the url of the configuration file */
    protected String getSysEnvKey()       { return "AG_CONFIG"; }
