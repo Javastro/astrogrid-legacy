@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigException.java,v 1.1 2004/02/16 22:46:51 mch Exp $
+ * $Id: ConfigException.java,v 1.2 2004/03/01 13:34:18 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,10 +24,17 @@ public class ConfigException extends RuntimeException {
       super(msg, th);
    }
    
+   public ConfigException(String msg) {
+      super(msg);
+   }
+   
 }
 
 /*
 $Log: ConfigException.java,v $
+Revision 1.2  2004/03/01 13:34:18  mch
+Added message-only constructor
+
 Revision 1.1  2004/02/16 22:46:51  mch
 For reporting configuration errors
 
