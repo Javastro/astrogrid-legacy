@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.lang.Exception;
 import java.io.IOException;
 import java.lang.SecurityException;
+import java.io.StringReader;
 
 //axis
 import org.apache.axis.AxisFault;
@@ -23,6 +24,18 @@ import org.apache.axis.AxisFault;
 //log4j
 import org.apache.log4j.Logger;
 import javax.xml.namespace.QName;
+
+//xml
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.apache.xerces.parsers.DOMParser;
+import org.xml.sax.InputSource;
 
 /**
  * @WebService
@@ -63,6 +76,9 @@ public class ServerManager {
 				if (DEBUG) logger.debug("ServerManager deleteDataHolder "+dataHolderPath);
 				if (isDeleted)  response = "File Deleted.";
 				else response = "File Not Deleted";
+				//String r2 = buildXMLResponse();
+				//logger.debug("SERVERMANAGER: r2="+r2);
+				
     		}catch(SecurityException se){
     			//to catch the exception and return proper error message
     		}
@@ -84,10 +100,7 @@ public class ServerManager {
     		//if (DEBUG)  logger.error(message.toString());
     	    //response = message.toString();
     	}
-    	return response;
-
-
-      
+    	return response; 
 }
 
     public String exportDataHolder(String dataHolderPath, String destinationDataHolderPath) {
@@ -146,8 +159,118 @@ public class ServerManager {
          
          return 0;
     }
+   
+    public String buildXMLResponse(String xml){//String origiRs, File xsl){
+    	logger.debug("BUILDXMLRESPONSE..."+xml);
+    	String response = "";
+		Node checker;
+		Document document = null;
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = null;
+		try {
+			InputSource source = new InputSource( new StringReader( xml ) );	
+			factory.setValidating( true ) ; 
+			builder = factory.newDocumentBuilder();
+			document = builder.parse( source );
+			
+			//now trying to walk the tree
+			checker=document.getDocumentElement();;
+            logger.debug("FIRST NODE IS :" +checker.getNodeName() +", TYPE OF" +checker.getNodeType());
+			boolean ascending = false;
+			int level = 1;
+				  while (true) {
+					logger.debug("Now trying to walk the dom tree..");
+					if (!ascending) {
+					  indentToLevel(level);
+					  printNodeInfo(checker);
+					}
+														
+					if ((checker.hasChildNodes()) && (!ascending)) {
+					  checker = checker.getFirstChild();
+					  logger.debug("GOING DOWN"+checker.getNodeName() +"NODETYPE="+checker.getNodeType());
+					  if(checker.getNodeType()==1){
+					  	printAttributes((Node)checker);
+					  }
+					  ascending = false;
+					  level++;
+					}
+					
+					else if (checker.getNextSibling() != null) {
+					  checker= checker.getNextSibling();
+					  ascending = false;
+					  logger.debug("GOING RIGHT");
+					}
+					
+					else if (checker.getParentNode() != null) {
+					  checker= checker.getParentNode();
+					  ascending = true;
+					  level--;
+					  logger.debug("GOING UP");
+					}
+					//*** OTHERWISE YOU'VE ASCENDED BACK TO ***
+					//*** THE DOCUMENT ELEMENT, SO YOU'RE DONE ***
+					else {
+					  break;
+					}					
+				  }
+			//response = MySpaceMessage.readFromFile(file);
+			logger.debug("RESPONSE = " +response);
+			
+		}//catch ParserConfigurationException
+		catch(SAXException saxe){
+			logger.error("SAX EXCEPTION");
+		}
+		catch(IllegalArgumentException iae){
+			logger.error("ILLEGALARGUMENTEXCEPTION WHILE PARSING DOCUMENT");
+		}
+		catch(IOException ioe){
+			logger.error("IO EXCEPTION");
+		}
+		catch(Exception e){
+			logger.error("EXCEPTION!!"+e);
+		}
 
-
+    	//parse with xslt   
+		return response;	
+    }//end method
+    
+    
+	private void indentToLevel(int level) {
+		for(int n=0; n < level; n++) {
+		  System.out.print("  ");
+		}
+	}
+	
+	private void printNodeInfo(Node thisNode) {
+		if(thisNode.getNodeType()==1){
+		
+			logger.debug("WITHIN PRINTNODEINFO nodeName: "+thisNode.getNodeName() + " nodeType: " + 
+					 thisNode.getNodeType() + " nodeValue: " +thisNode.getNodeValue());
+		}
+		
+		if(thisNode.getNodeType() == Node.ELEMENT_NODE) {
+		  printAttributes(thisNode);
+		}
+		
+	  }
+	  
+	  private void printAttributes(Node thisNode) {
+		  logger.debug("DEBUGING PRINTATTRIBUTES:  (");
+		  NamedNodeMap attribs = thisNode.getAttributes(); 
+		  logger.debug("NAMEDNODEMAP LENGTH: "+attribs.getLength());
+		  int numAttribs = attribs.getLength();
+		  logger.debug("LENGTH: "+numAttribs);
+		  for(int i=0; i < attribs.getLength(); i++){
+			Node attrib = attribs.item(i);
+			if(i>0){System.out.print(",");}
+			logger.debug("NODENAME: "+attrib.getNodeName());
+			logger.debug("=\"");
+			logger.debug("NODEVALUE: "+attrib.getNodeValue());
+			logger.debug("\"");
+		  }
+		  logger.debug(")");
+		}
+    
 
     /**
      * @link aggregationByValue

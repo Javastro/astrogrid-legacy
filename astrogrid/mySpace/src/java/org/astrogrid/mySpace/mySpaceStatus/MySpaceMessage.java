@@ -102,7 +102,7 @@ public class MySpaceMessage{
    		sb.delete(0,sb.indexOf(delimiter1)+1);
    		s2 = sb.substring(0,sb.indexOf(delimiter2)).trim();
    		sb.delete(0,sb.indexOf(delimiter2)+1);
-   		if (DEBUG)  logger.debug("YYY s1="+s1+", s2="+s2 +"XXX");
+   		if (DEBUG)  logger.debug("s1="+s1+", s2="+s2);
         p.put(s1, s2);
    	}
    	return p;
