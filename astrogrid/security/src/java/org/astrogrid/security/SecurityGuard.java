@@ -186,8 +186,13 @@ public class SecurityGuard {
    *
    * @param word the password
    */
-  public void setSsoPassword (Password word) {
-    this.setPassword(word);
+  public void setSsoPassword (String word) {
+    try {
+      this.setPassword(new Password(word, false));
+    }
+    catch (Exception e) {
+      // KLUDGE!
+    }
   }
 
   /**
@@ -201,8 +206,8 @@ public class SecurityGuard {
    *
    * @return the password
    */
-  public Password getSsoPassword () {
-    return this.getPassword();
+  public String getSsoPassword () {
+    return this.getPassword().getPlainPassword();
   }
 
 }
