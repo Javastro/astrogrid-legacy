@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.20 2004/03/29 12:19:44 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.21 2004/03/29 12:30:24 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -16,11 +16,11 @@
 <!--==================================================================================-->
 
 	<target name="RedeployTheLot"
-	    depends="RedeployMySpace, Redeployportal, Redeploycommunity, Redeployapplications,
-	    Redeployregistry, Redeployjes, RedeployPALSimple" />
+	    depends="RedeployMySpace, Redeployportal, Redeploycommunity, RedeployApplications,
+	    Redeployregistry, RedeployJES, RedeployPALSimple" />
 	<target name="DeployTheLot"
-	    depends="DeployMySpace, Deployportal, Deploycommunity, Deployapplications,
-	    Deployregistry, Deployjes, DeployPALSimple"  />
+	    depends="DeployMySpace, Deployportal, Deploycommunity, DeployApplications,
+	    Deployregistry, DeployJES, DeployPALSimple"  />
 
 <!--==================================================================================-->
 
