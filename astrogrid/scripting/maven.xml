@@ -3,30 +3,58 @@
 <project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:u="jelly:util" xmlns:deploy="deploy">
 
 
-<!-- hook into nightly build -->
-<postGoal name="war:deploy-snapshot">
-	<attainGoal name="deploy-dists" />
-</postGoal>
+<!-- astrogrid standard goals -->
+
+<goal name="astrogrid-clean" prereqs="clean"/>
+
+<goal name="astrogrid-build-site">
+        <attainGoal name="site" />
+</goal>
+
+<goal name="astrogrid-build-artifact">
+        <attainGoal name="dist:build-bin" />
+        <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:build-bin"/>
+        <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:build-bin" />
+        <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:build-bin" />
+</goal>
+
+<goal name="astrogrid-build-snapshot">
+        <attainGoal name="jar:snapshot" />
+</goal>
+
+<goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
+
+<goal name="astrogrid-install-artifact">
+        <attainGoal name="jar:install" />
+</goal>
+
+<goal name="astrogrid-install-snapshot">
+        <attainGoal name="jar:install-snapshot" />
+</goal>
+
+<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+        <attainGoal name="site:fs-deploy" />
+</goal>
+
+<goal name="astrogrid-deploy-snapshot">
+        <attainGoal name="jar:deploy-snapshot" />
+</goal>
+
+
+<goal name="astrogrid-deploy-artifact">
+        <attainGoal name="dist:deploy-bin"/>
+        <maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-bin"/>
+        <maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-bin" />
+        <maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-bin" />
+</goal>
+
+
+<!-- end astrogrid standard goals -->
 
 <!-- want all dependent libs in my dist -->
 <postGoal name="dist:prepare-bin-filesystem">
-	<deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
+        <deploy:copy-deps todir="${maven.dist.bin.assembly.dir}/lib" />
 </postGoal>
-
-<!-- version for running by hand -->
-<goal name="make-dists" prereqs="dist:build-bin">
-	<!-- now fire off sub-builds -->
-	<maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:build-bin"/>
-	<maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:build-bin" />
-	<maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:build-bin" /> 
-</goal>
-
-<!-- version for the nightly build -->
-<goal name="deploy-dists" prereqs="dist:deploy-bin">
-	<maven:maven descriptor="${basedir}/groovy/project.xml" goals="dist:deploy-bin"/>
-	<maven:maven descriptor="${basedir}/rhino/project.xml" goals="dist:deploy-bin" />
-	<maven:maven descriptor="${basedir}/jython/project.xml" goals="dist:deploy-bin" />
-</goal>
 
 
 </project>
