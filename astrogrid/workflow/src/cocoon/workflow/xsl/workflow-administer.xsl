@@ -67,32 +67,32 @@
           </tr>          
           <tr width="80%" align="center" valign="middle" style="color: rgb(51,51,255); background-color: rgb(204,204,204);">
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html?action=new">
+              <a href="agjobmonitor.html?action=new">
                 New
               </a>
             </td>
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html?action=submit">
+              <a href="agjobmonitor.html?action=submit">
                 Submit
               </a>
             </td>
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html?action=edit">
+              <a href="agjobmonitor.html?action=edit">
                 Edit
               </a>
             </td>
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html?action=copy">
+              <a href="agjobmonitor.html?action=copy">
                 Copy
               </a>
             </td>
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html?action=delete">
+              <a href="agjobmonitor.html?action=delete">
                 Delete
               </a>
             </td>
             <td width="0" height="0" colspan="1" rowspan="1" style=" font-family: arial,helvetica,sans-serif; font-size-adjust: 2; font-weight: bold; height: 30px; width: 200px;">
-              <a href="agworkflow-admin.html?action=send">
+              <a href="agjobmonitor.html?action=send">
                 Send
               </a>
             </td>
