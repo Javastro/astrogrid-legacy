@@ -166,11 +166,15 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         Iterator i = factory.findUserJobs(Axis2Castor.convert(arg0));
         List itemList = new ArrayList();
         while (i.hasNext()) {
-            Workflow w = (Workflow)i.next();
-            WorkflowSummary item = new WorkflowSummary();
-            item.setWorkflowName(w.getName());
-            item.setJobUrn(JesUtil.castor2axis(w.getJobExecutionRecord().getJobId()));
-            itemList.add(item);
+            try {
+                Workflow w = (Workflow)i.next();
+                WorkflowSummary item = new WorkflowSummary();
+                item.setWorkflowName(w.getName());
+                item.setJobUrn(JesUtil.castor2axis(w.getJobExecutionRecord().getJobId()));
+                itemList.add(item);
+            } catch (RuntimeException e) { // indicates a failure to read one of the workflows - may be a malformed zombie, etc. continue.
+                logger.warn("failed to read workflow",e);
+            }
         }
 
         return (WorkflowSummary[])itemList.toArray(new WorkflowSummary[]{});
