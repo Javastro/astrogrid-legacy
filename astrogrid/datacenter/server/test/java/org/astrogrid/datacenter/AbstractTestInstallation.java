@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.8 2004/01/15 16:35:24 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.9 2004/01/16 13:30:57 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,10 +19,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.client.Call;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
@@ -33,6 +36,7 @@ import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 
 /** Abstract base class that captures commonality between top level unit test and installation test.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -80,6 +84,7 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         System.out.println("Running with these settings: (adjust by runnng with -Dkey=value");
         System.out.println(SERVICE_URL_KEY + "=" + serviceURL.toString());
         System.out.println(QUERY_FILE_KEY + "=" + queryFile.getPath());
+
     }
 /* unimplemented
     public void testGetRegistryMetadata() {
@@ -169,8 +174,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         assertNotNull("Result of query was null",result);
        Element vo = result.getVotable();
        assertNotNull(vo);
+       XMLUtils.PrettyDocumentToStream(vo.getOwnerDocument(),System.out);
        assertIsVotableResultsResponse(vo.getOwnerDocument());
-       //assertIsVotable(vo); 
+       
     }
 
 
@@ -190,12 +196,12 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         QueryStatus stat = query.getStatus();
         assertNotNull("status is null",stat);
         assertEquals("status code is not as expected",QueryStatus.UNKNOWN,stat);
-                      
-        URL notifyURL = new URL("http://www.nobody.there.com");
-        query.registerWebListener(notifyURL);
+       // need to add this back in later - maybe a web listener that can't find its endpoint should just failsafe..               
+       // URL notifyURL = new URL("http://www.nobody.there.com");
+       // query.registerWebListener(notifyURL);
                  
         query.start();
-        try { // bit ad-hoc really- depend on latency?
+        try { // bit ad-hoc really- results may depend on load / processor speed
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             fail("Been interrupted");
@@ -206,9 +212,23 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         
         DatacenterResults result = query.getResultsAndClose();
         assertNotNull("result of query is null",result);
-        System.out.println("Results for Non-blocking query");
-        assertTrue(result.isFits());
-        assertNotNull(result.getUrls());
+        
+        // specific to what query is being performed - works for {@link DatacenterTest} - should be moved into there 
+        assertFalse(result.isFits());
+        assertFalse(result.isVotable());
+        assertTrue(result.isUrls());
+        
+        String[] resultUrls = result.getUrls();
+        assertNotNull(resultUrls);
+        assertTrue(resultUrls.length > 0);
+        for (int i = 0; i < resultUrls.length; i++) {
+        System.out.println(resultUrls[i]);
+        }
+        URL url = new URL(resultUrls[0]);
+        Document resultDoc = XMLUtils.newDocument(url.openStream());
+        assertNotNull(resultDoc);
+        XMLUtils.PrettyDocumentToStream(resultDoc,System.out);
+        assertIsVotable(resultDoc);
   
     }
     
@@ -277,6 +297,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.9  2004/01/16 13:30:57  nw
+got final test working
+
 Revision 1.8  2004/01/15 16:35:24  nw
 fixed failing test
 

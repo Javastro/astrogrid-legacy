@@ -1,4 +1,4 @@
-/*$Id: DatacenterTest.java,v 1.6 2003/11/27 17:28:09 nw Exp $
+/*$Id: DatacenterTest.java,v 1.7 2004/01/16 13:30:57 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 import javax.sql.DataSource;
 
@@ -23,12 +24,14 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.client.AdminClient;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.service.ServiceServer;
+import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 
 /**
  * Unit test that exercises the entire server application.
- * Exrtends the 'TestInstallation' class, runs it's tests against an in-memory HSQL db, and in-memory axis server.
+ * Exrtends the 'TestInstallation' class, runs it's tests against an in-memory HSQL db, and in-memory axis server, and the dummy my space delegate
  * nice - should get our precentages up :)
  
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -61,7 +64,8 @@ public class DatacenterTest extends AbstractTestInstallation {
         HsqlTestCase.initializeConfiguration();
         // set location of metadata
         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
-
+        // set myspace to use
+       SimpleConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
         // populate the database
         String script = ServerTestCase.getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
@@ -106,6 +110,9 @@ public class DatacenterTest extends AbstractTestInstallation {
 
 /*
 $Log: DatacenterTest.java,v $
+Revision 1.7  2004/01/16 13:30:57  nw
+got final test working
+
 Revision 1.6  2003/11/27 17:28:09  nw
 finished plugin-refactoring
 
