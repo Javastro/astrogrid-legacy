@@ -1,13 +1,12 @@
 /**
- * $Id: TempDirManager.java,v 1.1 2003/08/27 09:58:07 mch Exp $
+ * $Id: TempDirManager.java,v 1.2 2003/08/27 11:11:15 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
 
 import java.io.File;
 import java.io.IOException;
-import org.astrogrid.datacenter.config.ConfigurationDefaultImpl;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
+import org.astrogrid.datacenter.config.DTC;
 
 /**
  * A temporary filespace manager for
@@ -21,7 +20,7 @@ import org.astrogrid.datacenter.config.ConfigurationKeys;
 
 public class TempDirManager
 {
-   protected final ConfigurationDefaultImpl config;
+   protected final DTC config = DTC.getInstance();
    private static final String WORKSPACE_DIRECTORY_KEY = "Workspace Directory";
    private static final String WORKSPACE_DIRECTORY_CAT = "Service";
 
