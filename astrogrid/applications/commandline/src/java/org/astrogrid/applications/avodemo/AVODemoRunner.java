@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.4 2004/09/23 09:01:06 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.5 2004/09/29 19:47:26 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -340,6 +340,13 @@ private String workflowIvorn;
 
       param.setIndirect(true);
       param.setValue(myspaceBaseRef + "sexout_" + band);
+      
+      param = new ParameterValue();
+      input.addParameter(param);
+      param.setName("FILTER_NAME");
+      param.setValue("file:///home/applications/demo/h_goods_r1.0z_detect_conv.txt");
+      param.setIndirect(true);
+
 
       step.setTool(tool);
       step.setName("sextractor - " + band);
