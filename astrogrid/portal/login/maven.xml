@@ -1,4 +1,17 @@
 <?xml version="1.0" ?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/01/09 13:18:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/01/09 13:18:08  dave
+    |   Shuffled things round for Maven build
+    |
+    | </cvs:log>
+    |
+    +-->
 <project
     xmlns:jelly="jelly:core"
     xmlns:maven="jelly:maven"
@@ -58,13 +71,11 @@
 
 		<jelly:set var="webapp.dir.mount" value="${webapp.dir}/mount"/>
 		<jelly:set var="webapp.dir.mount.component" value="${webapp.dir.mount}/login"/>
-		<jelly:set var="webapp.dir.mount.component.web" value="${webapp.dir.mount.component}/web"/>
 
 		<ant:mkdir dir="${webapp.dir.mount}"/>
 		<ant:mkdir dir="${webapp.dir.mount.component}"/>
-		<ant:mkdir dir="${webapp.dir.mount.component.web}"/>
 
-		<ant:move todir="${webapp.dir.mount.component.web}">
+		<ant:move todir="${webapp.dir.mount.component}">
 			<ant:fileset dir="${webapp.dir}/web"/>
 		</ant:move>
 

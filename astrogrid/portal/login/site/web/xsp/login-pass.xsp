@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/xsp/Attic/login-pass.xsp,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 11:17:50 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 13:18:08 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.1  2004/01/09 13:18:08  dave
+    |   Shuffled things round for Maven build
+    |
     |   Revision 1.5  2004/01/09 11:17:50  dave
     |   Tidying up ... converted tabs to spaces
     |
