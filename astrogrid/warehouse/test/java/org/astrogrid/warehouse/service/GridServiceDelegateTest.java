@@ -165,7 +165,7 @@ public class GridServiceDelegateTest extends TestCase {
    * assumes that the isnatnce is dead.
    * This test only makes sense when simulation is off.
    */
-  public void testDetectionOfMissingDelegate () throws Exception {
+  public void testDetectionOfMissingInstance () throws Exception {
     GridServiceDelegate d = this.getConfiguredDelegate();
     d.setThrowsExceptions(true);
     d.setSimulating(false);
