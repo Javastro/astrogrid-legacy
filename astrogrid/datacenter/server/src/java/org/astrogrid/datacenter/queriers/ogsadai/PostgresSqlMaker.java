@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.10 2004/04/16 16:45:23 eca Exp $
+/*$Id: PostgresSqlMaker.java,v 1.11 2004/06/25 10:55:43 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,32 +47,35 @@ public class PostgresSqlMaker extends StdSqlMaker {
                 throw new DatabaseAccessException("Translation result " + intermediateRep.getClass().getName() + " not of expected type " + expectedType.getName());
             }
         } catch (Throwable t) {
-            throw new RuntimeException("Translation phase failed:" + t.getMessage());
+            throw new RuntimeException("Translation phase failed",t);
         }
-		return (String) intermediateRep;
+      return (String) intermediateRep;
      }
      catch (QueryException se) {
         throw new IllegalArgumentException("Bad ADQL/XML"+se);
      }
 
-   }  
+   }
 }
 
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.11  2004/06/25 10:55:43  mch
+More detailed exception reporting to translation failure
+
 Revision 1.10  2004/04/16 16:45:23  eca
 *** empty log message ***
 
 Revision 1.9  2004/04/16 16:42:37  eca
-Updated to call ADQLv06Utils - a class specific to ADQL v06. This will only 
+Updated to call ADQLv06Utils - a class specific to ADQL v06. This will only
 be called by the Postgres-specific query translator.
 
 Revision 1.2  2004/04/02 03:27:49  eca
 Fixed package declaration to include "deprecated".
 
 Revision 1.1  2004/04/02 03:09:52  eca
-Created "deprecated" folder to hold old version of PostgresSqlMaker. 
+Created "deprecated" folder to hold old version of PostgresSqlMaker.
 Just in case.
 
 Revision 1.6  2004/03/30 16:21:24  eca
