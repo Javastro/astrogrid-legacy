@@ -1,5 +1,5 @@
 /*
- * $Id: LocalApplicationControllerDelegateTest.java,v 1.1 2003/12/15 14:29:49 pah Exp $
+ * $Id: LocalApplicationControllerDelegateTest.java,v 1.2 2003/12/17 17:16:54 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -35,7 +35,7 @@ public class LocalApplicationControllerDelegateTest extends BaseDBTestCase {
     * @param arg0
     */
    
-   private int executionid;
+   private String executionid;
    private User user;
    private ParameterValues parameters;
    private String applicationid;
@@ -106,7 +106,7 @@ public class LocalApplicationControllerDelegateTest extends BaseDBTestCase {
       parameters.setParameterSpec(TestAppConst.PARAMETERSPEC1);
       try {
          executionid = delegate.initializeApplication(applicationid, "nojobstep", monitorURL, user, parameters);
-         assertTrue("executionid invalid", executionid != -1);
+         assertTrue("executionid invalid", executionid.equals("-1"));
       }
       catch (RemoteException e) {
          // TODO Auto-generated catch block

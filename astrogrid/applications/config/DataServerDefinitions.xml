@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!--$Id: DataServerDefinitions.xml,v 1.1 2003/12/17 17:16:54 pah Exp $-->
+<!--This is a very quick attempt at putting together the description of a datacentre-->
+<ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
+http://www.astrogrid.org/viewcvs/astrogrid/applications/schema/AGParameterDefinition.xsd?rev=HEAD&content-type=text/vnd.viewcvs-markup">
+	<Application name="Datacentre">
+		<Parameters>
+			<Parameter name="ADQL" type="agpd:ADQL" >
+				<UI_Name>Query</UI_Name>
+				<UI_Description>The query that is used as an input search</UI_Description>
+			</Parameter>
+			<Parameter name="ResultVOTable" type="agpd:MySpace_VOTableReference">
+				<UI_Name>Measurement Image</UI_Name>
+				<UI_Description>The Image that is used to measure photometric parameters</UI_Description>
+			</Parameter>
+			<Parameter name="ResultImage" type="agpd:MySpace_FileReference">
+				<UI_Name>Configuration File</UI_Name>
+				<UI_Description>File containing the main configuration parameters for SExtractor</UI_Description>
+			</Parameter>
+		</Parameters>
+		<Interfaces>
+			<Interface name="ConeSearch">
+				<input>
+					<pref ref="ADQL"/>
+				</input>
+				<output>
+					<pref ref="ResultVOTable"/>
+				</output>
+			</Interface>
+			<Interface name="SIA">
+				<input>
+					<pref ref="ADQL"/>
+				</input>
+				<output>
+					<pref ref="ResultImage"/>
+				</output>
+			</Interface>
+		</Interfaces>
+	</Application>
+</ApplicationController>

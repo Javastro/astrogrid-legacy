@@ -3,3 +3,4 @@ maven.log
 build
 target
 tests.log
+server-config.wsdd

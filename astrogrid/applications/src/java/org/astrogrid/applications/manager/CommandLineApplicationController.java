@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.12 2003/12/08 17:06:35 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.13 2003/12/17 17:16:54 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -43,14 +43,14 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#executeApplication(int)
     */
-   public boolean executeApplication(int executionId) {
+   public boolean executeApplication(String executionId) {
       boolean success = false;
       
-      Integer id = new Integer(executionId);
       
-      if (runningApplications.containsKey(id)) {
+      
+      if (runningApplications.containsKey(executionId)) {
          CmdLineApplication app =
-            (CmdLineApplication)runningApplications.get(id);
+            (CmdLineApplication)runningApplications.get(executionId);
             try {
                success = app.execute();
             }
@@ -68,7 +68,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationExecutionStatus(int)
     */
-   public String queryApplicationExecutionStatus(int executionId) {
+   public String queryApplicationExecutionStatus(String executionId) {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("CommandLineApplicationController.queryApplicationExecutionStatus() not implemented");
    }
@@ -76,7 +76,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.community.User, org.astrogrid.applications.ParameterValues)
     */
-   public int initializeApplication(
+   public String initializeApplication(
       String applicationID,
       String jobstepID,
       String jobMonitorURL,
@@ -104,7 +104,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
               
             
               // add this application to the execution map
-              runningApplications.put(new Integer(executionId), cmdLineApplication);
+              runningApplications.put(Integer.toString(executionId), cmdLineApplication);
             
             
             }
@@ -120,7 +120,8 @@ public class CommandLineApplicationController extends AbstractApplicationControl
             e.printStackTrace();
          }     
        
-       return executionId;
+       // the external representation of the execution ID is a string
+       return Integer.toString(executionId);
    }
 
    /**
@@ -132,11 +133,11 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     * Return a running application object.this is package private to assist with the unit tests primarily.
     * @return
     */
-    CmdLineApplication getRunningApplication(int executionID) {
+    CmdLineApplication getRunningApplication(String executionID) {
       CmdLineApplication app = null;
-      Integer i = new Integer(executionID);
-      if (runningApplications.containsKey(i)) {
-         app = (CmdLineApplication)runningApplications.get(i);         
+      
+      if (runningApplications.containsKey(executionID)) {
+         app = (CmdLineApplication)runningApplications.get(executionID);         
       }
       return app;
    }

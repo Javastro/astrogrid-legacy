@@ -11,6 +11,7 @@ public class ApplicationControllerServiceSoapBindingSkeleton implements org.astr
     private org.astrogrid.applications.service.ApplicationController impl;
     private static java.util.Map _myOperations = new java.util.Hashtable();
     private static java.util.Collection _myOperationsList = new java.util.ArrayList();
+
     /**
     * Returns List of OperationDesc objects with this name
     */
@@ -60,7 +61,7 @@ public class ApplicationControllerServiceSoapBindingSkeleton implements org.astr
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "parameters"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues"), org.astrogrid.applications.delegate.beans.ParameterValues.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("initializeApplication", _params, new javax.xml.namespace.QName("", "initializeApplicationReturn"));
-        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         _oper.setElementQName(new javax.xml.namespace.QName("urn:manager.applications.astrogrid.org", "initializeApplication"));
         _oper.setSoapAction("");
         _myOperationsList.add(_oper);
@@ -69,7 +70,7 @@ public class ApplicationControllerServiceSoapBindingSkeleton implements org.astr
         }
         ((java.util.List)_myOperations.get("initializeApplication")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "executionId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "executionId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("executeApplication", _params, new javax.xml.namespace.QName("", "executeApplicationReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
@@ -81,7 +82,7 @@ public class ApplicationControllerServiceSoapBindingSkeleton implements org.astr
         }
         ((java.util.List)_myOperations.get("executeApplication")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
-            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "executionId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, false, false), 
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "executionId"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
         };
         _oper = new org.apache.axis.description.OperationDesc("queryApplicationExecutionStatus", _params, new javax.xml.namespace.QName("", "queryApplicationExecutionStatusReturn"));
         _oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
@@ -124,19 +125,19 @@ public class ApplicationControllerServiceSoapBindingSkeleton implements org.astr
         return ret;
     }
 
-    public int initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.User user, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException
+    public java.lang.String initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.User user, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException
     {
-        int ret = impl.initializeApplication(applicationID, jobstepID, jobMonitorURL, user, parameters);
+        java.lang.String ret = impl.initializeApplication(applicationID, jobstepID, jobMonitorURL, user, parameters);
         return ret;
     }
 
-    public boolean executeApplication(int executionId) throws java.rmi.RemoteException
+    public boolean executeApplication(java.lang.String executionId) throws java.rmi.RemoteException
     {
         boolean ret = impl.executeApplication(executionId);
         return ret;
     }
 
-    public java.lang.String queryApplicationExecutionStatus(int executionId) throws java.rmi.RemoteException
+    public java.lang.String queryApplicationExecutionStatus(java.lang.String executionId) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.queryApplicationExecutionStatus(executionId);
         return ret;

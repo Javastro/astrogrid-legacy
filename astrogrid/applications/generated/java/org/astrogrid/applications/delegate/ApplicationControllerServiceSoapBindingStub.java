@@ -44,8 +44,8 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         oper.addParameter(new javax.xml.namespace.QName("", "jobMonitorURL"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "user"), new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User"), org.astrogrid.applications.delegate.beans.User.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("", "parameters"), new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues"), org.astrogrid.applications.delegate.beans.ParameterValues.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"));
-        oper.setReturnClass(int.class);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "initializeApplicationReturn"));
         oper.setStyle(org.apache.axis.enum.Style.RPC);
         oper.setUse(org.apache.axis.enum.Use.ENCODED);
@@ -53,7 +53,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("executeApplication");
-        oper.addParameter(new javax.xml.namespace.QName("", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
         oper.setReturnClass(boolean.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "executeApplicationReturn"));
@@ -63,7 +63,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("queryApplicationExecutionStatus");
-        oper.addParameter(new javax.xml.namespace.QName("", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "int"), int.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
         oper.setReturnQName(new javax.xml.namespace.QName("", "queryApplicationExecutionStatusReturn"));
@@ -107,16 +107,16 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues");
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.delegate.beans.ParameterValues.class;
+            cls = org.astrogrid.applications.delegate.beans.User.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "User");
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "SimpleApplicationDescription");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.delegate.beans.User.class;
+            cls = org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -128,9 +128,9 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
             cachedSerFactories.add(arraysf);
             cachedDeserFactories.add(arraydf);
 
-            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "SimpleApplicationDescription");
+            qName = new javax.xml.namespace.QName("urn:beans.applications.astrogrid.org", "ParameterValues");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.delegate.beans.SimpleApplicationDescription.class;
+            cls = org.astrogrid.applications.delegate.beans.ParameterValues.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -249,7 +249,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         }
     }
 
-    public int initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.User user, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException {
+    public java.lang.String initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.User user, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -270,14 +270,14 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         else {
             extractAttachments(_call);
             try {
-                return ((java.lang.Integer) _resp).intValue();
+                return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
-                return ((java.lang.Integer) org.apache.axis.utils.JavaUtils.convert(_resp, int.class)).intValue();
+                return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
             }
         }
     }
 
-    public boolean executeApplication(int executionId) throws java.rmi.RemoteException {
+    public boolean executeApplication(java.lang.String executionId) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -290,7 +290,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(executionId)});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {executionId});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -305,7 +305,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
         }
     }
 
-    public java.lang.String queryApplicationExecutionStatus(int executionId) throws java.rmi.RemoteException {
+    public java.lang.String queryApplicationExecutionStatus(java.lang.String executionId) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -318,7 +318,7 @@ public class ApplicationControllerServiceSoapBindingStub extends org.apache.axis
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {new java.lang.Integer(executionId)});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {executionId});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;

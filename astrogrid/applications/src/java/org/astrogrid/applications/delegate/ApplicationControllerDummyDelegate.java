@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerDummyDelegate.java,v 1.4 2003/12/07 01:09:48 pah Exp $
+ * $Id: ApplicationControllerDummyDelegate.java,v 1.5 2003/12/17 17:16:54 pah Exp $
  * 
  * Created on 25-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -62,28 +62,28 @@ public class ApplicationControllerDummyDelegate
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#initializeApplication(java.lang.String, java.lang.String, java.lang.String, org.astrogrid.applications.delegate.beans.ParameterValues)
     */
-   public int initializeApplication(
+   public String initializeApplication(
       String applicationID,
       String jobstepID,
       String jobMonitorURL,
       User user,
       ParameterValues parameters)
       throws RemoteException {
-         return 10;
+         return "10";
     }
     
 
    /* (non-Javadoc)
-    * @see org.astrogrid.applications.delegate.ApplicationController#executeApplication(int)
+    * @see org.astrogrid.applicationss.delegate.ApplicationController#executeApplication(int)
     */
-   public boolean executeApplication(int executionId) throws RemoteException {
+   public boolean executeApplication(String executionId) throws RemoteException {
       return true;
    }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.ApplicationController#queryApplicationExecutionStatus(int)
     */
-   public String queryApplicationExecutionStatus(int executionId)
+   public String queryApplicationExecutionStatus(String executionId)
    {
       return "Running";
     }

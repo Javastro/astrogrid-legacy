@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.10 2003/12/12 21:30:46 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.11 2003/12/17 17:16:54 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -44,7 +44,7 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
 
    private ParameterValues parameters = null;
 
-   private int executionId;
+   private String executionId;
 
    /**
     * Constructor for CommandLineApplicationControllerTest.

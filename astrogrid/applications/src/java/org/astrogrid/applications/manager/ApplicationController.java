@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.12 2003/12/10 00:18:48 pah Exp $
+ * $Id: ApplicationController.java,v 1.13 2003/12/17 17:16:54 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -48,20 +48,20 @@ public interface ApplicationController {
     * @param parameters the description of the job parameters.
     * @return an identifier for this particular execution instance -1 indicates a failure in initializing the application.
     */
-   int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, org.astrogrid.applications.ParameterValues parameters);
+   String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, org.astrogrid.applications.ParameterValues parameters);
 
    /**
     * Executes a particular application asynchronously that has previously been intialized by {@link #initializeApplication}
     * @param executionId The executionId returned by {@link #initializeApplication} .
     */
-   boolean executeApplication(int executionId);
+   boolean executeApplication(String executionId);
 
    /**
     * Query the status of a particular application execution.
     * @param executionId The executionId returned by {@link #initializeApplication} .
     * @return A String describing the current status of the application.
     */
-   String queryApplicationExecutionStatus(int executionId);
+   String queryApplicationExecutionStatus(String executionId);
 
    /**
     * Returns an xml string describing the application service controller and the applications that it controls. This string would be suitable for putting in the registry.

@@ -1,5 +1,5 @@
 /**
- * $Id: ApplicationControllerServiceSoapBindingImpl.java,v 1.7 2003/12/10 00:18:48 pah Exp $
+ * $Id: ApplicationControllerServiceSoapBindingImpl.java,v 1.8 2003/12/17 17:16:54 pah Exp $
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -86,7 +86,7 @@ public class ApplicationControllerServiceSoapBindingImpl
       return outdesc;
    }
 
-   public int initializeApplication(
+   public String initializeApplication(
       java.lang.String applicationID,
       java.lang.String jobstepID,
       java.lang.String jobMonitorURL,
@@ -117,11 +117,11 @@ public class ApplicationControllerServiceSoapBindingImpl
          outvals);
    }
 
-   public boolean executeApplication(int executionId) throws java.rmi.RemoteException {
+   public boolean executeApplication(String executionId) throws java.rmi.RemoteException {
       return applicationController.executeApplication(executionId);
    }
 
-   public java.lang.String queryApplicationExecutionStatus(int executionId)
+   public java.lang.String queryApplicationExecutionStatus(String executionId)
       throws java.rmi.RemoteException {
       return applicationController.queryApplicationExecutionStatus(executionId);
    }

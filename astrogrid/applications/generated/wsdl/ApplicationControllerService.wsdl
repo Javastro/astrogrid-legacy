@@ -59,13 +59,13 @@
 
    <wsdl:message name="queryApplicationExecutionStatusRequest">
 
-      <wsdl:part name="executionId" type="xsd:int"/>
+      <wsdl:part name="executionId" type="xsd:string"/>
 
    </wsdl:message>
 
    <wsdl:message name="initializeApplicationResponse">
 
-      <wsdl:part name="initializeApplicationReturn" type="xsd:int"/>
+      <wsdl:part name="initializeApplicationReturn" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -77,7 +77,7 @@
 
    <wsdl:message name="executeApplicationRequest">
 
-      <wsdl:part name="executionId" type="xsd:int"/>
+      <wsdl:part name="executionId" type="xsd:string"/>
 
    </wsdl:message>
 
