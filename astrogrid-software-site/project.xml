@@ -20,6 +20,34 @@
     </repository>
     <build/>
     <properties/>
+    <!-- things that we need to fetch and unpack  - jnlp packages only.
+    distros, etc can be linked directly into the repository. -->
+    <dependencies>
+    	<dependency>
+    		<artifactId>astrogrid-cdk-core</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>
+    	<dependency>
+    		<artifactId>astrogrid-cdk-workflow</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>
+    	<dependency>
+    		<artifactId>jescript-shell</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>
+    	<dependency>
+    		<artifactId>aladin-avo</artifactId>
+    		<groupId>org.astrogrid</groupId>
+    		<type>war</type>
+    		<version>${astrogrid.aggregate.version}</version>
+    	</dependency>    	    	    	
+    </dependencies>
     <reports>
         <report>maven-license-plugin</report>
         <report>maven-linkcheck-plugin </report>

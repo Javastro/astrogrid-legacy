@@ -26,6 +26,13 @@
             <item name="Itn04_1" href="http://www.astrogrid.org/maven/docs/Itn04_1_release/"/>
             <item name="Itn04" href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
             </item>
+		</menu>
+		<menu name="Clients">
+			<!-- nasty, but only way to have img and text at same time -->
+			<item name="Web Start" img="/images/new.png" href="/jnlp/index.html">
+				<item name="Web Start" href="/jnlp/index.html"  />		
+				<item name="Client Development Kit" href="/cdk.html"  />			
+			</item>
         </menu>
 		<menu name="Users and Installers">
 			<item name="Installing AstroGrid software" href="/userdocs/index.html" collapse="true">

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.1 2004/09/24 10:53:08 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.2 2004/12/02 16:09:29 nw Exp $ -->
 <!-- extension maven script -->
-<project>
+<project  xmlns:deploy="deploy"  xmlns:j="jelly:core">
 	<!-- astrogrid goals for nightly build -->
 	<goal name="astrogrid-clean" prereqs="clean"/>
 	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
@@ -37,4 +37,28 @@
       <attainGoal name="html2xdoc"/>
       <attainGoal name="faq"/>
 	</preGoal>
+	
+	<!-- copy war files into jnlp folder, and unpackage each of them -->
+	
+	<postGoal name="xdoc:copy-user-resources">
+		                <deploy:copy-deps todir="${maven.docs.dest}/jnlp" />
+		                <!-- for each file, need to create subdir, and then unwar into that subdir - why is nothing ever easy? -->		                
+				        <fileScanner var="wars">
+		    	            <fileset dir="${maven.docs.dest}/jnlp">
+	            	            <include name="*.war" />
+		            	    </fileset>
+			        	</fileScanner><!-- (-[^-]*\d[^-]*-)|(.war) -->
+				        <j:forEach var="war" items="${wars.iterator()}">	<!-- ${war} will contain a java.io.File -->
+				        	<j:set var="warPrefix" value='${war.getName().replaceAll("(-[^-]*\d[^-]*)|(\.war)","")}' /><!-- take the version number off the warfile name - assumes each part of a version num will have at least one digit.-->
+				        	<mkdir dir="${maven.docs.dest}/jnlp/${warPrefix}" />
+				        	<unwar src="${war}" dest="${maven.docs.dest}/jnlp/${warPrefix}" />
+				        </j:forEach>
+				        <!-- clean up -->
+				        <delete>
+				        	<fileset dir="${maven.docs.dest}/jnlp">
+				        		<include name="*.war" />
+				        	</fileset>
+				        </delete>
+	</postGoal>
+	
 </project>
