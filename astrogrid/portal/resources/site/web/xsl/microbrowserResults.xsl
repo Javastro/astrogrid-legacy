@@ -82,6 +82,36 @@
       }
     }
     
+    /*
+     * populateAndCloseTask()
+     * Populate relevant text field in parent window
+     *
+     * @param id       element id
+     * @param key      value to insert           
+     */ 
+    function populateAndCloseTask(id, key)
+    {
+      parentDoc = parent.opener.document;
+      parentId = parentDoc.getElementById(id);
+      parentId.value = key;
+      parent.window.close();
+    } 
+    
+    /*
+     * populateAndCloseCatalog()
+     * Populate relevant text field in parent window
+     *
+     * @param identifier      value to insert           
+     */ 
+    function populateAndCloseCatalog(identifier)
+    {
+      var url = "/astrogrid-portal/main/mount/datacenter/variablesFromMB.html?action=getTable&amp;uniqueID=";
+      url = url + identifier;
+	  parent.window.close();
+	  parent.opener.parent.location.href = url;
+	  parent.opener.parent.focus();     
+	}    
+    
 	    
    </script>       
         
