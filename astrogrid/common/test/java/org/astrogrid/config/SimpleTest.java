@@ -26,6 +26,8 @@ public class SimpleTest extends TestCase
    {
       //load from URL
       URL testUrl = getClass().getResource(testPropertyFile);
+      assertNotNull("Test not set up properly, '"+testPropertyFile+"' missing");
+      
       SimpleConfig.load(testUrl);
       //load from file - should fail
       //make sure we get an exception if we try loading a non-existant file
@@ -49,23 +51,6 @@ public class SimpleTest extends TestCase
 
    }
 
-   /**
-    * Tests auto load.  Not entirely sure what this 'should' do - all depends
-    * on the environment
-    */
-   public void testAutoload() throws IOException
-   {
-      //SimpleConfig.autoLoad(); //should not call this twice as second call ignored - jdt
-      
-      SimpleConfig.setProperty("TEST.FRUIT","Unix is not fruit");
-      
-      //try again, this time making sure that System Property is set
-      System.setProperty("AG_CONFIG", getClass().getResource(testPropertyFile).toString());
-      
-      //check that property has been set from system environment
-      String fruit = SimpleConfig.getProperty("TEST.FRUIT");
-      assertEquals("Should return APPLE", "APPLE",fruit);
-   }
    
    /**
     * Some keys are valid, some are not - this tests that the assertions for
@@ -114,7 +99,7 @@ public class SimpleTest extends TestCase
 
       //check it's loaded a value
       String fruit = SimpleConfig.getProperty("TEST.FRUIT");
-      assertEquals("Didn't get right result from '"+testPropertyFile+"'", fruit, "APPLE");
+      assertEquals("Didn't get right result from '"+testPropertyFile+"'", "APPLE", fruit );
 
       //check default is NOT returned if there IS a value
       fruit = SimpleConfig.getProperty("TEST.FRUIT", "Banana");

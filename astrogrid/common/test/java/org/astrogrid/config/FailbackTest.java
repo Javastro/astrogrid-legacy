@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackTest.java,v 1.2 2004/03/01 23:05:31 mch Exp $
+ * $Id: FailbackTest.java,v 1.3 2004/03/01 23:13:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -180,7 +180,7 @@ public class FailbackTest extends TestCase
       assertEquals("Unexpected value", "12", config.getString("TEST.URL.INTOBJ"));
       
       //check returns default OK
-      assertEquals(5, config.getInt("TEST.NOT.THERE", 6));
+      assertEquals(5, config.getInt("TEST.NOT.THERE", 5));
       
       //check returns default OK
       assertEquals(new URL("http://something/path"), config.getUrl("TEST.NOT.THERE", new URL("http://something/path")));
@@ -210,6 +210,9 @@ public class FailbackTest extends TestCase
 
 /*
  $Log: FailbackTest.java,v $
+ Revision 1.3  2004/03/01 23:13:31  mch
+ Fixed failed tests
+
  Revision 1.2  2004/03/01 23:05:31  mch
  Increased test coverage
 
@@ -226,4 +229,5 @@ public class FailbackTest extends TestCase
  Changed to use config
 
  */
+
 
