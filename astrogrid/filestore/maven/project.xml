@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/07/27 12:16:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2004/08/18 19:00:01  dave
+    |   Myspace manager modified to use remote filestore.
+    |   Tested before checkin - integration tests at 91%.
+    |
+    |   Revision 1.4.2.1  2004/07/27 15:50:54  dave
+    |   Changed tabs to spaces
+    |
     |   Revision 1.4  2004/07/27 12:16:07  jdt
     |   whoopsie
     |
@@ -26,8 +33,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ant="jelly:ant"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
-	<extend>../../maven-base/project.xml</extend>
-
+    <!--+
+        | Extend the global astrogrid project.xml.
+        +-->
+    <extend>../../maven-base/project.xml</extend>
 
     <!--+
         | The project developers.
@@ -36,27 +45,27 @@
         <!--+
             | Catherine Qin
             +-->
-		<developer>
-			<name>Catherine Qin</name>
-			<id>clq2</id>
-			<email>clq2@star.le.ac.uk</email>
-			<organization>Leicester</organization>
-			<roles>
-				<role>Software Developer</role>
-			</roles>
-		</developer>
+        <developer>
+            <name>Catherine Qin</name>
+            <id>clq2</id>
+            <email>clq2@star.le.ac.uk</email>
+            <organization>Leicester</organization>
+            <roles>
+                <role>Software Developer</role>
+            </roles>
+        </developer>
         <!--+
             | Clive Davenhall
             +-->
-		<developer>
-			<name>Clive Davenhall</name>
-			<id>acd</id>
-			<email>acd@roe.ac.uk</email>
-			<organization>ROE</organization>
-			<roles>
-				<role>Software Developer</role>
-			</roles>
-		</developer>
+        <developer>
+            <name>Clive Davenhall</name>
+            <id>acd</id>
+            <email>acd@roe.ac.uk</email>
+            <organization>ROE</organization>
+            <roles>
+                <role>Software Developer</role>
+            </roles>
+        </developer>
         <!--+
             | Dave Morris
             +-->

@@ -1,11 +1,21 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/resolver/FileStoreEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileStoreEndpointResolver.java,v $
+ *   Revision 1.4  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
+ *   Revision 1.3.8.2  2004/08/02 16:45:43  dave
+ *   Added debug ....
+ *
+ *   Revision 1.3.8.1  2004/07/28 03:00:17  dave
+ *   Refactored resolver constructors and added mock ivorn
+ *
  *   Revision 1.3  2004/07/23 15:17:30  dave
  *   Merged development branch, dave-dev-200407231013, into HEAD
  *
@@ -64,36 +74,66 @@ public class FileStoreEndpointResolver
      */
     public FileStoreEndpointResolver()
         {
-        //
-        // Initialise our default registry delegate.
-        this.registry = factory.createQuery() ;
+		this(
+			(URL) null
+			) ;
         }
 
     /**
      * Public constructor, for a specific Registry service.
-     * @param registry The endpoint address for our RegistryDelegate.
+     * @param endpoint The endpoint address for our RegistryDelegate.
      *
      */
     public FileStoreEndpointResolver(URL registry)
+		{
+		this(
+			registry,
+			new RegistryDelegateFactory()
+			) ;
+		}
+
+    /**
+     * Public constructor, for a specific Registry service.
+     * @param registry The endpoint address for our registry service.
+     * @param factory A factory to create our registry delegate.
+     *
+     */
+    public FileStoreEndpointResolver(URL registry, RegistryDelegateFactory factory)
         {
-		//
-		// Check for null URL.
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("FileStoreEndpointResolver()") ;
+        if (DEBUG_FLAG) System.out.println("  Registry : " + registry) ;
+		if (null == factory)
+			{
+			throw new IllegalArgumentException(
+				"Null registry delegate factory"
+				) ;
+			}
 		if (null == registry)
 			{
-            throw new IllegalArgumentException(
-                "Null registry URL"
-                ) ;
+	        this.registry = factory.createQuery() ;
 			}
-        //
-        // Initialise our registry delegate.
-        this.registry = factory.createQuery(registry) ;
+		else {
+	        this.registry = factory.createQuery(registry) ;
+			}
         }
 
     /**
-     * Our Registry delegate factory.
+     * Public constructor, using a specific registry delegate.
+     * @param registry The registry delegate.
      *
      */
-    private static RegistryDelegateFactory factory = new RegistryDelegateFactory() ;
+    public FileStoreEndpointResolver(RegistryService registry)
+        {
+		if (null == registry)
+			{
+			throw new IllegalArgumentException(
+				"Null registry delegate"
+				) ;
+			}
+		this.registry = registry ;
+		}
 
     /**
      * Our Registry delegate.
@@ -107,11 +147,10 @@ public class FileStoreEndpointResolver
      * @return The endpoint address for the service.
      * @throws FileStoreIdentifierException If the identifier is not valid.
      * @throws FileStoreResolverException If unable to resolve the identifier.
-     * @throws RegistryException If the Registry is unable to handle the identifier.
      *
      */
     public URL resolve(Ivorn ivorn)
-        throws RegistryException, FileStoreIdentifierException, FileStoreResolverException
+        throws FileStoreIdentifierException, FileStoreResolverException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -127,7 +166,7 @@ public class FileStoreEndpointResolver
             }
         //
         // Parse the ivorn and resolve it.
-        return this.resolve(
+    	return this.resolve(
             new FileStoreIvornParser(ivorn)
             ) ;
         }
@@ -138,11 +177,10 @@ public class FileStoreEndpointResolver
      * @return The endpoint address for the service.
      * @throws FileStoreIdentifierException If the identifier is not valid.
      * @throws FileStoreResolverException If unable to resolve the identifier.
-     * @throws RegistryException If the Registry is unable to handle the identifier.
      *
      */
     public URL resolve(FileStoreIvornParser parser)
-        throws RegistryException, FileStoreIdentifierException, FileStoreResolverException
+        throws FileStoreIdentifierException, FileStoreResolverException
         {
         if (DEBUG_FLAG) System.out.println("") ;
         if (DEBUG_FLAG) System.out.println("----\"----") ;

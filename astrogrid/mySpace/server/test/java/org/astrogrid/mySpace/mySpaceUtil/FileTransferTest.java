@@ -40,7 +40,7 @@ public class FileTransferTest extends TestCase {
    * is not available in the current directory.
    */
   public void setUp () throws Exception {
-	FileReader f = new FileReader("transfer-tests-sources.txt");
+	FileReader f = new FileReader("./conf/transfer-tests-sources.txt");
     this.testSources = new BufferedReader(f);
   }
 

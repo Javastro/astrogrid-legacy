@@ -942,9 +942,19 @@ public class ManagerGenuine implements Manager
 
    public KernelResults createAccount(String newAccount, boolean test)
      throws java.rmi.RemoteException
-   {  KernelResults results = new KernelResults();
+   {  
+      System.out.println("----");
+      System.out.println("ManagerGenuine.createAccount()");
+      System.out.println("  Test    : " + test);
+      System.out.println("  Account : " + newAccount);
+      
+      System.out.println("Creating KernelResults");
+      KernelResults results = new KernelResults();
+      System.out.println("Done");
 
+      System.out.println("Calling setup");
       setUp();
+      System.out.println("Done");
 
       try
       {
@@ -965,8 +975,15 @@ public class ManagerGenuine implements Manager
 //
 //      Invoke the MySpaceActions object perform the appropriate tasks.
 
+         System.out.println("Setting Actions registry name");
+         System.out.println("  Name : " + registryName);
          actions.setRegistryName(registryName);
+         System.out.println("Done");
+         System.out.println("Calling Actions createAccount");
+         System.out.println("  Account    : " + account);
+         System.out.println("  NewAccount : " + newAccount);
          boolean success = actions.createAccount(account, newAccount);
+         System.out.println("Done");
 
 //
 //      Generate a success method if the method succeeded.
@@ -1082,19 +1099,44 @@ public class ManagerGenuine implements Manager
 // be tested.
 
    protected void setUp()
-   {  try
+   {
+      System.out.println("----");
+      System.out.println("ManagerGenuine.setUp()");
+   
+     try
       {  
 //
 //      Get the configuration options from the properties file.
-
-         Configuration config = new Configuration("dummy");
+         System.out.println("Attempting to load config ...");
+         try {
+             Configuration config = new Configuration("dummy");
+             }
+         catch(Throwable ouch)
+		     {
+             System.out.println("Exception loading config");
+             System.out.println("Exception : " + ouch);
+			 ouch.printStackTrace() ;
+			 }
+         System.out.println("Done");
 
 //
 //      Get the MySpace registry name.
 
+         System.out.println("Attempting to get registry name ...");
          MMC.getInstance().checkPropertiesLoaded();
-         registryName = MMC.getProperty(MMC.REGISTRYCONF,
-             MMC.CATLOG);  
+         try {
+             registryName = MMC.getProperty(
+                 MMC.REGISTRYCONF,
+                 MMC.CATLOG
+                 );  
+             }
+         catch(Throwable ouch)
+		     {
+             System.out.println("Exception reading config");
+             System.out.println("Exception : " + ouch);
+			 ouch.printStackTrace() ;
+			 }
+         System.out.println("Done");
 
 //
 //      Set the log file options.

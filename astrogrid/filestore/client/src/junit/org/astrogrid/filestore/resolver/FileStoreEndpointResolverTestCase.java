@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/junit/org/astrogrid/filestore/resolver/FileStoreEndpointResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreEndpointResolverTestCase.java,v $
+ *   Revision 1.4  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
+ *   Revision 1.3.8.1  2004/07/28 03:00:17  dave
+ *   Refactored resolver constructors and added mock ivorn
+ *
  *   Revision 1.3  2004/07/23 15:17:30  dave
  *   Merged development branch, dave-dev-200407231013, into HEAD
  *
@@ -32,6 +39,8 @@ import junit.framework.TestCase ;
 import org.apache.axis.client.Call ;
 
 import org.astrogrid.store.Ivorn ;
+
+import org.astrogrid.registry.client.query.RegistryService ;
 
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 
@@ -79,7 +88,7 @@ public class FileStoreEndpointResolverTestCase
 		{
 		try {
 			new FileStoreEndpointResolver(
-				null
+				(RegistryService) null
 				) ;
 			}
 		catch (IllegalArgumentException ouch)

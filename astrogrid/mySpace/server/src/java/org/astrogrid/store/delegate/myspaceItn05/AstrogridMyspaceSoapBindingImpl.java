@@ -234,14 +234,22 @@ public class AstrogridMyspaceSoapBindingImpl implements
 
    public KernelResults createAccount(String newAccount, boolean test)
      throws java.rmi.RemoteException
-   {  KernelResults results = new KernelResults();
+   {  
+      System.out.println("----");
+      System.out.println("BindingImpl.createAccount()");
+      System.out.println("  Test    : " + test);
+      System.out.println("  Account : " + newAccount);
+      KernelResults results = new KernelResults();
 
       if (test)
       {  ManagerFake fake = new ManagerFake();
          results = fake.createAccount(newAccount, test);
       }
       else
-      {  ManagerGenuine genuine = new ManagerGenuine();
+      {  
+         System.out.println("Attempting to create ManagerGenuine ...");
+         ManagerGenuine genuine = new ManagerGenuine();
+         System.out.println("Attempting to call ManagerGenuine ...");
          results = genuine.createAccount(newAccount, test);
       }
 

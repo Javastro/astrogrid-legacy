@@ -1,10 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/filestore/integration/FileStoreIntegrationTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreIntegrationTest.java,v $
+ *   Revision 1.5  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
  *   Revision 1.4  2004/07/27 13:41:17  dave
  *   Merged development branch, dave-dev-200407261230, into HEAD
  *
@@ -64,7 +68,7 @@ public class FileStoreIntegrationTest
 			resolver.resolve(
 				new Ivorn(
 					getConfigProperty(
-						"org.astrogrid.filestore.service"
+						"org.astrogrid.filestore.service.ivorn"
 						)
 					)
 				) ;

@@ -1,10 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.6  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
+ *   Revision 1.5.10.3  2004/08/09 10:16:28  dave
+ *   Added resource URL to the properties.
+ *
+ *   Revision 1.5.10.2  2004/08/06 22:25:06  dave
+ *   Refactored bits and broke a few tests ...
+ *
+ *   Revision 1.5.10.1  2004/08/02 14:54:15  dave
+ *   Trying to get integration tests to run
+ *
  *   Revision 1.5  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -71,8 +84,11 @@ import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.file.FileIdentifier ;
 
+import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
+
 import org.astrogrid.filestore.common.transfer.TransferUtil ;
 import org.astrogrid.filestore.common.transfer.TransferProperties ;
+
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
@@ -92,10 +108,22 @@ public class FileStoreMock
 	protected static final boolean DEBUG_FLAG = true ;
 
 	/**
-	 * Ivorn identifier for the mock service.
+	 * Ivorn for the mock service.
 	 *
 	 */
-	public static final String MOCK_SERVICE_IDENT = "ivo://org.astrogrid.mock/filestore" ;
+	public static final String MOCK_SERVICE_IVORN = "ivo://org.astrogrid.mock/filestore" ;
+
+	/**
+	 * URL for the mock service.
+	 *
+	 */
+	public static final String MOCK_SERVICE_URL   = "http://mock.astrogrid.org/filestore" ;
+
+	/**
+	 * Ident for the mock service.
+	 *
+	 */
+	public static final String MOCK_SERVICE_IDENT = "org.astrogrid.mock/filestore" ;
 
 	/**
 	 * Internal Map of data objects.
@@ -147,15 +175,58 @@ public class FileStoreMock
 			// Create our properties.
 			this.properties = new FileProperties(props) ;
 			//
-			// Update our internal properties.
+			// Update our file properties.
+//			this.properties.setProperty(
+//				FileProperties.STORE_SERVICE_IDENT,
+//				MOCK_SERVICE_IDENT
+//				) ;
+			//
+			// Set the service ivorn.
 			this.properties.setProperty(
-				FileProperties.STORE_SERVICE_IDENTIFIER,
-				MOCK_SERVICE_IDENT
+				FileProperties.STORE_SERVICE_IVORN,
+				MOCK_SERVICE_IVORN
 				) ;
+			//
+			// Set the resource ident.
 			this.properties.setProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER,
+				FileProperties.STORE_RESOURCE_IDENT,
 				this.ident()
 				) ;
+			//
+			// Set the resource ivorn.
+			try {
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_IVORN,
+					FileStoreIvornFactory.createIdent(
+						MOCK_SERVICE_IDENT,
+						this.ident()
+						)
+					) ;
+				}
+			catch (FileStoreIdentifierException ouch)
+				{
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_IVORN,
+					null
+					) ;
+				}
+			//
+			// Set the service URL.
+			try {
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_URL,
+					new URL(
+						MOCK_SERVICE_URL + "/" + this.ident()
+						).toString()
+					) ;
+				}
+			catch (MalformedURLException ouch)
+				{
+				this.properties.setProperty(
+					FileProperties.STORE_RESOURCE_URL,
+					null
+					) ;
+				}
 			}
 
 		/**
@@ -266,7 +337,7 @@ public class FileStoreMock
 			//
 			// Set our propeties from the URL headers.
 			this.properties.setProperty(
-				FileProperties.TRANSFER_SOURCE_PROPERTY,
+				FileProperties.TRANSFER_SOURCE_URL,
 				url.toString()
 				) ;
 			this.properties.setProperty(
@@ -311,7 +382,7 @@ public class FileStoreMock
 	 */
 	public String identifier()
 		{
-		return MOCK_SERVICE_IDENT ;
+		return MOCK_SERVICE_IVORN ;
 		}
 
 	/**

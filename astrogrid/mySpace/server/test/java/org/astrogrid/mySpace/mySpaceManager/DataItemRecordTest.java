@@ -23,45 +23,69 @@ public class DataItemRecordTest extends TestCase
    {  super(name);
    }
 
-/**
- * Test the <code>getServer</code> method.  Note that this method is
- * tested because it more than a simple code>get</code> which returns
- * a member variable.
- */
+	/**
+	 * Test the <code>getServer</code> method.  Note that this method is
+	 * tested because it more than a simple code>get</code> which returns
+	 * a member variable.
+	 */
+	public void testGetServer()
+		{
+		Date creation = new Date(0);
+		DataItemRecord dataItem = new DataItemRecord(
+			"/clq@lei/serv1/file",
+			0,
+			"file",
+			null,
+			null,
+			"owner",
+			creation,
+			creation,
+			0,
+			DataItemRecord.UNKNOWN,
+			"permissions"
+			);
+		assertEquals(
+			"serv1",
+			dataItem.getServer()
+			);
+		}
 
-  public void testGetServer()
-   {  Date creation = new Date(0);
-      DataItemRecord dataItem = new DataItemRecord(
-        "/clq@lei/serv1/file", 0, "file",
-        "owner", creation, creation, 0, DataItemRecord.UNKNOWN,
-        "permissions");
-
-      Assert.assertEquals(dataItem.getServer(), "serv1");
-   }
-
-/**
- * Test the <code>resetDataItemFile</code> method.
- */
-
-   public void testResetDataItemFile()
-   {  Date creation = new Date(0);
-      DataItemRecord dataItem = new DataItemRecord("name", 0, "file",
-        "owner", creation, creation, 0, DataItemRecord.UNKNOWN,
-        "permissions");
-
-//
-//   Check that the dataItemFile has been set correctly, reset it and
-//   check that it is null.
-
-      Assert.assertEquals(dataItem.getDataItemFile(), "file");
-      dataItem.resetDataItemFile();
-      Assert.assertEquals(dataItem.getDataItemFile(), null);
-   }
+	/**
+	 * Test the <code>resetDataItemFile</code> method.
+	 */
+	public void testResetDataItemFile()
+		{
+		Date creation = new Date(0);
+		DataItemRecord dataItem = new DataItemRecord(
+			"name",
+			0,
+			"file",
+			null,
+			null,
+			"owner",
+			creation,
+			creation,
+			0,
+			DataItemRecord.UNKNOWN,
+			"permissions"
+			);
+		//
+		//   Check that the dataItemFile has been set correctly, reset it and
+		//   check that it is null.
+		assertEquals(
+			"file",
+			dataItem.getDataItemFile()
+			);
+		dataItem.resetDataItemFile();
+		assertEquals(
+			null,
+			dataItem.getDataItemFile()
+			);
+		}
 
 /**
  * Test the <code>translateType</code> method.
  */
-
    public void testTranslateType()
    {  Assert.assertEquals(DataItemRecord.VOT,
         DataItemRecord.translateType("VOT") );
@@ -76,19 +100,30 @@ public class DataItemRecordTest extends TestCase
         DataItemRecord.translateType("burble burble") );
    }
 
-/**
- * Test the <code>toString</code> method.
- */
-
-   public void testToString()
-   {  Date creation = new Date(0);
-      DataItemRecord dataItem = new DataItemRecord("name", 0, "file",
-        "owner", creation, creation, 0, DataItemRecord.UNKNOWN,
-        "permissions");
-
-      Assert.assertEquals(dataItem.toString(),
-       "name (unknown, created 01/01/70 01:00)");
-   }
+	/**
+	 * Test the <code>toString</code> method.
+	 */
+	public void testToString()
+		{
+		Date creation = new Date(0);
+		DataItemRecord dataItem = new DataItemRecord(
+			"name",
+			0,
+			"file",
+			null,
+			null,
+			"owner",
+			creation,
+			creation,
+			0,
+			DataItemRecord.UNKNOWN,
+			"permissions"
+			);
+		assertEquals(
+			"name (unknown, created 01/01/70 01:00)",
+			dataItem.toString()
+			);
+		}
 
 /**
  * Main method to run the class.

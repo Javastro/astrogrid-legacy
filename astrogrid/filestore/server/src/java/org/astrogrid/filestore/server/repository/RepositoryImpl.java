@@ -2,10 +2,26 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.6  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
+ *   Revision 1.5.10.4  2004/08/09 10:16:28  dave
+ *   Added resource URL to the properties.
+ *
+ *   Revision 1.5.10.3  2004/08/06 22:25:06  dave
+ *   Refactored bits and broke a few tests ...
+ *
+ *   Revision 1.5.10.2  2004/08/04 17:03:33  dave
+ *   Added container to servlet
+ *
+ *   Revision 1.5.10.1  2004/08/02 14:54:15  dave
+ *   Trying to get integration tests to run
+ *
  *   Revision 1.5  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -43,6 +59,7 @@ package org.astrogrid.filestore.server.repository ;
 
 import java.net.URL ;
 import java.net.URLConnection ;
+import java.net.MalformedURLException ;
 
 import java.io.File ;
 import java.io.IOException ;
@@ -55,6 +72,9 @@ import java.io.FileNotFoundException ;
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.file.FileIdentifier ;
+
+import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
+
 import org.astrogrid.filestore.common.transfer.TransferUtil ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
@@ -143,6 +163,7 @@ public class RepositoryImpl
 	 * @throws FileStoreIdentifierException if the identifier is null or not valid.
 	 * @throws FileStoreNotFoundException if unable to locate the file.
 	 * @throws FileStoreServiceException if unable handle the request.
+	 * @todo Use FileIdentifier to ensure the ident is valid (which it don't yet).
 	 *
 	 */
 	public RepositoryContainer load(String ident)
@@ -265,14 +286,32 @@ public class RepositoryImpl
 			// Create a new identifier.
 			this.ident = new FileIdentifier() ;
 			//
-			// Update the info properties.
+			// Set the service ivorn.
 			this.properties.setProperty(
-				FileProperties.STORE_SERVICE_IDENTIFIER,
-				config.getServiceIdent()
+				FileProperties.STORE_SERVICE_IVORN,
+				config.getServiceIvorn().toString()
 				) ;
+			//
+			// Set the resource ident.
 			this.properties.setProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER,
+				FileProperties.STORE_RESOURCE_IDENT,
 				ident.toString()
+				) ;
+			//
+			// Set the resource ivorn.
+			this.properties.setProperty(
+				FileProperties.STORE_RESOURCE_IVORN,
+				config.getResourceIvorn(
+					ident.toString()
+					).toString()
+				) ;
+			//
+			// Set the resource URL.
+			this.properties.setProperty(
+				FileProperties.STORE_RESOURCE_URL,
+				config.getResourceUrl(
+					ident.toString()
+					).toString()
 				) ;
 			//
 			// Save the container info.
@@ -303,9 +342,11 @@ public class RepositoryImpl
 
 		/**
 		 * Generate the properties file path.
+		 * @throws FileStoreServiceException if unable handle the request.
 		 *
 		 */
 		public File getInfoFile()
+			throws FileStoreServiceException
 			{
 			return new File(
 				config.getInfoDirectory(),
@@ -315,9 +356,11 @@ public class RepositoryImpl
 
 		/**
 		 * Generate the data file path.
+		 * @throws FileStoreServiceException if unable handle the request.
 		 *
 		 */
 		public File getDataFile()
+			throws FileStoreServiceException
 			{
 			return new File(
 				config.getDataDirectory(),
@@ -384,10 +427,10 @@ public class RepositoryImpl
 		 * Delete the container file(s).
 		 * @throws FileStoreNotFoundException If unable to locate the file.
 		 * @throws FileStoreServiceException If unable to complete the action.
-		 * @todo Add more robust error reporting.
 		 *
 		 */
 		public void delete()
+			throws FileStoreServiceException
 			{
 			this.getDataFile().delete() ;
 			this.getInfoFile().delete() ;
@@ -545,7 +588,7 @@ public class RepositoryImpl
 				//
 				// Set our propeties from the URL headers.
 				this.properties.setProperty(
-					FileProperties.TRANSFER_SOURCE_PROPERTY,
+					FileProperties.TRANSFER_SOURCE_URL,
 					url.toString()
 					) ;
 				this.properties.setProperty(
@@ -575,7 +618,7 @@ public class RepositoryImpl
 			}
 
 		/**
-		 * Import our data from am InputStream.
+		 * Import our data from an InputStream.
 		 * @param stream The input stream to import the data from.
 		 * @throws FileStoreTransferException If unable to complete the action.
 		 * @throws FileStoreServiceException If unable to open the local file.
@@ -588,6 +631,32 @@ public class RepositoryImpl
 				TransferUtil trans = new TransferUtil(
 					stream,
 					this.getDataOutputStream()
+					) ;
+				trans.transfer() ;
+				}
+			catch (IOException ouch)
+				{
+				throw new FileStoreTransferException(
+					"Encountered error while transferring data",
+					ouch
+					) ;
+				}
+			}
+
+		/**
+		 * Export our data to an OutputStream.
+		 * @param stream The output stream to export the data to.
+		 * @throws FileStoreTransferException If unable to complete the action.
+		 * @throws FileStoreServiceException If unable to open the local file.
+		 *
+		 */
+		public void exportData(OutputStream stream)
+			throws FileStoreServiceException, FileStoreNotFoundException, FileStoreTransferException
+			{
+			try {
+				TransferUtil trans = new TransferUtil(
+					this.getDataInputStream(),
+					stream
 					) ;
 				trans.transfer() ;
 				}

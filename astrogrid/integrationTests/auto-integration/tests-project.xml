@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.26 2004/08/18 13:16:45 clq2 Exp $ -->
+<!-- $Id: tests-project.xml,v 1.27 2004/08/18 19:00:01 dave Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -485,3 +485,4 @@
         <report>maven-jxr-plugin</report>
     </reports>
 </project>
+

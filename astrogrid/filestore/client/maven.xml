@@ -3,10 +3,17 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.6  2004/08/18 19:00:01  dave
+    |   Myspace manager modified to use remote filestore.
+    |   Tested before checkin - integration tests at 91%.
+    |
+    |   Revision 1.5.8.1  2004/07/28 03:00:17  dave
+    |   Refactored resolver constructors and added mock ivorn
+    |
     |   Revision 1.5  2004/07/23 15:17:30  dave
     |   Merged development branch, dave-dev-200407231013, into HEAD
     |
@@ -193,12 +200,10 @@
             <ant:echo message="  Service class     : ${service.class}"/>
             <ant:echo message="  Service authority : ${service.authority}"/>
             <ant:echo message="  Service resource  : ${service.resource}"/>
+            <ant:echo message="  Service endpoint  : local:/${service.name}"/>
             <ant:echo message="  Service file      : ${service.file}"/>
-            <ant:echo message="  Service wsdl      : ${wsdlDir}/${service.name}.wsdl"/>
-            <ant:echo message="  Service href      : local:/${service.name}"/>
             <!--+
                 | Modify the service WSDL to include a 'local://..' url.
-                +-->
             <ant:xslt style="${basedir}/src/xsl/registry/service.wsdl.xsl"
                   in="${wsdlDir}/${service.name}.wsdl"
                   out="${wsdlDir}/${service.name}.tmp">
@@ -208,6 +213,7 @@
                 <param name="service.href" expression="local:/${service.name}"/>
             </ant:xslt>
             <ant:move overwrite="true" file="${wsdlDir}/${service.name}.tmp" toFile="${wsdlDir}/${service.name}.wsdl"/>
+                +-->
             <!--+
                 | Create the registry entry that points to the service WSDL.
                 +-->
@@ -218,7 +224,7 @@
                 <outputproperty name="indent" value="yes"/>
                 <param name="service.authority" expression="${service.authority}"/>
                 <param name="service.resource"  expression="${service.resource}"/>
-                <param name="service.wsdl"      expression="file:///${wsdlDir}/${service.name}.wsdl"/>
+                <param name="service.endpoint"  expression="local:/${service.name}"/>
             </ant:xslt>
             <!--+
                 | Add the config property reference.

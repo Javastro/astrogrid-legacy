@@ -2,11 +2,15 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: gtr $</cvs:author>
-    | <cvs:date>$Date: 2004/08/17 14:36:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.5  2004/08/18 19:00:01  dave
+    |   Myspace manager modified to use remote filestore.
+    |   Tested before checkin - integration tests at 91%.
+    |
     |   Revision 1.4  2004/08/17 14:36:06  gtr
     |   BZ454. Merging changes into HEAD.
     |
@@ -109,6 +113,16 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
+
+        <!--+
+            | The servlet API library.
+            +-->
+		<dependency>
+			<artifactId>servletapi</artifactId>
+			<groupId>servletapi</groupId>
+			<version>2.2</version>
+		</dependency>
+
         <!--+
             | The Castor XML library.
         <dependency>

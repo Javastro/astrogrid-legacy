@@ -1,10 +1,23 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 09:11:16 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.7  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
+ *   Revision 1.6.10.3  2004/08/09 10:16:28  dave
+ *   Added resource URL to the properties.
+ *
+ *   Revision 1.6.10.2  2004/08/06 22:25:06  dave
+ *   Refactored bits and broke a few tests ...
+ *
+ *   Revision 1.6.10.1  2004/08/02 14:54:15  dave
+ *   Trying to get integration tests to run
+ *
  *   Revision 1.6  2004/07/23 09:11:16  dave
  *   Merged development branch, dave-dev-200407221513, into HEAD
  *
@@ -64,6 +77,7 @@ import junit.framework.TestCase ;
 
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
+import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
 import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
@@ -300,20 +314,42 @@ public class FileStoreTest
 			properties
 			) ;
 		//
-		// Check the server identifier is correct.
+		// Check the server ivorn is correct.
 		assertEquals(
-			"Wrong service identifier in FileProperties",
+			"Wrong service ivorn in FileProperties",
 			target.identifier(),
 			properties.getProperty(
-				FileProperties.STORE_SERVICE_IDENTIFIER
+				FileProperties.STORE_SERVICE_IVORN
 				)
 			) ;
 		//
-		// Check the internal identifier is not null.
+		// Check the resource ident is not null.
 		assertNotNull(
-			"Null internal identifier in properties",
+			"Null resource ident in properties",
 			properties.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
+				)
+			) ;
+		//
+		// Check the resource ivorn is correct.
+		assertEquals(
+			"Wrong resource ident in properties",
+			properties.getProperty(
+				FileProperties.STORE_RESOURCE_IVORN
+				),
+			FileStoreIvornFactory.createIdent(
+				target.identifier(),
+				properties.getProperty(
+					FileProperties.STORE_RESOURCE_IDENT
+					)
+				)
+			) ;
+		//
+		// Check the resource URL is not null.
+		assertNotNull(
+			"Null resource URL in properties",
+			properties.getProperty(
+				FileProperties.STORE_RESOURCE_URL
 				)
 			) ;
 		}
@@ -594,7 +630,7 @@ public class FileStoreTest
 			TEST_STRING,
 			target.exportString(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -631,7 +667,7 @@ public class FileStoreTest
 			new String(
 				target.exportBytes(
 					imported.getProperty(
-						FileProperties.STORE_INTERNAL_IDENTIFIER
+						FileProperties.STORE_RESOURCE_IDENT
 						)
 					)
 				)
@@ -833,7 +869,7 @@ public class FileStoreTest
 			TEST_BYTES,
 			target.exportBytes(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -871,7 +907,7 @@ public class FileStoreTest
 				),
 			target.exportString(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -948,7 +984,7 @@ public class FileStoreTest
 		FileProperties requested = new FileProperties(
 			target.properties(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -957,10 +993,10 @@ public class FileStoreTest
 		assertEquals(
 			"Requested ident not the same as imported",
 			imported.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				),
 			requested.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				)
 			) ;
 		}
@@ -988,7 +1024,7 @@ public class FileStoreTest
 		FileProperties requested = new FileProperties(
 			target.properties(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -997,10 +1033,10 @@ public class FileStoreTest
 		assertEquals(
 			"Requested ident not the same as imported",
 			imported.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				),
 			requested.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				)
 			) ;
 		}
@@ -1076,7 +1112,7 @@ public class FileStoreTest
 		FileProperties deleted = new FileProperties(
 			target.delete(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1085,10 +1121,10 @@ public class FileStoreTest
 		assertEquals(
 			"Deleted properties not the same as imported",
 			imported.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				),
 			deleted.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				)
 			) ;
 		}
@@ -1116,7 +1152,7 @@ public class FileStoreTest
 		FileProperties deleted = new FileProperties(
 			target.delete(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1125,10 +1161,10 @@ public class FileStoreTest
 		assertEquals(
 			"Deleted properties not the same as imported",
 			imported.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				),
 			deleted.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				)
 			) ;
 		}
@@ -1156,7 +1192,7 @@ public class FileStoreTest
 		FileProperties deleted = new FileProperties(
 			target.delete(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1165,7 +1201,7 @@ public class FileStoreTest
 		try {
 			target.properties(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				) ;
 			}
@@ -1199,7 +1235,7 @@ public class FileStoreTest
 		FileProperties deleted = new FileProperties(
 			target.delete(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1208,7 +1244,7 @@ public class FileStoreTest
 		try {
 			target.exportString(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				) ;
 			}
@@ -1315,7 +1351,7 @@ public class FileStoreTest
 		FileProperties modified = new FileProperties(
 			target.appendString(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				EXTRA_STRING
 				)
@@ -1327,7 +1363,7 @@ public class FileStoreTest
 			(TEST_STRING + EXTRA_STRING),
 			target.exportString(
 				modified.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1356,7 +1392,7 @@ public class FileStoreTest
 		FileProperties modified = new FileProperties(
 			target.appendBytes(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				EXTRA_BYTES
 				)
@@ -1368,7 +1404,7 @@ public class FileStoreTest
 			(TEST_STRING + new String(EXTRA_BYTES)),
 			target.exportString(
 				modified.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1447,7 +1483,7 @@ public class FileStoreTest
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				null
 				)
@@ -1457,10 +1493,10 @@ public class FileStoreTest
 		assertFalse(
 			"Duplicate identifiers",
 			imported.getProperty(
-				FileProperties.STORE_INTERNAL_IDENTIFIER
+				FileProperties.STORE_RESOURCE_IDENT
 				).equals(
 					duplicate.getProperty(
-						FileProperties.STORE_INTERNAL_IDENTIFIER
+						FileProperties.STORE_RESOURCE_IDENT
 						)
 					)
 			) ;
@@ -1489,7 +1525,7 @@ public class FileStoreTest
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				null
 				)
@@ -1501,7 +1537,7 @@ public class FileStoreTest
 			TEST_STRING,
 			target.exportString(
 				duplicate.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1546,7 +1582,7 @@ public class FileStoreTest
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				null
 				)
@@ -1594,7 +1630,7 @@ public class FileStoreTest
 		FileProperties duplicate = new FileProperties(
 			target.duplicate(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				null
 				)
@@ -1604,7 +1640,7 @@ public class FileStoreTest
 		FileProperties modified = new FileProperties(
 			target.appendString(
 				duplicate.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					),
 				EXTRA_STRING
 				)
@@ -1616,7 +1652,7 @@ public class FileStoreTest
 			TEST_STRING,
 			target.exportString(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1627,7 +1663,7 @@ public class FileStoreTest
 			(TEST_STRING + EXTRA_STRING),
 			target.exportString(
 				modified.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1865,7 +1901,7 @@ public class FileStoreTest
 			TEST_STRING,
 			target.exportString(
 				imported.getProperty(
-					FileProperties.STORE_INTERNAL_IDENTIFIER
+					FileProperties.STORE_RESOURCE_IDENT
 					)
 				)
 			) ;
@@ -1978,7 +2014,7 @@ public class FileStoreTest
 				"data.http.html"
 				),
 			imported.getProperty(
-				FileProperties.TRANSFER_SOURCE_PROPERTY
+				FileProperties.TRANSFER_SOURCE_URL
 				)
 			) ;
 		}

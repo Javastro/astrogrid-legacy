@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.76 2004/08/18 13:16:45 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.77 2004/08/18 19:00:01 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -141,7 +141,7 @@
 </goal>
 
 <goal name="astrogrid-build-site" description="Build the site docs for the test project">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="clean,site" />
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site" />
 </goal>
 
 <goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" >
@@ -800,7 +800,6 @@
   </j:catch>
 </goal>
 
-
 <goal name="CLEANTOMCAT" description="run this to clean out tomcat directories if tomcat not running">
         <delete includeEmptyDirs="true" defaultexcludes="false" >
                 <fileset dir="${tomcat.location}/webapps" >
@@ -986,4 +985,23 @@
   <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
 </goal>
 
+	<goal name="toad">
+		<!--+
+			| Clean out the target directory.
+			+-->
+		<attainGoal name="clean:clean"/>
+		<!--+
+			| Initialise the integration env.
+			+-->
+		<attainGoal name="init"/>
+		<!--+
+			| Deploy our components.
+			+-->
+		<attainGoal name="deploy-all"/>
+		<!--+
+			| Run the integration tests.
+		<attainGoal name="int-test"/>
+			+-->
+		<attainGoal name="astrogrid-build-site"/>
+	</goal>
 </project>

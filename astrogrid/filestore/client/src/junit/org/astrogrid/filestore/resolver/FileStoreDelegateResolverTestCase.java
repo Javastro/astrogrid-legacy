@@ -1,10 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/junit/org/astrogrid/filestore/resolver/FileStoreDelegateResolverTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDelegateResolverTestCase.java,v $
+ *   Revision 1.3  2004/08/18 19:00:01  dave
+ *   Myspace manager modified to use remote filestore.
+ *   Tested before checkin - integration tests at 91%.
+ *
+ *   Revision 1.2.8.1  2004/07/28 03:00:17  dave
+ *   Refactored resolver constructors and added mock ivorn
+ *
  *   Revision 1.2  2004/07/23 15:17:30  dave
  *   Merged development branch, dave-dev-200407231013, into HEAD
  *
@@ -33,7 +40,12 @@ import org.apache.axis.client.Call ;
 
 import org.astrogrid.store.Ivorn ;
 
+import org.astrogrid.registry.client.query.RegistryService ;
+
+import org.astrogrid.filestore.common.ivorn.FileStoreIvornFactory ;
+
 import org.astrogrid.filestore.client.FileStoreDelegate ;
+import org.astrogrid.filestore.client.FileStoreMockDelegate ;
 import org.astrogrid.filestore.client.FileStoreSoapDelegate ;
 import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 
@@ -81,7 +93,7 @@ public class FileStoreDelegateResolverTestCase
 		{
 		try {
 			new FileStoreDelegateResolver(
-				null
+				(RegistryService) null
 				) ;
 			}
 		catch (IllegalArgumentException ouch)
@@ -158,12 +170,36 @@ public class FileStoreDelegateResolverTestCase
 						)
 					)
 				) ;
+		assertTrue(
+			"Didn't get a true SOAP delegate",
+			(delegate instanceof FileStoreSoapDelegate)
+			) ;
 		assertEquals(
 			"Wrong service identifier",
 			getTestProperty(
 				"service.ivorn"
 				),
 			delegate.identifier()
+			) ;
+		}
+
+	/**
+	 * Check we get a delegate for a mock ivorn.
+	 *
+	 */
+	public void testResolveMock()
+		throws Exception
+		{
+		FileStoreDelegateResolver resolver = new FileStoreDelegateResolver() ;
+		FileStoreDelegate delegate = 
+			resolver.resolve(
+				FileStoreIvornFactory.createMock(
+					"frog"
+					)
+				) ;
+		assertTrue(
+			"Didn't get a mock delegate",
+			(delegate instanceof FileStoreMockDelegate)
 			) ;
 		}
 	}

@@ -62,8 +62,9 @@ public class DataItemRecord implements Serializable
 
    private String dataItemName;     // Full Name.
    private int    dataItemID;       // Identifier in the registry.
-   private String dataItemUri;      // URI to access the file.
    private String dataItemFile;     // Corresponding server file name.
+   private String dataItemUri;      // URI to access the file.
+   private String dataItemIvorn;    // Ivorn to access the file.
    private String ownerID;          // Owner's identifier.
    private Date   creationDate;     // Creation date.
    private Date   expiryDate;       // Expiry date.
@@ -77,7 +78,7 @@ public class DataItemRecord implements Serializable
 /**
  * Constructor in which arguments are passed to set all the member
  * variables (except dataItemUri is not passed).
- */
+ * @deprecated - all of the params should be set (use next constructor).
 
    public DataItemRecord (String dataItemName,  int dataItemID,
      String dataItemFile,  String ownerID,  Date creationDate,
@@ -94,63 +95,101 @@ public class DataItemRecord implements Serializable
 
       this.dataItemUri = null;
    }
-
-/**
- * Constructor in which all arguments are passed to set all the member
- * variables (except dataItemUri is not passed).
  */
 
-   public DataItemRecord (String dataItemName,  int dataItemID,
-     String dataItemFile,  String dataItemUri, String ownerID,  
-     Date creationDate, Date expiryDate,  int size,  int type, 
-     String permissionsMask)
-   {  this.dataItemName = dataItemName;
-      this.dataItemID = dataItemID;
-      this.dataItemFile = dataItemFile;
-      this.dataItemUri = dataItemUri;
-      this.ownerID = ownerID;
-      this.creationDate = creationDate;
-      this.expiryDate = expiryDate;
-      this.size = size;
-      this.type = type;
-      this.permissionsMask = permissionsMask;
-   }
+	/**
+	 * Constructor in which all arguments are passed to set all the member variables.
+	 */
+	public DataItemRecord(
+		String dataItemName,
+		int dataItemID,
+		String dataItemFile,
+		String dataItemUri,
+		String dataItemIvorn,
+		String ownerID,
+		Date creationDate,
+		Date expiryDate,
+		int size,
+		int type, 
+		String permissionsMask
+		) {
+		this.dataItemName = dataItemName;
+		this.dataItemID = dataItemID;
+		this.dataItemFile = dataItemFile;
+		this.dataItemUri = dataItemUri;
+		this.dataItemIvorn = dataItemIvorn;
+		this.ownerID = ownerID;
+		this.creationDate = creationDate;
+		this.expiryDate = expiryDate;
+		this.size = size;
+		this.type = type;
+		this.permissionsMask = permissionsMask;
+		}
 
-/**
- * Constructor with no arguments.  All the member variables are set to
- * null (or -1 in the case of <code>int</code>s).
- */
-
-   public DataItemRecord ()
-   {  this.dataItemName = null;
-      this.dataItemID = -1;
-      this.dataItemUri = null;
-      this.dataItemFile = null;
-      this.ownerID = null;
-      this.creationDate = null;
-      this.expiryDate = null;
-      this.size = -1;
-      this.type = UNKNOWN;
-      this.permissionsMask = null;
-   }
+	/**
+	 * Constructor with no arguments.  All the member variables are set to
+	 * null (or -1 in the case of <code>int</code>s).
+	 */
+	public DataItemRecord ()
+		{
+		this.dataItemName = null;
+		this.dataItemID = -1;
+		this.dataItemUri = null;
+		this.dataItemFile = null;
+		this.dataItemIvorn = null;
+		this.ownerID = null;
+		this.creationDate = null;
+		this.expiryDate = null;
+		this.size = -1;
+		this.type = UNKNOWN;
+		this.permissionsMask = null;
+		}
 
 // ----------------------------------------------------------------------
 
-//
-// Set method.
+/**
+ * Set the URI name corresponding to the <code>DataHolder</code>
+ * in the appropriate filestore.
+ * @deprecated - the uri should be replaced by the ivorn.
+ *
+ */
+   public void setDataItemUri(String dataItemUri)
+   {  this.dataItemUri = dataItemUri;
+   }
+
 
 /**
  * Set the file name corresponding to the <code>DataHolder</code>
- * in the appropriate MySpace server.
+ * in the appropriate filestore.
  *
- * @param dataItemFile The name of the file on the server corresponding
- *   the <code>DataHolder</code>.  It is specified without any
- *   preceeding directory structure.
  */
-
    protected void setDataItemFile(String dataItemFile)
    {  this.dataItemFile = dataItemFile;
    }
+
+/**
+ * Reset the DataItemFile.  The DataItemFile name should not be exported
+ * out of the mySpace system.  This method resets the name in the current
+ * DataItemRecord to null.  It is typically invoked prior to exporting
+ * the DataItemRecord.
+ * @deprecated - external systems will need to know the file identifier.
+ *
+ */
+
+   public void resetDataItemFile()
+   {  this.dataItemFile = null;
+   }
+
+
+/**
+ * Set the Ivorn  corresponding to the <code>DataHolder</code>
+ * in the appropriate filestore server.
+ *
+ */
+   protected void setDataItemIvorn(String dataItemIvorn)
+   {  this.dataItemIvorn = dataItemIvorn;
+   }
+
 
 // ----------------------------------------------------------------------
 
@@ -187,11 +226,22 @@ public class DataItemRecord implements Serializable
 /**
  * Return the URI name corresponding to the <code>DataHolder</code>
  * in the appropriate MySpace server.
+ * @deprecated - the uri should be replaced by the ivorn.
+ *
  */
 
    public String getDataItemUri()
    {  return dataItemUri;
    }
+
+/**
+ * Return the Ivorn corresponding to the <code>DataHolder</code>
+ * in the appropriate file store.
+ */
+   public String getDataItemIvorn()
+   {  return dataItemIvorn;
+   }
+
 
 /**
  * Return the identifer of the owner of the <code>DataHolder</code>.
@@ -285,30 +335,6 @@ public class DataItemRecord implements Serializable
    }
 
 // ----------------------------------------------------------------------
-
-//
-// Other methods.
-
-/**
- * Set the URI name corresponding to the <code>DataHolder</code>
- * in the appropriate MySpace server.
- */
-
-   public void setDataItemUri(String dataItemUri)
-   {  this.dataItemUri = dataItemUri;
-   }
-
-
-/**
- * Reset the DataItemFile.  The DataItemFile name should not be exported
- * out of the mySpace system.  This method resets the name in the current
- * DataItemRecord to null.  It is typically invoked prior to exporting
- * the DataItemRecord.
- */
-
-   public void resetDataItemFile()
-   {  this.dataItemFile = null;
-   }
 
 /**
  * Produce a reasonable string representation of a

@@ -83,7 +83,7 @@
         The URL for the MySpace Server managed by the MySpace Manager.  -->
 
         <property name="MYSPACESERVERURL"
-          value="http://astrogrid1.jb.man.ac.uk:8080/mySpace-SNAPSHOT/services/ServerManager" /> 
+          value="ivo://org.astrogrid.mock" /> 
 
 
       <!-- SERVERDEPLOYMENT

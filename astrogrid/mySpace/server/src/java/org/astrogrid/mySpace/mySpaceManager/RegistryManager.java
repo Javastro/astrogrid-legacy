@@ -61,7 +61,8 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  */
 
 public class RegistryManager
-{  private boolean DEBUG = false;
+	{
+	private boolean DEBUG = true ;
 
    private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
 
@@ -81,10 +82,15 @@ public class RegistryManager
  * @param registryName The name of the registry.
  */
 
-   public RegistryManager(String registryName)
-   {  this.registryName = registryName;
-      registryDBName = "jdbc:hsqldb:" + registryName + ".db";
-   }
+	public RegistryManager(String registryName)
+		{
+		System.out.println("----") ;
+		System.out.println("RegistryManager()") ;
+		this.registryName = registryName;
+		registryDBName = "jdbc:hsqldb:" + registryName + ".db";
+		System.out.println("  Name : " + registryName) ;
+		System.out.println("  DB   : " + registryDBName) ;
+		}
 
 // -------------------------------------------------------------------
 
@@ -109,7 +115,9 @@ public class RegistryManager
          String sqlStatement = "CREATE TABLE reg(" +
            "dataItemName VARCHAR(150), " +
            "dataItemID INTEGER IDENTITY, " +
-           "dataItemFile VARCHAR(15), " +
+           "dataItemFile VARCHAR(150), " +
+           "dataItemUri VARCHAR(150), " +
+           "dataItemIvorn VARCHAR(150), " +
            "ownerID VARCHAR(20), " +
            "creationDate DATE, " +
            "expiryDate DATE, " +
@@ -158,10 +166,8 @@ public class RegistryManager
                  server.getExpiryPeriod() + ", " +
                  "'" + server.getURI() + "', " +
                  "'" + server.getDirectory() + "')"; 
-
 //
 //            Attempt to execute the SQL statement.
-
                dbvec = this.transact(sqlStatement, true);
                if (dbvec == null)
                {  throw new Exception("JBDC error : " + sqlStatement);
@@ -249,14 +255,18 @@ public class RegistryManager
          String sqlStatement = "INSERT INTO reg(" +
            "dataItemName, " +
 //            dataItemID, 
-//            dataItemFile, 
+           "dataItemFile," + 
+           "dataItemUri," + 
+           "dataItemIvorn," + 
            "ownerID, " +
            "creationDate, expiryDate, " +
            "size, type, permissionsMask) " +
            "VALUES (" +
             "'" + dataItemRecord.getDataItemName() + "', " +
 //            "'" + dataItemRecord.getDataItemID() + "', " +
-//            "'" + dataItemRecord.getDataItemFile() + "', " +
+            "'" + dataItemRecord.getDataItemFile() + "', " +
+            "'" + dataItemRecord.getDataItemUri() + "', " +
+            "'" + dataItemRecord.getDataItemIvorn() + "', " +
             "'" + dataItemRecord.getOwnerID() + "', " +
             "'" + sqlCreation + "', " +
             "'" + sqlExpiry + "', " +
@@ -310,7 +320,8 @@ public class RegistryManager
 //      Note that if the dataItemRecord corresponds to a container
 //      then dataItemFile is set to "none" (because there is no
 //      corresponding file in this case.
-
+/*
+ *
          if (dataItemID > -1)
          {  if (dataItemRecord.getType() != DataItemRecord.CON)
             {  dataItemFile = "f" + dataItemID;
@@ -328,13 +339,14 @@ public class RegistryManager
             {  throw new Exception("JDBC error : " + sqlStatement);
             }
          }
-
+ *
+ */
 //
 //      Assemble the return dataItemRecord.
 
          if (dataItemID > -1)
          {  returnDataItem = newRec;
-            returnDataItem.setDataItemFile(dataItemFile);
+//            returnDataItem.setDataItemFile(dataItemFile);
          }
       }
       catch (Exception all)
@@ -384,6 +396,8 @@ public class RegistryManager
          String sqlStatement = "UPDATE reg SET " +
            "dataItemName = '" + dataItemRecord.getDataItemName() + "', " +
            "dataItemFile = '" + dataItemRecord.getDataItemFile() + "', " +
+           "dataItemUri = '" + dataItemRecord.getDataItemUri() + "', " +
+           "dataItemIvorn = '" + dataItemRecord.getDataItemIvorn() + "', " +
            "ownerID = '" + dataItemRecord.getOwnerID() + "', " +
            "creationDate = '" + sqlCreation + "', " +
            "expiryDate = '" + sqlExpiry + "', " +
@@ -489,9 +503,13 @@ public class RegistryManager
          if (dbvec != null)
          {  if (dbvec.size() == 1)
             {  returnItemRecord = (DataItemRecord)dbvec.elementAt(0);
+/*
+ *
                String uri = this.getServerURI("serv1") +
                  returnItemRecord.getDataItemFile();
                returnItemRecord.setDataItemUri(uri);
+ *
+ */
             }
             else
             {  throw new Exception("JDBC error : " + sqlStatement);
@@ -556,10 +574,15 @@ public class RegistryManager
             {  for(int loop=0; loop<dbvec.size(); loop++)
                {  DataItemRecord currRec =
                     (DataItemRecord)dbvec.elementAt(loop);
+/*
+ *
                   String uri = this.getServerURI("serv1") +
                     currRec.getDataItemFile();
                   currRec.setDataItemUri(uri);
+ *
+ */
                   returnItemRecords.add(currRec);
+
                }
             }
          }
@@ -924,7 +947,7 @@ public class RegistryManager
 
 //            System.out.println("numColumns: " + numColumns);
 
-            if (numColumns == 9)
+            if (numColumns > 4)
             {  DataItemRecord itemRec = new DataItemRecord();
 
                while (sqlResults.next() )
@@ -943,6 +966,8 @@ public class RegistryManager
                     sqlResults.getString("dataItemName"),
                     sqlResults.getInt("dataItemID"),
                     sqlResults.getString("dataItemFile"),
+                    sqlResults.getString("dataItemUri"),
+                    sqlResults.getString("dataItemIvorn"),
                     sqlResults.getString("ownerID"),
                     creation,
                     expiry,

@@ -3,10 +3,17 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/15 13:24:28 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.4  2004/08/18 19:00:01  dave
+    |   Myspace manager modified to use remote filestore.
+    |   Tested before checkin - integration tests at 91%.
+    |
+    |   Revision 1.3.20.1  2004/08/02 14:54:15  dave
+    |   Trying to get integration tests to run
+    |
     |   Revision 1.3  2004/07/15 13:24:28  dave
     |   Merged development branch, dave-dev-200407141515, into HEAD
     |
@@ -181,5 +188,17 @@
         <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
         <ant:echo message=""/>
     </preGoal>
+
+
+    <goal name="frog">
+        <core:set var="base" value="${basedir}"/>
+        <core:set var="frog" value="${maven.junit.dir}"/>
+        <core:set var="toad" value="${base.length()}"/>
+        <core:set var="newt" value="example/${frog.substring(base.length())}"/>
+        <ant:echo message="Frog : ${frog}"/>
+        <ant:echo message="Toad : ${toad}"/>
+        <ant:echo message="Newt : ${newt}"/>
+        <ant:echo message="Conf : ${maven.conf.dir}"/>
+    </goal>
 
 </project>

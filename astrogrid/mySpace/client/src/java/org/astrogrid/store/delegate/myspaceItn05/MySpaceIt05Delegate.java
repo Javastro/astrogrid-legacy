@@ -644,6 +644,10 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
    public URL getUrl(String path) throws IOException
    {
+System.out.println("") ;
+System.out.println("MySPaceDeletage.getUrl") ;
+System.out.println("  Path : " + path) ;
+
       if (!path.startsWith("/")) path = "/"+path;
       
       KernelResults results = innerDelegate.getEntriesList(path, isTest);
@@ -659,6 +663,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       
       //this seems to return a localhost
       URL url = new URL(entry.getEntryUri());
+System.out.println("  URL  : " + url.toString()) ;
       
       // >>> HACK ALERT!
       // >>> @author peter.shillan
@@ -667,6 +672,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       // The problem only arises if the servers are co-located and the solution works
       // in these circumstances.
       String host = url.getHost();
+System.out.println("  Host : " + host) ;
+
 
       // If localhost is returned, try to work out the real host name.
       if(host.equalsIgnoreCase("localhost")) {
@@ -684,6 +691,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
         }
       }
       // <<< HACK ALERT!
+System.out.println("  URL  : " + url.toString()) ;
       
       return url;
    }
@@ -719,6 +727,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
    public void copy(String sourcePath, Agsl target) throws IOException
    {
+/*
+ *
+ *
       if (target.getEndpoint().equals(getEndpoint())) {
          String targetPath = target.getPath();
          if (!targetPath.startsWith("/")) targetPath = "/"+targetPath;
@@ -734,9 +745,38 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       }
       else {
          StoreClient targetStore = StoreDelegateFactory.createDelegate(operator, target);
-         
          targetStore.putUrl(getUrl(sourcePath), target.getPath(), false);
+
       }
+ *
+ *
+ */
+System.out.println("----");
+System.out.println("MySpaceIt05Delegate.copy");
+System.out.println("  Source path : '" + sourcePath + "'");
+System.out.println("  Target agsl : '" + target.toString() + "'");
+
+		URL url = getUrl(sourcePath) ;
+// BANG !!
+System.out.println("  Source URL  : '" + url.toString() + "'");
+
+System.out.println("");
+System.out.println("Creating target delegate ....");
+		StoreClient targetStore = 
+			StoreDelegateFactory.createDelegate(
+				operator,
+				target
+				);
+System.out.println("Done");
+
+System.out.println("");
+System.out.println("Calling target delegate ....");
+		targetStore.putUrl(
+			url,
+			target.getPath(),
+			false
+			);
+System.out.println("Done");
 
    }
 
@@ -1369,8 +1409,18 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /*
 $Log: MySpaceIt05Delegate.java,v $
+Revision 1.7  2004/08/18 19:00:01  dave
+Myspace manager modified to use remote filestore.
+Tested before checkin - integration tests at 91%.
+
 Revision 1.6  2004/08/05 15:37:25  mch
 Fix for empty myspaces
+
+Revision 1.5.26.2  2004/08/09 12:37:58  dave
+Added debug to delegate ...
+
+Revision 1.5.26.1  2004/08/06 22:25:03  dave
+Refactored bits and broke a few tests ...
 
 Revision 1.5  2004/06/29 14:20:01  gps
 - making clear note of the "localhost hack"

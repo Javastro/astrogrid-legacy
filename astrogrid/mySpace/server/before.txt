@@ -1,0 +1,44 @@
+Original MySpace server test run, before I started fiddling with it ....
+
+test:test:
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.ActionsTest
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 19.441 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.ConfigurationTest
+    [junit] Tests run: 4, Failures: 0, Errors: 0, Time elapsed: 5.274 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.DataItemRecordTest
+    [junit] Tests run: 4, Failures: 0, Errors: 0, Time elapsed: 3.439 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.RegistryManagerTest
+    [junit] Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 10.706 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.ServerDetailsTest
+    [junit] Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 2.892 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.ServerDriverTest
+    [junit] [main] ERROR astrogrid.Configurator  - AGMSCZ00006:AstroGridMessage: Message ResourceBundle [] not found in classpath
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 6.348 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.UserAccountTest
+    [junit] Tests run: 6, Failures: 0, Errors: 0, Time elapsed: 3.269 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceManager.FileStoreDriverTest
+    [junit] [main] ERROR astrogrid.Configurator  - AGMMCZ00006:AstroGridMessage: Message ResourceBundle [] not found in classpath
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 4.13 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceServer.ServerManagerTest
+    [junit] [main] ERROR astrogrid.Configurator  - AGMSCZ00006:AstroGridMessage: Message ResourceBundle [] not found in classpath
+    [junit] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 6.938 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCodeTest
+    [junit] Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 3.036 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusTest
+    [junit] Tests run: 5, Failures: 0, Errors: 0, Time elapsed: 3.159 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceUtil.FileTransferExceptionTest
+    [junit] Tests run: 3, Failures: 0, Errors: 0, Time elapsed: 3.032 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceUtil.FileTransferTest
+    [junit] Tests run: 2, Failures: 0, Errors: 0, Time elapsed: 4.429 sec
+    [junit] Running org.astrogrid.mySpace.mySpaceUtil.MySpaceUtilsTest
+    [junit] Tests run: 2, Failures: 0, Errors: 0, Time elapsed: 3.003 sec
+    [junit] Running org.astrogrid.mySpace.webapp.DatabaseConfigurationBeanTest
+    [junit] Tests run: 9, Failures: 0, Errors: 0, Time elapsed: 5 sec
+    [junit] Running org.astrogrid.store.delegate.myspaceItn05.ManagerFakeTest
+    [junit] Tests run: 15, Failures: 0, Errors: 0, Time elapsed: 3.432 sec
+    [junit] Running org.astrogrid.store.delegate.myspaceItn05.ManagerTest
+    [junit] Tests run: 15, Failures: 0, Errors: 0, Time elapsed: 21.705 sec
+BUILD SUCCESSFUL
+Total time: 3 minutes 23 seconds
+Finished at: Tue Jul 27 22:35:05 BST 2004
+

@@ -2,6 +2,7 @@ package org.astrogrid.mySpace.mySpaceManager;
 
 import java.io.*;
 import java.util.*;
+import java.net.URL ;
 
 import java.lang.reflect.Array;
 
@@ -222,10 +223,19 @@ public class Actions
                      {  dataItemSize = Array.getLength(byteContents);
                      }
 
-                     DataItemRecord newDataItem = new DataItemRecord
-                       (newDataItemName, newdataItemID,
-                       dataItemFileName, account, creation, creation,
-                       dataItemSize, dataItemType, "permissions");
+                     DataItemRecord newDataItem = new DataItemRecord(
+                         newDataItemName,
+                         newdataItemID,
+                         dataItemFileName,
+                         null,
+                         null,
+                         account,
+                         creation,
+                         creation,
+                         dataItemSize,
+                         dataItemType,
+                         "permissions"
+                         );
 
 //
 //                  Attempt to add this entry to the registry.
@@ -234,32 +244,28 @@ public class Actions
                      newDataItem = reg.addDataItemRecord(newDataItem);
                      logger.appendMessage("after addDataItemRecord");
 
-                     System.out.println("new file name: " +
-                        newDataItem.getDataItemFile() );
-
                      if (newDataItem != null)
                      {  newdataItemID = newDataItem.getDataItemID();
-                        dataItemFileName = newDataItem.getDataItemFile();
 
 //
 //                     Attempt to copy the contents of the input string as
 //                     a new file on the server.
 //
 //                     [TODO]: Remove the hard-wired server name.
-
+/*
+ *
+                        String dataItemFileName = dataItem.getDataItemFile();
                         String serverName = "serv1";
                         System.out.println("serverName: " + serverName);
                         String serverDirectory =
                           reg.getServerDirectory(serverName);
                         System.out.println("serverDirectory" +
                           serverDirectory);
-
                         String copyTo = serverDirectory + dataItemFileName;
-
                         ServerDriver serverDriver = new ServerDriver();
                         if(!serverDriver.upLoadString(fileType,
                           stringContents, byteContents, copyTo,
-                          false) )
+                          false))
                         {
 
 //
@@ -275,6 +281,54 @@ public class Actions
 
                             returnStatus = false;
                         }
+ *
+ */
+						//
+						// Try transferring the data to our filestore.
+						try {
+							//
+							// Create our filestore driver.
+System.out.println("FROG : Attempting to create a new FileStoreDriver ...") ;
+							FileStoreDriver filestore = FileStoreDriver.create() ;
+System.out.println("FROG : Done") ;
+							//
+							// Transfer the data.
+System.out.println("FROG : Attempting to call FileStoreDriver ....") ;
+							if (fileType)
+								{
+								filestore.importString(newDataItem, stringContents) ;
+								}
+							else {
+								filestore.importBytes(newDataItem, byteContents) ;
+								}
+System.out.println("FROG : Done") ;
+							//
+							// Update the data item entry.
+System.out.println("FROG : Attempting to update data entry ....") ;
+							reg.updateDataItemRecord(newDataItem) ;
+System.out.println("FROG : Done") ;
+							}
+						//
+						// If the transfer failed.
+						catch (Throwable ouch)
+							{
+System.out.println("FROG : Exception when calling filestore") ;
+System.out.println("FROG : " + ouch) ;
+ouch.printStackTrace() ;
+							//
+							// Delete the entry from the registry.
+							reg.deleteDataItemRecord(newdataItemID);
+							//
+							// Add an error status code.
+							// @todo Set the error code from the exception message ?
+							status.addCode(
+								MySpaceStatusCode.AGMMCE00202,
+								MySpaceStatusCode.ERROR,
+								MySpaceStatusCode.LOG,
+								this.getClassName()
+								);
+							returnStatus = false;
+							}
                      }
                      else
                      {  status.addCode(MySpaceStatusCode.AGMMCE00203,
@@ -283,6 +337,9 @@ public class Actions
 
                         returnStatus = false;
                      }
+
+
+
                   }
                }
                else
@@ -307,13 +364,13 @@ public class Actions
                   {  DataItemRecord dataItem =
                        (DataItemRecord)dataItems.elementAt(0);
 
+/*
+ *
                      String dataItemFileName = dataItem.getDataItemFile();
                      String serverName = "serv1";
                      String serverDirectory =
                        reg.getServerDirectory(serverName);
- 
                      String copyTo = serverDirectory + dataItemFileName;
-
                      ServerDriver serverDriver = new ServerDriver();
                      if(!serverDriver.upLoadString(fileType,
                           stringContents, byteContents, copyTo, true) )
@@ -323,6 +380,48 @@ public class Actions
 
                         returnStatus = false;
                      }
+ *
+ */
+					//
+					// Try transferring the data to our filestore.
+					try {
+						//
+						// Create our filestore driver.
+						FileStoreDriver filestore = FileStoreDriver.create() ;
+						//
+						// Transfer the data.
+						if (fileType)
+							{
+							filestore.appendString(dataItem, stringContents) ;
+							}
+						else {
+							filestore.appendBytes(dataItem, byteContents) ;
+							}
+						//
+						// Update the data item entry.
+						reg.updateDataItemRecord(dataItem) ;
+						}
+					//
+					// If the transfer failed.
+					catch (Exception ouch)
+						{
+//
+// Not sure what we should do here ...
+// Should we update the data item or not ?
+						//
+						// Update the data item entry.
+						reg.updateDataItemRecord(dataItem) ;
+						//
+						// Add an error status code.
+						// @todo Set the error code from the exception message ?
+						status.addCode(
+							MySpaceStatusCode.AGMMCE00202,
+							MySpaceStatusCode.ERROR,
+							MySpaceStatusCode.LOG,
+							this.getClassName()
+							);
+						returnStatus = false;
+						}
                   }
                   else
                   {  status.addCode(MySpaceStatusCode.AGMMCE00201,
@@ -425,10 +524,19 @@ public class Actions
 
                      int dataItemSize = 10;
 
-                     DataItemRecord newDataItem = new DataItemRecord
-                       (newDataItemName, newdataItemID,
-                       dataItemFileName, account, creation, creation,
-                       dataItemSize, dataItemType, "permissions");
+                     DataItemRecord newDataItem = new DataItemRecord(
+                         newDataItemName,
+                         newdataItemID,
+                         dataItemFileName,
+                         null,
+                         null,
+                         account,
+                         creation,
+                         creation,
+                         dataItemSize,
+                         dataItemType,
+                         "permissions"
+                         );
 
 //
 //                  Attempt to add this entry to the registry.
@@ -442,14 +550,15 @@ public class Actions
 
                      if (newDataItem != null)
                      {  newdataItemID = newDataItem.getDataItemID();
-                        dataItemFileName = newDataItem.getDataItemFile();
 
 //
 //                     Attempt to copy the contents of the input string as
 //                     a new file on the server.
 //
 //                     [TODO]: Remove the hard-wired server name.
-
+/*
+ *
+                        dataItemFileName = newDataItem.getDataItemFile();
                         String serverName = "serv1";
                         System.out.println("serverName: " + serverName);
                         String serverDirectory =
@@ -460,6 +569,9 @@ public class Actions
                         String copyTo = serverDirectory + dataItemFileName;
 
                         ServerDriver serverDriver = new ServerDriver();
+//
+// FileStore ...
+//
                         if(!serverDriver.importDataHolder(importUrl, copyTo,
                           false) )
                         {
@@ -478,6 +590,54 @@ public class Actions
                             returnStatus = false;
                         }
                      }
+ *
+ */
+						//
+						// Try transferring the data to our filestore.
+						try {
+							//
+							// Create our filestore driver.
+System.out.println("FROG : Attempting to create a new FileStoreDriver ...") ;
+							FileStoreDriver filestore = FileStoreDriver.create() ;
+System.out.println("FROG : Done") ;
+							//
+							// Transfer the data.
+System.out.println("FROG : Attempting to call FileStoreDriver ....") ;
+							filestore.importUrl(
+								newDataItem,
+								new URL(
+									importUrl
+									)
+								) ;
+System.out.println("FROG : Done") ;
+							//
+							// Update the data item entry.
+System.out.println("FROG : Attempting to update data entry ....") ;
+							reg.updateDataItemRecord(newDataItem) ;
+System.out.println("FROG : Done") ;
+							}
+						//
+						// If the transfer failed.
+						catch (Throwable ouch)
+							{
+System.out.println("FROG : Exception when calling filestore") ;
+System.out.println("FROG : " + ouch) ;
+ouch.printStackTrace() ;
+							//
+							// Delete the entry from the registry.
+							reg.deleteDataItemRecord(newdataItemID);
+							//
+							// Add an error status code.
+							// @todo Set the error code from the exception message ?
+							status.addCode(
+								MySpaceStatusCode.AGMMCE00202,
+								MySpaceStatusCode.ERROR,
+								MySpaceStatusCode.LOG,
+								this.getClassName()
+								);
+							returnStatus = false;
+							}
+						}
                      else
                      {  status.addCode(MySpaceStatusCode.AGMMCE00203,
                           MySpaceStatusCode.ERROR,
@@ -509,7 +669,10 @@ public class Actions
                        (DataItemRecord)dataItems.elementAt(0);
 
                      String dataItemFileName = dataItem.getDataItemFile();
-                     String serverName = "serv1";
+
+/*
+ *
+                      String serverName = "serv1";
                      String serverDirectory =
                        reg.getServerDirectory(serverName);
  
@@ -524,6 +687,19 @@ public class Actions
 
                         returnStatus = false;
                      }
+ *
+ */
+					//
+					// Return error code, action not supported.
+					// If we need this I can modify the filestore to handle it.
+					status.addCode(
+						MySpaceStatusCode.AGMMCE00201,
+						MySpaceStatusCode.ERROR,
+						MySpaceStatusCode.LOG, this.getClassName()
+						);
+
+					returnStatus = false;
+
                   }
                   else
                   {  status.addCode(MySpaceStatusCode.AGMMCE00201,
@@ -597,22 +773,54 @@ public class Actions
 //
 //               [TODO]: do not hard-wire the server name.
 
+/*
+ *
                    String serverName = "serv1";
                    String serverDirectory =
                           reg.getServerDirectory(serverName);
 
                    String serverFile = serverDirectory +
                           dataItem.getDataItemFile();
-
+//
+// FileStore ...
+//
                    System.out.println("serverFile: " + serverFile);
                    ServerDriver serverDriver = new ServerDriver();
                    contents = serverDriver.retrieveString(serverFile);
                    System.out.println("contents" + contents);
+ *
+ */
+					//
+					// Try transferring the data from our filestore.
+					contents = null ;
+					try {
+						//
+						// Create our filestore driver.
+System.out.println("FROG : Attempting to create a new FileStoreDriver ...") ;
+						FileStoreDriver filestore = FileStoreDriver.create(
+							dataItem.getDataItemIvorn()
+							) ;
+System.out.println("FROG : Done") ;
+						//
+						// Transfer the data.
+System.out.println("FROG : Attempting to call FileStoreDriver ....") ;
+						contents = filestore.exportString(dataItem) ;
+System.out.println("FROG : Done") ;
+						}
+					//
+					// If the transfer failed.
+					catch (Exception ouch)
+						{
+System.out.println("FROG : Exception when calling filestore") ;
+System.out.println("FROG : " + ouch) ;
+ouch.printStackTrace() ;
+						contents = null ;
+						}
+
                    if (contents == null)
                    {  status.addCode(MySpaceStatusCode.AGMMCE00201,
                         MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
                         this.getClassName() );
-
                       contents = "";
                    }
                }
@@ -686,7 +894,8 @@ public class Actions
 //               Obtain the name of the file.
 //
 //               [TODO]: do not hard-wire the server name.
-
+/*
+ *
                    String serverName = "serv1";
                    String serverDirectory =
                           reg.getServerDirectory(serverName);
@@ -695,9 +904,43 @@ public class Actions
                           dataItem.getDataItemFile();
 
                    System.out.println("serverFile: " + serverFile);
+//
+// FileStore ...
+//
                    ServerDriver serverDriver = new ServerDriver();
                    contents = serverDriver.retrieveBytes(serverFile);
                    System.out.println("contents" + contents);
+
+ *
+ */
+
+					//
+					// Try transferring the data from our filestore.
+					contents = null ;
+					try {
+						//
+						// Create our filestore driver.
+System.out.println("FROG : Attempting to create a new FileStoreDriver ...") ;
+						FileStoreDriver filestore = FileStoreDriver.create(
+							dataItem.getDataItemIvorn()
+							) ;
+System.out.println("FROG : Done") ;
+						//
+						// Transfer the data.
+System.out.println("FROG : Attempting to call FileStoreDriver ....") ;
+						contents = filestore.exportBytes(dataItem) ;
+System.out.println("FROG : Done") ;
+						}
+					//
+					// If the transfer failed.
+					catch (Exception ouch)
+						{
+System.out.println("FROG : Exception when calling filestore") ;
+System.out.println("FROG : " + ouch) ;
+ouch.printStackTrace() ;
+						contents = null ;
+						}
+
                    if (contents == null)
                    {  status.addCode(MySpaceStatusCode.AGMMCE00201,
                         MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
@@ -775,9 +1018,19 @@ public class Actions
                   int dataItemType = EntryCodes.CON;
 
                   DataItemRecord newDataItem = new DataItemRecord
-                    (newContainerName, newdataItemID, dataItemFileName,
-                    account, creation, creation, 0, dataItemType,
-                    "permissions");
+                      (
+                      newContainerName,
+                      newdataItemID,
+                      dataItemFileName,
+                      null,
+                      null,
+                      account,
+                      creation,
+                      creation,
+                      0,
+                      dataItemType,
+                      "permissions"
+                      );
 
 //
 //               Attempt to add this entry to the registry.
@@ -874,18 +1127,30 @@ public class Actions
                         int dataItemType = oldDataItem.getType();
                         int dataItemSize = oldDataItem.getSize();
 
-                        DataItemRecord newDataItem = new DataItemRecord
-                          (newDataItemName, newdataItemID,
-                          dataItemFileName, account, creation, creation,
-                          dataItemSize, dataItemType, "permissions");
+                        DataItemRecord newDataItem = new DataItemRecord(
+                            newDataItemName,
+                            newdataItemID,
+                            dataItemFileName,
+                            null,
+                            null,
+                            account,
+                            creation,
+                            creation,
+                            dataItemSize,
+                            dataItemType,
+                            "permissions"
+                            );
 
 //
 //                     Attempt to add this entry to the registry.
 
                         newDataItem = reg.addDataItemRecord(newDataItem);
                         if (newDataItem != null)
-                        {  newdataItemID = newDataItem.getDataItemID();
-                           dataItemFileName = newDataItem.getDataItemFile();
+                        {  
+                           boolean copyOk = true;
+
+//                         newdataItemID = newDataItem.getDataItemID();
+//                         dataItemFileName = newDataItem.getDataItemFile();
 
 //
 //                        Attempt to copy the DataHolder.
@@ -895,18 +1160,22 @@ public class Actions
                            String oldServerName = "serv1";
                            String newServerName = "serv1";
 
-                           boolean copyOk = true;
 //
 //                        Check whether the new and old files are on
 //                        the same server and proceed accordingly.
 
-
+//
+// This should check the filestore ivorn for the two files.
+// However, need to pass the target ivorn in as a param to
+// this method in the first place.
+//
                            if (oldServerName.equals(newServerName) )
                            {
 //                              System.out.println(
 //                                "Input and output files are on the " +
 //                                "same server.");
-
+/*
+ *
                               String serverDirectory =
                                 reg.getServerDirectory(oldServerName);
 
@@ -920,6 +1189,40 @@ public class Actions
                                 copyTo) )
                               {  copyOk = false;
                               }
+ *
+ */
+							//
+							// Try copying the data within the filestore.
+							try {
+								//
+								// Create our filestore driver.
+System.out.println("FROG : Attempting to create a new FileStoreDriver ...") ;
+								FileStoreDriver filestore = FileStoreDriver.create(
+									oldDataItem.getDataItemIvorn()
+									) ;
+System.out.println("FROG : Done") ;
+								//
+								// Transfer the data.
+System.out.println("FROG : Attempting to call FileStoreDriver ...") ;
+								filestore.duplicate(
+									oldDataItem,
+									newDataItem
+									) ;
+System.out.println("FROG : Done") ;
+								//
+								// Update the data item entry.
+System.out.println("FROG : Attempting to update data entry ....") ;
+								reg.updateDataItemRecord(newDataItem) ;
+								}
+							//
+							// If the transfer failed.
+							catch (Exception ouch)
+								{
+System.out.println("FROG : Fail") ;
+System.out.println("FROG : Exception - " + ouch) ;
+								copyOk = false ;
+								}
+
                            }
                            else
                            {
@@ -934,6 +1237,8 @@ public class Actions
 //                           Assemble the URI for the old file from the
 //                           server URI and the file name of the file.
 
+/*
+ *
                               String oldServerURI =
                                 reg.getServerURI(oldServerName);
 
@@ -945,12 +1250,30 @@ public class Actions
 
                               String copyTo = newServerDirectory +
                                 dataItemFileName;
-
                               ServerDriver serverDriver = new ServerDriver();
                               if(!serverDriver.importDataHolder(
                                 oldDataHolderURI, copyTo, false) )
                               {  copyOk = false;
                               }
+ *
+ */
+
+//
+// FileStore ...
+// TODO
+// Tell filestore A to transfer to/from filestore B.
+							//
+							// Return error code for now.
+							// Once we modify the method to pass in
+							// the source and destination ivorns, we can implement this.
+							// 
+							status.addCode(
+								MySpaceStatusCode.AGMMCE00203,
+								MySpaceStatusCode.ERROR,
+								MySpaceStatusCode.LOG, this.getClassName()
+								);
+							returnStatus = false ;
+
                            }
 
 //
@@ -1083,10 +1406,23 @@ public class Actions
                         String permissionsMask =
                           oldDataItem.getPermissionsMask();
 
-                        DataItemRecord newDataItem = new DataItemRecord
-                          (newDataItemName, oldDataItemID,
-                          dataItemFileName, account, creation, expiry,
-                          dataItemSize, dataItemType, permissionsMask);
+                        String dataItemUrl   = oldDataItem.getDataItemUri();
+                        String dataItemIvorn = oldDataItem.getDataItemIvorn();
+
+
+                        DataItemRecord newDataItem = new DataItemRecord(
+                            newDataItemName,
+                            oldDataItemID,
+                            dataItemFileName,
+                            dataItemUrl,
+                            dataItemIvorn,
+                            account,
+                            creation,
+                            expiry,
+                            dataItemSize,
+                            dataItemType,
+                            permissionsMask
+                            );
 
 //
 //                     Attempt to update this entry in the registry.
@@ -1208,11 +1544,13 @@ public class Actions
 
                      if (userAcc.checkAuthorisation(UserAccount.READ,
                        ownerID, permissions))
-                     {  boolean deletedOk = false;
+                     {  
 
+/*
+ *
+                        boolean deletedOk = false;
 //
 //                     Check that the file is not a container.
-
                         if (dataItem.getType() != EntryCodes.CON)
                         {
 //
@@ -1230,6 +1568,8 @@ public class Actions
                            ServerDriver serverDriver = 
                              new ServerDriver();
                            deletedOk = serverDriver.deleteDataHolder(a);
+
+
                         }
                         else
                         {  deletedOk = true;
@@ -1240,7 +1580,6 @@ public class Actions
 //
 //                        Delete the entry for the DataHolder in the registry,
 //                        to bring the registry into line with reality.
-
                            reg.deleteDataItemRecord(dataItemID);
 
 //
@@ -1253,6 +1592,61 @@ public class Actions
                              MySpaceStatusCode.ERROR, MySpaceStatusCode.LOG,
                              this.getClassName() );
                         }
+ *
+ */
+System.out.println("FROG : deleting data item [" + dataItemID + "]") ;
+					//
+					// If it is a container
+					if (dataItem.getType() == EntryCodes.CON)
+						{
+						//
+						// Delete the entry from the registry.
+						reg.deleteDataItemRecord(dataItemID);
+						//
+						// Set the return status.
+						returnStatus = true;
+						}
+					//
+					// If it is not a container.
+					else {
+						//
+						// Try deleting the file.
+						try {
+							//
+							// Create our filestore driver.
+System.out.println("FROG : Attempting to create a new FileStoreDriver ...") ;
+							FileStoreDriver filestore = FileStoreDriver.create(
+								dataItem.getDataItemIvorn()
+								) ;
+System.out.println("FROG : Done") ;
+							//
+							// Delete the file from the store.
+System.out.println("FROG : Attempting to call FileStoreDriver ...") ;
+							filestore.delete(dataItem) ;
+System.out.println("FROG : Done") ;
+							//
+							// Delete the entry from the registry.
+System.out.println("FROG : Attempting to delete reg entry ...") ;
+							reg.deleteDataItemRecord(dataItemID);
+System.out.println("FROG : Done") ;
+							//
+							// Set the return status.
+							returnStatus = true;
+							}
+						catch (Exception ouch)
+							{
+System.out.println("FROG : Exception during delete ....") ;
+System.out.println("    Exception : " + ouch) ;
+							//
+							// Add an error code.
+							status.addCode(
+								MySpaceStatusCode.AGMMCE00211,
+								MySpaceStatusCode.ERROR,
+								MySpaceStatusCode.LOG,
+								this.getClassName()
+								);
+							}
+						}
                      }
                      else
                      {  status.addCode(MySpaceStatusCode.AGMMCE00212,
@@ -1298,6 +1692,10 @@ public class Actions
 
    public boolean createAccount(String account, String newAccount)
    {  boolean returnStatus = true;
+System.out.println("----") ;
+System.out.println("Actions.createAccount") ;
+System.out.println("  Account    : " + account) ;
+System.out.println("  NewAccount : " + newAccount) ;
 
       MySpaceStatus status = new MySpaceStatus();
 
@@ -1306,8 +1704,11 @@ public class Actions
 
 //
 //      Attempt to open the registry and proceed if ok.
-
+System.out.println("Attempting to create registry") ;
+System.out.println("  Name : " + registryName) ;
          RegistryManager reg = new RegistryManager(registryName);
+System.out.println("Done ....") ;
+
          if (status.getSuccessStatus())
          {
 //
@@ -1398,9 +1799,19 @@ public class Actions
 
                         int dataItemID = -1;
 
-                        itemRec = new DataItemRecord(containerName,
-                          dataItemID, "none", "sysadmin", creation,
-                          creation, 0, EntryCodes.CON, "permissions");
+                        itemRec = new DataItemRecord(
+                            containerName,
+                            dataItemID,
+                            "none",
+                            "sysadmin",
+                            null,
+                            null,
+                            creation,
+                            creation,
+                            0,
+                            EntryCodes.CON,
+                            "permissions"
+                            );
 
 //
 //                     Add the entry to the registry.
