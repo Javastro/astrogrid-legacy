@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.56 2004/07/01 11:43:03 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.57 2004/07/03 01:19:40 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -672,11 +672,8 @@
 <!-- extra reports - full junit report, annotated with regression info.-->
 <postGoal name="maven-junit-report-plugin:report">
         <attainGoal name="full-junit-report" />
-        <!--
-          still under development
         <attainGoal name="produce-baseline-summary" />
-        <attainGoal name="acquire-baselines"/>
-        <attainGoal name="annotate-report" />-->
+        <attainGoal name="annotate-report" />
         <attainGoal name="style-full-report" />
 </postGoal>
 <goal name="full-junit-report">
@@ -692,7 +689,7 @@
 <goal name="style-full-report">
        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
         <style basedir="${basedir}/target/" destdir="${basedir}/target/docs/junit-full" style="${basedir}/build/junit-frames.xsl">
-                <include name="TESTS-TestSuites.xml" />
+                <include name="TESTS-TestSuites-Annotated.xml" />
                 <param name="output.dir" expression="${basedir}/target/docs/junit-full" />
         </style>
 
@@ -701,11 +698,27 @@
 
 <goal name="produce-baseline-summary" description="generate summary test report, which could be used as a baseline for future tests">
        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
-       <!-- define summarizing stylesheet -->
+       <!-- define summarizing stylesheet inline - handy!-->
         <jsl:stylesheet var="summarize" >
                 <jsl:template match="/">
-                        <testsuites builddate="new java.util.Date()}">
-                        <jsl:applyTemplates />
+                        <testsuites>
+                        <baseline-summary>
+                                <baseline-name>GeneratedSummary</baseline-name>
+                                <baseline-description>to fill in</baseline-description>
+                                <j:new var="now" className="java.util.Date" />
+                                <when>${now}</when>
+                                <j:invokeStatic var="where" className="java.net.InetAddress" method="getLocalHost" />
+                                <where>${where}</where>
+                                <j:invokeStatic var="who" className="java.lang.System" method="getProperty">
+                                        <j:arg value="user.name" />
+                                </j:invokeStatic>
+                                <who>${who}</who>
+                                <project-name>auto-integration</project-name>
+                                <project-version>${astrogrid.iteration}</project-version><!-- is the the recommended way of getting version now?? -->
+                                <total-tests><jxml:expr select="sum(//testsuite/@tests)" /></total-tests>
+                                <total-errors><jxml:expr select="sum(//testsuite/@errors) + sum(//testsuite/@failures)"/></total-errors>
+                        </baseline-summary>
+                        <jsl:applyTemplates select="//testsuite" />
                         </testsuites>
                 </jsl:template>
 
@@ -714,54 +727,93 @@
                               <jxml:attribute name="name"><jxml:expr select="@name"/></jxml:attribute>
                              <jxml:attribute name="package"><jxml:expr select="@package"/></jxml:attribute>
                              <jxml:attribute name="tests"><jxml:expr select="@tests"/></jxml:attribute>
-                             <jxml:attribute name="errors"><jxml:expr select="@errors"/></jxml:attribute>
-                             <jxml:attribute name="failures"><jxml:expr select="@failures"/></jxml:attribute>
-                             <jsl:applyTemplates />
+                             <jxml:attribute name="failures"><jxml:expr select="@failures + @errors"/></jxml:attribute>
+                             <jsl:applyTemplates select="testcase" />
                         </jxml:element>
                 </jsl:template>
 
                 <jsl:template match="testcase">
                         <jxml:element name="testcase">
                                 <jxml:attribute name="name"><jxml:expr select="@name" /></jxml:attribute>
-                                <!-- error is a child element. dunno how failures are represented yet -->
+                                <jxml:attribute name="failure"><jxml:expr select="count(failure) + count(error)" /></jxml:attribute>
                         </jxml:element>
                 </jsl:template>
         </jsl:stylesheet>
+        <echo>Producing summary from current test results</echo>
         <!-- read in input file -->
-        <jxml:parse var="allSuites">
-          <j:import file="${regression.dir}/TESTS-TestSuites.xml"/>
-        </jxml:parse>
+        <jxml:parse var="allSuites" xml="target/TESTS-TestSuites.xml"/>
         <!-- apply stylesheet -->
-        <j:file name="${regression.dir}/summary.xml">
+        <j:file name="${basedir}/target/regression-baseline-summary.xml"><!-- add date here -->
          <jsl:style stylesheet="${summarize}" select="$allSuites" />
         </j:file>
 </goal>
 
 
-<goal name="annotate-report">
-        <j:set var="regression.dir" value="${basedir}/target/regression" />
-        <mkdir dir="${regression.dir}" />
-        <echo>summarizing this build</echo>
-        <junitreport todir="${regression.dir}">
-                <fileset dir="${basedir}/target/test-reports">
-                        <include name="TEST-*.xml" />
+
+<goal name="annotate-report" description="add details from saved baseines into current test results">
+        <echo>annotating test report with previous baselines</echo>
+        <!-- take a copy to start -->
+        <copy file="${basedir}/target/TESTS-TestSuites.xml" tofile="${basedir}/target/TESTS-TestSuites-Annotated.xml" overwrite="true"/>
+        <fileScanner var="files">
+                <fileset dir="${basedir}/baselines">
+                        <include name="*.xml" />
                 </fileset>
-        </junitreport>
+        </fileScanner>
+        <j:forEach var="baselineFile" items="${files.iterator()}">
+                <echo>Merging baseline ${baselineFile}</echo>
+                <!-- parse this document in -->
+                <!-- read in baseline file -->
+                <jxml:parse var="baseline" xml="${baselineFile}" />
 
+                <j:set var="baselineName"><jxml:expr select="$baseline/testsuites/baseline-summary/baseline-name" /></j:set>
+                <echo>Baseline '${baselineName}' defined in ${baselineFile}</echo>
+                <!-- define stylesheet -->
+                <jsl:stylesheet var="annotate">
+                        <jsl:template match="testsuites">
+                                <jxml:copy select=".">
+                                        <jxml:copyOf select="$baseline/testsuites/baseline-summary" />
+                                        <jsl:applyTemplates select="testsuite|baseline-summary"/>
+                                </jxml:copy>
+                        </jsl:template>
+                        <jsl:template match="testsuite">
+                                <jxml:copy select=".">
+                                        <jxml:set var="currentSuite" select="." />
+                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[@name=$currentSuite/@name and @package=$currentSuite/@package" />
 
-        <echo>merging current build summary with previous</echo>
+                                          <jxml:element name="baseline">
+                                                <jxml:attribute name="name">${baselineName}</jxml:attribute>
+                                                <jxml:attribute name="tests"><jxml:expr select="$suiteSummary/@tests"/></jxml:attribute>
+                                                <jxml:attribute name="failures"><jxml:expr select="$suiteSummary/@failures"/></jxml:attribute>
+                                          </jxml:element>
+                                        <jsl:applyTemplates select="testcase|baseline|properties|system-err|system-out"/>
+                                </jxml:copy>
+                        </jsl:template>
+                        <jsl:template match="testcase">
+                                <jxml:copy select=".">
+                                        <jxml:set var="currentTest" select="." />
+                                        <jxml:set var="testSummary" select="$suiteSummary/testcase[@name=$currentTest/@name]"/>
+                                        <jxml:element name="baseline">
+                                                <jxml:attribute name="name">${baselineName}</jxml:attribute>
+                                                <jxml:attribute name="failure"><jxml:expr select="$testSummary/@failure"/></jxml:attribute>
+                                        </jxml:element>
+                                        <jsl:applyTemplates select="error|failure|baseline"/>
+                                </jxml:copy>
+                        </jsl:template>
 
-        <j:file name="${regression.dir}/merge.xml">
-          <merge>
-            <current>
-             <j:import file="${regression.dir}/summary.xml" />
-            </current>
-            <previous>
-            <!--for now -->
-             <j:import file="${regression.dir}/summary.xml" />
-            </previous>
-          </merge>
-        </j:file>
+                        <jsl:template match="properties|error|failure|system-out|system-err|baseline|baseline-summary"><!-- pass through.. -->
+                                <jxml:copyOf select="." />
+                        </jsl:template>
+                </jsl:stylesheet>
+                <!-- read in intput file -->
+                <jxml:parse var="allSuites" xml="target/TESTS-TestSuites-Annotated.xml" />
+                <!-- apply stylesheet -->
+                <j:file name="${basedir}/target/processed-TESTS-TestSuites-Annotated.xml">
+                        <jsl:style stylesheet="${annotate}" select="$allSuites" />
+                </j:file>
+                <!-- move new file back to original copy -->
+                <move file="${basedir}/target/processed-TESTS-TestSuites-Annotated.xml"
+                        tofile="${basedir}/target/TESTS-TestSuites-Annotated.xml" overwrite="true"/>
+        </j:forEach>
 </goal>
 
 <!-- boilerplate below here /////////////////////////////////////////////////////////////////////////////////////////////-->
