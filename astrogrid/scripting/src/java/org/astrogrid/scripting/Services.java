@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.8 2004/03/12 13:50:23 nw Exp $
+/*$Id: Services.java,v 1.9 2004/05/07 15:33:50 pah Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -88,6 +88,7 @@ public class Services {
    protected List datacenters = new ArrayList();
    protected List applications = new ArrayList();
    protected List registries = new ArrayList();
+   protected List registryAdmins = new ArrayList();
    protected List jes = new ArrayList();
    protected List unknownServices = new ArrayList();
    
@@ -117,6 +118,8 @@ public class Services {
          myspaces.add(s);
       } else if (Service.REGISTRY_SERVICE.equals(s.getType())) {
          registries.add(s);
+            } else if (Service.REGISTRYADMIN_SERVICE.equals(s.getType())) {
+               registryAdmins.add(s);
       } else {
          unknownServices.add(s);
       }
@@ -130,6 +133,7 @@ public class Services {
       allServices.addAll(datacenters);
       allServices.addAll(applications);
       allServices.addAll(registries);
+      allServices.addAll(registryAdmins);
       allServices.addAll(jes);
       allServices.addAll(unknownServices);
       return allServices;
@@ -170,6 +174,13 @@ public class Services {
       return registries;
    }
 
+   /**access list of all registry admin services
+    * @return
+    */
+   public List getRegistryAdmins() {
+      return registryAdmins;
+   }
+
    /** access list of all unknoqn servics
     * @return
     */
@@ -189,6 +200,9 @@ public class Services {
 
 /* 
 $Log: Services.java,v $
+Revision 1.9  2004/05/07 15:33:50  pah
+added egistryAdmin as a service type
+
 Revision 1.8  2004/03/12 13:50:23  nw
 improved scripting object
 

@@ -1,4 +1,4 @@
-/*$Id: Service.java,v 1.8 2004/04/15 11:22:47 nw Exp $
+/*$Id: Service.java,v 1.9 2004/05/07 15:33:50 pah Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ public class Service {
    public static final String DATACENTER_SERVICE = "datacenter";
    public static final String MYSPACE_SERVICE= "myspace";
    public static final String REGISTRY_SERVICE = "registry";
+   public static final String REGISTRYADMIN_SERVICE = "registryadmin";
    public static final String APPLICATION_SERVICE = "application";
    public static final String JOBCONTROL_SERVICE = "jobcontrol";
    public static final String JOBMONITOR_SERVICE = "jobmonitor";
@@ -75,8 +76,8 @@ public class Service {
       if (JOBMONITOR_SERVICE.equals(type)) {
          return JesDelegateFactory.createJobMonitor(endpoint);
       }
-      if (REGISTRY_SERVICE.equals(type)) {
-          return RegistryDelegateFactory.createQuery(new URL(endpoint));
+      if (REGISTRYADMIN_SERVICE.equals(type)) {
+          return RegistryDelegateFactory.createAdmin(new URL(endpoint));
       }
       throw new IllegalStateException("Unknown service type - cannot create delegate:" + this.endpoint);
    }
@@ -135,6 +136,9 @@ public class Service {
 
 /* 
 $Log: Service.java,v $
+Revision 1.9  2004/05/07 15:33:50  pah
+added egistryAdmin as a service type
+
 Revision 1.8  2004/04/15 11:22:47  nw
 added support for registry delegate.
 
