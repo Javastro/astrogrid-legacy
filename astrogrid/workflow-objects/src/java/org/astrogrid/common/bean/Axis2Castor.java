@@ -1,5 +1,5 @@
 /*
- * $Id: Axis2Castor.java,v 1.8 2004/07/01 10:18:32 nw Exp $
+ * $Id: Axis2Castor.java,v 1.9 2004/08/25 11:38:01 nw Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -102,9 +102,13 @@ public class Axis2Castor {
     */
    public static Output convert(_output _output) {
       Output result = new Output();
-      org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] params = _output.getParameter();
-      for (int i = 0; i < params.length; i++) {
-         result.addParameter(convert(params[i]));
+      if ( _output != null) {
+          org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] params = _output.getParameter();
+          if (params != null) { // bit more code armour          
+              for (int i = 0; i < params.length; i++) {
+                  result.addParameter(convert(params[i]));
+              }
+          }
       }
       return result;
    }
@@ -139,9 +143,13 @@ public class Axis2Castor {
     */
    public static Input convert(_input _input) {
       Input result = new Input();
-      org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] params = _input.getParameter();
-      for (int i = 0; i < params.length; i++) {
-         result.addParameter(convert(params[i]));
+      if (_input != null) {
+          org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] params = _input.getParameter();
+          if (params != null) {
+              for (int i = 0; i < params.length; i++) {
+                  result.addParameter(convert(params[i]));
+              }
+          }
       }
       return result;
    }
