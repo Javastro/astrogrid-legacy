@@ -1,5 +1,5 @@
 /*
- * $Id: GdsQueryDelegate.java,v 1.2 2003/12/11 13:21:19 kea Exp $
+ * $Id: GdsQueryDelegate.java,v 1.3 2003/12/11 13:22:29 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,8 +38,6 @@ import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.io.FileReader;
 
-//import java.util.Properties;
-
 import java.net.URL;
 
 import org.xml.sax.SAXException;
@@ -60,15 +58,6 @@ import org.apache.axis.client.Stub;
 public class GdsQueryDelegate 
 {
   /**
-   * Configuration properties for this service.
-   * These use the WarehouseQuerier.properties file to discover
-   * the location of the OGSA-DAI warehouse services, configure 
-   * OGSA-DAI input etc.
-   */
-   //NO LONGER USED
-  //protected Properties serviceProperties = null;
-
-  /**
    * Default constructor, which loads run-time installation-specific
    * configuration properties (which must be supplied in the co-located
    * "WarehouseQuerier.properties" file).
@@ -77,28 +66,8 @@ public class GdsQueryDelegate
    * @throws IOException
    * @throws SAXException
    */
-  public GdsQueryDelegate() 
-      throws Exception, IOException, SAXException {
+  public GdsQueryDelegate() throws Exception, IOException, SAXException {
     super();    //Can throw IOException and SAXException
-
-/*
-    try {
-      // Load installation-specific runtime properties
-      serviceProperties = new Properties();
-      InputStream s = GdsQueryDelegate.class.getResourceAsStream(
-            "GdsQueryDelegate.properties"); 
-      if (s == null) {
-        throw new Exception(
-          "Couldn't find properties file GdsQueryDelegate.properties");
-      }
-      serviceProperties.load(s);
-    }
-    catch (IOException e) {
-      throw new Exception(
-          "Couldn't load properties from GdsQueryDelegate.properties: " + 
-           e.getMessage());
-    }
-    */
   }
 
   /*
@@ -330,6 +299,9 @@ public class GdsQueryDelegate
 }
 /*
 $Log: GdsQueryDelegate.java,v $
+Revision 1.3  2003/12/11 13:22:29  kea
+Removed GdsQueryDelegate.properties.
+
 Revision 1.2  2003/12/11 13:21:19  kea
 OGSA-DAI registry now passed in as command-line parameter.  Will remove
 GdsQueryDelegate.properties file shortly.
