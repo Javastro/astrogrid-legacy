@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileView.java,v 1.1 2004/04/15 17:24:31 mch Exp $
+ * $Id: StoreFileView.java,v 1.2 2004/05/10 15:06:22 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -268,7 +268,7 @@ public class StoreFileView extends JPanel {
                setIcon(closedIcon);
             }
         } else {
-            setToolTipText(((StoreFile) value).toAgsl().toString());
+            setToolTipText(((StoreFile) value).getOwner()+", "+((StoreFile) value).getModified());
         }
 
         return this;
@@ -281,6 +281,9 @@ public class StoreFileView extends JPanel {
 
 /*
  $Log: StoreFileView.java,v $
+ Revision 1.2  2004/05/10 15:06:22  mch
+ Fixed toAgsl()
+
  Revision 1.1  2004/04/15 17:24:31  mch
  Moved myspace ui to store ui
 
