@@ -15,7 +15,7 @@ import org.globus.ogsa.impl.core.service.ServiceLocator;
 import org.globus.ogsa.utils.GridServiceFactory;
 import org.globus.ogsa.wsdl.GSR;
 import org.globus.ogsa.utils.QueryHelper;
-
+import org.apache.log4j.Logger;
 
 public class GridServiceDelegate {
 
@@ -31,7 +31,7 @@ public class GridServiceDelegate {
   private   boolean    throwsExceptions = false;
   private   Exception  error            = null;
   private   boolean    simulating       = false;
-  
+  private   Logger     logger           = Logger.getLogger("gdsLogger");
 
   /**
    * Gives access to operations on the Factory port; a web-service stub.
@@ -171,14 +171,17 @@ public class GridServiceDelegate {
    * @return true if there is an instance connected; false otherwise.
    */
   public boolean isConnected () {
-    System.out.println("GSD: isConnected(): testing " + this.hashCode());
+    //System.out.println("GSD: isConnected(): testing " + this.hashCode());
+	logger.info("GSD: isConnected(): testing" + this.hashCode());
     if (!this.connected) {
-      System.out.println("GSD: already flagged as disconnected.");
+      //System.out.println("GSD: already flagged as disconnected.");
+	  logger.info("GSD: already flagged as disconnected");
       return false;
     }
     
     if (this.simulating) {
-      System.out.println("GSD: returning simulated value: " + this.connected);
+      //System.out.println("GSD: returning simulated value: " + this.connected);
+	  logger.info("GSD: returning simulated value: " + this.connected);
       return this.connected;
     }
     
@@ -188,27 +191,38 @@ public class GridServiceDelegate {
     // on-line.  This particular service datum is required to be
     // present by the OGSI specification. 
     try {
-      System.out.println("GSD: forming query.");
+      //System.out.println("GSD: forming query.");
+	  logger.info("GSD: forming query.");
       ExtensibilityType x = QueryHelper.getNamesQuery("terminationTime");
-      System.out.println("GSD: getting terminateTime SDE from service.");
+      //System.out.println("GSD: getting terminateTime SDE from service.");
+	  logger.info("GSD: getting terminateTime SDE from service.");
       this.instanceGridServicePort.findServiceData(x);
       this.connected = true;
     }
     catch (FaultType f) {
-      System.out.println("GSD: fault from service: " +
+      /*System.out.println("GSD: fault from service: " +
                          f.dumpToString());
+      */
+	  logger.info("GSD: fault from service: " + f.dumpToString());
       this.recordServiceDisconnected();
     }
     catch (Exception e) {
-      System.out.println("GSD: error from service: " 
+      /*System.out.println("GSD: error from service: " 
                          + " "
                          + e.getClass().getName()
                          + " "
                          + e.toString());
+      */
+	  logger.info("GSD: error from service: "
+	                     + " "
+	                     + e.getClass().getName()
+	                     + " "
+	                     + e.toString());
       this.recordServiceDisconnected();
     }
     
-    System.out.println("GSD: connected = " + this.connected);
+    // System.out.println("GSD: connected = " + this.connected);
+	logger.info("GSD: connected = " + this.connected);
     return this.connected;
   }
   
@@ -230,22 +244,27 @@ public class GridServiceDelegate {
    * and caches a stub for the grid-service port.
    */
   protected void createServiceInstance () throws Exception {
-    System.out.println("GSD: locating the factory port...");
+    //System.out.println("GSD: locating the factory port...");
+	logger.info("GSD: locating the factory port...");
     GridServiceFactory g = new GridServiceFactory(this.factoryPort);
-    System.out.println("GSD: creating the service instance...");
+    //System.out.println("GSD: creating the service instance...");
+	logger.info("GSD: creating the service instance...");
     this.instanceLocator = g.createService();
     this.connected= true;
     
     // Recover the GSH for the new instance.  This has to be done
     // indirectly, since the LocatorType for the instance doesn't
     // have it.
-    System.out.println("GSD: locating the service instance...");
+    //System.out.println("GSD: locating the service instance...");
+	logger.info("GSD: locating the service instance...");
     ServiceLocator s = new ServiceLocator();
     s.getServicePort(this.instanceLocator);
     GSR gsr = s.getGSR();
-    System.out.println("GSD: got the GSR");
+    //System.out.println("GSD: got the GSR");
+	logger.info("GSD: got to the GSR");
     this.instanceHandle = gsr.getHandle();
-    System.out.println("GSD: handle: " + this.instanceHandle.toString());
+    //System.out.println("GSD: handle: " + this.instanceHandle.toString());
+	logger.info("GSD: handle: " + this.instanceHandle.toString());
     
     // Find the grid-service port on this instance.
     OGSIServiceGridLocator l = new OGSIServiceGridLocator();

@@ -9,7 +9,8 @@ import org.w3c.dom.Document;
 import uk.org.ogsadai.common.XMLUtilities;
 import uk.org.ogsadai.wsdl.gds.GDSPortType;
 import uk.org.ogsadai.wsdl.gds.GDSServiceGridLocator;
-
+import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 import uk.org.ogsadai.service.OGSADAIConstants;
 import uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationPortType;
 import uk.org.ogsadai.service.daiservicegroups.DAIServiceGroupRegistrationServiceLocator;
@@ -46,18 +47,22 @@ import org.gridforum.ogsi.LocatorType;
  * inherited by the current class.
  */
 public class GdsDelegate extends GridServiceDelegate {
-  /**
+
+	/**
    * Configuration properties for the service.
    * These use the GdsDelegate.properties file to discover
    * the location of the OGSA-DAI warehouse services, configure
    * OGSA-DAI input etc.
    */
     private Properties serviceProperties = null;
-
+    static Logger logger = Logger.getLogger("GdsLogger");
+	private String factoryGsh = null;
+	    
   /**
    * Initialises the GdsDelegate using values in its properties file
    * GdsDelegate.properties.
    */
+ 
   public GdsDelegate() throws Exception {
 
     // Create and load default properties
@@ -77,6 +82,7 @@ public class GdsDelegate extends GridServiceDelegate {
     }
   }
 
+  
   /**
    * Invokes an SQL select statement on the GDS instance. The
    * SQL is passed  to the GDS in a "perform" document that is 
@@ -87,6 +93,15 @@ public class GdsDelegate extends GridServiceDelegate {
    *
    * @return The OGSA-DAI response document.
    */
+
+  public String getFactoryGsh() {
+	return this.factoryGsh;
+  }
+
+  public void setFactoryGsh(String factoryGsh) {
+	this.factoryGsh = factoryGsh;
+  }
+
   public ExtensibilityType performSelect (String query) throws Exception {
   
     // Build the perform document.
@@ -121,16 +136,21 @@ public class GdsDelegate extends GridServiceDelegate {
    */
   public void connect () throws Exception {
     
-    System.out.println("GdsDelegate: connecting...");
-    System.out.println("Finding the factory port...");
+    //System.out.println("GdsDelegate: connecting...");
+    //System.out.println("Finding the factory port...");
+    logger.info("GdsDelegate: connecting...");
+    logger.info("Finding the factory port...");
     this.findFactoryPort();
-    System.out.println("Creating the service instance...");
+    //System.out.println("Creating the service instance...");
+    logger.info("Creating the service instance");
     this.createServiceInstance();
-    System.out.println("Locating the service...");
+    //System.out.println("Locating the service...");
+	logger.info("Locating the service...");
     GDSServiceGridLocator g = new GDSServiceGridLocator();
     GDSPortType port = g.getGDSPort(this.instanceLocator);
     this.applicationPort = port;
-    System.out.println("GdsDelegate: connected.");
+    //System.out.println("GdsDelegate: connected.");
+	logger.info("GdsDelegate: connected.");
   }
   
   /**
@@ -167,6 +187,7 @@ public class GdsDelegate extends GridServiceDelegate {
    * @return The URL of the factory
    * @throws Exception
    */
+
     public static String getFactoryUrlFromRegistry( 
         String registryUrl, int timeoutValue ) throws Exception
     {
@@ -252,6 +273,104 @@ public class GdsDelegate extends GridServiceDelegate {
     // If we got here, we found the factory 
     return factoryURLString;
   }
+
+
+/**
+ * Obtains the factory handle from the specified registry and sets it
+ * to a factory service handle. This is lifted directly
+ * from package uk.org.ogsadai.client.Client.
+ * @param registryUrl The URL of the registry.
+ * @param timeoutValue The timeout value in seconds
+ * @return The URL of the factory
+ * @throws Exception
+ */
+  public static String setFactoryGdsFromRegistry( 
+	  String registryUrl, int timeoutValue ) throws Exception
+  {
+	// Ask the GDSR for information about registered GDSFs 
+	DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
+	DAIServiceGroupRegistrationPortType gdsrGpt = null;
+  
+	try {
+		gdsrLocator = new DAIServiceGroupRegistrationServiceLocator();
+		gdsrGpt = gdsrLocator.getDAIServiceGroupRegistrationPort(
+			  new URL(registryUrl));
+   
+		// Set timeout of SOAP calls
+		((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
+	}
+	catch (Exception e) {
+	  throw new Exception(
+		"Could not locate registry at: " + registryUrl,e);
+	}
+      
+	QName[] portTypes = new QName[1];
+	portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
+	ExtensibilityType query = 
+		DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
+	ExtensibilityType result;
+	result = gdsrGpt.findServiceData(query);
+          
+	String factoryHandle = "";
+	boolean haveFoundFactoryHandle = false;
+	try {
+	  Object[] entries = AnyHelper.getAsObject(result, EntryType.class);
+
+	  if (entries == null || entries.length == 0)
+		  throw new Exception("No locators.");
+                    
+	  // Chose which factory to use.  If message level security is
+	  // on prefer URLs that contain the work secure.  If message
+	  // level security is off prefer handles that do not contain the
+	  // work secure.
+	  for( int i = 0; i<entries.length && !haveFoundFactoryHandle; ++i )
+	  {
+		  EntryType someEntry = (EntryType) entries[i];
+		  LocatorType locator = someEntry.getMemberServiceLocator();
+		  HandleType[] handles = locator.getHandle();
+		  if (handles == null || handles.length == 0)
+		  {
+			  throw new Exception("No handles.");
+		  }
+          // ECA: handles[0] is factoryURLString; find out index for factory handle
+		  factoryHandle = handles[0].getValue().toString();
+                    
+		  // Check to see if finished looking for factory URLs
+		  // ECA: can get rid of this section if handles don't include "SECURE"?
+		  if ( factoryHandle.toUpperCase().indexOf( "SECURE") >= 0 ) {
+			  // This is a factory for a secure GDS.  We will 
+			  // consider this to be the best URL if message level
+			  // security is set.
+			  //if ( mIsMessageLevelSecurity ) //TOFIX - security flag
+			  if ( false ) {
+				  haveFoundFactoryHandle = true;
+			  }
+		  }
+		  else
+		  {
+			  // This is a factory for a non-secure GDS.  We will 
+			  // consider this to be the best bet if message level
+			  // security is off.
+			  //if ( !mIsMessageLevelSecurity ) //TOFIX - security flag
+			  if ( true ) {
+				  haveFoundFactoryHandle = true;
+			  }
+		  }
+	  }
+  }
+  catch (Exception e) {
+	throw new Exception(
+	   "No factories registered at the DAIRegistry at " + registryUrl, 
+	   e);
+  }
+  if (!haveFoundFactoryHandle) {
+	throw new Exception(
+	   "Couldn't find factory Handle at the DAIRegistry at " + registryUrl); 
+  }
+  // If we got here, we found the factory 
+  return factoryHandle;
+}
+
 
   /**
    * Converts an SQL string into an XML Perform document for OGSA-DAI.
