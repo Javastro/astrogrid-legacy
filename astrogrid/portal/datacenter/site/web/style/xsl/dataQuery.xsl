@@ -863,6 +863,9 @@ function defocusit(a){
 <td align="left">FROM:</td>
 <td align="left" colspan="2">
 <xsl:value-of select="//*/vr:Resource/vs:Table/vr:Name"/>
+<!-- To take into consideration other namespaces -->
+
+<xsl:value-of select="//*/vr:Resource/vr:Table/vr:Name"/>
 <!--
 <input name="none" size="20">
 <xsl:attribute name="value">
@@ -873,7 +876,7 @@ function defocusit(a){
 </tr>
 <tr>
 <td align="right">AS:</td>
-<td align="left"><input onFocus="focusit(this)" onBlur="defocusit(this)"  id="derriere" name="derriere" size="5"/></td>
+<td align="left"><input onFocus="focusit(this)" onBlur="defocusit(this)"  id="derriere" name="derriere" size="5" value="T1"/></td>
 <td align="right">
 <span class="agActionButton">
 <xsl:attribute name="title">Click here to paste <xsl:value-of select="DQtableID"/> As .. to the main box</xsl:attribute>
@@ -901,6 +904,11 @@ Hi! Ho!<br />
 <br />
 <xsl:for-each select="//*/vr:Resource/vs:Table/vs:Column">
 <input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
+</xsl:for-each>
+
+<!-- This is to take into consideration other namespace conventions -->
+<xsl:for-each select="//*/vr:Resource/vr:Table/vr:Column">
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vr:UCD}', '{vr:Unit}{vr:Units}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
 </xsl:for-each>
 </form>
 </center>
