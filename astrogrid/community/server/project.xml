@@ -2,11 +2,20 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.20 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/18 22:59:23 $</cvs:date>
+    | <cvs:version>$Revision: 1.21 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.21  2005/03/18 22:59:23  clq2
+    |   dave-dev-200503150513
+    |
+    |   Revision 1.20.20.2  2005/03/18 11:27:31  dave
+    |   Added commons collection to the depends.
+    |
+    |   Revision 1.20.20.1  2005/03/17 04:47:33  dave
+    |   Updated AccountManager to use FileManager for registering home space.
+    |
     |   Revision 1.20  2005/01/07 14:14:25  jdt
     |   merged from Reg_KMB_787
     |
@@ -130,14 +139,40 @@
             <url>http://www.astrogrid.org/</url>
         </dependency>
        <!--+
-            | The MySpace delegate.
+            | The FileManager client.
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-store-client</artifactId>
-            <version>${astrogrid.mySpace.version}</version>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <dependency>
+            <id>commons-collections</id>
+            <version>3.0</version>
+            <type>jar</type>
         </dependency>
         <!--+
             | The Castor JDO library.
@@ -150,17 +185,6 @@
             <url>http://www.castor.org/</url>
         </dependency>
         <!--+
-            | The Castor XML library - required for Registry delegate.
-        <dependency>
-            <groupId>castor</groupId>
-            <artifactId>castor-xml</artifactId>
-            <version>0.9.5</version>
-            <jar>castor-0.9.5-xml.jar</jar>
-            <type>jar</type>
-            <url>http://www.castor.org/</url>
-        </dependency>
-            +-->
-        <!--+
             | The JTA library that Castor relies on.
             +-->
         <dependency>
@@ -169,26 +193,6 @@
             <version>1.0.1</version>
             <type>jar</type>
         </dependency>
-        <!--+
-            | The Xerces library that Castor relies on.
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
-            <version>2.4.0</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-        </dependency>
-            +-->
-        <!--+
-            | The XML library that Xerces relies on.
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.0.b2</version>
-            <type>jar</type>
-            <url>http://xml.apache.org/</url>
-        </dependency>
-            +-->
         <!--+
             | The Hsqldb jars.
             +-->
@@ -235,18 +239,7 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>    	
-        	
-    	
-        <!--+
-            | The JConfig jars.
-        <dependency>
-            <groupId>jconfig</groupId>
-            <artifactId>jconfig</artifactId>
-            <version>2.2</version>
-            <type>jar</type>
-            <url>http://www.jconfig.org/</url>
-        </dependency>
-            +-->
+       	
     </dependencies>
 
     <!--+

@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
- * <cvs:version>$Revision: 1.22 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/03/18 22:59:23 $</cvs:date>
+ * <cvs:version>$Revision: 1.23 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.23  2005/03/18 22:59:23  clq2
+ *   dave-dev-200503150513
+ *
+ *   Revision 1.22.20.1  2005/03/17 04:47:34  dave
+ *   Updated AccountManager to use FileManager for registering home space.
+ *
  *   Revision 1.22  2005/01/07 14:14:25  jdt
  *   merged from Reg_KMB_787
  *
@@ -83,7 +89,13 @@ import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
 
-import org.astrogrid.store.VoSpaceClient ;
+import org.astrogrid.filemanager.common.NodeIvorn;
+import org.astrogrid.filemanager.common.AccountIdent;
+import org.astrogrid.filemanager.client.NodeMetadata;
+import org.astrogrid.filemanager.client.FileManagerNode;
+import org.astrogrid.filemanager.client.delegate.NodeDelegate;
+import org.astrogrid.filemanager.resolver.NodeDelegateResolver ;
+import org.astrogrid.filemanager.resolver.NodeDelegateResolverImpl;
 
 /**
  * Server side implmenetation of the AccountManager service.
@@ -924,29 +936,43 @@ public class AccountManagerImpl
         if (null == account.getHomeSpace())
             {
             //
-            // If we have a default home space.
-            Ivorn service = this.getDefaultVoSpace() ;
-            if (null != service)
+            // If we have a FileManager ivorn configured.
+            Ivorn ivorn = this.getDefaultVoSpace() ;
+            if (null != ivorn)
                 {
                 //
-                // Try calling the VoSpace client to create the space.
+                // Try calling the FileManager client to create the space.
                 try {
                     //
-                    // Create a new VoSpaceClient.
-                    VoSpaceClient resolver = new VoSpaceClient(null) ;
+                    // Create the FileManager resolver.
+                    log.debug("  Creating FileManager.NodeDelegateResolver") ;
+                    NodeDelegateResolver resolver = new NodeDelegateResolverImpl(
+                        null
+                        );                    
                     //
-                    // Allocate the new home space.
-                    Ivorn ivorn = resolver.createUser(
-                        service,
-                        new Ivorn(
+                    // Try to resolve the ivorn into a delegate.
+                    log.debug("  Resolving FileManager ivorn : " + ivorn.toString()) ;
+                    NodeDelegate delegate = resolver.resolve(ivorn);                    
+                    //
+                    // Ask the degagate to create a new account.
+                    log.debug("  Creating account home") ;
+                    FileManagerNode node = delegate.addAccount(
+                        new AccountIdent(
                             account.getIdent()
                             )
-                        ) ;
-                    log.debug("  VoSpace ivorn : " + ivorn) ;
+                        );
+                    //
+                    // Get the node metadata.
+                    NodeMetadata meta = node.getMetadata();
+                    //
+                    // Extract the node ivorn.
+                    NodeIvorn home = meta.getNodeIvorn();
+                    log.debug("  New account home : " + home.toString()) ;
                     //
                     // Update the Account data
+                    log.debug("  Updating account details") ;
                     account.setHomeSpace(
-                        ivorn.toString()
+                        home.toString()
                         ) ;
                     }
                 catch (Throwable ouch)

@@ -3,8 +3,8 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: clq2 $</cvs:author>
-    | <cvs:date>$Date: 2005/03/11 13:37:05 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2005/03/18 22:59:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     |
     +-->
 <project

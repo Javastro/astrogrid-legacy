@@ -10,7 +10,7 @@
         description="Community identifier"
         name="org.astrogrid.community.default.vospace"
         override="false" type="java.lang.String"
-        value="ivo://@REGAUTHORITY@/myspace"/>
+        value="ivo://@REGAUTHORITY@/filemanager-one"/>
 
 	<Environment 
 		name="org.astrogrid.registry.query.endpoint" 

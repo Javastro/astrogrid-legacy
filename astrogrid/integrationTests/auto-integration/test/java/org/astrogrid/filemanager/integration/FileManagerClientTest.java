@@ -1,4 +1,4 @@
-/*$Id: FileManagerClientTest.java,v 1.3 2005/03/14 22:03:53 clq2 Exp $
+/*$Id: FileManagerClientTest.java,v 1.4 2005/03/18 23:02:41 clq2 Exp $
  * Created on 02-Mar-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -100,6 +100,12 @@ public class FileManagerClientTest extends org.astrogrid.filemanager.client.File
 
 /* 
 $Log: FileManagerClientTest.java,v $
+Revision 1.4  2005/03/18 23:02:41  clq2
+dave-dev-200503150513
+
+Revision 1.3.2.1  2005/03/17 04:55:13  dave
+Updated Community to use FileManager to register account space.
+
 Revision 1.3  2005/03/14 22:03:53  clq2
 auto-integration-nww-994
 

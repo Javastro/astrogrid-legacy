@@ -2,11 +2,20 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/01/07 14:14:25 $</cvs:date>
-    | <cvs:version>$Revision: 1.25 $</cvs:version>
+    | <cvs:author>$Author: clq2 $</cvs:author>
+    | <cvs:date>$Date: 2005/03/18 22:59:23 $</cvs:date>
+    | <cvs:version>$Revision: 1.26 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.26  2005/03/18 22:59:23  clq2
+    |   dave-dev-200503150513
+    |
+    |   Revision 1.25.20.2  2005/03/18 11:36:22  dave
+    |   Added commons-collections to the web app ..
+    |
+    |   Revision 1.25.20.1  2005/03/17 04:47:35  dave
+    |   Updated AccountManager to use FileManager for registering home space.
+    |
     |   Revision 1.25  2005/01/07 14:14:25  jdt
     |   merged from Reg_KMB_787
     |
@@ -213,7 +222,6 @@
         </dependency>
         <!--+
             | The Community resolver components.
-            | (Used by the VoSpace client)
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
@@ -267,21 +275,59 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-    	
-    	
-        <!--+
-            | The MySpace delegate.
+       <!--+
+            | The FileManager client.
             +-->
         <dependency>
             <groupId>${pom.groupId}</groupId>
-            <artifactId>astrogrid-store-client</artifactId>
-            <version>${astrogrid.mySpace.version}</version>
+            <artifactId>astrogrid-filemanager-client</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filemanager-contract</artifactId>
+            <version>${astrogrid.filemanager.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-client</artifactId>
+            <version>${astrogrid.filestore.version}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <id>commons-collections</id>
+            <version>3.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+       
         <!--+
             | The Castor JDO library.
             +-->

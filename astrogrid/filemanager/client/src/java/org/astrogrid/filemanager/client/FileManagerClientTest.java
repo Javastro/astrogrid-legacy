@@ -1,10 +1,25 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientTest.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/03/11 13:37:06 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2005/03/18 22:59:46 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientTest.java,v $
+ *   Revision 1.4  2005/03/18 22:59:46  clq2
+ *   dave-dev-200503150513
+ *
+ *   Revision 1.3.4.4  2005/03/18 22:10:03  dave
+ *   Removed obvious debug messages ...
+ *
+ *   Revision 1.3.4.3  2005/03/18 18:05:51  dave
+ *   Added obvious debug message ...
+ *
+ *   Revision 1.3.4.2  2005/03/18 00:26:51  dave
+ *   Added debug to test case.
+ *
+ *   Revision 1.3.4.1  2005/03/17 04:50:21  dave
+ *   Modified client test to check if account space already registered by community.
+ *
  *   Revision 1.3  2005/03/11 13:37:06  clq2
  *   new filemanager merged with filemanager-nww-jdt-903-943
  *
@@ -105,7 +120,7 @@ public class FileManagerClientTest extends BaseTest {
      * Our account password.
      *  
      */
-    private String accountPass = "secret";
+    protected String accountPass = "secret";
 
 
 
@@ -135,7 +150,7 @@ public class FileManagerClientTest extends BaseTest {
      * Test that we can register our FileManager space. Not part of the
      * FileManagerClient API, just testing that the test environment works.
      *  
-     */
+     *  Causes problems if Community has already created the space.
     public void testRegisterCommunityHome() throws Exception {
         //
         // Create our Community account.
@@ -147,6 +162,7 @@ public class FileManagerClientTest extends BaseTest {
         // Register our FileManager space.
         assertNotNull(registerCommunityHome(accountIdent, accountNode.getIvorn()));
     }
+     */
 
     /**
      * Test that we can register our account(s). Not part of the
@@ -891,7 +907,7 @@ public class FileManagerClientTest extends BaseTest {
      *  
      */
     public void registerAccounts() throws Exception {
-        System.out.println("registerAccount(Ivorn)");
+        System.out.println("registerAccount()");
         //
         // Create our Community account.
         accountData = createCommunityAccount(accountIdent);
@@ -899,13 +915,27 @@ public class FileManagerClientTest extends BaseTest {
         // Set our account password.
         registerPassword(accountIdent, accountPass);
         //
-        // Create our FileManager account.
-        accountNode = createFileManagerAccount(accountIdent);
-        //
-        
-        Ivorn homeIvorn = new Ivorn(accountNode.getMetadata().getNodeIvorn().toString());
-        accountData = registerCommunityHome(accountIdent, homeIvorn);
-    }
+        // If the account does not have space allocated for it.
+        if (null == accountData.getHomeSpace())
+            {                
+            System.out.println("  Home space is null");
+            //
+            // Create our FileManager account.
+            accountNode = createFileManagerAccount(accountIdent);
+            //
+            // Register the account home.        
+            accountData = registerCommunityHome(
+                accountIdent,
+                new Ivorn(
+                    accountNode.getMetadata().getNodeIvorn().toString()
+                    )
+                );
+            }
+        else {
+            System.out.println("  Home space is already allocated");
+            System.out.println("  Home : " + accountData.getHomeSpace());
+            }
+        }
 
     /**
      * Create a Community account. Not part of the FileManagerClient API, this
@@ -950,6 +980,9 @@ public class FileManagerClientTest extends BaseTest {
      */
     public static FileManagerNode createFileManagerAccount(AccountIdent acc)
             throws Exception {
+        System.out.println("createFileManagerAccount(AccountIdent)");
+        System.out.println("  Account : " + acc.toString());
+
         Ivorn ivorn = new Ivorn(acc.toString());
         //
         // Create our resolver.
@@ -960,8 +993,11 @@ public class FileManagerClientTest extends BaseTest {
                 getTestProperty("ivorn")));
         //
         // Create the account.
-        return delegate.addAccount(acc);
-    }
+        FileManagerNode node = delegate.addAccount(acc);
+        System.out.println("New account created");
+
+        return node ;    
+        }
 
     /**
      * Register our FileManagerSpace in our CommunityAccount. Not part of the
@@ -971,7 +1007,7 @@ public class FileManagerClientTest extends BaseTest {
      * local FileManager service automagically.
      *  
      */
-    public static  AccountData registerCommunityHome(AccountIdent acc, Ivorn home)
+    public static AccountData registerCommunityHome(AccountIdent acc, Ivorn home)
             throws Exception {
         Ivorn ivorn = new Ivorn(acc.toString());
         //
