@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.2 2004/09/07 00:54:20 mch Exp $
+ * $Id: TargetIndicator.java,v 1.3 2004/09/07 01:01:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -143,66 +143,13 @@ public class TargetIndicator  {
       }
    }
    
-   /**
-    * Tests the destination exists and a file can be created on it.  This ensures
-    * that the given server url is correct, that the server is running and that
-    * the user has the right permissions on that particular one.
-    * We do this
-    * before, eg, running the query to try and ensure the query is not wasted.
-    *
-    * @throws IOException if the operation fails for any reason
-    */
-   public void testConnection(Account user) throws IOException {
-      
-      if (getEmail() != null) {
-         //check email server is available
-         String server = SimpleConfig.getSingleton().getString(EMAIL_SERVER);
-         String emailUser = SimpleConfig.getSingleton().getString(EMAIL_USER, null);
-         String password = SimpleConfig.getSingleton().getString(EMAIL_PWD, null);
-
-         try {
-            Properties props = new Properties();
-            props.put("mail.smtp.host", server);
-            Session session = Session.getDefaultInstance(props, null);
-   
-            Provider[] p = session.getProviders();
-            Transport transport = session.getTransport(session.getProvider("smtp"));
-            transport.connect(server, emailUser, password);
-         }
-         catch (MessagingException e) {
-            throw new IOException("Cannot connect to server "+server+": "+e);
-         }
-            
-      }
-
-      // test to see that the agsl for the results is valid
-      if (resolveAgsl() != null) {
-         
-         StoreClient store = StoreDelegateFactory.createDelegate(user.toUser(), resolveAgsl());
-
-         try {
-            store.putString("This is a test file to make sure we can create a file at the target before we start, so our query results are not lost",
-                              resolveAgsl().getPath(), false);
-         }
-         catch (StoreException se) {
-            //rethrow with more info
-            throw new StoreException("Test to create '"+resolveAgsl().getPath()+"' on target store failed "+se.getMessage(), se.getCause());
-         }
-         
-         try {
-            store.delete(resolveAgsl().getPath());
-         }
-         catch (StoreException se) {
-            //log it but don't fail
-            LogFactory.getLog(TargetIndicator.class).error("Could not delete test file",se);
-         }
-            
-      }
-   }
    
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.3  2004/09/07 01:01:29  mch
+ Moved testConnection to server slinger
+
  Revision 1.2  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 

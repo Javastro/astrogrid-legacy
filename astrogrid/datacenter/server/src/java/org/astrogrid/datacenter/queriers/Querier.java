@@ -1,33 +1,26 @@
 /*
- * $Id: Querier.java,v 1.59 2004/09/07 00:54:20 mch Exp $
+ * $Id: Querier.java,v 1.60 2004/09/07 01:03:10 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
-import org.astrogrid.datacenter.returns.*;
-
 import org.astrogrid.datacenter.queriers.status.*;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.Properties;
 import java.util.Vector;
-import javax.mail.MessagingException;
-import javax.mail.Provider;
-import javax.mail.Session;
-import javax.mail.Transport;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.returns.ReturnSpec;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.store.delegate.StoreException;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.slinger.Slinger;
 
 /**
  * Represents a single running query.
@@ -169,7 +162,7 @@ public class Querier implements Runnable {
     * results processing but there are helper methods here for it
      */
    public void ask() throws IOException {
-      returns.getTarget().testConnection(user);
+      Slinger.testConnection(returns.getTarget(), getUser());
 
       timeQueryStarted = new Date();
       
@@ -357,6 +350,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.60  2004/09/07 01:03:10  mch
+ Moved testConnection to server slinger
+
  Revision 1.59  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
