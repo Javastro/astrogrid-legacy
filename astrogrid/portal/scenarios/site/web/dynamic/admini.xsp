@@ -102,7 +102,7 @@ offered the chance to select them.
 </AGscenario>
 
 <AGscenario name="Portal Preferences">
-<link>javascript:newWindow('http://barbara.star.le.ac.uk:8080/astrogrid-portal/bare/mount/login/prefs.i07','newBy', 780, 480, 100, 20);</link>
+<link>javascript:newWindow('/astrogrid-portal/bare/mount/login/prefs.i07','newBy', 780, 480, 100, 20);</link>
 <inBrief>
 Modify preferences related to the portal pages
 </inBrief>
