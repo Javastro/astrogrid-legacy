@@ -6,7 +6,8 @@
          <li><a href="INSTALL.html">INSTALL</a>
          <li><a href="RELEASE.html">RELEASE</a>
          <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
-         <li><a href="self-test.jsp">Installation Test</a>
+         <li><a href="self-test.jsp">Installation Checks</a>
+         <li><a href="TestServlet?suite=org.astrogrid.datacenter.service.InstallationSelfCheck">Self Test</a>
          <li><a href="client-dist/astrogrid-datacenter-client-SNAPSHOT.zip">Java client API</a>
       </ul>
    </div>
