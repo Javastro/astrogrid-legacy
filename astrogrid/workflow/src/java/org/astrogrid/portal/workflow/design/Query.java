@@ -93,7 +93,8 @@ public final class Query implements Tool {
                source = new InputSource( new StringReader( xmlString ) );
                          
             query = new Query( XMLUtils.newDocument(source) ) ;
-      
+            query.setName( name ) ;
+
          }
          catch ( Exception ex ) {
              ex.printStackTrace() ;
@@ -183,7 +184,12 @@ public final class Query implements Tool {
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
                     
                     element = (Element) nodeList.item(i) ;
-                
+ 
+ // JL Note: These will require change according to how name and description tags
+ // finally end up in iteration 3...  
+ 
+                    name = "name";
+                    description = "description";             
                     if ( element.getTagName().equals( WorkflowDD.SELECT_NAME_ELEMENT ) ) {
                         name = element.getFirstChild().getNodeValue().trim() ;  
                     }  
@@ -212,13 +218,14 @@ public final class Query implements Tool {
            response = null ;
                                      
         try {
-            
+/*            
             Object []
                inserts = new Object[1] ;
             inserts[0] = XMLUtils.ElementToString( queryElement ) ;
 
             response = MessageFormat.format( WorkflowDD.QUERY_TEMPLATE, inserts ) ;
-
+*/
+            response = XMLUtils.ElementToString( queryElement ) ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Query.toXMLString() exit") ;    
@@ -236,13 +243,15 @@ public final class Query implements Tool {
            response = null ;
                                      
         try {
-            
+/*            
             Object []
                inserts = new Object[1] ;
             inserts[0] = XMLUtils.ElementToString( queryElement ) ;
 
             response = MessageFormat.format( WorkflowDD.JOBQUERY_TEMPLATE, inserts ) ;
+*/
 
+            response = XMLUtils.ElementToString( queryElement ) ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Query.toJESXMLString() exit") ;    
@@ -254,6 +263,8 @@ public final class Query implements Tool {
         
     
     public String getName() { return name ; }
+    public void setName( String name ) { this.name = name ; }
+    public void setDescription( String description ) { this.description = description ; }
     public String getDescription() { return description ; }
     
     private static void trace( String traceString ) {

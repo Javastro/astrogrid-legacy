@@ -107,7 +107,7 @@ public class Step extends Activity {
                         this.tool = new NullTool() ;   
                     }  
                     else if( element.getTagName().equals( WorkflowDD.QUERY_ELEMENT ) ) {
-                        this.tool = new Query( this.extractSelectElement( element ) ) ;   
+                        this.tool = new Query( element ) ;   
                     }  
                     else if( element.getTagName().equals( WorkflowDD.RESOURCES_ELEMENT ) ) {
                         this.resources = new Resources( element ) ;                
@@ -124,7 +124,7 @@ public class Step extends Activity {
         
     } 
     
-    
+    // JL Note: stop gap between iteration 2 and 3
     private Element extractSelectElement( Element queryElement ){
         if( TRACE_ENABLED ) trace( "Step.extractSelectElement() entry") ; 
         

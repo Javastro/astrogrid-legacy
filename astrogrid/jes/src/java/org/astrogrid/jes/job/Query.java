@@ -54,6 +54,15 @@ public class Query {
 		setParent(parent) ;
 		
 		try {
+            
+            String
+                type = queryElement.getAttribute( SubmissionRequestDD.QUERY_TYPE_ATTR ),
+                target = queryElement.getAttribute( SubmissionRequestDD.QUERY_TARGET_ATTR ) ; 
+                
+            if( type == SubmissionRequestDD.QUERY_TYPE_ADQL) {
+                fixupCatalogsForADQL( target ) ;
+                return ;
+            }
 
 			NodeList
 			   nodeList = queryElement.getChildNodes() ;
@@ -70,10 +79,6 @@ public class Query {
 	                    fixupCatalogs( element ) ;
                         break ;
 				    }
-                    else if( element.getTagName().equals( SubmissionRequestDD.ADQL_SELECT_ELEMENT ) ) {
-                        fixupCatalogsForADQL( element ) ;
-                        break ;
-                    }
 				
 				}
 				
@@ -126,19 +131,12 @@ public class Query {
 	} // end of fixupCatalog()
 
 
-    private void fixupCatalogsForADQL( Element fromElement ) throws JobException {
+    private void fixupCatalogsForADQL( String target ) throws JobException {
         if( TRACE_ENABLED ) logger.debug( "fixupCatalogsForADQL: entry") ;
         
         try {
-
-            String
-                xmlString = XMLUtils.ElementToString( fromElement ),
-                serviceURL 
-                    = xmlString.substring( xmlString.indexOf(SubmissionRequestDD.ADQL_TS_TAG) 
-                                         + SubmissionRequestDD.ADQL_TS_TAG.length()
-                                         , xmlString.indexOf( SubmissionRequestDD.ADQL_TS_ENDTAG ) ).trim() ;
-         
-            logger.debug( "serviceURL: " + serviceURL ) ;
+     
+            logger.debug( "target: " + target ) ;
             
             Catalog
                 catalog = new Catalog( this ) ;
@@ -148,7 +146,7 @@ public class Query {
             Service
                 service = new Service( catalog ) ;
             service.setName( "Service") ;
-            service.setUrl( serviceURL ) ;
+            service.setUrl( target ) ;
             catalog.addService( service ) ;
             
             Table

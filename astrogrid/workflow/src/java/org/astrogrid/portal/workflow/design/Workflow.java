@@ -249,18 +249,18 @@ public class Workflow extends Activity {
                 
             pathBuffer
                 .append( "/")
-                .append( workflow.getUserid() )
+                .append( userid )
                 .append( "@")
-                .append( workflow.getCommunity() )
+                .append( community )
                 .append( "/")
                 .append( "serv1")
                 .append( "/")
                 .append( "workflow")
                 .append( "/")
-                .append( workflow.getName() ) ;
+                .append( name ) ;
             
-            xmlString = mySpace.getDataHolding( workflow.getUserid()
-                                              , workflow.getCommunity()
+            xmlString = mySpace.getDataHolding( userid
+                                              , community
                                               , pathBuffer.toString() ) ;                      
 
             InputSource

@@ -43,6 +43,10 @@ public class WorkflowDD {
         
     public static final String
         QUERY_ELEMENT = "query",
+        QUERY_TYPE_ATTRIBUTE = "type",
+        QUERY_TARGET_ATTRIBUTE = "target" ;
+        
+    public static final String
         NULL_TOOL_ELEMENT = "nulltool",
         RESOURCES_ELEMENT = "resources";
         

@@ -16,7 +16,8 @@ public final class SubmissionRequestDD {
 	public static final String
 	    JOB_ELEMENT = "job",
 	    JOB_NAME_ATTR = "name",
-	    JOB_URN_ATTR = "jobURN",
+	    JOB_URN_ATTR = "jobURN",               // Iteration 2 jobid
+        JOB_ASSIGNID_ATTR = "AssignID",        // Iteration 3 jobid 
 	    JOB_MONITOR_URL_ATTR = "jobMonitorURL";
 	    
 	public static final String
@@ -32,7 +33,10 @@ public final class SubmissionRequestDD {
         JOBSTEP_JOINCONDITION_ATTR = "stepJoinCondition";
         
 	public static final String    
-	    QUERY_ELEMENT = "query";
+	    QUERY_ELEMENT = "query",
+        QUERY_TYPE_ATTR = "type",
+        QUERY_TARGET_ATTR = "target",
+        QUERY_TYPE_ADQL = "adql" ;
 	    
 	public static final String 
 	    FROM_ELEMENT = "from";
@@ -81,6 +85,7 @@ public final class SubmissionRequestDD {
 	    OP_NAME_ANY = "ANY",
 	    OP_NAME_ALL = "ALL" ;
         
+    // JL Note: review this after iteration 3
     public static final String
         ADQL_SELECT_ELEMENT = "Select",
         ADQL_TARGETSERVICE_ELEMENT = "Service",

@@ -428,16 +428,13 @@ public class DesignAction extends AbstractAction {
 				}                
                 
                 if( workflow == null ) {
-                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;
-                    // workflow.setDescription( description ) ; 
+                    workflow = Workflow.createWorkflow( userid, community, name, description ) ;; 
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
                     workflow = Workflow.createWorkflow( userid, community, name, description ) ;
-                    // workflow.setDescription( description ) ;
                 }
                 else if( !workflow.isDirty() ) {
                     workflow = Workflow.createWorkflow( userid, community, name, description ) ;
-                    // workflow.setDescription( description ) ;
                 }
                 else {
                     debug( "Create ignored - bConfirm == false" ) ;
@@ -528,10 +525,10 @@ public class DesignAction extends AbstractAction {
                     Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ; 
                 }
                 else if( workflow.isDirty() == false ) {
-                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  ; 
+                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  
                 }
                 else if( bConfirm == true ) {
-                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  ;
+                    Workflow.deleteWorkflow( userid, community, communitySnippet(), name ) ;  
                 }                              
             }
             finally {

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator ;
 
 import javax.xml.parsers.*;
+import javax.xml.namespace.QName ;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
@@ -409,8 +410,8 @@ public class JobScheduler {
                 element = (Element)iterator.next() ;
                 jobElement.removeChild( element ) ;
             }
-            
-            request = XMLUtils.DocumentToString( doc ) ;
+                     
+            request = this.runRequestToString( doc ) ;
               
         }
         catch ( Exception ex ) {
@@ -427,6 +428,51 @@ public class JobScheduler {
         return request ;
         
     } // end of formatRunRequest()
+    
+    
+    private String runRequestToString( Document doc ){
+        if( TRACE_ENABLED ) logger.debug( "runRequestToString() entry") ;
+        
+        String
+            docString = null ;
+        Element
+            element = null ;
+        String
+            queryType = null ;
+        
+        try {
+            docString = XMLUtils.DocumentToString( doc ) ;
+            
+            Node
+                node = XMLUtils.findNode( doc.getFirstChild()
+                                        , new QName( SubmissionRequestDD.QUERY_ELEMENT ) );
+            
+            if( node.getNodeType() == Node.ELEMENT_NODE ) {
+                element = (Element) node ;
+                queryType = element.getAttribute( SubmissionRequestDD.QUERY_TYPE_ATTR ) ;
+            }
+                
+            if( SubmissionRequestDD.QUERY_TYPE_ADQL.equals( queryType ) ) {
+                logger.debug( "This is an ADQL query") ;
+                docString =
+                    docString.replaceAll( SubmissionRequestDD.JOB_URN_ATTR
+                                        , SubmissionRequestDD.JOB_ASSIGNID_ATTR ) ;
+            }
+            else {
+                logger.debug( "This is an Iteration 2 query") ;
+            }
+    
+        }
+        catch( Exception ex ) {
+            if( TRACE_ENABLED ) ex.printStackTrace() ;
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "runRequestToString() exit") ;
+        }
+        
+        return docString ;
+        
+    } // end of runRequestToString()
     
 	
 	private String extractJobURN( Document jobDoc ) { 
