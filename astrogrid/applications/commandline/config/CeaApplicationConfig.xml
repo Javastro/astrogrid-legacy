@@ -585,7 +585,7 @@ M. Bolzonella, J.-M. Miralles, R. Pell?, 2000, A&amp;A 363, 476-492
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="INFALL" type="boolean" fileRef="false">
 				<agpd:UI_Name>Infall</agpd:UI_Name>
-				<agpd:DefaultValue>y</agpd:DefaultValue>
+				<agpd:DefaultValue>n</agpd:DefaultValue>
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="INFALLTIME" type="double" fileRef="false">
 				<agpd:UI_Name>Infall Timescale</agpd:UI_Name>

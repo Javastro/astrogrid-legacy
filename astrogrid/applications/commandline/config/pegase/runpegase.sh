@@ -1,4 +1,4 @@
-#/bin/sh -x
+#!/bin/sh -x
 #Paul Harrison
 #A wrapper to run the pegase code in a way that is reasonably CEA Friendly
 # note that this does away with the normal scripts that wrap the fortran executable
@@ -45,7 +45,6 @@ fi
 echo $SFSCENARIO >> $scin
 echo $CONEVOL >> $scin
 
-# there are more possibilities for these scenarios - this does not work in all cases. really need to write out a file and then use that....
 if [ $CONEVOL == "n" ] ; then
 echo $SMETAL >> $scin
 fi
@@ -73,3 +72,8 @@ spectra1.dat
 colours1.dat
 EOD4
 
+if [ -f $dirname/galevot/Galevot.jar ]; then
+ mv spectra1.dat spectra1.dat.original; java -jar $dirname/galevot/Galevot.jar spectra1.dat.original spectra1.dat;
+else
+ echo -e "the galevot converter is not present";exit 1;
+fi
