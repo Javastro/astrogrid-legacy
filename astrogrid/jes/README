@@ -25,3 +25,55 @@ configurable within the ASTROGRID_jesconfig file.
 
 At the present state of play, we have only had the opportunity of testing
 using Sybase on the hydra machine.
+
+JNDI.
+
+The datacenter uses JNDI to lookup it's associated databases, two files require 
+altering to enable this to happen:
+
+(1) The axis WEB.XML file - $CATALINA_HOME/webapps/axis/WEB-INF/web.xml:
+Add the JNDI names (as per ASTROGRID_datasetconfig.properties) under which the 
+web services will look up preconfigured datasources (1 for each datasource eg: 
+jes-datasource):
+
+  <resource-ref>
+    <res-ref-name>jdbc/jes-datasource</res-ref-name>
+    <res-type>java.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+  </resource-ref>
+
+(2) The Tomcat SERVER.XML file - $CATALINA_HOME/conf/server.xml
+Add database implementation specific details for each datasource as required
+by JNDI (eg. driverClassName, URL, User, Password):
+
+  <DefaultContext>
+    <Resource name="jdbc/jes-datasource"
+              auth="Container"
+              type="javax.sql.DataSource"/>
+    <ResourceParams name="jdbc/jes-datasource">
+      <parameter>
+        <name>driverClassName</name>
+        <value>com.sybase.jdbc2.jdbc.SybDriver</value>
+      </parameter>
+      <parameter>
+        <name>url</name>
+        <value>jdbc:sybase:Tds:hydra:4100</value>
+      </parameter>
+      <parameter>
+        <name>username</name>
+        <value>xxxx</value>
+      </parameter>
+      <parameter>
+        <name>password</name>
+        <value>xxxx</value>
+      </parameter>
+      <parameter>
+        <name>removeAbandoned</name>
+        <value>true</value>
+      </parameter>
+    </ResourceParams>
+     
+     .......
+     </DefaultContext>
+
+
