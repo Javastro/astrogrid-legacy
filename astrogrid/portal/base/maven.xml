@@ -15,5 +15,9 @@
             <fileset dir="${webapp.dir}" />
         </copy> 
   </postGoal>
+  	<preGoal name="site">
+		<mkdir dir="target/classes"/>
+		<!--fix annoying jdepend bug-->
+	</preGoal>
 
 </project>
