@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.2 2004/03/12 05:01:22 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.3 2004/03/12 05:03:23 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,21 +34,8 @@ public class PostgresSqlMaker extends StdSqlMaker {
       //should use appropriate xslt, but use deprecated stuff for now
 
       try {
-      // find the translator
         Element queryBody = query.toDom().getDocumentElement();
-        String namespaceURI = queryBody.getNamespaceURI();
-        if (namespaceURI == null) {
-            // maybe not using namespace aware parser - see if we can find an xmlns attribute instead
-            namespaceURI = queryBody.getAttribute("xmlns");
-        }
-        if (namespaceURI == null) {
-            DomHelper.PrettyElementToStream(queryBody,System.out);
-            throw new IllegalArgumentException("Query body has no namespace - cannot determine language");
-        }
         Translator trans = new PostgresAdqlQueryTranslator();
-        if (trans == null) {
-            throw new RuntimeException("No translator available for namespace: " + namespaceURI);
-        }
         // do the translation
         Object intermediateRep = null;
         Class expectedType = null;
@@ -109,6 +96,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.3  2004/03/12 05:03:23  mch
+Removed unused code
+
 Revision 1.2  2004/03/12 05:01:22  mch
 Changed doc
 
@@ -117,3 +107,4 @@ It05 MCH Refactor
 
  
 */
+
