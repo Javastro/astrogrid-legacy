@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+
+   <map:components>
+      <map:generators default="file"/>
+      <map:transformers default="xslt"/>
+      <map:readers default="resource"/>
+      <map:serializers default="html"/>
+      <map:selectors default="browser"/>
+      <map:matchers default="wildcard"/>
+   </map:components>
+
+   <map:pipelines>
+      <map:pipeline>
+         <map:match pattern="index.html">
+            <map:generate src="index.html"/>
+            <map:serialize/>
+         </map:match>
+      </map:pipeline>
+      <map:pipeline>
+         <map:match pattern="registry.html">
+            <map:read mime-type="text/html" src="registry.html"/>
+         </map:match>
+      </map:pipeline>
+      <map:pipeline>
+         <map:match pattern="registry">
+            <map:generate type="serverpages" src="registry.xsp"/>
+            <map:serialize type="xml"/>
+         </map:match>
+      </map:pipeline>
+      <map:pipeline>
+         <map:match pattern="registry.xsp">
+            <map:generate type="serverpages" src="registry.xsp"/>
+            <map:transform src="registry.xsl"/>
+            <map:serialize type="html"/>
+         </map:match>
+      </map:pipeline>
+      <map:pipeline>
+         <map:match pattern="registryquery">
+            <map:generate type="serverpages" src="registryquery.xsp"/>
+            <map:serialize type="xml"/>
+         </map:match>
+      </map:pipeline>
+      <map:pipeline>
+         <map:match pattern="registryquery.xsp">
+            <map:generate type="serverpages" src="registryquery.xsp"/>
+            <map:transform src="registryquery.xsl"/>
+            <map:serialize type="html"/>
+         </map:match>
+      </map:pipeline>
+      <map:pipeline>
+         <map:match pattern="dm.xsp">
+            <map:generate type="serverpages" src="dm.xsp"/>
+            <map:serialize type="xml"/>
+         </map:match>
+      </map:pipeline> 
+      <map:pipeline>
+         <map:match pattern="*.gif">
+            <map:read mime-type="image/gif" src="{1}.gif"/>
+         </map:match>
+      </map:pipeline>
+   </map:pipelines>
+</map:sitemap>
