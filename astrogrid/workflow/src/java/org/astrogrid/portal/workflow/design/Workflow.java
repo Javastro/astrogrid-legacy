@@ -153,13 +153,13 @@ public class Workflow extends Activity {
         
     private static final String complexWorkflowTemplate = 
         "<?xml version=\"1.0\" encoding=\"UTF8\"?>" +
-        "<!-- Workflow Template contains a flow of five steps followed sequentially by two more steps -->" +
+        "<!-- Workflow Template contains a flow of four steps followed sequentially by two more steps -->" +
         "<workflow name = \"FlowPlusSubsequentSteps\" templateName=\"complexWorkflow\">" +
-        "<description>This is a seven step job, five executed in parallel followed by two subsequent steps</description>" +
+        "<description>This is a six step job, four executed in parallel followed by two subsequent steps</description>" +
         "<!-- Every workflow begins with a top level sequence ========================================== -->" +
         "<sequence>" +
         " <flow>" +
-        "  <!-- These two steps will be dispatched in this order but they will execute in parallel ===== -->" +
+        "  <!-- These four steps will be dispatched in this order but they will execute in parallel ===== -->" +
         "  <step name=\"StepOne\" stepNumber=\"1\" sequenceNumber=\"1\">" +
         "  </step>" +
         "  <step name=\"StepTwo\" stepNumber=\"2\" sequenceNumber=\"1\">" +
@@ -169,10 +169,10 @@ public class Workflow extends Activity {
         "  <step name=\"StepFour\" stepNumber=\"4\" sequenceNumber=\"1\">" +
         "  </step>" +
         " </flow>" +
-        "  <!-- These subsequent steps will be dispatched only when steps one to five have finished correctly ======= -->" +
-        "  <step name=\"StepSix\" joinCondition=\"true\" stepNumber=\"5\" sequenceNumber=\"2\">" +
+        "  <!-- These subsequent steps will be dispatched only when steps one to fouor have finished correctly ======= -->" +
+        "  <step name=\"StepFive\" joinCondition=\"true\" stepNumber=\"5\" sequenceNumber=\"2\">" +
         "  </step>" +
-        "  <step name=\"StepSeven\" joinCondition=\"true\" stepNumber=\"6\" sequenceNumber=\"3\">" +
+        "  <step name=\"StepSix\" joinCondition=\"true\" stepNumber=\"6\" sequenceNumber=\"3\">" +
         "  </step>" +        
         "</sequence>" +
         "</workflow>" ;                    
