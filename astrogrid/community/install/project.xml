@@ -1,32 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    | Maven project description for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.15  2004/06/29 22:21:47  dave
-    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |   Revision 1.16  2004/07/14 13:50:07  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
     |
-    |   Revision 1.14.6.2  2004/06/29 15:25:47  dave
-    |   Restored cvs anon
+    |   Revision 1.15.4.2  2004/07/13 11:50:43  dave
+    |   Tidied up the file headers
     |
-    |   Revision 1.14.6.1  2004/06/29 14:30:42  dave
-    |   Patched cvs anon for changelog plugin
-    |
-    |   Revision 1.14  2004/06/21 09:41:27  KevinBenson
-    |   made it use the registry-client-lite version
-    |
-    |   Revision 1.13  2004/06/18 13:45:20  dave
-    |   Merged development branch, dave-dev-200406081614, into HEAD
-    |
-    |   Revision 1.11.10.1  2004/06/17 13:38:59  dave
-    |   Tidied up old CVS log entries
-    |
+    |   Revision 1.15.4.1  2004/07/05 14:18:55  dave
+    |   Tried to remove the JConfig libraries
     | </cvs:log>
+    |
     +-->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -39,15 +29,13 @@
 
     <!--+
         | The short name of the project.
-        | This is used when naming jars and distribution files.
         +-->
     <id>astrogrid-community-install</id>
 
     <!--+
         | The full name of the project.
-        | This is used when generating JavaDoc titles.
         +-->
-    <name>AstroGrid community install toolkit</name>
+    <name>Install toolkit</name>
 
     <!--+
         | A short description of the project.
@@ -174,8 +162,6 @@
                 <jar.fileset>true</jar.fileset>
             </properties>
         </dependency>
-                
-        
         <!--+
             | The new Castor libraries.
         <dependency>
@@ -280,19 +266,7 @@
                 <lib.fileset>true</lib.fileset>
             </properties>
         </dependency>
-        <!--+
-            | The JConfig jars.
-        <dependency>
-            <groupId>jconfig</groupId>
-            <artifactId>jconfig</artifactId>
-            <version>2.2</version>
-            <type>jar</type>
-            <url>http://www.jconfig.org/</url>
-            <properties>
-                <lib.fileset>true</lib.fileset>
-            </properties>
-        </dependency>
-            +-->
+
     </dependencies>
 
     <!--+

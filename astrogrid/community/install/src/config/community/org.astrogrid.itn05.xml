@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    |This is not the best place to do this  - the community setup needs to be factored out into the deployment package...
+    | This is not the best place to do this  - the community setup needs to be factored out into the deployment package...
     |
     +-->
 <community ident="ivo://org.astrogrid.itn05">

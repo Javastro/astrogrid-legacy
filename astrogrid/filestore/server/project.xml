@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/07/14 13:50:29  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/07/08 07:31:30  dave
+    |   Added container impl and tests
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+
+    <!--+
+        | The short name of the project.
+        +-->
+    <id>astrogrid-filestore-server</id>
+
+    <!--+
+        | The full name of the project.
+        +-->
+    <name>FileStore server</name>
+
+    <!--+
+        | The Java package name of the project.
+        +-->
+    <package>org.astrogrid.filestore.server</package>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        Short description of the project ....
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+            Long description of the project, including <i>HTML</i> tags ....
+        ]]>
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filestore/server
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filestore/server
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The FileStore common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The Castor XML library.
+            +-->
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor-xml</artifactId>
+            <version>0.9.5</version>
+            <jar>castor-0.9.5-xml.jar</jar>
+            <type>jar</type>
+            <url>http://www.castor.org/</url>
+        </dependency>
+        <!--+
+            | The JTA library that Castor relies on.
+            +-->
+        <dependency>
+            <groupId>jta</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.0.1</version>
+            <type>jar</type>
+        </dependency>
+        <!--+
+            | The Xerces library that Castor relies on.
+            +-->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xerces</artifactId>
+            <version>2.4.0</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+        </dependency>
+        <!--+
+            | The XML library that Xerces relies on.
+            +-->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+            <type>jar</type>
+            <url>http://xml.apache.org/</url>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+                +-->
+            <includes>
+                <include>**/*TestCase.java</include>
+            </includes>
+            <!--+
+                | Which tests to exclude.
+                +-->
+            <excludes>
+                <exclude>**/*Test.frog</exclude>
+            </excludes>
+            <!--+
+                | The resources for our tests.
+                +-->
+            <resources>
+                <resource>
+                    <directory>target/database/config</directory>
+                    <includes>
+                        <include>*.xml</include>
+                        <include>*.sql</include>
+                    </includes>
+                </resource>
+            </resources>
+        </unitTest>
+    </build>
+</project>

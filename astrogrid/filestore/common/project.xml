@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/07/14 13:50:29  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.1.2.2  2004/07/14 10:51:22  dave
+    |   Fixed project short name
+    |
+    |   Revision 1.1.2.1  2004/07/05 04:50:29  dave
+    |   Created initial FileStore components
+    | </cvs:log>
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>${basedir}/../maven/project.xml</extend>
+
+    <!--+
+        | The short name of the project.
+        +-->
+    <id>astrogrid-filestore-common</id>
+
+    <!--+
+        | The full name of the project.
+        +-->
+    <name>FileStore common</name>
+
+    <!--+
+        | The Java package name of the project.
+        +-->
+    <package>org.astrogrid.filestore.common</package>
+
+    <!--+
+        | A detailed description of the project.
+        +-->
+    <description>
+        <![CDATA[
+            Long description of the project, including <i>HTML</i> tags ....
+        ]]>
+    </description>
+
+    <!--+
+        | A short description of the project.
+        +-->
+    <shortDescription>Short description of the project ....</shortDescription>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filestore/common
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filestore/common
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external dependencies required to build and test the project.
+        +-->
+    <dependencies>
+        <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*TestCase.java</include>
+            </includes>
+        </unitTest>
+    </build>
+
+</project>

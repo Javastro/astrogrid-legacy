@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    | Maven project description for the AstroGrid community tomcat tools.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/tomcat/project.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
-    |   Revision 1.7  2004/06/29 22:21:47  dave
-    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |   Revision 1.8  2004/07/14 13:50:07  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
     |
-    |   Revision 1.6.8.2  2004/06/29 15:25:47  dave
-    |   Restored cvs anon
-    |
-    |   Revision 1.6.8.1  2004/06/29 14:30:42  dave
-    |   Patched cvs anon for changelog plugin
-    |
-    |   Revision 1.6  2004/06/18 13:45:20  dave
-    |   Merged development branch, dave-dev-200406081614, into HEAD
-    |
-    |   Revision 1.5.18.1  2004/06/17 13:38:59  dave
-    |   Tidied up old CVS log entries
+    |   Revision 1.7.4.1  2004/07/05 14:18:56  dave
+    |   Tried to remove the JConfig libraries
     |
     | </cvs:log>
+    |
     +-->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -36,15 +27,13 @@
 
     <!--+
         | The short name of the project.
-        | This is used when naming jars and distribution files.
         +-->
     <id>astrogrid-community-tomcat</id>
 
     <!--+
         | The full name of the project.
-        | This is used when generating JavaDoc titles.
         +-->
-    <name>AstroGrid community tomcat toolkit</name>
+    <name>Tomcat testkit</name>
 
     <!--+
         | A short description of the project.

@@ -1,14 +1,20 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
-    | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/07/02 14:13:15 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.13  2004/07/14 13:50:07  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
     |   Revision 1.12  2004/07/02 14:13:15  jdt
     |   I *think* this is the change required to be consistent with Paul's
     |   renaming of astrogrid-community -> astrogrid-community-SNAPSHOT in AGINAB.
+    |
+    |   Revision 1.11.12.1  2004/07/13 11:50:43  dave
+    |   Tidied up the file headers
     |
     |   Revision 1.11  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
@@ -17,7 +23,6 @@
     |   Tidied up old CVS log entries
     |
     | </cvs:log>
-    |
     |
     +-->
 <project default="init" basedir="." name="community-install">

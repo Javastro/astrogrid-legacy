@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/07/14 13:50:29  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/07/06 09:16:12  dave
+    |   Added delegate interface and mock implementation
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the common project descriptor.
+        +-->
+    <extend>../maven/project.xml</extend>
+
+    <!--+
+        | The short name of the project.
+        +-->
+    <id>astrogrid-filestore-client</id>
+
+    <!--+
+        | The full name of the project.
+        +-->
+    <name>FileStore client</name>
+
+    <!--+
+        | The Java package name of the project.
+        +-->
+    <package>org.astrogrid.filestore.client</package>
+
+    <!--+
+        | A short description of the project.
+        | The short description should be limited to a single line.
+        +-->
+    <shortDescription>
+        Short description of the project ....
+    </shortDescription>
+
+    <!--+
+        | A detailed description of the project.
+        | This is used to generate the front page of the projects web site. 
+        +-->
+    <description>
+        <![CDATA[
+            Long description of the project, including <i>HTML</i> tags ....
+        ]]>
+    </description>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/filestore/client
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/filestore/client
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | The external libraries required to build our component.
+        +-->
+    <dependencies>
+        <!--+
+            | The AstroGrid common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+        <!--+
+            | The FileStore common components.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-filestore-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The build properties for our project.
+        +-->
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+            +-->
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*TestCase.java</include>
+            </includes>
+            <!--+
+                | The resources for our tests.
+            <resources>
+                <resource>
+                </resource>
+            </resources>
+                +-->
+        </unitTest>
+    </build>
+
+</project>

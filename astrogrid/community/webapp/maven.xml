@@ -1,27 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    | Maven build tasks for the AstroGrid community webapp.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/29 22:21:47 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.12  2004/06/29 22:21:47  dave
-    |   Merged development branch, dave-dev-200406291222, into HEAD
+    |   Revision 1.13  2004/07/14 13:50:07  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
     |
-    |   Revision 1.11.8.2  2004/06/29 15:38:22  dave
-    |   Removed sub-project site goals
-    |
-    |   Revision 1.11.8.1  2004/06/29 13:31:04  dave
-    |   Removed the extra site goal
-    |
-    |   Revision 1.11  2004/06/18 13:45:20  dave
-    |   Merged development branch, dave-dev-200406081614, into HEAD
-    |
-    |   Revision 1.10.32.1  2004/06/17 13:38:59  dave
-    |   Tidied up old CVS log entries
+    |   Revision 1.12.4.1  2004/07/13 11:50:43  dave
+    |   Tidied up the file headers
     |
     | </cvs:log>
     |
@@ -52,7 +42,7 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
 
-    <!-- ================ Custom tag library ================ -->
+    <!-- ================ Reactor goals ================ -->
 
     <!--+
         | Clean, build and install our snapshot jar.
@@ -64,37 +54,6 @@
         <attainGoal name="clean"/>
         <attainGoal name="astrogrid-install-snapshot"/>
     </goal>
-
-    <!--+
-        | Define our local tag library.
-        +-->
-    <define:taglib uri="org.astrogrid.community">
-        <!--+
-            | Test tag, debug only.
-            | Attrib : message - The debug message to print.
-            |
-            +-->
-        <define:tag name="debug.tag">
-            <ant:echo message="Message ${message}"/>
-        </define:tag>
-        <!--+
-            | Deploy a service into the local Axis config.
-            | Attrib : service.name eg. SecurityManager
-            +-->
-        <define:tag name="service.deploy">
-            <ant:echo message="Deploying ${service.name}"/>
-            <ant:java classname="org.apache.axis.utils.Admin"
-                dir="${axisDir}/WEB-INF"
-                classpathref="maven.dependency.classpath"
-                fork="true"
-                >
-                <arg value="server"/>
-                <arg value="${wsddDir}/${service.name}.wsdd"/>
-            </ant:java>
-        </define:tag>
-    </define:taglib>
-
-    <!-- ================ Reactor goals ================ -->
 
     <!--+
         | Clean our build target.

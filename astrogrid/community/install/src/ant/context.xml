@@ -2,10 +2,16 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/context.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.4 $</cvs:version>
     | <cvs:log>
     |   $Log: context.xml,v $
+    |   Revision 1.4  2004/07/14 13:50:07  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.3.12.1  2004/07/13 11:50:43  dave
+    |   Tidied up the file headers
+    |
     |   Revision 1.3  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -13,9 +19,6 @@
     |   Tidied up old CVS log entries
     |
     | </cvs:log>
-    |
-    | A toolkit of Ant tasks to create JNDI context entries.
-    |
     |
     +-->
 <project default="init" basedir="." name="jndi-context">

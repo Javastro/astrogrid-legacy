@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/CommunityIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIdent.java,v $
+ *   Revision 1.6  2004/07/14 13:50:07  dave
+ *   Merged development branch, dave-dev-200406301228, into HEAD
+ *
+ *   Revision 1.5.12.1  2004/07/05 14:18:55  dave
+ *   Tried to remove the JConfig libraries
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -19,6 +25,11 @@ package org.astrogrid.community.common.policy.data ;
 
 import org.astrogrid.community.common.config.CommunityConfig ;
 
+/**
+ * @todo deprecate the whole class.
+ *
+ *
+ */
 public class CommunityIdent
     {
     /**

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/maven.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: maven.xml,v $
+    |   Revision 1.2  2004/07/14 13:50:29  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.1.2.2  2004/07/06 09:16:12  dave
+    |   Added delegate interface and mock implementation
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+    xmlns:core="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:util="jelly:util"
+    xmlns:log="jelly:log"
+    xmlns:define="jelly:define"
+    xmlns:deploy="deploy"
+    default="astrogrid-rebuild-snapshot"
+    >
+
+    <!--+
+        | Import the goals from our parent project.
+        | Looks like this gets included anyway, possibly because our project inherits from ../maven.project.xml ?
+    <core:import inherit="true" file="${maven.build.dir}/../../maven/maven.xml"/>
+        +-->
+
+    <!--+
+        | Debug info ....
+        +-->
+    <goal name="info">
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+    </goal>
+
+    <!-- ================ Reactor goals ================ -->
+
+    <!--+
+        | Clean, build and install our snapshot jar.
+        +-->
+    <goal name="astrogrid-rebuild-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean"/>
+        <attainGoal name="astrogrid-install-snapshot"/>
+    </goal>
+
+    <!--+
+        | Clean our build target.
+        +-->
+    <goal name="clean">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <attainGoal name="clean:clean"/>
+    </goal>
+
+    <!--+
+        | Build and install our component jar.
+        +-->
+    <goal name="astrogrid-install-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Build our jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local"/>
+    </goal>
+
+    <!--+
+        | Build and install our snapshot jar.
+        +-->
+    <goal name="astrogrid-install-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our snapshot name.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our jar.
+            +-->
+        <attainGoal name="jar:jar"/>
+        <!--+
+            | Install our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="install-local-snapshot"/>
+    </goal>
+
+    <!--+
+        | Build and deploy our component jar.
+        +-->
+    <goal name="astrogrid-deploy-artifact">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="astrogrid-install-artifact"/>
+        <!--+
+            | Deploy our jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local"/>
+    </goal>
+
+    <!--+
+        | Build and deploy our snapshot jar.
+        +-->
+    <goal name="astrogrid-deploy-snapshot">
+        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+        <ant:echo message="Build directory : ${maven.build.dir}"/>
+        <!--+
+            | Create our artifact jar.
+            +-->
+        <attainGoal name="astrogrid-install-snapshot"/>
+        <!--+
+            | Deploy our SNAPSHOT jar.
+            +-->
+        <core:set var="astrogrid.artifact.type" value="jar"/>
+        <core:set var="astrogrid.artifact.name" value="${maven.final.name}"/>
+        <attainGoal name="deploy-local-snapshot"/>
+    </goal>
+
+    <!-- ================ Component goals ================ -->
+
+    <!--+
+        | Setup our JUnit tests.
+        +-->
+    <preGoal name="test:test">
+        <ant:echo message=""/>
+        <ant:echo message="Artifact : ${pom.artifactId}"/>
+        <ant:echo message="Preparing services for tests"/>
+        <!--+
+            | Initialise our classpaths.
+            +-->
+        <attainGoal name="init.classpath"/>
+        <!--+
+            | Check the JUnit test settings.
+            +-->
+        <ant:echo message=""/>
+        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
+        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
+        <ant:echo message=""/>
+    </preGoal>
+
+</project>

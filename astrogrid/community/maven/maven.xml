@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
-    | Maven build tasks for the AstroGrid community components.
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.13  2004/07/14 13:50:07  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.12.12.1  2004/07/13 11:50:43  dave
+    |   Tidied up the file headers
+    |
     |   Revision 1.12  2004/06/18 13:45:20  dave
     |   Merged development branch, dave-dev-200406081614, into HEAD
     |
@@ -15,6 +20,7 @@
     |   Tidied up old CVS log entries
     |
     | </cvs:log>
+    |
     +-->
 <project
     xmlns:core="jelly:core"

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    |
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven/project.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:log>
+    |   $Log: project.xml,v $
+    |   Revision 1.2  2004/07/14 13:50:29  dave
+    |   Merged development branch, dave-dev-200406301228, into HEAD
+    |
+    |   Revision 1.1.2.1  2004/07/05 04:50:29  dave
+    |   Created initial FileStore components
+    |
+    | </cvs:log>
+    |
+    +-->
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ant="jelly:ant"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project group.
+        +-->
+    <groupId>org.astrogrid</groupId>
+
+    <!--+
+        | The current version of the project.
+        +-->
+    <currentVersion>${astrogrid.iteration}</currentVersion>
+
+    <!--+
+        | Bugzilla URL.
+        +-->
+    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+
+    <!--+
+        | The project developers.
+        +-->
+    <developers>
+        <!--+
+            | Catherine Qin
+            +-->
+		<developer>
+			<name>Catherine Qin</name>
+			<id>clq2</id>
+			<email>clq2@star.le.ac.uk</email>
+			<organization>Leicester</organization>
+			<roles>
+				<role>Software Developer</role>
+			</roles>
+		</developer>
+        <!--+
+            | Clive Davenhall
+            +-->
+		<developer>
+			<name>Clive Davenhall</name>
+			<id>acd</id>
+			<email>acd@roe.ac.uk</email>
+			<organization>ROE</organization>
+			<roles>
+				<role>Software Developer</role>
+			</roles>
+		</developer>
+        <!--+
+            | Dave Morris
+            +-->
+        <developer>
+            <name>Dave Morris</name>
+            <id>dave</id>
+            <email>maven-report@codon.demon.co.uk</email>
+            <organization>IoA Cambridge</organization>
+            <roles>
+                <role>Software developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <!--+
+        | Describes the licenses for this project.
+    <licenses>
+    </licenses>
+        +-->
+
+    <!--+
+        | The external libraries required to build our components.
+        +-->
+    <dependencies>
+        <!--+
+            | The Axis webapp war file.
+            +-->
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.1</version>
+            <type>war</type>
+            <url>http://ws.apache.org/axis/index.html</url>
+        </dependency>
+        <!--+
+            | JUnit library for test tasks.
+            +-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+            <url>http://www.junit.org/</url>
+        </dependency>
+        <!--+
+            | Ant library for test tasks.
+            +-->
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.5.3-1</version>
+            <type>jar</type>
+            <url>http://ant.apache.org/</url>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The list of reports to generate for each component.
+        +-->
+    <reports>
+        <report>
+            maven-changelog-plugin
+        </report>
+        <report>
+            maven-changes-plugin
+        </report>
+        <report>
+            maven-checkstyle-plugin
+        </report>
+        <report>
+            maven-clover-plugin
+        </report>
+        <report>
+            maven-developer-activity-plugin
+        </report>
+        <report>
+            maven-file-activity-plugin
+        </report>
+        <report>
+            maven-javadoc-plugin
+        </report>
+        <report>
+            maven-junit-report-plugin
+        </report>
+        <report>
+            maven-jxr-plugin
+        </report>
+        <report>
+            maven-license-plugin
+        </report>
+        <report>
+            maven-pmd-plugin
+        </report>
+        <report>
+            maven-tasklist-plugin
+        </report>
+        <report>
+            maven-simian-plugin
+        </report>
+    </reports>
+</project>
