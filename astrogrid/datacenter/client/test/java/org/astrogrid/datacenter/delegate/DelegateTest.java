@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.1 2003/11/13 22:57:25 mch Exp $
+ * $Id: DelegateTest.java,v 1.2 2003/11/13 22:58:08 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -175,4 +175,12 @@ public class DelegateTest extends TestCase implements DelegateQueryListener
        junit.textui.TestRunner.run(suite());
     }
 }
+
+/*
+ * $Log: DelegateTest.java,v $
+ * Revision 1.2  2003/11/13 22:58:08  mch
+ * Added Log to end
+ *
+ */
+
 
