@@ -128,21 +128,25 @@ public class LoginAction extends AbstractAction
          }else {
             password = password.trim();
          }
-         /*
+         
          if(errorMessage == null || errorMessage.trim().length() <= 0) {
             AuthenticationDelegate ad = new AuthenticationDelegate();
             try {
-               SecurityToken secToken = ad.authenticateLogin(user,String.valueOf(password.hashCode()));
+               SecurityToken secToken = ad.authenticateLogin(user,password);
                String token = secToken.getToken();
+               session.setAttribute("token", secToken);
                System.out.println("the token = " + token);
-               //I think if it starts with the word "BAD" then it he is not authenticated.  Not sure.
+               if(secToken.getUsed() == Boolean.TRUE)
+               {
+                  errorMessage = "Login Failed";
+               }
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();              
             }
          }
-         */
          
+         //call authenticateLogin()         
          if(errorMessage == null || errorMessage.trim().length() <= 0) {         
             PolicyServiceDelegate psd = new PolicyServiceDelegate();
             try {
@@ -158,7 +162,6 @@ public class LoginAction extends AbstractAction
 
          
          
-         //call authenticateLogin()
          //call authorizePortal()
          if(errorMessage == null || errorMessage.trim().length() <= 0) {
             session.setAttribute("user",user);
