@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepDescriptor.java,v 1.27 2004/08/03 14:24:09 nw Exp $
+ * $Id: StepDescriptor.java,v 1.28 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class StepDescriptor.
  * 
- * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
+ * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:39 $
  */
 public class StepDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 
@@ -101,6 +101,40 @@ public class StepDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActi
         { //-- local scope
             StringValidator typeValidator = new StringValidator();
             typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
+        }
+        desc.setValidator(fieldValidator);
+        //-- _resultVar
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_resultVar", "result-var", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                Step target = (Step) object;
+                return target.getResultVar();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    Step target = (Step) object;
+                    target.setResultVar( (java.lang.String) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new java.lang.String();
+            }
+        } );
+        desc.setHandler(handler);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _resultVar
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+            NameValidator typeValidator = new NameValidator(NameValidator.NCNAME);
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);

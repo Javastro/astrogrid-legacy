@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Tool.java,v 1.27 2004/08/03 14:24:09 nw Exp $
+ * $Id: Tool.java,v 1.28 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * represents a call to a CEA application 
  * 
- * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
+ * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:39 $
  */
 public class Tool extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

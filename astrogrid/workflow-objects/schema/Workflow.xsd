@@ -297,6 +297,10 @@
 											<xsd:annotation><xsd:documentation>descriptive name for this step</xsd:documentation>												
 											</xsd:annotation>
 											</xsd:attribute>
+										<xsd:attribute name="result-var" type="xsd:NCName" use="optional">
+											<xsd:annotation><xsd:documentation>workflow variable in which to store results of this cea call</xsd:documentation>												
+											</xsd:annotation>
+											</xsd:attribute>
                                         <!-- deprecated - want to remove sometime -->
                                         <xsd:attribute name="joinCondition" use="optional" default="any" type="agwf:join-type">
                                                 <xsd:annotation>

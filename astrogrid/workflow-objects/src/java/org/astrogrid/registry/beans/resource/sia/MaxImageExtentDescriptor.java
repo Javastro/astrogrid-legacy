@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MaxImageExtentDescriptor.java,v 1.5 2004/08/03 14:24:10 nw Exp $
+ * $Id: MaxImageExtentDescriptor.java,v 1.6 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.sia;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class MaxImageExtentDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/08/03 14:24:10 $
+ * @version $Revision: 1.6 $ $Date: 2004/08/04 13:58:39 $
  */
 public class MaxImageExtentDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

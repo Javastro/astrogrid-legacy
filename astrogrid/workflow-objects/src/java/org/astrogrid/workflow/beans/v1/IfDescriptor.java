@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: IfDescriptor.java,v 1.4 2004/08/03 14:24:09 nw Exp $
+ * $Id: IfDescriptor.java,v 1.5 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class IfDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/08/03 14:24:09 $
+ * @version $Revision: 1.5 $ $Date: 2004/08/04 13:58:39 $
  */
 public class IfDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 

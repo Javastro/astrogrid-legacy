@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TemporalType.java,v 1.5 2004/08/03 14:24:09 nw Exp $
+ * $Id: TemporalType.java,v 1.6 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.dataservice;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class TemporalType.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/08/03 14:24:09 $
+ * @version $Revision: 1.6 $ $Date: 2004/08/04 13:58:39 $
  */
 public class TemporalType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Scope.java,v 1.1 2004/08/03 14:24:09 nw Exp $
+ * $Id: Scope.java,v 1.2 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
  *  its body will no longer be in scope after the end tag.
  *  
  * 
- * @version $Revision: 1.1 $ $Date: 2004/08/03 14:24:09 $
+ * @version $Revision: 1.2 $ $Date: 2004/08/04 13:58:39 $
  */
 public class Scope extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

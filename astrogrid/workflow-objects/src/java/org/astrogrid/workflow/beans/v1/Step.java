@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.27 2004/08/03 14:24:09 nw Exp $
+ * $Id: Step.java,v 1.28 2004/08/04 13:58:39 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -28,7 +28,7 @@ import org.xml.sax.ContentHandler;
 /**
  * a step of the workflow - call to an external CEA application.
  * 
- * @version $Revision: 1.27 $ $Date: 2004/08/03 14:24:09 $
+ * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:39 $
  */
 public class Step extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -43,6 +43,11 @@ implements java.io.Serializable
      * descriptive name for this step
      */
     private java.lang.String _name;
+
+    /**
+     * workflow variable in which to store results of this cea call
+     */
+    private java.lang.String _resultVar;
 
     /**
      * @deprecated don't use
@@ -178,6 +183,13 @@ implements java.io.Serializable
             }
             else if (temp._name != null)
                 return false;
+            if (this._resultVar != null) {
+                if (temp._resultVar == null) return false;
+                else if (!(this._resultVar.equals(temp._resultVar))) 
+                    return false;
+            }
+            else if (temp._resultVar != null)
+                return false;
             if (this._joinCondition != null) {
                 if (temp._joinCondition == null) return false;
                 else if (!(this._joinCondition.equals(temp._joinCondition))) 
@@ -253,6 +265,18 @@ implements java.io.Serializable
     {
         return this._name;
     } //-- java.lang.String getName() 
+
+    /**
+     * Returns the value of field 'resultVar'. The field
+     * 'resultVar' has the following description: workflow variable
+     * in which to store results of this cea call
+     * 
+     * @return the value of field 'resultVar'.
+     */
+    public java.lang.String getResultVar()
+    {
+        return this._resultVar;
+    } //-- java.lang.String getResultVar() 
 
     /**
      * Returns the value of field 'sequenceNumber'. The field
@@ -426,6 +450,18 @@ implements java.io.Serializable
     {
         this._name = name;
     } //-- void setName(java.lang.String) 
+
+    /**
+     * Sets the value of field 'resultVar'. The field 'resultVar'
+     * has the following description: workflow variable in which to
+     * store results of this cea call
+     * 
+     * @param resultVar the value of field 'resultVar'.
+     */
+    public void setResultVar(java.lang.String resultVar)
+    {
+        this._resultVar = resultVar;
+    } //-- void setResultVar(java.lang.String) 
 
     /**
      * Sets the value of field 'sequenceNumber'. The field
