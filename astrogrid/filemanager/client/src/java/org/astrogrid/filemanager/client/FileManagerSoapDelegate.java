@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerSoapDelegate.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.2  2005/01/12 14:20:57  dave
+ *   Replaced tabs with spaces ....
+ *
+ *   Revision 1.2.4.1  2004/12/22 07:38:36  dave
+ *   Started to move towards StoreClient API ...
+ *
  *   Revision 1.2  2004/11/25 00:20:29  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -37,9 +46,9 @@ import org.astrogrid.filestore.resolver.FileStoreDelegateResolver ;
  *
  */
 public class FileManagerSoapDelegate
-	extends FileManagerCoreDelegate
-	implements FileManagerDelegate
-	{
+    extends FileManagerCoreDelegate
+    implements FileManagerDelegate
+    {
     /**
      * Our debug logger.
      *
@@ -50,49 +59,47 @@ public class FileManagerSoapDelegate
      * Our FileStore service locator.
      *
      */
-    private FileManagerService locator = new FileManagerServiceLocator() ;
-
-    /**
-     * Our endpoint address.
-     *
-     */
-    private URL endpoint ;
-
-    /**
-     * Get our endpoint address.
-     *
-     */
-    public URL getEndpoint()
-        {
-        return this.endpoint ;
-        }
+    private static FileManagerService locator = new FileManagerServiceLocator() ;
 
     /**
      * Public constructor, for a specific endpoint URL.
      * @param endpoint The service endpoint URL.
-     * @todo Trap null param.
      * @todo Trap MalformedURLException.
      *
      */
     public FileManagerSoapDelegate(String endpoint)
         throws MalformedURLException
         {
-        this(new URL(endpoint)) ;
+        this(
+            new URL(
+                endpoint
+                )
+            ) ;
         }
 
     /**
      * Public constructor, for a specific endpoint URL.
      * @param endpoint The service endpoint URL.
      * @todo Better Exception handling.
-     * @todo Trap null param.
      *
      */
     public FileManagerSoapDelegate(URL endpoint)
         {
-        super() ;
+        super(
+            wrapper(
+                endpoint
+                )
+            ) ;
+        }
+
+    /**
+     * Locate a SOAP client for an endpoint URL.
+     *
+     */
+    private static FileManager wrapper(URL endpoint)
+        {
         log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("FileManagerSoapDelegate()") ;
+        log.debug("FileManagerSoapDelegate.wrapper(URL)") ;
         log.debug("  URL : '" + endpoint + "'") ;
         //
         // Check for null param.
@@ -103,14 +110,11 @@ public class FileManagerSoapDelegate
                 ) ;
             }
         //
-        // Set our endpoint address.
-        this.endpoint = endpoint ;
-        //
         // Try locate our service instance.
         try {
-            this.manager = locator.getFileManager(
-	            this.endpoint
-	            ) ;
+            return locator.getFileManager(
+                endpoint
+                ) ;
             }
         //
         // Catch anything that went BANG.
@@ -120,6 +124,7 @@ public class FileManagerSoapDelegate
             // Log the Exception, and throw a nicer one.
             // Unwrap RemoteExceptions.
             //
+            return null ;
             }
         }
-	}
+    }

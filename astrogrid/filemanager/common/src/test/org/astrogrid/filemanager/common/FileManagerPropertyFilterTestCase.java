@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/test/org/astrogrid/filemanager/common/Attic/FileManagerPropertyFilterTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerPropertyFilterTestCase.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.1  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
  *   Revision 1.2  2004/11/25 00:20:29  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -36,90 +42,90 @@ import org.astrogrid.filestore.common.file.PropertyFilter ;
  *
  */
 public class FileManagerPropertyFilterTestCase
-	extends TestCase
-	{
+    extends TestCase
+    {
 
-	/**
-	 * Our target filter.
-	 *
-	 */
-	private PropertyFilter filter ;
+    /**
+     * Our target filter.
+     *
+     */
+    private PropertyFilter filter ;
 
-	/**
-	 * Setup our test.
-	 *
-	 */
-	public void setUp()
-		{
-		filter = new FileManagerPropertyFilter() ;
-		}
+    /**
+     * Setup our test.
+     *
+     */
+    public void setUp()
+        {
+        filter = new FileManagerPropertyFilter() ;
+        }
 
-	/**
-	 * Check we created our filter.
-	 *
-	 */
-	public void testCreated()
-		throws Exception
-		{
-		assertNotNull(
-			this.filter
-			) ;
-		}
+    /**
+     * Check we created our filter.
+     *
+     */
+    public void testCreated()
+        throws Exception
+        {
+        assertNotNull(
+            this.filter
+            ) ;
+        }
 
-	/**
-	 * Check that the manager properties are filtered.
-	 *
-	 */
-	public void testFilterReserved()
-		{
-		assertNull(
-			filter.filter(
-				new FileProperty(
-					FileManagerProperties.MANAGER_RESOURCE_IVORN,
-					"albert"
-					)
-				)
-			);
-		}
+    /**
+     * Check that the manager properties are filtered.
+     *
+     */
+    public void testFilterReserved()
+        {
+        assertNull(
+            filter.filter(
+                new FileProperty(
+                    FileManagerProperties.MANAGER_RESOURCE_IVORN,
+                    "albert"
+                    )
+                )
+            );
+        }
 
-	/**
-	 * Check that the filestore properties are not filtered.
-	 *
-	 */
-	public void testFilterFileStoreReserved()
-		{
-		assertNotNull(
-			filter.filter(
-				new FileProperty(
-					FileProperties.STORE_RESOURCE_IVORN,
-					"albert"
-					)
-				)
-			);
-		assertNotNull(
-			filter.filter(
-				new FileProperty(
-					FileProperties.STORE_RESOURCE_URL,
-					"albert"
-					)
-				)
-			);
-		}
+    /**
+     * Check that the filestore properties are not filtered.
+     *
+     */
+    public void testFilterFileStoreReserved()
+        {
+        assertNotNull(
+            filter.filter(
+                new FileProperty(
+                    FileProperties.STORE_RESOURCE_IVORN,
+                    "albert"
+                    )
+                )
+            );
+        assertNotNull(
+            filter.filter(
+                new FileProperty(
+                    FileProperties.STORE_RESOURCE_URL,
+                    "albert"
+                    )
+                )
+            );
+        }
 
-	/**
-	 * Check that a test property is not filtered.
-	 *
-	 */
-	public void testFilterNormal()
-		{
-		assertNotNull(
-			filter.filter(
-				new FileProperty(
-					"test.property",
-					"albert"
-					)
-				)
-			);
-		}
+    /**
+     * Check that a test property is not filtered.
+     *
+     */
+    public void testFilterNormal()
+        {
+        assertNotNull(
+            filter.filter(
+                new FileProperty(
+                    "test.property",
+                    "albert"
+                    )
+                )
+            );
+        }
 
-	}
+    }

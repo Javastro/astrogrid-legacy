@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/ivorn/Attic/FileManagerIvornFactory.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerIvornFactory.java,v $
+ *   Revision 1.4  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.3.4.2  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
+ *   Revision 1.3.4.1  2004/12/24 02:05:05  dave
+ *   Refactored exception handling, removing IdentifierException from the public API ...
+ *
  *   Revision 1.3  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -61,22 +70,22 @@ public class FileManagerIvornFactory
      */
     public Ivorn ivorn(Ivorn base, String path)
         throws FileManagerIdentifierException
-		{
-		try {
-			return new Ivorn(
-				ident(
-					base,
-					path
-					)
-				) ;
-			}
-		catch (URISyntaxException ouch)
-			{
-			throw new FileManagerIdentifierException(
-				ouch
-				) ;
-			}
-		}
+        {
+        try {
+            return new Ivorn(
+                ident(
+                    base,
+                    path
+                    )
+                ) ;
+            }
+        catch (URISyntaxException ouch)
+            {
+            throw new FileManagerIdentifierException(
+                ouch
+                ) ;
+            }
+        }
 
     /**
      * Create a filemanager ivorn.
@@ -87,37 +96,36 @@ public class FileManagerIvornFactory
      */
     public Ivorn ivorn(Ivorn base)
         throws FileManagerIdentifierException
-		{
-		try {
-			return new Ivorn(
-				ident(
-					base
-					)
-				) ;
-			}
-		catch (URISyntaxException ouch)
-			{
-			throw new FileManagerIdentifierException(
-				ouch
-				) ;
-			}
-		}
+        {
+        try {
+            return new Ivorn(
+                ident(
+                    base
+                    )
+                ) ;
+            }
+        catch (URISyntaxException ouch)
+            {
+            throw new FileManagerIdentifierException(
+                ouch
+                ) ;
+            }
+        }
 
     /**
      * Create a filemanager ident.
      * @param  base The filemanager service ivorn.
      * @return A new (ivorn) identifer.
      * @throws FileManagerIdentifierException if the filemanager or resource identifiers are null.
-     * @todo Check that the base does not already have a #fragment ....
      *
      */
     public String ident(Ivorn base)
         throws FileManagerIdentifierException
         {
-		return this.ident(
-			base.toString()
-			);
-		}
+        return this.ident(
+            base.toString()
+            );
+        }
 
     /**
      * Create a filemanager ident.
@@ -131,11 +139,11 @@ public class FileManagerIvornFactory
     public String ident(Ivorn base, String path)
         throws FileManagerIdentifierException
         {
-		return this.ident(
-			base.toString(),
-			path
-			);
-		}
+        return this.ident(
+            base.toString(),
+            path
+            );
+        }
 
     /**
      * Create a filemanager ident.
@@ -149,11 +157,11 @@ public class FileManagerIvornFactory
     public String ident(String base)
         throws FileManagerIdentifierException
         {
-		return this.ident(
-			base,
-			this.unique()
-			);
-		}
+        return this.ident(
+            base,
+            this.unique()
+            );
+        }
 
     /**
      * Create a filemanager ident.
@@ -161,7 +169,6 @@ public class FileManagerIvornFactory
      * @param  ident  The resource identifier.
      * @return A new (ivorn) identifer.
      * @throws FileManagerIdentifierException if the filemanager or resource identifiers are null.
-     * @todo Check that the base does not already have a #fragment ....
      *
      */
     public String ident(String base, String ident)
@@ -175,17 +182,17 @@ public class FileManagerIvornFactory
         //
         // Check for null params.
         if (null == base)
-        	{
-        	throw new FileManagerIdentifierException(
-        		"Null service identifier"
-        		) ;
-        	}
+            {
+            throw new FileManagerIdentifierException(
+                "Null service identifier"
+                ) ;
+            }
         if (null == ident)
-        	{
-        	throw new FileManagerIdentifierException(
-        		"Null resource identifier"
-        		) ;
-        	}
+            {
+            throw new FileManagerIdentifierException(
+                "Null resource identifier"
+                ) ;
+            }
         //
         // Put it all together.
         StringBuffer buffer = new StringBuffer() ;
@@ -197,52 +204,52 @@ public class FileManagerIvornFactory
             buffer.append("://") ;
             }
         buffer.append(base) ;
-		//
-		// If the base already has a fragment delimiter.
-		if (-1 != base.indexOf('#'))
-			{
-			buffer.append("/") ;
-			buffer.append(ident) ;
-			}
-		//
-		// If the base does not have a fragment delimiter.
-		else {
-			buffer.append("#") ;
-			buffer.append(ident) ;
-			}
+        //
+        // If the base already has a fragment delimiter.
+        if (-1 != base.indexOf('#'))
+            {
+            buffer.append("/") ;
+            buffer.append(ident) ;
+            }
+        //
+        // If the base does not have a fragment delimiter.
+        else {
+            buffer.append("#") ;
+            buffer.append(ident) ;
+            }
         log.debug("  Result : " + buffer.toString()) ;
         //
         // Return the new string.
         return buffer.toString() ;
         }
 
-	/**
-	 * Internal random number generator.
-	 *
-	 */
-	private Random random = new Random() ;
+    /**
+     * Internal random number generator.
+     *
+     */
+    private Random random = new Random() ;
 
-	/**
-	 * Generate a new unique identifier.
-	 * @return A new node identifier.
-	 *
-	 */
-	public String unique()
-		{
-		StringBuffer buffer = new StringBuffer() ;
-		buffer.append("node") ;
-		buffer.append("-") ;
-		buffer.append(
-			Long.toHexString(
-				System.currentTimeMillis()
-				).toUpperCase()
-			) ;
-		buffer.append("-") ;
-		buffer.append(
-			Integer.toHexString(
-				random.nextInt()
-				).toUpperCase()
-			) ;
-		return buffer.toString() ;
-		}
+    /**
+     * Generate a new unique identifier.
+     * @return A new node identifier.
+     *
+     */
+    public String unique()
+        {
+        StringBuffer buffer = new StringBuffer() ;
+        buffer.append("node") ;
+        buffer.append("-") ;
+        buffer.append(
+            Long.toHexString(
+                System.currentTimeMillis()
+                ).toUpperCase()
+            ) ;
+        buffer.append("-") ;
+        buffer.append(
+            Integer.toHexString(
+                random.nextInt()
+                ).toUpperCase()
+            ) ;
+        return buffer.toString() ;
+        }
     }

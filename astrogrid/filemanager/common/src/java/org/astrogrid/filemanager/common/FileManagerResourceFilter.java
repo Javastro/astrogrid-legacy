@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerResourceFilter.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerResourceFilter.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.1  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
  *   Revision 1.2  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -39,35 +45,35 @@ import org.astrogrid.filestore.common.file.FileStorePropertyFilter ;
  *
  */
 public class FileManagerResourceFilter
-	extends FileStorePropertyFilter
-	implements PropertyFilter
-	{
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public FileManagerResourceFilter()
-		{
-		super();
-		}
+    extends FileStorePropertyFilter
+    implements PropertyFilter
+    {
+    /**
+     * Public constructor.
+     *
+     */
+    public FileManagerResourceFilter()
+        {
+        super();
+        }
 
-	/**
-	 * Filter a property.
-	 * @param property The property to filter.
-	 * @return The filtered property value, or null if the whole property has been filtered out.
-	 *
-	 */
-	public FileProperty filter(FileProperty property)
-		{
-		if (FileManagerProperties.MANAGER_RESOURCE_IVORN.equals(property.getName()))
-			{
-			return null ;
-			}
-		//
-		// Filter the filestore properties.
-		return super.filter(
-			property
-			) ;
-		}
-	}
+    /**
+     * Filter a property.
+     * @param property The property to filter.
+     * @return The filtered property value, or null if the whole property has been filtered out.
+     *
+     */
+    public FileProperty filter(FileProperty property)
+        {
+        if (FileManagerProperties.MANAGER_RESOURCE_IVORN.equals(property.getName()))
+            {
+            return null ;
+            }
+        //
+        // Filter the filestore properties.
+        return super.filter(
+            property
+            ) ;
+        }
+    }
 

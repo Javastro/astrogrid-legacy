@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/ivorn/Attic/FileManagerIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerIvornParser.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.1  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
  *   Revision 1.2  2004/11/25 00:20:29  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -46,12 +52,12 @@ public class FileManagerIvornParser
      */
     private static Log log = LogFactory.getLog(FileManagerIvornParser.class);
 
-	/**
-	 * The mock service identifier.
-	 * Used to create mock ivorns in JUnit tests.
-	 *
-	 */
-	public static String MOCK_SERVICE_IDENT = "org.astrogrid.mock" ;
+    /**
+     * The mock service identifier.
+     * Used to create mock ivorns in JUnit tests.
+     *
+     */
+    public static String MOCK_SERVICE_IDENT = "org.astrogrid.mock" ;
 
     /**
      * Our AstroGrid configuration.
@@ -201,7 +207,7 @@ public class FileManagerIvornParser
      *
      */
     protected void parseServiceIdent()
-		throws FileManagerIdentifierException
+        throws FileManagerIdentifierException
         {
         log.debug("") ;
         log.debug("----\"----") ;
@@ -209,56 +215,56 @@ public class FileManagerIvornParser
         log.debug("  Ivorn    : " + ivorn) ;
         if (null != uri)
             {
-			String auth = uri.getAuthority() ;
-			String path = uri.getPath() ;
-			log.debug("  Auth     : " + auth) ;
-			log.debug("  Path     : " + path) ;
-			//
-			// If the URI has an authority ident.
-			if (null != auth)
-				{
-				//
-				// If the authority ident isn't empty.
-				if (auth.length() > 0)
-					{
-					//
-					// Start with the URI authority.
-					this.service = auth ;
-					//
-					// If we have a path.
-					if (null != path)
-						{
-						if (path.length() > 1)
-							{
-							StringBuffer buffer =
-								new StringBuffer(
-									auth
-									) ;
-							buffer.append(path) ;
-							this.service = buffer.toString() ;
-							}
-						}
-					}
-				//
-				// If the authority ident is empty.
-				else {
-					throw new FileManagerIdentifierException(
-						"Invalid identifier",
-						uri.toString()
-						) ;
-					}
-				}
-			//
-			// If the URI does not have an authority ident.
-			else {
-				throw new FileManagerIdentifierException(
-					"Invalid identifier",
-					uri.toString()
-					) ;
-				}
-			}
-		log.debug("  Service  : " + this.service) ;
-		}
+            String auth = uri.getAuthority() ;
+            String path = uri.getPath() ;
+            log.debug("  Auth     : " + auth) ;
+            log.debug("  Path     : " + path) ;
+            //
+            // If the URI has an authority ident.
+            if (null != auth)
+                {
+                //
+                // If the authority ident isn't empty.
+                if (auth.length() > 0)
+                    {
+                    //
+                    // Start with the URI authority.
+                    this.service = auth ;
+                    //
+                    // If we have a path.
+                    if (null != path)
+                        {
+                        if (path.length() > 1)
+                            {
+                            StringBuffer buffer =
+                                new StringBuffer(
+                                    auth
+                                    ) ;
+                            buffer.append(path) ;
+                            this.service = buffer.toString() ;
+                            }
+                        }
+                    }
+                //
+                // If the authority ident is empty.
+                else {
+                    throw new FileManagerIdentifierException(
+                        "Invalid identifier",
+                        uri.toString()
+                        ) ;
+                    }
+                }
+            //
+            // If the URI does not have an authority ident.
+            else {
+                throw new FileManagerIdentifierException(
+                    "Invalid identifier",
+                    uri.toString()
+                    ) ;
+                }
+            }
+        log.debug("  Service  : " + this.service) ;
+        }
 
     /**
      * Parse the resource ident.
@@ -290,27 +296,27 @@ public class FileManagerIvornParser
     /**
      * Get the filemanager ident as an ivorn.
      * @return The filemanager ivorn, or null if no match was found.
-	 * @throws FileManagerIdentifierException If the service identifier is not valid.
+     * @throws FileManagerIdentifierException If the service identifier is not valid.
      *
      */
     public Ivorn getServiceIvorn()
-		throws FileManagerIdentifierException
+        throws FileManagerIdentifierException
         {
         try {
-        	StringBuffer buffer = new StringBuffer() ;
-			buffer.append(Ivorn.SCHEME) ;
-			buffer.append("://") ;
-			buffer.append(this.service) ;
-        	return new Ivorn(
-        		buffer.toString()
-        		) ;
-			}
-		catch (URISyntaxException ouch)
-			{
-			throw new FileManagerIdentifierException(
-				ouch
-				) ;
-			}
+            StringBuffer buffer = new StringBuffer() ;
+            buffer.append(Ivorn.SCHEME) ;
+            buffer.append("://") ;
+            buffer.append(this.service) ;
+            return new Ivorn(
+                buffer.toString()
+                ) ;
+            }
+        catch (URISyntaxException ouch)
+            {
+            throw new FileManagerIdentifierException(
+                ouch
+                ) ;
+            }
         }
 
     /**
@@ -332,21 +338,21 @@ public class FileManagerIvornParser
         return "FilemanagerIvornParser : " + ((null != ivorn) ? ivorn.toString() : null) ;
         }
 
-	/**
-	 * Check if this is a mock ivorn.
-	 * @return true if this is a mock ivorn.
-	 *
-	 */
-	public boolean isMock()
-		{
-		if (null != this.service)
-			{
-			return this.service.startsWith(
-				MOCK_SERVICE_IDENT
-				) ;
-			}
-		else {
-			return false ;
-			}
-		}
+    /**
+     * Check if this is a mock ivorn.
+     * @return true if this is a mock ivorn.
+     *
+     */
+    public boolean isMock()
+        {
+        if (null != this.service)
+            {
+            return this.service.startsWith(
+                MOCK_SERVICE_IDENT
+                ) ;
+            }
+        else {
+            return false ;
+            }
+        }
     }

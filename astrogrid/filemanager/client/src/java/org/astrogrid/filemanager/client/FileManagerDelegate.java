@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/Attic/FileManagerDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerDelegate.java,v $
+ *   Revision 1.4  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.3.4.2  2005/01/12 14:20:57  dave
+ *   Replaced tabs with spaces ....
+ *
+ *   Revision 1.3.4.1  2004/12/22 07:38:36  dave
+ *   Started to move towards StoreClient API ...
+ *
  *   Revision 1.3  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -44,57 +53,56 @@ import org.astrogrid.filemanager.common.exception.FileManagerServiceException;
  *
  */
 public interface FileManagerDelegate
-	{
-	/**
-	 * Get the manager identifier.
-	 * @return The manager ivorn identifier.
-	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
-	 *
-	 */
-	public Ivorn getServiceIvorn()
-		throws
-			FileManagerServiceException;
+    {
+    /**
+     * Get the manager identifier.
+     * @return The manager ivorn identifier.
+     * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     *
+     */
+    public Ivorn getServiceIvorn()
+        throws FileManagerServiceException;
 
-	/**
-	 * Create a node for a new account.
-	 * @param ivorn The ivorn identifier for the account.
-	 * @return A node representing the account home.
-	 * @throws DuplicateNodeException If the the account already exists.
-	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
-	 *
-	 */
-	public FileManagerNode addAccount(Ivorn ident)
-		throws
-			FileManagerServiceException,
-			DuplicateNodeException;
+    /**
+     * Create a node for a new account.
+     * @param ivorn The ivorn identifier for the account.
+     * @return A node representing the account home.
+     * @throws DuplicateNodeException If the the account already exists.
+     * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     *
+     */
+    public FileManagerNode addAccount(Ivorn ident)
+        throws
+            FileManagerServiceException,
+            DuplicateNodeException;
 
-	/**
-	 * Get the root node for an account
-	 * @param ivorn The identifier of the account.
-	 * @return An new node for the account home.
-	 * @throws NodeNotFoundException If the account does not exist.
-	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
-	 *
-	 */
-	public FileManagerNode getAccount(Ivorn ivorn)
-		throws
-			FileManagerServiceException,
-			NodeNotFoundException;
+    /**
+     * Get the root node for an account
+     * @param ivorn The identifier of the account.
+     * @return An new node for the account home.
+     * @throws NodeNotFoundException If the account does not exist.
+     * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     *
+     */
+    public FileManagerNode getAccount(Ivorn ivorn)
+        throws
+            FileManagerServiceException,
+            NodeNotFoundException;
 
-	/**
-	 * Get a node from the node Ivorn
-	 * @param ivorn The identifier of the node.
-	 * @return The node for the ivorn.
-	 * @throws NodeNotFoundException If the node does not exist.
-	 * @throws FileManagerIdentifierException If the node identifier is invalid.
-	 * @throws FileManagerServiceException If a problem occurs when handling the request. 
-	 *
-	 */
-	public FileManagerNode getNode(Ivorn ivorn)
-		throws
-			FileManagerServiceException,
-			FileManagerIdentifierException,
-			NodeNotFoundException;
+    /**
+     * Get a node from the node Ivorn
+     * @param ivorn The identifier of the node.
+     * @return The node for the ivorn.
+     * @throws NodeNotFoundException If the node does not exist.
+     * @throws FileManagerIdentifierException If the node identifier is invalid.
+     * @throws FileManagerServiceException If a problem occurs when handling the request. 
+     *
+     */
+    public FileManagerNode getNode(Ivorn ivorn)
+        throws
+            FileManagerServiceException,
+            FileManagerIdentifierException,
+            NodeNotFoundException;
 
-	}
+    }
 

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/Attic/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2005/01/13 17:23:15  jdt
+    |   merges from dave-dev-200412201250
+    |
+    |   Revision 1.2.4.1  2005/01/12 12:40:08  dave
+    |   Added account handling to store ...
+    |
     |   Revision 1.2  2004/11/25 00:20:29  jdt
     |   Merge from dave-dev-200410061224-200411221626
     |
@@ -79,11 +85,11 @@
         <!--+
             | Install our artifact jar.
             +-->
-		<artifact:install
-			artifact="${maven.build.dir}/${maven.final.name}.jar"
-			project="${pom}"
-			type="jar"
-			/>
+        <artifact:install
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
     </goal>
 
     <!--+
@@ -105,11 +111,11 @@
         <!--+
             | Install our snapshot jar(s).
             +-->
-		<artifact:install-snapshot
-			artifact="${maven.build.dir}/${maven.final.name}.jar"
-			project="${pom}"
-			type="jar"
-			/>
+        <artifact:install-snapshot
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
     </goal>
 
     <!--+
@@ -126,11 +132,11 @@
         <!--+
             | Deploy our artifact jar.
             +-->
-		<artifact:deploy
-			artifact="${maven.build.dir}/${maven.final.name}.jar"
-			project="${pom}"
-			type="jar"
-			/>
+        <artifact:deploy
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
     </goal>
 
     <!--+
@@ -147,11 +153,11 @@
         <!--+
             | Deploy our snapshot jar(s).
             +-->
-		<artifact:deploy-snapshot
-			artifact="${maven.build.dir}/${maven.final.name}.jar"
-			project="${pom}"
-			type="jar"
-			/>
+        <artifact:deploy-snapshot
+            artifact="${maven.build.dir}/${maven.final.name}.jar"
+            project="${pom}"
+            type="jar"
+            />
     </goal>
 
     <!-- ================ Component goals ================ -->

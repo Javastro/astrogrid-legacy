@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/Attic/FileManagerConfigMock.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:27 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerConfigMock.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.1  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
  *   Revision 1.2  2004/11/25 00:20:27  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -35,54 +41,54 @@ import org.astrogrid.filemanager.common.exception.FileManagerServiceException ;
  *
  */
 public class FileManagerConfigMock
-	implements FileManagerConfig
-	{
+    implements FileManagerConfig
+    {
     /**
      * Our debug logger.
      *
      */
     private static Log log = LogFactory.getLog(FileManagerConfigMock.class);
 
-	/**
-	 * Our manager ivorn.
-	 *
-	 */
-	private Ivorn filemanager ;
+    /**
+     * Our manager ivorn.
+     *
+     */
+    private Ivorn filemanager ;
 
-	/**
-	 * Our default FileStore Ivorn.
-	 *
-	 */
-	private Ivorn filestore ;
+    /**
+     * Our default FileStore Ivorn.
+     *
+     */
+    private Ivorn filestore ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public FileManagerConfigMock(Ivorn filemanager, Ivorn filestore)
-		{
-		this.filemanager = filemanager ;
-		this.filestore   = filestore ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public FileManagerConfigMock(Ivorn filemanager, Ivorn filestore)
+        {
+        this.filemanager = filemanager ;
+        this.filestore   = filestore ;
+        }
 
-	/**
-	 * Get the manager ivorn.
-	 * @throws FileManagerServiceException If unable to read the configuration.
-	 *
-	 */
-	public Ivorn getFileManagerIvorn()
-		{
-		return this.filemanager ;
-		}
+    /**
+     * Get the manager ivorn.
+     * @throws FileManagerServiceException If unable to read the configuration.
+     *
+     */
+    public Ivorn getFileManagerIvorn()
+        {
+        return this.filemanager ;
+        }
 
-	/**
-	 * Get the default FileStore Ivorn.
-	 * @throws FileManagerServiceException
-	 *
-	 */
-	public Ivorn getFileStoreIvorn()
-		{
-		return this.filestore ;
-		}
+    /**
+     * Get the default FileStore Ivorn.
+     * @throws FileManagerServiceException
+     *
+     */
+    public Ivorn getFileStoreIvorn()
+        {
+        return this.filestore ;
+        }
 
-	}
+    }

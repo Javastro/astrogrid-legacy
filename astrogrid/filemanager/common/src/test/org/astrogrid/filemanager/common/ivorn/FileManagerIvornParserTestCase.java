@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/test/org/astrogrid/filemanager/common/ivorn/Attic/FileManagerIvornParserTestCase.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/12/16 17:25:49 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerIvornParserTestCase.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.1  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
  *   Revision 1.2  2004/12/16 17:25:49  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
@@ -28,55 +34,55 @@ import org.astrogrid.store.Ivorn ;
  *
  */
 public class FileManagerIvornParserTestCase
-	extends TestCase
-	{
+    extends TestCase
+    {
 
-	/**
-	 * Check we can create a parser with a String.
-	 *
-	 */
-	public void testParseString()
-		throws Exception
-		{
-		assertNotNull(
-			new FileManagerIvornParser(
-				"ivo://org.astro.test/path#fragment"
-				)
-			);
-		}
+    /**
+     * Check we can create a parser with a String.
+     *
+     */
+    public void testParseString()
+        throws Exception
+        {
+        assertNotNull(
+            new FileManagerIvornParser(
+                "ivo://org.astro.test/path#fragment"
+                )
+            );
+        }
 
-	/**
-	 * Check we can create a parser with an Ivorn.
-	 *
-	 */
-	public void testParseIvorn()
-		throws Exception
-		{
-		assertNotNull(
-			new FileManagerIvornParser(
-				new Ivorn(
-					"ivo://org.astro.test/path#fragment"
-					)
-				)
-			);
-		}
+    /**
+     * Check we can create a parser with an Ivorn.
+     *
+     */
+    public void testParseIvorn()
+        throws Exception
+        {
+        assertNotNull(
+            new FileManagerIvornParser(
+                new Ivorn(
+                    "ivo://org.astro.test/path#fragment"
+                    )
+                )
+            );
+        }
 
-	/**
-	 * Check we get the right service ident.
-	 *
-	 */
-	public void testGetServiceIdent()
-		throws Exception
-		{
-		FileManagerIvornParser parser = 
-			new FileManagerIvornParser(
-				"ivo://org.astro.test/path#fragment"
-				);
-		assertEquals(
-			"org.astro.test/path",
-			parser.getServiceIdent()
-			);
-		}
+    /**
+     * Check we get the right service ident.
+     *
+     */
+    public void testGetServiceIdent()
+        throws Exception
+        {
+        FileManagerIvornParser parser = 
+            new FileManagerIvornParser(
+                "ivo://org.astro.test/path#fragment"
+                );
+        assertEquals(
+            "org.astro.test/path",
+            parser.getServiceIdent()
+            );
+        }
 
 
-	}
+    }

@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/common/src/java/org/astrogrid/filemanager/common/exception/Attic/FileManagerException.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/11/25 00:20:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2005/01/13 17:23:15 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerException.java,v $
+ *   Revision 1.3  2005/01/13 17:23:15  jdt
+ *   merges from dave-dev-200412201250
+ *
+ *   Revision 1.2.4.1  2005/01/12 13:16:27  dave
+ *   Changed tabs to spaces ...
+ *
  *   Revision 1.2  2004/11/25 00:20:29  jdt
  *   Merge from dave-dev-200410061224-200411221626
  *
@@ -27,47 +33,47 @@ package org.astrogrid.filemanager.common.exception ;
  *
  */
 public class FileManagerException
-	extends Exception
-	{
+    extends Exception
+    {
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public FileManagerException()
-		{
-		super() ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public FileManagerException()
+        {
+        super() ;
+        }
 
-	/**
-	 * Public constructor.
-	 * @param message The exception message.
-	 *
-	 */
-	public FileManagerException(String message)
-		{
-		super(message) ;
-		}
+    /**
+     * Public constructor.
+     * @param message The exception message.
+     *
+     */
+    public FileManagerException(String message)
+        {
+        super(message) ;
+        }
 
-	/**
-	 * Public constructor.
-	 * @param cause The exception cause.
-	 *
-	 */
-	public FileManagerException(Throwable cause)
-		{
-		super(cause) ;
-		}
+    /**
+     * Public constructor.
+     * @param cause The exception cause.
+     *
+     */
+    public FileManagerException(Throwable cause)
+        {
+        super(cause) ;
+        }
 
-	/**
-	 * Public constructor.
-	 * @param message The exception message.
-	 * @param cause The exception cause.
-	 *
-	 */
-	public FileManagerException(String message, Throwable cause)
-		{
-		super(message, cause) ;
-		}
+    /**
+     * Public constructor.
+     * @param message The exception message.
+     * @param cause The exception cause.
+     *
+     */
+    public FileManagerException(String message, Throwable cause)
+        {
+        super(message, cause) ;
+        }
 
-	}
+    }
