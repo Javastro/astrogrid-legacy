@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: SelectionListChoiceItem.java,v 1.1 2003/08/28 15:27:54 nw Exp $
+ * $Id: SelectionListChoiceItem.java,v 1.2 2003/09/02 14:43:16 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated;
@@ -11,16 +11,21 @@ package org.astrogrid.datacenter.adql.generated;
  //- Imported classes and packages -/
 //---------------------------------/
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.io.Writer;
+
+import org.exolab.castor.xml.CastorException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
-
-/**
+import org.xml.sax.ContentHandler;
+import org.astrogrid.datacenter.adql.AbstractQOM;
+/**EDITED by HAND - work around for bug - made a subclass of AbstractQOM.
  * Class SelectionListChoiceItem.
  * 
- * @version $Revision: 1.1 $ $Date: 2003/08/28 15:27:54 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/02 14:43:16 $
  */
-public class SelectionListChoiceItem implements java.io.Serializable {
+public class SelectionListChoiceItem extends AbstractQOM  implements java.io.Serializable {
 
 
       //--------------------------/
@@ -190,5 +195,37 @@ public class SelectionListChoiceItem implements java.io.Serializable {
     {
         this._unaryExpr = unaryExpr;
     } //-- void setUnaryExpr(org.astrogrid.datacenter.adql.generated.UnaryExpr) 
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.datacenter.adql.QOM#isValid()
+     */
+    public boolean isValid() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.datacenter.adql.QOM#marshal(org.xml.sax.ContentHandler)
+     */
+    public void marshal(ContentHandler c) throws CastorException, IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.datacenter.adql.QOM#marshal(java.io.Writer)
+     */
+    public void marshal(Writer w) throws CastorException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /* (non-Javadoc)
+     * @see org.astrogrid.datacenter.adql.QOM#validate()
+     */
+    public void validate() throws CastorException {
+        // TODO Auto-generated method stub
+
+    }
 
 }
