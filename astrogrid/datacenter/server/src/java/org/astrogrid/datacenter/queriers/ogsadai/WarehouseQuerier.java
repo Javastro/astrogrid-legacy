@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.12 2004/04/01 10:10:09 eca Exp $
+ * $Id: WarehouseQuerier.java,v 1.13 2004/04/01 17:10:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,6 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
 import org.astrogrid.datacenter.queriers.status.QuerierComplete;
 import org.astrogrid.util.DomLoader;
 import org.astrogrid.util.Workspace;
@@ -34,7 +33,7 @@ import org.xml.sax.SAXException;
  *
  * Instead, it shells out to the command-line and invokes a
  * {@link GdsQueryDelegate} (running in a new JVM) to perform
- * the query.  The results supplied by the OGSA-DAI service 
+ * the query.  The results supplied by the OGSA-DAI service
  * in VOTable format.
  *
  * Communication between this <code>WarehouseQuerier</code> and
@@ -42,19 +41,19 @@ import org.xml.sax.SAXException;
  * This version of the WarehouseQuerier requests OGSA-DAI to deliver
  * its results to a local file. The implications of this are:
  * <ul>
- * <li> The tomcat instances hosting the OGSA-DAI service and the 
+ * <li> The tomcat instances hosting the OGSA-DAI service and the
  * Datacenter service <strong>must be running on the same host</strong>.
  *
- * <li>The tomcat instances hosting the OGSA-DAI service and the 
- * Datacenter service should probably be running as the same user 
+ * <li>The tomcat instances hosting the OGSA-DAI service and the
+ * Datacenter service should probably be running as the same user
  * (because the latter must create, and the former must write to,
  * the same temporary file).
  * </ul>
  *
  * Delivery to a GridFTP URL is also supported by the It5 OGSA-DAI client
- * code, but requires additional support at the datacenter end in terms 
+ * code, but requires additional support at the datacenter end in terms
  * of X.509 authentication etc. It is not explicitly supported in this
- * Iteration 5 version of the WarehouseQuerier, which relies on 
+ * Iteration 5 version of the WarehouseQuerier, which relies on
  * deliver-to-file instead.
  *
  * @author K Andrews
@@ -86,13 +85,13 @@ public class WarehouseQuerier extends QuerierPlugin {
    * GdsQueryDelegate running in a separate JVM).
    *
    * Converts input ADQL query into the SQL expected by the
-   * GdsQueryDelegate, using a custom Postgres-flavoured translator. 
+   * GdsQueryDelegate, using a custom Postgres-flavoured translator.
    *
    * @throws IOException, DatabaseAccessException
    */
   public void askQuery() throws IOException, DatabaseAccessException {
 
-    //Convert to SQL 
+    //Convert to SQL
     PostgresSqlMaker sqlMaker = new PostgresSqlMaker();
     String sql = escapeXmlSpecialChars(sqlMaker.getSql(querier.getQuery()));
      
@@ -366,8 +365,13 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.13  2004/04/01 17:10:31  mch
+Removed unused import
+
 Revision 1.12  2004/04/01 10:10:09  eca
 Replaced PostgresAdqlQueryTranslator with ogsadai.AdqlQueryTranslator.
+
+
 
 01/04/04 ElizabethAuden
 
