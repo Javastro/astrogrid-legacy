@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/16 11:07:51 $</cvs:date>
-    | <cvs:version>$Revision: 1.32 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/16 11:42:46 $</cvs:date>
+    | <cvs:version>$Revision: 1.33 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.33  2003/09/16 11:42:46  pah
+    |   authentication.BUILD working properly now
+    |
     |   Revision 1.32  2003/09/16 11:07:51  pah
     |   authentication service build nearly working
     |
@@ -3097,6 +3100,8 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 				<include name="org/astrogrid/community/authentication/**"/>
 				<include name="org/astrogrid/community/service/authentication/**"/>
 				<include name="org/astrogrid/community/policy/data/**"/>
+				<include name="org/astrogrid/community/common/**"/>
+				<exclude name="**/junit/**" />
 			</fileset>
 		</jar>
 	</target>
@@ -3117,6 +3122,8 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 				<include name="org/astrogrid/community/authentication/server/**"/>
 				<include name="org/astrogrid/community/delegate/authentication/**"/>
 				<include name="org/astrogrid/community/service/authentication/data/**"/>
+				<include name="org/astrogrid/community/common/**"/>
+				<exclude name="**/junit/**" />
 			</fileset>
 		</jar>
 	</target>
@@ -3332,6 +3339,19 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			</batchtest>
 		</junit>
 	</target>
+	
+    <target name="authentication.database.loadtestdata" depends="">
+		<sql driver="org.hsqldb.jdbcDriver"
+		     url="${hsqldb.url}"
+		     classpathref="hsqldb.classpath"
+		     userid="${hsqldb.user}"
+		     password="${hsqldb.pass}"
+		     print="true"
+		     src="${testdir}/java/org/astrogrid/community/common/db/testData.sql"
+			/>
+		
+	</target>
+	
 
 	<!--+
 	    | Test our policy service.
