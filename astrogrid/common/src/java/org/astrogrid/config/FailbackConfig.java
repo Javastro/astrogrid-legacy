@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.13 2004/03/06 14:54:26 mch Exp $
+ * $Id: FailbackConfig.java,v 1.14 2004/03/06 14:58:17 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -91,9 +91,12 @@ public class FailbackConfig extends Config {
    /** prefix to keys when accessing JNDI services.  No idea why this is required... */
    private static String jndiPrefix = "java:comp/env/";
 
-   /** Default filename for properties file in classpath, etc */
+   /** Usual filename for properties file in classpath, etc */
    private static String configFilename = "astrogrid.properties";
    
+   /** filename for default properties file that come with the distribution */
+   private static String defaultFilename = "default.properties";
+
    /**
     * Protected constructor because we shouldn't be able to make one of these.
     * At the moment the given context is ignored
@@ -195,7 +198,11 @@ public class FailbackConfig extends Config {
                   File propertyFile = new File(filename);
                   //if it's relative, locate from the classpath/working directory
                   if (!propertyFile.isAbsolute()) {
-                     lookForFile(filename);
+                     if (lookForFile(filename) == true)
+                     {
+                        //success!
+                        return;
+                     }
                   } else {
                      //otherwise get the url and carry on
                      fileUrl = propertyFile.toURL();
@@ -249,6 +256,17 @@ public class FailbackConfig extends Config {
                                             "' (returned by system environment variable '"+sysEnvKey+"')", ioe);
             }
          }
+
+         //Nothing in JNDI, nothing in sys env, so look in class path for general properties file
+         if (lookForFile(configFilename)) {
+            return;
+         }
+
+         //last resort - look for default.properties that might be part of the distribution
+         if (lookForFile(defaultFilename)) {
+            return;
+         }
+         
          
          //well we haven't found one anywhere - this may not be an error (as none may be desired) but
          //it should be reported...
@@ -504,6 +522,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.14  2004/03/06 14:58:17  mch
+Added more failback config files, incl default.properties
+
 Revision 1.13  2004/03/06 14:54:26  mch
 Better file lookup
 
