@@ -259,7 +259,7 @@
    
     <li>
       
-    <a href="TestServlet?suite=org.astrogrid.mySpace.installationTests.DeploymentTests">
+    <a href="TestServlet?suite=org.astrogrid.mySpace.installationtest.DeploymentTests">
      Run installation tests
    </a>
   
@@ -309,7 +309,7 @@
                   
                     
                     
-                      © 2002-2004, AstroGrid
+                      ï¿½ 2002-2004, AstroGrid
                     
                   
                   

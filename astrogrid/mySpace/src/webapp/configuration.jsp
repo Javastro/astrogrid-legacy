@@ -331,7 +331,7 @@ if (loadedConfig) {
 <input:text name="<%=filenameTxt%>" attributesText='size="150"' default="<%=exportLocation%>"/>
 </input:form>
 <%  } %>
-<p>Run the <a href="TestServlet?suite=org.astrogrid.mySpace.installationTests.DeploymentTests">Installation Tests</a> to see if the configuration is correct.<BR>
+<p>Run the <a href="TestServlet?suite=org.astrogrid.mySpace.installationtest.DeploymentTests">Installation Tests</a> to see if the configuration is correct.<BR>
 Back to <a href="index.html">index page</a>.</p>
 
 <!----------------------------------------------------------------------------->
