@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.1 2004/09/09 11:18:45 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.2 2004/09/09 12:31:56 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.integration;
+package org.astrogrid.datacenter.deployment;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,6 +74,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.2  2004/09/09 12:31:56  mch
+Switched to using correct port
+
 Revision 1.1  2004/09/09 11:18:45  mch
 Moved DeployedServicesTest to separate package
 
