@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.20 2004/09/07 02:28:29 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.21 2004/09/08 16:34:42 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.util.DomHelper;
@@ -33,6 +34,8 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     }
 
     protected void setUp() throws Exception {
+
+       SampleStarsPlugin.initConfig();
        
        SimpleConfig.getSingleton().setProperty(SqlMaker.CONE_SEARCH_TABLE_KEY, "o");
 
@@ -100,6 +103,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.21  2004/09/08 16:34:42  mch
+Added SampleStars init
+
 Revision 1.20  2004/09/07 02:28:29  mch
 Removed ADQL 0.5 tests
 

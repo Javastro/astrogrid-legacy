@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.7 2004/09/08 16:12:32 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.8 2004/09/08 16:33:06 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.FileResourcePlugin;
 import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
+import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.util.DomHelper;
@@ -38,6 +39,8 @@ public class AxisDataService05QueryTest extends ServerTestCase {
     protected void setUp() throws Exception {
        super.setUp();
 
+       SampleStarsPlugin.initConfig();
+       
        server = new AxisDataService_v05();
        
        query1 = new AdqlQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
@@ -97,6 +100,9 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.8  2004/09/08 16:33:06  mch
+Added SampleStars init
+
 Revision 1.7  2004/09/08 16:12:32  mch
 Fix tests to use ADQL 0.7.4
 
