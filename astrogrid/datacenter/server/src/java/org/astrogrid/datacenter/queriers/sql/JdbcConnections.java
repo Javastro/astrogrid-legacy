@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.3 2004/03/15 17:10:51 mch Exp $
+ * $Id: JdbcConnections.java,v 1.4 2004/03/18 14:20:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,7 +78,7 @@ public class JdbcConnections {
       this.userId = null;
       this.password = null;
       
-      log.info("JDBC Connection manager set to "+datasource);
+      log.info("JDBC Connection manager set to datasource "+datasource);
 
       if (!driversStarted) { startDrivers(); }
    }
@@ -92,7 +92,7 @@ public class JdbcConnections {
       this.jdbcUrl = databaseUrl;
       this.datasource = null;
 
-      log.info("JDBC Connection manager set to "+jdbcUrl);
+      log.info("JDBC Connection manager set to "+jdbcUrl+" ("+userId+")");
 
       if (!driversStarted) { startDrivers(); }
    }
@@ -153,7 +153,7 @@ public class JdbcConnections {
       }
       else
       {
-         log.debug("Creating JDBC Connection from DriverManager, to Url "+jdbcUrl);
+         log.debug("Creating JDBC Connection from DriverManager, to Url "+jdbcUrl+" ("+userId+")");
 
          //if a user/password are set, use that
          if (userId != null) {
