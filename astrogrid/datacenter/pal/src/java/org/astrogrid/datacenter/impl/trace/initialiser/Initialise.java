@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.1 2004/10/05 16:10:43 mch Exp $
+/*$Id: Initialise.java,v 1.2 2004/10/05 16:37:45 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,13 +28,16 @@ public class Initialise {
       IndexGenerator generator = new IndexGenerator();
       generator.checkForExtensions = false;
       generator.fitsDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-      generator.generateIndex(Initialise.class.getResourceAsStream("secUrls.txt"), System.out);
+      generator.generateIndex(Initialise.class.getResourceAsStream("traceUrls.txt"), System.out);
    }
 }
 
 
 /*
 $Log: Initialise.java,v $
+Revision 1.2  2004/10/05 16:37:45  mch
+Merged with PAL
+
 Revision 1.1  2004/10/05 16:10:43  mch
 Merged with PAL
 
