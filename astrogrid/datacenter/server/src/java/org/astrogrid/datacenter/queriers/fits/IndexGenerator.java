@@ -52,6 +52,7 @@ public class IndexGenerator
     */
    public static String generateIndex(URL fitsUrl) throws IOException
    {
+		Log.trace("Examining file "+fitsUrl+"...");
       return generateIndex(new FitsStreamReader(fitsUrl), fitsUrl.toString());
    }
    
@@ -182,7 +183,8 @@ public class IndexGenerator
                               //                      ), "//fannich/mch/fits/ngc6946/r169097.fit"));
          new URL[] {
                new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
-               new URL("http://www.roe.ac.uk/~mch/r169097.fit")
+               new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
+					new URL("http://www.roe.ac.uk/~mch/r169101.fit")
          }
       ));
     }
@@ -192,6 +194,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.3  2003/12/15 14:34:02  mch
+Added trace code, extra fits file
+
 Revision 1.2  2003/11/28 19:57:15  mch
 Cone Search now works
 
