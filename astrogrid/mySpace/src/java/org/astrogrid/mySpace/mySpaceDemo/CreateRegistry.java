@@ -66,8 +66,8 @@ class CreateRegistry
 //            Create an entry for the current entry.
 
                String containerName = (String)inputLines.get(loop);
-               System.out.println("loop, containerName: "
-                 + loop + " " + containerName);
+//               System.out.println("loop, containerName: "
+//                 + loop + " " + containerName);
 
                itemRec = new DataItemRecord(containerName,
                  loop+1, "none", "sysadmin", creation, creation, 0,
