@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.11 2004/01/14 17:57:32 nw Exp $
+/*$Id: QuerierManager.java,v 1.12 2004/01/15 17:38:25 nw Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -156,7 +156,6 @@ public class QuerierManager {
       if (querier != null)
       {
          querier.close();
-         queriers.remove(querier);
       }
    }
    
@@ -273,6 +272,11 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.12  2004/01/15 17:38:25  nw
+ adjusted how queriers close() themselves - altered so it
+ works no matter if Querier.close() or QuerierManager.closeQuerier(q)
+ is called.
+
  Revision 1.11  2004/01/14 17:57:32  nw
  improved documentation
 

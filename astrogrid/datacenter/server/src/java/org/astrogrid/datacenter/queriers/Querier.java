@@ -344,6 +344,9 @@ public abstract class Querier implements Runnable {
       if (workspace != null) {
          workspace.close();
       }
+      // bit of a bodge - will sort out later
+      // see, need to have close() method on queriers and querier manager.
+      QuerierManager.getQueriers().remove(this);
    }
    
    
@@ -431,6 +434,11 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.16  2004/01/15 17:38:25  nw
+ adjusted how queriers close() themselves - altered so it
+ works no matter if Querier.close() or QuerierManager.closeQuerier(q)
+ is called.
+
  Revision 1.15  2004/01/15 14:49:47  nw
  improved documentation
 
