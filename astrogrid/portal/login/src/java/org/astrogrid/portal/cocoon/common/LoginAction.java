@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.22 2004/03/26 18:08:39 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.23 2004/04/02 10:21:12 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/03/26 18:08:39 $</cvs:date>
- * <cvs:version>$Revision: 1.22 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/02 10:21:12 $</cvs:date>
+ * <cvs:version>$Revision: 1.23 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -26,11 +26,13 @@ import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.community.common.security.data.SecurityToken;
-import org.astrogrid.community.common.security.service.*; 
+import org.astrogrid.community.common.security.service.SecurityServiceMock;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.portal.login.common.SessionKeys;
+import org.astrogrid.store.Ivorn;
 /**
  * Login Action.  Extracts login parameters from the 
  * request action and checks them with the security 
@@ -123,19 +125,21 @@ public final class LoginAction extends AbstractAction {
         user = checkParameter(user, log);
         community = checkParameter(community, log);
         pass = checkParameter(pass, log);
-        //
-        // The new login action accepts the user name and
-        // community as separate params, so needs to 
-        // construct the unique id.  @TODO is this right?
-        
-        final String name = "ivo://"+community+"/"+user;
-        
+
         log.debug("LoginAction:login()");
         log.debug("  user : " + user);
         log.debug("  community : " + community);
-        log.debug("  Name : " + name);
         log.debug("  Pass : " + pass);
 
+        final Ivorn ivorn;
+        try {
+            ivorn = CommunityAccountIvornFactory.createIvorn(community, user);
+        } catch (CommunityIdentifierException e1) {
+            log.error("Unable to create ivorn", e1);
+            throw new LoginException("Invalid user name or community - unable to create an Ivorn from those parameters", e1);
+        }
+        log.debug("  Ivorn : " + ivorn);
+        final String name = ivorn.toString();
         //
         // Try creating a Community delegate.
         final SecurityServiceDelegate authenticator;
@@ -265,6 +269,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.23  2004/04/02 10:21:12  jdt
+ * Construct the ivorn using community factory class.
+ *
  * Revision 1.22  2004/03/26 18:08:39  jdt
  * Merge from PLGN_JDT_bz#275
  *
