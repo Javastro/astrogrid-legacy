@@ -1,6 +1,6 @@
 <html>
 <body>
-The delegates exist to make calling Astrogrid services as trivial as creating a Delegate instance,
+The delegates make calling Astrogrid services as trivial as creating a Delegate instance,
 and then calling a method on it.
 
 <h3>Quick Start to Using Datacenter Delegates</h3>
@@ -12,7 +12,7 @@ one delegate to make as many calls to that service as you like.
 Don't use a delegate constructor to create a delegate, use the call:
 <p>
 <code><pre>
-  AdqlQuerier delegate = DatacenterDelegateFactory.makeAdqlQuerier(String endpoint);
+  FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(String endpoint);
 </pre></code>
 or
 <code><pre>
@@ -23,18 +23,31 @@ Note that some datacenters might provide more than one connection type, but this
 information you can find in the registry.  You will get an exception if you try to create a delegate
 type that cannot be served on that endpoint.
 <p>
-<h3>Using an AdqlQuerier</h3>
+<h3>Using an {@link org.astrogrid.datacenter.delegate.FullSearcher}</h3>
 <h4>Doing a Query</h4>
-Call <code>delegate.doQuery(adql)</code> to carry out a blocking query
+Call {@link org.astrogrid.datacenter.delegate.FullSearcher#doQuery}to carry out a blocking query
 on the service.
 <p>
-To start an asynchronous query, you first call <code>makeQuery()</code> which returns
-a status code and a DatacenterQuery object, which you then use to control and monitor
+To start an asynchronous query, you first call
+{@link org.astrogrid.datacenter.delegate.FullSearcher#makeQuery} which returns
+a status code and a {@link org.astrogrid.datacenter.delegate.DatacenterQuery} object,
+ which you then use to control and monitor
 the query at the server end.  Your listeners will be notified when the query is complete,
 and you can then call getResultsAndClose() which returns a url of where to find the
 results.  NB once this call is made you may not be able to access information on
 that query ID 'session' again.
+
+<h4>Query Languages</h4>
+At present, the two languages supported are ADQL and SQL. However, others are possible.
+Different datacenter installations may accept different languages / versions of languages.
+This info will presumably be available from the registry.
 <p>
+The <tt>doQuery</tt> and <tt>makeQuery</tt> methods of <tt>FullSearcher</tt> accept a query-body
+with type {@link org.w3c.dom.Element}. So whatever query language / representation is being used,
+the query must be converted to this type before being passed to the <tt>FullSearcher</tt>.
+The helper classes {@link org.astrogrid.datacenter.adql.ADQLUtils} and {@link org.astrogrid.datacenter.sql.SQLUtils}
+provide methods to do this conversion for ADQL and SQL queries.
+
 <h4>Doing other things</h4>
 Refer to the DatacenterDelegate methods.
 
@@ -53,7 +66,8 @@ and the following 3rd party ones:
 <li>XML implementation, eg ...
 <li>SAX implementation, eg...
 <li>...more...
-
+<p>
+<i>In fact, this information is better expressed in the maven descriptor - see <tt>project.xml</tt>
 <p>
 <h3>A matter of state</h3>
 

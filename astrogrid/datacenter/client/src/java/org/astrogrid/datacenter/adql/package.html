@@ -1,11 +1,17 @@
 <html>
 <body>
 
-Supporting classes for the ADQL Query Object model. 
+<h1>Supporting classes for the ADQL query lanuage</h1>
 
-<p>
-Necessary to place in a separate package, to keep distinct from the tool-generated classes in {@link org.astrogrid.datacenter.adql.generated}
+This package introduces an interface {@link org.astrogrid.datacenter.adql.QOM} and abstract
+class {@link org.astrogrid.datacenter.adql.AbstractQOM} that are extended by each of the objects
+in the ADQL query language. This provides a standard way of manipulating ADQL objects - which allows
+the visitor pattern to be implemented over ADQL objects.
 
+<p />
+{@link org.astrogrid.datacenter.adql.ADQLUtils} provides helper methods for building
+ADQL queries, and converting a query into a {@link org.w3c.dom.Element} that can then be
+passed to a {@link org.astrogrid.datacenter.delegate.FullSearcher}
 
 </body>
 </html>
