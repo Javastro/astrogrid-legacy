@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.2 2004/04/01 10:11:53 eca Exp $
+ * $Id: SqlQuerierSPI.java,v 1.3 2004/04/01 17:16:49 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,6 @@ package org.astrogrid.datacenter.queriers.sql.deprecated;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -24,7 +23,6 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.ogsadai.AdqlQueryTranslator;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 import org.astrogrid.datacenter.queriers.sql.SqlResults;
@@ -260,3 +258,4 @@ public class SqlQuerierSPI extends BaseQuerierSPI implements QuerierSPI {
     }
 
 }
+
