@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.2 2004/03/12 22:27:19 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.3 2004/03/12 22:43:55 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
