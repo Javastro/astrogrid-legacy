@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.22 2004/03/29 13:13:59 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.23 2004/03/29 14:14:59 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -132,17 +132,17 @@
 <!--==================================================================================-->
   <!-- registry-->
 
-    <target depends="loadServersProperties" description="Obtain the latest registry war and deploy it to tomcat" name="Deployregistry">
-    	<!--echo message="Deploying registry from ${registry.war.url} to ${registry.host.url} at ${registry.path}"/-->
-		<!--deploy password="${registry.host.password}" path="${registry.path}" url="${registry.host.url}" username="${registry.host.user}" war="${registry.war.url}"/-->
-		<echo message="Warning! Registry not automatically deployable"/>
+    <target name="Deployregistry" depends="loadServersProperties" description="Obtain the latest registry war and deploy it to tomcat" >
+    	<echo message="Deploying registry from ${registry.war.url} to ${registry.host.url} at ${registry.path}"/>
+		<deploy password="${registry.host.password}" path="${registry.path}" url="${registry.host.url}" username="${registry.host.user}" war="${registry.war.url}"/-->
+		
     </target>
     
-    <target depends="loadServersProperties" name="Undeployregistry">
-		<!--remove password="${registry.host.password}" path="${registry.path}" url="${registry.host.url}" username="${registry.host.user}"/-->
+    <target name="Undeployregistry" depends="loadServersProperties" >
+		<remove password="${registry.host.password}" path="${registry.path}" url="${registry.host.url}" username="${registry.host.user}"/>
 	</target>
 	
-    <target depends="Undeployregistry, Deployregistry" name="Redeployregistry"/>
+    <target name="Redeployregistry" depends="Undeployregistry, Deployregistry" />
 
 <!--==================================================================================-->
 
