@@ -1,17 +1,15 @@
 /*
- * $Id: StatusHelper.java,v 1.2 2003/11/18 00:34:37 mch Exp $
+ * $Id: StatusHelper.java,v 1.3 2003/11/18 10:35:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.snippet;
 
-import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.query.*;
-import org.astrogrid.log.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import java.util.Date;
 
 /**
  * A helper class for constructing and relaying the documents that are common
@@ -77,7 +75,7 @@ public class StatusHelper
    /**
     * Returns the status of the given service id, given by a status tag in
     * the given dom document
-    * NWW: fixed for case when status tag is the rott element
+    * NWW: fixed for case when status tag is the root element
     */
    public static QueryStatus getServiceStatus(String queryId, Element domContainingStatuses)
    {
@@ -106,7 +104,7 @@ public class StatusHelper
             //service id, but we don't really want to crash (after all it may
             //be some irrelevent part of the document), so lets just log
             //it
-            Log.logError(STATUS_TAG+" in document has no "+QueryIdHelper.QUERY_ID_ATT+" attribute");
+            LogFactory.getLog(StatusHelper.class).error(STATUS_TAG+" in document has no "+QueryIdHelper.QUERY_ID_ATT+" attribute");
          }
          else
          {
@@ -147,7 +145,7 @@ public class StatusHelper
          return null;
       }
 
-      Log.affirm(idNodes.getLength() ==1, "Should only be 1 status in document...");
+      assert idNodes.getLength() ==1 : "Should only be 1 status in document...";
 
       String status = ((Element) idNodes.item(0)).getNodeValue();
       if (status == null)
