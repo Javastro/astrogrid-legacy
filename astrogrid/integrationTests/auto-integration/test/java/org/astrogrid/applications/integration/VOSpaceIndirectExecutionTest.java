@@ -1,4 +1,4 @@
-/*$Id: VOSpaceIndirectExecutionTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: VOSpaceIndirectExecutionTest.java,v 1.2 2004/07/23 08:44:30 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public class VOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
        client = new VoSpaceClient(user);
        assertNotNull(client);
        PrintWriter pw  = new PrintWriter(new OutputStreamWriter( client.putStream(inputIvorn)));
-       pw.println(40);
+       pw.print(40);
        pw.close();
 
     }
@@ -79,6 +79,9 @@ public class VOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: VOSpaceIndirectExecutionTest.java,v $
+Revision 1.2  2004/07/23 08:44:30  nw
+fix to parameter population
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  

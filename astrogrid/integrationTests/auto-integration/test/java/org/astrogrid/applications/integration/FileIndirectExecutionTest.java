@@ -1,4 +1,4 @@
-/*$Id: FileIndirectExecutionTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: FileIndirectExecutionTest.java,v 1.2 2004/07/23 08:44:30 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,7 +69,7 @@ public class FileIndirectExecutionTest extends AbstractRunTestForCEA {
         inputFile.deleteOnExit();
         outputFile.deleteOnExit();
         PrintWriter pw = new PrintWriter(new FileWriter(inputFile));
-        pw.println(40);
+        pw.print(40);
         pw.close();        
     }
     
@@ -81,6 +81,9 @@ public class FileIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: FileIndirectExecutionTest.java,v $
+Revision 1.2  2004/07/23 08:44:30  nw
+fix to parameter population
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  
