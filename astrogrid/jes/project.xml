@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.59 2004/04/14 15:00:24 nw Exp $ -->
+<!-- $Id: project.xml,v 1.60 2004/04/21 10:05:31 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -167,6 +167,13 @@
                               <war.bundle>true</war.bundle>
                     </properties>
             </dependency>
+       <dependency>
+            <id>regexp</id>
+            <version>1.3</version>
+            	<properties>
+            		<war.bundle>true</war.bundle>
+            	</properties>
+        </dependency>               
             <!--
             <dependency>
                     <id>xalan</id>
