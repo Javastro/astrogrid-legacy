@@ -1,5 +1,5 @@
 /*
- * $Id: QueryState.java,v 1.2 2004/03/10 02:35:39 mch Exp $
+ * $Id: QueryState.java,v 1.3 2004/10/05 14:55:41 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -19,6 +19,8 @@ public class QueryState extends TypeSafeEnumerator
 {
    /** Service has been initialised (ie created) but no other methods called */
    public static final QueryState CONSTRUCTED = new QueryState(0, "Constructed");
+   /** Service instance is waiting in queue */
+   public static final QueryState QUEUED = new QueryState(5, "Queued");
    /** Service instance is starting, ie initialising... */
    public static final QueryState STARTING = new QueryState(10, "Starting");
    /** Service instance is running, ie query is being processed... */
@@ -74,6 +76,9 @@ public class QueryState extends TypeSafeEnumerator
 
 /*
 $Log: QueryState.java,v $
+Revision 1.3  2004/10/05 14:55:41  mch
+Added queued
+
 Revision 1.2  2004/03/10 02:35:39  mch
 Published order so we can compare
 

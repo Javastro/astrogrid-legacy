@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.2 2004/10/01 18:04:58 mch Exp $
+/*$Id: QuerierManager.java,v 1.3 2004/10/05 14:57:10 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,15 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.TreeSet;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.status.QuerierClosed;
+import org.astrogrid.datacenter.queriers.status.QuerierQueued;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 
 /** Manages the construction and initialization of Queriers, and maintains a
@@ -37,17 +40,55 @@ public class QuerierManager implements QuerierListener {
    /** List of managers */
    private static Hashtable managers = new Hashtable();
    
+   /** lookup table of queued queriers */
+   private Hashtable queuedQueriers = new Hashtable();
+   
+   /** priority index of queued queriers */
+   private TreeSet queuedPriorities = new TreeSet(new PriorityComparator());
+
    /** lookup table of all the current queriers indexed by their handle*/
    private Hashtable runningQueriers = new Hashtable();
 
    /** lookup table of old queriers */
    private Hashtable closedQueriers = new Hashtable();
+
+   /** Maximum number of simultaneous queriers allowed */
+   private int maxQueriers = 10;
    
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
    
-   /** This isn't the right place to keep this, but it will do for now */
-   public final static String DEFAULT_MYSPACE = "DefaultMySpace";
+   /** PriorityComparitor for the queue */
+   protected class PriorityComparator implements Comparator {
+      
+      /**
+       * Compares its two arguments for order.  Returns a negative integer,
+       * zero, or a positive integer as the first argument is less than, equal
+       * to, or greater than the second.<p>
+       *
+       * @param o1 the first object to be compared.
+       * @param o2 the second object to be compared.
+       * @return a negative integer, zero, or a positive integer as the
+       *           first argument is less than, equal to, or greater than the
+       *        second.
+       * @throws ClassCastException if the arguments' types prevent them from
+       *           being compared by this Comparator.
+       */
+      public int compare(Object o1, Object o2) {
+         Querier q1 = (Querier) o1;
+         Querier q2 = (Querier) o2;
+         if (q1.getStatus().getStartTime().getTime()<q2.getStatus().getStartTime().getTime()) {
+            return -1;
+         }
+         else if (q1.getStatus().getStartTime().getTime()>q2.getStatus().getStartTime().getTime()) {
+            return 1;
+         }
+         else {
+            return 0;
+         }
+      }
+      
+   }
    
    /** Constructor. Protected because we want to force people to use the factory method   */
    protected QuerierManager(String givenId) {
@@ -72,11 +113,25 @@ public class QuerierManager implements QuerierListener {
       Querier q = (Querier) runningQueriers.get(qid);
       if (q != null) return q;
       
+      q = (Querier) queuedQueriers.get(qid);
+      if (q != null) return q;
+
       q = (Querier) closedQueriers.get(qid);
       return q;
    }
    
-   /** Returns a list of all the ids of the currently running queriers
+   /** Returns a list of all the queued (initialised but no started) queriers
+    */
+   public QuerierStatus[] getQueued() {
+      Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
+      QuerierStatus[] statuses = new QuerierStatus[queued.length];
+      for (int i = 0; i < queued.length; i++) {
+         statuses[i] = queued[i].getStatus();
+      }
+      return statuses;
+   }
+
+   /** Returns a list of all the currently running queriers
     */
    public QuerierStatus[] getRunning() {
       Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
@@ -100,10 +155,14 @@ public class QuerierManager implements QuerierListener {
    
    /** Returns the status's of all the queriers */
    public QuerierStatus[] getAllStatus() {
+      Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
       Querier[] running = (Querier[]) runningQueriers.values().toArray(new Querier[] {} );
       Querier[] ran = (Querier[]) closedQueriers.values().toArray(new Querier[] {} );
 
       Vector statuses = new Vector();
+      for (int i = 0; i < queued.length; i++) {
+         statuses.add(queued[i].getStatus());
+      }
       for (int i = 0; i < running.length; i++) {
          statuses.add(running[i].getStatus());
       }
@@ -115,7 +174,7 @@ public class QuerierManager implements QuerierListener {
    
    /**
     * Adds the given querier to this manager, and starts it off on a new
-    * thread
+    * thread.  asynchronous.
     */
    public void submitQuerier(Querier querier)  {
       
@@ -124,16 +183,17 @@ public class QuerierManager implements QuerierListener {
          log.error( "Handle '" + querier.getId() + "' already in use");
          throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
       }
-      runningQueriers.put(querier.getId(), querier);
+      querier.setStatus(new QuerierQueued(querier.getStatus()));
+      queuedQueriers.put(querier.getId(), querier);
+      queuedPriorities.add(querier);
       querier.addListener(this);
       
-      Thread qth = new Thread(querier);
-      qth.start();
-      //StaticThreadPool.execute(querier);
+      checkQueue();
    }
 
    /**
-    * Adds the given querier to this manager, runs it, and returns the status
+    * Adds the given querier to this manager, runs it, and returns the status;
+    * synchronous; not queued
     */
    public QuerierStatus askQuerier(Querier querier)  throws IOException {
       
@@ -157,6 +217,24 @@ public class QuerierManager implements QuerierListener {
       if (querier.getStatus() instanceof QuerierClosed) {
          runningQueriers.remove(querier.getId());
          closedQueriers.put(querier.getId(), querier);
+         checkQueue();
+      }
+   }
+   
+   /** Checks the queue - if there are queued queriers and not too many
+    * running, moves a queued one and starts it
+    */
+   protected synchronized void checkQueue() {
+      while ((queuedQueriers.size()>0) &&
+                ( (maxQueriers==-1) || (runningQueriers.size()<maxQueriers))) {
+         
+         Querier first = (Querier) queuedPriorities.first();
+         queuedPriorities.remove(first);
+         queuedQueriers.remove(first.getId());
+         runningQueriers.put(first.getId(), first);
+         
+         Thread qth = new Thread(first);
+         qth.start();
       }
    }
    
@@ -169,6 +247,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.3  2004/10/05 14:57:10  mch
+ Added queued
+
  Revision 1.2  2004/10/01 18:04:58  mch
  Some factoring out of status stuff, added monitor page
 

@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.2 2004/10/01 18:04:59 mch Exp $
+ * $Id: QuerierStatus.java,v 1.3 2004/10/05 14:57:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -31,8 +31,9 @@ public abstract class QuerierStatus implements TaskStatus
    /** Progress index */
    long progressPos = -1;
    
-   /** Progress max */
+   /** Progress max: -1 = unknown*/
    long progressMax = -1;
+
 
    /** Previous status */
    QuerierStatus previous = null;
@@ -128,12 +129,15 @@ public abstract class QuerierStatus implements TaskStatus
    
    /** Returns the progress as a human readable string */
    public String getProgressMsg() {
-      String s = progressNote+" "+progressPos;
-      if (progressPos>-1) {
-         return s+" of "+progressPos;
+      if (progressPos==-1) {
+         return progressNote;
+      }
+      else if (progressMax==-1) {
+         return progressNote+" "+progressPos;
       }
       else {
-         return s+" (of unknown)";
+         int percent = (int) ( progressPos *100 / progressMax);
+         return progressNote+" "+progressPos+" of "+progressMax;
       }
    }
    
@@ -141,6 +145,9 @@ public abstract class QuerierStatus implements TaskStatus
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.3  2004/10/05 14:57:01  mch
+Added queued
+
 Revision 1.2  2004/10/01 18:04:59  mch
 Some factoring out of status stuff, added monitor page
 
