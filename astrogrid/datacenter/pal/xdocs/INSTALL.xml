@@ -1,14 +1,14 @@
 <?xml version="1.0" ?>
 <document>
 <properties>
-	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-	<title>PAL Installation</title>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <title>PAL Installation</title>
 </properties>
 <!-- packrat requirments
 1 INSTALL document per component, to include:
-Where and how to download the installation kit 
-How to deploy and configure 
-How to administer (stop/start/restart) 
+Where and how to download the installation kit
+How to deploy and configure
+How to administer (stop/start/restart)
 How to trouble-shoot
 -->
 <body>
@@ -84,12 +84,12 @@ To add a dependency on PAL to your own project, add the following to your <a hre
 <source>
    &lt;dependencies&gt;
    ...
-  	&lt;dependency&gt;
-	&lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
-	&lt;artifactId&gt;pal&lt;/artifactId&gt;
-	&lt;version&gt;SNAPSHOT&lt;/version&gt;
-	&lt;type&gt;war&lt;/type&gt;
-	&lt;/dependency&gt;
+   &lt;dependency&gt;
+   &lt;groupId&gt;astrogrid-datacenter&lt;/groupId&gt;
+   &lt;artifactId&gt;pal&lt;/artifactId&gt;
+   &lt;version&gt;SNAPSHOT&lt;/version&gt;
+   &lt;type&gt;war&lt;/type&gt;
+   &lt;/dependency&gt;
    ...
    &lt;dependencies&gt;
 </source>
@@ -97,6 +97,11 @@ Alternately, the latest snapshot of PAL can be downloaded directly from<br />
  <a href="http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-SNAPSHOT.war"
  >http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-SNAPSHOT.war</a>
 </p>
+<p>
+Or the latest stable release (It4.1) from<br/>
+ <a href="http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-Itn04_1.war"
+ >http://www.astrogrid.org/maven/astrogrid-datacenter/wars/pal-Itn04_1.war</a>
+ </p>
 </section>
 
 <section name="Deploy PAL">
@@ -133,8 +138,8 @@ In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragme
 <![CDATA[
 <DefaultContext>
    <Resource name="jdbc/pal-datasource"
-    	auth="Container"
-	type="javax.sql.DataSource" />
+      auth="Container"
+   type="javax.sql.DataSource" />
         <ResourceParams name="jdbc/pal-datasource">
       <parameter>
         <name>driverClassName</name>
@@ -160,7 +165,7 @@ In <tt>${CATALINA_HOME}/conf/<b>server.xml</b></tt> add the following XML fragme
 
     <!-- set the value attribute to point to the configuration file -->
     <Environment name="org.astrogrid.config.url" value="file:/path/to/AstroGridConfig.properties"
-    	type="java.lang.String" override="false"/>
+      type="java.lang.String" override="false"/>
 </DefaultContext>
 ]]>
 </source>
