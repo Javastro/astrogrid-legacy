@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.10 2003/09/10 09:59:14 nw Exp $
+ * $Id: SqlQuerier.java,v 1.11 2003/09/10 18:58:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,6 @@ package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -22,11 +21,10 @@ import javax.sql.DataSource;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.astrogrid.log.Log;
-import org.exolab.castor.xml.MarshalException;
-import org.w3c.dom.Element;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -208,13 +206,13 @@ public class SqlQuerier extends DatabaseQuerier
     * in sql form and returning the results as an SqlResults wrapper around
     * the SQL ResultSet.
     */
-   public QueryResults queryDatabase(Element containsQuery) throws DatabaseAccessException {
+   public QueryResults queryDatabase(Query query) throws DatabaseAccessException {
       String sql = null;
       try
       {
          Statement statement = jdbcConnection.createStatement();
          QueryTranslator trans = createQueryTranslator();
-         sql = trans.translate(containsQuery);
+         sql = trans.translate(query.getXml());
          statement.execute(sql);
          ResultSet results = statement.getResultSet();
 

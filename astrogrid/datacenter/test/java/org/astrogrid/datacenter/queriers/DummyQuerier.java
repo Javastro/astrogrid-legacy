@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.7 2003/09/08 19:19:19 mch Exp $
+ * $Id: DummyQuerier.java,v 1.8 2003/09/10 18:58:56 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,7 @@ public class DummyQuerier extends DatabaseQuerier
       super();
    }
    
-   public QueryResults queryDatabase(Element soapBody) throws DatabaseAccessException
+   public QueryResults queryDatabase(Query query ) throws DatabaseAccessException
    {
       Date today = new Date();
       return new DummyQueryResults("Created "+ today.getDate()+"-"+today.getMonth()+"-"+today.getYear()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds());

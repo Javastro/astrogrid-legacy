@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.6 2003/09/10 14:48:35 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.7 2003/09/10 18:58:56 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,13 +11,12 @@
 package org.astrogrid.datacenter.queriers.sql;
 
 import java.io.InputStream;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -38,8 +37,8 @@ public class SqlQuerierTest extends TestCase {
     */
     public static void main(String[] args)
     {
-      /*NWW - moved configuration (setting of keys) to setUp - 
-      as setUp is guaranteed to be called before a test, while main() is not - 
+      /*NWW - moved configuration (setting of keys) to setUp -
+      as setUp is guaranteed to be called before a test, while main() is not -
       automated testing, testing within a GUI / IDE,,etc */
     
        junit.textui.TestRunner.run(SqlQuerierTest.class);
@@ -104,7 +103,7 @@ public class SqlQuerierTest extends TestCase {
         assertNotNull(queryElement);
         assertEquals("Select",queryElement.getLocalName());
 
-        QueryResults results = querier.queryDatabase(queryElement);
+        QueryResults results = querier.queryDatabase(new Query(queryElement));
         assertNotNull(results);
 
         Document voElement = results.toVotable();
@@ -124,6 +123,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.7  2003/09/10 18:58:56  mch
+Preparing to generalise Query
+
 Revision 1.6  2003/09/10 14:48:35  nw
 fixed breaking tests
 

@@ -69,10 +69,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_CONE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             // logger.info( "testQueryToString_CONE: " + resultString ) ;
             assertEquals(resultString,sqlString);
@@ -90,10 +90,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_EQUALS_NE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             assertEquals(resultString,sqlString);
     } // end of testQueryToString_AND_with_EQUALS_and_NOT_EQUALS()
@@ -110,10 +110,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_CONE_GT.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
             assertEquals(resultString,sqlString);
@@ -132,10 +132,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_BETWEEN_BETWEEN_GT.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_BETWEEN_BETWEEN_GT: " + resultString ) ;
             assertEquals(resultString.replaceAll(" ", ""),sqlString.replaceAll(" ", ""));
@@ -154,10 +154,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_GTE_LTE_OR_NE_GT_LT_NE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_GTE_LTE_OR_NE_GT_LT_NE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -173,10 +173,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_GT_NOT_NULL.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_GT_NOT_NULL: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -194,10 +194,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_LTE_GT_LT_NE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_LTE_GT_LT_NE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -216,10 +216,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_AND_OR_GT_LTE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString();
             //       logger.info( "testQueryToString_AND_OR_GT_LTE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -234,10 +234,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_COUNT_with_no_criteria.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_COUNT_with_no_criteria: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -256,10 +256,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_IN_with_list.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_IN_with_list: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -274,10 +274,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_MIN_MAX_with_no_criteria.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_MIN_MAX_with_no_criteria: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -293,10 +293,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_NOT_AND_GT_LTE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_NOT_AND_GT_LTE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -312,9 +312,9 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_OR_GTE_LTE_GT_LT.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
          String resultString = null;
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_OR_GTE_LTE_GT_LT: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -331,10 +331,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_OR_GT_AND_GT_LTE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             //       logger.info( "testQueryToString_OR_GT_AND_GT_LTE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -350,10 +350,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_LIKE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_LIKE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -370,10 +370,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_LIKE_AND_LIKE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_LIKE_AND_LIKE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -389,10 +389,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_NOT_LIKE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_NOT_LIKE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -408,10 +408,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_PLUS.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_PLUS: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -428,10 +428,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_MINUS.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_MINUS: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -448,10 +448,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_COLUMN_ARITHMETIC_PASSTHROUGH.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
 
             assertTrue(resultString.equals(sqlString));
@@ -466,10 +466,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_ORDER_BY_DESC.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_ORDER_BY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -485,10 +485,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_GROUP_BY.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_GROUP_BY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -507,10 +507,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_IN_with_SUBQUERY.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_IN_WITH_SUBQUERY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -528,10 +528,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_EXISTS_with_SUBQUERY.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_EXISTS_WITH_SUBQUERY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -548,10 +548,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_COLUMN_ARITHMETIC_PLUS_GT_MINUS.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_PLUS_GT_MINUS: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -568,10 +568,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_COLUMN_ARITHMETIC_MULTIPLY.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_MULTIPLY: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -589,10 +589,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_COLUMN_ARITHMETIC_DIVIDE.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_DIVIDE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));
@@ -608,10 +608,10 @@ public class QueryParsingTest extends TestCase {
             fileName = "query_MIN_MAX_AVG.xml";
         Element queryElement =
             this.setUpQueryElement( fileName);
-        Query query = null;
+        AstroGridQuery query = null;
         String resultString = null;
 
-            query = new Query(queryElement);
+            query = new AstroGridQuery(queryElement);
             resultString = query.toSQLString().trim();
             // logger.info( "testQueryToString_COLUMN_ARITMETIC_DIVIDE: " + resultString ) ;
             assertTrue(resultString.equals(sqlString));

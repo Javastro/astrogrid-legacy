@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.17 2003/09/10 17:57:31 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.18 2003/09/10 18:58:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,8 +73,11 @@ public abstract class DatabaseQuerier implements Runnable
    private static Hashtable queriers = new Hashtable();
 
    /** The document containing the query */
-   protected Element domContainingQuery = null;
+   //protected Element domContainingQuery = null;
 
+   /** The query object model */
+   private Query query = null;
+   
    /** Handle to the results from the query */
    protected QueryResults results = null;
 
@@ -94,9 +97,12 @@ public abstract class DatabaseQuerier implements Runnable
       setStatus(ServiceStatus.CONSTRUCTED);
    }
 
+   /**
+    * Creates the query model based on the given DOM
+    */
    public void setQuery(Element givenDOM)
    {
-      domContainingQuery = givenDOM;
+      query = new Query(givenDOM);
    }
 
    /**
@@ -287,7 +293,7 @@ public abstract class DatabaseQuerier implements Runnable
    {
       setStatus(ServiceStatus.RUNNING_QUERY);
 
-      results = queryDatabase(domContainingQuery);
+      results = queryDatabase(query);
 
       setStatus(ServiceStatus.QUERY_COMPLETE);
 
@@ -328,10 +334,10 @@ public abstract class DatabaseQuerier implements Runnable
    }
 
    /**
-    * Applies the DOM element which includes the given query, to the database,
+    * Applies the given query, to the database,
     * returning the results wrapped in QueryResults.
     */
-   public abstract QueryResults queryDatabase(Element containsQuery) throws DatabaseAccessException;
+   public abstract QueryResults queryDatabase(Query query) throws DatabaseAccessException;
 
 
    /**
@@ -395,8 +401,8 @@ public abstract class DatabaseQuerier implements Runnable
 
 
    /**
-    * Special error status - takes exception so this can be accessed by
-    * the client
+    * Special error status - generated when querier is in its own thread, so
+    * that it can be accessed by polling clients
     */
    protected void setErrorStatus(Throwable th)
    {
