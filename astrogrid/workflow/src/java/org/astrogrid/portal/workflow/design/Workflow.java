@@ -37,6 +37,8 @@ import org.astrogrid.portal.workflow.*;
 import org.astrogrid.portal.workflow.design.activity.*;
 import org.w3c.dom.Document ;
 
+import org.astrogrid.portal.workflow.design.unittest.* ;
+
 /**
  * The <code>Workflow</code> class represents a complex tree of Activities.
  * The following is a crude representation of the inheritance hierarchy.
@@ -241,8 +243,18 @@ public class Workflow extends Activity {
             pathBuffer = new StringBuffer( 64 ) ;
         String
             xmlString = null ;
+        String
+            mySpaceLocation = null ;
          
         try {
+            
+            mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+            // This is here purely for test situations...
+            if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+                workflow = WorkflowHelper.readWorkflow( userid, community, communitySnippet, name ) ;
+                return workflow ;
+            }
             
             MySpaceManagerDelegate
                 mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
@@ -291,9 +303,18 @@ public class Workflow extends Activity {
         boolean
             retValue = true ;
         StringBuffer
-            pathBuffer = new StringBuffer( 64 ) ;       
+            pathBuffer = new StringBuffer( 64 );
+        String
+            mySpaceLocation = null ;       
          
         try {
+            
+            mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+            // This is here purely for test situations...
+             if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+                 return WorkflowHelper.deleteWorkflow( userid, community, communitySnippet, name ) ;
+             }
             
             MySpaceManagerDelegate
                mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
@@ -335,9 +356,17 @@ public class Workflow extends Activity {
          retValue = false ;
      String
          xmlWorkflow = null,
-         filePath = null ;         
+         filePath = null,
+        mySpaceLocation = null ;         
          
      try {
+         
+         mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+         // This is here purely for test situations...
+         if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+             return WorkflowHelper.saveWorkflow( workflow ) ;
+         }
         
         MySpaceManagerDelegate
             mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
@@ -469,8 +498,18 @@ public class Workflow extends Activity {
            vector = null ;
         StringBuffer
            argumentBuffer = new StringBuffer( 64 ) ;
+        String
+           mySpaceLocation = null ;
         
         try {
+            
+           mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
+           
+           // This is here purely for test situations...
+           if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
+               vector = WorkflowHelper.readWorkflowList( userid, community, communitySnippet, filter) ;
+               return vector.iterator() ;
+           }
                 
            MySpaceManagerDelegate
               mySpace = new MySpaceManagerDelegate( WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ) ;
@@ -553,7 +592,7 @@ public class Workflow extends Activity {
       * 
       * @see 
       **/        
-    private Workflow( Document document ) {
+    public Workflow( Document document ) {
         super(null) ;   // null because no parent 
         if( TRACE_ENABLED ) trace( "Workflow(Document) entry") ;
         
