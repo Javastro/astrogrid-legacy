@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.1 2004/09/28 18:12:03 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
  **/
-package org.astrogrid.datacenter;
+package org.astrogrid.datacenter.queriers.test;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -86,6 +86,18 @@ public class InstallationSelfCheck extends TestCase {
                       new ReturnTable(new TargetIndicator(sw), ReturnTable.VOTABLE));
    }
 
+   /** Submits a 100 cone searches */
+   public void testSoak() throws Throwable
+   {
+      DataServer server = new DataServer();
+
+      for (int i=0;i<100;i++) {
+         //@todo really want to make this a submit...
+         server.submitQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6+i),
+                            new ReturnTable(new TargetIndicator(new StringWriter()), ReturnTable.CSV));
+      }
+   }
+
    public void testCanCreateWorkspace() throws IOException {
          Workspace ws = new Workspace("test-workspace");
          assertNotNull("Could not create test workspace - returned null", ws);
@@ -120,6 +132,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.1  2004/09/28 18:12:03  mch
+ Moved Installation tests to server
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

@@ -1,4 +1,4 @@
-/*$Id: DelegateTestInstallation.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: DelegateTestInstallation.java,v 1.2 2004/09/28 18:13:09 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,14 +16,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.client.Call;
-import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.metadata.VoDescriptionServer;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /** Runs delegates against teh service
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Sep-2003
@@ -139,7 +136,7 @@ public abstract class DelegateTestInstallation extends ServerTestCase {
         System.out.println("Connecting to datacenter service at " + serviceURL.toString());
         QuerySearcher del = null;
         try {
-            del = DatacenterDelegateFactory.makeQuerySearcher( serviceURL.toString()) ;// pity it can't take a URL
+            del = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, serviceURL.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE) ;// pity it can't take a URL
         } catch (IOException e) {
             e.printStackTrace();
             fail("Exception while creating delegate: " + e.getMessage());
@@ -291,6 +288,9 @@ public abstract class DelegateTestInstallation extends ServerTestCase {
 
 /*
 $Log: DelegateTestInstallation.java,v $
+Revision 1.2  2004/09/28 18:13:09  mch
+Moved Installation tests to server
+
 Revision 1.1  2004/09/28 15:11:33  mch
 Moved server test directory to pal
 
