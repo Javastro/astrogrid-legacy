@@ -50,7 +50,7 @@ xmlns:wsdd="http://xml.apache.org/axis/wsdd/">
 
 <!-- copy-all template -->
 <xsl:template match="node()|@*">
-        <xsl:copy name="{name()}">
+        <xsl:copy> <!-- was:  name="{name()}" -->
             <xsl:apply-templates select="@* | node()"/>
         </xsl:copy>
 </xsl:template>

@@ -6,7 +6,54 @@
 </properties>
 
 <body>
+<section name="tempoerary">
+<p>need to restart server after changes to config file</p>
+<subsection name="AstroGridConfig.properties"><p>
 
+Configuration parameters for the datacenter server are set in a properties
+file in the <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes</tt> directory.
+This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt> are comments and are ignored by the application.
+Set the <tt>JNDI_SRC</tt> property as follows
+</p><source>
+	JNDI_SRC=jdbc/dataset-connection
+</source><p>
+</p><div class="nw">
+sort this
+</div><p>
+Finally, copy the JAR file containing the JDBC driver for the target RDBMS into the
+<tt>${CATALINA_HOME}/common/lib</tt> directory.
+
+then edit AstroGridConfig.properties.
+
+</p></subsection>
+<subsection name="Configure the ADQL translator"><p>
+The translation between ADQL and SQL can be configured to specify the dialect of SQL to generate. The dialect to use is given by the </p><tt>Fooble</tt><p> key in </p><tt>AstroGridConfig.properties</tt><p>, and may take the following values
+</p><dl>
+</dl><div class="nw">
+ add 'trim' to the configurtion.getProperty method - will fix breaks here
+ </div><p>
+If none of these pre-defined translators are suitable, it is possible to write a new translator and plug it in. However, this is beyond the scope of this document. </p><i>Link to mailing list</i></subsection><subsection name="Metadata - Describe the data collection"><p>
+The datacenter server requires a metadata document that describes the contents of the dataset. The metadata document must conform to the following schema <a href="not.yet.written">not.yet.written</a>, which is documented <a href="not.yet.written">here</a>.
+</p><div class="nw">add links to metadata schema and documentation</div><p>
+By default the location of this file is <tt>${CATALINA_HOME}/webapps/axis/WEB-INF/classes/metadata.xml</tt>, although this may be altered in the configuration file. An example metadata document is provided to get you started.
+
+
+</p></subsection>
+
+
+<subsection name="Configure the Connection"><p>
+The connection between the datacenter server and database can either be specified as a direct connection (simpler)
+or as a server connection (more efficient and robust). We recommend the second method where possible.
+</p></subsection>
+<subsection name="Direct Connection"><p>
+In this configuration the datacenter server manages its own connections to the database.
+ The following configuration keys should be set directly in the </p><tt>AstroGridConfig.properties</tt><p> file.
+ </p><dl>
+ <dt>JDBC_URL</dt>
+ <dd>blah.. </dd>
+ </dl>
+ </subsection>
+</section>
 <section name="JNDI">
 
 </section>
