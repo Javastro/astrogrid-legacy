@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.5 2004/07/26 12:03:33 nw Exp $
+ * $Id: CommandLineApplication.java,v 1.6 2004/08/28 07:17:34 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -25,13 +25,20 @@ import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.crypto.BufferedAsymmetricBlockCipher;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 /**
@@ -76,7 +83,7 @@ public class CommandLineApplication extends AbstractApplication implements Runna
 
 
    public boolean execute() throws CeaException {
-      logger.debug("executing.. " + this.toString());
+      logger.info("executing.. " + this.toString());
       setupParameters();
       super.reportMessage("Calling preRunHook");
       preRunHook();
@@ -92,13 +99,9 @@ public class CommandLineApplication extends AbstractApplication implements Runna
      */
     protected ParameterAdapter instantiateAdapter( ParameterValue pval, ParameterDescription desr, ExternalValue indirectVal) {                
         CommandLineParameterDescription clpd = (CommandLineParameterDescription)desr;
-         if (!clpd.isFile()) {
-             logger.debug("treating " + pval.getName() + " as inline parameter");
-          return new InlineCommandLineParameterAdapter(pval, (CommandLineParameterDescription)desr, indirectVal);
-         } else {
-             logger.debug("treating " + pval.getName() +" as reference parameter");
-             return new ReferenceCommandLineParameterAdapter(getApplicationInterface(),pval, (CommandLineParameterDescription)desr,indirectVal,applicationEnvironment);
-         }
+             logger.debug("creating parameter adapter for " + pval.getName());
+             return new CommandLineParameterAdapter(getApplicationInterface(),pval, (CommandLineParameterDescription)desr,indirectVal,applicationEnvironment);
+         
       }
    protected void setupParameters() throws CeaException {
       // just setup the actual command line for now
@@ -110,8 +113,52 @@ public class CommandLineApplication extends AbstractApplication implements Runna
       // allow last minute manipulation of parameters before the application runs
       reportMessage("Calling postParamSetupHook");
      postParamSetupHook();
-     reportMessage("postParamSetupHook - completed");     
-     for (Iterator i = inputParameterAdapters(); i.hasNext(); ) {
+     reportMessage("postParamSetupHook - completed");
+     
+     //create a list of all the parameter adapters and sort them.
+     List allAdapterList = IteratorUtils.toList(parameterAdapters());
+     Collections.sort(allAdapterList, new Comparator(){
+       public int compare(Object o1, Object o2) {
+           //FIXME - need to check that the ordering of "equal" objects stays the same with thiss algorithm
+            CommandLineParameterAdapter p1 = (CommandLineParameterAdapter)o1;
+            CommandLineParameterAdapter p2 = (CommandLineParameterAdapter)o2;
+            int pos1 = p1.desc.getCommandPosition();
+            int pos2 = p2.desc.getCommandPosition();
+            if(pos1 == -1) // indicates that it is not a position dependent
+                          // parameter
+            {
+                if(pos2 == -1)
+                {
+                    return 0; // they are equivalent
+                }
+                else
+                {
+                    return 1; // p2 should be before p1
+                    }
+            }
+            else // it is a position dependent parameter
+            {
+                if (pos2 == -1) {
+                    return -1;  // the positional parameters should come first
+                }
+                else {
+                    if (pos1 == pos2)
+                    {
+                        return 0; 
+                    }
+                    else
+                    {
+                        return pos1 > pos2 ? 1 : -1;
+                    }
+                    }
+                }
+                    
+            };
+        }
+     );
+     
+     // iterate over all the parameter adapters now that they have been sorted...
+     for (Iterator i = allAdapterList.iterator(); i.hasNext(); ) {
          ParameterAdapter adapter = (ParameterAdapter)i.next();
          List vals = (List)adapter.process();
          for (Iterator j = vals.iterator(); j.hasNext(); ) {
@@ -119,13 +166,6 @@ public class CommandLineApplication extends AbstractApplication implements Runna
          }                  
      }
      
-     for (Iterator i = outputParameterAdapters(); i.hasNext(); ) {
-         ParameterAdapter adapter = (ParameterAdapter)i.next();
-         List vals = (List)adapter.process();
-         for (Iterator j = vals.iterator(); j.hasNext(); ) {
-            argvals.add(j.next().toString());
-         }                      
-     }     
      reportMessage("Parameters for application: " + argvals.toString());
       // TODO check for position parameters - really need to sort the parameter list based on the parameter position information.
       // TODO need to get good way to process repeated parameters also
@@ -179,9 +219,8 @@ public class CommandLineApplication extends AbstractApplication implements Runna
     }
 
 /**
-    *stop reader and writer threads and free up some resources 
-    */
-   /**
+  *stop reader and writer threads and free up some resources 
+  
  * @throws CeaException
  */
 private final void endApplication() throws CeaException {
@@ -208,7 +247,23 @@ private final void endApplication() throws CeaException {
 
       reportMessage("The application has completed with exit status="+exitStatus);
       if (exitStatus != 0) {
-          setStatus(Status.ERROR); // but its probably not a very big error...
+          setStatus(Status.ERROR); // send the stderr output as well
+          try {
+            BufferedReader errReader = new BufferedReader( new FileReader(applicationEnvironment.getErrorLog()));
+            StringBuffer errMsg = new StringBuffer();
+            String line;
+            while((line = errReader.readLine()) != null)
+            {
+               errMsg.append(line);
+               errMsg.append('\n');
+            }
+            //TODO - need to think about limiting the size of the returned error messages...
+            reportMessage("The standard error from the command line application follows");
+            reportMessage(errMsg.toString());
+        }
+        catch (IOException e) {
+           reportError("cannot write back standard error", e);
+        }
       } else {
           setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
       }

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.3 2004/07/26 12:03:33 nw Exp $
+ * $Id: HyperZVOTableReader.java,v 1.4 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,8 +16,8 @@ package org.astrogrid.applications.commandline.hyperz;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
+import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
-import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
@@ -40,7 +40,7 @@ import java.io.IOException;
  * @version $Name:  $
  * @since iteration4.1
  */
-public class HyperZVOTableReader extends ReferenceCommandLineParameterAdapter implements HyperZVOTableWriter.VOTableSource {
+public class HyperZVOTableReader extends CommandLineParameterAdapter implements HyperZVOTableWriter.VOTableSource {
    /** Construct a new HyperZVOTableReader
      * @param val
      * @param descr

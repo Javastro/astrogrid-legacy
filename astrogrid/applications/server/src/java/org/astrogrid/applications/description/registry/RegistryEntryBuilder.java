@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilder.java,v 1.3 2004/07/26 10:21:47 nw Exp $
+ * $Id: RegistryEntryBuilder.java,v 1.4 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -92,6 +92,7 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
    public RegistryEntryBuilder(ApplicationDescriptionLibrary lib, URLs urls) {
       this.lib = lib;
       this.urls = urls;
+      //FIXME need to read the template to get hold of the AuthorityID and the serverID to have those set early
    }
 
    /**
@@ -113,10 +114,15 @@ public class RegistryEntryBuilder implements ProvidesVODescription , ComponentDe
       for (int i = 0; i < applist.getApplicationDefnCount(); i++) {
 
          ApplicationBase theapp = applist.getApplicationDefn(i);
-         CeaApplicationType appentry = makeApplicationEntry(applicationTemplate, theapp);
-         vodesc.addResource(appentry);
-         //add this application to the list of managed applications.
-         managedApplications.addApplicationReference(appentry.getIdentifier());
+         
+         if (theapp.getName() != null) { //TODO this test is only here to get round a bug in the container, where a null application seems to be instantiated.
+            CeaApplicationType appentry = makeApplicationEntry(
+                    applicationTemplate, theapp);
+            vodesc.addResource(appentry);
+            //add this application to the list of managed applications.
+            managedApplications.addApplicationReference(appentry
+                    .getIdentifier());
+        }
 
       }
       //add the service description
@@ -274,6 +280,22 @@ private VODescription makeTemplate() throws IOException, MarshalException, Valid
 
 
 
+    /* (non-Javadoc)
+     * @see org.astrogrid.applications.component.ProvidesVODescription#getAuthorityID()
+     */
+    public String getAuthorityID() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException(
+                "RegistryEntryBuilder.getAuthorityID() not implemented");
+    }
+    /* (non-Javadoc)
+     * @see org.astrogrid.applications.component.ProvidesVODescription#setServerID(java.lang.String)
+     */
+    public String setServerID(String id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException(
+                "RegistryEntryBuilder.setServerID() not implemented");
+    }
 /**
  * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
  */

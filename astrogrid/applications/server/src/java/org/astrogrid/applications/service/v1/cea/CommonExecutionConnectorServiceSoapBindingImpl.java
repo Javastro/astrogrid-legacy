@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.4 2004/07/26 12:07:38 nw Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.5 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -25,6 +25,7 @@ import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.axis._tool;
 
+import org.apache.axis.description.ServiceDesc;
 import org.apache.axis.types.URI;
 
 import java.rmi.RemoteException;
@@ -52,6 +53,9 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
     */
    public CommonExecutionConnectorServiceSoapBindingImpl() {
       try {
+          //TODO need to get this service description into pico
+         ServiceDesc servicedesc = org.apache.axis.MessageContext.getCurrentContext().getService().getServiceDescription();
+ 
          cec = CEAComponentManagerFactory.getInstance().getExecutionController();
         
          //nController(servicedesc);

@@ -1,4 +1,4 @@
-/*$Id: DummyVODescriptionProvider.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: DummyVODescriptionProvider.java,v 1.3 2004/08/28 07:17:34 pah Exp $
  * Created on 02-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,10 +57,26 @@ public class DummyVODescriptionProvider implements ProvidesVODescription {
         curation.setPublisher(pubRef);
         return desc;
     }
+    /* (non-Javadoc)
+     * @see org.astrogrid.applications.component.ProvidesVODescription#getAuthorityID()
+     */
+    public String getAuthorityID() {
+       return AUTH_ID;
+    }
+    /* (non-Javadoc)
+     * @see org.astrogrid.applications.component.ProvidesVODescription#setServerID(java.lang.String)
+     */
+    public String setServerID(String id) {
+        // TODO implement this and refactor the test that uses it...
+        throw new  UnsupportedOperationException("DummyVODescriptionProvider.setServerID() not implemented");
+    }
 }
 
 /* 
 $Log: DummyVODescriptionProvider.java,v $
+Revision 1.3  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+ * $Id: AbstractApplication.java,v 1.6 2004/08/28 07:17:34 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,8 +17,10 @@ import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.Cardinality;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapterException;
@@ -144,12 +146,15 @@ public abstract class AbstractApplication extends Observable implements Applicat
      * must be called before any of the methods that access / query parameter adapters.
      * @throws ParameterDescriptionNotFoundException
      * @throws ParameterAdapterException
+     * @throws MandatoryParameterNotPassedException
+     * @throws ParameterNotInInterfaceException
      * @see #createAdapters() for customization.
      */
-    protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
+    protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException, ParameterNotInInterfaceException, MandatoryParameterNotPassedException {
         inputAdapters.clear();
         outputAdapters.clear();
         results.clearResult();
+        checkParameterValues();
         for  (Iterator params = inputParameterValues(); params.hasNext();){
              ParameterValue param = (ParameterValue)params.next();       
             ExternalValue iVal = (param.getIndirect() ? lib.getExternalValue(param) : null);
@@ -165,7 +170,49 @@ public abstract class AbstractApplication extends Observable implements Applicat
          }          
     }
    
-   /** can be extended by subclasses to provide more info */
+   /**
+     * Checks that all the parameters have been specified. 
+     * It does this by looking through the interface that has been specified and checking that all the mandatory parameters have been specified at least once.
+     * It will throw exception at the first error.
+ * @throws ParameterNotInInterfaceException
+ * @throws MandatoryParameterNotPassedException
+     */
+    private void checkParameterValues()
+            throws ParameterNotInInterfaceException,
+            MandatoryParameterNotPassedException {
+        String[] inputs = applicationInterface.getArrayofInputs();
+        for (int i = 0; i < inputs.length; i++) {
+            String inputName = inputs[i];
+            Cardinality car = applicationInterface
+                    .getParameterCardinality(inputName);
+            if (car.getMinOccurs() != 0) {
+                ParameterValue pval = findInputParameter(inputName);
+                if (pval == null) {
+                    throw new MandatoryParameterNotPassedException(
+                            tool.getName()+ " -- The interface " + applicationInterface.getName()
+                                    + " expects input parameter " + inputName);
+                }
+            }
+
+        }
+        String[] outputs = applicationInterface.getArrayofOutputs();
+        for (int i = 0; i < outputs.length; i++) {
+            String outputName = outputs[i];
+            Cardinality car = applicationInterface
+                    .getParameterCardinality(outputName);
+            if (car.getMinOccurs() == 1) {
+                ParameterValue pval = findOutputParameter(outputName);
+                if (pval == null) {
+                    throw new MandatoryParameterNotPassedException(
+                            tool.getName()+ " --The interface " + applicationInterface.getName()
+                                    + " expects output parameter " + outputName);
+                }
+            }
+
+        }
+   }
+
+    /** can be extended by subclasses to provide more info */
    public MessageType createTemplateMessage() {
        MessageType mt = new MessageType();
        mt.setSource(this.toString() + "\nid:" + this.getID() + "\nassignedId: " + this.getJobStepID());

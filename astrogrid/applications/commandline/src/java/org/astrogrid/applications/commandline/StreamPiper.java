@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: StreamPiper.java,v 1.3 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk) adapted from original in ACE package by Martin Hill
  *
@@ -83,7 +83,7 @@ public class StreamPiper implements Runnable
          {
             out.flush();
          }
-         logger.info("Stream Piper '"+name+"' terminated as source ("+in+") is finished");
+         logger.debug("Stream Piper '"+name+"' terminated as source ("+in+") is finished");
       }
       catch (IOException ioe)
       {
@@ -91,7 +91,7 @@ public class StreamPiper implements Runnable
             && !ioe.getMessage().equals("Pipe Broken")  //ignore this
             && !ioe.getMessage().equals("Read end dead"))  //ignore this
          {
-            logger.debug("Stream Piper '"+name+"'", ioe);
+            logger.error("Stream Piper '"+name+"'", ioe);
          }
       }
 

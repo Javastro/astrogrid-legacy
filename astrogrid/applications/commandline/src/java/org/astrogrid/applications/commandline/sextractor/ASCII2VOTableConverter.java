@@ -1,5 +1,5 @@
 /*
- * $Id: ASCII2VOTableConverter.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: ASCII2VOTableConverter.java,v 1.3 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,8 +14,7 @@
 package org.astrogrid.applications.commandline.sextractor;
 
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
-
+import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
 import voi.vowrite.VOTable;
 import voi.vowrite.VOTableCoosys;
 import voi.vowrite.VOTableField;
@@ -41,8 +40,8 @@ public class ASCII2VOTableConverter {
 
 
    private File tmpfile;
-   private ReferenceCommandLineParameterAdapter outFileparam; 
-   private ReferenceCommandLineParameterAdapter paramsFileparam; 
+   private CommandLineParameterAdapter outFileparam; 
+   private CommandLineParameterAdapter paramsFileparam; 
    private CommandLineApplicationEnvironment env;
    private OutputParams outputParams;
    static private org.apache.commons.logging.Log logger =
@@ -55,7 +54,7 @@ public class ASCII2VOTableConverter {
     * @param band
     * @throws IOException
     */
-   public ASCII2VOTableConverter(ReferenceCommandLineParameterAdapter outFile, ReferenceCommandLineParameterAdapter paramsFile, CommandLineApplicationEnvironment env, String band) throws IOException {
+   public ASCII2VOTableConverter(CommandLineParameterAdapter outFile, CommandLineParameterAdapter paramsFile, CommandLineApplicationEnvironment env, String band) throws IOException {
       this.outFileparam = outFile;
       this.paramsFileparam = paramsFile;
       this.env = env;

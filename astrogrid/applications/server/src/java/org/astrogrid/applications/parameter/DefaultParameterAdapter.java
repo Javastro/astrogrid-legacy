@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.6 2004/07/30 14:54:47 jdt Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.7 2004/08/28 07:17:34 pah Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ import java.io.StringWriter;
  * <p/>
  * Handles both direct and indirect parameters, returing them as an in-memory string.
  * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(ParameterValue)
+ * @todo check whether it is really appropriate use Readers and Writers to access the indirect parameters
  */
 public class DefaultParameterAdapter implements ParameterAdapter {
     /** Construct a new DefaultParameterAdapter
@@ -65,7 +66,7 @@ public class DefaultParameterAdapter implements ParameterAdapter {
                 return sw.toString();                
             }
             catch (IOException e) {
-                throw new CeaException("Could not prociess parameter " + val.getName());
+                throw new CeaException("Could not process parameter " + val.getName());
             }
 
         }
@@ -102,6 +103,9 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.7  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.6  2004/07/30 14:54:47  jdt
 merges in from case3 branch
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: ApplicationDescription.java,v 1.4 2004/08/28 07:17:34 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,11 +54,15 @@ public interface ApplicationDescription {
      * @param tool data object that defines which interface to call, and with what parameter values.
      * @return an <tt>Application</tt>
      * @throws Exception
+     * @todo should this not be throwing a CEAException?
      */
     public  Application initializeApplication(String callerAssignedID, User user, Tool tool) throws Exception;
 }
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.4  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 

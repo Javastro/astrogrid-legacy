@@ -1,4 +1,4 @@
-/*$Id: ProvidesVODescription.java,v 1.3 2004/07/23 13:21:21 nw Exp $
+/*$Id: ProvidesVODescription.java,v 1.4 2004/08/28 07:17:34 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,12 +16,19 @@ import org.astrogrid.registry.beans.resource.VODescription;
  * @todo refactor into one of the description packages.*/
 
 public interface ProvidesVODescription  {
-    /** access the vodescription for this server */
+    /** access the vodescription for this server. */
     public VODescription getVODescription()  throws Exception;
+    /** return the authorityID that this server is running under. */
+    public String getAuthorityID();
+    /** set the serverID that this server should run under. This string should include the authorityID part*/
+    public String setServerID(String id);
 }
 
 /* 
 $Log: ProvidesVODescription.java,v $
+Revision 1.4  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.3  2004/07/23 13:21:21  nw
 Javadocs
 

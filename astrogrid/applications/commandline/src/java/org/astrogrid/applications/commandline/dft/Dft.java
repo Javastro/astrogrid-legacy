@@ -1,5 +1,5 @@
 /*
- * $Id: Dft.java,v 1.4 2004/07/26 12:03:33 nw Exp $
+ * $Id: Dft.java,v 1.5 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -15,7 +15,7 @@ package org.astrogrid.applications.commandline.dft;
 
 import org.astrogrid.applications.commandline.CommandLineApplication;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
-import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
@@ -70,20 +70,20 @@ public class Dft extends CommandLineApplication {
     //outputAdapters.remove(outputParam);
     newparams.add(outputParam);
  //
-      ReferenceCommandLineParameterAdapter mergeparam = null;
+      CommandLineParameterAdapter mergeparam = null;
       StringBuffer sb = new StringBuffer();
  
       for (Iterator iter = inputParameterAdapters(); iter.hasNext();) {
          ParameterAdapter element = (ParameterAdapter)iter.next();
          if (element.getWrappedParameter().getName().equals("matches")) {
             if (mergeparam == null) {
-               mergeparam = (ReferenceCommandLineParameterAdapter)element;
+               mergeparam = (CommandLineParameterAdapter)element;
                sb.append(mergeparam.getReferenceFile().getPath());               
             }
             else
             {
                sb.append(" ");
-               sb.append(((ReferenceCommandLineParameterAdapter)element).getReferenceFile().getPath());
+               sb.append(((CommandLineParameterAdapter)element).getReferenceFile().getPath());
             }
 
          }

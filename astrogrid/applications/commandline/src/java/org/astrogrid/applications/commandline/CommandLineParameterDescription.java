@@ -1,4 +1,4 @@
-/*$Id: CommandLineParameterDescription.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+/*$Id: CommandLineParameterDescription.java,v 1.3 2004/08/28 07:17:34 pah Exp $
  * Created on 17-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.applications.commandline;
 
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.applications.beans.v1.types.SwitchTypes;
 import org.astrogrid.applications.description.base.BaseParameterDescription;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
     /**
      * The switchtype can be "normal" i.e. it is a -switch form or "keyword" where is is of the form switch=par
      */
-    private String switchType = "normal";
+    private SwitchTypes switchType = SwitchTypes.NORMAL;
     /**
      * The commandPosition indicates where on the command line the parameter is to be placed - The first parameter position is 1. If this value is specified then it means that no switch will be output, but the parameter value will be placed directly on the command line at that position.
      */
@@ -43,7 +44,7 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
    
 
     /** flag that indicates application expects a file-reference containing this parameter in the arguments, rather than the parameter value itself. */ 
-    private boolean file = false;
+    private boolean fileRef = false;
 
     /**
      * Adds any necessary switches to the commandline parameter. This is controlled by the @link #commandPosition, @link #commandSwitch and @link #switchType fields. 
@@ -63,12 +64,12 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
           {
              sw = commandSwitch;
           }
-          if (switchType.equalsIgnoreCase("normal")) {
+          if (switchType.equals(SwitchTypes.NORMAL)) {
              cmdarg.add( "-" + sw);
              cmdarg.add(val);
             
           }
-          else {             
+          else if (switchType.equals(SwitchTypes.KEYWORD)) {             
              cmdarg.add(sw + "=" + val);
           }
        
@@ -96,9 +97,11 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
     }
 
     /**
+     * Returns the SwitchType as a enumerated type. 
+     * @TODO Daft name...
      * @return
      */
-    public String getSwitchType() {
+    public SwitchTypes getSwitchTypeType() {
        return switchType;
     }
 
@@ -119,11 +122,24 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
     }
 
     /**
+     * Set the switchType.
+     * To allow the digester to work we need the argument to be a string (and the pseudo getter needs to be present), even though internally this is set to @link SwitchTypes.
      * @param string
      * 
      */
     public void setSwitchType(String string) {
-       switchType = string;
+       try {
+        switchType = SwitchTypes.valueOf(string);
+    }
+    catch (RuntimeException e) {
+        // catch any problem with the enumeration - hopefully this should not happen if the config has been verified by an xml parser
+        logger.warn("Invalid SwitchType - " + string + "defaulting to NORMAL for parameter "+ name , e);
+        switchType = SwitchTypes.NORMAL;
+    }
+    }
+    public String getSwitchType()
+    {
+        return switchType.toString();
     }
 
    
@@ -132,12 +148,12 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
         super.setType(ParameterTypes.valueOf(arg0));
     }
 
-    public boolean isFile() {
-        return file;
+    public boolean isFileRef() {
+        return fileRef;
     } 
     
-    public void setFile(boolean isFile) {
-        this.file = isFile;
+    public void setFileRef(boolean isFile) {
+        this.fileRef = isFile;
     }
 
 }
@@ -145,6 +161,9 @@ public class CommandLineParameterDescription extends BaseParameterDescription {
 
 /* 
 $Log: CommandLineParameterDescription.java,v $
+Revision 1.3  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.2  2004/07/01 11:07:59  nw
 merged in branch
 nww-itn06-componentization

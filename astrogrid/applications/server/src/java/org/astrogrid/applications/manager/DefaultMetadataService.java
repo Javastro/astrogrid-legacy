@@ -1,4 +1,4 @@
-/*$Id: DefaultMetadataService.java,v 1.4 2004/08/17 15:09:20 nw Exp $
+/*$Id: DefaultMetadataService.java,v 1.5 2004/08/28 07:17:34 pah Exp $
  * Created on 21-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,10 +12,12 @@ package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.component.ProvidesVODescription;
+import org.astrogrid.common.bean.v1.Namespaces;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.Marshaller;
 
 import java.io.StringWriter;
 
@@ -46,7 +48,15 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
        StringWriter sw;
        try {
           sw = new StringWriter();
-          provider.getVODescription().marshal(sw);
+          Marshaller mar = new Marshaller(sw);
+          mar.setMarshalExtendedType(true);
+          mar.setSuppressXSIType(false);
+          mar.setMarshalAsDocument(true);
+          //castor will not write the namespace out if it is a top level element - need to do manually
+          mar.setNamespaceMapping("cea", Namespaces.VOCEA); 
+          mar.setNamespaceMapping("ceapd", Namespaces.CEAPD);
+          mar.setNamespaceMapping("ceab", Namespaces.CEAB);
+          mar.marshal(provider.getVODescription());
           sw.close();                
           return sw.toString();
          
@@ -93,6 +103,9 @@ public class DefaultMetadataService implements MetadataService, ComponentDescrip
 
 /* 
 $Log: DefaultMetadataService.java,v $
+Revision 1.5  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.4  2004/08/17 15:09:20  nw
 minor improvement on logging
 

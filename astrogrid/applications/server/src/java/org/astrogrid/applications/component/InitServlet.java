@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.7 2004/08/18 16:37:52 pah Exp $
+ * $Id: InitServlet.java,v 1.8 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
+import org.astrogrid.config.SimpleConfig;
 
 /**
  * A simple servlet that starts cea service, by instantiating the pico container
@@ -69,7 +70,7 @@ public class InitServlet extends HttpServlet {
             //SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL,endpointURL);
             // whack it in JNDI instead,
             if (endpointURL != null) {
-                writeEndpointToJNDI(endpointURL);
+                writeEndpointConfig(endpointURL);
             } else {
                 logger.warn("Could not determine service endpoint");
             } 
@@ -98,7 +99,8 @@ public class InitServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (! storedEndpoint) {
             URL url = makeEndPointURL(req);
-            writeEndpointToJNDI(url);
+            writeEndpointConfig(url);
+            storedEndpoint = true;
         }
         // expect a 'method' parameter.
         PrintWriter writer = resp.getWriter();
@@ -160,9 +162,11 @@ public class InitServlet extends HttpServlet {
    private URL makeEndPointURL(HttpServletRequest request) {
         URL url = null;
         try {
-            url = new URL(request.getProtocol(), request.getServerName(),
+            url = new URL("http", request.getServerName(),
                     request.getServerPort(), request.getContextPath()
                             + "/services/CommonExecutionConnectorService");
+            logger.info("creating endpointURL="+url);
+
         }
         catch (MalformedURLException e) {
             logger.warn("could not create the context path from request data",
@@ -173,25 +177,27 @@ public class InitServlet extends HttpServlet {
     }
 
     /**
-     * Writes the endpoint url to JNDI. The endpoint can then be picked up from
-     * the config system.
+     * Writes the endpoint url to Config. The endpoint can then be picked up from
+     * the config system. 
      * 
      * @param endpointURL
      * @throws NamingException
      */
-    private void writeEndpointToJNDI(URL endpointURL) {
-        try {
-            Context root = new InitialContext();
-            String urlStr = endpointURL.toString();
-            root.rebind("java:comp/env/"
-                    + EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, urlStr);
-            root.close();
-        }
-        catch (NamingException e) {
-            logger
-                    .error("Could not set service endpoint url - JNDI problem",
-                            e);
-        }
+    private void writeEndpointConfig(URL endpointURL) {
+//        try {
+//            Context root = new InitialContext();
+//            String urlStr = endpointURL.toString();
+//            root.rebind("java:comp/env/"
+//                    + EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, urlStr);
+//            root.close();
+//        }
+//        catch (NamingException e) {
+//            logger
+//                    .error("Could not set service endpoint url - JNDI problem",
+//                            e);
+//        }
+        //just use the standard config ability to write a property.
+        SimpleConfig.getSingleton().setProperty(EmptyCEAComponentManager.SERVICE_ENDPOINT_URL, endpointURL);
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationInterface.java,v 1.6 2004/08/27 12:49:06 pah Exp $
+ * $Id: BaseApplicationInterface.java,v 1.7 2004/08/28 07:17:34 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,11 +28,12 @@ import java.util.Map;
  * Basic implementation of {@link org.astrogrid.applications.description.ApplicationInterface}
   <p />
   Implements all the methods of <tt>ApplicationInterface</tt>, plus methods to add parameter to the interface description.
-
+  
  * @author Paul Harison (pah@jb.man.ac.uk)
  * @author Noel Winstanley
  * @version $Name:  $
  * @since iteration4
+ * @TODO implement the stores of parameter names as Lists to retain parameter order for the user interface.
  */
 public class BaseApplicationInterface implements ApplicationInterface {
    static private org.apache.commons.logging.Log logger =
@@ -56,6 +57,7 @@ public class BaseApplicationInterface implements ApplicationInterface {
 
    protected final String name;
 
+   //FIXME - need to implement Lists for parameters to preserve order for the user interface
    private final  Map inputs = new HashMap();
    private final Map outputs = new HashMap();
 

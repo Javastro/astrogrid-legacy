@@ -1,4 +1,4 @@
-/*$Id: ParameterDescription.java,v 1.3 2004/07/26 00:57:46 nw Exp $
+/*$Id: ParameterDescription.java,v 1.4 2004/08/28 07:17:34 pah Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 /** Description of a parameter to an application
  * @see org.astrogrid.applications.description.ApplicationDescription
  * @author Noel Winstanley nw@jb.man.ac.uk 25-May-2004
+ * @TODO - would be sensible for the schema to match these names.....
  *
  */
 public interface ParameterDescription {
@@ -42,6 +43,9 @@ public interface ParameterDescription {
 }
 /* 
 $Log: ParameterDescription.java,v $
+Revision 1.4  2004/08/28 07:17:34  pah
+commandline parameter passing - unit tests ok
+
 Revision 1.3  2004/07/26 00:57:46  nw
 javadoc
 

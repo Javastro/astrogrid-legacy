@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.3 2004/07/26 12:03:33 nw Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.4 2004/08/28 07:17:34 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,11 +13,14 @@
 
 package org.astrogrid.applications.commandline.hyperz;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.commandline.CommandLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CommandLineParameterDescription;
-import org.astrogrid.applications.commandline.ReferenceCommandLineParameterAdapter;
+import org.astrogrid.applications.commandline.CommandLineParameterAdapter;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.parameter.protocol.ExternalValue;
 
@@ -43,10 +46,16 @@ import java.io.IOException;
  * @version $Name:  $
  * @since iteration4.1
  */
-public class HyperZVOTableWriter extends ReferenceCommandLineParameterAdapter {
+public class HyperZVOTableWriter extends CommandLineParameterAdapter {
+    /**
+     * Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(HyperZVOTableWriter.class);
 
     // define an interface here, rather than reference another component - as we need to allow late bindng
     public interface VOTableSource {
+  
         public SavotVOTable getVOTable() ;
     }
  
@@ -67,6 +76,10 @@ public class HyperZVOTableWriter extends ReferenceCommandLineParameterAdapter {
     * @see org.astrogrid.applications.ParameterAdapter#writeBack()
     */
    public void writeBack() throws CeaException {
+    if (logger.isDebugEnabled()) {
+        logger.debug("writeBack() - start");
+    }
+
       //FIXME the file name will be wrong when copying into myspace
       File outputfil = new File(getReferenceFile().getPath()+".z_phot");
       tmpfile.delete();
@@ -74,19 +87,35 @@ public class HyperZVOTableWriter extends ReferenceCommandLineParameterAdapter {
       SavotVOTable votable = votableSource.getVOTable();      
       internalAddToVOTable(votable,tmpfile);
       internalWriteVOTable(votable,getReferenceFile());      
+
+    if (logger.isDebugEnabled()) {
+        logger.debug("writeBack() - end");
+    }
    }
 
    /**
     * @param outputfil
     */
    private void internalWriteVOTable(SavotVOTable votable,File outputfil) {
+    if (logger.isDebugEnabled()) {
+        logger.debug("internalWriteVOTable(SavotVOTable, File) - start");
+    }
+
       WriteDocument.generateDocument(votable, outputfil.getPath());
+
+    if (logger.isDebugEnabled()) {
+        logger.debug("internalWriteVOTable(SavotVOTable, File) - end");
+    }
    }
 
    /**
     * @param tmpfile
     */
    private void internalAddToVOTable(SavotVOTable voTable,File tmpfile) {
+    if (logger.isDebugEnabled()) {
+        logger.debug("internalAddToVOTable(SavotVOTable, File) - start");
+    }
+
       SavotResource resource = (SavotResource)voTable.getResources().getItemAt(0);
       //set some names and descriptions
       resource.setDescription("This is the ouput of running the hyperz from within the ASTROGRID job system as part of the AVO Demo Jan 2004 - Paul Harrison (pah@jb.man.ac.uk)");
@@ -215,12 +244,17 @@ public class HyperZVOTableWriter extends ReferenceCommandLineParameterAdapter {
          }
       }
       catch (IOException e) {
+        logger.error("internalAddToVOTable(SavotVOTable, File)", e);
+
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
      
       
       
+    if (logger.isDebugEnabled()) {
+        logger.debug("internalAddToVOTable(SavotVOTable, File) - end");
+    }
    }
 
 
