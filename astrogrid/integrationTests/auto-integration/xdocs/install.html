@@ -19,7 +19,7 @@ frequently. </P>
 	<LI><P>JRE or <A HREF="http://java.sun.com/j2se/1.4.2/download.html">JDK</A>
 	1.4.x</P>
 	<LI><P><A HREF="http://maven.apache.org/start/download.html">Maven</A>
-	RC3 or better</P>
+	1.0.0 or better</P>
 	<LI><P><A HREF="http://apache.rmplc.co.uk/dist/jakarta/tomcat-5/v5.0.25/">Tomcat</A>
 	5.x with a user of role <A HREF="http://jakarta.apache.org/tomcat/tomcat-5.0-doc/manager-howto.html#Configuring Manager Application Access">manager</A>
 	enabled</P>
@@ -27,9 +27,10 @@ frequently. </P>
 <H2>Procedure to install the latest snapshot</H2>
 <UL>
 	<LI><P>Checkout <A HREF="http://www.astrogrid.org/viewcvs/astrogrid/integrationTests/auto-integration/">astrogrid/integrationTests/auto-integration</A>
-	from CVS and <FONT FACE="Courier, monospace">cd</FONT> to the root
-	directory</P>
-	<LI><P>Create a file <A HREF="build.properties">build.properties</A>
+	from CVS 
+	<LI><P>Checkout <A HREF="http://www.astrogrid.org/viewcvs/astrogrid/maven-base">astrogrid/integrationTests/maven-base</A>
+	from CVS    
+	<LI><P>Create a file <A HREF="build.properties">~/build.properties</A>
 	and edit the following properties to be appropriate for your local
 	set up:</P>
 	<UL>
@@ -52,6 +53,9 @@ frequently. </P>
 	</UL>
 </UL>
 <P STYLE="margin-bottom: 0cm"><BR>
+</P>
+<P>
+    In <FONT FACE="Courier, monospace">astrogrid/integrationTests/auto-integration</FONT>
 </P>
 <UL>
 	<LI><P>If you have previously installed Astrogrid execute:</P>
