@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManager.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: CEAComponentManager.java,v 1.3 2004/07/23 13:21:21 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,11 +22,11 @@ import org.astrogrid.component.ComponentManager;
  *
  */
 public interface CEAComponentManager extends ComponentManager {
-    /** controller component that does work */
+    /** @return the controller component that does work */
     public ExecutionController getExecutionController();
-    /** meta data component that describes what this controller provides */
+    /** @return the meta data component that describes what this controller provides */
     public MetadataService getMetadataService();
-    /** query component that allows inspection of progress */
+    /** @return the query component that allows inspection of progress */
     public QueryService getQueryService();
 
 }
@@ -34,6 +34,9 @@ public interface CEAComponentManager extends ComponentManager {
 
 /* 
 $Log: CEAComponentManager.java,v $
+Revision 1.3  2004/07/23 13:21:21  nw
+Javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

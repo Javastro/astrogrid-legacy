@@ -1,4 +1,4 @@
-/*$Id: JavaClassCEAComponentManager.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: JavaClassCEAComponentManager.java,v 1.3 2004/07/23 13:21:21 nw Exp $
  * Created on 10-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,21 +22,25 @@ import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
 
-/** simple component manager that defines a  standalone JavaClass CEA server
+/** Simple component manager that defines a  standalone JavaClass CEA server
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Jun-2004
- *
+ *@see org.astrogrid.applications.javaclass
+ *@todo factor into the javaclass package?
  */
 public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
     /**
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(JavaClassCEAComponentManager.class);
-    /** key to look in config under for the name of the java class to expose as cea applications (optional, defaulrs to {@link SampleJavaClassApplications})*/
+    /** key to look in config under for the name of the java class to expose as cea applications (optional, defaulrs to {@link SampleJavaClassApplications})
+     * @see #registerJavaClassProvider(MutablePicoContainer, Config)*/
     public final static String SERVER_CLASS_NAME = "cea.javaclass.server.class";
-    /** key to look in config under for the community to add provided applications to (optional, defaults to 'org.astrogrid.localhost') */
+    /** key to look in config under for the community to add provided applications to (optional, defaults to 'org.astrogrid.localhost') 
+     * @see #registerJavaClassProvider(MutablePicoContainer, Config)*/
     public final static String COMMUNITY_NAME = "cea.javaclass.community.name";
     /** Construct a new JavaClassCEAComponentManger, with all necessary components registered
-     * 
+     * <p />
+     * registers the java class provider, plus all the standard services defined in {@link EmptyCEAComponentManager}
      */
     public JavaClassCEAComponentManager() {
         super();
@@ -82,6 +86,9 @@ public class JavaClassCEAComponentManager extends EmptyCEAComponentManager {
 
 /* 
 $Log: JavaClassCEAComponentManager.java,v $
+Revision 1.3  2004/07/23 13:21:21  nw
+Javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

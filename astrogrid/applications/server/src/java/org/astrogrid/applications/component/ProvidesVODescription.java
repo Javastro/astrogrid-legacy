@@ -1,4 +1,4 @@
-/*$Id: ProvidesVODescription.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: ProvidesVODescription.java,v 1.3 2004/07/23 13:21:21 nw Exp $
  * Created on 25-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,14 +12,19 @@ package org.astrogrid.applications.component;
 
 import org.astrogrid.registry.beans.resource.VODescription;
 
-/** interface to a component that provides the registry entry (vodescription) for this server */
+/** interface to a component that provides the registry entry (vodescription) for this server 
+ * @todo refactor into one of the description packages.*/
 
 public interface ProvidesVODescription  {
+    /** access the vodescription for this server */
     public VODescription getVODescription()  throws Exception;
 }
 
 /* 
 $Log: ProvidesVODescription.java,v $
+Revision 1.3  2004/07/23 13:21:21  nw
+Javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

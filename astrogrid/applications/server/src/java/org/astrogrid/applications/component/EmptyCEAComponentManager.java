@@ -1,4 +1,4 @@
-/*$Id: EmptyCEAComponentManager.java,v 1.3 2004/07/05 18:45:09 nw Exp $
+/*$Id: EmptyCEAComponentManager.java,v 1.4 2004/07/23 13:21:21 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,16 +50,17 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
-/** empty of CEA Component manager.
+/** empty implementation of {@link org.astrogrid.applications.component.CEAComponentManager}
  * provides implementations of the accessor methods, but no componets are registered with the container. (this should be done in subclasses).
  * <p>
- * Registers a single validity-checking component, that depends on all the publicaly-accessible compoennts (i.e. CommonExecutionController,CEAMetaData).
+ * Registers a single validity-checking component, that depends on all the publicaly-accessible compoennts (i.e.QueryService, MetaData, etc).
  * As picontainer checks that all dependencies can be resolved on startup, this component enforces the requirement that all component managers will have 
  * instances of the publically-accesible components. How thiese components are built up and registered is left free to the subclasses.
  * <p/>
- * Also provides a set of static helper method that register 'clusters' of commonly-used components. These
+ * This class also provides a set of static helper method that register 'clusters' of commonly-used components. These
  * can be called from implementations of component manager to quickly set up the basic parts of the system
  * @author Noel Winstanley nw@jb.man.ac.uk 04-May-2004
+ * @see org.astrogrid.applications.component.JavaClassCEAComponentManager for example of how to assemble a server using this class.
  *
  */
 public abstract class EmptyCEAComponentManager extends EmptyComponentManager implements CEAComponentManager{
@@ -113,7 +114,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
     
     /** registers the default implementaiton of the indirection protocol library 
      * NB: does not register any protocols with the library. These must be added to the container separately
-     * any protocols added to the container  wil be detected and added to the library on startup*/
+     * any protocols added to the container  wil be detected and added to the library on startup
+     * @see #registerStandardIndirectionProtocols(MutablePicoContainer)
+     * @see #registerAstrogridIndirectionProtocols(MutablePicoContainer)*/
     protected static final void registerProtocolLibrary(final MutablePicoContainer pico) {
         log.info("Registering default indirection protocol library");
         pico.registerComponentImplementation(IndirectionProtocolLibrary.class,DefaultIndirectionProtocolLibrary.class);
@@ -145,7 +148,8 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         pico.registerComponentImplementation(IvornProtocol.class);
     }
     
-    /** key used to determing from config where to store execution history files */
+    /** key used to determing from config where to store execution history files
+     * @see #registerDefaultPersistence(MutablePicoContainer, Config) */
     public static final String FILESTORE_BASEDIR = "cea.filestore.basedir";
     
     /** register the standard persistence system - globally unique id generation, and file-based exection history 
@@ -162,14 +166,18 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         });
         pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);        
     }
-    /** key to query config for the url of the registry template to use (optional, default='/CEARegistryTemplate.xml' on classpath) */
+    /** key to query config for the url of the registry template to use (optional, default='/CEARegistryTemplate.xml' on classpath) 
+     * @see #registerDefaultVOProvider(MutablePicoContainer, Config)*/
     public static final String REGISTRY_TEMPLATE_URL  ="cea.registry.template.url";
-    /** key to query config for the url of this services endpoint (optional, recommended, otherwise makes a best guess)*/
+    /** key to query config for the url of this services endpoint (optional, recommended, otherwise makes a best guess)
+     * @see #registerDefaultVOProvider(MutablePicoContainer, Config)*/
     public static final String SERVICE_ENDPOINT_URL = "cea.service.endpoint.url";
     /** register the standard VO Provider - the component that generates the registry entry.
      *  standard provider operates by constructing VODecription from applicationDescriptions in library
      * @param pico
      * @param config
+     * @see #REGISTRY_TEMPLATE_URL
+     * @see #SERVICE_ENDPOINT_URL
      */
     protected static final void registerDefaultVOProvider(MutablePicoContainer pico, final Config config) {
         log.info("Registering default vo provider");
@@ -192,7 +200,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         }        
   
     }    
-    /** regiter component that uploads vodescription to registry on startup */
+    /** register optional component that uploads vodescription to registry on startup.  */
     protected static final void registerDefaultRegistryUploader(MutablePicoContainer pico) {
         log.info("Registering default registry uploader");
         pico.registerComponentImplementation(RegistryUploader.class);    
@@ -204,8 +212,8 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
         });        
     }
     
-    /** register the {@link CompositeApplicationDescriptionLibrary} - this will assemble other application
-     * description libraries registered in the container into a single unified library - allowing multiple 
+    /** register the {@link CompositeApplicationDescriptionLibrary} - this will assemble other implementations of {@link ApplicationDescriptionLibrary}
+     *  registered in the container into a single unified library - allowing multiple 
      * providers to be merged.
      * <p/>
      * For this to work, other app description libs must be registered with pico under their own classname - <b>not</b>
@@ -232,7 +240,7 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
             }
         });        
     }
-    /** register an application description library that will assemble all applicaitoinDescrption components registered with the container 
+    /** register an {@link ApplicationDescriptionLibrary} that will assemble all {@link ApplicationDescription} components registered with the container 
      *  - this allows applicatonDescriptions to be setup and configured individually at the picocontainer level.
      * @author Noel Winstanley nw@jb.man.ac.uk 05-Jul-2004
      *
@@ -260,6 +268,9 @@ public abstract class EmptyCEAComponentManager extends EmptyComponentManager imp
 
 /* 
 $Log: EmptyCEAComponentManager.java,v $
+Revision 1.4  2004/07/23 13:21:21  nw
+Javadocs
+
 Revision 1.3  2004/07/05 18:45:09  nw
 added helper method to assemble lib from registered descriptions
 

@@ -1,4 +1,4 @@
-/*$Id: CEAComponentManagerFactory.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: CEAComponentManagerFactory.java,v 1.3 2004/07/23 13:21:21 nw Exp $
  * Created on 04-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,14 @@ import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-/** static container that instantiates and  controls access to the component manager.
+/** static container that instantiates and  provides access to the component manager.
  * <p />
- * don't use this class willy-nilly - only at the top-leve of applications, where clients need to get an instance. Otherwise the whole model breaks.
+ * don't use this class willy-nilly - only at the top-leve of the CEA server, where clients need to get an instance. Otherwise the whole model breaks.
+ * Within the server itself, the components shoudl gain access to each other through constructor-based dependency injection (which sounds more complex than it is ;)
  *
  * <p />
  *  uses a config key {@link #COMPONENT_MANAGER_IMPL} to determine which class of component manager to instantiate. 
- * its expected this key is set in jndi (i.e. the context for that webapp).
+ * This key is looked up in the {@link org.astrogrid.config.Config} system (its likely this key is set in jndi (i.e. in the <tt>context.xml</tt> or <tt>web.xml</tt>for that webapp).
  * @author Noel Winstanley nw@jb.man.ac.uk 04-May-2004
  *
  */
@@ -44,7 +45,7 @@ public class CEAComponentManagerFactory {
 
         /** get the instnace.
          * lazily initialized - parses configuration and creates components on first call
-         * @return
+         * @return instance of cea component manager, which has been started.
          */
         public static synchronized CEAComponentManager getInstance() throws ComponentManagerException {
                     if (theInstance == null) {
@@ -93,6 +94,9 @@ public class CEAComponentManagerFactory {
 
 /* 
 $Log: CEAComponentManagerFactory.java,v $
+Revision 1.3  2004/07/23 13:21:21  nw
+Javadocs
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization

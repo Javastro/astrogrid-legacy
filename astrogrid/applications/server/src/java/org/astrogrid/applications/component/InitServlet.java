@@ -1,5 +1,5 @@
 /*
- * $Id: InitServlet.java,v 1.3 2004/07/16 11:01:02 nw Exp $
+ * $Id: InitServlet.java,v 1.4 2004/07/23 13:21:21 nw Exp $
  * 
  * Created on 14-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,10 +33,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * A simple servlet that starts the srervice off, by instantiating the pico container
+ * A simple servlet that starts cea service, by instantiating the pico container
  * on destroy, calls back into container, giving things a chance to clean themselves up if needed.
  * <p>
- * Also provides access to some of the metadata methods of the container
+ * Also provides access to some of the metadata methods of the container via HTTP-GET
+ * @author Noel Winstanley
  * @author Paul Harrison (pah@jb.man.ac.uk) 14-Apr-2004
  * @version $Name:  $
  * @since iteration5
@@ -45,11 +46,15 @@ public class InitServlet extends HttpServlet {
 
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(InitServlet.class);
+   /** if this key is set to true in config, this servlet will start up the cea server. otherwise it will start on the first request 
+    * @see #init(ServletConfig)
+    * */
     public static final String BOOT_CEA_KEY = "boot.cea";
     /**
      * just gets the component manager instance from the factory. 
      * as part of this, the picocontainer is started.
      * @todo doesn't seemt o want to work - url for resource is always null. arse.
+     * @see #BOOT_CEA_KEY
      */
     public void init(ServletConfig arg0) throws ServletException {
         super.init(arg0);
