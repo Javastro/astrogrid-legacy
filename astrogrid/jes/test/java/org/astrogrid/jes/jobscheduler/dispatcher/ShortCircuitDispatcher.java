@@ -1,4 +1,4 @@
-/*$Id: ShortCircuitDispatcher.java,v 1.3 2004/07/30 15:42:34 nw Exp $
+/*$Id: ShortCircuitDispatcher.java,v 1.4 2004/09/16 21:45:23 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,14 +10,20 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.rmi.RemoteException;
@@ -28,28 +34,36 @@ import java.util.Calendar;
  *
  */
 public class ShortCircuitDispatcher extends MockDispatcher {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(ShortCircuitDispatcher.class);
 
-    public ShortCircuitDispatcher(JobMonitor jb) {
-        this(jb,true);
+    public ShortCircuitDispatcher(JobMonitor jb, ResultsListener jrl) {
+        this(jb,jrl,true);
     }
 
     /** Construct a new ShortCircuitDispatcher
      * @param jm
      * @param willSucceed
      */
-    public ShortCircuitDispatcher(JobMonitor jm, boolean willSucceed) {
+    public ShortCircuitDispatcher(JobMonitor jm,  ResultsListener jrl, boolean willSucceed) {
         super(willSucceed);
+        logger.info("Created short circuit dispatcher");
         this.monitor = jm;
+        this.results = jrl;
     }
     protected JobMonitor monitor;
+    protected ResultsListener results;
     /**
      * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(org.astrogrid.workflow.beans.v1.Workflow, org.astrogrid.workflow.beans.v1.Step)
      */
-    public void dispatchStep(Workflow job, Step js) throws JesException {
+    public void dispatchStep(Workflow job, Tool t, String stepId) throws JesException {
+        logger.info("Dispatching tool " +stepId + " in workflow " + job.getJobExecutionRecord().getJobId().getContent());
         callCount++;
         // we've got a monitor, lets talk / barf through that.
         MessageType info = new MessageType();
-        String stepId = js.getId();
         JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(),stepId);
 
         info.setSource("application");
@@ -66,7 +80,15 @@ public class ShortCircuitDispatcher extends MockDispatcher {
         try {
             monitor.monitorJob(id,info);
         } catch (RemoteException e) {
-            throw new JesException("Mock Dispatcher had problems talking to job monitor",e);
+            throw new JesException("Short Circuit Dispatcher had problems talking to job monitor",e);
+        }
+        if (willSucceed) {
+            try {
+                ResultListType rl = new ResultListType();                
+                results.putResults(id,rl);
+            } catch (RemoteException e) {
+                throw new JesException("Short circuite dispatcher had problems talking to results listener",e);
+            }
         }
     }
 
@@ -83,11 +105,15 @@ public class ShortCircuitDispatcher extends MockDispatcher {
         }        
  
 
+
 }
 
 
 /* 
 $Log: ShortCircuitDispatcher.java,v $
+Revision 1.4  2004/09/16 21:45:23  nw
+got this test working again - had to add in result listener
+
 Revision 1.3  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

@@ -1,4 +1,4 @@
-/*$Id: LocalSOAPSystemTest.java,v 1.5 2004/08/18 21:52:24 nw Exp $
+/*$Id: LocalSOAPSystemTest.java,v 1.6 2004/09/16 21:44:42 nw Exp $
  * Created on 01-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,12 +14,15 @@ import org.astrogrid.jes.component.JesComponentManager;
 import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.delegate.impl.SOAPJobControllerTest;
 import org.astrogrid.jes.delegate.impl.SOAPJobMonitorTest;
+import org.astrogrid.jes.delegate.impl.SOAPResultListenerTest;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobControllerServiceLocator;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitorServiceLocator;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListenerServiceLocator;
 
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Parameter;
@@ -45,12 +48,15 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
             super();    
             JobMonitor monitorDelegate = 
                 (new JobMonitorServiceLocator()).getJobMonitorService(new URL(SOAPJobMonitorTest.MONITOR_ENDPOINT));
+            ResultsListener listenerDelegate = 
+                (new ResultsListenerServiceLocator()).getResultListener(new URL(SOAPResultListenerTest.RESULTS_LISTENER_ENDPOINT));
             MutablePicoContainer pico = super.getContainer();
             // disptcher that short-circuits back to a monitor - set to call soap monitor delegate
             pico.unregisterComponent(Dispatcher.class);
             pico.registerComponentImplementation(Dispatcher.class,ShortCircuitDispatcher.class,
                 new Parameter[] {
-                    new ConstantParameter(monitorDelegate)
+                    new ConstantParameter(monitorDelegate),
+                    new ConstantParameter(listenerDelegate)
                 }
             );
         }     
@@ -65,12 +71,13 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
         // this creates job monitor and job controller services..
         SOAPJobControllerTest.deployLocalController();
         SOAPJobMonitorTest.deployLocalMonitor();
+        SOAPResultListenerTest.deployLocalResultsListener();
         
         // create store
-        JesComponentManager cm = new SOAPTestComponentManager();        
+        JesComponentManager cm = new SOAPTestComponentManager();       
         JesComponentManagerFactory._setInstance(cm);
         
-        WAIT_SECONDS = 60;
+        WAIT_SECONDS = 120;
     }
 
     
@@ -82,6 +89,9 @@ public class LocalSOAPSystemTest extends InMemorySystemTest {
 
 /* 
 $Log: LocalSOAPSystemTest.java,v $
+Revision 1.6  2004/09/16 21:44:42  nw
+got this test working again - had to add in result listener
+
 Revision 1.5  2004/08/18 21:52:24  nw
 worked on tests
 

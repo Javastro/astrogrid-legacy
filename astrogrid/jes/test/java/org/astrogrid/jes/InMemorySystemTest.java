@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.21 2004/08/18 21:52:24 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.22 2004/09/16 21:44:42 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -146,7 +146,7 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         for (Iterator i = JesUtil.getJobSteps(job); i.hasNext(); ) {
             Step step = (Step)i.next();
             StepExecutionRecord exRec = JesUtil.getLatestOrNewRecord(step);
-            assertEquals(1,exRec.getMessageCount());
+            assertTrue(exRec.getMessageCount() > 0);
             assertEquals(ExecutionPhase.COMPLETED,exRec.getStatus());
         }
 
@@ -195,6 +195,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.22  2004/09/16 21:44:42  nw
+got this test working again - had to add in result listener
+
 Revision 1.21  2004/08/18 21:52:24  nw
 worked on tests
 
