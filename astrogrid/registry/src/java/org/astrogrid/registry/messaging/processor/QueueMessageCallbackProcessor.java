@@ -1,6 +1,7 @@
 package org.astrogrid.registry.messaging.processor;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
@@ -274,17 +275,28 @@ public class QueueMessageCallbackProcessor extends QueueMessageProcessorBase imp
     long proxyLifetime = 0L;
     
     Properties queueCallbackProperties = new Properties();
+
     try {
       queueCallbackProperties.load(new FileInputStream(propertiesFilename));
-      
+    }
+    catch(IOException e) {
+      logger.debug("[createSoapProxyCleaner] no properties file ... using defaults");
+    }
+    
+    try {
       sleepTime = Long.parseLong(
         queueCallbackProperties.getProperty(SLEEP_TIME_PROPERTY, DEFAULT_SLEEP_TIME));
-      
+    }
+    catch(NumberFormatException e) {
+      logger.error("[createSoapProxyCleaner] invalid sleep time");
+    }
+    
+    try {
       proxyLifetime = Long.parseLong(
         queueCallbackProperties.getProperty(PROXY_LIFETIME_PROPERTY, DEFAULT_PROXY_LIFETIME));
     }
-    catch(Exception e) {
-      logger.warn("[createSoapProxyCleaner] could not load queue callback properties ... using defaults", e);
+    catch(NumberFormatException e) {
+      logger.error("[createSoapProxyCleaner] invalid proxy lifetime");
     }
     
     return new QueueMessageCallbackCleaner(sleepTime, proxyLifetime, soapProxyMap);

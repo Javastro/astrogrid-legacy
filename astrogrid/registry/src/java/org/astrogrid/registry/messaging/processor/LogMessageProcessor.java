@@ -10,7 +10,8 @@ import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.log4j.Category;
-import org.astrogrid.registry.messaging.log.XmlBlasterUtil;
+import org.astrogrid.registry.messaging.log.XmlBlaster;
+import org.astrogrid.registry.messaging.log.XmlBlasterFactory;
 import org.astrogrid.registry.util.XsltTransformer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -79,8 +80,6 @@ public class LogMessageProcessor implements ElementProcessor {
     }
     
     try {
-      ServletContext servletContext = servletEndpointContext.getServletContext();
-      
       Document xmlDoc = getXmlDocument(element);
       
       if(logger.isDebugEnabled()) {
@@ -91,7 +90,7 @@ public class LogMessageProcessor implements ElementProcessor {
       String key = XsltTransformer.transform(xmlDoc, xslStyleSheet);
       logger.debug("[process] key: " + key);
       
-      XmlBlasterUtil xmlBlaster = new XmlBlasterUtil();
+      XmlBlaster xmlBlaster = XmlBlasterFactory.getXmlBlaster();
       xmlBlaster.connect(null, null);
      
       PublishReturnQos pubRetQos = xmlBlaster.publishString(XMLUtils.ElementToString(element), key);

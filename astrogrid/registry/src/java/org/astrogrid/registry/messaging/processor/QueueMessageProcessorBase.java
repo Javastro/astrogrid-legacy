@@ -1,6 +1,7 @@
 package org.astrogrid.registry.messaging.processor;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -36,42 +37,62 @@ public abstract class QueueMessageProcessorBase implements ElementProcessor {
     
     // Read OpenJMS properties.
     openJmsProperties = new Properties();
+    String realPath = servletContext.getRealPath(
+      OpenJmsConstants.OPENJMS_PROPERTIES_FILENAME);
+
+    logger.debug("[init] OpenJMS properties location: " + realPath);
+    
     try {
-      String realPath = servletContext.getRealPath(
-        OpenJmsConstants.OPENJMS_PROPERTIES_FILENAME);
-      logger.debug("[init] OpenJMS properties location: " + realPath);
-      
       openJmsProperties.load(new FileInputStream(realPath));
-      
-      isSenderTransactional = Boolean.valueOf(
-        openJmsProperties.getProperty(
-          OpenJmsConstants.SENDER_TRANSACTIONAL_PROPERTY,
-          OpenJmsConstants.SENDER_TRANSACTIONAL_DEFAULT)).booleanValue();
-      
+    }
+    catch(IOException e) {
+      logger.debug("[init] no OpenJMS properties ... using defaults");
+    }
+    
+    isSenderTransactional = Boolean.valueOf(
+      openJmsProperties.getProperty(
+        OpenJmsConstants.SENDER_TRANSACTIONAL_PROPERTY,
+        OpenJmsConstants.SENDER_TRANSACTIONAL_DEFAULT)).booleanValue();
+    logger.debug("[init] sender transactional: " + isSenderTransactional);
+    
+    try {
       senderAck = Integer.parseInt(
         openJmsProperties.getProperty(
           OpenJmsConstants.SENDER_ACKNOWLEDGEMENT_PROPERTY,
           OpenJmsConstants.SENDER_ACKNOWLEDGEMENT_DEFAULT));
-      
+    }
+    catch(NumberFormatException e) {
+      logger.error("[init] invalid sender acknowledgment");
+    }
+    logger.debug("[init] sender acknowledgement: " + senderAck);
+    
+    try {
       senderDelivery = Integer.parseInt(
         openJmsProperties.getProperty(
           OpenJmsConstants.SENDER_DELIVERY_MODE_PROPERTY,
           OpenJmsConstants.SENDER_DELIVERY_MODE_DEFAULT));
-      
-      isReceiverTransactional = Boolean.valueOf(
-        openJmsProperties.getProperty(
-          OpenJmsConstants.RECEIVER_TRANSACTIONAL_PROPERTY,
-          OpenJmsConstants.RECEIVER_TRANSACTIONAL_DEFAULT)).booleanValue();
-      
+    }
+    catch(NumberFormatException e) {
+      logger.error("[init] invalid sender delivery mode");
+    }
+    logger.debug("[init] sender delivery mode: " + senderDelivery);
+    
+    isReceiverTransactional = Boolean.valueOf(
+      openJmsProperties.getProperty(
+        OpenJmsConstants.RECEIVER_TRANSACTIONAL_PROPERTY,
+        OpenJmsConstants.RECEIVER_TRANSACTIONAL_DEFAULT)).booleanValue();
+    logger.debug("[init] receiver transactional: " + isReceiverTransactional);
+    
+    try {
       receiverAck = Integer.parseInt(
         openJmsProperties.getProperty(
           OpenJmsConstants.RECEIVER_ACKNOWLEDGEMENT_PROPERTY,
           OpenJmsConstants.RECEIVER_ACKNOWLEDGEMENT_DEFAULT));
     }
-    catch(Exception e) {
-      logger.error("[init] could not load OpenJMS properties: " + e.getMessage(), e);
-      throw new ProcessorException("could not load OpenJMS properties: " + e.getMessage(), e);
+    catch(NumberFormatException e) {
+      logger.error("[init] invalid receiver acknowledgement");
     }
+    logger.debug("[init] receiver acknowledgement: " + receiverAck);
   }
 
   /**

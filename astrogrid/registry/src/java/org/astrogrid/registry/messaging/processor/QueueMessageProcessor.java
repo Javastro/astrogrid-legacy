@@ -6,7 +6,8 @@ import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.messaging.queue.OpenJmsConstants;
-import org.astrogrid.registry.messaging.queue.OpenJmsSender;
+import org.astrogrid.registry.messaging.queue.OpenJmsFactory;
+import org.astrogrid.registry.messaging.queue.OpenJmsSenderInterface;
 import org.w3c.dom.Element;
 
 /**
@@ -45,9 +46,9 @@ public class QueueMessageProcessor extends QueueMessageProcessorBase implements 
     
     logger.debug("[process] queue name: " + queueName);
     
-    OpenJmsSender messageSender = null;
+    OpenJmsSenderInterface messageSender = null;
     try {
-      messageSender = new OpenJmsSender(openJmsProperties);
+      messageSender = OpenJmsFactory.getOpenJmsSender(openJmsProperties);
       messageSender.connect(queueName, isSenderTransactional, senderAck);
       messageSender.start();
     

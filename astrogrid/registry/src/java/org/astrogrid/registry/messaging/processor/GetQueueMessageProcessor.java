@@ -13,7 +13,8 @@ import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.registry.messaging.queue.OpenJmsConstants;
-import org.astrogrid.registry.messaging.queue.OpenJmsReceiver;
+import org.astrogrid.registry.messaging.queue.OpenJmsFactory;
+import org.astrogrid.registry.messaging.queue.OpenJmsReceiverInterface;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -90,9 +91,9 @@ public class GetQueueMessageProcessor extends QueueMessageProcessorBase implemen
     
     logger.debug("[process] queue name: " + queueName);
 
-    OpenJmsReceiver messageReceiver = null;
+    OpenJmsReceiverInterface messageReceiver = null;
     try {
-      messageReceiver = new OpenJmsReceiver(openJmsProperties);
+      messageReceiver = OpenJmsFactory.getOpenJmsReceiver(openJmsProperties);
       messageReceiver.connect(queueName, isSenderTransactional, senderAck);
       messageReceiver.start();
     

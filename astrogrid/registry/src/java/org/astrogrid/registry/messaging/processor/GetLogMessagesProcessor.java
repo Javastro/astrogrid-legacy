@@ -11,12 +11,15 @@ import javax.xml.rpc.server.ServletEndpointContext;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.log4j.Category;
-import org.astrogrid.registry.messaging.log.XmlBlasterUtil;
+import org.astrogrid.registry.messaging.log.XmlBlaster;
+import org.astrogrid.registry.messaging.log.XmlBlasterFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xmlBlaster.util.MsgUnit;
+import org.xmlBlaster.util.XmlBlasterException;
 
 /**
  * @author peter.shillan <mailto:gps@roe.ac.uk />
@@ -38,16 +41,26 @@ public class GetLogMessagesProcessor implements ElementProcessor {
   // Document builder.
   private DocumentBuilder builder;
   
+  public GetLogMessagesProcessor() {
+    logger.debug("[GetLogMessagesProcessor]");
+  }
+  
   /**
    * @see org.astrogrid.registry.messaging.processor.ElementProcessor#init(javax.xml.rpc.server.ServletEndpointContext)
    */
   public void init(ServletEndpointContext servletEndpointContext) throws ProcessorException {
+    logger.debug("[init] >>>");
+    
     ServletContext servletContext = servletEndpointContext.getServletContext();
     
     // Create XML parsers.
     try {
+      logger.debug("[init] create builder");
+
       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
       builder = builderFactory.newDocumentBuilder();
+
+      logger.debug("[init] create namespace-aware builder");
 
       builderFactory.setNamespaceAware(true);
       nsBuilder = builderFactory.newDocumentBuilder();
@@ -59,11 +72,16 @@ public class GetLogMessagesProcessor implements ElementProcessor {
 
     // Get base log messages document.
     try {
-      logMessageBase = nsBuilder.parse(new File(servletContext.getRealPath(LOG_MESSAGES_DOC_FILE)));
+      String logMessageBasePath = servletContext.getRealPath(LOG_MESSAGES_DOC_FILE);
+      logger.debug("[init] log message base: " + logMessageBasePath);
+      logMessageBase = nsBuilder.parse(new File(logMessageBasePath));
     }
     catch(Exception e) {
       logger.error("[init] could not parse log messages base", e);
       throw new ProcessorException("could not parse log messages base", e);
+    }
+    finally {
+      logger.debug("[init] <<<");
     }
   }
   
@@ -72,6 +90,7 @@ public class GetLogMessagesProcessor implements ElementProcessor {
    */
   public void destroy() throws ProcessorException {
     nsBuilder = null;
+    builder = null;
     logMessageBase = null;
   }
 
@@ -87,11 +106,16 @@ public class GetLogMessagesProcessor implements ElementProcessor {
       logger.debug("[process] element: " + XMLUtils.ElementToString(element));
     }
     
+    XmlBlaster xmlBlaster = XmlBlasterFactory.getXmlBlaster();
     try {
-      String xpathQuery = element.getAttribute(XPATH_QUERY);
+      logger.debug("[process] xpath query element");
+      String xpathQuery = getFirstValue(element, XPATH_QUERY);
       logger.debug("[process] xpath query: " + xpathQuery);
+      
+      if(xpathQuery == null || xpathQuery.length() == 0) {
+        throw new ProcessorException("no XPath query defined");
+      }
 
-      XmlBlasterUtil xmlBlaster = new XmlBlasterUtil();
       xmlBlaster.connect(null, null);
       logger.debug("[process] connected");
       
@@ -107,12 +131,18 @@ public class GetLogMessagesProcessor implements ElementProcessor {
           logger.debug("[process] result: " + XMLUtils.ElementToString(result));     
         }
       }
-      
-      xmlBlaster.disconnect(null);
     }
     catch(Exception e) {
-      logger.error("[process] failed to log message: " + e.getMessage(), e);
-      throw new ProcessorException("failed to log message: " + e.getMessage(), e);
+      logger.error("[process] failed to get messages: " + e.getMessage(), e);
+      throw new ProcessorException("failed to get messages: " + e.getMessage(), e);
+    }
+    finally {
+      try {
+        xmlBlaster.disconnect(null);
+      }
+      catch(XmlBlasterException e) {
+        logger.info("[process] failed to disconnect XMLBlaster: " + e.getMessage(), e);
+      }
     }
       
     return result;
@@ -166,6 +196,49 @@ public class GetLogMessagesProcessor implements ElementProcessor {
     finally {    
       reader.close();
     }
+    
+    return result;
+  }
+
+  private String getFirstValue(Element element, String tagName) {
+    String result = null;
+    
+//    StringReader reader = new StringReader(XMLUtils.ElementToString(element));
+//    try {
+//      InputSource inputSource = new InputSource(reader);
+//      SAXBuilder saxBuilder = new SAXBuilder();
+//      saxBuilder.
+//      org.jdom.Document doc = saxBuilder.build(inputSource);
+//      
+//      org.jdom.Element el = doc.getRootElement();
+//      String value = el.getChildText(tagName);
+//      
+//      logger.debug("[getFirstValue] JDOM value of " + tagName + ": <" + value + ">"); 
+//    }
+//    catch(JDOMException e) {
+//      logger.error("[getFirstValue] JDOM exception: " + e.getMessage());
+//    }
+//    finally {
+//      reader.close();
+//    }
+    
+    logger.debug("[getFirstValue] getting value of " + tagName);
+    
+    boolean nodeNotFound = true;
+    Element currentElement = null;
+    NodeList children = element.getElementsByTagName("*");
+    
+    for(int childIndex = 0; childIndex < children.getLength() && nodeNotFound; childIndex++) {
+      currentElement = (Element) children.item(childIndex);
+      logger.debug("[getFirstValue] current node: " + currentElement.getLocalName());
+      if(currentElement != null && tagName.equals(currentElement.getLocalName())) {
+        NodeList childNodes = currentElement.getChildNodes();
+        result = childNodes.item(0).getNodeValue();
+        nodeNotFound = false;
+      }
+    }
+    
+    logger.debug("[getFirstValue] result: " + result);
     
     return result;
   }
