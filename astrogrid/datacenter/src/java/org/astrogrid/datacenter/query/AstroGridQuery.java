@@ -18,7 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class Query {
+public class AstroGridQuery {
 
     private static final String
        ASTROGRIDERROR_COULD_NOT_CREATE_QUERY_FROM_ELEMENTS = "AGDTCE00055" ;
@@ -41,7 +41,7 @@ public class Query {
    private GroupBy
        groupByObject ;
 
-    public Query( Element elementIncQuery) throws QueryException {
+    public AstroGridQuery( Element elementIncQuery) throws QueryException {
       Log.trace( "Query(Element,QueryFactory): entry") ;
 
       Element queryElement = null;
