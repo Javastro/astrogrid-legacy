@@ -9,11 +9,11 @@
                 <item name="Libraries"   href="/resolver-toolkit.html#Required components"/>
                 <item name="Properties"  href="/resolver-toolkit.html#Resolver properties"/>
             </item>
-            <item name="Login" collapse="true" href="/toolkit/login-task.html">
+            <item name="Login" collapse="true" href="/login-task.html">
                 <item name="Live"  href="/login-task.html#Live registry"/>
                 <item name="Local" href="/login-task.html#Local registry"/>
             </item>
-            <item name="Validate" collapse="true" href="/toolkit/token-task.html">
+            <item name="Validate" collapse="true" href="/token-task.html">
                 <item name="Live"  href="/token-task.html#Live registry"/>
                 <item name="Local" href="/token-task.html#Local registry"/>
             </item>

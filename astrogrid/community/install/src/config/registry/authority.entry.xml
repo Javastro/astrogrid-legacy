@@ -21,25 +21,25 @@
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
     <vr:Resource xsi:type="AuthorityType">
         <Identifier>
-            <AuthorityID>org.astrogrid.test.frog</AuthorityID>
-            <ResourceKey>test</ResourceKey>
+            <AuthorityID>IDENT</AuthorityID>
+            <ResourceKey>TYPE</ResourceKey>
         </Identifier>
-        <Title>test</Title>
-        <ShortName>test</ShortName>
-        <Subject>test</Subject>
+        <Title>Test service</Title>
+        <ShortName>Test service</ShortName>
+        <Subject>Test service</Subject>
         <Summary>
-            <Description>test</Description>
-            <ReferenceURL>http://org.astrogrid.test.frog/</ReferenceURL>
+            <Description>Test service</Description>
+            <ReferenceURL>http://www.astrogrid.org/</ReferenceURL>
         </Summary>
         <Curation>
             <Publisher>
-                <Title>test</Title>
+                <Title>Test service</Title>
             </Publisher>
             <Contact>
-                <Name>test</Name>
-                <Email>test</Email>
+                <Name>Test service</Name>
+                <Email>test@astrogrid.org</Email>
             </Contact>
-            <Date>2003-08-30</Date>
+            <Date>DATE</Date>
         </Curation>
     </vr:Resource>
 </VODescription>

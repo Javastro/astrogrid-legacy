@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/registry/service.entry.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/xsl/registry/authority.entry.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
     | <cvs:date>$Date: 2004/04/01 13:27:36 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
-    |   $Log: service.entry.xsl,v $
-    |   Revision 1.3  2004/04/01 13:27:36  dave
+    |   $Log: authority.entry.xsl,v $
+    |   Revision 1.2  2004/04/01 13:27:36  dave
     |   Merged development branch, dave-dev-200404010813, into HEAD
     |
-    |   Revision 1.2.6.1  2004/04/01 13:19:51  dave
+    |   Revision 1.1.2.1  2004/04/01 13:19:51  dave
     |   Updated install registration tasks.
     |
     |   Revision 1.2  2004/03/30 01:40:03  dave
@@ -42,7 +42,6 @@
         +-->
     <xsl:param name="service.authority"/>
     <xsl:param name="service.resource"/>
-    <xsl:param name="service.wsdl"/>
     <xsl:param name="service.date"/>
 
     <!--+
@@ -55,23 +54,6 @@
             </xsl:element>
             <xsl:element name="vr:ResourceKey">
                 <xsl:value-of select="$service.resource"/>
-            </xsl:element>
-        </xsl:element>
-    </xsl:template>
-
-    <!--+
-        | Process the Interface element.
-        +-->
-    <xsl:template match="/vr:VODescription/vr:Resource/vr:Interface">
-        <xsl:element name="vr:Interface">
-            <xsl:element name="vr:Invocation">
-                <xsl:text>WebService</xsl:text>
-            </xsl:element>
-            <xsl:element name="vr:AccessURL">
-                <xsl:attribute name="use">
-                    <xsl:text>base</xsl:text>
-                </xsl:attribute>
-                <xsl:value-of select="$service.wsdl"/>
             </xsl:element>
         </xsl:element>
     </xsl:template>

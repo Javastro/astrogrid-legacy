@@ -2,10 +2,16 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/04/01 07:09:39 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Date: 2004/04/01 13:27:36 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.7  2004/04/01 13:27:36  dave
+    |   Merged development branch, dave-dev-200404010813, into HEAD
+    |
+    |   Revision 1.6.2.1  2004/04/01 13:19:51  dave
+    |   Updated install registration tasks.
+    |
     |   Revision 1.6  2004/04/01 07:09:39  dave
     |   Merged development branch, dave-dev-200403300547, into HEAD
     |
@@ -65,9 +71,10 @@
     <property name="org.astrogrid.community.ident" value="org.astrogrid.localhost"/>
 
     <!--+
-        | Default registry endpoint.
+        | Default registry endpoints.
         +-->
-    <property name="org.astrogrid.registry.url" value="http://localhost:8080/astrogrid-registry-webapp/services/Registry"/>
+    <property name="org.astrogrid.registry.url"   value="http://localhost:8080/astrogrid-registry-webapp/services/Registry"/>
+    <property name="org.astrogrid.registry.admin" value="http://localhost:8080/astrogrid-registry-webapp/services/RegistryAdmin"/>
 
     <!--+
         | Default Tomcat properties.
@@ -751,7 +758,7 @@
     <!-- ================ Install task ================ -->
 
     <!--+
-        | Install out service.
+        | Install our service.
         +-->
     <target name="install" depends="">
         <!--+
@@ -867,10 +874,125 @@
         <antcall target="database.load"/>
     </target>
 
+    <!-- ================ Registry tasks ================ -->
+
+
+    <!--+
+        | Default service properties.
+        +-->
+    <property name="service.host" value="localhost"/>
+    <property name="service.port" value="8080"/>
+    <property name="service.base" value="http://${service.host}:${service.port}/${webapp.name}/services"/>
+
+    <!--+
+        | Create a registry authority entry.
+        +-->
+    <target name="registy.authority" depends="">
+        <echo message=""/>
+        <echo message="Creating Registry authority entry"/>
+        <echo message="  Authority : ${service.authority}"/>
+        <echo message="  Resource  : ${service.resource}"/>
+        <echo message="  File      : ${service.file}"/>
+        <echo message="  Date      : ${service.date}"/>
+        <xslt style="${basedir}/xsl/registry/authority.entry.xsl"
+            in="${basedir}/config/registry/authority.entry.xml"
+            out="${basedir}/config/service/${service.file}">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="service.authority" expression="${service.authority}"/>
+            <param name="service.resource"  expression="${service.resource}"/>
+            <param name="service.date"      expression="${service.date}"/>
+        </xslt>
+    </target>
+
+    <!--+
+        | Create a registry service entry.
+        +-->
+    <target name="registy.service" depends="">
+        <echo message=""/>
+        <echo message="Creating Registry service entry"/>
+        <echo message="  Authority : ${service.authority}"/>
+        <echo message="  Resource  : ${service.resource}"/>
+        <echo message="  WSDL      : ${service.wsdl}"/>
+        <echo message="  File      : ${service.file}"/>
+        <echo message="  Date      : ${service.date}"/>
+        <xslt style="${basedir}/xsl/registry/service.entry.xsl"
+            in="${basedir}/config/registry/service.entry.xml"
+            out="${basedir}/config/service/${service.file}">
+            <outputproperty name="method" value="xml"/>
+            <outputproperty name="indent" value="yes"/>
+            <!-- Set the XSL params -->
+            <param name="service.authority" expression="${service.authority}"/>
+            <param name="service.resource"  expression="${service.resource}"/>
+            <param name="service.wsdl"      expression="${service.wsdl}"/>
+            <param name="service.date"      expression="${service.date}"/>
+        </xslt>
+    </target>
+
+    <!--+
+        | Generate our registry entries.
+        +-->
+    <target name="registy.generate" depends="">
+        <echo message=""/>
+        <echo message="Generating registry entry"/>
+	    <!--+
+	        | Create our target directory.
+	        +-->
+		<delete failonerror="false" dir="${basedir}/config/service"/>
+		<mkdir dir="${basedir}/config/service"/>
+	    <!--+
+	        | Generate our Registry timestamp.
+	        +-->
+        <tstamp>
+            <format property="service.date" pattern="yyyy-MM-dd"/>
+        </tstamp>
+	    <!--+
+	        | Generate our authority entry.
+	        +-->
+        <antcall target="registy.authority">
+            <param name="service.authority" value="${org.astrogrid.community.ident}"/>
+            <param name="service.resource"  value="org.astrogrid.community"/>
+            <param name="service.file"      value="authority.entry.xml"/>
+            <param name="service.date"      value="${service.date}"/>
+        </antcall>
+	    <!--+
+	        | Generate our service entries.
+	        +-->
+        <antcall target="registy.service">
+            <param name="service.authority" value="${org.astrogrid.community.ident}"/>
+            <param name="service.resource"  value="org.astrogrid.community.common.policy.manager.PolicyManager"/>
+            <param name="service.wsdl"      value="${service.base}/PolicyManager?wsdl"/>
+            <param name="service.file"      value="policy.manager.xml"/>
+            <param name="service.date"      value="${service.date}"/>
+        </antcall>
+        <antcall target="registy.service">
+            <param name="service.authority" value="${org.astrogrid.community.ident}"/>
+            <param name="service.resource"  value="org.astrogrid.community.common.policy.service.PolicyService"/>
+            <param name="service.wsdl"      value="${service.base}/PolicyService?wsdl"/>
+            <param name="service.file"      value="policy.service.xml"/>
+            <param name="service.date"      value="${service.date}"/>
+        </antcall>
+        <antcall target="registy.service">
+            <param name="service.authority" value="${org.astrogrid.community.ident}"/>
+            <param name="service.resource"  value="org.astrogrid.community.common.security.manager.SecurityManager"/>
+            <param name="service.wsdl"      value="${service.base}/SecurityManager?wsdl"/>
+            <param name="service.file"      value="security.manager.xml"/>
+            <param name="service.date"      value="${service.date}"/>
+        </antcall>
+        <antcall target="registy.service">
+            <param name="service.authority" value="${org.astrogrid.community.ident}"/>
+            <param name="service.resource"  value="org.astrogrid.community.common.security.service.SecurityService"/>
+            <param name="service.wsdl"      value="${service.base}/SecurityService?wsdl"/>
+            <param name="service.file"      value="security.service.xml"/>
+            <param name="service.date"      value="${service.date}"/>
+        </antcall>
+    </target>
+
     <!--+
         | Register our service.
         +-->
-    <target name="service.register" depends="">
+    <target name="registy.register" depends="">
         <echo message=""/>
         <echo message="Registering service ...."/>
         <!--+
@@ -880,14 +1002,45 @@
             <classpath refid="install.classpath"/>
         </taskdef>
         <!--+
-            | Call our WebService.
+            | Register our service entries.
             +-->
         <register.task
-            data="${basedir}/config/registry/test.xml"
-            registry="${org.astrogrid.registry.url}"
+            data="${basedir}/config/service/authority.entry.xml"
+            registry="${org.astrogrid.registry.admin}"
+            />
+        <register.task
+            data="${basedir}/config/service/policy.manager.xml"
+            registry="${org.astrogrid.registry.admin}"
+            />
+        <register.task
+            data="${basedir}/config/service/policy.service.xml"
+            registry="${org.astrogrid.registry.admin}"
+            />
+        <register.task
+            data="${basedir}/config/service/security.manager.xml"
+            registry="${org.astrogrid.registry.admin}"
+            />
+        <register.task
+            data="${basedir}/config/service/security.service.xml"
+            registry="${org.astrogrid.registry.admin}"
             />
     </target>
 
+    <!--+
+        | Register our service.
+        +-->
+    <target name="service.register">
+        <echo message=""/>
+        <echo message="Registering service ...."/>
+        <!--+
+	        | Generate our registry entries.
+            +-->
+        <antcall target="registy.generate"/>
+        <!--+
+	        | Register our service.
+            +-->
+        <antcall target="registy.register"/>
+    </target>
 
 </project>
 

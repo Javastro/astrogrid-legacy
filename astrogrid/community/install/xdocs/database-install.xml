@@ -63,7 +63,7 @@ ant -f install.xml database.reset
 <source><![CDATA[
 # Local community name.
 # Change this property to set the service identifier.
-org.astrogrid.community.ident=org.astrogrid.localhost
+org.astrogrid.community.ident=org.astrogrid.test.xyz
 ]]></source>
                 </p>
                 <p>

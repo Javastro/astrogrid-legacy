@@ -20,7 +20,7 @@
                 <p>
                     For example, if the CommunityIdentifier is set to
                     <ul>
-                        <li><i>org.astrogrid.test.xyz</i></li>
+                        <li><code>org.astrogrid.test.xyz</code></li>
                     </ul>
                     then the IVO identifier for the service would be
                     <ul>
@@ -49,8 +49,16 @@
 <source><![CDATA[
 # Local community name.
 # Change this property to set the service identifier.
-org.astrogrid.community.ident=org.astrogrid.localhost
+org.astrogrid.community.ident=org.astrogrid.test.xyz
 ]]></source>
+                </p>
+                <p>
+                    The install toolkit contains test data files for the following communities :
+                    <ul>
+                        <li>Cambridge <code>(ivo://<b>org.astrogrid.test.cam</b>)</code></li>
+                        <li>Leicester <code>(ivo://<b>org.astrogrid.test.le</b>)</code></li>
+                        <li>Edinburgh <code>(ivo://<b>org.astrogrid.test.roe</b>)</code></li>
+                    </ul>
                 </p>
             </subsection>
             <subsection name="Database resource">
