@@ -1,3 +1,4 @@
+drop table people if exists;
 create table people (
   id INTEGER NOT NULL PRIMARY KEY,
   firstName VARCHAR(20),

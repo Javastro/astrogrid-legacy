@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.2 2003/09/07 18:58:58 mch Exp $
+/*$Id: HsqlTestCase.java,v 1.3 2003/09/19 12:01:34 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,6 +23,10 @@ import java.sql.Statement;
 import java.util.StringTokenizer;
 
 import javax.sql.DataSource;
+
+import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 
 import junit.framework.TestCase;
 
@@ -139,12 +143,27 @@ public abstract class HsqlTestCase extends TestCase {
             assertNotNull(str);
         return str;
     }
+    /** sets up correct Configuration properties for the in-memory hsql database */
+    public static void initializeConfiguration() throws DatabaseAccessException {
+        //register HSQLDB driver with driver key in configration file
+        //put driver into config file
+        Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
+        Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
+        
+        //register where to find database
+        Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:.");
+        Configuration.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+        SqlQuerier.startDrivers();
+    }
 
 }
 
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.3  2003/09/19 12:01:34  nw
+fixed flakiness in db tests
+
 Revision 1.2  2003/09/07 18:58:58  mch
 Updated tests for weekends changes to main code (mostly threaded queries, typesafe ServiceStatus)
 

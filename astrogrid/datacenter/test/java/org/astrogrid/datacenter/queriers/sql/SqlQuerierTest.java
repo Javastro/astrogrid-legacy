@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.9 2003/09/17 14:53:02 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.10 2003/09/19 12:01:34 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Query;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.w3c.dom.Document;
@@ -55,13 +56,7 @@ public class SqlQuerierTest extends TestCase {
      * @see TestCase#setUp()
      */
     protected void setUp() throws Exception {
-        //register HSQLDB driver with driver key in configration file
-        //put driver into config file
-        Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
-
-        //register where to find database
-        Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:hsqldb:.");
-        Configuration.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+        HsqlTestCase.initializeConfiguration();
         querier = new SqlQuerier();
         String script = HsqlTestCase.getResourceAsString("create-test-db.sql");
         HsqlTestCase.runSQLScript(script,querier.jdbcConnection);
@@ -125,6 +120,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.10  2003/09/19 12:01:34  nw
+fixed flakiness in db tests
+
 Revision 1.9  2003/09/17 14:53:02  nw
 tidied imports
 
