@@ -79,6 +79,8 @@ public class RegistryBrowserAction extends AbstractAction
    
 	 public static final String SEPARATOR = "/";   
 
+	 public static final String SEPARATORHACK = "!";   
+
 /* Now the parameters passed back to Cocoon */
 	 public static final String PARAM_SERVER = "Server";
    
@@ -270,7 +272,7 @@ public class RegistryBrowserAction extends AbstractAction
 																				 uniqueID.lastIndexOf(SEPARATOR)
 																			 );
 					printDebug( method, "uniqueID - res = " + resourceKey);
-							table = uniqueID.substring( uniqueID.lastIndexOf(SEPARATOR)+1
+							table = uniqueID.substring( uniqueID.lastIndexOf(SEPARATORHACK)+1
 																						).trim();
 					printDebug( method, "uniqueID -table = " + table);	
 
