@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
-    | <cvs:date>$Author: rtp $</cvs:date>
-    | <cvs:author>$Date: 2003/09/10 16:04:15 $</cvs:author>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:date>$Author: eca $</cvs:date>
+    | <cvs:author>$Date: 2003/10/08 14:03:37 $</cvs:author>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.14  2003/10/08 14:03:37  eca
+    | Edited portalB/src/cocoon/sitemap.xmap
+    | 8 October 2003 by Elizabeth Auden
+    |
     | Revision 1.13  2003/09/10 16:04:15  rtp
     | Add registry browser and adn=min pages.
     |
@@ -138,6 +142,7 @@
                <map:parameter name="current-page"  value="agmyspace.html"/>               
                <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="registry-page" value="agregadmin.html"/>
                <map:parameter name="query-page"    value="agdataquery.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
@@ -174,6 +179,7 @@
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>               
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="logout-page"   value="aglogout.html"/>
@@ -205,6 +211,7 @@
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="admin-page"    value="agadministration.html"/>
@@ -236,6 +243,7 @@
                <map:parameter name="home-page"     value="agindex.html"/>
                <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
                <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
                <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                <map:parameter name="tools-page"    value="agtools.html"/>
                <map:parameter name="admin-page"    value="agadministration.html"/>
@@ -264,6 +272,7 @@
                   <map:parameter name="home-page"     value="agindex.html"/>
                   <map:parameter name="help-page"     value="agmyspacehelp.html"/>
                   <map:parameter name="registry-page" value="agregistry.html"/>
+                  <map:parameter name="registry-page" value="agregadmin.html"/>
                   <map:parameter name="query-page"    value="agdataquery.html"/>
                   <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
                   <map:parameter name="tools-page"    value="agtools.html"/>
@@ -276,6 +285,10 @@
 
             <!-- Registry browser and admin pages -->
          <map:match pattern="agregistry.html">
+             <map:mount uri-prefix="registry" src="registry/sitemap.xmap"
+                          check-reload="yes" reload-method="synchron"/>
+         </map:match>
+         <map:match pattern="agregadmin.html">
              <map:mount uri-prefix="registry" src="registry/sitemap.xmap"
                           check-reload="yes" reload-method="synchron"/>
          </map:match>
