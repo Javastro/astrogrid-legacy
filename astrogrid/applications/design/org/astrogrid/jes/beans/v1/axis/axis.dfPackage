@@ -1,0 +1,28 @@
+package idf4dgdsekfnt0dsekg70o;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id353jvdsekfnt0dsekg71a.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.beans.v1.axis.executionrecord:oiref> 
+*/
+class reference {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

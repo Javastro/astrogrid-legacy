@@ -6,7 +6,13 @@ package id377okdmemcb5ndmemchyu;
 @__modelType diagram 
 */
 class diagram {
-}/**
+/**
+@__ref <oiref:design#Class#id4dz9udsekfnt0dsekg6e4.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.service.v1:oiref> 
+*/
+class reference {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

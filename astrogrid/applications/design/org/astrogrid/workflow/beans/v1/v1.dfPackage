@@ -1,0 +1,40 @@
+package id3uygcdsekfnt0dsekg7eg;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#idmi84dsekfnt0dsekg7ft.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.workflow.beans.v1.execution:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#idrkk8dsekfnt0dsekg7fa.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.workflow.beans.v1.axis:oiref> 
+*/
+class reference30 {
+}/**
+@__ref <oiref:design#Class#id44p3ddsekfnt0dsekg7gf.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.workflow.beans.v1.types:oiref> 
+*/
+class reference55 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

@@ -11,11 +11,6 @@ class diagram {
 @__modelType reference 
 */
 class reference {
-}/**
-@__ref <oiref:java#Class#org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException:oiref><oihard>
-@__modelType reference 
-*/
-class reference7 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

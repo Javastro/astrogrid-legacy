@@ -31,6 +31,12 @@ class reference104 {
 @__modelType reference 
 */
 class reference105 {
+}/**
+@__ref <oiref:design#Class#id2hmcudshhp896dshmiypj.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobScheduler.CVS:oiref> 
+*/
+class reference12 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

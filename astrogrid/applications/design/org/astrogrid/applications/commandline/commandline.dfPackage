@@ -12,11 +12,6 @@ class diagram {
 */
 class reference {
 }/**
-@__ref <oiref:java#Class#org.astrogrid.applications.commandline.XYZApplication:oiref><oihard>
-@__modelType reference 
-*/
-class reference29 {
-}/**
 @__ref <oiref:design#Class#idv3x1dnym1eprdnym1uri.diagram:oiref><oihard>
 @__modelType reference
 @__fqn <oiref:#Package#org.astrogrid.applications.commandline.exceptions:oiref> 
@@ -59,8 +54,7 @@ class __options {
 <oigroup:<oiref:design#Class#id2z8nkdq6d6uu9dq6d7ann.diagram:oiref>=481,358,162,164,1:oigroup>
 <oigroup:<oiref:design#Class#id3lgaadq6d6uu9dq6d7aml.diagram:oiref>=511,178,83,118,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplicationCreator#instance:oiref>=760,240,760,290,850,290,850,200,800,200:oigroup>
-<oigroup:<oiref:design#Class#idv3x1dnym1eprdnym1uri.diagram:oiref>=860,10,200,141,1:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.XYZApplication:oiref>=350,420,121,99,1:oigroup>
+<oigroup:<oiref:design#Class#idv3x1dnym1eprdnym1uri.diagram:oiref>=860,10,200,118,1:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplicationEnvironment:oiref>=292,9,200,331,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplication#applicationEnvironment:oiref>=254,175,292,175:oigroup>
 <oigroup:<oiref:java#Extends#org.astrogrid.applications.commandline.XYZApplication#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=350,453,254,453:oigroup>

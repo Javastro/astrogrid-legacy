@@ -1,0 +1,72 @@
+package id3n9xqdsekfnt0dsekg6d0;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.ServiceFromRegistry:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.MySpaceFromConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference65 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.ServiceFromConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference66 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.RegistryQueryLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference67 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.RegistryAdminLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference68 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.MySpaceLocator:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.RegistryFromConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference70 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.RegistryAdminFromConfig:oiref><oihard>
+@__modelType reference 
+*/
+class reference71 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.ServiceNotFoundException:oiref><oihard>
+@__modelType reference 
+*/
+class reference72 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.manager.externalservices.MySpaceFromRegistry:oiref><oihard>
+@__modelType reference 
+*/
+class reference73 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

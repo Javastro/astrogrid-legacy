@@ -28,6 +28,18 @@ class reference1 {
 @__modelType reference 
 */
 class reference2 {
+}/**
+@__ref <oiref:design#Class#id1qorfdsekfnt0dsekg64g.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.portal.workflow.impl:oiref> 
+*/
+class reference34 {
+}/**
+@__ref <oiref:design#Class#id4balydsekfnt0dsekg673.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.portal.workflow.intf:oiref> 
+*/
+class reference50 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

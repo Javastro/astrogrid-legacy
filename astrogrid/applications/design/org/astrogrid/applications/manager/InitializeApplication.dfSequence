@@ -49,22 +49,23 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link:oiref>=672,142,360,142:oigroup>
+@__positions <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link:oiref>=609,165,360,165:oigroup>
 <oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.ApplicationEnvironment:oiref>=270,450,200,312,1:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link52:oiref>=:oigroup>
-<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=689,149,233,23,0,0.0,1.0:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=20,350,200,733,1:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.node:oiref>=858,172,14,20,1:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=679,172,858,172:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=626,149,233,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.commandline.CmdLineApplication:oiref>=900,360,200,733,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.node:oiref>=885,172,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node.link51:oiref>=616,172,885,172:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.CmdLineApplication#applicationEnvironment:oiref>=220,606,270,606:oigroup>
-<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref>=160,20,200,234,1:oigroup>
+<oigroup:<oiref:java#Class#org.astrogrid.applications.manager.CommandLineApplicationController:oiref>=160,20,200,388,1:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.commandline.ApplicationEnvironment#cmdLineApplication:oiref>=270,474,220,474:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46.link:oiref>=1109,300,120,350:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46.link:oiref>=1125,300,1070,360:oigroup>
 <oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44.link:oiref>=901,300,370,450:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46:oiref>=1040,30,138,270,1:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node:oiref>=554,30,236,270,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node46:oiref>=1056,30,138,270,0:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node:oiref>=491,30,236,270,0:oigroup>
+<oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.CommandLineApplicationController#instance:oiref>=260,20,260,20:oigroup>
 <oigroup:MemberLink#<oiref:java#Member#org.astrogrid.applications.manager.CommandLineApplicationController#runningApplications:oiref>=315,254,315,450:oigroup>
-<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref>=820,30,90,270,1:oigroup>
+<oigroup:<oiref:design#Class#idacadnrcpt1tdnrk0frm.node44:oiref>=847,30,90,270,0:oigroup>
 */
 class __positions {
 }/**

@@ -1,0 +1,78 @@
+package id454o6dsekfnt0dsekg6ma;
+
+/**
+@version 2.0
+@physicalPackage
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id2eivadsekfnt0dsekg6n1.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.applications.beans.v1.parameters.types:oiref> 
+*/
+class reference {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ADQL:oiref><oihard>
+@__modelType reference 
+*/
+class reference79 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.TDocumentationDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference80 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation:oiref><oihard>
+@__modelType reference 
+*/
+class reference81 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition:oiref><oihard>
+@__modelType reference 
+*/
+class reference82 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValueDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference83 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ADQLDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference84 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentationDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference85 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor:oiref><oihard>
+@__modelType reference 
+*/
+class reference86 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.TDocumentation:oiref><oihard>
+@__modelType reference 
+*/
+class reference87 {
+}/**
+@__ref <oiref:java#Class#org.astrogrid.applications.beans.v1.parameters.ParameterValue:oiref><oihard>
+@__modelType reference 
+*/
+class reference88 {
+}}/**
+@__tags
+@shapeType ClassDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+*/
+class __positions {
+}

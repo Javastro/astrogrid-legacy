@@ -6,7 +6,13 @@ package id2q77zdq6d6uu9dq6d7asf;
 @__modelType diagram 
 */
 class diagram {
-}/**
+/**
+@__ref <oiref:design#Class#id9t7mdshhp896dshmiyqv.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.webapp.CVS:oiref> 
+*/
+class reference {
+}}/**
 @__tags
 @shapeType ClassDiagram 
 */

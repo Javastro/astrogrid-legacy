@@ -29,6 +29,18 @@ class reference70 {
 @__modelType reference 
 */
 class reference101 {
+}/**
+@__ref <oiref:design#Class#id3o3k9dsekfnt0dsekg6q6.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.v1:oiref> 
+*/
+class reference31 {
+}/**
+@__ref <oiref:design#Class#id11tykdsekfnt0dsekg6pm.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.impl:oiref> 
+*/
+class reference36 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

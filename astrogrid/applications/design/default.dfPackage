@@ -26,7 +26,7 @@ class reference74 {
 }/**
 @__ref <oiref:design#Class#id3q45zdseq8h5sdseyys4q.diagram:oiref><oihard>
 @__modelType reference
-@__fqn <oiref:#Package#cea:oiref> 
+@__fqn <oiref:#Package#CeaApplication:oiref> 
 */
 class reference90 {
 }}/**
@@ -39,14 +39,14 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:<oiref:java#Class#cea.BaseParameter:oiref>=310,270,115,89,1:oigroup>
-<oigroup:<oiref:java#Class#cea.Interface:oiref>=330,250,83,89,1:oigroup>
-<oigroup:<oiref:java#Class#cea.InputParameter:oiref>=340,310,121,112,1:oigroup>
+@__positions <oigroup:<oiref:java#Class#CeaApplication.BaseParameter:oiref>=310,270,115,89,1:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.Interface:oiref>=330,250,83,89,1:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.InputParameter:oiref>=340,310,121,112,1:oigroup>
 <oigroup:<oiref:design#Class#idi7bkdmemcb5ndmemchqz.diagram:oiref>=176,10,83,118,1:oigroup>
-<oigroup:<oiref:java#Class#cea.Application:oiref>=330,310,94,89,1:oigroup>
+<oigroup:<oiref:java#Class#CeaApplication.Application:oiref>=330,310,94,89,1:oigroup>
 <oigroup:<oiref:design#Class#id10olzdmbyi87cdmbyj2hy.diagram:oiref>=10,10,146,164,1:oigroup>
 <oigroup:<oiref:design#Class#id3q45zdseq8h5sdseyys4q.diagram:oiref>=324,210,119,187,1:oigroup>
-<oigroup:<oiref:java#Extends#cea.InputParameter#cea.BaseParameter:oiref>=652,550,652,439:oigroup>
+<oigroup:<oiref:java#Extends#CeaApplication.InputParameter#CeaApplication.BaseParameter:oiref>=652,550,652,439:oigroup>
 <oigroup:<oiref:java#Class#GenerateMapping:oiref>=10,210,152,188,1:oigroup>
 */
 class __positions {

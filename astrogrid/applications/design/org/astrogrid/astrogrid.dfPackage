@@ -24,6 +24,30 @@ class reference72 {
 @__fqn <oiref:#Package#org.astrogrid.portal:oiref> 
 */
 class reference75 {
+}/**
+@__ref <oiref:design#Class#id4knj3dsekfnt0dsekg76h.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.community:oiref> 
+*/
+class reference16 {
+}/**
+@__ref <oiref:design#Class#id3zbz2dsekfnt0dsekg751.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.common:oiref> 
+*/
+class reference38 {
+}/**
+@__ref <oiref:design#Class#id254fddsekfnt0dsekg7d8.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.workflow:oiref> 
+*/
+class reference42 {
+}/**
+@__ref <oiref:design#Class#id10lswdsekfnt0dsekg78s.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.registry:oiref> 
+*/
+class reference57 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

@@ -21,6 +21,30 @@ class reference99 {
 @__modelType reference 
 */
 class reference100 {
+}/**
+@__ref <oiref:design#Class#id4cdtadsekfnt0dsekg6vd.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.locator:oiref> 
+*/
+class reference29 {
+}/**
+@__ref <oiref:design#Class#id40ta1dsekfnt0dsekg6vw.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.policy:oiref> 
+*/
+class reference33 {
+}/**
+@__ref <oiref:design#Class#id3i5eydsekfnt0dsekg6ut.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.impl:oiref> 
+*/
+class reference35 {
+}/**
+@__ref <oiref:design#Class#id3q3ybdsekfnt0dsekg6u9.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.jobscheduler.dispatcher:oiref> 
+*/
+class reference48 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

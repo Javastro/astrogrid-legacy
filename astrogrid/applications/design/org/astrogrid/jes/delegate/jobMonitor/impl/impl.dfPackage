@@ -16,6 +16,12 @@ class reference {
 @__modelType reference 
 */
 class reference17 {
+}/**
+@__ref <oiref:design#Class#id4v7f0dshhp896dshmiyl2.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobMonitor.impl.CVS:oiref> 
+*/
+class reference8 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

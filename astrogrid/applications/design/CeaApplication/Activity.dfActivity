@@ -1,0 +1,73 @@
+package id55ybdseq8h5sdsez4mk7;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id55ybdseq8h5sdsez4mk7.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id55ybdseq8h5sdsez4mk7.node9:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id55ybdseq8h5sdsez4mk7.node11:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id55ybdseq8h5sdsez4mk7.node13:oiref><oihard>
+@__modelType reference 
+*/
+class reference14 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id55ybdseq8h5sdsez4mk7.node:oiref>=230,90,190,520,0:oigroup>
+<oigroup:<oiref:design#Class#id55ybdseq8h5sdsez4mk7.node9:oiref>=508,80,190,530,0:oigroup>
+<oigroup:<oiref:design#Class#id55ybdseq8h5sdsez4mk7.node11:oiref>=700,90,190,518,0:oigroup>
+<oigroup:<oiref:design#Class#id55ybdseq8h5sdsez4mk7.node13:oiref>=890,90,190,520,0:oigroup>
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name Job Control
+@backgroundColor 200,200,200 
+*/
+class node {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name CEC
+@backgroundColor 200,200,200 
+*/
+class node9 {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name Job Monitor
+@backgroundColor 200,200,200 
+*/
+class node11 {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name Storage
+@backgroundColor 200,200,200 
+*/
+class node13 {
+}

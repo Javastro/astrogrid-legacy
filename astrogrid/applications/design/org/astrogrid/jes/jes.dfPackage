@@ -64,6 +64,54 @@ class reference1 {
 @__fqn <oiref:#Package#org.astrogrid.jes.installationTests:oiref> 
 */
 class reference4 {
+}/**
+@__ref <oiref:design#Class#id37rngdsekfnt0dsekg6zg.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.beans:oiref> 
+*/
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id1qvckdsekfnt0dsekg6wr.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.component:oiref> 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#id31bwydsekfnt0dsekg6yp.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.util:oiref> 
+*/
+class reference45 {
+}/**
+@__ref <oiref:design#Class#idzq04dsekfnt0dsekg71x.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.types:oiref> 
+*/
+class reference52 {
+}/**
+@__ref <oiref:design#Class#idh6qqdshhp896dshmiygq.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.i18n:oiref> 
+*/
+class reference3 {
+}/**
+@__ref <oiref:design#Class#idjt7cdshhp896dshmiyhx.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.comm:oiref> 
+*/
+class reference5 {
+}/**
+@__ref <oiref:design#Class#id4okbrdshhp896dshmiyjg.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.policy:oiref> 
+*/
+class reference7 {
+}/**
+@__ref <oiref:design#Class#id40xakdshhp896dshmiyqb.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.installationtest:oiref> 
+*/
+class reference13 {
 }}/**
 @__tags
 @shapeType ClassDiagram 

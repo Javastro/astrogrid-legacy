@@ -37,6 +37,12 @@ class reference113 {
 @__modelType reference 
 */
 class reference114 {
+}/**
+@__ref <oiref:design#Class#id38ekydshhp896dshmiyik.diagram:oiref><oihard>
+@__modelType reference
+@__fqn <oiref:#Package#org.astrogrid.jes.delegate.jobController.CVS:oiref> 
+*/
+class reference6 {
 }}/**
 @__tags
 @shapeType ClassDiagram 
