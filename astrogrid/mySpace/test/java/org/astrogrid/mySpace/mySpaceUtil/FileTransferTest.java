@@ -51,8 +51,11 @@ public class FileTransferTest extends TestCase {
    * passed if the transfer succeeds and failed otherwise.
    * The coverage and strength of the test depends on the
    * source URLS set in the file.
+   *
+   * All these transfer are expected to work.  See below
+   * for transfers that are expected to fail.
    */
-  public void testAll () throws Exception {
+  public void testGoodTransfers () throws Exception {
 	while (true) {
 	  FileTransferTestCase tc = new FileTransferTestCase(this.testSources);
 	  if (tc.isEndOfFile()) break;
@@ -77,9 +80,28 @@ public class FileTransferTest extends TestCase {
     }
   }
 
-
-
-
-
+  /**
+   * Test the error handling when all mirrors for a transfer
+   * fail to give a valid download.
+   */
+  public void testBadTransfers () throws Exception {
+	String[] mirrors = {"http://plausible/but/not/real",
+	                    "bogus:protocol",
+	                    "wibble:bling.bling.bling/woof/woof",
+	                    "totally invalid syntax"};
+    FileTransfer ft = new FileTransfer(mirrors, "transfer-test-result.dat");
+    try {
+      ft.transfer();
+      fail("FileTransfer raised no exception for an impossible download.");
+    }
+    catch (FileTransferException fte) {
+      System.out.println("FileTransferException (expected): "
+                         + fte.getMessage());
+    }
+    catch (Exception e) {
+      fail ("FileTransfer raised an Exception "
+            + "that was not a FileTransferException.");
+    }
+  }
 
 }
