@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.4 2004/05/13 12:25:04 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.5 2004/05/14 11:02:05 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.datacenter.integration;
 
-import java.net.URL;
+import java.io.InputStream;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -55,9 +55,12 @@ public class Query2MySpaceTest extends TestCase {
    public void testSubmit() throws Exception {
       
       Agsl resultsTarget = new Agsl(StdKeys.MYSPACE, resultsPath);
+
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      assertNotNull("Could not find test query", in);
       
       String queryId = delegate.submitQuery(
-         new ConeQuery(30,30,6),
+         new AdqlQuery(in),
          resultsTarget,
          QuerySearcher.VOTABLE
       );
@@ -97,6 +100,9 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.5  2004/05/14 11:02:05  mch
+Fixed a number of errors
+
 Revision 1.4  2004/05/13 12:25:04  mch
 Fixes to create user, and switched to mostly testing it05 interface
 
@@ -130,3 +136,4 @@ Revision 1.1  2004/01/22 16:14:59  nw
 added integration test for datacenter full searcher.
  
 */
+

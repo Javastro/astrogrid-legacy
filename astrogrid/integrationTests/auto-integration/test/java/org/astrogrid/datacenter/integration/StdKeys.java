@@ -8,12 +8,12 @@ package org.astrogrid.datacenter.integration;
 
 public interface StdKeys
 {
-//     public final static String PAL_v041_ENDPOINT = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
-//     public final static String PAL_v05_ENDPOINT = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
+     public final static String PAL_v041_ENDPOINT = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+     public final static String PAL_v05_ENDPOINT = "http://localhost:8080/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
 
-     public final static String PAL_v041_ENDPOINT = "http://grendel12.roe.ac.uk:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
-     public final static String PAL_v05_ENDPOINT = "http://grendel12.roe.ac.uk:8080/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
-   
+//     public final static String PAL_v041_ENDPOINT = "http://grendel12.roe.ac.uk:8080/astrogrid-pal-SNAPSHOT/services/AxisDataServer";
+//     public final static String PAL_v05_ENDPOINT = "http://grendel12.roe.ac.uk:8080/astrogrid-pal-SNAPSHOT/services/AxisDataService05";
+
      public final static String MYSPACE = "myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager";
 }
 

@@ -1,4 +1,4 @@
-/*$Id: IvoQuery2MySpaceTest.java,v 1.3 2004/05/13 12:25:04 mch Exp $
+/*$Id: IvoQuery2MySpaceTest.java,v 1.4 2004/05/14 11:02:05 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.datacenter.integration;
 
+import java.io.InputStream;
 import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -19,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
@@ -57,9 +58,12 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
    public void testSubmit() throws Exception {
       
       Ivorn resultsTarget = new Ivorn("ivo://org.astrogrid.localhost/myspace#"+resultsPath);
+
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      assertNotNull("Could not find test query", in);
       
       String queryId = delegate.submitQuery(
-         new ConeQuery(30,30,6),
+         new AdqlQuery(in),
          VoSpaceResolver.resolveAgsl(resultsTarget),
          QuerySearcher.VOTABLE
       );
@@ -103,6 +107,9 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: IvoQuery2MySpaceTest.java,v $
+Revision 1.4  2004/05/14 11:02:05  mch
+Fixed a number of errors
+
 Revision 1.3  2004/05/13 12:25:04  mch
 Fixes to create user, and switched to mostly testing it05 interface
 
@@ -133,3 +140,4 @@ Revision 1.1  2004/01/22 16:14:59  nw
 added integration test for datacenter full searcher.
  
 */
+

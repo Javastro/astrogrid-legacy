@@ -1,4 +1,4 @@
-/*$Id: CeaTest.java,v 1.3 2004/05/13 12:17:07 mch Exp $
+/*$Id: CeaTest.java,v 1.4 2004/05/14 11:02:05 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class CeaTest  extends TestCase {
    public void prepareMySpace() throws IOException {
 
       try {
-         StoreAdminClient admin = StoreDelegateFactory.createAdminDelegate(User.ANONYMOUS, new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"));
+         StoreAdminClient admin = StoreDelegateFactory.createAdminDelegate(User.ANONYMOUS, new Agsl(StdKeys.MYSPACE));
          admin.createUser(new User("CeaTest@Unknown", "org.astrogrid.localhost", ""));
       }
       catch (StoreException se) {
@@ -66,10 +66,10 @@ public class CeaTest  extends TestCase {
       }
       
       //upload query
-      StoreClient client = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager"));
+      StoreClient client = StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl(StdKeys.MYSPACE));
       OutputStream out = client.putStream(QUERY_PATH, false);
-      InputStream in = this.getClass().getResourceAsStream("Test-sample-adql-0.5.xml");
-      assertNotNull(in);
+      InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
+      assertNotNull("Could not find test query", in);
       Piper.pipe(in, out);
       out.close();
 
@@ -167,6 +167,9 @@ public class CeaTest  extends TestCase {
 
 /*
 $Log: CeaTest.java,v $
+Revision 1.4  2004/05/14 11:02:05  mch
+Fixed a number of errors
+
 Revision 1.3  2004/05/13 12:17:07  mch
 Fixed createUser
 
@@ -187,4 +190,5 @@ Added Integration test to try datacenter as an Application
 
 
 */
+
 
