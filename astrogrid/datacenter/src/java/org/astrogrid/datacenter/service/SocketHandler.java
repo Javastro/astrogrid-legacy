@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.5 2003/09/11 09:57:15 nw Exp $
+ * $Id: SocketHandler.java,v 1.6 2003/09/11 17:41:33 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,15 +10,17 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.delegate.SocketDelegate;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.ServiceListener;
 import org.astrogrid.log.Log;
-import org.w3c.dom.Element;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -64,6 +66,8 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
     * Runs forever handling dociments sent to the
     * socket, and returning responses, until socket is
     * closed or some kind of timeout...
+    * NB each request/response is still a pair, so that we don't end
+    * up with responses getting mixed up.
     */
    public void run()
    {
@@ -74,17 +78,28 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
          {
             try
             {
+               Log.trace("SocketHandler: Reading incoming document");
                //read incoming document
-               Element docRequest = XMLUtils.newDocument(in).getDocumentElement();
+               Element docRequest = readIncomingDocument();
+               Log.trace("SocketHandler: incoming document root tag="+docRequest.getNodeName());
 
-               //assume a blocking query
-               DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(docRequest);
+               //what kind of operation is it?
+               if (docRequest.getElementsByTagName(SocketDelegate.REQ_REG_METADATA_TAG).getLength() > 0)
+               {
+                  //request registry metadata
+                  XMLUtils.ElementToStream(getVOResource(), out);
+               }
+               else
+               {
+                  //assume a blocking query
+                  DatabaseQuerier querier = DatabaseQuerier.doQueryGetResults(docRequest);
 
-               querier.setStatus(ServiceStatus.RUNNING_RESULTS);
+                  querier.setStatus(ServiceStatus.RUNNING_RESULTS);
 
-               Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
-
-               XMLUtils.DocumentToStream(response, out);
+                  Document response = ResponseHelper.makeResultsResponse(querier, querier.getResults().toVotable().getDocumentElement());
+   
+                  XMLUtils.DocumentToStream(response, out);
+               }
             }
             catch (IOException e)
             {
@@ -115,11 +130,25 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
       }
    }
 
+   /**
+    * So we can plug in trace
+    */
+   private Element readIncomingDocument() throws IOException, SAXException, ParserConfigurationException
+   {
+      InputStream in = socket.getInputStream();
+      
+      Element element = XMLUtils.newDocument(in).getDocumentElement();
+
+      return element;
+   }
 
 }
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.6  2003/09/11 17:41:33  mch
+Fixes to socket-based client/server
+
 Revision 1.5  2003/09/11 09:57:15  nw
 reordered catch statements - my compiler was complaining that
 two were unreachable (as Throwable beats all)

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.2 2003/09/11 16:16:07 mch Exp $
+ * $Id: SocketDelegate.java,v 1.3 2003/09/11 17:41:33 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -21,7 +21,12 @@ import org.xml.sax.SAXException;
 import sun.security.krb5.internal.crypto.e;
 
 /**
- * A standard AstroGrid datacenter delegate implementation.
+ * A socket AstroGrid datacenter delegate implementation.  Talks directly
+ * to the server socket managed by SocketHandler on the server end.
+ *
+ * NB this is not properly threadsafe - eg request/response needs to be
+ * atomic.  At the moment, a thread can call getMetadata() while another
+ * is calling getQuery, and this will get mixed up responses.
  *
  * @see DatacenterDelegate
  *
@@ -41,10 +46,10 @@ public class SocketDelegate extends DatacenterDelegate
    private DataInputStream in = null;
 
    /** String used to request registry metadata */
-   public final static String REQ_REG_METADATA = "Give me registry metadata please!";
+   public final static String REQ_REG_METADATA_TAG = "RequestRegistryMetata";
    
    /** String used to request metadata */
-   public final static String REQ_METADATA = "Give me metadata please!";
+   public final static String REQ_METADATA_TAG = "RequestMetata";
 
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
@@ -52,7 +57,7 @@ public class SocketDelegate extends DatacenterDelegate
     */
    public SocketDelegate(InetSocketAddress socketAddress) throws IOException
    {
-      socket = new Socket(socketAddress.getAddress(), socketAddress.getPort());
+      setSocket(new Socket(socketAddress.getAddress(), socketAddress.getPort()));
    }
 
    /** Don't use this directly - use the factory method
@@ -66,9 +71,20 @@ public class SocketDelegate extends DatacenterDelegate
       int colon = endPoint.indexOf(":");
       String address = endPoint.substring(0,colon);
       int port = Integer.parseInt(endPoint.substring(colon+1));
-      socket = new Socket(address, port);
+      setSocket(new Socket(address, port));
    }
 
+   /**
+    * Used by constructor
+    */
+   private void setSocket(Socket aSocket) throws IOException
+   {
+      Log.trace("Connecting to "+aSocket);
+
+      socket = aSocket;
+      in = new DataInputStream(aSocket.getInputStream());
+      out = new DataOutputStream(aSocket.getOutputStream());
+   }
 
    /**
     * Sets the timeout for calling the service - ie how long after the initial call
@@ -94,7 +110,7 @@ public class SocketDelegate extends DatacenterDelegate
     * results part of the returned document, which may be VOTable or otherwise
     * depending on the results format specified in the ADQL
     */
-   public Element adqlQuery(Element adql) throws IOException
+   public synchronized Element adqlQuery(Element adql) throws IOException
    {
       //send query document
       socket.getOutputStream().write(adql.toString().getBytes());
@@ -116,12 +132,12 @@ public class SocketDelegate extends DatacenterDelegate
       }
    }
 
-   public Element getResults(String id) throws RemoteException
+   public synchronized Element getResults(String id) throws RemoteException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
-   public Element spawnAdqlQuery(Element adql) throws RemoteException
+   public synchronized Element spawnAdqlQuery(Element adql) throws RemoteException
    {
       throw new UnsupportedOperationException("Not implemented yet");
    }
@@ -132,7 +148,7 @@ public class SocketDelegate extends DatacenterDelegate
     * doing checks on how big the result set is likely to be before it has to be
     * transferred about the net.
     */
-   public int adqlCountDatacenter(Element adql)
+   public synchronized int adqlCountDatacenter(Element adql)
    {
       throw new UnsupportedOperationException();
    }
@@ -142,12 +158,17 @@ public class SocketDelegate extends DatacenterDelegate
     * center serves) in the form required by registries. See the VOResource
     * schema; I think that is what this should return...
     */
-   public Element getRegistryMetadata() throws IOException
+   public synchronized Element getRegistryMetadata() throws IOException
    {
-      out.writeChars(REQ_REG_METADATA);
+      Log.trace("SocketDelegate: Writing Request Metadata tag");
+      out.writeChars(
+         "<?xml version='1.0' encoding='UTF-8'?>\n"+
+         "<"+REQ_REG_METADATA_TAG+"/>\n"
+      );
       
       try
       {
+         Log.trace("SocketDelegate: Waiting for metadata...");
          XMLUtils.newDocument(in);
       }
       catch (ParserConfigurationException e)
@@ -166,7 +187,7 @@ public class SocketDelegate extends DatacenterDelegate
    /**
     * Polls the service and asks for the current status
     */
-   public ServiceStatus getServiceStatus(String id)
+   public synchronized ServiceStatus getServiceStatus(String id)
    {
       return ServiceStatus.UNKNOWN;
    }
@@ -185,6 +206,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.3  2003/09/11 17:41:33  mch
+Fixes to socket-based client/server
+
 Revision 1.2  2003/09/11 16:16:07  mch
 Correction for 'socket' protocol, plus get registry metadata added
 
@@ -214,4 +238,5 @@ initial checkin
 
 
 */
+
 
