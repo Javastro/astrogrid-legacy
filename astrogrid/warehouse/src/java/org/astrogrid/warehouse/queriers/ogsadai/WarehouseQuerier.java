@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.7 2003/12/08 20:16:54 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.8 2003/12/09 12:19:34 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -153,7 +153,7 @@ public class WarehouseQuerier extends Querier
     AdqlQueryTranslator translator = new AdqlQueryTranslator();
     try {
       sql = (String) translator.translate(getQueryingElement());
-      System.out.println("SQL is " + sql);
+      log.info("SQL query is " + sql);
     }
     catch (Exception e) {
       log.error("ADQLQueryTranslator couldn't get SQL query from input ADQL");
@@ -197,42 +197,35 @@ public class WarehouseQuerier extends Querier
    * @param sql  String containing the SQL query to be performed
    * @param tempFile  File to hold the GdsQueryDelegate's (XML RowSet) results
    * @return Document containing VOTable-ised query results
+   * @throws DatabaseAccessException
    */
   protected Document doShelledOutQuery(String sql, File tempFile) 
       throws DatabaseAccessException { 
 
     log.debug("Commencing doShelledOutQuery");
-    // Get class path for the Warehouse classes (eg this class)
-    String classPath = serviceProperties.getProperty(
-                  "WarehouseClasspath", DEFAULT_WAREHOUSE_CLASSPATH);
-
-    // Extract the name of the jar directory, containing jars to be
-    // included in the shelled-out classpath
-    String jarDir = serviceProperties.getProperty("WarehouseJarDir");
-    // If it exists, use it.
-    if ((!jarDir.equals("")) && (!jarDir.equals(null))) { 
-      classPath = getJarDirClasspath(classPath,jarDir);
-    }
-    log.debug("Parameters assembled, preparing shelled-out call");
 
     // Configure parameters for external call
     String[] cmdArgs;
     if (tempFile == null) {
-      cmdArgs = new String[5];
+      cmdArgs = new String[4];
     }
     else {
-      cmdArgs = new String[6];
+      cmdArgs = new String[5];
     }
     cmdArgs[0] = serviceProperties.getProperty(
                   "WarehouseJvm", DEFAULT_WAREHOUSE_JVM);
-    cmdArgs[1] = "-cp";
-    cmdArgs[2] = classPath;
-    cmdArgs[3] = serviceProperties.getProperty(
-                  "WarehouseQuerier", DEFAULT_WAREHOUSE_QUERIER); 
-    cmdArgs[4] = sql;
+    cmdArgs[1] = "-jar";
+    cmdArgs[2] = getExecutableJar();
+    cmdArgs[3] = sql;
     if (tempFile != null) {
-      cmdArgs[5] = tempFile.getAbsolutePath();
+      cmdArgs[4] = tempFile.getAbsolutePath();
+      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+            " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
     } 
+    else {
+      log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+            " " + cmdArgs[2] + " " + cmdArgs[3]);
+    }
 
     // Use utility helper to perform call
     log.info("Commencing shelled-out query");
@@ -328,60 +321,48 @@ public class WarehouseQuerier extends Querier
       log.error(errorMessage + ": " + e.getMessage());
       throw new DatabaseAccessException(errorMessage);
     }
-
-    /*
-    // OLD VERSION - USED XERCES, NOT GENERIC DomLoader
-    DOMParser parser = new DOMParser();
-    try {
-      parser.parse(new InputSource(
-          new StringReader(byteStream.toString())));
-    }
-    catch (Exception e) { //SAXException, IOException
-      String errorMessage = 
-          "Couldn't parse results VOTable from XSLT conversion";
-      log.error(errorMessage + ": " + e.getMessage());
-      throw new DatabaseAccessException(errorMessage);
-    }
-    log.info("Parsed converted VOTable successfully");
-    return parser.getDocument();
-    */
   }
 
-    // Now assemble classpath for all the OGSA(-DAI) jars etc.
-    // These are assumed to be in a single directory specified by
-    // the property WarehouseJarDir.
-
   /* 
-   * Assembles a Java classpath by extending the supplied classpath to
-   * include all the jars in the supplied directory.
+   * Assembles the fully-qualified path of the Java executable jar 
+   * containing the OGSA-DAI GdsQueryDelegate.
    * 
-   * @param classPath  String containing the initial classpath (if any)
-   * @param jarDir  String providing full path to jar directory
-   * @return  String containing extended classpath
+   * The location and name of the jar can be customised for a given
+   * installation in the WarehouseQuerier.properties file.
+   * 
+   * @return  String holding full path of the GdsQueryDelegate executable jar
+   * @throws DatabaseAccessException
    */
-  protected String getJarDirClasspath(String classPath, String jarDir) {
-    if (classPath.equals(null)) {
-      classPath = "";
+  protected String getExecutableJar() throws DatabaseAccessException {
+    // Extract path to directory containing executable jar 
+    String jarPath = serviceProperties.getProperty("ExecutableJarPath");
+    if (jarPath.equals(null)) {
+      String errorMessage = "Property 'ExecutableJarPath' not set in " +
+          "properties file 'WarehouseQuerier.properties'";
+      log.error(errorMessage);
+      throw new DatabaseAccessException(errorMessage);
     }
-    if ((!jarDir.equals("")) && (!jarDir.equals(null))) {  //Sanitycheck
-      File dirFile = new File(jarDir);
-      if (dirFile.isDirectory()) {
-        File contents[] = dirFile.listFiles();  // Get directory contents
-        int len = contents.length;
-        for (int i = 0; i < len; i++) {
-          //Is this a jar?  If so, add it to classpath
-          String path = contents[i].getAbsolutePath();
-          int pathlen = path.length();
-          if (path.substring(pathlen-4,pathlen).equalsIgnoreCase(".jar")) {
-            if (!classPath.equals("")) {
-              classPath = classPath + ":";  // Add separator if needed
-            }
-            classPath = classPath + contents[i].getAbsolutePath();
-          }
-        }
+    String sep = System.getProperty("file.separator");
+    if (sep.equals(null)) {
+      log.warn("Warning, couldn't get system file.separator, assuming " +
+          "ExecutableJarPath is properly terminated with file separator");
+    }
+    else {
+      int pathlen = jarPath.length();
+      // If last char in path not separator, add separator
+      if (! jarPath.substring(pathlen-1,pathlen).equalsIgnoreCase(sep)) {
+        jarPath = jarPath + sep;
       }
     }
-    return classPath;
+    // Extract name of executable jar
+    String jarName = serviceProperties.getProperty("ExecutableJarName");
+    if (jarName.equals(null)) {
+      String errorMessage = "Property 'ExecutableJarName' not set in " +
+          "properties file 'WarehouseQuerier.properties'";
+      log.error(errorMessage);
+      throw new DatabaseAccessException(errorMessage);
+    }
+    return jarPath + jarName;
   }
 
   // ----------------------------------------------------------
@@ -389,11 +370,6 @@ public class WarehouseQuerier extends Querier
   // per-installation basis in the WarehouseServiceImpl.properties 
   private final String DEFAULT_WAREHOUSE_JVM = 
         "/usr/bin/java";
-  private final String DEFAULT_WAREHOUSE_CLASSPATH =
-        ".";
-  private final String DEFAULT_WAREHOUSE_QUERIER =
-        "org.astrogrid.warehouse.ogsadai.GdsQueryDelegate";
-
   private final String DEFAULT_XSL_TRANSFORM = 
         "http://astrogrid.ast.cam.ac.uk/xslt/ag-warehouse-first.xsl";
 
@@ -406,6 +382,10 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.8  2003/12/09 12:19:34  kea
+Changed shelling-out to use executable jar (including adjustments
+to properties file).
+
 Revision 1.7  2003/12/08 20:16:54  kea
 Added JavaDoc.  Changed properties to use Java-style capitalisation.
 Misc. small tidyings.
