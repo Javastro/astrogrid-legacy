@@ -1,5 +1,5 @@
 /*
-   $Id: XmlOutputStream.java,v 1.2 2004/07/01 22:36:14 mch Exp $
+   $Id: XmlPrinter.java,v 1.1 2004/07/02 16:52:20 mch Exp $
 
   Date        Author      Changes
    8 Oct 2002  M Hill      Created
@@ -10,23 +10,20 @@ package org.astrogrid.io.xml;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import org.astrogrid.io.ascii.AsciiOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
 import org.astrogrid.log.Log;
 
 /**
- * Output stream for writing XML files.  Probably mostly used as a superclass for
- * various sepcific XML formats.  Provides helper classes, such as the XmlTag,
- * to help write tags correctly, so that closing tags are ensured.
+ * A special XmlTagPrinter used to represent the underlying output stream.
  * <p>
- * Actually this isn't an output stream, although it is intended to sit at the 'top'
- * of a stack of output streams.  It's a special XmlTagWriter that is a 'root' that
- * writes to the outputstream it was given at construction.
  *
  */
 
-public class XmlOutputStream extends XmlTagWriter
+public class XmlPrinter extends XmlTagPrinter
 {
-   private AsciiOutputStream out = null;
+   private PrintWriter out = null;
    
    private String indentSpaces = "   ";
    private final static int INDENT_SIZE = 3;
@@ -40,13 +37,22 @@ public class XmlOutputStream extends XmlTagWriter
     * Constructor - pass in output stream to pipe to, and
     * the initial header will be written
     */
-   public XmlOutputStream(OutputStream anOutStream) throws IOException
+   public XmlPrinter(Writer aWriter) throws IOException
    {
       super(null, null, null);
-      out = new AsciiOutputStream(anOutStream);
+      out = new PrintWriter(aWriter);
       writeLine("<?xml version=\"1.0\"?>");
    }
    
+   /**
+    * Constructor - pass in output stream to pipe to, and
+    * the initial header will be written
+    */
+   public XmlPrinter(OutputStream out) throws IOException
+   {
+      this(new OutputStreamWriter(out));
+   }
+
    /**
     * Should only be able to write comment tags at the root level (ie, at
     * outputstream level) before any child tags are added
@@ -62,7 +68,7 @@ public class XmlOutputStream extends XmlTagWriter
    /**
     * newTag overridden to ensure only one tag can be set
     */
-   public XmlTagWriter newTag(XmlTagWriter aTag) throws IOException
+   public XmlTagPrinter newTag(XmlTagPrinter aTag) throws IOException
    {
       Log.affirm(state == STATE_PRETAG, "Cannot set new tag - one "+getChild()+" already set");
       state = STATE_TAG;
@@ -127,19 +133,19 @@ public class XmlOutputStream extends XmlTagWriter
       
       try
       {
-         XmlOutputStream xOut = new XmlOutputStream(System.out);
+         XmlPrinter xOut = new XmlPrinter(new OutputStreamWriter(System.out));
          
-         XmlTagWriter ftag = xOut.newTag("FRUIT","");
+         XmlTagPrinter ftag = xOut.newTag("FRUIT","");
 
          ftag.writeTag("DESCRIPTION","Sort of fruity things");
          
-         XmlTagWriter atag = ftag.newTag("APPLE","");
+         XmlTagPrinter atag = ftag.newTag("APPLE","");
          atag.writeTag("SKIN","Rosy");
          atag.writeTag("FLESH","White & Powdery");
          atag.writeTag("STALK","Yes unless it's fallen off");
          atag.close();
          
-         XmlTagWriter otag = ftag.newTag("ORANGE","");
+         XmlTagPrinter otag = ftag.newTag("ORANGE","");
          otag.writeTag("SKIN","Orange");
          otag.writeTag("FLESH","Really Orange. Or Red.");
          otag.writeTag("STALK","Would be orange but I've eaten it");

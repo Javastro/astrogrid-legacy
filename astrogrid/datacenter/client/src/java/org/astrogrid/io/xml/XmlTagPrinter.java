@@ -1,8 +1,5 @@
 /*
-   $Id: XmlTagWriter.java,v 1.1 2004/07/01 22:37:15 mch Exp $
-
-   Date        Author      Changes
-   8 Oct 2002  M Hill      Created
+   $Id: XmlTagPrinter.java,v 1.1 2004/07/02 16:52:20 mch Exp $
 
    (c) Copyright...
 */
@@ -12,22 +9,19 @@ import java.io.*;
 import org.astrogrid.log.Log;
 
 /**
- * An abstract class defining output methods for XML output streams and tags. By
- * using this 'intermediary' class, we can define tags or streams as XmlOutput,
- * and pass them around as the same thing.  Therefore there is no effective
- * difference between writing a node in a bigger XML file, and writing the
- * root node.
+ * Class used to write to an Xml Element.  The element is always created within
+ * the context of another element (the root element being the file).
  *
  */
 
-public class XmlTagWriter
+public class XmlTagPrinter
 {
-   private XmlTagWriter parent = null;
-   private XmlTagWriter child = null;  //can only have one child at a time
+   private XmlTagPrinter parent = null;
+   private XmlTagPrinter child = null;  //can only have one child at a time
    private String name = null;
 
    
-   public XmlTagWriter(String givenName, String attrs, XmlTagWriter parentWriter) throws IOException
+   public XmlTagPrinter(String givenName, String attrs, XmlTagPrinter parentWriter) throws IOException
    {
       super();
       
@@ -78,7 +72,8 @@ public class XmlTagWriter
    }
    
    /**
-    * writeString implementation - writes a string out to the parent output
+    * writeString implementation - writes the given string within the opening
+    * & closing tags of this element. Really you should use writeTag or writeComment...
     */
    public void writeString(String s) throws IOException
    {
@@ -86,7 +81,7 @@ public class XmlTagWriter
    }
 
    /**
-    * Convenience routine to write a tag on one line
+    * Convenience routine to write a child tag within this element
     */
    public void writeTag(String tag, String value) throws IOException
    {
@@ -94,7 +89,7 @@ public class XmlTagWriter
    }
 
    /**
-    * Convenience routine to write a comment
+    * Convenience routine to write a child comment tag within this element
     */
    public void writeComment(String text) throws IOException
    {
@@ -102,7 +97,8 @@ public class XmlTagWriter
    }
 
    /**
-    * Writes out a tag with attributes (given as "name='Value'" etc) on one line
+    * Convenience routine to write a child tag with attributes (given as
+    * "name='Value' other='more' " etc) within this element
     */
    public void writeTag(String tag, String attr, String value) throws IOException
    {
@@ -143,28 +139,29 @@ public class XmlTagWriter
    }
    
    /**
-    * Called to make a new simple tag with a name and a string of attributes.
+    * Called to make a new child tag with the given tag name and a string of attribute/values.
+    * @param attr a string such as " name='this' size='other' "
     */
-   public XmlTagWriter newTag(String tag, String attr) throws IOException
+   public XmlTagPrinter newTag(String tag, String attr) throws IOException
    {
       closeChild();
-      return newTag(new XmlTagWriter(tag, attr, this));
+      return newTag(new XmlTagPrinter(tag, attr, this));
    }
 
    /**
-    * Called to make a new simple tag with a name
+    * Called to make a new child tag with the given tag name
     */
-   public XmlTagWriter newTag(String tag) throws IOException
+   public XmlTagPrinter newTag(String tag) throws IOException
    {
       closeChild();
-      return newTag(new XmlTagWriter(tag, null, this));
+      return newTag(new XmlTagPrinter(tag, null, this));
    }
 
    /**
-    * Called to take the given tag and make it the child.  Allows for specialist
+    * Called to take the given tag and make it the child.  Useful for specialist
     * derived Tags.
     */
-   public XmlTagWriter newTag(XmlTagWriter tag) throws IOException
+   public XmlTagPrinter newTag(XmlTagPrinter tag) throws IOException
    {
       closeChild();
       child = tag;
@@ -198,7 +195,7 @@ public class XmlTagWriter
     * Returns the child tag - only used for administration purposes by
     * subclasses
     */
-   protected XmlTagWriter getChild()
+   protected XmlTagPrinter getChild()
    {
       return child;
    }
@@ -226,4 +223,16 @@ public class XmlTagWriter
    
 }
 
+/*
+ $Log: XmlTagPrinter.java,v $
+ Revision 1.1  2004/07/02 16:52:20  mch
+ More sensible names
 
+
+
+   Date        Author      Changes
+   8 Oct 2002  M Hill      Created
+
+ */
+
+   
