@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.9 2004/12/03 10:20:04 jdt Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.10 2004/12/03 10:48:04 jdt Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
@@ -25,9 +25,9 @@ TEXCS1=**/portal/integration/**/*Test.java
 echo "Including $TINCS"
 echo "Excluding $TEXCS, $TEXCS1"
 
-if maven $MY_MAVEN_OPTS -Dastrogrid.inttest.includes=$TINCS
-                        -Dastrogrid.inttest.excludes=$TEXCS
-                        -Dastrogrid.inttest.excludes1=$TEXCS1
+if maven $MY_MAVEN_OPTS -Dastrogrid.inttest.includes=$TINCS\
+                        -Dastrogrid.inttest.excludes=$TEXCS\
+                        -Dastrogrid.inttest.excludes1=$TEXCS1\
                         -Dastrogrid.docs.root=$DOCLOCATION int-test 
 then
    echo "OK" 
@@ -45,9 +45,9 @@ unset TEXCS1
 echo "Including $TINCS"
 echo "Excluding $TEXCS, $TEXCS1"
 
-if maven $MY_MAVEN_OPTS -Dastrogrid.inttest.includes=$TINCS
-                        -Dastrogrid.inttest.excludes=$TEXCS
-                        -Dastrogrid.inttest.excludes1=$TEXCS1
+if maven $MY_MAVEN_OPTS -Dastrogrid.inttest.includes=$TINCS\
+                        -Dastrogrid.inttest.excludes=$TEXCS\
+                        -Dastrogrid.inttest.excludes1=$TEXCS1\
                         -Dastrogrid.docs.root=$DOCLOCATION astrogrid-deploy-site 
 then
    echo "OK" 
