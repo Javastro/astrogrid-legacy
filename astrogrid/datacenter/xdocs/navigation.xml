@@ -4,6 +4,9 @@
   <title>AstroGrid Project</title>
 
   <body>
+    <menu name="Publishers Astrogrid Library">
+    	<item name="Download PAL snapshot" href="pal.zip" />
+    </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
        <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
