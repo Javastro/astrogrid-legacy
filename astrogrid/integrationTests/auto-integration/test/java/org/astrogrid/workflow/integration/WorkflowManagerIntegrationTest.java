@@ -1,4 +1,4 @@
-/*$Id: WorkflowManagerIntegrationTest.java,v 1.1 2004/03/16 17:48:34 nw Exp $
+/*$Id: WorkflowManagerIntegrationTest.java,v 1.2 2004/03/17 01:14:37 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -133,14 +133,11 @@ public class WorkflowManagerIntegrationTest extends AbstractTestForIntegration {
            }
        }
        assertTrue(found);
-       Workflow w1 = null;
-       do { // keep polling, until job is finished / reaches error state.
-           Thread.sleep(1000);
+           Thread.sleep(10000); // 10 seconds should be enough
         // try retreiving the workflow.
-           w1 = jes.readJob(urn);
+           Workflow w1 = jes.readJob(urn);
            assertNotNull(w1);
             assertEquals(w1.getName(),wf.getName());
-       } while (w1.getJobExecutionRecord().getStatus().getType() < ExecutionPhase.COMPLETED_TYPE);
        
        assertEquals(ExecutionPhase.COMPLETED_TYPE,w1.getJobExecutionRecord().getStatus().getType()); // i.e. its not in error
        // dump it to myspace store - then we can look at it later.
@@ -155,6 +152,9 @@ public class WorkflowManagerIntegrationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowManagerIntegrationTest.java,v $
+Revision 1.2  2004/03/17 01:14:37  nw
+removed possible infinite loop
+
 Revision 1.1  2004/03/16 17:48:34  nw
 first stab at an auto-integration project
  
