@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.6 2004/05/17 17:42:13 nw Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.7 2004/05/26 14:49:09 nw Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,9 +13,6 @@
 
 package org.astrogrid.workflow.integration;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
@@ -25,6 +22,11 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * An end to end test that exercises a commandLine application with myspace interaction.
@@ -79,23 +81,44 @@ public class MySpaceCommandlineWorkflowEndToEndTest
    }
    
    public void setupAndVerifyVOSpaceFiles()  throws Exception {
-      
+      System.out.println("Input IVORN: " + inputIvorn.toString());
+      System.out.println("Output IVORN: " + targetIvorn.toString());
        // write to myspace...
        VoSpaceClient voSpaceClient = new VoSpaceClient(user);
-       byte[] bytes = TESTCONTENTS.getBytes();
-       assertNotNull(bytes);       
-       //voSpaceClient.putBytes(bytes, 0, bytes.length, inputIvorn, false);   
        OutputStream os = voSpaceClient.putStream(inputIvorn);
        assertNotNull(os);
-       os.write(bytes);
-       os.close();
+       PrintWriter pout = new PrintWriter(new OutputStreamWriter(os));
+       pout.println(TESTCONTENTS);
+       pout.close();
+       
        InputStream is = voSpaceClient.getStream(inputIvorn);
        assertNotNull(is);
        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
        String content = reader.readLine();
        assertNotNull(content);
-       is.close();
+       reader.close();
+       assertEquals("contents not written to input file correctly",TESTCONTENTS,content);
+       // remove output file if there already.
+       try {
+        voSpaceClient.delete(targetIvorn);
+       } catch (Exception e) {
+           // don't care. just make sure its gone.
+       }
+      
    }
+   
+   public void testResultFileInMyspace() throws Exception {
+       VoSpaceClient client = new VoSpaceClient(user);
+       InputStream is = client.getStream(targetIvorn);
+       assertNotNull(is);
+       
+       // now check target ivorn has same contents as the original.
+       BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+       String content = reader.readLine();
+       assertNotNull(content);
+       reader.close();
+       assertEquals("contents of result file do not match contents of input file",TESTCONTENTS,content);
+       }
    
    public static Test suite() {
         TestSuite suite = new TestSuite(MySpaceCommandlineWorkflowEndToEndTest.class.getName());        
@@ -105,6 +128,7 @@ public class MySpaceCommandlineWorkflowEndToEndTest
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testSubmitWorkflow"));
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testExecutionProgress"));
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testCheckExecutionResults"));
+        suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("testResultFileInMyspace"));
         suite.addTest(new MySpaceCommandlineWorkflowEndToEndTest("tidyUp"));        
         return suite;
     }
