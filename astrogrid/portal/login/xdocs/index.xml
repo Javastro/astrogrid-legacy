@@ -10,6 +10,23 @@
     <section name="Introduction">
         <p> This page gives a rough outline of how the login page works. </p>
     </section>
+    <section name="Configuration">
+        <p>
+            The login page configuration is handled using the org.astrogrid.config package.
+            The simplest way to configure it is to enter the JNDI properties below
+            into Tomcat's server.xml file using the Tomcat administrator tool.
+            <ul>
+                <li>org.astrogrid.portal.community.url=end point of the community webservice [MockDelegate]</li>
+                <li>emailserver.address=address of your smtp server [127.0.0.1]</li>
+                <li>emailserver.user=user whose account is used for sending reminder emails [astrogrid]</li>
+                <li>emailserver.password=user's password (if necessary) []</li>
+                <li>emailserver.from=return address for reminder emails [astrogrid@star.le.ac.uk]</li>
+                <li>astrogrid.portal.admin.email=email address of the administrator who should receive reminder and registration emails from users[jdt@roe.ac.uk]</li>
+            </ul> 
+            If values are not given for these properties, the defaults in square brackets are used instead.
+            
+        </p>
+    </section>
     <section name="Other portal components....">
         <p> 
         When a user logs in  number of objects are put into the session for you to
