@@ -62,7 +62,12 @@
     <name>Phil Nicholson</name>
     <id>pjn3</id>
     <email>pjn3@star.le.ac.uk</email>
-    </developer>   
+    </developer>
+    <developer>
+    <name>Roy Platon</name>
+    <id>rtp</id>
+    <email>R.T.Platon@rl.ac.uk</email>
+    </developer>
     
 </developers>
  
