@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.14 2004/01/05 19:06:26 mch Exp $
+ * $Id: WebDelegate.java,v 1.15 2004/01/08 12:55:15 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -32,6 +32,8 @@ import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
@@ -144,7 +146,6 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
     * @param resultsformat string specifying how the results will be returned (eg
     * votable, fits, etc) strings as given in the datacenter's metadata
     * @param ADQL
-    * @todo move adql package into common
     */
    public DatacenterResults doQuery(String resultsFormat, Select adql) throws DatacenterException {
       try {
@@ -258,7 +259,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
  
    
    /**
-    * returns a list of the services that this application delegate can handle
+    * ApplicationController implemenation: returns a list of the services that this application delegate can handle
     */
    public String[] listApplications() {
       
@@ -266,7 +267,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
    }
    
    /**
-    * Returns a reference to the application description
+    * ApplicationController implemenation: Returns a reference to the application description
     */
    public SimpleApplicationDescription getApplicationDescription(String applicationID)  {
 
@@ -283,27 +284,79 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
     * to access the query... */
    private static Hashtable queries = new Hashtable();
    
+    /**
+      * ApplicationController implemenation: Initialises a query, returning the query id.
+      * Parameter Values should include the
+      *
+      */
+    public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
+       
+       Document doc = null;
+       
+       //extract query, results etc
+       try {
+          doc = XMLUtils.newDocument(new StringBufferInputStream(parameters.getParameterSpec()));
+       }
+       catch (SAXException e) { throw new IllegalArgumentException("Parameters not valid xml: "+e); }
+       catch (ParserConfigurationException e) { throw new RuntimeException(e); }
+       catch (IOException e) { throw new RuntimeException(e); }
+       
+       
+       NodeList elements = doc.getElementsByTagName("Parameter");
+       
+       String queryUrl = null;
+       String resultsDestinationUrl = null;
+       
+       //look through parameters
+       for (int i=0;i<elements.getLength();i++) {
+          Node n = elements.item(i);
+          String name = n.getAttributes().getNamedItem("name").getNodeValue();
+          
+          if (name.toLowerCase().equals("queryUrl")) {
+             queryUrl = n.getNodeValue();
+          }
+          else if (name.toLowerCase().equals("resultsUrl")) {
+             resultsDestinationUrl = n.getNodeValue();
+          }
+          else {
+             throw new IllegalArgumentException("Unknown parameter '"+name+"' not queryUrl or ResultsUrl");
+          }
+       }
+       
+       assert queryUrl != null : "QueryUrl not given in parameters";
+       assert resultsDestinationUrl != null : "ResultsUrl not given in parameters";
+       
+       //Transform to the right types
+       Select adql = null;
+       try {
+          //load query
+          Document adqlDoc = XMLUtils.newDocument(queryUrl);
+          
+          adql = ADQLUtils.unmarshalSelect(adqlDoc);
+       }
+       catch (SAXException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid xml: "+e); }
+       catch (ADQLException e) { throw new IllegalArgumentException("Query at '"+queryUrl+"' not valid adql: "+e); }
+       catch (ParserConfigurationException e) { throw new RuntimeException(e); }
+       catch (IOException e) { throw new RuntimeException("Could not get query at '"+queryUrl+"'",e); }
+       
+       try {
+          WebQueryDelegate query = (WebQueryDelegate) makeQuery(adql, jobstepID);
+          
+          queries.put(query.getId(), query);
+          
+          query.registerJobMonitor(new URL(jobMonitorURL));
+          query.setResultsDestination(new URL(resultsDestinationUrl));
+          
+          return query.getId();
+       }
+       catch (IOException e) {
+          throw new RuntimeException("Error creating query",e);
+       }
+       
+    }
+
    /**
-    * Initialises a query, returning the query id
-    *
-    */
-   public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
-
-      /*
-      WebQueryDelegate query = makeQuery(parameters.getSomething(), jobstepID);
-
-      queries.put(query.getId(), query);
-
-      query.registerJobMonitor(new URL(jobMonitorURL));
-      
-      return query.getId();
-       */
-      // TODO
-      return "Dummy";
-   }
-
-   /**
-    * Returns the status of a running query
+    * ApplicationController implemenation: Returns the status of a running query
     *
     */
    public String queryApplicationExecutionStatus(String executionId) {
@@ -324,7 +377,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
    }
    
    /**
-    * Runs the given query
+    * ApplicationController implemenation: Runs the given query
     *
     */
    public boolean executeApplication(String executionId) {
@@ -371,6 +424,9 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, Appli
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.15  2004/01/08 12:55:15  mch
+ Finished implementing ApplicationController interface
+
  Revision 1.14  2004/01/05 19:06:26  mch
  Introduced ApplicationController interface
 
