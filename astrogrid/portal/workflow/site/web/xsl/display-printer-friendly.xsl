@@ -106,14 +106,14 @@
 
 
 <xsl:template match="er:job-execution-record">
-         <nobr><span class="KEY">JobURN</span> <span class="VALUE"><xsl:value-of select="normalize-space(er:jobId)" /></span></nobr><br />
+         <nobr><span class="KEY">JobURN</span> <span class="VALUE"><xsl:value-of select="er:jobId" /></span></nobr><br />
         <xsl:call-template name="exec-record" />
 </xsl:template>
 
 <xsl:template match="wf:Credentials">
   <nobr>
-  <span class='KEY'>User</span> <span class='VALUE'><xsl:value-of select="normalize-space(creds:Account/creds:Name)"/>@<xsl:value-of select="normalize-space(creds:Account/creds:Community)"/></span>
-  <span class='KEY'>Group</span> <span class='VALUE'><xsl:value-of select="normalize-space(creds:Group/creds:Name)"/>@<xsl:value-of select="normalize-space(creds:Group/creds:Community)"/></span>
+  <span class='KEY'>User</span> <span class='VALUE'><xsl:value-of select="creds:Account/creds:Name"/>@<xsl:value-of select="creds:Account/creds:Community"/></span>
+  <span class='KEY'>Group</span> <span class='VALUE'><xsl:value-of select="creds:Group/creds:Name"/>@<xsl:value-of select="creds:Group/creds:Community"/></span>
   </nobr>
 </xsl:template>
 
@@ -137,7 +137,7 @@
 <xsl:template match="wf:step" name="step">
         <div class="step">
         <nobr>
-        <span class='ACTIVITY'>Step:</span> <span class='KEY'>Name</span> <span class='VALUE'><xsl:value-of select="normalize-space(@name)"/></span>,
+        <span class='ACTIVITY'>Step:</span> <span class='KEY'>Name</span> <span class='VALUE'><xsl:value-of select="@name"/></span>,
                 <span class='KEY'>Result Var</span> <span class='VALUE'><xsl:value-of select="@result-var"/></span>
         </nobr><br />
                 <xsl:apply-templates select="wf:description" />
@@ -174,7 +174,7 @@
 <xsl:template match="wf:for" name="for">
         <div class="block">
         <span class='ACTIVITY'>For</span>
-                <nobr><span class='VALUE'><xsl:value-of select="normalize-space(@var)" /></span> in <span class='VALUE'><xsl:value-of select="@values" /></span></nobr>
+                <nobr><span class='VALUE'><xsl:value-of select="@var" /></span> in <span class='VALUE'><xsl:value-of select="@values" /></span></nobr>
                 <div class="sequence-children">
                         <xsl:apply-templates />
                 </div>
@@ -193,7 +193,7 @@
 <xsl:template match="wf:parfor" name="parfor">
                 <div class="block">
                         <span class='ACTIVITY'>ParFor</span>
-                <nobr><span class='VALUE'><xsl:value-of select="normalize-space(@var)" /></span> in <span class='VALUE'><xsl:value-of select="@values" /></span></nobr>
+                <nobr><span class='VALUE'><xsl:value-of select="@var" /></span> in <span class='VALUE'><xsl:value-of select="@values" /></span></nobr>
                 <div class="sequence-children">
                         <xsl:apply-templates />
                 </div>
@@ -203,13 +203,13 @@
 <xsl:template match="wf:set" name="set">
         <div class="step">
                 <span class='ACTIVITY'>Set</span>
-                <nobr><span class='VALUE'><xsl:value-of select="normalize-space(@var)"/></span> := <span class='VALUE'><xsl:value-of select="@value" /></span></nobr>
+                <nobr><span class='VALUE'><xsl:value-of select="@var"/></span> := <span class='VALUE'><xsl:value-of select="@value" /></span></nobr>
         </div>
 </xsl:template>
 
 <xsl:template match="wf:unset" name="unset">
         <div class="step">
-                <nobr><span class='ACTIVITY'>Unset</span> <span class='VALUE'><xsl:value-of select="normalize-space(@var)" /></span></nobr>
+                <nobr><span class='ACTIVITY'>Unset</span> <span class='VALUE'><xsl:value-of select="@var" /></span></nobr>
         </div>
 </xsl:template>
 
@@ -243,7 +243,7 @@
 
 <xsl:template match="wf:parameter">
         <nobr>
-        <span class='KEY'><xsl:value-of select="normalize-space(@name)"/></span> := <xsl:if test="@indirect = 'true'"><b>Remote Reference</b></xsl:if> <span class='VALUE'><xsl:value-of select="pd:value" /></span></nobr><br />
+        <span class='KEY'><xsl:value-of select="@name"/></span> := <xsl:if test="@indirect = 'true'"><b>Remote Reference</b></xsl:if> <span class='VALUE'><xsl:value-of select="pd:value" /></span></nobr><br />
 </xsl:template>
 
 
@@ -271,20 +271,20 @@
 
 <xsl:template match="cea:message">
         <div>
-                <xsl:attribute name="class"><xsl:value-of select="normalize-space(cea:level)"/></xsl:attribute>
+                <xsl:attribute name="class"><xsl:value-of select="cea:level"/></xsl:attribute>
 
         <span class='ACTIVITY'>Message</span><br />
          <nobr>
          <span style='font-stretch:condensed;'>
-         <span class='KEY'>Time</span> <span class='VALUE'><xsl:value-of select="normalize-space(cea:timestamp)" /></span>
+         <span class='KEY'>Time</span> <span class='VALUE'><xsl:value-of select="cea:timestamp" /></span>
 
         <span class='KEY'>Phase</span>
         <span>
-                <xsl:attribute name="class"><xsl:value-of select="normalize-space(cea:phase)" /></xsl:attribute>
-                <xsl:value-of select="normalize-space(cea:phase)" />
+                <xsl:attribute name="class"><xsl:value-of select="cea:phase" /></xsl:attribute>
+                <xsl:value-of select="cea:phase" />
         </span>
 
-        <span class='KEY'>Source</span> <span class='VALUE'><xsl:value-of select="normalize-space(cea:source)" /></span>
+        <span class='KEY'>Source</span> <span class='VALUE'><xsl:value-of select="cea:source" /></span>
         </span>
         </nobr>
                 <div class="message-content">
