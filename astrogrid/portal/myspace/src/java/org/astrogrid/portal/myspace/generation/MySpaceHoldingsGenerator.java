@@ -1,5 +1,6 @@
 package org.astrogrid.portal.myspace.generation;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class MySpaceHoldingsGenerator extends AbstractGenerator {
   private String communityId;
   private String credential;
   private String query;
+  private String testFile;
 
   /* (non-Javadoc)
    * @see org.apache.cocoon.sitemap.SitemapModelComponent#setup(org.apache.cocoon.environment.SourceResolver, java.util.Map, java.lang.String, org.apache.avalon.framework.parameters.Parameters)
@@ -65,8 +67,11 @@ public class MySpaceHoldingsGenerator extends AbstractGenerator {
       credential = utils.getAnyParameter("credential", params, request);
       logger.debug("[setup] credential: " + credential);
 
-      query = utils.getAnyParameter("myspace-query", params, request);
+      query = utils.getAnyParameter("myspace-query", MySpaceHoldingsGenerator.getDefaultQuery(userId, communityId), params, request);
       logger.debug("[setup] query: " + query);
+
+      testFile = utils.getAnyParameter("test-file", "", params, request);
+      logger.debug("[setup] testFile: " + testFile);
     }
     catch(Exception e) {
       delegate = null;
@@ -83,7 +88,10 @@ public class MySpaceHoldingsGenerator extends AbstractGenerator {
     try {
       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder builder = builderFactory.newDocumentBuilder();
-      if(delegate != null) {
+      if(testFile != null && testFile.length() > 0) {
+        sourceDoc = builder.parse(new File(testFile));
+      } 
+      else if(delegate != null) {
         Vector holdings = null;
         try {
           holdings = delegate.listDataHoldingsGen(userId, communityId, credential, query);
@@ -119,5 +127,9 @@ public class MySpaceHoldingsGenerator extends AbstractGenerator {
     streamer.setNormalizeNamespaces(false);
     streamer.setContentHandler(contentHandler);
     streamer.stream(sourceDoc);
+  }
+  
+  private static String getDefaultQuery(String userId, String communityId) {
+    return "/" + userId + "@" + communityId + "/*";
   }
 }
