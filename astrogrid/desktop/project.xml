@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+
+    <!--<extend>../maven-base/project.xml</extend>-->
+    <extend>${basedir}/../aggregate/cdk/script/project.xml</extend>
+        <artifactId>astrogrid-desktop</artifactId>
+        <currentVersion>${astrogrid.desktop.version}</currentVersion>
+        <name>Astrogrid Desktop</name>
+        <description><![CDATA[
+          project impelemts a desktop service that other user applications can connect to
+          to interact with astrogrid. Will support HTTP / XML-RPC / SOAP / Java-RMI eventually
+         ]]></description>
+        <shortDescription>AstroGrid Desktop</shortDescription>
+        <build>
+                <sourceDirectory>src/java</sourceDirectory>
+                <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+                <unitTest>
+                        <includes>
+                                <include>**/*Test.java</include>
+                        </includes>
+                        <resources>
+                                <resource>
+                                        <directory>${basedir}/test/java</directory>
+                                        <includes>
+                                                <include>**/*.properties</include>
+                                                <include>**/*.xml</include>
+                                        </includes>
+                                </resource>
+                        </resources>
+                </unitTest>
+                <resources>
+                        <resource>
+                                <directory>${basedir}/src/java</directory>
+                                <includes>
+                                        <include>*.properties</include>
+                                        <include>**/*.xml</include>
+                                        <include>**/*.png</include>
+                                </includes>
+                        </resource>
+                </resources>
+        </build>
+
+        <dependencies>
+        <dependency>
+                <groupId>jetty</groupId>
+                <artifactId>org.mortbay.jetty</artifactId>
+                <version>5.1.2</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+        <dependency>
+                <!-- need to test whether this one is really used -->
+                <groupId>jetty</groupId>
+                <artifactId>org.mortbay.jmx</artifactId>
+                <version>5.1.2</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+
+        <dependency>
+                <!-- this one may already be present -->
+                <groupId>picocontainer</groupId>
+                <artifactId>picocontainer</artifactId>
+                <version>1.0</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+        <dependency>
+                <groupId>xmlrpc</groupId>
+                <artifactId>xmlrpc</artifactId>
+                <version>1.2-b1</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+        <dependency>
+                <artifactId>commons-attributes-api</artifactId>
+                <groupId>commons-attributes</groupId>
+                <version>2.1</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+        <dependency>
+                <artifactId>commons-beanutils</artifactId>
+                <groupId>commons-beanutils</groupId>
+                <version>1.6</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+        <dependency>
+                <artifactId>xstream</artifactId>
+                <groupId>xstream</groupId>
+                <version>1.0.1</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+        <dependency><!-- maybe already present. -->
+                <artifactId>commons-lang</artifactId>
+                <groupId>commons-lang</groupId>
+                <version>2.0</version>
+                <type>jar</type>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+        </dependency>
+    <dependency>
+      <artifactId>servletapi</artifactId>
+      <groupId>servletapi</groupId>
+      <version>2.3</version>
+                <properties>
+                        <jnlp.jar>true</jnlp.jar>
+                </properties>
+    </dependency>
+
+        <!-- only needed as part of the build -->
+        <dependency>
+                <artifactId>commons-attributes-plugin</artifactId>
+                <groupId>commons-attributes</groupId>
+                <version>2.1</version>
+                <type>plugin</type>
+        </dependency>
+    </dependencies>
+</project>
