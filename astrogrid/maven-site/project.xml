@@ -1,104 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="maven-project.xsd">
-
-  <pomVersion>3</pomVersion>
+<!-- $Id: project.xml,v 1.4 2004/03/03 21:39:11 jdt Exp $ -->
+<project>
+  <extend>../maven-base/project.xml</extend>
   <id>astrogrid</id>
   <name>AstroGrid</name>
-
-  <currentVersion>HEAD</currentVersion>
-  
-  <organization>
-    <name>AstroGrid</name>
-    <url>http://www.astrogrid.org</url>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  </organization>
-
-  <inceptionYear>2002</inceptionYear>
-  <package>org.astrogrid</package>
-  <logo>http://www.astrogrid.org/images/AGlogo</logo>
-  
   <shortDescription>AstroGrid Projects</shortDescription>
-
   <siteDirectory>/var/www/www/maven/build</siteDirectory>
-  
   <repository>
     <connection>
-      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/maven-site
     </connection>
     <developerConnection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/maven-site
     </developerConnection>
   </repository>
   
-  <developers>
-    <developer>
-      <name>Peter Shillan</name>
-      <id>gps</id>
-      <email>gps@roe.ac.uk</email>
-    </developer>
-  </developers>
-
   <dependencies/>
   
-<!--
-  <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-
-    <unitTest/>
-  </build>
--->
   
   <reports/>
-<!--
-  <reports>
-    <report>
-      maven-changelog-plugin
-    </report>
-    <report>
-      maven-changes-plugin
-    </report>
-    <report>
-      maven-checkstyle-plugin
-    </report>
-    <report>
-      maven-clover-plugin
-    </report>
-    <report>
-      maven-developer-activity-plugin
-    </report>
-    <report>
-      maven-file-activity-plugin
-    </report>
-    <report>
-      maven-javadoc-plugin
-    </report>
-    <report>
-      maven-jdepend-plugin
-    </report>
-    <report>
-      maven-junit-report-plugin
-    </report>
-    <report>
-      maven-jxr-plugin
-    </report>
-    <report>
-      maven-license-plugin
-    </report>
-    <report>
-      maven-linkcheck-plugin
-    </report>
-    <report>
-      maven-pmd-plugin
-    </report>
-    <report>
-      maven-tasklist-plugin
-    </report>
-    <report>
-      maven-simian-plugin
-    </report>
-  </reports>
--->
+
 </project>
