@@ -1,5 +1,5 @@
 /*
- * $Id: Application.java,v 1.5 2004/09/17 01:20:54 nw Exp $
+ * $Id: Application.java,v 1.6 2004/09/20 16:40:43 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,6 +16,8 @@ import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
+import org.astrogrid.applications.description.exception.ParameterNotInInterfaceException;
 import org.astrogrid.community.User;
 
 import java.util.Observer;
@@ -100,6 +102,18 @@ public interface Application  {
    /** try to abort / cancel execution of the application 
     * @return true if the attempt was successful*/
    public boolean attemptAbort();
+   
+   /**
+    * Checks that all the parameters have been specified properly. 
+    * 
+    * It will throw exception at the first error.
+    * @throws ParameterNotInInterfaceException
+    * @throws MandatoryParameterNotPassedException
+    * @throws ParameterDescriptionNotFoundException
+    */
+   public boolean checkParameterValues() throws ParameterNotInInterfaceException,
+   MandatoryParameterNotPassedException, ParameterDescriptionNotFoundException;
+
    
    /** create  a template message, prepopulated as much as possible - this is used for reporting
     * back to listeners on the application progress

@@ -1,5 +1,5 @@
 /*
- * $Id: DefaultExecutionController.java,v 1.7 2004/09/17 01:21:49 nw Exp $
+ * $Id: DefaultExecutionController.java,v 1.8 2004/09/20 16:40:43 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -96,7 +96,8 @@ public String init(Tool tool, String jobstepID) throws CeaException {
       try {
           ApplicationDescription descr = applicationDescriptions.getDescription(toolname);
           User user = new User(); //TODO this needs to be obtained from the context
-          Application app = descr.initializeApplication(jobstepID,user,tool);         
+          Application app = descr.initializeApplication(jobstepID,user,tool);   
+          app.checkParameterValues();          
           executionHistory.addApplicationToCurrentSet(app);          
           app.addObserver(this);
           return app.getID();

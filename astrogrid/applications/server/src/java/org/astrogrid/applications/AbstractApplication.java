@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.8 2004/09/17 01:20:54 nw Exp $
+ * $Id: AbstractApplication.java,v 1.9 2004/09/20 16:40:43 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -121,13 +121,14 @@ public abstract class AbstractApplication extends Observable implements Applicat
     * @param tool defines the parameters of this exeuction, and which application / interface is to be called.
     * @param applicationInterface the descrptioni interface this application conforms to.
     * @param lib library of indirection handlers - used to read remote parameters using various protocols
-    */
-   public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,ProtocolLibrary lib)
+     */
+   public AbstractApplication(IDs ids,Tool tool, ApplicationInterface applicationInterface,ProtocolLibrary lib) 
    {      
       this.applicationInterface = applicationInterface;
       this.ids = ids;
       this.tool = tool;
       this.lib = lib;
+
    }
     /** default implementation of attemptAbort - always fails, and returns false.
      */
@@ -146,15 +147,12 @@ public abstract class AbstractApplication extends Observable implements Applicat
      * must be called before any of the methods that access / query parameter adapters.
      * @throws ParameterDescriptionNotFoundException
      * @throws ParameterAdapterException
-     * @throws MandatoryParameterNotPassedException
-     * @throws ParameterNotInInterfaceException
      * @see #createAdapters() for customization.
      */
-    protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException, ParameterNotInInterfaceException, MandatoryParameterNotPassedException {
+    protected final void createAdapters() throws ParameterDescriptionNotFoundException, ParameterAdapterException {
         inputAdapters.clear();
         outputAdapters.clear();
         results.clearResult();
-        checkParameterValues();
         for  (Iterator params = inputParameterValues(); params.hasNext();){
              ParameterValue param = (ParameterValue)params.next();       
             ExternalValue iVal = (param.getIndirect() ? lib.getExternalValue(param) : null);
@@ -174,44 +172,69 @@ public abstract class AbstractApplication extends Observable implements Applicat
      * Checks that all the parameters have been specified. 
      * It does this by looking through the interface that has been specified and checking that all the mandatory parameters have been specified at least once.
      * It will throw exception at the first error.
+     * @TODO it would be better to gather all of the errors together and thow an exception with all of them in, rather than just the first....
  * @throws ParameterNotInInterfaceException
  * @throws MandatoryParameterNotPassedException
+ * @throws ParameterDescriptionNotFoundException
      */
-    private void checkParameterValues()
+    public boolean checkParameterValues()
             throws ParameterNotInInterfaceException,
-            MandatoryParameterNotPassedException {
-        String[] inputs = applicationInterface.getArrayofInputs();
-        for (int i = 0; i < inputs.length; i++) {
-            String inputName = inputs[i];
-            Cardinality car = applicationInterface
-                    .getParameterCardinality(inputName);
-            if (car.getMinOccurs() != 0) {
-                ParameterValue pval = findInputParameter(inputName);
-                if (pval == null) {
-                    throw new MandatoryParameterNotPassedException(
-                            tool.getName()+ " -- The interface " + applicationInterface.getName()
-                                    + " expects input parameter " + inputName);
-                }
-            }
+            MandatoryParameterNotPassedException, ParameterDescriptionNotFoundException {
+        //first check that the parameters are allowed at all
+        ParameterValue[] inputs = tool.getInput().getParameter();
+        checkParametersInDefinition(inputs);
+        ParameterValue[] outputs = tool.getOutput().getParameter();
+        checkParametersInDefinition(outputs);
+               
+ 
+        // Then check on parameter cardinalities
+        String[] inputNames = applicationInterface.getArrayofInputs();
+        for (int i = 0; i < inputNames.length; i++) {
+            String inputName = inputNames[i];
+            checkCardinality(inputName, true);
 
         }
-        String[] outputs = applicationInterface.getArrayofOutputs();
-        for (int i = 0; i < outputs.length; i++) {
-            String outputName = outputs[i];
-            Cardinality car = applicationInterface
-                    .getParameterCardinality(outputName);
-            if (car.getMinOccurs() == 1) {
-                ParameterValue pval = findOutputParameter(outputName);
-                if (pval == null) {
-                    throw new MandatoryParameterNotPassedException(
-                            tool.getName()+ " --The interface " + applicationInterface.getName()
-                                    + " expects output parameter " + outputName);
-                }
-            }
-
+        String[] outputNames = applicationInterface.getArrayofOutputs();
+        for (int i = 0; i < outputNames.length; i++) {
+            String outputName = outputNames[i];
+            checkCardinality(outputName, false);
         }
+        return true;
    }
 
+    /**
+     * Checks that all of the {@link ParameterValue}s in an array are allowed by the application definition. It will throw an exeception on the first error found.
+     * @param pv the array of parameter values to be checked
+     * @throws ParameterDescriptionNotFoundException
+     */
+    private void checkParametersInDefinition(ParameterValue[] pv) throws ParameterDescriptionNotFoundException
+    {
+        for (int i = 0; i < pv.length; i++) {
+            ParameterValue value = pv[i];
+            getApplicationDescription().getParameterDescription(value.getName()); //checks if the parameter exists in description
+             
+        }
+    }
+    /**
+     * Checks whether parameters specified conform with their cardinality. At the moment this only checks to see if a required parameter is missing.
+ * @param inputName the name of the paramter to be checked.
+ * @param isInput is the parameter an input parameter.
+ * @throws ParameterDescriptionNotFoundException
+ * @throws ParameterNotInInterfaceException
+ * @throws MandatoryParameterNotPassedException
+ */
+private void checkCardinality(String inputName, boolean isInput) throws ParameterDescriptionNotFoundException, ParameterNotInInterfaceException, MandatoryParameterNotPassedException {
+    Cardinality car = applicationInterface
+            .getParameterCardinality(inputName);
+    if (car.getMinOccurs() != 0) {
+        ParameterValue pval = isInput?findInputParameter(inputName):findOutputParameter(inputName);
+        if (pval == null) {
+            throw new MandatoryParameterNotPassedException(
+                    tool.getName()+ " -- The interface " + applicationInterface.getName()
+                            + " expects "+ (isInput?"input":"output") +" parameter " + inputName);
+        }
+    }
+}
     /** can be extended by subclasses to provide more info */
    public MessageType createTemplateMessage() {
        MessageType mt = new MessageType();
