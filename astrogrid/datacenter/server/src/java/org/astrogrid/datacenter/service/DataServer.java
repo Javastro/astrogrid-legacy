@@ -1,30 +1,28 @@
 /*
- * $Id: DataServer.java,v 1.2 2004/03/08 00:31:28 mch Exp $
+ * $Id: DataServer.java,v 1.3 2004/03/08 13:24:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import javax.xml.parsers.ParserConfigurationException;
+import java.net.URI;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.ConfigException;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Circle;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.adql.generated.TableExpression;
+import org.astrogrid.datacenter.adql.generated.Where;
+import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierStatus;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.store.Agsl;
 import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -68,20 +66,59 @@ public class DataServer
    }
    
    /**
-    * Submits a query for asynchronous (non-blocking) processing.
+    * Runs a (blocking) cone search, returning a Votable
     */
-   public QuerierStatus submitQuery(Account user, Agsl queryAgsl, URL monitor, String clientRef) throws IOException {
-      
-      throw new UnsupportedOperationException();
-      /*
-      InputStream in = queryAgsl.openStream(user.toUser());
-      Querier querier = QuerierManager.createQuerier(query);
-      Thread queryThread = new Thread(querier);
-      queryThread.start();
-      
-      return querier.getStatus();
-       */
+   public String searchCone(Account user, double ra, double dec, double sr) throws IOException, ADQLException, SAXException {
+
+         Select s = ADQLUtils.buildMinimalQuery();
+         TableExpression tc = new TableExpression();
+         s.setTableClause(tc);
+         
+         Where w = new Where();
+         tc.setWhereClause(w);
+         
+         Circle c = new Circle();
+         c.setDec(ADQLUtils.mkApproxNum(dec));
+         c.setRa(ADQLUtils.mkApproxNum(ra));
+         c.setRadius(ADQLUtils.mkApproxNum(sr));
+         w.setCircle(c);
+
+         QueryResults results = askAdql(user, s);
+         
+         //bit of a botch at the moment - converts VOTable back into string/input stream for returning...
+         //best way to fix is properly to pipe it - still not quite right but less
+         //memory
+         return DomHelper.DocumentToString(results.toVotable());
    }
+   
+   /**
+    * Runs a blocking ADQL query
+    */
+   public QueryResults askAdql(Account user, Select adql) throws IOException, ADQLException {
+      
+      Query q = new Query();
+      q.setQueryBody(ADQLUtils.toQueryBody(adql));
+      
+      Querier querier =  QuerierManager.createQuerier(q);
+      QueryResults results = querier.doQuery();
+      QuerierManager.closeQuerier(querier);
+      return results;
+   }
+   
+   /**
+    * Submites an asynchronous ADQL query
+    */
+   public QuerierStatus submitAdql(Account user, Select adql, URI monitor) throws IOException, ADQLException {
+      
+      Query q = new Query();
+      q.setQueryBody(ADQLUtils.toQueryBody(adql));
+      
+      Querier querier =  QuerierManager.createQuerier(q);
+      Thread qth = new Thread(querier);
+      qth.start();
+      return querier.getStatus();
+   }
+   
 
    /**
     * Runs a blocking query.
@@ -91,6 +128,21 @@ public class DataServer
       return querier.doQuery();
    }
    
+   /**
+    * Submits a query for asynchronous (non-blocking) processing.
+    *
+   public QuerierStatus submitQuery(Account user, Agsl queryAgsl, URL monitor, String clientRef) throws IOException {
+      
+      throw new UnsupportedOperationException();
+
+      InputStream in = queryAgsl.openStream(user.toUser());
+      Querier querier = QuerierManager.createQuerier(query);
+      Thread queryThread = new Thread(querier);
+      queryThread.start();
+      
+      return querier.getStatus();
+   }
+
    /**
     * Submits a query for asynchronous (non-blocking) processing.
     * Not sure how all this is going to work yet.

@@ -69,8 +69,8 @@
   <env-entry>
       <description>URL giving location of the properties file to use for configuration</description>
       <env-entry-name>org.astrogrid.config.filename</env-entry-name>
-      <env-entry-type>java.lang.String</env-entry-type>
       <env-entry-value>datacenter.properties</env-entry-value>
+      <env-entry-type>java.lang.String</env-entry-type>
   </env-entry>
   <!--
   <resource-ref>

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQueryResults.java,v 1.2 2004/03/08 00:31:28 mch Exp $
+ * $Id: DummyQueryResults.java,v 1.3 2004/03/08 13:24:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,8 +23,6 @@ import org.xml.sax.SAXException;
 
 public class DummyQueryResults implements QueryResults
 {
-   private URL table = null;
-
    private String id = null;
 
    /**
@@ -36,9 +34,7 @@ public class DummyQueryResults implements QueryResults
    {
       this.id = someIdentifyingMark;
 
-      //example is in same directory
-      table = getClass().getResource("ExampleVotable.xml");
-      if (table == null)
+      if (getExampleStream() == null)
          throw new RuntimeException("Could not find example votable");
    }
 
@@ -46,9 +42,17 @@ public class DummyQueryResults implements QueryResults
     * Returns InputStream to results raw data.  In this case to the example
     * votable file.
     */
-   public InputStream getInputStream() throws IOException
+   public InputStream getExampleStream()
    {
-      return table.openConnection().getInputStream();
+      //example is in same directory
+      InputStream table = getClass().getResourceAsStream("ExampleVotable.xml");
+      
+      //sometimes it cant' find stuff int he local directory if it's in a jar - try the classpath
+      if (table == null) {
+         table = ClassLoader.getSystemResourceAsStream("ExampleVotable.xml");
+      }
+      
+      return table;
    }
 
    /**
@@ -59,7 +63,7 @@ public class DummyQueryResults implements QueryResults
    {
       try
       {
-         return DomHelper.newDocument(getInputStream());
+         return DomHelper.newDocument(getExampleStream());
       }
       catch (javax.xml.parsers.ParserConfigurationException pce)
       {
@@ -75,7 +79,7 @@ public class DummyQueryResults implements QueryResults
    public void toVotable(OutputStream out) throws IOException
    {
       
-      InputStream in = new BufferedInputStream(getInputStream());
+      InputStream in = new BufferedInputStream(getExampleStream());
 
       byte[] block = new byte[100];
       int bytesRead = 0;

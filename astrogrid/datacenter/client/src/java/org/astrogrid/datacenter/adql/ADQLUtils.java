@@ -1,4 +1,4 @@
-/*$Id: ADQLUtils.java,v 1.4 2004/03/07 21:09:47 mch Exp $
+/*$Id: ADQLUtils.java,v 1.5 2004/03/08 13:24:35 mch Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -102,7 +102,7 @@ public class ADQLUtils {
            Document doc = DomHelper.newDocument();
            Marshaller.marshal(s, doc);
            return doc.getDocumentElement();
-       } catch (Exception e) {
+       } catch (Throwable e) {
            throw new ADQLException("Failed to marshall select",e);
        }
    }
@@ -113,6 +113,9 @@ public class ADQLUtils {
 
 /*
 $Log: ADQLUtils.java,v $
+Revision 1.5  2004/03/08 13:24:35  mch
+Fixes to reintroduce ADQL querying and cone searches
+
 Revision 1.4  2004/03/07 21:09:47  mch
 Changed apache XMLUtils to implementation-independent DomHelper
 
