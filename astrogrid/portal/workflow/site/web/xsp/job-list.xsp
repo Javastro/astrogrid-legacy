@@ -17,7 +17,7 @@
 
 <xsp:logic>
 		
-		private static final boolean TRACE_ENABLED = true ;
+		private static final boolean TRACE_ENABLED = false ;
                 	
 		public void jobList ( Workflow[] workflows ) throws SAXException {
         	if( TRACE_ENABLED ) trace( "job-list-xsp.list() entry") ; 

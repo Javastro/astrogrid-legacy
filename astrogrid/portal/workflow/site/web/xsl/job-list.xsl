@@ -5,6 +5,8 @@
        | Author: Phil Nicolson "pjn3@star.le.ac.uk"
        | Date:   Sept 2004
        +--> 
+       
+       <xsl:param name="show_job_link" />
   
       <!--+
           | Match the root element.
@@ -23,41 +25,48 @@
       <xsl:template match="workflow">
       <p />          
          <table border="2" cellpadding="0" cellspacing="0">
-            <tr>
+            <tr>           
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Name</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Description</td>
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
                <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Status</td>
-               <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">
-                  <div class="jobIdColumn" style="display: none;">
-                     <xsl:attribute name="id">full_column_heading</xsl:attribute>               
-                     <xsl:element name="a">  
-                        <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
-                        <xsl:attribute name="href">javascript:void(0);</xsl:attribute> 
-                        <xsl:attribute name="class">jobIdColumn</xsl:attribute>
-                        <xsl:attribute name="NOWRAP">true</xsl:attribute>
-                     </xsl:element>
-                     <font>
-                        <small><b>[less]</b></small>
-                     </font>
-                     <xsl:element name="/a"></xsl:element> 
-                  </div>
-                  <div class="jobIdColumn">
-                     <xsl:attribute name="id">short_column_heading</xsl:attribute>              
-                     <xsl:element name="a">  
-                        <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
-                        <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
-                        <xsl:attribute name="class">jobIdColumn</xsl:attribute>
-                        <xsl:attribute name="NOWRAP">true</xsl:attribute>
-                     </xsl:element>
-                     <font>
-                        <small><b>[more]</b></small>
-                     </font>
-                     <xsl:element name="/a"></xsl:element> 
-                  </div>                                      
-                  Job ID   
-               </td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Delete/Cancel?</td> 
+               <xsl:choose>               
+                 <xsl:when test="$show_job_link = 'true'">
+                   <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">
+                    <div class="jobIdColumn" style="display: none;">
+                       <xsl:attribute name="id">full_column_heading</xsl:attribute>               
+                       <xsl:element name="a">  
+                          <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
+                          <xsl:attribute name="href">javascript:void(0);</xsl:attribute> 
+                          <xsl:attribute name="class">jobIdColumn</xsl:attribute>
+                          <xsl:attribute name="NOWRAP">true</xsl:attribute>
+                       </xsl:element>
+                       <font>
+                          <small><b>[less]</b></small>
+                       </font>
+                       <xsl:element name="/a"></xsl:element> 
+                    </div>
+                    <div class="jobIdColumn">
+                       <xsl:attribute name="id">short_column_heading</xsl:attribute>              
+                       <xsl:element name="a">  
+                          <xsl:attribute name="onClick">toggleColumn('jobIdColumn');</xsl:attribute>                
+                          <xsl:attribute name="href">javascript:void(0);</xsl:attribute>
+                          <xsl:attribute name="class">jobIdColumn</xsl:attribute>
+                          <xsl:attribute name="NOWRAP">true</xsl:attribute>
+                       </xsl:element>
+                       <font>
+                          <small><b>[more]</b></small>
+                       </font>
+                       <xsl:element name="/a"></xsl:element> 
+                    </div>                                      
+                    Job ID   
+                 </td>
+               </xsl:when>
+               <xsl:otherwise>
+                 <td nowrap="true" style="color: blue; background-color: lightblue; text-align: center;">Job ID</td>
+               </xsl:otherwise>
+             </xsl:choose>               
+             <td style="color: blue; background-color: lightblue; text-align: center;">Delete/Cancel?</td> 
             </tr>
             <xsl:for-each select="//job">
                <tr>    
@@ -81,24 +90,38 @@
                            n/a
                         </xsl:when>
                         <xsl:otherwise>
+                          <xsl:choose>
+                            <xsl:when test="$show_job_link = 'true'">                        
+                             <div class="jobIdColumn" style="display: none;">                      
+                                <xsl:attribute name="id">full_<xsl:value-of select="@jobid"/></xsl:attribute> 
+                                <xsl:element name="a">
+                                   <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                                </xsl:element>
+                                <xsl:value-of select="@jobid"/>
+                                <xsl:element name="/a"></xsl:element>
+                             </div>
+                             <div class="jobIdColumn">
+                               <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
+                               <xsl:element name="a">                  
+                                  <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                                  <xsl:attribute name="class">jobIdColumn</xsl:attribute>              
+                               </xsl:element>
+                                  ......<xsl:value-of select="@jobid-short"/>
+                               <xsl:element name="/a"></xsl:element>                                                       
+                            </div>
+                          </xsl:when>
+                          <xsl:otherwise>
                            <div class="jobIdColumn" style="display: none;">                      
                               <xsl:attribute name="id">full_<xsl:value-of select="@jobid"/></xsl:attribute> 
-                              <xsl:element name="a">
-                                 <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
-                              </xsl:element>
                               <xsl:value-of select="@jobid"/>
-                              <xsl:element name="/a"></xsl:element>
                            </div>
                            <div class="jobIdColumn">
-                           <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
-                           <xsl:element name="a">                  
-                              <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
-                              <xsl:attribute name="class">jobIdColumn</xsl:attribute>              
-                           </xsl:element>
-                              ......<xsl:value-of select="@jobid-short"/>
-                           <xsl:element name="/a"></xsl:element>                                                       
-                        </div>                           
-                        </xsl:otherwise>                                                                 
+                             <xsl:attribute name="id">short_<xsl:value-of select="@jobid"/></xsl:attribute>
+                             ......<xsl:value-of select="@jobid-short"/>                          
+                           </div>
+                         </xsl:otherwise>
+                        </xsl:choose>                                                   
+                      </xsl:otherwise>                                                                 
                      </xsl:choose>                     
                      </td>
                      <td align="center">

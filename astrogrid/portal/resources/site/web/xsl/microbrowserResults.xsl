@@ -370,11 +370,11 @@
             <xsl:element name="SPAN">                                
               <xsl:attribute name="title">&#10;View column details&#10;</xsl:attribute> 
               <xsl:attribute name="class">agActionButton</xsl:attribute> 
-              <xsl:attribute name="onclick">toggle('column:<xsl:value-of select="../vr:Identifier/vr:AuthorityID"/>/<xsl:value-of select="../vr:Identifier/vr:ResourceKey"/>');</xsl:attribute>
+              <xsl:attribute name="onclick">toggle('column:<xsl:value-of select="vr:Name"/>');</xsl:attribute>
               column
             </xsl:element>                              
           <div class="detail">
-            <xsl:attribute name="id">column:<xsl:value-of select="../vr:Identifier/vr:AuthorityID"/>/<xsl:value-of select="../vr:Identifier/vr:ResourceKey"/></xsl:attribute>                                
+            <xsl:attribute name="id">column:<xsl:value-of select="vr:Name"/></xsl:attribute>                                
             <xsl:apply-templates select="vs:Column" />
           </div>
         </div>

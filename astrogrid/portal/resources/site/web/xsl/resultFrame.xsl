@@ -172,6 +172,7 @@
               coverage
             </xsl:element>
           </xsl:if>
+<!--          
           <xsl:if test="count(vs:Table) &gt; 0">
             <xsl:element name="SPAN">                                
               <xsl:attribute name="title">&#10;table/column&#10;</xsl:attribute> 
@@ -180,6 +181,7 @@
               table/column
             </xsl:element>                    
           </xsl:if>
+-->          
           <xsl:if test="count(cea:ApplicationDefinition) &gt; 0">
             <xsl:element name="SPAN">                                
               <xsl:attribute name="title">&#10;parameters/interfaces&#10;</xsl:attribute> 
@@ -317,12 +319,22 @@
       
       <!-- TABLE -->
       <xsl:template match="vs:Table">
-        <div class="detail">
+        <div class="options">
           <xsl:attribute name="id">table:<xsl:value-of select="../vr:Identifier/vr:AuthorityID"/>/<xsl:value-of select="../vr:Identifier/vr:ResourceKey"/></xsl:attribute>
 <!--          <span class="HEADING">Table</span><br />  -->
-          <span class="KEY">Name:</span>
-          <span class="VALUE"><xsl:value-of select="vr:Name"/></span><br />
-          <xsl:apply-templates select="vs:Column" />
+          <span class="KEY">Table Name:</span>
+          <span class="VALUE"><xsl:value-of select="vr:Name"/></span>
+          <!-- COLUMN DETAILS -->
+            <xsl:element name="SPAN">                                
+              <xsl:attribute name="title">&#10;View column details&#10;</xsl:attribute> 
+              <xsl:attribute name="class">agActionButton</xsl:attribute> 
+              <xsl:attribute name="onclick">toggle('column:<xsl:value-of select="vr:Name"/>');</xsl:attribute>
+              column
+            </xsl:element>                              
+          <div class="detail">
+            <xsl:attribute name="id">column:<xsl:value-of select="vr:Name"/></xsl:attribute>                                
+            <xsl:apply-templates select="vs:Column" />
+          </div>
         </div>
       </xsl:template>
       

@@ -42,7 +42,7 @@
 
    <xsp:logic>
 
-      private static final boolean TRACE_ENABLED = true;
+      private static final boolean TRACE_ENABLED = false;
          
       private Workflow workflow = null;
       
