@@ -114,7 +114,36 @@
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
         <ant:echo message="Build directory : ${maven.build.dir}"/>
         <ant:echo message="Building snapshot artifact ...."/>
+    	
+        <!--+
+            | Create our snapshot name.
+            +-->
+        <maven:snapshot project="${pom}"/>
+        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+        <!--+
+            | Build our snapshot war.
+            +-->
+        <attainGoal name="war:war"/>
+        <!--+
+            | Rename our war to include the version.
+            +-->
+        <ant:move
+            file="${maven.build.dir}/${maven.war.final.name}"
+            toFile="${maven.build.dir}/${maven.final.name}.war"
+            />
+        <!--+
+            | Install our snapshot war(s).
+            +-->
+        <artifact:install-snapshot
+            artifact="${maven.build.dir}/${maven.final.name}.war"
+            project="${pom}"
+            type="war"
+            />
+        	
+    	
+    	<!--
         <attainGoal name="war:install-snapshot"/>
+        -->
       <!--+
          | Create the war file.
       <attainGoal name="war:war"/>
