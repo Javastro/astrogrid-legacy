@@ -11,6 +11,10 @@
     <link>/astrogrid-portal/main/mount/workflow/agjobmanager.html</link>
     <description>Job Manager</description>   
   </item>
+  <item display="Job Monitor">
+    <link>/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html?action=read-job-list</link>
+    <description>Job Monitor</description>   
+  </item>  
   <item display="Help">
     <link>/astrogrid-portal/main/mount/workflow/workflow-help.xml</link>
     <description>Job Manager Help</description>
