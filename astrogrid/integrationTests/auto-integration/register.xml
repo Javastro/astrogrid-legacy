@@ -17,6 +17,12 @@
         <fileset dir="tmp">
             <include name="*.jar"/>
         </fileset>
+        <fileset dir="tmp/community/jar">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="tmp/community/lib">
+            <include name="*.jar"/>
+        </fileset>
     </path>
 
     <!--+
