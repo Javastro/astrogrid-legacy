@@ -39,7 +39,7 @@
 			</xsd:sequence>
 			<xsd:attribute name="startTime" type="xsd:dateTime" use="optional"/>
 			<xsd:attribute name="finishTime" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="status" type="ceat:execution-phase" use="optional" default="UNKNOWN"/>	
+			<xsd:attribute name="status" type="ceat:execution-phase" use="optional" default="PENDING"/>	
 		</xsd:complexType>		
 
 	<!-- defined as a complex type to get castor to produce a new bean for us. -->
