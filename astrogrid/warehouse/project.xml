@@ -142,9 +142,6 @@ This is the configuration file for an Astrogrid data centre - it can be speciali
     </developerConnection>
   </repository>
 
-<<<<<<< project.xml
-<reports>
-=======
   <developers>
     <developer>
       <name>Kona Andrews</name>
@@ -329,7 +326,7 @@ This is the configuration file for an Astrogrid data centre - it can be speciali
   </build>
 
   <reports>
->>>>>>> 1.26
+
     <report>
       maven-changelog-plugin
     </report>
