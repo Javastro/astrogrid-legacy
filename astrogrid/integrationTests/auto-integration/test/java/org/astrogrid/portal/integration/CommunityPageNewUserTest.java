@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityPageNewUserTest.java,v 1.4 2004/07/05 15:48:16 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
+ * $Id: CommunityPageNewUserTest.java,v 1.5 2004/09/02 10:56:26 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
  * Copyright (c) Astrigrid 2004. All rights reserved.
  *  
  */
@@ -120,7 +120,7 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *
      */
     public void testCreateNewAccount() {
-        final String testUser = "Schumie";//+Long.toString(new Date().getTime());
+        final String testUser = "schumie";//+Long.toString(new Date().getTime());
         final String testCommunity = TEST_COMMUNITY;        
         final String testPassword = "sapo";
         final String testDisplayName = "";//"Hyla Cinerea";       
@@ -143,7 +143,38 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
         //Can we log in?
         login(testUser, testCommunity, testPassword);
     }
-    
+    /**
+     * Create a new account and ensure we can login.
+     * At the moment the community sends all usernames to lowercase,
+     * but doesn't do the same when you log in.  This will confuse
+     * our poor user.  Well, it confused poor me anyway. JDT
+     * @TODO check that homespace etc is created.
+     *
+     */
+    public void testCreateNewAccountWithUpperCaseUsername() {
+        final String testUser = "Bunbury";//+Long.toString(new Date().getTime());
+        final String testCommunity = TEST_COMMUNITY;        
+        final String testPassword = "sapo";
+        final String testDisplayName = "";//"Hyla Cinerea";       
+        final String testDescription = "";//"Herbert is an American Green Tree Frog";
+ 
+        System.out.println("Trying to create user:" + testUser);
+        createUser(testUser, testCommunity, testPassword, testDisplayName, testDescription);
+        assertTextPresent("Account inserted");
+        
+        //Pause to allow it to digest that
+        System.out.println("Waiting");
+        
+        try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        System.out.println("Trying to log in");
+        //Can we log in?
+        login(testUser, testCommunity, testPassword);
+    }   
     /**
      * Try to create an account without a username
      *
@@ -165,7 +196,7 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *
      */
     public void testCreateNewAccountNoCommunity() {
-        final String testUser = "Hedley";
+        final String testUser = "hedley";
         final String testCommunity = "";        
         final String testPassword = "Sapo";
         final String testDisplayName = "Hyla Cinerea";       
@@ -181,7 +212,7 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *
      */
     public void testCreateNewAccountNoPassword() {
-        final String testUser = "Hedley";
+        final String testUser = "hedley";
         final String testCommunity = TEST_COMMUNITY;        
         final String testPassword = "";
         final String testDisplayName = "Hyla Cinerea";       
@@ -198,7 +229,7 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *
      */
     public void testCanCreateNewAccountNoDescriptionOrDisplayName() {
-        final String testUser = "Lillian";
+        final String testUser = "lillian";
         final String testCommunity = TEST_COMMUNITY;        
         final String testPassword = "Brian";
         final String testDisplayName = "";       
@@ -231,7 +262,7 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *   Check that we can't create two accounts with the same username
      */
     public void testCantDuplicateAccount() {
-        final String testUser = "Rana";
+        final String testUser = "rana";
         final String testCommunity = TEST_COMMUNITY;        
         final String testPassword = "Sapo";
         final String testDisplayName = "Hyla Cinerea";       
@@ -285,6 +316,12 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
 }
 /*
  * $Log: CommunityPageNewUserTest.java,v $
+ * Revision 1.5  2004/09/02 10:56:26  jdt
+ * Community is currently case-insensitive to account creation,
+ * but case sensitive to logins.  Altered the tests to use lower case
+ * usernames, but added a test (that I expect to fail for now)
+ * to pick up the case problems.
+ *
  * Revision 1.4  2004/07/05 15:48:16  jdt
  * another attempt to get this test to pass....though there seems to be something wrong with
  * the community....maybe an installation problem?
