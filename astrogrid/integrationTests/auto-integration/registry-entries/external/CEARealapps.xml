@@ -2,7 +2,7 @@
 <vr:VODescription xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Pegase</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -42,7 +42,7 @@
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Starburst99</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -461,7 +461,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>annz</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -528,7 +528,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>HyperZ</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -623,7 +623,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Galexyev</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -663,7 +663,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>BPZ</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -846,7 +846,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>SExtractor</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -1113,7 +1113,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>swarp</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -1180,7 +1180,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Resource>
 <vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 <vr:Identifier>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>CrossMatcher</vr:ResourceKey>
 </vr:Identifier>
 <vr:Title>TemplateEntry</vr:Title>
@@ -1327,39 +1327,39 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</ceapd:UI_Name>
 </vr:Interface>
 <cea:ManagedApplications>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Pegase</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Starburst99</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>annz</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>HyperZ</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>Galexyev</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>BPZ</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>SExtractor</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>swarp</vr:ResourceKey>
 </cea:ApplicationReference>
 <cea:ApplicationReference>
-<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+<vr:AuthorityID>org.astrogrid</vr:AuthorityID>
 <vr:ResourceKey>CrossMatcher</vr:ResourceKey>
 </cea:ApplicationReference>
 </cea:ManagedApplications>

@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-<vr:Resource  xsi:type="vg:AuthorityType" >
+<vr:Resource  xsi:type="vg:AuthorityType"  updated="2004-10-25T15:34:22-01:00">
     <Identifier>
       <AuthorityID>org.astrogrid</AuthorityID> <!-- note not the @REGAUTHORITY -->
       <ResourceKey xsi:nil="true"/>

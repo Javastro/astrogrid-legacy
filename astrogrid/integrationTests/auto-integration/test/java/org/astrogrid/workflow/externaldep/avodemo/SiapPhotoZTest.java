@@ -1,5 +1,5 @@
 /*
- * $Id: SiapPhotoZTest.java,v 1.1 2004/10/22 05:57:44 pah Exp $
+ * $Id: SiapPhotoZTest.java,v 1.2 2004/11/09 14:11:18 pah Exp $
  * 
  * Created on 15-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -14,11 +14,13 @@ package org.astrogrid.workflow.externaldep.avodemo;
 
 import org.astrogrid.applications.avodemo.AVODemoConstants;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
@@ -31,6 +33,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
  */
 public class SiapPhotoZTest extends SimpleSiapWorkflowTest {
 
+   private static final String SEXOUTFILEVARNAME = "sexoutname";
    protected final static String SExtractor_SERVICE = AUTHORITYID + "/"
          + AvoDemoTestConstants.SEXTRACTOR;
 
@@ -51,7 +54,12 @@ public class SiapPhotoZTest extends SimpleSiapWorkflowTest {
 
    protected void buildWorkflow() throws Exception {
       super.buildWorkflow(); // use the siap step from there
-
+//    add the variable set for the output file name at the top of the workflow.
+      Set setvar = new Set();
+      setvar.setVar(SEXOUTFILEVARNAME);
+      Ivorn sexoutfilestub = createIVORN("/intwfsexout");
+      setvar.setValue(sexoutfilestub.toString());
+      wf.getSequence().addActivity(0, setvar); 
       //add a script to parse the urls out of the votable
       Script sc = new Script();
       sc
@@ -65,7 +73,8 @@ public class SiapPhotoZTest extends SimpleSiapWorkflowTest {
       forstep.setItems("${urls}");
       forstep.setVar("theURL");
       sc = new Script();
-      sc.setBody("jes.info('calling sextractor for ${theURL}')");
+      sc.setBody("jes.info('calling sextractor for ${theURL}')\n" +
+      		"n++");
       Sequence seq = new Sequence();
       seq.addActivity(sc);
 
@@ -115,7 +124,7 @@ public class SiapPhotoZTest extends SimpleSiapWorkflowTest {
       param = new ParameterValue();
       output.addParameter(param);
       param.setName("CATALOG_NAME");
-      param.setValue("tobereturned");
+      param.setValue("${"+SEXOUTFILEVARNAME+"}${n}");
 
       param.setIndirect(false);
       assertTrue("tool is not valid", tool.isValid());

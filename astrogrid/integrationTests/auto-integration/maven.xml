@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.126 2004/10/29 14:25:14 nw Exp $ -->
+<!-- $Id: maven.xml,v 1.127 2004/11/09 14:11:18 pah Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -40,10 +40,12 @@
 <!-- properties that should be overridden when deploying real components -->
 <property name="cea.app.id" value="testdsa" /><!--this is a property that will be set when installing a single cea application-->
 <property name="cea.cmd.config" value="file://${work.dir}/cea/commandline/config/TestApplicationConfig.xml"/>
+<property name="cea.reg.template" value="file://${work.dir}/cea/CEARegistryTemplate.xml"/>
 <property name="toolbasedir" value="${work.dir}/cea/commandline/work/" />
-
-
-                        <!--+
+<property name="registry.exclusions" value="examples/**" />
+	
+		
+			<!--+
     | need to rationalize the use of the astrogrid.iteration - pah
     | better name would be astrogrid.release - i.e. it is intended to be SNAPSHOT for the current iteration and the iteration TAG for preious ones
     +-->
@@ -84,8 +86,9 @@
         <filter token="CENTRALREGISTRY" value="${registry.endpoint}"/>
         <filter token="TOMCATUSER" value="${tomcat.manager.username}"/>
         <filter token="TOMCATPASS" value="${tomcat.manager.password}"/>
-                <filter token="CEAAPPID" value="${cea.app.id}"/>
-                <filter token="CEACMDCONFIG" value="${cea.cmd.config}" />
+		<filter token="CEAAPPID" value="${cea.app.id}"/>
+		<filter token="CEACMDCONFIG" value="${cea.cmd.config}" />
+		<filter token="CEAREGTEMPLATE" value="${cea.reg.template}" />
 
 <!-- setup -->
 <goal name="astrogrid-clean" prereqs="clean:clean">
@@ -388,27 +391,27 @@
         <!-- expand tokens -->
         <copy todir="${temporary.dir}/registry-entries" filtering="true">
                 <fileset dir="registry-entries">
-                        <include name="**/*.xml" />
-                        <exclude name="examples/**" />
+                        <include name="**/*.xml" />						
+                        <exclude name="${registry.exclusions}" />
                 </fileset>
         </copy>
         <!-- now upload each one -->
         <pathconvert property="entriesr" pathsep=" ">
                 <path>
                         <fileset dir="${temporary.dir}/registry-entries">
-                                                        <exclude name="**/ARegistry.xml" />
-                                                </fileset>
+							<exclude name="**/ARegistry.xml" />
+						</fileset>
                 </path>
         </pathconvert>
             <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
 
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-                                <j:if test="${not(registry.dontuploadregistrytypeentry == true)}">
+			        <j:if test="${not('yes' == (context.getVariable('registry.dontuploadregistrytypeentry')))}">			
                         <ag:register file="${temporary.dir}/registry-entries/ARegistry.xml" />
-                                        </j:if>
+					</j:if>
                         <ag:register file="${temporary.dir}/registry-entries/AstrogridStandardAuthority.xml" />
                         <ag:register file="${temporary.dir}/registry-entries/AuthorityTest.xml" />
-
+						
 
                 <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
                 <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
@@ -635,9 +638,9 @@
         <copy todir="${temporary.dir}/cea-commandline" filtering="true">
                 <fileset dir="contexts/cea-commandline" />
         </copy>
-                <echo>
-                        using config file ${cea.cmd.config}
-                </echo>
+		<echo>
+			using config file ${cea.cmd.config}
+		</echo>
        <ag:maybe-enable-cougaar webapp="cea-commandline" />
         <war update="true" destfile="${temporary.dir}/astrogrid-cea-commandline-${pom.currentVersion}.war">
                 <metainf dir="${temporary.dir}/cea-commandline"/>

@@ -1,9 +1,8 @@
 <Context path="/astrogrid-cea-commandline-@VERSION@">
   <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/commandline/store" />
   
-<!--optional - picks up a default template from the classpath - can override to set up personalised values in template
-<Environment name="cea.registry.template.url" decription="The template registry entry" type="java.lang.String" value="@CONFIGPATH@/CEARegistryTemplate.xml" />
--->
+<!--optional - picks up a default template from the classpath - can override to set up personalised values in template -->
+<Environment name="cea.registry.template.url" decription="The template registry entry" type="java.lang.String" value="file://@WORKDIR@/cea/CEARegistryTemplate.xml" />
 <Environment name="cea.commandline.workingdir.file" description="The working directory where execution environments are created" type="java.lang.String" value="@WORKDIR@/cea/commandline/work" />
 <Environment name="cea.commandline.description.list.url" description="The configuration file for applications" type="java.lang.String" value="@CEACMDCONFIG@"/>
 

@@ -4,6 +4,9 @@
   <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String" value="@CONFIGPATH@/AstroGridConfig.properties" />
   -->
   <Environment name="cea.filestore.basedir" override="false" type="java.lang.String" value="@WORKDIR@/cea/java/store" />
+  <Environment name="cea.application.authorityid" description="The authority ID under which applications will be registered" type="java.lang.String"
+		value="@REGAUTHORITY@"/>
+
 <!-- registry endpoints - these are essential for the proper working of CEA -
         it needs to be able to query the registry to do myspace operations and can update the registry with its own configuration
         I suspect that most of the components will need the query endpoint-->

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.19 2004/09/16 21:58:06 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.20 2004/11/09 14:11:18 pah Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,7 +83,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         JobURN urn = null;
         try {
             buildWorkflow();
-            //NWWwriteWorkflowToVOSpace(wf);
+            writeWorkflowToVOSpace(wf);
             assertTrue("workflow is not valid", wf.isValid());
             urn = jes.submitWorkflow(wf);
             assertNotNull("submitted workflow produced null urn", urn);
@@ -357,6 +357,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.20  2004/11/09 14:11:18  pah
+more rationalization of registering
+
 Revision 1.19  2004/09/16 21:58:06  nw
 don'y seem able to write out workflow to myspace - seems to cause no end of problems - so commented out for now.
 
