@@ -15,8 +15,13 @@
     </servlet>
 
     <servlet>
-        <servlet-name>Browser</servlet-name>
-        <servlet-class>Browser</servlet-class>
+        <servlet-name>Picker</servlet-name>
+        <servlet-class>org.astrogrid.slinger.ui.servlet.PickerServlet</servlet-class>
     </servlet>
+
+  <welcome-file-list id="WelcomeFileList">
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
 
 </web-app>
