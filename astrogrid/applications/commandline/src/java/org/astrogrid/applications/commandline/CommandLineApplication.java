@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.2 2004/07/01 11:07:59 nw Exp $
+ * $Id: CommandLineApplication.java,v 1.3 2004/07/09 11:00:21 nw Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -194,12 +194,12 @@ public class CommandLineApplication extends AbstractApplication implements Runna
                 reportError("There was a problem writing back parameter "+adapter.getWrappedParameter().getName(),e);
          }            
       }        
-      // The application has now finished - including any manipulations of results.
-      setStatus(Status.COMPLETED); // always need to do this - it notifies that results are ready to be consumed.
 
       reportMessage("The application has completed with exit status="+exitStatus);
       if (exitStatus != 0) {
           setStatus(Status.ERROR); // but its probably not a very big error...
+      } else {
+          setStatus(Status.COMPLETED);//it notifies that results are ready to be consumed.
       }
    }
    
