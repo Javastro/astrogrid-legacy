@@ -1,5 +1,5 @@
 /*
- * $Id: SelfMonitorBody.java,v 1.3 2004/10/05 15:28:33 mch Exp $
+ * $Id: SelfMonitorBody.java,v 1.4 2004/10/05 18:05:02 mch Exp $
  */
 
 package org.astrogrid.status;
@@ -58,6 +58,7 @@ public class SelfMonitorBody  {
          String fg = "#000000"; //default to foreground black
          if (task.getStage() == TaskStatus.ABORTED)  { bg = "#FFFFAA"; } //yellow/orange
          if (task.getStage() == TaskStatus.ERROR)    { bg = "#FFAAAA"; } //black on red
+         if (task.getStage() == TaskStatus.RUNNING)  { bg = "#AAFFAA"; } //green
          if (task.getStage() == TaskStatus.COMPLETE) { bg = "#AAAAFF"; } //blue
          
          out.write("<tr bgcolor='"+bg+"' fgcolor='"+fg+"'>");
