@@ -40,7 +40,7 @@
      <Description>Master Declination J2000</Description>
    </Column>
 
-<-- and these ones! CX  float    Cartesian x of unit (ra,dec) vector on celestial sphere
+<!-- and these ones! CX  float    Cartesian x of unit (ra,dec) vector on celestial sphere
 CY    float    Cartesian y of unit (ra,dec) vector on celestial sphere
 CZ    float    Cartesian z of unit (ra,dec) vector on celestial sphere
 GL    float    galactic longitude
