@@ -1,11 +1,11 @@
-/*$Id: AbstractJobStepTest.java,v 1.2 2003/08/22 15:50:31 nw Exp $
+/*$Id: AbstractJobStepTest.java,v 1.3 2003/08/27 23:59:35 mch Exp $
  * Created on 22-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.impl.abstr;
@@ -51,23 +51,26 @@ public class AbstractJobStepTest extends JobStepTestSpec {
      */
     protected Query createQuery() {
         try {
-        return new Query(null,null);
+        return new Query(null);
         } catch (QueryException e) {
             fail("Could not create query " + e.getMessage());
         }
         return null;
     }
-    
+
 
 }
 
 
-/* 
+/*
 $Log: AbstractJobStepTest.java,v $
+Revision 1.3  2003/08/27 23:59:35  mch
+removed tabs (?) and QueryFactory from Query constructor
+
 Revision 1.2  2003/08/22 15:50:31  nw
 tidied imports
 
 Revision 1.1  2003/08/22 10:37:48  nw
 added test hierarchy for Job / JobStep
- 
+
 */
