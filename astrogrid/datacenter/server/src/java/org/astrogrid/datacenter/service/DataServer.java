@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.20 2004/03/15 17:12:28 mch Exp $
+ * $Id: DataServer.java,v 1.21 2004/03/15 17:50:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -173,8 +173,8 @@ public class DataServer
    
    /**
     * Returns number of queries tracked */
-   public long getNumQueries() {
-      return querierManager.getQueriers().size();
+   public String[] getRunning() {
+      return querierManager.getRunning();
    }
    
    

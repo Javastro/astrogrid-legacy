@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.6 2004/03/15 17:12:28 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.7 2004/03/15 17:50:43 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -159,20 +159,40 @@ public class HtmlDataServer
     */
    public String serverStatusAsHtml() {
 
+      String[] running = server.querierManager.getRunning();
+      
       StringBuffer html = new StringBuffer(
          "<html>\n"+
          "<head><title>Datacenter Service Status </title></head>\n"+
          "<body>\n"+
          "<h1>Datacenter Service Status at "+new Date()+"</h1>\n"+
          "<p>Started: "+server.startTime+"</p>"+
-         "<p>Num Queries: "+server.getNumQueries()+"</p>"+
-         "<p>Free memory:"+Runtime.getRuntime().freeMemory()+"</p>"+
-         "<p>Max memory:"+Runtime.getRuntime().maxMemory()+"</p>"+
-         "<p>Total memory:"+Runtime.getRuntime().totalMemory()+"</p>"+
+         "<h3>Memory</h3>"+
+         "<p>Free:"+Runtime.getRuntime().freeMemory()+"<br/>"+
+         "Max:"+Runtime.getRuntime().maxMemory()+"<br/>"+
+         "Total:"+Runtime.getRuntime().totalMemory()+"<br/></p>\n"+
+         "<h3>Load</h3>"+
+         "<p>Running Queries: "+running.length+"</p");
+
+      for (int i=0;i<running.length;i++) {
+         html.append(running[i]+"<br/>\n");
+      }
+   
+      String[] done = server.querierManager.getRan();
+
+      html.append(
+         "</p>"+
+         "<h3>History</h3>"+
+         "<p>Closed Queries: "+done.length+"</p");
+
+      for (int i=0;i<done.length;i++) {
+         html.append(done[i]+"<br/>\n");
+      }
+      
+      html.append(
+         "</p>"+
          "</body>\n"+
          "</html>\n");
-      
-      server.querierManager.getQueriers().size();
       
       return html.toString();
    }

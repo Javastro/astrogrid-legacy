@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.21 2004/03/13 23:38:46 mch Exp $
+/*$Id: QuerierManager.java,v 1.22 2004/03/15 17:50:57 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,10 +15,8 @@ import java.util.Collection;
 import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.queriers.status.QuerierClosed;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.store.Agsl;
 
 /** Manages the construction and initialization of Queriers, and maintains a
  * collection of current Queriers. It might run queues or something... later...
@@ -36,7 +34,10 @@ public class QuerierManager implements QuerierListener {
    private String managerId;
    
    /** lookup table of all the current queriers indexed by their handle*/
-   private Hashtable queriers = new Hashtable();
+   private Hashtable runningQueriers = new Hashtable();
+
+   /** lookup table of old queriers */
+   private Hashtable closedQueriers = new Hashtable();
    
    /** Special ID used to create a test querier for testing getStatus,. etc */
    public final static String TEST_QUERIER_ID = "TestQuerier:";
@@ -49,26 +50,27 @@ public class QuerierManager implements QuerierListener {
       this.managerId = givenId;
    }
 
-   /** Return the querier with the given id; if the given ID is the special
-    * test one, creates a new test Querier */
+   /** Return the querier with the given id */
    public Querier getQuerier(String qid) {
 
-      /* use an existing, old query...
-      if (qid.startsWith(TEST_QUERIER_ID)) {
-         
-         return Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(), (Agsl) null, QueryResults.FORMAT_VOTABLE);
-      }
-       */
+      Querier q = (Querier) runningQueriers.get(qid);
+      if (q != null) return q;
       
-      return (Querier) queriers.get(qid);
+      q = (Querier) closedQueriers.get(qid);
+      return q;
    }
    
-   /** Returns a list of all the currently running queriers
+   /** Returns a list of all the ids of the currently running queriers
     */
-   public Collection getQueriers() {
-      return queriers.values();
+   public String[] getRunning() {
+      return (String[]) runningQueriers.keySet().toArray(new String[] {});
    }
    
+   /** Returns the IDs of the queriers already run
+    */
+   public String[] getRan() {
+      return (String[]) closedQueriers.keySet().toArray(new String[] {});
+   }
    /**
     * Adds the given querier to this manager, and starts it off on a new
     * thread
@@ -76,11 +78,11 @@ public class QuerierManager implements QuerierListener {
    public void submitQuerier(Querier querier)  {
       
       //assigns handle
-      if (queriers.get(querier.getId()) != null) {
+      if (runningQueriers.get(querier.getId()) != null) {
          log.error( "Handle '" + querier.getId() + "' already in use");
          throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
       }
-      queriers.put(querier.getId(), querier);
+      runningQueriers.put(querier.getId(), querier);
       querier.addListener(this);
       
       Thread qth = new Thread(querier);
@@ -93,31 +95,26 @@ public class QuerierManager implements QuerierListener {
    public QuerierStatus askQuerier(Querier querier)  throws IOException {
       
       //assigns handle
-      if (queriers.get(querier.getId()) != null) {
+      if (runningQueriers.get(querier.getId()) != null) {
          log.error( "Handle '" + querier.getId() + "' already in use");
          throw new IllegalArgumentException("Handle " + querier.getId() + "already in use");
       }
-      queriers.put(querier.getId(), querier);
+      runningQueriers.put(querier.getId(), querier);
       querier.addListener(this);
       querier.ask();
       return querier.getStatus();
    }
 
-   /**
-    * Removes the querier indexed by the given id from this manager
-    * commented out at the moment as I think only other managers should be
-    * able to do this... havne't thought enough about it.
-   public void removeQuerier(String id)  {
-      Querier q = (Querier) queriers.get(id);
-      q.removeListener(this);
-      
-      queriers.remove(id);
-   }
    
    /** A Querier manager must listen to it's queriers
     */
    public void queryStatusChanged(Querier querier) {
-      // TODO
+
+      //if it's changed to closed, then move to closed list
+      if (querier.getStatus() instanceof QuerierClosed) {
+         runningQueriers.remove(querier.getId());
+         runningQueriers.put(querier.getId(), querier);
+      }
    }
    
    
@@ -129,6 +126,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.22  2004/03/15 17:50:57  mch
+ Added 'closed' querier queue and more published status information
+
  Revision 1.21  2004/03/13 23:38:46  mch
  Test fixes and better front-end JSP access
 
