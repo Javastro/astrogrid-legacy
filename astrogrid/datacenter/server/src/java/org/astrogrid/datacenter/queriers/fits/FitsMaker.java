@@ -1,4 +1,4 @@
-/*$Id: FitsMaker.java,v 1.2 2004/07/26 13:53:44 KevinBenson Exp $
+/*$Id: FitsMaker.java,v 1.3 2004/08/10 12:07:03 KevinBenson Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -114,7 +114,8 @@ public class FitsMaker {
       }
       else if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
          //xsltDoc = "adql073-2-sql.xsl";
-         xsltDoc = "ADQLToXQL-0_73.xsl";
+         //xsltDoc = "ADQLToXQL-0_73.xsl";
+        xsltDoc = "adql073-2-xql_fits.xsl";
       }
       else if (namespaceURI.equals("http://www.ivoa.net/xml/ADQL/v0.7.4")) {
          xsltDoc = "adql074-2-sql.xsl";
@@ -137,7 +138,9 @@ public class FitsMaker {
       Transformer transformer = null;
       try {
          //find specified sheet on classpath/working directory
-         InputStream xsltIn = new BufferedInputStream(FitsMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
+         //InputStream xsltIn = new BufferedInputStream(FitsMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
+        ClassLoader loader = this.getClass().getClassLoader();
+        InputStream xsltIn = loader.getResourceAsStream(xsltDoc);
       
          if (xsltIn == null) {
             throw new QueryException("Could not find/create ADQL->XQL transformer doc "+xsltDoc);
@@ -188,6 +191,12 @@ public class FitsMaker {
 
 /*
 $Log: FitsMaker.java,v $
+Revision 1.3  2004/08/10 12:07:03  KevinBenson
+result of merge with kev_09_08_04_RT fixing the fits problem with xsl stylesheet
+
+Revision 1.2.10.1  2004/08/10 12:01:34  KevinBenson
+small change to reference another xsl stylesheet
+
 Revision 1.2  2004/07/26 13:53:44  KevinBenson
 Changes to Fits to do an xquery on an xml file dealing with fits data.
 Small xsl style sheet to make the xql which will get the filename element
