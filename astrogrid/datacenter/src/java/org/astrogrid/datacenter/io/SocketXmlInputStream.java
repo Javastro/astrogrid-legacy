@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlInputStream.java,v 1.1 2003/09/14 22:07:12 mch Exp $
+ * $Id: SocketXmlInputStream.java,v 1.2 2003/09/15 11:16:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -54,9 +54,10 @@ public class SocketXmlInputStream extends FilterInputStream implements AsciiCode
       }
 
       Document doc = XMLUtils.newDocument(new StringBufferInputStream(inBuffer.toString()));
-      Log.trace("SocketHandler: incoming document root tag="+doc.getDocumentElement().getNodeName());
+      Log.trace("SocketXmlInputStream: incoming document root tag="+doc.getDocumentElement().getNodeName());
       return doc;
    }
 
 }
+
 
