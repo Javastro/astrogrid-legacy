@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.3 2004/05/17 12:37:31 pah Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.4 2004/07/01 11:47:17 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.integration;
+
+import net.sourceforge.groboutils.junit.v1.IntegrationTestCase;
 
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
@@ -24,7 +26,7 @@ import junit.framework.TestCase;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class AbstractTestForIntegration extends TestCase {
+public class AbstractTestForIntegration extends IntegrationTestCase {
    /**
      * Constructor for AbstractTestForIntegration.
      * @param arg0
@@ -70,6 +72,9 @@ public class AbstractTestForIntegration extends TestCase {
     public static final String TESTDSA = COMMUNITY + "/testdsa";
     public static final String TESTAPP = COMMUNITY + "/testapp";
     public static final String TESTAPP2 = COMMUNITY + "/testap2"; //note it isn't double 'p'
+    public static final String HELLO_WORLD = COMMUNITY + "/helloWorld";
+    public static final String HELLO_YOU = COMMUNITY + "/helloYou";
+    public static final String SUM = COMMUNITY + "/sum";
     
    protected Ivorn createIVORN(String path)
    {
@@ -81,6 +86,13 @@ public class AbstractTestForIntegration extends TestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.4  2004/07/01 11:47:17  nw
+made our integration-test base case extend groboUtils IntegrationTestCase
+this means that 'softAssertions' can be used in any of the integration tests now.
+soft assertion - the test will continue, even if the assertion fails
+(very handy for testing a lot of things after a complex initialization).
+each soft assertion appears as a separate test in the reports.
+
 Revision 1.3  2004/05/17 12:37:31  pah
 Improve CEA tests that call application controller directly
 
