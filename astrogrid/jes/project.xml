@@ -23,8 +23,11 @@
   
   <repository>
     <connection>
-      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
     </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+    </developerConnection>
   </repository>
   
   <developers>
@@ -37,8 +40,40 @@
   
   <dependencies>
     <dependency>
+      <id>axis</id>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>jax-qname</id>
+      <version>UNKNOWN</version>
+      <jar>jax-qname.jar</jar>
+    </dependency>
+
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>jconn</id>
+      <version>UNKNOWN</version>
+      <jar>jconn2.jar</jar>
+    </dependency>
+
+    <dependency>
       <id>junit</id>
       <version>3.8</version>
+    </dependency>
+
+    <dependency>
+      <id>log4j</id>
+      <version>1.2.4</version>
+    </dependency>
+
+    <dependency>
+      <id>saaj-api</id>
+      <version>1.1.1</version>
     </dependency>
   </dependencies>
   
@@ -62,6 +97,9 @@
     </report>
     <report>
       maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-clover-plugin
     </report>
     <report>
       maven-developer-activity-plugin
@@ -92,6 +130,9 @@
     </report>
     <report>
       maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
     </report>
   </reports>
 </project>
