@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplication.java,v 1.6 2004/08/28 07:17:34 pah Exp $
+ * $Id: CommandLineApplication.java,v 1.7 2004/08/30 08:12:22 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -28,7 +28,6 @@ import org.astrogrid.workflow.beans.v1.Tool;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bouncycastle.crypto.BufferedAsymmetricBlockCipher;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
