@@ -1,10 +1,19 @@
 /*
- * $Id: Configuration.java,v 1.6 2003/09/09 17:47:21 mch Exp $
+ * $Id: Configuration.java,v 1.7 2003/09/15 15:47:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.config;
+
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Properties;
+import org.astrogrid.log.Log;
+
 
 /**
  * A static singleton so that all packages have access to the *same*
@@ -35,21 +44,14 @@ package org.astrogrid.datacenter.config;
  * @author M Hill
  */
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Properties;
-
-import org.astrogrid.log.Log;
-
 public abstract class Configuration
 {
    /** Made-up constant */
-   public static String DEFAULT_FILENAME = "AstroGridConfig.properties";
+   public static final String DEFAULT_FILENAME = "AstroGridConfig.properties";
 
-   /** List of locations that the configuration file has been loaded from */
-   public static String locations = null;
+   /** For debug purposes - a list of locations that the configuration file
+    * has been loaded from @see getLocations() */
+   private static String locations = null;
 
    /** The way this implementation works, from a Properties file */
    private static Properties properties = new Properties();
