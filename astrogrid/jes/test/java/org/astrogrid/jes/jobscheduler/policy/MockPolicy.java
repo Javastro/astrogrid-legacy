@@ -1,4 +1,4 @@
-/*$Id: MockPolicy.java,v 1.7 2004/03/15 01:29:13 nw Exp $
+/*$Id: MockPolicy.java,v 1.8 2004/03/18 01:29:17 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,15 @@ import junit.framework.Test;
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
  *
  */
-public class MockPolicy extends AbstractPolicy implements Policy, ComponentDescriptor {
+public class MockPolicy extends AbstractPolicy implements Policy{
     /** Construct a new MockPolicy
      * 
      */
     public MockPolicy() {
         super();
         logger.info("Creating Mock Policy - job is always RUNNING, schedules every pending step");
+        this.name = "MockPolicy";
+        this.description =  "Always returns a running job status, finds all pending job steps";
     }
 
     /**
@@ -44,32 +46,14 @@ public class MockPolicy extends AbstractPolicy implements Policy, ComponentDescr
         registerFunctions(job);
         return (Step)job.findXPathValue("//*[jes:isStep() and jes:latestStatus() = '" + ExecutionPhase.PENDING + "']");
     }
-
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
-     */
-    public String getName() {
-        return "MockPolicy";
-    }
-
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
-     */
-    public String getDescription() {
-        return "Always returns a running job status, finds all pending job steps";
-    }
-
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
-     */
-    public Test getInstallationTest() {
-        return null;
-    }
 }
 
 
 /* 
 $Log: MockPolicy.java,v $
+Revision 1.8  2004/03/18 01:29:17  nw
+tidied
+
 Revision 1.7  2004/03/15 01:29:13  nw
 factored component descriptor out into separate package
 
