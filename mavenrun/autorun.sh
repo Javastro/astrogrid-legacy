@@ -1,5 +1,6 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.17 2004/07/04 23:05:45 jdt Exp $ 
+# $Id: autorun.sh,v 1.18 2004/07/20 13:08:05 jdt Exp $ 
+# Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
 #setup paths etc
@@ -19,10 +20,12 @@ export CVSROOT=:pserver:anoncvs@cvs.astrogrid.org:/devel
 rm $LOGFILE
 echo "Integration Test Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
+#Use old style download counter
+MY_OPTS=maven -Dmaven.download.meter=bootstrap
 
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo "Undeploying old apps..." >> $LOGFILE
-if maven undeploy-all >> $LOGFILE 2>&1
+if maven $MY_OPTS undeploy-all >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOGFILE
 else
@@ -50,7 +53,7 @@ $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
 echo "Deploying new apps..." >> $LOGFILE
 
-if maven  deploy-all >> $LOGFILE 2>&1
+if maven $MY_OPTS deploy-all >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOGFILE
 else
@@ -60,7 +63,7 @@ fi
 
 echo "Running tests..." >> $LOGFILE
 
-if maven -Dorg.astrogrid.autobuild=true astrogrid-deploy-site >> $LOGFILE 2>&1
+if maven $MY_OPTS astrogrid-deploy-site >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOGFILE
 else
