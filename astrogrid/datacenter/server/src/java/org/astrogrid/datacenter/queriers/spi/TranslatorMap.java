@@ -1,4 +1,4 @@
-/*$Id: TranslatorMap.java,v 1.3 2004/01/15 12:00:55 nw Exp $
+/*$Id: TranslatorMap.java,v 1.4 2004/01/15 12:08:05 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.queriers.spi;
 
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 
-/** A container for language translators
+/** A container for {@link Translator} objects
  * <p>
  * Allows access to translators keyed by xmlns namespace IDs.
  * @see Translator
@@ -38,6 +38,9 @@ public interface TranslatorMap {
 
 /* 
 $Log: TranslatorMap.java,v $
+Revision 1.4  2004/01/15 12:08:05  nw
+improved documentation
+
 Revision 1.3  2004/01/15 12:00:55  nw
 improved documentation
 
