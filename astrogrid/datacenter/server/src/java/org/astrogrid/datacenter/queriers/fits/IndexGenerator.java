@@ -132,26 +132,26 @@ public class IndexGenerator
       String key = null;
       String val = null;
 
-      if (header.getNumAxis() >= 2) {      
+      if (header.getNumAxis() != null && header.getNumAxis() >= 2) {      
          //return "";
       
-      //work out coverage.  This is not a straightforward rectangle, as the
-      //image may be rotated and possibly even skewed.  So just give it as a
-      //polygon with 4 points.
-      FitsWCS wcsCalculator = new FitsWCS(header);
-      double maxPixelX = header.get("NAXIS1").toInt();
-      double maxPixelY = header.get("NAXIS2").toInt();
-
-      double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
-      double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelY});
-      double[] point3 = wcsCalculator.toWCS( new double[] {maxPixelX,maxPixelY});
-      double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelX,0});
-      
-      //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
-      coverageSnippet.append( "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
-                              "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
-                              "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
-                              "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n");
+         //work out coverage.  This is not a straightforward rectangle, as the
+         //image may be rotated and possibly even skewed.  So just give it as a
+         //polygon with 4 points.
+         FitsWCS wcsCalculator = new FitsWCS(header);
+         double maxPixelX = header.get("NAXIS1").toInt();
+         double maxPixelY = header.get("NAXIS2").toInt();
+   
+         double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
+         double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelY});
+         double[] point3 = wcsCalculator.toWCS( new double[] {maxPixelX,maxPixelY});
+         double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelX,0});
+         
+         //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
+         coverageSnippet.append( "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
+                                 "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
+                                 "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
+                                 "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n");
       }//if
                                 
       //run trhough all keywords adding them
@@ -327,6 +327,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.9  2004/07/29 11:05:45  KevinBenson
+small change to make sure the header is not null
+
 Revision 1.8  2004/07/26 13:53:44  KevinBenson
 Changes to Fits to do an xquery on an xml file dealing with fits data.
 Small xsl style sheet to make the xql which will get the filename element
