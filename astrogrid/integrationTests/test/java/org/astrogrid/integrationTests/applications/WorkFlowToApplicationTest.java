@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.2 2004/02/17 23:59:17 jdt Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.3 2004/03/04 11:45:03 pah Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,24 +19,36 @@ import java.util.Vector;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.applications.beans.v1.Parameter;
+import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
+import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.astrogrid.applications.common.config.ConfigLoader;
 import org.astrogrid.community.User;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.beans.v1.Group;
 import org.astrogrid.integrationTests.common.ConfManager;
+import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.JesDelegateFactory;
+import org.astrogrid.jes.delegate.JobController;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
 import org.astrogrid.portal.workflow.WKF;
-import org.astrogrid.portal.workflow.design.Cardinality;
-import org.astrogrid.portal.workflow.design.JoinCondition;
-import org.astrogrid.portal.workflow.design.Parameter;
-import org.astrogrid.portal.workflow.design.Sequence;
-import org.astrogrid.portal.workflow.design.Step;
-import org.astrogrid.portal.workflow.design.Tool;
-import org.astrogrid.portal.workflow.design.Workflow;
+import org.astrogrid.workflow.beans.v1.Activities;
+import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
+import org.astrogrid.workflow.beans.v1.Sequence;
+import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
+import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.types.StepJoinConditionType;
 
 
 
 /**
+ * Exercises the workflow object model, then submits the job created to run a test application.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
@@ -79,8 +91,7 @@ public class WorkFlowToApplicationTest extends TestCase {
 
    }
 
-   public void testRun() {
-      Cardinality cardinality = null;
+   public void testRun() throws JesDelegateException, IOException {
       // need to put a file into mySpace
       Vector servers = new Vector();
       servers.add("serv1");
@@ -129,15 +140,22 @@ public class WorkFlowToApplicationTest extends TestCase {
       Step step = null;
       String wfXML = null;
 
-      workflow = Workflow.createWorkflow(communitySnippet(), workflowName, description);
+      workflow = new Workflow();
+      workflow.setName(workflowName);
+      workflow.setDescription(description);
 
-      sequence = new Sequence(workflow);
-      workflow.setChild(sequence);
-      step = sequence.createStep(0);
+      sequence = new Sequence();
+      Activities activities = new Activities();
+      activities.addActivity(sequence);
+     
+      workflow.setActivities(activities);
+     
+      step = new Step();
       step.setName("One step sequence");
       step.setDescription("One step sequence containing test tool");
-      step.setJoinCondition(JoinCondition.ANY);
-
+      step.setJoinCondition(StepJoinConditionType.ANY);
+      sequence.addActivity(step);
+      
       // Setting sequence and step numbers shows a weakness in the current approach.
       // These should be auto-generated in some fashion...
       step.setSequenceNumber(1);
@@ -145,43 +163,71 @@ public class WorkFlowToApplicationTest extends TestCase {
 
       // set up the tool - totally manually
 
-      Tool tool = new Tool("testapp");
-      cardinality = new Cardinality(1, 1);
+      Tool tool = new Tool();
+      tool.setName("testapp");
+      
+      Input inputs = new Input();
 
-      Parameter param = tool.newInputParameter("P1");
-      param.setCardinality(cardinality);
-      param.setType("xs:integer");
-      param.setValue("15");
+      ParameterValue param = new ParameterValue();
+      param.setName("P1");
+      param.setType(ParameterTypes.INTEGER);
+      
+      param.setContent("15");
+      inputs.addParameter(param);
 
-      param = tool.newInputParameter("P2");
-      param.setCardinality(cardinality);
-      param.setType("xs:double");
-      param.setValue("25.4");
+      
+      param = new ParameterValue();
+      param.setName("P2");
+      param.setType(ParameterTypes.DOUBLE);
+      param.setContent("25.4");
 
-      param = tool.newInputParameter("P4");
-      param.setCardinality(cardinality);
-      param.setType("xs:string");
-      param.setValue("Hello World");
+      param = new ParameterValue();
+      param.setName("P4");
+      param.setType(ParameterTypes.STRING);
+      param.setContent("Hello World");
 
-      param = tool.newInputParameter("P9");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
-      param.setValue(infileName);
+      param = new ParameterValue();
+      param.setName("p9");
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+      param.setContent(infileName);
       
       
       // output
+      Output outputs = new Output();
+     
+      param = new ParameterValue();
+      param.setName("P3");
+      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+      param.setContent(outFilename);
       
-      param = tool.newOutputParameter("P3");
-      param.setCardinality(cardinality);
-      param.setType("agpd:MySpace_FileReference");
-      param.setValue(outFilename);
       
+      tool.setInput(inputs);
+      tool.setOutput(outputs);
       //put the tool in the step...
       step.setTool(tool);
 
-      rc = Workflow.submitWorkflow( communitySnippet(), workflow ) ;
-      logger.info( "JobController says: " + rc ) ;
-
+      // set up the credentials TODO - should have a common util to do this for the intgration tests...
+      
+      Credentials credentials = new Credentials();
+      Account account = new Account();
+      account.setName("anonymous");
+      account.setCommunity("test.astrogrid.org");
+      credentials.setAccount(account);
+      Group group = new Group();
+      group.setName("test");
+      group.setCommunity("test.astrogrid.org");
+      credentials.setGroup(group);
+      credentials.setSecurityToken("dummy");
+      
+      workflow.setCredentials(credentials);
+      
+      
+      //submit the job....
+         
+      JobController jobcon = JesDelegateFactory.createJobController(ConfManager.getInstance().getJobControllerEndPoint());  
+      
+      jobcon.submitJob(workflow);      
+ 
    }
 
    /**
