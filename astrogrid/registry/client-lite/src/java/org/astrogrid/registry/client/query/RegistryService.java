@@ -303,7 +303,7 @@ public class RegistryService  {
       }
       System.out.println("The AccessURL = " + returnVal);
       System.out.println("The Invocation = " + invocation);
-      if(returnVal != null && returnVal.indexOf("?wsdl") > 0 && "WebService".equals(invocation)) {
+      if(returnVal != null && returnVal.indexOf("wsdl") > 0 && "WebService".equals(invocation)) {
          System.out.println("Get URL from WSDL");      
          WSDLBasicInformation wsdlBasic = getBasicWSDLInformation(doc);
          returnVal = (String)wsdlBasic.getEndPoint().values().iterator().next();
