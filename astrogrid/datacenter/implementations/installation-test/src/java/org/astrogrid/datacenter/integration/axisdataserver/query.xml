@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<!-- simple template query -fill in table to perform a select *
+<query type="adql">
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>_tablename_</Name>
+					<AliasName>t</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+	</TableClause>
+</Select>
+</query>

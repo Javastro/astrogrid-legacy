@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <extend>${basedir}/../../project-base.xml</extend>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+
+  <!-- a unique name for this project -->
+  <id>installation-test</id>
+
+  <!-- a short but descriptive name for the project -->
+  <name>Datacenter Installation Checker</name>
+
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-dev -->
+  <currentVersion>HEAD</currentVersion>
+
+
+  <description>
+	Tool that connects to a datacenter and exercises its methods - checks the server is available, etc.
+  </description>
+  <!-- a short description of what the project does -->
+  <shortDescription>
+    Datacenter Installation Checker
+  </shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/datacenter/implementations/installation-test</siteDirectory>
+
+  <!-- the version control repository and http url for online access
+       the connection element has the form:
+       scm:<system>:<system specific connection string> -->
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/installation-test
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/datacenter/implementations/installation-test
+    </developerConnection>
+  </repository>
+
+
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+
+	<dependency>
+		<groupId>astrogrid-datacenter</groupId>
+		<artifactId>astrogrid-datacenter-server</artifactId>
+		<version>SNAPSHOT</version>
+	</dependency>
+
+  </dependencies>
+
+</project>
+
