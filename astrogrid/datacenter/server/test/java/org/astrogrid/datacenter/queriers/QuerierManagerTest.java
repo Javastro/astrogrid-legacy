@@ -1,4 +1,4 @@
-/*$Id: QuerierManagerTest.java,v 1.7 2004/03/12 20:11:09 mch Exp $
+/*$Id: QuerierManagerTest.java,v 1.8 2004/03/13 23:38:56 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,7 +36,7 @@ public class QuerierManagerTest extends ServerTestCase {
    
    protected void setUp() throws Exception {
       super.setUp();
-      SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, DummySqlPlugin.class.getName());
+      DummySqlPlugin.initConfig();
    }
    
    protected void tearDown() throws Exception {
@@ -66,6 +66,9 @@ public class QuerierManagerTest extends ServerTestCase {
 
 /*
  $Log: QuerierManagerTest.java,v $
+ Revision 1.8  2004/03/13 23:38:56  mch
+ Test fixes and better front-end JSP access
+
  Revision 1.7  2004/03/12 20:11:09  mch
  It05 Refactor (Client)
 

@@ -1,29 +1,23 @@
-<% // NB Don't allow any blank lines to be printed before the results %><%@ page import="java.io.*,
-       java.net.URL,
-       org.w3c.dom.*,
-       java.io.*,
+<% // NB Don't allow any blank lines to be printed before the results %><%@
+   page import="java.io.*,
        org.apache.commons.logging.*,
-       org.apache.axis.utils.XMLUtils,
        org.astrogrid.community.Account,
-       org.astrogrid.datacenter.adql.ADQLUtils,
-       org.astrogrid.datacenter.service.DataServer,
-       org.astrogrid.datacenter.queriers.query.AdqlQuery,
-       org.astrogrid.util.DomHelper,
+       org.astrogrid.datacenter.service.HtmlDataServer,
+       org.astrogrid.datacenter.query.AdqlQuery,
        org.astrogrid.io.*"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
 %><%@ page language="java" %><%!
-    DataServer server = new DataServer();
+    HtmlDataServer server = new HtmlDataServer();
 %><%
    /**
     * Runs ADQL query from given ADQL string
     */
    String adqlXml = request.getParameter("AdqlXml");
-   Document adqlDom = DomHelper.newDocument(new StringBufferInputStream(adqlXml));
    
    try {
-     server.askQuery(Account.ANONYMOUS, new AdqlQuery(ADQLUtils.unmarshalSelect(adqlDom)), out);
+     server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), out, "VOTABLE");
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.37 2004/03/13 16:26:40 mch Exp $
+ * $Id: Querier.java,v 1.38 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,15 +10,15 @@ import org.astrogrid.datacenter.queriers.status.*;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
@@ -55,9 +55,6 @@ public class Querier implements Runnable {
     * basis for any temporary storage. */
    private final String id;
    
-   /** External reference used to identify a particular query */
-   private String extRef;
-   
    /** On whose behalf is this querier running */
    private final Account user;
 
@@ -92,8 +89,6 @@ public class Querier implements Runnable {
    /** Key to configuration entry for the default target myspace for this server */
    public static final String DEFAULT_MYSPACE = "DefaultMySpace";
 
-   public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
-   
    /** Convenience constructor for other constructors, makers, etc */
    protected Querier(Account forUser, Query query, String resultsFormat) throws IOException {
       this.id = generateQueryId();
@@ -101,11 +96,9 @@ public class Querier implements Runnable {
       this.user = forUser;
       this.query = query;
 
-      this.extRef = this.id; //default to same as internal
-
       //check raw sql
-      if (!SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED, false)) {
-         throw new IllegalArgumentException("This datacenter does not allow raw SQL to be submitted");
+      if ((query instanceof RawSqlQuery) && (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false))) {
+         throw new IllegalArgumentException("This datacenter does not allow raw SQL Queriers to be constructed");
       }
       
       //default results destination is taken from default myspace given in config
@@ -122,36 +115,14 @@ public class Querier implements Runnable {
    
    /** Convenience constructor for struct a querier from the given details. Takes a writer so generally used
     * for blocking queries where the results have to be sent back to the calling client */
-   public static Querier makeQuerier(Account forUser, String extId, Query query, Writer whereToSendResults, String resultsFormat) throws IOException {
+   public static Querier makeQuerier(Account forUser, Query query, Writer whereToSendResults, String resultsFormat) throws IOException {
       Querier querier = new Querier(forUser, query, resultsFormat);
 
       querier.resultsTargetStream = whereToSendResults;
-      if (extId != null) { querier.extRef = extId; }
       
       return querier;
    }
    
-   /** Construct a querier from the given details. Takes an agsl for the results target so its
-    * up to the querier to send the results there */
-   public static Querier makeQuerier(Account forUser, String extId, Query query, Agsl whereToSendResults, String resultsFormat) throws IOException {
-      Querier querier = new Querier(forUser, query, resultsFormat);
-      
-      querier.resultsTargetAgsl = whereToSendResults;
-      if (extId != null) { querier.extRef = extId; }
-
-      return querier;
-   }
-
-   /** Construct a querier from the given details. Takes an agsl for the results target so its
-    * up to the querier to send the results there */
-   public static Querier makeQuerier(Account forUser, Query query, Writer whereToSendResults, String resultsFormat) throws IOException {
-      Querier querier = new Querier(forUser, query, resultsFormat);
-      
-      querier.resultsTargetStream = whereToSendResults;
-
-      return querier;
-   }
-
    /** Construct a querier from the given details. Takes an agsl for the results target so its
     * up to the querier to send the results there */
    public static Querier makeQuerier(Account forUser, Query query, Agsl whereToSendResults, String resultsFormat) throws IOException {
@@ -165,9 +136,6 @@ public class Querier implements Runnable {
    /** Returns this instances handle    */
    public String getId() {       return id;   }
 
-   /** Returns the external reference to this query - eg job step id   */
-   public String getExtRef() {   return id;   }
-   
    /** Returns the query for subclasses   */
    public Query getQuery() { return query; }
    
@@ -406,6 +374,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.38  2004/03/13 23:38:46  mch
+ Test fixes and better front-end JSP access
+
  Revision 1.37  2004/03/13 16:26:40  mch
  Changed makeFullSearcher to makeQuerySearcher
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummySqlPlugin.java,v 1.2 2004/03/12 20:04:57 mch Exp $
+ * $Id: DummySqlPlugin.java,v 1.3 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,7 +40,7 @@ public class DummySqlPlugin extends JdbcPlugin
    /** Sets up the configuration etc for accessing this database */
    public static void initConfig() {
       
-      SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, DummySqlPlugin.class.getName());
+      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, DummySqlPlugin.class.getName());
       SimpleConfig.setProperty(JdbcPlugin.SQL_TRANSLATOR, StdSqlMaker.class.getName());
 
       SimpleConfig.setProperty(SqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
@@ -150,6 +150,9 @@ public class DummySqlPlugin extends JdbcPlugin
 }
    /*
    $Log: DummySqlPlugin.java,v $
+   Revision 1.3  2004/03/13 23:38:46  mch
+   Test fixes and better front-end JSP access
+
    Revision 1.2  2004/03/12 20:04:57  mch
    It05 Refactor (Client)
 

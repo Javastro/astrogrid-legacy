@@ -174,6 +174,17 @@
 %>
 <h1>System Fingerprint</h1>
 
+<h2>Interface call</h2>
+<pre>
+<%
+    out.println("Server "+request.getServerName() +":" + request.getServerPort());
+    out.println("Servlet "+request.getServletPath());
+    out.println("Context path "+request.getContextPath());
+    out.println("Context type "+request.getContentType());
+    
+%>
+</pre>
+
 <hr />
 <h2>Datacenter Configuration</h2>
 <pre>
@@ -182,7 +193,7 @@
       //force load
       SimpleConfig.getProperty("Dummy",null);
    } catch (Throwable t) {
-     out.println(t.getMessage());
+      out.println("Error loading Config: "+t);
    }
    
    SimpleConfig.getSingleton().dumpConfig(out);
@@ -193,15 +204,15 @@
 <h2>Plugin Configuration</h2>
 <%
 
-String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.DATABASE_QUERIER_KEY);
-String spiClass = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.spi.PluginQuerier.QUERIER_SPI_KEY) ;
+String pluginClass =  SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.QuerierPluginFactory.PLUGIN_KEY);
+String sqlMaker = SimpleConfig.getProperty(org.astrogrid.datacenter.queriers.sql.JdbcPlugin.SQL_TRANSLATOR) ;
 %>
 Plugin Class <%= pluginClass %>
 <%
 if (pluginClass != null) {
   try {
     Class plugin = Class.forName(pluginClass);
-   out.println(" - found on classpath");
+    out.println(" - found on classpath");
 
   } catch (Throwable t) {
     out.println(" - Could not load plugin class");
@@ -210,11 +221,11 @@ if (pluginClass != null) {
 }
 %>
 <br />
-SPI Class <%= spiClass %>
+SQL Translator <%= sqlMaker %>
 <%
-if (spiClass != null) {
+if (sqlMaker != null) {
   try {
-    Class spi = Class.forName(spiClass);
+    Class spi = Class.forName(sqlMaker);
    out.println(" - found on classpath");
   } catch (Throwable t) {
     out.println(" - Could not load plugin class");

@@ -1,5 +1,5 @@
 /*
- * $Id: CeaService.java,v 1.1 2004/03/13 14:44:15 mch Exp $
+ * $Id: CeaService.java,v 1.2 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,15 +13,14 @@ import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.service.v1.cea.CeaFault;
 import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.store.Agsl;
-import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.axis._tool;
 
 
@@ -55,7 +54,7 @@ public class CeaService extends AxisDataServer implements org.astrogrid.applicat
          QuerierStatus status = server.getQueryStatus(Account.ANONYMOUS, queryId);
          
          MessageType returnMsg = new MessageType();
-         returnMsg.setValue(status.getState().toString());
+//         returnMsg.setValue(status.getState().toString());
          return returnMsg;
       }
       catch (Throwable th) {
@@ -102,7 +101,7 @@ public class CeaService extends AxisDataServer implements org.astrogrid.applicat
          throw makeFault(true, "Invalid monitor url "+mue, mue);
       }
       
-      return submitQuery(Account.ANONYMOUS, query, jobId.toString(), monitorUrl, resultsTarget, format);
+      return submitQuery(Account.ANONYMOUS, query, resultsTarget, format, new JobNotifyServiceListener(jobId.toString(), monitorUrl));
    }
    
    /**
@@ -132,6 +131,9 @@ public class CeaService extends AxisDataServer implements org.astrogrid.applicat
 }
 
 /*
+$Log: CeaService.java,v $
+Revision 1.2  2004/03/13 23:38:46  mch
+Test fixes and better front-end JSP access
 
  */
 

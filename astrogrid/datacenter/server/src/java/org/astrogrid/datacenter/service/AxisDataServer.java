@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.35 2004/03/12 20:04:57 mch Exp $
+ * $Id: AxisDataServer.java,v 1.36 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,15 +8,15 @@ package org.astrogrid.datacenter.service;
 
 import java.io.*;
 
-import java.net.URL;
 import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.metadata.MetadataServer;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.io.Piper;
 import org.astrogrid.store.Agsl;
 
@@ -25,7 +25,7 @@ import org.astrogrid.store.Agsl;
  * abstract as subclasses should inherit from it and implement the appropriate
  * interfaces/use appropriate bindings to the particular version of the interface
  * <p>
- * (When Axis receives a SOAP message from the client it is routed to this class for processing.
+ * (When Axis receives a SOAP message from the client it is routed to the subclass for processing.
  * It can be a singleton; state comes from the Queriers).
 
  * @author M Hill
@@ -107,11 +107,12 @@ public abstract class AxisDataServer  {
    /**
     * Submits given query
     */
-   public String submitQuery(Account user, Query query, String extRef, URL monitorUrl, Agsl resultsTarget, String requestedFormat) throws AxisFault {
+   public String submitQuery(Account user, Query query, Agsl resultsTarget, String requestedFormat, QuerierListener listener) throws AxisFault {
       try  {
-         Querier querier = Querier.makeQuerier(user, extRef, query, resultsTarget, requestedFormat);
+         Querier querier = Querier.makeQuerier(user, query, resultsTarget, requestedFormat);
+         querier.addListener(listener);
          server.querierManager.submitQuerier(querier);
-         return querier.getExtRef();
+         return querier.getId();
       }
       catch (Throwable e)  {
          throw makeFault(SERVERFAULT, "Submitting "+query+" for user "+user, e);
@@ -162,6 +163,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.36  2004/03/13 23:38:46  mch
+Test fixes and better front-end JSP access
+
 Revision 1.35  2004/03/12 20:04:57  mch
 It05 Refactor (Client)
 

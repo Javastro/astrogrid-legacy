@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.2 2004/03/12 20:04:57 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.3 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -25,15 +25,17 @@ import org.astrogrid.jes.delegate.JobMonitor;
 public class JobNotifyServiceListener implements QuerierListener
 {
    private URL jobMonitor = null;
-
+   private String jobId = null;
+   
    Log log = LogFactory.getLog(JobNotifyServiceListener.class);
    
    /**
     * Create a listener which will send service updates to the given URL
     */
-   public JobNotifyServiceListener(URL aClientListener)
+   public JobNotifyServiceListener(String givenJobId, URL aClientListener)
    {
       jobMonitor = aClientListener;
+      jobId= givenJobId;
    }
 
    /** Called by the service when it has a
@@ -48,7 +50,7 @@ public class JobNotifyServiceListener implements QuerierListener
          
          //create Job Info bean
          
-         log.debug("Querier ["+querier.getExtRef()+"] telling "+jobMonitor+" of status '"+querier.getStatus().getState());
+         log.debug(querier+" telling "+jobMonitor+" of status '"+querier.getStatus().getState());
 //         jmd.monitorJob(querier.getExtRef(), status, message);
 //      }
 //      catch (JesDelegateException e) {
@@ -60,6 +62,9 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.3  2004/03/13 23:38:46  mch
+Test fixes and better front-end JSP access
+
 Revision 1.2  2004/03/12 20:04:57  mch
 It05 Refactor (Client)
 

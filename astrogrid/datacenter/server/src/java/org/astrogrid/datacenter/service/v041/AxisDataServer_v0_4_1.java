@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.2 2004/03/12 20:04:57 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.3 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -99,8 +99,8 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
       try {
          Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), (Agsl) null, QueryResults.FORMAT_VOTABLE);
-         madeQueriers.put(querier.getExtRef(), querier);
-         return querier.getExtRef();
+         madeQueriers.put(querier.getId(), querier);
+         return querier.getId();
       }
       catch (Exception e) {
          throw makeFault(SERVERFAULT, "Failed to make Query", e);
@@ -110,20 +110,17 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
    /**
     * Creates an asynchronous query with the given id, returning that id
     * Does not start the query running - may want to register listeners with
-    * it first
+    * it first.
+    * NB Assigned ID now ignored
     * <p>
     * @soap
     */
    public String makeQueryWithId(Query axisQ, String assignedId) throws AxisFault {
       
       try {
-         if (assignedId == null || assignedId.length() == 0)  {
-            throw new IllegalArgumentException("Empty assigned id");
-         }
-         
-         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, assignedId, new AdqlQuery(axisQ.getQueryBody()), (Agsl) null, QueryResults.FORMAT_VOTABLE);
-         madeQueriers.put(querier.getExtRef(), querier);
-         return querier.getExtRef();
+         Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(axisQ.getQueryBody()), (Agsl) null, QueryResults.FORMAT_VOTABLE);
+         madeQueriers.put(querier.getId(), querier);
+         return querier.getId();
       }
       catch (Exception e) {
          throw makeFault(SERVERFAULT, "Failed to make Query", e);
@@ -196,7 +193,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
     */
    public void startQuery(String id) throws AxisFault {
       try {
-         Querier querier = server.querierManager.getQuerierByExt(id);
+         Querier querier = server.querierManager.getQuerier(id);
          server.querierManager.submitQuerier(querier);
       }
       catch (Exception e) {
@@ -233,12 +230,12 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
       log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
       try  {
          URL u = new URL(uri.toString());
-         Querier querier = server.querierManager.getQuerierByExt(queryId);
+         Querier querier = server.querierManager.getQuerier(queryId);
          if (querier == null) {
             throw new IllegalArgumentException("Unknown qid" + queryId);
          }
          
-         querier.addListener(new JobNotifyServiceListener(u));
+         querier.addListener(new JobNotifyServiceListener(queryId, u));
       }
       catch (Exception e)  {
          throw makeFault(SERVERFAULT, e+" registering job monitor "+uri+" for query ["+queryId+"]", e);
@@ -262,6 +259,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.3  2004/03/13 23:38:46  mch
+Test fixes and better front-end JSP access
+
 Revision 1.2  2004/03/12 20:04:57  mch
 It05 Refactor (Client)
 

@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.2 2004/03/12 20:11:09 mch Exp $
+/*$Id: DataServiceTest.java,v 1.3 2004/03/13 23:38:56 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.datacenter.service;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.StringWriter;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -18,8 +17,9 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.metadata.MetadataServer;
-import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
+import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -81,7 +81,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Exception {
        
       StringWriter sw = new StringWriter();
-       server.searchCone(Account.ANONYMOUS, 30, 30, 6, sw);
+       server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), sw, "VOTABLE");
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -95,7 +95,7 @@ public class DataServiceTest extends ServerTestCase {
    {
       //submit query
       StringWriter sw = new StringWriter();
-      server.askQuery(Account.ANONYMOUS, query1, sw);
+      server.askQuery(Account.ANONYMOUS, query1, sw, "VOTABLE");
       String result = sw.toString();
        
       assertNotNull(result);
@@ -147,6 +147,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.3  2004/03/13 23:38:56  mch
+Test fixes and better front-end JSP access
+
 Revision 1.2  2004/03/12 20:11:09  mch
 It05 Refactor (Client)
 

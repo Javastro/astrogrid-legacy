@@ -1,25 +1,23 @@
 /*
- * $Id: DataServer.java,v 1.15 2004/03/13 19:23:00 mch Exp $
+ * $Id: DataServer.java,v 1.16 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.query.ConeQuery;
-import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.RawSqlQuery;
 import org.astrogrid.store.Agsl;
 
 /**
@@ -46,82 +44,73 @@ public class DataServer
 {
    protected static Log log = LogFactory.getLog(DataServer.class);
    
-   public final QuerierManager querierManager = new QuerierManager("DataServer");
+   /** Singleton that manages the queriers for the application.  By using a singleton,
+    * we can access the same queriers through different interfaces; eg start a querier
+    * using the AxisDataServer, but then watch its progress using a browser
+    */
+   public final static QuerierManager querierManager = new QuerierManager("DataServer");
 
    /** Start Time for status info */
    private final Date startTime = new Date();
 
    /** Number of queries asked/submitted for status info */
    private long numQueries = 0;
-   
-   /**
-    * Runs a blocking SQL query.  Many systems will have this disabled; it
-    * is useful though for manipulating data until the official query languages
-    * are sufficiently developed.
-    */
-   public QueryResults askRawSql(Account user, String sql) throws DatabaseAccessException {
 
-      
-      throw new UnsupportedOperationException();
-      /*
-      Querier querier = QuerierManager.createSqlQuerier(sql);
-      return querier.doQuery();
-       */
-   }
-   
-   /**
-    * Runs a (blocking) cone search, sending a string to the given out
-    */
-   public void searchCone(Account user, double ra, double dec, double sr, Writer out) throws IOException {
-      askQuery(user, new ConeQuery(ra, dec, sr), out);
-   }
+   /** Configuration setting used to mark whether raw sql is allowed */
+   public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
    
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
     */
-   public void askQuery(Account user, Query query, Writer out) throws IOException {
+   public void askQuery(Account user, Query query, Writer out, String requestedFormat) throws IOException {
       
-      try {
-         Querier querier = Querier.makeQuerier(user, query, out, QueryResults.FORMAT_VOTABLE);
-         querierManager.askQuerier(querier);
+      if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+         throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
       }
-      catch (Throwable th) {
-         log.error(th);
-         out.write(exceptionAsHtml("askQuery("+user+", "+query+", "+out+")", th));
-      }
+
+      Querier querier = Querier.makeQuerier(user, query, out, requestedFormat);
+      querierManager.askQuerier(querier);
    }
  
    /**
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
     */
-   public String submitQuery(Account user, Query query, Agsl out) throws IOException {
+   public String submitQuery(Account user, Query query, Agsl out, String requestedFormat) throws IOException {
       
-      try {
-         Querier querier = Querier.makeQuerier(user, query, out, QueryResults.FORMAT_VOTABLE);
-         querierManager.submitQuerier(querier);
-         return querier.getExtRef();
+      if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+         throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
       }
-      catch (Throwable th) {
-         log.error(th);
-         return "ERROR: submitQuery("+user+", "+query+", "+out+"): "+th;
-      }
+
+      Querier querier = Querier.makeQuerier(user, query, out, requestedFormat);
+      querierManager.submitQuerier(querier);
+      return querier.getId();
    }
 
    /**
     * Returns status of a query. NB the id given is the *datacenter's* id
     */
-   public QuerierStatus getQueryStatus(Account user, String queryId)
+   public QuerierStatus getQueryStatus(Account user, String queryId) throws IOException
    {
-      return querierManager.getQuerierByExt(queryId).getStatus();
+      Querier querier = querierManager.getQuerier(queryId);
+      if (querier == null) {
+         throw new DatacenterException("No Query found for ID="+queryId+" on this server");
+      }
+
+      return querier.getStatus();
    }
 
    /**
     * Request to stop a query.  This might not be successful - depends on the
     * back end.  NB the id given is the *datacenters* id.
     */
-   public QuerierStatus abortQuery(Account user, String queryId) {
-      return querierManager.getQuerierByExt(queryId).abort();
+   public QuerierStatus abortQuery(Account user, String queryId) throws IOException {
+      Querier querier = querierManager.getQuerier(queryId);
+      if (querier == null) {
+         throw new DatacenterException("No Query found for ID="+queryId+" on this server");
+      }
+   
+      return querier.abort();
    }
    
    /**
@@ -152,54 +141,8 @@ public class DataServer
             "Queries Running:"+numQueriesRunning;
       }
       
-      public String toHtml() {
-         return toString(); //for now
-      }
-      
    }
    
-   /**
-    * Returns the querier corresponding to the given ID
-    * don't ask the server - ask the right manager
-   public Querier getQuerier(String queryId)
-   {
-      Querier q = querierManager.getQuerier(queryId);
-      if (q == null) {
-         throw new IllegalArgumentException("No Querier found for ID="+queryId);
-      }
-      return q;
-   }
-   
-   /**
-    * Returns an error in html form.  Not strictly a data server
-    * activity, but useful for JSPs to use.
-    */
-   public static String exceptionAsHtml(String title, Throwable th, String details) {
-
-      StringWriter sw = new StringWriter();
-      th.printStackTrace(new PrintWriter(sw));
-            
-      return
-         "<html>\n"+
-         "<head><title>"+title+"</title></head>\n"+
-         "<body>\n"+
-         "<h1>ERROR REPORT</h1>\n"+
-         "<b>"+title+"</b>\n"+
-         "<p><b>"+th.getMessage()+"</b></p>\n"+
-         "<p>\n"+
-         "<plaintext>"+sw.toString()+"</plaintext>\n"+
-         "</p>\n"+
-         "<p>\n"+
-         "<plaintext>"+details+"</plaintext>\n"+
-         "</p>\n"+
-         "</body>\n"+
-         "</html>\n";
-   }
-
-   /** Convenience routine for exceptionAsHtml(String, Exception, String)   */
-   public static String exceptionAsHtml(String title, Throwable th) {
-      return exceptionAsHtml(title, th, "");
-   }
 }
 
 

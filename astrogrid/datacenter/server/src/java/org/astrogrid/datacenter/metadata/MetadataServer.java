@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.3 2004/03/09 21:03:56 mch Exp $
+ * $Id: MetadataServer.java,v 1.4 2004/03/13 23:38:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,7 +43,7 @@ public class MetadataServer
    public static final String METADATA_URL_LOC_KEY = "datacenter.metadata.url";
 
    /** Default metadata filename */
-   public static final String METADATA_DEFAULT_FILENAME = "datacenter.metadata";
+   public static final String METADATA_DEFAULT_FILENAME = "datacenter.metadata.xml";
    /**
     * Returns the VODescription element of the metadata
     * If there is more than one, logs an error but does not fail.
@@ -74,7 +74,7 @@ public class MetadataServer
       }
 
       if ((filename == null) && (url == null)) {
-         log.warn("Server not configured properly: neither file "+METADATA_FILE_LOC_KEY+" nor url "+METADATA_URL_LOC_KEY+" are given in config ("+SimpleConfig.loadedFrom()+") to locate metadata file Looking in classpath");
+         log.warn("Server not configured properly: neither file "+METADATA_FILE_LOC_KEY+" nor url "+METADATA_URL_LOC_KEY+" are given in config ("+SimpleConfig.loadedFrom()+") to locate metadata file. Looking in classpath for "+METADATA_DEFAULT_FILENAME);
          filename = METADATA_DEFAULT_FILENAME;
       }
 

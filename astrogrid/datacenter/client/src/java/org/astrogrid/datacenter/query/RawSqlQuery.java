@@ -1,5 +1,5 @@
 /*
- * $Id: RawSqlQuery.java,v 1.1 2004/03/12 20:00:11 mch Exp $
+ * $Id: RawSqlQuery.java,v 1.2 2004/03/13 23:38:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,9 +32,17 @@ public class RawSqlQuery implements Query {
       return sql;
    }
    
+   /** Human representation for debugging, trace, etc */
+   public String toString() {
+      return "SqlQuery: '"+sql+"'";
+   }
+   
 }
 /*
  $Log: RawSqlQuery.java,v $
+ Revision 1.2  2004/03/13 23:38:27  mch
+ Test fixes and better front-end JSP access
+
  Revision 1.1  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 

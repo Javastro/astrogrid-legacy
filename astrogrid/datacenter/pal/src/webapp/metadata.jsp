@@ -3,17 +3,17 @@
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
+       org.astrogrid.datacenter.metadata.MetadataServer,
        org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false"
-%><%@ page language="java" %><%!
-    HtmlDataServer server = new HtmlDataServer();
-%><%
+   contentType="text/xml"
+%><%@ page language="java" %><%
    try {
-      out.write(server.getServerStatus());
+      MetadataServer.getMetadata();
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Getting server status", th));
+      out.write(HtmlDataServer.exceptionAsHtml("Getting metadata", th));
    }
       
 

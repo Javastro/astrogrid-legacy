@@ -3,12 +3,13 @@
        org.apache.commons.logging.LogFactory,
        org.astrogrid.io.*,
        org.astrogrid.community.Account,
-       org.astrogrid.datacenter.service.DataServer"
+       org.astrogrid.datacenter.query.ConeQuery,
+       org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
 %><%@ page language="java" %><%!
-    DataServer server = new DataServer();
+    HtmlDataServer server = new HtmlDataServer();
 %><%
    /*
     * Simple image access protocol - similar to cone search but different
@@ -24,7 +25,7 @@
       double dec = Double.parseDouble(pos.substring(comma+1));
       
       try {
-         out.write(server.searchCone(Account.ANONYMOUS, ra, dec, size));
+         server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, size), out, formatList);
       } catch (Exception e) {
          LogFactory.getLog(request.getContextPath()).error(e);
          out.write(server.exceptionAsHtml("SIAP; Searching Cone (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList, e));

@@ -1,5 +1,5 @@
 /*
- * $Id: ConeQuery.java,v 1.2 2004/03/12 23:58:03 mch Exp $
+ * $Id: ConeQuery.java,v 1.3 2004/03/13 23:38:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -43,9 +43,19 @@ public class ConeQuery implements Query {
       "))) < "+radius+")";
    }
     */
+
+   /** Human representation for debugging, trace, etc */
+   public String toString() {
+      return "ConeQuery("+ra+", "+dec+", "+radius+")";
+   }
+   
+
 }
 /*
  $Log: ConeQuery.java,v $
+ Revision 1.3  2004/03/13 23:38:27  mch
+ Test fixes and better front-end JSP access
+
  Revision 1.2  2004/03/12 23:58:03  mch
  It05 Refactor (Client)
 

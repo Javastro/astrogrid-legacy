@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.20 2004/03/12 04:45:26 mch Exp $
+/*$Id: QuerierManager.java,v 1.21 2004/03/13 23:38:46 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,10 @@ import java.util.Collection;
 import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.store.Agsl;
 
 /** Manages the construction and initialization of Queriers, and maintains a
  * collection of current Queriers. It might run queues or something... later...
@@ -35,26 +38,31 @@ public class QuerierManager implements QuerierListener {
    /** lookup table of all the current queriers indexed by their handle*/
    private Hashtable queriers = new Hashtable();
    
-   /** lookup table by external references */
-   private Hashtable extIndex = new Hashtable();
+   /** Special ID used to create a test querier for testing getStatus,. etc */
+   public final static String TEST_QUERIER_ID = "TestQuerier:";
    
    /** This isn't the right place to keep this, but it will do for now */
    public final static String DEFAULT_MYSPACE = "DefaultMySpace";
    
+   /** Constructor.   */
    public QuerierManager(String givenId) {
       this.managerId = givenId;
    }
 
-   /** Return the querier with the given id */
+   /** Return the querier with the given id; if the given ID is the special
+    * test one, creates a new test Querier */
    public Querier getQuerier(String qid) {
+
+      /* use an existing, old query...
+      if (qid.startsWith(TEST_QUERIER_ID)) {
+         
+         return Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(), (Agsl) null, QueryResults.FORMAT_VOTABLE);
+      }
+       */
+      
       return (Querier) queriers.get(qid);
    }
    
-   /** Return the querier with the given id */
-   public Querier getQuerierByExt(String extRef) {
-      return (Querier) extIndex.get(extRef);
-   }
-
    /** Returns a list of all the currently running queriers
     */
    public Collection getQueriers() {
@@ -121,6 +129,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.21  2004/03/13 23:38:46  mch
+ Test fixes and better front-end JSP access
+
  Revision 1.20  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.13 2004/03/12 20:11:09 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.14 2004/03/13 23:38:56 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -34,7 +34,7 @@ public class FitsQuerierTest extends TestCase
 {
    
    protected void setUp() throws Exception{
-      SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, FitsQuerierPlugin.class.getName());
+      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
       
       //set up test index first
       String index = new FitsTest().generateTestIndex();
@@ -43,7 +43,7 @@ public class FitsQuerierTest extends TestCase
       FileOutputStream out = new FileOutputStream(indexFile);
       out.write(index.getBytes());
 
-      SimpleConfig.setProperty(QuerierPluginFactory.DATABASE_QUERIER_KEY, FitsQuerierPlugin.class.getName());
+      SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY, FitsQuerierPlugin.class.getName());
       
       
    }
@@ -82,6 +82,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.14  2004/03/13 23:38:56  mch
+ Test fixes and better front-end JSP access
+
  Revision 1.13  2004/03/12 20:11:09  mch
  It05 Refactor (Client)
 

@@ -3,13 +3,13 @@
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
-       org.astrogrid.datacenter.queriers.query.ConeQuery,
-       org.astrogrid.datacenter.service.DataServer"
+       org.astrogrid.datacenter.query.ConeQuery,
+       org.astrogrid.datacenter.service.HtmlDataServer"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
 %><%@ page language="java" %><%!
-    DataServer server = new DataServer();
+    HtmlDataServer server = new HtmlDataServer();
 %><%
    /*
     * NVO Compliant cone search
@@ -19,7 +19,7 @@
    double sr = Double.parseDouble(request.getParameter("SR"));
 
    try {
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out);
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, "VOTABLE");
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
       out.write(server.exceptionAsHtml("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
