@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.52 2004/03/07 23:51:46 nw Exp $ -->
+<!-- $Id: project.xml,v 1.53 2004/03/08 00:36:08 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -103,9 +103,28 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <!-- other things we talk to -->
+        <!-- registry -->
         <dependency>
-            <artifactId>ApplicationControllerDelegate</artifactId>
-            <groupId>astrogrid-applications</groupId>
+        	<artifactId>astrogrid-registry-client</artifactId>
+        	<groupId>org.astrogrid</groupId>
+        	<version>SNAPSHOT</version>
+        	<properties>
+        		<war.bundle>true</war.bundle>
+        	</properties>        	
+        </dependency>
+        <dependency>
+        	<artifactId>astrogrid-registry-common</artifactId>
+        	<groupId>org.astrogrid</groupId>
+        	<version>SNAPSHOT</version>
+        	<properties>
+        		<war.bundle>true</war.bundle>
+        	</properties>
+        </dependency>
+        <!-- app controller -->
+        <dependency>
+            <artifactId>astrogrid-applications-client</artifactId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
