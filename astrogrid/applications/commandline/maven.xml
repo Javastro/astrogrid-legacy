@@ -60,10 +60,10 @@
                 tofile="${maven.war.webapp.dir}/WEB-INF/web.xml"
         />
         <!-- also want to patch the log4j.properties - so it logs to a different file.-->
-        <replace file="${maven.war.webapp.dir}/WEB-INF/classes/log4j.properties"
-                token="cea"
-                value="cea-commandline"
-        />
+        <replace file="${maven.war.webapp.dir}/WEB-INF/classes/log4j.properties">
+                <replacefilter token="cea" value="cea-commandline" />
+                <replacefilter token="CEA" value="CEA_COMMANDLINE" />
+        </replace>
   </goal>
 
   <goal name="copy-resources" description="add other stuff to webapp" >
