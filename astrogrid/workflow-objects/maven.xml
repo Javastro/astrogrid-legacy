@@ -37,6 +37,7 @@
                         <include name="org/astrogrid/workflow/beans/v1/**/*.java" />
                         <include name="org/astrogrid/applications/beans/v1/**/*.java" />
                         <include name="org/astrogrid/community/beans/v1/**/*.java" />
+                        <include name="org/astrogrid/registry/beans/**/*.java" />
                 </fileset>
         </delete>
   </goal>
@@ -129,6 +130,21 @@
                 </classpath>
                     <arg value="-i"/>
                     <arg file="${basedir}/schema/Workflow.xsd" />
+                <arg value="-binding-file" />
+                <arg file="${basedir}/build/castor-binding.xml" />
+                    <arg value="-dest" />
+                    <arg file="${generated.src}" />
+                <arg value="-verbose" />
+                <arg value="-types" />
+                <arg value="j2" />
+        </java>
+        <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+                <classpath>
+                        <pathelement location="${basedir}/build" />
+                        <path refid="maven.dependency.classpath" />
+                </classpath>
+                    <arg value="-i"/>
+                    <arg file="${basedir}/schema/VOCEA.xsd" />
                 <arg value="-binding-file" />
                 <arg file="${basedir}/build/castor-binding.xml" />
                     <arg value="-dest" />
