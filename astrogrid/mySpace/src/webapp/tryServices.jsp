@@ -17,14 +17,14 @@ The end point for the service is: <%=serviceURL%> . <BR>
 <%
 	MySpaceClient client = MySpaceDelegateFactory.createDelegate(serviceURL.toString());
 	
-    String userId = "jdt";
+    String userId = "jdt"; //these will need to become member vars to persist
     String communityId = "roe";
     String credential = "any";
     String serversVector = "serv1";
     
-    boolean addUserSubmitted = true; //depends on form request
+    boolean createUserSubmitted = (request.getParameter("button").equals("createUser")); //depends on form request
     
-    if (addUserSubmitted) {  
+    if (createUserSubmitted) {  
        userId = request.getParameter("userId"); //these are going to need to be local to retain
        communityId = request.getParameter("communityId");
        credential = request.getParameter("credential");
@@ -44,16 +44,18 @@ The end point for the service is: <%=serviceURL%> . <BR>
 </form>
 <% 
 //Detect whether this form has been submitted
-if (addUserSubmitted) {
+if (createUserSubmitted) {
     //parse the string 
-    String[] serversList = serversVector.split(",");
     Vector servers = new Vector();
-    for (int i=0;i<serverList.length;++i) {
-    	servers.add(serversList[i]);
-    }
-  
+    if (serversVector!=null) {
+	    String[] serversList = serversVector.split(",");
+	    for (int i=0;i<serversList.length;++i) {
+	    	servers.add(serversList[i]);
+	    }
+	}  
     //get myspace delegate
 	boolean result = client.createUser(userId, communityId, credential, servers);
+	out.print("<h3>Result</h3>");
     out.print(result);
     out.print("<BR>");
 }
