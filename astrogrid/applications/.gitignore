@@ -8,3 +8,5 @@ velocity.log
 .project
 junit*.properties
 
+.classpath
+.checkstyle

@@ -1,5 +1,5 @@
 /*
- * $Id: CeaControllerConfig.java,v 1.5 2004/03/30 22:45:09 pah Exp $
+ * $Id: CeaControllerConfig.java,v 1.6 2004/05/04 16:16:13 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,7 +14,6 @@
 package org.astrogrid.applications.common.config;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -22,11 +21,8 @@ import javax.mail.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
 import org.astrogrid.applications.common.ApplicationsConstants;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 
 /**
  * Important application controller configuration constants. This is a singleton, with the actual configuration that is loaded being controlled by the {@link ConfigLoader} class.
@@ -37,8 +33,17 @@ import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
  */
 public class CeaControllerConfig {
 
+/**
+ * The instance of this controller config
+ */
    private static CeaControllerConfig instance = null;
+   /**
+    * This stores the acutal configurations.
+    */
    RawPropertyConfig rawPropertyConfig;
+   /**
+    * The logger
+    */
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(
          CeaControllerConfig.class);
@@ -76,6 +81,7 @@ public class CeaControllerConfig {
    /**
     * Find the config file that defines which applications we can run...
     * @return The location of the config file
+    * @throws MalformedURLException
     *
     */
    public URL getApplicationConfigFile() throws MalformedURLException {
@@ -113,9 +119,15 @@ public class CeaControllerConfig {
    public javax.sql.DataSource getDataSource() {
       return dataSource;
    }
+   /**
+    * @return
+    */
    public String getDBuser() {
       return rawPropertyConfig.getProperty(ApplicationsConstants.DATABASE_USER_KEY);
    }
+   /**
+    * @return
+    */
    public String getDBpwd() {
       return rawPropertyConfig.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
    }
@@ -228,7 +240,7 @@ public class CeaControllerConfig {
 
    /**
     * Sets the datasource. This is only used in testing where the datasource is not available from jndi
-    * @param source
+    * @param source The datasource that is used.
     */
     void setDataSource(javax.sql.DataSource source) {
       dataSource = source;

@@ -1,4 +1,4 @@
-/*$Id: Delegate.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+/*$Id: Delegate.java,v 1.3 2004/05/04 16:16:13 pah Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,9 @@ public interface Delegate {
     /** pass this as the target endpoint to return a 'test' delegate */
     public final static String TEST_URI = "urn:test";
    // public abstract void setTargetEndPoint(String targetEndPoint);
-   /** access the endpoint this delegate will communicate with */
+   /** 
+    * access the endpoint this delegate will communicate with
+    *  */
     public abstract String getTargetEndPoint();
     /** configure the timeout for communications to the service */
     public abstract void setTimeout(int timeout);
@@ -26,6 +28,9 @@ public interface Delegate {
 }
 /* 
 $Log: Delegate.java,v $
+Revision 1.3  2004/05/04 16:16:13  pah
+some checkstyle cleanup
+
 Revision 1.2  2004/03/23 12:51:25  pah
 result of merge of app_pah_147
 

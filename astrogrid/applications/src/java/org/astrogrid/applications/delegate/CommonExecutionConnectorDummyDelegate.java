@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.4 2004/04/28 16:10:11 pah Exp $
+ * $Id: CommonExecutionConnectorDummyDelegate.java,v 1.5 2004/05/04 16:16:13 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,8 +12,6 @@
  */ 
 
 package org.astrogrid.applications.delegate;
-
-import java.rmi.RemoteException;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
@@ -37,7 +35,7 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#execute(org.astrogrid.workflow.beans.v1.Tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, java.lang.String)
     */
-   public String execute(Tool tool, JobIdentifierType jobstepID, String jobMonitorURL) throws CEADelegateException {
+   public String execute(final Tool tool, final JobIdentifierType jobstepID, final String jobMonitorURL) throws CEADelegateException {
       // TODO Auto-generated method stub
       throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.execute() not implemented");
    }
@@ -45,7 +43,7 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#abort(java.lang.String)
     */
-   public boolean abort(String executionId) throws CEADelegateException {
+   public boolean abort(final String executionId) throws CEADelegateException {
       // TODO Auto-generated method stub
       throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.abort() not implemented");
    }
@@ -61,7 +59,7 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#getApplicationDescription(java.lang.String)
     */
-   public String getApplicationDescription(String applicationID) throws CEADelegateException {
+   public String getApplicationDescription(final String applicationID) throws CEADelegateException {
       // TODO Auto-generated method stub
       throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.getApplicationDescription() not implemented");
    }
@@ -69,7 +67,7 @@ public class CommonExecutionConnectorDummyDelegate extends CommonExecutionConnec
    /* (non-Javadoc)
     * @see org.astrogrid.applications.delegate.CommonExecutionConnectorClient#queryExecutionStatus(java.lang.String)
     */
-   public MessageType queryExecutionStatus(String executionId) throws CEADelegateException {
+   public MessageType queryExecutionStatus(final String executionId) throws CEADelegateException {
       // TODO Auto-generated method stub
       throw new  UnsupportedOperationException("CommonExecutionConnectorDummyDelegate.queryExecutionStatus() not implemented");
    }
