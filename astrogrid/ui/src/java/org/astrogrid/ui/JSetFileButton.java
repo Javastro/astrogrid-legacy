@@ -1,5 +1,5 @@
 /*
-   $Id: JSetFileButton.java,v 1.2 2002/12/03 17:28:57 mch Exp $
+   $Id: JSetFileButton.java,v 1.3 2002/12/09 15:40:41 mch Exp $
 
    Date       Author      Changes
    $date$     M Hill      Created
@@ -20,6 +20,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -32,6 +33,7 @@ import javax.swing.filechooser.FileFilter;
 
 public class JSetFileButton extends JButton implements ActionListener
 {
+   private JComboBox comboBox = null;
    private JTextField textField = null;
    private JFileChooser fileChooser = new JFileChooser();
 
@@ -40,18 +42,24 @@ public class JSetFileButton extends JButton implements ActionListener
    public JSetFileButton()
    {
       super(IconFactory.getIcon("Open"));
+      
+      addActionListener(this);
+
+      if (getIcon() == null)
+      {
+         setText("Set");
+      }
+      else
+      {
+         //make an effort to size the button to the icon
 //      setPreferredSize(SIZE);
 //      setMinimumSize(SIZE);
 //      setMaximumSize(SIZE);
 //      getBorder().getBorderInsets(this).top=0;
-//    setBorder(BorderFactory.create
-//      setMargin(new Insets(0,0,0,0));
-      if (getIcon()==null)
-      {
-         setText("Set");
+         setBorder(null);
+//       setMargin(new Insets(0,0,0,0));
       }
-      setToolTipText("Opens a file browser to select file");
-      addActionListener(this);
+      setToolTipText("Browse files");
    }
 
    public JSetFileButton(String text, Icon icon)
@@ -85,10 +93,19 @@ public class JSetFileButton extends JButton implements ActionListener
    /**
     * Used if special file filter is required
     */
+   public void addChoosableFilter(FileFilter specialFilter)
+   {
+      fileChooser.addChoosableFileFilter(specialFilter);
+   }
+
+   /**
+    * Used if special file filter is required
+    */
    public void setFilter(FileFilter specialFilter)
    {
       fileChooser.setFileFilter(specialFilter);
    }
+
 
    /**
     * Set the input text field that will show the path to the chosen file
@@ -96,7 +113,34 @@ public class JSetFileButton extends JButton implements ActionListener
    public void setTextField(JTextField givenField)
    {
       textField = givenField;
+      
+      if (getIcon() != null)
+      {
+         setPreferredSize(new Dimension(
+//                          this.getPreferredSize().width,
+                             textField.getPreferredSize().height,
+                             textField.getPreferredSize().height
+         ));
+      }
    }
+
+   /**
+    * Set an editable combo box that will show the path to the chosen file
+    */
+   public void setComboBox(JComboBox givenCombo)
+   {
+      comboBox = givenCombo;
+      
+      if (getIcon() != null)
+      {
+         setPreferredSize(new Dimension(
+//                          this.getPreferredSize().width,
+                             comboBox.getPreferredSize().height,
+                             comboBox.getPreferredSize().height
+         ));
+      }
+      
+   };
 
    /**
     * Invoked when an action occurs - ie wehn the button is pressed. Displays
@@ -125,13 +169,18 @@ public class JSetFileButton extends JButton implements ActionListener
       {
          textField.setText(givenFile.getAbsolutePath());
       }
+      
+      if (comboBox != null)
+      {
+         comboBox.setSelectedItem(givenFile.getAbsolutePath());
+      }
    }
 
 
    /**
     * "Test harness"
     */
-   public static void main(String[] args)
+/*   public static void main(String[] args)
    {
       StandardDialog sd = new StandardDialog((java.awt.Frame) null, "Test");
 
@@ -146,6 +195,6 @@ public class JSetFileButton extends JButton implements ActionListener
 
       sd.show();
    }
-
+*/
 }
 
