@@ -94,12 +94,14 @@
 		
         <menu name="Logs">
             <item name="Maven Build Logs" href="/logs.html" collapse="true">
+                <item name="Aggregate" href="log/maven-build-aggregate.log"/>
                 <item name="Applications Integration" 
                     href="log/maven-build-applications.log" />
                 <item name="Common" href="log/maven-build-common.log" />
                 <item name="Community" href="log/maven-build-community.log" />
                 <item name="DataCenter" href="log/maven-build-datacenter.log" />
 				 <item name="eXist" href="log/maven-build-eXist.log" />
+                 <item name="FileManager" href="log/maven-build-filemanager.log"/>  
                 <item name="FileStore" href="log/maven-build-filestore.log"/>                
                 <item name="Job Management" href="log/maven-build-jes.log" />
                 <item name="mySpace" href="log/maven-build-mySpace.log" />
@@ -107,6 +109,7 @@
                 <item name="Registry" href="log/maven-build-registry.log" />
                 <item name="Scripting" href="log/maven-build-scripting.log" />
                 <item name="Security" href="log/maven-build-security.log" />
+                <item name="Slinger" href="log/maven-build-slinger.log"/>  
                 <item name="UI" href="log/maven-build-ui.log" />
                 <item name="Warehouse" href="log/maven-build-warehouse.log" />
                 <item name="Workflow" href="log/maven-build-workflow.log" />
