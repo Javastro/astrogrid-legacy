@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/ant/Attic/tomcat.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 00:04:36 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: tomcat.xml,v $
+    | Revision 1.2  2003/06/27 00:04:36  dave
+    | Added Cocoon 2.0 binary and updated MySpace jar
+    |
     | Revision 1.1  2003/06/12 18:19:38  dave
     | Initial import into cvs ...
     |
@@ -63,31 +66,32 @@
 		<!-- Prefix for system properties -->
 		<property environment="env"/>
 		<!-- Bootstrap classpath for Tomcat -->
-		<path id="tomcat.bootstrap.classpath">
+		<path id="tomcat.bootstrap">
 			<pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
 			<pathelement location="${tomcat.home}/bin/bootstrap.jar"/>
 		</path>
 		<!-- Endorsed libraries for Tomcat -->
-		<path id="tomcat.endorsed.classpath">
+		<path id="tomcat.endorsed">
 			<pathelement path="${tomcat.home}/bin"/>
 			<pathelement path="${tomcat.home}/common/endorsed"/>
 		</path>
 		<!-- Build libraries for Tomcat servlets -->
-		<path id="tomcat.build.classpath">
+		<path id="tomcat.servlet.jar">
 			<pathelement location="${tomcat.home}/common/lib/servlet.jar"/>
 		</path>
 
 		<!-- Create the config directory -->
 		<mkdir dir="build/config"/>
 		<!-- Convert the paths to properties -->
-		<property name="tomcat.build.classpath" refid="tomcat.build.classpath"/>
+		<property name="tomcat.servlet.jar" refid="tomcat.servlet.jar"/>
+		<property name="tomcat.endorsed"    refid="tomcat.endorsed"/>
 		<!-- Save the properties to a file -->
 		<propertyfile
 			file="build/config/tomcat.properties"
 			comment="Tomcat properties">
 			<entry key="tomcat.home"            value="${tomcat.home}"/>
 			<entry key="tomcat.deploy.path"     value="${tomcat.home}/webapps"/>
-			<entry key="tomcat.build.classpath" value="${tomcat.build.classpath}"/>
+			<entry key="tomcat.servlet.jar" value="${tomcat.servlet.jar}"/>
 		</propertyfile>
 	</target>
 
@@ -96,7 +100,7 @@
 		<!-- Start Tomcat in a separate VM -->
 		<java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true" dir="${tomcat.home}/bin">
 			<!-- Use the bootstrap classpath -->
-			<classpath refid="tomcat.bootstrap.classpath"/>
+			<classpath refid="tomcat.bootstrap"/>
 			<!-- These replace the -D command line arguments -->
 			<sysproperty key="java.endorsed.dirs" path="${tomcat.endorsed}"/>
 			<sysproperty key="catalina.base"      path="${tomcat.home}"/>
@@ -114,7 +118,7 @@
 		<!-- Stop Tomcat -->
 		<java taskname="tomcat" classname="org.apache.catalina.startup.Bootstrap" fork="true">
 			<!-- Use the bootstrap classpath -->
-			<classpath refid="tomcat.bootstrap.classpath"/>
+			<classpath refid="tomcat.bootstrap"/>
 			<!-- These replace the -D command line arguments -->
 			<sysproperty key="java.endorsed.dirs" path="${tomcat.endorsed}"/>
 			<sysproperty key="catalina.base"      path="${tomcat.home}"/>

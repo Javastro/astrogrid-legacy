@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 14:15:10 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/27 00:04:36 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.2  2003/06/27 00:04:36  dave
+    | Added Cocoon 2.0 binary and updated MySpace jar
+    |
     | Revision 1.1  2003/06/26 14:15:10  dave
     | Added explorer pages and actions to Cocoon
     |
@@ -228,17 +231,6 @@
 					</xsl:when>
 				</xsl:choose>
 			</td>
-<!--
-			<td>
-				<xsl:value-of select="@ident"/>
-			</td>
-			<td>
-				<xsl:value-of select="@type"/>
-			</td>
-			<td>
-				<xsl:value-of select="@level"/>
-			</td>
--->
 			<td>
 				<xsl:call-template name="node-actions"/>
 			</td>
@@ -317,7 +309,6 @@
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
-
 				<!-- Add the rename-item action -->
 				<xsl:text> </xsl:text>
 				<link type="action">
@@ -331,8 +322,7 @@
 						<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
 					</href>
 				</link>
-
-				<!-- Add the rename-item action -->
+				<!-- Add the delete-item action -->
 				<xsl:text> </xsl:text>
 				<link type="action">
 					<display>
@@ -398,8 +388,19 @@
 				</xsl:if>
 				<!-- If this is below the top three levels -->
 				<xsl:if test="@level > 2">
+					<!-- Add the delete-item action -->
 					<xsl:text> </xsl:text>
-					<xsl:text>[Delete]</xsl:text>
+					<link type="action">
+						<display>
+							<xsl:text>Delete</xsl:text>
+						</display>
+						<href>
+							<base><xsl:value-of select="$page"/></base>
+							<param name="action">delete-item</param>
+							<param name="AST-VIEW"><xsl:value-of select="/page/view/@ident"/></param>
+							<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+						</href>
+					</link>
 				</xsl:if>
 			</xsl:when>
 		</xsl:choose>
