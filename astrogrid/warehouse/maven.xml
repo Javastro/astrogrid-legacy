@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+
+<!-- extension maven script -->
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" default="jar:jar">
+
+	<!-- Customise standard maven tasks -->
+
+	<preGoal name="java:compile">
+
+		<mkdir dir="${basedir}/target/src/java" />
+
+		<!-- declares new src tree to maven -->
+		<path id="generated.src" location="${basedir}/target/src/java"/>
+		<maven:addPath id="maven.compile.src.set" refid="generated.src"/>  
+
+		<!-- generate classes from schema and wsdl before compiling -->
+		<attainGoal name="generateStubs" />
+
+	</preGoal>
+
+	<preGoal name="clean">
+		<delete dir="${basedir}/target/src" />
+		<delete>
+			<fileset dir="${basedir}/wsdl">
+			<include name="**/*.wsdl" />
+			</fileset>
+		</delete>
+	</preGoal>
+
+   <!-- This file is for local adjustments.  -->
+   <property file="config/build.properties"/>
+   
+   <!-- This file specializes this template to a particular product. -->
+   <property file="config/template.properties"/>
+   
+   <!-- These names are used in several targets. -->
+   <property name="wsdl.directory" value="wsdl"/>
+   <property name="wsdl.file"      value="${service.name}.wsdl"/>
+   <property name="wsdl.path"      value="${wsdl.directory}/${wsdl.file}"/>
+
+   <!-- Generate WSDL for the service starting from a Java class defining the
+        interface to a web-service port. -->
+   <target name="generateWSDL">
+      <echo message="Generating ${wsdl.file} from ${service.java.package}.${port.interface.java.class}..."/>
+      <mkdir dir="target/classes"/>
+      <javac srcdir="src/java" 
+             destdir="target/classes">
+         <include name="**/${port.interface.java.class}.java" />
+      </javac>
+      <mkdir dir="target/${wsdl.directory}"/>
+      <java classname="${java2wsdl.tool}" dir="./target/classes" fork="yes">
+         <arg value="-S"/>  
+         <arg value="${service.name}"/>  
+         <arg value="-l"/>  
+         <arg value="http://localhost/services/"/>  
+         <arg value="-n"/>  
+         <arg value="${service.xml.namespace.uri}"/>  
+         <arg value="-o"/>
+         <arg value="../../${wsdl.path}"/>
+         <arg value="${service.java.package}.${port.interface.java.class}"/>
+      </java>
+   </target>
+
+   <!-- Generate Java classes, as source code, for the client
+        and the service, based on the WSDL file. -->
+   <target name="generateStubs" depends="generateWSDL">
+      <echo message="Generating stubs from ${wsdl.path} ..." />
+      <mkdir dir="target/src/java"/>
+      <java classname="${wsdl.tool}" dir="." fork="yes">
+         <arg value="-o"/>  
+         <arg value="target/src/java"/>  
+         <arg value="${wsdl.path}"/>
+      </java>
+   </target>
+
+</project>

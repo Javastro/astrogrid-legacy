@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+  <pomVersion>3</pomVersion>
+  <id>astrogrid-datacenter</id>
+  <name>AstroGrid DataCenter</name>
+
+  <currentVersion>HEAD</currentVersion>
+  
+  <organization>
+    <name>AstroGrid</name>
+    <url>http://www.astrogrid.org</url>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+  </organization>
+
+  <inceptionYear>2002</inceptionYear>
+  <package>org.astrogrid</package>
+  <logo>http://www.astrogrid.org/images/AGlogo</logo>
+
+  <shortDescription>AstroGrid Warehouse Components</shortDescription>
+
+  <siteDirectory>/var/www/www/maven/build/warehouse</siteDirectory>
+
+  <repository>
+    <connection>
+      scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/warehouse
+    </connection>
+    <developerConnection>
+      scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/warehouse
+    </developerConnection>
+  </repository>
+
+  <developers>
+    <developer>
+      <name>Kona Andrews</name>
+      <id>kea</id>
+      <email>kea@ast.cam.ac.uk</email>
+    </developer>
+
+    <developer>
+    	<name>Elizabeth Auden</name>
+    	<id>eca</id>
+    	<email>eca@mssl.ucl.ac.uk</email>
+    </developer>
+
+    <developer>
+    	<name>Clive Page</name>
+    	<id>cgp</id>
+    	<email>cgp@star.le.ac.uk</email>
+    </developer>
+
+    <developer>
+    	<name>Guy Rixon</name>
+    	<id>gtr</id>
+    	<email>gtr@ast.cam.ac.uk</email>
+    </developer>
+  </developers>
+
+  <dependencies> <!-- hope to be able to remove some of these soon. -->
+    <!-- astrogrid -specific deps -->
+    <dependency>
+      <id>astrogrid-common</id>
+      <version>SNAPSHOT</version>
+    </dependency>
+
+    <!-- more standard deps -->
+      <!-- axis, and the jars it relies upon -->
+    <dependency>
+      <id>axis</id>
+      <version>1.1</version>
+    </dependency>
+
+    <dependency>
+      <id>wsdl4j</id>
+      <version>1.0</version>
+    </dependency>
+
+	<dependency>
+		<id>saaj</id>
+		<version>1.0</version>
+		<jar>saaj.jar</jar>
+	</dependency>
+
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+    </dependency>
+
+    <dependency>
+      <id>commons-discovery</id>
+      <version>20030211.213356</version>
+      <!--<version>SNAPSHOT</version>-->
+    </dependency>
+    
+    <dependency>
+      <id>jaxrpc-api</id>
+      <version>1.0.3</version>
+    </dependency>
+    
+    <dependency>
+      <id>xml-apis</id>
+      <version>1.0.b2</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+	    <include>**/*.properties</include>
+	    <include>**/*.sql</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+
+    <resources>
+    	<resource><!-- config files -->
+		<directory>${basedir}/src/java</directory>
+		<includes>
+			<include>**/*.xml</include>
+			<include>**/*.properties</include>
+		</includes>
+	</resource>
+	<resource> <!-- schemas  - may be needed for validation -->
+		<directory>${basedir}</directory>
+		<includes>
+			<include>schema/*.xsd</include>
+			<include>schema/*.dtd</include>
+		</includes>
+	</resource>
+	<resource> <!-- webservice related files -->
+		<directory>${basedir}</directory>
+		<includes>
+			<include>wsdl/*.wsdl</include>
+			<include>wsdd/*.wsdd</include>
+		</includes>
+	</resource>
+    </resources>
+
+  </build>
+
+  <reports>
+    <report>
+      maven-changelog-plugin
+    </report>
+    <report>
+      maven-changes-plugin
+    </report>
+    <report>
+      maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-clover-plugin
+    </report>
+    <report>
+      maven-developer-activity-plugin
+    </report>
+    <report>
+      maven-file-activity-plugin
+    </report>
+    <report>
+      maven-javadoc-plugin
+    </report>
+    <report>
+      maven-jdepend-plugin
+    </report>
+    <report>
+      maven-junit-report-plugin
+    </report>
+    <report>
+      maven-jxr-plugin
+    </report>
+    <report>
+      maven-license-plugin
+    </report>
+    <report>
+      maven-linkcheck-plugin
+    </report>
+    <report>
+      maven-pmd-plugin
+    </report>
+    <report>
+      maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
+    </report>
+  </reports>
+</project>
