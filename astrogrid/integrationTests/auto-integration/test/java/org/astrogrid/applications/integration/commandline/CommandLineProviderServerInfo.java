@@ -1,4 +1,4 @@
-/*$Id: CommandLineProviderServerInfo.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: CommandLineProviderServerInfo.java,v 1.2 2004/09/02 17:11:31 pah Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,7 @@ public class CommandLineProviderServerInfo implements ServerInfo {
      * @see org.astrogrid.applications.integration.ServerInfo#getApplicationName()
      */
     public String getApplicationName() {
-        return AbstractTestForIntegration.TESTAPP2;
+        return AbstractTestForIntegration.TESTAPP;
     }
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#getServerSearchString()
@@ -49,9 +49,6 @@ public class CommandLineProviderServerInfo implements ServerInfo {
         ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
         pval.setValue("1"); // wait one second...
         pval.setIndirect(false);
-        pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
-        pval.setValue("30.5");
-        pval.setIndirect(false);
         pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
         pval.setValue("test string");
         pval.setIndirect(false);
@@ -60,6 +57,8 @@ public class CommandLineProviderServerInfo implements ServerInfo {
         pval.setIndirect(false);
         pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
         pval.setIndirect(false);
+        pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P2']");
+        pval.setIndirect(false);
     }
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#populateIndirectTool(org.astrogrid.workflow.beans.v1.Tool, java.lang.String, java.lang.String)
@@ -67,9 +66,6 @@ public class CommandLineProviderServerInfo implements ServerInfo {
     public void populateIndirectTool(Tool tool, String inputURI, String outputURI) {
         ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
         pval.setValue("1"); // wait one second...
-        pval.setIndirect(false);
-        pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
-        pval.setValue("30.5");
         pval.setIndirect(false);
         pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
         pval.setValue("test string");
@@ -87,6 +83,9 @@ public class CommandLineProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: CommandLineProviderServerInfo.java,v $
+Revision 1.2  2004/09/02 17:11:31  pah
+update for new test application which does more
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.12 2004/08/22 01:51:43 nw Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.13 2004/09/02 17:12:03 pah Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -93,7 +93,7 @@ public class MySpaceCommandlineWorkflowEndToEndTest
        Step s = (Step)wf.getSequence().getActivity(0);
        assertStepCompleted(s);
        ResultListType res = getResultOfStep(s);
-       String value = res.getResult(0).getValue();
+       String value = ((ParameterValue)res.findXPathValue("result[name='P3']")).getValue();
        softAssertEquals("results not at expected location",targetIvorn.toString(),value);  
         try {       
         InputStream is = voSpaceClient.getStream(targetIvorn);
