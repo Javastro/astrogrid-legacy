@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-16"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!-- SQL equivalent
 SELECT t.a, g.d FROM Tab a, Tab d WHERE a.d < d.e AND a.f < d.f ORDER BY t.f, g.b
 -->
