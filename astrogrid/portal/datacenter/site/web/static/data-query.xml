@@ -9,15 +9,13 @@
         -->
       <div style="clear:both;">
         <h2 class="ag-db-h1">Data Query Builder</h2>
-        <textarea id="ag-data-query" cols="50" rows="20" name="query"> </textarea>
+        <textarea id="ag-data-query" cols="50" rows="20" name="adql-query"> </textarea>
 
         <!--
           MySpace actions
           -->
         <div style="text-align:center;">
-          <input name="action" type="submit" value="Load"/>&#160;<input name="myspace-name" type="text"/>&#160;<input name="action" type="submit" value="Save"/> <br/>
-          <input name="action" type="submit" value="Test"/>
-        </div>
+          <input name="action" type="submit" value="Load"/>&#160;<input name="myspace-name" type="text"/>&#160;<input name="action" type="submit" value="Save"/>        </div>
 
   <!--
           <div style="float:right;width:50%;">

@@ -55,6 +55,7 @@ public class MySpaceLoadAction extends AbstractAction {
     Request request = ObjectModelHelper.getRequest(objectModel);
     Session session = request.getSession(true);
     
+		InputStream inStream = null;
     try {
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);
@@ -74,15 +75,12 @@ public class MySpaceLoadAction extends AbstractAction {
 			logger.debug("[act] mySpaceName: " + mySpaceName);
 
 			// Copy the input stream to the output buffer.
-			InputStream inStream = storeClient.getStream(mySpaceName);
+			inStream = storeClient.getStream(mySpaceName);
 			StringBuffer outputBuffer = new StringBuffer();
 			
-	    byte[] bytesRead = null;
 	    int bytesAvailable = inStream.available();
 	    while(bytesAvailable > 0) {
-	      bytesRead = new byte[bytesAvailable];
-	      inStream.read(bytesRead);
-	      outputBuffer.append(bytesRead);
+	      outputBuffer.append((char)inStream.read());
 	      
 	      bytesAvailable = inStream.available();
 	    }
@@ -105,7 +103,17 @@ public class MySpaceLoadAction extends AbstractAction {
       
       logger.debug("[act] throwable: " + t.getClass() + ", msg: " + t.getLocalizedMessage());
     }
-    
+    finally {
+      try {
+        if(inStream != null) {
+          inStream.close();
+	      }
+      }
+      catch(Throwable t){
+        // assume closure.
+      }
+    }    
+
     logger.debug("[act] sitemapParams: " + sitemapParams);
     
     return sitemapParams;

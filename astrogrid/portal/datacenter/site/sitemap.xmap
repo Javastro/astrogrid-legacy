@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.8 2004/03/19 15:11:04 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.9 2004/04/19 08:54:39 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -251,30 +251,18 @@
         <map:select type="request-parameter">
           <map:parameter name="parameter-name" value="action"/>
           
-			<map:when test="Load">
-				<map:act type="load-adql">
-					<map:parameter name="myspace-end-point" 						value="http://Dummy.address/"/>
-					<map:parameter name="username" value="Anon"/>
-					<map:parameter name="community-id" value="gps@star.le.ac.uk"/>
-					<map:parameter name="password" value="None"/>
-					<map:parameter name="myspace-name" value="myspace-name"/>
-					<map:generate type="file" src="web/static/data-query.xml"/>
-					<map:transform src="cocoon:/load-adql.xsl">
-							<map:parameter name="adql-document" value="{adql-document}"/>
-					</map:transform>
-					<map:serialize type="xml"/>
-				</map:act>
-			</map:when>
+          <map:when test="Load">
+            <map:act type="load-adql">
+              <map:generate type="file" src="web/static/data-query.xml"/>
+              <map:transform src="cocoon:/load-adql.xsl">
+                  <map:parameter name="adql-document" value="{adql-document}"/>
+              </map:transform>
+              <map:serialize type="xml"/>
+            </map:act>
+          </map:when>
           
           <map:when test="Save">
             <map:act type="save-adql">
-              <map:parameter name="myspace-end-point" value="http://Dummy.address/"/>
-              <map:parameter name="username" value="Anon"/>
-              <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
-              <map:parameter name="password" value="None"/>
-              <map:parameter name="myspace-name" value="myspace-name"/>
-              <map:parameter name="adql-query" value="query"/>
-              
               <map:call resource="test-results"/>
             </map:act>
           </map:when>
