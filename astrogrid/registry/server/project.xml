@@ -141,7 +141,7 @@
 		  	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required, See webapp section for more on this servlet.  For harvesting other registries, the time intervals for automatic harvests to be started.</li>
 	  	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
 		      <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
-	          <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true
+	          <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true</li>
 			</ul>
     		Example of config properties:
     		<ul>
