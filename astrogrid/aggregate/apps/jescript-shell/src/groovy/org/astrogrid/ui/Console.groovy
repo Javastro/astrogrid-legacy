@@ -36,7 +36,7 @@ class Console extends ConsoleSupport {
     scriptFile
     codeBase
 
-    private URL helpURL = new URL("http://www.astrogrid.org/maven/docs/HEAD/jes/index.html");
+    private URL helpURL = new URL("http://www.astrogrid.org/maven/docs/HEAD/jes/userguide-architecture.html");
     private boolean dirty
     private GroovyShell shell
     private int counter = 0;
@@ -55,7 +55,7 @@ class Console extends ConsoleSupport {
         acc.name = JOptionPane.showInputDialog("Usename:")
         // password not used.
         password = JOptionPane.showInputDialog("Password:")
-        acc.community = JOptionPane.showInputDialog("Community:","org.astrogrid")
+        acc.community = JOptionPane.showInputDialog("Community:","astrogrid.org")
         group.community = acc.community
 
         creds.account = acc
