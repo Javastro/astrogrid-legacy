@@ -1,4 +1,4 @@
-/*$Id: CatApplicationDescription.java,v 1.2 2004/08/17 15:07:25 nw Exp $
+/*$Id: CatApplicationDescription.java,v 1.3 2004/09/03 13:19:14 nw Exp $
  * Created on 16-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -147,6 +147,7 @@ public class CatApplicationDescription extends AbstractApplicationDescription
             List streams = new ArrayList();
             for (Iterator i = inputParameterAdapters(); i.hasNext();) {
                 ParameterAdapter input = (ParameterAdapter)i.next();
+                reportMessage("reading in parameter " + input.getWrappedParameter().getValue());
                 streams.add(input.process());
             }            
             setStatus(Status.WRITINGBACK);
@@ -210,6 +211,9 @@ public class CatApplicationDescription extends AbstractApplicationDescription
 
 /* 
 $Log: CatApplicationDescription.java,v $
+Revision 1.3  2004/09/03 13:19:14  nw
+added some progress messages
+
 Revision 1.2  2004/08/17 15:07:25  nw
 added concat application
 

@@ -1,4 +1,4 @@
-/*$Id: SendMailApplicationDescription.java,v 1.3 2004/08/28 11:25:10 nw Exp $
+/*$Id: SendMailApplicationDescription.java,v 1.4 2004/09/03 13:19:14 nw Exp $
  * Created on 11-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -222,6 +222,7 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
                         message.setRecipient(Message.RecipientType.TO,new InternetAddress(args.get(TO).toString()));
                         Transport.send(message);
                         setStatus(Status.COMPLETED);
+                        reportMessage("message sent");
                         } catch (NamingException e) {
                             reportError("Could not find mail session in JNDI",e);
                         } catch (MessagingException e) {
@@ -254,6 +255,9 @@ public class SendMailApplicationDescription extends AbstractApplicationDescripti
 
 /* 
 $Log: SendMailApplicationDescription.java,v $
+Revision 1.4  2004/09/03 13:19:14  nw
+added some progress messages
+
 Revision 1.3  2004/08/28 11:25:10  nw
 tried to improve error trapping - seems to fail to complete at the moment.
 
