@@ -1,0 +1,12 @@
+<project
+    xmlns:j="jelly:core"
+    xmlns:u="jelly:util">
+
+  <!-- Conditionally disable linkcheck based on a property. --> 
+  <postGoal name="maven-javadoc-plugin:register">  
+    <j:if test="${maven.javadoc.disable}"> 
+      <attainGoal name="maven-javadoc-plugin:deregister"/>  
+      <echo>javadoc is disabled.</echo> 
+    </j:if> 
+  </postGoal> 
+</project>
