@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.1 2004/07/07 09:17:40 KevinBenson Exp $
+/*$Id: EgsoQuerierTest.java,v 1.2 2004/07/26 13:50:25 KevinBenson Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,7 +78,7 @@ public class EgsoQuerierTest extends ServerTestCase {
       }    
 
    public void testAdql1() throws Exception {
-      //askAdqlFromFile("sql-querier-test-4.xml");
+      askAdqlFromFile("sql-querier-test-5.xml");
    }
    /*
    public void testAdl2() throws Exception {
@@ -116,6 +116,9 @@ public class EgsoQuerierTest extends ServerTestCase {
 
 /*
 $Log: EgsoQuerierTest.java,v $
+Revision 1.2  2004/07/26 13:50:25  KevinBenson
+Small test case that goes out and queries sec based on an adql query
+
 Revision 1.1  2004/07/07 09:17:40  KevinBenson
 New SEC/EGSO proxy to query there web service on the Solar Event Catalog
 
