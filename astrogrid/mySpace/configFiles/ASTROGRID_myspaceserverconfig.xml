@@ -24,7 +24,7 @@
    ASTROGRID_myspaceservermessages_en_US.properties  // US specific English language messages
   -->
   <category name="MESSAGES">
-    <property name="INSTALLATION.BASENAME" value="ASTROGRID_myspacemanagermessages" />
+    <property name="INSTALLATION.BASENAME" value="ASTROGRID_myspaceservermessages" />
     <property name="INSTALLATION.LANGUAGECODE" value="" />
     <property name="INSTALLATION.COUNTRYCODE" value="" />    
   </category>
