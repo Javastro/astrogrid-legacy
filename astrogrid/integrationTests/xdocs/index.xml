@@ -16,15 +16,13 @@
     </section>
     <section name="Automatic redeployment">
       <p>
-         The maven builds produce wars for (almost) all components.  Before the integration tests are run these wars are grabbed
+         The maven builds produce wars for  all components.  Before the integration tests are run these wars are grabbed
          from the repository and (re-)deployed to a variety of test machines.  You can find out what goes where by looking at the ant 
          script deployWebapps.xml.
        </p>
        <subsection name="What's next?">
        	<P>
-       		All components bar registry are being deployed, but only mySpace and JES are configured correctly.  Rest are pending....
-       		<BR/>
-       		WE NEED MORE TESTS!
+       		All components bar registry are being deployed, but not yet configured....
        	</P>
        </subsection>
     </section>
