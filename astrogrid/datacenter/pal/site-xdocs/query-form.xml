@@ -19,6 +19,10 @@
              <option value="VOTABLE">VOTable</option>
              <option value="CSV">CSV</option>
           </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
+          </select>
           Send them to
           <input type="text" name="Target"/>
           <input type="submit" value="Submit ADQL" />
@@ -43,6 +47,10 @@
              <option value="VOTABLE">VOTable</option>
              <option value="CSV">CSV</option>
           </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
+          </select>
           Send them to
           <input type="text" name="Target"/>
           <input type="submit" value="Submit ADQL" />
@@ -64,6 +72,10 @@
           <select name='Format'>
              <option value="VOTABLE">VOTable</option>
              <option value="CSV">CSV</option>
+          </select>
+          Compression
+          <select name='Compression'>
+             <option value="NONE">None</option>
           </select>
           Send them to
           <input type="text" name="Target"/>
