@@ -18,6 +18,7 @@
 	<xs:element name="CeaApplication" type="cea:CeaApplicationType" substitutionGroup="vr:Resource"/>
 	<!-- This schema would benefit from some constraints being added to do better validation on the cross references within it -->
 	<xs:complexType name="CeaApplicationType">
+	<!-- This would benefit from some sort of indication as to what type of application - datacentre/cmdline/webapp etc.... -->
 		<xs:complexContent>
 			<xs:extension base="vr:ResourceType">
 				<xs:sequence>
