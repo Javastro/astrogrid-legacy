@@ -60,6 +60,19 @@
       </java>
    </target>
 
+   <target name="datacenterTest">
+     <path id="classpath">
+       <pathelement location="target/classes"/>
+       <path refid="maven.dependency.classpath"/>
+     </path>
+      <java classname="org.astrogrid.datacenter.tools.SimpleQuerier"
+            dir="target/classes" fork="yes" failonerror="true"
+            classpathref="classpath">
+        <arg value="http://cass123.ast.cam.ac.uk:4040/pal-SNAPSHOT/services/AxisDataServer"/>
+        <arg value= "/data/cass123a/kea/DEVEL/astrogrid/warehouse/myquery"/>
+      </java>
+   </target>
+
    <!-- TEMPORARY TEST HARNESS -TOFIX REMOVE -->
    <target name="tempTest">
      <path id="classpath">
