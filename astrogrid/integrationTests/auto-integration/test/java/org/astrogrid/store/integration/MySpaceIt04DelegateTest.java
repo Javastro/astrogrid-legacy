@@ -1,4 +1,4 @@
-/*$Id: MySpaceIt04DelegateTest.java,v 1.1 2004/04/15 13:39:39 jdt Exp $
+/*$Id: MySpaceIt04DelegateTest.java,v 1.2 2004/04/15 15:04:58 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.community.User;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate;
 
@@ -26,7 +27,7 @@ import org.astrogrid.store.delegate.myspace.MySpaceIt04Delegate;
 public class MySpaceIt04DelegateTest extends StoreClientTestHelper {
 
    
-   private static final String TESTSTORE = "myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager";
+   private static final String TESTSTORE = "myspace:"+SimpleConfig.getSingleton().getString("org.astrogrid.myspace.endpoint");
 
    private static final String TESTSTORE2 ="myspace:http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/MySpaceManager";
 
@@ -97,6 +98,9 @@ public class MySpaceIt04DelegateTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceIt04DelegateTest.java,v $
+Revision 1.2  2004/04/15 15:04:58  jdt
+Now picks up location of local myspace
+
 Revision 1.1  2004/04/15 13:39:39  jdt
 Moved from integrationTests to auto-integration
 
