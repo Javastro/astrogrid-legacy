@@ -1,4 +1,4 @@
-/*$Id: LocalFileStoreTest.java,v 1.4 2004/03/08 13:46:25 mch Exp $
+/*$Id: LocalFileStoreTest.java,v 1.5 2004/03/14 13:23:14 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import org.astrogrid.store.delegate.local.LocalFileStore;
  * @author M Hill
  *
  */
-public class LocalFileStoreTest extends StoreClientTest {
+public class LocalFileStoreTest extends StoreClientTestHelper {
 
    
    private static final String TESTSTORE = "file://LocalFileStoreTest";
@@ -93,6 +93,9 @@ public class LocalFileStoreTest extends StoreClientTest {
 
 /*
 $Log: LocalFileStoreTest.java,v $
+Revision 1.5  2004/03/14 13:23:14  mch
+Renamed StoreClientTestHelper so that it doesn't get used directly for testing
+
 Revision 1.4  2004/03/08 13:46:25  mch
 Fixed imports
 
