@@ -189,6 +189,7 @@
   
   <build>
     <sourceDirectory>src/java</sourceDirectory>
+    <sourceDirectory>stubs/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
 
     <unitTest/>
