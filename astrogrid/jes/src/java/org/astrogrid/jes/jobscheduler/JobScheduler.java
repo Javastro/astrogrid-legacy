@@ -63,7 +63,8 @@ public class JobScheduler {
         ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00490",
 		ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE     = "AGJESE00500",
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST = "AGJESE00510",
-	    ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER = "AGJESE00520" ;
+	    ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER = "AGJESE00520",
+        ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY   = "AGJESE00525";
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobScheduler.class ) ;
@@ -133,12 +134,6 @@ public class JobScheduler {
             
             // Schedule one or more job steps....
             this.scheduleSteps( job ) ;
-	        
-	        // Locate appropriate datacenter, using the Registry if need be...
-//			datacenterLocation = locateDatacenter( job ) ;
-	        
-			// Prod the datacenter into life...
-//			startJob( datacenterLocation, job ) ;
 
 			factory.updateJob( job ) ;              // Update any changed details to the database                           		
 			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
@@ -146,10 +141,8 @@ public class JobScheduler {
         }
         catch( AstroGridException jex ) {
         	
-	        AstroGridMessage
-		       detailMessage = jex.getAstroGridMessage() ,  
+	        AstroGridMessage  
 		       generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE ) ;
-	        logger.error( detailMessage.toString(), jex ) ;
 	        logger.error( generalMessage.toString() ) ;
 	        
         }
@@ -163,17 +156,20 @@ public class JobScheduler {
     } // end of scheduleJob()
     
     
-    private void scheduleSteps( Job job ) {
+    private void scheduleSteps( Job job ) throws JesException {
         if( TRACE_ENABLED ) logger.debug( "scheduleSteps(): entry") ;
         
         ArrayList
-            steps = this.identifyStepCandidates( job ) ;
+            steps = null ;
         Iterator
-            iterator  = steps.listIterator() ;
+            iterator = null ;
         JobStep
             step = null ;
         
         try {
+            
+            steps = this.identifyDispatchableCandidates( job ) ;
+            iterator = steps.listIterator() ;
             
             InputSource
                jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
@@ -185,6 +181,7 @@ public class JobScheduler {
                 step = (JobStep)iterator.next() ;
                 doc = XMLUtils.newDocument( jobSource ) ;
                 this.dispatchOneStep( step, doc ) ;
+                step.getParent().setStatus( Job.STATUS_RUNNING ) ;
             }
                   
         }
@@ -192,6 +189,7 @@ public class JobScheduler {
             AstroGridMessage
                 message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
             logger.error( message.toString(), ex ) ;
+            throw new JesException( message ) ;
         } 
         finally {
             if( TRACE_ENABLED ) logger.debug( "scheduleSteps(): exit") ;
@@ -200,10 +198,18 @@ public class JobScheduler {
     } // end of scheduleSteps()
 	
     
-    private void dispatchOneStep( JobStep step, Document doc ) {
+    private void dispatchOneStep( JobStep step, Document doc )  throws JesException {
         if( TRACE_ENABLED ) logger.debug( "dispatchOneStep(): entry") ; 
         
+        String
+            requestXML = null,
+            location = null ;
+        
         try {
+            
+            requestXML = this.formatRunRequest( step, doc ) ;
+            location = this.findService( step ) ;
+            dispatch( requestXML, location ) ;
             
         }
         finally {
@@ -268,51 +274,6 @@ public class JobScheduler {
         return candidateService ;
         
     } // end of findService( JobStep )
-
-
-
-/* 
-	
-	
-	private String findService( Job job ) {	
-		if( TRACE_ENABLED ) logger.debug( "findService( job ): entry") ;
-		
-		JobStep
-		   jobStep = null ;
-		Catalog
-		   catalog = null ;
-		String
-		   candidateService = null ;
-		
-		try {
-			// JBL Note: insufficient except for iteration 2.
-			// Examine our one and only JobStep...
-			jobStep = (JobStep)job.getJobSteps().next() ;
-			
-			// Now try to get first catalog with a service location attached...
-			Iterator
-			   catIt = jobStep.getQuery().getCatalogs();
-			
-			while( catIt.hasNext() ) {
-				
-				 catalog = (Catalog)catIt.next() ;
-	             candidateService = findService( catalog ) ; 
-                 if( candidateService != null  )
-                     break ;
-                     
-			} // end while
-			
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "findService( job ): exit") ;	
-		}
-		
-		return candidateService ;
-		
-	} // end of findService( Job job )
-
-*/
-
 	
 	
 	private String findService( Catalog catalog ) {		
@@ -348,162 +309,91 @@ public class JobScheduler {
 		return url ;		
 		
 	} // end of findService()
-	
-	  	
-	private void startJob( String datacenterLocation, Job job ) throws JesException { 
-		if( TRACE_ENABLED ) logger.debug( "startJob() entry") ;
-		
-		try {
-			
-			Object []
-			   parms = new Object[] { formatRunRequest( job ) } ;
-			
-			Call 
-			   call = (Call) new Service().createCall() ;			  
-
-			call.setTargetEndpointAddress( new URL( datacenterLocation ) ) ;
-			call.setOperationName( "runQuery" ) ;  // Set method to invoke		
-			call.addParameter("jobXML", XMLType.XSD_STRING,ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_STRING);   // JBL Note: Is this OK?
-			call.invokeOneWay( parms ) ;			
-			job.setStatus( Job.STATUS_RUNNING ) ;
-
-		}
-		catch ( Exception ex ) {
-			// job.setStatus( Job.STATUS_INITIALIZED ) ;
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER ) ; 
-			logger.error( message.toString(), ex ) ;
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "startJob() exit") ;	
-		}					
-		
-	} // end startJob()
-	
-	
-	private String formatRunRequest( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
-		
-		String
-		    request = null ;
-		
+    
+    
+    private void dispatch( String requestXML, String datacenterLocation ) throws JesException { 
+        if( TRACE_ENABLED ) logger.debug( "dispatch() entry") ;
+        
         try {
-        	
-        	//JBL Note: This is  adequate only for iteration two where we are expecting
-        	//          one jobstep only. You have been warned!
-            //
-            // A way forward for iteration three. Retain the document editing idea.
-            // But eliminate the unnecessary steps.
-            //
-        	
-			InputSource
-			   jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
-			
-            Document
-               doc = XMLUtils.newDocument( jobSource ) ;
-               
-            Element
-               element = doc.getDocumentElement() ;   // This should pick up the "job" element
-               
-            // set the Job id (i.e. its job URN)...
-            element.setAttribute( SubmissionRequestDD.JOB_URN_ATTR,job.getId() ) ;
             
-            // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
-			element.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
-			                    , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_URL ) ) ; 
-               
-			NodeList
-			   nodeList = element.getChildNodes() ;  	
-			   
-			// identify jobstep and add the step number attribute...
-			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-							
-				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-					
-					element = (Element) nodeList.item(i) ;					
-                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {  
-                        //JBL Note. Iteration Three. At this point, eliminate the unnecessary steps.                 	
-                    	String
-                    	   stepNumber = ((JobStep)job.getJobSteps().next()).getStepNumber().toString() ;	
-						element.setAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR, stepNumber ) ;
-					}
-				
-				} // end if
-				
-			} // end for
+            Object []
+               parms = new Object[] { requestXML } ;
             
+            Call 
+               call = (Call) new Service().createCall() ;             
 
-			
-			request = XMLUtils.DocumentToString( doc ) ;
-               
-		}
-		catch ( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
-			logger.error( message.toString(), ex ) ;
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;	
-		}		
-		
-		return request ;
-		
-	} // end of formatRunRequest()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    private String formatRunRequest( Job job, JobStep step ) {
+            call.setTargetEndpointAddress( datacenterLocation ) ;
+            call.setOperationName( "runQuery" ) ;  // Set method to invoke      
+            call.addParameter("jobXML", XMLType.XSD_STRING,ParameterMode.IN);
+            call.setReturnType(XMLType.XSD_STRING);   
+            call.invokeOneWay( parms ) ;            
+
+        }
+        catch ( Exception ex ) {
+            AstroGridMessage
+                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER ) ; 
+            logger.error( message.toString(), ex ) ;
+            throw new JesException( message ) ;
+        } 
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "dispatch() exit") ;  
+        }                   
+        
+    } // end dispatch()
+	
+	
+    private String formatRunRequest( JobStep step, Document doc ) throws JesException {
         if( TRACE_ENABLED ) logger.debug( "formatRunRequest() entry") ;
         
         String
             request = null ;
         
         try {
-            
-            InputSource
-               jobSource = new InputSource( new StringReader( job.getDocumentXML() ) );
-            
-            Document
-               doc = XMLUtils.newDocument( jobSource ) ;
                
             Element
-               element = doc.getDocumentElement() ;   // This should pick up the "job" element
+               element = null ,
+               jobElement = doc.getDocumentElement() ;   // This should pick up the "job" element
                
             // set the Job id (i.e. its job URN)...
-            element.setAttribute( SubmissionRequestDD.JOB_URN_ATTR,job.getId() ) ;
+            jobElement.setAttribute( SubmissionRequestDD.JOB_URN_ATTR, step.getParent().getId() ) ;
             
             // set the URL for the JobMonitor so that it can be contacted by the datacenter... 
-            element.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
-                                , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_URL ) ) ; 
+            jobElement.setAttribute( SubmissionRequestDD.JOB_MONITOR_URL_ATTR
+                                   , JES.getProperty( JES.MONITOR_URL, JES.MONITOR_URL ) ) ; 
                
             NodeList
-               nodeList = element.getChildNodes() ;     
+               nodeList = element.getChildNodes() ; 
+            ArrayList
+               stepsToBeEliminated = new ArrayList() ; 
+            Integer
+               stepNumber = null ;   
                
-            // identify jobstep and add the step number attribute...
+            // identify jobsteps to be eliminated...
             for( int i=0 ; i < nodeList.getLength() ; i++ ) {
                             
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
                     
                     element = (Element) nodeList.item(i) ;                  
-                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {  
-                        //JBL Note. Iteration Three. At this point, eliminate the unnecessary steps.                    
-                        String
-                           stepNumber = ((JobStep)job.getJobSteps().next()).getStepNumber().toString() ;    
-                        element.setAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR, stepNumber ) ;
+                    if( element.getTagName().equals( SubmissionRequestDD.JOBSTEP_ELEMENT ) ) {                      
+                        
+                        stepNumber = new Integer( element.getAttribute( SubmissionRequestDD.JOBSTEP_STEPNUMBER_ATTR).trim() ) ;
+                        if( !stepNumber.equals( step.getStepNumber() ) ) {
+                            stepsToBeEliminated.add( element ) ;
+                        }
+                        
                     }
                 
                 } // end if
                 
             } // end for
             
-
+            Iterator
+                iterator = stepsToBeEliminated.iterator() ;
+                
+            while ( iterator.hasNext() ) {
+                element = (Element)iterator.next() ;
+                jobElement.removeChild( element ) ;
+            }
             
             request = XMLUtils.DocumentToString( doc ) ;
                
@@ -512,6 +402,7 @@ public class JobScheduler {
             AstroGridMessage
                 message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
             logger.error( message.toString(), ex ) ;
+            throw new JesException( message ) ;
         } 
         finally {
             if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;  
@@ -521,24 +412,12 @@ public class JobScheduler {
         
     } // end of formatRunRequest()
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	
 	
 	private String extractJobURN( Document jobDoc ) { 
 		return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
 	} 
 	
+    
 	private String enquireOfRegistry( JobStep step ) throws JesException { 
 		if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() entry") ;
 		
@@ -569,8 +448,9 @@ public class JobScheduler {
 		}
 		catch ( Exception ex ) {
 			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER ) ; 
+				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_REGISTRY ) ; 
 			logger.error( message.toString(), ex ) ;
+            throw new JesException(message) ;
 		} 
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "enquireOfRegistry() exit") ;	
@@ -607,8 +487,8 @@ public class JobScheduler {
 	} // end of formatRegistryRequest()
     
     
-    private ArrayList identifyStepCandidates( Job job ) {
-        if( TRACE_ENABLED ) logger.debug( "identifyStepCandidates(): entry") ;
+    private ArrayList identifyDispatchableCandidates( Job job ) {
+        if( TRACE_ENABLED ) logger.debug( "identifyDispatchableCandidates(): entry") ;
         
         Iterator
            iterator = job.getJobSteps() ;
@@ -676,15 +556,17 @@ public class JobScheduler {
                     // for execution...loop to examine the next step...
                 
            } // end while 
+           
+           logger.debug( "dispatchable candidates number: " + candidates.size() ) ;
                   
         }
         finally {
-            if( TRACE_ENABLED ) logger.debug( "identifyStepCandidates(): exit") ;        
+            if( TRACE_ENABLED ) logger.debug( "identifyDispatchableCandidates(): exit") ;        
         }
         
         return candidates ;
         
-    } // end of identifyStepCandidates()
+    } // end of identifyDispatchableCandidates()
     
     
     private void maintainCandidateList( ArrayList list, JobStep candidate ) {

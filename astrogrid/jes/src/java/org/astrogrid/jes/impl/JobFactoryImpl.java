@@ -147,126 +147,27 @@ public class JobFactoryImpl implements JobFactory {
 		datasource = null ;
 
 
+    //JBL Note: this is a fudge for the moment      
     private static int
-        assignedLimit = -1,
-	    uniqueID = 0;
-	    
-	private Connection
-		connection = null ;
+        uniqueID =  ( new Double( Math.random() * Integer.MAX_VALUE ) ).intValue() ;
+        
+    private Connection
+        connection = null ;
 
-
-    private synchronized static int generateUniqueInt( JobFactoryImpl jobFactory ) throws JobException {
-        if( TRACE_ENABLED ) logger.debug( "generateUniqueInt(): entry") ;
-          
-        try {          
-            if( uniqueID >= assignedLimit ) {
-                updateAssignedLimit( jobFactory ) ;
-            }
+    //JBL Note: this is a fudge for the moment
+    private int generateUniqueInt() {
+        
+        int
+            retValue = 0 ;
+        
+        synchronized ( JobFactoryImpl.class ) {
+            retValue = uniqueID++ ;
         }
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "generateUniqueInt(): exit") ;            
-        }
-    	
-    	return ++uniqueID ;
-    	
+        
+        return retValue ;
+        
     } // end of generateUniqueInt()
-    
-    
-    private static void updateAssignedLimit( JobFactoryImpl jobFactory ) throws JobException {
-        
-        Statement   
-           statement = null ;
-        ResultSet
-           rs = null ;
-           
-        try {           
-            // Attempt to retrieve the singleton row containing assigned values...
-            rs = updateAssignedLimit_Retrieve( statement ) ;
-            
-            if( !rs.isBeforeFirst() ) {
-                // First time through for this system!!!
-                // Initialize here. Insert the system's one and only row...
-                try { rs.close(); } catch( SQLException sex ) {;} 
-                try { statement.close(); } catch( SQLException sex ) {;} 
-                statement = jobFactory.getConnection().createStatement() ;
-                updateAssignedLimit_Insert( statement ) ;                
-            }
-            else {
-                // Update our one and only row...    
-                updateAssignedLimit_Update( rs ) ;
-            } 
-                           
-        }
-        catch( SQLException ex ) {
-            AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_UNEXPECTED_SQL_ERROR_ON_TABLE
-                                              , SUBCOMPONENT_NAME
-                                              , JES.getProperty( JES.JOB_TABLENAME_JOBID, JES.JOB_CATEGORY ) ) ;
-            logger.error( message.toString(), ex ) ;
-            throw new JobException( message, ex ) ;         
-        }
-        finally {
-            if( rs != null ) { try { rs.close(); } catch( SQLException sex ) {;} }
-            if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }     
-        }                                                                              
-       
-    }
-    
-    
-    private static ResultSet updateAssignedLimit_Retrieve( Statement statement ) throws SQLException {
-        
-        Object []
-           inserts = new Object[1] ;
-        inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBID
-                                    , JES.JOB_CATEGORY ) ;  
-        String
-           selectString = MessageFormat.format( JOBID_SELECT_TEMPLATE, inserts ) ;  
-        logger.debug( "Assigned limit select: " + selectString ) ;        
 
-        return statement.executeQuery( selectString );
-                 
-    } // end of updateAssignedLimit_Retrieve()
-    
-    
-    private static ResultSet updateAssignedLimit_Insert( Statement statement ) throws SQLException {
-        
-        Object []
-           inserts = new Object[1] ;
-        inserts[0] = JES.getProperty( JES.JOB_TABLENAME_JOBID
-                                    , JES.JOB_CATEGORY ) ;  
-        String
-           insertString = MessageFormat.format( JOBID_INSERT_TEMPLATE, inserts ) ;  
-        logger.debug( "Assigned limit insert: " + insertString ) ;        
-
-        return statement.executeQuery( insertString );
-                 
-    } // end of updateAssignedLimit_Insert()
-    
-    
-    private static void updateAssignedLimit_Update( ResultSet rs ) throws SQLException, JobException {
-        
-        rs.next() ;  // position on the (hopefully) one and only row.
-        
-        // The range is set within a configuration property...
-         int 
-             range = new Integer( JES.getProperty( JES.JOB_ID_BOOKABLERANGE
-                                                 , JES.JOB_CATEGORY ) ).intValue() ;          
-        uniqueID = rs.getInt( COL_JOBID_ASSIGNED ) ;
-        assignedLimit = uniqueID + range ;
-                
-        rs.updateInt( COL_JOBID_ASSIGNED, assignedLimit ) ;
-                
-        if( rs.next() == true ) {
-            // We have multiple rows!!! This should be impossible...
-            AstroGridMessage
-               message = new AstroGridMessage( ASTROGRIDERROR_JOBID_SINGLETON_ROW_FAULT
-                                             , SUBCOMPONENT_NAME
-                                             , JES.getProperty( JES.JOB_TABLENAME_JOBID, JES.JOB_CATEGORY ) ) ;
-            throw new JobException( message ) ;
-        }    
-               
-    } // end of updateAssignedLimit_Update()
-    
 
 	public static DataSource getDataSource() throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "getDataSource(): entry") ; 
@@ -1225,7 +1126,7 @@ public class JobFactoryImpl implements JobFactory {
 	       .append( ':' )
 	       .append( JES.getProperty( JES.JES_ID, JES.JES_CATEGORY ) )
 	       .append( ':' )
-	       .append( generateUniqueInt( this ) ) ;
+	       .append( generateUniqueInt() ) ;
 	       
 		return buffer.toString() ;
 		
