@@ -1,5 +1,5 @@
 /*
- * $Id: HomespaceName.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: HomespaceName.java,v 1.4 2005/01/26 17:41:48 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -98,7 +98,7 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
 
    /** Resolves the location */
    public String toLocation(Principal user) throws IOException {
-      return resolveIvosrn().resolveSrl().toURI();
+      return null;//@todo    return resolveIvosrn().resolveSrl().toURI();
    }
    
    /** Returns true if the given string is likely to be a homespace - ie if it
@@ -232,8 +232,9 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       IVOSRN ivosrn = name.resolveIvosrn();
       System.out.println("->"+ivosrn);
       
-      SRL msrl = ivosrn.resolveSrl();
-      System.out.println("->"+msrl);
+      /*
+//      SRL msrl = ivosrn.resolveSrl();
+//      System.out.println("->"+ivosrnmsrl);
       
       OutputStream out = ((MSRL) msrl).resolveOutputStream(LoginAccount.ANONYMOUS);
       out.write("This could be rude and you'd never know cos it's about to be overwritten".getBytes());
@@ -244,11 +245,15 @@ public class HomespaceName implements SRI, TargetIdentifier, SourceIdentifier
       out.close();
       
       System.out.println("done");
+       */
    }
 }
 
 /*
 $Log: HomespaceName.java,v $
+Revision 1.4  2005/01/26 17:41:48  mch
+fix to compile until resolving is properly handled
+
 Revision 1.3  2005/01/26 17:31:57  mch
 Split slinger out to scapi, swib, etc.
 

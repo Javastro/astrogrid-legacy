@@ -1,5 +1,5 @@
 /*
- * $Id: IVOSRN.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: IVOSRN.java,v 1.4 2005/01/26 17:41:48 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -16,6 +16,8 @@ import java.security.Principal;
 import org.astrogrid.slinger.SRI;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.targets.TargetIdentifier;
+import org.astrogrid.slinger.targets.TargetMaker;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
  * International Virtual Observatory Storepoint Resource Name.  An IVORN used to
@@ -51,7 +53,8 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public OutputStream resolveOutputStream(Principal user) throws IOException {
-      return VoSpaceResolver.resolveOutputStream(this, user);
+//@todo      return TargetMaker.makeTarget(super.resolve());
+      return null;
    }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
@@ -70,27 +73,27 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
    /** All sources must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public InputStream resolveInputStream(Principal user) throws IOException {
-      return VoSpaceResolver.resolveInputStream(this, user);
+      return null; //return VoSpaceResolver.resolveInputStream(this, user);
    }
    
    /** Used to get the mime type of the pointed-do data */
    public String getMimeType(Principal user) throws IOException {
-      return VoSpaceResolver.resolveMsrl(this).getMimeType(user);
-//      catch (URISyntaxException e) {
-//         throw new IOException(e+" resolving file at "+this);
-//      }
+      //@todo
+      return null;
    }
 
-   /** Gets the *location* of the ivorn *
-   public String toLocation(Principal user) throws IOException {
-      return VoSpaceResolver.resolveSrl(this).toURI();
+   /** resolves to a locator  */
+   public String resolveSrl() throws IOException {
+      return null; //@todo
    }
-    */
 
 }
 
 /*
 $Log: IVOSRN.java,v $
+Revision 1.4  2005/01/26 17:41:48  mch
+fix to compile until resolving is properly handled
+
 Revision 1.3  2005/01/26 17:31:57  mch
 Split slinger out to scapi, swib, etc.
 

@@ -1,5 +1,5 @@
 /*
- * $Id: IVORN.java,v 1.3 2005/01/26 17:31:57 mch Exp $
+ * $Id: IVORN.java,v 1.4 2005/01/26 17:41:48 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -148,8 +148,6 @@ public class IVORN
             throw new FileNotFoundException("Cannot resolve "+this+" from "+lookedIn);
          }
          else {
-            //hmmm yes but what have we got back? a myspace endpoint or an http endpoint?
-            //assume myspace for now...
             LogFactory.getLog(IVORN.class).trace("Registry-Resolved "+this+" to "+resolvedEndPoint+" (from "+registry+")");
             return resolvedEndPoint;
          }
@@ -165,6 +163,9 @@ public class IVORN
 
 /*
 $Log: IVORN.java,v $
+Revision 1.4  2005/01/26 17:41:48  mch
+fix to compile until resolving is properly handled
+
 Revision 1.3  2005/01/26 17:31:57  mch
 Split slinger out to scapi, swib, etc.
 
