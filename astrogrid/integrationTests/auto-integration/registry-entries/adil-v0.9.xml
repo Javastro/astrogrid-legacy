@@ -19,8 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-  <!-- Describe the ADIL Cone Search service -->
-  <vs:TabularSkyService>
+  <vr:Resource xsi:type="TabularSkyService">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>vocone</ResourceKey>
@@ -83,8 +82,6 @@
       <vr:Invocation>Extended</vr:Invocation>
       <vr:AccessURL use="base">http://adil.ncsa.uiuc.edu/vocone?survey=f&amp;</vr:AccessURL>
       <HTTPResults>text/xml</HTTPResults>
-
-      <!-- These are the supported input parameters -->
       <Param>
         <vr:Name>RA</vr:Name>
         <vr:Description>The right ascension of the search cone center</vr:Description>
@@ -169,10 +166,10 @@
           <DataType arraysize="*">char</DataType>
        </Column>
     </Table>
-  </vs:TabularSkyService>
+  </vr:Resource>
 
   <!-- Describe the ADIL SIA service -->
-  <vs:TabularSkyService>
+  <vr:Resource xsi:type="TabularSkyService">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>sia</ResourceKey>
@@ -253,10 +250,6 @@
       <vr:Invocation>Extended</vr:Invocation>
       <vr:AccessURL use="base">http://adil.ncsa.uiuc.edu/vocone?</vr:AccessURL>
       <HTTPResults>text/xml</HTTPResults>
-      <!-- 
-           These are the supported input parameters taken from the ADIL
-           SIA service's "Metadata" operation.  
-         -->
       <Param>
         <vr:Name>POS</vr:Name>
         <vr:Description>Search Position in the form "ra,dec" where ra and dec are given in decimal degrees in the ICRS coordinate system.</vr:Description>
@@ -392,5 +385,5 @@
           <UCD>VOX:Image_AccessReference</UCD>
        </Column>
     </Table>
-  </vs:TabularSkyService>
+  </vr:Resource>
 </VODescription>
