@@ -1,5 +1,5 @@
 /*
- * $Id: Vorl.java,v 1.1 2004/03/09 23:18:58 mch Exp $
+ * $Id: Vorl.java,v 1.2 2004/03/25 12:21:59 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,11 +20,13 @@ import java.util.StringTokenizer;
  * 4.1 clients using newer components.
  * <p>
  * It is of the form:
- *    vospace:<delegateendpoint>[#<path>]
- *
+ * <pre>
+ *    vospace:{delegateendpoint}[#{path}]
+ * </pre>
  * where the path is given as what was going to be an ivo, ie:
- *
+ * <pre>
  *    /community/user/path/path/filename.ext
+ * </pre>
  * @deprecated
  */
 
@@ -85,6 +87,9 @@ public class Vorl
 
 /*
 $Log: Vorl.java,v $
+Revision 1.2  2004/03/25 12:21:59  mch
+Tidied doc
+
 Revision 1.1  2004/03/09 23:18:58  mch
 Added Vorl for 4.1 access
 

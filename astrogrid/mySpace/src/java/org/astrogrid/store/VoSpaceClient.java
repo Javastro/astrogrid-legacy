@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.1 2004/03/22 10:25:42 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.2 2004/03/25 12:21:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,10 +19,10 @@ import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
  * This delegate provides methods for operating on files in VoSpace - that is,
- * files that are on store points (accessible through StoreClient implementations)
+ * files that are on store points (accessible through <code>StoreClient</code> implementations)
  * that are Registered in IVO Registries and/or Communities.
- *
- * Note that there is a difference between the user (termed *operator* here) of
+ * <p>
+ * Note that there is a difference between the user (termed <b>operator</b> here) of
  * this class, and the owner of the files that might be being browsed.
  */
 
@@ -128,6 +128,9 @@ public class VoSpaceClient {
 
 /*
 $Log: VoSpaceClient.java,v $
+Revision 1.2  2004/03/25 12:21:59  mch
+Tidied doc
+
 Revision 1.1  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.6 2004/03/22 10:25:42 mch Exp $
+ * $Id: Msrl.java,v 1.7 2004/03/25 12:21:59 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,11 +24,12 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
  * file (or the location to create a file) completely in MySpace
  * <p>
  * It is of the form:
- *    myspace:<delegateendpoint>[#<myspacepath>[!<serverId>]]
- *
+ * <pre>
+ *    myspace:{delegateendpoint}[#{myspacepath}[!{serverId}]]
+ * </pre>
  * If the path fragment is empty, the MSRL refers to a myspace store service
- *
- * @todo - plug this into the URL mechanism, so we can just pass around URLs instead of AGSLs
+ * <p>
+ * Note that this should normally be used by only AGSLs and other Store classes
  */
 
 public class Msrl
@@ -200,6 +201,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.7  2004/03/25 12:21:59  mch
+Tidied doc
+
 Revision 1.6  2004/03/22 10:25:42  mch
 Added VoSpaceClient, StoreDelegate, some minor changes to StoreClient interface
 

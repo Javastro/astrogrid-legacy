@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.11 2004/03/18 20:00:47 mch Exp $
+ * $Id: Agsl.java,v 1.12 2004/03/25 12:21:59 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -25,15 +25,22 @@ import org.astrogrid.community.User;
  * This contains all the information you
  * need to identify a file in 'VoSpace' that can be reached through one of
  * the StoreClient delegates
- *
+ * <p>
  * It is of the form:
- *    astrogrid:store:<url>
+ * <pre>
+ *    astrogrid:store:{url}
+ * </pre>
  *or
- *    astrogrid:store:myspace:[<serverId>@]<delegateendpoint>#myspacepath
+ * <pre>
+ *    astrogrid:store:myspace:[{serverId}]{delegateendpoint}#{myspacepath}
+ * </pre>
  *or (experimental)
- *    astrogrid:store:mailto:<email address>
- *
- * The path can be null, ie referring just to a store service
+ * <pre>
+ *    astrogrid:store:mailto:{email address}
+ * </pre>
+ * <p>
+ * The path can be null, ie referring just to a store <i>service</i> rather than
+ * a file/folder on that service.
  */
 
 public class Agsl
@@ -232,6 +239,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.12  2004/03/25 12:21:59  mch
+Tidied doc
+
 Revision 1.11  2004/03/18 20:00:47  mch
 Added trims
 
