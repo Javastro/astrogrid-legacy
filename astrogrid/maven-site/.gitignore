@@ -1,1 +1,4 @@
 .project
+target
+maven.log
+velocity.log
