@@ -18,7 +18,7 @@
 	    <!-- Add our page content -->
 		<content>
 		  <agPUBMessage>
-        Query the Registry Microbrowser - <xsl:value-of select="$mainelement"/>
+            Query the Registry Microbrowser - <xsl:value-of select="$mainelement"/>
           </agPUBMessage> 
 		  <ag-script type="text/javascript" src="/astrogrid-portal/extras.js"/>
 		  <xsl:apply-templates/>
@@ -235,7 +235,7 @@
                   <em> : <xsl:value-of select="@title"/></em>
                   <br/> 
                 </xsl:for-each>
-              <input type="button" value="Select">               
+              <input class="agActionButton" type="button" value="Select">               
                 <xsl:attribute name="onClick">
                    getSelectionId('<xsl:value-of select="$authId"/>','
                                    <xsl:value-of select="$resourceKey"/>');
