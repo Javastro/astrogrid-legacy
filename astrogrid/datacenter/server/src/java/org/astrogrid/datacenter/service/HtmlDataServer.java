@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.12 2004/07/06 16:00:01 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.13 2004/07/06 16:00:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,7 +42,7 @@ public class HtmlDataServer
       }
       catch (Throwable th) {
          log.error(th);
-         out.write(exceptionAsHtml("askQuery("+user+", "+query+", Writer)", th));
+         out.write(exceptionAsHtmlPage("askQuery("+user+", "+query+", Writer)", th));
       }
    }
  
@@ -57,7 +57,7 @@ public class HtmlDataServer
       }
       catch (Throwable th) {
          log.error(th);
-         return exceptionAsHtml("submitQuery("+user+", "+query+", "+target+")", th);
+         return exceptionAsHtmlPage("submitQuery("+user+", "+query+", "+target+")", th);
       }
    }
 
@@ -117,7 +117,7 @@ public class HtmlDataServer
       }
       catch (Throwable th) {
          log.error(th);
-         return exceptionAsHtml("abortQuery("+user+", "+queryId+")", th);
+         return exceptionAsHtmlPage("abortQuery("+user+", "+queryId+")", th);
       }
    }
 
@@ -235,6 +235,7 @@ public class HtmlDataServer
       return exceptionAsHtmlPage(title, th, "");
    }
 }
+
 
 
 
