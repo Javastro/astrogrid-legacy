@@ -37,7 +37,7 @@ public class IndexGenerator
    /** this is meant to run as a command-line program, so output should go to the
     * console, but it uses routines that use commons-logging anyway...
     */
-   private static Log log = LogFactory.getLog(IndexGenerator.class);
+   public static Log log = LogFactory.getLog(IndexGenerator.class);
    
    /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
@@ -47,7 +47,7 @@ public class IndexGenerator
    {
       assert fitsUrl != null;
       
-      log.debug("Examining file "+fitsUrl+"...");
+      log.info("Examining file "+fitsUrl+"...");
       return makeIndexSnippet(new FitsStreamReader(fitsUrl), fitsUrl.toString());
    }
    
@@ -209,7 +209,6 @@ public class IndexGenerator
             = new BufferedReader(new InputStreamReader(urlsIn));
          String line = null;
          while( (line = in.readLine()) != null) {
-            log.debug("Processing " + line);
             out.write(makeIndexSnippet(new URL(line)).getBytes());
          }
          in.close();
@@ -352,6 +351,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.18  2004/09/07 09:48:34  mch
+Logging updates
+
 Revision 1.17  2004/09/07 01:39:27  mch
 Moved email keys from TargetIndicator to Slinger
 

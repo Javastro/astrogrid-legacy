@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.3 2004/09/07 01:39:27 mch Exp $
+/*$Id: Initialise.java,v 1.4 2004/09/07 09:48:56 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.sec.initialiser;
 
 import java.io.IOException;
+import org.apache.log4j.BasicConfigurator;
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 
 
@@ -25,6 +26,7 @@ public class Initialise {
     */
    public static void main(String[] args) throws IOException {
       IndexGenerator generator = new IndexGenerator();
+      BasicConfigurator.configure();
       generator.generateIndex(Initialise.class.getResourceAsStream("secUrls.txt"), System.out);
    }
 }
@@ -32,6 +34,9 @@ public class Initialise {
 
 /*
 $Log: Initialise.java,v $
+Revision 1.4  2004/09/07 09:48:56  mch
+Logging updates
+
 Revision 1.3  2004/09/07 01:39:27  mch
 Moved email keys from TargetIndicator to Slinger
 
