@@ -1,24 +1,16 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.2 2003/11/17 15:41:48 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.3 2003/11/17 21:56:29 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
-import java.net.MalformedURLException;
 import java.net.URL;
-import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
-import org.apache.axis.encoding.XMLType;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.snippet.DocHelper;
-import org.astrogrid.datacenter.snippet.StatusHelper;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
-import org.astrogrid.log.Log;
-import org.w3c.dom.Document;
+import org.astrogrid.datacenter.webnotify.WebNotifier;
 
 /**
  * This is an implementation of a listener design for remote listeners (ie service
@@ -32,71 +24,40 @@ import org.w3c.dom.Document;
 
 public class WebNotifyServiceListener implements QuerierListener
 {
-   /** URL of client listener - this is a web service that will receive
-    * a document containing the new status */
-   protected URL clientListener = null;
-
+   private WebNotifier notifier = null;
+   
    /**
     * Create a listener which will send service updates to the given URL
-    *
-    * @todo design &amp; implement properly...
     */
    public WebNotifyServiceListener(URL aClientListener)
    {
-      this.clientListener = aClientListener;
-   }
-   
-   /** default constructor */
-   public WebNotifyServiceListener() {
+      notifier = new WebNotifier(aClientListener);
    }
 
    /** Called by the service when it has a
-    * status change. Opens a connection to the URL and sends it a document, which
-    * is defined in StatusHelper
+    * status change. Uses the JobMonitorNotifier to send the change.
     */
    public void queryStatusChanged(DatabaseQuerier querier)
    {
-      throw new UnsupportedOperationException("We have not yet defined what method a web listener will implement");
-
-      /*
-      Log.trace("WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
-
       try {
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(querier.getid, querier.getStatus()));
-
-         Object[] parms = new Object[]
-         {
-            XMLUtils.DocumentToString(statusDoc)
-         };
-
-         Call call = (Call) new Service().createCall() ;
-
-         call.setTargetEndpointAddress( clientListener ) ;
-         call.setOperationName( "serviceStatusChanged" ) ;  // Set method to invoke
-         call.addParameter("serviceStatusXML", XMLType.XSD_STRING,ParameterMode.IN);
-         call.setReturnType(XMLType.XSD_STRING);
-
-         call.invokeOneWay( parms ) ;
+         notifier.tellServer(querier.getHandle(), querier.getStatus());
       }
-      catch (ServiceException e)
-      {
-         Log.logError("Could not connect to client "+clientListener+" to send status update", e);
+      catch (ServiceException e) {
+         LogFactory.getLog(WebNotifier.class).error("Failed to contact service using "+notifier, e);
       }
-
-      Log.trace("exit WebNotifyServiceListener.serviceStatusChanged("+newStatus+")") ;
-       */
-
+         
    }
-/**
+
+   /**
  * @return
- */
+ *
 public String getClientListener() {
     return clientListener.toString();
 }
 
 /**
  * @param url
- */
+ *
 public void setClientListener(String url) {
     try {
         clientListener = new URL(url);
@@ -104,11 +65,14 @@ public void setClientListener(String url) {
         throw new IllegalArgumentException("Malformed URL:" + e.getMessage());
     }
 }
-
+    /**/
 }
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.3  2003/11/17 21:56:29  mch
+Moved notification stuff to client part 2
+
 Revision 1.2  2003/11/17 15:41:48  mch
 Package movements
 

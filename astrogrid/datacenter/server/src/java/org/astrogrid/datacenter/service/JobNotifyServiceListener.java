@@ -1,25 +1,18 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.5 2003/11/17 21:41:30 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.6 2003/11/17 21:56:29 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
 
-
-
 import java.net.URL;
-import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
-import org.apache.axis.encoding.XMLType;
-import org.apache.axis.utils.XMLUtils;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
-import org.astrogrid.datacenter.snippet.DocHelper;
+import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.webnotify.JobMonitorNotifier;
-import org.astrogrid.log.Log;
-import org.w3c.dom.Document;
+import org.astrogrid.datacenter.webnotify.WebNotifier;
 
 /**
  * Very much like the WebNotifyServiceListener, this one creates a special
@@ -29,37 +22,38 @@ import org.w3c.dom.Document;
  * @author M Hill
  */
 
-public class JobNotifyServiceListener extends WebNotifyServiceListener
+public class JobNotifyServiceListener implements QuerierListener
 {
-   JobMonitorNotifier notifier = null;
+   private JobMonitorNotifier notifier = null;
    
    /**
     * Create a listener which will send service updates to the given URL
-    *
-    * @todo design &amp; implement properly...
     */
    public JobNotifyServiceListener(URL aClientListener)
    {
-      super(aClientListener);
       notifier = new JobMonitorNotifier(aClientListener);
    }
 
    /** Called by the service when it has a
-    * status change. Opens a connection to the URL and sends it a document, which
-    * is defined in ????
+    * status change. Uses the JobMonitorNotifier to send the change.
     */
-   public void serviceStatusChanged(DatabaseQuerier querier)
+   public void queryStatusChanged(DatabaseQuerier querier)
    {
-      Log.trace("JobNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
-
-      notifier.tellServer(querier.getHandle(), querier.getStatus());
-
-      Log.trace("exit JobNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
+      try {
+         notifier.tellServer(querier.getHandle(), querier.getStatus());
+      }
+      catch (ServiceException e) {
+         LogFactory.getLog(WebNotifier.class).error("Failed to contact service using "+notifier, e);
+      }
    }
+   
 }
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.6  2003/11/17 21:56:29  mch
+Moved notification stuff to client part 2
+
 Revision 1.5  2003/11/17 21:41:30  mch
 Moved notification stuff to client
 

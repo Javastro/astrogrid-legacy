@@ -33,9 +33,8 @@ public class JobMonitorNotifier
       this.endPoint = givenEndPoint;
    }
    
-   public void tellServer(String queryId, QueryStatus status)
+   public void tellServer(String queryId, QueryStatus status) throws ServiceException
    {
-      try {
 //         String
 //            requestTemplate = Configuration.getProperty( MONITOR_REQUEST_TEMPLATE) ;
 
@@ -63,11 +62,6 @@ public class JobMonitorNotifier
          call.invokeOneWay( parms ) ;
 
 
-      }
-      catch (ServiceException e)
-      {
-         Log.logError("Could not connect to client "+endPoint+" to send status update", e);
-      }
 
    }
 
@@ -98,6 +92,9 @@ public class JobMonitorNotifier
 
 /*
 $Log: JobMonitorNotifier.java,v $
+Revision 1.3  2003/11/17 21:56:42  mch
+Moved notification stuff to client part 2
+
 Revision 1.2  2003/11/17 21:41:16  mch
 Moved notification stuff to client
 
