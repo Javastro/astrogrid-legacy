@@ -63,9 +63,6 @@ public class AstrogridAction extends AbstractAction
       Session session = request.getSession();
       
       String credential = (String)session.getAttribute(PARAM_CREDENTIAL);
-      if(credential == null || credential.length() <= 0) {
-         credential = "testcredential";
-      }
       if(DEBUG_FLAG) {
          System.out.println("the credential is = " + credential);      
       }

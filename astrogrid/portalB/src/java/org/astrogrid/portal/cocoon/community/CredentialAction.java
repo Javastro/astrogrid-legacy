@@ -7,6 +7,7 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
+import org.astrogrid.community.common.CommunityConfig;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,7 @@ public class CredentialAction extends AbstractAction
    
    private static final String PARAM_COMMUNITY_LIST = "communitylist";
    
-   private static final String PARAM_COMMUNITY_URL = "communityurl";   
+   private static final String PARAM_COMMUNITY = "community";   
 
    private static final String PARAM_GROUP_LIST = "grouplist";   
    
@@ -49,8 +50,6 @@ public class CredentialAction extends AbstractAction
    
    private static final String ACTION_SET_GROUP = "setgroup";
 
-   
-      
    /**
     * Our action method.
     *
@@ -68,7 +67,11 @@ public class CredentialAction extends AbstractAction
       Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
       
-      String user = (String)session.getAttribute(USER_PARAM_NAME);
+      String comm_account = (String)session.getAttribute("community_account");
+      if(comm_account == null || comm_account.length() <= 0) {
+         comm_account = (String)session.getAttribute("user");
+      } 
+
 
       String action = request.getParameter(ACTION);
       if(DEBUG_FLAG) {
@@ -80,30 +83,21 @@ public class CredentialAction extends AbstractAction
       
       if(communityList == null || communityList.size() <= 0) {
          //call delegate to get the communities trusted by this local community.
-         //fill with dummy data for the moment.
          try {
             communityList = adminDelegate.getCommunityList();
          }catch(Exception e) {
             e.printStackTrace();
          }
          session.setAttribute(PARAM_COMMUNITY_LIST,communityList);
-         
       }
-      
-      ArrayList groupList = (ArrayList)session.getAttribute(PARAM_GROUP_LIST);
-
+     
       //Create a new HashMap for our results.  Will be used to
       //pass to the transformer (xsl page)
       Map results = new HashMap();
-      
-      if(groupList == null || groupList.size() <= 0) {
-         groupList = new ArrayList();
-         //call delegate to get the groups for the local community.
-         //fill with dummy data for the moment.
-         //adminDelegate.getAccountGroupList(user);
-         groupList.add("Solar_Flares@mssl");
-         groupList.add("BigBang@mssl");
-         session.setAttribute(PARAM_GROUP_LIST,groupList);
+          
+      String community = (String)request.getParameter(PARAM_COMMUNITY);
+      if(community == null || community.length() <= 0) {
+         community = CommunityConfig.getCommunityName();
       }
       
       if(ACTION_SET_GROUP.equals(action)) {
@@ -111,12 +105,15 @@ public class CredentialAction extends AbstractAction
          results.put(PARAM_CREDENTIAL,(String)request.getParameter(PARAM_CREDENTIAL));
       }
       
-      if(ACTION_GET_COMMUNITY_GROUPS.equals(action)) {
-         String communityURL = (String)request.getParameter(PARAM_COMMUNITY_URL);
-         //ArrayList temp = adminDelegate.getAccountGroupList(user,communityURL);
-         //groupList.addAll(temp);
-         //call the delegate to do a groupList.addAll(ViewGroup(user,communityName));
-      }
+         try {
+            ArrayList groupList = adminDelegate.getAccountGroups(comm_account, community);
+            session.setAttribute(PARAM_GROUP_LIST,groupList);
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+         
+         String credential = (String)session.getAttribute(PARAM_CREDENTIAL);
+         results.put(PARAM_CREDENTIAL,credential);         
 
       return results;
    }  

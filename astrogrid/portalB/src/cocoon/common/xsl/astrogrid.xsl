@@ -2,10 +2,15 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/10 06:16:51 $</cvs:author>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/14 21:11:26 $</cvs:author>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.8  2003/09/14 21:11:26  KevinBenson
+    | Several small things cleared up on the portal interacting with the community.
+    | Cleared up some validation bugs and made sure only Admin users can do certain
+    | admin features.  Plus redirecting to the secure url
+    |
     | Revision 1.7  2003/09/10 06:16:51  KevinBenson
     | *** empty log message ***
     |
@@ -65,7 +70,7 @@
 	    +-->
 	<xsl:param name="home-page">index.html</xsl:param>
 	<xsl:param name="current-page">test.html</xsl:param>
-	<xsl:param name="credential">credential</xsl:param>
+	<xsl:param name="credential" />
 	<xsl:param name="credential-page">agcredentials.html</xsl:param>
 	<xsl:param name="myspace-page">agmyspace.html</xsl:param>
 	<xsl:param name="help-page">agmyspacehelp.html</xsl:param>

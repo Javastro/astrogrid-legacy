@@ -13,7 +13,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import org.astrogrid.community.delegate.policy.AdministrationDelegate;
 import org.astrogrid.community.policy.data.GroupData;
-import org.astrogrid.community.policy.data.GroupMemberData;
+import org.astrogrid.community.common.CommunityConfig;
+import org.astrogrid.community.policy.data.CommunityData;
 import org.astrogrid.community.policy.data.AccountData;
 import org.astrogrid.community.policy.data.ResourceData;
 
@@ -27,6 +28,7 @@ import org.astrogrid.community.policy.data.ResourceData;
  */
 public class AdministrationAction extends AbstractAction
 {
+   
 	/**
 	 * Switch for our debug statements.
 	 *
@@ -73,6 +75,8 @@ public class AdministrationAction extends AbstractAction
    
    private static final String ACTION_VIEW_RESOURCES = "viewresources";
    
+   private static final String ACTION_VIEW_MEMBERS = "viewmembers";   
+   
    private static final String ACTION_CHANGE_PASSWORD = "changeofpassword";
    
    private static final String IDENT = "ident";
@@ -85,8 +89,12 @@ public class AdministrationAction extends AbstractAction
    
    private static final String PARAM_ACCOUNT_LIST = "accountlist";   
 
-   private static final String PARAM_GROUP_LIST = "grouplist";   
-	
+   private static final String PARAM_GROUP_LIST = "grouplist";
+      
+   private static final String PARAM_MEMBERS_LIST = "memberslist";   
+   
+   private static final String HTTPS_CONNECTION = "on";   
+   
 		
 	/**
 	 * Our action method.
@@ -99,7 +107,10 @@ public class AdministrationAction extends AbstractAction
 		String source, 
 		Parameters params)
 		{
-		
+	      
+      String community_name = CommunityConfig.getCommunityName();
+      System.out.println(community_name);
+      
 		//
 		// Get our current request and session.
 		Request request = ObjectModelHelper.getRequest(objectModel);
@@ -115,46 +126,152 @@ public class AdministrationAction extends AbstractAction
       if(processAction != null && processAction.length() > 0 ) {
          action = processAction;
       }
+      
+
+      String secureConn = CommunityConfig.getProperty("portal.security","on");
+      String securePort = CommunityConfig.getProperty("portal.secure.port",String.valueOf(request.getServerPort()));
+      String nonSecurePort = CommunityConfig.getProperty("portal.nonsecure.port",String.valueOf(request.getServerPort()));      
+      
+      String redirect_url = null;
+      if(HTTPS_CONNECTION.equals(secureConn) && 
+         (ACTION_INSERT_ACCOUNT.equals(processAction) || ACTION_CHANGE_PASSWORD.equals(processAction) )) {
+         if(!request.isSecure()) {
+            try {
+               redirect_url = "https://" + request.getServerName() + ":" +
+                            securePort + request.getRequestURI() + "?" +
+                            request.getQueryString();
+               System.out.println(redirect_url);
+               redirector.redirect(true,redirect_url);
+             }catch(Exception e) {
+                e.printStackTrace();
+             }
+         }
+      }else {
+         if(request.isSecure()) {
+            try {
+               redirect_url = "http://" + request.getServerName() + ":" +
+                            nonSecurePort + request.getRequestURI() + "?" +
+                            request.getQueryString();
+               System.out.println(redirect_url);
+               redirector.redirect(true,redirect_url);
+             }catch(Exception e) {
+                e.printStackTrace();
+             }
+         }
+      }
+      
+      
+      
+      
 		if(DEBUG_FLAG) {
 			System.out.println("the action is = " + action);		
 		}
       AdministrationDelegate adminDelegate = new AdministrationDelegate();
       String ident = (String)request.getParameter(IDENT);
-
+      boolean isAdmin = false;
       Hashtable actionTable = new Hashtable();
       String comm_account = (String)session.getAttribute("community_account");
       if(comm_account == null || comm_account.length() <= 0) {
          comm_account = (String)session.getAttribute("user");
       }
+      
+      //String [][]actionChoices = null;
       if(comm_account == null) {
+         //actionChoices = new String[0][2];
+         //actionChoices[0][0] = ACTION_INSERT_ACCOUNT;
+         //actionChoices[0][1] = "Insert Account";
          //user is a new user registring
          actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
       }else {
-         actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
-         actionTable.put(ACTION_REMOVE_ACCOUNT,"Remove Account");
-         actionTable.put(ACTION_INSERT_GROUP,"Insert Group");
-         actionTable.put(ACTION_REMOVE_GROUP,"Remove Group");
-         actionTable.put(ACTION_INSERT_COMMUNITY,"Insert Community");
-         actionTable.put(ACTION_REMOVE_COMMUNITY,"Remove Community");
-         actionTable.put(ACTION_INSERT_RESOURCE,"Insert Resource");
-         actionTable.put(ACTION_REMOVE_RESOURCE,"Remove Resource");
-         actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");
-         actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
-         actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
-         actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
-         actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
-         actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
-         actionTable.put(ACTION_VIEW_COMMUNITY,"View Community");
-         actionTable.put(ACTION_VIEW_ACCOUNTS,"View Accounts");         
-         actionTable.put(ACTION_VIEW_RESOURCES,"View Resources");         
+         try {
+            isAdmin = adminDelegate.isAdminAccount(comm_account,community_name);
+         }catch(Exception e) {
+            e.printStackTrace();
+            isAdmin = false;
+         }
+
+         if(isAdmin) {
+            //actionChoices = new String[16][2];
+            actionTable.put(ACTION_INSERT_ACCOUNT,"Insert Account");
+            //actionChoices[0][0] = ACTION_INSERT_ACCOUNT;
+            //actionChoices[0][1] = "Insert Account";
+            actionTable.put(ACTION_REMOVE_ACCOUNT,"Remove Account");
+            //actionChoices[1][0] = ACTION_REMOVE_ACCOUNT;
+            //actionChoices[1][1] = "Remove Account";            
+            actionTable.put(ACTION_INSERT_GROUP,"Insert Group");
+            //actionChoices[1][0] = ACTION_INSERT_GROUP;
+            //actionChoices[1][1] = "Insert Group";                        
+            actionTable.put(ACTION_REMOVE_GROUP,"Remove Group");
+            //actionChoices[2][0] = ACTION_REMOVE_GROUP;
+            //actionChoices[2][1] = "Remove Group";                                    
+            actionTable.put(ACTION_INSERT_COMMUNITY,"Insert Community");
+            //actionChoices[3][0] = ACTION_INSERT_COMMUNITY;
+            //actionChoices[3][1] = "Insert Community";                                                
+            actionTable.put(ACTION_REMOVE_COMMUNITY,"Remove Community");
+            //actionChoices[4][0] = ACTION_REMOVE_COMMUNITY;
+           // actionChoices[4][1] = "Remove Community";                                                            
+            actionTable.put(ACTION_INSERT_RESOURCE,"Insert Resource");
+            //actionChoices[5][0] = ACTION_INSERT_RESOURCE;
+            //actionChoices[5][1] = "Insert Resource";                                                            
+            
+            actionTable.put(ACTION_REMOVE_RESOURCE,"Remove Resource");
+            //actionChoices[6][0] = ACTION_REMOVE_RESOURCE;
+            //actionChoices[6][1] = "Remove Resource";                                                            
+            
+            actionTable.put(ACTION_INSERT_MEMBER,"Insert Member");
+            //actionChoices[7][0] = ACTION_INSERT_MEMBER;
+            //actionChoices[7][1] = "Insert Member";                                                            
+            
+            actionTable.put(ACTION_REMOVE_MEMBER,"Remove Member");
+            //actionChoices[8][0] = ACTION_REMOVE_MEMBER;
+            //actionChoices[8][1] = "Remove Member";                                                            
+            
+            actionTable.put(ACTION_INSERT_PERMISSION,"Insert Permission");
+            //actionChoices[9][0] = ACTION_INSERT_PERMISSION;
+            //actionChoices[9][1] = "Insert Permission";                                                            
+            
+            actionTable.put(ACTION_REMOVE_PERMISSION,"Remove Permission");
+            //actionChoices[10][0] = ACTION_REMOVE_PERMISSION;
+            //actionChoices[10][1] = "Remove Permission";                                                            
+            
+            actionTable.put(ACTION_VIEW_COMMUNITY,"View Community");
+            //actionChoices[11][0] = ACTION_VIEW_COMMUNITY;
+            //actionChoices[11][1] = "View Community";                                                            
+            
+            actionTable.put(ACTION_VIEW_ACCOUNTS,"View Accounts");
+            //actionChoices[12][0] = ACTION_VIEW_ACCOUNTS;
+            //actionChoices[12][1] = "View Accounts";                                                            
+                     
+            actionTable.put(ACTION_VIEW_RESOURCES,"View Resources");
+            //actionChoices[13][0] = ACTION_VIEW_RESOURCES;
+            //actionChoices[13][1] = "View Resources";
+            
+            actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
+            //actionChoices[14][0] = ACTION_VIEW_GROUPS;
+            //actionChoices[14][1] = "View Groups";
+            
+            actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
+            //actionChoices[15][0] = ACTION_CHANGE_PASSWORD;
+            //actionChoices[15][1] = "Change of Password";
+//            actionTable.put(ACTION_VIEW_MEMBERS,"View Members");
+         }else {
+            //actionChoices = new String[2][2];            
+            actionTable.put(ACTION_VIEW_GROUPS,"View Groups");
+            //actionChoices[0][0] = ACTION_VIEW_GROUPS;
+            //actionChoices[0][1] = "View Groups";
+            
+            actionTable.put(ACTION_CHANGE_PASSWORD,"Change of Password");
+            //actionChoices[1][0] = ACTION_CHANGE_PASSWORD;
+            //actionChoices[1][1] = "Change of Password";
+
+         }
       }      
       
       session.setAttribute("actionlist",actionTable);
       
       String community = request.getParameter("community");
       if(community == null || community.length() > 0) {
-         //community = session.getAttribute("community_name");
-         community = "localhost";
+         community = (String)session.getAttribute("community_name");
       }
       
       
@@ -180,7 +297,7 @@ public class AdministrationAction extends AbstractAction
             e.printStackTrace();
         }
       }
-            
+      
       if(ACTION_REMOVE_RESOURCE.equals(action) ||  ACTION_INSERT_PERMISSION.equals(action)
          || ACTION_REMOVE_PERMISSION.equals(action) || ACTION_VIEW_RESOURCES.equals(action) ) {
         try {
@@ -236,11 +353,23 @@ public class AdministrationAction extends AbstractAction
             errorMessage = "No group found to remove";
          } 
       } else if(ACTION_INSERT_COMMUNITY.equals(processAction)) {
-         System.out.println("Entering INSERT Community ident val = " + ident);
          if(ident != null && ident.length() > 0) {
             try {
-               adminDelegate.addCommunity(ident);
+               CommunityData commData = adminDelegate.addCommunity(ident);
+               String managerURL = request.getParameter("managerurl");
+               String serviceURL = request.getParameter("serviceurl");
                message = "Community inserted.";
+               if(managerURL != null && managerURL.length() > 0) {
+                  commData.setManagerUrl(managerURL);
+
+               }
+               if(serviceURL != null && serviceURL.length() > 0) {
+                  commData.setServiceUrl(serviceURL);
+               }
+               if(serviceURL != null || managerURL != null) {
+                  adminDelegate.setCommunity(commData);                  
+               }
+
             }catch(Exception e) {
                errorMessage = e.toString();
                e.printStackTrace();
@@ -263,15 +392,24 @@ public class AdministrationAction extends AbstractAction
       } else if(ACTION_INSERT_ACCOUNT.equals(processAction)) {
          System.out.println("Entering INSERT account ident val = " + ident);
          if(ident != null && ident.length() > 0) {
-            try {
-               AccountData ad = adminDelegate.addAccount(ident);
-               ad.setDescription(request.getParameter("description"));
-               ad.setPassword(request.getParameter("password"));
-               adminDelegate.setAccount(ad);
-               message = "Account inserted.";
-            }catch(Exception e) {
-               errorMessage = e.toString();
-               e.printStackTrace();
+            String pass = request.getParameter("password");
+            if(pass == null || pass.trim().length() <= 0) {
+               errorMessage = "You cannot have no or empty password";
+            }
+            else {
+               int passwordHashed = pass.hashCode();
+               try {
+                  AccountData ad = adminDelegate.addAccount(ident);
+                  if(ad != null) {
+                     ad.setDescription(request.getParameter("description"));
+                     ad.setPassword(String.valueOf(passwordHashed));
+                     adminDelegate.setAccount(ad);                  
+                  }
+                  message = "Account inserted.";
+               }catch(Exception e) {
+                  errorMessage = e.toString();
+                  e.printStackTrace();
+               }
             }
          }else {
             errorMessage = "No account given to insert";
@@ -329,9 +467,14 @@ public class AdministrationAction extends AbstractAction
                String verifypassword = request.getParameter("verify_password");
                if(ad.getPassword().equals(password)) {
                   if(newpassword.equals(verifypassword)) {
-                     ad.setPassword(newpassword);
-                     adminDelegate.setAccount(ad);
-                     message = "Account's password changed.";
+                     if(newpassword == null || newpassword.trim().length() <= 0) {
+                        errorMessage = "You cannot have an empty new password";
+                     }else {
+                        int newPasswordHashed = newpassword.hashCode();
+                        ad.setPassword(String.valueOf(newPasswordHashed));
+                        adminDelegate.setAccount(ad);
+                        message = "Account's password changed.";                        
+                     }
                   }else {
                      errorMessage = "Your new password and the verification password do not match.";
                   }

@@ -33,7 +33,8 @@
 	     	src="org.astrogrid.portal.cocoon.query.QueryAction"/>
          <map:action name="astrogrid-admin" 
          	src="org.astrogrid.portal.cocoon.community.AdministrationAction"/>            
-	    <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>              	
+	    <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>
+	    <map:action name="astrogrid-login" src="org.astrogrid.portal.cocoon.common.LoginAction"/>
       </map:actions>
    </map:components>
 
@@ -79,15 +80,34 @@
          </map:match>
 
          <map:match pattern="aglogin.html">
-            <map:read mime-type="text/html" src="html/aglogin.html"/>
-         </map:match>
-
-         <map:match pattern="login.xsp">
-            <map:generate type="serverpages" src="xsp/login.xsp">
-               <map:parameter name="pwdfile" value=
-      "http://stargrid1.bnsc.rl.ac.uk:8080/org/astrogrid/portal/password.txt"/>
-            </map:generate>
-            <map:transform src="xsl/redirect.xsl"/> 
+         	<map:act type="astrogrid-login">
+               <map:generate src="common/xsp/login.xsp" type="serverpages" label="000, 001"/>         	
+              <map:transform src="common/xsl/login.xsl" label="002">
+                  <map:parameter name="action" value="{action}"/>
+                  <map:parameter name="errormessage" value="{errormessage}"/>
+                  <map:parameter name="admin" value="{admin}"/>
+                  <map:parameter name="adminEmail" value="{adminEmail}"/>
+                  <map:parameter name="message" value="{message}"/>
+                  <map:parameter name="secure_connection" value="{secure_connection}"/>
+                  <map:parameter name="secure_url" value="{secure_url}"/>
+              </map:transform>
+             </map:act>
+	          <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		        <map:parameter name="current-page"  value="agdataquery.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="aglogin.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="title-name"  value="Login"/>               
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
             <map:serialize type="html"/>
          </map:match>
 

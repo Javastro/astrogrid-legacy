@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java" xmlns:xsp="http://apache.org/xsp">
+
+<xsp:comment>
+
+XSP page to process the Astrogrid login form.
+
+Kevin Benson
+</xsp:comment>
+
+
+   <login>
+   
+   </login>
+   
+
+
+
+
+</xsp:page>

@@ -156,7 +156,7 @@
 				<br /><br />
 				<form method="get" name="AddRemoteAccountsToMembers">
 					<input type="hidden" name="action" value="insertmember" />
-					<strong>Add Remote Accounts from another community:</stong>
+					<strong>Add Remote Accounts from another community:</strong>
 					<select name="community">
 						<xsl:for-each select="//admin/options/communities/community">
 								<xsl:element name="option">
@@ -269,7 +269,7 @@
 			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'insertaccount'">			
-			<form method="get" name="InsertAccount">
+			<form method="post" name="InsertAccount">
 				<input type="hidden" name="processaction" value="insertaccount" />			
 				<strong>User: </strong> <input type="text" name="ident" />
 				<br />
@@ -303,6 +303,20 @@
 				<strong>Community Name (Domain Name): </strong> <input type="text" name="ident" />
 				<br />
 				<input type="submit" name="insertcommunity" value="Insert Community" />
+				<br />
+				<i>You can specefy other information if needed.<br />
+				   For example a different port number, protocol, or different webservice other than apache axis
+				   <br />
+				   The default will be http://domainnameabove:8080/axis/services/PolicyManager
+				   <br />
+				   The name of the services are PolicyManager, PolicyService.
+				   <br />
+				</i>
+				<strong>Policy Manager URL:</strong>
+				<input type="text" name="managerurl" />
+				<strong>Policy Service URL:</strong>
+				<input type="text" name="serviceurl" />
+				
 			</form>
 		</xsl:if>			
 		<xsl:if test="$action = 'removecommunity'">			
@@ -323,7 +337,7 @@
 			</form>
 		</xsl:if>
 		<xsl:if test="$action = 'changeofpassword'">			
-			<form method="get" name="ChangeOfPassword">
+			<form method="post" name="ChangeOfPassword">
 				<input type="hidden" name="processaction" value="changeofpassword" />
 				<strong>Current Password: </strong> <input type="password" name="currentpassword" /><br />
 				<strong>New Password: </strong> <input type="password" name="newpassword" /><br />

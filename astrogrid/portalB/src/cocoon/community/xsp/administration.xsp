@@ -20,7 +20,8 @@
 		<xsp:include>org.astrogrid.community.policy.data.GroupData</xsp:include>
 		<xsp:include>org.astrogrid.community.policy.data.CommunityData</xsp:include>		
 		<xsp:include>org.astrogrid.community.policy.data.AccountData</xsp:include>				
-		<xsp:include>org.astrogrid.community.policy.data.ResourceData</xsp:include>						
+		<xsp:include>org.astrogrid.community.policy.data.ResourceData</xsp:include>
+		<xsp:include>org.astrogrid.community.policy.data.GroupMemberData</xsp:include>
 	</xsp:structure>	    
 	    
 	    
@@ -43,7 +44,7 @@
 				    }
 				}
 			]]>				
-			</xsp:logic>			
+			</xsp:logic>				
 			</actions>
 		
 		</options>
@@ -71,6 +72,31 @@
 			</xsp:logic>
 			</resources>
 		</options>
+
+		<options>
+			<members>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList memberList = (ArrayList)session.getAttribute("memberslist");
+				GroupMemberData gmd = null;
+				if(memberList != null && memberList.size() > 0 ) {
+				iter = memberList.iterator();
+				while (iter.hasNext()) {
+					gmd = (GroupMemberData)iter.next();
+			]]>
+					<xsp:element name="member">
+						<xsp:attribute name="group"><xsp:expr>gmd.getGroup()</xsp:expr></xsp:attribute>
+						<xsp:attribute name="account"><xsp:expr>gmd.getAccount()</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+			</members>
+		</options>
+		
+		
 		<options>
 		<groups>
 			<xsp:logic>
