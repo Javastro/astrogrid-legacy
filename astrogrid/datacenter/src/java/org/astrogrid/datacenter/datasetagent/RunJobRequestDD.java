@@ -36,6 +36,12 @@ public final class RunJobRequestDD {
 	
 	public static final String 
 		ORDER_ELEMENT = "order";	
+		
+	public static final String 
+		GROUP_ELEMENT = "group";
+		
+	public static final String 
+	    SUBQUERY_ELEMENT = "SUBQUERY";
 	    
 	public static final String
 	    CATALOG_ELEMENT = "catalog",
