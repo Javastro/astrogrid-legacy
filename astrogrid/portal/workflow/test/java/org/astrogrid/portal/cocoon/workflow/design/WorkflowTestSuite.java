@@ -41,6 +41,10 @@ import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.exception.CommunityPolicyException;
 
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+import org.astrogrid.community.User;
+import org.astrogrid.store.Ivorn;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Enumeration;
@@ -187,12 +191,12 @@ public class WorkflowTestSuite extends TestCase {
         trace( "enter: WorkflowTestSuite.testSaveWorkflow()" ); 
         final DesignAction action = new DesignAction();
         final Map objectModel = new HashMap(); 
-//        final DummyRequest request = new DummyRequest();
-//        final Session session = request.getSession() ;
         
         try {
-//            request.addParameter( DesignAction.WORKFLOW_NAME_PARAMETER,"JL_Workflow" );
-//            request.addParameter( DesignAction.WORKFLOW_DESCRIPTION_PARAMETER,"JL_WorkflowDescription" ) ;
+            request.addParameter( DesignAction.WORKFLOW_NAME_PARAMETER,"JL_Workflow" );
+            request.addParameter( DesignAction.WORKFLOW_DESCRIPTION_PARAMETER,"JL_WorkflowDescription" ) ;
+
+            request.addParameter( DesignAction.WORKFLOW_IVORN_PARAMETER, "ivo://leicester/jl99#jl99/") ;
             request.addParameter( DesignAction.ACTION_PARAM_TAG, DesignAction.ACTION_SAVE_WORKFLOW );     
         
             session.setAttribute( DesignAction.USER_TAG, "jl99" );
@@ -217,12 +221,8 @@ public class WorkflowTestSuite extends TestCase {
 	        trace( "enter: WorkflowTestSuite.test_AM_ReadToolsList()" ); 
 	        final DesignAction action = new DesignAction();
 	        final Map objectModel = new HashMap(); 
-	//        final DummyRequest request = new DummyRequest();
-	//        final Session session = request.getSession() ;
 	        
 	        try {
-	//            request.addParameter( DesignAction.WORKFLOW_NAME_PARAMETER,"JL_Workflow" );
-	//            request.addParameter( DesignAction.WORKFLOW_DESCRIPTION_PARAMETER,"JL_WorkflowDescription" ) ;
 	            request.addParameter( DesignAction.ACTION_PARAM_TAG, DesignAction.ACTION_READ_TOOL_LIST );     
 	        
 	            session.setAttribute( DesignAction.USER_TAG, "jl99" );
@@ -257,12 +257,8 @@ public class WorkflowTestSuite extends TestCase {
 		        trace( "enter: WorkflowTestSuite.test_BA_CreateTool()" ); 
 		        final DesignAction action = new DesignAction();
 		        final Map objectModel = new HashMap(); 
-		//        final DummyRequest request = new DummyRequest();
-		//        final Session session = request.getSession() ;
 		        
 		        try {
-		//            request.addParameter( DesignAction.WORKFLOW_NAME_PARAMETER,"JL_Workflow" );
-		//            request.addParameter( DesignAction.WORKFLOW_DESCRIPTION_PARAMETER,"JL_WorkflowDescription" ) ;
 		            request.addParameter( DesignAction.ACTION_PARAM_TAG, DesignAction.ACTION_CREATE_TOOL );    
                     request.addParameter( DesignAction.TOOL_NAME_PARAMETER, "org.astrogrid.test.mssl/testapp" ) ;
 		        

@@ -551,7 +551,11 @@ public class DesignAction extends AbstractAction {
                 }
                 else {
                     ivorn = (new CommunityIvornParser(ivornName)).getIvorn();
+                    debug( "user: " + user );
+                    debug( "ivorn: " + ivorn );
+                    debug( "workflow: " + workflow );
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
+                    debug( "wfStore: " + wfStore );
                     wfStore.saveWorkflow( user, ivorn, workflow ) ;
                     session.removeAttribute( HTTP_WORKFLOW_TAG );
 					workflow = null ;
