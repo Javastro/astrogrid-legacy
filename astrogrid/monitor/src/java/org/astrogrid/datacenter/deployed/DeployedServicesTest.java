@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.2 2004/11/03 19:35:41 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.3 2004/11/06 19:30:34 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,25 +12,31 @@ package org.astrogrid.datacenter.deployed;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.rpc.ServiceException;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.Adql074Writer;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.SqlQueryMaker;
-import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.workflow.beans.v1.Input;
+import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.SAXException;
+import java.net.MalformedURLException;
+import org.astrogrid.datacenter.delegate.DatacenterException;
 
 /**
  * Tests to see if the real deployed services are up.  This isn't really an
@@ -40,22 +46,95 @@ import org.xml.sax.SAXException;
  */
 public class DeployedServicesTest extends TestCase {
 
+      /** Runs a CEA test */
+   public void doCea(String endpoint, String toolName, double ra, double dec, double radius) throws IOException, SAXException, IOException, ParserConfigurationException, CEADelegateException, MarshalException, ValidationException  {
+      
+      CommonExecutionConnectorClient client = DelegateFactory.createDelegate(endpoint);
 
-   /** Runs a cone search on 6dF */
-   public void test6dF() throws IOException, SAXException, IOException, ParserConfigurationException  {
+      Tool dsaTool = new Tool();
+      dsaTool.setName(toolName);
+      dsaTool.setInterface("adql");
+//    ParameterValue query
+//    i.addParameter(new ParameterValue(
+
+      ParameterValue query= new ParameterValue();
+      query.setName("Query");
+      query.setIndirect(false);
+      Query q = SimpleQueryMaker.makeConeQuery(ra,dec,radius);
+      query.setValue(Adql074Writer.makeAdql(q));
+      
+
+        ParameterValue format= new ParameterValue();
+      format.setName("Format");
+        format.setIndirect(false);
+        format.setValue("VOTABLE");// rely on default values.
+        ParameterValue result= new ParameterValue();
+      result.setName("Result");
+      result.setIndirect(false);
+      
+      Input i = new Input();
+      i.addParameter(query);
+      i.addParameter(format);
+      Output o = new Output();
+      o.addParameter(result);
+
+      dsaTool.setInput(i);
+      dsaTool.setOutput(o);
+
+      String id = client.init(dsaTool, new JobIdentifierType("DeployedServicesTestJesID1"));
+      boolean success = client.execute(id);
+
+      ExecutionSummaryType summary = client.getExecutionSumary(id);
+      long start = System.currentTimeMillis();
+      while ((summary.getStatus().getType() < summary.getStatus().COMPLETED_TYPE) && (System.currentTimeMillis() < start+10000)) {
+         summary = client.getExecutionSumary(id);
+      }
+      java.io.StringWriter sw = new java.io.StringWriter();
+      summary.marshal(sw);
+      System.out.println(sw.toString());
+      
+      assertTrue(success);
+   }
+
+   public void doCone(String endpoint, double ra, double dec, double radius) throws MalformedURLException, DatacenterException, IOException, IOException, ParserConfigurationException, SAXException {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
          Account.ANONYMOUS,
-         "http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService05",
+         endpoint,
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
       delegate.setTimeout(60000);
-      InputStream is = delegate.coneSearch(10,10,2);
+      InputStream is = delegate.coneSearch(ra,dec,radius);
       assertNotNull(is);
       DomHelper.newDocument(is);
    }
+
+   public void test6dfCea() throws IOException, MarshalException, CEADelegateException, ParserConfigurationException, ValidationException, SAXException {
+      doCea("http://grendel12.roe.ac.uk:8080/pal-6df/services/CommonExecutionConnectorService",
+            "roe.ac.uk/DSA_6dF/ceaApplication",
+            20,
+            20,
+            1);
+   }
+   
+   public void testSsaCea() throws IOException, MarshalException, CEADelegateException, ParserConfigurationException, ValidationException, SAXException {
+      doCea("http://astrogrid.roe.ac.uk:8080/pal-ssa/services/CommonExecutionConnectorService",
+            "roe.ac.uk/DSA_SSA/ceaApplication",
+            20,
+            20,
+            0.1);
+   }
+   
+
+   /** Runs a cone search on 6dF */
+   public void test6dFCone() throws IOException, SAXException, IOException, ParserConfigurationException  {
+      doCone("http://grendel12.roe.ac.uk:8080/pal-6df/services/AxisDataService05",
+             10,
+             10,
+             2);
+   }
    
    /** Runs a simple adql search on SEC proxy on grendel12. No point in running
-    * a cone search - Solar Event Catalogues don't do cones */
+    * a cone search - Solar Event Catalogues don't do cones
    public void testGrendelSecProxy() throws IOException, SAXException, IOException, ParserConfigurationException, ServiceException  {
      QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(
          Account.ANONYMOUS,
@@ -73,7 +152,7 @@ public class DeployedServicesTest extends TestCase {
       DomHelper.newDocument(is);
    }
 
-   /** Runs a cone search on Vizier proxy on grendel12 */
+   /** Runs a cone search on Vizier proxy on grendel12
    public void testGrendelVizierProxy() throws IOException, SAXException, IOException, ParserConfigurationException  {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
          Account.ANONYMOUS,
@@ -86,7 +165,7 @@ public class DeployedServicesTest extends TestCase {
       DomHelper.newDocument(is);
    }
 
-   /** Runs a cone search on SSA */
+   /** Runs a cone search on SSA
    public void testSsaCone() throws IOException, SAXException, IOException, ParserConfigurationException  {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
          Account.ANONYMOUS,
@@ -99,19 +178,66 @@ public class DeployedServicesTest extends TestCase {
       DomHelper.newDocument(is);
    }
 
-   /** Runs a CEA test on SSA */
+   /** Runs a CEA test on SSA
    public void testSsaCea() throws IOException, SAXException, IOException, ParserConfigurationException, CEADelegateException  {
       
       CommonExecutionConnectorClient client = DelegateFactory.createDelegate("http://astrogrid.roe.ac.uk:8080/pal-sss/services/CommonExecutionConnectorService");
 
       Tool dsaTool = new Tool();
-      dsaTool.setInput(new Input());
+      dsaTool.setName("DSA_SSA/ceaApplication");
+      dsaTool.setInterface("adql");
+//    ParameterValue query
+//    i.addParameter(new ParameterValue(
+
+      ParameterValue query= new ParameterValue();
+      query.setName("Query");
+      query.setIndirect(false);
+      Query q = SimpleQueryMaker.makeConeQuery(20,-10,0.1);
+      query.setValue(Adql074Writer.makeAdql(q));
       
-      client.init(dsaTool, new JobIdentifierType("DeployedServicesTestJesID1"));
-      boolean success = client.execute("DeployedServicesTestExID1");
+
+        ParameterValue format= new ParameterValue();
+      format.setName("Format");
+        format.setIndirect(false);
+        format.setValue("VOTABLE");// rely on default values.
+        ParameterValue result= new ParameterValue();
+      result.setName("Result");
+      result.setIndirect(false);
+      
+      Input i = new Input();
+      i.addParameter(query);
+      i.addParameter(format);
+      Output o = new Output();
+      o.addParameter(result);
+
+      dsaTool.setInput(i);
+      dsaTool.setOutput(o);
+//    populateDsaTool(dsaTool);
+      String id = client.init(dsaTool, new JobIdentifierType("DeployedServicesTestJesID1"));
+      boolean success = client.execute(id);
+      client.getResults(id);
+      
+      assertTrue(success);
    }
    
-   /** Runs a cone search on INT-WFS */
+   public void populateDsaTool(Tool tool) throws IOException {
+      
+      ParameterValue query= (ParameterValue)tool.findXPathValue("input/parameter[name='Query']");
+        query.setIndirect(false);
+         
+      Query q = SimpleQueryMaker.makeConeQuery(20,-10,0.1);
+      query.setValue(Adql074Writer.makeAdql(q));
+      
+
+        ParameterValue format= (ParameterValue)tool.findXPathValue("input/parameter[name='Format']");
+        format.setIndirect(false);
+        format.setValue("VOTABLE");// rely on default values.
+        ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Result']");
+        target.setIndirect(false);
+     }
+   
+   
+   /** Runs a cone search on INT-WFS
    public void testIntWfs() throws IOException, SAXException, IOException, ParserConfigurationException  {
      ConeSearcher delegate = DatacenterDelegateFactory.makeConeSearcher(
          Account.ANONYMOUS,
@@ -123,6 +249,7 @@ public class DeployedServicesTest extends TestCase {
       assertNotNull(is);
       DomHelper.newDocument(is);
    }
+    */
 
    public static void main(String[] args) {
       junit.textui.TestRunner.run(new TestSuite(DeployedServicesTest.class));
@@ -132,6 +259,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.3  2004/11/06 19:30:34  mch
+Added CEA tests
+
 Revision 1.2  2004/11/03 19:35:41  mch
 added CEA test (not working yet) and fixed SQL for SEC that didn't have table names/alias
 
