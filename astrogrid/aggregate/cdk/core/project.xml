@@ -21,6 +21,7 @@
 
 
         <!-- myspace -->
+		<!--
        <dependency>
             <artifactId>astrogrid-store-client</artifactId>
             <groupId>org.astrogrid</groupId>
@@ -30,7 +31,26 @@
                     <jnlp.jar>${shall.bundle.core}</jnlp.jar>
             </properties>
         </dependency>
-
+	-->
+	
+		<!-- filemanager -->
+		<dependency>
+			<artifactId>astrogrid-filemanager-client</artifactId>
+			<groupId>org.astrogrid</groupId>
+			<version>${astrogrid.filemanager.version}</version>
+            <properties>
+                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+            </properties>
+			</dependency>			
+		<dependency>
+			<artifactId>astrogrid-filemanager-contract</artifactId>
+			<groupId>org.astrogrid</groupId>
+			<version>${astrogrid.filemanager.version}</version>
+            <properties>
+                    <jnlp.jar>${shall.bundle.core}</jnlp.jar>
+            </properties>
+			</dependency>		
+		<!-- filestore -->
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-filestore-client</artifactId>
