@@ -6,10 +6,11 @@
 	<author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
 	</properties>
 <body>
-<section name="Workflow Schema Reference">
-<p>
-	todo.
-</p>
+<section name="Workflow Document Schema">
+<ul><!-- do this properly later -->
+	<li><a href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/schema/">HTML Formatted</a></li>
+	<li><a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">XSD Schema</a></li>
+	</ul>
 </section>
 </body>
 </document>

@@ -4,37 +4,43 @@
   <title>AstroGrid Project</title>
 
   <body>
+    <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+       <item name="Projects"        href="../index.html"/>
+       <item name="Job Management"  href="index.html"/>
+    </links>
+		
      <menu name="Install">
        <item name="Install" href="INSTALL.html"/>
        <item name="Read me" href="README.html"/>
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-jes-SNAPSHOT.war"/>
        <item name="Sample Config" href="astrogrid.properties" />
     </menu>
-    <menu name="Workflow Userguide">		
+	
+	<menu name="Workflow Userguide">
+		<item name="Introduction &amp; Overview" href="userguide-architecture.html" >
+			<item name="System Architecture" href="userguide-architecture.html" 		/>
+			<item name="FAQ" href="userguide-faq.html" />
+			<item name="Glossary" href="userguide-glossary.html" />
+-		</item>
 
-		 <item name="System Architecture" href="userguide-architecture.html" />
-	    <item name="FAQ" href="userguide-faq.html" />
-    	<item name="Glossary" href="userguide-glossary.html" />
+		<item name="Workflow Documents" href="userguide-activities.html" >
+			<item name="Activities" href="userguide-activities.html" />
+			<item name="Control Logic, Variables &amp; Scripts" href="userguide-jescript.html" />
+			<item name="JEScript Objects" href="api-reference.html" />
+			<item name="Execution Results" href="userguide-running.html" />
+			<item name="Document Schema" href="userguide-workflowschema.html" />
+-		</item>
 
-<!--		<menu name="Workflow Documents">-->
-		  <item name="Workflow Documents - Activities" href="userguide-activities.html" />
-	    	<item name=" - JEScript" href="userguide-jescript.html" />
-    		<item name=" - JEScript Object Model" href="api-reference.html" />
-	    	<item name=" - Extensions" href="userguide-extensions.html" />	
-			<item name=" - Execution Results" href="userguide-running.html" />
-    		<item name=" - Workflow Document Schema" href="userguide-workflowschema.html" />			
-<!--		</menu>
-		<menu name="Examples">-->
-		  <item name="Examples - Simple Workflows" href="userguide-examples.html" />
-    		<item name=" - Scripted Workflows" href="userguide-scripted-examples.html" />
-    	  <item name=" - JEScript Recipes" href="userguide-recipes.html" />
-<!--		  </menu>-->
-        <item name="Workflow Userguide (pdf)" href="astrogrid-workflow-userguide.pdf" />
-    </menu>
-    <links>
-       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
-       <item name="Projects"        href="../index.html"/>
-       <item name="Job Management"  href="index.html"/>
-    </links>
+		<item name="Examples" href="userguide-examples.html">
+			<item name="Simple Examples" href="userguide-examples.html" />
+			<item name="Scripted Workflows" 
+				href="userguide-scripted-examples.html" />
+			<item name="JEScript Recipes" href="userguide-recipes.html" />
+		</item>
+		<item name="Workflow Userguide (pdf)" 
+			href="astrogrid-workflow-userguide.pdf" />
+	</menu>
+
   </body>
 </project>

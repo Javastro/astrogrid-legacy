@@ -2,7 +2,7 @@
 <!DOCTYPE document SYSTEM "xdoc.dtd" >
 <document>
   <properties>
-    <title>Workflow Scripting Language</title>
+    <title>Control Logic, Variables and Scripts</title>
 
     <author email="Noel.Winstanley@manchester.ac.uk">Noel
     Winstanley</author>
@@ -10,16 +10,25 @@
 
   <body>
 
+<section name="Introduction"><p>
+	The previous section shows how to write basic linear workflows. This chapter describes how to construct
+	workflows containing loops and branches.  Looping and conditional control constructs need some
+	way of testing and altering values - so we start by introducing <em>workflow variables</em>
+	</p>
+	
+	<p><em>This document is still a bit tangled at present - you may need to read the whole thing once before it starts to make sense</em></p>
+	</section>
+
 <section name="Workflow Variables">
-	<p> A workflow may contain <em>workflow variables</em> - these are named 
-		variables which may have literal strings / java objects stored within 
-		them. Variables may be accessed from <code>&lt;script&gt;</code> 
+	<p> A workflow may contain <em>workflow variables</em>  - named 
+		variables that contain  simple java objects and structures.
+		 Variables may be accessed and altered from <code>&lt;script&gt;</code> 
 		elements within the workflow document, and may also be referenced from script 
-		expressions </p>
+		expressions in other workflow activities</p>
 </section>
 
 <section name="Set">
-	<p> The <code>&lt;set&gt;</code> element is an activity that defines a new 
+	<p> The <code>&lt;set&gt;</code>  activity  defines a new 
 		workflow variable, or updates the value of an existing variable. It has 
 		two attributes: <code>var</code> - the name of the workflow variable 
 		(required); <code>value</code> - the value to set this variable to 
@@ -31,24 +40,21 @@
 		expression </p>
 </section>
 <section name="Unset">
-	<p> The <code>&lt;unset&gt;</code> element is an activity that deletes a 
+	<p> The <code>&lt;unset&gt;</code>  activity  deletes a 
 		workflow variable. It has one required attribute - <code>var</code> - 
 		the name of the workflow variable to delete. </p>
-	<p> If a workflow variable is referenced after it has been deleted, 
-		<code>null</code> is returned. </p>
+	<p> If a workflow variable is referenced after it has been deleted, an exception is thrown.. </p>
 </section>
 <section name="Scope">
-	<p> The <code>&lt;scope&gt;</code> element is a container for activities 
+	<p> <code>&lt;scope&gt;</code> is a container for activities 
 		that introduces a new nested scope for workflow variables. Any workflow 
 		variables defined within a nested scope are not visible outside that 
-		scope. Any attempts to reference such variables returns 
-		<code>null</code> </p>
+		scope. Any attempts to reference such variables throws an exception</p>
 </section>
 <section name="Script Expressions">
 	<p> The value of certain attributes and elements may contain references to 
-		workflow variables and other arbitrary <a 
-		href="/bin/view/Astrogrid/ItnSixWorkflowUserDocumentation#ScriptingLanguage">scripting 
-		language</a> expressions. These <strong>script expressions</strong> are 
+		workflow variables and other scripting 
+		language expressions. These <strong>script expressions</strong> are 
 		delimited by <code>${..}</code>. Script expressions are interpreted as 
 		follows <ul> <li> If the entire content of an attribute / element is a 
 		script expression (with no further characters or whitespace) , then the 
@@ -108,8 +114,8 @@
 		aborting other workflow jobs. </li> <li> Administrative functions - 
 		such as creating user accounts. </li> </ul> </p>
 	<p> The <code>script</code> element contains an optional 
-		<code>description</code> element; a mandatory <code>body</code> element 
-		that contains the script text, and a <code>step-execution-record</code> 
+		<code>description</code> element and  a mandatory <code>body</code> element 
+		that contains the script text. When it is executed a <code>step-execution-record</code> element will be added
 		which records the execution of the script. </p>
 	<p> A script may reference workflow variables, reading and storing data in 
 		them. The changes to the workflow variables are visible further on in 
@@ -153,79 +159,21 @@
 
 </section>
 
-<section name="System Objects">
-	<p> From groovy scripts it is possible to import any class available on the 
-		classpath, and then instantiate and use it in the normal manner. </p>
-	<p> In addition to this, the workflow scripting environment provides access 
-		to <strong>system objects</strong> - preconfigured object instances 
-		that are always available under fixed names. System objects are the 
-		typical way to allow embedded scripts to interact with the application 
-		hosting them. For example, in the case of web-browser scripting, 
-		there's always a <code>document</code> object present, etc. </p>
-	<p>
-		<em>link to list of jars bundled with JES - so user can see what's 
-			available</em>
-	</p>
-	<!-- start of object list - should probably go with stylesheet eventially. -->
-	<p> The workflow execution system makes the following objects available to 
-		embedded scripts and script expressions: </p>
-		
-	<subsection name="jes"><p> An object that represents the job execution 
-		server that is executing the current workflow. </p><p> Javadoc: <a 
-		href="http://www.astrogrid.org/maven/docs/HEADjes/apidocs/org/astrogrid/jes/jobscheduler/impl/groovy/JesInterface.html" 
-		>http://www.astrogrid.org/maven/docs/HEAD/jes/apidocs/org/astrogrid/jes/jobscheduler/impl/groovy/JesInterface.html</a> 
-		</p>><p> This object provides the following abilities <ul> <li> logging 
-		- has methods like <code>error()</code>, <code>info()</code>, that can 
-		be used to log messages during workflow execution. These messages will 
-		be recorded in the <code>job-execution-record</code> element of the 
-		workflow document. </li> <li> workflow document manipulation - has 
-		methods that return the workflow document model, all steps in the 
-		document, retrive an activity by id, create new tool parameters, etc. 
-		These can be used to dynamically alter the data of the executing 
-		workflow. </li> </ul> </p> </subsection>
-		
-	<subsection name="astrogrid">
-		<p> An object that represents the entire Astrogrid system. </p>
-		<p> Javadoc: <a 
-			href="http://www.astrogrid.org/maven/docs/HEAD/scripting/apidocs/org/astrogrid/scripting/Astrogrid.html" >http://www.astrogrid.org/maven/docs/HEAD/scripting/apidocs/org/astrogrid/scripting/Astrogrid.html</a> 
-			</p>
-		<p> This object is a root which provides configured delegates to other 
-			astrogrid services - registry, vospace, datacenters, cea, jes. It 
-			also provides access to helper routines for constructing workflow 
-			documents, ADQL queries, and other objects used within astrogrid. 
-			</p>
-		<p> By calling methods on this object, a workflow may orchestrate 
-			operations on other astrogrid components. Possible applications - 
-			bulk file manipulation, workflows spawning further workflows, 
-			automated searching of registries, etc. </p>
-	</subsection>
-	
-	<subsection name="account">
-		<p> Simple object that represents the identity under which this 
-			workflow is being executed. </p>
-		<p> Javadoc: <a 
-			href="http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/apidocs/org/astrogrid/community/beans/v1/Account.html" >http://www.astrogrid.org/maven/docs/HEAD/astrogrid-workflow-objects/apidocs/org/astrogrid/community/beans/v1/Account.html</a> 
-			</p>
-	</subsection>
-	<subsection name="user">
-		<p> Simple object instance of the (deprecated) User object for the 
-			current account. </p>
-		<p> Javadoc: <a 
-			href="http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/community/User.html" >http://www.astrogrid.org/maven/docs/HEAD/common/apidocs/org/astrogrid/community/User.html</a> 
-			</p>
-	</subsection>
-</section>
-<section name="Examples">
+<section name="Examples"><p>
+	Print out a message (which gets captured into the execution record).</p>
 <source><![CDATA[
-<!-- print out a message (gets captured into the execution record) -->
 <script>
   <body>
     print("hello world");
   </body>
 </script>
-
-<!-- extract list of urls from a votable returned by a previous step, store in workflow variable for later use.-->
-
+]]></source>
+<p>
+Extract a list of urls from a votable returned by a previous step, store in workflow variable for later use.
+This example uses methods native to groovy - in the examples chapter we show how to do the same thing more concisely
+using the STIL library.
+</p>
+<source><![CDATA[
 <step result-var="results">
   <!-- omitted for clarity -->
 </step>
@@ -284,8 +232,8 @@ print(urlList); // show what we've found
 		executed for every time that the test evaluates to <code>true</code>. 
 		</p>
 	<subsection name="Example">
+	<p>	Repeatedly execute a step, until it returns at least one result value.</p>
 		<source><![CDATA[
-<!-- repeatedly execute a step until it returns at least 1 result value -->
 <while test="${results == null || results.size() < 1}">
    <step result-var="results">
       <!-- omitted -->
@@ -294,6 +242,7 @@ print(urlList); // show what we've found
 ]]></source>
 	</subsection>
 </section>
+
 <section name="For Loop">
 	<p> The <code>&lt;for&amp;gt</code> element expresses a for loop. The 
 		structure of the for loop is similar to the for in Python (or for-each 
@@ -308,9 +257,8 @@ print(urlList); // show what we've found
 	<p> Groovy provides native syntactic support for quickly defining numeric 
 		sequences - <a href="http://groovy.codehaus.org/Collections" >http://groovy.codehaus.org/Collections</a> </p>
 	<subsection name="Examples">
+		<p>Count up to 10.</p>
 		<source><![CDATA[
-<!-- count up to 10 -->
-
 <for var="x" items="${1...10}> <!-- start ... finish is groovy syntax for numeric ranges -->
   <script>
    <body>
@@ -318,11 +266,10 @@ print(urlList); // show what we've found
    </body>
   </script>
 </for>
-
-
-<!-- call a CEA tool for each item in a list of urls (as was created in earlier example)
--->
-
+]]></source>
+<p>
+Call a CEA tool for each item in a list of urls (as was created in earlier example)</p>
+<source><![CDATA[
 <for var="u" items="${urlList}">
    <sequence>
       <script>
@@ -376,48 +323,6 @@ print(urlList); // show what we've found
 		implemented at the moment (Iteration 7)</p>
 </section>
 	
-    <section name="Result Var">
-      <p>added an attributed &#39;result-var&#39; to the 
-      <code>&lt;step&gt;</code>
-
-      element - when set, it names a scripting variable in which to
-      store a map of the results of the cea call. so now possible
-      to set up workflow variables, manipulate via script elements,
-      pass in as parameter to cea calls, define new variables from
-      results of cea calls.</p>
-    </section>
-
-    <section name="System Objects">
-      <p>a binding to an instance of the Astrogrid class into the
-      JEScript environment. This means that methods on the
-      Astrogrid scripting object can be called from 
-      <code>&lt;script&gt;</code>
-
-      steps in workflows.</p>
-
-      <p>Whats the point? Now its possible to write workflow
-      documents that contain script steps that do useful things
-      like 
-      <ul>
-        <li>copy / move / delete files in vospace.</li>
-
-        <li>read contents of a vospace file into a workflow
-        scripting variable</li>
-
-        <li>write contents of a vospace file</li>
-
-        <li>query registry</li>
-      </ul>
-
-      and mindboggling / daft things like 
-      <ul>
-        <li>create and submit child-workflow documents</li>
-
-        <li>cancel or delete their own workflow.</li>
-      </ul>
-      </p>
-
-    </section>
   </body>
 </document>
 

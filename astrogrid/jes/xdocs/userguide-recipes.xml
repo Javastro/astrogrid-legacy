@@ -80,5 +80,26 @@ vospace.putUrl('http://www.slashdot.org',target,false)
 		</p>
 	</subsection>
 </section>
+
+<section name="System Information">
+	<subsection name="Check server version">
+		<source><![CDATA[
+try {
+ jes.info("Scripting version :" + astrogrid.version)
+} catch (Exception e) {
+  jes.warn(e)
+}
+try {
+jes.info("JES version: " + jes.version)
+} catch (Exception e) {
+jes.warn(e)
+}]]></source>			
+<p>
+   This script will send two messages, with version info for the scripting library, and then the jes server.
+	The version information is at present a space-separated list of bugzilla numbers that this component implements.
+	The version can be checked programmatically by searching for a particular substring with these version reports.
+	</p>
+	</subsection>
+	</section>
 </body>
 </document>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+build script noel uses to extract javadoc entries from certain classes, and convert
+them to xdoc.
+
+won't work on anyone elses pc at the moment - relies on AurigaDoclet,
+and is also very specific about path locations.
+
+later - will make all this portable, and add to main maven scripts.
+
+  -->
+
+<project default="single" name="astrogrid-scripting" basedir="../..">
+
+<target name="single" description="generate javadoc">
+
+    <javadoc  public="true" author="true" version="true" source="1.4"
+    doclet="com.aurigalogic.doclet.core.Doclet"
+    docletpath="/home/noel/java/aurigadoclet/bin/AurigaDoclet.jar"
+    additionalparam="-format fo -out ${basedir}/jes/xdocs/api-reference.xml -xslfile toXdoc.xsl -notoc -noindex"
+    >
+      <classpath>
+        <fileset dir="/home/noel/.maven/repository">
+          <include name="*/jars/*.jar">
+          </include>
+        </fileset>
+
+        <fileset dir="/home/noel/java/aurigadoclet/lib">
+                <include name="*.jar" />
+        </fileset>
+
+      </classpath>
+
+      <fileset dir="scripting/src/java" includes="**/Toolbox.java,**/XMLHelper.java,**/StarTableBuilder.java,**/ObjectBuilder.java,**/IOHelper.java,**/Script*.java" />
+
+      <fileset dir="jes-scripting/src/java" includes="**/JesInterface.java,**/WorkflowLogger.java" />
+
+      <fileset dir="common/src/java" includes="**/Ivorn.java,**/User.java,**/Config.java" />
+
+        <fileset dir="applications-HEAD/client/src/java" includes="**/*.java"  excludes="**/*DummyDelegate.java"/>
+
+        <fileset dir="myspace/client/src/java" includes="**/VoSpaceClient.java,**/File.java,**/Node.java,**/Container.java,**/TreeClient.java"/>
+
+        <fileset dir="registry/client-lite/src/java" includes="**/query/*.java,**/RegistryAdminService.java,**/UpdateRegistry.java"/>
+        <!--<fileset dir="registry/common/src/java"/>-->
+
+        <fileset dir="workflow/src/java" includes="**/intf/*.java" excludes="**/WorkflowManagerFactory.java,**/*Exception.java,**/AcivityKey.java" />
+
+       <fileset  dir="workflow-objects/src/java"  includes="**/workflow/**/*.java,**/community/**/*.java" excludes="**/*Descriptor.java,**/axis/**"/>
+
+    </javadoc>
+  </target>
+
+</project>

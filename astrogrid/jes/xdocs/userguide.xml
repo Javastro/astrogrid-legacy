@@ -7,45 +7,28 @@
   </properties>
 
   <body>
-  <menu name="Overview">
-    <item name="System Architecture" href="userguide-architecture.html" />
+ 
+		<menu name="Introduction &amp; Overview" >
+			<item name="System Architecture" href="userguide-architecture.html" 		/>
+			<item name="FAQ" href="userguide-faq.html" />
+			<item name="Glossary" href="userguide-glossary.html" />
+-		</menu>
 
+		<menu name="Workflow Documents"  >
+			<item name="Activities" href="userguide-activities.html" />
+			<item name="Control Logic, Variables &amp; Scripts" href="userguide-jescript.html" />
+			<item name="JEScript Objects" href="api-reference.html" />
+			<item name="Execution Results" href="userguide-running.html" />
+			<item name="Document Schema" href="userguide-workflowschema.html" />
+-		</menu>
 
-    <item name="FAQ" href="userguide-faq.html" />
-    <item name="Glossary" href="userguide-glossary.html" />
-  </menu>
-
-  <menu name="Workflow Documents">
-    <item name="Activities" href="userguide-activities.html" />
-    <item name="JEScript" href="userguide-jescript.html" />
-    <item name="JEScript Object Model" href="api-reference.html" />
-    <item name="Extensions" href="userguide-extensions.html" />
+		<menu name="Examples">
+			<item name="Simple Examples" href="userguide-examples.html" />
+			<item name="Scripted Workflows" 
+				href="userguide-scripted-examples.html" />
+			<item name="JEScript Recipes" href="userguide-recipes.html" />
+		</menu>
 	
-	<item name="Execution Results" href="userguide-running.html" />
-    <item name="Workflow Document Schema"
-    href="userguide-workflowschema.html" />	
-  </menu>
-
-  <menu name="Examples">
-    <item name="Simple Workflows" href="userguide-examples.html" />
-    <item name="Scripted Workflows" href="userguide-scripted-examples.html" />
-    <item name="JEScript Recipes" href="userguide-recipes.html" />
-  </menu>
-  
-<!-- later
-  <menu name="Running Workflows">
-	
-    <item name="Portal HTML Interface" href="userguide-portal.html" />
-
-    <item name="JES HTML Interface" href="userguide-jes-html.html" />
-
-    <item name="Workflow Library" href="userguide-business-objects.html" />
-
-    <item name="JES Web Services" href="userguide-jes-ws.html" />
-
-    <item name="CEA Web Services" href="userguide-cea-ws.html" />
-  </menu>
--->
   </body>
 </project>
 

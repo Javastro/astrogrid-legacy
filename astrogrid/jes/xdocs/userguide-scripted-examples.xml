@@ -26,12 +26,7 @@
 
 
 <section name="Self-Modifiying Workflows">
-	<p> Added some methods to allow scripts to easily modify workflow documents 
-		(well, add parameters to existing tool steps). Wrote example workflow 
-		integration test - ExampleVOTableParsingWorkflowTest.java interesting 
-		part of this workflow is the script step which parses a votable, 
-		extracts urls, and adds each url as a new parameter to the next cea 
-		tool step. in 8 lines of code -- </p>
+	<p> workflow scripts may add  dynamically parameter values to tool elements </p>
 	<source><![CDATA[
 // access result of previous step
   votable = source.result;

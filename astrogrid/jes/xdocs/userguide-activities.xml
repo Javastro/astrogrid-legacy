@@ -24,6 +24,9 @@
 			<dd>schema definitions</dd>
 			<dt><a href="http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/">http://www.astrogrid.org/viewcvs/astrogrid/workflow-objects/schema/</a></dt>
 			</dl>		
+			<subsection name="Schematic View"><p>
+				      <img src="workflow-hierarchy.jpg" />
+</p>				</subsection>
 	</section>
 	
 <section name="Top Level">
@@ -36,7 +39,7 @@
 
 <p> During execution of a workflow, progress messages are added to the workflow 
 	document. These are stored in the <code>&lt;job-execution-record&gt;</code> 
-	child element of workflow. We'll come back to this <a href="userguide-running.html">later</a>. </p>
+	child element of workflow. This is described in more detail in a <a href="userguide-running.html">later section</a>. </p>
 
 <p> There's also a <code>Credentials</code> element tree, which describes the 
 	identity and authentication of the account to run the workflow under. We'll 
@@ -49,8 +52,8 @@
 <subsection name="Example ">
 
 <p>In the examples in this document, I've omitted namespace declarations and 
-	prefixes for clarity. You'll need these (sadly) when writing real workflow 
-	docs. </p>
+	prefixes for clarity. You'll need these (sadly) if writing real workflow 
+	documents by hand.. </p>
 
  <source><![CDATA[
 <?xml version="1.0" ?>
@@ -75,7 +78,7 @@
 <p>The <code>&lt;sequence&gt;</code> element composes a set of activities into a linear structure - they will be executed sequentially in order.</p>
 </subsection>
 <subsection name="Flow">
-<p>The <code>&lt;flow&gt;</code> element composes a set of activities into a parallel structure - the activities in the flow will be executed simultaneously.</p>
+<p>The <code>&lt;flow&gt;</code> element composes a set of activities into a parallel structure - the activities in the flow may be executed in any order, or even concurrently</p>
 </subsection>
 <subsection name="Examples">
 <source><![CDATA[
@@ -104,14 +107,16 @@
 	</section>
 	
 	<section name="Step">
+		
 		<p> The <code>&lt;step&gt;</code> element is an activity that performs 
 			a call to a CEA application. <em>(link to cea)</em> . This element 
 			has a required <code>name</code> attribute, and an optional 
-			<code>description</code> child element. </p>
+			<code>description</code> child element. </p>. 
 		<p> When a step is executed, the progress of the execution is recorded 
 			as a <code>&lt;step-execution-record&gt;</code> child element. This 
 			is covered in a <a href="userguide-running.html">later section</a> 
 			</p>
+			
 		<subsection name="Tool">
 			<p> The <code>step</code> element contains a 
 				<code>&lt;tool&gt;</code> element, which specifies: the name of 
@@ -120,7 +125,7 @@
 				to the tool call. </p>
 		</subsection>
 		<subsection name="Parameter">
-			<p> Parameters to a call are defined by 
+			<p>Input and Output Parameters to a call are defined by 
 				<code>&lt;parameter&gt;</code> elements. The <code>name</code> 
 				attribute defines the name of the parameter, while the content 
 				of the <code>&lt;value&gt;</code> child element defines the 
@@ -135,9 +140,11 @@
 				that points to a resource that contains the actual value for 
 				this parameter. If set to <code>false</code> (the default), 
 				then the parameter value is expected inline. </p>
+			<p>For output parameters, if the <code>indirect</code> attribute is set to <code>true</code>
+				then the value of the parameter specifies the location to store this result. However, if the <code>indirect</code>
+				attribute is set to <code>false</code>, then this result value will be returned direct to the JES server</p>
 		</subsection>		
 		<subsection name="Accessing Results of the Tool Execution">
-			<p><em>should be in scripting chapter - just give a plain example here</em></p>
 			<p> Sometimes the results of a CEA Tool execution are required 
 				further on in the workflow - for example, so that they can be 
 				passed to another CEA Tool, or to select branches of the 
@@ -149,8 +156,9 @@
 				finishes executing. </p>
 			<p> Once exection completes, the variable named will contain an 
 				instance of <code>java.util.Map</code>. The map will have 
-				entries for all output parameters - key is the parameter name, 
-				value is the result. </p>
+				entries for all output parameters that were configured to return direct. The keys in the map are are the output parameter names,
+				while the values are the results returned from the CEA application.
+				 </p>
 		</subsection>
 		<subsection name="Example">
 			<source><![CDATA[
@@ -158,12 +166,16 @@
    <description>an example</description>
    <tool name="anAuthority/aCeaApplication" interface="simpleInterface">
       <input>
-         <parameter name="RA"><value>21</value></parameter><!-- constant parameter value-->
-         <parameter name="DEC"><value>${dec}</value></parameter><!-- script expression referring to previously defined workflow variable -->
+	  <!-- constant parameter value-->
+         <parameter name="RA"><value>21</value></parameter>
+	  <!-- script expression referring to previously defined workflow variable -->
+         <parameter name="DEC"><value>${dec}</value></parameter>
+	  <!-- indirect parameter value -->
+		 <parameter name="Radius" indirect="true"><value>ivo://aCommunity/user#user/root/parameters.txt</value></parameter>
       </input>
       <output>
-         <parameter name="results" indirect="true"><value>vospace:/myResults/results-${new java.util.Date()}.votable</value></parameter>
-         <!-- uses script expression to generate timestamped output filename -->
+         <!-- write results to handy ftp server, uses script expression to generate timestamped output filename -->
+         <parameter name="results" indirect="true"><value>ftp://aServer/myResults/results-${new java.util.Date()}.votable</value></parameter>
       </output>
    </tool>
 </step>
@@ -172,24 +184,7 @@
 	</section>
 
     
-	<!-- maybe move to userguide-jescript.xml
-    <section name="Parallel Loop">
-      <p>Implemented and unit tested parallel-for-loop. This is
-      similar to the for-loop (executes loop body for each item in
-      a list), but in this case the loop bodies are executed
-      potentially in parallel. That is, any calls to CEA
-      applications will be fired off concurrently - other workflow
-      activites are processed sequentially by the jes server.</p>
 
-      <p>A bit of a tricky one to implement - especially the
-      treatment of variables and scopes - as there&#39;s many
-      different values for the loop variable, all valid at the same
-      time. Implememtation works by evaluating the list, and then
-      uses the set of rules for the loop body as a template, from
-      which new rules are generated for each loop branch. These
-      rules are added to the rulestore, and then executed.</p>
-    </section>
-	-->
   </body>
 </document>
 
