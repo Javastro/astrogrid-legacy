@@ -1,0 +1,122 @@
+/*
+ * $Id: SocketHandler.java,v 1.1 2003/09/07 18:41:42 mch Exp $
+ *
+ * (C) Copyright AstroGrid...
+ */
+
+package org.astrogrid.datacenter.service;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.query.QueryException;
+import org.astrogrid.datacenter.service.ServiceListener;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
+import org.astrogrid.log.Log;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+/**
+ * Handles a single socket for the socket-based server -
+ * @see SocketHandler
+ * @author M Hill
+ */
+
+public class SocketHandler extends ServiceServer implements Runnable, ServiceListener
+{
+   private Socket socket = null;
+   private DataOutputStream out = null;
+
+   public SocketHandler(Socket givenSocket) throws IOException
+   {
+      this.socket = givenSocket;
+      out = new DataOutputStream(socket.getOutputStream());
+
+      //create a thread running this isntance and start it
+      new Thread(this).start();
+   }
+
+   /** called when the status changes - writes out the new status to the
+    * socket
+    */
+   public void serviceStatusChanged(ServiceStatus newStatus)
+   {
+      try
+      {
+         out.writeChars(""+newStatus);
+      }
+      catch (IOException e)
+      {
+         Log.logError("Could not pass service Status change ("+newStatus+") to socket client",e);
+      }
+
+   }
+
+
+
+
+   /**
+    * Runs forever handling dociments sent to the
+    * socket, and returning responses, until socket is
+    * closed or some kind of timeout...
+    */
+   public void run()
+   {
+      try
+      {
+         InputStream in = socket.getInputStream();
+         while (socket.isConnected())
+         {
+            try
+            {
+               //read incoming document
+               Element docRequest = XMLUtils.newDocument(in).getDocumentElement();
+
+               //assume a blocking query
+               Element results = DatabaseQuerier.doQueryGetVotable(docRequest);
+
+               XMLUtils.DocumentToStream(results.getOwnerDocument(), out);
+            }
+            catch (IOException e)
+            {
+               e.printStackTrace(System.out);
+            }
+            catch (SAXException e)
+            {
+               //need to tell user
+               out.writeChars("Oh no it's all gone horribly wrong "+e);
+               e.printStackTrace(System.out);
+            }
+            catch (QueryException e)
+            {
+               //need to tell user
+               out.writeChars("Oh no it's all gone horribly wrong "+e);
+               e.printStackTrace(System.out);
+            }
+         }
+      }
+      catch (IOException e)
+      {
+         e.printStackTrace(System.out);
+      }
+      catch (ParserConfigurationException e)
+      {
+         e.printStackTrace(System.out);
+      }
+   }
+
+
+}
+
+/*
+$Log: SocketHandler.java,v $
+Revision 1.1  2003/09/07 18:41:42  mch
+Direct Socket (apacheless) server
+
+
+*/
+
