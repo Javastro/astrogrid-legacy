@@ -29,21 +29,21 @@ public class DomLoaderTest extends TestCase
    public void testLoadFile() throws IOException, ParserConfigurationException, SAXException
    {
       InputStream in = this.getClass().getResourceAsStream("xmlDocument.xml");
-      Document doc = DomLoader.readDocument(in);
+      Document doc = DomHelper.newDocument(in);
       assertNotNull(doc);
    }
 
    public void testReadString() throws IOException, ParserConfigurationException, SAXException
    {
       String xml = "<Root><Parent><Child>Arthuer</Child><Child>Beatrice</Child></Parent></Root>";
-      Document doc = DomLoader.readDocument(xml);
+      Document doc = DomHelper.newDocument(xml);
       assertNotNull(doc);
    }
 
    public void testReadUrl() throws IOException, ParserConfigurationException, SAXException
    {
       URL xml = this.getClass().getResource("xmlDocument.xml");
-      Document doc = DomLoader.readDocument(xml);
+      Document doc = DomHelper.newDocument(xml);
       assertNotNull(doc);
    }
 
@@ -69,6 +69,9 @@ public class DomLoaderTest extends TestCase
 
 /*
 $Log: DomLoaderTest.java,v $
+Revision 1.3  2004/03/09 17:06:36  mch
+Switched to test DomHelper
+
 Revision 1.2  2004/03/01 22:46:29  mch
 Increased test coverage
 
