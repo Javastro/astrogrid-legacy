@@ -3,7 +3,7 @@
 <extend>${basedir}/build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
-  
+
   <!-- a unique name for this project -->
   <id>astrogrid-datacenter</id>
   <name>AstroGrid DataCenter</name>
@@ -11,15 +11,149 @@
   <currentVersion>HEAD</currentVersion>
 
 	<description><![CDATA[
-	Astrogrid datacenter
-	<p />
+	<p>
 	Follow the links on the left to subprojects for
 	<ul>
 	  <li>client delegates</li>
 	  <li>server engine</li>
-	  <li>server implementations</li>
+	  <li>backend plugin implementations</li>
 	  <li>Publishers Astrogrid Library</li>
 	</ul>
+	</p>
+	<section name="Build"><p>
+The datacenter build is quite byzantine - partly because it does a lot, partly to work-around
+maven flaws and bugs. Is should be possible to rationalize it a bit, but
+its probably best to wait for the proper maven v1.0 release.
+</p>
+</section>
+<section name="Project Structure"><p>
+The datacenter is made up of a set of sub-projects. Each is in a separate subdirectory - <tt>/client, /server,
+/pal, /implementations/*</tt>.
+</p><p>
+Each subproject requires a <tt>project.xml</tt>
+<tt>project.properties</tt> and <tt>maven.xml</tt>.
+To save replication and simplify modifications, each project extends templates in the <tt>/build</tt> directory. Common
+resources - such as checkstyle and license files - can also be shared between projects by placing
+them in <tt>build</tt> directory.
+</p></section>
+<section name="Nightly Build"><p>
+The nightly build script calls the following maven goals
+<ol>
+<li><tt>java:compile</tt> - compile up sources</li>
+<li><tt>clover:html-report</tt> - dunno. probably a work-around for a bug</li>
+<li><tt>site</tt> - build project website </li>
+<li><tt>site:fsdeploy</tt> - pubish project website on server</li>
+<li><tt>jar:depoy-snapshot</tt> - generate jar, publish on central repository</li>
+<li><tt>war:deploy-snapshot</tt> - generate war, publish central repository</li>
+</ol>
+</p><p>
+These work fine for building a single project. However, the datacenter comprises a
+group of separate sub-projects - each with their own maven <tt>project.xml</tt> files,etc.
+There are dependencies between the sub-projects, so they need to be run in the
+correct order.
+</p><p>
+The subprojects are tied together by the top-level datacenter project (that's the one you're reading now).
+ This contains no code, provides a bit of additional site documentation, and the
+maven script that binds the sub-projects together.
+</p><p>
+Building the correct sequence of sub-projects is shoe-horned into the nightly
+build by defining 'preGoals' for the important goals in the list above. These
+are defined for this top-level project in
+(<tt>datacenter/maven.xml</tt>)
+</p><p>
+These pregoals use the <tt>multiproject</tt> plugin, or the <tt>reactor</tt> tag - both do the
+same thing - attain a single goal in a group of interrelated-projects.
+Furthermore, if subproject A has a dependency on subproject B,
+multiproject/reactor ensures that the goal is executed on B before A.
+</p>
+<subsection name="What really happens"><p>
+So what really happens during the nightly build is:
+<ol>
+<li><tt>java:compile</tt> - Fails, as its being run in the top-level datacenter project, where there's
+no code. we don't care.
+
+</li><li><tt>clover:html-report</tt> - Fails with errors. We don't care.
+
+</li><li><tt>site</tt> - Builds a simple site based only on the top-level project. This is later
+overwritten
+</li><li><tt>site:fsdeploy</tt> - has a pregoal to attain <tt>multiproject:site</tt>. This builds a composite
+project website site from all the sub-projects. It is this website that is
+then deployed to the webserver by the <tt>site:fsdeploy</tt>
+</li><li><tt>jar:deploy-snapshot</tt> - has a pregoal that runs <tt>jar:deploy-snapshot,dist</tt> for each of the
+subprojects (except pal):
+       <ul><li><tt>jar:deploy-snapshot</tt> generates a jar for the subproject and places it in the
+central repository.</li>
+       <li><tt>dist</tt> generates source and binary zipfiles containing jars, sources and javadoc
+for each subproject.
+	</li>
+	</ul>The pregoal then calls goals in the pal project<ul>
+       <li><tt>webapp-site</tt> - fills in webapp configuration files, generates pal webapp
+documentation</li>
+       <li><tt>war:deploy-snapshot</tt> - assembles the war file, publishes on central
+repository. As part of the assembly, the source and binary zipfiles
+created by the previous <tt>dist</tt> goal are grabbed and inserted into the war.
+	</li></ul>
+</li><li><tt>war:deploy snapshot</tt> - this runs in the top level project. there's no sources here, so it just
+generates an empty war file, which is published to the central server.
+</li></ol>
+</p><p>
+In summary, the main goals are <tt>site</tt>, followed by <tt>jar:deploy-snapshot</tt>
+</p></subsection>
+<subsection name="Doing it better"><p>
+Clearly, there's a lot of redundancy and wasted computatioin here, due to the mis-match between
+what the nightly build thinks the datacenter project should do, and what we
+want it to do.
+</p><p>
+I've been talking to folk about replacing the long list of
+predefined goals in the nightly build by a list of goals such as:
+<ol>
+<li>astrogrid-site
+</li><li>astrogrid-deploy-snapshots
+</li></ol>
+then it would be up to each project to define these goals to do whatever was
+necessary for itself. This would make the datacenter build clearer and more efficient.
+
+</p></subsection></section>
+<section name="Building by Hand"><p>
+<tt>cd</tt> into any sub-project (client,server,implementations/*)and issue commands
+there to build just that project. They behave just like any other maven project. e.g.
+<ul>
+<li><code>$ cd datacenter/client</code>
+</li><li><code>$ maven site</code> builds single site for the client project.
+</li><li><code>$ maven jar:install-snapshot</code> builds snapshot jar for client, places in <i>local</i> repository where it can
+be found by other projects.
+</li></ul>
+</p>
+<subsection name="PAL"><p>
+To build PAL by hand, you need to build all its prerequisites - the jars it
+depends on, plus the javadocs and dist bundles it grabs. Do the following:
+</p><p>
+<code>
+$ cd datacenter<br />
+$ maven multiproject:clean ; maven multiproject:site ; maven jar:install-snapshot<br />
+</code>
+</p><p>
+then go and have a cup of coffee
+</p><p>
+<tt>multiproject:site</tt> is optional (IIRC)- pal grabs some extra documentation from
+the site build for each project. I think it will manage without it though.
+</p><p>
+<tt>jar:install-snapshot</tt> has a preGoal in <tt>maven.xml</tt>, which is similar to that for
+<tt>jar:deploy-snapshot</tt> used in the nightly build.
+<ul>
+<li>it calls <tt>jar:install-snapshot dist</tt> on each subproject in turn. This
+places each subproject's snapshot jar in the local repository, where they can
+be found by the other subproject builds.
+</li><li>it then calls the goals in the pal project that grabs the resources,
+configure and assemble the war file.
+</li></ul>
+</p><p>
+The result is a pal-SNAPSHOT, which is left in your local
+repository - usually
+<tt>~/.maven/repository/astrogrid-datacenter/wars/pal-SNAPSHOT.war</tt>
+</p><p>
+See documentation for the PAL project for further build instructions.
+</p></subsection></section>
 	]]>
 	</description>
 
@@ -43,7 +177,7 @@
     </report>
     <report>
       maven-changes-plugin
-    </report>    
+    </report>
     <report>
       maven-developer-activity-plugin
     </report>

@@ -10,6 +10,63 @@
   <name>Publishers Astrogrid Library</name>
   <currentVersion>HEAD</currentVersion>
 
+  <description><![CDATA[
+	<p>
+	An Astrogrid datacenter published a collection of astronomical data on the Astrogrid.
+	</p><p>
+	PAL contains everything you need to install a data center, wrapped up in one big bundle.
+	</p>
+  <section name="Build">
+	<p>
+	<i>See parent project for fuller instructions</i>
+	</p><p>
+To build PAL by hand, you need to build all its prerequisites - the jars it
+depends on, plus the javadocs and dist bundles it grabs. Do the following:
+</p><p>
+<code>
+$ cd datacenter<br />
+$ maven multiproject:clean ; maven multiproject:site ; maven jar:install-snapshot<br />
+</code>
+then go and have a cup of coffee
+</p><p>
+The result is a pal-SNAPSHOT, which is left in your local
+repository. Usually
+<tt>~/.maven/repository/astrogrid-datacenter/wars/pal-SNAPSHOT.war</tt>
+</p>
+<subsection name="Hacking with PAL"><p>
+
+The full build above takes a long time to finish - not good if you're tinkering with
+the packaging of PAL itself. However, once you've run the recipe once, the
+required resources are present. You can then rebuild PAL using the existing
+resources by:
+</p><p>
+<code>
+$ cd datacenter/pal<br />
+$ maven pal <br />
+</code>
+</p><p>
+Note however, that the result of this build is put in a different place -
+<tt>datacenter/pal/target/pal.war</tt>
+</p>
+</subsection>
+<subsection name="Other goals"><p>
+
+<b>pal-deploy / pal-undeploy</b><br />
+The pal project provides goals to deploy / undeploy
+<tt>datacenter/pal/target/pal.war</tt> to a tomcat webserver using tomcat's manager tool.
+This can be handy for testing.
+</p><p>
+You need to set some variables for this
+to work. Its probably best to put them in <tt>~/build.properties</tt>.
+</p><p>
+<code>
+tomcat.endpoint=http://localhost:8080/manager<br />
+tomcat.username=noel<br />
+tomcat.password=secret<br />
+</code>
+</p></subsection>
+</section>
+  ]]></description>
 
 
   <!-- must be on a single line -->

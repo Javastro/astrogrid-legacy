@@ -3,7 +3,7 @@
 <extend>${basedir}/../build/project-base.xml</extend>
   <!-- the version of maven's project object model -->
   <pomVersion>3</pomVersion>
-  
+
   <!-- a unique name for this project -->
   <id>astrogrid-datacenter-client</id>
   <name>AstroGrid DataCenter Client Delegate</name>
@@ -11,8 +11,10 @@
   <currentVersion>HEAD</currentVersion>
 
    <description><![CDATA[
+   <section name="Astrogrid Datacenter Client">
+   <p>
     This project contains the delegate interface to the datacenter.
-    <p />
+    </p><p>
     The name of the jar produced by this project is <tt>astrogrid-datacenter-client</tt>
     To add a dependency on this project to your own project, add the following to your <tt>project.xml</tt>
     <source>
@@ -28,19 +30,21 @@
     </source>
 
 
-    <p><subsection name="Build" /></p>
+    </p></section>
+	<section name="Build" ><p>
     This project generates a large amount of source code automatically from XML schema and WSDL files in
     <tt>src/xsd</tt> and <tt>src/wsdl</tt>. This source is placed in a separate tree called <tt>generated/java</tt>.
-   <p />
+   </p><p>
     This maven project has an additional goal - <tt>generate-delegate</tt>
     that performs this code generation.
     Castor and the wsdl2java tool from Axis are used as part of this.
     The goal is defined in the <tt>maven.xml</tt> file, where is is documented in more detail.
-   <p />
+   </p><p>
    The code generation is <b>not</b> performed automatically by the nightly build: after editing the wsdl or schema files the
    <tt>generate-delegate</tt> goal must be run by hand; then the generated sources verified and checked back into CVS.
-
-      ]]>
+	</p>
+	</section>
+	]]>
    </description>
 
   <shortDescription>Client-side delegate and supporting libraries</shortDescription>
