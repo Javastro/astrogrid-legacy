@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.11 2004/08/03 16:31:25 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.12 2004/08/09 17:31:11 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
     protected ApplicationControllerDispatcher disp;
     
     public void testDispatchStep(Workflow w,Step js) throws Exception {
-        disp.dispatchStep(w,js,js.getTool());
+        disp.dispatchStep(w,js.getTool(),"someID");
     }
 
     /**
@@ -82,6 +82,9 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.12  2004/08/09 17:31:11  nw
+adjusted interface, to work better with dynamically-generated states.
+
 Revision 1.11  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

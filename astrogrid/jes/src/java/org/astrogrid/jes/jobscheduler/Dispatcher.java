@@ -1,4 +1,4 @@
-/*$Id: Dispatcher.java,v 1.6 2004/08/03 16:31:25 nw Exp $
+/*$Id: Dispatcher.java,v 1.7 2004/08/09 17:31:11 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,14 +26,18 @@ public interface Dispatcher {
      * @param wf workflow document the step is from
      * @param js the job step to execute
      * @param tool the tool to use to perform the call.
+     * @param id id assigned to this step.
      * @throws JesException
      */
-    void dispatchStep(Workflow wf, Step js,Tool tool) throws JesException;
+    void dispatchStep(Workflow wf,Tool tool, String id) throws JesException;
 }
 
 
 /* 
 $Log: Dispatcher.java,v $
+Revision 1.7  2004/08/09 17:31:11  nw
+adjusted interface, to work better with dynamically-generated states.
+
 Revision 1.6  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.17 2004/08/03 16:31:25 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.18 2004/08/09 17:31:11 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,13 +75,12 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
    /**
     * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
     */
-   public void dispatchStep(Workflow job, Step js, Tool tool) throws JesException {
-      boolean succeeded = false;
+   public void dispatchStep(Workflow job, Tool tool,String stepId) throws JesException {
 
       String toolLocation = locator.locateTool(tool);    
       CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocation);
 
-      JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), js.getId());
+      JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), stepId);
       logger.debug(         "Calling application controller at " + toolLocation + " for "
             + tool.getName() + ", "+ id.getValue());
       try {
@@ -147,6 +146,9 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.18  2004/08/09 17:31:11  nw
+adjusted interface, to work better with dynamically-generated states.
+
 Revision 1.17  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.
