@@ -6,11 +6,14 @@ import java.util.Calendar;
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/authentication/data/Attic/SecurityToken.java,v $</cvs:source>
  * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/05 09:00:45 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/05 09:13:35 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityToken.java,v $
+ *   Revision 1.2  2003/09/05 09:13:35  KevinBenson
+ *   Just changed the boolean to the object Boolean
+ *
  *   Revision 1.1  2003/09/05 09:00:45  KevinBenson
  *   Got rid of a package that made things look a little confusing.
  *   Added a quick dataobject called SecurityToken under authentication that will be usedf for castor.
@@ -56,7 +59,7 @@ public class SecurityToken {
        * Our Account ident.
        *
        */
-      private boolean used = false;
+      private Boolean used = new Boolean(false);
       
       /**
        * Our Account ident.
@@ -207,7 +210,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public boolean getUsed(){
+   public Boolean getUsed(){
       return this.used;
    }
 
@@ -215,7 +218,7 @@ public class SecurityToken {
     * Access to our Token.
     *
    */
-   public void setUsed(boolean used) {
+   public void setUsed(Boolean used) {
       this.used = used;
    }
 
