@@ -114,12 +114,13 @@ public class RegistryService implements
    public Document loadRegistry(Document query) {
       //System.out.println("received = " + XMLUtils.DocumentToString(query));
       String authorityID = conf.getString(AUTHORITYID_PROPERTY);
+      authorityID = authorityID.trim();
       Document doc = null;
       Document responseDoc = null;
       String selectQuery = "<query><selectionSequence>" +
-      "<selection item='searchElements' itemOp='EQ' value='Registry'/>" +
+      "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
       "<selectionOp op='$and$'/>" +
-      "<selection item='AuthorityID' itemOp='CONTAINS' value='" + authorityID + "'/>" +
+      "<selection item='AuthorityID' itemOp='EQ' value='" + authorityID + "'/>" +
       "</selectionSequence></query>";
       
       try {      

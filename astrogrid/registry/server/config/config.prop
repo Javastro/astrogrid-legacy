@@ -1,4 +1,4 @@
-org.astrogrid.registry.authorityid=astrogrid.local
+org.astrogrid.registry.authorityid=astrogrid
 org.astrogrid.registry.writefile.timedelay.minutes=10
-org.astrogrid.registry.file=C:\Development\temp\registry\myregistry.xml
+org.astrogrid.registry.file=C:\Development\temp\registry\registry.xml
 org.astrogrid.registry.version=0_9

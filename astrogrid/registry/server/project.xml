@@ -145,6 +145,20 @@
         </dependency>
         
         <dependency>
+           <id>jaxrpc</id>
+           <version>unknown</version>
+           <jar>jaxrpc.jar</jar>
+        </dependency>
+
+        <dependency>
+           <id>saaj</id>
+           <version>unknown</version>
+           <jar>saaj.jar</jar>
+        </dependency>
+
+        
+        
+        <dependency>
             <id>ipsi</id>
             <version>1.0.2</version>
             <url>http://www.astrogrid.org/</url>
@@ -162,7 +176,7 @@
         <!--+
             | The location of our JUnit source code.
             +-->
-        <unitTestSourceDirectory>src/junit2</unitTestSourceDirectory>
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
         <!--+
             | Our JUnit test classes.
             +-->
@@ -181,21 +195,14 @@
              +-->            
             <!--+
                 | The resources for our tests.
+            +-->
             <resources>
                 <resource>
-                    <directory>target/junit/xml</directory>
-                    <includes>
-                        <include>*.xml</include>
-                    </includes>
                 </resource>
                 <resource>
-                    <directory>target/registry/config</directory>
-                    <includes>
-                        <include>*.xml</include>
-                    </includes>
                 </resource>
             </resources>
-             +-->
+
         </unitTest>
     </build>
 

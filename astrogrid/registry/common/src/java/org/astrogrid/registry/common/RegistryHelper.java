@@ -17,7 +17,7 @@ public class RegistryHelper {
    
    public static IRegistryInfo loadRegistryInfo() {
       IRegistryInfo iri = null;
-      String className = "org.astrogrid.registry.versionNS.vr" + conf.getString(REGISTRY_VERSION_PROPERTY) + ".Registry";
+      String className = "org.astrogrid.registry.common.versionNS.vr" + conf.getString(REGISTRY_VERSION_PROPERTY) + ".Registry";
       Class reg = null;
       try {
          reg = Class.forName(className);

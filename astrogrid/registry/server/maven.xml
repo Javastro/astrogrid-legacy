@@ -153,6 +153,7 @@
         | Prepare the database config files for our JUnit tests.
         +-->
     <preGoal name="test:test-resources">
+    
         <ant:echo message=""/>
         <ant:echo message="Artifact : ${pom.artifactId}"/>
         <ant:echo message="Preparing test-resources ...."/>
@@ -160,22 +161,15 @@
             | Setup our properties.
             +-->
         <ant:property name="junit.template.data"   value="${maven.build.dir}/junit/xml"/>
-        <ant:property name="registry.config" value="${maven.build.dir}/registry/config"/>
         <!--+
             | Create our config directory.
             +-->
 
         <ant:echo message="Creating junit template area"/>
         <ant:mkdir dir="${junit.template.data}"/>
-        <!--
         <ant:echo message=""/>
         <ant:echo message="copy junit xml contents"/>        
-        <ant:copy overwrite="true" file="src/junit/xml/*.xml" toDir="${junit.template.data}"/>
-
-        <ant:echo message=""/>
-        <ant:echo message="copy config file"/>
-        <ant:copy overwrite="true" file="./config/config.xml" toFile="${registry.config}/config.xml"/>        
-		-->        
+        <ant:copy overwrite="true" file="${basedir}/config/junitcache/registry.xml" toDir="${junit.template.data}"/>
     </preGoal>
     
     
