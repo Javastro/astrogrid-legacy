@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.13 2004/02/24 01:34:19 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.14 2004/02/24 18:15:48 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,7 +79,7 @@ public final class SimpleMySpaceTest extends TestCase {
    *             the web service
    */
   public final void setUp() throws Exception {
-    log.debug("\n\nSetting up...");
+    log.debug("\n\n\n\nSetting up...");
     mySpaceEndPoint = ConfManager.getInstance().getMySpaceEndPoint();
     assert(mySpaceEndPoint != null);
     boolean ok = createUser(defaultUser, defaultCommunity, mySpaceEndPoint);
@@ -103,67 +103,27 @@ public final class SimpleMySpaceTest extends TestCase {
   }
 
   /**
-   * The simplest test. Add a user, and delete it again.
-   *  
-   */
-  public void testAddDeleteUser() {
-    String communityId = "roe";
-    String userId = "jdtTesting";
-    boolean ok1 = false;
-    boolean ok2 = false;
-    try {
-      ok1 = createUser(userId, communityId, mySpaceEndPoint);
-      log.debug("Created OK?" + ok1);
-    } catch (Exception e) {
-      log.error("Error creating user: " + e);
-      fail("Exception creating user: " + e);
-    } finally {
-      log.debug("Attempting to delete user");
-      try {
-        ok2 = deleteUser(userId, communityId, mySpaceEndPoint);
-        log.debug("Deleted OK? " + ok2);
-      } catch (Exception e) {
-        log.error("Error deleting user: " + e);
-        log.error(
-          "Warning - failed to delete user; mySpace database may now be corrupt and require some TLC");
-        fail("Exception deleting user:  " + e);
-      }
-    }
-    assertTrue("Result from createUser was false", ok1);
-    assertTrue("Result from deleteUser was false", ok2);
-  }
-
-  /**
    *  
    */
   private boolean deleteUser(
     final String userID,
     final String communityID,
     final String endPoint)
-    throws Exception {
-
-    MySpaceClient client = getDelegate(endPoint);
-    // Attempt to add, and then delete a user
-    Vector servers = new Vector();
-    servers.add(defaultServer);
-    String credential = "any";
-    boolean ok2 = false;
+    {
+    
+    MySpaceWiper wiper;
     try {
-      log.debug("Attempting to deleteUser with the following params:");
-      log.debug("userID: " + userID);
-      log.debug("communityId: " + communityID);
-      log.debug("credential: " + credential);
-      log.debug("servers: " + servers);
-      ok2 = client.deleteUser(userID, communityID, credential);
-      log.debug("Deleted? " + ok2);
-    } catch (Exception e) {
-      log.error("Error deleting user: " + e);
-      log.error(
-        "Warning - failed to delete user; mySpace database may now be corrupt and require some TLC");
-      throw e;
+        wiper = new MySpaceWiper(endPoint);
+        wiper.clear(userID, communityID);
+    } catch (IOException e) {
+        log.error("Exception: ", e);
+        return false;
+    } catch (MySpaceDelegateException e1) {
+       log.error("Exception: ", e1);
+       return false;
     }
 
-    return ok2;
+    return true;
   }
   /**
    *  
