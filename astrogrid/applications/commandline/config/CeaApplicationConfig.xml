@@ -28,6 +28,43 @@
 				<agpd:UI_Name>Derived output catalogue</agpd:UI_Name>
 				<agpd:UI_Description>The catalogue of images derived from the input images</agpd:UI_Description>
 			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="FILTER_NAME" type="Text" fileRef="true">
+				<agpd:UI_Name>detection filter</agpd:UI_Name>
+				<agpd:UI_Description>the convolution filter</agpd:UI_Description>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="text" name="DETECT_TYPE" fileRef="false">
+				<agpd:UI_Name>detection type</agpd:UI_Name>
+				<agpd:UI_Description></agpd:UI_Description>
+				<agpd:DefaultValue>CCD</agpd:DefaultValue>
+				<agpd:OptionList>
+					<agpd:OptionVal>CCD</agpd:OptionVal>
+					<agpd:OptionVal>PHOTO</agpd:OptionVal>
+				</agpd:OptionList>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="fits" name="FLAG_IMAGE" fileRef="true">
+				<agpd:UI_Name>flag image</agpd:UI_Name>
+				<agpd:UI_Description></agpd:UI_Description>
+				
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="integer" name="DETECT_MINAREA" fileRef="false">
+				<agpd:UI_Name>minimum detection area</agpd:UI_Name>
+				<agpd:UI_Description>minimum number of pixels above threshold</agpd:UI_Description>
+				<agpd:DefaultValue>5</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="double" name="DETECT_THRESH">
+				<agpd:UI_Name>Detection Threshold</agpd:UI_Name>
+				<agpd:UI_Description>sigmas or threshold,ZP in mag.arcsec-2</agpd:UI_Description>
+				<agpd:DefaultValue>1.5</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="double" name="ANALYSIS_THRESH">
+				<agpd:UI_Name>Analysis Threshold</agpd:UI_Name>
+				<agpd:UI_Description>sigmas or threshold,ZP in mag.arcsec-2</agpd:UI_Description>
+				<agpd:DefaultValue>1.5</agpd:DefaultValue>
+			</CmdLineParameterDefn>
+			<CmdLineParameterDefn type="boolean" name="FILTER">
+				<agpd:UI_Name>use filter</agpd:UI_Name>
+				<agpd:UI_Description>apply filter for detection</agpd:UI_Description>
+			</CmdLineParameterDefn>
 		</Parameters>
 		<Interfaces>
 			<Interface name="Simple">
