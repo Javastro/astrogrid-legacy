@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- -->
+<!DOCTYPE project [
+  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
+]>
+<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:xi="http://www.w3.org/2001/XInclude"
     xsi:noNamespaceSchemaLocation="../maven-project.xsd">
   <extend>../project.xml</extend>
   
@@ -41,7 +45,7 @@
     </dependency>
     
     <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
-    <xi:include href="../cocoon-dependencies-nowar.xml"/>
+    &cocoon-deps;
   </dependencies>
   
   <build>
