@@ -36,75 +36,81 @@ class __tags {
 */
 class __options {
 }/**
-@__positions <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node.node52.link:oiref>=260,142,128,17,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79.link:oiref>=853,790,103,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node72.link:oiref>=590,653,590,720:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73.link74:oiref>=560,726,290,730,290,363:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link85:oiref>=710,760,27,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80:oiref>=890,540,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link:oiref>=845,770,845,703:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node52:oiref>=170,100,183,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node66.link:oiref>=570,413,570,460:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node.link:oiref>=580,263,580,310:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node72.link:oiref>=600,677,165,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81:oiref>=800,770,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node75.link:oiref>=820,497,820,730,620,730:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79.link84:oiref>=980,790,980,820:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node.node55.link:oiref>=70,250,62,17,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link:oiref>=855,727,32,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node:oiref>=490,240,180,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node82:oiref>=830,820,212,23,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link77:oiref>=679,560,132,17,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node66.link:oiref>=580,419,200,34,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node69.link:oiref>=925,633,925,680:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node78.link:oiref>=980,703,980,770:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node78:oiref>=830,680,191,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link85:oiref>=822,770,590,740:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node87.link:oiref>=629,180,629,240:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61:oiref>=550,310,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node83:oiref>=820,870,228,37,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node78.link:oiref>=990,727,142,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node55:oiref>=220,180,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79:oiref>=950,770,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50:oiref>=470,30,580,880,0:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link:oiref>=920,560,920,610:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node56:oiref>=252,59,12,12,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link77:oiref>=600,550,890,550:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node.link:oiref>=590,277,128,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node83.link:oiref>=820,880,640,880,640,653:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link:oiref>=600,470,710,470:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link86:oiref>=924,509,29,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node56.link:oiref>=258,71,258,100:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node65.link:oiref>=180,350,65,308:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node87:oiref>=588,140,460,40,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node59.link:oiref>=306,290,490,253:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61.link:oiref>=550,320,359,350:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70:oiref>=540,540,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node59:oiref>=200,280,106,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node53:oiref>=10,80,110,140,0:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link:oiref>=570,560,570,630:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node66:oiref>=500,390,152,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61.link67:oiref>=580,330,580,390:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link71:oiref>=580,501,183,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node52.link:oiref>=250,123,250,180:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node55.link60:oiref>=265,200,265,280:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node64.link:oiref>=:oigroup>
+@__positions <oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node82:oiref>=830,860,212,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node65:oiref>=180,340,179,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link86:oiref>=914,540,914,497:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link:oiref>=580,586,109,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73.link:oiref>=560,733,380,730,390,400,500,400:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node:oiref>=150,30,211,380,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node72:oiref>=520,630,163,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node82.link:oiref>=929,843,929,870:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node55.link:oiref>=250,200,58,300:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68:oiref>=540,460,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73:oiref>=560,720,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link71:oiref>=570,480,570,540:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node53.link:oiref>=120,111,170,111:oigroup>
-<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node69:oiref>=830,610,203,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node52:oiref>=170,100,183,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link86:oiref>=905,560,905,497:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link86:oiref>=915,519,29,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73.link:oiref>=574,770,380,730,390,400,500,400:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link:oiref>=840,770,840,723:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50:oiref>=470,30,580,980,0:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link85:oiref>=800,780,610,780:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link85:oiref>=691,790,27,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node59.link:oiref>=306,290,490,253:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node78.link:oiref>=980,723,980,770:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node65.link:oiref>=180,350,65,308:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node52.link:oiref>=250,123,250,180:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link77:oiref>=600,570,890,570:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link77:oiref>=630,550,200,34,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73.link:oiref>=395,575,32,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81.link:oiref>=850,737,32,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node69:oiref>=830,630,203,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node.link:oiref>=580,263,580,310:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node78:oiref>=830,700,191,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node.node52.link:oiref>=260,142,128,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73.link74:oiref>=300,537,27,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73.link74:oiref>=562,770,290,730,290,363:oigroup>
 <oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node57:oiref>=50,300,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node87:oiref>=588,140,460,40,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node78.link:oiref>=990,737,149,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node.link:oiref>=590,277,128,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link:oiref>=600,470,710,470:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node55.link:oiref>=250,200,58,300:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61.link67:oiref>=580,330,580,390:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node59:oiref>=200,280,106,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link:oiref>=640,470,32,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node53:oiref>=10,80,110,140,0:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node53.link:oiref>=120,111,170,111:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node55.link60:oiref>=265,200,265,280:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node83:oiref>=820,930,228,37,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node82.link:oiref>=968,883,968,930:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61.link:oiref>=550,320,359,350:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node.node55.link:oiref>=70,250,62,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node72:oiref>=520,660,163,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node55:oiref>=220,180,60,20,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61.link:oiref>=420,352,27,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node81:oiref>=800,770,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node61:oiref>=550,310,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79.link:oiref>=950,780,860,780:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node87.link:oiref>=629,180,629,240:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node66.link:oiref>=570,413,570,460:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70:oiref>=540,560,60,20,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node66.link:oiref>=580,419,200,34,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link71:oiref>=555,480,555,560:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68.link71:oiref>=560,510,200,34,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node64.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link:oiref>=920,580,920,630:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node72.link:oiref>=586,683,586,770:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79.link:oiref>=853,790,110,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79:oiref>=950,770,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node:oiref>=490,240,180,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node69.link:oiref>=925,653,925,700:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node68:oiref>=540,460,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node56.link:oiref>=258,71,258,100:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node:oiref>=150,30,211,380,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80.link:oiref>=930,596,32,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node72.link:oiref>=596,717,165,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link:oiref>=570,580,570,660:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79.link84:oiref>=990,816,32,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node79.link84:oiref>=980,790,980,860:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node66:oiref>=500,390,152,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4jumidrab9857dracvya3.node50.node70.link:oiref>=580,611,109,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node73:oiref>=550,770,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node75:oiref>=710,460,228,37,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node.node56:oiref>=252,59,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node80:oiref>=890,560,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node75.link:oiref>=820,497,820,730,598,770:oigroup>
+<oigroup:<oiref:design#Class#id4jumidrab9857dracvya3.node50.node83.link:oiref>=894,930,640,880,640,683:oigroup>
 */
 class __positions {
 }/**
@@ -212,6 +218,7 @@ class node61 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node.node65:oiref><oihard> 
+@sendClause no
 */
 class link {
 }/**
@@ -230,7 +237,7 @@ class node66 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node68:oiref><oihard>
-@sendClause AuthorityID owned by another Registry 
+@sendClause AuthorityID owned by another Registry?
 */
 class link {
 }}/**
@@ -243,13 +250,14 @@ class node68 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node70:oiref><oihard>
-@sendClause Do we Manage the AuthorityID? 
+@sendClause No;Do we Manage the AuthorityID?
 */
 class link71 {
 }/**
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node75:oiref><oihard> 
+@sendClause yes
 */
 class link {
 }}/**
@@ -281,7 +289,7 @@ class link {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node80:oiref><oihard>
-@sendClause Have Authority Entries 
+@sendClause No;Have Authority Entries? (in request)
 */
 class link77 {
 }}/**
@@ -307,12 +315,14 @@ class node73 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node66:oiref><oihard> 
+@sendClause yes
 */
 class link {
 }/**
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node.node65:oiref><oihard> 
+@sendClause no
 */
 class link74 {
 }}/**
@@ -337,7 +347,7 @@ class node78 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node79:oiref><oihard>
-@sendClause matches the AuthorityID 
+@sendClause matches the AuthorityID?
 */
 class link {
 }}/**
@@ -350,13 +360,14 @@ class node79 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node81:oiref><oihard>
-@sendClause more Authorities 
+@sendClause more Authorities?
 */
 class link {
 }/**
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node82:oiref><oihard> 
+@sendClause yes
 */
 class link84 {
 }}/**
@@ -369,6 +380,7 @@ class node80 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4jumidrab9857dracvya3.node50.node69:oiref><oihard> 
+@sendClause yes
 */
 class link {
 }/**

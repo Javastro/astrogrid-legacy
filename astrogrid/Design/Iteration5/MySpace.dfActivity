@@ -52,76 +52,86 @@ class __tags {
 class __options {
 }/**
 @__positions 
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link:oiref>=138,410,138,335:oigroup>
+
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link:oiref>=125,439,125,649:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link:oiref>=206,663,747,663:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9:oiref>=66,179,157,32,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9:oiref>=66,179,157,41,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node74.link99:oiref>=114,963,114,1000:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link:oiref>=344,673,114,17,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node78.link:oiref>=490,1062,149,17,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link:oiref>=148,363,113,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link:oiref>=135,535,32,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node2.link:oiref>=223,330,510,293:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node39.link43:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node92.link:oiref>=570,1540,748,1511:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node84.link:oiref>=480,1300,480,1340:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node7:oiref>=457,1654,15,15,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node30.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node82:oiref>=419,1200,176,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node93.node95:oiref>=758,1548,153,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node84:oiref>=450,1280,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node84.link90:oiref>=450,1290,420,1290,420,1411:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node84.link90:oiref>=430,1341,29,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node84.link90:oiref>=390,1320,29,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node2.link5:oiref>=125,360,125,410:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node91:oiref>=440,1470,60,20,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node2.link5:oiref>=135,376,145,17,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node38:oiref>=747,631,142,46,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node23.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37:oiref>=63,649,143,53,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17:oiref>=100,750,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node92.link97:oiref>=480,1553,480,1610:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node1:oiref>=50,66,172,35,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node3:oiref>=40,260,15,15,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node84.link:oiref>=490,1311,34,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link36:oiref>=125,439,125,550:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node.link:oiref>=135,51,135,66:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31:oiref>=40,550,180,50,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node79.link:oiref>=450,1120,407,1121:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node87.link:oiref>=470,1417,470,1470:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node98.link:oiref>=192,1023,270,1028:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17.link:oiref>=160,760,280,760,278,1020:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node82.link:oiref>=480,1223,480,1280:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link:oiref>=170,270,510,270:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link:oiref>=140,280,140,320:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26:oiref>=510,260,140,43,0:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node82.link:oiref>=490,1242,131,17,1:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link14:oiref>=140,211,140,260:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link14:oiref>=150,231,164,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link:oiref>=150,291,32,17,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link4:oiref>=110,270,55,268:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link14:oiref>=140,220,140,260:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node10.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node46.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node98:oiref>=50,1000,142,23,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node79.link:oiref>=438,1130,29,17,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node87.link:oiref>=480,1434,129,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link4:oiref>=43,279,29,17,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76:oiref>=370,890,227,790,0:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17.link:oiref>=280,840,143,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17.link:oiref>=280,840,27,17,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node87:oiref>=400,1411,150,6,0:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link13:oiref>=138,280,138,320:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node86:oiref>=740,1350,199,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26.link:oiref>=575,303,575,390:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node18.link:oiref>=:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node85.link:oiref>=546,1353,740,1360:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node85.link:oiref>=571,1353,740,1360:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node96:oiref>=390,1610,183,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31.link:oiref>=134,600,134,649:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node78:oiref>=390,1010,171,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref>=270,1020,15,15,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link37:oiref>=130,702,130,750:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37.link37:oiref>=140,717,157,17,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node:oiref>=390,940,140,23,1:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node85:oiref>=440,1340,106,23,1:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node85:oiref>=440,1340,131,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node74:oiref>=60,940,109,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node21.link11:oiref>=:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12.link13:oiref>=148,291,108,17,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29:oiref>=100,410,51,29,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node92:oiref>=390,1530,180,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node44.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node21.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29.link6:oiref>=100,429,50,430,48,275:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16:oiref>=30,20,195,1320,0:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link:oiref>=257,216,200,34,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node:oiref>=129,39,12,12,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link:oiref>=260,170,200,34,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node81:oiref>=392,1113,15,15,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node1.link:oiref>=144,101,144,179:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node91.link:oiref>=470,1490,470,1530:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node2:oiref>=56,320,167,40,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node96.link:oiref>=465,1633,465,1654:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node42.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node91.link:oiref>=470,1490,470,1530:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node1.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node31.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node27:oiref>=510,390,131,54,0:oigroup>
@@ -134,20 +144,18 @@ class __options {
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node:oiref>=480,30,181,670,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node39.link:oiref>=:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node50:oiref>=130,320,15,15,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node39.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node29.link36:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19.node:oiref>=732,201,236,23,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12:oiref>=110,260,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node27.link:oiref>=510,424,151,424:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node78.link:oiref>=480,1033,480,1110:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node85.link88:oiref>=493,1363,493,1411:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node93.node:oiref>=748,1498,140,23,1:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node79:oiref>=450,1110,60,20,1:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link:oiref>=223,201,732,211:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node9.link:oiref>=223,210,732,211:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node93:oiref>=730,1460,190,148,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node19:oiref>=730,30,220,1380,0:oigroup>
-<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node48:oiref>=990,30,180,350,0:oigroup>
+<oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node48:oiref>=990,30,250,350,0:oigroup>
 <oigroup:<oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node74.link:oiref>=169,951,390,951:oigroup>
 
 
@@ -191,7 +199,7 @@ class link {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call to Community 
+@name Call to Community (*C)
 */
 class node9 {
 /**
@@ -205,12 +213,13 @@ class link {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node12:oiref><oihard> 
+@sendClause Community Service Found?
 */
 class link14 {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call Registry 
+@name Call Registry (*R)
 */
 class node37 {
 /**
@@ -224,15 +233,10 @@ class link {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node17:oiref><oihard> 
+@sendClause Myspace endpoing found?
 */
 class link37 {
 }}/**
-@shapeType EndState
-@__modelType node
-@name EndState2 
-*/
-class node50 {
-}/**
 @shapeType Decision
 @__modelType node
 @name Decision2 
@@ -241,28 +245,17 @@ class node12 {
 /**
 @shapeType TransitionLink
 @__modelType link
-@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26:oiref><oihard> 
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node2:oiref><oihard>
+@sendClause yes 
 */
 class link {
 }/**
 @shapeType TransitionLink
 @__modelType link
-@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node50:oiref><oihard>
-@eventArguments No service found 
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node3:oiref><oihard>
+@sendClause No 
 */
-class link13 {
-}}/**
-@shapeType Activity
-@__modelType node
-@name Return Myspace identifier
-*/
-class node31 {
-/**
-@shapeType TransitionLink
-@__modelType link
-@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37:oiref><oihard> 
-*/
-class link {
+class link4 {
 }}/**
 @shapeType Decision
 @__modelType node
@@ -272,16 +265,16 @@ class node29 {
 /**
 @shapeType TransitionLink
 @__modelType link
-@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node31:oiref><oihard> 
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node37:oiref><oihard>
+@sendClause yes 
 */
-class link36 {
+class link {
 }/**
 @shapeType TransitionLink
 @__modelType link
-@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node50:oiref><oihard>
-@eventArguments No Myspace ident 
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node3:oiref><oihard> 
 */
-class link {
+class link6 {
 }}/**
 @shapeType Decision
 @__modelType node
@@ -292,7 +285,7 @@ class node17 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref><oihard>
-@sendClause No Myspace entry found 
+@sendClause no
 */
 class link {
 }/**
@@ -304,7 +297,7 @@ class link75 {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call Myspace 
+@name Call Myspace
 */
 class node74 {
 /**
@@ -331,7 +324,32 @@ class node98 {
 @__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node47:oiref><oihard> 
 */
 class link {
-}}}/**
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call Community Service (*C)
+*/
+class node2 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node.node26:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29:oiref><oihard>
+@sendClause Find Myspace Identifier? 
+*/
+class link5 {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState2 
+*/
+class node3 {
+}}/**
 @shapeType SwimLane
 @__modelType node
 @name Community
@@ -356,13 +374,7 @@ class link {
 @name Ask Users Myspace Identifier 
 */
 class node27 {
-/**
-@shapeType TransitionLink
-@__modelType link
-@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node16.node29:oiref><oihard> 
-*/
-class link {
-}}}/**
+}}/**
 @shapeType SwimLane
 @__modelType node
 @name Registry
@@ -395,6 +407,8 @@ class node86 {
 will be instaled with Myspace, but the delegates will try
 to look things up in a config (local cache) if their is no actual
 web service installed.
+(*R) - In Registry Delegate
+(*C) - in Community Delegate
 */
 class node48 {
 }/**
@@ -498,7 +512,7 @@ class link90 {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call Registry 
+@name Call Registry (*R)
 */
 class node85 {
 /**
@@ -562,6 +576,18 @@ class link97 {
 @name Update Metadata if needed 
 */
 class node96 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id4oieddr9kvksudr9kxa28.node76.node7:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState4 
+*/
+class node7 {
 }}/**
 @shapeType SwimLane
 @__modelType node

@@ -100,6 +100,11 @@ class reference72 {
 @__modelType reference 
 */
 class reference76 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node20:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
 }}/**
 
 @__tags
@@ -117,7 +122,9 @@ class __options {
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node46.link64:oiref>=315,803,830,768:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node54.link:oiref>=323,1077,174,17,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link:oiref>=280,436,34,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65.link70:oiref>=570,436,32,17,1:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node68:oiref>=500,490,228,37,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node20.link:oiref>=616,340,285,380:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node56.link:oiref>=283,1120,150,1120,150,870,240,870:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node48.link:oiref>=300,883,300,960:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node69.link:oiref>=:oigroup>
@@ -136,7 +143,7 @@ class __options {
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75.link77:oiref>=570,600,29,17,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65.link:oiref>=849,585,29,17,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node36.link:oiref>=280,342,189,17,1:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node44.link:oiref>=295,759,126,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node44.link:oiref>=295,759,133,17,1:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75.link:oiref>=290,600,290,630:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node83.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node75.link:oiref>=:oigroup>
@@ -148,6 +155,7 @@ class __options {
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node36.link:oiref>=270,323,270,380:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node56.link63:oiref>=310,1130,310,1160,830,1160,838,775:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node20:oiref>=480,300,272,40,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.link:oiref>=310,1001,34,17,1:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65.link:oiref>=590,390,840,390,838,760:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node78.link:oiref>=:oigroup>
@@ -179,12 +187,12 @@ class __options {
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node32:oiref>=250,150,12,12,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node48.link:oiref>=310,904,200,34,1:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node58.link:oiref>=630,983,630,1120,343,1120:oigroup>
-<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node87.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node79.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node87.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node82.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node66.link:oiref>=:oigroup>
 <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75.link77:oiref>=320,590,630,590,834,760:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link67:oiref>=323,400,183,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link67:oiref>=323,400,200,34,1:oigroup>
 
 
 
@@ -297,7 +305,7 @@ class link {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node65:oiref><oihard>
-@sendClause Is it a Registry Resource entry? 
+@sendClause No;Is it a Registry Resource entry?
 */
 class link67 {
 }}/**
@@ -335,7 +343,7 @@ class node44 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node46:oiref><oihard>
-@sendClause Is the metadata valid 
+@sendClause Is the metadata valid?
 */
 class link {
 }}/**
@@ -367,7 +375,7 @@ class node48 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node50:oiref><oihard>
-@sendClause Entries AuthorityID is managed by some registry? 
+@sendClause The entries AuthorityID is managed by some registry?
 */
 class link {
 }}/**
@@ -457,6 +465,7 @@ class link {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node68:oiref><oihard> 
+@sendClause yes
 */
 class link70 {
 }}/**
@@ -477,9 +486,9 @@ class link {
 @name Note2
 @text Other web service methods for harvesting: shown above is harvestResource which takes in a Resource entry.  Usually a Registry or Service entry.
 1.) harvestFromResource - same as harvestResource (shown above), but allows you to specify a date for Registry Resource entries only.
-2.) harvestFrom - return the results for this registry of all metadata that has been added/changed since a particular date. And the metadata has an AuthorityID this registry manages.
+2.) harvestFrom - return the results for this registry of all metadata that has been added/changed since a particular date (can take a null see harvest #3). And the metadata has an AuthorityID this registry manages.
 3.) harvest - return all metadata that is in this registry and has an AuthorityID that this registry manages.
-4.) harvestAll - supposed to be internal use only, but can be done by client.  Kicks off a harvest for all metadata it is capabile of harvesting.  Services or Registry. 
+4.) harvestAll - supposed to be internal use only, but can be done by client currently.  Kicks off a harvest for all metadata it is capabile of harvesting.  Services or Registry.
 */
 class node71 {
 }/**
@@ -501,4 +510,17 @@ class link {
 @sendClause No 
 */
 class link77 {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text We could potentially take this decision away. 
+*/
+class node20 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node38:oiref><oihard> 
+*/
+class link {
 }}

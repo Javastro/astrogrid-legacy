@@ -384,7 +384,7 @@ class node36 {
 @shapeType Note
 @__modelType node
 @name Note1
-@text A string containing of where to place the results will be passed in known as a AGSL.  It may also have ivo identifiers to be used for calling the registry for an endpoint.  Usually for myspace. Please notice "Delegate" this is located on the same system as the DataCenter In Itn05 no ivo idents will be present except for the location of the myspace mgr.
+@text A string containing of where to place the results will be passed in known as a AGSL.  It may also have ivo identifiers to be used for calling the registry for an endpoint.  Usually for myspace. Please notice "Delegate" this is located on the same system as the DataCenter In Itn05 no ivo idents will be present except possibly the location of the myspace mgr.
 */
 class node19 {
 /**

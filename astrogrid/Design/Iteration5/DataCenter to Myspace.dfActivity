@@ -30,6 +30,11 @@ class reference54 {
 @__modelType reference 
 */
 class reference69 {
+}/**
+@__ref <oiref:design#Class#id3aspwdraleup4dramh4ke.node22:oiref><oihard>
+@__modelType reference 
+*/
+class reference23 {
 }}/**
 
 @__tags
@@ -42,58 +47,61 @@ class __tags {
 class __options {
 }/**
 @__positions <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node72.link:oiref>=770,658,115,658:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57.link:oiref>=845,340,800,340,800,380:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57.link:oiref>=900,340,800,340,800,380:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node40.link:oiref>=100,127,100,170:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node41.link:oiref>=120,207,139,17,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node65:oiref>=820,440,140,6,0:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57.link:oiref>=805,350,34,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57.link:oiref>=833,350,34,17,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node70:oiref>=810,560,129,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node43.link:oiref>=80,490,30,490,30,660,100,658:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node44.node:oiref>=480,110,195,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node:oiref>=760,100,222,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node68.node71:oiref>=1130,160,228,23,1:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node46.link:oiref>=176,370,390,370,390,120,480,120:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node62.link:oiref>=120,452,166,17,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node46.link:oiref>=201,370,390,370,390,120,480,120:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node62.link:oiref>=120,452,173,17,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node58.link66:oiref>=838,403,838,440:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node72:oiref>=770,632,228,37,1:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node56.link:oiref>=875,283,875,330:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node56.link:oiref>=930,283,930,330:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node:oiref>=10,60,330,540,0:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node65.link:oiref>=870,446,870,500:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node56.link:oiref>=885,297,185,17,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node22:oiref>=10,700,163,42,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node56.link:oiref>=940,297,185,17,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node44:oiref>=450,40,227,380,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node40:oiref>=94,115,12,12,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node68.node:oiref>=1130,90,137,23,1:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node42.link:oiref>=140,250,270,250,170,437:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node62:oiref>=57,437,179,6,0:oigroup>
-<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node65.link:oiref>=880,464,187,17,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node42.link:oiref>=140,250,270,250,270,437:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node62:oiref>=57,437,253,6,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node65.link:oiref>=880,464,194,17,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node51.link:oiref>=237,550,700,550,700,110,760,110:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node43.link:oiref>=40,621,29,17,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node70.link73:oiref>=874,583,874,632:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node43.link52:oiref>=110,500,110,540:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node41:oiref>=30,170,173,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node41:oiref>=30,170,198,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node70.link:oiref>=939,570,1050,570,1050,100,1130,100:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node42:oiref>=80,240,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node68:oiref>=1110,40,250,380,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node43.link52:oiref>=120,511,34,17,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node44.node59:oiref>=470,380,199,23,1:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node68.node.link:oiref>=1198,113,1198,160:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node55.link:oiref>=864,203,864,260:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node68.node.link:oiref>=1198,113,1198,160:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node43:oiref>=80,480,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node55:oiref>=780,180,168,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node60:oiref>=840,500,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node58.link:oiref>=770,391,669,391:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57.link67:oiref>=875,350,875,440:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57.link67:oiref>=930,350,930,440:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node41.link:oiref>=110,193,110,240:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53:oiref>=750,40,250,650,0:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node56:oiref>=780,260,194,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node49:oiref>=100,650,15,15,1:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57:oiref>=845,330,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node57:oiref>=900,330,60,20,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node60.link:oiref>=870,520,870,560:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node46.link63:oiref>=105,383,105,437:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node46.link63:oiref>=135,383,135,437:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node.link:oiref>=864,123,864,180:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node58:oiref>=770,380,106,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node58:oiref>=770,380,131,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node42.link47:oiref>=80,250,40,250,40,370,70,370:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node46:oiref>=70,360,106,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node46:oiref>=70,360,131,23,1:oigroup>
 <oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node62.link:oiref>=110,443,110,480:oigroup>
-<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node51:oiref>=60,540,152,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node51:oiref>=60,540,177,23,1:oigroup>
 <oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3aspwdraleup4dramh4ke.node.node42.link47:oiref>=50,301,34,17,1:oigroup>
 */
 class __positions {
@@ -110,10 +118,16 @@ class node {
 @name StartState1 
 */
 class node40 {
-}/**
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3aspwdraleup4dramh4ke.node.node41:oiref><oihard> 
+*/
+class link {
+}}/**
 @shapeType Activity
 @__modelType node
-@name Myspace Delegate called 
+@name Myspace Delegate called (*M)
 */
 class node41 {
 /**
@@ -165,7 +179,7 @@ class link52 {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call Registry 
+@name Call Registry (*R)
 */
 class node46 {
 /**
@@ -183,10 +197,16 @@ class link63 {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call Myspace Service 
+@name Call Myspace Service (*M)
 */
 class node51 {
-}/**
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node:oiref><oihard> 
+*/
+class link {
+}}/**
 @shapeType SyncBar
 @__modelType node
 @name SyncBar1 
@@ -196,7 +216,7 @@ class node62 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id3aspwdraleup4dramh4ke.node.node43:oiref><oihard>
-@sendClause Is there a Myspace endpoint 
+@sendClause Is there a Myspace endpoint?
 */
 class link {
 }}}/**
@@ -291,7 +311,7 @@ class link67 {
 }}/**
 @shapeType Activity
 @__modelType node
-@name Call Registry 
+@name Call Registry (*R)
 */
 class node58 {
 /**
@@ -328,7 +348,7 @@ class node65 {
 @shapeType TransitionLink
 @__modelType link
 @__ref <oiref:design#Class#id3aspwdraleup4dramh4ke.node53.node60:oiref><oihard>
-@sendClause Is there a myspace svr endpoint 
+@sendClause Is there a myspace svr endpoint?
 */
 class link {
 }}/**
@@ -386,4 +406,12 @@ class link {
 @name Pull Data from Datacenter endpoint 
 */
 class node71 {
-}}
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text (*R) - Registry Delegate
+(*M) - Myspace Delegate 
+*/
+class node22 {
+}
