@@ -6,3 +6,4 @@ tests.log
 server-config.wsdd
 velocity.log
 mySpace.log
+junit*.properties
