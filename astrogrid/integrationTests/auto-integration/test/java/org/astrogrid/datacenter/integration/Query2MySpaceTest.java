@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.9 2004/05/24 12:00:49 jdt Exp $
+/*$Id: Query2MySpaceTest.java,v 1.10 2004/05/25 13:34:33 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,8 +54,8 @@ public class Query2MySpaceTest extends TestCase {
     * retreive from myspace, check they're what we expect
     */
    public void testSubmit() throws Exception {
-       fail("This is causing the integration tests to freeze");
-/* @TODO disabled by JDT
+      // fail("This is causing the integration tests to freeze");
+
       Agsl resultsTarget = new Agsl(new Msrl(StdKeys.MYSPACE), resultsPath);
 
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql05.xml");
@@ -68,18 +68,25 @@ public class Query2MySpaceTest extends TestCase {
       );
          
       String stat = delegate.getStatus(queryId);
-
+      TimeStamp timeout = new TimeStamp();
+      
       //wait until query finishes
       do {
          stat = delegate.getStatus(queryId);
-      } while (!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))); // need some extra timout here too
- 
+      }
+      while (!stat.equals(QueryState.FINISHED.toString()) && (!stat.equals(QueryState.ERROR.toString()))
+            && (timeout.getSecsSince()<60) ); // ..or timesout
+
+      if (timeout.getSecsSince()>=60) {
+         fail("query timed out");
+      }
+      
       //see if results are in expected myspace location
       StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), resultsTarget);
       StoreFile file = store.getFile(resultsTarget.getPath());
       
       Document resultDoc = DomHelper.newDocument(store.getStream(resultsTarget.getPath()));
-      assertNotNull("null result document",resultDoc);*/
+      assertNotNull("null result document",resultDoc);
    }
    
     /**
@@ -101,8 +108,12 @@ public class Query2MySpaceTest extends TestCase {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.10  2004/05/25 13:34:33  mch
+Fixed lack of timeout
+
 Revision 1.9  2004/05/24 12:00:49  jdt
 Disabled this test because it seems to be causing the whole suite
+
 to seize up.
 
 Revision 1.8  2004/05/24 11:56:06  jdt
