@@ -1,5 +1,5 @@
 /*
- $Id: Log.java,v 1.4 2003/09/11 17:53:54 mch Exp $
+ $Id: Log.java,v 1.5 2003/09/15 11:47:14 mch Exp $
  */
 
 package org.astrogrid.log;
@@ -9,6 +9,7 @@ import java.util.logging.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.Enumeration;
 
 /**
  * A covenience singleton, providing easy to use access to logging facilities,
@@ -224,10 +225,10 @@ public class Log
    public static void starting()
    {
       logger.setLevel(Level.FINEST); //make sure it's available
-      
+
       trace("Logging Started "+new Date()+"...");
    }
-   
+
    /** Direct output to file (as well)
     */
    public static void logToFile(String filename) throws IOException
@@ -244,7 +245,7 @@ public class Log
    {
       logger.addHandler(new StreamHandler(out, new SimpleFormatter()));
    }
-   
+
    /**
     * Direct output to stream (as well) in XML format
     */
@@ -254,28 +255,40 @@ public class Log
    }
 
    /**
-    * Direct output to console (as well)
+    * Direct output to console (as well).  This is a bit messy for the
+    * built-in logger, which has its own way of outputting to the console
+    * that we need to remove/change
     */
    public static void logToConsole() throws IOException
    {
-      //remove existing console handlers
-      Handler[] handlers = logger.getHandlers();
-      
-      for (int i=0;i<handlers.length;i++)
+      //remove all existing console handlers
+      Enumeration loggerIndex = LogManager.getLogManager().getLoggerNames();
+
+      while (loggerIndex.hasMoreElements())
       {
-         if (handlers[i] instanceof ConsoleHandler)
+         Logger aLogger = LogManager.getLogManager().getLogger((String) loggerIndex.nextElement());
+
+         //remove existing console handlers
+         Handler[] handlers = aLogger.getHandlers();
+
+         for (int i=0;i<handlers.length;i++)
          {
-            logger.removeHandler(handlers[i]);
+            if (handlers[i] instanceof ConsoleHandler)
+            {
+               aLogger.removeHandler(handlers[i]);
+            }
          }
       }
-      
+
+
+
       Handler handler = new ConsoleHandler();
       handler.setLevel(Level.FINEST);
       handler.setFilter(null);
       handler.setFormatter(new ConsoleFormatter());
       logger.addHandler(handler);
    }
-   
+
    /**
     * Returns implementation - this allows applications to do what they need
     * with the logger, while still letting 99% of the code do its stuff through
@@ -287,7 +300,7 @@ public class Log
    {
       return logger;
    }
-   
+
    /**
     * Test harness
     */
@@ -304,6 +317,9 @@ public class Log
 }
 /*
 $Log: Log.java,v $
+Revision 1.5  2003/09/15 11:47:14  mch
+Fixes to handle the built-in loggers hidden console output
+
 Revision 1.4  2003/09/11 17:53:54  mch
 Added logTo() methods and made sure trace can go to console
 

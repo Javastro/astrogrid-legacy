@@ -54,6 +54,10 @@ public class ConsoleFormatter extends Formatter
             msg = msg + "\n\n"+writer.toString();
          }
       }
+      else
+      {
+         msg = msg +"\n";
+      }
 
       return msg;
    }
@@ -63,6 +67,9 @@ public class ConsoleFormatter extends Formatter
 
 /*
 $Log: ConsoleFormatter.java,v $
+Revision 1.3  2003/09/15 11:47:14  mch
+Fixes to handle the built-in loggers hidden console output
+
 Revision 1.2  2003/09/14 22:34:02  mch
 Nicer warning messages
 
