@@ -504,10 +504,10 @@ public class Workflow extends Activity {
       **/           
     private Workflow() {
         super(null) ; // null because no parent 
-        if( TRACE_ENABLED ) trace( "Workflow() entry") ;
-        this.activities = Collections.synchronizedMap( new HashMap() ) ;   
-        this.activities.put( this.getKey(), this ) ;
-        if( TRACE_ENABLED ) trace( "Workflow() exit") ;
+        if( TRACE_ENABLED ) trace( "Workflow() entry/exit") ;
+//        this.activities = Collections.synchronizedMap( new HashMap() ) ;   
+//        this.activities.put( this.getKey(), this ) ;
+//        if( TRACE_ENABLED ) trace( "Workflow() exit") ;
     }
     
     

@@ -197,6 +197,25 @@ public abstract class Activity {
     }
     
     
+//   public int hashCode() {
+//        return this.getKey().hashCode() ;
+//    }
+    
+    
+    public boolean equals( Object o ) {
+        
+         boolean
+             retValue = false ;
+            
+         if( (o != null) && (o instanceof Activity) ){
+             retValue = ( o.hashCode() == this.hashCode() ) ;         
+         }
+        
+         return retValue ;
+        
+     }
+    
+    
     public abstract String toXMLString() ;
     public abstract String toJESXMLString() ;  
     

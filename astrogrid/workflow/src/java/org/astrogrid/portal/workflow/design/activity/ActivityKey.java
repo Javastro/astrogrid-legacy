@@ -68,11 +68,24 @@ public class ActivityKey {
     
     
     public String toString() {
-        return new Integer( key).toString() ; 
+        return new Integer( key ).toString() ; 
     }
     
     public int hashCode() {
         return key ;
+    }
+    
+    public boolean equals( Object o ) {
+        
+        boolean
+            retValue = false ;
+            
+        if( (o != null) && (o instanceof ActivityKey) ){
+             retValue = ( o.hashCode() == this.hashCode() ) ;         
+         }
+        
+        return retValue ;
+        
     }
     
     private static void trace( String traceString ) {
