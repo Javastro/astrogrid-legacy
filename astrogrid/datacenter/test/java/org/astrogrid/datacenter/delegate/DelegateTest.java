@@ -1,5 +1,5 @@
 /*
- * $Id: DelegateTest.java,v 1.2 2003/09/07 18:58:58 mch Exp $
+ * $Id: DelegateTest.java,v 1.3 2003/09/09 17:57:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,8 +23,8 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -35,7 +35,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
    /**
     * Creates a delegate, passes it a query and checks the return values
     */
-   public void testDelegates() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException
+   public void testBlockingQuery() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException
    {
       DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
 
@@ -48,7 +48,7 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
       //'submit' query to dummy service
       int count = delegate.adqlCountDatacenter(adqlQuery);
 
-      Element votable = delegate.adqlQueryDatacenter(adqlQuery);
+      Element votable = delegate.adqlQuery(adqlQuery);
 
       //check that some statuses are returned
       assertTrue("Status's not been returned", statusChangedList.size() != 0);
@@ -58,13 +58,46 @@ public class DelegateTest extends TestCase implements DatacenterStatusListener
 
    }
 
+   /**
+    * test spawning query
+    */
+   public void testSpawnQuery() throws ServiceException, MalformedURLException, SAXException, ParserConfigurationException, IOException, QueryException
+   {
+      DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
+
+      delegate.registerStatusListener(this);
+
+      //load test query file
+      URL url = getClass().getResource("testQuery.xml");
+      Element adqlQuery = XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
+
+      //start query
+      Element response = delegate.spawnAdqlQuery(adqlQuery);
+
+      //check status
+      String id = DocMessageHelper.getServiceId(response);
+      response = delegate.getResults(id);
+
+
+
+   }
+
+   /**
+    * test getting metadata
+    */
+   public void testMetadata() throws IOException, ServiceException, ParserConfigurationException, SAXException
+   {
+      DatacenterDelegate delegate = DatacenterDelegate.makeDelegate(null);
+
+      Element voRegistry = delegate.getRegistryMetadata();
+   }
+
    /** 'Callback' method called by Delegate when its status changes.  Stores
     * the status returned so that the tests above can examine them
     */
-   public void datacenterStatusChanged(ServiceStatus newStatus)
+   public void datacenterStatusChanged(String newStatus)
    {
       statusChangedList.add(newStatus);
-
    }
 
 
