@@ -41,10 +41,10 @@
        <Email>ael@star.le.ac.uk</Email>
       </Contact>
     </Curation>
+    <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
     <Interface>
       <Invocation>WebService</Invocation>
       <AccessURL use="full">@CENTRALREGISTRY@Query</AccessURL>
     </Interface>
-    <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
   </vr:Resource>
   </VODescription>

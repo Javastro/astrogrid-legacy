@@ -177,7 +177,6 @@
     </goal>
 
 
-	<!--
 	<preGoal name="java:compile">
 
 	     <mkdir dir="${basedir}/target/classes" />  
@@ -186,7 +185,6 @@
             </ant:fileset>
         </ant:copy>    
 	</preGoal>    
-	-->
 
 	
     

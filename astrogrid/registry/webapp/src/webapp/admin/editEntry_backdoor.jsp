@@ -24,7 +24,6 @@
 
 <%
    String resource = "";
-   
    Document resourceDoc = null;
    if(request.getParameter("IVORN") != null && request.getParameter("IVORN").trim().length() > 0) {
    	  RegistryQueryService server = new RegistryQueryService();

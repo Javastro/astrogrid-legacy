@@ -28,9 +28,6 @@
         +-->
     <goal name="info">
         <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Build dest directory : ${maven.build.dest}"/>
-        <ant:echo message="Build test dest directory : ${maven.test.dest}"/>
-        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>    	
         <ant:echo message="Build artifact  : ${pom.artifactId}"/>
         <ant:echo message="Build version   : ${pom.currentVersion}"/>
     </goal>
@@ -251,18 +248,6 @@
             | Initialise our paths.
             +-->
         <attainGoal name="init.paths"/>
-    	
-        <core:set var="commonJarIdent" value="${pom.groupId}:astrogrid-registry-common"/>
-        <core:forEach var="artifact" items="${pom.getArtifacts()}">
-            <core:if test="${artifact.getDependency().getId().equals(commonJarIdent)}">
-                <ant:echo message="Found registry common jar"/>
-                <ant:echo message="Name     : ${artifact.getName()}"/>
-                <ant:echo message="Path     : ${artifact.getPath()}"/>
-                <core:set var="commonJarPath" value="${artifact.getPath()}"/>
-            </core:if>
-        </core:forEach>
-    	
-    	
         <!--+
             | Locate our registry server jar.
             +-->
@@ -282,8 +267,7 @@
             src="${serverJarPath}"
             dest="${tempDir}">
             <patternset>
-                <include name="wsdd/*.wsdd"/>
-                <include name="xsl/*.xsl"/>            	
+                <include name="META-INF/wsdd/*.wsdd"/>
             </patternset>
         </ant:unzip>
         <ant:copy toDir="${wsddDir}" flatten="true">
@@ -291,26 +275,6 @@
                 <include name="**/*.wsdd"/>
             </fileset>
         </ant:copy>
-    	
-        <ant:copy verbose="false" todir="${axisDir}/WEB-INF/classes/xsl" overwrite="false">
-        	<fileset dir="${tempDir}/xsl">        
-            </fileset>
-        </ant:copy>
-
-    	
-        <ant:unzip
-            src="${commonJarPath}"
-            dest="${tempDir}">
-            <patternset>
-                <include name="schema/**"/>
-            </patternset>
-        </ant:unzip>
-
-        <ant:copy verbose="false" todir="${axisDir}" overwrite="false">
-        	<fileset dir="${tempDir}/schema">
-            </fileset>
-        </ant:copy>
-    	
 			
     	<!--
         <ant:mkdir dir="${axisDir}/WEB-INF/classes"/>
@@ -359,20 +323,5 @@
 	    </preGoal>		
 	    -->
     </postGoal>
-	
-    <preGoal name="test:test">
-        <ant:echo message=""/>
-        <ant:echo message="Artifact : ${pom.artifactId}"/>
-        <ant:echo message="Preparing services for tests"/>
-            <ant:echo message="Build test dest directory : ${maven.test.dest}"/>    	
-        <!--+
-            | Check the JUnit test settings.
-            +-->
-        <ant:echo message=""/>
-        <ant:echo message="JUnit fork VM - ${maven.junit.fork}"/>
-        <ant:echo message="JUnit test directory : ${maven.junit.dir}"/>
-        <ant:echo message="Maven classes directory : ${maven.junit.dir}"/>
-    </preGoal>
-	
 
 </project>

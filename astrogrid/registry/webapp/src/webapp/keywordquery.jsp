@@ -15,11 +15,6 @@
 <%
       RegistryQueryService server = new RegistryQueryService();
       ArrayList al = server.getAstrogridVersions();
-      String version = request.getParameter("version");
-	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryServerHelper.getDefaultVersionNumber();
-   	}
-            
 %>
 <html>
 <head>
@@ -46,9 +41,7 @@
 Version: 
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
+      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
    <%}%>
 </select>
 <br />
@@ -63,6 +56,7 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
   boolean doQuery = false;
   String keywords = null;
   boolean orValue = false;
+  String version = request.getParameter("version");
   if(request.getParameter("keywordquery") != null && request.getParameter("keywordquery").trim().equals("true")) {
    if(request.getParameter("keywords") != null && request.getParameter("keywords").trim().length() > 0) {
       keywords = request.getParameter("keywords");
@@ -124,7 +118,7 @@ Search for "any" of the words: <input type="checkbox" name="orValues" value="tru
                ivoStr += "/" + resource;
          }//if
 
-         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">View</a></td>\n");
+         out.write("<td><a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">View</a></td>\n");
          
          out.write("</tr>\n");
          

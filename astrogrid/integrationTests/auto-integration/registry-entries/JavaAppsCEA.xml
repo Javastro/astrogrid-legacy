@@ -127,7 +127,8 @@
   </Resource>
   <Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType"
   xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
-  xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+  xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+  >
   <vr:Identifier>
         <AuthorityID>@REGAUTHORITY@</AuthorityID>
     <vr:ResourceKey>siap-image-fetch</vr:ResourceKey>

@@ -1,4 +1,4 @@
-/*$Id: HarvestRegistryTest.java,v 1.4 2005/02/15 12:43:24 clq2 Exp $
+/*$Id: HarvestRegistryTest.java,v 1.5 2005/02/18 12:09:31 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,34 +44,34 @@ public class HarvestRegistryTest extends AbstractTestForRegistry {
     public void testIdentify() throws RegistryException
     {
        //HashMap auth = delegate.managedAuthorities();
-       Document result = rsOAI.identify();
+       Document result = rs.identify();
        DomHelper.DocumentToStream(result,System.out);
     }
     
     public void testListRecords() throws RegistryException {
-    	Document result = rsOAI.listRecords();
+    	Document result = rs.listRecords();
       DomHelper.DocumentToStream(result,System.out);
     }
     
    public void testListRecordsWithDate() throws RegistryException {
         Calendar fromCal = Calendar.getInstance();
         fromCal.set(2001,5,9);
-        Document result = rsOAI.listRecords(fromCal.getTime());
+        Document result = rs.listRecords(fromCal.getTime());
         DomHelper.DocumentToStream(result,System.out);
    }
    
    public void testGetRecord() throws RegistryException {
-       Document result = rsOAI.getRecord("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
+       Document result = rs.getRecord("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
        DomHelper.DocumentToStream(result,System.out);
    }
    
    public void testListMetadataFormats() throws RegistryException {
-       Document result = rsOAI.listMetadataFormats("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
+       Document result = rs.listMetadataFormats("ivo_vor://org.astrogrid.localhost/org.astrogrid.registry.RegistryService");
        DomHelper.DocumentToStream(result,System.out);
    }
    
    public void testListIdentifiers() throws RegistryException {
-       Document result = rsOAI.listIdentifiers();
+       Document result = rs.listIdentifiers();
        DomHelper.DocumentToStream(result,System.out);
    }
    

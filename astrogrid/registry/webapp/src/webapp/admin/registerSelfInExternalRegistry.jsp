@@ -12,10 +12,6 @@
 <%
       RegistryQueryService server = new RegistryQueryService();
       ArrayList al = server.getAstrogridVersions();
-      String version = request.getParameter("version");
-	   if(version == null || version.trim().length() <= 0) {
-   		version = RegistryServerHelper.getDefaultVersionNumber();
-   	}            
 %>
 
 <html>
@@ -41,9 +37,7 @@ machine <span style="font-style: italic;">hydra</span>.<br>
 <input type="hidden" name="postrequest" value="true" />
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
+      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
    <%}%>
 </select>
 <p><input name="postregsubmit" value="Set up harvesting by hydra" type="submit"></p>

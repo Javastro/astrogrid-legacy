@@ -39,12 +39,12 @@
 <p>
 Here you can update the resources in various ways. If the Resources are already there then it will be updated, This page also can handle multiple versions of the registry to be updated:
 <%
-if(SimpleConfig.getSingleton().getBoolean("reg.amend.validate",false)) {
+if(SimpleConfig.getSingleton().getBoolean("registry.validate.onupdates",false)) {
 %>
 <br />
 <font color="blue">Validation is already turned on for server side updates.</font><br />
 <%
-   if(SimpleConfig.getSingleton().getBoolean("reg.amend.quiton.invalid",false)) {
+   if(SimpleConfig.getSingleton().getBoolean("registry.quiton.invalid",false)) {
 %>
       <font color="blue">It is also set to Quit on invalid updates.</font>
 <%}else {%>

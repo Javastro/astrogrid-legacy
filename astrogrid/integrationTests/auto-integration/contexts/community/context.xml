@@ -1,4 +1,4 @@
-<Context path="/astrogrid-community-@VERSION@">
+<Context path="/astrogrid-community-SNAPSHOT">
 
     <Environment
         description="Community identifier"

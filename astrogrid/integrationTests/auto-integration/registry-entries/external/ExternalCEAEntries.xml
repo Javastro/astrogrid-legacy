@@ -367,7 +367,7 @@
         </vr:Resource>
 <vr:Resource xsi:type="CeaApplicationType"  updated="2004-11-20T15:34:22Z" status="active">
                 <vr:Identifier>
-                        <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                        <vr:AuthorityID>astrogrid.org</vr:AuthorityID>
                         <vr:ResourceKey>sec_dsa</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>CEA entry for the Solar Event Catalog</vr:Title>
@@ -424,7 +424,7 @@
         </vr:Resource>
   <vr:Resource xsi:type="CeaServiceType"  updated="2004-11-20T15:34:22Z" status="active">
                 <vr:Identifier>
-                        <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                        <vr:AuthorityID>astrogrid.org</vr:AuthorityID>
                         <vr:ResourceKey>sec_dsaservice</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>

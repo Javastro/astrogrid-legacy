@@ -9,7 +9,15 @@
 <deployment
     xmlns="http://xml.apache.org/axis/wsdd/"
     xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
-    
+
+  <!-- Services from RegistryInterfaceService WSDL service -->
+
+  	<service name="Registry" style="message">
+    	<parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.registry"/>
+      	<parameter name="className" value="org.astrogrid.registry.server.query.RegistryService"/>
+      	<parameter name="allowedMethods" value="submitQuery loadRegistry"/>
+  	</service>
+
 	<service name="RegistryQuery" provider="java:MSG" style="message" use="literal">
 		<parameter name="allowedMethods" value="*"/>
 		<parameter name="wsdlPortType" value="QueryRegistryPortType"/>
@@ -19,15 +27,27 @@
 		<parameter name="wsdlServiceElement" value="QueryRegistryService"/>  
 		<wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
 	</service>
+	
+ <service name="RegistrySearch" provider="java:MSG" style="message" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlPortType" value="RegistrySearchPortType"/>
+  <parameter name="className" value="org.astrogrid.registry.server.query.RegistryQueryService"/>
+  <parameter name="wsdlServicePort" value="RegistrySearchPort"/>
+  <parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
+  <parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
+  <wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
+ </service>
  
-	<service name="RegistryHarvest" provider="java:MSG" style="message" use="literal">
-  		<parameter name="allowedMethods" value="*"/>
-  		<parameter name="wsdlPortType" value="RegistryHarvestPortType"/>
-  		<parameter name="className" value="org.astrogrid.registry.server.query.OAIService"/>
-  		<parameter name="wsdlServicePort" value="RegistryHarvestPort"/>
-  		<parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
-	  	<parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
-  		<wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
-	</service>
+ <service name="RegistryHarvest" provider="java:MSG" style="message" use="literal">
+  <parameter name="allowedMethods" value="*"/>
+  <parameter name="wsdlPortType" value="RegistryHarvestPortType"/>
+  <parameter name="className" value="org.astrogrid.registry.server.query.RegistryQueryService"/>
+  <parameter name="wsdlServicePort" value="RegistryHarvestPort"/>
+  <parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
+  <parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
+  <wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
+ </service>
+
+	
   
 </deployment>

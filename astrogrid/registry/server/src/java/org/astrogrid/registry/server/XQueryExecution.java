@@ -53,7 +53,7 @@ public class XQueryExecution
     * @param query XML document object representing the query language used.
     * @return Xquery string representation.
     */   
-   public static String createXQL (Document query, String versionNumber) {
+   public static String createXQL (Document query) {
 
    /**
     * First build a DOM tree out of the XML query.  
@@ -90,10 +90,7 @@ public class XQueryExecution
           * the xmlToXQL method.
           */
 
-            if(versionNumber.equals("0.10"))
-                xml_to_xql = " //vor:Resource[" + xmlToXQL(ssList.item(0)) + "]";
-            else
-                xml_to_xql = " //vr:Resource[" + xmlToXQL(ssList.item(0)) + "]";
+            xml_to_xql = " //vr:Resource[" + xmlToXQL(ssList.item(0)) + "]";
             return xml_to_xql;
          }
          else {

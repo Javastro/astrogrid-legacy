@@ -14,20 +14,17 @@
    </xs:annotation>
 
    <xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.10"
-              schemaLocation="/schema/registry/VOResource-v0.10.xsd"/>
+              schemaLocation="VOResource-v0.10.xsd"/>
    <xs:import namespace="http://www.ivoa.net/xml/VORegistry/v0.3" 
-              schemaLocation="/schema/registry/VORegistry-v0.3.xsd"  />
-   <xs:import schemaLocation="/schema/registry/VODataService-v0.5.xsd" 
+              schemaLocation="VORegistry-v0.3.xsd"  />
+   <xs:import schemaLocation="VODataService-v0.5.xsd" 
               namespace="http://www.ivoa.net/xml/VODataService/v0.5"  />
    <xs:import namespace="http://www.ivoa.net/xml/ConeSearch/v0.3" 
-              schemaLocation="/schema/registry/ConeSearch-v0.3.xsd"  />
+              schemaLocation="ConeSearch-v0.3.xsd"  />
    <xs:import namespace="http://www.ivoa.net/xml/SIA/v0.7" 
-              schemaLocation="/schema/registry/SIA-v0.7.xsd"  />
+              schemaLocation="SIA-v0.7.xsd"  />
    <xs:import namespace="http://www.ivoa.net/xml/VODataService/v0.5" 
-              schemaLocation="/schema/registry/VODataService-v0.5.xsd"  />
-   <xs:import namespace="http://www.ivoa.net/xml/CEAService/v0.2" 
-              schemaLocation="/schema/cea/VOCEA-v0.2.xsd"  />
-              
+              schemaLocation="VODataService-v0.5.xsd"  />
 
    <xs:element name="VOResources">
       <xs:complexType>

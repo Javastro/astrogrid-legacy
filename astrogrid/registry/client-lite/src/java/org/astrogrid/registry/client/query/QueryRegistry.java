@@ -300,6 +300,262 @@ public class QueryRegistry implements RegistryService {
    }
    
    /**
+    * Identify - Queryies based on OAI-Identify verb, identifying the repository.
+    * @return XML DOM of an OAI-PMH for the Identify. 
+    */   
+   public Document identify() throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         logger.info("identify() - creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "Identify");
+         doc.appendChild(root);
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+         return callService(doc,"Identify","Identify");
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+   }
+   
+
+   /**
+    * ListRecords - OAI ListRecords query, the Registry server will default the
+    * metadataPrefix to ivo_vor. 
+    * @return XML DOM of an OAI-PMH for the ListRecords. 
+    */
+   public Document listRecords() throws RegistryException {
+   	return listRecords(null,null,null);
+   }
+   
+   /**
+    * ListRecords - OAI ListRecords query based on a fromDate, the recods
+    * changed from that date The Registry server will default the
+    * metadataPrefix to ivo_vor
+    * @param fromDate - A from date for returning Resources from a date till now. 
+    * @return XML DOM of an OAI-PMH for the ListRecords. 
+    */
+   public Document listRecords(Date fromDate) throws RegistryException {
+   	return listRecords(null,fromDate,null);    
+   }
+   
+   /**
+    * ListRecords - OAI ListRecords query. This will be the most used OAI verb for harvesting.
+    * @param metadataPrefix - oai metadataPrefix string normally ivo_vor or oai_dc. 
+    * A null will let the Registry server default it to ivo_vor. 
+    * @param fromDate - A from date for returning Resources from a date till now. 
+    * @param untilDate - Returning resources from the beginning till a date. 
+    * @return XML DOM of an OAI-PMH for the ListRecords. 
+    */
+   public Document listRecords(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+          
+         logger
+               .info("listRecords(String, Date, Date) - creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "ListRecords");
+         doc.appendChild(root);
+         Element temp = null;
+         //Create the other xml elements in the soap body if they are present
+         if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
+         	temp = doc.createElement("metadataPrefix");
+            temp.appendChild(doc.createTextNode(metadataPrefix));
+            root.appendChild(temp);    
+         }         
+         if(fromDate != null) {
+            temp = doc.createElement("from");
+            temp.appendChild(doc.createTextNode(sdf.format(fromDate)));
+            root.appendChild(temp);
+         }
+         if(untilDate != null) {
+            temp = doc.createElement("until");
+            temp.appendChild(doc.createTextNode(sdf.format(untilDate)));
+            root.appendChild(temp);            
+         }
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+          return callService(doc,"ListRecords","ListRecords");
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+   }
+   
+   /**
+    * ListMetadataFormats - OAI ListMetadtaFormats verb call.  With an optional
+    * identifier string to list the metadata formats for a particular id.
+    * @return XML DOM of an OAI-PMH for the ListMetadataFormats. 
+    */
+   public Document listMetadataFormats(String identifier) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+          
+         logger
+              .info("listMetadataFormats(String) - creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "ListMetadataFormats");
+         doc.appendChild(root);
+         if(identifier != null || identifier.trim().length() > 0) {          
+             Element temp = doc.createElement("identifier");
+             temp.appendChild(doc.createTextNode(identifier));
+             root.appendChild(temp);
+         }
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+          return callService(doc,"ListMetadataFormats","ListMetadataFormats");
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+   }
+   
+   /**
+    * OAI - Get a specific record from OAI given an identifier. 
+    * Defaults the metadataPrefix to ivo_vor.
+    * @param identifier for a particular record ex: ivo_vor://astrogrid.org/Registry
+    * 
+    * @return XML DOM of an OAI-PMH for the GetRecord. 
+    */
+   public Document getRecord(String identifier) throws RegistryException {
+   	return getRecord(identifier,null);
+   }
+   
+   /**
+    * OAI - Get a specefic record for an identifier and metadataprefix
+    * @param identifier for a particular record ex: ivo_vor://astrogrid.org/Registry
+    * @param metadataPrefix is the oai prefix/id to be used, currently only ivo_vor and oai_dc. 
+    * @return XML DOM of an OAI-PMH for the GetRecord. 
+    */
+   public Document getRecord(String identifier, String metadataPrefix) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         logger
+              .info("getRecord(String, String) - creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "GetRecord");
+         doc.appendChild(root);
+         Element temp = null;
+         if(identifier == null || identifier.trim().length() <= 0) 
+            throw new RegistryException("Error From Client: No identifier found for calling GetRecord");
+         
+         temp = doc.createElement("identifier");
+         temp.appendChild(doc.createTextNode(identifier));
+         root.appendChild(temp);    
+
+         if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
+            temp = doc.createElement("metadataPrefix");
+            temp.appendChild(doc.createTextNode(metadataPrefix));
+            root.appendChild(temp);    
+         }         
+ 
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+          return callService(doc,"GetRecord","GetRecord");
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+   }
+   
+   /**
+    * OAI - ListIdentifiers call, similiar to ListRecords but only returns
+    * the identifiers (unique ids) for the records. Defaults the metadataPrefix to
+    * ivo_vor.
+    * 
+    * @return XML DOM of an OAI-PMH for the ListIdentifiers. 
+    */
+   public Document listIdentifiers() throws RegistryException {
+   	return listIdentifiers(null,null,null);
+   }
+   
+   /**
+    * OAI - ListIdentifiers call, similiar to ListRecords but only returns
+    * the identifiers (unique ids) for the records. Defaults the metadataPrefix to
+    * ivo_vor.
+    * @param metadataPrefix the oai prefix; normally ivo_vor.  Also available is oai_dc.
+    * @param fromDate - A from date for returning Resources from a date till now. 
+    * @param untilDate - Returning resources from the beginning till a date.
+    * @return XML DOM of an OAI-PMH for the ListIdentifiers. 
+    */
+   public Document listIdentifiers(String metadataPrefix, Date fromDate, Date untilDate) throws RegistryException {
+      Document doc = null;
+      Document resultDoc = null;
+
+      try {
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+          
+         logger
+              .info("listIdentifiers(String, Date, Date) - creating full soap element.");
+         doc = DomHelper.newDocument();
+         Element root = doc.createElementNS(NAMESPACE_URI, "ListIdentifiers");
+         doc.appendChild(root);
+         Element temp = null;
+         if(metadataPrefix != null && metadataPrefix.trim().length() > 0) {
+            temp = doc.createElement("metadataPrefix");
+            temp.appendChild(doc.createTextNode(metadataPrefix));
+            root.appendChild(temp);    
+         }         
+         if(fromDate != null) {
+            temp = doc.createElement("from");
+            temp.appendChild(doc.createTextNode(sdf.format(fromDate)));
+            root.appendChild(temp);
+         }
+         if(untilDate != null) {
+            temp = doc.createElement("until");
+            temp.appendChild(doc.createTextNode(sdf.format(untilDate)));
+            root.appendChild(temp);            
+         }
+      } catch (ParserConfigurationException pce) {
+         throw new RegistryException(pce);
+      }
+      
+      try {
+          return callService(doc,"ListIdentifiers","ListIdentifiers");
+      } catch (RemoteException re) {
+         throw new RegistryException(re);
+      } catch (ServiceException se) {
+         throw new RegistryException(se);
+      } catch (Exception e) {
+         throw new RegistryException(e);
+      }
+   }   
+
+   /**
     * Old style xml in string form to perform a query. To be deprecated soon, but currently
     * other astrogrid components use this method.  Created before the standard of ADQL.
     * @param the xml string version of the old style astrogrid query language
@@ -334,8 +590,6 @@ public class QueryRegistry implements RegistryService {
          logger.info("submitQuery(Document) - creating full soap element.");
          doc = DomHelper.newDocument();
          Element root = doc.createElementNS(NAMESPACE_URI, "submitQuery");
-         String value = "http://www.ivoa.net/xml/VOResource/v" + reg_default_version;
-         root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);         
          doc.appendChild(root);
          Node nd = doc.importNode(query.getDocumentElement(), true);
          root.appendChild(nd);
@@ -441,7 +695,7 @@ public class QueryRegistry implements RegistryService {
       if (ident == null) {
          throw new RegistryException("Cannot call this method with a null ivorn identifier");
       }
-      return getResourceByIdentifier(ident.toRegistryString());
+      return getResourceByIdentifier(ident.getPath());
    }
    
    /**
@@ -455,12 +709,7 @@ public class QueryRegistry implements RegistryService {
    public Document getResourceByIdentifier(String ident)   
       throws RegistryException {    
        Document doc = null;
-       Document resultDoc = null;
-       
-       if(!Ivorn.isIvorn(ident)) {
-           //hmmm okay old code lets put a small hack for and put  a ivo:// in front
-           ident = "ivo://" + ident;
-       }
+       Document resultDoc = null;     
        
        logger
        .info("getResourceByIdentifier(String) - entered getResourceByIdentifierDOM");
@@ -634,7 +883,7 @@ public class QueryRegistry implements RegistryService {
     */
    public String getEndPointByIdentifier(Ivorn ident)
       throws RegistryException {
-      return getEndPointByIdentifier(ident.toRegistryString());
+      return getEndPointByIdentifier(ident.getPath());
    }
 
    /**

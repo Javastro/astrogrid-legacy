@@ -29,12 +29,6 @@
    RegistryQueryService server = new RegistryQueryService();
    ArrayList al = server.getAstrogridVersions();
 
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-   	version = RegistryServerHelper.getDefaultVersionNumber();
-   }
-
-
    long offset = 0;
    String off = request.getParameter("Index");
    if (off != null) {
@@ -68,9 +62,7 @@
 Version: 
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>  
+      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
    <%}%>
 </select>
 <br/>
@@ -84,9 +76,7 @@ Find IVORNs including: <input name="IvornPart" type="text" value='<%= ivornpart 
 Browse for another version
 <select name="version">
    <% for(int k = (al.size()-1);k >= 0;k--) { %>
-      <option value="<%=al.get(k)%>"
-        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
-      ><%=al.get(k)%></option>
+      <option value="<%=al.get(k)%>"><%out.print(((String)al.get(k)).replaceAll("_","."));%></option>  
    <%}%>
 </select>
 <input type="submit" name="button" value='List'/>
@@ -107,7 +97,11 @@ Browse for another version
    //out.write("*"+ivornpart+"*:<br/");
    
    Document entries = null;
-//   System.out.println("version in browse.jsp=" + version);
+   String version = request.getParameter("version");
+   if(version == null || version.trim().length() <= 0) {
+   	version = RegistryServerHelper.getDefaultVersionNumber();
+   }
+   System.out.println("version in browse.jsp=" + version);
    
    if ( (ivornpart != null) && (ivornpart.trim().length() > 0) ) {
    		 entries = server.getResourcesByAnyIdentifier(ivornpart,version);
@@ -128,9 +122,11 @@ Browse for another version
 
       for (int n=0;n<resources.getLength();n++) {
          Element resourceElement = (Element) resources.item(n);
-	     	boolean deleted = false; 
-	     	if(resourceElement.getAttribute("status") != null)
-		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");         
+
+	     boolean deleted = false; 
+	     if(resourceElement.getAttribute("status") != null)
+		  	deleted = resourceElement.getAttribute("status").toLowerCase().equals("deleted");
+         
          String bgColour = "#FFFFFF";
          String fgColour = "#000000";
          
@@ -143,17 +139,21 @@ Browse for another version
          
          out.write("<tr bgcolor='"+bgColour+"'>\n");
 
-			if("0.9".equals(version)) {
-				out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
+			if("0_10".equals(version)) {         
+	         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "title")+endFG+"</td>");
 	      }else {
-  	         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "title")+endFG+"</td>");	         
+	         out.write("<td>"+setFG+DomHelper.getValue(resourceElement, "Title")+endFG+"</td>");
 	      }
          
          //type
          out.write("<td>"+setFG+resourceElement.getAttribute("xsi:type")+endFG+"</td>");
+
+            
             //authr
-				String authority = RegistryServerHelper.getAuthorityID(resourceElement);
-				String resource = RegistryServerHelper.getResourceKey(resourceElement);
+//            Element resource = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","ResourceKey").item(0);
+//            Element authority = (Element) ((Element) identifiers.item(0)).getElementsByTagNameNS("*","AuthorityID").item(0);
+			String authority = RegistryServerHelper.getAuthorityID(resourceElement);
+			String resource = RegistryServerHelper.getResourceKey(resourceElement);
    
             String ivoStr = null;
             if (authority == null || authority.trim().length() <= 0) {
@@ -175,7 +175,7 @@ Browse for another version
             
             out.write("<td>");
    
-            out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN=ivo://"+ivoStr+">XML</a>,  ");
+            out.write("<a href=viewResourceEntry.jsp?version="+version+"&IVORN="+ivoStr+">XML</a>,  ");
 
             out.write("<a href=editEntry.jsp?version="+version+"&IVORN="+ivoStr+">Edit</a>");
 

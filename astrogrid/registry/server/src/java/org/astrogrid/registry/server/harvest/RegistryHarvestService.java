@@ -49,15 +49,7 @@ import org.astrogrid.registry.common.XSLHelper;
 
 import java.net.MalformedURLException;
 import org.apache.axis.AxisFault;
-
-import org.astrogrid.xmldb.client.XMLDBFactory;
-
-import org.xmldb.api.base.ResourceSet;
-import org.xmldb.api.modules.XMLResource;
-import org.xmldb.api.base.Resource;
-import org.xmldb.api.base.Collection;
-import org.xmldb.api.base.XMLDBException;
-
+import org.astrogrid.xmldb.eXist.server.QueryDBService;
 
 /**
  *
@@ -81,6 +73,63 @@ public class RegistryHarvestService {
    }
 
 
+  /**
+    * Takes a Resource entry (a Registry type entry).  And performs a full replicate
+    * or harvest from that registry, to populate this registry.  Usually there is only one
+    * Registry Resource, but there might be more.
+    *
+    * @param query XML document object representing the query language used on the registry.
+    * @return null (nothing is returned on this web service operation).
+    * @author Kevin Benson
+    */
+   public Document harvestResource(Node resource,Date dt)  throws RegistryException, IOException {
+      log.debug("start harvestResource");
+      log.info("update harvestResource");
+
+
+      boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
+      if(!harvestEnabled) {
+          return null;
+      }
+      //RegistryAdminService ras = new RegistryAdminService();
+
+      //Change this up to look at the Node make sure it is a REgistryType or a Web service
+      //if not then throw an exception if so then try to call it.
+
+      //Okay this is just a small xsl sheet to make sure the xml is formatted in
+      //a nice consistent way.  Because currently the schema espcially version 0.9
+      //allows the user to put the xml in a few different ways.
+
+      //Okay update this one resource entry.
+      //ras.updateResource(resource);
+      
+      NodeList nl = null;
+      if(Node.DOCUMENT_NODE == resource.getNodeType()) {
+          nl = ((Document)resource).getElementsByTagNameNS("*","Resource");
+      }
+      else if(Node.ELEMENT_NODE == resource.getNodeType()) {
+          nl = ((Element)resource).getElementsByTagNameNS("*","Resource");
+      }
+      for(int i = 0; i < nl.getLength();i++) {
+          Element elem = (Element) nl.item(i);
+          /*
+          if(dt != null) {
+              //Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+              //String dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+              //Date dt = new Date(Long.parseLong(dateString));
+              //harvestResource(elem,dt);
+              beginHarvest(elem,dt);
+          }else {
+              //harvestResource(elem,null);
+              beginHarvest(elem,null);
+          }//else
+          */   
+          //beginHarvest(elem,null,null);          
+      }
+      log.info("exiting harvestResource");
+      log.debug("end harvestResource");
+      return null;
+   }
 
    /**
        * Will start a harvest of all the Registries known to this registry.
@@ -95,106 +144,129 @@ public class RegistryHarvestService {
       String xqlQuery = null;
       String ident = null;
       onlyRegistries = true;
-      Date dt = null;
-      boolean harvestEnabled = conf.getBoolean("reg.amend.harvest",false);
+      boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
       if(!harvestEnabled) {
           return;
       }
 
+
       String versionNumber = null;
       //String collectionName = "astrogridv" + versionNumber;
       String collectionName = "";
-      //QueryDBService qdb = new QueryDBService();
-      XMLDBFactory xdb = new XMLDBFactory();
-      Collection coll = null;
-      String authorityID = conf.getString("reg.amend.authorityid");
-      
+      QueryDBService qdb = new QueryDBService();
       //instantiate the Admin service that contains the update methods.c
       RegistryAdminService ras = new RegistryAdminService();
+      Document tempDoc = null;
+      try {
+          tempDoc = DomHelper.newDocument();
           if(onlyRegistries) {
              //query for all the Registry types which should be all of them with an xsi:type="RegistryType"
              //xqlQuery = "declare namespace vr = \"http://www.ivoa.net/xml/VOResource/v0.9\"; //vr:Resource[@xsi:type='RegistryType']";
              //System.out.println("The harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
-             ArrayList versions = null;
              RegistryQueryService rqs = new RegistryQueryService();
-             try {
-                 versions = rqs.getAstrogridVersions();
-             }catch(XMLDBException xdbe) {
-                 log.error(xdbe);
-                 throw new RegistryException("Could not find any Astrogrid Versions in the Registry");
-             }
-             
+             ArrayList versions = rqs.getAstrogridVersions();
+             System.out.println("the number of versions = " + versions);
              for(int k = 0;k < versions.size();k++) {
-                 log.info("Start processing Registry Types from version = " + (String)versions.get(k));
                  try {
-                     harvestDoc = rqs.getRegistriesQuery((String)versions.get(k));
+                 System.out.println("begin work on version = " + (String)versions.get(k));
+                 harvestDoc = rqs.getRegistriesQuery((String)versions.get(k));
+                 //tempDoc.appendChild(
+                 //        tempDoc.importNode(harvestDoc.getDocumentElement(),true));
+                 //ras.updateResource(harvestDoc);
+                 ras.updateNoCheck(harvestDoc,(String)versions.get(k));                 
+
+                 //log.info("try just the Resource");
+                 NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
+                 log.info("Harvest All found this number of resources = " + nl.getLength());
+                 for(int i = 0; i < nl.getLength();i++) {
+                   Element elem = (Element) nl.item(i);
+                   versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
+                   versionNumber = versionNumber.replace('.','_');               
+                   if(useDates) {
+                      String dateString = null;
+                      try {
+                          Document statDoc = qdb.getResource("statv"+versionNumber,RegistryServerHelper.getIdentifier(elem));
+                          dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
+                      }catch(Exception e) {
+                         log.warn("ignore for now: could not find a stat/date for element using no date.");
+                      }                      
+                      Date dt = null;
+                      if(dateString != null && dateString.trim().length() > 0) {
+                          dt = new Date(Long.parseLong(dateString));
+                      }
+                      //harvestResource(elem,dt);
+                      beginHarvest(elem,dt,(String)versions.get(k));
+                   }else {
+                    //harvestResource(elem,null);
+                    beginHarvest(elem,null,(String)versions.get(k));
+                   }//else
+                 }//for
                  }catch(Exception e) {
-                     log.error(e);
-                     harvestDoc = null;
+                     log.error("Found exception, but still need to harvest other versions:" + e.getMessage());
                  }
-                 if(harvestDoc != null) {
-                     NodeList nl = harvestDoc.getElementsByTagNameNS("*","Resource");
-                     log.info("Harvest All found this number of resources = " + nl.getLength());
-                     for(int i = 0; i < nl.getLength();i++) {
-                       Element elem = (Element) nl.item(i);
-                       versionNumber = RegistryServerHelper.getRegistryVersionFromNode(elem);
-                   
-                       if(useDates) {
-                          String dateString = null;
-                          try {
-                              coll = xdb.openCollection("statv" + versionNumber.replace('.','_'));
-                              XMLResource xmlr = (XMLResource)xdb.getResource(coll,RegistryServerHelper.getIdentifier(elem).replaceAll("[^\\w*]","_"));
-                              if(xmlr != null) {
-                                  Document statDoc = (Document)xmlr.getContentAsDOM();
-                                  dateString = DomHelper.getNodeTextValue(statDoc,"StatsDateMillis");
-                              }
-                          }catch(XMLDBException xdbe) {
-                              log.error(xdbe);
-                              log.info("xmldb exception thrown when trying to obtain stat and date information. Continue on and do a full harvest of the Registry Type");
-                              dateString = null;
-                              //throw new RegistryException(xdbe);
-                          }catch(IOException ioe) {
-                              log.error(ioe);
-                              log.info("xmldb exception thrown when trying to obtain stat and date information. Continue on and do a full harvest of the Registry Type");
-                              dateString = null;
-                              //throw new RegistryException(ioe);
-                          } finally {
-                              try {
-                                  xdb.closeCollection(coll);
-                              }catch(XMLDBException xmldb) {
-                                  log.error(xmldb);
-                              }
-                          }//finally
-                          if(dateString != null && dateString.trim().length() > 0) {
-                              dt = new Date(Long.parseLong(dateString));
-                          }//if
-                       }//if
-                       try {
-                           ident = RegistryServerHelper.getAuthorityID( elem );                           
-                           if(authorityID.equals(ident)) {
-                               log.info("This is our main Registry type do not do a harvest of it");
-                           } else {                           
-                               beginHarvest(elem,dt,(String)versions.get(k));                  
-                               ras.updateNoCheck(DomHelper.newDocument(DomHelper.ElementToString(elem)),(String)versions.get(k));
-                           }
-                       }catch(RegistryException re) {
-                           log.error(re);
-                           log.info("still continue to the next Registry type if there are any");
-                       }catch(IOException ioe) {
-                           log.error(ioe);
-                           log.info("still continue to the next Registry type if there are any");
-                       }catch(XMLDBException xmldbe) {
-                           log.error(xmldbe);
-                       }catch(SAXException sax) {
-                           log.error(sax);
-                       }catch(ParserConfigurationException pce) {
-                           log.error(pce);
-                       }
-                     }//for
-                 }//if
              }//for
-          }//if
+          }
+      }catch(ParserConfigurationException pce) {
+      	throw new RegistryException(pce);
+      }//catch(IOException ioe) {
+      	//throw new RegistryException(ioe);
+      //}
    }
+
+/**
+ * Small Thread class to update the registry with a particular number
+ * of Resources.  This class inherits from the Thread class, so
+ * the harvesting can continue to keep harvesting more Resources.
+ * Some Registries require paging through the Resources hence, the
+ * multithreading helps performance.
+ *
+ *
+ */
+private class HarvestThread extends Thread {
+
+   private RegistryAdminService ras = null;
+   private Document updateDoc = null;
+
+   /**
+    * HarvestThread class constructor.
+    * @param ras The RegistryAdminService class which does updates of Resources
+    * @param updateDoc a set of one or more Resources.
+    */
+   public HarvestThread(RegistryAdminService ras, Node updateNode) throws RegistryException {
+      this.ras = ras;
+      if(updateNode instanceof Element) {
+        try {
+      	updateDoc = DomHelper.newDocument();
+         updateDoc.appendChild(updateDoc.importNode(updateNode, true));
+        }catch(ParserConfigurationException pce) {
+        	throw new RegistryException(pce);
+        }
+      }else if(updateNode instanceof Document) {
+        this.updateDoc = (Document)updateNode;
+      }
+   }
+
+   /**
+    * Begin the update, Calls updateNoCheck from RegistryAdminService, because
+    * it is assumed the Rewsources have been checked and valid and require no
+    * special checking.
+    */
+
+   public void run() {
+	  //Element el = updateDoc.getDocumentElement();
+      try {
+         ras.updateNoCheck(updateDoc,null);
+         //updateDoc = null;
+         //System.gc();
+  //       ras.Update(updateDoc);
+  //    }catch(MalformedURLException mue) {
+  //       mue.printStackTrace();
+      }catch(IOException ioe) {
+         ioe.printStackTrace();
+      }
+   }
+
+}
 
    /**
     * This is the main method which uses the HarvestThread class to begin
@@ -220,12 +292,11 @@ public class RegistryHarvestService {
       String soapActionURI = null;
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
       int threadCount = 0;
-      
 
       //instantiate the Admin service that contains the update methods.
       RegistryAdminService ras = new RegistryAdminService();
 
-      //System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
+      System.out.println(resource.getNodeName() + " " + resource.getNodeValue());
 
       NamedNodeMap attributes = resource.getAttributes();
 
@@ -435,7 +506,21 @@ public class RegistryHarvestService {
                }
                }//while
                if(resumptionSuccess) {
+                   //(new HarvestThread(ras,doc)).start();
                    ras.updateNoCheck(doc,version);
+                   /*
+                   threadCount++;                           
+                   if(threadCount > 6) {
+                       log.info("5 harvest threads have started recently, sleeping for 5 seconds. ");
+                       log.info("The activethread count = " + Thread.activeCount());
+                       try {
+                           Thread.sleep(5000);
+                       }catch(InterruptedException ie) {
+                           log.info("Possible interruption in the middle of harvest");
+                       }
+                       threadCount = 0;
+                   }//if
+                   */
                }else {
                    doc = null;
                }//else
@@ -451,9 +536,6 @@ public class RegistryHarvestService {
          }catch(IOException ioe){
             ioe.printStackTrace();
             log.error(ioe);
-         }catch(XMLDBException xdbe) {
-             xdbe.printStackTrace();
-             log.error(xdbe);
          }
       }//elseif
       log.info("exiting beginHarvest");
@@ -486,5 +568,4 @@ public class RegistryHarvestService {
       }
       return _call;
    }//getCall
-   
 }

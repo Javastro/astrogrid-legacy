@@ -31,27 +31,4 @@
     </Curation>
     <Subject>The standard astrogrid naming authority</Subject>
   </vr:Resource>
-<Resource status="active" updated="Fri Oct 22 16:13:51 BST 2004" xsi:type="AuthorityType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns="http://www.ivoa.net/xml/VOResource/v0.9">
-	<Identifier>
-		<AuthorityID>roe.ac.uk</AuthorityID>
-		<ResourceKey>authority</ResourceKey>
-	</Identifier>
-	<Title>SuperCOSMOS Science Archive (PAL)</Title>
-	<ShortName/>
-	<Summary>
-		<Description>SuperCOSMOS Science Archive.  Catalogue based on the ROE Schmidt sky survey plates</Description>
-		<ReferenceURL>http://astrogrid.roe.ac.uk/pal-ssa/</ReferenceURL>
-	</Summary>
-    <Curation>
-      <Publisher>
-         <Title>Astrogrid</Title>
-      </Publisher>
-       <Contact>
-        <Name>Tony Linde</Name>
-       <Email>ael@star.le.ac.uk</Email>
-      </Contact>
-     <Date>2003-08-30</Date>
-    </Curation>
-    <Subject>The standard astrogrid naming authority</Subject>
-</Resource>
   </VODescription>

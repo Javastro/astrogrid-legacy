@@ -36,26 +36,11 @@
     <load-on-startup>100</load-on-startup>
   </servlet>
 
-	<servlet>
-   		<servlet-name>RegistryHarvest</servlet-name>
-   		<servlet-class>astrogrid.registry.harvest.daemon.HarvestDaemon</servlet-class>
-   		<load-on-startup>200</load-on-startup>
-	</servlet>
-
-	<servlet>
-   		<servlet-name>ExistDatabaseManager</servlet-name>
-   		<servlet-class>org.astrogrid.registry.server.admin.ExistDatabaseManager</servlet-class>
-		<init-param>
-	        <param-name>configuration</param-name>
-        	<param-value>exist.xml</param-value>
-      	</init-param>
-       	<init-param>
-        	<param-name>basedir</param-name>
-         	<param-value>WEB-INF/</param-value>
-       	</init-param>
-   		<load-on-startup>100</load-on-startup>
-	</servlet>
-
+<servlet>
+   <servlet-name>RegistryHarvest</servlet-name>
+   <servlet-class>astrogrid.registry.harvest.daemon.HarvestDaemon</servlet-class>
+   <load-on-startup>200</load-on-startup>
+ </servlet>
 
     <servlet>
       <servlet-name>OAIHandlerv0_9</servlet-name>
@@ -92,230 +77,16 @@
       </init-param>
     </servlet>
 
-	<env-entry>
-		<description>The Main Authority ID for this Registry (Authority ID used for the Registry type)</description>
-		<env-entry-name>reg.amend.authorityid</env-entry-name>
-		<env-entry-value>org.changethis</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>
-			The XMLDB server location url. By default it is set to use the internal eXist db.  
-			You may set it to xmldb:exist://host:port/exist/xmlrpc for external eXist db. e.g. xmldb:exist://localhost:8080/exist/xmlrpc.  
-			In general you can switch to another db but this is untested read configuration page from your context on that.</description>
-		<env-entry-name>xmldb.uri</env-entry-name>
-		<env-entry-value>xmldb:exist://</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The XMLDB driver to be the registered xml database.</description>
-		<env-entry-name>xmldb.driver</env-entry-name>
-		<env-entry-value>org.exist.xmldb.DatabaseImpl</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>What type of query service, XQueryService or XPathQueryService.</description>
-		<env-entry-name>xmldb.query.service</env-entry-name>
-		<env-entry-value>XQueryService</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The user used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
-		<env-entry-name>xmldb.admin.user</env-entry-name>
-		<env-entry-value>admin</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The admin password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
-		<env-entry-name>xmldb.admin.password</env-entry-name>
-		<env-entry-value></env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The user used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
-		<env-entry-name>xmldb.query.user</env-entry-name>
-		<env-entry-value></env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The query password used to create Resources or collections, and shutdown the internal eXist database if it is internally being ran.</description>
-		<env-entry-name>xmldb.query.password</env-entry-name>
-		<env-entry-value></env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The default registry version used, May be overriden on updates and queries based on vr namespace.</description>
-		<env-entry-name>reg.amend.defaultversion</env-entry-name>
-		<env-entry-value>0.9</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Have validation on or off.</description>
-		<env-entry-name>reg.amend.validate</env-entry-name>
-		<env-entry-value>true</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Quit on validation.</description>
-		<env-entry-name>reg.amend.quiton.invalid</env-entry-name>
-		<env-entry-value>false</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-
-	<env-entry>
-		<description>The maximum number of results to return from queries.</description>
-		<env-entry-name>reg.amend.returncount</env-entry-name>
-		<env-entry-value>100</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Does this registry need to do harvesting.</description>
-		<env-entry-name>reg.amend.harvest</env-entry-name>
-		<env-entry-value>true</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The url to the oai publishing url for 0.9, default is set to astrogrid servlet, but is not required to use.</description>
-		<env-entry-name>reg.oaipublish.0.9</env-entry-name>
-		<env-entry-value>http://localhost:8080/astrogrid-registry/OAIHandlerv0_9</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>The url to the oai publishing url for 0.10, default is set to astrogrid servlet, but is not required to use.</description>
-		<env-entry-name>reg.amend.oaipublish.0.10</env-entry-name>
-		<env-entry-value>http://localhost:8080/astrogrid-registry/OAIHandlerv0_10</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Point to another exist configuration file on your disk hence a different data directory as well.  (only for internal db use).  This might be handly if you want to use the internal database, but not have the configuration file and data directory of eXist db with the war file so undeploying/updating wars will not lose data. Also use if servlet container does not unpack war file.</description>
-		<env-entry-name>reg.custom.exist.configuration</env-entry-name>
-		<env-entry-value></env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Number of hours between harvest (if harvest is enabled)</description>
-		<env-entry-name>reg.custom.harvest.interval_hours</env-entry-name>
-		<env-entry-value>2</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Used for the Identify verb in OAI.  The repository Name.</description>
-		<env-entry-name>reg.amend.identify.repositoryName</env-entry-name>
-		<env-entry-value>Astrogrid Full Repository</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Used for the Identify verb in OAI.  The administration Email of this OAI repository.</description>
-		<env-entry-name>reg.amend.identify.adminEmail</env-entry-name>
-		<env-entry-value>mailto:ktn@star.le.ac.uk</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>Used for the Identify verb in OAI.  The earliest date stamp for records/metadata being published.</description>
-		<env-entry-name>reg.custom.identify.earliestDatestamp</env-entry-name>
-		<env-entry-value>1950-03-03T22:14:22</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
----
-	<env-entry>
-		<description>(Advanced) Specify stylesheets to be used on updates for particular versions.</description>
-		<env-entry-name>reg.custom.updatestylesheet.0.9</env-entry-name>
-		<env-entry-value>true</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Specify stylesheets to be used on harvest updates for particular versions.</description>
-		<env-entry-name>reg.custom.harveststylesheet.0.9</env-entry-name>
-		<env-entry-value>true</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Specify stylesheets to be used on harvest updates for particular versions.</description>
-		<env-entry-name>reg.custom.harveststylesheet.0.10</env-entry-name>
-		<env-entry-value>true</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Specify xpath for keyword search based on various versions in the registry.</description>
-		<env-entry-name>reg.custom.keywordxpaths.0.9</env-entry-name>
-		<env-entry-value>vr:Summary/vr:Description, vr:Title, vr:Subject</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Specify xpath for keyword search based on various versions in the registry.</description>
-		<env-entry-name>reg.custom.keywordxpaths.0.10</env-entry-name>
-		<env-entry-value>vr:content/vr:description, vr:title, vr:content/vr:subject</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Does the Identifier split up with an AuthorityID element based on version in registry.</description>
-		<env-entry-name>reg.custom.identifier.hasauthorityid.0.9</env-entry-name>
-		<env-entry-value>true</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</description>
-		<env-entry-name>reg.custom.rootNode.default</env-entry-name>
-		<env-entry-value>vor:Resource</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</description>
-		<env-entry-name>reg.custom.rootNode.0.10</env-entry-name>
-		<env-entry-value>vor:Resource</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) The default root node for elements in the Registry. Can override on various versions in the registry.</description>
-		<env-entry-name>reg.custom.rootNode.0.9</env-entry-name>
-		<env-entry-value>vr:Resource</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Declare the namespaces used on the registry, based on registry versions.</description>
-		<env-entry-name>reg.custom.declareNS.0.9</env-entry-name>
-		<env-entry-value>
-			declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9"; declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.2"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.4"; declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"; declare namespace ag="http://www.astrogrid.org/schema/AstrogridDataService/v0.1"; declare namespace xsi="http://www.w3.org/2001/XMLSchema-instance"; 
-		</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
-
-	<env-entry>
-		<description>(Advanced) Declare the namespaces used on the registry, based on registry versions.</description>
-		<env-entry-name>reg.custom.declareNS.0.10</env-entry-name>
-		<env-entry-value>
-			declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.10"; declare namespace vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.5"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.3"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.7"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.3"; declare namespace vc = "http://www.ivoa.net/xml/VORegistry/v0.3"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.2"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"; declare namespace ag="http://www.astrogrid.org/schema/AstrogridDataService/v0.2"; declare namespace xsi="http://www.w3.org/2001/XMLSchema-instance"; 
-		</env-entry-value>
-		<env-entry-type>java.lang.String</env-entry-type>
-	</env-entry>
+   <!--
+    <context-param>
+      <param-name>properties</param-name>
+      <param-value>oaicat.properties</param-value>
+      <description>
+        The oaicat.properties file containing
+        datapairs used to initialize the OAI repository software.
+      </description>
+    </context-param>
+   -->
 
     <context-param>
       <param-name>properties</param-name>
@@ -326,15 +97,10 @@
       </description>
     </context-param>
 
-	<servlet-mapping>
-   		<servlet-name>RegistryHarvest</servlet-name>
-   		<url-pattern>/RegistryHarvest</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-   		<servlet-name>ExistDatabaseManager</servlet-name>
-   		<url-pattern>/ExistDatabaseManager</url-pattern>
-	</servlet-mapping>
+<servlet-mapping>
+   <servlet-name>RegistryHarvest</servlet-name>
+   <url-pattern>/RegistryHarvest</url-pattern>
+</servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>AxisServlet</servlet-name>
@@ -375,6 +141,26 @@
         <servlet-name>OAIHandlerv0_10</servlet-name>
         <url-pattern>/servlet/OAIHandlerv0_10</url-pattern>
     </servlet-mapping>
+
+
+<!--
+    <context-param>
+      <param-name>properties</param-name>
+      <param-value>oaicat.properties</param-value>
+      <description>
+        The oaicat.properties file containing
+        datapairs used to initialize the OAI repository software.
+      </description>
+    </context-param>
+-->
+
+ <!-- uncomment this if you want the admin servlet -->
+ <!--
+  <servlet-mapping>
+    <servlet-name>AdminServlet</servlet-name>
+    <url-pattern>/servlet/AdminServlet</url-pattern>
+  </servlet-mapping>
+ -->
 
     <!-- currently the W3C havent settled on a media type for WSDL;
     http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft

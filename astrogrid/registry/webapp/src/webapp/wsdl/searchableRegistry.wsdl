@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions name="searchableRegistry" 
-             xmlns="http://schemas.xmlsoap.org/wsdl/" 
-             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
-             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
-             xmlns:ris="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
-             xmlns:rih="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
-             xmlns:tns="http://myvo.org/registry/searchableRegistry.wsdl"
+<definitions name="searchableRegistry" 
+             xmlns="http://schemas.xmlsoap.org/wsdl/" 
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+             xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+             xmlns:ris="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
+             xmlns:rih="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
+             xmlns:tns="http://myvo.org/registry/searchableRegistry.wsdl"
              targetNamespace="http://myvo.org/registry/searchableRegistry.wsdl">
-   <import namespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
-           location="/wsdl/RegistrySearch-v0.1.wsdl"/>
-   <import namespace="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
-           location="/wsdl/RegistryHarvest-v0.1.wsdl"/>
+             
 
-   <service name="RegistryInterfaceService">
-      <port name="RegistrySearchPort" binding="ris:RegistrySearchSOAP">
-         <soap:address 
-        location="http://localhost:8080/axis/services/RegistrySearchPort"/>
-      </port>      <port name="RegistryHarvestPort" binding="rih:RegistryHarvestSOAP">
-         <soap:address 
-        location="http://localhost:8080/axis/services/RegistryHarvestPort"/>
-      </port>   </service>
+   <import namespace="http://www.ivoa.net/wsdl/RegistrySearch/v0.1"
+           location="RegistrySearch-v0.1.wsdl"/>
+   <import namespace="http://www.ivoa.net/wsdl/RegistryHarvest/v0.1"
+           location="RegistryHarvest-v0.1.wsdl"/>
+
+   <service name="RegistryInterfaceService">
+      <port name="RegistrySearchPort" binding="ris:RegistrySearchSOAP">
+         <soap:address 
+        location="http://localhost:8080/axis/services/RegistrySearchPort"/>
+      </port>
+
+      <port name="RegistryHarvestPort" binding="rih:RegistryHarvestSOAP">
+         <soap:address 
+        location="http://localhost:8080/axis/services/RegistryHarvestPort"/>
+      </port>
+   </service>
+
 </definitions>
