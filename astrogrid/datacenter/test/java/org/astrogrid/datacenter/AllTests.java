@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.10 2003/09/05 12:05:42 mch Exp $
+/*$Id: AllTests.java,v 1.11 2003/09/11 13:28:24 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,6 +41,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.delegate.DelegateTest.suite());
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
+        suite.addTest(org.astrogrid.datacenter.common.AllTests.suite());
         return suite;
     }
 }
@@ -48,6 +49,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.11  2003/09/11 13:28:24  nw
+added xml creation tests
+
 Revision 1.10  2003/09/05 12:05:42  mch
 Removed tests on removed classes
 
