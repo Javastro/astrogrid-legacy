@@ -179,6 +179,46 @@
           		<war.bundle>true</war.bundle>
           	</properties>            
         </dependency>
+        
+       <dependency>
+            <artifactId>exist</artifactId>
+            <groupId>exist</groupId>
+            <version>1.0b1</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+
+
+       <dependency>
+            <artifactId>commons-pool</artifactId>
+            <groupId>exist</groupId>
+            <version>1.1</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+
+        
+		<dependency>
+			<artifactId>xmldb</artifactId>
+            <groupId>exist</groupId>
+           	<version>unknown</version>            
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>           
+        </dependency>
+
+       <dependency>
+            <artifactId>xmlrpc</artifactId>
+            <groupId>exist</groupId>
+            <version>1.2</version>
+            <url>http://www.astrogrid.org</url>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+        
 
 		<!---+
 			Commenting this out, because wsdl4j is already going into the lib directory with 
