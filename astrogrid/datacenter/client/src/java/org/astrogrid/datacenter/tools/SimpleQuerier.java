@@ -1,4 +1,4 @@
-/*$Id: SimpleQuerier.java,v 1.4 2004/01/14 12:49:49 nw Exp $
+/*$Id: SimpleQuerier.java,v 1.5 2004/01/14 12:55:28 nw Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,9 +33,18 @@ import org.w3c.dom.Element;
 
 /** Simple tool to fire a query at a server, and print out the response.
  * Currently accepts queries in ADQL and SQL
+ * <h2>Examples of use</h2>
  * For usage instructions, run with no arguments:
  * <pre>
  * java org.astrogrid.datacenter.tools.SimpleQuerier
+ * </pre>
+ * Submit an SQL query
+ * <pre>
+ * java org.astrogrid.datacenter.tools.SimpleQuerier http://localhost:8080/pal/services/AxisDataServer --sql "Select * from merlinCatalog where DataNo = 657038"
+ * </pre>
+ * Submit an ADQL query, stored in the file <tt>adql-query.xml</tt>
+ * <pre>
+ * java org.astrogrid.datacenter.tools.SimpleQuerier http://localhost:8080/pal/services/AxisDataServer adql-query.xml
  * </pre>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Nov-2003
  *
@@ -132,6 +141,9 @@ public class SimpleQuerier {
 
 /* 
 $Log: SimpleQuerier.java,v $
+Revision 1.5  2004/01/14 12:55:28  nw
+improved documentation
+
 Revision 1.4  2004/01/14 12:49:49  nw
 improved documentation
 
