@@ -29,11 +29,33 @@
         <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-discovery.jar"/>
     </path>
     
-   <property name="maven.war.src" value="${axis.webapp.srcdir}"/> 
+   <!--<property name="maven.war.src" value="${axis.webapp.srcdir}"/> deleted by JDT for quick and dirty war-->
 
-<preGoal name="war">
+<postGoal name="war:webapp">
   <echo message="${maven.war.src}"/>
-</preGoal>
+  <echo message="Copying xml templates and properties across to src directory"/>
+	<copy todir="${maven.build.dest}" overwrite="yes">
+		<fileset dir="${maven.conf.dir}"> 
+			<exclude name = "ASTROGRID_jesconfig.xml"/> <!-- exclude this because we don't want to overwrite an edited one-->
+		</fileset>
+	</copy>
+	<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
+	<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
+		<fileset dir="${maven.docs.dest}"/> 
+	</copy>
+	<echo message="copying across a readme and sample config file"/>
+	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+		<fileset dir="${basedir}">
+			<include name="README"/>
+		</fileset> 
+	</copy>
+	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
+		<fileset dir="${maven.conf.dir}"> 
+			<include name="ASTROGRID_jesconfig.xml"/>
+		</fileset>
+	</copy>
+</postGoal>
+
 
 <!-- hooks into existing goals -->
   <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
