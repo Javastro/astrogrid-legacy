@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.6 2004/04/19 09:35:24 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.7 2004/04/20 14:48:21 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -118,7 +118,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
                        
         ParameterValue target = (ParameterValue)datacenterTool.findXPathValue("output/parameter[name='Target']");
         assertNotNull(target);
-        Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/test/WorkflowEndToEnd-complexDocument.votable.xml");
+        Ivorn targetIvorn = new Ivorn(MYSPACE,"/" + user.getUserId() + "/WorkflowEndToEnd-complexDocument.votable.xml");
         target.setValue(targetIvorn.toString());
         
         
@@ -169,7 +169,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
             assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
         // dump it to myspace store - then we can look at it later.
        w1.setName(workflowName + "-" + System.currentTimeMillis());
-       Ivorn ivorn = new Ivorn(MYSPACE,"/" + user.getUserId() +"/saved-workflows/" + w1.getName() + ".workflow.xml"); 
+       Ivorn ivorn = new Ivorn(MYSPACE,"/" + user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
        store.saveWorkflow(user,ivorn,w1);       
         return w1;
     }    
@@ -180,6 +180,9 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.7  2004/04/20 14:48:21  nw
+simplified myspace storepoint.
+
 Revision 1.6  2004/04/19 09:35:24  nw
 added constants for ivorns of services.
 added test query
