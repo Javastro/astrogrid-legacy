@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.18 2004/08/18 21:36:28 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.19 2004/08/19 08:32:48 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -44,7 +44,7 @@ public class FitsQuerierTest extends TestCase
    }
 
    public void testPluginClass() throws IOException {
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("astrogrid:store:null"), QueryResults.FORMAT_VOTABLE);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(300, 60, 12), new TargetIndicator("mailto:mch@roe.ac.uk"), QueryResults.FORMAT_VOTABLE);
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
    }
@@ -83,6 +83,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.19  2004/08/19 08:32:48  mch
+ Fix to target indicator
+
  Revision 1.18  2004/08/18 21:36:28  mch
  Added better error msg
 
