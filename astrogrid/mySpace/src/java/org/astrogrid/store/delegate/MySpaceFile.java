@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.2 2004/03/01 15:15:04 mch Exp $
+ * $Id: MySpaceFile.java,v 1.3 2004/03/01 16:38:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,7 +10,7 @@
 package org.astrogrid.store.delegate;
 
 import java.net.MalformedURLException;
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
 
 /**
  * Represents a file in vospace.  There is also MySpaceFolder to represent
@@ -63,10 +63,10 @@ public class MySpaceFile implements StoreFile {
    public String getPermissions() { return permissions; }
 
    /** Returns the location of this file as an Astrogrid Storepoint Location */
-   public AGSL toAgsl()
+   public Agsl toAgsl()
    {
       try {
-         return new AGSL(parentFolder.toAgsl()+"/"+getName());
+         return new Agsl(parentFolder.toAgsl()+"/"+getName());
       }
       catch (MalformedURLException mue) {
          throw new RuntimeException("Program error: Should not be possible to construct myspacefiles with illegal AGSLs...");
@@ -103,6 +103,9 @@ public class MySpaceFile implements StoreFile {
 
 /*
  $Log: MySpaceFile.java,v $
+ Revision 1.3  2004/03/01 16:38:58  mch
+ Merged in from datacenter 4.1 and odd cvs/case problems
+
  Revision 1.2  2004/03/01 15:15:04  mch
  Updates to Store delegates after myspace meeting
 

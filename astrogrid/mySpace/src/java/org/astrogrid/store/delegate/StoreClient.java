@@ -1,5 +1,5 @@
 /*
- * $Id: StoreClient.java,v 1.2 2004/03/01 15:15:04 mch Exp $
+ * $Id: StoreClient.java,v 1.3 2004/03/01 16:38:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import org.astrogrid.community.Account;
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
 
 /**
  * These are the methods that vospace delegates must implement.

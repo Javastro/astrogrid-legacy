@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.1 2004/03/01 16:24:05 mch Exp $
+ * $Id: Agsl.java,v 1.2 2004/03/01 16:38:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -36,7 +36,7 @@ import org.astrogrid.store.delegate.StoreDelegateFactory;
  * The path can be null, ie referring just to a store service
  */
 
-public class AGSL
+public class Agsl
 {
    private URL url = null;
    private Msrl msrl = null;
@@ -45,12 +45,12 @@ public class AGSL
    
    public static final String FORM = SCHEME+":[<Msrl>|<URL>]";
    
-   public AGSL(URL aUrl)
+   public Agsl(URL aUrl)
    {
       this.url = aUrl;
    }
 
-   public AGSL(Msrl aMyspaceResourceLocation)
+   public Agsl(Msrl aMyspaceResourceLocation)
    {
       this.msrl = aMyspaceResourceLocation;
    }
@@ -59,7 +59,7 @@ public class AGSL
     * but also URLs and MSRLs. Also, for the moment, takes the deprecated VospaceRL
     * from It4.1
     */
-   public AGSL(String rl) throws MalformedURLException
+   public Agsl(String rl) throws MalformedURLException
    {
       if (rl.toLowerCase().startsWith("vospace:"))
       {
@@ -157,6 +157,9 @@ public class AGSL
 
 /*
 $Log: Agsl.java,v $
+Revision 1.2  2004/03/01 16:38:58  mch
+Merged in from datacenter 4.1 and odd cvs/case problems
+
 Revision 1.1  2004/03/01 16:24:05  mch
 Merged in from datacenter 4.1
 

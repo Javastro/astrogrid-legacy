@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.2 2004/03/01 15:15:04 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.3 2004/03/01 16:38:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,7 +13,7 @@ package org.astrogrid.store.delegate;
 import java.io.IOException;
 import java.net.URL;
 import org.astrogrid.community.Account;
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 
 /**
@@ -31,7 +31,7 @@ public class StoreDelegateFactory
     * myspace.  We could also add a FTP and GridFTP delegates for services
     * without accounts on MySpace servers.
     */
-   public static StoreClient createDelegate(Account operator, AGSL location) throws IOException
+   public static StoreClient createDelegate(Account operator, Agsl location) throws IOException
    {
       if (location.getMsrl() != null) {
          Msrl msrl = location.getMsrl();
@@ -53,6 +53,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.3  2004/03/01 16:38:58  mch
+Merged in from datacenter 4.1 and odd cvs/case problems
+
 Revision 1.2  2004/03/01 15:15:04  mch
 Updates to Store delegates after myspace meeting
 

@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.1 2004/03/01 15:15:04 mch Exp $
+ * $Id: StoreFile.java,v 1.2 2004/03/01 16:38:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,7 +9,7 @@
 
 package org.astrogrid.store.delegate;
 
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
 
 
 /**
@@ -42,7 +42,7 @@ public interface StoreFile {
    public String getPath();
    
    /** Returns where to find this file using an AStrogrid Store Locator */
-   public AGSL toAgsl();
+   public Agsl toAgsl();
 }
 
 /*

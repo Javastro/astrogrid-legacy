@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.2 2004/03/01 15:15:04 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.3 2004/03/01 16:38:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -11,7 +11,7 @@ package org.astrogrid.store.delegate;
 
 import java.net.MalformedURLException;
 import java.util.Hashtable;
-import org.astrogrid.store.AGSL;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
 
 /**
@@ -30,7 +30,7 @@ public class MySpaceFolder implements StoreFile {
    
    String name = null;
    
-   AGSL agsl = null;
+   Agsl agsl = null;
    
    /** Create folder from a myspace reference.  Use to create root folders - to
     * create entries that are children, use the constructor that tkaes a parent */
@@ -50,7 +50,7 @@ public class MySpaceFolder implements StoreFile {
       
       try {
          //build AGSL from parents one and child
-         agsl = new AGSL(parent.toAgsl()+"/"+childName);
+         agsl = new Agsl(parent.toAgsl()+"/"+childName);
       }
       catch (MalformedURLException mue) {
          throw new RuntimeException("Program Error: should not be possible to build illegal AGSLs here", mue);
@@ -88,7 +88,7 @@ public class MySpaceFolder implements StoreFile {
    
 
    /** Returns where to find this file using an AStrogrid Store Locator */
-   public AGSL toAgsl() {           return agsl; }
+   public Agsl toAgsl() {           return agsl; }
    
    /** Returns parent folder of this file/folder */
    public StoreFile getParent() {   return this.parentFolder;  }
@@ -107,6 +107,9 @@ public class MySpaceFolder implements StoreFile {
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.3  2004/03/01 16:38:58  mch
+ Merged in from datacenter 4.1 and odd cvs/case problems
+
  Revision 1.2  2004/03/01 15:15:04  mch
  Updates to Store delegates after myspace meeting
 

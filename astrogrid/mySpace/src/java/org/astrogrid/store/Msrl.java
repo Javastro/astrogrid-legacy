@@ -1,5 +1,5 @@
 /*
- * $Id: Msrl.java,v 1.1 2004/03/01 15:15:33 mch Exp $
+ * $Id: Msrl.java,v 1.2 2004/03/01 16:38:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -165,9 +165,9 @@ public class Msrl
    }
 
    /** Returns the AGSL version of this reference */
-   public AGSL toAgsl()
+   public Agsl toAgsl()
    {
-      return new AGSL(this);
+      return new Agsl(this);
    }
    
    /** Opens an inputstream to the file.  Just like url.openStream()....
@@ -194,6 +194,9 @@ public class Msrl
 
 /*
 $Log: Msrl.java,v $
+Revision 1.2  2004/03/01 16:38:58  mch
+Merged in from datacenter 4.1 and odd cvs/case problems
+
 Revision 1.1  2004/03/01 15:15:33  mch
 Updates to Store delegates after myspace meeting
 
