@@ -23,7 +23,7 @@
             <version>SNAPSHOT</version>
             <type>war</type>
             <properties/>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-cea-commandline</artifactId>
@@ -53,12 +53,12 @@
             <properties/>
         </dependency>
         <dependency>
-            <groupId>exist</groupId>
-            <artifactId>exist</artifactId>
-            <version>SNAPSHOT</version>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-exist</artifactId>
+	        <version>${pom.currentVersion}</version>
             <type>war</type>
             <properties/>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>pal</artifactId>

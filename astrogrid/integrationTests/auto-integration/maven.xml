@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.63 2004/07/22 16:04:15 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.64 2004/07/23 11:54:30 KevinBenson Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -336,7 +336,7 @@
         <propertyfile
             file="${temporary.dir}/community/install.properties">
             <entry key="org.astrogrid.registry.admin"
-                value="${tomcat.url}//astrogrid-registry-SNAPSHOT/services/RegistryAdmin"/>
+                value="${tomcat.url}//astrogrid-registry-SNAPSHOT/services/RegistryUpdate"/>
         </propertyfile>
         <!--+
             | Set the local hostname.
@@ -524,7 +524,7 @@
   </j:catch>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
+          path="/exist" war="file:///${temporary.dir}/astrogrid-exist-SNAPSHOT.war"/>
   </j:catch>
 </goal>
 

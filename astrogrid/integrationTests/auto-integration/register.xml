@@ -8,7 +8,7 @@
         | Default Registry endpoints.
         +-->
     <property name="org.astrogrid.registry.url"   value="${tomcat.url}/astrogrid-registry-SNAPSHOT/services/Registry"/>
-    <property name="org.astrogrid.registry.admin" value="${tomcat.url}/astrogrid-registry-SNAPSHOT/services/RegistryAdmin"/>
+    <property name="org.astrogrid.registry.admin" value="${tomcat.url}/astrogrid-registry-SNAPSHOT/services/RegistryUpdate"/>
 
     <!--+
         | The registry tools classpath.
