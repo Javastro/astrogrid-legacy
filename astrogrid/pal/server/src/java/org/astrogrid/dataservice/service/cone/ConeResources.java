@@ -1,4 +1,4 @@
-/*$Id: ConeResources.java,v 1.6 2005/03/23 17:54:15 mch Exp $
+/*$Id: ConeResources.java,v 1.7 2005/03/24 17:50:48 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
       String cone =
          makeVoResourceElement("ServiceType", "")+
-         makeCore("/cone")+
+         makeCore("cone")+
       
         //"<Subject>Stars</Subject>"+ //etc
         //"<ContentLevel>Research</ContentLevel>"+ //etc
@@ -53,6 +53,9 @@ public class ConeResources extends VoResourceSupport implements VoResourcePlugin
 
 /*
  $Log: ConeResources.java,v $
+ Revision 1.7  2005/03/24 17:50:48  mch
+ Fixed various resource bits
+
  Revision 1.6  2005/03/23 17:54:15  mch
  removed rbmsresours
 

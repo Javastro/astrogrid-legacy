@@ -1,5 +1,5 @@
 /*
- * $Id: TabularDbResources.java,v 1.4 2005/03/23 17:24:48 mch Exp $
+ * $Id: TabularDbResources.java,v 1.5 2005/03/24 17:50:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,6 +30,7 @@ public class TabularDbResources extends VoResourceSupport implements VoResourceP
 
       StringBuffer tabularDb = new StringBuffer(
          makeVoResourceElement("tdb:TabularDB",
+                                 "xmlns='http://www.ivoa.net/xml/VODataService/v0.5' "+ //default namnespace
                                  "xmlns:vod='http://www.ivoa.net/xml/VODataService/v0.5' "+
                                  "xmlns:tdb ='urn:astrogrid:schema:vo-resource-types:TabularDB:v0.3' ")+
          makeCore("TDB")+

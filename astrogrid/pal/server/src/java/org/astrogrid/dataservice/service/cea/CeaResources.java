@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResources.java,v 1.6 2005/03/23 17:24:48 mch Exp $
+ * $Id: CeaResources.java,v 1.7 2005/03/24 17:50:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -42,7 +42,7 @@ public class CeaResources extends VoResourceSupport implements VoResourcePlugin 
          //reference to the application that this serves
          "<cea:ManagedApplications>"+
             "<cea:ApplicationReference>"+
-               makeId("/ceaApplication")+
+               makeId("ceaApplication")+
             "</cea:ApplicationReference>"+
          "</cea:ManagedApplications>"+
          "</"+VORESOURCE_ELEMENT+">";
