@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.6 2003/09/07 18:45:56 mch Exp $
+ * $Id: Workspace.java,v 1.7 2003/09/08 18:07:13 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -7,6 +7,8 @@ package org.astrogrid.datacenter.service;
 import java.io.File;
 import java.io.IOException;
 import org.astrogrid.datacenter.config.Configuration;
+import org.astrogrid.log.Log;
+
 /**
  * A temporary filespace manager for
  * service instances.  Actually just a set of helper methods for creating
@@ -26,6 +28,12 @@ public class Workspace
 
    private static final String ERR_WORKSPACE_ALREADY_IN_USE = "Workspace Already In Use";
 
+   /** public marker as to whether workspace should tidy up when closed -
+    * for debugging purposes it is sometimes useful to leave temporary files
+    * for examination
+    */
+   public static boolean PERSIST = false;
+   
    /** Path to this workspace instance */
    protected String workspacePath = null;
 
@@ -33,8 +41,7 @@ public class Workspace
    protected File workspaceFile = null;
 
    /** Used to mark when the directory has been closed (deleted) */
-//   protected boolean closed = false; this is meaningless if we expose workspaceFile
-
+   //use isClosed() protected boolean closed = false;
 
    /**
     * Creates a temporary directory with the name given by workspaceId
@@ -61,30 +68,52 @@ public class Workspace
    /**
     * Use when you've finished with the space and you want to tidy up
     */
-   public void close() throws IOException
+   public synchronized void close() throws IOException
    {
-      //empty(workspacePath);  //commented out at the moment so we can debug contents
+      Log.affirm(!isClosed(), "Trying to close a closed workspace");
 
-//      closed = true;
+      //attempt at threadsafetying but haven't thought about it properly - MCH
+      File tempFile = workspaceFile;
+      workspaceFile = null;
+      
+      if (!PERSIST)
+      {
+         empty();
+         workspaceFile.delete();
+      }
    }
 
+
+   public boolean isClosed()
+   {
+      return (workspaceFile != null);
+   }
+   
    /**
-    * Returns the path to the workspace
+    * Called by teh garbage collector when there are no more references to
+    * it - check it's been closed and close if not
     */
-   public File getWorkspace()
+   protected void finalize() throws Throwable
    {
-      return workspaceFile;
+      try
+      {
+         if (!isClosed())
+         {
+            close();
+         }
+      }
+      finally
+      {
+         super.finalize();
+      }
    }
-
+   
    /**
     * Deletes the contents of the workspace
     */
    public void empty() throws IOException
    {
-//      if (closed)
-//      {
-//         throw new UnsupportedOperationException("This workspace has been closed");
-//      }
+      Log.affirm(!isClosed(), "Trying to empty a closed workspace");
 
       emptyDirectory(workspaceFile);
    }
@@ -95,9 +124,28 @@ public class Workspace
     */
    public File makeWorkFile(String filename)
    {
+      Log.affirm(!isClosed(), "Trying to create a new file in a closed workspace");
+
       return new File(workspacePath + File.separator + filename);
    }
 
+   /**
+    * Auto generate temp file
+    */
+   public File makeTempFile(String prefix, String suffix) throws IOException
+   {
+      return File.createTempFile(prefix, suffix, workspaceFile);
+   }
+
+   /**
+    * Auto generate temp file
+    */
+   public File makeTempFile(String prefix) throws IOException
+   {
+      return File.createTempFile(prefix, "$$$", workspaceFile);
+   }
+   
+   
    /**
     * General purpose method that deletes the contents of the given directory
     */
