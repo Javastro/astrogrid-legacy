@@ -1,5 +1,5 @@
 /*
- * $Id: AllBodyIncElementsRule.java,v 1.1 2003/11/29 00:50:14 pah Exp $
+ * $Id: AllBodyIncElementsRule.java,v 1.2 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -32,9 +32,11 @@ import org.xml.sax.Attributes;
     */
 class AllBodyIncElementsRule extends BeanPropertySetterRule {
    private static StringBuffer contents;
+   private boolean needinner;
 
-   public AllBodyIncElementsRule(String propName) {
+   public AllBodyIncElementsRule(String propName, boolean inner) {
       super(propName);
+      needinner = inner;
    }
 
    /* (non-Javadoc)
@@ -44,7 +46,15 @@ class AllBodyIncElementsRule extends BeanPropertySetterRule {
       //set the bodytext to the collected contents as this is what the end usually sets
       Object o = getDigester().peek();
       if (o instanceof Node) {
-         String s = XMLUtils.getInnerXMLString((Element)o);
+         String s;
+
+         if (needinner) {
+            s = XMLUtils.getInnerXMLString((Element)o);
+         }
+         else
+         {
+            s= XMLUtils.ElementToString((Element)o);
+         }
          getDigester().pop(); // remove Node from the Digester stack.
          bodyText = s;
       }

@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.7 2003/12/01 22:24:59 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.8 2003/12/04 13:26:25 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,9 +17,20 @@ import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.community.User;
+import java.util.HashSet;
 
 public class CommandLineApplicationController extends AbstractApplicationController  {
+   
+   
  
+
+   /**
+    * Standard Constructor.
+    */
+   public CommandLineApplicationController() {
+      super();
+      
+   }
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#executeApplication(int)
@@ -30,36 +41,11 @@ public class CommandLineApplicationController extends AbstractApplicationControl
    }
 
    /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#getApplicationDescription(java.lang.String)
-    */
-   public SimpleApplicationDescription getApplicationDescription(String applicationID) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.getApplicationDescription() not implemented");
-   }
-
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#listApplications()
-    */
-   public String[] listApplications() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.listApplications() not implemented");
-   }
-
-   /* (non-Javadoc)
     * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationExecutionStatus(int)
     */
    public String queryApplicationExecutionStatus(int executionId) {
       // TODO Auto-generated method stub
       throw new UnsupportedOperationException("CommandLineApplicationController.queryApplicationExecutionStatus() not implemented");
-   }
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#returnRegistryEntry()
-    */
-   public String returnRegistryEntry() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("CommandLineApplicationController.returnRegistryEntry() not implemented");
    }
 
    /* (non-Javadoc)
@@ -75,5 +61,10 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       throw new UnsupportedOperationException("CommandLineApplicationController.initializeApplication() not implemented");
    }
 
+   /**
+    *@link aggregation
+    *      @associates org.astrogrid.applications.commandline.ApplicationEnvironment
+    */
+   private HashSet runningApplications;
 }
 

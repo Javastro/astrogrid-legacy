@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.3 2003/12/01 22:24:59 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.4 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,6 +14,12 @@
 package org.astrogrid.applications.common.config;
 
 import java.io.File;
+
+import javax.sql.DataSource;
+
+
+
+
 
 import org.astrogrid.applications.common.ApplicationsConstants;
 
@@ -30,10 +36,23 @@ public class ApplicationControllerConfig {
  static private org.apache.commons.logging.Log logger =
    org.apache.commons.logging.LogFactory.getLog(
       ApplicationControllerConfig.class);
+      
+ private javax.sql.DataSource dataSource = null;
  
  private ApplicationControllerConfig()
  {
     config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
+    //TODO get the real datasource from JNDI...
+ }
+ 
+ /**
+  * constructor to allow unit testing. Note that this is package private
+ * @param ds
+ */
+ApplicationControllerConfig(DataSource ds)
+ {
+    instance = this;
+    dataSource = ds;
  }
  
  public static ApplicationControllerConfig getInstance()
@@ -70,4 +89,11 @@ public class ApplicationControllerConfig {
     return config.getProperty(ApplicationsConstants.DataSourceName);
  }
  
+/**
+ * @return
+ */
+public javax.sql.DataSource getDataSource() {
+   return dataSource;
+}
+
 }

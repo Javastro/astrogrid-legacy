@@ -1,5 +1,5 @@
 /*
- * $Id: UnitTestData.java,v 1.2 2003/12/02 18:13:31 pah Exp $
+ * $Id: UnitTestData.java,v 1.1 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 19-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,7 +11,7 @@
  *
  */ 
 
-package org.astrogrid.applications.manager.db;
+package org.astrogrid.applications.common.config;
 
 import java.sql.Connection;
 import java.sql.SQLException;

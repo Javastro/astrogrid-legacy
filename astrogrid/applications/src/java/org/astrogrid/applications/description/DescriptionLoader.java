@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.5 2003/12/01 22:24:59 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.6 2003/12/04 13:26:25 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -39,28 +39,12 @@ import org.astrogrid.applications.manager.AbstractApplicationController;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4
- * @TODO make namespace aware
+ * @TODO make namespace aware and validate the input xml
  */
 public class DescriptionLoader {
    private AbstractApplicationController appController;
 
    private Digester digester;
-   private static final String APPLICATIONCONTROLLER_ELEMENT =
-      "ApplicationController";
-   private static final String APPLICATION_ELEMENT =
-      "ApplicationController/Application";
-      private static final String EXPATH_ELEMENT = APPLICATION_ELEMENT + "/ExecutionPath";
-   private static final String PARAMETER_ELEMENT =
-      "ApplicationController/Application/Parameters/Parameter";
-   private static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/UI_NAME";
-   private static final String UI_DESC_ELEMENT = PARAMETER_ELEMENT + "/UI_Description";
-   private static final String UI_DESC_CHILDREN = PARAMETER_ELEMENT + "/UI_Description/?";
-   private static final String UCD_ELEMENT = PARAMETER_ELEMENT + "/UCD";
-   private static final String DEFVAL_ELEMENT = PARAMETER_ELEMENT + "/DefaultValue";
-   private static final String UNITSL_ELEMENT = PARAMETER_ELEMENT + "/Units";
-   private static final String INTERFACE_ELEMENT= APPLICATION_ELEMENT + "/Interfaces/Interface";
-   private static final String INPUT_PREFS = INTERFACE_ELEMENT + "/input/pref";
-   private static final String OUTPUT_PREFS = INTERFACE_ELEMENT + "/output/pref";
    public DescriptionLoader(AbstractApplicationController ac) {
       appController = ac;
       try {
@@ -104,44 +88,44 @@ public class DescriptionLoader {
       digester.setRules(new ExtendedBaseRules()); // to allow matches on any children....
       
       digester.addObjectCreate(
-         APPLICATIONCONTROLLER_ELEMENT,
+      ApplicationDescriptionConstants.APPLICATIONCONTROLLER_ELEMENT,
          ApplicationDescriptions.class);
 
-      digester.addObjectCreate(APPLICATION_ELEMENT, ApplicationDescription.class);
+      digester.addObjectCreate(ApplicationDescriptionConstants.APPLICATION_ELEMENT, ApplicationDescription.class);
       // set the appropriate attributes
-      digester.addSetProperties(APPLICATION_ELEMENT);
-      digester.addCallMethod(EXPATH_ELEMENT, "setExecutionPath", 0);
+      digester.addSetProperties(ApplicationDescriptionConstants.APPLICATION_ELEMENT);
+      digester.addCallMethod(ApplicationDescriptionConstants.EXPATH_ELEMENT, "setExecutionPath", 0);
 
       // add the appropriate paramter element and set its properties
-      digester.addFactoryCreate(PARAMETER_ELEMENT, new ParameterCreationFactory());
-      digester.addSetProperties(PARAMETER_ELEMENT);
+      digester.addFactoryCreate(ApplicationDescriptionConstants.PARAMETER_ELEMENT, new ParameterCreationFactory());
+      digester.addSetProperties(ApplicationDescriptionConstants.PARAMETER_ELEMENT);
       
       //set some extra property values from the body elements of children
-      digester.addCallMethod(UI_NAME_ELEMENT, "setDisplayName", 0);
-      digester.addRule(UI_DESC_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
-      digester.addRule(UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription"));
+      digester.addCallMethod(ApplicationDescriptionConstants.UI_NAME_ELEMENT, "setDisplayName", 0);
+      digester.addRule(ApplicationDescriptionConstants.UI_DESC_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
+      digester.addRule(ApplicationDescriptionConstants.UI_DESC_ELEMENT, new AllBodyIncElementsRule("displayDescription", true));
       // add the parameter to the list of paramters      
-      digester.addSetNext(PARAMETER_ELEMENT, "addParameter");
+      digester.addSetNext(ApplicationDescriptionConstants.PARAMETER_ELEMENT, "addParameter");
       
       //deal with the interface defintions
-      digester.addObjectCreate(INTERFACE_ELEMENT, ApplicationInterface.class);
-      digester.addSetProperties(INTERFACE_ELEMENT);
-      digester.addRule(INTERFACE_ELEMENT, new SetTopRuleAtStart("setApplication","org.astrogrid.applications.description.ApplicationDescription"));
+      digester.addObjectCreate(ApplicationDescriptionConstants.INTERFACE_ELEMENT, ApplicationInterface.class);
+      digester.addSetProperties(ApplicationDescriptionConstants.INTERFACE_ELEMENT);
+      digester.addRule(ApplicationDescriptionConstants.INTERFACE_ELEMENT, new SetTopRuleAtStart("setApplication","org.astrogrid.applications.description.ApplicationDescription"));
       
       //input and output parameter references
-      digester.addCallMethod(INPUT_PREFS, "addInputParameter",1);
-      digester.addCallParam(INPUT_PREFS, 0, "ref");
+      digester.addCallMethod(ApplicationDescriptionConstants.INPUT_PREFS, "addInputParameter",1);
+      digester.addCallParam(ApplicationDescriptionConstants.INPUT_PREFS, 0, "ref");
       
       //input and output parameter references
-      digester.addCallMethod(OUTPUT_PREFS, "addOutputParameter",1);
-      digester.addCallParam(OUTPUT_PREFS, 0, "ref");
+      digester.addCallMethod(ApplicationDescriptionConstants.OUTPUT_PREFS, "addOutputParameter",1);
+      digester.addCallParam(ApplicationDescriptionConstants.OUTPUT_PREFS, 0, "ref");
       
       
       
-      digester.addSetNext(INTERFACE_ELEMENT, "addInterface");
+      digester.addSetNext(ApplicationDescriptionConstants.INTERFACE_ELEMENT, "addInterface");
 
       // finally add the application description to the list
-      digester.addSetNext(APPLICATION_ELEMENT, "addDescription");
+      digester.addSetNext(ApplicationDescriptionConstants.APPLICATION_ELEMENT, "addDescription");
       
  
      

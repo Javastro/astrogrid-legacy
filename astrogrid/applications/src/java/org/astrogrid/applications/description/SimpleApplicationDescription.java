@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleApplicationDescription.java,v 1.1 2003/12/01 22:24:59 pah Exp $
+ * $Id: SimpleApplicationDescription.java,v 1.2 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,7 @@ package org.astrogrid.applications.description;
  */
 public class SimpleApplicationDescription {
    String xmlDescriptor;
+   String name;
 
    /**
     * @return
@@ -34,6 +35,20 @@ public class SimpleApplicationDescription {
     */
    public void setXmlDescriptor(String string) {
       xmlDescriptor = string;
+   }
+
+   /**
+    * @return
+    */
+   public String getName() {
+      return name;
+   }
+
+   /**
+    * @param string
+    */
+   public void setName(String string) {
+      name = string;
    }
 
 }

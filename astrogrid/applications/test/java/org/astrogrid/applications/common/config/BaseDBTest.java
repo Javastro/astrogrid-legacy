@@ -1,5 +1,5 @@
 /*
- * $Id: BaseDBTest.java,v 1.2 2003/12/02 18:13:31 pah Exp $
+ * $Id: BaseDBTest.java,v 1.1 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,7 +11,7 @@
  *
  */ 
 
-package org.astrogrid.applications.manager.db;
+package org.astrogrid.applications.common.config;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -90,6 +90,9 @@ public class BaseDBTest extends TestCase {
          String script = streamToString(stream);
          runSQLScript(script, conn);
          UnitTestData.load(conn);
+         
+         // create a new config using the newly created datasource.
+         new ApplicationControllerConfig(ds);
 
       }
       catch (SQLException sqle) {

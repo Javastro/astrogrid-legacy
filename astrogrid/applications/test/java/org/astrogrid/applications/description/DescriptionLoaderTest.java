@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.5 2003/12/03 11:48:48 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.6 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -54,16 +54,9 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class DescriptionLoaderTest extends TestCase {
-
-   private CommandLineApplicationController ac;
-
-   private URL urlconfig;
-   private static String testFile = "TestApplicationConfig.xml";
+public class DescriptionLoaderTest extends DescriptionBaseTest {
 
    private DescriptionLoader dl;
-
-   private File inputFile;
 
    /**
     * Constructor for DescriptionLoaderTest.
@@ -77,21 +70,6 @@ public class DescriptionLoaderTest extends TestCase {
       junit.textui.TestRunner.run(DescriptionLoaderTest.class);
    }
 
-   /*
-    * @see TestCase#setUp()
-    */
-   protected void setUp() throws Exception {
-      super.setUp();
-      urlconfig = (this.getClass()).getResource(testFile);
-      assertNotNull("cannot find the input test file " + testFile, urlconfig);
-
-      URI uri = new URI(urlconfig.toString());
-      inputFile = new File(uri);
-      ac = new CommandLineApplicationController();
-      assertNotNull("Cannot create application controller", ac);
-      testDescriptionLoader(); //call this even though it is a trivial test
-   }
-
    final public void testDescriptionLoader() {
       dl = new DescriptionLoader(ac);
       assertNotNull("cannot create the DescriptionLoader", dl);
@@ -103,7 +81,7 @@ public class DescriptionLoaderTest extends TestCase {
       assertTrue("The load failed", success);
       try {
          ApplicationDescription ad =
-            ac.getApplicationDescriptions().getDescription("testapp");
+            ac.getApplicationDescriptions().getDescription(TESTAPPNAME);
             assertEquals("instance class",ad.getInstanceClass(),"org.astrogrid.applications.commandline.TestApp");
             
             assertTrue("execution path", ad.getExecutionPath().endsWith( "testapp.sh")); //this is dependent on the actual location
@@ -168,6 +146,15 @@ public class DescriptionLoaderTest extends TestCase {
       catch (ApplicationDescriptionNotFoundException e) {
          fail("expected application testapp not found");
       }
+   }
+
+   /* (non-Javadoc)
+    * @see junit.framework.TestCase#setUp()
+    */
+   protected void setUp() throws Exception {
+      super.setUp();
+      testDescriptionLoader(); //call this even though it is a trivial test
+
    }
 
 }

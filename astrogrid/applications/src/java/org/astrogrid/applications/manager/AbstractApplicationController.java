@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.5 2003/11/26 22:07:24 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.6 2003/12/04 13:26:25 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,14 +13,19 @@ package org.astrogrid.applications.manager;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.Parameter;
+import org.astrogrid.applications.common.config.ApplicationControllerConfig;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationDescriptions;
+import org.astrogrid.applications.description.DescriptionLoader;
+import org.astrogrid.applications.description.SimpleApplicationDescription;
 
 import javax.sql.DataSource;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 abstract public class AbstractApplicationController implements ApplicationController {
-
    /**
     * The place where the application controller stores local execution status. 
     */
@@ -30,7 +35,21 @@ abstract public class AbstractApplicationController implements ApplicationContro
     * The store for the descriptions of the applications that this application controller manages.
     */
    private ApplicationDescriptions applicationDescriptions;
+   private Map simpleDescriptions;
    
+   AbstractApplicationController()
+   {
+      simpleDescriptions = new HashMap();
+      // get the datasource
+      ApplicationControllerConfig config = ApplicationControllerConfig.getInstance();
+      db = config.getDataSource();
+      
+      // load the application descriptions
+      DescriptionLoader dl = new DescriptionLoader(this);
+      dl.loadDescription(config.getApplicationConfigFile());
+      
+     
+   }
    
    /**
     * @return
@@ -44,6 +63,25 @@ abstract public class AbstractApplicationController implements ApplicationContro
     */
    public void setApplicationDescriptions(ApplicationDescriptions descriptions) {
       applicationDescriptions = descriptions;
+   }
+
+   public SimpleApplicationDescription getApplicationDescription(String applicationID) {
+      return (SimpleApplicationDescription)simpleDescriptions.get(applicationID);
+   }
+
+   public String[] listApplications() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("CommandLineApplicationController.listApplications() not implemented");
+   }
+
+   public String returnRegistryEntry() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("CommandLineApplicationController.returnRegistryEntry() not implemented");
+   }
+   
+   public void addSimpleDescription(SimpleApplicationDescription d)
+   {
+      simpleDescriptions.put(d.getName(), d);
    }
 
 }

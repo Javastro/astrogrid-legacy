@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.1 2003/12/01 22:24:59 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.2 2003/12/04 13:26:25 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,6 +22,8 @@ import junit.framework.TestCase;
  */
 public class CommandLineApplicationControllerTest extends TestCase {
 
+   private CommandLineApplicationController controller;
+
    /**
     * Constructor for CommandLineApplicationControllerTest.
     * @param arg0
@@ -39,6 +41,7 @@ public class CommandLineApplicationControllerTest extends TestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
+      controller = new CommandLineApplicationController();
    }
 
    final public void testExecuteApplication() {
