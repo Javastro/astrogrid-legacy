@@ -2,9 +2,10 @@
 <xsd:schema
         targetNamespace="http://www.astrogrid.org/schema/CEATypes/v1"
         xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
+        xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
         xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-
-        <xsd:element name="message" type="ceat:message-type" />
+        <xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
+              <xsd:element name="message" type="ceat:message-type" />
         <!-- needed to change schema of this. unit tests reveal that axis can't transport xsd:dateTime as an attrib.
         works as an element though. gah
         if I'm changing one field to a nested element, may as well change the lot of them...
@@ -13,16 +14,6 @@
                 <xsd:annotation>
                         <xsd:documentation>A log entry recorded during execution</xsd:documentation>
                 </xsd:annotation>
-                <!--
-                <xsd:simpleContent>
-                        <xsd:extension base="xsd:string">
-                                <xsd:attribute name="source" type="xsd:string" />
-                                <xsd:attribute name="timestamp" type="xsd:dateTime" />
-                                <xsd:attribute name="level" type="ceat:log-level" />
-                                <xsd:attribute name="phase" type="ceat:execution-phase" />
-                        </xsd:extension>
-                </xsd:simpleContent>
-                -->
                 <xsd:all>
                         <xsd:element name="content" type="xsd:string" minOccurs="0" />
                         <xsd:element name="source" type="xsd:string" minOccurs="0" />
@@ -68,5 +59,28 @@
                 </xsd:restriction>
         </xsd:simpleType>
 
+
+      <xsd:complexType name="result-list-type">
+        <xsd:sequence>
+                <xsd:element name="result" type="ceapd:parameterValue" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:complexType>
+
+      <xsd:complexType name="input-list-type">
+        <xsd:sequence>
+                <xsd:element name="input" type="ceapd:parameterValue" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+      </xsd:complexType>
+
+       <xsd:complexType name="execution-summary-type">
+        <xsd:all>
+                        <xsd:element name="application-name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                        <xsd:element name="execution-id" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                        <!-- have startTime and end Time here ?? -->
+                        <xsd:element name="input-list" type="ceat:input-list-type" minOccurs="1" maxOccurs="1" />
+                        <xsd:element name="result-list" type="ceat:result-list-type" minOccurs="0" maxOccurs="1" />
+                        <xsd:element name="status" type="ceat:execution-phase" minOccurs="1" maxOccurs="1" />
+        </xsd:all>
+       </xsd:complexType>
 
 </xsd:schema>

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinitionDescriptor.java,v 1.23 2004/05/06 13:40:01 pah Exp $
+ * $Id: BaseParameterDefinitionDescriptor.java,v 1.24 2004/07/01 10:18:31 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class BaseParameterDefinitionDescriptor.
  * 
- * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.24 $ $Date: 2004/07/01 10:18:31 $
  */
 public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -133,6 +133,72 @@ public class BaseParameterDefinitionDescriptor extends org.exolab.castor.xml.uti
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _acceptEncodings
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_acceptEncodings", "accept-encodings", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                BaseParameterDefinition target = (BaseParameterDefinition) object;
+                return target.getAcceptEncodings();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    BaseParameterDefinition target = (BaseParameterDefinition) object;
+                    target.addAcceptEncodings( (java.lang.String) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return new java.lang.String();
+            }
+        } );
+        desc.setHandler( new org.exolab.castor.xml.handlers.CollectionFieldHandler(handler, new org.exolab.castor.xml.validators.NameValidator(org.exolab.castor.xml.validators.NameValidator.NMTOKEN)));
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _acceptEncodings
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(0);
+        //-- _subType
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_subType", "sub-type", org.exolab.castor.xml.NodeType.Attribute);
+        desc.setImmutable(true);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                BaseParameterDefinition target = (BaseParameterDefinition) object;
+                return target.getSubType();
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    BaseParameterDefinition target = (BaseParameterDefinition) object;
+                    target.setSubType( (java.lang.String) value);
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return null;
+            }
+        } );
+        desc.setHandler(handler);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _subType
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors

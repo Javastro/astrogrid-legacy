@@ -1,38 +1,38 @@
 /**
- * Interface_output.java
+ * ResultListType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.applications.beans.v1.axis.ceabase;
+package org.astrogrid.jes.types.v1.cea.axis;
 
-public class Interface_output  implements java.io.Serializable {
-    private org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] pref;
+public class ResultListType  implements java.io.Serializable {
+    private org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] result;
 
-    public Interface_output() {
+    public ResultListType() {
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] getPref() {
-        return pref;
+    public org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] getResult() {
+        return result;
     }
 
-    public void setPref(org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] pref) {
-        this.pref = pref;
+    public void setResult(org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] result) {
+        this.result = result;
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef getPref(int i) {
-        return pref[i];
+    public org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue getResult(int i) {
+        return result[i];
     }
 
-    public void setPref(int i, org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef value) {
-        this.pref[i] = value;
+    public void setResult(int i, org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue value) {
+        this.result[i] = value;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Interface_output)) return false;
-        Interface_output other = (Interface_output) obj;
+        if (!(obj instanceof ResultListType)) return false;
+        ResultListType other = (ResultListType) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -41,9 +41,9 @@ public class Interface_output  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.pref==null && other.getPref()==null) || 
-             (this.pref!=null &&
-              java.util.Arrays.equals(this.pref, other.getPref())));
+            ((this.result==null && other.getResult()==null) || 
+             (this.result!=null &&
+              java.util.Arrays.equals(this.result, other.getResult())));
         __equalsCalc = null;
         return _equals;
     }
@@ -55,11 +55,11 @@ public class Interface_output  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getPref() != null) {
+        if (getResult() != null) {
             for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getPref());
+                 i<java.lang.reflect.Array.getLength(getResult());
                  i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getPref(), i);
+                java.lang.Object obj = java.lang.reflect.Array.get(getResult(), i);
                 if (obj != null &&
                     !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
@@ -72,14 +72,14 @@ public class Interface_output  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Interface_output.class);
+        new org.apache.axis.description.TypeDesc(ResultListType.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>output"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("pref");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "pref"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "parameterRef"));
+        elemField.setFieldName("result");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue"));
         elemField.setMinOccurs(0);
         typeDesc.addFieldDesc(elemField);
     }

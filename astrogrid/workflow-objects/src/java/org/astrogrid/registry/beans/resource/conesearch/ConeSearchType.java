@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ConeSearchType.java,v 1.1 2004/05/06 13:40:02 pah Exp $
+ * $Id: ConeSearchType.java,v 1.2 2004/07/01 10:18:32 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.conesearch;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ConeSearchType.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/05/06 13:40:02 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/01 10:18:32 $
  */
 public class ConeSearchType extends org.astrogrid.registry.beans.resource.CapabilityType 
 implements java.io.Serializable

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValue.java,v 1.23 2004/05/06 13:40:01 pah Exp $
+ * $Id: ParameterValue.java,v 1.24 2004/07/01 10:18:31 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
@@ -26,7 +25,7 @@ import org.xml.sax.ContentHandler;
  * Defines what a parameterValue can contain - for the instance
  * document
  * 
- * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.24 $ $Date: 2004/07/01 10:18:31 $
  */
 public class ParameterValue extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -43,9 +42,9 @@ implements java.io.Serializable
     private java.lang.String _name;
 
     /**
-     * Field _type
+     * Field _encoding
      */
-    private org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes _type;
+    private java.lang.String _encoding;
 
     /**
      * Field _indirect
@@ -107,12 +106,12 @@ implements java.io.Serializable
             }
             else if (temp._name != null)
                 return false;
-            if (this._type != null) {
-                if (temp._type == null) return false;
-                else if (!(this._type.equals(temp._type))) 
+            if (this._encoding != null) {
+                if (temp._encoding == null) return false;
+                else if (!(this._encoding.equals(temp._encoding))) 
                     return false;
             }
-            else if (temp._type != null)
+            else if (temp._encoding != null)
                 return false;
             if (this._indirect != temp._indirect)
                 return false;
@@ -129,6 +128,16 @@ implements java.io.Serializable
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
+
+    /**
+     * Returns the value of field 'encoding'.
+     * 
+     * @return the value of field 'encoding'.
+     */
+    public java.lang.String getEncoding()
+    {
+        return this._encoding;
+    } //-- java.lang.String getEncoding() 
 
     /**
      * Returns the value of field 'indirect'.
@@ -149,16 +158,6 @@ implements java.io.Serializable
     {
         return this._name;
     } //-- java.lang.String getName() 
-
-    /**
-     * Returns the value of field 'type'.
-     * 
-     * @return the value of field 'type'.
-     */
-    public org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes getType()
-    {
-        return this._type;
-    } //-- org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes getType() 
 
     /**
      * Returns the value of field 'value'.
@@ -217,6 +216,16 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
+     * Sets the value of field 'encoding'.
+     * 
+     * @param encoding the value of field 'encoding'.
+     */
+    public void setEncoding(java.lang.String encoding)
+    {
+        this._encoding = encoding;
+    } //-- void setEncoding(java.lang.String) 
+
+    /**
      * Sets the value of field 'indirect'.
      * 
      * @param indirect the value of field 'indirect'.
@@ -236,16 +245,6 @@ implements java.io.Serializable
     {
         this._name = name;
     } //-- void setName(java.lang.String) 
-
-    /**
-     * Sets the value of field 'type'.
-     * 
-     * @param type the value of field 'type'.
-     */
-    public void setType(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes type)
-    {
-        this._type = type;
-    } //-- void setType(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes) 
 
     /**
      * Sets the value of field 'value'.

@@ -1,38 +1,38 @@
 /**
- * Interface_input.java
+ * InputListType.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
  */
 
-package org.astrogrid.applications.beans.v1.axis.ceabase;
+package org.astrogrid.jes.types.v1.cea.axis;
 
-public class Interface_input  implements java.io.Serializable {
-    private org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] pref;
+public class InputListType  implements java.io.Serializable {
+    private org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] input;
 
-    public Interface_input() {
+    public InputListType() {
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] getPref() {
-        return pref;
+    public org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] getInput() {
+        return input;
     }
 
-    public void setPref(org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] pref) {
-        this.pref = pref;
+    public void setInput(org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue[] input) {
+        this.input = input;
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef getPref(int i) {
-        return pref[i];
+    public org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue getInput(int i) {
+        return input[i];
     }
 
-    public void setPref(int i, org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef value) {
-        this.pref[i] = value;
+    public void setInput(int i, org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue value) {
+        this.input[i] = value;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof Interface_input)) return false;
-        Interface_input other = (Interface_input) obj;
+        if (!(obj instanceof InputListType)) return false;
+        InputListType other = (InputListType) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -41,9 +41,9 @@ public class Interface_input  implements java.io.Serializable {
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.pref==null && other.getPref()==null) || 
-             (this.pref!=null &&
-              java.util.Arrays.equals(this.pref, other.getPref())));
+            ((this.input==null && other.getInput()==null) || 
+             (this.input!=null &&
+              java.util.Arrays.equals(this.input, other.getInput())));
         __equalsCalc = null;
         return _equals;
     }
@@ -55,11 +55,11 @@ public class Interface_input  implements java.io.Serializable {
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getPref() != null) {
+        if (getInput() != null) {
             for (int i=0;
-                 i<java.lang.reflect.Array.getLength(getPref());
+                 i<java.lang.reflect.Array.getLength(getInput());
                  i++) {
-                java.lang.Object obj = java.lang.reflect.Array.get(getPref(), i);
+                java.lang.Object obj = java.lang.reflect.Array.get(getInput(), i);
                 if (obj != null &&
                     !obj.getClass().isArray()) {
                     _hashCode += obj.hashCode();
@@ -72,14 +72,14 @@ public class Interface_input  implements java.io.Serializable {
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(Interface_input.class);
+        new org.apache.axis.description.TypeDesc(InputListType.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>input"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "input-list-type"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("pref");
-        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "pref"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "parameterRef"));
+        elemField.setFieldName("input");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "input"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue"));
         elemField.setMinOccurs(0);
         typeDesc.addFieldDesc(elemField);
     }

@@ -20,10 +20,11 @@ public class ResultsListenerServiceSoapBindingStub extends org.apache.axis.clien
         org.apache.axis.description.OperationDesc oper;
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("putResults");
-        oper.addParameter(new javax.xml.namespace.QName("urn:cea/resultslistener-wrapper/v1", "putResults"), new javax.xml.namespace.QName("urn:cea/resultslistener-wrapper/v1", ">putResults"), org.astrogrid.jes.service.v1.cearesults.wrapper._putResults.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type"), org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("", "result-list"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type"), org.astrogrid.jes.types.v1.cea.axis.ResultListType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
-        oper.setStyle(org.apache.axis.enum.Style.DOCUMENT);
-        oper.setUse(org.apache.axis.enum.Use.ENCODED);
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
         _operations[0] = oper;
 
     }
@@ -53,12 +54,19 @@ public class ResultsListenerServiceSoapBindingStub extends org.apache.axis.clien
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("urn:cea/resultslistener-wrapper/v1", ">putResults");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.service.v1.cearesults.wrapper._putResults.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ResultListType.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
 
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
             cachedSerQNames.add(qName);
@@ -66,13 +74,6 @@ public class ResultsListenerServiceSoapBindingStub extends org.apache.axis.clien
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
 
     }
 
@@ -111,8 +112,7 @@ public class ResultsListenerServiceSoapBindingStub extends org.apache.axis.clien
             synchronized (this) {
                 if (firstCall()) {
                     // must set encoding style before registering serializers
-                    _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-                    _call.setEncodingStyle(org.apache.axis.Constants.URI_SOAP11_ENC);
+                    _call.setEncodingStyle(null);
                     for (int i = 0; i < cachedSerFactories.size(); ++i) {
                         java.lang.Class cls = (java.lang.Class) cachedSerClasses.get(i);
                         javax.xml.namespace.QName qName =
@@ -132,18 +132,23 @@ public class ResultsListenerServiceSoapBindingStub extends org.apache.axis.clien
         }
     }
 
-    public void putResults(org.astrogrid.jes.service.v1.cearesults.wrapper._putResults parameters) throws java.rmi.RemoteException {
+    public void putResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType jobIdentifier, org.astrogrid.jes.types.v1.cea.axis.ResultListType resultList) throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
         _call.setOperation(_operations[0]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("putResults");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("", "putResults"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:cea/resultslistener-wrapper/v1", "putResults"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        _call.invokeOneWay(new java.lang.Object[] {parameters});
+        _call.invokeOneWay(new java.lang.Object[] {jobIdentifier, resultList});
 
     }
 

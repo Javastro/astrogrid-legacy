@@ -66,7 +66,7 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
-            <xsd:element name="execute">
+            <xsd:element name="init">
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element ref="wkf:tool"/>
@@ -75,18 +75,13 @@
                                 <xsd:documentation>The identifier for the job step being executed</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
-                        <xsd:element name="jobMonitorURL" type="xsd:string">
-                            <xsd:annotation>
-                                <xsd:documentation>The endpoint of the JobMonitor service that is to be used for status callbacks</xsd:documentation>
-                            </xsd:annotation>
-                        </xsd:element>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
-            <xsd:element name="executeResponse">
+            <xsd:element name="initResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="executeReturn" type="xsd:string">
+                        <xsd:element name="initReturn" type="xsd:string">
                             <xsd:annotation>
                                 <xsd:documentation>The idetifier that can be used to track this particular execution instance of the application</xsd:documentation>
                             </xsd:annotation>
@@ -116,34 +111,61 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
-            <xsd:element name="listApplications">
-                <xsd:complexType/>
-            </xsd:element>
-            <xsd:element name="listApplicationsResponse">
+
+           <xsd:element name="registerProgressListener">
+               <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="executionId" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>The identifier for the execution instance that is to be executed.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="endpoint" type="xsd:anyURI">
+                        	<xsd:annotation>
+                        		<xsd:documentation>the endpoint of the listener interface to register</xsd:documentation>
+                        	</xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>       
+                 </xsd:complexType>    	
+           </xsd:element>
+           <xsd:element name="registerResultsListener">
+               <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="executionId" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>The identifier for the execution instance that is to be executed.</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                        <xsd:element name="endpoint" type="xsd:anyURI">
+                        	<xsd:annotation>
+                        		<xsd:documentation>the endpoint of the listener interface to register</xsd:documentation>
+                        	</xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>   
+                 </xsd:complexType>        	
+           </xsd:element>           
+           <xsd:element name="execute">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element ref="cea:ApplicationList">
+                        <xsd:element name="executionId" type="xsd:string">
                             <xsd:annotation>
-                                <xsd:documentation>perhaps this should just be the simple name list</xsd:documentation>
+                                <xsd:documentation>The identifier for the execution instance that is to be executed.</xsd:documentation>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
-            <xsd:element name="getApplicationDescription">
+            <xsd:element name="executeResponse">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="applicationID" type="xsd:string"/>
+                        <xsd:element name="abortReturn" type="xsd:boolean">
+                            <xsd:annotation>
+                                <xsd:documentation>returns true if the application execution was successfully started</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
                     </xsd:sequence>
                 </xsd:complexType>
-            </xsd:element>
-            <xsd:element name="getApplicationDescriptionResponse">
-                <xsd:complexType>
-                    <xsd:sequence>
-                        <xsd:element name="ApplicationDesciption" type="cea:ApplicationBase"/>
-                    </xsd:sequence>
-                </xsd:complexType>
-            </xsd:element>
+            </xsd:element>            
             <xsd:element name="queryExecutionStatus">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -166,6 +188,28 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="getExecutionSummary">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="executionId" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>The identifier for the execution instance that is to be queried</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getExecutionSummaryResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="getExecutionSummaryReturn" type="ceat:execution-summary-type">
+                            <xsd:annotation>
+                                <xsd:documentation>This is the standard execution status message</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>            
             <xsd:element name="returnRegistryEntry">
                 <xsd:complexType/>
             </xsd:element>
@@ -187,37 +231,66 @@
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
+            <xsd:element name="getResults">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="executionId" type="xsd:string">
+                            <xsd:annotation>
+                                <xsd:documentation>The identifier for the execution instance that is to be queried</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getResultsResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="getResultsReturn" type="ceat:result-list-type">
+                            <xsd:annotation>
+                                <xsd:documentation>A list of results</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
         </xsd:schema>
     </wsdl:types>
+    <wsdl:message name="initRequest">
+        <wsdl:part element="impl:init" name="parameters"/>
+    </wsdl:message>
     <wsdl:message name="executeRequest">
         <wsdl:part element="impl:execute" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="getApplicationDescriptionResponse">
-        <wsdl:part element="impl:getApplicationDescriptionResponse" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="executeResponse">
-        <wsdl:part element="impl:executeResponse" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="getApplicationDescriptionRequest">
-        <wsdl:part element="impl:getApplicationDescription" name="parameters"/>
-    </wsdl:message>
-    <wsdl:message name="listApplicationsRequest">
-        <wsdl:part element="impl:listApplications" name="parameters"/>
-    </wsdl:message>
+    </wsdl:message>    
     <wsdl:message name="ceaFault">
         <wsdl:part name="message" type="xsd:string"/>
+    </wsdl:message>
+    <wsdl:message name="getResultsResponse">
+        <wsdl:part element="impl:getResultsResponse" name="parameters"/>
     </wsdl:message>
     <wsdl:message name="queryExecutionStatusRequest">
         <wsdl:part element="impl:queryExecutionStatus" name="parameters"/>
     </wsdl:message>
-    <wsdl:message name="listApplicationsResponse">
-        <wsdl:part element="impl:listApplicationsResponse" name="parameters"/>
-    </wsdl:message>
+    <wsdl:message name="getExecutionSummaryRequest">
+        <wsdl:part element="impl:getExecutionSummary" name="parameters"/>
+    </wsdl:message>    
     <wsdl:message name="abortRequest">
         <wsdl:part element="impl:abort" name="parameters"/>
     </wsdl:message>
+    <wsdl:message name="registerResultsListenerRequest">
+        <wsdl:part element="impl:registerResultsListener" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="registerProgressListenerRequest">
+        <wsdl:part element="impl:registerProgressListener" name="parameters"/>
+    </wsdl:message>
+            
     <wsdl:message name="returnRegistryEntryRequest">
         <wsdl:part element="impl:returnRegistryEntry" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="getResultsRequest">
+        <wsdl:part element="impl:getResults" name="parameters"/>
+    </wsdl:message>
+    <wsdl:message name="initResponse">
+        <wsdl:part element="impl:initResponse" name="parameters"/>
     </wsdl:message>
     <wsdl:message name="returnRegistryEntryResponse">
         <wsdl:part element="impl:returnRegistryEntryResponse" name="parameters"/>
@@ -225,37 +298,39 @@
     <wsdl:message name="queryExecutionStatusResponse">
         <wsdl:part element="impl:queryExecutionStatusResponse" name="parameters"/>
     </wsdl:message>
+    <wsdl:message name="getExecutionSummaryResponse">
+        <wsdl:part element="impl:getExecutionSummaryResponse" name="parameters"/>
+    </wsdl:message>    
     <wsdl:message name="abortResponse">
         <wsdl:part element="impl:abortResponse" name="parameters"/>
     </wsdl:message>
+    <wsdl:message name="executeResponse">
+        <wsdl:part element="impl:executeResponse" name="parameters"/>
+    </wsdl:message>    
     <wsdl:portType name="CommonExecutionConnector">
+        <wsdl:operation name="init" parameterOrder="">
+            <wsdl:input message="intf:initRequest" name="initRequest"/>
+            <wsdl:output message="intf:initResponse" name="initResponse"/>
+            <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
+        </wsdl:operation>
         <wsdl:operation name="execute" parameterOrder="">
             <wsdl:input message="intf:executeRequest" name="executeRequest"/>
             <wsdl:output message="intf:executeResponse" name="executeResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
-        </wsdl:operation>
+        </wsdl:operation>        
         <wsdl:operation name="abort" parameterOrder="">
             <wsdl:input message="intf:abortRequest" name="abortRequest"/>
             <wsdl:output message="intf:abortResponse" name="abortResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
-        <wsdl:operation name="listApplications">
-            <wsdl:input
-                message="intf:listApplicationsRequest"
-                name="listApplicationsRequest"/>
-            <wsdl:output
-                message="intf:listApplicationsResponse"
-                name="listApplicationsResponse"/>
+       <wsdl:operation name="registerResultsListener" parameterOrder="">
+            <wsdl:input message="intf:registerResultsListenerRequest" name="registerResultsListenerRequest"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
-        <wsdl:operation name="getApplicationDescription" parameterOrder="">
-            <wsdl:input
-                message="intf:getApplicationDescriptionRequest"
-                name="getApplicationDescriptionRequest"/>
-            <wsdl:output
-                message="intf:getApplicationDescriptionResponse"
-                name="getApplicationDescriptionResponse"/>
-        </wsdl:operation>
+       <wsdl:operation name="registerProgressListener" parameterOrder="">
+            <wsdl:input message="intf:registerProgressListenerRequest" name="registerProgressListenerRequest"/>
+            <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
+        </wsdl:operation>                
         <wsdl:operation name="queryExecutionStatus" parameterOrder="">
             <wsdl:input
                 message="intf:queryExecutionStatusRequest"
@@ -265,6 +340,15 @@
                 name="queryExecutionStatusResponse"/>
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
+      <wsdl:operation name="getExecutionSummary" parameterOrder="">
+            <wsdl:input
+                message="intf:getExecutionSummaryRequest"
+                name="getExecutionSummaryRequest"/>
+            <wsdl:output
+                message="intf:getExecutionSummaryResponse"
+                name="getExecutionSummaryResponse"/>
+            <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
+        </wsdl:operation>        
         <wsdl:operation name="returnRegistryEntry">
             <wsdl:input
                 message="intf:returnRegistryEntryRequest"
@@ -273,79 +357,159 @@
                 message="intf:returnRegistryEntryResponse"
                 name="returnRegistryEntryResponse"/>
         </wsdl:operation>
+        <wsdl:operation name="getResults">
+            <wsdl:input message="intf:getResultsRequest"/>
+            <wsdl:output message="intf:getResultsResponse"/>
+             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
+        </wsdl:operation>
     </wsdl:portType>
-<!-- could try removing the namespace attributes -->
     <wsdl:binding
         name="CommonExecutionConnectorServiceSoapBinding"
         type="intf:CommonExecutionConnector">
         <wsdlsoap:binding
             style="document"
             transport="http://schemas.xmlsoap.org/soap/http"/>
-        <wsdl:operation name="execute">
+        <wsdl:operation name="init">
             <wsdlsoap:operation/>
             <wsdl:input>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:output>
             <wsdl:fault name="ceaFault">
-                <wsdlsoap:fault name="intf:ceaFault" use="literal"/>
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="abort">
             <wsdlsoap:operation/>
             <wsdl:input>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:output>
             <wsdl:fault name="ceaFault">
-                <wsdlsoap:fault name="intf:ceaFault" use="literal"/>
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="listApplications">
+        <wsdl:operation name="registerResultsListener">
             <wsdlsoap:operation/>
             <wsdl:input>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
+             </wsdl:input>
+            <wsdl:fault name="ceaFault">
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>   
+        <wsdl:operation name="registerProgressListener">
+            <wsdlsoap:operation/>
+            <wsdl:input>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
+             </wsdl:input>
+            <wsdl:fault name="ceaFault">
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>              
+        <wsdl:operation name="execute">
+            <wsdlsoap:operation/>
+            <wsdl:input>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:output>
             <wsdl:fault name="ceaFault">
-                <wsdlsoap:fault name="intf:ceaFault" use="literal"/>
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
             </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getApplicationDescription">
-            <wsdlsoap:operation/>
-            <wsdl:input>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
-            </wsdl:input>
-            <wsdl:output>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
+        </wsdl:operation>        
         <wsdl:operation name="queryExecutionStatus">
             <wsdlsoap:operation/>
             <wsdl:input>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:output>
             <wsdl:fault name="ceaFault">
-                <wsdlsoap:fault name="intf:ceaFault" use="literal"/>
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
             </wsdl:fault>
         </wsdl:operation>
+        <wsdl:operation name="getExecutionSummary">
+            <wsdlsoap:operation/>
+            <wsdl:input>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="ceaFault">
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>        
         <wsdl:operation name="returnRegistryEntry">
             <wsdlsoap:operation/>
             <wsdl:input>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:input>
             <wsdl:output>
-                <wsdlsoap:body namespace="urn:cea.applications.astrogrid.org" use="literal"/>
+                <wsdlsoap:body
+                    namespace="urn:cea.applications.astrogrid.org"
+                    parts="parameters"
+                    use="literal"/>
             </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getResults">
+            <wsdlsoap:operation
+                soapAction="capeconnect:CommonExecutionConnectorService:CommonExecutionConnector#getResults"/>
+            <wsdl:input>
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+             <wsdl:fault name="ceaFault">
+                <wsdlsoap:fault name="ceaFault" use="literal"/>
+            </wsdl:fault>
         </wsdl:operation>
     </wsdl:binding>
     <wsdl:service name="CommonExecutionConnectorService">

@@ -10,7 +10,7 @@ package org.astrogrid.jes.service.v1.cearesults;
 public class ResultsListenerServiceLocator extends org.apache.axis.client.Service implements org.astrogrid.jes.service.v1.cearesults.ResultsListenerService {
 
     // Use to get a proxy class for ResultListener
-    private final java.lang.String ResultListener_address = "http://localhost:8000/ccx/ResultsListenerService";
+    private final java.lang.String ResultListener_address = "http://localhost:8080/axis/services/ResultsListenerService";
 
     public java.lang.String getResultListenerAddress() {
         return ResultListener_address;

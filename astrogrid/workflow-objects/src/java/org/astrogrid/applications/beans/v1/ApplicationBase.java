@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ApplicationBase.java,v 1.13 2004/05/06 13:40:01 pah Exp $
+ * $Id: ApplicationBase.java,v 1.14 2004/07/01 10:18:31 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Base Application Description
  * 
- * @version $Revision: 1.13 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.14 $ $Date: 2004/07/01 10:18:31 $
  */
 public class ApplicationBase extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

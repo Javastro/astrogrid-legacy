@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: DataCentreControllerConfig.java,v 1.23 2004/05/06 13:40:01 pah Exp $
+ * $Id: DataCentreControllerConfig.java,v 1.24 2004/07/01 10:18:31 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Configuration for a set of datacentre descriptions
  * 
- * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.24 $ $Date: 2004/07/01 10:18:31 $
  */
 public class DataCentreControllerConfig extends org.astrogrid.applications.beans.v1.CommonExecutionConnectorConfigType 
 implements java.io.Serializable

@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ADQLDescriptor.java,v 1.23 2004/05/06 13:40:01 pah Exp $
+ * $Id: ResultListTypeDescriptor.java,v 1.1 2004/07/01 10:18:31 nw Exp $
  */
 
-package org.astrogrid.applications.beans.v1.parameters;
+package org.astrogrid.applications.beans.v1.cea.castor;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class ADQLDescriptor.
+ * Class ResultListTypeDescriptor.
  * 
- * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.1 $ $Date: 2004/07/01 10:18:31 $
  */
-public class ADQLDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class ResultListTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,10 +53,10 @@ public class ADQLDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
      //- Constructors -/
     //----------------/
 
-    public ADQLDescriptor() {
+    public ResultListTypeDescriptor() {
         super();
-        nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/v1";
-        xmlName = "ADQL";
+        nsURI = "http://www.astrogrid.org/schema/CEATypes/v1";
+        xmlName = "result-list-type";
         
         //-- set grouping compositor
         setCompositorAsSequence();
@@ -67,40 +67,42 @@ public class ADQLDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
         
         //-- initialize element descriptors
         
-        //-- _anyObject
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Object.class, "_anyObject", (String)null, org.exolab.castor.xml.NodeType.Element);
+        //-- _resultList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.applications.beans.v1.parameters.ParameterValue.class, "_resultList", "result", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                ADQL target = (ADQL) object;
-                return target.getAnyObject();
+                ResultListType target = (ResultListType) object;
+                return target.getResult();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    ADQL target = (ADQL) object;
-                    target.addAnyObject(  value );
+                    ResultListType target = (ResultListType) object;
+                    target.addResult( (org.astrogrid.applications.beans.v1.parameters.ParameterValue) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return null;
+                return new org.astrogrid.applications.beans.v1.parameters.ParameterValue();
             }
         } );
         desc.setHandler(handler);
-        desc.setRequired(true);
-        desc.setMatches("*");
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/CEATypes/v1");
         desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _anyObject
+        //-- validation code for: _resultList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(0);
+        { //-- local scope
+        }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.applications.beans.v1.parameters.ADQLDescriptor()
+    } //-- org.astrogrid.applications.beans.v1.cea.castor.ResultListTypeDescriptor()
 
 
       //-----------/
@@ -136,7 +138,7 @@ public class ADQLDescriptor extends org.exolab.castor.xml.util.XMLClassDescripto
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.parameters.ADQL.class;
+        return org.astrogrid.applications.beans.v1.cea.castor.ResultListType.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: INFODescriptor.java,v 1.1 2004/05/06 13:40:01 pah Exp $
+ * $Id: INFODescriptor.java,v 1.2 2004/07/01 10:18:31 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class INFODescriptor.
  * 
- * @version $Revision: 1.1 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/07/01 10:18:31 $
  */
 public class INFODescriptor extends org.astrogrid.registry.beans.resource.votable.AnyTEXTDescriptor {
 

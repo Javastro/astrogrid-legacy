@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.8 2004/04/30 18:06:26 pah Exp $
+ * $Id: Castor2Axis.java,v 1.9 2004/07/01 10:18:32 nw Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -18,6 +18,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import javax.xml.namespace.QName;
@@ -25,6 +26,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.axis.message.MessageElement;
 import org.apache.axis.types.Id;
+import org.apache.axis.types.NMToken;
+import org.apache.axis.types.NMTokens;
 import org.apache.axis.utils.XMLUtils;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
@@ -39,17 +42,14 @@ import org.astrogrid.applications.beans.v1.Interface;
 import org.astrogrid.applications.beans.v1.InterfacesType;
 import org.astrogrid.applications.beans.v1.ParameterRef;
 import org.astrogrid.applications.beans.v1.Parameters;
-import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters;
-import org.astrogrid.applications.beans.v1.axis.ceabase.Interface_input;
-import org.astrogrid.applications.beans.v1.axis.ceabase.Interface_output;
-import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
-import org.astrogrid.applications.beans.v1.axis.ceabase._interface;
-import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes;
 import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition;
 import org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
+import org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType;
+import org.astrogrid.jes.types.v1.cea.axis.InputListType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -123,7 +123,11 @@ public class Castor2Axis {
    {
       ParameterValue result = new ParameterValue();
       result.setName(parameterValue.getName());
-      result.setType(convert(parameterValue.getType()));
+      if (parameterValue.getEncoding() != null) {
+        result.setEncoding(new NMToken(parameterValue.getEncoding()));
+      } else {
+          result.setEncoding(new NMToken());
+      }
       result.setIndirect(parameterValue.getIndirect());
       result.setValue(parameterValue.getValue());
      
@@ -134,6 +138,7 @@ public class Castor2Axis {
     * @param types
     * @return
     */
+   /* not used
    public static ParameterTypes convert(org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes type) {
       ParameterTypes result = null;
       if (type != null) {
@@ -141,63 +146,15 @@ public class Castor2Axis {
       }
       return result;
    }
+   */
 
-   /**
-    * @param outlist
-    * @return
-    */
-   public static _ApplicationList convert(ApplicationList outlist) {
-      _ApplicationList result = new _ApplicationList();
-      ApplicationBase[] apps = outlist.getApplicationDefn();
-      result.setApplicationDefn(convert(apps));
-      
-      
-      return result;
-   }
 
-   /**
-    * @param apps
-    * @return
-    */
-   public static org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase[] convert(ApplicationBase[] apps) {
-      //REFACTORME - better to use collections and convert to array at end
-      org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase[] result = new org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase[apps.length];
-      for (int i = 0; i < result.length; i++) {
-         result[i]= convert(apps[i]);
-      }
- 
-      return result;
-   }
-
-   /**
-    * @param base
-    * @return
-    */
-   public static org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase convert(ApplicationBase base) {
-      Id id = new Id(base.getName());
-      org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase result = new org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase();
-      
-      result.setName(id);
-      result.setInstanceClass(base.getInstanceClass());
-      result.setInterfaces(convert(base.getInterfaces()));
-      result.setParameters(convert(base.getParameters()));
-      return result;
-   }
-
-   /**
-    * @param parameters
-    * @return
-    */
-   public static ApplicationBase_Parameters convert(Parameters parameters) {
-      ApplicationBase_Parameters result = new ApplicationBase_Parameters();
-      result.setParameter(convert(parameters.getParameter()));
-      return result;
-   }
 
    /**
     * @param definitions
     * @return
     */
+   /* not used 
    public static org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition[] convert(BaseParameterDefinition[] definitions) {
       org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition[] result = new org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition[definitions.length];
       for (int i = 0; i < result.length; i++) {
@@ -205,11 +162,13 @@ public class Castor2Axis {
       }
       return result;
    }
+   */
 
    /**
     * @param definition
     * @return
     */
+   /* not used
    public static org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition convert(BaseParameterDefinition definition) {
       org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition result = new org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition();
       String nothing="";
@@ -218,6 +177,14 @@ public class Castor2Axis {
       
       result.setDefaultValue(definition.getDefaultValue());
       result.setType(convert(definition.getType()));
+      result.setSubType(definition.getSubType());
+      String[] encodings = definition.getAcceptEncodings();
+      StringBuffer buff = new StringBuffer();
+      for (int i = 0; i < encodings.length; i++) {
+          buff.append(encodings[i]);
+          buff.append(" ");
+      }
+      result.setAcceptEncodings(new NMTokens(buff.toString()));
       result.setUCD(definition.getUCD());
       result.setUI_Description(convert(definition.getUI_Description()));
       result.setUI_Name(definition.getUI_Name());
@@ -225,7 +192,7 @@ public class Castor2Axis {
       
       return result;
    }
-
+*/
    /**
     * convert between the documentation elements. This is very messy just to get between two "any" elements!
     * @param documentation
@@ -233,6 +200,7 @@ public class Castor2Axis {
     * @TODO FIXME this really needs a better implementation - it does not work - do not really understand how castor/axis deal with any - the schema has been converted to a type derived from string for now to make things easier...
     * 
     */
+   /* not used
    public static org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation convert(XhtmlDocumentation documentation) {
 //      MessageElement[] _an = new MessageElement[1];
 //      StringWriter out = new StringWriter();
@@ -258,86 +226,8 @@ public class Castor2Axis {
       return result;
    }
 
-   /**
-    * @param type
-    * @return
-    */
-   public static org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType convert(InterfacesType type) {
-      org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType result = new org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType();
-      result.set_interface(convert(type.get_interface()));
-      
-      return result;
-   }
+*/
 
-   /**
-    * @param interfaces
-    * @return
-    */
-   public static _interface[] convert(Interface[] interfaces) {
-      _interface[] result = new _interface[interfaces.length];
-      for (int i = 0; i < result.length; i++) {
-         result[i] = convert(interfaces[i]);
-      }
-      return result;
-   }
-
-   /**
-    * @param interface1
-    * @return
-    */
-   public static _interface convert(Interface interface1) {
-      _interface result = new _interface();
-      result.setName(interface1.getName());
-      result.setInput(convert(interface1.getInput()));
-      result.setOutput(convert(interface1.getOutput()));
-      return result;
-   }
-
-   /**
-    * @param input
-    * @return
-    */
-   public static Interface_input convert(org.astrogrid.applications.beans.v1.Input input) {
-      Interface_input result = new Interface_input();
-      result.setPref(convert(input.getPref()));
-  
-      return result;
-   }
-
-   /**
-    * @param output
-    * @return
-    */
-   public static Interface_output convert(org.astrogrid.applications.beans.v1.Output output) {
-      Interface_output result = new Interface_output();
-      result.setPref(convert(output.getPref()));
-  
-      return result;
-   }
-
-   /**
-    * @param refs
-    * @return
-    */
-   public static org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] convert(ParameterRef[] refs) {
-      org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[] result = new org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef[refs.length];
-      for (int i = 0; i < result.length; i++) {
-         result[i] = convert(refs[i]);
-      }
-      return result;
-   }
-
-   /**
-    * @param ref
-    * @return
-    */
-   public static org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef convert(ParameterRef ref) {
-      org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef result = new org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef();
-      result.setMaxoccurs(ref.getMaxoccurs());
-      result.setMinoccurs(ref.getMinoccurs());
-      result.setRef(ref.getRef());
-      return result;
-   }
 
    /**
     * @param mess
@@ -365,6 +255,31 @@ public class Castor2Axis {
   public static org.astrogrid.jes.types.v1.cea.axis.LogLevel convert(org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel ll)
   {
      return org.astrogrid.jes.types.v1.cea.axis.LogLevel.fromString(ll.toString());
+  }
+  
+  public static ExecutionSummaryType convert(org.astrogrid.applications.beans.v1.cea.castor.ExecutionSummaryType castor) {
+      ExecutionSummaryType axis = new ExecutionSummaryType();
+      axis.setApplicationName(castor.getApplicationName());
+      axis.setExecutionId(castor.getExecutionId());
+      axis.setResultList(convert(castor.getResultList()));
+      axis.setInputList(new InputListType());
+      axis.getInputList().setInput(convert(castor.getInputList().getInput()));
+      axis.setStatus(convert(castor.getStatus()));
+      return axis;
+  }
+  
+  public static ResultListType convert(org.astrogrid.applications.beans.v1.cea.castor.ResultListType castor) {
+      ResultListType axis = new ResultListType();
+      axis.setResult(convert(castor.getResult()));
+      return axis;
+  }
+  
+  public static ParameterValue[] convert(org.astrogrid.applications.beans.v1.parameters.ParameterValue[] castor) {
+      ParameterValue[] axis = new ParameterValue[castor.length];
+      for (int i = 0; i < axis.length; i++) {
+          axis[i] = convert(castor[i]);
+      }
+      return axis;
   }
   
  

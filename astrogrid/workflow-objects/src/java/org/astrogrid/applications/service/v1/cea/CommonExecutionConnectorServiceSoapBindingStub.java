@@ -16,16 +16,15 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
     static org.apache.axis.description.OperationDesc [] _operations;
 
     static {
-        _operations = new org.apache.axis.description.OperationDesc[6];
+        _operations = new org.apache.axis.description.OperationDesc[9];
         org.apache.axis.description.OperationDesc oper;
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("execute");
+        oper.setName("init");
         oper.addParameter(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "tool"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "tool"), org.astrogrid.workflow.beans.v1.axis._tool.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "jobstepID"), new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type"), org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "jobMonitorURL"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
         oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         oper.setReturnClass(java.lang.String.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "executeReturn"));
+        oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "initReturn"));
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         oper.addFault(new org.apache.axis.description.FaultDesc(
@@ -53,10 +52,10 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         _operations[1] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("listApplications");
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationList"));
-        oper.setReturnClass(org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationList"));
+        oper.setName("registerResultsListener");
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "endpoint"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyURI"), org.apache.axis.types.URI.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
         oper.addFault(new org.apache.axis.description.FaultDesc(
@@ -68,14 +67,35 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         _operations[2] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
-        oper.setName("getApplicationDescription");
-        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "applicationID"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
-        oper.setReturnType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase"));
-        oper.setReturnClass(org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase.class);
-        oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "ApplicationDesciption"));
+        oper.setName("registerProgressListener");
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "endpoint"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyURI"), org.apache.axis.types.URI.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.applications.service.v1.cea.CeaFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
         _operations[3] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("execute");
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "boolean"));
+        oper.setReturnClass(boolean.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "abortReturn"));
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.applications.service.v1.cea.CeaFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
+        _operations[4] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("queryExecutionStatus");
@@ -91,7 +111,23 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
                       new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
                       false
                      ));
-        _operations[4] = oper;
+        _operations[5] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getExecutionSummary");
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-summary-type"));
+        oper.setReturnClass(org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getExecutionSummaryReturn"));
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.applications.service.v1.cea.CeaFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
+        _operations[6] = oper;
 
         oper = new org.apache.axis.description.OperationDesc();
         oper.setName("returnRegistryEntry");
@@ -100,7 +136,23 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "returnRegistryEntryReturn"));
         oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
         oper.setUse(org.apache.axis.enum.Use.LITERAL);
-        _operations[5] = oper;
+        _operations[7] = oper;
+
+        oper = new org.apache.axis.description.OperationDesc();
+        oper.setName("getResults");
+        oper.addParameter(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "executionId"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, org.apache.axis.description.ParameterDesc.IN, false, false);
+        oper.setReturnType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type"));
+        oper.setReturnClass(org.astrogrid.jes.types.v1.cea.axis.ResultListType.class);
+        oper.setReturnQName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getResultsReturn"));
+        oper.setStyle(org.apache.axis.enum.Style.WRAPPED);
+        oper.setUse(org.apache.axis.enum.Use.LITERAL);
+        oper.addFault(new org.apache.axis.description.FaultDesc(
+                      new javax.xml.namespace.QName("", "message"),
+                      "org.astrogrid.applications.service.v1.cea.CeaFault",
+                      new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), 
+                      false
+                     ));
+        _operations[8] = oper;
 
     }
 
@@ -129,128 +181,9 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             java.lang.Class arraydf = org.apache.axis.encoding.ser.ArrayDeserializerFactory.class;
             java.lang.Class simplesf = org.apache.axis.encoding.ser.SimpleSerializerFactory.class;
             java.lang.Class simpledf = org.apache.axis.encoding.ser.SimpleDeserializerFactory.class;
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "InterfacesType");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.InterfacesType.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "xhtmlDocumentation");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.XhtmlDocumentation.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(simplesf);
-            cachedDeserFactories.add(simpledf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "DataCentreApplication");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.DataCentreApplication.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "BaseParameterDefinition");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.BaseParameterDefinition.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(enumsf);
-            cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "WebServiceParameterDefinition");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceParameterDefinition.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "tool");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.workflow.beans.v1.axis._tool.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>output");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.Interface_output.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "output");
             cachedSerQNames.add(qName);
             cls = org.astrogrid.workflow.beans.v1.axis._output.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase._interface.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "DataCenterParameterDefinition");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.DataCenterParameterDefinition.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CommandLineParameterDefinition");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineParameterDefinition.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CommandLineApplication");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.CommandLineApplication.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -262,40 +195,12 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "switchTypes");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-phase");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.SwitchTypes.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(enumsf);
             cachedDeserFactories.add(enumdf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationBase>Parameters");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase_Parameters.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "ApplicationList");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "parameterRef");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.ParameterRef.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
-
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "Interface>input");
-            cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.Interface_input.class;
-            cachedSerClasses.add(cls);
-            cachedSerFactories.add(beansf);
-            cachedDeserFactories.add(beandf);
 
             qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "message-type");
             cachedSerQNames.add(qName);
@@ -304,16 +209,51 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "WebServiceApplication");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "execution-summary-type");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase.WebServiceApplication.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1", "CmdLineParameterDefn");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceabase._CmdLineParameterDefn.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "job-identifier-type");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(simplesf);
+            cachedDeserFactories.add(simpledf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGWorkflow/v1", "tool");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.workflow.beans.v1.axis._tool.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.ResultListType.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(beansf);
+            cachedDeserFactories.add(beandf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "log-level");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.LogLevel.class;
+            cachedSerClasses.add(cls);
+            cachedSerFactories.add(enumsf);
+            cachedDeserFactories.add(enumdf);
+
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "input-list-type");
+            cachedSerQNames.add(qName);
+            cls = org.astrogrid.jes.types.v1.cea.axis.InputListType.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
@@ -375,7 +315,7 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         }
     }
 
-    public java.lang.String execute(org.astrogrid.workflow.beans.v1.axis._tool tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType jobstepID, java.lang.String jobMonitorURL) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
+    public java.lang.String init(org.astrogrid.workflow.beans.v1.axis._tool tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType jobstepID) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -385,11 +325,11 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "execute"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "init"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {tool, jobstepID, jobMonitorURL});
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {tool, jobstepID});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -433,7 +373,7 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         }
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList listApplications() throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
+    public void registerResultsListener(java.lang.String executionId, org.apache.axis.types.URI endpoint) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -443,26 +383,15 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "listApplications"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "registerResultsListener"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {});
+        _call.invokeOneWay(new java.lang.Object[] {executionId, endpoint});
 
-        if (_resp instanceof java.rmi.RemoteException) {
-            throw (java.rmi.RemoteException)_resp;
-        }
-        else {
-            extractAttachments(_call);
-            try {
-                return (org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList) _resp;
-            } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList.class);
-            }
-        }
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase getApplicationDescription(java.lang.String applicationID) throws java.rmi.RemoteException {
+    public void registerProgressListener(java.lang.String executionId, org.apache.axis.types.URI endpoint) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
@@ -472,11 +401,29 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
         _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
-        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getApplicationDescription"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "registerProgressListener"));
 
         setRequestHeaders(_call);
         setAttachments(_call);
-        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {applicationID});
+        _call.invokeOneWay(new java.lang.Object[] {executionId, endpoint});
+
+    }
+
+    public boolean execute(java.lang.String executionId) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[4]);
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "execute"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {executionId});
 
         if (_resp instanceof java.rmi.RemoteException) {
             throw (java.rmi.RemoteException)_resp;
@@ -484,9 +431,9 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         else {
             extractAttachments(_call);
             try {
-                return (org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase) _resp;
+                return ((java.lang.Boolean) _resp).booleanValue();
             } catch (java.lang.Exception _exception) {
-                return (org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase.class);
+                return ((java.lang.Boolean) org.apache.axis.utils.JavaUtils.convert(_resp, boolean.class)).booleanValue();
             }
         }
     }
@@ -496,7 +443,7 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[4]);
+        _call.setOperation(_operations[5]);
         _call.setEncodingStyle(null);
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
@@ -520,12 +467,41 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
         }
     }
 
+    public org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType getExecutionSummary(java.lang.String executionId) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[6]);
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getExecutionSummary"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {executionId});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType.class);
+            }
+        }
+    }
+
     public java.lang.String returnRegistryEntry() throws java.rmi.RemoteException {
         if (super.cachedEndpoint == null) {
             throw new org.apache.axis.NoEndPointException();
         }
         org.apache.axis.client.Call _call = createCall();
-        _call.setOperation(_operations[5]);
+        _call.setOperation(_operations[7]);
         _call.setEncodingStyle(null);
         _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
         _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
@@ -545,6 +521,37 @@ public class CommonExecutionConnectorServiceSoapBindingStub extends org.apache.a
                 return (java.lang.String) _resp;
             } catch (java.lang.Exception _exception) {
                 return (java.lang.String) org.apache.axis.utils.JavaUtils.convert(_resp, java.lang.String.class);
+            }
+        }
+    }
+
+    public org.astrogrid.jes.types.v1.cea.axis.ResultListType getResults(java.lang.String executionId) throws java.rmi.RemoteException, org.astrogrid.applications.service.v1.cea.CeaFault {
+        if (super.cachedEndpoint == null) {
+            throw new org.apache.axis.NoEndPointException();
+        }
+        org.apache.axis.client.Call _call = createCall();
+        _call.setOperation(_operations[8]);
+        _call.setUseSOAPAction(true);
+        _call.setSOAPActionURI("capeconnect:CommonExecutionConnectorService:CommonExecutionConnector#getResults");
+        _call.setEncodingStyle(null);
+        _call.setProperty(org.apache.axis.client.Call.SEND_TYPE_ATTR, Boolean.FALSE);
+        _call.setProperty(org.apache.axis.AxisEngine.PROP_DOMULTIREFS, Boolean.FALSE);
+        _call.setSOAPVersion(org.apache.axis.soap.SOAPConstants.SOAP11_CONSTANTS);
+        _call.setOperationName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "getResults"));
+
+        setRequestHeaders(_call);
+        setAttachments(_call);
+        java.lang.Object _resp = _call.invoke(new java.lang.Object[] {executionId});
+
+        if (_resp instanceof java.rmi.RemoteException) {
+            throw (java.rmi.RemoteException)_resp;
+        }
+        else {
+            extractAttachments(_call);
+            try {
+                return (org.astrogrid.jes.types.v1.cea.axis.ResultListType) _resp;
+            } catch (java.lang.Exception _exception) {
+                return (org.astrogrid.jes.types.v1.cea.axis.ResultListType) org.apache.axis.utils.JavaUtils.convert(_resp, org.astrogrid.jes.types.v1.cea.axis.ResultListType.class);
             }
         }
     }

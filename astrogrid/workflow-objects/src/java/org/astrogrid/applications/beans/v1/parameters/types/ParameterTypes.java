@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterTypes.java,v 1.23 2004/05/06 13:40:02 pah Exp $
+ * $Id: ParameterTypes.java,v 1.24 2004/07/01 10:18:32 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters.types;
@@ -22,7 +22,7 @@ import org.exolab.castor.xml.Unmarshaller;
  * should have the namespace appended? I have removed them to make
  * castor generate nicer objects
  * 
- * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:02 $
+ * @version $Revision: 1.24 $ $Date: 2004/07/01 10:18:32 $
  */
 public class ParameterTypes implements java.io.Serializable {
 
@@ -52,9 +52,19 @@ public class ParameterTypes implements java.io.Serializable {
     public static final ParameterTypes REAL = new ParameterTypes(REAL_TYPE, "real");
 
     /**
+     * The complex type
+     */
+    public static final int COMPLEX_TYPE = 2;
+
+    /**
+     * The instance of the complex type
+     */
+    public static final ParameterTypes COMPLEX = new ParameterTypes(COMPLEX_TYPE, "complex");
+
+    /**
      * The double type
      */
-    public static final int DOUBLE_TYPE = 2;
+    public static final int DOUBLE_TYPE = 3;
 
     /**
      * The instance of the double type
@@ -62,19 +72,19 @@ public class ParameterTypes implements java.io.Serializable {
     public static final ParameterTypes DOUBLE = new ParameterTypes(DOUBLE_TYPE, "double");
 
     /**
-     * The string type
+     * The text type
      */
-    public static final int STRING_TYPE = 3;
+    public static final int TEXT_TYPE = 4;
 
     /**
-     * The instance of the string type
+     * The instance of the text type
      */
-    public static final ParameterTypes STRING = new ParameterTypes(STRING_TYPE, "string");
+    public static final ParameterTypes TEXT = new ParameterTypes(TEXT_TYPE, "text");
 
     /**
      * The boolean type
      */
-    public static final int BOOLEAN_TYPE = 4;
+    public static final int BOOLEAN_TYPE = 5;
 
     /**
      * The instance of the boolean type
@@ -84,7 +94,7 @@ public class ParameterTypes implements java.io.Serializable {
     /**
      * The anyURI type
      */
-    public static final int ANYURI_TYPE = 5;
+    public static final int ANYURI_TYPE = 6;
 
     /**
      * The instance of the anyURI type
@@ -92,34 +102,24 @@ public class ParameterTypes implements java.io.Serializable {
     public static final ParameterTypes ANYURI = new ParameterTypes(ANYURI_TYPE, "anyURI");
 
     /**
-     * The FileReference type
+     * The anyXML type
      */
-    public static final int FILEREFERENCE_TYPE = 6;
+    public static final int ANYXML_TYPE = 7;
 
     /**
-     * The instance of the FileReference type
+     * The instance of the anyXML type
      */
-    public static final ParameterTypes FILEREFERENCE = new ParameterTypes(FILEREFERENCE_TYPE, "FileReference");
+    public static final ParameterTypes ANYXML = new ParameterTypes(ANYXML_TYPE, "anyXML");
 
     /**
-     * The MySpace_FileReference type
+     * The VOTable type
      */
-    public static final int MYSPACE_FILEREFERENCE_TYPE = 7;
+    public static final int VOTABLE_TYPE = 8;
 
     /**
-     * The instance of the MySpace_FileReference type
+     * The instance of the VOTable type
      */
-    public static final ParameterTypes MYSPACE_FILEREFERENCE = new ParameterTypes(MYSPACE_FILEREFERENCE_TYPE, "MySpace_FileReference");
-
-    /**
-     * The MySpace_VOTableReference type
-     */
-    public static final int MYSPACE_VOTABLEREFERENCE_TYPE = 8;
-
-    /**
-     * The instance of the MySpace_VOTableReference type
-     */
-    public static final ParameterTypes MYSPACE_VOTABLEREFERENCE = new ParameterTypes(MYSPACE_VOTABLEREFERENCE_TYPE, "MySpace_VOTableReference");
+    public static final ParameterTypes VOTABLE = new ParameterTypes(VOTABLE_TYPE, "VOTable");
 
     /**
      * The RA type
@@ -152,14 +152,24 @@ public class ParameterTypes implements java.io.Serializable {
     public static final ParameterTypes ADQL = new ParameterTypes(ADQL_TYPE, "ADQL");
 
     /**
-     * The IVORN type
+     * The binary type
      */
-    public static final int IVORN_TYPE = 12;
+    public static final int BINARY_TYPE = 12;
 
     /**
-     * The instance of the IVORN type
+     * The instance of the binary type
      */
-    public static final ParameterTypes IVORN = new ParameterTypes(IVORN_TYPE, "IVORN");
+    public static final ParameterTypes BINARY = new ParameterTypes(BINARY_TYPE, "binary");
+
+    /**
+     * The FITS type
+     */
+    public static final int FITS_TYPE = 13;
+
+    /**
+     * The instance of the FITS type
+     */
+    public static final ParameterTypes FITS = new ParameterTypes(FITS_TYPE, "FITS");
 
     /**
      * Field _memberTable
@@ -217,17 +227,18 @@ public class ParameterTypes implements java.io.Serializable {
         Hashtable members = new Hashtable();
         members.put("integer", INTEGER);
         members.put("real", REAL);
+        members.put("complex", COMPLEX);
         members.put("double", DOUBLE);
-        members.put("string", STRING);
+        members.put("text", TEXT);
         members.put("boolean", BOOLEAN);
         members.put("anyURI", ANYURI);
-        members.put("FileReference", FILEREFERENCE);
-        members.put("MySpace_FileReference", MYSPACE_FILEREFERENCE);
-        members.put("MySpace_VOTableReference", MYSPACE_VOTABLEREFERENCE);
+        members.put("anyXML", ANYXML);
+        members.put("VOTable", VOTABLE);
         members.put("RA", RA);
         members.put("Dec", DEC);
         members.put("ADQL", ADQL);
-        members.put("IVORN", IVORN);
+        members.put("binary", BINARY);
+        members.put("FITS", FITS);
         return members;
     } //-- java.util.Hashtable init() 
 

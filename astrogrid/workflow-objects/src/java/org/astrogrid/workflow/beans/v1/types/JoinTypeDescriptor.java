@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JoinTypeDescriptor.java,v 1.17 2004/05/06 13:40:02 pah Exp $
+ * $Id: JoinTypeDescriptor.java,v 1.18 2004/07/01 10:18:32 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class JoinTypeDescriptor.
  * 
- * @version $Revision: 1.17 $ $Date: 2004/05/06 13:40:02 $
+ * @version $Revision: 1.18 $ $Date: 2004/07/01 10:18:32 $
  */
 public class JoinTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

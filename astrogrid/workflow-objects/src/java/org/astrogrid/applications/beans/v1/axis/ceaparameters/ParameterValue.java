@@ -10,7 +10,7 @@ package org.astrogrid.applications.beans.v1.axis.ceaparameters;
 public class ParameterValue  implements java.io.Serializable {
     private java.lang.String value;
     private java.lang.String name;  // attribute
-    private org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes type;  // attribute
+    private org.apache.axis.types.NMToken encoding;  // attribute
     private boolean indirect;  // attribute
 
     public ParameterValue() {
@@ -32,12 +32,12 @@ public class ParameterValue  implements java.io.Serializable {
         this.name = name;
     }
 
-    public org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes getType() {
-        return type;
+    public org.apache.axis.types.NMToken getEncoding() {
+        return encoding;
     }
 
-    public void setType(org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterTypes type) {
-        this.type = type;
+    public void setEncoding(org.apache.axis.types.NMToken encoding) {
+        this.encoding = encoding;
     }
 
     public boolean isIndirect() {
@@ -66,9 +66,9 @@ public class ParameterValue  implements java.io.Serializable {
             ((this.name==null && other.getName()==null) || 
              (this.name!=null &&
               this.name.equals(other.getName()))) &&
-            ((this.type==null && other.getType()==null) || 
-             (this.type!=null &&
-              this.type.equals(other.getType()))) &&
+            ((this.encoding==null && other.getEncoding()==null) || 
+             (this.encoding!=null &&
+              this.encoding.equals(other.getEncoding()))) &&
             this.indirect == other.isIndirect();
         __equalsCalc = null;
         return _equals;
@@ -87,8 +87,8 @@ public class ParameterValue  implements java.io.Serializable {
         if (getName() != null) {
             _hashCode += getName().hashCode();
         }
-        if (getType() != null) {
-            _hashCode += getType().hashCode();
+        if (getEncoding() != null) {
+            _hashCode += getEncoding().hashCode();
         }
         _hashCode += new Boolean(isIndirect()).hashCode();
         __hashCodeCalc = false;
@@ -107,9 +107,9 @@ public class ParameterValue  implements java.io.Serializable {
         attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(attrField);
         attrField = new org.apache.axis.description.AttributeDesc();
-        attrField.setFieldName("type");
-        attrField.setXmlName(new javax.xml.namespace.QName("", "type"));
-        attrField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterTypes"));
+        attrField.setFieldName("encoding");
+        attrField.setXmlName(new javax.xml.namespace.QName("", "encoding"));
+        attrField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "NMTOKEN"));
         typeDesc.addFieldDesc(attrField);
         attrField = new org.apache.axis.description.AttributeDesc();
         attrField.setFieldName("indirect");

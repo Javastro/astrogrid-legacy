@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinition.java,v 1.23 2004/05/06 13:40:01 pah Exp $
+ * $Id: BaseParameterDefinition.java,v 1.24 2004/07/01 10:18:31 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Serializable;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
@@ -25,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class BaseParameterDefinition.
  * 
- * @version $Revision: 1.23 $ $Date: 2004/05/06 13:40:01 $
+ * @version $Revision: 1.24 $ $Date: 2004/07/01 10:18:31 $
  */
 public class BaseParameterDefinition extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -45,6 +47,16 @@ implements java.io.Serializable
      * Field _type
      */
     private org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes _type;
+
+    /**
+     * Field _acceptEncodings
+     */
+    private java.util.ArrayList _acceptEncodings;
+
+    /**
+     * Field _subType
+     */
+    private java.lang.String _subType;
 
     /**
      * The name that is to be used to display this parameter in te U
@@ -82,12 +94,52 @@ implements java.io.Serializable
 
     public BaseParameterDefinition() {
         super();
+        _acceptEncodings = new ArrayList();
     } //-- org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition()
 
 
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Method addAcceptEncodings
+     * 
+     * @param vAcceptEncodings
+     */
+    public void addAcceptEncodings(java.lang.String vAcceptEncodings)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _acceptEncodings.add(vAcceptEncodings);
+    } //-- void addAcceptEncodings(java.lang.String) 
+
+    /**
+     * Method addAcceptEncodings
+     * 
+     * @param index
+     * @param vAcceptEncodings
+     */
+    public void addAcceptEncodings(int index, java.lang.String vAcceptEncodings)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        _acceptEncodings.add(index, vAcceptEncodings);
+    } //-- void addAcceptEncodings(int, java.lang.String) 
+
+    /**
+     * Method clearAcceptEncodings
+     */
+    public void clearAcceptEncodings()
+    {
+        _acceptEncodings.clear();
+    } //-- void clearAcceptEncodings() 
+
+    /**
+     * Method enumerateAcceptEncodings
+     */
+    public java.util.Enumeration enumerateAcceptEncodings()
+    {
+        return new org.exolab.castor.util.IteratorEnumeration(_acceptEncodings.iterator());
+    } //-- java.util.Enumeration enumerateAcceptEncodings() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -118,6 +170,20 @@ implements java.io.Serializable
                     return false;
             }
             else if (temp._type != null)
+                return false;
+            if (this._acceptEncodings != null) {
+                if (temp._acceptEncodings == null) return false;
+                else if (!(this._acceptEncodings.equals(temp._acceptEncodings))) 
+                    return false;
+            }
+            else if (temp._acceptEncodings != null)
+                return false;
+            if (this._subType != null) {
+                if (temp._subType == null) return false;
+                else if (!(this._subType.equals(temp._subType))) 
+                    return false;
+            }
+            else if (temp._subType != null)
                 return false;
             if (this._UI_Name != null) {
                 if (temp._UI_Name == null) return false;
@@ -160,6 +226,43 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
+     * Method getAcceptEncodings
+     * 
+     * @param index
+     */
+    public java.lang.String getAcceptEncodings(int index)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _acceptEncodings.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        
+        return (String)_acceptEncodings.get(index);
+    } //-- java.lang.String getAcceptEncodings(int) 
+
+    /**
+     * Method getAcceptEncodings
+     */
+    public java.lang.String[] getAcceptEncodings()
+    {
+        int size = _acceptEncodings.size();
+        java.lang.String[] mArray = new java.lang.String[size];
+        for (int index = 0; index < size; index++) {
+            mArray[index] = (String)_acceptEncodings.get(index);
+        }
+        return mArray;
+    } //-- java.lang.String[] getAcceptEncodings() 
+
+    /**
+     * Method getAcceptEncodingsCount
+     */
+    public int getAcceptEncodingsCount()
+    {
+        return _acceptEncodings.size();
+    } //-- int getAcceptEncodingsCount() 
+
+    /**
      * Returns the value of field 'defaultValue'. The field
      * 'defaultValue' has the following description: a possible
      * default for this type of parameter - should probably be
@@ -181,6 +284,16 @@ implements java.io.Serializable
     {
         return this._name;
     } //-- java.lang.String getName() 
+
+    /**
+     * Returns the value of field 'subType'.
+     * 
+     * @return the value of field 'subType'.
+     */
+    public java.lang.String getSubType()
+    {
+        return this._subType;
+    } //-- java.lang.String getSubType() 
 
     /**
      * Returns the value of field 'type'.
@@ -280,6 +393,47 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
+     * Method removeAcceptEncodings
+     * 
+     * @param vAcceptEncodings
+     */
+    public boolean removeAcceptEncodings(java.lang.String vAcceptEncodings)
+    {
+        boolean removed = _acceptEncodings.remove(vAcceptEncodings);
+        return removed;
+    } //-- boolean removeAcceptEncodings(java.lang.String) 
+
+    /**
+     * Method setAcceptEncodings
+     * 
+     * @param index
+     * @param vAcceptEncodings
+     */
+    public void setAcceptEncodings(int index, java.lang.String vAcceptEncodings)
+        throws java.lang.IndexOutOfBoundsException
+    {
+        //-- check bounds for index
+        if ((index < 0) || (index > _acceptEncodings.size())) {
+            throw new IndexOutOfBoundsException();
+        }
+        _acceptEncodings.set(index, vAcceptEncodings);
+    } //-- void setAcceptEncodings(int, java.lang.String) 
+
+    /**
+     * Method setAcceptEncodings
+     * 
+     * @param acceptEncodingsArray
+     */
+    public void setAcceptEncodings(java.lang.String[] acceptEncodingsArray)
+    {
+        //-- copy array
+        _acceptEncodings.clear();
+        for (int i = 0; i < acceptEncodingsArray.length; i++) {
+            _acceptEncodings.add(acceptEncodingsArray[i]);
+        }
+    } //-- void setAcceptEncodings(java.lang.String) 
+
+    /**
      * Sets the value of field 'defaultValue'. The field
      * 'defaultValue' has the following description: a possible
      * default for this type of parameter - should probably be
@@ -301,6 +455,16 @@ implements java.io.Serializable
     {
         this._name = name;
     } //-- void setName(java.lang.String) 
+
+    /**
+     * Sets the value of field 'subType'.
+     * 
+     * @param subType the value of field 'subType'.
+     */
+    public void setSubType(java.lang.String subType)
+    {
+        this._subType = subType;
+    } //-- void setSubType(java.lang.String) 
 
     /**
      * Sets the value of field 'type'.
