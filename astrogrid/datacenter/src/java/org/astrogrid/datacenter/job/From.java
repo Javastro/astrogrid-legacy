@@ -21,7 +21,7 @@ import org.w3c.dom.* ;
  * </pre></blockquote>
  * <p>
  *
- * @author  Jeff Lusted
+ * @author  Jeff Lusted/Phil Nicolson
  * @version 1.0 27-May-2003
  * @see     org.astrogrid.datacenter.Query
  * @since   AstroGrid 1.2
