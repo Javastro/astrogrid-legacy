@@ -94,6 +94,25 @@
         </dependency>
         
         <dependency>
+        	<artifactId>commons-jxpath</artifactId>
+            <groupId>commons-jxpath</groupId>
+            <version>1.1</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+        
+        <dependency>
+        	<artifactId>jakarta-regexp</artifactId>
+            <groupId>jakarta-regexp</groupId>
+            <version>1.3</version>
+          	<properties>
+          		<war.bundle>true</war.bundle>
+          	</properties>            
+        </dependency>
+        
+        
+        <dependency>
             <groupId>astrogrid-common</groupId>
             <artifactId>astrogrid-common</artifactId>
             <version>SNAPSHOT</version>
@@ -114,8 +133,6 @@
             </properties>            
         </dependency>
         
-        
-        
         <!--+
             | The Registry components.
             +-->
@@ -129,13 +146,10 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        
         <dependency >
             <id>axis</id>
             <version>1.1</version>
-        </dependency>
-        <dependency >
-            <id>cocoon</id>
-            <version>2.1.2</version>
         </dependency>
         
        <dependency>
@@ -150,10 +164,12 @@
             <id>avalon-framework</id>
             <version>20020627</version>
         </dependency>
+        
         <dependency >
             <id>excalibur-pool</id>
             <version>20020820</version>
         </dependency>
+        
     </dependencies>
 
     <!--+
