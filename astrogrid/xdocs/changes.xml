@@ -4,13 +4,16 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
-    <release version="TBD" date="6/12/04">
+    <release version="TBD incs. 0.7-b000s, 0.7-b001o" date="7/12/04">
         <action dev="nw" type="fix" issue="776">
             Summary objects return more data.
         </action>
         <action dev="mch" type="add">
             New <a href="../slinger">Slinger</a> project.
-        </action>        
+        </action>  
+        <action dev="nw" type="fix" issue="805">
+            Added some VOTable arithmetic
+        </action>              
     </release>
     <release  version="0.7-b001g,0.7-b001h,0.7-b000r" date="25/11/04" description="FileManager Project Integrated">
       <action dev="dave" type="add"  >
