@@ -3,6 +3,8 @@ package org.astrogrid.mySpace.mySpaceStatus;
 import java.io.*;
 import java.util.*;
 
+import org.astrogrid.store.delegate.myspaceItn05.StatusResults;
+
 /**
  * The <code>MySpaceStatus</code> class is used for recording error
  * status information in the MySpace system.
@@ -71,7 +73,8 @@ import java.util.*;
  * report the codes to standard output.
  * 
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 4.
+ * @since Iteration 3.
+ * @version Iteration 5.
  */
 
 public class MySpaceStatus
@@ -136,6 +139,37 @@ public class MySpaceStatus
    public Vector getCodes()
    {  return codes;
    }
+
+/**
+ * Return an ArrayList of <code>StatusResults</code> objects which have
+ * been derived from the messages which have been set.
+ */
+
+   public ArrayList getStatusResults()
+   {  ArrayList statusResults = new ArrayList();
+
+      for (int loop=0; loop<codes.size(); loop++)
+      {  MySpaceStatusCode currentCode = 
+           (MySpaceStatusCode)codes.elementAt(loop);
+
+         Date timeStampDate = new Date();
+         long timeStamp = timeStampDate.getTime();
+
+         StatusResults message = new StatusResults();
+         message.setSeverity( currentCode.getType() );
+         message.setMessage( currentCode.getCodeMessage() );
+         message.setTimeStamp(timeStamp);
+
+         statusResults.add(message);
+      }
+
+      return statusResults;
+   }
+
+
+
+
+
 
 //
 // ----------------------------------------------------------------------

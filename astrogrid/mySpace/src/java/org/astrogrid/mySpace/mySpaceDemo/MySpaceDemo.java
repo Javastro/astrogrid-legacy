@@ -8,15 +8,22 @@ import java.awt.event.*;
 
 import java.io.*;
 import java.util.*;
+import java.util.ArrayList;
+import java.lang.reflect.Array;
 
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceManager.*;
+
+import org.astrogrid.store.delegate.myspaceItn05.ManagerGenuine;
+import org.astrogrid.store.delegate.myspaceItn05.KernelResults;
+import org.astrogrid.store.delegate.myspaceItn05.StatusResults;
 
 /**
  * Simple demonstration program for the MySpace registry.
  *
  * @author A C Davenhall (Edinburgh)
- * @version Iteration 2.
+ * @since Iteration 2.
+ * @version Iteration 5.
  */
 
 
@@ -25,8 +32,9 @@ public class MySpaceDemo
    private Configuration config = new Configuration(true, false,
      Configuration.INTERNALSERVERS);
 
-   private static MySpaceActions myspace = new MySpaceActions();
+   private static ManagerGenuine myspace = new ManagerGenuine();
    private static MySpaceStatus status = new MySpaceStatus();
+   private KernelResults results = new KernelResults();
 
 //
 //      Set up for logging.
@@ -75,94 +83,27 @@ public class MySpaceDemo
                   query ="*";
                }
 
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", query);
-
-               System.out.println("Registry entries satisfying query: "
-                 + query + "\n");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               DataItemRecord itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
-            }
-         }
-      );
-      fileMenu.add(menuItem);
-
-      menuItem = new JMenuItem("List expired dataHolders");
-      menuItem.addActionListener(new ActionListener()
-         {  public void actionPerformed(ActionEvent e)
-            {  BufferedReader console = new BufferedReader(
-                 new InputStreamReader(System.in));
-
-               System.out.println("Enter query (eg. '*'):");
-               String query = null;
                try
-               {  query = console.readLine();
-               }
-               catch (IOException ioerror)
-               {  System.out.println("Ooops");
-                  query ="*";
-               }
+               {  results = myspace.getEntriesList(query, true);
 
-               Vector expiredRecVector = new Vector();
-               expiredRecVector = myspace.listExpiredDataHolders(
-                 "acd", "roe", "job27", query);
+                  Object[] statusList = results.getStatusList();
+                  int numStatus = Array.getLength(statusList);
 
-               System.out.println("Registry entries satisfying query: "
-                 + query + "\n");
+                  StatusResults status = new StatusResults();
 
-               int numFound;
-               if (expiredRecVector != null)
-               {  numFound = expiredRecVector.size();
+                  for(int loop=0; loop<numStatus; loop++)
+                  {  status = (StatusResults)statusList[loop];
+                     System.out.println(loop + ": " +  status.toString() );
+                  }
                }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries have expired.");
+               catch (Exception ex)
+               {  ex.printStackTrace();
                }
-
-               DataItemRecord itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)expiredRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.getDataItemName()
-                    + " expired on: " + itemRec.getExpiryDate() + ".");
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
       fileMenu.add(menuItem);
+
 
       menuItem = new JMenuItem("Show details of DataHolder");
       menuItem.addActionListener(new ActionListener()
@@ -184,43 +125,7 @@ public class MySpaceDemo
                   itemID = 0;
                }
 
-               DataItemRecord itemRec = new DataItemRecord();
-
-               itemRec = myspace.lookupDataHolderDetails(
-                 "acd", "roe", "job27", itemID);
-
-               if (itemRec != null)
-               {  System.out.println("Details of DataHolder with ID " + 
-                    itemID + ":-" );
-
-                  System.out.println("  name:" + itemRec.getDataItemName() );
-                  System.out.println("  ID: " + itemRec.getDataItemID() );
-                  System.out.println("  owner: " + itemRec.getOwnerID() );
-                  System.out.println("  creation date: " + itemRec.getCreationDate() );
-                  System.out.println("  expiry date: " + itemRec.getExpiryDate() );
-
-                  int type = itemRec.getType();
-                  if (type == DataItemRecord.CON)
-                  {  System.out.println("  type: Container.");
-                  }
-                  else if (type == DataItemRecord.VOT)
-                  {  System.out.println("  type: VOTable.");
-                  }
-                  else
-                  {  System.out.println("  type: unknown.");
-                  }
-               }
-               else
-               {  System.out.println("Item not found.");
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
+ 
             }
          }
       );
@@ -246,24 +151,7 @@ public class MySpaceDemo
                   itemID = 0;
                }
 
-               String exportURI = myspace.exportDataHolder(
-                 "acd", "roe", "job27", itemID);
 
-               if (exportURI != null)
-               {  System.out.println("Export URI of DataHolder with ID [" 
-                    + itemID + "]: " + exportURI);
-               }
-               else
-               {  System.out.println("Item not found.");
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -297,41 +185,7 @@ public class MySpaceDemo
                   newDataHolderName = "";
                }
 
-               DataItemRecord itemRec = new DataItemRecord();
 
-               itemRec = myspace.copyDataHolder("acd", "roe", "job27",
-                 itemID, newDataHolderName);
-
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", "*");
-
-               System.out.println("New state of the registry: ");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -365,41 +219,7 @@ public class MySpaceDemo
                   newDataHolderName = "";
                }
 
-               DataItemRecord itemRec = new DataItemRecord();
-
-               itemRec = myspace.moveDataHolder("acd", "roe", "job27",
-                 itemID, newDataHolderName);
-
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", "*");
-
-               System.out.println("New state of the registry: ");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
+ 
             }
          }
       );
@@ -421,40 +241,7 @@ public class MySpaceDemo
                   newContainerName = "";
                }
 
-               DataItemRecord newCont = myspace.createContainer(
-                 "acd", "roe", "job27", newContainerName);
 
-
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", "*");
-
-               System.out.println("New state of the registry: ");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               DataItemRecord itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -497,50 +284,10 @@ public class MySpaceDemo
                   overwrite = "";
                }
 
-               int dispatchExisting = myspace.LEAVE;
+ 
 
-               overwrite = overwrite.toLowerCase();
-               int overwritePos = overwrite.indexOf('y');
-               if (overwritePos > -1)
-               {  dispatchExisting = myspace.OVERWRITE;
-               }
 
-               System.out.println("dispatchExisting: " + dispatchExisting);
 
-               DataItemRecord newDataHolder = myspace.importDataHolder(
-                 "acd", "roe", "job27", remoteURI, newDataHolderName,
-                 "quERY", dispatchExisting);
-
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", "*");
-
-               System.out.println("New state of the registry: ");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               DataItemRecord itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -583,50 +330,9 @@ public class MySpaceDemo
                   overwrite = "";
                }
 
-               int dispatchExisting = myspace.LEAVE;
 
-               overwrite = overwrite.toLowerCase();
-               int overwritePos = overwrite.indexOf('y');
-               if (overwritePos > -1)
-               {  dispatchExisting = myspace.OVERWRITE;
-               }
 
-               System.out.println("dispatchExisting: " + dispatchExisting);
 
-               DataItemRecord newDataHolder = myspace.upLoadDataHolder(
-                 "acd", "roe", "job27", newDataHolderName, contents,
-                 "wF", dispatchExisting);
-
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", "*");
-
-               System.out.println("New state of the registry: ");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               DataItemRecord itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -655,43 +361,8 @@ public class MySpaceDemo
                   itemID = 0;
                }
 
-               boolean deletedOk = myspace.deleteDataHolder(
-                 "acd", "roe", "job27", itemID);
 
-               if (!deletedOk)
-               {  System.out.println("Delete failed.");
-               }
 
-               Vector itemRecVector = new Vector();
-               itemRecVector = myspace.lookupDataHoldersDetails(
-                 "acd", "roe", "job27", "*");
-
-               System.out.println("New state of the registry: ");
-
-               int numFound;
-               if (itemRecVector != null)
-               {  numFound = itemRecVector.size();
-               }
-               else
-               {   numFound = 0;
-                   System.out.println("  No entries matched the query");
-               }
-
-               DataItemRecord itemRec = new DataItemRecord();
-
-               for (int loop=0; loop<numFound; loop++)
-               {  itemRec = (DataItemRecord)itemRecVector.elementAt(loop);
-                  System.out.println("[" + itemRec.getDataItemID()
-                    + "]: " + itemRec.toString() );
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -725,21 +396,7 @@ public class MySpaceDemo
                   newOwner = "";
                }
 
-               DataItemRecord itemRec = new DataItemRecord();
 
-               itemRec = myspace.changeOwnerDataHolder("acd", "roe", "job27",
-                 itemID, newOwner);
-
-               System.out.println(itemRec.getDataItemName() +
-                 " is now owned by " + itemRec.getOwnerID() + ".");
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -775,21 +432,7 @@ public class MySpaceDemo
                   advance = 0;
                }
 
-               DataItemRecord itemRec = new DataItemRecord();
 
-               itemRec = myspace.advanceExpiryDataHolder("acd", "roe",
-                 "job27", itemID, advance);
-
-               System.out.println(itemRec.getDataItemName() +
-                 " now expires on " + itemRec.getExpiryDate() + ".");
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -847,23 +490,7 @@ public class MySpaceDemo
                {  System.out.println("no second server.");
                }
 
-               boolean addOk = myspace.createUser(userID, communityID,
-                 "job27", servers);
-
-               if (addOk)
-               {  System.out.println("User added ok.");
-               }
-               else
-               {  System.out.println("Failed to add user.");
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
+ 
             }
          }
       );
@@ -895,23 +522,7 @@ public class MySpaceDemo
                   communityID = "";
                }
 
-               boolean deleteOk = myspace.deleteUser(userID, communityID,
-                 "job27");
 
-               if (deleteOk)
-               {  System.out.println("User deleted ok.");
-               }
-               else
-               {  System.out.println("Failed to delete user.");
-               }
-
-               System.out.println("");
-               if (!status.getSuccessStatus())
-               {  System.out.println("Operation failed.");
-               }
-               status.outputCodes();
-               status.reset();
-               System.out.println("");
             }
          }
       );
@@ -948,7 +559,8 @@ public class MySpaceDemo
 //
 //      Set the registry file name.
 
-         myspace.setRegistryName(registryName);
+
+//         myspace.setRegistryName(registryName);
 
 //
 //      Set the look and feel.

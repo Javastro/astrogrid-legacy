@@ -1,5 +1,7 @@
 package org.astrogrid.mySpace.mySpaceStatus;
 
+import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
+
 /**
  * <p>
  * The <code>MySpaceStatusCode</code> class represents codes from the
@@ -43,9 +45,9 @@ public class MySpaceStatusCode
 //
 //Public constants defining the permitted codes for the message type.
 
-   public static final int INFO  = 1;  // Information (ie. nothing amiss).
-   public static final int WARN  = 2;  // Warning.
-   public static final int ERROR = 3;  // Error.
+   public static final int INFO  = StatusCodes.INFO;   // Information.
+   public static final int WARN  = StatusCodes.WARN;   // Warning.
+   public static final int ERROR = StatusCodes.ERROR;  // Error.
 
 //
 //Public constants defining whether errors are logged.
