@@ -3,14 +3,14 @@
 <document>
 	<properties>
 		<title>Simple Maven Project</title>
-		<author email="jdt@roe.ac.uk">John Taylor</author>
+		<author email="jdt%40roe.ac.uk">John Taylor</author>
 	</properties>
 	<body>
 		<section name="Introduction">
 			<p> This  is an example of how to set up a simple 
 				project that can be built by Maven during our automatic build 
 				process. Please send comments and suggestions to <a 
-				href="mailto:jdt@roe.ac.uk">John Taylor</a>. </p>
+				href="mailto:jdt%40roe.ac.uk">John Taylor</a>. </p>
 		</section>
 		<section name="Building using Maven">
 			<p> From Itn05 onwards Astrogrid components are to be built using 
@@ -27,7 +27,7 @@
 					these scripts see <a href="astrogridgoals.html">Astrogrid 
 					Maven Goals</a>. If you create a new component and wish to 
 					add it to the automatic build please contact <a 
-					href="mailto:jdt@roe.ac.uk">John Taylor</a>. </P>
+					href="mailto:jdt%40roe.ac.uk">John Taylor</a>. </P>
 			</subsection>
 		</section>
 		<section name="Using Maven - files you should know about">

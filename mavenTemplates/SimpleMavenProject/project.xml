@@ -10,7 +10,7 @@
 	<name>Simple Example Maven Project</name>
 	<package>org.astrogrid.simple</package>
 	<description> A collection of example projects showing how to use maven in 
-		different situations </description>
+		different situations.  Includes a "bad" class to deliberately cause checkstyle violations. </description>
 	<!-- a short description of what the project does -->
 	<shortDescription> How to set up Maven. </shortDescription>
 	<!-- Override values in the parent POM-->
