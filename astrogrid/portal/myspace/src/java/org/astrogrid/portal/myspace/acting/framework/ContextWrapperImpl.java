@@ -15,6 +15,7 @@ import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
@@ -32,6 +33,9 @@ public class ContextWrapperImpl implements ContextWrapper {
   private Ivorn ivorn;
   private Agsl agsl;
   private StoreClient storeClient;
+  
+  public static final String MYSPACE_CACHE = "myspace-cache";
+
   
   public ContextWrapperImpl(ActionUtils utils, Parameters params, Request request, Session session) 
   		throws MalformedURLException, IOException {
@@ -99,4 +103,29 @@ public class ContextWrapperImpl implements ContextWrapper {
     
     return result;
   }
+  
+  /**
+   * Return the cache of MySpace files for a user.
+   * 
+   * 
+   * @return <code>StoreFile</code> for a user
+   *n
+   */
+  public StoreFile getMySpaceCache() {
+      //JL: temporarilly removed caching...
+      return (StoreFile)null ;
+      // return (StoreFile)this.session.getAttribute( MYSPACE_CACHE ) ;
+  }
+  
+  
+  /**
+   * Set the cache of MySpace files for a user.
+   * 
+   * 
+   */
+  public void setMySpaceCache( StoreFile cache ) {
+      //JL: temporarilly removed caching...
+      // this.session.setAttribute( MYSPACE_CACHE, cache ) ;
+  }
+  
 }

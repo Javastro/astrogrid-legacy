@@ -9,7 +9,7 @@
       target="_self"
       status-text="File...">
     <agp:item
-        contents="New Container"
+        contents="New Container..."
         contents-hover="New Container"
         uri='javascript:void(myspace_browse_fill("myspace-src", "myspace-dest", "myspace_generic_return", "myspace-new-container"));'
         target="_self"
@@ -21,25 +21,18 @@
         target="_self"
         status-text="Delete a MySpace Item"/>
     <agp:item
-        contents="Rename"
+        contents="Rename..."
         contents-hover="Rename"
         uri='javascript:void(myspace_browse_fill("myspace-src", "myspace-dest", "myspace_generic_return", "myspace-move"));'
         target="_self"
         status-text="Rename a MySpace Item"/>
     <agp:item
-        contents="Download"
-        contents-hover="Download"
-        uri='javascript:void(myspace_download("myspace-clipboard-url"));'
-        target="_self"
-        status-text="Download a MySpace Item"/>
-    <agp:item
-        contents="Properties"
-        contents-hover="Properties"
+        contents="Properties and Download..."
+        contents-hover="Properties and download"
         uri='javascript:void(myspace_properties("myspace-clipboard"));'
         target="_self"
-        status-text="Show the properties of a MySpace item"/>
+        status-text="Show the properties of a MySpace item (plus download)"/>
   </agp:menu>
-
   <agp:menu
       contents="Edit"
       contents-hover="Edit"
@@ -54,14 +47,14 @@
         status-text="Store MySpace item in the clipboard"/>
 
     <agp:item
-        contents="Paste"
+        contents="Paste..."
         contents-hover="Paste"
         uri='javascript:void(myspace_browse_fill("myspace-clipboard", "myspace-dest", "myspace_generic_return", "myspace-copy"));'
         target="_self"
         status-text="Paste stored MySpace item into a new location"/>
 
     <agp:item
-        contents="Move"
+        contents="Move..."
         contents-hover="Move"
         uri='javascript:void(myspace_browse_fill("myspace-clipboard", "myspace-dest", "myspace_generic_return", "myspace-move"));'
         target="_self"

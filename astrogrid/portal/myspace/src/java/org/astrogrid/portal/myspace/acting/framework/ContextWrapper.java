@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.astrogrid.community.User;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreFile;
 
 /**
  * Wraps the environment context for use by <code>MySpaceHandler</code>
@@ -83,4 +84,28 @@ public interface ContextWrapper {
    * @throws Exception
    */
   public InputStream getFileInputStream(String fileName) throws Exception;
+  
+  /**
+   * Return the cache of MySpace files for a user.
+   * 
+   * 
+   * @return <code>StoreFile</code> for a user
+   *
+   */
+  public StoreFile getMySpaceCache() ;
+  
+  
+  /**
+   * Set the cache of MySpace files for a user.
+   * 
+   * 
+   */
+  public void setMySpaceCache( StoreFile cache ) ;
+  
+  
+  
+  
+  
+  
+  
 }

@@ -371,7 +371,7 @@ class="agResetButton">Clear</span></td></tr>
 <tr><td align="left">
 	  <img src="/astrogrid-portal/x.gif" width="1" id="HMarker" />
 <span class="agActionButton"
-onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Load');" >
+onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Load&amp;myspace-refresh-cache=yes');" >
 Load from MySpace</span>
 <input id="action"  type="hidden" name="action" />
 <input id="myspace-agsl"  type="hidden" name="myspace-name" />
@@ -396,7 +396,7 @@ onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.htm
 <input class="agActionButton" name="action" type="submit" value="Save to MySpace"/>
 -->
 <span class="agActionButton"
-onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Save');" >
+onclick="popupBrowser('/astrogrid-portal/lean/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl&amp;form_name=qb_form&amp;field_name=action&amp;field_value=Save&amp;myspace-refresh-cache=yes');" >
 Save to MySpace</span>
 </td>
 <td align="right">

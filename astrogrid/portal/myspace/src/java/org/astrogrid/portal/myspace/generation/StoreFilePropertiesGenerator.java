@@ -19,6 +19,7 @@ import org.astrogrid.portal.myspace.acting.framework.ContextWrapperFactory;
 import org.astrogrid.portal.myspace.acting.framework.MySpaceHandler;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
+import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreFile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,6 +37,7 @@ public class StoreFilePropertiesGenerator extends AbstractGenerator {
   private static final String STORE_FILE_OWNER = "owner";
   private static final String STORE_FILE_PATH = "path";
   private static final String STORE_FILE_SIZE = "size";
+  private static final String STORE_FILE_URL = "url" ;
 
   private ContextWrapper context;
 
@@ -102,9 +104,14 @@ public class StoreFilePropertiesGenerator extends AbstractGenerator {
           StoreFilePropertiesGenerator.STORE_FILE_NAME,
           storeFile.getName());
       
+//      rootElement.setAttribute(
+//          StoreFilePropertiesGenerator.STORE_FILE_OWNER,
+//          storeFile.getOwner());
+      
+      //JL. This is a hack. The above is the kosher way.
       rootElement.setAttribute(
-          StoreFilePropertiesGenerator.STORE_FILE_OWNER,
-          storeFile.getOwner());
+              StoreFilePropertiesGenerator.STORE_FILE_OWNER,
+              context.getUser().getUserId() );
       
       rootElement.setAttribute(
           StoreFilePropertiesGenerator.STORE_FILE_PATH,
@@ -113,6 +120,12 @@ public class StoreFilePropertiesGenerator extends AbstractGenerator {
       rootElement.setAttribute(
           StoreFilePropertiesGenerator.STORE_FILE_SIZE,
           Long.toString(storeFile.getSize()));
+      
+      Agsl agsl = context.getStoreClient().getAgsl(storeFile.getPath());
+      
+      rootElement.setAttribute(
+          StoreFilePropertiesGenerator.STORE_FILE_URL,
+          agsl.resolveURL().toString() );
 
       document.appendChild(rootElement);
 

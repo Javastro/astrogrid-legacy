@@ -1,5 +1,5 @@
 /* <cvs:id> 
- * $Id: SessionKeys.java,v 1.4 2004/10/05 14:32:55 gps Exp $
+ * $Id: SessionKeys.java,v 1.5 2005/01/20 16:48:48 clq2 Exp $
  * </cvs:id>
  * Created on Mar 26, 2004 by jdt 
  * 
@@ -38,11 +38,21 @@ public final class SessionKeys {
      * Parameter names to look for in the session object.
      */
     public static final String IVORN = "ivorn";
+    /**
+     * Parameter names to look for in the session object.
+     */
+    public static final String MYSPACE_CACHE = "myspace-cache";
 }
 
 
 /*
  *  $Log: SessionKeys.java,v $
+ *  Revision 1.5  2005/01/20 16:48:48  clq2
+ *  por-jl-888
+ *
+ *  Revision 1.4.64.1  2005/01/19 11:47:16  jl99
+ *  Caching in place. Download shifted to properties box.
+ *
  *  Revision 1.4  2004/10/05 14:32:55  gps
  *  - myspace end point changes
  *

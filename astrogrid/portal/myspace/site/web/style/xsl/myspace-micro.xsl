@@ -75,7 +75,14 @@
                                     '<xsl:value-of select="$parent_func"/>');
             </xsl:attribute>
           </input>
-
+<!-- JL: Caching temporarilly removed from the system ...
+          <input class="agActionButton" type="button" value="Refresh">
+            <xsl:attribute name="onclick">
+              processMicroBrowserRefresh('<xsl:value-of select="$agsl"/>',
+                                         '<xsl:value-of select="$parent_func"/>');
+            </xsl:attribute>
+          </input>
+-->
           <input class="agActionButton" type="button" value="Cancel" onclick="window.close();"/>
         </form>
 
@@ -103,16 +110,16 @@
        The idea is to default display as not open.
        Priority 2 is to ensure this template is not chosen over the top folder selection
   -->  
-  <xsl:template match="myspace-item[@type='folder']" priority="2">
+  <xsl:template match="myspace-item[@type='folder']" priority="2">      
     <xsl:call-template name="folder">
        <xsl:with-param name="display">none</xsl:with-param>
-       <xsl:with-param name="icon-path">/astrogrid-portal/icons/Folder.png</xsl:with-param>
+       <xsl:with-param name="icon-path">/astrogrid-portal/icons/Folder.png</xsl:with-param>        
     </xsl:call-template>
   </xsl:template>
   
   <!-- Named template "folder"
        The idea is to supply common processing for folders, varying only on the default
-       display characteristics. As used above, the top folder is always shown as open by
+       display characteristiacs. As used above, the top folder is always shown as open by
        default, others are shown closed by default. The user has the option to toggle.
   -->  
   <xsl:template name="folder">
@@ -141,23 +148,32 @@
     <span class="branch">
       <xsl:attribute name="style">display:<xsl:value-of select="$display"/></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="@safe-name"/></xsl:attribute>
-      <xsl:apply-templates/>
+      <xsl:apply-templates select="myspace-item[@type='folder']">                
+          <xsl:sort select="@item-name"/>         
+      </xsl:apply-templates>
+      <xsl:apply-templates select="myspace-item[@type='file']">                
+          <xsl:sort select="@item-name"/>         
+      </xsl:apply-templates>      
+      
       <notag/>
-    </span>
+    </span>    
   </xsl:template>
   
   
   <!-- Selects all other items of the user, which means files.
        Priority 1 is to ensure this template is not chosen over any folder selection
   --> 
-  <xsl:template match="myspace-item" priority="1">
+  <xsl:template match="myspace-item[@type='file']" priority="1">
+      
     <img src="/astrogrid-portal/icons/Document.png" alt="doc"/>
 
     &#160;
     <span class="document">
+      <xsl:attribute name="id"><xsl:value-of select="@safe-name"/></xsl:attribute>
       <xsl:attribute name="onclick">
         setIVORNAgsl('<xsl:value-of select="@ivorn"/>', '<xsl:value-of select="@full-name"/>');
         newAgsl('<xsl:value-of select="@folder-path"/>', '<xsl:value-of select="@item-name"/>');
+        setHighlight('<xsl:value-of select="@safe-name"/>', 'document-highlight');
       </xsl:attribute>
       <xsl:value-of select="@item-name"/>
     </span>

@@ -87,15 +87,17 @@ function myspace_browse_fill(selectedId, destId, funcName, actionValue) {
       
       // Get agsl (micro)
       if(funcName) {
-        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+        popupBrowser("/astrogrid-portal/lean/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId );
+        // micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
       }
       else {
-        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+        popupBrowser("/astrogrid-portal/lean/mount/myspace/myspace-micro?agsl=" + destId);
+        // micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
       }
 
       // Focus micro browser and maintain focus on it.
-      window.blur();
-      micro_browser.focus();
+      // window.blur();
+      // micro_browser.focus();
       // micro_browswer_tid = window.setTimeout("micro_focus()", 100);
     }
     else {
@@ -163,11 +165,14 @@ function myspace_download(urlId) {
 
 function myspace_properties(fileId) {
   fileEl = document.getElementById(fileId);
-  if(fileEl) {
+  var finalChar = fileEl.value.charAt(fileEl.value.length - 1);
+  var slash = "/";
+  if(fileEl && fileEl.value.length != 0 && !(finalChar == slash) ) {
     window.open("/astrogrid-portal/mount/myspace/storefile-properties?myspace-src=" + fileEl.value, "storefileProperties", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=500, height=400");
   }
   else {
-    alert('invalid file element: ' + fileId);
+  //  alert('invalid file element: ' + fileId);
+    alert( "Please select a file before choosing Properties" );
   }
 }
 

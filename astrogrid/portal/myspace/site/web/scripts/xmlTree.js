@@ -185,15 +185,27 @@ function newIvorn(baseIvorn, path, file) {
     if(errorMsg.length != 0 ) {
       errorMsg = errorMsg + '\n';
     }
-    errorMsg = errorMsg + 'Invalid location.';
+    errorMsg = errorMsg + 'Location missing. Please select a location.';
+  }
+  
+  if( file && file.length > 0 ) {
+     // replace leading and trailing spaces...
+     file = (file.replace(/^\s+/,'')).replace(/\s+$/,'');
   }
 
-  // name must exist and not contain white space...
-  if(!file || file.length == 0 || file.match(/[\s]/) ) {
+  // name must exist...
+  if(!file || file.length == 0 ) {
     if(errorMsg.length != 0 ) {
       errorMsg = errorMsg + '\n';
     }
-    errorMsg = errorMsg + 'Invalid name.';
+    errorMsg = errorMsg + 'Name missing. Please enter or select a name.';
+  }
+  // name must not contain white space or special characters...
+  else if( file.match(/[\s\/@><]/) ) {
+    if(errorMsg.length != 0 ) {
+      errorMsg = errorMsg + '\n';
+    }
+    errorMsg = errorMsg + 'Invalid name. A name cannot contain blanks or special characters';
   }
   
   if(errorMsg.length != 0) {
@@ -216,6 +228,11 @@ function newIvorn(baseIvorn, path, file) {
 function newAgsl(path, file) {
   var errorMsg = null;
   var result = '';
+
+  if( file && file.length > 0 ) {
+     // replace leading and trailing spaces...
+     file= (file.replace(/^\s+/,'')).replace(/\s+$/,'');
+  }
 
   if(!path && path.length == 0) {
     if(errorMsg != null) {
@@ -290,6 +307,18 @@ function processMicroBrowserOK( ivorn, agsl, fieldName, fieldValue, formName, fo
      setParentHiddenField(fieldName, fieldValue);
      submitParentForm(formName, formAction);
      callParentFunction(parentFunction);
+  }
+  
+}
+
+
+function processMicroBrowserRefresh( agslDestid, funcName ) {
+  
+  if(funcName) {
+     window.opener.popupBrowser("/astrogrid-portal/lean/mount/myspace/myspace-micro?myspace-refresh-cache=yes&parent_func=" + funcName + "()&agsl=" + agslDestid );
+  }
+  else {
+     window.opener.popupBrowser("/astrogrid-portal/lean/mount/myspace/myspace-micro?myspace-refresh-cache=yes&agsl=" + agslDestid);
   }
   
 }

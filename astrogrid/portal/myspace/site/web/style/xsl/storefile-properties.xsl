@@ -12,39 +12,45 @@
       </head>
       
       <body>
+      <!--
         <h1>
           Properties: <xsl:value-of select="@path"/>
         </h1>
-        
+      -->  
         <table>
           <tr>
-            <td>name:&#160;</td>
+            <td>Name:&#160;</td>
             <td><xsl:value-of select="@name"/></td>
           </tr>
           <tr>
-            <td>path:&#160;</td>
-            <td><xsl:value-of select="@path"/></td>
+            <td>Path:&#160;</td>
+            <td>
+                 <xsl:element name="A">
+                     <xsl:attribute name="href"><xsl:value-of select="@url"/></xsl:attribute>
+                     <xsl:value-of select="@path"/>
+                 </xsl:element>
+            </td>
           </tr>
           <tr>
-            <td>created:&#160;</td>
+            <td>Created:&#160;</td>
             <td><xsl:value-of select="@created"/></td>
           </tr>
           <tr>
-            <td>modified:&#160;</td>
+            <td>Modified:&#160;</td>
             <td><xsl:value-of select="@modified"/></td>
           </tr>
           <tr>
-            <td>owner:&#160;</td>
+            <td>Owner:&#160;</td>
             <td><xsl:value-of select="@owner"/></td>
           </tr>
           <tr>
-            <td>size:&#160;</td>
+            <td>Size:&#160;</td>
             <td><xsl:value-of select="@size"/></td>
           </tr>
           <tr>
             <td>MIME type:&#160;</td>
             <td><xsl:value-of select="@mime-type"/></td>
-          </tr>
+          </tr>       
         </table>
       </body>
     </html>

@@ -26,6 +26,7 @@ public class DeleteHandler extends AbstractMySpaceHandler {
     
     if(src != null && src.length() > 0) {
       context.getStoreClient().delete(src);
+      context.setMySpaceCache( null ) ;
     }
     else {
       throw new MySpaceHandlerException("invalid source");

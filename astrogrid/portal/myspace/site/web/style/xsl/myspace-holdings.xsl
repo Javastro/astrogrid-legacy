@@ -140,7 +140,12 @@
     <span class="branch" >
       <xsl:attribute name="style">display:<xsl:value-of select="$display"/></xsl:attribute>
       <xsl:attribute name="id"><xsl:value-of select="@safe-name"/></xsl:attribute>
-      <xsl:apply-templates/>
+      <xsl:apply-templates select="myspace-item[@type='folder']">                
+          <xsl:sort select="@item-name"/>         
+      </xsl:apply-templates>
+      <xsl:apply-templates select="myspace-item[@type='file']">                
+          <xsl:sort select="@item-name"/>         
+      </xsl:apply-templates>
       <notag/>
     </span>
 

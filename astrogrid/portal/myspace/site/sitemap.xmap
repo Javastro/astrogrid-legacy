@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.14 2004/08/20 15:03:11 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.15 2005/01/20 16:48:47 clq2 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -181,7 +181,18 @@
       | production environment in order to avoid exposing data
       | that you may not necessarily wish to.
       +-->
-  <map:views></map:views>
+  <map:views>
+      <!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <map:view name="001" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <map:view name="002" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>     
+  </map:views>
 
 <!-- =========================== Resources ================================= -->
 
@@ -388,7 +399,7 @@
       
       <map:match pattern="myspace-micro">
 
-        <map:generate type="myspace-holding-gen">
+        <map:generate type="myspace-holding-gen" label="000">
           <map:parameter name="user" value="ivo://org.astrogrid.mock/frog"/>
           <map:parameter name="community_account" value="org.astrogrid.mock"/>
           <map:parameter name="token" value="secret"/>
