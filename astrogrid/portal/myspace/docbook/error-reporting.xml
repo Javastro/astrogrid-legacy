@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<!DOCTYPE article
+    PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+    "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+  <!ENTITY ag "AstroGrid">
+  <!ENTITY agp "AstroGrid Portal">
+]>
+    
+<article>
+  <articleinfo>
+    <title>Error Reporting in the &agp;</title>
+    <author>
+      <firstname>Peter</firstname>
+      <surname>Shillan</surname>
+    </author>
+  </articleinfo>
+  
+  <abstract>
+    <title>Purpose</title>
+    
+    <para>
+      The purpose of this document is to detail the mechanisms that will be used to report on errors in the &agp;.  This included two separate types of error:
+      
+      <itemizedlist>
+        <listitem>
+          <para>
+            Site Errors
+          </para>
+          
+          <para>
+            Errors that occur in the website itself caused, in general, by an oversite during development or erroneous configuration.
+          </para>
+        </listitem>
+        
+        <listitem>
+          <para>
+            User Errors
+          </para>
+          
+          <para>
+            Errors made by the user when using the site, for example, incorrectly filling in a form field.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+  </abstract>
+  
+  <sect1>
+    <title>Introduction</title>
+    
+    <para>
+      The &agp; is a complex environment made up of several components including Java(tm) code, XML files (both static and dynamically generated) and complex configuration files.  The portal also presents information to the user and requires user interaction.  User interaction will often lead to users making mistakes.  The complexity of the portal setup also makes it likely that portal developers and administrators will make mistakes in setup.
+    </para>
+    
+    <para>
+      To enable both users and developers/administrators to provide and act upon errors they might make, the portal has a responsibility to provide a suitable mechanism that provides maximum feedback with as little effort as possible.  The following sections detail the feedback that should be given for both user and site errors and what responsibilities will have to be met by the developers to enable this feedback to occur.
+    </para>
+  </sect1>
+  
+  <sect1>
+    <title>Site Errors</title>
+    
+    <para>
+      Site errors will usually result in the Cocoon code throwing an exception.  It is important that these exceptions are logged and reported in as seemless a fashion as possible.
+    </para>
+    
+    <para>
+      Cocoon has a mechanism built in to its configuration that allows action to be taken when one of the pipelines it defines throws an exception during execution.  By using the <function>&lt;map:handle-errors&gt;</function> element, the Cocoon developer can capture the exception and choose a suitable reporting method.
+    </para>
+    
+    <para>
+      While it is beyond the scope of this document to fully describe Cocoon's error handling mechanism, some points should be highlighted:
+      
+      <itemizedlist>
+        <listitem>
+          <para>
+            Multiple Pipelines
+          </para>
+          
+          <para>
+            Multiple pipelines can be defined where different types of errors are appropriate.  An example of this is that simple URL requests can report differently than dynamic content generation.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Exception Selection
+          </para>
+          
+          <para>
+            Error reporting can be setup in the sitemap such that different exceptions are reported in different ways.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </para>
+    
+    <para>
+      Error reporting will:
+      
+      <itemizedlist>
+        <listitem>
+          <para>
+            Log the error
+          </para>
+          
+          <para>
+            Some errors may write to a log file but others may wish to take more immediate action such as e-mailing the site administrator.
+          </para>
+        </listitem>
+
+        <listitem>
+          <para>
+            Report to the user.
+          </para>
+          
+          <para>
+            A well formatted web page should be returned to the user indicating that an error has occurred.  The page will offer the opportunity to report the error to the site administrator.
+          </para>
+        </listitem>
+      </itemizedlist>
+      
+      For a fuller explanation of Cocoon's error handling mechanism, see <ulink url="http://cocoon.apache.org/2.1/userdocs/concepts/errorhandling.html">Coccon error handling</ulink> and <ulink url="http://wiki.cocoondev.org/Wiki.jsp?page=ErrorHandling">CocoonWiki error handling</ulink> documents.
+    </para>
+  </sect1>
+  
+  <sect1>
+    <title>User Errors</title>
+    
+    <para>
+      User errors are caused by the user performing an erroneous action on the site such as filling in a form incorrectly or trying to access a URL when they do not have permission to do so.  When this occurs, the user must be informed of their mistake and corrective action suggested.  The source of the error should be highlighted in such a way that the user will be able to find it easily.
+    </para>
+    
+    <sect2>
+      <title>
+        Error Messages
+      </title>
+      
+      <para>
+        Error messages should be summarised at the top of the page.  This will provide a full list of page errors and allow navigation directly to those errors.  A summary of the error message should be shown.
+      </para>
+    </sect2>
+    
+    <sect2>
+      <title>
+        Highlighting the Error
+      </title>
+      
+      <para>
+        The error will be linked to from the summary using an anchor such that clicking the summary will navigate straight to the error.  The error itself will have its corresponding HTML element class changed so that it's style (font, colours, etc) will reflect its erroneous status.
+      </para>
+    </sect2>
+  </sect1>
+  
+  <sect1>
+    <title>Developer Responsibilities</title>
+    
+    <para>
+      To enable the &agp; to provide the feedback detailed above, the developer of portal components must provide certain information and must configure their sub-sitemaps correctly.  Java components will have to throw appropriate exceptions.
+    </para>
+    
+    <sect2>
+      <title>Page Content</title>
+      
+      <para>
+        Sub-components of the &agp; return XML markup of the form:
+        
+        <programlisting>
+          <![CDATA[
+          <ag-div>
+            <form action="foo/bar">
+              <input type="text"/>
+              ...
+            </form>
+            
+            <p>
+              Some text
+              ...
+            </p>
+          </ag-div>
+          ]]>
+        </programlisting>
+
+        The addition of a new element, <function>&lt;ag-errors&gt;</function> will allow a list of error to be specified using <function>&lt;ag-error&gt;</function> elements.  Each error element will have the following set of attributes/children:
+        
+        <segmentedlist>
+          <?dbhtml list-presentation="table"?>
+          <?dbhtml term-presentation="bold"?>
+          
+          <title>Error Attributes</title>
+          
+          <segtitle>Attribute</segtitle>
+          <segtitle>Definition</segtitle>
+          
+          <seglistitem>
+            <seg>id</seg>
+            <seg>id of the HTML element the error applies to</seg>
+          </seglistitem>
+          
+          <seglistitem>
+            <seg>anchor</seg>
+            <seg>anchor to link the error message to</seg>
+          </seglistitem>
+          
+          <seglistitem>
+            <seg>message</seg>
+            <seg>error message text</seg>
+          </seglistitem>
+        </segmentedlist>
+        
+        The class of the relevant HTML element will also be changed.
+      </para>
+    </sect2>
+  </sect1>
+</article>
