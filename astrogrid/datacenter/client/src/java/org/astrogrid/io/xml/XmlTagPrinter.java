@@ -1,5 +1,5 @@
 /*
-   $Id: XmlTagPrinter.java,v 1.2 2004/07/06 14:43:19 mch Exp $
+   $Id: XmlTagPrinter.java,v 1.3 2004/07/07 19:32:53 mch Exp $
 
    (c) Copyright...
 */
@@ -102,6 +102,10 @@ public class XmlTagPrinter
     */
    public static String transformSpecials(String s)
    {
+      if (s==null) {
+         return "";
+      }
+         
       //java v1.4
       s = s.replaceAll("&", "&amp;");  //do first so we don't catch specials
       s = s.replaceAll("<", "&lt;");
@@ -220,6 +224,9 @@ public class XmlTagPrinter
 
 /*
  $Log: XmlTagPrinter.java,v $
+ Revision 1.3  2004/07/07 19:32:53  mch
+ Fix for null values
+
  Revision 1.2  2004/07/06 14:43:19  mch
  Fixed a series of bugs
 
