@@ -176,8 +176,8 @@ public class IndexGenerator
       //assemble snippet
       String snippet = "<FitsFile>\n"+
                "   <Filename>"+fileLocation+"</Filename>\n"+
-               makeCoverageSnippet(header)+
-               keywordSnippet.toString()+
+               makeCoverageSnippet(header) + "<Keywords>" +
+               keywordSnippet.toString() + "</Keywords>" +
                "</FitsFile>\n";
       
       validate(snippet); //debug - test snippet
@@ -317,11 +317,11 @@ public class IndexGenerator
           return fileIndexDir;
    }
    
-   private static void updateXMLDB(String directoryName) throws Exception {
+   private void updateXMLDB(String directoryName) throws Exception {
 
        
        File fi = new File(directoryName);
-       if(!fi.exists()) {           
+       if(!fi.exists()) {
            String indexGenHomePath = SimpleConfig.getProperty("indexgen.path", ("." + File.separator));
            if(!indexGenHomePath.endsWith(File.separator))
                indexGenHomePath += File.separator;
@@ -336,63 +336,74 @@ public class IndexGenerator
            System.out.println("There is a file that exists here, but is reported to not be a directory.  Now exiting");
            System.exit(1);
        }
-       String line = null;
-       InputStreamReader consoleReader = new InputStreamReader(System.in);
-       BufferedReader consoleInput = new BufferedReader(consoleReader);
-       System.out.println("What is the Table Name (Collection Name) you wish to put in the xml files into. Example: TraceData, EITData");
-       System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");
-       String correct = "N";
-       String uploadCollection = null;
-       while(!correct.equals("Y")) {
-           while( (line = consoleInput.readLine()) != null) ;
-           line = line.replaceAll("[^\\w*]","_");
-           uploadCollection = line;
-           System.out.println("The full location of placing xml files will be: (You cannot get rid of /db/dcfitsfiles");
-           System.out.println("/db/dcfitsfiles/" + uploadCollection);
-           System.out.println("Is this all correct Y|N");
-           while( (correct = consoleInput.readLine()) != null) ;
-           correct = correct.toUpperCase();
-       }
+       updateXMLDB(fi);
+   }
+   
+   public void updateXMLDB(File fi) throws Exception {
        
-       correct = "N";
-       String adminUser = "admin";
-       String adminPass = "";
-       String xmldbURI = "xmldb:exist://";
-       String xmldbConfig = "../exist.xml";
-       String xmldbDriver = "org.exist.xmldb.DatabaseImpl";
-       int changeNum = -1;
-       while(!correct.equals("Y")) {
-           System.out.println("Do you need to correct|change any of the below settings, Normally No if running pal with internal eXist db. [Y|N]");
-           System.out.println("Commonly number 1 may be changed, and at times 4");
-           System.out.println("1.) xmldb.uri = URI to the database. Default: " + xmldbURI + " (external example: xmldb:exist://localhost:9080/exist/xmlrpc)");
-           System.out.println("2.) xmldb.admin.user = Administration user for adding xml files. Default: " + adminUser);
-           System.out.println("3.) xmldb.admin.password = Administration password for adding xml files. Default: " + adminPass);
-           System.out.println("4.) xmldb.configuration = Location of the xml db configuration file; If your running eXist internally advise to change read pal configuration page. Default: " + xmldbConfig);
-           System.out.println("5.) xmldb.driver = The XML database driver. Default: " + xmldbDriver);
-           while( (line = consoleInput.readLine()) != null) ;
-           correct = correct.toUpperCase();
-           if(correct.equals("N")) {
-               System.out.println("Which number would you like to change [1-5], or 0 to exit changing");
-               while(changeNum < 0) {
-                   while( (line = consoleInput.readLine()) != null) ;
-                   changeNum = Integer.parseInt(line);
-                   if(changeNum > 5 || changeNum < 0) {
-                       System.out.println("Invalid Number");
-                       changeNum = -1;
-                   }
-                   if(changeNum == 1)
-                       xmldbURI = askQuestion("What xmldb.uri do you wish to use?");
-                   else if(changeNum == 2)
-                       adminUser = askQuestion("What is the admin user?");
-                   else if(changeNum == 3)
-                       adminPass = askQuestion("What is the admin password?");
-                   else if(changeNum == 4)
-                       xmldbConfig = askQuestion("What is the location of the xmldb configuration file 'exist.xml'?");
-                   else if(changeNum == 5)
-                       xmldbDriver = askQuestion("What is the XMLDB driver?");
-               }//while
-           }//if
-       }//while
+       String line = null;
+       String correct = "N";
+       String uploadCollection = SimpleConfig.getProperty("upload.collection", null);
+       String adminUser = SimpleConfig.getProperty("xmldb.admin.user", "admin");
+       String adminPass = SimpleConfig.getProperty("xmldb.admin.password", "");
+       String xmldbURI = SimpleConfig.getProperty("xmldb.uri", "xmldb:exist://");
+       String xmldbConfig = SimpleConfig.getProperty("exist.config.file", "../exist.xml");
+       String xmldbDriver = SimpleConfig.getProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+       String testBypass = SimpleConfig.getProperty("test.bypass", "no");
+
+       if(testBypass.equals("no")) {
+           InputStreamReader consoleReader = new InputStreamReader(System.in);
+           BufferedReader consoleInput = new BufferedReader(consoleReader);
+           System.out.println("What is the Table Name (Collection Name) you wish to put in the xml files into. Example: TraceData, EITData");
+           System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");           
+           while(!correct.equals("Y")) {
+               while( (line = consoleInput.readLine()) != null) ;
+               line = line.replaceAll("[^\\w*]","_");
+               uploadCollection = line;
+               System.out.println("The full location of placing xml files will be: (You cannot get rid of /db/dcfitsfiles");
+               System.out.println("/db/dcfitsfiles/" + uploadCollection);
+               System.out.println("Is this all correct Y|N");
+               while( (correct = consoleInput.readLine()) != null) ;
+               correct = correct.toUpperCase();
+           }
+           
+           correct = "N";
+           
+    
+           int changeNum = -1;
+           while(!correct.equals("Y")) {
+               System.out.println("Do you need to correct|change any of the below settings, Normally No if running pal with internal eXist db. [Y|N]");
+               System.out.println("Commonly number 1 may be changed, and at times 4");
+               System.out.println("1.) xmldb.uri = URI to the database. Default: " + xmldbURI + " (external example: xmldb:exist://localhost:9080/exist/xmlrpc)");
+               System.out.println("2.) xmldb.admin.user = Administration user for adding xml files. Default: " + adminUser);
+               System.out.println("3.) xmldb.admin.password = Administration password for adding xml files. Default: " + adminPass);
+               System.out.println("4.) xmldb.configuration = Location of the xml db configuration file; If your running eXist internally advise to change read pal configuration page. Default: " + xmldbConfig);
+               System.out.println("5.) xmldb.driver = The XML database driver. Default: " + xmldbDriver);
+               while( (line = consoleInput.readLine()) != null) ;
+               correct = correct.toUpperCase();
+               if(correct.equals("N")) {
+                   System.out.println("Which number would you like to change [1-5], or 0 to exit changing");
+                   while(changeNum < 0) {
+                       while( (line = consoleInput.readLine()) != null) ;
+                       changeNum = Integer.parseInt(line);
+                       if(changeNum > 5 || changeNum < 0) {
+                           System.out.println("Invalid Number");
+                           changeNum = -1;
+                       }
+                       if(changeNum == 1)
+                           xmldbURI = askQuestion("What xmldb.uri do you wish to use?");
+                       else if(changeNum == 2)
+                           adminUser = askQuestion("What is the admin user?");
+                       else if(changeNum == 3)
+                           adminPass = askQuestion("What is the admin password?");
+                       else if(changeNum == 4)
+                           xmldbConfig = askQuestion("What is the location of the xmldb configuration file 'exist.xml'?");
+                       else if(changeNum == 5)
+                           xmldbDriver = askQuestion("What is the XMLDB driver?");
+                   }//while
+               }//if
+           }//while
+       }//bypassif
        
 
        SimpleConfig.setProperty("xmldb.uri", xmldbURI);
@@ -400,9 +411,14 @@ public class IndexGenerator
        SimpleConfig.setProperty("xmldb.admin.user", adminUser);
        SimpleConfig.setProperty("xmldb.admin.password", adminPass);
        //commented out until latest dependency arrives
+       if(!dbRegistered) {
+           XMLDBFactory.registerDB(xmldbConfig);
+           dbRegistered = true;
+       }
+       
        XMLDBFactory xdb = new XMLDBFactory();
        System.out.println("Now Registering the database");
-       xdb.registerDB(xmldbConfig);
+       
        File []xmlFiles = fi.listFiles();
        Document xmlDoc = null;
        Collection coll = null;
@@ -418,6 +434,8 @@ public class IndexGenerator
            }//if
        }
    }
+   
+   private static boolean dbRegistered = false;
    
    private static String askQuestion(String question) throws Exception {
        InputStreamReader consoleReader = new InputStreamReader(System.in);
@@ -452,7 +470,7 @@ public class IndexGenerator
              String urlString = args[1];
              generator.generateIndex(new URL(urlString));
           }else if("-update".equals(args[0])) {
-              updateXMLDB(args[1]);
+              generator.updateXMLDB(args[1]);
           }
     }
 
@@ -460,6 +478,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.6  2005/03/14 16:09:31  KevinBenson
+Fixed up some more tests for the IndexGenerator
+
 Revision 1.5  2005/03/14 15:07:52  KevinBenson
 now the test works and writes to a xml file
 

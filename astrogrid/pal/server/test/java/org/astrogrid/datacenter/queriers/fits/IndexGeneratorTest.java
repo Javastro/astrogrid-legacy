@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.8 2005/03/13 11:43:44 KevinBenson Exp $
+/*$Id: IndexGeneratorTest.java,v 1.9 2005/03/14 16:09:31 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -31,9 +31,9 @@ public class IndexGeneratorTest extends TestCase
 {
    
    /** Tests generating indexes from the test fits files.   */
-   public void testInMemory() throws Exception
+   public void testGenerate() throws Exception
    {
-      URL []genURLS = FitsTestSupport.getTestFits();
+      URL []genURLS = FitsTestSupport.getTestFits();      
       System.out.println("length of urls = " + genURLS.length);
       SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
       IndexGenerator generator = new IndexGenerator();
@@ -51,6 +51,40 @@ public class IndexGeneratorTest extends TestCase
       catch (SAXException e) {
          fail("Generated index is not valid xml"+e);
       }
+   }
+   
+   /** Tests generating indexes from the test fits files.   */
+   public void testGenerateAndUpdate() throws Exception
+   {
+      URL []genURLS = FitsTestSupport.getTestFits();
+      SimpleConfig.setProperty("upload.collection","IndexGenTest/CDSData");      
+      SimpleConfig.setProperty("test.bypass","yes");
+      SimpleConfig.setProperty("xmldb.uri", "xmldb:exist://");
+      SimpleConfig.setProperty("xmldb.driver", "org.exist.xmldb.DatabaseImpl");
+      SimpleConfig.setProperty("xmldb.query.service", "XQueryService");
+      SimpleConfig.setProperty("xmldb.admin.user", "admin");
+      SimpleConfig.setProperty("xmldb.admin.password", "");
+      SimpleConfig.setProperty("exist.config.file", "target/test-classes/exist.xml");
+
+      System.out.println("length of urls = " + genURLS.length);
+      SimpleConfig.setProperty("indexgen.path","." + File.separator + "target");      
+      IndexGenerator generator = new IndexGenerator();
+      generator.raAxis = 1;
+      generator.decAxis = 2;
+      File indexDir = generator.generateIndex(genURLS);
+      assertNotNull(indexDir);
+      assertTrue(indexDir.isDirectory());
+      assertEquals(FitsTestSupport.getTestFits().length,indexDir.list().length);
+      //make sure they are xml documents.
+      try {
+         File fi = (indexDir.listFiles())[0];
+         DomHelper.newDocument(fi);  //check its' a valid XML doc
+      }
+      catch (SAXException e) {
+         fail("Generated index is not valid xml"+e);
+      }
+      generator.updateXMLDB(indexDir);
+      
    }
 
    /** Tests generating indexes from the test fits files.   
@@ -99,6 +133,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.9  2005/03/14 16:09:31  KevinBenson
+ Fixed up some more tests for the IndexGenerator
+
  Revision 1.8  2005/03/13 11:43:44  KevinBenson
  small change for the indextenerator to create directories under target
 
