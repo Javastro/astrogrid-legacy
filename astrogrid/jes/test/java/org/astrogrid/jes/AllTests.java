@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/02/06 12:39:37 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/02/09 11:51:24 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.jes.impl.AllTests.suite());
         suite.addTest(org.astrogrid.jes.job.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobcontroller.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.delegate.impl.AllTests.suite());
         
         return suite;
     }
@@ -39,6 +40,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/02/09 11:51:24  nw
+fixed glitch
+
 Revision 1.2  2004/02/06 12:39:37  nw
 merged in nww-it05-bz#85a branch (trim down unit tests)
 
