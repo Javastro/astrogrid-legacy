@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineParameterAdapter.java,v 1.2 2004/09/09 10:37:51 pah Exp $
+ * $Id: CommandLineParameterAdapter.java,v 1.3 2004/09/21 16:37:18 pah Exp $
  * 
  * Created on 20-Aug-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -112,6 +112,11 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
         
         String CommandLineVal = pval.getValue();
         // don't want to fetch output-only files.
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("process() - start "+pval.getName()+"="+pval.getValue());
+        }
+
         if (!isOutputOnly) {
             try {
 
@@ -127,7 +132,7 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
                         pw.close();
 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - " + pval.getName() + "="
+                            logger.debug("process() local copied - " + pval.getName() + "="
                                     + pval.getValue() + " direct, fileref="
                                     + referenceFile.getAbsolutePath());
                         }
@@ -136,7 +141,7 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
                     }
                     else {
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - " + pval.getName() + "="
+                            logger.debug("process() local copied - " + pval.getName() + "="
                                     + pval.getValue() + " direct");
                         }
                         CommandLineVal = pval.getValue();
@@ -151,7 +156,7 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
                         is.close();
                         os.close();
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - " + pval.getName() + "="
+                            logger.debug("process() local copied - " + pval.getName() + "="
                                     + pval.getValue() + " indirect, fileref="
                                     + referenceFile.getAbsolutePath());
                         }
@@ -168,7 +173,7 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
                         sw.close();
                         pval.setValue(sw.toString()); //TODO do we really want to set this - or is just 
                         if (logger.isDebugEnabled()) {
-                            logger.debug("process() - " + pval.getName() + "="
+                            logger.debug("process() local copied - " + pval.getName() + "="
                                     + pval.getValue() + " indirect");
                         }
 
@@ -224,7 +229,7 @@ public class CommandLineParameterAdapter implements ParameterAdapter {
                     }
 
                     OutputStream os = indirect.write();
-                    Piper.pipe(is, os);
+                    Piper.bufferedPipe(is, os);
                     is.close();
                     os.close();
                 }
