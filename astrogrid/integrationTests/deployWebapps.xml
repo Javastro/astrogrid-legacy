@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: deployWebapps.xml,v 1.12 2004/02/13 12:05:36 jdt Exp $ --><!--
+<!-- $Id: deployWebapps.xml,v 1.13 2004/02/13 14:14:56 jdt Exp $ --><!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
 
@@ -12,6 +12,14 @@
 	-->
 <project basedir="." default="RedeployTheLot" name="DeployWars">
   
+
+<!--==================================================================================-->
+
+	<target depends="RedeployApplications,RedeployJES,RedeployMySpace,Redeployportal,DeployPalMartin" name="RedeployTheLot"/>
+	<target depends="DeployApplications,DeployJES,DeployMySpace,DeployPALSkyServer,Deployportal,DeployPalMartin" name="DeployTheLot"/>
+
+<!--==================================================================================-->
+
 
 
 <!--Deployment machines see http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IREnvironment -->
@@ -38,7 +46,12 @@
     <property name="palSkyServer.host.url" value="${servers.e.url}"/>
     <property name="palSkyServer.host.user" value="${servers.e.user}"/>
     <property name="palSkyServer.host.password" value="${servers.e.password}"/> 
-    
+
+    <property name="palMartin.path" value="/intTest-palMartin"/>   
+    <property name="palMartin.war.url" value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
+    <property name="palMartin.host.url" value="${servers.c.url}"/>
+    <property name="palMartin.host.user" value="${servers.c.user}"/>
+    <property name="palMartin.host.password" value="${servers.c.password}"/>     
 
     
     <property name="applications.path" value="/intTest-applications"/>   
@@ -73,12 +86,6 @@
      
   </target>
 
-<!--==================================================================================-->
-
-	<target depends="RedeployApplications,RedeployJES,RedeployMySpace,Redeployportal" name="RedeployTheLot"/>
-	<target depends="DeployApplications,DeployJES,DeployMySpace,DeployPALSkyServer,Deployportal" name="DeployTheLot"/>
-
-<!--==================================================================================-->
 
 <!--==================================================================================-->
   <!-- community-->
@@ -211,6 +218,24 @@
     <target depends="UndeployPALSkyServer, DeployPALSkyServer" name="RedeployPALSkyServer"/>
 
 <!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- PAL/Martin-->
+
+
+    <target depends="loadServersProperties" description="obtain latest pal war and deploy it" name="DeployPalMartin">
+	    <echo message="Deploying PAL/Martin from ${palMartin.war.url} to ${palMartin.host.url} at ${palMartin.path}"/>
+		<deploy password="${palMartin.host.password}" path="${palMartin.path}" url="${palMartin.host.url}" username="${palMartin.host.user}" war="${palMartin.war.url}"/>
+    </target>
+    
+    <target name="UndeployPalMartin">
+		<remove password="${palMartin.host.password}" path="${palMartin.path}" url="${palMartin.host.url}" username="${palMartin.host.user}"/>
+	</target>
+	
+    <target depends="UndeployPalMartin, DeployPalMartin" name="RedeployPalMartin"/>
+
+<!--==================================================================================-->
+
 
 
   <!-- Configure the custom Ant tasks for the Manager application -->
