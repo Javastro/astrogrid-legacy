@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileResolver.java,v 1.2 2005/03/25 16:19:57 mch Exp $
+ * $Id: StoreFileResolver.java,v 1.3 2005/03/26 13:09:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,9 +13,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
 import javax.xml.rpc.ServiceException;
+import org.astrogrid.slinger.agfm.FileManagerId;
 import org.astrogrid.slinger.myspace.MSRL;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
+import org.astrogrid.storeclient.api.agfm.FileManagerFile;
 import org.astrogrid.storeclient.api.file.LocalFile;
 import org.astrogrid.storeclient.api.ftp.FtpFile;
 import org.astrogrid.storeclient.api.myspace.MySpaceFile;
@@ -52,8 +54,13 @@ public class StoreFileResolver {
       }
    }
 
-   public static StoreFile resolveStoreFile(HomespaceName homespace, Principal user) throws IOException {
-      return resolveStoreFile(homespace.resolveIvosrn(), user);
+   /** assumes homespaces are filemanagers... bad... */
+   public static StoreFile resolveStoreFile(HomespaceName homespace, Principal user) throws IOException, URISyntaxException {
+      return resolveStoreFile(new FileManagerId(homespace.toIvoForm()), user);
+   }
+
+   public static StoreFile resolveStoreFile(FileManagerId fileManagerId, Principal user) throws IOException, URISyntaxException {
+      return new FileManagerFile(fileManagerId.getId(), user);
    }
 
    /** Assumes ivosrn resolves to a myspace - bad... */
@@ -61,7 +68,7 @@ public class StoreFileResolver {
       MSRL myspace = new MSRL(new URL(ivosrn.resolve()), ivosrn.getFragment());
       return resolveStoreFile(myspace, user);
    }
-
+   
    public static StoreFile resolveStoreFile(String uri, Principal user) throws IOException, URISyntaxException {
       try {
          //see if it's a URL
@@ -76,9 +83,9 @@ public class StoreFileResolver {
       else if (MSRL.isMsrl(uri)) {
          return resolveStoreFile(new MSRL(uri), user);
       }
-//      else if (FileManagerId.isFileManagerId(uri)) {
-//         return resolveStoreFile(new FileManagerId(uri), user);
-//      }
+      else if (FileManagerId.isFileManagerId(uri)) {
+         return resolveStoreFile(new FileManagerId(uri), user);
+      }
       else if (HomespaceName.isHomespaceName(uri)) {
          return resolveStoreFile(new HomespaceName(uri), user);
       }
@@ -94,6 +101,9 @@ public class StoreFileResolver {
 
 /*
 $Log: StoreFileResolver.java,v $
+Revision 1.3  2005/03/26 13:09:57  mch
+Minor fixes for accessing FileManager
+
 Revision 1.2  2005/03/25 16:19:57  mch
 Added FIleManger suport
 

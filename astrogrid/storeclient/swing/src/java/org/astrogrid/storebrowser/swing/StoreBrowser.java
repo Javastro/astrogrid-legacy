@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.2 2005/03/25 16:19:57 mch Exp $
+ * $Id: StoreBrowser.java,v 1.3 2005/03/26 13:09:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -29,8 +29,10 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.account.IvoAccount;
 import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.mime.MimeFileExts;
 import org.astrogrid.slinger.sources.SourceIdentifier;
@@ -78,7 +80,7 @@ public class StoreBrowser extends JDialog
    boolean isCancelled = false;
 
    //toolbar buttons
-//   JButton refreshBtn = null;
+   JButton refreshBtn = null;
    JButton uploadBtn = null;
    JButton uploadUrlBtn = null;
    JButton downloadBtn = null;
@@ -155,7 +157,7 @@ public class StoreBrowser extends JDialog
       addressPicker.addItem(""); //empty one to start with
       
       //toolbar
-//      refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
+      refreshBtn = IconButtonHelper.makeIconButton("Refresh", "Refresh", "Reloads file list from server");
       newFolderBtn = IconButtonHelper.makeIconButton("New", "NewFolder", "Creates a new folder");
       uploadBtn = IconButtonHelper.makeIconButton("Put", "Up", "Upload file from local disk to MySpace");
       uploadUrlBtn = IconButtonHelper.makeIconButton("PutUrl","Putty", "Copy file from public URL to MySpace");
@@ -166,7 +168,7 @@ public class StoreBrowser extends JDialog
       JPanel iconBtnPanel = new JPanel();
       BoxLayout btnLayout = new BoxLayout(iconBtnPanel, BoxLayout.X_AXIS);
       iconBtnPanel.setLayout(btnLayout);
-//      iconBtnPanel.add(refreshBtn);
+      iconBtnPanel.add(refreshBtn);
       iconBtnPanel.add(newFolderBtn);
       iconBtnPanel.add(uploadBtn);
       iconBtnPanel.add(uploadUrlBtn);
@@ -231,15 +233,13 @@ public class StoreBrowser extends JDialog
          RHS.add(actionPanel, BorderLayout.SOUTH);
       }
       
-      /*
       refreshBtn.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-//               treeView.refresh();
+               refresh();
             }
          }
       );
-       */
       
       uploadBtn.addActionListener(
          new ActionListener() {
@@ -352,6 +352,19 @@ public class StoreBrowser extends JDialog
    }
    
    
+   public void refresh() {
+      StoreFile file = getSelectedFile();
+      
+      if (file != null) {
+         try {
+            file.refresh();
+            repaint();
+         }
+         catch (IOException ioe) {
+         }
+      }
+   }
+   
    /** Download button pressed - copy selected file from store to disk */
    public void downloadSelectedToDisk()
    {
@@ -414,13 +427,17 @@ public class StoreBrowser extends JDialog
             }
 
             Slinger.sling(SourceMaker.makeSource(new FileInputStream(source)), TargetMaker.makeTarget(out), operator);
-            target.refresh();
-            repaint();
             
          } catch (IOException e) {
-            log.error("Upload of '"+target+" failed",e);
+            log.error(e+" Uploading "+source+" to "+target,e);
             JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          }
+         try {
+            target.refresh();
+         } catch (IOException e) {
+            log.error(e+" Refreshing "+target,e);
+         }
+         repaint();
       }
    }
 
@@ -452,7 +469,6 @@ public class StoreBrowser extends JDialog
             }
             TargetIdentifier target = TargetMaker.makeTarget(file.getUri());
             Slinger.sling(source, target, operator);
-            file.refresh();
 
          } catch (URISyntaxException mue) {
             log.error("Invalid URL '"+urlEntry+"' ", mue);
@@ -464,6 +480,12 @@ public class StoreBrowser extends JDialog
             log.error("Upload of '"+urlEntry+"' failed", e);
             JOptionPane.showMessageDialog(this, e+", uploading "+source+" to '"+urlEntry+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
          }
+         try {
+            file.refresh();
+         } catch (IOException e) {
+            log.error(e+" Refreshing "+file,e);
+         }
+         repaint();
       }
    }
 
@@ -606,10 +628,12 @@ public class StoreBrowser extends JDialog
      */
    public static void main(String[] args)  {
 
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+      ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
+
       try
       {
-         ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
-         StoreBrowser browser = StoreBrowser.showDialog(LoginAccount.ANONYMOUS, NO_ACTION);
+         StoreBrowser browser = StoreBrowser.showDialog(new IvoAccount("DSATEST1", "uk.ac.le.star", null), NO_ACTION);
          browser.setLocation(100,100);
          ((RootStoreNode) browser.treeView.getModel().getRoot()).addDefaultStores(true);
       } catch (IOException ioe)
@@ -621,6 +645,9 @@ public class StoreBrowser extends JDialog
 
 /*
 $Log: StoreBrowser.java,v $
+Revision 1.3  2005/03/26 13:09:57  mch
+Minor fixes for accessing FileManager
+
 Revision 1.2  2005/03/25 16:19:57  mch
 Added FIleManger suport
 

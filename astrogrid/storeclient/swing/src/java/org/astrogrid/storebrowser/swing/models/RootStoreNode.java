@@ -1,5 +1,5 @@
 /*
- * $Id: RootStoreNode.java,v 1.2 2005/03/25 16:19:57 mch Exp $
+ * $Id: RootStoreNode.java,v 1.3 2005/03/26 13:09:57 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -13,6 +13,7 @@ package org.astrogrid.storebrowser.swing.models;
 import java.security.Principal;
 import java.util.Vector;
 import javax.swing.tree.TreeNode;
+import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
@@ -31,9 +32,14 @@ public class RootStoreNode extends StoreFileNode {
    public RootStoreNode(Principal aUser) {
       super(null, aUser);
 
+      //add standard stores
       if ((user != null) && (!user.getName().toUpperCase().startsWith("ANONYMOUS"))) {
          addStore(new StoreNode(this, "My Space", "homespace:"+aUser.getName(), aUser));
       }
+      if (ConfigFactory.getCommonConfig().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
+         addStore(new StoreNode(this, "LocalDisk", "file://", aUser));
+      }
+      
    }
    
    /** Constructs with given stores */
@@ -56,7 +62,7 @@ public class RootStoreNode extends StoreFileNode {
       }
       if (store.getUri().trim().toLowerCase().startsWith("file:")) {
          //check that it's allowed
-         if (!SimpleConfig.getSingleton().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
+         if (!ConfigFactory.getCommonConfig().getBoolean(PERMIT_LOCAL_ACCESS_KEY, false)) {
             throw new IllegalArgumentException("Browsing local file stores is not permitted here");
          }
       }

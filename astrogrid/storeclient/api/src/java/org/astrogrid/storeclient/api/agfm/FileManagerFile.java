@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerFile.java,v 1.1 2005/03/25 16:19:57 mch Exp $
+ * $Id: FileManagerFile.java,v 1.2 2005/03/26 13:09:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,6 +20,7 @@ import org.astrogrid.registry.RegistryException;
 import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.storeclient.api.StoreFile;
+import java.rmi.RemoteException;
 
 /**
  * Wrapper around the FileManagerNode that is used to access AstroGrid's FileManager
@@ -36,24 +37,48 @@ public class FileManagerFile implements StoreFile {
    FileManagerNode node = null;;
    
    IVOSRN id = null;
+   
+   boolean exists = false;  //cached flag
 
-   public FileManagerFile(IVOSRN givenId, Principal aUser) throws IOException, RegistryException, CommunityException, URISyntaxException  {
-      FileManagerClient client = factory.login(/*aUser*/);
-      node = client.node(givenId.toOldIvorn());
-      this.id = givenId;
+   public FileManagerFile(IVOSRN givenId, Principal aUser) throws IOException, URISyntaxException  {
+      try {
+         client = factory.login(/*aUser*/);
+         node = client.node(givenId.toOldIvorn());
+         this.id = givenId;
+         exists = (client.exists(givenId.toOldIvorn()) != null);
+      }
+      catch (CommunityException e) {
+         throw new StoreException(e+" getting FileManagerFile "+givenId+" for "+aUser,e);
+      }
+      catch (RegistryException e) {
+         throw new StoreException(e+" getting FileManagerFile "+givenId+" for "+aUser,e);
+      }
    }
-
+   
    public FileManagerFile(FileManagerClient givenClient, FileManagerNode givenNode) throws IOException {
+      
+      assert givenClient != null : "FileManagerClient null";
+      assert givenNode != null : "FileManagerNode null";
+      
       this.client = givenClient;
       this.node = givenNode;
       String s = node.getIvorn().toString();
       try {
          this.id = new IVOSRN(s);
+         exists = (client.exists(id.toOldIvorn()) != null);
       }
       catch (URISyntaxException e) {
          throw new StoreException(e+" from "+s,e);
       }
+      catch (CommunityException e) {
+         throw new StoreException(e+" getting FileManagerFile "+id,e);
+      }
+      catch (RegistryException e) {
+         throw new StoreException(e+" getting FileManagerFile "+id,e);
+      }
    }
+   
+   public String toString() { return id.toString(); }
    
    /** Refreshes from the server */
    public void refresh() throws IOException {
@@ -98,8 +123,8 @@ public class FileManagerFile implements StoreFile {
    
    /** Returns true if it exists - eg it may be a reference to a file about to be
     * created.  In this case returns true as 'I don't know'... which probably is not good... */
-   public boolean exists()       {
-      return true;
+   public boolean exists()      {
+      return exists;
    }
    
    /** Renames the file to the given filename. Affects only the name, not the
@@ -157,7 +182,7 @@ public class FileManagerFile implements StoreFile {
    
    /** Lists children files if this is a container - returns null otherwise */
    public StoreFile[] listFiles(Principal user) throws IOException {
-      if (isFolder()) {
+      if (!isFolder()) {
          return null;
       }
       StoreFile[] sf = new StoreFile[node.getChildCount()];
@@ -188,6 +213,9 @@ public class FileManagerFile implements StoreFile {
 
 /*
 $Log: FileManagerFile.java,v $
+Revision 1.2  2005/03/26 13:09:57  mch
+Minor fixes for accessing FileManager
+
 Revision 1.1  2005/03/25 16:19:57  mch
 Added FIleManger suport
 
