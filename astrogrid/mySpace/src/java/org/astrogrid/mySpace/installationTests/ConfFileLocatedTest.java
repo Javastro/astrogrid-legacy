@@ -1,4 +1,4 @@
-/* $Id: ConfFileLocatedTest.java,v 1.1 2004/01/02 15:28:17 jdt Exp $
+/* $Id: ConfFileLocatedTest.java,v 1.2 2004/01/02 16:07:27 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,7 +7,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file. 
  */
-package org.astrogrid.mySpace.webapp;
+package org.astrogrid.mySpace.installationTests;
 
 import org.astrogrid.AstroGridException;
 import org.astrogrid.mySpace.mySpaceManager.MMC;
