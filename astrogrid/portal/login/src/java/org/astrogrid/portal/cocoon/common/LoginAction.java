@@ -39,6 +39,16 @@ public class LoginAction extends AbstractAction
 	private static final String POLICY_ACTION   = "read" ;
 	private static final String POLICY_RESOURCE = "portal.site" ;
 
+	private static final String BAD_NAME_MESSAGE = "Please enter a valid account name" ;
+	private static final String BAD_PASS_MESSAGE = "Please enter a valid password" ;
+	private static final String SYSTEM_ERROR_MESSAGE = "System error - login failed" ;
+
+	private static final String LOGIN_FAIL_MESSAGE = "Login rejected" ;
+	private static final String LOGIN_PASS_MESSAGE = "Login accepted" ;
+
+	private static final String POLICY_FAIL_MESSAGE = "Permission revoked" ;
+	private static final String POLICY_PASS_MESSAGE = "Permission granted" ;
+
 	/**
 	 * Our action method.
 	 *
@@ -63,8 +73,8 @@ public class LoginAction extends AbstractAction
 		if (DEBUG_FLAG) System.out.println("LoginAction:act()") ;
 		if (DEBUG_FLAG) System.out.println("  Action : " + action) ;
 		//
-		// Setup the error message.
-		String error = null ;
+		// Setup our error message.
+		String message = null ;
 		//
 		// Setup our security token.
 		SecurityToken token = null ;
@@ -72,9 +82,17 @@ public class LoginAction extends AbstractAction
 		// Setup our authentication
 		boolean authorized = false ;
 		//
-		// If the action is login.
+		// Setup our results map.
+		Map results = new HashMap() ;
+
+		//
+		// If the request action is login.
 		if (LOGIN_ACTION.equals(action))
 			{
+			//
+			// Clear the current account info.
+			session.setAttribute("user", null) ;
+			session.setAttribute("community_account", null) ;
 			//
 			// Get the user name and password from our request.
 			String name = request.getParameter(NAME_PARAM);
@@ -87,13 +105,13 @@ public class LoginAction extends AbstractAction
 			// Check for a null or blank name.
 			if(null == name)
 				{
-				error = "Null name" ;
+				message = BAD_NAME_MESSAGE ;
 				}
 			else {
 				name = name.trim() ;
 				if(name.length() <= 0)
 					{
-					error = "Blank name" ;
+					message = BAD_NAME_MESSAGE ;
 					}
 				}
 
@@ -101,13 +119,13 @@ public class LoginAction extends AbstractAction
 			// Check for a null or blank password.
 			if(null == pass)
 				{
-				error = "Null password" ;
+				message = BAD_PASS_MESSAGE ;
 				}
 			else {
 				pass = pass.trim() ;
 				if(pass.length() <= 0)
 					{
-					error = "Blank password" ;
+					message = BAD_PASS_MESSAGE ;
 					}
 				}
 
@@ -117,6 +135,7 @@ public class LoginAction extends AbstractAction
 			if (null == authenticator)
 				{
 				if (DEBUG_FLAG) System.out.println("FAIL : Null AuthenticationDelegate") ;
+				message = SYSTEM_ERROR_MESSAGE ;
 				}
 			//
 			// 
@@ -129,6 +148,7 @@ public class LoginAction extends AbstractAction
 					if (null == token)
 						{
 						if (DEBUG_FLAG) System.out.println("FAIL : Null token") ;
+						message = LOGIN_FAIL_MESSAGE ;
 						}
 					else {
 						if (DEBUG_FLAG) System.out.println("PASS : Got token") ;
@@ -139,11 +159,12 @@ public class LoginAction extends AbstractAction
 						if (DEBUG_FLAG) System.out.println("  Account : " + token.getAccount()) ;
 						if (DEBUG_FLAG) System.out.println("  Start   : " + token.getStartDate()) ;
 						if (DEBUG_FLAG) System.out.println("  End     : " + token.getExpirationDate()) ;
+						message = LOGIN_PASS_MESSAGE ;
 						}
 					}
 				catch(Exception ouch)
 					{
-					error = "Login failed" ;
+					message = SYSTEM_ERROR_MESSAGE ;
 					ouch.printStackTrace();
 					}
 				}
@@ -153,6 +174,7 @@ public class LoginAction extends AbstractAction
 			if (null == delegate)
 				{
 				if (DEBUG_FLAG) System.out.println("FAIL : Null PolicyServiceDelegate") ;
+				message = SYSTEM_ERROR_MESSAGE ;
 				}
 			//
 			// 
@@ -165,17 +187,34 @@ public class LoginAction extends AbstractAction
 					if (authorized)
 						{
 						if (DEBUG_FLAG) System.out.println("PASS : Permission check ok") ;
+						message = POLICY_PASS_MESSAGE ;
 						}
 					else {
 						if (DEBUG_FLAG) System.out.println("FAIL : Permission check failed") ;
+						message = POLICY_FAIL_MESSAGE ;
 						}
 					}
 				catch(Exception ouch)
 					{
-					error = "Permission check failed" ;
+					message = SYSTEM_ERROR_MESSAGE ;
 					ouch.printStackTrace();
 					}
 				}
+
+			//
+			// If we pass the tests.
+			if ((null != token) && (authorized))
+				{
+				//
+				// Set the current account info.
+				session.setAttribute("user", name) ;
+				session.setAttribute("community_account", token.getAccount()) ;
+				}
+
+			//
+			// Add our display message.
+			results.put("message", message);
+
 			}
 
 		Map results = new HashMap() ;
@@ -193,7 +232,6 @@ public class LoginAction extends AbstractAction
 		// Load our community config.
 		CommunityConfig.loadConfig();
 		}
-
 
    /**
     * Our action method.
@@ -237,8 +275,6 @@ public class LoginAction extends AbstractAction
       
       String secure_url = null;
 
-		/*
-		 *
       if(HTTPS_CONNECTION.equals(secureConn)) {
          
          if(!request.isSecure()) {
@@ -254,8 +290,6 @@ public class LoginAction extends AbstractAction
             }
          }
       }
-		*
-		*/
       
       String admin = CommunityConfig.getAdministrator();
       String adminEmail = CommunityConfig.getAdministratorEmail();
