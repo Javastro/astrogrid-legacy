@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.7 2004/11/08 13:03:18 mch Exp $
+ * $Id: AdqlXml074Parser.java,v 1.8 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -327,12 +327,15 @@ public class AdqlXml074Parser  {
       Element radiusElement = DsaDomHelper.getSingleChildByTagName(region, "Radius");
       double radius = Double.parseDouble(DomHelper.getValue(radiusElement));
       
-      return new Circle(coordSys, ra, dec, radius);
+      return new CircleCondition(coordSys, ra, dec, radius);
    }
    
 }
 /*
  $Log: AdqlXml074Parser.java,v $
+ Revision 1.8  2004/11/11 23:23:29  mch
+ Prepared framework for SSAP and SIAP
+
  Revision 1.7  2004/11/08 13:03:18  mch
  Fix to pick up right DEC from region arg
 

@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.9 2004/11/11 20:42:50 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.10 2004/11/11 23:23:29 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -191,18 +191,7 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
    /** Returns just the number of matches rather than the list of matches. Since there's no way to do this yet
     * directly with Vizier (I don't think?), we just do a normal query then count the rows */
    public long getCount(Account user, Query query, Querier querier) throws IOException {
-      StringWriter sw = new StringWriter();
-      query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
-      askQuery(user, query, querier);
-      try {
-         return DomHelper.newDocument(sw.toString()).getElementsByTagName("TR").getLength();
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server not configured correctly ",e);
-      }
-      catch (SAXException e) {
-         throw new IOException("Vizier returned invalid VOTable: "+e);
-      }
+      return getCountFromResults(user, query, querier);
    }
    
    
@@ -211,6 +200,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.10  2004/11/11 23:23:29  mch
+ Prepared framework for SSAP and SIAP
+
  Revision 1.9  2004/11/11 20:42:50  mch
  Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Circle.java,v 1.2 2004/10/18 13:11:30 mch Exp $
+ * $Id: CircleCondition.java,v 1.1 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,13 +12,13 @@ package org.astrogrid.datacenter.query.condition;
  * be created from a Function, as well as one that might be included inline
  */
 
-public class Circle extends Function  {
+public class CircleCondition extends Function  {
    
    String funcName = null;
    Expression[] funcArgs = null;
    
    /** Create Circle function with given parameters, assuming J2000 */
-   public Circle(double ra, double dec, double radius) {
+   public CircleCondition(double ra, double dec, double radius) {
       super("CIRCLE", new Expression[] {
                   new LiteralString("J2000"),
                   new LiteralNumber(""+ra),
@@ -28,7 +28,7 @@ public class Circle extends Function  {
    }
 
    /** Create Circle function with given parameters */
-   public Circle(String coordSys, double ra, double dec, double radius) {
+   public CircleCondition(String coordSys, double ra, double dec, double radius) {
       super("CIRCLE", new Expression[] {
                   new LiteralString(coordSys),
                   new LiteralNumber(""+ra),
@@ -51,10 +51,13 @@ public class Circle extends Function  {
    
    /** Factory method used to create a circle from a Function object with the
     * function name of 'CIRCLE' */
-   public static Circle makeCircle(Function circleFunction) {
+   public static CircleCondition makeCircle(Function circleFunction) {
+      
+      if (circleFunction instanceof CircleCondition) { return (CircleCondition) circleFunction; }
+      
       assert circleFunction.getName().toLowerCase().equals("circle") : circleFunction+" is not a circle";
       
-      return new Circle( ((LiteralString) circleFunction.getArg(1)).getValue(),
+      return new CircleCondition( ((LiteralString) circleFunction.getArg(1)).getValue(),
                  getArgDouble(2, circleFunction),
                  getArgDouble(3, circleFunction),
                  getArgDouble(4, circleFunction)
@@ -80,7 +83,10 @@ public class Circle extends Function  {
 }
 
 /*
-$Log: Circle.java,v $
+$Log: CircleCondition.java,v $
+Revision 1.1  2004/11/11 23:23:29  mch
+Prepared framework for SSAP and SIAP
+
 Revision 1.2  2004/10/18 13:11:30  mch
 Lumpy Merge
 

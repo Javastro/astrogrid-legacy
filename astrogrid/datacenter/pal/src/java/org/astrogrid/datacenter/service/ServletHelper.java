@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.12 2004/11/10 22:01:50 mch Exp $
+ * $Id: ServletHelper.java,v 1.13 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,9 +15,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.query.condition.CircleCondition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.slinger.targets.TargetIndicator;
 import org.astrogrid.slinger.targets.TargetMaker;
 
 /**
@@ -141,7 +141,54 @@ public class ServletHelper
 
    }
    
+   /** Creates a Circle function condition from parameters in the given request.
+    * Accepts POS=(ra,dec) and RA=ra&DEC=dec, and SIZE and SR for search radius.
+    * Accepts all-lower case as well as all-upper case
+    */
+   public static CircleCondition makeCircleCondition(HttpServletRequest request) {
+      
+      String radiusparam = request.getParameter("SIZE");
+      if (radiusparam == null) { radiusparam = request.getParameter("size"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("SR"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("sr"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("RADIUS"); }
+      if (radiusparam == null) { radiusparam = request.getParameter("radius"); }
+      if (radiusparam == null) {
+         throw new IllegalArgumentException("No Radius given as SIZE or SR or RADIUS");
+      }
+      double radius = Double.parseDouble(radiusparam);
+      
+      double ra;
+      double dec;
 
+      String pos = request.getParameter("POS");
+      if (pos == null)     {  request.getParameter("pos"); }
+      if (pos != null) {
+         int comma = pos.indexOf(",");
+         ra = Double.parseDouble(pos.substring(0,comma));
+         dec = Double.parseDouble(pos.substring(comma+1));
+         return new CircleCondition(ra, dec, radius);
+      }
+
+      String raparam = request.getParameter("RA");
+      if (raparam == null) {  raparam = request.getParameter("ra"); }
+      if (raparam == null) {  raparam = request.getParameter("Ra"); }
+      if (raparam == null) {
+         throw new IllegalArgumentException("No RA given");
+      }
+      
+      String decparam = request.getParameter("DEC");
+      if (decparam == null) { decparam = request.getParameter("dec"); }
+      if (decparam == null) { decparam = request.getParameter("Dec"); }
+      if (raparam == null) {
+         throw new IllegalArgumentException("No DEC given");
+      }
+      
+      ra = Double.parseDouble(raparam);
+      dec = Double.parseDouble(decparam);
+      
+      return new CircleCondition(ra, dec, radius);
+   }
    
    
    /** Convenience routine for returning the correct 'HTML' snippet that

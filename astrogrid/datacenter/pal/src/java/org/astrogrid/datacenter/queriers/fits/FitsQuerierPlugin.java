@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.5 2004/11/09 17:42:22 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.6 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,6 +19,7 @@ import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.UrlListResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.queriers.xql.XqlMaker;
 import org.astrogrid.datacenter.query.Query;
@@ -71,7 +72,7 @@ public class FitsQuerierPlugin extends DefaultPlugin
       
       if ((!aborted) && (filenames != null)) {
          querier.getStatus().addDetail(filenames+" files matched");
-         FitsResults results = new FitsResults(querier, filenames);
+         UrlListResults results = new UrlListResults(querier, filenames);
          results.send(query.getResultsDef(), querier.getUser());
       }
    }
@@ -246,6 +247,9 @@ public class FitsQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.6  2004/11/11 23:23:29  mch
+ Prepared framework for SSAP and SIAP
+
  Revision 1.5  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

@@ -1,10 +1,10 @@
 /*
- * $Id: FitsResults.java,v 1.4 2004/11/09 17:42:22 mch Exp $
+ * $Id: UrlListResults.java,v 1.1 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.datacenter.queriers.fits;
+package org.astrogrid.datacenter.queriers;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,29 +15,27 @@ import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 
 /**
- * Holds the list of found FITS files.
+ * Results which are a list of URLs
  *
  * @author M Hill
  */
 
-public class FitsResults extends QueryResults {
+public class UrlListResults extends QueryResults {
    
-   /** List of FITS files - probably URLs */
-   protected String[] filenames;
+   /** List of URLs to (probably) FITS files  */
+   protected String[] urls;
    
    /**
-    * Construct this wrapper around the given JDBC/SQL ResultSet.  We don't
-    * know how big this result set will be, so it's likely we'll need a workspace
-    * for any temporary files created when doing conversions
+    * Construct this wrapper around the given list of results
     */
-   public FitsResults(Querier parentQuerier, String[] results) {
+   public UrlListResults(Querier parentQuerier, String[] results) {
       super(parentQuerier);
-      this.filenames = results;
+      this.urls = results;
    }
    
    /** Returns number of found files */
    public int getCount() throws IOException {
-      return filenames.length;
+      return urls.length;
    }
 
    public void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
@@ -76,13 +74,13 @@ public class FitsResults extends QueryResults {
       if (statusToUpdate != null) {
          statusToUpdate.newProgress("Adding File", getCount());
       }
-      for (int i=0;i<filenames.length;i++) {
+      for (int i=0;i<urls.length;i++) {
          if (statusToUpdate != null) {
             statusToUpdate.setProgress(i);
          }
          printOut.println("<TABLE>");
          printOut.println("<DATA><FITS>");
-         printOut.println("   <STREAM>"+filenames[i]+"</STREAM>");
+         printOut.println("   <STREAM>"+urls[i]+"</STREAM>");
          
          printOut.println("</FITS></DATA>");
          printOut.println("</TABLE>");
@@ -115,11 +113,11 @@ public class FitsResults extends QueryResults {
       if (statusToUpdate != null) {
          statusToUpdate.newProgress("Adding File", getCount());
       }
-      for (int i=0;i<filenames.length;i++) {
+      for (int i=0;i<urls.length;i++) {
          if (statusToUpdate != null) {
             statusToUpdate.setProgress(i);
          }
-         printOut.println("   <P>"+filenames[i]+"</P>");
+         printOut.println("   <P>"+urls[i]+"</P>");
       }
       
       if (statusToUpdate != null)   { statusToUpdate.clearProgress(); }
@@ -144,11 +142,11 @@ public class FitsResults extends QueryResults {
       }
 
       printOut.println("Found Files");
-      for (int i=0;i<filenames.length;i++) {
+      for (int i=0;i<urls.length;i++) {
          if (statusToUpdate != null) {
             statusToUpdate.setProgress(i);
          }
-         printOut.println(filenames);
+         printOut.println(urls);
       }
       
       if (statusToUpdate != null)   { statusToUpdate.clearProgress(); }
@@ -159,7 +157,10 @@ public class FitsResults extends QueryResults {
 }
 
 /*
- $Log: FitsResults.java,v $
+ $Log: UrlListResults.java,v $
+ Revision 1.1  2004/11/11 23:23:29  mch
+ Prepared framework for SSAP and SIAP
+
  Revision 1.4  2004/11/09 17:42:22  mch
  Fixes to tests after fixes for demos, incl adding closable to targetIndicators
 

@@ -1,8 +1,8 @@
 /*
- * $Id: SimpleImageQuery.java,v 1.5 2004/11/11 23:23:29 mch Exp $
+ * $Id: SimpleSpectraQuery.java,v 1.1 2004/11/11 23:23:29 mch Exp $
  */
 
-package org.astrogrid.datacenter.siap;
+package org.astrogrid.datacenter.ssap;
 
 import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +23,7 @@ import org.astrogrid.webapp.DefaultServlet;
  *
  * @author mch
  */
-public class SimpleImageQuery extends DefaultServlet {
+public class SimpleSpectraQuery extends DefaultServlet {
    
    DataServer server = new DataServer();
  
@@ -37,7 +37,7 @@ public class SimpleImageQuery extends DefaultServlet {
          try {
             server.askQuery(Account.ANONYMOUS, new Query(circleCon, new ReturnTable(TargetMaker.makeIndicator(response.getWriter()), format)), this);
          } catch (Throwable e) {
-            doError(response, "SIAP error (RA="+circleCon.getRa()+", DEC="+circleCon.getDec()+", SIZE="+circleCon.getRadius()+", FORMAT="+format+")", e);
+            doError(response, "SSAP error (RA="+circleCon.getRa()+", DEC="+circleCon.getDec()+", SIZE="+circleCon.getRadius()+", FORMAT="+format+")", e);
          }
          
       } catch (NumberFormatException e) {

@@ -1,5 +1,5 @@
 /*
- * $Id: SssImagePlugin.java,v 1.1 2004/11/11 20:42:50 mch Exp $
+ * $Id: SssImagePlugin.java,v 1.2 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,13 +8,13 @@ package org.astrogrid.datacenter.impl.roe;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Vector;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.impl.cds.KeywordMaker;
-import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.fits.FitsResults;
+import org.astrogrid.datacenter.queriers.UrlListResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.returns.ReturnTable;
@@ -63,31 +63,28 @@ public class SssImagePlugin extends DefaultPlugin {
       
       //build urls to images depending on if there are any at that wavelength.
       //hmmm actually for now just assume there is everywhere
-      String[] urls = new String[5];
+      Vector urls = new Vector();
       for (int waveband = 0; waveband < 5; waveband++) {
-         urls[waveband] = SSS_URL+"ra="+ra.asDegrees()+"&dec="+dec.asDegrees()+"&mime-type=image/x-gfits&x="+imageWidth.asArcMins()+"&y="+imageHeight.asArcMins()+"&waveband="+waveband;
+         if (isCovered(ra, dec, waveband)) {
+            urls.add(SSS_URL+"ra="+ra.asDegrees()+"&dec="+dec.asDegrees()+"&mime-type=image/x-gfits&x="+imageWidth.asArcMins()+"&y="+imageHeight.asArcMins()+"&waveband="+waveband);
+         }
       }
       
-      FitsResults results = new FitsResults(querier, urls);
+      UrlListResults results = new UrlListResults(querier, (String[]) urls.toArray(new String[] {} ));
       results.send(query.getResultsDef(), user);
+   }
+   
+   /** Returns true if the given point is covered by the survey at the given
+    * waveband */
+   public boolean isCovered(Angle ra, Angle dec, int waveband) {
+      return true;
    }
    
 
    /** Returns just the number of matches rather than the list of matches. Just does
     * an askQuery and counts the results */
    public long getCount(Account user, Query query, Querier querier) throws IOException {
-      StringWriter sw = new StringWriter();
-      query.setResultsDef(new ReturnTable(TargetMaker.makeIndicator(sw), ReturnTable.VOTABLE));
-      askQuery(user, query, querier);
-      try {
-         return DomHelper.newDocument(sw.toString()).getElementsByTagName("TR").getLength();
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server not configured correctly ",e);
-      }
-      catch (SAXException e) {
-         throw new IOException("Vizier returned invalid VOTable: "+e);
-      }
+      return getCountFromResults(user, query, querier);
    }
 
    

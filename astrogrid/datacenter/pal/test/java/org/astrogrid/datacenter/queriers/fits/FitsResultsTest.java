@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.3 2004/10/18 13:11:30 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.4 2004/11/11 23:23:29 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -15,9 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
-import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.datacenter.queriers.UrlListResults;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -29,7 +27,7 @@ public class FitsResultsTest extends TestCase
    String [] exampleUrls = {"http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0500",
                             "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600"};
 
-   FitsResults fixedResults = new FitsResults(null, exampleUrls);
+   UrlListResults fixedResults = new UrlListResults(null, exampleUrls);
                             
    public void testToVotable() throws IOException, SAXException, ParserConfigurationException
    {
@@ -77,6 +75,9 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.4  2004/11/11 23:23:29  mch
+ Prepared framework for SSAP and SIAP
+
  Revision 1.3  2004/10/18 13:11:30  mch
  Lumpy Merge
 

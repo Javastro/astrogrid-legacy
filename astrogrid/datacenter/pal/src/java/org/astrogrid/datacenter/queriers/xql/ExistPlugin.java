@@ -1,5 +1,5 @@
 /*
- * $Id: ExistPlugin.java,v 1.3 2004/11/03 00:17:56 mch Exp $
+ * $Id: ExistPlugin.java,v 1.4 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,13 +16,11 @@ import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.fits.FitsResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.queriers.xql.XqlMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.util.DomHelper;
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 /**
@@ -122,6 +120,9 @@ public class ExistPlugin extends DefaultPlugin {
 
 /*
  $Log: ExistPlugin.java,v $
+ Revision 1.4  2004/11/11 23:23:29  mch
+ Prepared framework for SSAP and SIAP
+
  Revision 1.3  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 

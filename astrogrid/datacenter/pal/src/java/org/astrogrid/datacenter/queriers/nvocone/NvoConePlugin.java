@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConePlugin.java,v 1.4 2004/11/03 00:17:56 mch Exp $
+ * $Id: NvoConePlugin.java,v 1.5 2004/11/11 23:23:29 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.condition.Circle;
+import org.astrogrid.datacenter.query.condition.CircleCondition;
 import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.query.condition.Function;
 
@@ -44,7 +44,7 @@ public class NvoConePlugin extends DefaultPlugin
    /**
     * Makes the URL required to talk to the server
     */
-   public URL makeUrl(Circle cone) throws IOException
+   public URL makeUrl(CircleCondition cone) throws IOException
    {
       String queryUrl = serverUrl;
       
@@ -61,7 +61,7 @@ public class NvoConePlugin extends DefaultPlugin
    
    
    /**
-    * Simple blocking query; submit Query.  NB this routes the results through
+    * Sends the query to the nvo cone search.  NB this routes the results through
     * this server, which is not necesssarily the best thing.  Ho hum.
     */
    public void askQuery(Account user, Query query, Querier querier) throws IOException {
@@ -76,7 +76,7 @@ public class NvoConePlugin extends DefaultPlugin
          throw new QueryException("Only simple circle criteria are available on NVO cone search catalogues.  Specify one condition that is a circle function");
       }
 
-      Circle circle = Circle.makeCircle( (Function) coneFunc );
+      CircleCondition circle = CircleCondition.makeCircle( (Function) coneFunc );
       
       URL url = makeUrl(circle);
       
@@ -90,13 +90,16 @@ public class NvoConePlugin extends DefaultPlugin
    
    /** Returns just the number of matches rather than the list of matches */
    public long getCount(Account user, Query query, Querier querier) throws IOException {
-            throw new UnsupportedOperationException("Not done yet");
+       return getCountFromResults(user, query, querier);
    }
    
 }
 
 /*
 $Log: NvoConePlugin.java,v $
+Revision 1.5  2004/11/11 23:23:29  mch
+Prepared framework for SSAP and SIAP
+
 Revision 1.4  2004/11/03 00:17:56  mch
 PAL_MCH Candidate 2 merge
 
