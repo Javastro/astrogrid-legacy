@@ -1,4 +1,4 @@
-/*$Id: FlowWorkflowTest.java,v 1.1 2004/04/23 00:27:56 nw Exp $
+/*$Id: FlowWorkflowTest.java,v 1.2 2004/04/26 12:17:00 nw Exp $
  * Created on 22-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,10 +86,11 @@ public class FlowWorkflowTest extends SimpleCommandlineWorkflowEndToEndTest {
      */
     protected void buildWorkflow() throws Exception {
         wf.setName("Flow Workflow Test");
+        wf.setDescription("Execute a flow of two concurrent steps, and verify that the scheduler is executing these in parallel");
         Flow flow = new Flow();
         wf.getSequence().addActivity(flow);
         // now add two steps to the flow.
-        ApplicationDescription app = reg.getDescriptionFor(TESTAPP2);
+        ApplicationDescription app = reg.getDescriptionFor(targetApplication);
         Step s1 = createStep(app);
         s1.setName("A");
         Step s2 = createStep(app);
@@ -102,9 +103,10 @@ public class FlowWorkflowTest extends SimpleCommandlineWorkflowEndToEndTest {
     
     private Step createStep(ApplicationDescription descr) {
         Step step = new Step();
-        Tool tool = descr.createToolFromDefaultInterface();      
+        Tool tool = descr.createToolFromDefaultInterface();
+        super.configureToolParameters(tool);      
          step.setTool(tool);   
-        ParameterValue param = (ParameterValue)tool.findXPathValue("input/parameter[name='p2']");
+        ParameterValue param = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
         assertNotNull(param);
         param.setValue("10"); // think this means it will wait for 10 secs
         return step;
@@ -128,6 +130,9 @@ public class FlowWorkflowTest extends SimpleCommandlineWorkflowEndToEndTest {
 
 /* 
 $Log: FlowWorkflowTest.java,v $
+Revision 1.2  2004/04/26 12:17:00  nw
+got working.
+
 Revision 1.1  2004/04/23 00:27:56  nw
 reorganized end-to-end tests. added test to verify flows are executed in parallel
  
