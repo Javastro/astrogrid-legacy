@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.8 2003/12/02 17:58:05 mch Exp $
+ * $Id: FitsQuerier.java,v 1.9 2003/12/03 15:25:13 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -96,8 +96,10 @@ public class FitsQuerier extends Querier
             String filename = DocHelper.getTagValue(parent, "Filename");
             //add if not already there - ie ignore duplicates, which might
             //happen if a FITS has several images
-            if (intersectingFits.get(filename) != null)
-            intersectingFits.put(filename, filename);
+            if (intersectingFits.get(filename) == null)
+            {
+               intersectingFits.put(filename, filename);
+            }
          }
          
       }
@@ -232,6 +234,9 @@ public class FitsQuerier extends Querier
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.9  2003/12/03 15:25:13  mch
+ Fix to ignoring duplicates
+
  Revision 1.8  2003/12/02 17:58:05  mch
  Removed duplicate filenames
 
@@ -260,5 +265,6 @@ public class FitsQuerier extends Querier
  Abstracted Querier from DatabaseQuerier
 
  */
+
 
 
