@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core" xmlns:ant="jelly:ant"   xmlns:doc="doc" xmlns:util="jelly:util" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
 
 <!-- location of generated source tree -->
 <property name="generated.src" location="${basedir}/generated/java" />
@@ -20,14 +20,11 @@ new goals
   <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
   	<description><![CDATA[
 generate java classes for delegate and server from a hand-written wsdl file.
-Uses method described in http://www-106.ibm.com/developerworks/webservices/library/ws-castor/?Open&ca=daw-ws-news
-to use castor xml serializers within Axis.
 Outline:
 * remove all sources in the generated/java src hierarchy
 * generate classes from wsdl using axis-wsdl2java - subgoal wsdl2java
 * generate classes from schema using castor - subgoal generate-adql
-* transform deployment descriptor to refer to castor serialization mechanism (via xslt) - subgoal transform-wsdd
-* munge axis-generated client stub to refer to castor classes (via search'n'replace, regexps) - subgoal munge-stub
+* transform deployment descriptor to refer to our implementation class - subgoal transform-wsdd
 * do similar for axis-generated skeleton and test too.
 Result: rebuild generated/java src hierachy, wsdd/deploy.wsdd and wsdd/undeploy.wsdd
 Requires:
@@ -37,7 +34,6 @@ Requires:
 * build/xslt/generate-wsdd.xsl - transformation for wsdd.
 * build/patch/* - patches to apply
 * build/castor-binding.xml - configuration for castor tasks
-* build/subst.properties - set of search n replace terms.
 	]]></description>
 	<!-- ensure the directories exist, remove previously generated products -->
 	<attainGoal name="clean-out" />
@@ -83,7 +79,7 @@ Requires:
 
   </goal>
 
- <!-- wsdl2java dengerates too much - now have overlapping classes. delete the offenders -->
+ <!-- wsdl2java generates too much - now have overlapping classes. delete the offenders -->
  <goal name="delete-surplus">
 	<delete>
 		<fileset dir="${generated.src}">
@@ -94,18 +90,14 @@ Requires:
    </goal>
 
   <goal name="generate-adql"  description="regenerate the ADQL object model">
-	<!-- set up the classpath for the source generator tool -->
- 	 <path id="castor.class.path"><!-- needed to override the default configuration file - ikky Castor.. -->
-		<pathelement location="${basedir}/build/config" />
-  		<path refid="maven.dependency.classpath" />
-  	</path>
-    	<delete quiet="true">
+
+    <delete quiet="true">
    		<fileset dir="${basedir}/generated/java/org/astrogrid/datacenter">
   	 		<include name="adql/generated/**/*.java" />
    		</fileset>
    	</delete>
 	<!-- generate adql object model -->
-  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
+  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
   	  	<arg value="-i"/>
   	  	<arg file="${basedir}/src/xsd/ADQLschema.xsd" />
 		<arg value="-binding-file" />
@@ -114,18 +106,6 @@ Requires:
   	  	<arg file="${generated.src}" />
 		<arg arg="-verbose" />
 	</java>
-	<!-- generate axis dataserver types -->
-	<!-- don't want this anymore
-  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="castor.class.path">
-  	  	<arg value="-i"/>
-		<arg file="${basedir}/src/xsd/AxisDataServer.xsd" />
-		<arg value="-binding-file" />
-		<arg file="${basedir}/build/castor-binding.xml" />
-  	  	<arg value="-dest" />
-  	  	<arg file="${generated.src}" />
-		<arg arg="-verbose" />
- 	  </java>
-	  -->
  	  <!-- now do some patching of the output - hope to do away with this in time. -->
  	  <patch patchfile="${basedir}/build/patch/groupByChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
  	  <patch patchfile="${basedir}/build/patch/selectionListChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
@@ -140,24 +120,14 @@ Requires:
   </goal>
 
  <goal name="munge-files" description="do all the search and replace work">
- 	<!--
-	<replace summary="true" replacefilterfile="${basedir}/build/subst.properties"
-		 dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
-			<include name="*.java" />
-			<include name="*.wsdd" />
-	</replace>
-	-->
+
 		<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
 	<replaceregexp flags="sg" match='"&gt;([^"]+)"'	replace='"\1"' >
 		  <fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
 		  		<include name="*.java" />
 		  	</fileset>
 		</replaceregexp>
-
 	<attainGoal name="transform-wsdd" />
-	<!--
-	<attainGoal name="munge-stub" />
-	-->
 	<attainGoal name="munge-test" />
   </goal>
 
@@ -168,94 +138,9 @@ Requires:
 	<xslt basedir="${generated.src}/org/astrogrid/datacenter/axisdataserver"
 	      includes="*.wsdd" style="${basedir}/build/xslt/generate-wsdd.xsl"
 	      destdir="${generated.wsdd}" extension=".wsdd" />
-	<!--
-	<replace summary="true" file="${generated.wsdd}/deploy.wsdd" >
-			<replacefilter
-			token='org.astrogrid.datacenter.adql.generated.Comparison"'
-			value='org.astrogrid.datacenter.adql.generated.types.Comparison"' />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.OrderDirection"
-			value="org.astrogrid.datacenter.adql.generated.types.OrderDirection" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.AggregateFunction"
-			value="org.astrogrid.datacenter.adql.generated.types.AggregateFunction" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.BinaryOperator"
-			value="org.astrogrid.datacenter.adql.generated.types.BinaryOperator" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.UnaryOperator"
-			value="org.astrogrid.datacenter.adql.generated.types.UnaryOperator" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct"
-			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct" />
-		<replacefilter
-			token="org.astrogrid.datacenter.axisdataserver.types.QueryType"
-			value="org.astrogrid.datacenter.axisdataserver.types.types.QueryType" />
-	</replace>
-
-	<move todir="${generated.wsdd}">
-		<fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver">
-			<include name="*.wsdd" />
-		</fileset>
-	</move>
-	-->
 	<!-- transform once more to create test version here.. -->
 	<xslt style="${basedir}/build/xslt/generate-test-wsdd.xsl" in="${generated.wsdd}/deploy.wsdd" out="${generated.wsdd}/test-deploy.wsdd" />
    </goal>
-
-   <goal name="munge-stub">
-	<!-- now need to do some work on the stub file. -->
- 	<property name="stub.file"
-		location="${generated.src}/org/astrogrid/datacenter/axisdataserver/AxisDataServerSoapBindingStub.java" />
-	<replace summary="true" file="${stub.file}" >
-			<!-- first castor places some classes in the 'types' package. do a search and replace on the stub file, update referecnes -->
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.Comparison.class"
-			value="org.astrogrid.datacenter.adql.generated.types.Comparison.class" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.OrderDirection.class"
-			value="org.astrogrid.datacenter.adql.generated.types.OrderDirection.class" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.AggregateFunction.class"
-			value="org.astrogrid.datacenter.adql.generated.types.AggregateFunction.class" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.BinaryOperator.class"
-			value="org.astrogrid.datacenter.adql.generated.types.BinaryOperator.class" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.UnaryOperator.class"
-			value="org.astrogrid.datacenter.adql.generated.types.UnaryOperator.class" />
-		<replacefilter
-			token="org.astrogrid.datacenter.adql.generated.AllOrDistinct.class"
-			value="org.astrogrid.datacenter.adql.generated.types.AllOrDistinct.class" />
-		<replacefilter
-			token="org.astrogrid.datacenter.axisdataserver.types.QueryType.class"
-			value="org.astrogrid.datacenter.axisdataserver.types.types.QueryType.class" />			
-			<!-- add declarations of castor serializers -->
-		<replacefilter
-			token="javax.xml.namespace.QName qName;"
-			value="javax.xml.namespace.QName qName;
-			        java.lang.Class castorsf = org.apache.axis.encoding.ser.castor.CastorSerializerFactory.class;
-       				java.lang.Class castordf = org.apache.axis.encoding.ser.castor.CastorDeserializerFactory.class;" />
-	</replace>
-	<!-- for declaration of castor classes, replace 2 lines with our own definitions.
-	relies on axis-generated code following certain pattern. -->
-	<replaceregexp 	file="${stub.file}" flags="sg"
-		match="(cls = org\.astrogrid\.datacenter\.adql\.generated\.[^\n]+\n)([^\n]+\n)([^\n]+\n)([^\n]+\n)"
-		replace="\1\2
-			cachedSerFactories.add(castorsf);
-			cachedDeserFactories.add(castordf);
-
-			"/>
-	<!-- do the same for the web service types too -->
-	<replaceregexp 	file="${stub.file}" flags="sg"
-		match="(cls = org\.astrogrid\.datacenter\.axisdataserver\.types\.[^\n]+\n)([^\n]+\n)([^\n]+\n)([^\n]+\n)"
-		replace="\1\2
-			cachedSerFactories.add(castorsf);
-			cachedDeserFactories.add(castordf);
-
-			"/>
-  </goal>
-
 
 	<goal name="munge-test">
 		<property name="test.file"
@@ -281,6 +166,156 @@ Requires:
 		</replace>
 	</goal>
 
+<!-- run javadoc over both source trees -->
+
+<!-- removes previously generated javadocs, and does javadoc again including generated sources too -->
+<postGoal name="maven-javadoc-plugin:report">
+	<attainGoal name="xdoc:init" />
+<!-- lifted from the javadoc plugin code -->
+      <!-- Get the year to display in the Javadocs -->
+      <ant:tstamp>
+         <ant:format property="currentYear" pattern="yyyy"/>
+      </ant:tstamp>
+      <ant:tstamp>
+        <j:choose>
+          <j:when test="${pom.inceptionYear.equals(currentYear)}">
+            <ant:format property="year" pattern="yyyy"/>
+          </j:when>
+          <j:otherwise>
+            <ant:format property="year" pattern="${pom.inceptionYear}-yyyy"/>
+          </j:otherwise>
+        </j:choose>
+      </ant:tstamp>
+
+      <ant:property name="copyright"
+        value="Copyright &amp;copy; ${year} ${pom.organization.name}. All Rights Reserved." />
+
+      <!-- calculate online/offline mode -->
+      <j:set var="online" value="${maven.javadoc.mode.online}"/>
+      <j:if test="${empty(online)}">
+        <j:set var="online" value="${maven.mode.online}"/>
+      </j:if>
+
+      <j:choose>
+        <j:when test="${online}">
+          <util:tokenize var="links" delim="," trim="true">${maven.javadoc.links}</util:tokenize>
+          <j:forEach var="link" items="${links}">
+            <ant:echo>Linking with API information from ${link.trim()} ...</ant:echo>
+          </j:forEach>
+        </j:when>
+        <j:otherwise>
+          <util:tokenize var="links" delim="," trim="true">${maven.javadoc.offlineLinks}</util:tokenize>
+          <j:forEach var="link" items="${links}">
+            <ant:echo>Linking offline API information from ${link.trim()} ...</ant:echo>
+          </j:forEach>
+        </j:otherwise>
+      </j:choose>
+
+      <j:set var="maxMemory" value="${maven.javadoc.maxmemory}" />
+
+      <ant:mkdir dir="${maven.build.dir}/javadoc/" />
+      <ant:record name="${maven.build.dir}/javadoc/report.txt" action="start" />
+
+      <ant:javadoc
+        packagenames="${pom.package}.*"
+        destdir="${maven.docs.dest}/apidocs"
+        author="${maven.javadoc.author}"
+        public="false"
+        package="true"
+        private="false"
+        version="${maven.javadoc.version}"
+        use="${maven.javadoc.use}"
+        windowtitle="${pom.name} ${pom.currentVersion} API"
+        doctitle="${pom.name} ${pom.currentVersion} API"
+		sourcepath="${basedir}/src/java:${generated.src}"
+        bottom="${copyright}">
+		<!--
+        stylesheetfile="${maven.javadoc.stylesheet}"
+        additionalparam="${maven.javadoc.additionalparam}"
+        useexternalfile="${maven.javadoc.useexternalfile}"
+		-->
+        <j:if test="${context.getVariable('maven.javadoc.source') != null}">
+          <ant:setProperty name="source" value="${maven.javadoc.source}" />
+        </j:if>
+
+        <!-- Process/Parse links -->
+        <!-- This code allows to specify a packagelistLoc even when in online mode -->
+        <j:forEach var="link" items="${links}">
+          <j:set var="pos" value="${link.indexOf('#')}" />
+
+          <!-- set href and packagelistLoc -->
+          <j:choose>
+            <!-- I am bad with jelly, the test is: "pos == -1" -->
+            <j:when test="${1+pos == 0}">
+              <j:set var="href" value="${link.trim()}" />
+              <j:set var="packagelistLoc" value="${href}"/>
+            </j:when>
+            <j:otherwise>
+              <j:set var="href" value="${link.substring(0,pos).trim()}"/>
+              <j:set var="packagelistLoc" value="${link.substring(pos).substring(1).trim()}"/>
+            </j:otherwise>
+          </j:choose>
+
+          <!-- generate the link -->
+          <j:choose>
+            <j:when test="${online}" />
+              <ant:link href="${href}" offline="false" packagelistLoc="${packagelistLoc}" />
+            <j:otherwise />
+              <ant:link href="${href}" offline="true"  packagelistLoc="${packagelistLoc}" />
+          </j:choose>
+        </j:forEach>
+
+        <ant:classpath>
+          <ant:path refid="maven.dependency.classpath"/>
+          <ant:path location="${maven.build.dest}"/>
+        </ant:classpath>
+
+        <j:if test="${context.getVariable('maven.javadoc.overview') != null}">
+          <ant:setProperty name="overview" value="${maven.javadoc.overview}" />
+        </j:if>
+
+        <j:if test="${maxMemory != null}">
+          <ant:setProperty name="maxmemory" value="${maven.javadoc.maxmemory}" />
+        </j:if>
+
+        <j:forEach var="packageGroup" items="${pom.packageGroups}">
+          <ant:group title="${packageGroup.title}" packages="${packageGroup.packages}"/>
+        </j:forEach>
+
+        <!-- allow custom doclets -->
+        <j:if test="${context.getVariable('maven.javadoc.doclet') != null}">
+          <ant:setProperty name="doclet" value="${maven.javadoc.doclet}" />
+        </j:if>
+        <j:if test="${context.getVariable('maven.javadoc.docletpath') != null}">
+          <ant:setProperty name="doclet" value="${maven.javadoc.docletpath}" />
+        </j:if>
+
+        <!-- allow custom tags -->
+        <util:tokenize var="listOfTags" delim=" ">${maven.javadoc.customtags}</util:tokenize>
+        <j:forEach var="someTag" items="${listOfTags}">
+          <j:set var="nameVar" value="${someTag}.name"/>
+          <j:set var="name" value="${context.findVariable(nameVar)}"/>
+          <j:set var="descriptionVar" value="${someTag}.description"/>
+          <j:set var="description" value="${context.findVariable(descriptionVar)}"/>
+          <j:set var="enabledVar" value="${someTag}.enabled"/>
+          <j:set var="enabled" value="${context.findVariable(enabledVar)}"/>
+          <j:set var="scopeVar" value="${someTag}.scope"/>
+          <j:set var="scope" value="${context.findVariable(scopeVar)}"/>
+          <ant:tag name="${name}" description="${description}"
+               enabled="${enabled}" scope="${scope}"/>
+        </j:forEach>
+
+      </ant:javadoc>
+      <ant:record name="${maven.build.dir}/javadoc/report.txt" action="stop" />
+
+      <j:set var="genDocs" value="${maven.gen.docs}" />
+      <doc:text-xdoc
+        title="Javadoc Report"
+        section="Javadoc Report"
+        inputFile="${maven.build.dir}/javadoc/report.txt"
+        output="${genDocs}/javadoc.xml"/>
+
+</postGoal>
 
 
 <!--

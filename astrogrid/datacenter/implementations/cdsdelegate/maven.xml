@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
-<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar"    xmlns:doc="doc" xmlns:util="jelly:util"  xmlns:ant="jelly:ant">
 
 <!-- location of generated source tree -->
 <property name="generated.src" location="${basedir}/generated/java" />
@@ -11,6 +11,156 @@
 	<path id="generated.src.path" location="${generated.src}" />
 	<maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
 </preGoal>
+
+
+<!-- removes previously generated javadocs, and does javadoc again including generated sources too -->
+<postGoal name="maven-javadoc-plugin:report">
+	<attainGoal name="xdoc:init" />
+<!-- lifted from the javadoc plugin code -->
+      <!-- Get the year to display in the Javadocs -->
+      <ant:tstamp>
+         <ant:format property="currentYear" pattern="yyyy"/>
+      </ant:tstamp>
+      <ant:tstamp>
+        <j:choose>
+          <j:when test="${pom.inceptionYear.equals(currentYear)}">
+            <ant:format property="year" pattern="yyyy"/>
+          </j:when>
+          <j:otherwise>
+            <ant:format property="year" pattern="${pom.inceptionYear}-yyyy"/>
+          </j:otherwise>
+        </j:choose>
+      </ant:tstamp>
+
+      <ant:property name="copyright"
+        value="Copyright &amp;copy; ${year} ${pom.organization.name}. All Rights Reserved." />
+
+      <!-- calculate online/offline mode -->
+      <j:set var="online" value="${maven.javadoc.mode.online}"/>
+      <j:if test="${empty(online)}">
+        <j:set var="online" value="${maven.mode.online}"/>
+      </j:if>
+
+      <j:choose>
+        <j:when test="${online}">
+          <util:tokenize var="links" delim="," trim="true">${maven.javadoc.links}</util:tokenize>
+          <j:forEach var="link" items="${links}">
+            <ant:echo>Linking with API information from ${link.trim()} ...</ant:echo>
+          </j:forEach>
+        </j:when>
+        <j:otherwise>
+          <util:tokenize var="links" delim="," trim="true">${maven.javadoc.offlineLinks}</util:tokenize>
+          <j:forEach var="link" items="${links}">
+            <ant:echo>Linking offline API information from ${link.trim()} ...</ant:echo>
+          </j:forEach>
+        </j:otherwise>
+      </j:choose>
+
+      <j:set var="maxMemory" value="${maven.javadoc.maxmemory}" />
+
+      <ant:mkdir dir="${maven.build.dir}/javadoc/" />
+      <ant:record name="${maven.build.dir}/javadoc/report.txt" action="start" />
+
+      <ant:javadoc
+        packagenames="${pom.package}.*"
+        destdir="${maven.docs.dest}/apidocs"
+        author="${maven.javadoc.author}"
+        public="false"
+        package="true"
+        private="false"
+        version="${maven.javadoc.version}"
+        use="${maven.javadoc.use}"
+        windowtitle="${pom.name} ${pom.currentVersion} API"
+        doctitle="${pom.name} ${pom.currentVersion} API"
+		sourcepath="${basedir}/src/java:${generated.src}"
+        bottom="${copyright}">
+		<!--
+        stylesheetfile="${maven.javadoc.stylesheet}"
+        additionalparam="${maven.javadoc.additionalparam}"
+        useexternalfile="${maven.javadoc.useexternalfile}"
+		-->
+        <j:if test="${context.getVariable('maven.javadoc.source') != null}">
+          <ant:setProperty name="source" value="${maven.javadoc.source}" />
+        </j:if>
+
+        <!-- Process/Parse links -->
+        <!-- This code allows to specify a packagelistLoc even when in online mode -->
+        <j:forEach var="link" items="${links}">
+          <j:set var="pos" value="${link.indexOf('#')}" />
+
+          <!-- set href and packagelistLoc -->
+          <j:choose>
+            <!-- I am bad with jelly, the test is: "pos == -1" -->
+            <j:when test="${1+pos == 0}">
+              <j:set var="href" value="${link.trim()}" />
+              <j:set var="packagelistLoc" value="${href}"/>
+            </j:when>
+            <j:otherwise>
+              <j:set var="href" value="${link.substring(0,pos).trim()}"/>
+              <j:set var="packagelistLoc" value="${link.substring(pos).substring(1).trim()}"/>
+            </j:otherwise>
+          </j:choose>
+
+          <!-- generate the link -->
+          <j:choose>
+            <j:when test="${online}" />
+              <ant:link href="${href}" offline="false" packagelistLoc="${packagelistLoc}" />
+            <j:otherwise />
+              <ant:link href="${href}" offline="true"  packagelistLoc="${packagelistLoc}" />
+          </j:choose>
+        </j:forEach>
+
+        <ant:classpath>
+          <ant:path refid="maven.dependency.classpath"/>
+          <ant:path location="${maven.build.dest}"/>
+        </ant:classpath>
+
+        <j:if test="${context.getVariable('maven.javadoc.overview') != null}">
+          <ant:setProperty name="overview" value="${maven.javadoc.overview}" />
+        </j:if>
+
+        <j:if test="${maxMemory != null}">
+          <ant:setProperty name="maxmemory" value="${maven.javadoc.maxmemory}" />
+        </j:if>
+
+        <j:forEach var="packageGroup" items="${pom.packageGroups}">
+          <ant:group title="${packageGroup.title}" packages="${packageGroup.packages}"/>
+        </j:forEach>
+
+        <!-- allow custom doclets -->
+        <j:if test="${context.getVariable('maven.javadoc.doclet') != null}">
+          <ant:setProperty name="doclet" value="${maven.javadoc.doclet}" />
+        </j:if>
+        <j:if test="${context.getVariable('maven.javadoc.docletpath') != null}">
+          <ant:setProperty name="doclet" value="${maven.javadoc.docletpath}" />
+        </j:if>
+
+        <!-- allow custom tags -->
+        <util:tokenize var="listOfTags" delim=" ">${maven.javadoc.customtags}</util:tokenize>
+        <j:forEach var="someTag" items="${listOfTags}">
+          <j:set var="nameVar" value="${someTag}.name"/>
+          <j:set var="name" value="${context.findVariable(nameVar)}"/>
+          <j:set var="descriptionVar" value="${someTag}.description"/>
+          <j:set var="description" value="${context.findVariable(descriptionVar)}"/>
+          <j:set var="enabledVar" value="${someTag}.enabled"/>
+          <j:set var="enabled" value="${context.findVariable(enabledVar)}"/>
+          <j:set var="scopeVar" value="${someTag}.scope"/>
+          <j:set var="scope" value="${context.findVariable(scopeVar)}"/>
+          <ant:tag name="${name}" description="${description}"
+               enabled="${enabled}" scope="${scope}"/>
+        </j:forEach>
+
+      </ant:javadoc>
+      <ant:record name="${maven.build.dir}/javadoc/report.txt" action="stop" />
+
+      <j:set var="genDocs" value="${maven.gen.docs}" />
+      <doc:text-xdoc
+        title="Javadoc Report"
+        section="Javadoc Report"
+        inputFile="${maven.build.dir}/javadoc/report.txt"
+        output="${genDocs}/javadoc.xml"/>
+
+</postGoal>
 
 <!--
 new goals
