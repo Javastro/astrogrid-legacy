@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyCredentials.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyCredentials.java,v $
+ *   Revision 1.5  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.4  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -26,149 +29,149 @@
 package org.astrogrid.community.policy.data ;
 
 public class PolicyCredentials
-	{
-	/**
-	 * Status code for valid credentials.
-	 *
-	 */
-	public static final int STATUS_VALID = 0xFF ;
+    {
+    /**
+     * Status code for valid credentials.
+     *
+     */
+    public static final int STATUS_VALID = 0xFF ;
 
-	/**
-	 * Status code for credentials unchecked.
-	 *
-	 */
-	public static final int STATUS_NOT_KNOWN = 0x00 ;
+    /**
+     * Status code for credentials unchecked.
+     *
+     */
+    public static final int STATUS_NOT_KNOWN = 0x00 ;
 
-	/**
-	 * Status code for credentials invalid.
-	 *
-	 */
-	public static final int STATUS_NOT_VALID = 0x01 ;
+    /**
+     * Status code for credentials invalid.
+     *
+     */
+    public static final int STATUS_NOT_VALID = 0x01 ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public PolicyCredentials()
-		{
-		this(null, null) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public PolicyCredentials()
+        {
+        this(null, null) ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public PolicyCredentials(String account, String group)
-		{
-		this.group   = group   ;
-		this.account = account ;
-		this.status  = STATUS_NOT_KNOWN ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public PolicyCredentials(String account, String group)
+        {
+        this.group   = group   ;
+        this.account = account ;
+        this.status  = STATUS_NOT_KNOWN ;
+        }
 
-	/**
-	 * Our Account ident.
-	 *
-	 */
-	private String account ;
+    /**
+     * Our Account ident.
+     *
+     */
+    private String account ;
 
-	/**
-	 * Access to our Account ident.
-	 *
-	 */
-	public String getAccount()
-		{
-		return this.account ;
-		}
+    /**
+     * Access to our Account ident.
+     *
+     */
+    public String getAccount()
+        {
+        return this.account ;
+        }
 
-	/**
-	 * Access to our Account ident.
-	 *
-	 */
-	public void setAccount(String value)
-		{
-		this.account = value ;
-		}
+    /**
+     * Access to our Account ident.
+     *
+     */
+    public void setAccount(String value)
+        {
+        this.account = value ;
+        }
 
-	/**
-	 * Our Group ident.
-	 *
-	 */
-	private String group ;
+    /**
+     * Our Group ident.
+     *
+     */
+    private String group ;
 
-	/**
-	 * Access to our Group ident.
-	 *
-	 */
-	public String getGroup()
-		{
-		return this.group ;
-		}
+    /**
+     * Access to our Group ident.
+     *
+     */
+    public String getGroup()
+        {
+        return this.group ;
+        }
 
-	/**
-	 * Access to our Group ident.
-	 *
-	 */
-	public void setGroup(String value)
-		{
-		this.group = value ;
-		}
+    /**
+     * Access to our Group ident.
+     *
+     */
+    public void setGroup(String value)
+        {
+        this.group = value ;
+        }
 
-	/**
-	 * The status value.
-	 *
-	 */
-	private int status ;
+    /**
+     * The status value.
+     *
+     */
+    private int status ;
 
-	/**
-	 * Access to the status.
-	 *
-	 */
-	public int getStatus()
-		{
-		return this.status ;
-		}
+    /**
+     * Access to the status.
+     *
+     */
+    public int getStatus()
+        {
+        return this.status ;
+        }
 
-	/**
-	 * Access to the status.
-	 *
-	 */
-	public void setStatus(int value)
-		{
-		this.status = value ;
-		}
+    /**
+     * Access to the status.
+     *
+     */
+    public void setStatus(int value)
+        {
+        this.status = value ;
+        }
 
-	/**
-	 * Access to the status.
-	 *
-	 */
-	public boolean isValid()
-		{
-		return (STATUS_VALID == this.status) ;
-		}
+    /**
+     * Access to the status.
+     *
+     */
+    public boolean isValid()
+        {
+        return (STATUS_VALID == this.status) ;
+        }
 
-	/**
-	 * The status reason, explains why.
-	 *
-	 */
-	private String reason ;
+    /**
+     * The status reason, explains why.
+     *
+     */
+    private String reason ;
 
-	/**
-	 * Access to the reason.
-	 *
-	 */
-	public String getReason()
-		{
-		return this.reason ;
-		}
+    /**
+     * Access to the reason.
+     *
+     */
+    public String getReason()
+        {
+        return this.reason ;
+        }
 
-	/**
-	 * Access to the reason.
-	 *
-	 */
-	public void setReason(String value)
-		{
-		this.reason = value ;
-		}
+    /**
+     * Access to the reason.
+     *
+     */
+    public void setReason(String value)
+        {
+        this.reason = value ;
+        }
 
 
-	}
+    }

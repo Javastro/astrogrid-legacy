@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/ResourceData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceData.java,v $
+ *   Revision 1.3  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.2  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -17,58 +20,58 @@
 package org.astrogrid.community.policy.data ;
 
 public class ResourceData
-	{
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public ResourceData()
-		{
-		this(null, null) ;
-		}
+    {
+    /**
+     * Public constructor.
+     *
+     */
+    public ResourceData()
+        {
+        this(null, null) ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public ResourceData(String ident)
-		{
-		this(ident, null) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public ResourceData(String ident)
+        {
+        this(ident, null) ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public ResourceData(String ident, String description)
-		{
-		this.ident = ident ;
-		this.description = description ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public ResourceData(String ident, String description)
+        {
+        this.ident = ident ;
+        this.description = description ;
+        }
 
-	/**
-	 * Our Resource ident.
-	 *
-	 */
-	private String ident ;
+    /**
+     * Our Resource ident.
+     *
+     */
+    private String ident ;
 
-	/**
-	 * Access to our Resource ident.
-	 *
-	 */
-	public String getIdent()
-		{
-		return this.ident ;
-		}
+    /**
+     * Access to our Resource ident.
+     *
+     */
+    public String getIdent()
+        {
+        return this.ident ;
+        }
 
-	/**
-	 * Access to our Resource ident.
-	 *
-	 */
-	public void setIdent(String value)
-		{
-		this.ident = value ;
-		}
+    /**
+     * Access to our Resource ident.
+     *
+     */
+    public void setIdent(String value)
+        {
+        this.ident = value ;
+        }
 
 
       /**
@@ -94,4 +97,4 @@ public class ResourceData
          {
          this.description = value ;
          }
-	}
+    }

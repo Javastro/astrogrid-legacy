@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.15  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.14  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -69,77 +72,77 @@ import org.astrogrid.community.policy.data.GroupMemberData ;
  *
  */
 public interface PolicyManager
-	extends java.rmi.Remote, AccountManager, GroupManager, CommunityManager, ResourceManager, PermissionManager
-	{
+    extends java.rmi.Remote, AccountManager, GroupManager, CommunityManager, ResourceManager, PermissionManager
+    {
 
-	/**
-	 * Service health check.
-	 *
-	 */
-	public ServiceData getServiceStatus()
-		throws RemoteException ;
+    /**
+     * Service health check.
+     *
+     */
+    public ServiceData getServiceStatus()
+        throws RemoteException ;
 
-	/**
-	 * Request a list of local Accounts.
-	 *
-	 */
-	public Object[] getLocalAccounts()
-		throws RemoteException ;
+    /**
+     * Request a list of local Accounts.
+     *
+     */
+    public Object[] getLocalAccounts()
+        throws RemoteException ;
 
-	/**
-	 * Request a list of Accounts, given a remote Community name.
-	 *
-	 */
-	public Object[] getRemoteAccounts(String community)
-		throws RemoteException ;
+    /**
+     * Request a list of Accounts, given a remote Community name.
+     *
+     */
+    public Object[] getRemoteAccounts(String community)
+        throws RemoteException ;
 
-	/**
-	 * Request a list of local Groups.
-	 *
-	 */
-	public Object[] getLocalGroups()
-		throws RemoteException ;
+    /**
+     * Request a list of local Groups.
+     *
+     */
+    public Object[] getLocalGroups()
+        throws RemoteException ;
 
-	/**
-	 * Request a list of Groups, given a remote Community name.
-	 *
-	 */
-	public Object[] getRemoteGroups(String community)
-		throws RemoteException ;
+    /**
+     * Request a list of Groups, given a remote Community name.
+     *
+     */
+    public Object[] getRemoteGroups(String community)
+        throws RemoteException ;
 
-	/**
-	 * Add an Account to a Group, given the Account and Group names.
-	 *
-	 */
-	public GroupMemberData addGroupMember(String account, String group)
-		throws RemoteException ;
+    /**
+     * Add an Account to a Group, given the Account and Group names.
+     *
+     */
+    public GroupMemberData addGroupMember(String account, String group)
+        throws RemoteException ;
 
-	/**
-	 * Remove an Account from a Group, given the Account and Group names.
-	 *
-	 */
-	public GroupMemberData delGroupMember(String account, String group)
-		throws RemoteException ;
+    /**
+     * Remove an Account from a Group, given the Account and Group names.
+     *
+     */
+    public GroupMemberData delGroupMember(String account, String group)
+        throws RemoteException ;
 
-	/**
-	 * Get a list of Group members, given the Group name.
-	 *
-	 */
-	public Object[] getGroupMembers(String group)
-		throws RemoteException ;
+    /**
+     * Get a list of Group members, given the Group name.
+     *
+     */
+    public Object[] getGroupMembers(String group)
+        throws RemoteException ;
 
-	/**
-	 * Get a list of local Groups that an Account belongs to, given the Account name.
-	 *
-	 */
-	public Object[] getLocalAccountGroups(String account)
-		throws RemoteException ;
+    /**
+     * Get a list of local Groups that an Account belongs to, given the Account name.
+     *
+     */
+    public Object[] getLocalAccountGroups(String account)
+        throws RemoteException ;
 
-	/**
-	 * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
-	 *
-	 */
-	public Object[] getRemoteAccountGroups(String account, String community)
-		throws RemoteException ;
+    /**
+     * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
+     *
+     */
+    public Object[] getRemoteAccountGroups(String account, String community)
+        throws RemoteException ;
 
-	}
+    }

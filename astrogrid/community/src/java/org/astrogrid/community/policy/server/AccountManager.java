@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/24 21:56:06 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManager.java,v $
+ *   Revision 1.7  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.6  2003/09/24 21:56:06  dave
  *   Added setPassword() to AccountManager
  *
@@ -35,14 +38,14 @@ import java.rmi.RemoteException ;
 import org.astrogrid.community.policy.data.AccountData ;
 
 public interface AccountManager
-	extends java.rmi.Remote
-	{
-	/**
-	 * Create a new Account, given the Account name.
-	 *
-	 */
-	public AccountData addAccount(String name)
-		throws RemoteException ;
+    extends java.rmi.Remote
+    {
+    /**
+     * Create a new Account, given the Account name.
+     *
+     */
+    public AccountData addAccount(String name)
+        throws RemoteException ;
       
    /**
     * Request a password for an account
@@ -50,39 +53,39 @@ public interface AccountManager
     */
    public String getPassword(String name) throws RemoteException;
 
-	/**
-	 * Update an Account password.
-	 *
-	 */
-	public AccountData setPassword(String account, String password)
-		throws RemoteException ;
+    /**
+     * Update an Account password.
+     *
+     */
+    public AccountData setPassword(String account, String password)
+        throws RemoteException ;
 
-	/**
-	 * Request an Account data, given the Account name.
-	 *
-	 */
-	public AccountData getAccount(String name)
-		throws RemoteException ;
+    /**
+     * Request an Account data, given the Account name.
+     *
+     */
+    public AccountData getAccount(String name)
+        throws RemoteException ;
 
-	/**
-	 * Update an Account data.
-	 *
-	 */
-	public AccountData setAccount(AccountData account)
-		throws RemoteException ;
+    /**
+     * Update an Account data.
+     *
+     */
+    public AccountData setAccount(AccountData account)
+        throws RemoteException ;
 
-	/**
-	 * Delete an Account, given the Account name.
-	 *
-	 */
-	public AccountData delAccount(String name)
-		throws RemoteException ;
+    /**
+     * Delete an Account, given the Account name.
+     *
+     */
+    public AccountData delAccount(String name)
+        throws RemoteException ;
 
-	/**
-	 * Request a list of local Accounts.
-	 *
-	 */
-	public Object[] getLocalAccounts()
-		throws RemoteException ;
+    /**
+     * Request a list of local Accounts.
+     *
+     */
+    public Object[] getLocalAccounts()
+        throws RemoteException ;
 
-	}
+    }

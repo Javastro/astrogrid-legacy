@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManager.java,v $
+ *   Revision 1.8  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.7  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -42,48 +45,48 @@ import org.astrogrid.community.policy.data.GroupData ;
 import java.util.ArrayList;
 
 public interface GroupManager
-	extends java.rmi.Remote
-	{
-	/**
-	 * Create a new Group, given the Group name.
-	 *
-	 */
-	public GroupData addGroup(String name)
-		throws RemoteException ;
+    extends java.rmi.Remote
+    {
+    /**
+     * Create a new Group, given the Group name.
+     *
+     */
+    public GroupData addGroup(String name)
+        throws RemoteException ;
 
-	/**
-	 * Request an Group data, given the Group name.
-	 *
-	 */
-	public GroupData getGroup(String name)
-		throws RemoteException ;
+    /**
+     * Request an Group data, given the Group name.
+     *
+     */
+    public GroupData getGroup(String name)
+        throws RemoteException ;
 
-	/**
-	 * Update an Group data.
-	 *
-	 */
-	public GroupData setGroup(GroupData account)
-		throws RemoteException ;
+    /**
+     * Update an Group data.
+     *
+     */
+    public GroupData setGroup(GroupData account)
+        throws RemoteException ;
 
-	/**
-	 * Delete an Group, given the Group name.
-	 *
-	 */
-	public GroupData delGroup(String name)
-		throws RemoteException ;
+    /**
+     * Delete an Group, given the Group name.
+     *
+     */
+    public GroupData delGroup(String name)
+        throws RemoteException ;
 
-	/**
-	 * Request a list of local Groups.
-	 *
-	 */
-	public Object[] getLocalGroups()
-		throws RemoteException ;
+    /**
+     * Request a list of local Groups.
+     *
+     */
+    public Object[] getLocalGroups()
+        throws RemoteException ;
 
-	/**
-	 * Get a list of local Groups that an Account belongs to, given the Account name.
-	 *
-	 */
-	public Object[] getLocalAccountGroups(String account)
-		throws RemoteException ;
+    /**
+     * Get a list of local Groups that an Account belongs to, given the Account name.
+     *
+     */
+    public Object[] getLocalAccountGroups(String account)
+        throws RemoteException ;
 
-	}
+    }

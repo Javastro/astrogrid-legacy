@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/loader/Attic/ResourceDataParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/24 15:47:38 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceDataParser.java,v $
+ *   Revision 1.2  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.1  2003/09/24 15:47:38  dave
  *   Added policy database loader tools.
  *
@@ -30,240 +33,240 @@ import org.astrogrid.community.policy.server.PolicyManager ;
  *
  */
 public class ResourceDataParser
-	extends SAXElementHandler
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	protected static final boolean DEBUG_FLAG = true ;
+    extends SAXElementHandler
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    protected static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * A reference to our parent parser.
-	 *
-	 */
-	private PolicyDataParser parent ;
+    /**
+     * A reference to our parent parser.
+     *
+     */
+    private PolicyDataParser parent ;
 
-	/**
-	 * Access to our parent parser.
-	 *
-	 */
-	public PolicyDataParser getParent()
-		{
-		return this.parent ;
-		}
+    /**
+     * Access to our parent parser.
+     *
+     */
+    public PolicyDataParser getParent()
+        {
+        return this.parent ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public ResourceDataParser(PolicyDataParser parent)
-		{
-		this(parent, "resource") ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public ResourceDataParser(PolicyDataParser parent)
+        {
+        this(parent, "resource") ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public ResourceDataParser(PolicyDataParser parent, String name)
-		{
-		super(name) ;
-		this.parent = parent ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public ResourceDataParser(PolicyDataParser parent, String name)
+        {
+        super(name) ;
+        this.parent = parent ;
+        }
 
-	/**
-	 * Initialise our parser tree.
-	 *
-	 */
-	public void init()
-		{
-		//
-		// Initialise our ResourceIdentParser.
-		super.init() ;
-		//
-		// Add an attrib handler for our ident.
-		addAttributeHandler(
-			new SAXAttributeHandler("ident")
-				{
-				public void parseAttribute(String value)
-					{
-					setIdent(value) ;
-					}
-				}
-			) ;
-		//
-		// Add an character handler for our description.
-		addElementHandler(
-			new SAXElementHandler("description")
-				{
-				public void init()
-					{
-					setCharacterHandler(
-						new SAXCharacterHandler()
-							{
-							public void parseText(String value)
-								throws SAXException
-								{
-								if (null != resource)
-									{
-									resource.setDescription(value) ;
-									}
-								}
-							}
-						) ;
-					}
-				}
-			) ;
-		}
+    /**
+     * Initialise our parser tree.
+     *
+     */
+    public void init()
+        {
+        //
+        // Initialise our ResourceIdentParser.
+        super.init() ;
+        //
+        // Add an attrib handler for our ident.
+        addAttributeHandler(
+            new SAXAttributeHandler("ident")
+                {
+                public void parseAttribute(String value)
+                    {
+                    setIdent(value) ;
+                    }
+                }
+            ) ;
+        //
+        // Add an character handler for our description.
+        addElementHandler(
+            new SAXElementHandler("description")
+                {
+                public void init()
+                    {
+                    setCharacterHandler(
+                        new SAXCharacterHandler()
+                            {
+                            public void parseText(String value)
+                                throws SAXException
+                                {
+                                if (null != resource)
+                                    {
+                                    resource.setDescription(value) ;
+                                    }
+                                }
+                            }
+                        ) ;
+                    }
+                }
+            ) ;
+        }
 
-	/**
-	 * Reference to our PolicyManager.
-	 *
-	 */
-	private PolicyManager manager ;
+    /**
+     * Reference to our PolicyManager.
+     *
+     */
+    private PolicyManager manager ;
 
-	/**
-	 * Access to our PolicyManager.
-	 *
-	 */
-	public PolicyManager getManager()
-		{
-		if (null == manager)
-			{
-			if (null != parent)
-				{
-				//
-				// Get the PolicyManager from our parent.
-				manager = parent.getManager() ;
-				}
-			}
-		return this.manager ;
-		}
+    /**
+     * Access to our PolicyManager.
+     *
+     */
+    public PolicyManager getManager()
+        {
+        if (null == manager)
+            {
+            if (null != parent)
+                {
+                //
+                // Get the PolicyManager from our parent.
+                manager = parent.getManager() ;
+                }
+            }
+        return this.manager ;
+        }
 
-	/**
-	 * Our current Resource data.
-	 *
-	 */
-	protected ResourceData resource ;
+    /**
+     * Our current Resource data.
+     *
+     */
+    protected ResourceData resource ;
 
-	/**
-	 * Handle the start of our <resource> element.
-	 * Re-sets our ResourceData.
-	 *
-	 */
-	protected void startElement()
-		throws SAXException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceDataParser.startElement()") ;
+    /**
+     * Handle the start of our <resource> element.
+     * Re-sets our ResourceData.
+     *
+     */
+    protected void startElement()
+        throws SAXException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceDataParser.startElement()") ;
 
-		//
-		// Reset our resource data.
-		resource = null ;
+        //
+        // Reset our resource data.
+        resource = null ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        }
 
-	/**
-	 * Handle the end of our <resource> element.
-	 * Calls our PolicyManager to update the server with our ResourceData.
-	 *
-	 */
-	protected void closeElement()
-		throws SAXException
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceDataParser.closeElement()") ;
+    /**
+     * Handle the end of our <resource> element.
+     * Calls our PolicyManager to update the server with our ResourceData.
+     *
+     */
+    protected void closeElement()
+        throws SAXException
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceDataParser.closeElement()") ;
 
-		//
-		// If we have an Resource.
-		if (null != resource)
-			{
-			if (DEBUG_FLAG) System.out.println("  PASS : Got resource") ;
-			//
-			// Try updating the database
-			if (null != getManager())
-				{
-				if (DEBUG_FLAG) System.out.println("  PASS : Got manager") ;
-				try {
-					resource = getManager().setResource(resource) ;
-					}
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("  FAIL : Exception while creating Resource") ;
-					ouch.printStackTrace() ;
-					}
-				if (null != resource)
-					{
-					if (DEBUG_FLAG) System.out.println("  PASS : Updated resource") ;
-					}
-				}
-			}
-		//
-		// If we don't have an Resource.
-		else {
-			if (DEBUG_FLAG) System.out.println("  FAIL : Null resource") ;
-			}
+        //
+        // If we have an Resource.
+        if (null != resource)
+            {
+            if (DEBUG_FLAG) System.out.println("  PASS : Got resource") ;
+            //
+            // Try updating the database
+            if (null != getManager())
+                {
+                if (DEBUG_FLAG) System.out.println("  PASS : Got manager") ;
+                try {
+                    resource = getManager().setResource(resource) ;
+                    }
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("  FAIL : Exception while creating Resource") ;
+                    ouch.printStackTrace() ;
+                    }
+                if (null != resource)
+                    {
+                    if (DEBUG_FLAG) System.out.println("  PASS : Updated resource") ;
+                    }
+                }
+            }
+        //
+        // If we don't have an Resource.
+        else {
+            if (DEBUG_FLAG) System.out.println("  FAIL : Null resource") ;
+            }
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        }
 
-	/**
-	 * Handle our Resource ident.
-	 * Calls our PolicyManager to load or create our ResourceData.
-	 * Creates a new Resource if it does not exist.
-	 *
-	 */
-	protected void setIdent(String ident)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("ResourceDataParser.setIdent()") ;
-		if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
+    /**
+     * Handle our Resource ident.
+     * Calls our PolicyManager to load or create our ResourceData.
+     * Creates a new Resource if it does not exist.
+     *
+     */
+    protected void setIdent(String ident)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("ResourceDataParser.setIdent()") ;
+        if (DEBUG_FLAG) System.out.println("  Ident : " + ident) ;
 
-		if (null != getManager())
-			{
-			//
-			// See if we can load the Resource.
-			if (null == resource)
-				{
-				if (DEBUG_FLAG) System.out.println("  Loading resource ....") ;
-				try {
-					resource = getManager().getResource(ident) ;
-					}
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("  FAIL : Exception while loading Resource") ;
-					ouch.printStackTrace() ;
-					}
-				}
+        if (null != getManager())
+            {
+            //
+            // See if we can load the Resource.
+            if (null == resource)
+                {
+                if (DEBUG_FLAG) System.out.println("  Loading resource ....") ;
+                try {
+                    resource = getManager().getResource(ident) ;
+                    }
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("  FAIL : Exception while loading Resource") ;
+                    ouch.printStackTrace() ;
+                    }
+                }
 
-			//
-			// See if we can create the Resource.
-			if (null == resource)
-				{
-				if (DEBUG_FLAG) System.out.println("  Creating resource ....") ;
-				try {
-					resource = getManager().addResource(ident) ;
-					}
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("  FAIL : Exception while creating Resource") ;
-					ouch.printStackTrace() ;
-					}
-				}
+            //
+            // See if we can create the Resource.
+            if (null == resource)
+                {
+                if (DEBUG_FLAG) System.out.println("  Creating resource ....") ;
+                try {
+                    resource = getManager().addResource(ident) ;
+                    }
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("  FAIL : Exception while creating Resource") ;
+                    ouch.printStackTrace() ;
+                    }
+                }
 
-			if (null != resource)
-				{
-				if (DEBUG_FLAG) System.out.println("  PASS : Got resource") ;
-				}
-			}
+            if (null != resource)
+                {
+                if (DEBUG_FLAG) System.out.println("  PASS : Got resource") ;
+                }
+            }
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        }
 
-	}
+    }
 

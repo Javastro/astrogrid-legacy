@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/DatabaseManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerImpl.java,v $
+ *   Revision 1.4  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.3  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -37,234 +40,234 @@ import org.exolab.castor.mapping.MappingException;
 import org.astrogrid.community.common.CommunityConfig ;
 
 public class DatabaseManagerImpl
-	implements DatabaseManager
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	protected static final boolean DEBUG_FLAG = true ;
+    implements DatabaseManager
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    protected static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * The name of our config property to read the location of our JDO mapping from.
-	 *
-	 */
-	private static final String MAPPING_CONFIG_PROPERTY = "database.mapping" ;
+    /**
+     * The name of our config property to read the location of our JDO mapping from.
+     *
+     */
+    private static final String MAPPING_CONFIG_PROPERTY = "database.mapping" ;
 
-	/**
-	 * The name of our config property to read the location of our JDO config from.
-	 *
-	 */
-	private static final String DATABASE_CONFIG_PROPERTY = "database.config" ;
+    /**
+     * The name of our config property to read the location of our JDO config from.
+     *
+     */
+    private static final String DATABASE_CONFIG_PROPERTY = "database.config" ;
 
-	/**
-	 * The name of our config property to read our database name from.
-	 *
-	 */
-	private static final String DATABASE_NAME_PROPERTY = "database.name" ;
+    /**
+     * The name of our config property to read our database name from.
+     *
+     */
+    private static final String DATABASE_NAME_PROPERTY = "database.name" ;
 
-	/**
-	 * Our log writer.
-	 *
-	 */
-	private Logger logger ;
+    /**
+     * Our log writer.
+     *
+     */
+    private Logger logger ;
 
-	/**
-	 * Our JDO and XML mapping.
-	 *
-	 */
-	private Mapping mapping ;
+    /**
+     * Our JDO and XML mapping.
+     *
+     */
+    private Mapping mapping ;
 
-	/**
-	 * Our JDO engine.
-	 *
-	 */
-	private JDO jdo ;
+    /**
+     * Our JDO engine.
+     *
+     */
+    private JDO jdo ;
 
-	/**
-	 * Our database connection.
-	 *
-	 */
-	private Database database ;
+    /**
+     * Our database connection.
+     *
+     */
+    private Database database ;
 
-	/**
-	 * Access to our database.
-	 *
-	 */
-	public Database getDatabase()
-		{
-		return this.database ;
-		}
+    /**
+     * Access to our database.
+     *
+     */
+    public Database getDatabase()
+        {
+        return this.database ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public DatabaseManagerImpl()
-		{
-		//
-		// Initialise our database.
-		this.init() ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public DatabaseManagerImpl()
+        {
+        //
+        // Initialise our database.
+        this.init() ;
+        }
 
-	/**
-	 * Initialise our database.
-	 *
-	 */
-	protected void init()
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("DatabaseManagerImpl.init()") ;
+    /**
+     * Initialise our database.
+     *
+     */
+    protected void init()
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("DatabaseManagerImpl.init()") ;
 
-		//
-		// Initialise our configuration.
-		CommunityConfig.loadConfig() ;
-		//
-		// Get the database configuration.
-		if (DEBUG_FLAG) System.out.println("  Mapping  : " + CommunityConfig.getProperty(MAPPING_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("  Database : " + CommunityConfig.getProperty(DATABASE_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("  Database : " + CommunityConfig.getProperty(DATABASE_NAME_PROPERTY)) ;
+        //
+        // Initialise our configuration.
+        CommunityConfig.loadConfig() ;
+        //
+        // Get the database configuration.
+        if (DEBUG_FLAG) System.out.println("  Mapping  : " + CommunityConfig.getProperty(MAPPING_CONFIG_PROPERTY)) ;
+        if (DEBUG_FLAG) System.out.println("  Database : " + CommunityConfig.getProperty(DATABASE_CONFIG_PROPERTY)) ;
+        if (DEBUG_FLAG) System.out.println("  Database : " + CommunityConfig.getProperty(DATABASE_NAME_PROPERTY)) ;
 
-		try {
-			//
-			// Create our log writer.
-			logger = new Logger(System.out).setPrefix("castor");
-			//
-			// Load our object mapping.
-			mapping = new Mapping(getClass().getClassLoader());
-			mapping.loadMapping(CommunityConfig.getProperty(MAPPING_CONFIG_PROPERTY));
+        try {
+            //
+            // Create our log writer.
+            logger = new Logger(System.out).setPrefix("castor");
+            //
+            // Load our object mapping.
+            mapping = new Mapping(getClass().getClassLoader());
+            mapping.loadMapping(CommunityConfig.getProperty(MAPPING_CONFIG_PROPERTY));
 
-			//
-			// Create our JDO engine.
-			jdo = new JDO();
-			jdo.setLogWriter(logger);
-			jdo.setConfiguration(CommunityConfig.getProperty(DATABASE_CONFIG_PROPERTY));
-			jdo.setDatabaseName(CommunityConfig.getProperty(DATABASE_NAME_PROPERTY));
-			//
-			// Create our database connection.
-			database = jdo.getDatabase();
-			}
+            //
+            // Create our JDO engine.
+            jdo = new JDO();
+            jdo.setLogWriter(logger);
+            jdo.setConfiguration(CommunityConfig.getProperty(DATABASE_CONFIG_PROPERTY));
+            jdo.setDatabaseName(CommunityConfig.getProperty(DATABASE_NAME_PROPERTY));
+            //
+            // Create our database connection.
+            database = jdo.getDatabase();
+            }
 // TODO
 // Need to do something with these ??
 //
-		catch(IOException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("IOException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
+        catch(IOException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("IOException during initialisation.") ;
+            if (DEBUG_FLAG) System.out.println(ouch) ;
+            }
 
-		catch(DatabaseNotFoundException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("DatabaseNotFoundException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
+        catch(DatabaseNotFoundException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("DatabaseNotFoundException during initialisation.") ;
+            if (DEBUG_FLAG) System.out.println(ouch) ;
+            }
 
-		catch(PersistenceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("PersistenceException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
+        catch(PersistenceException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("PersistenceException during initialisation.") ;
+            if (DEBUG_FLAG) System.out.println(ouch) ;
+            }
 
-		catch(MappingException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("MappingException during initialisation.") ;
-			if (DEBUG_FLAG) System.out.println(ouch) ;
-			}
+        catch(MappingException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("MappingException during initialisation.") ;
+            if (DEBUG_FLAG) System.out.println(ouch) ;
+            }
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Create an object in the database.
-	 *
-	public void create(Object object)
-		throws PersistenceException
-		{
-		//
-		// Try performing our transaction.
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Try creating the object in the database.
-			database.create(object);
-			//
-			// Try comitting the transaction.
-			database.commit() ;
-			}
-		//
-		// If anything else bang.
-		catch (PersistenceException ouch)
-			{
-			//
-			// Roll back the transaction.
-			database.rollback() ;
-			//
-			// Re-throw the exception.
-			throw ouch ;
-			}
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	 */
+    /**
+     * Create an object in the database.
+     *
+    public void create(Object object)
+        throws PersistenceException
+        {
+        //
+        // Try performing our transaction.
+        try {
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Try creating the object in the database.
+            database.create(object);
+            //
+            // Try comitting the transaction.
+            database.commit() ;
+            }
+        //
+        // If anything else bang.
+        catch (PersistenceException ouch)
+            {
+            //
+            // Roll back the transaction.
+            database.rollback() ;
+            //
+            // Re-throw the exception.
+            throw ouch ;
+            }
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
+     */
 
-	/**
-	 * Select an object from the database.
-	 *
-	public Object select(Class type, Object ident)
-		throws PersistenceException
-		{
-		Object result = null ;
-		//
-		// Try performing our transaction.
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Try loading the object from the database.
-			result = database.load(type, object);
-			//
-			// Try comitting the transaction.
-			database.commit() ;
-			}
-		//
-		// If anything went bang.
-		catch (PersistenceException ouch)
-			{
-			//
-			// Roll back the transaction.
-			database.rollback() ;
-			//
-			// Set the result to null.
-			result = null ;
-			//
-			// Re-throw the exception.
-			throw ouch ;
-			}
-		return result ;
-		}
-	 */
+    /**
+     * Select an object from the database.
+     *
+    public Object select(Class type, Object ident)
+        throws PersistenceException
+        {
+        Object result = null ;
+        //
+        // Try performing our transaction.
+        try {
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Try loading the object from the database.
+            result = database.load(type, object);
+            //
+            // Try comitting the transaction.
+            database.commit() ;
+            }
+        //
+        // If anything went bang.
+        catch (PersistenceException ouch)
+            {
+            //
+            // Roll back the transaction.
+            database.rollback() ;
+            //
+            // Set the result to null.
+            result = null ;
+            //
+            // Re-throw the exception.
+            throw ouch ;
+            }
+        return result ;
+        }
+     */
 
-	/**
-	 * Update an object in the database.
-	 *
-	public void update(Class type, Object ident)
-		throws PersistenceException
-		{
-		}
-	 */
+    /**
+     * Update an object in the database.
+     *
+    public void update(Class type, Object ident)
+        throws PersistenceException
+        {
+        }
+     */
 
-	/**
-	 * Delete an object in the database.
-	 *
-	public void delete(Class type, Object ident)
-		throws PersistenceException
-		{
-		}
-	 */
+    /**
+     * Delete an object in the database.
+     *
+    public void delete(Class type, Object ident)
+        throws PersistenceException
+        {
+        }
+     */
 
-	}
+    }

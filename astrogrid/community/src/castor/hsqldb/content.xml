@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/content.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: content.xml,v $
+    |   Revision 1.2  2003/11/06 15:35:26  dave
+    |   Replaced tabs with spaces
+    |
     |   Revision 1.1  2003/08/28 17:33:56  dave
     |   Initial policy prototype
     |
@@ -13,75 +16,75 @@
     |
     +-->
 <policy-database>
-	<communities>
-		<community ident="pond">
-			<description>Pond community</description>
-		</community>
-		<community ident="stone">
-			<description>Stone community</description>
-		</community>
-		<community ident="rock">
-			<description>Rock community</description>
-		</community>
-		<community ident="tree">
-			<description>Tree community</description>
-		</community>
-	</communities>
+    <communities>
+        <community ident="pond">
+            <description>Pond community</description>
+        </community>
+        <community ident="stone">
+            <description>Stone community</description>
+        </community>
+        <community ident="rock">
+            <description>Rock community</description>
+        </community>
+        <community ident="tree">
+            <description>Tree community</description>
+        </community>
+    </communities>
 
-	<accounts>
-		<account ident="green.frog@pond" name="green.frog" community="pond">
-			<description>Green frog in pond</description>
-		</account>
-		<account ident="spotted.frog@pond" name="spotted.frog" community="pond">
-			<description>Spotted frog in pond</description>
-		</account>
-		<account ident="silver.fish@pond" name="silver.fish" community="pond">
-			<description>Silver fish in pond</description>
-		</account>
-		<account ident="striped.fish@pond" name="striped.fish" community="pond">
-			<description>Striped fish in pond</description>
-		</account>
-		<account ident="brown.toad@stone" name="brown.toad" community="stone">
-			<description>Brown toad under stone</description>
-		</account>
-		<account ident="speckled.toad@stone" name="speckled.toad" community="stone">
-			<description>Speckled toad under log</description>
-		</account>
-		<account ident="yellow.lizard@rock" name="yellow.lizard" community="rock">
-			<description>Yellow lizard on rock</description>
-		</account>
-		<account ident="green.lizard@tree" name="green.lizard" community="tree">
-			<description>Green lizard in tree</description>
-		</account>
-	</accounts>
+    <accounts>
+        <account ident="green.frog@pond" name="green.frog" community="pond">
+            <description>Green frog in pond</description>
+        </account>
+        <account ident="spotted.frog@pond" name="spotted.frog" community="pond">
+            <description>Spotted frog in pond</description>
+        </account>
+        <account ident="silver.fish@pond" name="silver.fish" community="pond">
+            <description>Silver fish in pond</description>
+        </account>
+        <account ident="striped.fish@pond" name="striped.fish" community="pond">
+            <description>Striped fish in pond</description>
+        </account>
+        <account ident="brown.toad@stone" name="brown.toad" community="stone">
+            <description>Brown toad under stone</description>
+        </account>
+        <account ident="speckled.toad@stone" name="speckled.toad" community="stone">
+            <description>Speckled toad under log</description>
+        </account>
+        <account ident="yellow.lizard@rock" name="yellow.lizard" community="rock">
+            <description>Yellow lizard on rock</description>
+        </account>
+        <account ident="green.lizard@tree" name="green.lizard" community="tree">
+            <description>Green lizard in tree</description>
+        </account>
+    </accounts>
 
-	<groups>
-		<group ident="amphibians@pond" name="amphibians" community="pond">
-			<description>Group of amphibians in forrest</description>
-			<accounts>
-				<account ident="green.frog@pond"/>
-				<account ident="spotted.frog@pond"/>
-				<account ident="brown.toad@stone"/>
-				<account ident="speckled.toad@stone"/>
-				<!--
-				<account>green.frog@pond</account>
-				<account>spotted.frog@pond</account>
-				<account>brown.toad@stone</account>
-				<account>speckled.toad@stone</account>
-				-->
-			</accounts>
-		</group>
+    <groups>
+        <group ident="amphibians@pond" name="amphibians" community="pond">
+            <description>Group of amphibians in forrest</description>
+            <accounts>
+                <account ident="green.frog@pond"/>
+                <account ident="spotted.frog@pond"/>
+                <account ident="brown.toad@stone"/>
+                <account ident="speckled.toad@stone"/>
+                <!--
+                <account>green.frog@pond</account>
+                <account>spotted.frog@pond</account>
+                <account>brown.toad@stone</account>
+                <account>speckled.toad@stone</account>
+                -->
+            </accounts>
+        </group>
 
-		<group ident="reptiles@rock" name="reptiles" community="rock">
-			<description>Group of reptiles in forrest</description>
-			<accounts>
-				<account ident="yellow.lizard@rock"/>
-				<account ident="green.lizard@tree"/>
-			</accounts>
+        <group ident="reptiles@rock" name="reptiles" community="rock">
+            <description>Group of reptiles in forrest</description>
+            <accounts>
+                <account ident="yellow.lizard@rock"/>
+                <account ident="green.lizard@tree"/>
+            </accounts>
 <!--
 -->
-		</group>
+        </group>
 
-	</groups>
+    </groups>
 
 </policy-database>

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitPermissionTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitPermissionTest.java,v $
+ *   Revision 1.4  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.3  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -39,230 +42,230 @@ import org.astrogrid.community.policy.server.PolicyManagerImpl ;
  *
  */
 public class JUnitPermissionTest
-	extends TestCase
-	{
-	/**
-	 * Our test group.
-	 *
-	 */
-	private static final String TEST_GROUP_IDENT = "test" ;
+    extends TestCase
+    {
+    /**
+     * Our test group.
+     *
+     */
+    private static final String TEST_GROUP_IDENT = "test" ;
 
-	/**
-	 * Our test resource.
-	 *
-	 */
-	private static final String TEST_RESOURCE_IDENT = "test" ;
+    /**
+     * Our test resource.
+     *
+     */
+    private static final String TEST_RESOURCE_IDENT = "test" ;
 
-	/**
-	 * Our test action.
-	 *
-	 */
-	private static final String TEST_ACTION = "action" ;
+    /**
+     * Our test action.
+     *
+     */
+    private static final String TEST_ACTION = "action" ;
 
-	/**
-	 * Our test reason.
-	 *
-	 */
-	private static final String TEST_REASON = "Because ...." ;
+    /**
+     * Our test reason.
+     *
+     */
+    private static final String TEST_REASON = "Because ...." ;
 
-	/**
-	 * Our fake ident.
-	 *
-	 */
-	private static final String FAKE_RESOURCE_IDENT = "unknown" ;
+    /**
+     * Our fake ident.
+     *
+     */
+    private static final String FAKE_RESOURCE_IDENT = "unknown" ;
 
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static final boolean DEBUG_FLAG = true ;
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Switch for our assert statements.
-	 *
-	 */
-	private static final boolean ASSERT_FLAG = false ;
+    /**
+     * Switch for our assert statements.
+     *
+     */
+    private static final boolean ASSERT_FLAG = false ;
 
-	/**
-	 * Our PolicyManager.
-	 *
-	 */
-	private PolicyManager manager = null ;
+    /**
+     * Our PolicyManager.
+     *
+     */
+    private PolicyManager manager = null ;
 
-	/**
-	 * Setup our tests.
-	 *
-	 */
-	protected void setUp()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("setUp()") ;
+    /**
+     * Setup our tests.
+     *
+     */
+    protected void setUp()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("setUp()") ;
 
-		//
-		// Create our PolicyManager.
-		manager = new PolicyManagerImpl();
+        //
+        // Create our PolicyManager.
+        manager = new PolicyManagerImpl();
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can get the manager status.
-	 *
-	 */
-	public void testGetServiceStatus()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
+    /**
+     * Check we can get the manager status.
+     *
+     */
+    public void testGetServiceStatus()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
-		//
-		// Try getting the manager status.
-		ServiceData status = manager.getServiceStatus() ;
-		assertNotNull("Null manager status", status) ;
+        //
+        // Try getting the manager status.
+        ServiceData status = manager.getServiceStatus() ;
+        assertNotNull("Null manager status", status) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
-		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
-		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
-		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Status") ;
+        if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
+        if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
+        if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
+        if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can create a PolicyPermission object.
-	 *
-	 */
-	public void testAddPermission()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testAddPermission()") ;
+    /**
+     * Check we can create a PolicyPermission object.
+     *
+     */
+    public void testAddPermission()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testAddPermission()") ;
 
-		//
-		// Try creating the PolicyPermission.
-		PolicyPermission result ;
-		result = manager.addPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
-		assertNotNull("Failed to create permission", result) ;
+        //
+        // Try creating the PolicyPermission.
+        PolicyPermission result ;
+        result = manager.addPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        assertNotNull("Failed to create permission", result) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Permission") ;
-		if (DEBUG_FLAG) System.out.println("    resource : " + result.getResource()) ;
-		if (DEBUG_FLAG) System.out.println("    group    : " + result.getGroup()) ;
-		if (DEBUG_FLAG) System.out.println("    action   : " + result.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("    status   : " + result.getStatus()) ;
-		if (DEBUG_FLAG) System.out.println("    valid    : " + result.isValid()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Permission") ;
+        if (DEBUG_FLAG) System.out.println("    resource : " + result.getResource()) ;
+        if (DEBUG_FLAG) System.out.println("    group    : " + result.getGroup()) ;
+        if (DEBUG_FLAG) System.out.println("    action   : " + result.getAction()) ;
+        if (DEBUG_FLAG) System.out.println("    status   : " + result.getStatus()) ;
+        if (DEBUG_FLAG) System.out.println("    valid    : " + result.isValid()) ;
 
-		//
-		// Try creating the same PolicyPermission again.
-		result = manager.addPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
-		assertNull("Created a duplicate permission", result) ;
+        //
+        // Try creating the same PolicyPermission again.
+        result = manager.addPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        assertNull("Created a duplicate permission", result) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can get a PolicyPermission object.
-	 *
-	 */
-	public void testGetPermission()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetPermission()") ;
+    /**
+     * Check we can get a PolicyPermission object.
+     *
+     */
+    public void testGetPermission()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testGetPermission()") ;
 
-		//
-		// Try getting the fake Permission.
-		PolicyPermission result ;
-		result = manager.getPermission(FAKE_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
-		assertNull("Found the fake permission", result) ;
-		//
-		// Try getting the real Permission.
-		result = manager.getPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
-		assertNotNull("Failed to find the real permission", result) ;
+        //
+        // Try getting the fake Permission.
+        PolicyPermission result ;
+        result = manager.getPermission(FAKE_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        assertNull("Found the fake permission", result) ;
+        //
+        // Try getting the real Permission.
+        result = manager.getPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        assertNotNull("Failed to find the real permission", result) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Permission") ;
-		if (DEBUG_FLAG) System.out.println("    resource : " + result.getResource()) ;
-		if (DEBUG_FLAG) System.out.println("    group    : " + result.getGroup()) ;
-		if (DEBUG_FLAG) System.out.println("    action   : " + result.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("    status   : " + result.getStatus()) ;
-		if (DEBUG_FLAG) System.out.println("    valid    : " + result.isValid()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Permission") ;
+        if (DEBUG_FLAG) System.out.println("    resource : " + result.getResource()) ;
+        if (DEBUG_FLAG) System.out.println("    group    : " + result.getGroup()) ;
+        if (DEBUG_FLAG) System.out.println("    action   : " + result.getAction()) ;
+        if (DEBUG_FLAG) System.out.println("    status   : " + result.getStatus()) ;
+        if (DEBUG_FLAG) System.out.println("    valid    : " + result.isValid()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can set a PolicyPermission object.
-	 *
-	 */
-	public void testSetPermission()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testSetPermission()") ;
+    /**
+     * Check we can set a PolicyPermission object.
+     *
+     */
+    public void testSetPermission()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testSetPermission()") ;
 
-		//
-		// Try getting the real Permission.
-		PolicyPermission result ;
-		result = manager.getPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
-		assertNotNull("Failed to find the real permission", result) ;
-		//
-		// Modify the permission.
-		result.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
-		result.setReason(TEST_REASON);
-		//
-		// Try updating the Resource.
-		result = manager.setPermission(result);
-		assertNotNull("Failed to update the permission", result) ;
+        //
+        // Try getting the real Permission.
+        PolicyPermission result ;
+        result = manager.getPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        assertNotNull("Failed to find the real permission", result) ;
+        //
+        // Modify the permission.
+        result.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
+        result.setReason(TEST_REASON);
+        //
+        // Try updating the Resource.
+        result = manager.setPermission(result);
+        assertNotNull("Failed to update the permission", result) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Permission") ;
-		if (DEBUG_FLAG) System.out.println("    resource : " + result.getResource()) ;
-		if (DEBUG_FLAG) System.out.println("    group    : " + result.getGroup()) ;
-		if (DEBUG_FLAG) System.out.println("    action   : " + result.getAction()) ;
-		if (DEBUG_FLAG) System.out.println("    status   : " + result.getStatus()) ;
-		if (DEBUG_FLAG) System.out.println("    valid    : " + result.isValid()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Permission") ;
+        if (DEBUG_FLAG) System.out.println("    resource : " + result.getResource()) ;
+        if (DEBUG_FLAG) System.out.println("    group    : " + result.getGroup()) ;
+        if (DEBUG_FLAG) System.out.println("    action   : " + result.getAction()) ;
+        if (DEBUG_FLAG) System.out.println("    status   : " + result.getStatus()) ;
+        if (DEBUG_FLAG) System.out.println("    valid    : " + result.isValid()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can delete a PolicyPermission object.
-	 *
-	 */
-	public void testDelPermission()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testDelPermission()") ;
+    /**
+     * Check we can delete a PolicyPermission object.
+     *
+     */
+    public void testDelPermission()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testDelPermission()") ;
 
-		//
-		// Delete the real permission (no return data).
-		manager.delPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        //
+        // Delete the real permission (no return data).
+        manager.delPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
 
-		//
-		// Delete the real permission again (no return data).
-		manager.delPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        //
+        // Delete the real permission again (no return data).
+        manager.delPermission(TEST_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
 
-		//
-		// Delete the fake permission (no return data).
-		manager.delPermission(FAKE_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
+        //
+        // Delete the fake permission (no return data).
+        manager.delPermission(FAKE_RESOURCE_IDENT, TEST_GROUP_IDENT, TEST_ACTION);
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
+    }

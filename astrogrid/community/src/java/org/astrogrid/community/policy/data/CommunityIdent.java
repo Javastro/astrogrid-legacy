@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/CommunityIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIdent.java,v $
+ *   Revision 1.5  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.4  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -29,174 +32,174 @@ package org.astrogrid.community.policy.data ;
 import org.astrogrid.community.common.CommunityConfig ;
 
 public class CommunityIdent
-	{
-	/**
-	 * The default account name.
-	 *
-	 */
-	public static String DEFAULT_ACCOUNT = "guest" ;
+    {
+    /**
+     * The default account name.
+     *
+     */
+    public static String DEFAULT_ACCOUNT = "guest" ;
 
-	/**
-	 * The separator for name and community.
-	 *
-	 */
-	public static char IDENT_SEPARATOR = '@' ;
+    /**
+     * The separator for name and community.
+     *
+     */
+    public static char IDENT_SEPARATOR = '@' ;
 
-	/**
-	 * Flag to indicate the ident is valid.
-	 *
-	 */
-	private boolean valid = false ;
+    /**
+     * Flag to indicate the ident is valid.
+     *
+     */
+    private boolean valid = false ;
 
-	/**
-	 * Flag to indicate the ident is local.
-	 *
-	 */
-	private boolean local = false ;
+    /**
+     * Flag to indicate the ident is local.
+     *
+     */
+    private boolean local = false ;
 
-	/**
-	 * Our ident.
-	 *
-	 */
-	private String ident ;
+    /**
+     * Our ident.
+     *
+     */
+    private String ident ;
 
-	/**
-	 * Our ident name.
-	 *
-	 */
-	private String name ;
+    /**
+     * Our ident name.
+     *
+     */
+    private String name ;
 
-	/**
-	 * Our Ident community.
-	 *
-	 */
-	private String community ;
+    /**
+     * Our Ident community.
+     *
+     */
+    private String community ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public CommunityIdent(String ident)
-		{
-		//
-		// Check for a null ident.
-		if ((null == ident) || (0 == ident.length()))
-			{
-			ident = DEFAULT_ACCOUNT ;
-			}
-		//
-		// Convert everything to lowercase.
-		ident = ident.toLowerCase() ;
-		//
-		// Save the ident.
-		this.ident = ident ;
-		//
-		// Find the first and last separator.
-		int first = ident.indexOf(IDENT_SEPARATOR) ;
-		int last  = ident.lastIndexOf(IDENT_SEPARATOR) ;
-		//
-		// If the ident contains separator.
-		if (-1 != first)
-			{
-			//
-			// If the first and last are the same.
-			if (first == last)
-				{
-				//
-				// Split the ident into name and community.
-				this.name = ident.substring(0, first) ;
-				this.community = ident.substring(first + 1) ;
+    /**
+     * Public constructor.
+     *
+     */
+    public CommunityIdent(String ident)
+        {
+        //
+        // Check for a null ident.
+        if ((null == ident) || (0 == ident.length()))
+            {
+            ident = DEFAULT_ACCOUNT ;
+            }
+        //
+        // Convert everything to lowercase.
+        ident = ident.toLowerCase() ;
+        //
+        // Save the ident.
+        this.ident = ident ;
+        //
+        // Find the first and last separator.
+        int first = ident.indexOf(IDENT_SEPARATOR) ;
+        int last  = ident.lastIndexOf(IDENT_SEPARATOR) ;
+        //
+        // If the ident contains separator.
+        if (-1 != first)
+            {
+            //
+            // If the first and last are the same.
+            if (first == last)
+                {
+                //
+                // Split the ident into name and community.
+                this.name = ident.substring(0, first) ;
+                this.community = ident.substring(first + 1) ;
 //
 // Check the lengths ...
 //
-				//
-				// Check if the community is local.
-				if (CommunityConfig.getCommunityName().equals(this.community))
-					{
-					this.valid = true ;
-					this.local = true ;
-					}
-				//
-				// If the community is not local.
-				else {
-					this.valid = true ;
-					this.local = false ;
-					}
-				}
-			//
-			// If the first and last do not match.
-			else {
-				this.valid = false ;
-				this.local = false ;
-				this.name  = null ;
-				this.community = null ;
-				}
-			}
-		//
-		// If the ident does not contain a community.
-		else {
-			//
-			// Use the local community ident.
-			this.name = ident ;
-			this.community = CommunityConfig.getCommunityName() ;
-			this.ident = this.name +  IDENT_SEPARATOR + this.community ;
-			this.valid = true ;
-			this.local = true ;
-			}
-		}
+                //
+                // Check if the community is local.
+                if (CommunityConfig.getCommunityName().equals(this.community))
+                    {
+                    this.valid = true ;
+                    this.local = true ;
+                    }
+                //
+                // If the community is not local.
+                else {
+                    this.valid = true ;
+                    this.local = false ;
+                    }
+                }
+            //
+            // If the first and last do not match.
+            else {
+                this.valid = false ;
+                this.local = false ;
+                this.name  = null ;
+                this.community = null ;
+                }
+            }
+        //
+        // If the ident does not contain a community.
+        else {
+            //
+            // Use the local community ident.
+            this.name = ident ;
+            this.community = CommunityConfig.getCommunityName() ;
+            this.ident = this.name +  IDENT_SEPARATOR + this.community ;
+            this.valid = true ;
+            this.local = true ;
+            }
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public CommunityIdent(String name, String community)
-		{
-		this(name +  IDENT_SEPARATOR + community) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public CommunityIdent(String name, String community)
+        {
+        this(name +  IDENT_SEPARATOR + community) ;
+        }
 
-	/**
-	 * Is this a valid ident.
-	 *
-	 */
-	public boolean isValid()
-		{
-		return this.valid ;
-		}
+    /**
+     * Is this a valid ident.
+     *
+     */
+    public boolean isValid()
+        {
+        return this.valid ;
+        }
 
-	/**
-	 * Is this a local ident.
-	 *
-	 */
-	public boolean isLocal()
-		{
-		return this.local ;
-		}
+    /**
+     * Is this a local ident.
+     *
+     */
+    public boolean isLocal()
+        {
+        return this.local ;
+        }
 
-	/**
-	 * Get the name from this ident.
-	 *
-	 */
-	public String getName()
-		{
-		return this.name ;
-		}
+    /**
+     * Get the name from this ident.
+     *
+     */
+    public String getName()
+        {
+        return this.name ;
+        }
 
-	/**
-	 * Get the community name from this ident.
-	 *
-	 */
-	public String getCommunity()
-		{
-		return this.community ;
-		}
+    /**
+     * Get the community name from this ident.
+     *
+     */
+    public String getCommunity()
+        {
+        return this.community ;
+        }
 
-	/**
-	 * Convert the ident as a string.
-	 *
-	 */
-	public String toString()
-		{
-		return this.ident ;
-		}
+    /**
+     * Convert the ident as a string.
+     *
+     */
+    public String toString()
+        {
+        return this.ident ;
+        }
 
-	}
+    }

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/ServiceData.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ServiceData.java,v $
+ *   Revision 1.5  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.4  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -27,100 +30,100 @@
 package org.astrogrid.community.policy.data ;
 
 public class ServiceData
-	{
-	/**
-	 * Our config file location.
-	 *
-	 */
-	private String config ;
+    {
+    /**
+     * Our config file location.
+     *
+     */
+    private String config ;
 
-	/**
-	 * Access to our config file location.
-	 *
-	 */
-	public String getConfigPath()
-		{
-		return this.config ;
-		}
+    /**
+     * Access to our config file location.
+     *
+     */
+    public String getConfigPath()
+        {
+        return this.config ;
+        }
 
-	/**
-	 * Access to our config file location.
-	 *
-	 */
-	public void setConfigPath(String value)
-		{
-		this.config = value ;
-		}
+    /**
+     * Access to our config file location.
+     *
+     */
+    public void setConfigPath(String value)
+        {
+        this.config = value ;
+        }
 
-	/**
-	 * Our community name.
-	 *
-	 */
-	private String community ;
+    /**
+     * Our community name.
+     *
+     */
+    private String community ;
 
-	/**
-	 * Access to our community name.
-	 *
-	 */
-	public String getCommunityName()
-		{
-		return this.community ;
-		}
+    /**
+     * Access to our community name.
+     *
+     */
+    public String getCommunityName()
+        {
+        return this.community ;
+        }
 
-	/**
-	 * Access to our community name.
-	 *
-	 */
-	public void setCommunityName(String value)
-		{
-		this.community = value ;
-		}
+    /**
+     * Access to our community name.
+     *
+     */
+    public void setCommunityName(String value)
+        {
+        this.community = value ;
+        }
 
-	/**
-	 * Our service URL.
-	 *
-	 */
-	private String service ;
+    /**
+     * Our service URL.
+     *
+     */
+    private String service ;
 
-	/**
-	 * Access to our service URL.
-	 *
-	 */
-	public String getServiceUrl()
-		{
-		return this.service ;
-		}
+    /**
+     * Access to our service URL.
+     *
+     */
+    public String getServiceUrl()
+        {
+        return this.service ;
+        }
 
-	/**
-	 * Access to our service URL.
-	 *
-	 */
-	public void setServiceUrl(String value)
-		{
-		this.service = value ;
-		}
+    /**
+     * Access to our service URL.
+     *
+     */
+    public void setServiceUrl(String value)
+        {
+        this.service = value ;
+        }
 
-	/**
-	 * Our manager URL.
-	 *
-	 */
-	private String manager ;
+    /**
+     * Our manager URL.
+     *
+     */
+    private String manager ;
 
-	/**
-	 * Access to our manager URL.
-	 *
-	 */
-	public String getManagerUrl()
-		{
-		return this.manager ;
-		}
+    /**
+     * Access to our manager URL.
+     *
+     */
+    public String getManagerUrl()
+        {
+        return this.manager ;
+        }
 
-	/**
-	 * Access to our manager URL.
-	 *
-	 */
-	public void setManagerUrl(String value)
-		{
-		this.manager = value ;
-		}
-	}
+    /**
+     * Access to our manager URL.
+     *
+     */
+    public void setManagerUrl(String value)
+        {
+        this.manager = value ;
+        }
+    }

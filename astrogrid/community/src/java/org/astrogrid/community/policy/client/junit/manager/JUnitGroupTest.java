@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupTest.java,v $
+ *   Revision 1.6  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.5  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -47,261 +50,261 @@ import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
  *
  */
 public class JUnitGroupTest
-	extends TestCase
-	{
-	/**
-	 * Our test group ident.
-	 *
-	 */
-	private static final String TEST_GROUP_IDENT = "client.manager.junit" ;
+    extends TestCase
+    {
+    /**
+     * Our test group ident.
+     *
+     */
+    private static final String TEST_GROUP_IDENT = "client.manager.junit" ;
 
-	/**
-	 * Our fake ident.
-	 *
-	 */
-	private static final String FAKE_GROUP_IDENT = "unknown" ;
+    /**
+     * Our fake ident.
+     *
+     */
+    private static final String FAKE_GROUP_IDENT = "unknown" ;
 
-	/**
-	 * Our fake ident and domain.
-	 *
-	 */
-	private static final String FAKE_GROUP_DOMAIN = "unknown@unknown" ;
+    /**
+     * Our fake ident and domain.
+     *
+     */
+    private static final String FAKE_GROUP_DOMAIN = "unknown@unknown" ;
 
-	/**
-	 * Our test description.
-	 *
-	 */
-	private static final String TEST_GROUP_DESC = "JUnit test group" ;
+    /**
+     * Our test description.
+     *
+     */
+    private static final String TEST_GROUP_DESC = "JUnit test group" ;
 
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static final boolean DEBUG_FLAG = true ;
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Switch for our assert statements.
-	 *
-	 */
-	private static final boolean ASSERT_FLAG = false ;
+    /**
+     * Switch for our assert statements.
+     *
+     */
+    private static final boolean ASSERT_FLAG = false ;
 
-	/**
-	 * Our manager locator.
-	 *
-	 */
-	private PolicyManagerService locator ;
+    /**
+     * Our manager locator.
+     *
+     */
+    private PolicyManagerService locator ;
 
-	/**
-	 * Our manager.
-	 *
-	 */
-	private PolicyManager manager ;
+    /**
+     * Our manager.
+     *
+     */
+    private PolicyManager manager ;
 
-	/**
-	 * Setup our tests.
-	 *
-	 */
-	protected void setUp()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("setUp()") ;
+    /**
+     * Setup our tests.
+     *
+     */
+    protected void setUp()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("setUp()") ;
 
-		//
-		// Create our manager locator.
-		locator = new PolicyManagerServiceLocator() ;
-		assertNotNull("Null manager locator", locator) ;
-		//
-		// Create our manager.
-		manager = locator.getPolicyManager() ;
-		assertNotNull("Null manager", manager) ;
+        //
+        // Create our manager locator.
+        locator = new PolicyManagerServiceLocator() ;
+        assertNotNull("Null manager locator", locator) ;
+        //
+        // Create our manager.
+        manager = locator.getPolicyManager() ;
+        assertNotNull("Null manager", manager) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can get the manager status.
-	 *
-	 */
-	public void testGetServiceStatus()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
+    /**
+     * Check we can get the manager status.
+     *
+     */
+    public void testGetServiceStatus()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testGetServiceStatus()") ;
 
-		//
-		// Try getting the manager status.
-		ServiceData status = manager.getServiceStatus() ;
-		assertNotNull("Null manager status", status) ;
+        //
+        // Try getting the manager status.
+        ServiceData status = manager.getServiceStatus() ;
+        assertNotNull("Null manager status", status) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Status") ;
-		if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
-		if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
-		if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
-		if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Status") ;
+        if (DEBUG_FLAG) System.out.println("    Config    : " + status.getConfigPath()) ;
+        if (DEBUG_FLAG) System.out.println("    Community : " + status.getCommunityName()) ;
+        if (DEBUG_FLAG) System.out.println("    Service   : " + status.getServiceUrl()) ;
+        if (DEBUG_FLAG) System.out.println("    Manager   : " + status.getManagerUrl()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can create an Group object.
-	 *
-	 */
-	public void testAddGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testAddGroup()") ;
+    /**
+     * Check we can create an Group object.
+     *
+     */
+    public void testAddGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testAddGroup()") ;
 
-		//
-		// Try creating the Group.
-		GroupData group ;
-		group = manager.addGroup(TEST_GROUP_IDENT);
-		assertNotNull("Failed to create group", group) ;
+        //
+        // Try creating the Group.
+        GroupData group ;
+        group = manager.addGroup(TEST_GROUP_IDENT);
+        assertNotNull("Failed to create group", group) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Group") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Group") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
-		//
-		// Try creating the same Group again.
-		group = manager.addGroup(TEST_GROUP_IDENT);
-		assertNull("Created a duplicate group", group) ;
+        //
+        // Try creating the same Group again.
+        group = manager.addGroup(TEST_GROUP_IDENT);
+        assertNull("Created a duplicate group", group) ;
 
-		//
-		// Try creating group in a fake community.
-		group = manager.addGroup(FAKE_GROUP_DOMAIN);
-		assertNull("Created a group in fake domain", group) ;
+        //
+        // Try creating group in a fake community.
+        group = manager.addGroup(FAKE_GROUP_DOMAIN);
+        assertNull("Created a group in fake domain", group) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can get an Group object.
-	 *
-	 */
-	public void testGetGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetGroup()") ;
+    /**
+     * Check we can get an Group object.
+     *
+     */
+    public void testGetGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testGetGroup()") ;
 
-		//
-		// Try getting the fake Group.
-		GroupData group ;
-		group = manager.getGroup(FAKE_GROUP_IDENT);
-		assertNull("Found the fake group", group) ;
-		//
-		// Try getting the real Group.
-		group = manager.getGroup(TEST_GROUP_IDENT);
-		assertNotNull("Failed to find the real group", group) ;
+        //
+        // Try getting the fake Group.
+        GroupData group ;
+        group = manager.getGroup(FAKE_GROUP_IDENT);
+        assertNull("Found the fake group", group) ;
+        //
+        // Try getting the real Group.
+        group = manager.getGroup(TEST_GROUP_IDENT);
+        assertNotNull("Failed to find the real group", group) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Group") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Group") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can set an Group object.
-	 *
-	 */
-	public void testSetGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testSetGroup()") ;
+    /**
+     * Check we can set an Group object.
+     *
+     */
+    public void testSetGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testSetGroup()") ;
 
-		//
-		// Try getting the real Group.
-		GroupData group ;
-		group = manager.getGroup(TEST_GROUP_IDENT);
-		assertNotNull("Failed to find the real group", group) ;
-		//
-		// Modify the group.
-		group.setDescription("Modified description") ;
-		//
-		// Try updating the Group.
-		manager.setGroup(group);
+        //
+        // Try getting the real Group.
+        GroupData group ;
+        group = manager.getGroup(TEST_GROUP_IDENT);
+        assertNotNull("Failed to find the real group", group) ;
+        //
+        // Modify the group.
+        group.setDescription("Modified description") ;
+        //
+        // Try updating the Group.
+        manager.setGroup(group);
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Group") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  Group") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
 
-	/**
-	 * Check we can get a list of Groups.
-	 *
-	 */
-	public void testGetGroupList()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetGroupList()") ;
+    /**
+     * Check we can get a list of Groups.
+     *
+     */
+    public void testGetGroupList()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testGetGroupList()") ;
 
-		//
-		// Try getting the list of Groups.
-		Object[] list ;
-		list = manager.getLocalGroups();
-		assertNotNull("Failed to get the list of Groups", list) ;
+        //
+        // Try getting the list of Groups.
+        Object[] list ;
+        list = manager.getLocalGroups();
+        assertNotNull("Failed to get the list of Groups", list) ;
 
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  ----") ;
-		if (DEBUG_FLAG) System.out.println("  List") ;
-		for (int i = 0 ; i < list.length ; i++)
-			{
-			GroupData group = (GroupData) list[i] ;
-			if (DEBUG_FLAG) System.out.println("    Group") ;
-			if (DEBUG_FLAG) System.out.println("      ident : " + group.getIdent()) ;
-			if (DEBUG_FLAG) System.out.println("      desc  : " + group.getDescription()) ;
-			}
-		if (DEBUG_FLAG) System.out.println("  ----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("  ----") ;
+        if (DEBUG_FLAG) System.out.println("  List") ;
+        for (int i = 0 ; i < list.length ; i++)
+            {
+            GroupData group = (GroupData) list[i] ;
+            if (DEBUG_FLAG) System.out.println("    Group") ;
+            if (DEBUG_FLAG) System.out.println("      ident : " + group.getIdent()) ;
+            if (DEBUG_FLAG) System.out.println("      desc  : " + group.getDescription()) ;
+            }
+        if (DEBUG_FLAG) System.out.println("  ----") ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can delete an Group object.
-	 *
-	 */
-	public void testDelGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testDelGroup()") ;
+    /**
+     * Check we can delete an Group object.
+     *
+     */
+    public void testDelGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testDelGroup()") ;
 
-		//
-		// Delete the real group (no return data).
-		manager.delGroup(TEST_GROUP_IDENT);
-		//
-		// Delete the real group again (no return data).
-		manager.delGroup(TEST_GROUP_IDENT);
-		//
-		// Delete the fake group (no return data).
-		manager.delGroup(FAKE_GROUP_IDENT);
+        //
+        // Delete the real group (no return data).
+        manager.delGroup(TEST_GROUP_IDENT);
+        //
+        // Delete the real group again (no return data).
+        manager.delGroup(TEST_GROUP_IDENT);
+        //
+        // Delete the fake group (no return data).
+        manager.delGroup(FAKE_GROUP_IDENT);
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
+    }

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/10/10 13:27:51 $</cvs:date>
- * <cvs:version>$Revision: 1.16 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.17 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.17  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.16  2003/10/10 13:27:51  KevinBenson
  *   commented out the setPassword(null)
  *
@@ -88,220 +91,220 @@ import org.astrogrid.community.policy.data.GroupMemberData ;
 import org.astrogrid.community.common.CommunityConfig;
 
 public class AccountManagerImpl
-	implements AccountManager
-	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	protected static final boolean DEBUG_FLAG = true ;
+    implements AccountManager
+    {
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    protected static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Our database manager.
-	 *
-	 */
-	private DatabaseManager databaseManager ;
+    /**
+     * Our database manager.
+     *
+     */
+    private DatabaseManager databaseManager ;
 
-	/**
-	 * Our database connection.
-	 *
-	 */
-	private Database database ;
+    /**
+     * Our database connection.
+     *
+     */
+    private Database database ;
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public AccountManagerImpl()
-		{
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public AccountManagerImpl()
+        {
+        }
 
-	/**
-	 * Initialise our manager.
-	 *
-	 */
-	public void init(DatabaseManager databaseManager)
-		{
-		//
-		// Keep a reference to our database connection.
-		this.databaseManager = databaseManager ;
-		this.database = databaseManager.getDatabase() ;
-		}
+    /**
+     * Initialise our manager.
+     *
+     */
+    public void init(DatabaseManager databaseManager)
+        {
+        //
+        // Keep a reference to our database connection.
+        this.databaseManager = databaseManager ;
+        this.database = databaseManager.getDatabase() ;
+        }
 
-	/**
-	 * Create a new Account, given the Account name.
-	 *
-	 */
-	public AccountData addAccount(String name)
-		{
-		return this.addAccount(new CommunityIdent(name)) ;
-		}
+    /**
+     * Create a new Account, given the Account name.
+     *
+     */
+    public AccountData addAccount(String name)
+        {
+        return this.addAccount(new CommunityIdent(name)) ;
+        }
 
-	/**
-	 * Create a new Account, given the Account ident.
-	 *
-	 */
-	protected AccountData addAccount(CommunityIdent ident)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+    /**
+     * Create a new Account, given the Account ident.
+     *
+     */
+    protected AccountData addAccount(CommunityIdent ident)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.addAccount()") ;
+        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-		AccountData account = null ;
-		GroupData   group   = null ;
-		//
-		// If the ident is valid.
-		if (ident.isValid())
-			{
-			//
-			// If the ident is local.
-			if (ident.isLocal())
-				{
-				//
-				// Create our new Account object.
-				account = new AccountData(ident.toString()) ;
-				//
-				// Create the corresponding Group object.
-				group = new GroupData(ident.toString()) ;
-				group.setType(GroupData.SINGLE_TYPE) ;
+        AccountData account = null ;
+        GroupData   group   = null ;
+        //
+        // If the ident is valid.
+        if (ident.isValid())
+            {
+            //
+            // If the ident is local.
+            if (ident.isLocal())
+                {
+                //
+                // Create our new Account object.
+                account = new AccountData(ident.toString()) ;
+                //
+                // Create the corresponding Group object.
+                group = new GroupData(ident.toString()) ;
+                group.setType(GroupData.SINGLE_TYPE) ;
 
-				//
-				// Create the default group membership objects.
+                //
+                // Create the default group membership objects.
 // TODO
 // Need to add the account to the account group.
 // Need to add the account to the guest group.
 // Only do this if the guest group exists.
-				GroupMemberData groupmember = new GroupMemberData(ident.toString(), ident.toString()) ;
-				GroupMemberData guestmember = new GroupMemberData(ident.toString(), "guest") ;
+                GroupMemberData groupmember = new GroupMemberData(ident.toString(), ident.toString()) ;
+                GroupMemberData guestmember = new GroupMemberData(ident.toString(), "guest") ;
 
-				//
-				// Try performing our transaction.
-				try {
-					//
-					// Begin a new database transaction.
-					database.begin();
-					//
-					// Try creating the account in the database.
-					database.create(account);
-					//
-					// Try creating the group in the database.
-					database.create(group);
-					//
-					// Try adding the account to the groups.
+                //
+                // Try performing our transaction.
+                try {
+                    //
+                    // Begin a new database transaction.
+                    database.begin();
+                    //
+                    // Try creating the account in the database.
+                    database.create(account);
+                    //
+                    // Try creating the group in the database.
+                    database.create(group);
+                    //
+                    // Try adding the account to the groups.
 // TODO
 // Need to add the account to the account group.
 // Need to add the account to the guest group.
-					database.create(groupmember);
-					database.create(guestmember);
-					}
-				//
-				// If we already have an object with that ident.
-				catch (DuplicateIdentityException ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
-					//ouch.printStackTrace();
-					//
-					// Set the response to null.
-					group   = null ;
-					account = null ;
+                    database.create(groupmember);
+                    database.create(guestmember);
+                    }
+                //
+                // If we already have an object with that ident.
+                catch (DuplicateIdentityException ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("DuplicateIdentityException in addAccount()") ;
+                    //ouch.printStackTrace();
+                    //
+                    // Set the response to null.
+                    group   = null ;
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// If anything else went bang.
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in addAccount()") ;
-					//ouch.printStackTrace();
-					//
-					// Set the response to null.
-					group   = null ;
-					account = null ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // If anything else went bang.
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("Exception in addAccount()") ;
+                    //ouch.printStackTrace();
+                    //
+                    // Set the response to null.
+                    group   = null ;
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// Commit the transaction.
-				finally
-					{
-					try {
-						if (null != account)
-							{
-							database.commit() ;
-							}
-						else {
-							database.rollback() ;
-							}
-						}
-					catch (Exception ouch)
-						{
-						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in addAccount() finally clause") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // Commit the transaction.
+                finally
+                    {
+                    try {
+                        if (null != account)
+                            {
+                            database.commit() ;
+                            }
+                        else {
+                            database.rollback() ;
+                            }
+                        }
+                    catch (Exception ouch)
+                        {
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("Exception in addAccount() finally clause") ;
                   ouch.printStackTrace();
-						//
-						// Set the response to null.
-						group   = null ;
-						account = null ;
+                        //
+                        // Set the response to null.
+                        group   = null ;
+                        account = null ;
 
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("") ;
-						}
-					}
-				}
-			//
-			// If the ident is not local.
-			else {
-				//
-				// Set the response to null.
-				group   = null ;
-				account = null ;
-				}
-			}
-			//
-			// If the ident is not valid.
-		else {
-			//
-			// Set the response to null.
-			group   = null ;
-			account = null ;
-			}
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        }
+                    }
+                }
+            //
+            // If the ident is not local.
+            else {
+                //
+                // Set the response to null.
+                group   = null ;
+                account = null ;
+                }
+            }
+            //
+            // If the ident is not valid.
+        else {
+            //
+            // Set the response to null.
+            group   = null ;
+            account = null ;
+            }
 
-		// TODO
-		// Need to return something to the client.
-		// Possibly a new DataObject ... ?
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
+        // TODO
+        // Need to return something to the client.
+        // Possibly a new DataObject ... ?
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
 
-		//
-		// Add the user to the local myspace.
-		if(account != null)
-			{
-			String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
-			//
-			// If we have a local MySpace service.
-			if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
-				{
-				try {
-					MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
-					Vector tempVector = new Vector();
-					tempVector.add("serv1");
-					msmd.createUser(ident.getName(),ident.getCommunity(),"credential",tempVector);
-					}
-				catch(Exception ouch)
-					{
-					ouch.printStackTrace();
-					}
-				}
-			}
-		return account ;
-		}
+        //
+        // Add the user to the local myspace.
+        if(account != null)
+            {
+            String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
+            //
+            // If we have a local MySpace service.
+            if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
+                {
+                try {
+                    MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
+                    Vector tempVector = new Vector();
+                    tempVector.add("serv1");
+                    msmd.createUser(ident.getName(),ident.getCommunity(),"credential",tempVector);
+                    }
+                catch(Exception ouch)
+                    {
+                    ouch.printStackTrace();
+                    }
+                }
+            }
+        return account ;
+        }
 
    public String getPassword(String name) {
       return this.getPassword(new CommunityIdent(name));
@@ -421,545 +424,545 @@ public class AccountManagerImpl
       return password;
    }
 
-	/**
-	 * Update an Account password.
-	 *
-	 */
-	public AccountData setPassword(String account, String password)
-		{
-		return setPassword(new CommunityIdent(account), password) ;
-		}
+    /**
+     * Update an Account password.
+     *
+     */
+    public AccountData setPassword(String account, String password)
+        {
+        return setPassword(new CommunityIdent(account), password) ;
+        }
 
-	/**
-	 * Update an existing Account data.
-	 *
-	 */
-	public AccountData setPassword(CommunityIdent ident, String password)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setPassword()") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + ident) ;
-		if (DEBUG_FLAG) System.out.println("    pass  : " + password) ;
+    /**
+     * Update an existing Account data.
+     *
+     */
+    public AccountData setPassword(CommunityIdent ident, String password)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setPassword()") ;
+        if (DEBUG_FLAG) System.out.println("  Account") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + ident) ;
+        if (DEBUG_FLAG) System.out.println("    pass  : " + password) ;
 
-		AccountData account = null ;
-		//
-		// If the ident is valid.
-		if (ident.isValid())
-			{
-			//
-			// If the ident is local.
-			if (ident.isLocal())
-				{
-				//
-				// Try update the database.
-				try {
-					//
-					// Begin a new database transaction.
-					database.begin();
-					//
-					// Load the Account from the database.
-					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-					//
-					// Update the account data.
-					account.setPassword(password);
-					}
-				//
-				// If we couldn't find the object.
-				catch (ObjectNotFoundException ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setPassword()") ;
+        AccountData account = null ;
+        //
+        // If the ident is valid.
+        if (ident.isValid())
+            {
+            //
+            // If the ident is local.
+            if (ident.isLocal())
+                {
+                //
+                // Try update the database.
+                try {
+                    //
+                    // Begin a new database transaction.
+                    database.begin();
+                    //
+                    // Load the Account from the database.
+                    account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+                    //
+                    // Update the account data.
+                    account.setPassword(password);
+                    }
+                //
+                // If we couldn't find the object.
+                catch (ObjectNotFoundException ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setPassword()") ;
 
-					//
-					// Set the response to null.
-					account = null ;
+                    //
+                    // Set the response to null.
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// If anything else went bang.
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in setPassword()") ;
-					if (DEBUG_FLAG) System.out.println("  Exception  : " + ouch) ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // If anything else went bang.
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("Exception in setPassword()") ;
+                    if (DEBUG_FLAG) System.out.println("  Exception  : " + ouch) ;
 
-					//
-					// Set the response to null.
-					account = null ;
+                    //
+                    // Set the response to null.
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// Commit the transaction.
-				finally
-					{
-					try {
-						if (null != account)
-							{
-							database.commit() ;
-							}
-						else {
-							database.rollback() ;
-							}
-						}
-					catch (Exception ouch)
-						{
-						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in setPassword() finally clause") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // Commit the transaction.
+                finally
+                    {
+                    try {
+                        if (null != account)
+                            {
+                            database.commit() ;
+                            }
+                        else {
+                            database.rollback() ;
+                            }
+                        }
+                    catch (Exception ouch)
+                        {
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("Exception in setPassword() finally clause") ;
 
-						//
-						// Set the response to null.
-						account = null ;
+                        //
+                        // Set the response to null.
+                        account = null ;
 
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("") ;
-						}
-					}
-				}
-			//
-			// If the ident is not local.
-			else {
-				//
-				// Set the response to null.
-				account = null ;
-				}
-			}
-			//
-			// If the ident is not valid.
-		else {
-			//
-			// Set the response to null.
-			account = null ;
-			}
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        }
+                    }
+                }
+            //
+            // If the ident is not local.
+            else {
+                //
+                // Set the response to null.
+                account = null ;
+                }
+            }
+            //
+            // If the ident is not valid.
+        else {
+            //
+            // Set the response to null.
+            account = null ;
+            }
 
-		// TODO
-		// Need to return something to the client.
-		// Possibly a new DataObject ... ?
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
-		}
+        // TODO
+        // Need to return something to the client.
+        // Possibly a new DataObject ... ?
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        return account ;
+        }
 
-	/**
-	 * Request an Account data, given the Account name.
-	 *
-	 */
-	public AccountData getAccount(String name)
-		{
-		return this.getAccount(new CommunityIdent(name)) ;
-		}
+    /**
+     * Request an Account data, given the Account name.
+     *
+     */
+    public AccountData getAccount(String name)
+        {
+        return this.getAccount(new CommunityIdent(name)) ;
+        }
 
-	/**
-	 * Request an Account data, given the Account ident.
-	 *
-	 */
-	protected AccountData getAccount(CommunityIdent ident)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+    /**
+     * Request an Account data, given the Account ident.
+     *
+     */
+    protected AccountData getAccount(CommunityIdent ident)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getAccount()") ;
+        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-		AccountData account = null ;
-		//
-		// If the ident is valid.
-		if (ident.isValid())
-			{
-			//
-			// If the ident is local.
-			if (ident.isLocal())
-				{
-				try {
-					//
-					// Begin a new database transaction.
-					database.begin();
-					//
-					// Load the Account from the database.
-					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-					//
-					// Always set the password to null. FIXME - why was this done?  - pah - I think It might be an error that is causing authentication to fail remember that it is done in a castor transaction, so it will be persisted back to the database....
-//					account.setPassword(null);
-					}
-				//
-				// If we couldn't find the object.
-				catch (ObjectNotFoundException ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getAccount()") ;
+        AccountData account = null ;
+        //
+        // If the ident is valid.
+        if (ident.isValid())
+            {
+            //
+            // If the ident is local.
+            if (ident.isLocal())
+                {
+                try {
+                    //
+                    // Begin a new database transaction.
+                    database.begin();
+                    //
+                    // Load the Account from the database.
+                    account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+                    //
+                    // Always set the password to null. FIXME - why was this done?  - pah - I think It might be an error that is causing authentication to fail remember that it is done in a castor transaction, so it will be persisted back to the database....
+//                    account.setPassword(null);
+                    }
+                //
+                // If we couldn't find the object.
+                catch (ObjectNotFoundException ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getAccount()") ;
 
-					//
-					// Set the response to null.
-					account = null ;
+                    //
+                    // Set the response to null.
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// If anything else went bang.
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in getAccount()") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // If anything else went bang.
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("Exception in getAccount()") ;
 
-					//
-					// Set the response to null.
-					account = null ;
+                    //
+                    // Set the response to null.
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// Commit the transaction.
-				finally
-					{
-					try {
-						if (null != account)
-							{
-							database.commit() ;
-							}
-						else {
-							database.rollback() ;
-							}
-						}
-					catch (Exception ouch)
-						{
-						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in getAccount() finally clause") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // Commit the transaction.
+                finally
+                    {
+                    try {
+                        if (null != account)
+                            {
+                            database.commit() ;
+                            }
+                        else {
+                            database.rollback() ;
+                            }
+                        }
+                    catch (Exception ouch)
+                        {
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("Exception in getAccount() finally clause") ;
 
-						//
-						// Set the response to null.
-						account = null ;
+                        //
+                        // Set the response to null.
+                        account = null ;
 
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("") ;
-						}
-					}
-				}
-			//
-			// If the ident is not local.
-			else {
-				//
-				// Set the response to null.
-				account = null ;
-				}
-			}
-			//
-			// If the ident is not valid.
-		else {
-			//
-			// Set the response to null.
-			account = null ;
-			}
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        }
+                    }
+                }
+            //
+            // If the ident is not local.
+            else {
+                //
+                // Set the response to null.
+                account = null ;
+                }
+            }
+            //
+            // If the ident is not valid.
+        else {
+            //
+            // Set the response to null.
+            account = null ;
+            }
 
-		// TODO
-		// Need to return something to the client.
-		// Possibly a new DataObject ... ?
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
-		}
+        // TODO
+        // Need to return something to the client.
+        // Possibly a new DataObject ... ?
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        return account ;
+        }
 
-	/**
-	 * Update an existing Account data.
-	 *
-	 */
-	public AccountData setAccount(AccountData account)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
-		//
-		// Create a CommunityIdent from the account.
-		CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
-		//
-		// If the ident is valid.
-		if (ident.isValid())
-			{
-			//
-			// If the ident is local.
-			if (ident.isLocal())
-				{
-				//
-				// Try update the database.
-				try {
-					//
-					// Begin a new database transaction.
-					database.begin();
-					//
-					// Load the Account from the database.
-					AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
-					//
-					// Update the account data.
-					// Ignore the password, use setPassword() to change it.
-					data.setDescription(account.getDescription()) ;
-					}
-				//
-				// If we couldn't find the object.
-				catch (ObjectNotFoundException ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setAccount()") ;
+    /**
+     * Update an existing Account data.
+     *
+     */
+    public AccountData setAccount(AccountData account)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.setAccount()") ;
+        if (DEBUG_FLAG) System.out.println("  Account") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+        //
+        // Create a CommunityIdent from the account.
+        CommunityIdent ident = new CommunityIdent(account.getIdent()) ;
+        //
+        // If the ident is valid.
+        if (ident.isValid())
+            {
+            //
+            // If the ident is local.
+            if (ident.isLocal())
+                {
+                //
+                // Try update the database.
+                try {
+                    //
+                    // Begin a new database transaction.
+                    database.begin();
+                    //
+                    // Load the Account from the database.
+                    AccountData data = (AccountData) database.load(AccountData.class, account.getIdent()) ;
+                    //
+                    // Update the account data.
+                    // Ignore the password, use setPassword() to change it.
+                    data.setDescription(account.getDescription()) ;
+                    }
+                //
+                // If we couldn't find the object.
+                catch (ObjectNotFoundException ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in setAccount()") ;
 
-					//
-					// Set the response to null.
-					account = null ;
+                    //
+                    // Set the response to null.
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// If anything else went bang.
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in setAccount()") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // If anything else went bang.
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("Exception in setAccount()") ;
 
-					//
-					// Set the response to null.
-					account = null ;
+                    //
+                    // Set the response to null.
+                    account = null ;
 
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				//
-				// Commit the transaction.
-				finally
-					{
-					try {
-						if (null != account)
-							{
-							database.commit() ;
-							}
-						else {
-							database.rollback() ;
-							}
-						}
-					catch (Exception ouch)
-						{
-						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("Exception in setAccount() finally clause") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                //
+                // Commit the transaction.
+                finally
+                    {
+                    try {
+                        if (null != account)
+                            {
+                            database.commit() ;
+                            }
+                        else {
+                            database.rollback() ;
+                            }
+                        }
+                    catch (Exception ouch)
+                        {
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("Exception in setAccount() finally clause") ;
 
-						//
-						// Set the response to null.
-						account = null ;
+                        //
+                        // Set the response to null.
+                        account = null ;
 
-						if (DEBUG_FLAG) System.out.println("  ----") ;
-						if (DEBUG_FLAG) System.out.println("") ;
-						}
-					}
-				}
-			//
-			// If the ident is not local.
-			else {
-				//
-				// Set the response to null.
-				account = null ;
-				}
-			}
-			//
-			// If the ident is not valid.
-		else {
-			//
-			// Set the response to null.
-			account = null ;
-			}
+                        if (DEBUG_FLAG) System.out.println("  ----") ;
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        }
+                    }
+                }
+            //
+            // If the ident is not local.
+            else {
+                //
+                // Set the response to null.
+                account = null ;
+                }
+            }
+            //
+            // If the ident is not valid.
+        else {
+            //
+            // Set the response to null.
+            account = null ;
+            }
 
-		// TODO
-		// Need to return something to the client.
-		// Possibly a new DataObject ... ?
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return account ;
-		}
+        // TODO
+        // Need to return something to the client.
+        // Possibly a new DataObject ... ?
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        return account ;
+        }
 
-	/**
-	 * Delete an Account, given the Account name.
-	 *
-	 */
-	public AccountData delAccount(String name)
-		{
-		return this.delAccount(new CommunityIdent(name)) ;
-		}
+    /**
+     * Delete an Account, given the Account name.
+     *
+     */
+    public AccountData delAccount(String name)
+        {
+        return this.delAccount(new CommunityIdent(name)) ;
+        }
 
-	/**
-	 * Delete an Account, given the Account ident.
-	 *
-	 */
-	protected AccountData delAccount(CommunityIdent ident)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
+    /**
+     * Delete an Account, given the Account ident.
+     *
+     */
+    protected AccountData delAccount(CommunityIdent ident)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.delAccount()") ;
+        if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
-		AccountData account = null ;
+        AccountData account = null ;
 
-		//
-		// If the ident is valid.
-		if (ident.isValid())
-			{
-			if (DEBUG_FLAG) System.out.println("  PASS : ident is valid") ;
-			//
-			// If the ident is local.
-			if (ident.isLocal())
-				{
-				if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
-				//
-				// Try update the database.
-				try {
-					//
-					// Begin a new database transaction.
-					database.begin();
+        //
+        // If the ident is valid.
+        if (ident.isValid())
+            {
+            if (DEBUG_FLAG) System.out.println("  PASS : ident is valid") ;
+            //
+            // If the ident is local.
+            if (ident.isLocal())
+                {
+                if (DEBUG_FLAG) System.out.println("  PASS : ident is local") ;
+                //
+                // Try update the database.
+                try {
+                    //
+                    // Begin a new database transaction.
+                    database.begin();
 
-					//
-					// Load the Account from the database.
-					account = (AccountData) database.load(AccountData.class, ident.toString()) ;
-					//
-					// If we found the Account.
-					if (null != account)
-						{
-						if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
-						//
-						// Find the group for this account (if it exists).
-						OQLQuery groupQuery = database.getOQLQuery(
-							"SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups WHERE groups.ident = $1"
-							);
-						//
-						// Bind the query param.
-						groupQuery.bind(ident.toString()) ;
-						//
-						// Execute our query.
-						QueryResults groups = groupQuery.execute();
-						if (null != groups)
-							{
-							if (DEBUG_FLAG)System.out.println("  PASS : found groups") ;
-							}
-						else {
-							if (DEBUG_FLAG)System.out.println("  FAIL : null groups") ;
-							}
+                    //
+                    // Load the Account from the database.
+                    account = (AccountData) database.load(AccountData.class, ident.toString()) ;
+                    //
+                    // If we found the Account.
+                    if (null != account)
+                        {
+                        if (DEBUG_FLAG)System.out.println("  PASS : found account") ;
+                        //
+                        // Find the group for this account (if it exists).
+                        OQLQuery groupQuery = database.getOQLQuery(
+                            "SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups WHERE groups.ident = $1"
+                            );
+                        //
+                        // Bind the query param.
+                        groupQuery.bind(ident.toString()) ;
+                        //
+                        // Execute our query.
+                        QueryResults groups = groupQuery.execute();
+                        if (null != groups)
+                            {
+                            if (DEBUG_FLAG)System.out.println("  PASS : found groups") ;
+                            }
+                        else {
+                            if (DEBUG_FLAG)System.out.println("  FAIL : null groups") ;
+                            }
 
-						//
-						// Find all of the group memberships for this account.
-						OQLQuery memberQuery = database.getOQLQuery(
-							"SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.account = $1"
-							);
-						//
-						// Bind the query param.
-						memberQuery.bind(ident.toString()) ;
-						//
-						// Execute our query.
-						QueryResults members = memberQuery.execute();
-						if (null != members)
-							{
-							if (DEBUG_FLAG)System.out.println("  PASS : found members") ;
-							}
-						else {
-							if (DEBUG_FLAG)System.out.println("  FAIL : null members") ;
-							}
+                        //
+                        // Find all of the group memberships for this account.
+                        OQLQuery memberQuery = database.getOQLQuery(
+                            "SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.account = $1"
+                            );
+                        //
+                        // Bind the query param.
+                        memberQuery.bind(ident.toString()) ;
+                        //
+                        // Execute our query.
+                        QueryResults members = memberQuery.execute();
+                        if (null != members)
+                            {
+                            if (DEBUG_FLAG)System.out.println("  PASS : found members") ;
+                            }
+                        else {
+                            if (DEBUG_FLAG)System.out.println("  FAIL : null members") ;
+                            }
 
-						//
-						// Load all the permissions for this group.
-						OQLQuery permissionQuery = database.getOQLQuery(
-							"SELECT permissions FROM org.astrogrid.community.policy.data.PolicyPermission permissions WHERE permissions.group = $1"
-							);
-						//
-						// Bind the query param.
-						permissionQuery.bind(ident.toString()) ;
-						//
-						// Execute our query.
-						QueryResults permissions = permissionQuery.execute();
-						if (null != permissions)
-							{
-							if (DEBUG_FLAG)System.out.println("  PASS : found permissions") ;
-							}
-						else {
-							if (DEBUG_FLAG)System.out.println("  FAIL : null permissions") ;
-							}
-						//
-						// Delete the permissions.
-						while (permissions.hasMore())
-							{
-							if (DEBUG_FLAG) System.out.println("  STEP : deleting permission") ;
-							database.remove(permissions.next()) ;
-							}
-						//
-						// Delete the group memberships.
-						while (members.hasMore())
-							{
-							if (DEBUG_FLAG) System.out.println("  STEP : deleting membership") ;
-							database.remove(members.next()) ;
-							}
-						//
-						// Delete the Group.
-						while (groups.hasMore())
-							{
-							if (DEBUG_FLAG) System.out.println("  STEP : deleting group") ;
-							database.remove(groups.next()) ;
-							}
-						//
-						// Delete the Account.
-						database.remove(account) ;
-						}
-					if (DEBUG_FLAG) System.out.println("  PASS : finished deleting") ;
-					//
-					// Commit the transaction.
-					database.commit() ;
-					if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
-					}
-				//
-				// If anything went bang.
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("") ;
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("Exception in delAccount()") ;
-					if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-					if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+                        //
+                        // Load all the permissions for this group.
+                        OQLQuery permissionQuery = database.getOQLQuery(
+                            "SELECT permissions FROM org.astrogrid.community.policy.data.PolicyPermission permissions WHERE permissions.group = $1"
+                            );
+                        //
+                        // Bind the query param.
+                        permissionQuery.bind(ident.toString()) ;
+                        //
+                        // Execute our query.
+                        QueryResults permissions = permissionQuery.execute();
+                        if (null != permissions)
+                            {
+                            if (DEBUG_FLAG)System.out.println("  PASS : found permissions") ;
+                            }
+                        else {
+                            if (DEBUG_FLAG)System.out.println("  FAIL : null permissions") ;
+                            }
+                        //
+                        // Delete the permissions.
+                        while (permissions.hasMore())
+                            {
+                            if (DEBUG_FLAG) System.out.println("  STEP : deleting permission") ;
+                            database.remove(permissions.next()) ;
+                            }
+                        //
+                        // Delete the group memberships.
+                        while (members.hasMore())
+                            {
+                            if (DEBUG_FLAG) System.out.println("  STEP : deleting membership") ;
+                            database.remove(members.next()) ;
+                            }
+                        //
+                        // Delete the Group.
+                        while (groups.hasMore())
+                            {
+                            if (DEBUG_FLAG) System.out.println("  STEP : deleting group") ;
+                            database.remove(groups.next()) ;
+                            }
+                        //
+                        // Delete the Account.
+                        database.remove(account) ;
+                        }
+                    if (DEBUG_FLAG) System.out.println("  PASS : finished deleting") ;
+                    //
+                    // Commit the transaction.
+                    database.commit() ;
+                    if (DEBUG_FLAG) System.out.println("  PASS : done commit") ;
+                    }
+                //
+                // If anything went bang.
+                catch (Exception ouch)
+                    {
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("Exception in delAccount()") ;
+                    if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+                    if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
 
-					//
-					// Rollback the transaction.
-					try {
-						database.rollback() ;
-						}
-					catch (Exception any)
-						{
-						if (DEBUG_FLAG) System.out.println("") ;
-						if (DEBUG_FLAG) System.out.println("Exception in delAccount() rollback") ;
-						}
-					if (DEBUG_FLAG) System.out.println("  ----") ;
-					if (DEBUG_FLAG) System.out.println("") ;
-					}
-				}
-			//
-			// If the ident is not local.
-			else {
-				account = null ;
+                    //
+                    // Rollback the transaction.
+                    try {
+                        database.rollback() ;
+                        }
+                    catch (Exception any)
+                        {
+                        if (DEBUG_FLAG) System.out.println("") ;
+                        if (DEBUG_FLAG) System.out.println("Exception in delAccount() rollback") ;
+                        }
+                    if (DEBUG_FLAG) System.out.println("  ----") ;
+                    if (DEBUG_FLAG) System.out.println("") ;
+                    }
+                }
+            //
+            // If the ident is not local.
+            else {
+                account = null ;
 //
 // TODO
 // Actually, this could be a call from a remote community to tell us that it is deleting an Account.
 // In which case, we need to tidy up our groups and permissions tables ....
 //
-				}
-			}
-			//
-			// If the ident is not valid.
-		else {
-			account = null ;
-			}
+                }
+            }
+            //
+            // If the ident is not valid.
+        else {
+            account = null ;
+            }
 
 //
 // TODO .. should we notify other community services that the Account has gone ?
@@ -968,114 +971,114 @@ public class AccountManagerImpl
 //
 // TODO
 // Should this be inside our database transaction ?
-		String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
-		//
-		// If we have a local MySpace service.
-		if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
-			{
-			MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
-			try {
-				msmd.deleteUser(ident.getName(),ident.getCommunity(),"credential");
-				}
-			catch(Exception ouch)
-				{
-				ouch.printStackTrace();
-				}
-			}
+        String myspaceUrl = CommunityConfig.getProperty("myspace.url.webservice");
+        //
+        // If we have a local MySpace service.
+        if ((null != myspaceUrl) && (myspaceUrl.length() > 0))
+            {
+            MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
+            try {
+                msmd.deleteUser(ident.getName(),ident.getCommunity(),"credential");
+                }
+            catch(Exception ouch)
+                {
+                ouch.printStackTrace();
+                }
+            }
 
-		// TODO
-		// Need to return something to the client.
-		// Possibly a new DataObject ... ?
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
+        // TODO
+        // Need to return something to the client.
+        // Possibly a new DataObject ... ?
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
 
-		return account ;
-		}
+        return account ;
+        }
 
-	/**
-	 * Request a list of local Accounts.
-	 *
-	 */
-	public Object[] getLocalAccounts()
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getLocalAccounts()") ;
+    /**
+     * Request a list of local Accounts.
+     *
+     */
+    public Object[] getLocalAccounts()
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AccountManagerImpl.getLocalAccounts()") ;
 
-		//
-		// Try to query the database.
-		Object[] array = null ;
-		try {
-			//
-			// Begin a new database transaction.
-			database.begin();
-			//
-			// Create our OQL query.
-			OQLQuery query = database.getOQLQuery(
-				"SELECT accounts FROM org.astrogrid.community.policy.data.AccountData accounts"
-				);
-			//
-			// Execute our query.
-			QueryResults results = query.execute();
-			//
-			// Transfer our results to a vector.
-			Collection collection = new Vector() ;
-			while (results.hasMore())
-				{
+        //
+        // Try to query the database.
+        Object[] array = null ;
+        try {
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Create our OQL query.
+            OQLQuery query = database.getOQLQuery(
+                "SELECT accounts FROM org.astrogrid.community.policy.data.AccountData accounts"
+                );
+            //
+            // Execute our query.
+            QueryResults results = query.execute();
+            //
+            // Transfer our results to a vector.
+            Collection collection = new Vector() ;
+            while (results.hasMore())
+                {
             AccountData ad = (AccountData)results.next();
           //  ad.setPassword(null);
-				collection.add(ad) ;
-				}
-			//
-			// Convert it into an array.
-			array = collection.toArray() ;
-			}
-		//
-		// If anything went bang.
-		catch (Exception ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("Exception in getLocalAccounts()") ;
+                collection.add(ad) ;
+                }
+            //
+            // Convert it into an array.
+            array = collection.toArray() ;
+            }
+        //
+        // If anything went bang.
+        catch (Exception ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("") ;
+            if (DEBUG_FLAG) System.out.println("  ----") ;
+            if (DEBUG_FLAG) System.out.println("Exception in getLocalAccounts()") ;
 
-			//
-			// Set the response to null.
-			array = null ;
+            //
+            // Set the response to null.
+            array = null ;
 
-			if (DEBUG_FLAG) System.out.println("  ----") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		//
-		// Commit the transaction.
-		finally
-			{
-			try {
-				if (null != array)
-					{
-					database.commit() ;
-					}
-				else {
-					database.rollback() ;
-					}
-				}
-			catch (Exception ouch)
-				{
-				if (DEBUG_FLAG) System.out.println("") ;
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("Exception in getLocalAccounts() finally clause") ;
+            if (DEBUG_FLAG) System.out.println("  ----") ;
+            if (DEBUG_FLAG) System.out.println("") ;
+            }
+        //
+        // Commit the transaction.
+        finally
+            {
+            try {
+                if (null != array)
+                    {
+                    database.commit() ;
+                    }
+                else {
+                    database.rollback() ;
+                    }
+                }
+            catch (Exception ouch)
+                {
+                if (DEBUG_FLAG) System.out.println("") ;
+                if (DEBUG_FLAG) System.out.println("  ----") ;
+                if (DEBUG_FLAG) System.out.println("Exception in getLocalAccounts() finally clause") ;
 
-				//
-				// Set the response to null.
-				array = null ;
+                //
+                // Set the response to null.
+                array = null ;
 
-				if (DEBUG_FLAG) System.out.println("  ----") ;
-				if (DEBUG_FLAG) System.out.println("") ;
-				}
-			}
+                if (DEBUG_FLAG) System.out.println("  ----") ;
+                if (DEBUG_FLAG) System.out.println("") ;
+                }
+            }
 
-		// TODO
-		// Need to return something to the client.
-		// Possibly a new DataObject ... ?
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		return array ;
-		}
-	}
+        // TODO
+        // Need to return something to the client.
+        // Possibly a new DataObject ... ?
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        return array ;
+        }
+    }

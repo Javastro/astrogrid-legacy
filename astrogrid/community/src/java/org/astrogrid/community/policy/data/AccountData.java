@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/AccountData.java,v $</cvs:source>
- * <cvs:author>$Author: KevinBenson $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 16:41:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountData.java,v $
+ *   Revision 1.5  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.4  2003/09/09 16:41:53  KevinBenson
  *   Added password field
  *
@@ -24,58 +27,58 @@
 package org.astrogrid.community.policy.data ;
 
 public class AccountData
-	{
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public AccountData()
-		{
-		this(null, null) ;
-		}
+    {
+    /**
+     * Public constructor.
+     *
+     */
+    public AccountData()
+        {
+        this(null, null) ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public AccountData(String ident)
-		{
-		this(ident, null) ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public AccountData(String ident)
+        {
+        this(ident, null) ;
+        }
 
-	/**
-	 * Public constructor.
-	 *
-	 */
-	public AccountData(String ident, String password)
-		{
-		this.ident = ident ;
-		this.password = password ;
-		}
+    /**
+     * Public constructor.
+     *
+     */
+    public AccountData(String ident, String password)
+        {
+        this.ident = ident ;
+        this.password = password ;
+        }
 
-	/**
-	 * Our Account ident.
-	 *
-	 */
-	private String ident ;
+    /**
+     * Our Account ident.
+     *
+     */
+    private String ident ;
 
-	/**
-	 * Access to our Account ident.
-	 *
-	 */
-	public String getIdent()
-		{
-		return this.ident ;
-		}
+    /**
+     * Access to our Account ident.
+     *
+     */
+    public String getIdent()
+        {
+        return this.ident ;
+        }
 
-	/**
-	 * Access to our Account ident.
-	 *
-	 */
-	public void setIdent(String value)
-		{
-		this.ident = value ;
-		}
+    /**
+     * Access to our Account ident.
+     *
+     */
+    public void setIdent(String value)
+        {
+        this.ident = value ;
+        }
 
 
       /**
@@ -103,28 +106,28 @@ public class AccountData
          }
 
 
-	/**
-	 * Our Account description.
-	 *
-	 */
-	private String password ;
+    /**
+     * Our Account description.
+     *
+     */
+    private String password ;
 
-	/**
-	 * Access to our Account description.
-	 *
-	 */
-	public String getPassword()
-		{
-		return this.password ;
-		}
+    /**
+     * Access to our Account description.
+     *
+     */
+    public String getPassword()
+        {
+        return this.password ;
+        }
 
-	/**
-	 * Access to our Account description.
-	 *
-	 */
-	public void setPassword(String value)
-		{
-		this.password = value ;
-		}
+    /**
+     * Access to our Account description.
+     *
+     */
+    public void setPassword(String value)
+        {
+        this.password = value ;
+        }
 
-	}
+    }

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/castor/hsqldb/Attic/database.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/08/28 17:33:56 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: database.xml,v $
+    |   Revision 1.2  2003/11/06 15:35:26  dave
+    |   Replaced tabs with spaces
+    |
     |   Revision 1.1  2003/08/28 17:33:56  dave
     |   Initial policy prototype
     |
@@ -13,13 +16,13 @@
     |
     +-->
 <!DOCTYPE databases PUBLIC
-	"-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
-	"http://castor.exolab.org/jdo-conf.dtd">
+    "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
+    "http://castor.exolab.org/jdo-conf.dtd">
 <database name="policy" engine="hsql">
-	<driver class-name="org.hsqldb.jdbcDriver"
-		url="jdbc:hsqldb:hsql://localhost:9001">
-		<param name="user"     value="sa"/>
-		<param name="password" value="veritas"/>
-	</driver>
-	<mapping href="mapping.xml"/>
+    <driver class-name="org.hsqldb.jdbcDriver"
+        url="jdbc:hsqldb:hsql://localhost:9001">
+        <param name="user"     value="sa"/>
+        <param name="password" value="veritas"/>
+    </driver>
+    <mapping href="mapping.xml"/>
 </database>

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/database/Attic/JUnitGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/11/06 15:35:26 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitGroupTest.java,v $
+ *   Revision 1.4  2003/11/06 15:35:26  dave
+ *   Replaced tabs with spaces
+ *
  *   Revision 1.3  2003/09/13 02:18:52  dave
  *   Extended the jConfig configuration code.
  *
@@ -48,185 +51,185 @@ import java.util.Collection ;
  *
  */
 public class JUnitGroupTest
-	extends TestCase
-	{
-	/**
-	 * Our test group ident.
-	 *
-	 */
-	private static final String TEST_GROUP_IDENT = "server.database.junit" ;
+    extends TestCase
+    {
+    /**
+     * Our test group ident.
+     *
+     */
+    private static final String TEST_GROUP_IDENT = "server.database.junit" ;
 
-	/**
-	 * Our test group description.
-	 *
-	 */
-	private static final String TEST_GROUP_DESC = "JUnit test group" ;
+    /**
+     * Our test group description.
+     *
+     */
+    private static final String TEST_GROUP_DESC = "JUnit test group" ;
 
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	private static final boolean DEBUG_FLAG = true ;
+    /**
+     * Switch for our debug statements.
+     *
+     */
+    private static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * Switch for our assert statements.
-	 *
-	 */
-	private static final boolean ASSERT_FLAG = false ;
+    /**
+     * Switch for our assert statements.
+     *
+     */
+    private static final boolean ASSERT_FLAG = false ;
 
-	/**
-	 * Our database manager.
-	 *
-	 */
-	private DatabaseManager manager ;
+    /**
+     * Our database manager.
+     *
+     */
+    private DatabaseManager manager ;
 
-	/**
-	 * Our database connection.
-	 *
-	 */
-	private Database database ;
+    /**
+     * Our database connection.
+     *
+     */
+    private Database database ;
 
-	/**
-	 * Setup our tests.
-	 *
-	 */
-	protected void setUp()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("setUp()") ;
+    /**
+     * Setup our tests.
+     *
+     */
+    protected void setUp()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("setUp()") ;
 
-		//
-		// Initialise our DatabaseManager.
-		manager = new DatabaseManagerImpl() ;
-		//
-		// Initialise our database.
-		database = manager.getDatabase() ;
+        //
+        // Initialise our DatabaseManager.
+        manager = new DatabaseManagerImpl() ;
+        //
+        // Initialise our database.
+        database = manager.getDatabase() ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can create an Group object.
-	 *
-	 */
-	public void testCreateGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testCreateGroup()") ;
+    /**
+     * Check we can create an Group object.
+     *
+     */
+    public void testCreateGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testCreateGroup()") ;
 
-		//
-		// Create the Group object.
-		GroupData group = new GroupData() ;
-		group.setIdent(TEST_GROUP_IDENT) ;
-		group.setDescription(TEST_GROUP_DESC) ;
+        //
+        // Create the Group object.
+        GroupData group = new GroupData() ;
+        group.setIdent(TEST_GROUP_IDENT) ;
+        group.setDescription(TEST_GROUP_DESC) ;
 
-		//
-		// Begin a new database transaction.
-		database.begin();
+        //
+        // Begin a new database transaction.
+        database.begin();
 
-		//
-		// Try creating the Group in the database.
-		database.create(group);
+        //
+        // Try creating the Group in the database.
+        database.create(group);
 
-		//
-		// Commit our transaction.
-		database.commit() ;
+        //
+        // Commit our transaction.
+        database.commit() ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can load an Group object.
-	 *
-	 */
-	public void testLoadGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testLoadGroup()") ;
+    /**
+     * Check we can load an Group object.
+     *
+     */
+    public void testLoadGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testLoadGroup()") ;
 
-		//
-		// Begin a new database transaction.
-		database.begin();
-		//
-		// Load the Group from the database.
-		GroupData group = (GroupData) database.load(GroupData.class, TEST_GROUP_IDENT) ;
-		assertNotNull("Null group data", group) ;
-		//
-		// Commit our transaction.
-		database.commit() ;
+        //
+        // Begin a new database transaction.
+        database.begin();
+        //
+        // Load the Group from the database.
+        GroupData group = (GroupData) database.load(GroupData.class, TEST_GROUP_IDENT) ;
+        assertNotNull("Null group data", group) ;
+        //
+        // Commit our transaction.
+        database.commit() ;
 
-		if (DEBUG_FLAG) System.out.println("  Group") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("  Group") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can modify an Group object.
-	 *
-	 */
-	public void testModifyGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testModifyGroup()") ;
+    /**
+     * Check we can modify an Group object.
+     *
+     */
+    public void testModifyGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testModifyGroup()") ;
 
-		//
-		// Begin a new database transaction.
-		database.begin();
-		//
-		// Load the Group from the database.
-		GroupData group = (GroupData) database.load(GroupData.class, TEST_GROUP_IDENT) ;
-		//
-		// Update the group data.
-		group.setDescription("Modified description") ;
-		//
-		// Commit our transaction.
-		database.commit() ;
+        //
+        // Begin a new database transaction.
+        database.begin();
+        //
+        // Load the Group from the database.
+        GroupData group = (GroupData) database.load(GroupData.class, TEST_GROUP_IDENT) ;
+        //
+        // Update the group data.
+        group.setDescription("Modified description") ;
+        //
+        // Commit our transaction.
+        database.commit() ;
 
-		if (DEBUG_FLAG) System.out.println("  Group") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
+        if (DEBUG_FLAG) System.out.println("  Group") ;
+        if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Check we can delete an Group object.
-	 *
-	 */
-	public void testDeleteGroup()
-		throws Exception
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testDeleteGroup()") ;
+    /**
+     * Check we can delete an Group object.
+     *
+     */
+    public void testDeleteGroup()
+        throws Exception
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("testDeleteGroup()") ;
 
-		//
-		// Begin a new database transaction.
-		database.begin();
-		//
-		// Load the Group from the database.
-		GroupData group = (GroupData) database.load(GroupData.class, TEST_GROUP_IDENT) ;
-		//
-		// Delete the group.
-		database.remove(group) ;
-		//
-		// Commit our transaction.
-		database.commit() ;
+        //
+        // Begin a new database transaction.
+        database.begin();
+        //
+        // Load the Group from the database.
+        GroupData group = (GroupData) database.load(GroupData.class, TEST_GROUP_IDENT) ;
+        //
+        // Delete the group.
+        database.remove(group) ;
+        //
+        // Commit our transaction.
+        database.commit() ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
-	}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
+    }

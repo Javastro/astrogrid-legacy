@@ -1,5 +1,5 @@
 /*
- * $Id: AuthenticationDelegate.java,v 1.4 2003/10/09 01:38:30 dave Exp $
+ * $Id: AuthenticationDelegate.java,v 1.5 2003/11/06 15:35:26 dave Exp $
  * 
  * Created on 10-Sep-2003 by pah
  *
@@ -41,100 +41,100 @@ public class AuthenticationDelegate implements TokenAuthenticator {
      */
     private static final boolean DEBUG_FLAG = true ;
 
-	/**
-	 * An internal reference to our SOAP stub.
-	 *
-	 */
-	private AuthenticationServiceSoapBindingStub binding;
+    /**
+     * An internal reference to our SOAP stub.
+     *
+     */
+    private AuthenticationServiceSoapBindingStub binding;
 
-	/**
-	 * Public constructor, automatically generates the SOAP stub based on the URL settings from the local configuration.
-	 *
-	 */
-	public AuthenticationDelegate()
-		{
-		initService() ;
+    /**
+     * Public constructor, automatically generates the SOAP stub based on the URL settings from the local configuration.
+     *
+     */
+    public AuthenticationDelegate()
+        {
+        initService() ;
 //
 // Not sure we need to specify this.
 // If we do, then it should be configurable.
-//		binding.setTimeout(60000);
-		}
+//        binding.setTimeout(60000);
+        }
 
-	/**
-	 * Initialise our SOAP stub based on the URL settings from the local configuration.
-	 *
-	 */
-	private void initService()
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AuthenticationDelegate.initService()") ;
+    /**
+     * Initialise our SOAP stub based on the URL settings from the local configuration.
+     *
+     */
+    private void initService()
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AuthenticationDelegate.initService()") ;
 
-		//
-		// Try reading the service URL from the local config.
-		String address = CommunityConfig.getAuthenticationServiceUrl() ;
-		//
-		// Initialise the SOAP stub.
-		initService(address) ;
+        //
+        // Try reading the service URL from the local config.
+        String address = CommunityConfig.getAuthenticationServiceUrl() ;
+        //
+        // Initialise the SOAP stub.
+        initService(address) ;
 
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
-	/**
-	 * Initialise our SOAP stub.
-	 *
-	 */
-	private void initService(String address)
-		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("AuthenticationDelegate.initService()") ;
-		if (DEBUG_FLAG) System.out.println("  Address : '" + address + "'") ;
+    /**
+     * Initialise our SOAP stub.
+     *
+     */
+    private void initService(String address)
+        {
+        if (DEBUG_FLAG) System.out.println("") ;
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("AuthenticationDelegate.initService()") ;
+        if (DEBUG_FLAG) System.out.println("  Address : '" + address + "'") ;
 
-		try {
-			//
-			// Create our service locator.
-			TokenAuthenticatorServiceLocator locator = new TokenAuthenticatorServiceLocator();
+        try {
+            //
+            // Create our service locator.
+            TokenAuthenticatorServiceLocator locator = new TokenAuthenticatorServiceLocator();
 
-			//
-			// If we have a specific service url.
-			if ((null != address) && (address.length() > 0))
-				{
-				//
-				// Use the service url to create our stub.
-				binding = (AuthenticationServiceSoapBindingStub) locator.getAuthenticationService(new URL(address));
-				}
-			//
-			// If we don't have a specific service url.
-			else {
-				//
-				// Create a default (localhost) stub.
-				binding = (AuthenticationServiceSoapBindingStub) locator.getAuthenticationService();
-				}
-			}
-		catch (MalformedURLException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("MalformedURLException while trying to locate the AuthenticationServiceSoapBindingStub") ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			binding = null ;
-			}
+            //
+            // If we have a specific service url.
+            if ((null != address) && (address.length() > 0))
+                {
+                //
+                // Use the service url to create our stub.
+                binding = (AuthenticationServiceSoapBindingStub) locator.getAuthenticationService(new URL(address));
+                }
+            //
+            // If we don't have a specific service url.
+            else {
+                //
+                // Create a default (localhost) stub.
+                binding = (AuthenticationServiceSoapBindingStub) locator.getAuthenticationService();
+                }
+            }
+        catch (MalformedURLException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("") ;
+            if (DEBUG_FLAG) System.out.println("MalformedURLException while trying to locate the AuthenticationServiceSoapBindingStub") ;
+            if (DEBUG_FLAG) System.out.println("") ;
+            binding = null ;
+            }
 
-		catch (ServiceException ouch)
-			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("ServiceException while trying to locate the AuthenticationServiceSoapBindingStub") ;
-			if (ouch.getLinkedCause() != null)
-				{
-				ouch.getLinkedCause().printStackTrace();
-				}
-			binding = null ;
-			if (DEBUG_FLAG) System.out.println("") ;
-			}
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("") ;
-		}
+        catch (ServiceException ouch)
+            {
+            if (DEBUG_FLAG) System.out.println("") ;
+            if (DEBUG_FLAG) System.out.println("ServiceException while trying to locate the AuthenticationServiceSoapBindingStub") ;
+            if (ouch.getLinkedCause() != null)
+                {
+                ouch.getLinkedCause().printStackTrace();
+                }
+            binding = null ;
+            if (DEBUG_FLAG) System.out.println("") ;
+            }
+        if (DEBUG_FLAG) System.out.println("----\"----") ;
+        if (DEBUG_FLAG) System.out.println("") ;
+        }
 
 
    /* (non-Javadoc)
