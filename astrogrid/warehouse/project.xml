@@ -71,8 +71,8 @@ documentation</a>.
 <p>
 To configure the installed datacenter as a GDW, the following entries 
 need to be added or adjusted in the tomcat configuration file 
-<tt>${CATALINA_HOME}/conf/datacenter.properties</tt>, where
-<tt>${CATALINA_HOME}</tt> is the tomcat toplevel directory for the 
+<tt>\$\{CATALINA_HOME\}/conf/datacenter.properties</tt>, where
+<tt>\$\{CATALINA_HOME\}</tt> is the tomcat toplevel directory for the 
 tomcat in which the DataCenter webapp is installed:
 
 <pre>
