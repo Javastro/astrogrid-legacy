@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.15 2003/10/28 17:27:54 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.16 2003/10/30 18:49:03 jdt Exp $ -->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -166,6 +166,11 @@
     	<version>1.0_JLbugfix</version>
     </dependency>          
   
+    <!--This is for testing only and can be removed from the released build.
+     **WARNING** For reasons best known to themselves, the HSQLDB people have omitted to
+       package their jdbcDataSource class in this jar.  Hence I've added it explicitly to the
+       test directory.  This is going to give us all sorts of annoying headaches with versions
+       in the future, but I can't think of anything else to do right now. -->
     <dependency><!-- hsqldb - for testing -->
     	<id>hsqldb</id>
     	<version>1.7.1</version>
@@ -194,6 +199,7 @@
     </unitTest>
   </build>
   
+  <!-- by omitting this, all reports are produced...
   <reports>
     <report>
       maven-changelog-plugin
@@ -240,5 +246,5 @@
     <report>
       maven-simian-plugin
     </report>
-  </reports>
+  </reports-->
 </project>
