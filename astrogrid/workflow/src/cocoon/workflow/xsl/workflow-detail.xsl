@@ -26,14 +26,34 @@
 	      <p>
 	          Workflow description:<xsl:value-of select="@workflow-description"/>	          
 	      </p>
+	      <p>
+	          Workflow template: <xsl:value-of select="@template-name"/>	         
+	      </p>	      
 	</xsl:template>
 	
 	<xsl:template name="workflow-description">
-		<a href="http://www.astrogrid.org">
-			<img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
-		</a>
-	</xsl:template>
-	
+	    <xsl:if test="@template-name = ''">
+		    <a href="http://www.astrogrid.org">
+			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
+		    </a>
+		</xsl:if>
+	    <xsl:if test="@template-name = 'OneStepJob'">
+		    <a href="http://www.astrogrid.org">
+			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
+		    </a>
+		</xsl:if>
+	    <xsl:if test="@template-name = 'TwoParallelJobstep'">
+		    <a href="http://www.astrogrid.org">
+			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
+		    </a>
+		</xsl:if>
+	    <xsl:if test="@template-name = 'TwoSequentialJobsteps'">
+		    <a href="http://www.astrogrid.org">
+			    <img src="OneStepJob.gif" title="AstroGrid Home" alt="" style="border: 0px solid ; width: 200px; height: 250px;"/>
+		    </a>
+		</xsl:if>
+	</xsl:template>			
+		
 	<!--+
 	    | Main menu
 	    +-->	

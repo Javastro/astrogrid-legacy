@@ -157,11 +157,15 @@
                <td>     
                  Template:
                </td>
-               <td>    
-                 <input type="checkbox" name="template" value="oneStepSequence">one step sequence</input>
-                 <input type="checkbox" name="template" value="twoStepFlow">two step flow</input>
-                 <input type="checkbox" name="template" value="twoStepSequence">two step sequence</input>  
-               </td>
+               <td>
+                 <br><input type="radio" name="template" value="" checked="true">None</input></br>
+                 <br><input type="radio" name="template" value="OneStepJob">one step sequence</input></br>
+                 <br><input type="radio" name="template" value="TwoParallelJobsteps">two step flow</input></br>
+                 <br><input type="radio" name="template" value="TwoSequentialJobsteps">two step sequence</input></br>      
+<!--                 <input type="checkbox" name="template" value="OneStepJob">one step sequence</input>
+                 <input type="checkbox" name="template" value="TwoParallelJobsteps">two step flow</input>
+                 <input type="checkbox" name="template" value="TwoSequentialJobsteps">two step sequence</input>  
+-->               </td>
              </tr>
              <tr>
                <td>
