@@ -42,7 +42,7 @@
 
 <!-- setup -->
 <goal name="init" prereqs="tomcat-declare-tasks">
-                <echo>AuthorityID used: ${registry.authorityid}</echo>
+        <echo>AuthorityID used: ${registry.authorityid}</echo>
         <delete dir="${temporary.dir}" />
         <mkdir dir="${temporary.dir}" />
         <deploy:copy-deps todir="${temporary.dir}" />
@@ -51,38 +51,13 @@
 <!-- main goals //////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="cycle"
  description="deprecated: timing issues. call undeploy-all, deploy-all, setup, int-test by hand.">
-         <echo>Deprecated: problems with timing / memory load. call undeploy-all, deploy-all, int-test by hand individually</echo>
-        <attainGoal name="undeploy-all" />
-        <attainGoal name="deploy-all" />
-        <attainGoal name="int-test" />
- </goal>
-
-<goal name="deploy-all" prereqs="init" description="deploy all webapps, setup environment.">
-        <echo>*** Deploying all webapps...</echo>
-        <attainGoal name="common-libs-deploy" />
-        <attainGoal name="configuration-deploy" />
-        <sleep seconds="2" />
-        <attainGoal name="reg-deploy" />
-        <sleep seconds="4" />
-        <attainGoal name="setup" />
-</goal>
-
-<goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
-        <echo>*** Undeploying all webapps...</echo>
-        <attainGoal name="configuration-undeploy" />
+        <echo>Deprecated: problems with timing / memory load. call undeploy-all, deploy-all, int-test by hand individually</echo>
         <attainGoal name="reg-undeploy" />
-</goal>
+        <attainGoal name="reg-deploy" />
+ </goal>
 
 <goal name="list" prereqs="init" description="list deployed webapps">
         <tomcat-list url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}" />
-</goal>
-
-<goal name="int-test" description="run integration tests">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="test" />
-</goal>
-
-<goal name="eclipse-int-test" description="Generate eclipse files for the tests">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="eclipse" />
 </goal>
 
 <goal name="astrogrid-build-site" description="Build the site docs for the test project">
@@ -115,41 +90,40 @@
         <attainGoal name="setup-registry" />
 </goal>
 
+	<goal name="setup-registry" description="populate the registry">
+	        <echo>Configuring Registry</echo>
+	        <!-- expand tokens -->
+	        <copy todir="${temporary.dir}/registry-entries" filtering="true">
+	                <fileset dir="registry-entries">
+	                        <include name="**/*.xml" />
+	                </fileset>
+	        </copy>
+	        <!-- now upload each one -->
+	        <pathconvert property="entriesr" pathsep=" ">
+	                <path>
+	                        <fileset dir="${temporary.dir}/registry-entries"/>
+	                </path>
+	        </pathconvert>
+	            <util:tokenize var="entryListr" delim=" ">${entriesr}</util:tokenize>
 
-<goal name="setup-registry" description="populate the registry">
-        <echo>Configuring Registry</echo>
-        <!-- expand tokens -->
-        <copy todir="${temporary.dir}/registry-entries" filtering="true">
-                <fileset dir="registry-entries">
-                        <include name="**/*.xml" />
-                </fileset>
-        </copy>
-        <!-- now upload each one -->
-        <pathconvert property="entries" pathsep=" ">
-                <path>
-                        <fileset dir="${temporary.dir}/registry-entries"/>
-                </path>
-        </pathconvert>
-            <util:tokenize var="entryList" delim=" ">${entries}</util:tokenize>
-          <j:catch>
-            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-            <ant target="register" antfile="register.xml" >
-        `       <property name="registry.entry" value="${temporary.dir}/registry-entries/astrogridv0_9/ARegistry.xml"/>
-            </ant>
-          </j:catch>            
-		<waitfor maxwait="10" maxwaitunit="second" checkevery="500">
-        	<http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
-		</waitfor>
-            
-        <j:forEach var="entry" items="${entryList}">
-          <j:catch>
-            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-            <ant target="register" antfile="register.xml" >
-        `       <property name="registry.entry" value="${entry}"/>
-            </ant>
-          </j:catch>
-        </j:forEach>
-</goal>
+	            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+	            <ant target="register" antfile="register.xml" >
+	        `       <property name="registry.entry" value="${temporary.dir}/registry-entries/astrogridv0_9/ARegistry.xml"/>
+	            </ant>
+
+	                <waitfor maxwait="10" maxwaitunit="second" checkevery="500">
+	                <http url="${tomcat.url}/exist/xmldb/db/?xpath=%2F%2F*%3AResource%5B*%3AIdentifier%2F*%3AResourceKey%2Ftext%28%29+%3D+%27org.astrogrid.registry.RegistryService%27%5D"/>
+	                </waitfor>
+
+	        <j:forEach var="entryr" items="${entryListr}">
+
+	            <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
+	            <ant target="register" antfile="register.xml" >
+	        `       <property name="registry.entry" value="${entryr}"/>
+	            </ant>
+
+	        </j:forEach>
+	</goal>
 
 <!--+
     | Unpack our Community install toolkit.
@@ -244,46 +218,25 @@
 
 
 <!-- deployment //////////////////////////////////////////////////////////////////////// -->
+	<goal name="reg-deploy"   prereqs="init" >
+		<copy todir="${temporary.dir}/registry" filtering="true" overwrite="true">
+	            <fileset dir="webapps/astrogrid-configuration/registry">
+	            	<include name="astro*.prop*"/>
+	            </fileset>
+	    </copy>
 
-<goal name="common-libs-deploy" description="copy db drivers, etc into shared directory">
-        <echo message="Tomcat common : ${tomcat.common.lib.dir}"/>
-        <copy verbose="true" todir="${tomcat.common.lib.dir}">
-                <fileset dir="${temporary.dir}">
-                        <include name="hsql*.jar" />
-                        <!-- may need to add more here later -->
-                </fileset>
-        </copy>
-</goal>
+	    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
+			<classes dir="${temporary.dir}/registry"/>
+	    </war>
+		
+	    <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+         path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war"/>
 
-<!-- hand assembled webapps ///////////////////////////////////////-->
-<goal name="configuration-deploy" description="create and install configuration webapp">
-        <copy todir="${temporary.dir}/astrogrid-configuration" filtering="true">
-                <fileset dir="webapps/astrogrid-configuration" />
-        </copy>
-        <jar destfile="${temporary.dir}/${config.webapp.name}.war" basedir="${temporary.dir}/astrogrid-configuration">
-        </jar>
-        <j:catch>
-                <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                        path="/${config.webapp.name}" war="file:///${temporary.dir}/${config.webapp.name}.war" />
-        </j:catch>
-</goal>
 
-<goal name="reg-deploy" >
-        <copy todir="${temporary.dir}/registry" filtering="true">
-                <fileset dir="contexts/registry" />
-        </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-registry-SNAPSHOT.war">
-                <metainf dir="${temporary.dir}/registry"/>
-        </war>
-  <j:catch>
-          <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
-  </j:catch>
-  <j:catch>
-          <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" war="file:///${temporary.dir}/astrogrid-exist-SNAPSHOT.war"/>
-  </j:catch>
-</goal>
+        <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
+
+	</goal>
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <goal name="reg-undeploy" >
@@ -293,15 +246,7 @@
   </j:catch>
   <j:catch>
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-exist-SNAPSHOT" />
-  </j:catch>
-</goal>
-
-
-<goal name="configuration-undeploy" >
-  <j:catch>
-        <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-configuration" />
+          path="/exist" />
   </j:catch>
 </goal>
 
