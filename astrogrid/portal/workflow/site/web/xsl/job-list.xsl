@@ -43,7 +43,7 @@
                <td style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Status</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Job ID</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Delete?</td> 
+               <td style="color: blue; background-color: lightblue; text-align: center;">Delete/Cancel?</td> 
             </tr>
             <xsl:for-each select="//job">
                <tr>    
@@ -59,15 +59,39 @@
                      <xsl:element name="/a">
                      </xsl:element>                                                                 
                   </td>
-                  <td>
-                      <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
-                          <xsl:element name="input">                              
-                              <xsl:attribute name="type">hidden</xsl:attribute>
-                              <xsl:attribute name="name">jobURN</xsl:attribute>
-                              <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
-                          </xsl:element>                                                                                                        
-                          <input type="submit" name="action" value="delete-job"/>                          
-                      </form>
+                  <td align="center">
+                      <xsl:choose>                                      
+                          <xsl:when test="@status = 'ERROR'">  <!--  ERROR -->
+                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                                  <xsl:element name="input">                              
+                                      <xsl:attribute name="type">hidden</xsl:attribute>
+                                      <xsl:attribute name="name">jobURN</xsl:attribute>
+                                      <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
+                                  </xsl:element>                                                                                                        
+                                  <input type="submit" name="action" value="delete-job"/>                          
+                              </form>
+                          </xsl:when>
+                          <xsl:when test="@status = 'COMPLETED'">  <!--  COMPLETED -->
+                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                                  <xsl:element name="input">                              
+                                      <xsl:attribute name="type">hidden</xsl:attribute>
+                                      <xsl:attribute name="name">jobURN</xsl:attribute>
+                                      <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
+                                  </xsl:element>                                                                                                        
+                                  <input type="submit" name="action" value="delete-job"/>                          
+                              </form>
+                          </xsl:when>                                                                              
+                          <xsl:otherwise>
+                              <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
+                                  <xsl:element name="input">                              
+                                      <xsl:attribute name="type">hidden</xsl:attribute>
+                                      <xsl:attribute name="name">jobURN</xsl:attribute>
+                                      <xsl:attribute name="value"><xsl:value-of select="@jobid" /></xsl:attribute>
+                                  </xsl:element>                                                                                                        
+                                  <input type="submit" name="action" value="cancel-job"/>                          
+                              </form>                        
+                          </xsl:otherwise>
+                      </xsl:choose>                                                                                                                                                                                      
                   </td>                 
                </tr>
             </xsl:for-each>
