@@ -75,9 +75,15 @@
 <!--             <xsl:call-template name="create_workflow"/> -->
             <xsl:call-template name="insert_parameter"/> 
          </xsl:if>
-         <xsl:if test="$action = 'insert-parameter-into-tool'">
+         <xsl:if test="$action = 'insert-input-value'">
+            <xsl:call-template name="insert_parameter"/>             
+         </xsl:if>
+         <xsl:if test="$action = 'insert-output-value'">
+            <xsl:call-template name="insert_parameter"/>             
+         </xsl:if>                  
+         <xsl:if test="$action = 'parameters-complete'">
             <xsl:call-template name="create_workflow"/>             
-         </xsl:if>                                 
+         </xsl:if>         
          <xsl:if test="$action = 'templates'">
             <xsl:call-template name="templates"/>             
          </xsl:if>
@@ -293,39 +299,43 @@
                         <td align="center">Input parameters</td>   
                         <td align="center">Output parameters</td>
                      </tr>
-                     <xsl:for-each select="//step">
+                     <xsl:for-each select="//step">                         
                         <td><!--  start of step column -->
-                           <table>
-                              <tr><td><xsl:value-of select="@step-name"/></td></tr>
-                              <tr><td>Desc: <xsl:value-of select="@step-description"/></td></tr>
-                              <tr><td>Join: <xsl:value-of select="@joinCondition"/> </td></tr>
-                           </table>
-                        </td><!-- end of step column -->
-                        <td><!-- start of tool column -->
-                           <xsl:for-each select="tool">
-                              <table>                                 
-                                 <tr><td>Tool: <xsl:value-of select="@tool-name"/></td></tr>
-                                 <tr><td>Documentation: <xsl:value-of select="@tool-documentation"/></td></tr>
-                              </table>
-                              <td><!-- start of input column -->
-                                 <xsl:for-each select="inputParam">
-                                    <table>
-                                       <td>Name: <xsl:value-of select="@param-name"/></td>
-                                       <td>Type: <xsl:value-of select="@param-type"/></td>
-                                       <td>Location: <xsl:value-of select="@param-location"/></td>
+                           <tr>
+                              <td>                        
+                                 <table>
+                                    <tr><td><xsl:value-of select="@step-name"/></td></tr>
+                                    <tr><td>Desc: <xsl:value-of select="@step-description"/></td></tr>
+                                    <tr><td>Join: <xsl:value-of select="@joinCondition"/> </td></tr>
+                                 </table>
+                              </td><!-- end of step column -->
+                              <td><!-- start of tool column -->
+                                 <xsl:for-each select="tool">
+                                    <table>                                 
+                                       <tr><td>Tool: <xsl:value-of select="@tool-name"/></td></tr>
+                                       <tr><td>Documentation: <xsl:value-of select="@tool-documentation"/></td></tr>
                                     </table>
-                                 </xsl:for-each>
-                              </td><!-- end of input column -->
-                              <td><!-- start of output column -->
-                                 <xsl:for-each select="outputParam">
-                                    <table>
-                                       <td>Name: <xsl:value-of select="@param-name"/></td>
-                                       <td>Type: <xsl:value-of select="@param-type"/></td>
-                                       <td>Location: <xsl:value-of select="@param-location"/></td>
-                                    </table>
-                                 </xsl:for-each>                                                                                     
-                               </td><!-- end of output column -->                                                               
-                           </xsl:for-each><!-- end of each tool -->
+                                    <td><!-- start of input column -->
+                                       <xsl:for-each select="inputParam">
+                                          <table>
+                                             <td>Name: <xsl:value-of select="@param-name"/></td>
+                                             <td>Type: <xsl:value-of select="@param-type"/></td>
+                                             <td>Location: <xsl:value-of select="@param-value"/></td>
+                                          </table>
+                                       </xsl:for-each>
+                                    </td><!-- end of input column -->
+                                    <td><!-- start of output column -->
+                                       <xsl:for-each select="outputParam">
+                                          <table>
+                                             <td>Name: <xsl:value-of select="@param-name"/></td>
+                                             <td>Type: <xsl:value-of select="@param-type"/></td>
+                                             <td>Location: <xsl:value-of select="@param-location"/></td>
+                                          </table>
+                                       </xsl:for-each>                                                                                     
+                                     </td><!-- end of output column -->                                                               
+                                 </xsl:for-each><!-- end of each tool -->
+                              </td>
+                           </tr>                           
                         </td><!-- end of tool column -->     
                      </xsl:for-each><!-- end of each step -->
                   </table>
@@ -430,15 +440,15 @@
           | Insert parameters into a tool
           +-->   
       <xsl:template name="insert_parameter">
-         <form method="get" name="ParameterInsertForm">
-            <table cellpadding="0" cellspacing="0">                                                           
+<!--         <form method="get" name="ParameterInsertForm"> -->
+            <table cellpadding="0" cellspacing="0" border="1">                                                           
                <tr>
                   <td>Workflow name:</td>
                   <td><xsl:value-of select="@workflow-name" /></td>                                    
                </tr>
                <tr>
                   <td>Workflow description:</td>
-                  <td><xsl:value-of select="@workflow-description" /></td>                  
+                  <td colspan="4"><xsl:value-of select="@workflow-description" /></td>                  
                </tr>
                <xsl:for-each select="//step">           
                    <xsl:if test="$activity-key = @key">
@@ -449,22 +459,16 @@
                      </tr>
                      <tr>
                         <td>Tool documentation:</td>
-                        <td><xsl:value-of select="@tool-documentation" /></td>
+                        <td colspan="4"><xsl:value-of select="@tool-documentation" /></td>
                      </tr>
                      <tr>
-                        <td>
+                        <td colspan="5">
                            <table>
                               <tr>
                                  <td align="center" colspan="3">Input parameters:</td>
                               </tr>
                               <xsl:for-each select="inputParam">
-                                 <tr> 
-                                    <td>Name: <xsl:value-of select="@param-name" /></td>
-                                    <td>Type: <xsl:value-of select="@param-type" /></td>
-                                    <td>Location: <xsl:value-of select="@param-location" /></td>
-                                    <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
-                                    <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
-                                 </tr>
+                                 <xsl:call-template name="insert_input_parameter" />
                               </xsl:for-each><!-- end of inputParam -->  
                            </table>
                         </td>                  
@@ -476,13 +480,7 @@
                                  <td align="center" colspan="3"> Output parameters:</td>
                               </tr>
                               <xsl:for-each select="outputParam">  
-                                 <tr> 
-                                    <td>Name: <xsl:value-of select="@param-name" /></td>
-                                    <td>Type: <xsl:value-of select="@param-type" /></td>
-                                    <td>Location: <xsl:value-of select="@param-location" /></td>
-                                    <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
-                                    <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
-                                 </tr>
+                                 <xsl:call-template name="insert_output_parameter" />
                              </xsl:for-each><!-- end of outputParam -->  
                           </table>
                         </td>                  
@@ -490,13 +488,84 @@
                   </xsl:for-each><!-- end of tool -->               
                </xsl:if>
                </xsl:for-each><!-- end of step -->                                        
-		    <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>
-		    <input type="hidden" name="action" value="insert-parameter-into-tool" />
-		    <input type="text" name="location" />		                     	                 		                 		                 
-		    <input type="submit" value="Insert parameter" /> 
+<!--		    <input type="submit" value="Insert parameter" /> -->
 		  </table>
-	   </form>
+<!-- This is temp - until parameter insert is working -->		  
+<form method="get" name="ParameterInsertForm">		  
+<input type="hidden" name="action" value="parameters-complete" />
+<input type="submit" value="Done" />   
+</form>
       </xsl:template>
+    
+      <!--+
+          | Insert Input Parameter
+          +-->   
+      <xsl:template name="insert_input_parameter" method="get">
+         <xsl:if test="@param-value = 'null'">
+         <form name="input_query_tool_from" >               
+            <table cellpadding="0" cellspacing="0" border="1">                      
+               <tr> 
+                  <td>Name: <xsl:value-of select="@param-name" /></td>
+                  <td>Type: <xsl:value-of select="@param-type" /></td>
+                  <td>Value: <input type="text" name="param-value" /><input type="submit" value="Submit" /></td>
+                  <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
+                  <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
+               </tr>                                        
+            </table> 
+            <input type="hidden" name="action" value="insert-input-value" />
+            <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>
+            <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
+         </form>
+         </xsl:if>
+         <xsl:if test="@param-value != 'null'">
+            <table cellpadding="0" cellspacing="0">                      
+               <tr> 
+                  <td>Name: <xsl:value-of select="@param-name" /></td>
+                  <td>Type: <xsl:value-of select="@param-type" /></td>
+                  <td>Value: <xsl:value-of select="@param-value" /></td>
+                  <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
+                  <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
+               </tr>                                        
+            </table>             
+         </xsl:if>
+      </xsl:template>
+
+
+      <!--+
+          | Insert Output Parameter
+          +-->   
+      <xsl:template name="insert_output_parameter" method="get">
+         <xsl:if test="@param-location = 'null'">
+         <form name="input_query_tool_from" >               
+            <table cellpadding="0" cellspacing="0">                      
+               <tr> 
+                  <td>Name: <xsl:value-of select="@param-name" /></td>
+                  <td>Type: <xsl:value-of select="@param-type" /></td>
+                  <td>Value: <input type="text" name="param-value" /><input type="submit" value="Submit" /></td>
+                  <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
+                  <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
+               </tr>                                        
+            </table> 
+            <input type="hidden" name="action" value="insert-output-value" />
+            <input type="hidden" name="param-name"><xsl:attribute name="value"><xsl:value-of select="@param-name"/></xsl:attribute></input>            
+            <input type="hidden" name="activity-key"><xsl:attribute name="value"><xsl:value-of select="$activity-key"/></xsl:attribute></input>              
+         </form>
+         </xsl:if>
+         <xsl:if test="@param-location != 'null'">
+            <table cellpadding="0" cellspacing="0">                      
+               <tr> 
+                  <td>Name: <xsl:value-of select="@param-name" /></td>
+                  <td>Type: <xsl:value-of select="@param-type" /></td>
+                  <td>Value: <xsl:value-of select="@param-location" /></td>
+                  <td>Cardinality (max): <xsl:value-of select="@param-cardinality-max" /></td>
+                  <td>Cardinality (min): <xsl:value-of select="@param-cardinality-min" /></td>
+               </tr>                                        
+            </table>             
+         </xsl:if>
+      </xsl:template>
+    
+    
+    
     
      <!-- Default, copy all and apply templates -->
      <xsl:template match="@*|node()">

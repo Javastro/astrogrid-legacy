@@ -76,7 +76,7 @@
                <xsp:element name="inputParam">
                   <xsp:attribute name="param-name"><xsp:expr>params.getName()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-type"><xsp:expr>params.getType()</xsp:expr></xsp:attribute>
-                  <xsp:attribute name="param-location"><xsp:expr>params.getLocation()</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="param-value"><xsp:expr>params.getValue()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-cardinality-max"><xsp:expr>params.getCardinality().getMaximum()</xsp:expr></xsp:attribute>                                                      
                   <xsp:attribute name="param-cardinality-min"><xsp:expr>params.getCardinality().getMinimum()</xsp:expr></xsp:attribute>                                                                        
                </xsp:element>
