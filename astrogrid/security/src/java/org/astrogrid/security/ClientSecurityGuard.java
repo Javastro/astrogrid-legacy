@@ -121,8 +121,8 @@ public class ClientSecurityGuard extends SecurityGuard {
    * @throws Exception if the sign-on fails
    */
   public void signOn () throws Exception {
-    String   u = this.getUsername();
-    Password p = this.getPassword();
+    String u = this.getSsoUsername();
+    String p = this.getSsoPassword();
     System.out.println("ClientSecurityGuard.signOn(): signing on to the grid"
                      + " with account name "
                      + u);
@@ -132,7 +132,7 @@ public class ClientSecurityGuard extends SecurityGuard {
       SecurityServiceDelegate ssd = ssr.resolve(accountId);
 
       NonceToken t
-          = new NonceToken(ssd.checkPassword(u, p.getPlainPassword()));
+          = new NonceToken(ssd.checkPassword(u, p));
       this.setNonceToken(t);
     }
     catch (Exception e) {
