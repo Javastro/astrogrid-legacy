@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.7 2004/04/16 16:47:23 pah Exp $
+ * $Id: ParameterLoader.java,v 1.8 2004/04/19 11:36:39 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,6 +21,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.NodeCreateRule;
+import org.apache.commons.digester.RuleSetBase;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -56,9 +57,10 @@ public class ParameterLoader {
    private void createDigester() throws ParserConfigurationException{
       digester = new Digester();
       digester.setValidating(false);
+      digester.setNamespaceAware(true);
       digester.addFactoryCreate(INPUTPARAMETER_ELEMENT, new ParameterFactory(application));
       digester.addRule(INPUTPARAMETERVALUE_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
-      digester.addRule(INPUTPARAMETERVALUE_ELEMENT, new AllBodyIncElementsRule("rawValue", true));
+      digester.addRuleSet(new MyRuleSet()); // add the encasulated ruleset with the appropriate namespace mapping
       digester.addSetNext(INPUTPARAMETER_ELEMENT, "addParameter");
       
    }
@@ -83,6 +85,33 @@ public class ParameterLoader {
       
       
       return success;
+      
+   }
+
+    
+   /**
+    * Small ruleset simply to get the namespace processing correct.
+    * @author Paul Harrison (pah@jb.man.ac.uk) 19-Apr-2004
+    * @version $Name:  $
+    * @since iteration5
+    */
+   private class MyRuleSet extends RuleSetBase
+   {
+      /**
+       * 
+       */
+      public MyRuleSet() {
+        super();
+        this.namespaceURI = "http://www.astrogrid.org/schema/AGParameterDefinition/v1";
+      }
+
+      /** 
+       * @see org.apache.commons.digester.RuleSetBase#addRuleInstances(org.apache.commons.digester.Digester)
+       */
+      public void addRuleInstances(Digester dig) {
+         dig.addRule(INPUTPARAMETERVALUE_ELEMENT, new AllBodyIncElementsRule("rawValue", true));
+  
+      }
       
    }
 
