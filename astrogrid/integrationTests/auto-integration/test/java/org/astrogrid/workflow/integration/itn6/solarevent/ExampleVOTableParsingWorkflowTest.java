@@ -1,4 +1,4 @@
-/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.1 2004/08/12 13:33:34 nw Exp $
+/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.2 2004/08/12 15:15:55 nw Exp $
  * Created on 06-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,52 +23,43 @@ import org.exolab.castor.xml.Marshaller;
 import org.w3c.dom.Document;
 
 /** Example workflow that acquires a votable of urls, parses it, and then passes list of urls to parameters of next step.
+ * extends the existing fitsworkflow test - as this provides a nice source for a votable.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Aug-2004
  *
  */
-public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow implements SolarEventKeys{
+public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
 
     /** Construct a new ExampleVOTableParsingWorkflowTest
      * @param applications
      * @param arg0
      */
     public ExampleVOTableParsingWorkflowTest(String arg0) {
-        super(new String[]{}, arg0); //@todo add in real names.
+        super(arg0); //@todo add in real names.
     }
 
     
     /**
      * @see org.astrogrid.workflow.integration.AbstractTestForWorkflow#buildWorkflow()
      */
-    protected void buildWorkflow() throws WorkflowInterfaceException {
-        wf.setName(this.getClass().getName());
-        // the app that generates the votable
-        ApplicationDescription descr = reg.getDescriptionFor(VOTABLE_SOURCE);
-        Tool sourceTool = descr.createToolFromDefaultInterface();
-        // setup parameters here. 
-        // set result to direct.
-        Step source = new Step();
-        source.setName("source-step");
-        source.setResultVar("source");
-        source.setTool(sourceTool);
-        wf.getSequence().addActivity(source);
-        
+    protected void buildWorkflow() throws Exception {
+        super.buildWorkflow(); 
         // now the script that mangles the results.
         // assumes its just a single-column votable, with urls - pity votable isn't so easy to parse.
         Script sc = new Script();
         sc.setBody(
-                "votable = source.result; // access result of previous step\n" +
+                "votable = source.Result; // access result of previous step\n" +
                 "parser = new XmlParser(); //create new parser \n" +
                 "nodes = parser.parseText(votable); //parse votable into node tree\n" +
                 "urls = nodes.depthFirst().findAll{it.name() == 'TD'}.collect{it.value()}.flatten(); // filter node tree on 'TD', project value\n" +
-                "print(urls); // show what we've found\n" +
-                "sinkStep = jes.getSteps().find {it.getName() == 'sink-step'}; // find next step in workflow\n" +
-               "inputs = sinkStep.getTool().getInput(); // get to set of input parameters" +
-                "urls.each { p = jes.newParameter(); p.setName('url'); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"
+                "print(urls); // show what we've found\n"
+             //   "sinkStep = jes.getSteps().find {it.getName() == 'sink-step'}; // find next step in workflow\n" +
+             //  "inputs = sinkStep.getTool().getInput(); // get to set of input parameters" +
+              //  "urls.each { p = jes.newParameter(); p.setName('url'); p.setValue(it); inputs.addParameter(p);} // add a new parameter for each url\n"
                 
         );
         wf.getSequence().addActivity(sc);
-        
+      
+        /**
         // now the app that consumes the list of parameters.
         descr = reg.getDescriptionFor(URL_LIST_SINK);
         Tool sinkTool = descr.createToolFromDefaultInterface();
@@ -77,7 +68,7 @@ public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow i
         sink.setName("sink-step");
         sink.setTool(sinkTool);
         wf.getSequence().addActivity(sink);
-        
+        **/
                 
     }
     
@@ -94,6 +85,9 @@ public class ExampleVOTableParsingWorkflowTest extends AbstractTestForWorkflow i
 
 /* 
 $Log: ExampleVOTableParsingWorkflowTest.java,v $
+Revision 1.2  2004/08/12 15:15:55  nw
+getting there
+
 Revision 1.1  2004/08/12 13:33:34  nw
 added framework of classes for testing the solar event science case.
 

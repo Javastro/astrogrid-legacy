@@ -1,4 +1,4 @@
-/*$Id: SimpleFitsWorkflowTest.java,v 1.2 2004/08/12 14:30:03 nw Exp $
+/*$Id: SimpleFitsWorkflowTest.java,v 1.3 2004/08/12 15:15:55 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,6 +75,7 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
         Step s = new Step();
         s.setDescription("Fits query");
         s.setName(FITS_APP);
+        s.setResultVar("source");
         s.setTool(fitsTool);
         wf.getSequence().addActivity(s);
     }
@@ -92,6 +93,9 @@ public class SimpleFitsWorkflowTest extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleFitsWorkflowTest.java,v $
+Revision 1.3  2004/08/12 15:15:55  nw
+getting there
+
 Revision 1.2  2004/08/12 14:30:03  nw
 constructed workflows to call fits and sec. need to check the results next
 
