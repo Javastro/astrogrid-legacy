@@ -1,25 +1,22 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.3 2003/11/17 15:41:48 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.4 2003/11/17 20:48:44 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.service;
-import org.astrogrid.datacenter.service.*;
+
 
 
 import java.net.URL;
-
 import javax.xml.rpc.ParameterMode;
 import javax.xml.rpc.ServiceException;
-
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.apache.axis.encoding.XMLType;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.snippet.DocHelper;
-import org.astrogrid.datacenter.snippet.StatusHelper;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.snippet.DocHelper;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 
@@ -94,6 +91,9 @@ public class JobNotifyServiceListener extends WebNotifyServiceListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.4  2003/11/17 20:48:44  mch
+Adding Adql-like access to Nvo cone searches
+
 Revision 1.3  2003/11/17 15:41:48  mch
 Package movements
 

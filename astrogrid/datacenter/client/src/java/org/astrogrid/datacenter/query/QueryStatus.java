@@ -1,5 +1,5 @@
 /*
- * $Id: QueryStatus.java,v 1.1 2003/11/17 12:32:27 mch Exp $
+ * $Id: QueryStatus.java,v 1.2 2003/11/17 20:47:57 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -28,7 +28,7 @@ public class QueryStatus extends TypeSafeEnumerator
    /** Service is processing results, eg converting to VOTable */
    public static final QueryStatus RUNNING_RESULTS = new QueryStatus(40, "Processing Results");
    /** Service instance has finished/closed/no longer available */
-   public static final QueryStatus FINISHED = new QueryStatus(50, "Finished");
+   public static final QueryStatus FINISHED = new QueryStatus(50, "COMPLETED");
    /** Service instance is unknown, or cannot provide state */
    public static final QueryStatus UNKNOWN = new QueryStatus(-1, "Unknown");
    /** Service has had an error (usually in spawned thread).  'Last' in order
@@ -68,6 +68,9 @@ public class QueryStatus extends TypeSafeEnumerator
 
 /*
 $Log: QueryStatus.java,v $
+Revision 1.2  2003/11/17 20:47:57  mch
+Adding Adql-like access to Nvo cone searches
+
 Revision 1.1  2003/11/17 12:32:27  mch
 Moved QueryStatus to query pacakge
 

@@ -27,7 +27,6 @@ public interface ConeSearcher
     * @param dec Decliniation in decimal degress, J2000
     * @param sr search radius in decimal degrees.
     * @return InputStream to results document, including votable
-    * @todo return VOTable instance not Element
     */
    public InputStream coneSearch(double ra, double dec, double sr) throws IOException;
 
@@ -35,6 +34,9 @@ public interface ConeSearcher
 
 /*
 $Log: ConeSearcher.java,v $
+Revision 1.4  2003/11/17 20:47:57  mch
+Adding Adql-like access to Nvo cone searches
+
 Revision 1.3  2003/11/17 16:59:12  mch
 ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
 
