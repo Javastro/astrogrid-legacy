@@ -457,20 +457,20 @@ public class RegistryBrowserAction extends AbstractAction
           sqlQuery += " and vr:title like '%" + title +"%' ";             
 		 }
 		 if ( tabname != null ) {
-          sqlQuery += " and (vs:table/vs:name = '" + tabname + "' or tdb:table/vs:name = '" + tabname + "') ";
+          sqlQuery += " and (vs:table/vs:name = '" + tabname + "' or tdb:db/tdb:table/vs:name = '" + tabname + "') ";
 		 }
 		 if ( colname != null ) {
-          sqlQuery += " and (vs:table/vs:column/vs:name = '" + colname + "' or tdb:table/vs:column/vs:name = '" + colname + "') ";             
+          sqlQuery += " and (vs:table/vs:column/vs:name = '" + colname + "' or tdb:db/tdb:table/vs:column/vs:name = '" + colname + "') ";             
           
 		 }
 		 if ( ucd != null ) {
-          sqlQuery += " and (vs:table/vs:column/vs:ucd = '" + ucd + "' or tdb:table/vs:column/vs:ucd = '" + ucd + "') ";
+          sqlQuery += " and (vs:table/vs:column/vs:ucd = '" + ucd + "' or tdb:db/tdb:table/vs:column/vs:ucd = '" + ucd + "') ";
 		 }
 		 if ( units != null ) {
-          sqlQuery += " and (vs:table/vs:column/vs:unit = '" + units + "' or tdb:table/vs:column/vs:unit = '" + units + "') ";
+          sqlQuery += " and (vs:table/vs:column/vs:unit = '" + units + "' or tdb:db/tdb:table/vs:column/vs:unit = '" + units + "') ";
 		 }
 		 if ( desc != null ) {
-          sqlQuery += " and (vs:table/vs:column/vs:description like '%" + desc + "%' or tdb:table/vs:column/vs:description like '%" + desc + "%') ";             
+          sqlQuery += " and (vs:table/vs:column/vs:description like '%" + desc + "%' or tdb:db/tdb:table/vs:column/vs:description like '%" + desc + "%') ";             
 		 }
        return sqlQuery;
 	 }

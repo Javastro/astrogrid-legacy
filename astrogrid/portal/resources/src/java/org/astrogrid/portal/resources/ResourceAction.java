@@ -38,8 +38,8 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.8 $Date:
- * @version $Name:  $Revision: 1.8 $Date:
+ * @version $Name:  $Revision: 1.9 $Date:
+ * @version $Name:  $Revision: 1.9 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
