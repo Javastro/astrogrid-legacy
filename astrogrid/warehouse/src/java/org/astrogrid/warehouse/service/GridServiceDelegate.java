@@ -172,13 +172,14 @@ public class GridServiceDelegate {
    * @return true if there is an instance connected; false otherwise.
    */
   public boolean isConnected () {
-    System.out.println("GSD: testing " + this.hashCode());
+    System.out.println("GSD: isConnected(): testing " + this.hashCode());
     if (!this.connected) {
       System.out.println("GSD: already flagged as disconnected.");
       return false;
     }
     
     if (this.simulating) {
+      System.out.println("GSD: returning simulated value: " + this.connected);
       return this.connected;
     }
     
