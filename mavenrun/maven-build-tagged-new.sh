@@ -7,7 +7,6 @@ DATE=`date`
 BUILD_HOME=/home/maven/build/$TAGNAME
 SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
-DOC_HOME=/var/www/www/maven/docs
 ASTROGRID_VERSION=$TAGNAME
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
 ADMIN_EMAIL=jdt@roe.ac.uk
