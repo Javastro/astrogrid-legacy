@@ -61,9 +61,9 @@
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
           </xsl:if>            
-            <td valign="top" align="left">            
+            <td valign="top" align="left">
                 <xsl:choose>                                      
-                    <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->         
+                    <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->                             
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence.gif</xsl:attribute>
                             <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
@@ -72,6 +72,9 @@
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">sequence</xsl:attribute>
                             <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>');hide_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>');</xsl:attribute>
+                            <xsl:if test="count(child::*) = 0">
+                                <ag-onload function="change_image('/sequence','sequence');populate_activity_container_insert_form('/sequence','0');"/>
+                            </xsl:if>
                         </xsl:element>
                     </xsl:when>
                             
