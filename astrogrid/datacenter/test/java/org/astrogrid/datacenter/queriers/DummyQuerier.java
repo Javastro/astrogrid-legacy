@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerier.java,v 1.2 2003/08/27 16:33:52 mch Exp $
+ * $Id: DummyQuerier.java,v 1.3 2003/08/28 13:23:13 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,7 +15,7 @@ import org.astrogrid.datacenter.query.Query;
  * @author M Hill
  */
 
-public class DummyQuerier implements DatabaseQuerier
+public class DummyQuerier extends DatabaseQuerier
 {
    public QueryResults queryDatabase(Query query) throws DatabaseAccessException
    {

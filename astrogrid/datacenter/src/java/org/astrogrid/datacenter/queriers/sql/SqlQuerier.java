@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.1 2003/08/27 22:45:49 mch Exp $
+ * $Id: SqlQuerier.java,v 1.2 2003/08/28 13:23:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.astrogrid.datacenter.query.Query;
  * @author M Hill
  */
 
-public class SqlQuerier implements DatabaseQuerier
+public class SqlQuerier extends DatabaseQuerier
 {
    public QueryResults queryDatabase(Query query)
    {

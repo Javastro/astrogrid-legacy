@@ -1,5 +1,5 @@
 /*
- * $Id: MySqlQuerier.java,v 1.3 2003/08/27 17:35:23 mch Exp $
+ * $Id: MySqlQuerier.java,v 1.4 2003/08/28 13:23:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -23,7 +23,7 @@ import org.astrogrid.datacenter.query.Query;
  * @author M Hill
  */
 
-public class MySqlQuerier implements DatabaseQuerier
+public class MySqlQuerier extends DatabaseQuerier
 {
    /** the standard sql jdbc connection, opened when the instance is created */
    private Connection jdbcConnection = null;
@@ -51,7 +51,7 @@ public class MySqlQuerier implements DatabaseQuerier
 
          //or... which is not checked at compiletime but can be configured at runtime
          Class.forName("org.gjt.mm.mysql.Driver").newInstance();
-         
+
          jdbcConnection = DriverManager.getConnection(url);
       }
       catch (IllegalAccessException e)
