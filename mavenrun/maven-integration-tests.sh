@@ -46,14 +46,14 @@ cd $BUILD_DIR >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] remove old SNAPSHOTS" >> $BUILD_DIR/$LOG_FILE 2>&1
 sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $BUILD_DIR/$LOG_FILE 2>&1
 
-echo "Saving tomcatServers.xml config file"
+echo "Saving tomcatServers.xml config file" >> $BUILD_DIR/$LOG_FILE 2>&1
 cp $PROJECT_HOME/$TOMCAT_SERVERS $TMP >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME" >> $BUILD_DIR/$LOG_FILE 2>&1
 rm -fr $PROJECT_HOME >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] cvs checkout" >> $BUILD_DIR/$LOG_FILE 2>&1
 cvs -d $CVSROOT co -A astrogrid/$PROJECT_NAME >> $BUILD_DIR/$LOG_FILE 2>&1
-echo "Restoring tomcatServers.xml config file"
+echo "Restoring tomcatServers.xml config file" >> $BUILD_DIR/$LOG_FILE 2>&1
 mv $TMP/$TOMCAT_SERVERS $PROJECT_HOME >> $BUILD_DIR/$LOG_FILE 2>&1
 
 
