@@ -41,7 +41,9 @@
 	<p>
 		This is the main project to build a war file for deployment and that can be just dropped into a server.  It bundles the Axis
     	web service toolkit along with all the necessary jar file dependencies such as astrogrid-registry-server.jar all into this
-    	war file.  It also bundles together two servlets that handle the OAI and a harvest daemeon.
+    	war file.  It also bundles together two servlets that handle the OAI and a harvest daemeon.  See the deployment section below
+    	for configuring the registry.  The Registry is now more mulit-versioned where if necessary you can fairly easily by adding
+    	properties have the registry handle more than one version.
 	</p>
 	<section name="Builds">
 		<p>			
@@ -64,7 +66,7 @@
     	    query the eXist xml database for all the resources managed by this registry.  Then with
     		xsl will transform it to a OAI xml, where it gives it to the OAICat toolkit for handling
     	    any of the OAI tasks such as certain verbs.  Modify the oaicat.properties file for the
-    	    Identification verb. Location http://..../OAIHandler
+    	    Identification verb. Location http://..../OAIHandlerv0_9
     		OAI verbs handled by astrogrid:
     	    <ul>
     			<li>Identify</li>
@@ -75,48 +77,74 @@
     			<li>ListIdentifiers</li>
     			<li>ResumeListIdentifiers - resumptionTokens can be used, but expect not to</li>
     		</ul>
+    		<i>One final note in the web.xml file located in src/webapp you can define more OAI
+    	       servlets to handle multiple versions by adding the param "registry.version"</i>
     		<br />
     		<b>Harvest Daemon</b> -- The harvest daemon will automatically kick off harvests or you may
     	    go to the servet web site to kick off manual harvests. Location http://..../RegistryHarvest
     	</p>
     </section>
-   	<section name="More on eXist XMLDB">
+   	<section name="eXist">
      	<p>
-    		Registry uses an eXist xml database for storing and querying the resources. 
-    	    See the eXist section for astrogrid on more about eXist, this section 
-    	    lets you install the eXist database as a war file.  But for security purposes,
+    		Registry uses an eXist xml database for storing and querying the resources of the Registry. 
+    	    You can download eXist from <a href="http://exist.sourceforge.net">eXist website</a>. You can
+    	    also download it from <a href="http://www.astrogrid.org/maven/exist">eXist from Astrogrid</a>
+     	    For security purposes,
     	    it is better to install the eXist as a server installation on another port
-    	    that is not accessible to outise computers, but still accessible to 
-    	    the registry installation.
+    	    that is not accessible to outside computers, but still accessible to 
+    	    the registry installation.  This is completely optional though, and for ease of installation 
+    	    throughout astrogrid it is normally installed as a war file.<br />
+    	    Changes to be made once eXist is installed:<br />
+    	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.  Change
+    	    the cacheSize to something bigger if this is going to be a full Registry. 
+    	    Finally set the match-tagging-elements and match-tagging-attributes to "no".  In Astrogrid
+    	    these changes are already in place, but change the cacheSize to something more appropriate.
+    	</p>
+    	<p>
+    		It is recommended to have the exist location end in "exist" hence http://server.com/exist is the location.  This
+    	    is not required, but if you wish to view exist manually it can be easier.
     	</p>
     </section>
 	<section name="Deployment/Installation">
 		<p>			
 			After the builds a war file is produced in the "target" area.  This war file can be dropped into the webapps
 			portion of your java server (servlet container) such as tomcat.			
-			directory. Once installed as a System property or JNDI entry in the web.xml file located in the 
-			astrogrid-registry-webapp/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file.
-    		Or you may point to a config file with a context.xml in your installations.
-    		Remember to modify the oaicat.properties file under src/oaicat
-    		<i>Below are the properties and examples from the registry-server documentation, which are needed
-    	       for the installation of the registry.</i>
+			Once installed as a System property or JNDI entry in the web.xml file located in the 
+			/WEB-INF/web.xml file there needs to be a "org.astrogrid.config.url" pointing to a config file. Or you may
+    	    place in the default AstrogridConfig.properties file in your WEB-INF/classes to be picked up.
+    	    If your using the registry servlet contained in this install for OAI then
+    		remember to modify the oaicat.properties file under src/oaicat or modify it after the install in the WEB-INF/classes.
+    	    See the properties below, you may point to another OAI web based instance if you like.
+    		<i>Below are the properties and examples from the registry-server documentation plus some additions for the servlets, 
+    	       which are needed for the installation of the registry.</i>
 		Currently the config file only requires properties:
 		<ul>
 		  <li>org.astrogrid.registry.authorityid - required, the main authority id for this registry. Should be the same authorityid used on the main Registry type Resource.</li>
 		  <li>org.astrogrid.registry.version - required, a version number of the current main IVOA registry schema, slowly being factored out.</li>
 		  <li>exist.db.url - required, eXist url property pointing to the root location of the eXist XML database.</li>
 		  <li>exist.query.returncount - optional, the return count number (defaults to 25 if not given).</li>
-		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet.</li>
-    	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required for harvesting other registries, the time intervals for automatic harvests to be started.</li>
+		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet, Does not have to be a servlet could point to oai cgi,perl or other web based implementation.</li>
+    	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required, for harvesting other registries, the time intervals for automatic harvests to be started.</li>
+	  	  <li>registry.harvest.enabled - required, Does this registry do harvesting of other registries.</li>
+	  	  <li>registry.harvest.onload - optional, Start a harvest when servlet container starts.  Recommend false.</li>
+	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
+		  <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
+  	      <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true
+  	  </li>
 		</ul>
 		Example of config properties:
 		<ul>
 		  <li>org.astrogrid.registry.authorityid=org.astrogrid.leicester</li>
 		  <li>exist.db.url=http://localhost:8080/exist</li>
 		  <li>exist.query.returncount=25</li>
-		  <li>oai.servlet.url=http://localhost:8080/astrogrid-registry-snapshot/OAIHandler</li>
+		  <li>oai.servlet.url=http://server.com:8080/astrogrid-registry-real/OAIHandlerv0_9</li>
 	      <li>org.astrogrid.registry.version=0_9</li>
     	  <li>org.astrogrid.registry.harvest.daemon.interval-hours=1</li>
+	  	  <li>registry.harvest.enabled=true required, Does this registry do harvesting of other registries.</li>
+	  	  <li>registry.harvest.onload - optional, Start a harvest when servlet container starts.  Recommend false.</li>
+	  	  <li>declare.namespace.0_9=declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9"; declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.2"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.4"; declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";</li>
+		  <li>keyword.query.path.0_9=vr:Summary/vr:Description, vr:Title, vr:Subject</li>
+	      <li>identifier.path.hasauthorityid.0_9=true</li>
 		</ul>
 		</p>
 	</section>
