@@ -21,6 +21,7 @@ import org.astrogrid.AstroGridException ;
 
 import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 import org.astrogrid.community.policy.data.PolicyPermission ;
+import org.astrogrid.community.service.authentication.data.SecurityToken;
 
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
 import org.astrogrid.portal.workflow.*;
@@ -99,8 +100,9 @@ public class DesignAction extends AbstractAction {
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag" ,
         COMMUNITY_ACCOUNT_TAG = "community_account" ,
+        COMMUNITY_NAME_TAG = "community_name" ,
         CREDENTIAL_TAG = "credential",
-        COMMUNITY_TOKEN_TAG = "community-token" ;
+        COMMUNITY_TOKEN_TAG = "token" ;
         
     public static final String
         WORKFLOW_NAME_PARAMETER = "workflow-name",  
@@ -345,19 +347,23 @@ public class DesignAction extends AbstractAction {
             try {
         
                 // JL Note: Iteration 3 way of doing things...
-trace("getting attributes") ;                
-                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;
-trace("useridCommunity: " + useridCommunity) ;                
-                ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;
-trace("ampersandIndex: " + ampersandIndex) ;                
-                this.userid = useridCommunity.substring(  0, ampersandIndex ) ;
-trace("userid: " + this.userid ) ;                
-                this.community = useridCommunity.substring( ampersandIndex + 1 );
-trace("community: " + this.community ) ; 
-                this.group = (String)session.getAttribute( CREDENTIAL_TAG ) ;
-trace("group: " + this.group ) ;                 
-                this.token = (String)session.getAttribute( COMMUNITY_TOKEN_TAG ) ;
-trace("token: " + this.token ) ;                 
+                // PJN note: alterred slightly, also not sure if LoginAction intends to put security token into session?
+              
+                this.userid = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;               
+                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG ) ;              
+				this.group = (String)session.getAttribute( CREDENTIAL_TAG ) ;
+				SecurityToken secToken = (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG ) ;				
+				this.token = secToken.getToken() ;
+
+                
+//                useridCommunity = (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ) ;                
+//                ampersandIndex = useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR ) ;               
+//                this.userid = useridCommunity.substring(  0, ampersandIndex ) ;               
+//                this.community = useridCommunity.substring( ampersandIndex + 1 );
+ 
+                 
+                
+                 
                 
                 if( this.workflow != null ) {
 //                  workflow.setUserid( userid ) ;
