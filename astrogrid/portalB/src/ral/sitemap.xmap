@@ -278,14 +278,23 @@
                   </map:transform>
                </map:act>
                <!-- Wrap the page in our HTML template -->
+<<<<<<< sitemap.xmap
+               <map:transform src="common/xsl/astrogrid.xsl" label="003">
+<<<<<<< sitemap.xmap
+               <!-- Add the explorer page names -->
+                  <map:parameter name="current-page"  value="agmyspace.html"/>
+=======
+=======
                <map:act type="astrogrid">
 		           <map:transform src="common/xsl/astrogrid.xsl" label="003">
 		              <!-- Add the rest of the page names -->
 		              <map:parameter name="credential" value="{credential}" />
 		              <map:parameter name="credential-page" value="agcredentials.html" />
+>>>>>>> 1.9
                   <!-- Add the current page name -->
                   <map:parameter name="current-page" value="agmyspace.html"/>
                   <!-- Add the explorer page names -->
+>>>>>>> 1.7
                   <map:parameter name="explorer-page" value="agmyspace.html"/>
                   <map:parameter name="votable-page"  value="agvotable.html"/>
                   <!-- Add the rest of the page names -->
@@ -316,6 +325,7 @@
                   <!-- Wrap the page in our HTML template -->
                   <map:transform src="common/xsl/astrogrid.xsl" label="003">
                   <!-- Add the explorer page names -->
+                   <map:parameter name="current-page"  value="agmyspace.html"/>
                    <map:parameter name="explorer-page" value="agmyspace.html"/>
                    <map:parameter name="votable-page"  value="agvotable.html"/>
                    <!-- Add the rest of the page names -->

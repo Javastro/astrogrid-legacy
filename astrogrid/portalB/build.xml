@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/09 22:46:45 $</cvs:author>
-    | <cvs:version>$Revision: 1.41 $</cvs:version>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/09/10 02:34:05 $</cvs:author>
+    | <cvs:version>$Revision: 1.42 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.42  2003/09/10 02:34:05  dave
+    | Removed build directory files from cvs
+    |
     | Revision 1.41  2003/09/09 22:46:45  KevinBenson
     | *** empty log message ***
     |
@@ -149,8 +152,9 @@
 	<property name="site.cocoon"  value="${basedir}/build/site/cocoon"/>
 
 	<!--+
-	    | User properties, these will override the properties defined in the build script.
-	<property file="${user.home}/ant.properties"/>
+	    | User preferences.
+	    | This is where to put local properties eg.tomcat installation path.
+	    | tomcat.home=/usr/java/servers/tomcat/jakarta-tomcat-4.1.24-LE-jdk14
 	    +-->
 	<property file="ant.properties"/>
 
