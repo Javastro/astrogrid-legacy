@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.29 2004/10/05 14:32:55 gps Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.30 2004/10/22 14:40:22 gps Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: gps $</cvs:author>
- * <cvs:date>$Date: 2004/10/05 14:32:55 $</cvs:date>
- * <cvs:version>$Revision: 1.29 $</cvs:version>
+ * <cvs:date>$Date: 2004/10/22 14:40:22 $</cvs:date>
+ * <cvs:version>$Revision: 1.30 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -214,25 +214,20 @@ public final class LoginAction extends AbstractAction {
         log.debug("  Account : " + token.getAccount());
         
         // Get MySpace Manager end point.
-        final Ivorn accountSpace;
+        Ivorn accountSpace = null;
         try {
           final Config config = SimpleConfig.getSingleton();
           final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
           
           CommunityAccountSpaceResolver accSpaceResolver = new CommunityAccountSpaceResolver(new URL(endpoint));
           accountSpace = accSpaceResolver.resolve(ivorn);
+          
+          assert accountSpace != null : "Account Space should not be null";
         }
-        catch(MalformedURLException e) {
-        }
-        catch(CommunityPolicyException e) {
-        }
-        catch(CommunityServiceException e) {
-        }
-        catch(CommunityResolverException e) {
-        }
-        catch(CommunityIdentifierException e) {
-        }
-        catch(RegistryException e) {
+        catch(Exception e) {
+          accountSpace = null;
+          
+          throw new LoginException("Failed to resolve account space for <" + ivorn.toString() + ">", e);
         }
 
         // We pass the tests so set the current account info in our session.
@@ -244,7 +239,7 @@ public final class LoginAction extends AbstractAction {
         session.setAttribute(
             SessionKeys.COMMUNITY_NAME,
             CommunityConfig.getCommunityName());
-        session.setAttribute(SessionKeys.IVORN, ivorn);
+        session.setAttribute(SessionKeys.IVORN, accountSpace);
             
         session.setAttribute("community_authority",community);
         //
@@ -298,6 +293,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.30  2004/10/22 14:40:22  gps
+ * - storing account space IVORN
+ *
  * Revision 1.29  2004/10/05 14:32:55  gps
  * - myspace end point changes
  *
