@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.13 2004/11/11 23:23:29 mch Exp $
+ * $Id: ServletHelper.java,v 1.14 2004/11/12 10:44:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -120,7 +120,9 @@ public class ServletHelper
             }
          }
          else {
-            throw new IllegalArgumentException("Bad Target; TargetResponse not 'true' and TargetURI not set");
+            //throw new IllegalArgumentException("Bad Target; TargetResponse not 'true' and TargetURI not set");
+            //assume targetresponse true (for things like cone searches)
+            tableSpec.setTarget(null);
          }
       }
       
@@ -273,6 +275,7 @@ public class ServletHelper
       return exceptionAsHtmlPage(title, th, "");
    }
 }
+
 
 
 

@@ -37,7 +37,7 @@
   <servlet>
     <servlet-name>SubmitCone</servlet-name>
     <description>Servlet for submitting simple (NVO compatible) cone searches via POST or GET</description>
-    <servlet-class>org.astrogrid.datacenter.servlet.SubmitCone</servlet-class>
+    <servlet-class>org.astrogrid.datacenter.cone.SubmitCone</servlet-class>
   </servlet>
 
   <servlet>

@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeResources.java,v 1.1 2004/11/11 23:23:29 mch Exp $
+ * $Id: NvoConeResources.java,v 1.2 2004/11/12 10:44:54 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,49 +7,143 @@
 package org.astrogrid.datacenter.queriers.nvocone;
 
 import java.io.IOException;
-import java.net.URL;
-import org.astrogrid.community.Account;
+import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.impl.cds.vizier.VizierWavelength;
+import org.astrogrid.datacenter.metadata.VoDescriptionServer;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.VotableInResults;
-import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.condition.CircleCondition;
-import org.astrogrid.datacenter.query.condition.Condition;
-import org.astrogrid.datacenter.query.condition.Function;
+import org.astrogrid.datacenter.service.ServletHelper;
 
 /**
  * The National Virtual Observatory, an American effort, defined a simple
  * cone search service:
  * @see http://www.us-vo.org/metadata/conesearch/
  * <p>
- * This plugin gives us the capability to query such datacenters
+ * This resource
+ * plugin returns details for a PAL service that proxies to these cone searches
  * <p>
- * Cunning plan - there is no real need for this plugin to connect to the URL
- * unless it needs to stream the results back to the front end.  The URL can
- * just be given to the StoreClient to connect to.  No status info though...
  *
  * @author M Hill
  */
 
 public class NvoConeResources implements VoResourcePlugin {
    
+   private static String[] cache = null;
+   
    /**
     * Returns an array of VOResource elements of the metadata.  Returns a string (rather than
     * DOM element)
     * so that we can combine them easily; some DOMs do not mix well.
     */
-   public String[] getVoResources() throws IOException {
-      // TODO
-      return null;
+   public synchronized String[] getVoResources() throws IOException {
+      if (cache == null) {
+         cache = new String[] { getQueryable(), getRdbmsResource() };
+      }
+      
+      return cache;
    }
+   
+   
+   /**
+    * Returns Queryable, which describes the way the query can be built.
+    */
+   public String getQueryable() throws IOException {
+         String resource =
+         "<Resource xsi:type='Queryable'>\n"+
+              "<Identifier>"+
+                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY)+"</AuthorityID>"+
+                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+"/queryable</ResourceKey>"+
+              "</Identifier>\n"+
+              "<Scope>";
+
+      //add scope - tables available
+      String[] tables = NvoConePlugin.getTables();
+      
+      for (int i = 0; i < tables.length; i++) {
+         resource = resource + "<Table><Name>"+tables[i]+"</Name>"+
+              "<ForceFlat>Intersection</ForceFlat>\n"+
+              "<Field name='RA' optional='false' datatype='double'>"+
+                  "<Description>RA of search center </Description>"+
+                  "<Unit>deg</Unit>"+
+                  "<UCD>POS_RA_MAIN</UCD>"+
+              "</Field>\n"+
+              "<Field name='DEC' optional='false' datatype='double'>"+
+                  "<Description>DEC of search center </Description>"+
+                  "<Unit>deg</Unit>"+
+                  "<UCD>POS_DEC_MAIN</UCD>"+
+              "</Field>\n"+
+              "<Field name='Radius' optional='false' datatype='varchar'>"+
+                  "<Description>Radius of search from target or RA/DEC</Description>"+
+                  "<Unit>deg</Unit>"+
+              "</Field>\n"+
+            "<Table>";
+      }
+      
+      resource = resource +
+              "</Scope>"+
+              "<Functions><Function>CIRCLE</Function></Functions>\n"+
+              "<Formats><Format>VOTABLE</Format><Format>HTML</Format><Format>CSV</Format></Formats>\n"+
+              "<SkyNodeInterface version='0.7.4'>"+
+                  "<AccessURL>"+ServletHelper.getUrlStem()+"/services/SkyNode074</AccessURL>"+
+              "</SkyNodeInterface>\n"+
+              "<AstroGridInterface version='0.6'>"+
+                  "<AccessURL>"+ServletHelper.getUrlStem()+"/services/AxisDataService06</AccessURL>"+
+              "</AstroGridInterface>\n"+
+            "</Resource>\n";
+         
+         return resource;
+   }
+   
+   /**
+    * Returns RdbmsResource, for the portal query builder until QUeryable is settled
+    */
+   public String getRdbmsResource() throws IOException {
+         String resource =
+            "<Resource xsi:type='RdbmsMetadata'>\n"+
+              "<Identifier>"+
+                  "<AuthorityID>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.AUTHID_KEY)+"</AuthorityID>"+
+                  "<ResourceKey>"+SimpleConfig.getSingleton().getString(VoDescriptionServer.RESKEY_KEY)+"/rdbms</ResourceKey>"+
+              "</Identifier>";
+      
+      //add scope - tables available
+      String[] tables = NvoConePlugin.getTables();
+
+      for (int i = 0; i < tables.length; i++) {
+         resource = resource + "<Table><Name>"+tables[i]+"</Name>"+
+                  "<Column>"+
+                     "<Name>RA</Name>"+
+                     "<Unit>deg</Unit>"+
+                     "<Description>RA of center point to search</Description>"+
+                  "</Column>\n"+
+                  "<Column>"+
+                     "<Name>DEC</Name>"+
+                     "<Unit>deg</Unit>"+
+                     "<Description>DEC of center point to search</Description>"+
+                  "</Column>\n"+
+                  "<Column>"+
+                     "<Name>Radius</Name>"+
+                     "<Unit>deg</Unit>"+
+                     "<Description>Radius around named target to look in</Description>"+
+                  "</Column>\n"+
+               "</Table>\n";
+      }
+
+      resource = resource +
+            "<Functions><Function>CIRCLE</Function></Functions>\n"+
+            "</Resource>\n";
+      
+      return resource;
+
+   }
+   
    
    
 }
 
 /*
 $Log: NvoConeResources.java,v $
+Revision 1.2  2004/11/12 10:44:54  mch
+More resources, siap stuff, ssap stuff, SSS
+
 Revision 1.1  2004/11/11 23:23:29  mch
 Prepared framework for SSAP and SIAP
 
@@ -76,5 +170,6 @@ Completed the askQuery
 
 
 */
+
 
 

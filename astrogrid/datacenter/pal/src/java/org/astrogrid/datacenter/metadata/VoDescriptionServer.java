@@ -1,11 +1,12 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.11 2004/11/09 17:42:22 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.12 2004/11/12 10:44:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.metadata;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -20,7 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.DsaDomHelper;
+import org.astrogrid.datacenter.cone.ConeResourceServer;
 import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.datacenter.service.skynode.v074.SkyNodeResourceServer;
+import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.io.xml.XmlTagPrinter;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -200,23 +204,38 @@ public class VoDescriptionServer {
       //start the vodescription document
       StringBuffer vod = new StringBuffer();
       vod.append(VODESCRIPTION_ELEMENT+"\n");
-
+      boolean ceaDone = false; //backwards compatiblity marker to see if CeaResource has been done
+      
       //loop through plugins adding each one's list of resources
       for (int p = 0; p < plugins.length; p++) {
          //make plugin
          VoResourcePlugin plugin = createPlugin(plugins[p].toString());
          //get resources from plugin
-         String[] voResources = plugin.getVoResources();
-         //add to document
-         for (int r = 0; r < voResources.length; r++) {
-            vod.append(voResources[r]);
-         }
+         addResources(vod, plugin);
+         
+         if (plugin instanceof CeaResourceServer) { ceaDone = true; }
       }
 
+      //add the standard ones - cea, cone etc
+      if (!ceaDone) { addResources(vod, new CeaResourceServer()); }
+      addResources(vod, new ConeResourceServer());
+      addResources(vod, new SkyNodeResourceServer());
+      
       //finish vod element
       vod.append(VODESCRIPTION_ELEMENT_END);
 
       return vod.toString();
+   }
+
+   /** Convenience routine for the above to load the resources from the given plugin
+    * to the given StringBuffer */
+   private static void addResources(StringBuffer b, VoResourcePlugin plugin) throws IOException {
+      String[] voResources = plugin.getVoResources();
+      //add to document
+      for (int r = 0; r < voResources.length; r++) {
+         b.append(voResources[r]);
+      }
+      return;
    }
 
    /**
@@ -262,7 +281,7 @@ public class VoDescriptionServer {
    }
    
    /** Adds an Identifier tag to the given XmlPrinter */
-   public static void addIdentifier(XmlTagPrinter parent, String resourceKeyEnd) throws IOException {
+   public static void writeIdentifier(XmlTagPrinter parent, String resourceKeyEnd) throws IOException {
       XmlTagPrinter identifier = parent.newTag("Identifier");
       identifier.writeTag("AuthorityID", SimpleConfig.getSingleton().getString(AUTHID_KEY));
       identifier.writeTag("ResourceKey", SimpleConfig.getSingleton().getString(RESKEY_KEY)+resourceKeyEnd);
@@ -292,7 +311,28 @@ public class VoDescriptionServer {
       contact.writeTag("Email", SimpleConfig.getSingleton().getString("datacenter.contact.email",""));
       contact.writeTag("Date", SimpleConfig.getSingleton().getString("datacenter.contact.date",""));
    }
+   
+   public static void appendSummary(StringBuffer buffer) throws IOException {
+      StringWriter sw = new StringWriter();
+      XmlPrinter xp = new XmlPrinter(sw, false);
+      writeSummary(xp);
+      buffer.append(sw.toString());
+   }
 
+   public static void appendIdentifier(StringBuffer buffer, String resourceKeyEnd) throws IOException {
+      StringWriter sw = new StringWriter();
+      XmlPrinter xp = new XmlPrinter(sw, false);
+      writeIdentifier(xp, resourceKeyEnd);
+      buffer.append(sw.toString());
+   }
+
+   public static void appendCuration(StringBuffer buffer) throws IOException {
+      StringWriter sw = new StringWriter();
+      XmlPrinter xp = new XmlPrinter(sw, false);
+      writeCuration(xp);
+      buffer.append(sw.toString());
+   }
+   
    /** Checks that the identifier elements are there and set to the local values,
     * creating and setting if not.  The given resourceKeyEnd is appended to the
     datacenter's resourceKey to give the appropriate full resource key */

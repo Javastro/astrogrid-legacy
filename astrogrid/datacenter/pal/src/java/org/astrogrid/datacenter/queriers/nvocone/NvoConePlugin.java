@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConePlugin.java,v 1.5 2004/11/11 23:23:29 mch Exp $
+ * $Id: NvoConePlugin.java,v 1.6 2004/11/12 10:44:54 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -8,25 +8,26 @@ package org.astrogrid.datacenter.queriers.nvocone;
 
 import java.io.IOException;
 import java.net.URL;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.impl.cds.KeywordMaker;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.condition.CircleCondition;
-import org.astrogrid.datacenter.query.condition.Condition;
-import org.astrogrid.datacenter.query.condition.Function;
+import org.astrogrid.datacenter.sky.Angle;
 
 /**
  * The National Virtual Observatory, an American effort, defined a simple
  * cone search service:
  * @see http://www.us-vo.org/metadata/conesearch/
  * <p>
- * This plugin gives us the capability to query such datacenters
+ * This plugin gives us the capability to query such datacenters by mapping table
+ * names to the URLs.
  * <p>
  * Cunning plan - there is no real need for this plugin to connect to the URL
  * unless it needs to stream the results back to the front end.  The URL can
@@ -38,48 +39,73 @@ import org.astrogrid.datacenter.query.condition.Function;
 public class NvoConePlugin extends DefaultPlugin
 {
 
-   /** base url to service */
-   protected String serverUrl = null;
+   /** index of table names and the corresponding cone search */
+   private static Hashtable tableUrls = null;
 
+   /** populates the tableUrls with virtual table names and corresponding URLs.
+    * At the moment this is hardwired, but should be loaded from config or even
+    * better got from the registry. @see http://nvo.stsci.edu/voregistry/QueryRegistry.aspx */
+   public static synchronized void initialise() {
+      if (tableUrls != null) {
+         tableUrls.put("VIRTUALSKY_MESSIER", "http://virtualsky.org/servlet/cover?CAT=messier");
+         tableUrls.put("COPERNICUS", "http://archive.stsci.edu/copernicus/search.php?");
+         tableUrls.put("HIPPARCOS", "http://chart.stsci.edu/GSCVO/HIPVO.jsp?");
+      }
+   }
+   
+   /** returns the list of virtual tables that correspond to the services */
+   public static String[] getTables() {
+      if (tableUrls == null) initialise();
+      Vector tables = new Vector();
+      Enumeration keys = tableUrls.keys();
+      while (keys.hasMoreElements()) {
+         Object key = keys.nextElement();
+         tables.add(tableUrls.get(key));
+      }
+      return (String[]) tables.toArray(new String[] {} );
+   }
+   
    /**
-    * Makes the URL required to talk to the server
+    * Sends the query to the nvo cone search.  NB this routes the results through
+    * this server, which is not necesssarily the best thing.  Ideally the URL should
+    * be passed to the storepoint to upload directly.
     */
-   public URL makeUrl(CircleCondition cone) throws IOException
-   {
-      String queryUrl = serverUrl;
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+
+      if (tableUrls == null) initialise();
+
+      KeywordMaker maker = new KeywordMaker();
+      maker.makeKeywords(query);
+      
+      Angle ra = Angle.parseAngle(maker.getRequiredValue(maker.RA_KEYWORD).toString());
+      Angle dec = Angle.parseAngle(maker.getRequiredValue(maker.DEC_KEYWORD).toString());
+      Angle radius = Angle.parseAngle(maker.getRequiredValue(maker.RADIUS_KEYWORD).toString());
+
+      String[] tables = query.getScope();
+      if (tables.length>1) {
+         throw new DatacenterException("Datacenters can only proxy to one NVO cone search at a time; just give one table in the FROM");
+      }
+      if (tables.length==0) {
+         throw new DatacenterException("No table given in scope; check the metadata for valid tables");
+      }
+      
+      String queryUrl = tableUrls.get(tables[0]).toString();
+      if (queryUrl == null) {
+         throw new DatacenterException("Table "+tables[0]+" is unknown - check the metadata for valid tables");
+      }
       
       //add query stuff - there might already be query stuff in the base url
-      if (serverUrl.indexOf("?")>-1) {
+      if (queryUrl.indexOf("?")>-1) {
          queryUrl = queryUrl + "&";
       }
       else {
          queryUrl = queryUrl + "?";
       }
       
-      return new URL(queryUrl+"RA="+cone.getRa()+"&DEC="+cone.getDec()+"&SR="+cone.getRadius());
-   }
-   
-   
-   /**
-    * Sends the query to the nvo cone search.  NB this routes the results through
-    * this server, which is not necesssarily the best thing.  Ho hum.
-    */
-   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+      URL url = new URL(queryUrl+"RA="+ra.asDegrees()+"&DEC="+dec.asDegrees()+"&SR="+radius.asDegrees());
 
-      querier.setStatus(new QuerierQuerying(querier.getStatus()));
-      
-      Condition coneFunc = query.getCriteria();
-      
-      //check that the query is simple and only a cone search
-      if (!(coneFunc instanceof Function) ||
-           !( ((Function) coneFunc).getName().equals("CIRCLE"))) {
-         throw new QueryException("Only simple circle criteria are available on NVO cone search catalogues.  Specify one condition that is a circle function");
-      }
-
-      CircleCondition circle = CircleCondition.makeCircle( (Function) coneFunc );
-      
-      URL url = makeUrl(circle);
-      
       //start query & pick up handle to results
       VotableInResults results = new VotableInResults(querier, url.openStream());
 
@@ -97,6 +123,9 @@ public class NvoConePlugin extends DefaultPlugin
 
 /*
 $Log: NvoConePlugin.java,v $
+Revision 1.6  2004/11/12 10:44:54  mch
+More resources, siap stuff, ssap stuff, SSS
+
 Revision 1.5  2004/11/11 23:23:29  mch
 Prepared framework for SSAP and SIAP
 
@@ -123,5 +152,6 @@ Completed the askQuery
 
 
 */
+
 
 

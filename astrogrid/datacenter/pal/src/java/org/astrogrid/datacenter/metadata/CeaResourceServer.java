@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResourceServer.java,v 1.8 2004/11/05 19:12:59 mch Exp $
+ * $Id: CeaResourceServer.java,v 1.9 2004/11/12 10:44:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -98,7 +98,7 @@ public class CeaResourceServer implements VoResourcePlugin {
                "status='active'",
                "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
-      VoDescriptionServer.addIdentifier(appType, "/ceaApplication");
+      VoDescriptionServer.writeIdentifier(appType, "/ceaApplication");
 
       VoDescriptionServer.writeSummary(appType);
       VoDescriptionServer.writeCuration(appType);
@@ -127,7 +127,7 @@ public class CeaResourceServer implements VoResourcePlugin {
                "status='active'",
                "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
-      VoDescriptionServer.addIdentifier(servType , "/ceaService");
+      VoDescriptionServer.writeIdentifier(servType , "/ceaService");
 
       VoDescriptionServer.writeSummary(servType );
       VoDescriptionServer.writeCuration(servType );

@@ -1,4 +1,4 @@
-/*$Id: VizierResourcePlugin.java,v 1.7 2004/11/11 20:42:50 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.8 2004/11/12 10:44:54 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,10 @@ import org.astrogrid.datacenter.service.ServletHelper;
 /** Returns Registry resources for Vizier proxy service.  Because of the size
  * of Vizier, the resource documents are cached, but only in memory so that
  * we get a refresh if we restart the service.
+ * <p>
+ * The resources here are separately cached so we don't keep hitting VizieR - I
+ * don't know if this is a good thing, it just means this service ahs to be restarted
+ * if Vizier adds a new catalogue
  */
 public class VizierResourcePlugin implements VoResourcePlugin {
    
@@ -176,6 +180,9 @@ public class VizierResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: VizierResourcePlugin.java,v $
+ Revision 1.8  2004/11/12 10:44:54  mch
+ More resources, siap stuff, ssap stuff, SSS
+
  Revision 1.7  2004/11/11 20:42:50  mch
  Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
 
