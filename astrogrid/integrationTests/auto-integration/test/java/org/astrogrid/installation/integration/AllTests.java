@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/04/15 12:12:28 nw Exp $
+/*$Id: AllTests.java,v 1.1 2004/04/15 12:12:28 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.integration;
+package org.astrogrid.installation.integration;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -22,12 +22,10 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Integration Tests");
+        TestSuite suite = new TestSuite("Test for org.astrogrid.installation.integration");
         //$JUnit-BEGIN$
+        suite.addTest(InstallationTest.suite());
         //$JUnit-END$
-        suite.addTest(org.astrogrid.installation.integration.AllTests.suite());
-        suite.addTest(org.astrogrid.registry.integration.AllTests.suite());
-        suite.addTest(org.astrogrid.workflow.integration.AllTests.suite());
         return suite;
     }
 }
@@ -35,10 +33,7 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
-Revision 1.2  2004/04/15 12:12:28  nw
+Revision 1.1  2004/04/15 12:12:28  nw
 testing
-
-Revision 1.1  2004/04/15 11:55:30  nw
-binds everything together
  
 */

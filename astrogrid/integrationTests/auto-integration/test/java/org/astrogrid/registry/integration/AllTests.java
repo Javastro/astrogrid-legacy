@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.1 2004/04/15 11:55:16 nw Exp $
+/*$Id: AllTests.java,v 1.2 2004/04/15 12:12:28 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,7 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.registry.integration");
+        TestSuite suite = new TestSuite("Registry");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(RegistryInstallationTest.class));
         //$JUnit-END$
@@ -33,6 +33,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.2  2004/04/15 12:12:28  nw
+testing
+
 Revision 1.1  2004/04/15 11:55:16  nw
 added registy installation test
  
