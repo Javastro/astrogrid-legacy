@@ -18,6 +18,7 @@
       <item name="mySpace"          href="http://www.astrogrid.org/maven/build/mySpace/index.html"/>
       <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/datacenter/index.html"/>
       <item name="PortalB"          href="http://www.astrogrid.org/maven/build/portalB/index.html"/>
+      <item name="Workflow"          href="http://www.astrogrid.org/maven/build/workflow/index.html"/>
     </menu>
     <menu name="Maven Build Logs">
       <item name="Applications Integration"           href="http://www.astrogrid.org/maven/build/log/maven-build-applications.log"/>
@@ -29,6 +30,7 @@
       <item name="mySpace"          href="http://www.astrogrid.org/maven/build/log/maven-build-mySpace.log"/>
       <item name="DataCenter"       href="http://www.astrogrid.org/maven/build/log/maven-build-datacenter.log"/>
       <item name="PortalB"          href="http://www.astrogrid.org/maven/build/log/maven-build-portalB.log"/>
+      <item name="Workflow"         href="http://www.astrogrid.org/maven/build/log/maven-build-workflow.log"/>
     </menu>
   </body>
 </project>
