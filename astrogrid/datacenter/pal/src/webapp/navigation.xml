@@ -8,6 +8,7 @@
          <!-- <li><a href="WEB-INF/classes/default.properties">Sample Configuration</a> -->
          <li><a href="self-test.html">Installation Test</a>
          <li><a href="fingerprint.jsp">Fingerprint</a>
+         <li><a href="http://grendel12.roe.ac.uk:8080/pal-6df/servlet/AxisServlet">SOAP WSDL</a>
       </ul>
    </div>
    <div id='menuQuery'>
@@ -27,6 +28,7 @@
          <li><a href='index.html'>Index</a>
          <li><a href="serverStatus.jsp">Status</a>
          <li><a href="viewMetadata.jsp">Metadata</a>
+         <li><a href="admin/GetLog?Log=DEBUG">Log</a>
       </ul>
    </div>
 </div>
