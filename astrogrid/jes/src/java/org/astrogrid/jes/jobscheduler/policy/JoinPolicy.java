@@ -1,4 +1,4 @@
-/*$Id: JoinPolicy.java,v 1.2 2004/04/08 14:43:26 nw Exp $
+/*$Id: JoinPolicy.java,v 1.3 2004/04/21 16:39:53 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,8 @@ package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.Policy;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.StepActivityNode;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
@@ -40,53 +42,36 @@ public class JoinPolicy extends AbstractPolicy {
       */
      public ExecutionPhase currentJobStatus(Workflow job) {
          logger.debug("JoinPolicy::currentJobStatus()");
+         ActivityNode node = builder.buildTree(job);
+         ActivityNodeInfo visitor = new ActivityNodeInfo();
+         node.accept(visitor);
+                  
          registerFunctions(job);
          // special case for empty workflow
-         if (job.findXPathValue("//*[jes:isStep()]") == null) {
-             logger.debug("Found no steps - so is already completed");
-             return ExecutionPhase.COMPLETED;
-         }  
-         Iterator i = job.findXPathIterator("//*[jes:isStep()]");
-        
-         boolean runningFound = false;       
-         boolean pendingFound = false;
-         boolean errorFound = false;
-         while (i.hasNext()) {
-             Step step = (Step)i.next();
-             ExecutionPhase s = getLatestExecutionPhase(step,ExecutionPhase.PENDING);
-             if (s.equals(ExecutionPhase.ERROR)) {
-                 logger.debug("found error");
-                 errorFound = true;
-             }
-             if (s.equals(ExecutionPhase.UNKNOWN)) { // bomb out right now.
-                 logger.debug("found unknown - returning immeadiately");
-                 return s;
-             }
-             if (s.equals(ExecutionPhase.RUNNING)) {
-                 logger.debug("found running");
-                 runningFound = true;
-             }
-             if (s.equals(ExecutionPhase.PENDING)) {
-                 logger.debug("found pending");
-                 pendingFound = true;
-             }
-         }
+    if (visitor.stepCount == 0) {
+        logger.debug("empty workflow - so automatically completed");
+        return ExecutionPhase.COMPLETED;
+    }
+    if (visitor.unknownFound) {
+        logger.debug("returning UNKNOWN");
+        return ExecutionPhase.UNKNOWN;
+    }       
+    if (visitor.runningFound) {
+        logger.debug("returning 'RUNNING'");            
+        return ExecutionPhase.RUNNING;
+    }
+    if (visitor.errorFound) {//and no running
+        // see if there's a candidate step with the join condition to recover from this error.
+        if (nextExecutableStep(job) != null) { // not sure if this is quite right, but will do for now.
+            logger.debug("seen error, but possiblility of recovery, returning 'RUNNING'");
+            return ExecutionPhase.RUNNING;
+        } else {
+            logger.debug("seen error, no possibility of recovery, returning 'ERROR'");
+            return ExecutionPhase.ERROR;
+        }
+    }
 
-         if (runningFound) {
-             logger.debug("returning 'RUNNING'");
-             return ExecutionPhase.RUNNING;
-         }
-         if (errorFound) {//and no running
-             // see if there's a candidate step with the join condition to recover from this error.
-             if (nextExecutableStep(job) != null) { // not sure if this is quite right, but will do for now.
-                 logger.debug("seen error, but possiblility of recovery, returning 'RUNNING'");
-                 return ExecutionPhase.RUNNING;
-             } else {
-                 logger.debug("seen error, no possibility of recovery, returning 'ERROR'");
-                 return ExecutionPhase.ERROR;
-             }
-         }
-         if ( pendingFound) { // and no running, or error...
+         if ( visitor.pendingFound) { // and no running, or error...
              logger.debug("returning 'PENDING'");
              return ExecutionPhase.PENDING;
          } 
@@ -98,41 +83,54 @@ public class JoinPolicy extends AbstractPolicy {
      /** Returns a step that either has no execution record, or an execution record that has pending status.
       * @see org.astrogrid.jes.jobscheduler.Policy#nextExecutableStep(org.astrogrid.workflow.beans.v1.Workflow)
       */
-     public Step nextExecutableStep(Workflow job) {
-         logger.debug("JoinPolicy::nextExecutableStep()");
-         registerFunctions(job);
 
-         Iterator i = job.findXPathIterator("//*[jes:isStep()]"); // returns flattened list of all steps - we are relying on the order these are returned in really.
-         boolean justSeenComplete = true; // necessary, special case for first step.
-         boolean justSeenError = false;
-         while (i.hasNext()) {
-             Step s = (Step)i.next();
-             ExecutionPhase status = getLatestExecutionPhase(s,ExecutionPhase.PENDING);
-             if (status.equals(ExecutionPhase.PENDING)) {//its a candidate             
-                 if (justSeenComplete && ! s.getJoinCondition().equals(JoinType.FALSE)) { // think this is right.
-                     logger.debug("found candidate after success");
-                     return s;
-                 } 
-                 if (justSeenError && ! s.getJoinCondition().equals(JoinType.TRUE)) {
-                     logger.debug("found candidate after error ");
-                     return s;
-                 }
-             } else if (status.equals(ExecutionPhase.COMPLETED)) {
-                 logger.debug("found completed");
-                 justSeenComplete = true;
-                 justSeenError = false;
-             } else if (status.equals(ExecutionPhase.ERROR)) {
-                 logger.debug("found error");
-                 justSeenComplete = false;
-                 justSeenError = true;
-             } else {
-                 justSeenComplete = false;
-                 justSeenError = true;
-             }                 
-         }
-         logger.debug("no candidate steps found");
-         return null;
-     }
+    public Step nextExecutableStep(Workflow job) {
+        logger.debug("LinearPolicy::nextExecutableStep");
+        ActivityNode node = builder.buildTree(job);
+        FindNextExecutableStepVisitor visitor = new FindNextExecutableStepVisitor();
+        node.accept(visitor);
+        return visitor.result;
+
+    }
+
+    
+    private static class FindNextExecutableStepVisitor extends BaseActivityNodeVisitor {
+
+        private boolean justSeenComplete = true;
+        private boolean justSeenError = false;
+        Step result = null;
+        
+        public void visit(StepActivityNode node) {
+            if (result != null) { // found one already. leave it.
+                return;
+            }
+            Step s = node.getStep();
+
+            ExecutionPhase status = getLatestExecutionPhase(s,ExecutionPhase.PENDING);
+            if (status.equals(ExecutionPhase.PENDING)) {//its a candidate             
+                if (justSeenComplete && ! s.getJoinCondition().equals(JoinType.FALSE)) { // think this is right.
+                    logger.debug("found candidate after success");
+                    result = s;
+                } 
+                if (justSeenError && ! s.getJoinCondition().equals(JoinType.TRUE)) {
+                    logger.debug("found candidate after error ");
+                    result = s;
+                }
+            } else if (status.equals(ExecutionPhase.COMPLETED)) {
+                logger.debug("found completed");
+                justSeenComplete = true;
+                justSeenError = false;
+            } else if (status.equals(ExecutionPhase.ERROR)) {
+                logger.debug("found error");
+                justSeenComplete = false;
+                justSeenError = true;
+            } else {
+                justSeenComplete = false;
+                justSeenError = true;
+            }                 
+                                                
+       }
+    }     
     
 
 }
@@ -140,6 +138,9 @@ public class JoinPolicy extends AbstractPolicy {
 
 /* 
 $Log: JoinPolicy.java,v $
+Revision 1.3  2004/04/21 16:39:53  nw
+rewrote policy implementations to use object models
+
 Revision 1.2  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

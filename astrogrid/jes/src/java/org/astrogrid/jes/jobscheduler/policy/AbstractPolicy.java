@@ -1,4 +1,4 @@
-/*$Id: AbstractPolicy.java,v 1.4 2004/03/18 10:54:52 nw Exp $
+/*$Id: AbstractPolicy.java,v 1.5 2004/04/21 16:39:53 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.jes.jobscheduler.policy;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNodeBuilder;
 import org.astrogrid.jes.util.JesFunctions;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -34,7 +35,9 @@ public abstract class AbstractPolicy extends SimpleComponentDescriptor implement
      */
     public AbstractPolicy() {
         super();
+        builder = new ActivityNodeBuilder();
     }
+    protected final ActivityNodeBuilder builder;
 
     /** add a set of functions to the jxpath context for a workflow.
      * <p>
@@ -44,27 +47,16 @@ public abstract class AbstractPolicy extends SimpleComponentDescriptor implement
         wf.addFunctions(JesFunctions.FUNCTIONS);
     }
 
-    /** access the phase value for the latest execution record in the step
-     * <p>
-     * if no execution record present, return defaultValue
-     * @param s step to examine
-     * @param defaultValue status to return when no execution records found
-     * @return execution phase.
-     */
-    protected ExecutionPhase getLatestExecutionPhase(Step s, ExecutionPhase defaultValue) {
-        int count = s.getStepExecutionRecordCount();
-        if (count == 0) {
-            return defaultValue;
-        } else {
-            return s.getStepExecutionRecord(count-1).getStatus();
-        }
-    }
+
 
 }
 
 
 /* 
 $Log: AbstractPolicy.java,v $
+Revision 1.5  2004/04/21 16:39:53  nw
+rewrote policy implementations to use object models
+
 Revision 1.4  2004/03/18 10:54:52  nw
 factored helper method into base class
 

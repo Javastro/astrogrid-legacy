@@ -1,4 +1,4 @@
-/*$Id: FlowPolicy.java,v 1.2 2004/04/08 14:43:26 nw Exp $
+/*$Id: FlowPolicy.java,v 1.3 2004/04/21 16:39:53 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,9 @@ package org.astrogrid.jes.jobscheduler.policy;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.types.JoinType;
+
+import java.util.Iterator;
 
 /** Policy implementation that executes flows in parallel, and respects join conditions.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2004
@@ -26,28 +29,30 @@ public class FlowPolicy extends AbstractPolicy {
         super();
            logger.info("Creating Flow Policy");
            this.name =  "FlowPolicy";
-           this.description = "Executes job steps in a parallel manner where possible. respects join conditions.";       
+           this.description = "Executes job steps in a parallel manner where possible. ignores join conditions.";       
  
     }
-    /**
-     * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
-     */
-    public ExecutionPhase currentJobStatus(Workflow job) {
-        logger.error("Flow Policy: unimplemented");
-        return null;
-    }
-    /**
-     * @see org.astrogrid.jes.jobscheduler.Policy#nextExecutableStep(org.astrogrid.workflow.beans.v1.Workflow)
-     */
-    public Step nextExecutableStep(Workflow job) {
-        logger.error("Flow Policy: unimplemented");
-        return null;
-    }
+    /** 
+    * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
+    */
+   public ExecutionPhase currentJobStatus(Workflow job) {
+       return null;
+  }      
+
+   /** Returns a step that either has no execution record, or an execution record that has pending status.
+    * @see org.astrogrid.jes.jobscheduler.Policy#nextExecutableStep(org.astrogrid.workflow.beans.v1.Workflow)
+    */
+   public Step nextExecutableStep(Workflow job) {
+       return null;
+   }
 }
 
 
 /* 
 $Log: FlowPolicy.java,v $
+Revision 1.3  2004/04/21 16:39:53  nw
+rewrote policy implementations to use object models
+
 Revision 1.2  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

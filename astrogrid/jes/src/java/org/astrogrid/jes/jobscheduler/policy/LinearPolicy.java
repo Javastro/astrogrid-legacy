@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.8 2004/04/08 14:43:26 nw Exp $
+/*$Id: LinearPolicy.java,v 1.9 2004/04/21 16:39:53 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,11 @@ package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.Policy;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNodeVisitor;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.FlowActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.SequenceActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.StepActivityNode;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
@@ -39,40 +44,26 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
      */
     public ExecutionPhase currentJobStatus(Workflow job) {
         logger.debug("LinearPolicy::currentJobStatus()");
-        registerFunctions(job);
+ 
+        ActivityNode node = builder.buildTree(job);
+        ActivityNodeInfo visitor = new ActivityNodeInfo();
+        node.accept(visitor);
         // special case for empty workflow
-        if (job.findXPathValue("//*[jes:isStep()]") == null) {
+        if (visitor.stepCount == 0) {
             logger.debug("empty workflow - so automatically completed");
             return ExecutionPhase.COMPLETED;
-        }  
-        Iterator i = job.findXPathIterator("//*[jes:isStep()]");
-        
-        boolean runningFound = false;       
-        boolean pendingFound = false;
-        boolean noStatusFound = true;
-        while (i.hasNext()) {
-            noStatusFound = false;
-            Step step = (Step)i.next();
-            ExecutionPhase s = getLatestExecutionPhase(step,ExecutionPhase.PENDING);
-            if (s.equals(ExecutionPhase.ERROR) || s.equals(ExecutionPhase.UNKNOWN)) {
-                logger.debug("saw error or unknown - returning immediately");
-                return s;
-            }
-            if (s.equals(ExecutionPhase.RUNNING)) {
-                logger.debug("saw running");
-                runningFound = true;
-            }
-            if (s.equals(ExecutionPhase.PENDING)) {
-                logger.debug("saw pending");
-                pendingFound = true;
-            }
         }
-
-        if (runningFound) {
+        if (visitor.errorFound) {
+            return ExecutionPhase.ERROR;
+        }
+        if (visitor.unknownFound) {
+            return ExecutionPhase.UNKNOWN;
+        }           
+        if (visitor.runningFound) {
             logger.debug("returning 'RUNNING'");            
             return ExecutionPhase.RUNNING;
         }
-        if (noStatusFound || pendingFound) { // and no running, or error...
+        if (visitor.noStatusFound || visitor.pendingFound) { // and no running, or error...
             logger.debug("returning 'PENDING'");
             return ExecutionPhase.PENDING;
         } 
@@ -86,27 +77,36 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
      */
     public Step nextExecutableStep(Workflow job) {
         logger.debug("LinearPolicy::nextExecutableStep");
-        registerFunctions(job);
+        ActivityNode node = builder.buildTree(job);
+        FindNextExecutableStepVisitor visitor = new FindNextExecutableStepVisitor();
+        node.accept(visitor);
+        return visitor.result;
 
-        Iterator i = job.findXPathIterator("//*[jes:isStep()]"); // returns flattened list of all steps - we are relying on the order these are returned in really.
-        boolean justSeenComplete = true; // necessary, special case for first step.
-        while (i.hasNext()) {
-            Step s = (Step)i.next();
-            ExecutionPhase phase = getLatestExecutionPhase(s,ExecutionPhase.PENDING);
-                if (justSeenComplete && phase.equals(ExecutionPhase.PENDING)) {
-                    logger.debug("found candidate");
-                    return s;                
-                }
-                if (phase.equals(ExecutionPhase.COMPLETED)) {
-                    justSeenComplete = true;
-                } else {
-                    justSeenComplete = false;
-                }         
-          }       
-        logger.debug("no executable steps found");
-        return null;
     }
+    
+    private static class FindNextExecutableStepVisitor extends BaseActivityNodeVisitor {
 
+        private boolean justSeenComplete = true;
+        Step result = null;
+        
+        public void visit(StepActivityNode node) {
+            if (result != null) { // found one already. leave it.
+                return;
+            }
+            Step s = node.getStep();
+            ExecutionPhase phase = getLatestExecutionPhase(s,ExecutionPhase.PENDING);
+            if (justSeenComplete && phase.equals(ExecutionPhase.PENDING)) {
+                        logger.debug("found candidate");
+                        result = s;                
+            }
+            if (phase.equals(ExecutionPhase.COMPLETED)) {
+                        justSeenComplete = true;
+            } else {
+                        justSeenComplete = false;
+            }                             
+            logger.debug("no executable steps found");                   
+       }
+    }
     
    
     
@@ -115,6 +115,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.9  2004/04/21 16:39:53  nw
+rewrote policy implementations to use object models
+
 Revision 1.8  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 
