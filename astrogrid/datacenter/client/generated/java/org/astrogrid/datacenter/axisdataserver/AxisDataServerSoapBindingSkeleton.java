@@ -42,6 +42,17 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
         }
         ((java.util.List)_myOperations.get("getMetadata")).add(_oper);
         _params = new org.apache.axis.description.ParameterDesc [] {
+            new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getLanguageInfo"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "anyType"), java.lang.Object.class, false, false), 
+        };
+        _oper = new org.apache.axis.description.OperationDesc("getLanguageInfo", _params, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "language[unbounded]"));
+        _oper.setReturnType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "language"));
+        _oper.setElementQName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "getLanguageInfo"));
+        _myOperationsList.add(_oper);
+        if (_myOperations.get("getLanguageInfo") == null) {
+            _myOperations.put("getLanguageInfo", new java.util.ArrayList());
+        }
+        ((java.util.List)_myOperations.get("getLanguageInfo")).add(_oper);
+        _params = new org.apache.axis.description.ParameterDesc [] {
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("", "resultsFormat"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, false, false), 
             new org.apache.axis.description.ParameterDesc(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.apache.axis.description.ParameterDesc.IN, new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "query"), org.astrogrid.datacenter.axisdataserver.types._query.class, false, false), 
         };
@@ -217,6 +228,12 @@ public class AxisDataServerSoapBindingSkeleton implements org.astrogrid.datacent
     public java.lang.String getMetadata(java.lang.Object parameters) throws java.rmi.RemoteException
     {
         java.lang.String ret = impl.getMetadata(parameters);
+        return ret;
+    }
+
+    public org.astrogrid.datacenter.axisdataserver.types._language[] getLanguageInfo(java.lang.Object parameters) throws java.rmi.RemoteException
+    {
+        org.astrogrid.datacenter.axisdataserver.types._language[] ret = impl.getLanguageInfo(parameters);
         return ret;
     }
 

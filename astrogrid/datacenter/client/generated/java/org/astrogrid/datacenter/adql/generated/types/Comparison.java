@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Comparison.java,v 1.7 2003/11/26 16:22:19 nw Exp $
+ * $Id: Comparison.java,v 1.8 2003/11/26 17:01:37 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated.types;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class Comparison.
  * 
- * @version $Revision: 1.7 $ $Date: 2003/11/26 16:22:19 $
+ * @version $Revision: 1.8 $ $Date: 2003/11/26 17:01:37 $
  */
 public class Comparison implements java.io.Serializable {
 

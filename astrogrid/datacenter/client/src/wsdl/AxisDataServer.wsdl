@@ -62,6 +62,13 @@
           <wsdl:part element="types:getMetadataResponse" name="parameters" />
     </wsdl:message>
 
+    <wsdl:message name="getLanguageInfo">
+    	<wsdl:part element="types:getLanguageInfo" name="parameters" />
+    </wsdl:message>
+    <wsdl:message name="getLanguageInfoResponse">
+    	<wsdl:part element="types:getLanguageInfoResponse" name="parameters" />
+    </wsdl:message>
+
     <wsdl:message name="doQuery">
         <wsdl:part element="types:doQuery" name="parameters"/>
     </wsdl:message>
@@ -103,7 +110,7 @@
     </wsdl:message>
     <wsdl:message name="abortQueryResponse">
     </wsdl:message>
-    
+
     <wsdl:message name="getStatus">
         <wsdl:part element="types:getStatus" name="parameters" />
     </wsdl:message>
@@ -141,6 +148,11 @@
             <wsdl:input message="getMetadata" name="getMetadata" />
             <wsdl:output message="getMetadataResponse" name="getMetadataResponse" />
         </wsdl:operation>
+
+	<wsdl:operation name="getLanguageInfo">
+		<wsdl:input message="getLanguageInfo" name="getLanguageInfo" />
+		<wsdl:output message="getLanguageInfoResponse" name="getLanguageInfoResponse" />
+	</wsdl:operation>
 
         <wsdl:operation name="doQuery">
             <wsdl:input message="doQuery" name="doQuery"/>
@@ -211,6 +223,15 @@
                 <wsdlsoap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+
+	<wsdl:operation name="getLanguageInfo">
+		<wsdl:input name="getLanguageInfo">
+			<wsdlsoap:body use="literal" />
+		</wsdl:input>
+		<wsdl:output name="getLanguageInfoResponse">
+			<wsdlsoap:body use="literal" />
+		</wsdl:output>
+	</wsdl:operation>
 
           <wsdl:operation name="doQuery">
             <wsdl:input name="doQuery">

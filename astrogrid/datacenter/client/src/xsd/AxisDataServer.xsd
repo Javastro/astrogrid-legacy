@@ -4,8 +4,8 @@
      xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
      xmlns:apachesoap="http://xml.apache.org/xml-soap"
      >
-
         <!--<xsd:import namespace="http://tempuri.org/adql" schemaLocation="ADQLschema.xsd"/>-->
+
             <xsd:element name="getMetadata">
                 <!-- need to find way of expressing a null service -->
             </xsd:element>
@@ -20,13 +20,35 @@
                     </xsd:sequence>
                     </xsd:complexType>
             </xsd:element>
+
+	<xsd:element name="getLanguageInfo">
+		<!-- how do I say no parameters please? -->
+	</xsd:element>
+	<xsd:element name="getLanguageInfoResponse">
+	<xsd:complexType>
+		<xsd:sequence>
+			<xsd:element ref="ns:language" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	</xsd:element>
+
+	<xsd:element name="language" maxOccurs="unbounded">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="namespace" type="xsd:anyURI" />
+				<xsd:element name="schema-location" type="xsd:anyURI" minOccurs="1"/>
+				<xsd:element name="implementing-class" type="xsd:string" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+
 	<!-- thing to hang other attributes off later.. -->
 	<xsd:element name="query">
-		<!-- cant get it / doesn't work - pass outside the query for now as an apachesoap:Element. arse -->
 	  <xsd:complexType>
 	    <xsd:sequence>
 	    	<!--
-	    	<xsd:any processContents="lax" namespace="##other"/>
+	    	<xsd:any processContents="lax" namespace="##other"/> - more correct, but gives an ugly type.
 		-->
 		<xsd:element name="query-body" type="apachesoap:Element" />
 	    </xsd:sequence>
@@ -45,7 +67,6 @@
                     <xsd:sequence>
                         <xsd:element name="resultsFormat" type="xsd:string"/>
                          <xsd:element ref="ns:query"/>
-                        <!--<xsd:element name="src" type="apachesoap:Element" /> temporarily for now -->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -65,7 +86,6 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element ref="ns:query"/>
-                        <!-- <xsd:element name="src" type="apachesoap:Element" />  temporarily for now -->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -74,7 +94,6 @@
                 <xsd:complexType>
                     <xsd:sequence>
                         <xsd:element ref="ns:query" />
-                        <!-- <xsd:element name="src" type="apachesoap:Element" />  temporarily for now -->
                         <xsd:element name="assignedId" type="xsd:string" />
                     </xsd:sequence>
                 </xsd:complexType>
@@ -84,23 +103,20 @@
                 <xsd:complexType>
                     <xsd:sequence>
                     	<xsd:element ref="ns:QueryId" />
-                        <!-- <xsd:element name="getQueryReturn" type="xsd:string"/>-->
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="setResultsDestination">
                 <xsd:complexType>
                     <xsd:sequence>
-                    	<!-- <xsd:element name="queryId" type="xsd:string" />-->
                     	<xsd:element ref="ns:QueryId" />
-                        <xsd:element name="myspaceUrl" type="xsd:anyURI"/><!-- should be a url -->
+                        <xsd:element name="myspaceUrl" type="xsd:anyURI"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="getResultsAndClose">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <!-- <xsd:element name="queryId" type="xsd:string"/> -->
                         <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
@@ -115,7 +131,6 @@
             <xsd:element name="startQuery">
                 <xsd:complexType>
                     <xsd:sequence>
-                   <!--     <xsd:element name="queryId" type="xsd:string"/>-->
                    <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
@@ -123,7 +138,6 @@
             <xsd:element name="abortQuery">
                 <xsd:complexType>
                     <xsd:sequence>
-                 <!--       <xsd:element name="queryId" type="xsd:string" /> -->
                  <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
@@ -131,7 +145,6 @@
             <xsd:element name="getStatus">
                 <xsd:complexType>
                     <xsd:sequence>
-                 <!--       <xsd:element name="queryId" type="xsd:string" /> -->
                  <xsd:element ref="ns:QueryId" />
                     </xsd:sequence>
                 </xsd:complexType>
@@ -146,16 +159,14 @@
             <xsd:element name="registerWebListener">
                    <xsd:complexType>
                        <xsd:sequence>
-                    <!--       <xsd:element name="queryId" type="xsd:string"/> -->
                     <xsd:element ref="ns:QueryId" />
-                           <xsd:element name="url" type="xsd:anyURI" /> <!-- should be url -->
+                           <xsd:element name="url" type="xsd:anyURI" />
                        </xsd:sequence>
                    </xsd:complexType>
             </xsd:element>
             <xsd:element name="registerJobMonitor">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <!-- <xsd:element name="queryId" type="xsd:string" /> -->
                         <xsd:element ref="ns:QueryId" />
                         <xsd:element name="url" type="xsd:anyURI" />
                     </xsd:sequence>

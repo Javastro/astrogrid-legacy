@@ -33,7 +33,29 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test2AxisDataServerDoQuery() throws Exception {
+    public void test2AxisDataServerGetLanguageInfo() throws Exception {
+        org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
+        try {
+            binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
+                          new org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator().getAxisDataServer(serviceURL);
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        assertNotNull("binding is null", binding);
+
+        // Time out after a minute
+        binding.setTimeout(60000);
+
+        // Test operation
+        org.astrogrid.datacenter.axisdataserver.types._language[] value = null;
+        value = binding.getLanguageInfo(new java.lang.String());
+        // TBD - validate results
+    }
+
+    public void test3AxisDataServerDoQuery() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -66,7 +88,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
             // TBD - validate results
     }
 
-    public void test3AxisDataServerMakeQuery() throws Exception {
+    public void test4AxisDataServerMakeQuery() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -99,7 +121,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
             // TBD - validate results
     }
 
-    public void test4AxisDataServerMakeQueryWithId() throws Exception {
+    public void test5AxisDataServerMakeQueryWithId() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -132,7 +154,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
             // TBD - validate results
     }
 
-    public void test5AxisDataServerSetResultsDestination() throws Exception {
+    public void test6AxisDataServerSetResultsDestination() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -153,7 +175,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test6AxisDataServerStartQuery() throws Exception {
+    public void test7AxisDataServerStartQuery() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -174,7 +196,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test7AxisDataServerGetResultsAndClose() throws Exception {
+    public void test8AxisDataServerGetResultsAndClose() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -196,7 +218,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test8AxisDataServerAbortQuery() throws Exception {
+    public void test9AxisDataServerAbortQuery() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -217,7 +239,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test9AxisDataServerGetStatus() throws Exception {
+    public void test10AxisDataServerGetStatus() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -239,7 +261,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test10AxisDataServerRegisterWebListener() throws Exception {
+    public void test11AxisDataServerRegisterWebListener() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)
@@ -260,7 +282,7 @@ public class AxisDataServerServiceTestCase extends junit.framework.TestCase {   
         // TBD - validate results
     }
 
-    public void test11AxisDataServerRegisterJobMonitor() throws Exception {
+    public void test12AxisDataServerRegisterJobMonitor() throws Exception {
         org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub binding;
         try {
             binding = (org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub)

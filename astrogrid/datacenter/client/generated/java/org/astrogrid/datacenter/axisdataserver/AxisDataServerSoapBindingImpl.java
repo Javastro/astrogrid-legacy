@@ -12,6 +12,10 @@ public class AxisDataServerSoapBindingImpl implements org.astrogrid.datacenter.a
         return null;
     }
 
+    public org.astrogrid.datacenter.axisdataserver.types._language[] getLanguageInfo(java.lang.Object parameters) throws java.rmi.RemoteException {
+        return null;
+    }
+
     public java.lang.String doQuery(java.lang.String resultsFormat, org.astrogrid.datacenter.axisdataserver.types._query query) throws java.rmi.RemoteException, java.io.IOException, org.astrogrid.datacenter.query.QueryException, org.xml.sax.SAXException {
         return null;
     }
