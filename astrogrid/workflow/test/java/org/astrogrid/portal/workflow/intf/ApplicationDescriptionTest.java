@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescriptionTest.java,v 1.4 2004/03/17 00:32:36 nw Exp $
+/*$Id: ApplicationDescriptionTest.java,v 1.5 2004/07/01 11:23:37 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -85,7 +85,6 @@ public class ApplicationDescriptionTest extends TestCase {
             ParameterValue paramVal = params[i];
             assertNotNull(paramVal.getName());
             assertNotNull(paramVal.getValue());
-            assertNotNull(paramVal.getType());
             // check we can resolve each paramVal.
             BaseParameterDefinition def = descr.getDefinitionForValue(paramVal,intf);
         }
@@ -115,6 +114,10 @@ public class ApplicationDescriptionTest extends TestCase {
 
 /* 
 $Log: ApplicationDescriptionTest.java,v $
+Revision 1.5  2004/07/01 11:23:37  nw
+removed 'setType' - as parameterValue nolonger has this atrribute.
+part of cea componentization refactoring
+
 Revision 1.4  2004/03/17 00:32:36  nw
 updated to fit with altererd parameter object model
 

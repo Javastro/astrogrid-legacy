@@ -1,4 +1,4 @@
-/*$Id: ApplicationDescription.java,v 1.4 2004/03/17 00:31:51 nw Exp $
+/*$Id: ApplicationDescription.java,v 1.5 2004/07/01 11:23:14 nw Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -139,7 +139,6 @@ public class ApplicationDescription  {
     public ParameterValue createValueFromDefinition(BaseParameterDefinition defn) {
         ParameterValue paramVal = new ParameterValue();
         paramVal.setName(defn.getName());
-        paramVal.setType(defn.getType());
         Object o= defn.getDefaultValue();
         if (o != null) { // work around here.. - extension schema, so there's a hole, where an anynode appears. orsomething.
             if (o instanceof AnyNode) {
@@ -275,6 +274,10 @@ public class ApplicationDescription  {
 
 /* 
 $Log: ApplicationDescription.java,v $
+Revision 1.5  2004/07/01 11:23:14  nw
+removed 'setType' - as parameterValue nolonger has this atrribute.
+part of cea componentization refactoring
+
 Revision 1.4  2004/03/17 00:31:51  nw
 updated to always populate 'value' field of 'parameter' -
 necessary to make the object model schema-valid
