@@ -49,11 +49,12 @@ public class Workflow extends Sequence {
         logger = Logger.getLogger( Workflow.class ) ; 
         
     private static final String
-        ASTROGRIDERROR_= " " ;
+        ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
     static {
         
         try { 
+            // Loads the workflow config file and messages...
             WKF.getInstance().checkPropertiesLoaded() ;
         }
         catch ( AstroGridException agex ) {
@@ -64,10 +65,24 @@ public class Workflow extends Sequence {
         
         
     public static Workflow createWorkflow(  String userid, String community, String name  ) {
-
+        if( TRACE_ENABLED ) logger.debug( "createWorkflow() entry") ;   
+           
+        Workflow
+            workflow ;
+            
+        try {
+            workflow = new Workflow() ;
+            workflow.setUserid( userid) ;
+            workflow.setCommunity( community ) ;
+            workflow.setName( name ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "createWorkflow() exit") ; 
+        }
+ 
+        return workflow ;
         
-        return null ;
-    }
+    } // end createWorkflow()
         
         
     public static Workflow readWorkflow( String userid, String community, String name ) {
@@ -118,7 +133,13 @@ public class Workflow extends Sequence {
     private Map 
         activities = Collections.synchronizedMap( new HashMap() ) ;
         
-        
+    /**
+      * <p> 
+      * Default constructor.
+      * <p>
+      * Gives a workflow with an empty sequence.
+      * 
+      **/           
     public Workflow() {
         super() ;
         if( TRACE_ENABLED ) logger.debug( "Workflow() entry") ;  
@@ -127,14 +148,45 @@ public class Workflow extends Sequence {
     }
     
     
-    public Workflow( String key ) {
-        super( key ) ;
+    /**
+      * <p> 
+      * Constructor using XML.
+      * <p>
+      * Gives a workflow as described by the XML
+      * 
+      * 
+      * @param workflowXML - An XML description. Could be from MySpace
+      * or from a template loaded from a config file.
+      * 
+      * @see 
+      **/        
+    public Workflow( String workflowXML ) {
+        super() ;
         if( TRACE_ENABLED ) logger.debug( "Workflow(String) entry") ;
-        this.activities.put( this.getKey(), this ) ;
-        if( TRACE_ENABLED ) logger.debug( "Workflow(String) exit") ;
+        
+        try{
+            this.activities.put( this.getKey(), this ) ;
+        
+            //JBL todo: Parse XML string to document...
+        
+            //JBL todo: Fill object model from document... 
+        }
+        finally {
+            if( TRACE_ENABLED ) logger.debug( "Workflow(String) exit") ;
+        }
+        
     }
     
     
+    /**
+      * <p> 
+      * A navigational aid. Navigates to the Activity given a key.
+      * <p>
+      * 
+      * @param String key - the key of the activity
+      * 
+      * @see 
+      **/     
     public Activity getActivity( String key ) {
         if( TRACE_ENABLED ) logger.debug( "getActivity() entry") ; 
         try { 
