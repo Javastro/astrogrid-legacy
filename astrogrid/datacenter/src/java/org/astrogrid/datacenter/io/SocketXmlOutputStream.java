@@ -1,5 +1,5 @@
 /*
- * $Id: SocketXmlOutputStream.java,v 1.2 2003/09/14 22:22:57 mch Exp $
+ * $Id: SocketXmlOutputStream.java,v 1.3 2003/09/14 22:31:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,9 +45,9 @@ public class SocketXmlOutputStream extends FilterOutputStream implements AsciiCo
     */
    public void writeAsDoc(Element element) throws IOException
    {
-      String hdr = "<?xml version='1.0'?>\n";
+//      String hdr = "<?xml version='1.0'?>\n";
 
-      out.write(hdr.getBytes());
+//      out.write(hdr.getBytes());
       XMLUtils.DocumentToStream(element.getOwnerDocument(), out);
       out.write(SocketXmlInputStream.EOD);
    }
