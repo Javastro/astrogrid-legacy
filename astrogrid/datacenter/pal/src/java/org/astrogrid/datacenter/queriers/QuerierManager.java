@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.10 2004/11/03 00:17:56 mch Exp $
+/*$Id: QuerierManager.java,v 1.11 2004/11/08 02:59:45 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,16 @@ public class QuerierManager implements QuerierListener {
    /** List of managers */
    private static Hashtable managers = new Hashtable();
    
-   /** lookup table of queued queriers */
+   /** Lookup table of initialised queriers.  These are queriers that have been
+    * created but are yet 'complete', or have not yet been told to run.  For
+    * example, the CEA architecture has an 'init' which creates a query, and a
+    * 'execute' which will kick it to the queue
+    */
+   private Hashtable heldQueriers = new Hashtable();
+   
+   /** lookup table of queued queriers.  These are queriers that are waiting on
+    a 'free' spot on the running queriers - ie when the running queriers have hit
+    * the maximum limit and the */
    private Hashtable queuedQueriers = new Hashtable();
    
    /** priority index of queued queriers */
@@ -150,13 +159,18 @@ public class QuerierManager implements QuerierListener {
       return q;
    }
    
-   /** Returns a list of all the queued (initialised but no started) queriers
+   /** Returns a list of all the queued (initialised but not started) queriers - including
+    * those that are on the active queue and those just initialised waiting on some external push
     */
    public QuerierStatus[] getQueued() {
       Querier[] queued = (Querier[]) queuedQueriers.values().toArray(new Querier[] {} );
-      QuerierStatus[] statuses = new QuerierStatus[queued.length];
+      Querier[] initialised = (Querier[]) heldQueriers.values().toArray(new Querier[] {} );
+      QuerierStatus[] statuses = new QuerierStatus[queued.length+initialised.length];
       for (int i = 0; i < queued.length; i++) {
          statuses[i] = queued[i].getStatus();
+      }
+      for (int j = 0; j < initialised.length; j++) {
+         statuses[j+queued.length] = initialised[j].getStatus();
       }
       return statuses;
    }
@@ -202,11 +216,21 @@ public class QuerierManager implements QuerierListener {
       return (QuerierStatus[]) statuses.toArray(new QuerierStatus[] {} );
    }
    
+   /** Adds the given querier to this manager, but leaves it in the initialised passive queue */
+   public void holdQuerier(Querier querier) {
+      heldQueriers.put(querier.getId(), querier);
+   }
+   
    /**
     * Adds the given querier to this manager, and starts it off on a new
     * thread.  asynchronous.
     */
    public void submitQuerier(Querier querier)  {
+
+      //see if it's in holding queue
+      if (heldQueriers.get(querier.getId()) != null) {
+         heldQueriers.remove(querier.getId());
+      }
       
       //assigns handle
       if (runningQueriers.get(querier.getId()) != null) {
@@ -303,6 +327,9 @@ public class QuerierManager implements QuerierListener {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.11  2004/11/08 02:59:45  mch
+ Added held queriers
+
  Revision 1.10  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
