@@ -84,7 +84,8 @@
                                 </table>
                             </td>
                         </tr>
-                    </table>                    
+                    </table>
+                    <input type="hidden" name="display_tool_values"><xsl:attribute name="value">true</xsl:attribute></input>                    
                 </form>                
             </div>     
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="insert_sequence_form">
@@ -105,7 +106,7 @@
                 <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="remove_activity_form">
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
-                   <input type="hidden"  name="action" value="remove-activity"/>            
+                   <input type="hidden"  name="action" value="remove_activity"/>            
                 </form>                                                                              
         </xsl:template>
         
