@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/common/Attic/CommunityConfig.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/18 15:50:03 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityConfig.java,v $
+ *   Revision 1.6  2003/09/18 15:50:03  dave
+ *   Fixing bugs in configuration
+ *
  *   Revision 1.5  2003/09/17 19:47:21  dave
  *   1) Fixed classnotfound problems in the build.
  *   2) Added the JUnit task to add the initial accounts and groups.
@@ -86,10 +89,28 @@ public class CommunityConfig
 	public static final String DEFAULT_PROPERTY_NAME = "org.astrogrid.community.config";
 
 	/**
+	 * The name of the config property for our local host name.
+	 *
+	 */
+	public static final String LOCALHOST_PROPERTY_NAME = "community.host";
+
+	/**
 	 * The name of the config property for our local community name.
 	 *
 	 */
 	public static final String COMMUNITY_PROPERTY_NAME = "community.name";
+
+	/**
+	 * The name of the property for our policy manager URL.
+	 *
+	 */
+	public static final String POLICY_MANAGER_PROPERTY_NAME = "policy.manager.url";
+
+	/**
+	 * The name of the property for our service URL.
+	 *
+	 */
+	public static final String POLICY_SERVICE_PROPERTY_NAME = "policy.service.url";
 
 	/**
 	 * Our JConfig Configuration instance.
@@ -287,6 +308,58 @@ public class CommunityConfig
 		}
 
 	/**
+	 * Our local host name.
+	 *
+	 */
+	private static String localhost = null ;
+
+	/**
+	 * Static method to get our localhost name.
+	 * If not specified in the config file or a system property, defaults to our local host name.
+	 *
+	 */
+	public static String getHostName()
+		{
+		//
+		// Try reading our config property.
+		if ((null == localhost) || (localhost.length() <= 0))
+			{
+			if (DEBUG_FLAG) System.out.println("getHostName()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying config property '" + LOCALHOST_PROPERTY_NAME + "'") ;
+			localhost = getProperty(LOCALHOST_PROPERTY_NAME) ;
+			if (DEBUG_FLAG) System.out.println("  Config property result : " + localhost) ;
+			}
+		//
+		// Try reading our system property.
+		if ((null == localhost) || (localhost.length() <= 0))
+			{
+			String name = CONFIG_NAME + "." + LOCALHOST_PROPERTY_NAME ;
+			if (DEBUG_FLAG) System.out.println("getHostName()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying system property '" + name + "'") ;
+			localhost = System.getProperty(name) ;
+			if (DEBUG_FLAG) System.out.println("  System property result : " + localhost) ;
+			}
+		//
+		// Try using our hostname.
+		if ((null == localhost) || (localhost.length() <= 0))
+			{
+			if (DEBUG_FLAG) System.out.println("getHostName()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+			//
+			// Try our local host address.
+			try {
+				localhost = InetAddress.getLocalHost().getHostName() ;
+				}
+			catch (Exception ouch)
+				{
+				localhost = "localhost" ;
+				}
+			if (DEBUG_FLAG) System.out.println("  Localhost result : " + localhost) ;
+			}
+		return localhost ;
+		}
+
+	/**
 	 * Our local community name.
 	 *
 	 */
@@ -294,14 +367,14 @@ public class CommunityConfig
 
 	/**
 	 * Static method to get our community name.
-	 * If not specified in the config file, defaults to our local host name.
+	 * If not specified in the config file or a system property, defaults to our local host name.
 	 *
 	 */
 	public static String getCommunityName()
 		{
 		//
 		// Try reading our config property.
-		if (null == community)
+		if ((null == community) || (community.length() <= 0))
 			{
 			if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying config property '" + COMMUNITY_PROPERTY_NAME + "'") ;
@@ -310,7 +383,7 @@ public class CommunityConfig
 			}
 		//
 		// Try reading our system property.
-		if (null == community)
+		if ((null == community) || (community.length() <= 0))
 			{
 			String name = CONFIG_NAME + "." + COMMUNITY_PROPERTY_NAME ;
 			if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
@@ -320,19 +393,13 @@ public class CommunityConfig
 			}
 		//
 		// Try using our hostname.
-		if(community == null || community.length() <= 0)
+		if ((null == community) || (community.length() <= 0))
 			{
 			if (DEBUG_FLAG) System.out.println("getCommunityName()") ;
 			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
 			//
 			// Try our local host address.
-			try {
-				community = InetAddress.getLocalHost().getHostName() ;
-				}
-			catch (Exception ouch)
-				{
-				community = "localhost" ;
-				}
+			community = getHostName() ;
 			if (DEBUG_FLAG) System.out.println("  Localhost result : " + community) ;
 			}
 		return community ;
@@ -345,29 +412,32 @@ public class CommunityConfig
 	private static String manager = null ;
 
 	/**
-	 * The name of the property for our policy manager URL.
-	 *
-	 */
-	public static final String POLICY_MANAGER_PROPERTY_NAME = "policy.manager.url";
-
-	/**
 	 * Static method to get our local manager URL.
 	 *
 	 */
 	public static String getManagerUrl()
 		{
+		if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
 		//
 		// Try reading our config property.
-		if (null == manager)
+		if ((null == manager) || (manager.length() <= 0))
 			{
+			if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying config property '" + POLICY_MANAGER_PROPERTY_NAME + "'") ;
 			manager = getProperty(POLICY_MANAGER_PROPERTY_NAME) ;
+			if (null != manager) manager = manager.trim() ;
+			if (DEBUG_FLAG) System.out.println("  Config property result : " + manager) ;
 			}
 		//
 		// Try using our local host name.
-		if (null == manager)
+		if ((null == manager) || (manager.length() <= 0))
 			{
-			manager = "http://" + getCommunityName() + ":8080/axis/services/PolicyManager" ;
+			if (DEBUG_FLAG) System.out.println("getManagerUrl()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+			manager = "http://" + getHostName() + ":8080/axis/services/PolicyManager" ;
+			if (DEBUG_FLAG) System.out.println("  Localhost result : " + manager) ;
 			}
+		if (DEBUG_FLAG) System.out.println("  Manager URL : " + manager) ;
 		return manager ;
 		}
 
@@ -378,29 +448,32 @@ public class CommunityConfig
 	private static String service = null ;
 
 	/**
-	 * The name of the property for our service URL.
-	 *
-	 */
-	public static final String POLICY_SERVICE_PROPERTY_NAME = "policy.service.url";
-
-	/**
 	 * Static method to get our local service URL.
 	 *
 	 */
 	public static String getServiceUrl()
 		{
+		if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
 		//
 		// Try reading our config property.
-		if (null == service)
+		if ((null == service) || (service.length() <= 0))
 			{
+			if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying config property '" + POLICY_SERVICE_PROPERTY_NAME + "'") ;
 			service = getProperty(POLICY_SERVICE_PROPERTY_NAME) ;
+			if (null != service) service = service.trim() ;
+			if (DEBUG_FLAG) System.out.println("  Config property result : " + service) ;
 			}
 		//
 		// Try using our local host name.
-		if (null == service)
+		if ((null == service) || (service.length() <= 0))
 			{
-			service = "http://" + getCommunityName() + ":8080/axis/services/PolicyService" ;
+			if (DEBUG_FLAG) System.out.println("getServiceUrl()") ;
+			if (DEBUG_FLAG) System.out.println("  Trying localhost ....") ;
+			service = "http://" + getHostName() + ":8080/axis/services/PolicyService" ;
+			if (DEBUG_FLAG) System.out.println("  Localhost result : " + manager) ;
 			}
+		if (DEBUG_FLAG) System.out.println("  Service URL : " + manager) ;
 		return service ;
 		}
 

@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/config/Attic/config.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/18 15:50:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: config.xml,v $
+    |   Revision 1.5  2003/09/18 15:50:03  dave
+    |   Fixing bugs in configuration
+    |
     |   Revision 1.4  2003/09/17 19:47:21  dave
     |   1) Fixed classnotfound problems in the build.
     |   2) Added the JUnit task to add the initial accounts and groups.
@@ -32,9 +35,42 @@
 	    |
 	    +-->
 	<category name="org.astrogrid.community">
-		<property name="community.name"   value="...."/>
+		<!--+
+			| The local community name.
+			| This will default to your local hostname
+			+-->
+		<property name="community.name" value=""/>
+
+		<!--+
+			| The community host name.
+			| This will default to your local hostname
+			+-->
+		<property name="community.host" value=""/>
+
+		<!--+
+			| The local community services.
+			| These will default to the standard Axis services URL using the community host name.
+			+-->
+		<property name="policy.manager.url" value=""/>
+		<property name="policy.service.url" value=""/>
+
+		<!--+
+			| Configuration for the server database.
+			| No defaults, filled in by the Ant build script.
+			+-->
 		<property name="database.name"    value="...."/>
 		<property name="database.config"  value="...."/>
 		<property name="database.mapping" value="...."/>
+
+		<!-- Configuration for the community client  -->
+		<property name="community.security"    value="off" />
+		<property name="community.secure.port" value="8443" />
+		<!-- Configuration for the portal client  -->
+		<property name="portal.security" value="off" />
+		<property name="portal.secure.port" value="8443" />
+		<property name="portal.nonsecure.port" value="8080" />       
+		<!-- Configuration for the portal site  -->
+		<property name="astrogrid.admin" value="Kevin Benson" />
+		<property name="astrogrid.adminEmail" value="kmb@mssl.ucl.ac.uk" />
 	</category> 
 </properties>

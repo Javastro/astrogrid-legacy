@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/17 19:47:21 $</cvs:date>
-    | <cvs:version>$Revision: 1.38 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/18 15:50:03 $</cvs:date>
+    | <cvs:version>$Revision: 1.39 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.39  2003/09/18 15:50:03  dave
+    |   Fixing bugs in configuration
+    |
     |   Revision 1.38  2003/09/17 19:47:21  dave
     |   1) Fixed classnotfound problems in the build.
     |   2) Added the JUnit task to add the initial accounts and groups.
@@ -2714,11 +2717,6 @@ Start of Authentication "auth" tasks
 	<property name="config.file" value="${config.base}/${config.name}"></property>
 
 	<!--+
-	    | The community name (defaults to local host name).
-	    +-->
-	<property name="community.name" value="codon.demon.co.uk"></property>
-
-	<!--+
 		| Delete our configuration files.
 		+-->
 	<target name="config.delete" depends="">
@@ -2749,7 +2747,6 @@ Start of Authentication "auth" tasks
 			<outputproperty name="indent" value="yes"/>
 			<!-- Set the XSL params -->
 			<param name="category"         expression="org.astrogrid.community"/>
-			<param name="community.name"   expression="${community.name}"/>
 			<param name="database.name"    expression="${hsqldb.database}"/>
 			<param name="database.config"  expression="${config.base}/database.xml"/>
 			<param name="database.mapping" expression="${config.base}/mapping.xml"/>
@@ -2779,6 +2776,33 @@ Start of Authentication "auth" tasks
 		</xslt>
 		<!-- Replace the existing web.xml with the new one -->
 		<move file="${axis.webapp}/WEB-INF/web.xml.new" tofile="${axis.webapp}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Modify a generic webapp web.xml to include our JNDI property.
+		| This uses an XSL transform to add the path to our config file to the Axis web.xml.
+		| This will be picked up by our WebService using a JNDI lookup call.
+		+-->
+	<target name="config.webapp.jndi" depends="">
+		<echo message=""/>
+		<echo message="Modifying WebApp web.xml ...."/>
+		<echo message="  Target webapp : ${target.webapp}"/>
+		<echo message="  Target config : ${target.config}"/>
+		<!-- Copy the existing web.xml to a backup file -->
+		<copy file="${target.webapp}/WEB-INF/web.xml" tofile="${target.webapp}/WEB-INF/web.xml.old" overwrite="true" failonerror="false"/>
+
+		<!-- Transform the Axis web.xml, adding our JNDI property -->
+		<xslt style="src/xsl/build/config/webapp.xsl"
+		      in="${target.webapp}/WEB-INF/web.xml"
+		      out="${target.webapp}/WEB-INF/web.xml.new">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="property.name"  expression="org.astrogrid.community.config"/>
+			<param name="property.value" expression="${target.config}"/>
+		</xslt>
+		<!-- Replace the existing web.xml with the new one -->
+		<move file="${target.webapp}/WEB-INF/web.xml.new" tofile="${target.webapp}/WEB-INF/web.xml" overwrite="true" failonerror="false"/>
 	</target>
 
 	<!--+

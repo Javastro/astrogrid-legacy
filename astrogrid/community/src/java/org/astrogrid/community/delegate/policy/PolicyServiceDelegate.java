@@ -31,12 +31,17 @@ public class PolicyServiceDelegate {
     *
     */
    public PolicyServiceDelegate() {
+       if (DEBUG_FLAG) System.out.println("") ;
+       if (DEBUG_FLAG) System.out.println("----\"----") ;
+       if (DEBUG_FLAG) System.out.println("PolicyServiceDelegate()") ;
       try {
          service = getService(CommunityConfig.getServiceUrl());
       }catch(Exception e) {
          e.printStackTrace();
          service = null;
       }      
+       if (DEBUG_FLAG) System.out.println("----\"----") ;
+       if (DEBUG_FLAG) System.out.println("") ;
    }
    
    public boolean checkPermissions(String account,String group, String resource, String action) throws Exception {
@@ -65,6 +70,13 @@ public class PolicyServiceDelegate {
        if (DEBUG_FLAG) System.out.println("") ;
        if (DEBUG_FLAG) System.out.println("----\"----") ;
        if (DEBUG_FLAG) System.out.println("setUp()") ;
+       if (DEBUG_FLAG) System.out.println("  Target : '" + targetEndPoint + "'") ;
+
+       if ((null == targetEndPoint) || (targetEndPoint.length() <= 0))
+         {
+         targetEndPoint = CommunityConfig.getServiceUrl() ;
+         }
+       if (DEBUG_FLAG) System.out.println("  Target : '" + targetEndPoint + "'") ;
 
        PolicyServiceService locator = null;
        PolicyService service = null;
