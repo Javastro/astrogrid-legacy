@@ -142,7 +142,7 @@
         <!--+
             | Clean this project target.
             +-->
-        <attainGoal name="clean:clean"/>
+        <!-- <attainGoal name="clean:clean"/> -->
     </goal>
 
     <!--+
