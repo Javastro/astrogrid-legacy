@@ -9,6 +9,7 @@
 
 <xsp:structure>
 	<xsp:include>org.astrogrid.portal.workflow.design.Workflow</xsp:include>
+	<xsp:include>org.astrogrid.portal.cocoon.workflow.design.DesignAction</xsp:include>
 </xsp:structure>
 
 
@@ -16,13 +17,26 @@
 <workflow>
 
 	<xsp:logic>
+		
+	
+		<![CDATA[
+		//================================================================================
+		Workflow
+			workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
+		
+		//================================================================================
+		]]>
+	
+	
 		<xsp:attribute name="type">onestep-sequence</xsp:attribute>
-		<xsp:element name="workflow-name">USNOBQuery 
+		<xsp:element name="workflow-name">
+			<xsp:expr>workflow.getName()</xsp:expr>
 		</xsp:element> 
-		<xsp:element name="workflow-description">Query against USNOB - via XSP
+		<xsp:element name="workflow-description">
+			<xsp:expr>workflow.getDescription()</xsp:expr>
 		</xsp:element> 
 		<xsp:element name="sequence">
-			<xsp:attribute name="key">12345</xsp:attribute>
+			<xsp:attribute name="key"><xsp:expr>workflow.getKey()</xsp:expr></xsp:attribute>
 			<xsp:element name="step">
 				<xsp:attribute name="key">12346</xsp:attribute>
 				<xsp:element name="step-name">Query</xsp:element> 
