@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.18 2004/03/06 22:22:08 mch Exp $
+ * $Id: Config.java,v 1.19 2004/03/06 22:23:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -235,9 +235,10 @@ public abstract class Config {
     * then in the working directory.
     * If the path is not found, a FileNotFoundException is thrown listing
     * the places looked.  If the path is found, a url to it is returned.
+    *
     * Hmm not sure if this is really a Configuration thing....
     */
-   public URL resolveFilename(String givenFilename) throws IOException {
+   public static URL resolveFilename(String givenFilename) throws IOException {
       
       String filename = givenFilename; //so we preserve the original
       
