@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2003/09/30 16:07:30 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:author>$Author: KevinBenson $</cvs:author>
+ * <cvs:date>$Date: 2003/10/07 20:40:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.14  2003/10/07 20:40:25  KevinBenson
+ *   conforms to new myspace delegate
+ *
  *   Revision 1.13  2003/09/30 16:07:30  pah
  *   removed the password nulling in getAccount() - it was being written back to the database
  *
@@ -278,7 +281,9 @@ public class AccountManagerImpl
 				{
 				try {
 					MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceUrl);
-					msmd.createUser(ident.toString(),null);
+               Vector tempVector = new Vector();
+               tempVector.add("serv1");
+					msmd.createUser(ident.getName(),ident.getCommunity(),"credential",tempVector);
 					}
 				catch(Exception ouch)
 					{
@@ -910,7 +915,7 @@ public class AccountManagerImpl
          String myspaceCall = CommunityConfig.getProperty("myspace.url.webservice");
          MySpaceManagerDelegate msmd = new MySpaceManagerDelegate(myspaceCall);
          try {
-            msmd.deleteUser(ident.toString());
+            msmd.deleteUser(ident.getName(),ident.getCommunity(),"credential");
          }catch(Exception ouch) {
             ouch.printStackTrace();
          }
