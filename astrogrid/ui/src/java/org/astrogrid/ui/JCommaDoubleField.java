@@ -1,0 +1,153 @@
+package org.astrogrid.ui;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+import javax.swing.JTextField;
+
+import java.util.StringTokenizer;
+
+/**
+ * JDoubleField.java
+ *
+ * A convenient subclass of JTextField that just allows double
+ * numbers to be entered and provides get/setValue methods.
+ *
+ * Derived from the similar JIntegerField code
+ *
+ * @author Alan Maxwell
+ */
+
+public class JCommaDoubleField extends JTextField
+{
+
+   /**
+    * A text document which will reject any characters that are not
+    * numerical digits or a '.'
+    */
+   public class DoubleNumberDocument extends PlainDocument
+   {
+      public void insertString(int offs, String str, AttributeSet atts)
+                                                   throws BadLocationException
+      {
+         if ( 
+              !Character.isDigit(str.charAt(0)) && 
+              !(str.charAt(0) == '-') &&
+              !(str.charAt(0) == '.') &&
+              !(str.charAt(0) == ',') &&
+              !(str.charAt(0) == 'e') &&
+              !(str.charAt(0) == 'E')
+            ) {
+            return;
+         }
+
+         if (str.charAt(0) == ',')
+         {
+           super.insertString(offs, str + " ", atts);
+         }
+         else
+         {
+           super.insertString(offs, str, atts);
+         }
+      }
+   }
+   
+   /**
+    * Constructs field
+    */
+   public JCommaDoubleField()
+   {
+      super();
+      setDocument(new DoubleNumberDocument());
+   }
+
+   /**
+    * Returns the part of the text representing the individual value
+    * numbered 'paramNum' (in a comma separated list, values start at
+    * 0). If 'paramNum' is greater than the number of doubles in the
+    * list, the returned string will be empty...
+    */
+   public String getText(int paramNum)
+   {
+     if (getText() == null)
+     {
+       return "";
+     };
+
+     StringTokenizer tokenizer = new StringTokenizer(getText().trim());
+
+     int atToken = 0;
+
+     while ((tokenizer.hasMoreTokens()) && (atToken < paramNum))
+     {
+       tokenizer.nextToken(","); // Skip over tokens to get one we want
+       atToken++;
+     };
+
+     if ((tokenizer.hasMoreTokens()) && (atToken == paramNum))
+     {
+       return tokenizer.nextToken(",").trim();
+     }
+     else
+     {
+       return "";
+     }
+   }
+
+   /**
+    * Returns the value entered in the field.  It <i>should</i> be impossible
+    * to have a NumberFormatException, as there should be no way of setting
+    * the text to be anything else, but the exception must still be caught
+    */
+   public double getValue(int paramNum)
+   {
+      try
+      {
+         String value = getText(paramNum);
+
+         if (value.length() == 0)
+           return 0.0;
+         else
+           return Double.parseDouble(value);
+      }
+      catch (NumberFormatException nfe)
+      {
+         //should never happen, so make it a fatal/application exception
+         throw new RuntimeException("NumberField contains non-number '"+getText()+"'");
+      }
+   }
+
+   /**
+    * Double property setter
+    */
+   public void setValue(double value)
+   {
+      // Calls superclass directly as there is no need to for the double
+      // check in setText(String);
+      super.setText("" + value);
+   }
+   
+   /**
+    * Overrides the superclass method to check that the value the field is
+    * being set to is a valid double/doublelist.
+    */
+   public void setText(String value)
+   {
+      try
+      {
+        StringTokenizer tokenizer = new StringTokenizer(value);
+
+        // Check any/all passed values are integers
+        while (tokenizer.hasMoreTokens())
+        {
+          Double.parseDouble(tokenizer.nextToken(","));
+        };
+
+        super.setText(value.trim());
+      }
+      catch (NumberFormatException nfe)
+      {
+         throw new IllegalArgumentException("'" + value + "' is not a double");
+      }
+   }
+}
