@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.4 2004/07/06 19:37:19 mch Exp $
+ * $Id: Agsl.java,v 1.5 2004/10/06 17:37:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -9,16 +9,18 @@
 
 package org.astrogrid.store;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import org.astrogrid.community.User;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import java.net.URISyntaxException;
 
 /**
  * AstroGrid Storepoint Locator.  An astrogrid-specific way of <b>locating</b> a
@@ -194,6 +196,17 @@ public class Agsl
       }
    }
  
+   /** Returns the AGSL in URI form */
+   public URI toUri() {
+      try {
+         return new URI(toString());
+      }
+      catch (URISyntaxException e) {
+         //this should never happen as it shouldn't be possible to create an agsl that isn't
+         throw new RuntimeException("Application error: "+e+" for AGSL "+toString());
+      }
+   }
+   
    /** Returns true if the given string is an attempt to be an agsl */
    public static boolean isAgsl(String agsl)
    {
@@ -333,6 +346,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.5  2004/10/06 17:37:58  mch
+Added toURI
+
 Revision 1.4  2004/07/06 19:37:19  mch
 Removed Vorl
 

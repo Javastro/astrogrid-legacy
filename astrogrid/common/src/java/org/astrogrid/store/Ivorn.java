@@ -1,5 +1,5 @@
 /*
- * $Id: Ivorn.java,v 1.10 2004/07/07 10:55:24 mch Exp $
+ * $Id: Ivorn.java,v 1.11 2004/10/06 17:37:47 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -111,6 +111,17 @@ public class Ivorn
       }
    }
 
+   /** Returns the IVORN in URI form */
+   public URI toUri() {
+      try {
+         return new URI(toString());
+      }
+      catch (URISyntaxException e) {
+         //this should never happen as it shouldn't be possible to create an agsl that isn't
+         throw new RuntimeException("Application error: "+e+" for IVORN "+toString());
+      }
+   }
+
    /** Representation to be used when submitting the IVORN to a registry
     * to be resolved */
    public String toRegistryString() {
@@ -128,6 +139,9 @@ public class Ivorn
 
 /*
 $Log: Ivorn.java,v $
+Revision 1.11  2004/10/06 17:37:47  mch
+Added toURI
+
 Revision 1.10  2004/07/07 10:55:24  mch
 Replaced two-string constructor
 
