@@ -25,7 +25,7 @@
 		<parameter name="wsdlServicePort" value="QueryRegistrySOAPPort"/>
 		<parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
 		<parameter name="wsdlServiceElement" value="QueryRegistryService"/>  
-		<wsdlFile>/wsdl/searchableRegistry.wsdl</wsdlFile>
+		<wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
 	</service>
 	
  <service name="RegistrySearch" provider="java:MSG" style="message" use="literal">
@@ -35,7 +35,7 @@
   <parameter name="wsdlServicePort" value="RegistrySearchPort"/>
   <parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
   <parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
-  <wsdlFile>/wsdl/searchableRegistry.wsdl</wsdlFile>
+  <wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
  </service>
  
  <service name="RegistryHarvest" provider="java:MSG" style="message" use="literal">
@@ -45,7 +45,7 @@
   <parameter name="wsdlServicePort" value="RegistryHarvestPort"/>
   <parameter name="wsdlTargetNamespace" value="http://www.ivoa.net/schemas/services/QueryRegistry/wsdl"/>
   <parameter name="wsdlServiceElement" value="RegistryInterfaceService"/>
-  <wsdlFile>/wsdl/searchableRegistry.wsdl</wsdlFile>
+  <wsdlFile>/../../wsdl/searchableRegistry.wsdl</wsdlFile>
  </service>
 
 	
