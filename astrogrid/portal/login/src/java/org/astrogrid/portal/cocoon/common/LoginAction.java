@@ -58,7 +58,12 @@ public class LoginAction extends AbstractAction
 		String action = request.getParameter(ACTION_PARAM);
 		if (DEBUG_FLAG) System.out.println("LoginAction:act()") ;
 		if (DEBUG_FLAG) System.out.println("  Action : " + action) ;
-
+		//
+		// Setup the error message.
+		String error = null ;
+		//
+		// Setup our security token.
+		SecurityToken token = null ;
 		//
 		// If the action is login.
 		if (LOGIN_ACTION.equals(action))
@@ -71,9 +76,67 @@ public class LoginAction extends AbstractAction
 			if (DEBUG_FLAG) System.out.println("  Name : " + name) ;
 			if (DEBUG_FLAG) System.out.println("  Pass : " + pass) ;
 
+			//
+			// Check for a null or blank name.
+			if(null == name)
+				{
+				error = "Null name" ;
+				}
+			else {
+				name = name.trim() ;
+				if(name.length() <= 0)
+					{
+					error = "Blank name" ;
+					}
+				}
 
+			//
+			// Check for a null or blank password.
+			if(null == pass)
+				{
+				error = "Null password" ;
+				}
+			else {
+				pass = pass.trim() ;
+				if(pass.length() <= 0)
+					{
+					error = "Blank password" ;
+					}
+				}
+
+			//
+			// Try creating a Community delegate.
+			AuthenticationDelegate delegate = new AuthenticationDelegate();
+			if (null == delegate)
+				{
+				if (DEBUG_FLAG) System.out.println("FAIL : Null delegate") ;
+				}
+
+			else {
+				if (DEBUG_FLAG) System.out.println("PASS : Got delegate") ;
+				//
+				// Try logging in to the Community.
+				try {
+					token = delegate.authenticateLogin(name, pass);
+					if (null == token)
+						{
+						if (DEBUG_FLAG) System.out.println("FAIL : Null token") ;
+						}
+					else {
+						if (DEBUG_FLAG) System.out.println("PASS : Got token") ;
+						if (DEBUG_FLAG) System.out.println("  Token : " + token) ;
+						if (DEBUG_FLAG) System.out.println("  Token : " + token.getToken()) ;
+						if (DEBUG_FLAG) System.out.println("  Used  : " + token.getUsed()) ;
+						}
+					}
+
+				catch(Exception ouch)
+					{
+					error = "Login failed" ;
+					ouch.printStackTrace();
+					}
+				}
 			}
-
 
 		Map results = new HashMap() ;
 		return results;
@@ -89,12 +152,6 @@ public class LoginAction extends AbstractAction
 		//
 		// Load our community config.
 		CommunityConfig.loadConfig();
-		//
-		// Check the community name.
-		String community = CommunityConfig.getCommunityName();
-		if (DEBUG_FLAG) System.out.println("  Community : " + CommunityConfig.getCommunityName()) ;
-
-
 		}
 
 
