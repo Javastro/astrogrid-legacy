@@ -1,5 +1,5 @@
 /*
- * $Id: CeaDataService.java,v 1.3 2004/04/01 11:24:00 mch Exp $
+ * $Id: CeaDataService.java,v 1.4 2004/04/22 13:25:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -15,16 +15,21 @@ import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.service.v1.cea.impl._ceaFault;
 import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.community.Account;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
-import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.axis._tool;
+import java.net.URISyntaxException;
+import java.io.IOException;
+import org.astrogrid.datacenter.query.QueryException;
 
 
 /**
@@ -86,7 +91,23 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
       //extract parameters from _tool
       ParameterValue value = parameters.getInput().getParameter(0);
       assert (value.getName().equals("Query"));
-      Query query = new ConeQuery(30,30,6);
+      String queryArgument = value.getValue();
+      Query query = null;
+      if (queryArgument.startsWith("ivo")) {
+         //ivorn passed in
+         try {
+            query = new AdqlQuery(new VoSpaceClient(User.ANONYMOUS).getStream(new Ivorn(queryArgument)));
+         }
+         catch (IOException e) {
+            throw makeFault(true, "Could not read valid ADQL query from "+queryArgument, e);
+         }
+         catch (URISyntaxException e) {
+            throw makeFault(true, "Invalid IVORN '"+queryArgument+" given for Query Parameter", e);
+         }
+      }
+      else {
+         query = new AdqlQuery(queryArgument);
+      }
       
       value = parameters.getInput().getParameter(1);
       assert (value.getName().equals("Format"));
@@ -142,6 +163,9 @@ public class CeaDataService extends AxisDataServer implements org.astrogrid.appl
 
 /*
 $Log: CeaDataService.java,v $
+Revision 1.4  2004/04/22 13:25:54  mch
+Allowed IVORN for query
+
 Revision 1.3  2004/04/01 11:24:00  mch
 Change to CEA fault
 

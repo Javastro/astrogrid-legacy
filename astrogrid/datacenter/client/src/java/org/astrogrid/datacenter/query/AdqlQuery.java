@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQuery.java,v 1.3 2004/03/13 23:38:27 mch Exp $
+ * $Id: AdqlQuery.java,v 1.4 2004/04/22 13:26:08 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,9 +7,13 @@
 package org.astrogrid.datacenter.query;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import javax.xml.parsers.ParserConfigurationException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.io.Piper;
 import org.astrogrid.util.DomHelper;
 import org.exolab.castor.xml.CastorException;
 import org.w3c.dom.Document;
@@ -57,6 +61,16 @@ public class AdqlQuery implements Query {
       this.adqlXml = DomHelper.ElementToString(givenAdql);
    }
    
+   /** Constructs query from given inputstream
+    */
+   public AdqlQuery(InputStream in) throws QueryException, IOException {
+
+      StringWriter sw = new StringWriter();
+      Piper.pipe(new InputStreamReader(in), sw);
+      this.adqlXml = sw.toString();
+   }
+  
+   
    /** Returns DOM representation  */
    public Document toDom() throws QueryException {
       try {
@@ -84,6 +98,9 @@ public class AdqlQuery implements Query {
 }
 /*
  $Log: AdqlQuery.java,v $
+ Revision 1.4  2004/04/22 13:26:08  mch
+ Allowed IVORN for query
+
  Revision 1.3  2004/03/13 23:38:27  mch
  Test fixes and better front-end JSP access
 
