@@ -27,20 +27,20 @@
 	<dl>
 	  <dt>cea.filestore.basedir</dt> 
       <dd>
-        <p>This is the directory where the server stores the record of each of the application executions</p>
+        This is the directory where the server stores the record of each of the application executions
 		</dd>
 	  <dt>cea.commandline.workingdir.file</dt>
       <dd>
-        <p>This is the directory where the server stores sets up working directories for each application execution. It should be noted that this directory tree can consume a large amount of space if not cleaned up occasionally.</p>
+        This is the directory where the server stores sets up working directories for each application execution. It should be noted that this directory tree can consume a large amount of space if not cleaned up occasionally.
 		</dd>
     <dt>org.astrogrid.registry.admin.endpoint</dt>
-      <dd><p>This needs to be set to the URL of a registry admin service endpoint. This is necessary because the server is capable of registering itself.</p>
+      <dd>This needs to be set to the URL of a registry admin service endpoint. This is necessary because the server is capable of registering itself.
 	</dd> 
     <dt>org.astrogrid.registry.query.endpoint</dt>
-       <dd><p>This needs to be set to the URL of a registry query service endpoint. This is because the CEC server needs to be able to find the location of other VO services.</p>
+       <dd>This needs to be set to the URL of a registry query service endpoint. This is because the CEC server needs to be able to find the location of other VO services.
 	</dd> 
     <dt>cea.registry.template.url</dt>
-       <dd> <p>When registering itself the server needs to know a certain amount of meta information about itself. This information can be supplied in the this template file. If this is not set then some default values will be used, but these will probably lead to misleading registry entries for the server that you are installing.</p>
+       <dd>When registering itself the server needs to know a certain amount of meta information about itself. This information can be supplied in the this template file. If this is not set then some default values will be used, but these will probably lead to misleading registry entries for the server that you are installing.
         <p>A suitable template file for customization can be found in <a href="http://www.astrogrid.org/viewcvs/astrogrid/applications/server/src/java/CEARegistryTemplate.xml?rev=HEAD&amp;content-type=text/vnd.viewcvs-markup">cvs</a> and the meaning of the various entries is explained in the <a href="http://www.ivoa.net/Documents/latest/RM.html">IVOA Resource Metadata Standard</a> </p>
 		</dd>
         <dt>cea.service.endpoint.url</dt>
@@ -66,7 +66,7 @@
     
  </subsection>
  <subsection name="Testing the server">
-    <p>When the server has been configured it is possible to do a number of simple self tests on the server by clicking on the "Installation Tests" link from the main administration page. These tests are reasonable simple tests, but any failure will mean that some part of the configuration is invalid.</p>
+    <p>When the server has been configured it is possible to do a number of simple self tests on the server by clicking on the <a href="../TestServlet?suite=org.astrogrid.applications.component.CEAComponentManagerFactory">"Installation Tests"</a> link from the main administration page. These tests are reasonably simple tests, but any failure will mean that some part of the configuration is invalid.</p>
  </subsection>
  <subsection name="Registering">
     <p>Once a CEA server has been successfully configured it is possible to make it register itself with the registry specified by the <em>org.astrogrid.registry.admin.endpoint</em> key</p>

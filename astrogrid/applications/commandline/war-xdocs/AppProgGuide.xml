@@ -8,7 +8,8 @@
 <body>
 <section name="Programming the CEA CommandLineAppliction Execution Controller">
 
-<p>where detailed explanations of the confuration steps are contained. </p>
+<p>This guide provides information specific to the CommandLine Application Exection Controller. To see more general information about 
+	programming CommandLineControllers see <a href="../programmers_guide.html">this guide</a></p>
 </section>
 </body>
 </document>

@@ -19,7 +19,7 @@
     </menu>
 	<menu name="CEC Specific">
 	  <item name="documentation" href="provider" />
-	  <item name="adding an application" href="provider/AppProgGuide.html"/>
+	  <item name="adding an application" href="provider/ApplicationConfiguration.html"/>
       <item name="CEC javadoc" href="provider/apidocs" />
       <item name="CEC formatted Source" href="provider/xref" />
  		
