@@ -98,7 +98,10 @@ public class PostgresSqlMakerTest extends TestCase{
 	public void test10() throws Exception {		
 		processFile("crossmatch.xml");
 	}
-	
+
+	public void test11() throws Exception {		
+		processFile("bad_adql.xml");
+	}	
 	protected void processFile(String path) throws Exception {
 		
 		InputStream is = this.getClass().getResourceAsStream(path);
