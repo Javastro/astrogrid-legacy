@@ -1,5 +1,5 @@
 /*
- * $Id: TestConfig.java,v 1.2 2003/12/09 23:01:15 pah Exp $
+ * $Id: TestConfig.java,v 1.3 2003/12/11 15:22:55 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,6 +17,8 @@ import javax.sql.DataSource;
 
 public class TestConfig implements Config {
    private ResourceBundle bundle;
+   static private org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(TestConfig.class);
    private TestConfig() {
     bundle = ResourceBundle.getBundle(this.getClass().getPackage().getName()+".Test");
     
@@ -47,8 +49,8 @@ public class TestConfig implements Config {
     * @see org.astrogrid.applications.common.config.Config#getDataSource(java.lang.String)
     */
    public DataSource getDataSource(String key) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("TestConfig.getDataSource() not implemented");
+      logger.info("the test config does not do this - need to use the @link BaseDBTestCase instead during tests");
+      return null; 
    }
 
 }
