@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.113 2004/09/21 10:47:11 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.114 2004/09/21 11:38:54 jdt Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -173,7 +173,7 @@
 
 <goal name="undeploy-all" prereqs="init" description="undeploy all webapps">
         <echo>*** Undeploying all webapps...</echo>
-        <attainGoal name="configuration-undeploy" />
+        <attainGoal name="configuration-undeploy"/>
         <attainGoal name="jes-undeploy" />
         <attainGoal name="cea-server-undeploy" />
         <attainGoal name="cea-commandline-undeploy" />
@@ -187,6 +187,23 @@
         <attainGoal name="pal-cds-undeploy" />
         <attainGoal name="community-undeploy" />
         <attainGoal name="portal-undeploy" />
+</goal>
+
+<goal name="undeploy-all-except-portal" prereqs="init" description="undeploy all webapps except the portal">
+        <echo>*** Undeploying all webapps except the portal...</echo>
+        <attainGoal name="configuration-undeploy"/>
+        <attainGoal name="jes-undeploy" />
+        <attainGoal name="cea-server-undeploy" />
+        <attainGoal name="cea-commandline-undeploy" />
+        <attainGoal name="cea-http-undeploy" />
+        <attainGoal name="reg-undeploy" />
+        <attainGoal name="myspace-undeploy" />
+        <attainGoal name="filestore-undeploy" />
+        <attainGoal name="pal-undeploy" />
+        <attainGoal name="pal-fits-undeploy" />
+        <attainGoal name="pal-sec-undeploy" />
+        <attainGoal name="pal-cds-undeploy" />
+        <attainGoal name="community-undeploy" />
 </goal>
 
 <goal name="list" prereqs="init" description="list deployed webapps">

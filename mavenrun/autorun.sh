@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.23 2004/09/21 10:47:19 jdt Exp $ 
+# $Id: autorun.sh,v 1.24 2004/09/21 11:39:00 jdt Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -26,7 +26,7 @@ MY_OPTS=-Dmaven.download.meter=bootstrap
 
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo "Undeploying old apps..." >> $LOGFILE
-if maven $MY_OPTS undeploy-all >> $LOGFILE 2>&1
+if maven $MY_OPTS undeploy-all-except-portal >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOGFILE
 else
