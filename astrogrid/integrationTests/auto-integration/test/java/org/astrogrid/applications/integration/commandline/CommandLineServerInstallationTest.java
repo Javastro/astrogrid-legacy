@@ -1,4 +1,4 @@
-/*$Id: CommandLineServerInstallationTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: CommandLineServerInstallationTest.java,v 1.2 2004/11/19 10:27:29 clq2 Exp $
  * Created on 29-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.applications.integration.ServerInstallationTest;
 
 /** installation test for commandline cea server.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jun-2004
- *
+ *@see org.astrogrid.applications.integration.ServerInstallationTest
  */
 public class CommandLineServerInstallationTest extends ServerInstallationTest {
     /** Construct a new CommandLineServerInstallationTest
@@ -31,6 +31,12 @@ public class CommandLineServerInstallationTest extends ServerInstallationTest {
 
 /* 
 $Log: CommandLineServerInstallationTest.java,v $
+Revision 1.2  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.1.104.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  

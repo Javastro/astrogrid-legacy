@@ -1,0 +1,12 @@
+<html>
+<body>
+	<h1>Integration tests for core workflow functionality</h1>
+	This package contains tests  that exercise the JES server. Many of the constuct workflow documents containing calls to test applications, submit them to jes, 
+	and then examine the results. The test applications themsevles
+	should have already been verified as working by the tests in the {@link prg.astrogrid.applications.integration} hierarchy.
+	<p>
+		At the moment, jes has no method of notifying a listener when job execution is complete - the client has to poll instead. Furthermore, because of the
+		concurrent nature of JES, it's possible that a workflow is paused / delayed in execution - this may mean that the occasional workflow test times out, or that a
+		failure in one test class affects subsequent tests. There's not a lot that can be done about this.
+</body>
+</html>

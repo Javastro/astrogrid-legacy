@@ -1,4 +1,4 @@
-/*$Id: DataCenterProviderServerInfo.java,v 1.3 2004/07/20 01:59:25 nw Exp $
+/*$Id: DataCenterProviderServerInfo.java,v 1.4 2004/11/19 10:27:29 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,9 @@ import java.io.StringWriter;
 
 import junit.framework.Assert;
 
-/**
+/** Info for testing the datacenter cea
+ * calls the 'TESTDSA' application
+ * @see DataCenterProviderServerInfo
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
  *
  */
@@ -90,6 +92,12 @@ public class DataCenterProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: DataCenterProviderServerInfo.java,v $
+Revision 1.4  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.3.100.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.3  2004/07/20 01:59:25  nw
 testing new datacenter cea
 

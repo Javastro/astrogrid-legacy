@@ -1,4 +1,4 @@
-/*$Id: DataCenterServerInstallationTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: DataCenterServerInstallationTest.java,v 1.2 2004/11/19 10:27:29 clq2 Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import java.io.StringWriter;
 
 /** Test  CEA installation for datacenter provider.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
+ * @see org.astrogrid.applications.integration.ServerInstallationTest
  *
  */
 public class DataCenterServerInstallationTest extends ServerInstallationTest {
@@ -39,6 +40,12 @@ public class DataCenterServerInstallationTest extends ServerInstallationTest {
 
 /* 
 $Log: DataCenterServerInstallationTest.java,v $
+Revision 1.2  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.1.104.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
 

@@ -1,4 +1,4 @@
-/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.5 2004/08/17 13:33:36 nw Exp $
+/*$Id: ExampleVOTableParsingWorkflowTest.java,v 1.6 2004/11/19 10:27:29 clq2 Exp $
  * Created on 06-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,7 +26,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
 
-/** Example workflow that acquires a votable of urls, parses it, and then passes list of urls to parameters of next step.
+/** test inline scripts for parsing votables.
+ * constructs a workflow that acquires a votable of urls, parses it, and then passes list of urls to parameters of next step.
  * extends the existing fitsworkflow test - as this provides a nice source for a votable.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Aug-2004
  *
@@ -96,6 +97,12 @@ public class ExampleVOTableParsingWorkflowTest extends SimpleFitsWorkflowTest{
 
 /* 
 $Log: ExampleVOTableParsingWorkflowTest.java,v $
+Revision 1.6  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.5.66.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.5  2004/08/17 13:33:36  nw
 cleaned up
 

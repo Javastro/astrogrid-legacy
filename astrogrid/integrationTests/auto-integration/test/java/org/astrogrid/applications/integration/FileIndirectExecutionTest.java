@@ -1,4 +1,4 @@
-/*$Id: FileIndirectExecutionTest.java,v 1.2 2004/07/23 08:44:30 nw Exp $
+/*$Id: FileIndirectExecutionTest.java,v 1.3 2004/11/19 10:27:29 clq2 Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,11 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.net.URI;
 
-/** Tests the fetching of indirect methods. uses the file:/ protocol for convenience, although same should apply to all..
+/** Simplest CEA test that checks the fetching of indirect methods. uses the file:/ protocol for convenience, although same should apply to all protocols
  * @author Noel Winstanley nw@jb.man.ac.uk 23-Jun-2004
+ * 
+ * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
+ * @see org.astrogrid.applications.integration.JavaProviderServerInfo
  *
  */
 public class FileIndirectExecutionTest extends AbstractRunTestForCEA {
@@ -81,6 +84,12 @@ public class FileIndirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: FileIndirectExecutionTest.java,v $
+Revision 1.3  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.2.92.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.2  2004/07/23 08:44:30  nw
 fix to parameter population
 

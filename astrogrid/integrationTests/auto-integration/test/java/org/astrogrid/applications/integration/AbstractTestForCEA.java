@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractTestForCEA.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
+ * $Id: AbstractTestForCEA.java,v 1.3 2004/11/19 10:27:29 clq2 Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,7 +22,7 @@ import org.astrogrid.scripting.Service;
 import java.util.Iterator;
 import java.util.List;
 
-/** Abstract class for all cea server tests - provides a delegate pointing to the required server.
+/** Abstract class for all cea server tests - inplements provides a delegate pointing to the required server.
  * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
  * @version $Name:  $
  * @since iteration5
@@ -35,7 +35,7 @@ public abstract class AbstractTestForCEA extends AbstractTestForIntegration {
 			.getLogger(AbstractTestForCEA.class);
 
    /**
-    * @param arg0
+    * @param searchSring - key to search in service list for endpoint to communicate to.
     */
    public AbstractTestForCEA(String searchString,String arg0) {
       super(arg0);
@@ -44,7 +44,7 @@ public abstract class AbstractTestForCEA extends AbstractTestForIntegration {
 
     /** string to search in service list for */
     protected final String searchString;
-
+    /** searches for service endpoint*/
    protected void setUp() throws Exception {
         super.setUp();
         List apps = ag.getApplications();
@@ -64,9 +64,9 @@ public abstract class AbstractTestForCEA extends AbstractTestForIntegration {
         delegate = (CommonExecutionConnectorClient)serv.createDelegate();
         
     }
-
+   /** record of service the test will connect to - initialized in {@link #setUp()} */
    protected Service serv;
-
+/** delegate to service - configured in {@link #setUp()}*/
    protected CommonExecutionConnectorClient delegate;
 
 }

@@ -1,4 +1,4 @@
-/*$Id: HttpProviderServerInfo.java,v 1.5 2004/09/15 17:09:01 jdt Exp $
+/*$Id: HttpProviderServerInfo.java,v 1.6 2004/11/19 10:27:29 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,8 +14,10 @@ import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.workflow.beans.v1.Tool;
 
-/**
+/** Information on the Http CEA server
+ * calls the 'HTTP_ADDER_GET'
  * @author jdt
+ * @link org.astrogrid.applications.integration.ServerInfo
  *
  */
 public class HttpProviderServerInfo implements ServerInfo {
@@ -58,6 +60,12 @@ public class HttpProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: HttpProviderServerInfo.java,v $
+Revision 1.6  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.5.34.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.5  2004/09/15 17:09:01  jdt
 Removed superfluous imports.
 

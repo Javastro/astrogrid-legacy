@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.4 2004/09/10 18:39:50 pah Exp $
+ * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.5 2004/11/19 10:27:29 clq2 Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -29,10 +29,13 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
 
-/**
+/** test for cea server, fetching parameters from vospace
  * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
  * @version $Name:  $
  * @since iteration5
+ * 
+ * @see org.astrogrid.applications.integration.AbstractRunTestForCEA
+ * @see org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo
  */
 public class CommandLineVOSpaceIndirectExecutionTest extends AbstractRunTestForCEA {
 

@@ -1,4 +1,4 @@
-/*$Id: FlowWorkflowTest.java,v 1.4 2004/08/04 16:49:32 nw Exp $
+/*$Id: FlowWorkflowTest.java,v 1.5 2004/11/19 10:27:29 clq2 Exp $
  * Created on 22-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,8 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /** test of a workflow containing a flow. in particular, going to check execution times of steps, to prove steps in flows are executed in parallel
+ * <p>
+ * calls the TESTAPP application twice
  * @author Noel Winstanley nw@jb.man.ac.uk 22-Apr-2004
  *
  */
@@ -121,6 +123,12 @@ public class FlowWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: FlowWorkflowTest.java,v $
+Revision 1.5  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.4.76.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.4  2004/08/04 16:49:32  nw
 added test for scripting extensions to workflow
 

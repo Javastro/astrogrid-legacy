@@ -1,4 +1,4 @@
-/*$Id: SolarEventKeys.java,v 1.5 2004/08/17 13:35:18 nw Exp $
+/*$Id: SolarEventKeys.java,v 1.6 2004/11/19 10:27:29 clq2 Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,31 @@
 **/
 package org.astrogrid.workflow.integration.itn6.solarevent;
 
-/**naughty interface defining key constants for the solar event science case.
+/**defines registry key constants for the solar event science case.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Aug-2004
- *@todo check these keys are correct
+ *@todo check whether these constants need to be querying config properties for authorityID.
+ *
  */
 public interface SolarEventKeys {
+    /** registry key for the sec application */
     public static final String SEC_APP = "org.astrogrid.localhost/sec_dsa";
+    /** registry key for the trace / fits application */
     public static final String FITS_APP = "org.astrogrid.localhost/trace_dsa";
+    /** registry key for the movemaker application */
     public static final String MPEG_APP = "org.astrogrid.localhost/CallMakeMPEGFitsImages";
+    /** registry key for the concat application - a simplified mock of the moviemaker application */
     public static final String CONCAT_APP = "org.astrogrid.localhost/concat";
 }
 
 
 /* 
 $Log: SolarEventKeys.java,v $
+Revision 1.6  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.5.66.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.5  2004/08/17 13:35:18  nw
 added key for concat app
 

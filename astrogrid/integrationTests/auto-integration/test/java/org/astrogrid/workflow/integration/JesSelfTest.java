@@ -1,4 +1,4 @@
-/*$Id: JesSelfTest.java,v 1.3 2004/08/27 13:25:40 nw Exp $
+/*$Id: JesSelfTest.java,v 1.4 2004/11/19 10:27:29 clq2 Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,7 +15,8 @@ import org.astrogrid.config.SimpleConfig;
 
 import net.sourceforge.jwebunit.WebTestCase;
 
-/** Call the self-tests of the jes webapp - check that no errors occur there.
+/** Calls the self-tests of the jes webapp - check that no errors occur there.
+ * requires that the property {@link #JES_BASE_URL} is set to the base URL of the jes webapp
  * @author Noel Winstanley nw@jb.man.ac.uk 21-Apr-2004
  *
  */
@@ -55,6 +56,12 @@ public class JesSelfTest extends WebTestCase {
 
 /* 
 $Log: JesSelfTest.java,v $
+Revision 1.4  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.3.52.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.3  2004/08/27 13:25:40  nw
 removed hardcoded endpoint.
 

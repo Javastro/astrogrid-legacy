@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.20 2004/11/09 14:11:18 pah Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.21 2004/11/19 10:27:29 clq2 Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,60 +19,108 @@ import org.astrogrid.jes.delegate.JobSummary;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.JobExecutionService;
-import org.astrogrid.portal.workflow.intf.ToolValidationException;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.portal.workflow.intf.WorkflowManager;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.axis.utils.XMLUtils;
-import org.exolab.castor.xml.MarshalException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 
 import java.io.StringReader;
 
 /** Abstract base class for all tests that fire workflows into jes.
+ * <p>
+ * 
+ * There's a lot of commonality involved in constructing a workflow document, submitting it to the service, polling and waiting, and then inspecting the results. This class
+ * captures the common behaviour.
+ * {@link #testWorkflow()} is a  skeleton tet method that performs the test procedure -
+ *  subclasses should normally only need to override {@link #checkExecutionResults(Workflow)} and {@link #buildWorkflow()}
+ * <p />
+ * This class also defines a bunch of helper methods that can be used to assert properties of workflows in{@link #checkExecutionResults(Workflow)} 
  * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
  *
  */
 public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(AbstractTestForWorkflow.class);
+
     /** Construct a new AbstractTestForWorkflow
      *  Construct a new AbstractTestForWorkflow
-     * @param applications - list of application names involved in this workflow.
+     * @param applications - list of registry keys of applications involved in this workflow. At an early stage in the test, it will be verifed that these keys do exist in the registry.
      * @param arg0
      */
     public AbstractTestForWorkflow(String[] applications,String arg0) {
         super(arg0);
         this.applications = applications;
     }
+    /** keys of applications that must appear in the registry */
     protected final String[] applications;
 
     protected void setUp() throws Exception {
         super.setUp();
+        urn = null;
         WorkflowManager manager = ag.getWorkflowManager();
         jes = manager.getJobExecutionService();
         reg = manager.getToolRegistry();
     }
-
-
+    /** @NWW - test addition. Added a cleanup routine in the tearDown - will try to cancel / remove the job - so that it doesn't interfere with subsequent tests*/
+    protected void tearDown() throws Exception{
+        try {
+            jes.cancelJob(urn);
+        } catch (WorkflowInterfaceException e) {
+            logger.info("Exception when attempting to cancel job",e);
+        }              
+        super.tearDown();
+    }
+    
+  /** an instance of the jes client, initialized in {@link #setup} */
     protected JobExecutionService jes;
+    /** an instance of the application registry client, initialized in {@link #setup}*/
     protected ApplicationRegistry reg;
     
+    /** abstract method that should be implemented in subclasses to build the workflow document
+     * The parent class provides a pre-initialized workflow document in the member variable {@link AbstractTestForIntegration#wf}
+     * @throws Exception if something goes wrong.
+     */
     protected abstract void buildWorkflow() throws  Exception;
     /** timout is ten minutes for each test. can be overridden in subclasses. */
-   public  long WAIT_TIME = 10 * 60 * 1000; 
-/** override this to do fuller tests */
+   public  long WAIT_TIME = 10 * 60 * 1000;
+    protected JobURN urn; 
+/** checks the results of a JES execution. 
+ * this implementation just asserts that the workflow completed. Override to check the workflow document more thoroughly
+ * <p>
+ * Soft assertions are a good idea here..
+ * @param result - resulting workflow, with execution annotations, retreived from the jes server
+ * @throws Exception
+ */
     public void checkExecutionResults(Workflow result) throws Exception{
         assertWorkflowCompleted(result);
     }
 
+    /** skeleton tet method - perorms the test procedure - subclasses should normally only need to extend {@link #checkExecutionResults(Workflow)} and {@link #buildWorkflow()}
+     * <p>
+     * <ul>
+     * <li>First verifies that required applications do have registry entries
+     * <li>calls {@link #buildWorkflow()}
+     * <li>writes copy of workflow document to myspace.
+     * <li>submits document to jes.
+     * <li>verify that it's in the jes queue
+     * <li>polls JES until either job completes, or {@link #WAIT_TIME} is exceeded
+     * <li>Retreives result document from jes, writes to system.out (so it can be picked up by maven test reports)
+     * <li>calls {@link #checkExecutionResults(Workflow)}
+     * @throws Exception
+     */
     public void testWorkflow() throws Exception {
         // check registry entries are there. - if not, no point continuing.
         for (int i = 0; i < applications.length; i++) {
@@ -80,7 +128,6 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             assertNotNull(description);
             assertEquals(applications[i], description.getName());
         }
-        JobURN urn = null;
         try {
             buildWorkflow();
             writeWorkflowToVOSpace(wf);
@@ -89,6 +136,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             assertNotNull("submitted workflow produced null urn", urn);
             System.out.println(this.getClass().getName() + ": assigned URN is " + urn.getContent());
             //check its in the list.
+            Thread.sleep(2000); // wait 2 secs, to just be safe.
             JobSummary summaries[] = jes.readJobList(acc);
             softAssertNotNull("null job list returned", summaries);
             softAssertTrue("empty job list returned", summaries.length > 0);
@@ -238,7 +286,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     }
 
     // helper assertions to use.
-    /**
+    /** helper assertion - assert that a workflow completed - ie. it's status is 'completed', and a finish time was recorded
      * @param result
      */
     public void assertWorkflowCompleted(Workflow result) {
@@ -249,31 +297,32 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         softAssertEquals("status not completed",ExecutionPhase.COMPLETED,jrec.getStatus());
     }
 
+    /** helper assertion - assert that a workflow is in error - no finish timme, and it's status is 'error'*/
     protected void assertWorkflowError(Workflow result) {
-        // workflow should have been executed and completed.
         assertNotNull("no execution record",result.getJobExecutionRecord());
         JobExecutionRecord jrec = result.getJobExecutionRecord();
         softAssertNotNull("no finish time recorded",jrec.getFinishTime());
         softAssertEquals("status not completed",ExecutionPhase.ERROR,jrec.getStatus());
     }    
     
-    /**
-     * @param sc2
+    /** helper assertion - assert that a script element output the expected message
+     * <p>
+     * calls {@link #assertScriptCompleted(Script)}
+     * @param sc2 the script element
+     * @param msg expected message to see in Stdout.
      */
     protected void assertScriptCompletedWithMessage(Script sc2, String msg) {
-        softAssertEquals("expected a single execution",1,sc2.getStepExecutionRecordCount());
-        StepExecutionRecord rec = sc2.getStepExecutionRecord(0);
-        softAssertEquals("expected to complete",ExecutionPhase.COMPLETED, rec.getStatus());
-        softAssertTrue("expected some messages",rec.getMessageCount() > 0);
+        assertScriptCompleted(sc2);
         //check stdout and stderr messages.
+        StepExecutionRecord rec = sc2.getStepExecutionRecord(0);        
         MessageType stdout = (MessageType)rec.findXPathValue("message[source='stdout']");
         assertNotNull("no stdout message found",stdout);
         System.out.println(stdout.getContent());
         softAssertEquals("Message was " + stdout.getContent(),msg,stdout.getContent().trim());
     }
 
-    /**
-     * @param sc1
+    /** helper assertion - assert that a scirpt element was executed only once, and completed successfully
+     * @param sc1 the script element to check.
      */
     protected void assertScriptCompleted(Script sc1) {
         softAssertEquals("expected a single execution",1,sc1.getStepExecutionRecordCount());
@@ -281,19 +330,24 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         softAssertEquals("expected to complete",ExecutionPhase.COMPLETED,rec.getStatus());
         softAssertTrue("expected some messages",rec.getMessageCount() > 0);
     }
+    /** helper assertion - assert that a script element ended in error
+     * 
+     * @param sc1 the script expected to err
+     */
     protected void assertScriptError(Script sc1) {
         softAssertEquals("expected a single execution",1,sc1.getStepExecutionRecordCount());
         StepExecutionRecord rec = sc1.getStepExecutionRecord(0);
         softAssertEquals("expected to err",ExecutionPhase.ERROR,rec.getStatus());
         softAssertTrue("expected some messages",rec.getMessageCount() > 0);
     }    
+    /** helper assertion - assert that a script element was not run at all*/
     protected void assertScriptNotRun(Script sc1) {
         softAssertEquals("expected script not to run",0,sc1.getStepExecutionRecordCount());
 
     }    
-    /**
+    /** helper assertion - assert that a step element ended in 'COMPLETED', after being executed once.
      * @param step
-     */
+     */        
     protected void assertStepCompleted(Step step) {
         softAssertEquals("expected a single execution",1,step.getStepExecutionRecordCount());
         if (step.getStepExecutionRecordCount() > 0) {
@@ -306,7 +360,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     }
     
 
-    /**
+    /** helper assertion - assert that a step is still running
      * @param step
      */
     protected void assertStepRunning(Step step) {
@@ -317,6 +371,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         softAssertNull("didn't expect a finish time",rec.getFinishTime());
     }
     
+    /** access the results returned by a step */
     protected ResultListType getResultOfStep(Step step) throws Exception {
         StepExecutionRecord rec = step.getStepExecutionRecord(0);
         assertNotNull("step execution record was null",rec);
@@ -327,7 +382,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         assertNotNull("result list was null",resultList);
         return resultList;
     }
-    
+    /** access the messages a script executioin wrote to stdout */
     protected String getStdoutOfScript(Script sc2) throws Exception {
         softAssertEquals("expected a single execution",1,sc2.getStepExecutionRecordCount());
         StepExecutionRecord rec = sc2.getStepExecutionRecord(0);
@@ -338,7 +393,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         return stdout.getContent();
     }
 
-    /** clone the parameter.
+    /** clone a parameter
      * @param src
      * @return
      */
@@ -352,11 +407,18 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
         
     }
         
+
 }
 
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.21  2004/11/19 10:27:29  clq2
+nww-itn07-659
+
+Revision 1.20.2.1  2004/11/18 10:52:01  nw
+javadoc, some very minor tweaks.
+
 Revision 1.20  2004/11/09 14:11:18  pah
 more rationalization of registering
 
