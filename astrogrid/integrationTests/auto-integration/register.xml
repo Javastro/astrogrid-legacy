@@ -43,7 +43,7 @@
             | Upload our Registry entry.
             +-->
         <register.task
-            data="${registry.data}"
+            data="${registry.entry}"
             registry="${org.astrogrid.registry.admin}"
             />
     </target>
