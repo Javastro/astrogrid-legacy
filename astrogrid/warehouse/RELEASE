@@ -1,0 +1,19 @@
+The front-end web-service is released as an AstroGrid component; the 
+back-end grid-service is not. There is nothing "secret" about the back-end 
+service, but it is harder to install and configure than the front-end 
+service. For now, AstroGrid offers a pre-installed back-end service at 
+http://hydra.star.le.ac.uk:8082/gdw/. The released software is 
+preconfigured to use this back-end service. Please see 
+GdwCataloguesIteration4 for a list of data-sets installed in the back-end 
+service. 
+
+The web interface for a test query times out if the query runs longer than 
+about two minutes. This interface is not intended for long tests. 
+
+It is impossible to install the warehouse front-end service in the same 
+Tomcat as a datacenter installation because the entries in 
+AstroGridConfig.properties clash. This is due to warehouse being a 
+specialized form of datacenter and re-using many classes from the latter 
+component. We hope to remove this limitation in a later release. 
+
+
