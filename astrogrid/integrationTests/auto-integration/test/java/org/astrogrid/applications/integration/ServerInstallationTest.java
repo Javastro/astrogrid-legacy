@@ -1,4 +1,4 @@
-/*$Id: ServerInstallationTest.java,v 1.5 2004/08/29 23:03:29 nw Exp $
+/*$Id: ServerInstallationTest.java,v 1.6 2004/09/02 01:33:25 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import org.astrogrid.portal.workflow.intf.ApplicationDescription;
 import org.astrogrid.portal.workflow.intf.ApplicationRegistry;
 import org.astrogrid.portal.workflow.intf.WorkflowInterfaceException;
 import org.astrogrid.test.AstrogridAssert;
+import org.astrogrid.test.schema.SchemaMap;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -73,8 +74,8 @@ public class ServerInstallationTest extends AbstractTestForCEA {
         String entry = delegate.returnRegistryEntry();
         assertNotNull(entry);
         System.out.println(entry);
-        // @todo validate against VOResource schema.
-        //AstrogridAssert.assertXMLValid(entry); - won't work - wants to validate against dtd.
+       
+        AstrogridAssert.assertSchemaValid(entry,"VODescription",SchemaMap.ALL);
 
     }
 
@@ -84,6 +85,9 @@ public class ServerInstallationTest extends AbstractTestForCEA {
 
 /* 
 $Log: ServerInstallationTest.java,v $
+Revision 1.6  2004/09/02 01:33:25  nw
+added assertion that we're getting back a voresource.
+
 Revision 1.5  2004/08/29 23:03:29  nw
 think I was callinig the wrong assertion.
 
