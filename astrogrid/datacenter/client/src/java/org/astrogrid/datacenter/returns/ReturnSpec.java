@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnSpec.java,v 1.3 2004/09/07 00:54:20 mch Exp $
+ * $Id: ReturnSpec.java,v 1.4 2004/10/05 19:20:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,6 +26,7 @@ public abstract class ReturnSpec  {
    
    public static final String VOTABLE  = "VOTable";
    public static final String HTML     = "Html";
+   public static final String RAW      = "Raw"; //use for things like count
    
    /** No compression */
    public final static String NONE = "None";
@@ -60,6 +61,9 @@ public abstract class ReturnSpec  {
 }
 /*
  $Log: ReturnSpec.java,v $
+ Revision 1.4  2004/10/05 19:20:00  mch
+ Added raw
+
  Revision 1.3  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
