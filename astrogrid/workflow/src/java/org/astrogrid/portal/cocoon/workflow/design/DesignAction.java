@@ -172,6 +172,9 @@ public class DesignAction extends AbstractAction {
                 this.action = request.getParameter( ACTION_PARAM_TAG ) ; 
                 this.bConfirm = new Boolean ( request.getParameter(CONFIRM_PARAM_TAG) ).booleanValue() ;
                 
+                debug( request.getParameter(CONFIRM_PARAM_TAG) ) ;
+                debug( "request: " + request.toString() ) ;
+                
                 // Load current Workflow - if any - from our HttpSession.
                 this.workflow = (Workflow) session.getAttribute( HTTP_WORKFLOW_TAG ) ;
                 
@@ -215,7 +218,7 @@ public class DesignAction extends AbstractAction {
                     this.editJoinCondition() ; 
                 }
                 else {
-                    ; // unsupported action
+                    debug( "unsupported action") ; // unsupported action
                 }
                 // Save the workflow in the session object...
                 debug( "about to set session attribute..." ) ;
@@ -224,6 +227,9 @@ public class DesignAction extends AbstractAction {
             }
             catch( ConsistencyException cex ) {
                 debug( "ConsistencyException occurred");
+            }
+            catch( Exception ex) {
+                debug( "Exception: ex") ;
             }
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.act() exit" ) ;  
@@ -287,12 +293,19 @@ public class DesignAction extends AbstractAction {
                 }
                 
                 if( workflow == null ) {
-                    Workflow.createWorkflow( userid, community, name ) ;
+                    workflow = Workflow.createWorkflow( userid, community, name ) ;
                     workflow.setDescription( "Some Query against USNOB" ) ; 
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
-                    Workflow.createWorkflow( userid, community, name ) ;
+                    workflow = Workflow.createWorkflow( userid, community, name ) ;
                     workflow.setDescription( "Some Query against USNOB" ) ;
+                }
+                else if( !workflow.isDirty() ) {
+                    workflow = Workflow.createWorkflow( userid, community, name ) ;
+                    workflow.setDescription( "Some Query against USNOB" ) ;
+                }
+                else {
+                    debug( "Create ignored - bConfirm == false" ) ;
                 }
         
             }

@@ -12,7 +12,7 @@
 package org.astrogrid.portal.workflow.design;
 
 import org.astrogrid.portal.workflow.design.activity.*;
-import org.astrogrid.workflow.design.activity.*;
+import org.apache.log4j.Logger ;
 
 /**
  * The <code>Step</code> class represents... 
@@ -30,6 +30,14 @@ import org.astrogrid.workflow.design.activity.*;
  */
 public class Step extends Activity {
     
+    /** Compile-time switch used to turn tracing on/off. 
+      * Set this to false to eliminate all trace statements within the byte code.*/         
+    private static final boolean 
+        TRACE_ENABLED = true ;
+        
+    private static Logger 
+        logger = Logger.getLogger( Step.class ) ;  
+    
     public static final NullTool
         NULLTOOL = new NullTool() ;
     
@@ -44,7 +52,10 @@ public class Step extends Activity {
         inputResources = null ,
         outputResources = null ;
     
-    public Step() {}
+    public Step() {
+        super() ;
+        if( TRACE_ENABLED ) trace( "Step() entry/exit") ; 
+    }
 
 	public void setName(String name) {
 		this.name = name;
@@ -97,5 +108,15 @@ public class Step extends Activity {
 	public String getDescription() {
 		return description;
 	}
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }
    
 } // end of class Step

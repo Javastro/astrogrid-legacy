@@ -20,8 +20,6 @@ import java.text.MessageFormat ;
 import org.apache.log4j.Logger ;
 
 import org.astrogrid.i18n.*;
-import org.astrogrid.workflow.*;
-import org.astrogrid.workflow.design.activity.*;
 import org.astrogrid.AstroGridException ;
 
 import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
