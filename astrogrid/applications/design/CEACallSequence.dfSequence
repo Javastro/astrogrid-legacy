@@ -1,0 +1,154 @@
+package id10m9sdseq8h5sdses45cg;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref><oihard>
+@__modelType reference 
+*/
+class reference22 {
+}/**
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node23:oiref><oihard>
+@__modelType reference 
+*/
+class reference24 {
+}/**
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node4:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}}/**
+
+@__tags
+@shapeType SequenceDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions 
+
+
+
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node8:oiref>=568,260,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref>=285,158,568,158:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link:oiref>=582,183,851,183:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node:oiref>=240,30,90,330,1:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link7:oiref>=302,228,12,23,0,0.036208127,0.9993443:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node4:oiref>=1024,30,115,330,1:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref>=450,30,251,330,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link3:oiref>=:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link:oiref>=592,160,12,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link7:oiref>=292,250,568,260:oigroup>
+<oigroup:Composite#$messageInplaceEditing#<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref>=295,135,65,23,0,0.0,1.0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link1:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node23:oiref>=780,30,156,330,0:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node23.node:oiref>=851,183,14,20,1:oigroup>
+<oigroup:<oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.node:oiref>=568,158,14,20,1:oigroup>
+
+*/
+class __positions {
+}/**
+@shapeType Object
+@__modelType node
+@name Common Execution Controller 
+*/
+class node21 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation1
+@activationMessage <oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link:oiref> 
+*/
+class node {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node23:oiref><oihard>
+@sendingInstant 183
+@processingDuration 20
+@sequenceNumber 2
+@diagram_uniqe_name <oiref:design#Class#id10m9sdseq8h5sdses45cg.diagram:oiref> 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node23:oiref><oihard> 
+*/
+class link3 {
+}/**
+@shapeType Activation
+@__modelType node
+@name Activation3
+@activationMessage <oiref:design#Class#id10m9sdseq8h5sdses45cg.node.link7:oiref> 
+*/
+class node8 {
+}}/**
+@shapeType Object
+@__modelType node
+@name Job Monitor Service 
+*/
+class node23 {
+/**
+@shapeType Activation
+@__modelType node
+@name Activation2
+@activationMessage <oiref:design#Class#id10m9sdseq8h5sdses45cg.node21.link:oiref> 
+*/
+class node {
+}}/**
+@shapeType Object
+@__modelType node
+@name Caller
+@stereotype worker
+@persistence transient
+@multipleInstance
+*/
+class node {
+/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref><oihard>
+@sendingInstant 158
+@processingDuration 20
+@sequenceNumber 1
+@diagram_uniqe_name <oiref:design#Class#id10m9sdseq8h5sdses45cg.diagram:oiref>
+@controlFlowType asynchronous
+@label Execute 
+*/
+class link {
+}/**
+@shapeType CollaborationLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref><oihard> 
+*/
+class link1 {
+}/**
+@shapeType MessageLink
+@__modelType link
+@__ref <oiref:design#Class#id10m9sdseq8h5sdses45cg.node21:oiref><oihard>
+@sendingInstant 250
+@processingDuration 20
+@sequenceNumber 3
+@diagram_uniqe_name <oiref:design#Class#id10m9sdseq8h5sdses45cg.diagram:oiref>
+@transmissionDuration 10 
+*/
+class link7 {
+}}/**
+@shapeType Object
+@__modelType node
+@name StorageService 
+*/
+class node4 {
+}

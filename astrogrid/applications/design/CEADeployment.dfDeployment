@@ -11,10 +11,45 @@ class diagram {
 */
 class reference {
 }/**
-@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46:oiref><oihard>
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1:oiref><oihard>
 @__modelType reference 
 */
-class reference47 {
+class reference2 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node5:oiref><oihard>
+@__modelType reference 
+*/
+class reference6 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node11:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15:oiref><oihard>
+@__modelType reference 
+*/
+class reference16 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node9:oiref><oihard>
+@__modelType reference 
+*/
+class reference10 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node12:oiref><oihard>
+@__modelType reference 
+*/
+class reference13 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node14:oiref><oihard>
+@__modelType reference 
+*/
+class reference15 {
+}/**
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node16:oiref><oihard>
+@__modelType reference 
+*/
+class reference17 {
 }}/**
 
 @__tags
@@ -29,29 +64,80 @@ class __options {
 @__positions 
 
 
-<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link62:oiref>=1076,505,22,23,0,-1.0,0.0:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46:oiref>=800,80,590,570,0:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link61:oiref>=490,250,490,350:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52:oiref>=950,350,324,60,0:oigroup>
-<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link62:oiref>=1127,415,118,23,0,1.0,0.0:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40.link:oiref>=480,420,480,404:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link:oiref>=570,202,870,184:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40:oiref>=410,420,141,60,1:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link:oiref>=995,350,995,300:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node52.link62:oiref>=1101,410,1101,510:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node50.link:oiref>=970,240,970,194:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node49:oiref>=870,140,192,54,1:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51:oiref>=410,190,160,60,0:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node50:oiref>=900,240,141,60,1:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node48:oiref>=990,510,223,60,1:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref>=390,350,192,54,1:oigroup>
-<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node:oiref>=330,130,330,380,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node:oiref>=600,710,152,54,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node11:oiref>=500,650,300,210,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=1316,640,1041,690:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link:oiref>=760,128,992,169:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=1324,319,1053,359:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node50.link:oiref>=1292,186,1184,186:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51:oiref>=600,80,160,60,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node14.link:oiref>=166,880,166,854:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link8:oiref>=328,136,62,23,0,-0.11462411,0.993409:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node12:oiref>=513,925,537,95,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link61:oiref>=680,140,680,190:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node16.link:oiref>=1589,680,1540,680:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node:oiref>=47,227,233,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node1.link:oiref>=646,790,646,764:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link:oiref>=1350,580,1350,560:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node14:oiref>=1569,254,261,146,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node7:oiref>=70,157,192,54,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1:oiref>=920,40,620,760,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node14:oiref>=60,880,186,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15:oiref>=30,470,400,520,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node12.link:oiref>=513,957,430,957:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3:oiref>=590,380,174,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node50:oiref>=1292,159,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node16:oiref>=1589,600,221,160,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link3:oiref>=653,140,176,550:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link:oiref>=1362,259,1362,219:oigroup>
+<oigroup:Composite#label#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=673,639,29,23,0,-1.0,0.0:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link:oiref>=907,153,62,23,0,-0.17402747,-0.9847408:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link4:oiref>=720,140,1056,510:oigroup>
+<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=956,678,22,23,0,-0.17888544,0.98386997:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node.link:oiref>=166,227,166,211:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node9.link:oiref>=280,76,280,90:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node17:oiref>=80,550,192,54,1:oigroup>
+<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52.link62:oiref>=1391,652,118,23,0,0.17888544,-0.98386997:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40:oiref>=610,280,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node2:oiref>=90,800,152,54,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node1:oiref>=570,790,186,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52:oiref>=1162,259,324,60,0:oigroup>
+<oigroup:Composite#supplierCardinality#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=950,347,22,23,0,-0.14601944,0.9892817:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node5:oiref>=40,90,270,277,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node48:oiref>=942,359,223,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19.link:oiref>=170,720,170,690:oigroup>
+<oigroup:Composite#clientRole#<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52.link62:oiref>=1417,331,118,23,0,0.14601944,-0.9892817:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node18:oiref>=100,630,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40.link:oiref>=680,280,680,244:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node49:oiref>=992,159,192,54,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=696,440,696,710:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node50:oiref>=1280,500,141,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node:oiref>=520,20,330,510,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19:oiref>=70,720,174,60,1:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link3:oiref>=375,348,62,23,0,-0.6518382,0.75835806:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46:oiref>=922,109,590,330,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node14.link:oiref>=1569,289,1486,289:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19.link4:oiref>=166,780,166,800:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref>=590,190,192,54,1:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link4:oiref>=892,363,62,23,0,-0.7403021,-0.67227435:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node51.link8:oiref>=600,128,262,167:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node:oiref>=250,810,142,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link:oiref>=685,380,685,340:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node50.link:oiref>=1280,535,1152,535:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node52:oiref>=1170,580,293,60,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node48:oiref>=930,690,223,60,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75:oiref>=922,447,600,333,0:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node18.link:oiref>=170,630,170,604:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node9:oiref>=250,20,209,56,1:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node19.link6:oiref>=205,780,321,810:oigroup>
+<oigroup:<oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node49:oiref>=960,510,192,54,1:oigroup>
+<oigroup:Composite#stereotype#<oiref:design#Class#id135f4drevt17tdrewcnqe.node.node3.link13:oiref>=673,606,62,23,0,-1.0,0.0:oigroup>
 */
 class __positions {
 }/**
 @shapeType Node
 @__modelType node
-@name Job Control Server 
+@name Workflow Server
 */
 class node {
 /**
@@ -84,7 +170,8 @@ class node51 {
 /**
 @shapeType DependencyLink
 @__modelType link
-@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node49:oiref><oihard> 
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node49:oiref><oihard> 
+@stereotype call
 */
 class link {
 }/**
@@ -93,7 +180,57 @@ class link {
 @__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node.node43:oiref><oihard> 
 */
 class link61 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node49:oiref><oihard> 
+@stereotype call
+*/
+class link4 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node7:oiref><oihard>
+@stereotype call
+*/
+class link8 {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node17:oiref><oihard>
+@stereotype call 
+*/
+class link3 {
+}}/**
+this component can translate between the CommonExecutionConnector interface and any generic web service (with suitable configuration).
+@shapeType Component
+@__modelType node
+@name Web Service Proxy
+@instanceForm 
+*/
+class node3 {
+/**
+@shapeType AssociatesLink
+@__modelType link
+@aggregation
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node.node40:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node:oiref><oihard> 
+@label calls
+@stereotype call
+*/
+class link13 {
 }}}/**
+@shapeType Node
+@__modelType node
+@name Compute Farm 
+*/
+class node1 {
+/**
 @shapeType Node
 @__modelType node
 @name Application Server 1 
@@ -118,7 +255,7 @@ class node50 {
 /**
 @shapeType SupportsLink
 @__modelType link
-@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node49:oiref><oihard> 
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node49:oiref><oihard> 
 */
 class link {
 }}/**
@@ -138,16 +275,256 @@ class node52 {
 @shapeType AssociatesLink
 @__modelType link
 @aggregation
-@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node50:oiref><oihard>
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node50:oiref><oihard>
 @composition 
 */
 class link {
 }/**
 @shapeType AssociatesLink
 @__modelType link
-@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node46.node48:oiref><oihard>
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node48:oiref><oihard>
 @clientRole controls execution
 @supplierCardinality 1..* 
 */
 class link62 {
-}}}
+}}}/**
+@shapeType Node
+@__modelType node
+@name Application Server 2
+*/
+class node75 {
+/**
+@shapeType Component
+@__modelType node
+@name CommandLineApplication
+@instanceForm
+@stereotype application 
+*/
+class node48 {
+}/**
+@shapeType Component
+@__modelType node
+@name CEA
+@instanceForm
+@stereotype library 
+*/
+class node50 {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node49:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Interface
+@__modelType node
+@name CommonExecutionConnector 
+*/
+class node49 {
+}/**
+@shapeType Component
+@__modelType node
+@name CommandLineExecutionController
+@instanceForm 
+*/
+class node52 {
+/**
+@shapeType AssociatesLink
+@__modelType link
+@aggregation
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node50:oiref><oihard>
+@composition 
+*/
+class link {
+}/**
+@shapeType AssociatesLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node75.node48:oiref><oihard>
+@clientRole controls execution
+@supplierCardinality 1..* 
+*/
+class link62 {
+}}}}/**
+@shapeType Node
+@__modelType node
+@name Remote Server 
+*/
+class node5 {
+/**
+@shapeType Interface
+@__modelType node
+@name CommonExecutionConnector 
+*/
+class node7 {
+}/**
+@shapeType Component
+@__modelType node
+@name CEA Compliant Web Service
+@instanceForm 
+*/
+class node {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node5.node7:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Node
+@__modelType node
+@name Remote Server 
+*/
+class node11 {
+/**
+@shapeType Interface
+@__modelType node
+@name WSDL defined interface 
+*/
+class node {
+}/**
+@shapeType Component
+@__modelType node
+@name Generic Web service
+@instanceForm 
+*/
+class node1 {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node11.node:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Node
+@__modelType node
+@name Remote Server
+*/
+class node15 {
+/**
+@shapeType Component
+@__modelType node
+@name Web Service Proxy
+@instanceForm 
+*/
+class node19 {
+/**
+@shapeType AssociatesLink
+@__modelType link
+@aggregation
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node18:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType DependencyLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node2:oiref><oihard> 
+*/
+class link4 {
+}/**
+@shapeType AssociatesLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node:oiref><oihard> 
+*/
+class link6 {
+}}/**
+@shapeType Interface
+@__modelType node
+@name CommonExecutionConnector 
+*/
+class node17 {
+}/**
+@shapeType Component
+@__modelType node
+@name CEA
+@instanceForm
+@stereotype library 
+*/
+class node18 {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node17:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Interface
+@__modelType node
+@name WSDL defined interface 
+*/
+class node2 {
+}/**
+@shapeType Component
+@__modelType node
+@name Generic Web service
+@instanceForm 
+*/
+class node14 {
+/**
+@shapeType SupportsLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15.node2:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Component
+@__modelType node
+@name local Storage
+@instanceForm
+@stereotype file 
+*/
+class node {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text A direct call can be made to 
+a compliant service 
+*/
+class node9 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node5:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text The Web servicce proxy component might be co-located with 
+a generic web service to localize data storage and thus minimise network traffic. 
+*/
+class node12 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node15:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note3
+@text A command line execution Controller component is capable of running unix command line applications 
+*/
+class node14 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1.node46.node52:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note4
+@text Application Servers may be combined into compute farms 
+*/
+class node16 {
+/**
+@shapeType NoteLink
+@__modelType link
+@__ref <oiref:design#Class#id135f4drevt17tdrewcnqe.node1:oiref><oihard> 
+*/
+class link {
+}}
