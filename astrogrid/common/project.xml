@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.16 2004/05/04 11:00:25 nw Exp $ -->
+<!-- $Id: project.xml,v 1.17 2004/05/28 18:20:38 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-common</id>
     <name>Common classes</name>
     <description>Classes used across the components.</description>
-    <shortDescription>AstroGrid Common Components</shortDescription>
+    <shortDescription>AstroGrid Common Library</shortDescription>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
