@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.25 2004/04/05 16:42:29 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.26 2004/04/21 16:59:39 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/04/05 16:42:29 $</cvs:date>
- * <cvs:version>$Revision: 1.25 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/21 16:59:39 $</cvs:date>
+ * <cvs:version>$Revision: 1.26 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -187,8 +187,8 @@ public final class LoginAction extends AbstractAction {
         try {
             token = passwordResolver.checkPassword(name, pass);
         } catch (CommunityServiceException e) {
-            log.error("CommunityServiceException from security delegate",e);
-            throw new LoginException("Exception from security delegate",e);
+            log.debug("Security check failed",e);
+            return null; //failed to log in
         } catch (CommunitySecurityException e) {
             log.debug("Security check failed",e);
             return null; //failed to log in
@@ -283,6 +283,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.26  2004/04/21 16:59:39  jdt
+ * temporary change to accommodate bug 297
+ *
  * Revision 1.25  2004/04/05 16:42:29  jdt
  * reinstated the init method till we decide whether it is really required.
  *
