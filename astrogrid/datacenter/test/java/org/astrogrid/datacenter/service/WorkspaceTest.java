@@ -51,7 +51,7 @@ public class WorkspaceTest extends TestCase
       //check there are 5 files in there
       File[] contents = workspaceFile.listFiles();
       assertNotNull(contents);
-      assertEquals("5 files created but not 5 files in workspace",0,contents.lengh);
+      assertEquals("5 files created but not 5 files in workspace",0,contents.length);
       
       //empty the workspace
       workspace.empty();
@@ -86,6 +86,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.3  2003/09/04 10:49:16  nw
+fixed typo
+
 Revision 1.2  2003/09/04 09:24:32  nw
 added martin's changes
 
