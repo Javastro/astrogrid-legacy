@@ -72,7 +72,7 @@
                 </dependency>
                      <dependency >
                            <id>wsdl4j</id>
-                           <version>1.4</version>
+                           <version>1.0</version>
                 </dependency>
 
         <!-- myspace -->
