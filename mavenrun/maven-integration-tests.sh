@@ -1,8 +1,10 @@
 BUILD_DIR=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
+TMP=/tmp
 OLDDIR=$PWD
 PROJECT_NAME=integrationTests
 LOG_FILE=maven-build-integrationTests.log
+TOMCAT_SERVERS=tomcatServers.xml
 
 DATE=`date`
 TIMESTAMP=`date +%Y%m%d-%T`
@@ -44,11 +46,16 @@ cd $BUILD_DIR >> $BUILD_DIR/$LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] remove old SNAPSHOTS" >> $BUILD_DIR/$LOG_FILE 2>&1
 sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $BUILD_DIR/$LOG_FILE 2>&1
 
-#echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME" >> $BUILD_DIR/$LOG_FILE 2>&1
-#rm -fr $PROJECT_HOME >> $BUILD_DIR/$LOG_FILE 2>&1
+echo "Saving tomcatServers.xml config file"
+cp $PROJECT_HOME/$TOMCAT_SERVERS $TMP
+echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME" >> $BUILD_DIR/$LOG_FILE 2>&1
+rm -fr $PROJECT_HOME >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] cvs checkout" >> $BUILD_DIR/$LOG_FILE 2>&1
-cvs -d $CVSROOT update -A astrogrid/$PROJECT_NAME >> $BUILD_DIR/$LOG_FILE 2>&1
+cvs -d $CVSROOT co -A astrogrid/$PROJECT_NAME >> $BUILD_DIR/$LOG_FILE 2>&1
+echo "Restoring tomcatServers.xml config file"
+mv $TMP/$TOMCAT_SERVERS $PROJECT_HOME
+
 
 echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME" >> $BUILD_DIR/$LOG_FILE 2>&1
 cd $PROJECT_HOME >> $BUILD_DIR/$LOG_FILE 2>&1
