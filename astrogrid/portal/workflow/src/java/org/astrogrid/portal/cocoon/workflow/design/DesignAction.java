@@ -11,7 +11,7 @@
 package org.astrogrid.portal.cocoon.workflow.design;
 
 import org.apache.log4j.Logger; 
-
+   
 //import org.astrogrid.i18n.*;
 //import org.astrogrid.AstroGridException;
 //import org.astrogrid.portal.workflow.WKF;
@@ -163,6 +163,7 @@ public class DesignAction extends AbstractAction {
         ACTION_SUBMIT_WORKFLOW = "submit-workflow",
 	    ACTION_EDIT_WORKFLOW = "edit-workflow",
         ACTION_READ_WORKFLOW_LIST = "read-workflow-list",
+        ACTION_READ_TOOL_LIST = "read-tool-list",        
 		ACTION_COPY_WORKFLOW = "copy-workflow",
         ACTION_CHOOSE_QUERY = "choose-query",
         ACTION_EDIT_JOINCONDITION = "edit-join-condition",
@@ -356,6 +357,9 @@ public class DesignAction extends AbstractAction {
                 else if( action.equals( ACTION_READ_WORKFLOW_LIST ) ) {
                     this.readWorkflowList(); 
                 }
+                else if( action.equals( ACTION_READ_TOOL_LIST ) ) {
+                    this.readToolList(); 
+                }
                 else if( action.equals( ACTION_READ_QUERY_LIST ) ) {
                     this.readQueryList(); 
                 }
@@ -416,7 +420,7 @@ public class DesignAction extends AbstractAction {
             	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ); 
                 }
                 
-				this.readLists() ; // Ensure request object contains latest Workflow/Query
+//				this.readLists() ; // Ensure request object contains latest Workflow/Query
             }
             catch( ConsistencyException cex ) {
                 results = null;
@@ -799,7 +803,6 @@ public class DesignAction extends AbstractAction {
         } // end of editJoinCondition()
         
         
-        //JBL Note: this seems a redundant action. The tool is not saved anywhere.
         private void createTool() throws ConsistencyException {
            if( TRACE_ENABLED ) trace( "DesignActionImpl.createTool() entry" ) ;
            try {
@@ -871,7 +874,7 @@ public class DesignAction extends AbstractAction {
 //                this.checkPermissions( AUTHORIZATION_RESOURCE_WORKFLOW
 //                                     , AUTHORIZATION_ACTION_EDIT ) ;
                                
-                //NB: The filter argument is ignored at present (Sept 2003).
+
                 WorkflowStore wfStore = workflowManager.getWorkflowStore();
                 workflows = wfStore.listWorkflows( credentials.getAccount() ) ;
                 this.request.setAttribute( WORKFLOW_LIST_PARAMETER, workflows ) ;               
@@ -917,6 +920,15 @@ public class DesignAction extends AbstractAction {
            try {
               ApplicationRegistry toolRegistry = workflowManager.getToolRegistry();
               tools = toolRegistry.listApplications();
+//              debug( "tools list: " ); 
+//              if(tools != null){
+//                  for( int i=0; i<tools.length; i++ ){
+//                      debug( tools[i]);
+//                  }
+//              }
+//              else {
+//                  debug( "tools list is null" );
+//              }
               this.request.setAttribute( TOOL_LIST_PARAMETER, tools ) ;              
            }
            catch( WorkflowInterfaceException wix ) {
@@ -1355,8 +1367,8 @@ public class DesignAction extends AbstractAction {
                   index = -1;
               }
               
-			  activityContainer = locateActivityContainer( workflow, activityTargetKey );
-
+              activityContainer = locateActivityContainer( workflow, activityTargetKey );
+			 
               highWaterMark = activityContainer.getActivityCount() - 1;
               if( highWaterMark < 0 ) {
                   highWaterMark = 0;
