@@ -1,5 +1,5 @@
 /*
- * $Id: IVOSRN.java,v 1.4 2005/01/26 17:41:48 mch Exp $
+ * $Id: IVOSRN.java,v 1.5 2005/01/27 18:52:11 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,10 +14,11 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.security.Principal;
 import org.astrogrid.slinger.SRI;
+import org.astrogrid.slinger.StoreException;
 import org.astrogrid.slinger.sources.SourceIdentifier;
+import org.astrogrid.slinger.sources.SourceMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
  * International Virtual Observatory Storepoint Resource Name.  An IVORN used to
@@ -53,19 +54,14 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
    /** All targets must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public OutputStream resolveOutputStream(Principal user) throws IOException {
-//@todo      return TargetMaker.makeTarget(super.resolve());
-      return null;
+      return resolveTarget().resolveOutputStream(user);
    }
    
    /** Used to set the mime type of the data about to be sent to the target. Does nothing. */
-   public void setMimeType(String aMimeType, Principal user) {
-      //@todo
+   public void setMimeType(String aMimeType, Principal user) throws IOException {
+      resolveTarget().setMimeType(aMimeType, user);
    }
 
-   public Reader resolveReader(Principal user) throws IOException {
-      return new InputStreamReader(resolveInputStream(user));
-   }
-   
    public Writer resolveWriter(Principal user) throws IOException {
       return new OutputStreamWriter(resolveOutputStream(user));
    }
@@ -73,24 +69,48 @@ public class IVOSRN extends IVORN implements SRI, TargetIdentifier, SourceIdenti
    /** All sources must be able to resolve to a stream.  The user is required
     * for permissioning. */
    public InputStream resolveInputStream(Principal user) throws IOException {
-      return null; //return VoSpaceResolver.resolveInputStream(this, user);
+      return resolveSource().resolveInputStream(user);
    }
    
    /** Used to get the mime type of the pointed-do data */
    public String getMimeType(Principal user) throws IOException {
-      //@todo
-      return null;
+      return resolveSource().getMimeType(user);
    }
 
-   /** resolves to a locator  */
-   public String resolveSrl() throws IOException {
-      return null; //@todo
+   public Reader resolveReader(Principal user) throws IOException {
+      return new InputStreamReader(resolveInputStream(user));
+   }
+   
+   /** resolves to a target locator  */
+   public TargetIdentifier resolveTarget() throws IOException {
+
+      try {
+         return TargetMaker.makeTarget(resolve());
+      }
+      catch (URISyntaxException e) {
+         throw new StoreException("IVORN "+this+" resolves to illegal URI "+resolve(), e);
+      }
    }
 
+   /** resolves to a Source locator  */
+   public SourceIdentifier resolveSource() throws IOException {
+
+      try {
+         return SourceMaker.makeSource(resolve()); //@todo what about fragment
+      }
+      catch (URISyntaxException e) {
+         throw new StoreException("IVORN "+this+" resolves to illegal URI "+resolve(), e);
+      }
+   }
+   
+   
 }
 
 /*
 $Log: IVOSRN.java,v $
+Revision 1.5  2005/01/27 18:52:11  mch
+Added resolve source/target
+
 Revision 1.4  2005/01/26 17:41:48  mch
 fix to compile until resolving is properly handled
 
