@@ -87,16 +87,16 @@ function myspace_browse_fill(selectedId, destId, funcName, actionValue) {
       
       // Get agsl (micro)
       if(funcName) {
-        micro_browser = window.open("/astrogrid-portal/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?parent_func=" + funcName + "()&agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
       }
       else {
-        micro_browser = window.open("/astrogrid-portal/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
+        micro_browser = window.open("/astrogrid-portal/lean/mount/myspace/myspace-micro?agsl=" + destId, "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200");
       }
 
       // Focus micro browser and maintain focus on it.
       window.blur();
       micro_browser.focus();
-      micro_browswer_tid = window.setTimeout("micro_focus()", 1);
+      // micro_browswer_tid = window.setTimeout("micro_focus()", 100);
     }
     else {
       alert('Destination Does not Exist');
@@ -112,21 +112,21 @@ function micro_focus() {
     window.blur();
     micro_browser.focus();
     
-    micro_browswer_tid = window.setTimeout("micro_focus()", 1);
+    micro_browswer_tid = window.setTimeout("micro_focus()", 100);
   }
 }
 
 function myspace_return_common() {
   window.focus();
   window.clearTimeout(micro_browswer_tid);
+  micro_browser = null;
 }
 
 function myspace_generic_return() {
   myspace_return_common();
   
   // If valid src and dest
-  if(selectedEl.value && selectedEl.value.length > 0 && 
-     destEl.value && destEl.value.length > 0) {
+  if(destEl.value && destEl.value.length > 0) {
     myspace_submit_form('myspace-explorer-form', 'myspace-action', myspace_action_value);
   }
   else {

@@ -20,7 +20,7 @@
   <xsl:param name="parent_func"/>
 
   <xsl:template match="/">      
-	  <ag-div>	      
+	  <ag-div>
 	    <!-- Add our page content -->
 		<content>
 		  <agPUBMessage>
@@ -28,10 +28,12 @@
           </agPUBMessage> 
           <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/xmlTree.js"/>
           <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/myspace.js"/>
+          <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/focus.js"/>	  
+          
           <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/xmlTree.css"/>
           <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/myspace/myspace.css"/>
 
-      
+          <ag-onload function="fcsOnMe();"/>
 
 <!--
         <p>
@@ -61,7 +63,7 @@
           </table>
           
           <p>
-            Item Name: <input name="myspace-item" id="myspace-item" type="text"/>
+            Item Name: <input name="myspace-item" id="myspace-item" type="text" onfocus="skipcycle=true;" onblur="skipcycle=false;"/>
           </p>
           
           <input class="agActionButton" type="button" value="OK">
