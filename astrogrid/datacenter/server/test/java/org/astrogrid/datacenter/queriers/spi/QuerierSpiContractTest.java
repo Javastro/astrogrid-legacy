@@ -1,4 +1,4 @@
-/*$Id: QuerierSpiContractTest.java,v 1.6 2004/01/13 00:33:14 nw Exp $
+/*$Id: QuerierSpiContractTest.java,v 1.7 2004/01/15 17:39:51 nw Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.datacenter.queriers.spi;
 
 import junit.framework.TestCase;
 
+import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -39,7 +40,6 @@ public class QuerierSpiContractTest extends TestCase {
     }
     
     protected void setUp() throws Exception {
-//        workspace = new Workspace(QID);
         query = QueryHelper.buildMinimalQuery();
     }
     
@@ -53,10 +53,8 @@ public class QuerierSpiContractTest extends TestCase {
         spi.selfCheck();
     }
     
-//    public static final String QID = "handle";
  
     protected Query query;
-    protected Workspace workspace;
     
     
     class MockQuerierSPI implements QuerierSPI {
@@ -69,7 +67,7 @@ public class QuerierSpiContractTest extends TestCase {
         }
         protected SimpleTranslatorMap trans = new SimpleTranslatorMap();
         {
-            trans.add("http://tempuri.org/adql",new IdTranslator());
+            trans.add(ADQLUtils.ADQL_XMLNS,new IdTranslator());
         }
         public TranslatorMap getTranslatorMap() {
           return trans;
@@ -85,7 +83,7 @@ public class QuerierSpiContractTest extends TestCase {
         private int seenQuery;
         private int seenClose;
         public void setWorkspace(Workspace ws) {
-            assertSame(workspace,ws);
+            assertNotNull(ws);
             seenWorkspace++;
             
         }
@@ -113,6 +111,9 @@ public class QuerierSpiContractTest extends TestCase {
 
 /*
 $Log: QuerierSpiContractTest.java,v $
+Revision 1.7  2004/01/15 17:39:51  nw
+fixed test.
+
 Revision 1.6  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through
