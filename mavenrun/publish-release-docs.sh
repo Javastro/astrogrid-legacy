@@ -20,13 +20,17 @@ if [ -z "$CHECKOUTHOME" ]; then
 	echo "Value of CHECKOUTHOME (ie where to checkout sources) must be set"
 	exit 1
 fi
+if [ -z "$DOCLOCATION" ]; then
+	echo "Value of DOCLOCATION (ie where documents should be published) must be set"
+	exit 1
+fi
 
 OLDDIR=$PWD
 
 TAG=$1
 TAG=${TAG:-HEAD}
 
-echo "Going to deploy docs for this release $TAG to $DOCLOCATION on $DOCMACHINE - hit ctrl-c if this isn't what you want"
+echo "Going to deploy docs for this release $TAG to $DOCLOCATION - hit ctrl-c if this isn't what you want"
 
 # Fairly unvariable variables
 BUILDHOME=$CHECKOUTHOME/astrogrid
