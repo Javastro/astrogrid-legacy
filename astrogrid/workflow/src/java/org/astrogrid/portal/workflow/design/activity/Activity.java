@@ -111,4 +111,14 @@ public abstract class Activity {
     
     public abstract String toXMLString() ;
     
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }  
+    
 } // end of class Activity

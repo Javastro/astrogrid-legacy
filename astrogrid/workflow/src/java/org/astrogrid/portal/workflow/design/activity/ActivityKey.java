@@ -11,6 +11,7 @@
 
 package org.astrogrid.portal.workflow.design.activity;
 
+import org.apache.log4j.Logger ;
 /**
  * The <code>ActivityKey</code> class is a thin wrapper
  * for the String key of an Activiy.
@@ -23,6 +24,14 @@ package org.astrogrid.portal.workflow.design.activity;
  */
 public class ActivityKey {
     
+    /** Compile-time switch used to turn tracing on/off. 
+      * Set this to false to eliminate all trace statements within the byte code.*/         
+    private static final boolean 
+        TRACE_ENABLED = true ;
+        
+    private static Logger 
+        logger = Logger.getLogger( ActivityKey.class ) ; 
+        
     private static int
         highWaterMark = 0 ;
     
@@ -31,7 +40,18 @@ public class ActivityKey {
         
         
     public static synchronized ActivityKey createKey() {
-        return new ActivityKey( highWaterMark++ ) ;
+        if( TRACE_ENABLED ) trace( "createKey() entry") ; 
+        ActivityKey
+            key = null ;
+        try {
+            key = new ActivityKey( highWaterMark++ ) ;
+            debug( "key: " + key.toString() ) ;
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "createKey() exit") ; 
+        }
+        
+        return key ;
     }
     
     
@@ -51,6 +71,16 @@ public class ActivityKey {
     
     public int hashCode() {
         return key ;
+    }
+    
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
     }
     
 } // end of class ActivityKey
