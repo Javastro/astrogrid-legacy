@@ -383,6 +383,14 @@ public class RegistryAdminService {
                                 ((HashMap)otherAuths.get(versionNumber)).put(manageNodeVal,null);
                             }//if
                         }//for
+                        RegistryHarvestService rhs = new RegistryHarvestService();
+                        try {
+                            rhs.harvestResource(currentResource,null);
+                        }catch(RegistryException re) {
+                            log.error(re);
+                        }catch(IOException ioe) {
+                            log.error(ioe);
+                        }
                      }
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("Authority") != -1)

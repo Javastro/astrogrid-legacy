@@ -81,11 +81,15 @@ public class RegistryHarvestService {
     * @return null (nothing is returned on this web service operation).
     * @author Kevin Benson
     */
-   public Document harvestResource(Document resource,Date dt)  throws RegistryException, IOException {
+   public Document harvestResource(Node resource,Date dt)  throws RegistryException, IOException {
       log.debug("start harvestResource");
       log.info("update harvestResource");
 
 
+      boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
+      if(!harvestEnabled) {
+          return null;
+      }
       //RegistryAdminService ras = new RegistryAdminService();
 
       //Change this up to look at the Node make sure it is a REgistryType or a Web service
@@ -97,7 +101,14 @@ public class RegistryHarvestService {
 
       //Okay update this one resource entry.
       //ras.updateResource(resource);
-      NodeList nl = resource.getElementsByTagNameNS("*","Resource");
+      
+      NodeList nl = null;
+      if(Node.DOCUMENT_NODE == resource.getNodeType()) {
+          nl = ((Document)resource).getElementsByTagNameNS("*","Resource");
+      }
+      else if(Node.ELEMENT_NODE == resource.getNodeType()) {
+          nl = ((Element)resource).getElementsByTagNameNS("*","Resource");
+      }
       for(int i = 0; i < nl.getLength();i++) {
           Element elem = (Element) nl.item(i);
           /*
@@ -131,6 +142,12 @@ public class RegistryHarvestService {
       Document harvestDoc = null;
       String xqlQuery = null;
       String ident = null;
+
+      boolean harvestEnabled = conf.getBoolean("registry.harvest.enabled",false);
+      if(!harvestEnabled) {
+          return;
+      }
+
 
       String versionNumber = null;
       //String collectionName = "astrogridv" + versionNumber;
