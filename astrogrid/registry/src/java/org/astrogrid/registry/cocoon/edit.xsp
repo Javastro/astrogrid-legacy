@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java"
+   xmlns:xsp="http://apache.org/xsp"
+   xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+     
+   <xsp:comment>
+
+      Astrogrid Registry Admin GUI using Cocoon.
+
+      Author: Elizabeth Auden, Astrogrid, MSSL
+
+   </xsp:comment>
+
+   <xsp:structure>
+
+      <xsp:comment>Cocoon Util</xsp:comment>
+      <xsp:include>org.apache.cocoon.components.language.markup.xsp.XSPUtil
+      </xsp:include>
+      <xsp:include>org.jconfig.*</xsp:include>
+
+   </xsp:structure>
+
+<agtemplate title="Registry Administration: Edit" help="agregistryhelp.html">
+   <xsp:logic>
+         String out = null;
+
+   <form method='POST' action='edit.xsp'> 
+      <h1>Registry administration: Edit</h1>
+	<p>
+	<table>
+	   <tr>
+	      <td><b>Name:</b></td><td><input name='userName' type='TEXT' value=''/></td>
+	   </tr>
+ 	   <tr>
+      	<td><b>Certificate:</b></td><td><input name='certificate' type='TEXT' value=''/></td> 
+	   </tr>
+	</table>
+      <hr width='100%'/>
+      </p>
+      <input type='SUBMIT' name='submitquery' value='Edit'/>
+      <input type='RESET'/>
+   </form>
+   </xsp:logic>
+</agtemplate>
+
+</xsp:page>

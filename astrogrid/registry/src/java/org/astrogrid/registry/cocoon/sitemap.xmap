@@ -20,14 +20,32 @@
          <!-- Registry Browser -->
          <map:match pattern="*agregistrybrowse">
             <map:generate type="serverpages" src="browse.xsp"/>
-            <map:transform src="../xsl/agtemplate.xsl"/> 
+            <map:transform src="xsl/agtemplate.xsl"/> 
             <map:serialize type="html"/>
          </map:match>
 
-         <!-- Registry Update -->
-         <map:match pattern="*agregistryupdate">
-            <map:generate type="serverpages" src="update.xsp"/>
-            <map:transform src="../xsl/agtemplate.xsl"/> 
+         <!-- Registry Admin -->
+         <map:match pattern="*agregistryadmin">
+            <map:generate type="serverpages" src="admin.xsp"/>
+            <map:transform src="xsl/agtemplate.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="*agregistryadd">
+            <map:generate type="serverpages" src="add.xsp"/>
+            <map:transform src="xsl/agtemplate.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="*agregistryedit">
+            <map:generate type="serverpages" src="edit.xsp"/>
+            <map:transform src="xsl/agtemplate.xsl"/> 
+            <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="*agregistrydelete">
+            <map:generate type="serverpages" src="delete.xsp"/>
+            <map:transform src="xsl/agtemplate.xsl"/> 
             <map:serialize type="html"/>
          </map:match>
 
@@ -44,7 +62,7 @@
          <!-- XML pages -->
          <map:match pattern="*.xml">
             <map:generate type="file" src="{1}.xml"/>
-            <map:transform src="../xsl/agtemplate.xsl"/> 
+            <map:transform src="xsl/agtemplate.xsl"/> 
             <map:serialize type="html"/>
          </map:match>
 
@@ -57,10 +75,10 @@
 
          <!-- Site images -->
          <map:match pattern="*.gif">
-            <map:read src="../images/{1}.gif" mime-type="images/gif"/>
+            <map:read src="images/{1}.gif" mime-type="images/gif"/>
          </map:match>
          <map:match pattern="*.png">
-            <map:read src="../images/{1}.png" mime-type="images/png"/>
+            <map:read src="images/{1}.png" mime-type="images/png"/>
          </map:match>
 
       </map:pipeline>
