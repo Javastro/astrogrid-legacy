@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.22 2004/07/02 11:56:32 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.23 2004/08/27 12:42:58 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-common</id>
@@ -45,6 +45,10 @@
             <version>3.8</version>
         </dependency>
         <dependency>
+                <id>xmlunit</id>
+                <version>1.0</version>
+        </dependency>
+        <dependency>
             <id>log4j</id>
             <version>1.2.8</version>
         </dependency>
@@ -53,8 +57,8 @@
             <version>20030211.213356</version>
         </dependency>
         <dependency>
-        	<id>commons-jxpath</id>
-        	<version>1.1</version>
+                <id>commons-jxpath</id>
+                <version>1.1</version>
         </dependency>
         <dependency>
             <artifactId>hsqldb</artifactId>
@@ -63,8 +67,8 @@
         </dependency>
         <!-- pico container -->
         <dependency>
-			<groupId>picocontainer</groupId>
-			<artifactId>picocontainer</artifactId>
+                        <groupId>picocontainer</groupId>
+                        <artifactId>picocontainer</artifactId>
             <version>1.0</version>
         </dependency>
      </dependencies>
