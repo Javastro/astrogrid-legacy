@@ -14,14 +14,14 @@ import java.lang.reflect.Array;
 import org.astrogrid.mySpace.mySpaceStatus.*;
 import org.astrogrid.mySpace.mySpaceManager.*;
 
-import org.astrogrid.store.delegate.myspaceItn05.ManagerGenuine;
-import org.astrogrid.store.delegate.myspaceItn05.KernelResults;
-import org.astrogrid.store.delegate.myspaceItn05.StatusResults;
-import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
-import org.astrogrid.store.delegate.myspaceItn05.EntryResults;
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.StoreFile;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.community.User;
+
+import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 import org.astrogrid.store.delegate.myspaceItn05.EntryRecord;
-import org.astrogrid.store.delegate.myspaceItn05.EntryCodes;
-import org.astrogrid.store.delegate.myspaceItn05.ManagerCodes;
+
 
 /**
  * Simple demonstration program for the MySpace registry.
@@ -32,21 +32,12 @@ import org.astrogrid.store.delegate.myspaceItn05.ManagerCodes;
  */
 
 
-public class MySpaceDemo
-{  private Logger logger = new Logger(false, true, true, "./myspace.log");
-   private Configuration config = new Configuration(true, false,
-     Configuration.INTERNALSERVERS);
+public class MySpaceDriver
+{  static boolean isTest;
 
-   private static ManagerGenuine myspace = new ManagerGenuine();
-   private static MySpaceStatus status = new MySpaceStatus();
-   private KernelResults results = new KernelResults();
+   static User operator = new User();
 
-//
-//      Set up for logging.
-
-    private static Logger demoLog = new
-      Logger(false, true, true, "./myspace.log");
-
+   static MySpaceIt05Delegate middle = null;
 
    public Component createDemoComponents()
    {
@@ -89,43 +80,29 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.getEntriesList(query, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  StoreFile[] files = middle.listFiles(query);
 
-//
-//               List the entries selected.
+                  System.out.println("\nMatching files:-");
 
-                  int numEntries = 0;
-                  java.lang.Object[] entries = results.getEntries();
-                  if (entries != null)
-                  {  numEntries = Array.getLength(entries);
-                  }
+                  int numFiles = Array.getLength(files);
 
-                  if (numEntries > 0)
-                  {  for(int loop=0; loop<numEntries; loop++)
-                     {  EntryResults entry = (EntryResults)entries[loop];
-                        EntryRecord file = new EntryRecord(entry);
+                  if (numFiles > 0)
+                  {  EntryRecord file = new EntryRecord();
 
-                        System.out.println(loop + ": " + file.toString() ); 
+                     for(int loop=0; loop<numFiles; loop++)
+                     {  file = (EntryRecord)files[loop];
+                        System.out.println(loop + ": " + file.toString() );
                      }
                   }
                   else
-                  {  System.out.println("No files matched the query.");
+                  {  System.out.println("No files satisfied query.");
                   }
-                  System.out.println("");
 
-//
-//               List the status messages.
-
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
-
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                   System.out.println("\nMessages:-");
+                   middle.outputStatusList();
+                   middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
@@ -163,23 +140,19 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.putString(newFileName, contents,
-                    EntryCodes.VOT, ManagerCodes.LEAVE, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.putString(contents, newFileName, false);
 
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
-
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
                }
+ 
+
             }
          }
       );
@@ -192,8 +165,8 @@ public class MySpaceDemo
             {  BufferedReader console = new BufferedReader(
                  new InputStreamReader(System.in));
 
-               System.out.println("File name:");
-               String fileName = "";
+               String fileName;
+               System.out.println("Enter name of file:");
                try
                {  fileName = console.readLine();
                }
@@ -203,34 +176,22 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.getString(fileName, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  String contents = middle.getString(fileName);
 
-                  String contents = results.getContentsString();
+                  System.out.println("\nFile content:-");
+                  System.out.println(contents);
 
-                  System.out.println("File contents:-");
-                  int contentsLength = contents.length();
-                  if (contentsLength < 70)
-                  {  System.out.println(contents);
-                  }
-                  else
-                  {  System.out.println(contents.substring(0, 69)
-                       + "...");
-                  }
-
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
-
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
                }
+ 
+
             }
          }
       );
@@ -254,21 +215,13 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.createContainer(newContainerName,
-                    true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.newFolder(newContainerName);
 
-                  String contents = results.getContentsString();
-
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
-
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
@@ -277,6 +230,7 @@ public class MySpaceDemo
          }
       );
       fileMenu.add(menuItem);
+
 
       menuItem = new JMenuItem("Copy a file");
       menuItem.addActionListener(new ActionListener()
@@ -305,21 +259,17 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.copyFile(oldFileName,
-                    newFileName, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
 
-                  String contents = results.getContentsString();
+                  Agsl someAgsl = new Agsl("http://www.google.com",
+                    newFileName);
 
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
+                  middle.copy(oldFileName, someAgsl);
 
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
@@ -357,21 +307,17 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.moveFile(oldFileName,
-                    newFileName, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
 
-                  String contents = results.getContentsString();
+                  Agsl someAgsl = new Agsl("http://www.google.com",
+                    newFileName);
 
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
+                  middle.move(oldFileName, someAgsl);
 
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
@@ -399,20 +345,13 @@ public class MySpaceDemo
                }
 
                try
-               {  results = myspace.deleteFile(fileName, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.delete(fileName);
 
-                  String contents = results.getContentsString();
-
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
-
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
@@ -439,19 +378,16 @@ public class MySpaceDemo
                   newAccount = "";
                }
 
+               User account = new User(newAccount, "", "", "");
+
                try
-               {  results = myspace.createAccount(newAccount, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.createUser(account);
 
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
-
-                  StatusResults status = new StatusResults();
-
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
-                  }
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
                }
                catch (Exception ex)
                {  ex.printStackTrace();
@@ -469,27 +405,47 @@ public class MySpaceDemo
                  new InputStreamReader(System.in));
 
                System.out.println("Enter ID of the account to delete:");
-               String accountID;
+               String deadAccount;
                try
-               {  accountID = console.readLine();
+               {  deadAccount = console.readLine();
                }
                catch (IOException ioerror)
                {  System.out.println("Ooops");
-                  accountID = "";
+                  deadAccount = "";
                }
 
+               User account = new User(deadAccount, "", "", "");
+
                try
-               {  results = myspace.deleteAccount(accountID, true);
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+                  middle.deleteUser(account);
 
-                  Object[] statusList = results.getStatusList();
-                  int numStatus = Array.getLength(statusList);
+                  System.out.println("\nMessages:-");
+                  middle.outputStatusList();
+                  middle.resetStatusList();
+               }
+               catch (Exception ex)
+               {  ex.printStackTrace();
+               }
+            }
+         }
+      );
+      fileMenu.add(menuItem);
 
-                  StatusResults status = new StatusResults();
 
-                  for(int loop=0; loop<numStatus; loop++)
-                  {  status = (StatusResults)statusList[loop];
-                     StatusMessage message = new StatusMessage(status);
-                     System.out.println(loop + ": " + message.toString() );
+      menuItem = new JMenuItem("Heartbeat");
+      menuItem.addActionListener(new ActionListener()
+         {  public void actionPerformed(ActionEvent e)
+            {  try
+               {  middle.setTest(isTest);
+                  middle.setThrow(false);
+
+                  if (middle.heartBeat() )
+                  {  System.out.println("The Manager is responding ok.");
+                  }
+                  else
+                  {  System.out.println("No response from the Manager.");
                   }
                }
                catch (Exception ex)
@@ -504,8 +460,7 @@ public class MySpaceDemo
       menuItem = new JMenuItem("Quit");
       menuItem.addActionListener(new ActionListener()
          {  public void actionPerformed(ActionEvent e)
-            {  demoLog.close();
-               System.out.println("MySpace Demo. exiting normally.");
+            {  System.out.println("MySpace Driver. exiting normally.");
                System.exit(0);
             }
          }
@@ -527,8 +482,22 @@ public class MySpaceDemo
    public static void main(String argv[])
    {  System.setProperty("java.util.prefs.syncInterval","2000000");
 
-      if (argv.length == 0)
-      {  
+      if (argv.length > 0)
+      {  String endPoint = argv[0];
+
+         try
+         {  middle = new MySpaceIt05Delegate(operator, endPoint);
+         }
+         catch (Exception all)
+         {  System.out.println("Ooops.");
+         }
+
+         isTest = false;
+         if (argv.length > 1)
+         {  isTest = true;
+         }
+         
+
 //
 //      Set the look and feel.
 
@@ -543,8 +512,8 @@ public class MySpaceDemo
 //
 //      Create the top-level container and add contents to it.
 
-         JFrame demo = new JFrame("MySpaceDemo");
-         MySpaceDemo app = new MySpaceDemo();
+         JFrame demo = new JFrame("MySpaceDriver");
+         MySpaceDriver app = new MySpaceDriver();
          Component demoContents = app.createDemoComponents();
          demo.getContentPane().add(demoContents, BorderLayout.CENTER);
 
@@ -553,7 +522,7 @@ public class MySpaceDemo
 
          demo.addWindowListener(new WindowAdapter()
             {  public void windowClosing(WindowEvent e)
-               {  System.out.println("MySpaceDemo window closed.");
+               {  System.out.println("MySpaceDriver window closed.");
                   System.exit(0);
                }
             }
@@ -564,7 +533,11 @@ public class MySpaceDemo
       }
       else
       {  System.out.println("Usage:-");
-         System.out.println("  java MySpaceDemo");
+         System.out.println("  java MySpaceDriver Manager-end-point [test]");
+         System.out.println("");
+         System.out.println(
+           "Any value for the second argument causes the Manager to return");
+         System.out.println("standard, test responses.");
       }
    }
 }
