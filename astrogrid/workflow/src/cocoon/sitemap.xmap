@@ -81,7 +81,7 @@
       </map:match>
       
 
-      <!-- Workflow: Job Monitor/ Administer Jobs page --> 
+      <!-- Workflow: Administer workflows page --> 
       <!-- display without calling action -->
       <map:match pattern="agworkflow-admin.html" >
    	    <map:generate src="workflow/xsp/workflow-administer.xsp" type="serverpages" />  
@@ -99,7 +99,7 @@
    		<map:serialize type="html" /> 
       </map:match> 
       
-     <!-- Workflow: Job Monitor/ Administer Jobs page -->           
+     <!-- Workflow: Administer workflows page -->           
       <!-- display and call action -->
    	  <map:match pattern="agworkflow-administer.html" >
    	  <map:act type="astrogrid-workflow">
@@ -119,7 +119,13 @@
        
       
       
-     <!-- Workflow: Job Monitor/ Administer Jobs page -->           
+     <!--+
+         |
+         | JBL: This section to be worked on in detail...
+         |      Administer/Monitor jobs
+         |
+         + -->
+     <!-- Workflow: Administer/Monitor jobs page -->           
       <!-- display and call action -->
    	  <map:match pattern="agjes-administer.html" >
    	  <map:act type="astrogrid-jes">
@@ -138,13 +144,6 @@
        </map:match>
        
        
-       
-       
-       
-       
-       
- 
-   
    <!-- ========================= Site images ============================== -->
    <map:match pattern="*.gif">
    		<map:read src="workflow/images/{1}.gif" mime-type="images/gif"/>
