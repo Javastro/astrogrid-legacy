@@ -70,7 +70,7 @@
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-server</artifactId>
-      <version>Itn04-2003-12-02</version>
+      <version>Warehouse01</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -79,7 +79,7 @@
     <dependency>
       <groupId>astrogrid-datacenter</groupId>
       <artifactId>astrogrid-datacenter-client</artifactId>
-      <version>Itn04-2003-12-02</version>
+      <version>Warehouse01</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
@@ -203,15 +203,28 @@
 
     <resources>
     
-      <!-- This the is product of the build of the ogsadai sub-project. -->
+      <!-- This the is product of the build of the ogsadai sub-project. 
+           It's listed twice, in two separate directories, because Maven can't
+           make up its mind where to build the jar.  If you go to the ogsadai
+           sub-project and build it manually, it's in ogsadai/target.  If
+           you build war in the parent project, thereby triggering the
+           javaapp goal in the sub-project, then the jar is in  
+           ogsadai/ogsadai/target.  It;'s the same jar going to the same location
+           in the web-app, so the duplication ought not to matter. -->
       <resource>
         <directory>ogsadai/target</directory>
         <includes>
           <include>astrogrid-datawarehouse-ogsadai-app-HEAD.jar</include>
         </includes>
       </resource>
-      
-    	<resource><!-- config files -->
+     <resource>
+        <directory>ogsadai/ogsadai/target</directory>
+        <includes>
+          <include>astrogrid-datawarehouse-ogsadai-app-HEAD.jar</include>
+        </includes>
+      </resource>
+    	
+        <resource><!-- config files -->
 		<directory>${basedir}/src/java</directory>
 		<includes>
 			<include>**/*.xml</include>
