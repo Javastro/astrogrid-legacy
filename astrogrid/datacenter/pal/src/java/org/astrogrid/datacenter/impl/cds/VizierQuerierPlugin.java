@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.7 2004/11/07 14:10:14 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.8 2004/11/08 02:59:13 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -60,7 +60,7 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       //extract query to specific keys
       KeywordMaker maker = new KeywordMaker();
       Hashtable keywords = maker.makeKeywords(query);
-      
+
       String text = (String) keywords.get("TEXT");
       String r = (String) keywords.get(KeywordMaker.RADIUS_KEYWORD);
       if (r == null) {
@@ -105,11 +105,11 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
       }
       
       try {
-         VizieRService service = new VizieRServiceLocator();
-         VizieR vizier = service.getVizieR(new URL("http://cdsws.u-strasbg.fr/axis/services/VizieR"));
 
          /* SOAP access - no good for large datasets but required for now if ra/dec given */
          if (target.indexOf(" ")>-1) {
+            VizieRService service = new VizieRServiceLocator();
+            VizieR vizier = service.getVizieR(new URL("http://cdsws.u-strasbg.fr/axis/services/VizieR"));
             String response;
             if (wavelength == null) {
                System.out.println("Calling vizier via SOAP...");
@@ -121,6 +121,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
             }
             System.out.println("...vizier responded");
             if (!aborted) {
+               if (response == null) {
+                  throw new DatacenterException("Vizier returned null");
+               }
                VotableDomResults results = new VotableDomResults(querier, response);
                results.send(query.getResultsDef(), user);
             }
@@ -164,6 +167,9 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.8  2004/11/08 02:59:13  mch
+ Fixes to connect to Vizier
+
  Revision 1.7  2004/11/07 14:10:14  mch
  add pos sign to dec if not signed
 
@@ -231,4 +237,5 @@ public class VizierQuerierPlugin extends DefaultPlugin  {
  mavenized cds delegate
  
  */
+
 
