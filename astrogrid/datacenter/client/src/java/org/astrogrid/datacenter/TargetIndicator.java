@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.1 2004/08/17 20:19:36 mch Exp $
+ * $Id: TargetIndicator.java,v 1.2 2004/08/18 22:27:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import org.astrogrid.community.Account;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
@@ -37,9 +38,10 @@ public class TargetIndicator  {
    public final static String VOTABLE = "VOTABLE";
    public final static String CSV  = "CSV";
    
-
-   public TargetIndicator(String targetEmail) {
-      this.email = targetEmail;
+   /** Email constructor - see also makeIndicator */
+   public TargetIndicator(String mailto) {
+      assert mailto.startsWith("mailto") : "email target indicator should start with 'mailto'";
+      this.email = mailto;
    }
 
    public TargetIndicator(Agsl targetAgsl) {
@@ -71,10 +73,11 @@ public class TargetIndicator  {
          return new TargetIndicator(new Ivorn(id));
       }
       else {
-         throw new IllegalArgumentException("'"+id+" should start 'emailto:' or '"+Ivorn.SCHEME+"' or '"+Agsl.SCHEME+"'");
+         throw new IllegalArgumentException("'"+id+" should start 'mailto:' or '"+Ivorn.SCHEME+"' or '"+Agsl.SCHEME+"'");
       }
    }
-   
+   /**/
+      
    public String getEmail() {
       return email;
    }
@@ -134,6 +137,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.2  2004/08/18 22:27:57  mch
+ Better error checking
+
  Revision 1.1  2004/08/17 20:19:36  mch
  Moved TargetIndicator to client
 
