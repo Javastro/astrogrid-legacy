@@ -17,6 +17,7 @@ import javax.xml.rpc.server.ServletEndpointContext;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.log4j.Category;
 import org.astrogrid.registry.messaging.processor.ElementProcessor;
+import org.astrogrid.registry.messaging.processor.ProcessorException;
 import org.w3c.dom.Element;
 
 /**
@@ -24,11 +25,10 @@ import org.w3c.dom.Element;
  */
 public class MessagingService implements ServiceLifecycle {
   // Constants.
-  private static String XMLBLASTER_PROPERTIES_FILENAME = "xmlblaster.properties";
-  private static String REGISTRY_FILENAME = "astrolog-processor.reg";
+  private static String REGISTRY_FILENAME = "message-processor.reg";
   
   // Logging.
-  private Category logger = Category.getInstance(MessagingService.class);
+  private Category logger = Category.getInstance(getClass());
   
   // Endpoint context object.
   private ServletEndpointContext servletEndpointContext;
@@ -48,13 +48,11 @@ public class MessagingService implements ServiceLifecycle {
     ServletContext servletContext = servletEndpointContext.getServletContext();
 
     // read element processor registry
-    processorRegistry = loadProcessorRegistry(servletContext);
+    processorRegistry = initProcessorRegistry(servletContext);
     
     if(logger.isInfoEnabled()) {
       logger.info("[init] element processors: " + processorRegistry);
     }
-    
-    // TODO load xmlblaster properties
     
     logger.debug("[init] <<<");
   }
@@ -66,7 +64,6 @@ public class MessagingService implements ServiceLifecycle {
     logger.debug("[destroy] >>>");
     
     processorRegistry = null;
-    // TODO delete xmlblaster properties
     
     logger.debug("[destroy] <<<");
   }
@@ -77,19 +74,22 @@ public class MessagingService implements ServiceLifecycle {
 
     logger.debug("[process] >>>");
     
-    if(logger.isDebugEnabled()) {
-      for(int xmlIndex = 0; xmlIndex < xml.length; xmlIndex++) {
-        logger.debug("[process] xml[" + xmlIndex + "]: " + XMLUtils.ElementToString(xml[xmlIndex]));
-        logger.debug("[process] xml[" + xmlIndex + "] tag name: " + xml[xmlIndex].getTagName());
-      } 
-    }
-    
     List resultList = new ArrayList(xml.length);
     Element currentElement = null;
+    Element resultElement = null;
     for(int xmlIndex = 0; xmlIndex < xml.length; xmlIndex++) {
       if(xml[xmlIndex] != null) {
         currentElement = xml[xmlIndex];
-        resultList.add(process(currentElement)); 
+        if(logger.isDebugEnabled()) {
+          logger.debug("[process] current element: " + XMLUtils.ElementToString(currentElement));
+        }
+
+        resultElement = process(currentElement);
+        if(logger.isDebugEnabled()) {
+          logger.debug("[process] result element: " + XMLUtils.ElementToString(resultElement));
+        }
+
+        resultList.add(resultElement); 
       }
     }
     
@@ -103,10 +103,13 @@ public class MessagingService implements ServiceLifecycle {
   
     Element result = null;
     
-    ElementProcessor processor = (ElementProcessor) processorRegistry.get(element.getTagName());
+    Element messageContent = (Element) element.getChildNodes().item(1);
+    logger.debug("[process] processing: " + messageContent.getNodeName());
+    
+    ElementProcessor processor = (ElementProcessor) processorRegistry.get(messageContent.getLocalName());
     if(processor != null) {
       try {
-        result = processor.process(element, servletEndpointContext);
+        result = processor.process(messageContent, servletEndpointContext);
         logger.debug("[process] result: " + result);
       }
       catch(Exception e) {
@@ -114,39 +117,57 @@ public class MessagingService implements ServiceLifecycle {
       }
     }
     else {
-      throw new ServiceException("no processor for " + element.getTagName());
+      throw new ServiceException("no processor for " + messageContent.getTagName());
     }
     
     return result;
   }
   
-  private Map loadProcessorRegistry(ServletContext servletContext) throws ServiceException {
+  private Map initProcessorRegistry(ServletContext servletContext) throws ServiceException {
     Map registry = new HashMap();
     
     try {
       Properties elementProcessors = new Properties();
-      elementProcessors.load(
-        new FileInputStream(
-          servletContext.getRealPath(REGISTRY_FILENAME)));
+      elementProcessors.load(new FileInputStream(servletContext.getRealPath(REGISTRY_FILENAME)));
       
+      Map clazzMap = new HashMap();
+
+      String clazzName = null;      
       Class clazz = null;
       String tagName = null;
+      ElementProcessor processor = null;
       Iterator processorIt = elementProcessors.keySet().iterator();
       while(processorIt.hasNext()) {
         tagName = (String) processorIt.next();
         
         try {
-          clazz = Class.forName(elementProcessors.getProperty(tagName));
-          registry.put(tagName, clazz.newInstance());
+          clazzName = elementProcessors.getProperty(tagName);
+          if(clazzMap.containsKey(clazzName)) {
+            processor = (ElementProcessor) clazzMap.get(clazzName);
+          }
+          else {
+            clazz = Class.forName(clazzName);
+
+            processor = (ElementProcessor) clazz.newInstance();
+            processor.init(servletEndpointContext);
+            
+            clazzMap.put(clazzName, processor);
+          }
+
+          registry.put(tagName, processor);
         }
         catch(ClassNotFoundException e) {
-          logger.warn("could not find class for tag name: " + tagName, e);
+          logger.warn("[initProcessorRegistry] could not find class for tag name: " + tagName, e);
         }
         catch(InstantiationException e) {
-          logger.warn("could instantiate class for tag name: " + tagName, e);
+          logger.warn("[initProcessorRegistry] could instantiate class for tag name: " + tagName, e);
         }
         catch(IllegalAccessException e) {
-          logger.warn("illegal access to class for tag name: " + tagName, e);
+          logger.warn("[initProcessorRegistry] illegal access to class for tag name: " + tagName, e);
+        }
+        catch(ProcessorException e) {
+          logger.error("[initProcessorRegistry] could not initialise processor for tag name: " + tagName, e);
+          throw new ServiceException("", e);
         }
       }
     }
@@ -156,20 +177,20 @@ public class MessagingService implements ServiceLifecycle {
     
     return registry;
   }
-
-  private boolean isConnected() {
-    return false;
-  }
   
-  private void connect() {
-    if(!isConnected()) {
-      // TODO Auto-generated method stub
+  private void destroyProcessorRegistry(Map registry) throws ServiceException {
+    try {
+      String tagName = null;
+      ElementProcessor processor = null;
+      Iterator processorIt = registry.keySet().iterator();
+      while(processorIt.hasNext()) {
+        tagName = (String) processorIt.next();
+        processor = (ElementProcessor) registry.get(tagName);
+        processor.destroy();
+      }
     }
-  }
-  
-  private void disconnect() {
-    if(isConnected()) {
-      // TODO Auto-generated method stub
+    catch(ProcessorException e) {
+      throw new ServiceException("", e);
     }
   }
 }
