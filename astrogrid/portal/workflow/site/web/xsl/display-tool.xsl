@@ -110,16 +110,6 @@
                    <input type="hidden" name="activity_key"/>
                    <input type="hidden" name="activity_index_key"/>
                    <input type="hidden"  name="action" value="remove_activity"/>            
-                </form>
-                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="open_workflow_form">
-                   agsl:<input type="text" name="workflow-name" id="open-workflow-agsl"/>
-                   ivorn:<input type="text" name="workflow-ivorn" id="open-workflow-ivorn"/>
-                   <input type="submit" name="action" value="read-workflow" />
-                </form>
-                <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="save_workflow_form">
-                   agsl:<input type="text" name="workflow-name" id="save-workflow-agsl"/>
-                   ivorn:<input type="text" name="workflow-ivorn" id="save-workflow-ivorn"/>
-                   <input type="submit" name="action" value="save-workflow" />                                                       
                 </form>                                                                                              
         </xsl:template>
         
