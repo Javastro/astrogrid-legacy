@@ -1,19 +1,61 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core" default="astrogrid-build-site">
-	<!-- astrogrid goals for nightly build -->
-	<goal name="astrogrid-clean" prereqs="clean"/>
-	<goal name="astrogrid-deploy-site" 
-		prereqs="astrogrid-build-site,site:fsdeploy" />
-	<goal name="astrogrid-build-site" prereqs="site"/>
-	<goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
-	<goal name="astrogrid-build-snapshot" prereqs="jar:snapshot"/>
-	<goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
-	<goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
-	<goal name="astrogrid-build-artifact" prereqs="jar:jar"/>
-	<goal name="astrogrid-install-artifact" prereqs="jar:install"/>
-	<preGoal name="site">
-		<mkdir dir="target/classes"/>
-		<!--fix annoying jdepend bug-->
-	</preGoal>
+    <!-- astrogrid goals for nightly build -->
+    <goal name="astrogrid-clean" prereqs="clean"/>
+    <goal name="astrogrid-deploy-site" 
+        prereqs="astrogrid-build-site,site:fsdeploy" >
+        <attainGoal name="wave-goodbye-site"/>        
+    </goal>
+    <goal name="astrogrid-build-site" prereqs="site"/>
+    <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot">
+        <attainGoal name="wave-goodbye-artifact"/>
+    </goal>
+    <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot"/>
+    <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
+    <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
+    <goal name="astrogrid-build-artifact" prereqs="jar:jar"/>
+    <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
+    
+
+    <!--+
+        | To use the following goals you need to have the correct jars installed.
+        | The smack.jar and imtask.jar may be found at http://
+        | Place them in your $MAVEN_HOME/lib directory and edit
+        | $MAVEN_HOME/bin/forehead.conf appropriately.
+        | In your build.properties you should then set
+        | jabber.host=jabber.astrogrid.org
+        | jabber.sender=maven
+        | jabber.receiver=JohnTaylor@jabber.astrogrid.org/Gaim
+        | jabber.password=maven
+        +-->
+ 
+    <goal name="wave-goodbye-site">
+        <j:set var="message" value="${pom.artifactId} documentation has finished building"/>
+        <attainGoal name="jabber-me"/> 
+    </goal>    
+    <goal name="wave-goodbye-artifact">
+        <j:set var="message" value="${pom.artifactId} artifacts have finished building"/>
+        <attainGoal name="jabber-me"/> 
+    </goal>  
+    <goal name="jabber-me">
+        <j:if test="${context.getVariable('jabber.host') != null}">
+            <attainGoal name="tomcat-declare-tasks"/>
+            <j:catch>
+                <jabber host="${jabber.host}" from="${jabber.sender}" 
+                    to="${jabber.receiver}" password="${jabber.password}" 
+                    message="${message}"/>
+            </j:catch>
+        </j:if>
+    </goal>
+    <!-- Configure the custom Ant tasks for Jabber -->
+    <goal name="tomcat-declare-tasks">
+        <taskdef name="jabber" classname="com.tfftech.ant.taskdefs.im.jabber.JabberTask" /> 
+    </goal>
+    <!-- End Jabber Goals -->
+    
+    <preGoal name="site">
+        <mkdir dir="target/classes"/>
+        <!--fix annoying jdepend bug-->
+    </preGoal>
 </project>
