@@ -1,4 +1,4 @@
-/*$Id: ServerInstallationTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
+/*$Id: ServerInstallationTest.java,v 1.4 2004/08/28 11:16:56 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -72,7 +72,8 @@ public class ServerInstallationTest extends AbstractTestForCEA {
     public void testReturnRegistryEntry() throws Exception {
         String entry = delegate.returnRegistryEntry();
         assertNotNull(entry);
-        AstrogridAssert.assertXMLValid("not valid xml returned",entry);
+        System.out.println(entry);
+        AstrogridAssert.assertXMLValid(entry);
         //@todo schema validate.
 
     }
@@ -83,6 +84,9 @@ public class ServerInstallationTest extends AbstractTestForCEA {
 
 /* 
 $Log: ServerInstallationTest.java,v $
+Revision 1.4  2004/08/28 11:16:56  nw
+think I was callinig the wrong assertion.
+
 Revision 1.3  2004/08/27 13:16:52  nw
 used AstrogridAssert to check results more thoroughly.
 
