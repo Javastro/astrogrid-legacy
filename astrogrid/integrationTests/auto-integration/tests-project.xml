@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.4 2004/04/15 12:13:10 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.5 2004/04/15 13:08:02 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <id>auto-integration-tests</id>
@@ -239,4 +239,25 @@
 
 
     </dependencies>
+    <!-- A mini set of reports -->
+    <reports>
+		<report>
+      		maven-junit-report-plugin
+    	</report>
+		<report>
+      		maven-changelog-plugin
+    	</report>
+		<report>
+      		maven-changes-plugin
+    	</report>
+		<report>
+      		maven-developer-activity-plugin
+    	</report>
+		<report>
+      		maven-file-activity-plugin
+   	 	</report>
+   	 	<report>
+            maven-jxr-plugin
+        </report>
+   	</reports>
 </project>
