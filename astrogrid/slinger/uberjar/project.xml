@@ -4,4 +4,13 @@
     <name>Astrogrid Slinger UberJar</name>
     <description>This project takes the Slinger API and repackages it as a single jar</description>
     <shortDescription>This project takes the Slinger API and repackages it as a single jar</shortDescription>
+    <dependencies>
+
+        <!-- need common for the old User and Ivorns -->
+        <dependency>
+            <artifactId>astrogrid-slinger-api</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>${astrogrid.common.version}</version>
+        </dependency>
+    </dependencies>
 </project>
