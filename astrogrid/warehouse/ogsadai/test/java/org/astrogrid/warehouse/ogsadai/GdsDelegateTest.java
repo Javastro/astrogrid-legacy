@@ -39,7 +39,7 @@ public class GdsDelegateTest extends TestCase {
 		
     // Test method with valid testRegistryUrl:
     try {
-      gds.setFactoryGshFromRegistry(testRegistryUrl1, timeoutValue);
+      gds.setFactoryGshFromRegistry(testRegistryUrl2, timeoutValue);
       assertNotNull(gds.getFactoryHandle());
     }
     catch (Exception e) {}
@@ -55,7 +55,7 @@ public class GdsDelegateTest extends TestCase {
     // Test method with invalid timeoutValue:
     int bogusTimeoutValue = -1;
     try {
-      gds.setFactoryGshFromRegistry(testRegistryUrl1, bogusTimeoutValue);
+      gds.setFactoryGshFromRegistry(testRegistryUrl2, bogusTimeoutValue);
       fail("Factory handle passed back with timeoutValue set to -1");
     }
     catch (Exception e){}
@@ -71,7 +71,7 @@ public class GdsDelegateTest extends TestCase {
    */
   public void testRegistryLookup3 () throws Exception {
     GdsDelegate gds = new GdsDelegate();
-    gds.setRegistryGsh(testRegistryUrl1);
+    gds.setRegistryGsh(testRegistryUrl2);
     gds.setFactoryGshFromRegistry();
     assertNotNull(gds.getFactoryHandle());
   }
@@ -102,7 +102,7 @@ public class GdsDelegateTest extends TestCase {
    */	
   public void testConnect() throws Exception {
     GdsDelegate gds = new GdsDelegate();
-    gds.setRegistryGsh(testRegistryUrl1);
+    gds.setRegistryGsh(testRegistryUrl2);
     gds.setFactoryGshFromRegistry();
 				
     // Make sure that service is initially unconnected and factory
@@ -145,7 +145,7 @@ public class GdsDelegateTest extends TestCase {
 		
     // Set up the GDS delegate; make sure it knows where its factory is.
     GdsDelegate gds = new GdsDelegate();
-    gds.setRegistryGsh(testRegistryUrl1);
+    gds.setRegistryGsh(testRegistryUrl2);
     gds.setFactoryGshFromRegistry();
     gds.connect();
 
