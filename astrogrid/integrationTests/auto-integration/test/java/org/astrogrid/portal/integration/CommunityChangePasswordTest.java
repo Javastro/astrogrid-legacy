@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityChangePassword.java,v 1.1 2004/06/07 14:39:16 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
+ * $Id: CommunityChangePasswordTest.java,v 1.1 2004/06/07 18:51:12 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
  * Copyright (c) Astrigrid 2004. All rights reserved.
  *  
  */
@@ -9,7 +9,7 @@ package org.astrogrid.portal.integration;
  * 
  * @author jdt
  */
-public final class CommunityChangePassword extends AstrogridPortalWebTestCase {
+public final class CommunityChangePasswordTest extends AstrogridPortalWebTestCase {
     /**
      * A known registered community
      */
@@ -27,7 +27,7 @@ public final class CommunityChangePassword extends AstrogridPortalWebTestCase {
      */
     private static final org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(
-            CommunityChangePassword.class);
+            CommunityChangePasswordTest.class);
     /**
      * Names of items on webpage
      * Some of these are the display text, some the names of the html
@@ -83,14 +83,14 @@ public final class CommunityChangePassword extends AstrogridPortalWebTestCase {
      * 
      * @param arg0 testname
      */
-    public CommunityChangePassword(final String arg0) {
+    public CommunityChangePasswordTest(final String arg0) {
         super(arg0);
     }
     /**
      * Constructor
      *  
      */
-    public CommunityChangePassword() {
+    public CommunityChangePasswordTest() {
         super();
     }
     /**
@@ -218,7 +218,10 @@ public final class CommunityChangePassword extends AstrogridPortalWebTestCase {
     
 }
 /*
- * $Log: CommunityChangePassword.java,v $
+ * $Log: CommunityChangePasswordTest.java,v $
+ * Revision 1.1  2004/06/07 18:51:12  jdt
+ * Name change
+ *
  * Revision 1.1  2004/06/07 14:39:16  jdt
  * added new tests
  *

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/06/07 14:39:16 jdt Exp $
+/*$Id: AllTests.java,v 1.3 2004/06/07 18:51:12 jdt Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,13 +41,16 @@ public class AllTests {
         suite.addTestSuite(PortalLoginPageTest.class);
         suite.addTestSuite(PortalLoginPageHttpUnitTest.class);
         suite.addTestSuite(ReminderPageTest.class);
-        suite.addTestSuite(CommunityPageNewUser.class);
+        suite.addTestSuite(CommunityPageNewUserTest.class);
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/06/07 18:51:12  jdt
+Name change
+
 Revision 1.2  2004/06/07 14:39:16  jdt
 added new tests
 

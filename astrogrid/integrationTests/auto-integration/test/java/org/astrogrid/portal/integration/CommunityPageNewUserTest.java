@@ -1,5 +1,5 @@
 /*
- * $Id: CommunityPageNewUser.java,v 1.1 2004/06/07 14:39:16 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
+ * $Id: CommunityPageNewUserTest.java,v 1.1 2004/06/07 18:51:12 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
  * Copyright (c) Astrigrid 2004. All rights reserved.
  *  
  */
@@ -9,7 +9,7 @@ package org.astrogrid.portal.integration;
  * 
  * @author jdt
  */
-public final class CommunityPageNewUser extends AstrogridPortalWebTestCase {
+public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
     /**
      * A known registered community
      */
@@ -20,7 +20,7 @@ public final class CommunityPageNewUser extends AstrogridPortalWebTestCase {
      */
     private static final org.apache.commons.logging.Log log =
         org.apache.commons.logging.LogFactory.getLog(
-            CommunityPageNewUser.class);
+            CommunityPageNewUserTest.class);
     /**
      * Names of items on webpage
      */
@@ -70,14 +70,14 @@ public final class CommunityPageNewUser extends AstrogridPortalWebTestCase {
      * 
      * @param arg0 testname
      */
-    public CommunityPageNewUser(final String arg0) {
+    public CommunityPageNewUserTest(final String arg0) {
         super(arg0);
     }
     /**
      * Constructor
      *  
      */
-    public CommunityPageNewUser() {
+    public CommunityPageNewUserTest() {
         super();
     }
     /**
@@ -270,7 +270,10 @@ public final class CommunityPageNewUser extends AstrogridPortalWebTestCase {
     
 }
 /*
- * $Log: CommunityPageNewUser.java,v $
+ * $Log: CommunityPageNewUserTest.java,v $
+ * Revision 1.1  2004/06/07 18:51:12  jdt
+ * Name change
+ *
  * Revision 1.1  2004/06/07 14:39:16  jdt
  * added new tests
  *
