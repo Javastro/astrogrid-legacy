@@ -298,12 +298,12 @@ h6 {
         <xsl:if test="contains(system-err,'***WORKFLOW***')"> <!-- we detect an embedded workflow in stderr .. -->
         <xsl:variable name="xmlFile" select="concat($class.name,'-workflow.xml')" />
         <xsl:variable name="htmlFile" select="concat($class.name,'-workflow.html')" />
-           <redirect:write file="{$output.dir}/{$xmlFile}">
+           <redirect:write file="{$output.dir}/{translate($package.name,'.','/')}/{$xmlFile}">
                 <xsl:value-of disable-output-escaping="yes"
                 select="substring-before(substring-after(system-err,'***WORKFLOW***'),'***WORKFLOW-END***')" />
             </redirect:write>
 
-           Resulting Workflow Document <a href="{$output.dir}/{$htmlFile}" frame='_blank'>html</a>, <a href="{$output.dir}/{$xmlFile}" frame='_blank'>xml</a>
+           Resulting Workflow Document <a href="{$htmlFile}" frame='_blank'>html</a>, <a href="{$xmlFile}" frame='_blank'>xml</a>
         </xsl:if>
             <table class="details" border="0" celpadding="5" cellspacing="2" width="95%">
             <tr>
