@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForSimpleWorkflow.java,v 1.1 2004/07/01 11:47:39 nw Exp $
+/*$Id: AbstractTestForSimpleWorkflow.java,v 1.2 2004/08/22 01:43:18 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,6 +50,7 @@ public abstract class AbstractTestForSimpleWorkflow extends AbstractTestForWorkf
           step.setDescription("single step");
           step.setName("test step");
           step.setTool(tool);
+          step.setResultVar("resultVar"); // needs to be set if we want to get results back.
           wf.getSequence().addActivity(step);
       }
 
@@ -63,6 +64,9 @@ public abstract class AbstractTestForSimpleWorkflow extends AbstractTestForWorkf
 
 /* 
 $Log: AbstractTestForSimpleWorkflow.java,v $
+Revision 1.2  2004/08/22 01:43:18  nw
+improved concurrent behaviour
+
 Revision 1.1  2004/07/01 11:47:39  nw
 cea refactor
  

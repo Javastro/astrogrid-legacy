@@ -1,4 +1,4 @@
-/*$Id: SimpleConcatToolWorkflowTest.java,v 1.2 2004/08/17 15:38:53 nw Exp $
+/*$Id: SimpleConcatToolWorkflowTest.java,v 1.3 2004/08/22 01:45:10 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -62,6 +62,7 @@ public class SimpleConcatToolWorkflowTest extends AbstractTestForWorkflow implem
         s.setDescription("Concat tool");
         s.setName("concat");
         s.setTool(concatTool);
+        s.setResultVar("results");
         wf.getSequence().addActivity(s);
     }
     public void checkExecutionResults(Workflow result) throws Exception {
@@ -82,6 +83,9 @@ public class SimpleConcatToolWorkflowTest extends AbstractTestForWorkflow implem
 
 /* 
 $Log: SimpleConcatToolWorkflowTest.java,v $
+Revision 1.3  2004/08/22 01:45:10  nw
+improved concurrent behaviour
+
 Revision 1.2  2004/08/17 15:38:53  nw
 tests for solar event science case.
 
