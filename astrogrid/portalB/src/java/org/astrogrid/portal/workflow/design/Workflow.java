@@ -748,7 +748,7 @@ public class Workflow extends Activity {
             inserts[2] = this.community ;
             inserts[3] = this.description ;
             inserts[4] = communitySnippet;          
-            inserts[5] = getChild().toXMLString() ; // JobSteps come here
+            inserts[5] = getChild().toJESXMLString() ; // JobSteps come here
             
             response = MessageFormat.format( WorkflowDD.JOB_TEMPLATE, inserts ) ;
 
