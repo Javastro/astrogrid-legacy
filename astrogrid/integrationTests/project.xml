@@ -68,6 +68,27 @@
 			<version>SNAPSHOT</version>
 		</dependency>
 		<dependency>
+           <groupId>astrogrid-jes</groupId>
+           <artifactId>astrogrid-jes</artifactId>
+           <version>SNAPSHOT</version>
+	    </dependency>
+        <dependency>
+           <groupId>astrogrid-common</groupId>
+           <artifactId>astrogrid-common</artifactId>
+           <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+           <groupId>astrogrid-workflow</groupId>
+           <artifactId>astrogrid-workflow</artifactId>
+           <version>SNAPSHOT</version>
+        </dependency>
+        <dependency>
+           <groupId>astrogrid-applications</groupId>
+           <artifactId>astrogrid-applications</artifactId>
+           <version>SNAPSHOT</version>
+        </dependency>
+    
+		<dependency>
 			<artifactId>jconfig</artifactId>
 			<groupId>jconfig</groupId>
 			<version>2.1</version>
