@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.7 2004/04/30 17:57:42 pah Exp $
+ * $Id: Castor2Axis.java,v 1.8 2004/04/30 18:06:26 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -124,6 +124,7 @@ public class Castor2Axis {
       ParameterValue result = new ParameterValue();
       result.setName(parameterValue.getName());
       result.setType(convert(parameterValue.getType()));
+      result.setIndirect(parameterValue.getIndirect());
       result.setValue(parameterValue.getValue());
      
       return result;
