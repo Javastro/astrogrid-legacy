@@ -1,4 +1,4 @@
-/*$Id: ApplicationsIntegrationTest.java,v 1.6 2004/04/15 10:28:40 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.1 2004/04/15 12:18:25 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,12 +26,12 @@ import java.util.List;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class ApplicationsIntegrationTest extends AbstractTestForIntegration {
+public class ApplicationsInstallationTest extends AbstractTestForIntegration {
     /**
      * Constructor for ApplicationsIntegrationTest.
      * @param arg0
      */
-    public ApplicationsIntegrationTest(String arg0) {
+    public ApplicationsInstallationTest(String arg0) {
         super(arg0);
     }
     
@@ -103,7 +103,10 @@ public class ApplicationsIntegrationTest extends AbstractTestForIntegration {
 
 
 /* 
-$Log: ApplicationsIntegrationTest.java,v $
+$Log: ApplicationsInstallationTest.java,v $
+Revision 1.1  2004/04/15 12:18:25  nw
+updating tests
+
 Revision 1.6  2004/04/15 10:28:40  nw
 improving testing
 

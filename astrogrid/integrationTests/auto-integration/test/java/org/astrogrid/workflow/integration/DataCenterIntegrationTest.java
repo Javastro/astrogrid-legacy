@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.3 2004/04/15 10:28:40 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.4 2004/04/15 12:18:25 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import java.util.Iterator;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class DataCenterIntegrationTest extends ApplicationsIntegrationTest {
+public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
     /**
      * Constructor for DataCenterIntegrationTest.
      * @param arg0
@@ -69,6 +69,9 @@ public class DataCenterIntegrationTest extends ApplicationsIntegrationTest {
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.4  2004/04/15 12:18:25  nw
+updating tests
+
 Revision 1.3  2004/04/15 10:28:40  nw
 improving testing
 
