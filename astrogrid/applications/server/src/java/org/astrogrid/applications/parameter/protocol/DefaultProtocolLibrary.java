@@ -1,4 +1,4 @@
-/*$Id: DefaultProtocolLibrary.java,v 1.1 2004/07/26 12:07:38 nw Exp $
+/*$Id: DefaultProtocolLibrary.java,v 1.2 2004/11/22 18:26:37 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,6 +64,15 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
         }
         return p.createIndirectValue(reference);
     }
+    
+
+
+    /**
+     * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#getExternalValue(java.lang.String)
+     */
+    public ExternalValue getExternalValue(String location) throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException {
+        return getExternalValue(new URI(location));
+    }    
     /**
      * @see org.astrogrid.applications.parameter.protocol.ProtocolLibrary#listSupportedProtocols()
      */
@@ -101,11 +110,19 @@ public class DefaultProtocolLibrary implements ProtocolLibrary, ComponentDescrip
         return null;
     }
 
+
 }
 
 
 /* 
 $Log: DefaultProtocolLibrary.java,v $
+Revision 1.2  2004/11/22 18:26:37  clq2
+nww-itn07-715a
+
+Revision 1.1.84.1  2004/11/22 14:27:21  nw
+added factory, and create-from-string-uri methods, to make
+this package more accessible from other user's code / scripts.
+
 Revision 1.1  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package

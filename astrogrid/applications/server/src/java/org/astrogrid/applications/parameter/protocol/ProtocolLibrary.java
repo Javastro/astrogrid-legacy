@@ -1,4 +1,4 @@
-/*$Id: ProtocolLibrary.java,v 1.1 2004/07/26 12:07:38 nw Exp $
+/*$Id: ProtocolLibrary.java,v 1.2 2004/11/22 18:26:37 clq2 Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications.parameter.protocol;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /** A library of protocol-handling code, for working with External Values
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Jun-2004
@@ -34,6 +35,15 @@ public interface ProtocolLibrary {
      * @throws InaccessibleExternalValueException - if the external value cannot be accessed - e.g. cannot resolve, 
      * @throws UnrecognizedProtocolException - if the uri protocol / scheme is not recognized */
     ExternalValue getExternalValue(URI location) throws InaccessibleExternalValueException, UnrecognizedProtocolException;
+
+    /** build an external value, direct from a URI String
+     * @param location String representation of URI location to build external value for
+     * @return an external value for this location
+     * @throws InaccessibleExternalValueException - if the external value cannot be accessed - e.g. cannot resolve, 
+     * @throws UnrecognizedProtocolException - if the uri protocol / scheme is not recognized */
+    ExternalValue getExternalValue(String location) throws InaccessibleExternalValueException, UnrecognizedProtocolException, URISyntaxException;
+
+    
     
     /** list the protocols supported in this library */
     String[] listSupportedProtocols();
