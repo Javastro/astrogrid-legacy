@@ -1,4 +1,4 @@
-/*$Id: AbstractAstrogridApplication.java,v 1.2 2005/01/13 15:18:55 nw Exp $
+/*$Id: AbstractAstrogridApplication.java,v 1.3 2005/01/14 00:42:58 nw Exp $
  * Created on 11-Jan-2005
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,11 +27,12 @@ import org.astrogrid.store.Ivorn;
  */
 public class AbstractAstrogridApplication {
 
-    protected Toolbox astrogrid;
-    protected User user;
-    protected Account account;
-    protected Ivorn homeIvorn;
-    protected Ivorn userIvorn;
+    public Toolbox astrogrid;
+    public User user;
+    public Account account;
+    public Ivorn homeIvorn;
+    public Ivorn userIvorn;
+    public String password;
 
     /** Construct a new AbstractUIApplication
      * 
@@ -40,15 +41,15 @@ public class AbstractAstrogridApplication {
         super();
     }
 
-    protected final void login(String username,String community,String password) throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException {
+    public final void login(String username,String community,String password) throws CommunityResolverException, CommunityServiceException, CommunitySecurityException, CommunityIdentifierException, RegistryException {
 
           ScriptEnvironment env = LoginFactory.login(username,community,password);
-          astrogrid = env.getAstrogrid();
-          user = env.getUser();
-          account = env.getAccount();
-          homeIvorn = env.getHomeIvorn();
-          userIvorn = env.getUserIvorn();
-
+          this.astrogrid = env.getAstrogrid();
+          this.user = env.getUser();
+          this.account = env.getAccount();
+          this.homeIvorn = env.getHomeIvorn();
+          this.userIvorn = env.getUserIvorn();
+          this.password = env.getPassword();
         }    
     
 }
@@ -56,6 +57,9 @@ public class AbstractAstrogridApplication {
 
 /* 
 $Log: AbstractAstrogridApplication.java,v $
+Revision 1.3  2005/01/14 00:42:58  nw
+worked on this a bit more. got it sorted.
+
 Revision 1.2  2005/01/13 15:18:55  nw
 moved classes from scripting cdk - belong here.
 
