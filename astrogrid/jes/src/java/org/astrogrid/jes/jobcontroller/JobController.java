@@ -38,34 +38,29 @@ import java.net.URL;
  * being the <code>JobScheduler</code> and the <code>JobMonitor</code>. 
  * <p>
  * The <code>JobController</code> accepts a request for job submission and
- * creates 
- * usually a query against an astronomical catalog. The catalog is likely held 
- * within an SQL/RDBMS style database that is JDBC compliant. However, this is
- * not an absolute restriction, and other sources can be utilized at the cost
- * of the datacenter writing an implementation factory to support their own
- * special query processing.
+ * creates the necessary job structures within the Job database for scheduling
+ * and tracking the Job through the AstroGrid system. It informs the JobScheduler
+ * that there is a new candidate for scheduling before returning a reply which
+ * contains the unique identifier for the job.
  * <p>
- * The mainline argument (the workflow) is held within the method runQuery(),
+ * The mainline argument (the workflow) is held within the method submitJob(),
  * which should be referred to for further detail. The basic workflow is:
- *      1. Load the datacenter properties (if not already loaded).
- *      2. Analyse the query and create appropriate structures.
- *      3  Execute the query.
- *      4. Allocate temporary file space within the local file system.
- *      5. Convert the query into VOTable format and stream it to
- *         the allocated file.
- *      6. Inform the MySpace facility that there is a file to
- *         pick up, and give it the file location.
- *      7. Inform the JobMonitor of successful completion.
+ *      1. Load the JobController properties (if not already loaded).
+ *      2. Analyse the job submission document and create the appropriate 
+ *         data structures within the Job database.
+ *      3  Inform the JobScheduler.
+ *      4. Format a reply, passing back the unique job identifier.
  * <p>	
- * The above does not cover use cases where errors occur.
+ * The above does not cover use cases where errors occura
  * <p>
- * An instance of a DatasetAgent is stateless, with some provisos:
- * 1. The datacenter is driven by a properties file, held at class level.
+ * An instance of a JobController is stateless, with some provisos:
+ * 1. The JobController is driven by a properties file, held at class level.
  * 2. AstroGrid messages are held in a manner amenable to internationalization.
  * These are also loaded from a properties file, held at class level.
- * 3. Finally, and importantly, the DatasetAgent utilizes an entity which does
- * contain state - the Job entity, which currently represents one table held in any suitable
- * JDBC compliant database. However, again this is not an absolute restriction.
+ * 3. Finally, and importantly, the JobController utilizes an entity which does
+ * contain state - the Job entity, which currently represents a number of tables 
+ * held in any suitable JDBC compliant database. However, again this is not 
+ * an absolute restriction.
  *
  *
  * @author  Jeff Lusted
@@ -88,6 +83,7 @@ public class JobController {
 		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
 		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
 		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
+	    ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED    = "AGJESI00050",
 		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
 	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420";
@@ -308,7 +304,9 @@ public class JobController {
   
     
 	private String formatBadResponse( Job job, Message errorMessage ) {
-		return formatResponse( job, errorMessage.toString() ) ;
+		Message
+			message = new Message( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED ) ; 
+		return formatResponse( job, message.toString() ) ;
 	}   
 
 	

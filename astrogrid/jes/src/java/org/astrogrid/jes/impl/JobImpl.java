@@ -8,8 +8,8 @@ package org.astrogrid.jes.impl;
 
 import org.astrogrid.jes.job.Job ;
 import org.astrogrid.jes.job.JobStep ;
-import org.astrogrid.jes.job.SubmissionRequestDD ;
 import org.astrogrid.jes.job.JobException ;
+import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
 import org.astrogrid.jes.i18n.*;
 import org.apache.log4j.Logger;
 

@@ -9,6 +9,7 @@ package org.astrogrid.jes.job;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.jes.i18n.*;
+import org.astrogrid.jes.jobcontroller.*;
 import org.w3c.dom.* ;
 
 /**

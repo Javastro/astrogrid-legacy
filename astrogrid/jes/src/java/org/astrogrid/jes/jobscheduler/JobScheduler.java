@@ -56,13 +56,13 @@ public class JobScheduler {
 		CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
-		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobController: Could not read my configuration file",
-		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobController: Not initialized. Perhaps my configuration file is missing.",
-		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
-		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
-		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
-	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
-	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420";
+		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobScheduler: Could not read my configuration file",
+		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobScheduler: Not initialized. Perhaps my configuration file is missing.",
+		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030" ;
+//		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
+//		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
+//	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
+//	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420";
 	        			
 	private static final String
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
@@ -214,8 +214,6 @@ public class JobScheduler {
     public void scheduleJob( Document scheduleJobDocument ) {
 		if( TRACE_ENABLED ) logger.debug( "scheduleJob() entry") ;
     	
-        String
-	        response = null ;
 		JobFactory
 		    factory = null ;
         Job
@@ -257,54 +255,15 @@ public class JobScheduler {
         	if( bCleanCommit == false ) {
 				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
         	}
-	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "scheduleJob() exit") ;
         } 
-         	
+         	 
     } // end of scheduleJob()
-    
-    
-    private String formatGoodResponse( Job job ) {
-        return formatResponse( job, "" ) ;
-    }
-  
-    
-	private String formatBadResponse( Job job, Message errorMessage ) {
-		return formatResponse( job, errorMessage.toString() ) ;
-	}   
-
 	
-	private String formatResponse( Job job, String aMessage ) {
-		if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;
+	
+	private void locateDatacenter ( Job job ) {
 		
-		String 
-		   response = getProperty( SUBMIT_JOB_RESPONSE_TEMPLATE ) ;
-		
-		try {
-			
-			Object []
-			   inserts = new Object[5] ;
-			inserts[0] = job.getUserId() ;
-			inserts[1] = job.getCommunity() ;
-			inserts[2] = job.getDate() ;
-			inserts[3] = job.getId() ;
-			inserts[4] = aMessage ;
-			
-			response = MessageFormat.format( response, inserts ) ;
-
-		}
-		catch ( Exception ex ) {
-			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE ) ; 
-			logger.error( message.toString(), ex ) ;
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;	
-		}		
-		
-		return response ;
-		
-	} // end of formatResponse()
+	} // end of locateDatacenter()
 	
 	  	
 	private void startJob( Job job ) throws JesException { 
@@ -347,6 +306,8 @@ public class JobScheduler {
 	private String formatRunRequest( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;
 		
+		//JBL Note: Requires rewriting... 
+		
 		String 
 		   response = getProperty( SCHEDULE_JOB_REQUEST_TEMPLATE ) ;
 		
@@ -378,42 +339,8 @@ public class JobScheduler {
 	
 	
 	private String extractJobURN( Document jobDoc ) { 
-		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): entry") ;	
-		
-		String
-		   jobURN = null ;
-		
-		try { 	
-		
-		   Element
-		      element = null ;			   
-		   NodeList
-		      nodeList = submitDoc.getChildNodes() ;  
-			   
-		   for( int i=0 ; i < nodeList.getLength() ; i++ ) {
-				
-			   if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-					
-				   element = (Element) nodeList.item(i) ;
-					
-				   if ( element.getTagName().equals( MonitorRequestDD.JOB_ELEMENT ) ) {
-					   jobURN = element.getAttribute( MonitorRequestDD.JOB_URN_ATTR ).trim() ;
-				   }
-					
-			   } // end if
-								
-		    } // end for
-		
-		} catch( Exception ex ) {
-			
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ;	
-		}
-					
-		return jobURN ;
-		
-	} // end of extractJobURN()
+		return element.getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
+	} 
 	
 
 } // end of class JobScheduler

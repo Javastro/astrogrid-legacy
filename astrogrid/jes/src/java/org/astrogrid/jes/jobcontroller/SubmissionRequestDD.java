@@ -4,7 +4,7 @@
  * AstroGrid Copyright notice.
  * 
  */
-package org.astrogrid.jes.job;
+package org.astrogrid.jes.jobcontroller;
 
 /**
  * @author jl99
