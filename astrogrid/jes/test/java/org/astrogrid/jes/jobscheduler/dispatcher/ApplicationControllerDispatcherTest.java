@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.6 2004/03/10 14:37:35 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.7 2004/03/24 11:47:13 pah Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
-import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.locator.MockLocator;
@@ -54,12 +53,6 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
         disp.dispatchStep(w,js);
     }
 
-    public void testBuildParameterValues(Step js) throws Exception{
-        ParameterValues val = disp.buildParameterValues(js);
-        assertNotNull(val);
-        assertNotNull(val.getMethodName());
-        assertNotNull(val.getParameterSpec());
-    }
     /**
      * @see org.astrogrid.jes.AbstractTestWorkflowInputs#testIt(java.io.InputStream, int)
      */
@@ -78,7 +71,6 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
         Step js = (Step)JesUtil.getJobSteps(w).next();
         assertNotNull(js); 
         testDispatchStep(w,js);
-        testBuildParameterValues(js);   
 
     }
 }
@@ -86,6 +78,9 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.7  2004/03/24 11:47:13  pah
+removed the buildParameters test - not needed as the new CEC delegate uses workflow objects directly
+
 Revision 1.6  2004/03/10 14:37:35  nw
 adjusted tests to handle an empty workflow
 
