@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.4 2004/10/08 15:19:36 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
  **/
 package org.astrogrid.datacenter.queriers.sql;
-
-import org.astrogrid.datacenter.queriers.sql.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +40,7 @@ import org.xml.sax.SAXException;
  * A 'standard' translator that creates 'standard' SQL
  */
 public class StdSqlMaker  extends SqlMaker {
-   
+
    private static final Log log = LogFactory.getLog(StdSqlMaker.class);
    
    /**
@@ -411,6 +409,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.4  2004/10/08 15:19:36  mch
+ Removed unnecessary imports
+
  Revision 1.3  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

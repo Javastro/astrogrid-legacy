@@ -1,5 +1,5 @@
 /*
- * $Id: QuerySearcher.java,v 1.2 2004/10/06 21:12:16 mch Exp $
+ * $Id: QuerySearcher.java,v 1.3 2004/10/08 15:18:41 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,7 +9,6 @@ package org.astrogrid.datacenter.delegate;
 import java.io.IOException;
 import java.io.InputStream;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.store.Agsl;
 
 /**
  * Defines the interface for clients that want to query using complex query languages
@@ -41,6 +40,9 @@ public interface QuerySearcher extends ConeSearcher
 
 /*
 $Log: QuerySearcher.java,v $
+Revision 1.3  2004/10/08 15:18:41  mch
+Removed unnecessary imports
+
 Revision 1.2  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

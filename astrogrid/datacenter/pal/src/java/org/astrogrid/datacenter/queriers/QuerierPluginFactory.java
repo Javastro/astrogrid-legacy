@@ -1,4 +1,4 @@
-/*$Id: QuerierPluginFactory.java,v 1.2 2004/09/28 16:38:05 mch Exp $
+/*$Id: QuerierPluginFactory.java,v 1.3 2004/10/08 15:17:20 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,17 +10,11 @@
  **/
 package org.astrogrid.datacenter.queriers;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.store.Agsl;
 
 /** Manages a single query; this is the root for a chain of possible chain
  * of plugins, translators, etc. It makes the right kind of querier for the job,
@@ -112,6 +106,9 @@ public class QuerierPluginFactory {
 
 /*
  $Log: QuerierPluginFactory.java,v $
+ Revision 1.3  2004/10/08 15:17:20  mch
+ Removed unnecessary imports
+
  Revision 1.2  2004/09/28 16:38:05  mch
  Removed 4.1 interface
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Slinger.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: Slinger.java,v 1.3 2004/10/08 15:16:45 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,6 @@ import org.astrogrid.slinger.AgslTarget;
 import org.astrogrid.slinger.EmailTarget;
 import org.astrogrid.slinger.IvornTarget;
 import org.astrogrid.slinger.TargetIndicator;
-import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.store.delegate.StoreException;
@@ -97,6 +96,9 @@ public class Slinger  {
 }
 /*
  $Log: Slinger.java,v $
+ Revision 1.3  2004/10/08 15:16:45  mch
+ Removed unnecessary imports
+
  Revision 1.2  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.15 2004/10/06 21:12:16 mch Exp $
+ * $Id: DummyDelegate.java,v 1.16 2004/10/08 15:19:01 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -16,7 +16,6 @@ import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
 import org.astrogrid.io.Piper;
-import org.astrogrid.store.Agsl;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -167,6 +166,9 @@ public class DummyDelegate implements QuerySearcher, ConeSearcher {
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.16  2004/10/08 15:19:01  mch
+Removed unnecessary imports
+
 Revision 1.15  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
