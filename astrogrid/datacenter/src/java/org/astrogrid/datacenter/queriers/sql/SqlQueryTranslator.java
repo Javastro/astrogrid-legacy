@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.2 2003/09/17 14:51:30 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.3 2003/09/26 11:04:42 nw Exp $
  * Created on 03-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -193,7 +193,7 @@ public class SqlQueryTranslator extends QueryTranslator {
         String secondExpr = translate(p.getSecondExpr());
         String negateString = ( p.getNegate() ? " NOT " : "");
         stack.pop();
-        stack.top().add(SEARCH,negateString + "BETWEEN(" + firstExpr + "," + expr + "," + secondExpr + ")");
+        stack.top().add(SEARCH,expr + negateString + " BETWEEN " + firstExpr + " AND "+ secondExpr);
     }
     public void visit(ComparisonPred p) throws Exception {
         // evaluate individually.
@@ -208,7 +208,7 @@ public class SqlQueryTranslator extends QueryTranslator {
         String exp = translate(p.getExpr());
         String negateString = (p.getNegate() ? " NOT " : "");
         stack.pop();
-        stack.top().add(SEARCH,exp + negateString + "LIKE " + atom);
+        stack.top().add(SEARCH,exp + negateString + " LIKE " + atom);
     }
     
     {
@@ -272,9 +272,9 @@ public class SqlQueryTranslator extends QueryTranslator {
        stack.top().add(EXPR,Double.toString(e.getValue()));
    }
    public void visit(StringLiteral e) {
-       ArrayOfString as = e.getValue();
+       ArrayOfString as = e.getValue();      
        String strArr = TranslationFrame.join(as.getString()," ");
-       stack.top().add(EXPR,strArr);
+       stack.top().add(EXPR,"'" + strArr + "'");
    }
    {
        requiresFrame(BinaryExpr.class);
@@ -351,8 +351,8 @@ public class SqlQueryTranslator extends QueryTranslator {
        TranslationFrame f = stack.pop();
        String operator = e.getOperator().toString();
        StringBuffer buff = new StringBuffer()
-            .append("(")
             .append(operator)
+            .append("(")            
             .append(f.get(EXPR))
             .append(")");
        stack.top().add(EXPR,buff);
@@ -364,6 +364,9 @@ public class SqlQueryTranslator extends QueryTranslator {
 
 /* 
 $Log: SqlQueryTranslator.java,v $
+Revision 1.3  2003/09/26 11:04:42  nw
+fixed a few minor translation errors (spacing,parens, etc) raised by new test.
+
 Revision 1.2  2003/09/17 14:51:30  nw
 tidied imports - will stop maven build whinging
 
