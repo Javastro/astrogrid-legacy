@@ -30,14 +30,6 @@
 
   <!-- jar files the project is dependent on -->
   <dependencies>
-  	<!-- ensure we get run last of all -->
-	<!--
-  	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>astrogrid-datacenter-implementations</artifactId>
-		<version>SNAPSHOT</version>
-	</dependency>
--->
 	<dependency>
 		<groupId>astrogrid-datacenter</groupId>
 		<artifactId>astrogrid-datacenter-server</artifactId>
@@ -107,6 +99,14 @@
           <properties>
       <war.bundle>true</war.bundle>
     </properties>
+    </dependency>
+    
+    <dependency>
+    	<id>junitee</id>
+    	<version>1.8</version>
+    	<properties>
+    		<war.bundle>true</war.bundle>
+    	</properties>
     </dependency>
 
     <dependency><!-- hsqldb - for testing -->
