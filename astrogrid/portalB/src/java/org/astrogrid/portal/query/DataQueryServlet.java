@@ -297,6 +297,7 @@ public class DataQueryServlet extends HttpServlet {
 			//Okay he wants to start over so get rid of everything.
 			qb.clear();
 			qb = null;
+			session.setAttribute("CriteriaNumber",null);
 			session.setAttribute("QueryString",null);
 		}else if(validParameter(request.getParameter("SubmitQuery"))){
 			//submited a query so send it to the JobController.

@@ -99,7 +99,7 @@ for(var i = 0;i < dsColArray[sIndex].length;i++) {
                         <td width="0" height="0" rowspan="0" colspan="0"
                             style="color: white; font-family: arial, helvetica, sans-serif; 
                            	font-size-adjust: -2; font-weight: bold; height: 30px; width: 200px; ">
-                            <a href="agdataqueryhelp.html" style="color: #FFFFFF; ">Help</a>
+                            <a href="DataQueryHelp.html" style="color: #FFFFFF; ">Help</a>
                         </td>
                         <td width="70%">&nbsp;</td>
                     </tr>
@@ -148,7 +148,7 @@ for(var i = 0;i < dsColArray[sIndex].length;i++) {
 										</select>
 										<i>* this is required when removing a criteria</i>
 										<br />
-										<b>Choose the join operation for you next criteria:</b>
+										<b>Choose the join operation for your next criteria:</b>
 										<select name="JoinType">
 											<option value="AND">AND</option>
 											<option value="OR">OR</option>
