@@ -195,6 +195,7 @@ public class DesignAction extends AbstractAction {
 	    ACTION_ADD_STEP_NAME = "add-step-name", 	    
         ACTION_READ_LISTS = "read-lists",
         ACTION_REMOVE_WORKFLOW_FROM_SESSION = "remove-workflow-from-session",
+        ACTION_RESET_WORKFLOW = "reset-workflow",
         ACTION_REMOVE_ACTIVITY = "remove_activity";
         
     public static final String
@@ -400,7 +401,11 @@ public class DesignAction extends AbstractAction {
 				}				
 				else if( action.equals( ACTION_REMOVE_WORKFLOW_FROM_SESSION )){
 					this.removeWorkflow();  
-				}				
+				}
+				else if( action.equals( ACTION_RESET_WORKFLOW )){
+					this.removeWorkflow() ;
+					this.createWorkflow() ;  
+				}								
                 else if( action.equals( ACTION_INSERT_FLOW ) ) {
                     this.insertFlow();                                                    
                 }   
