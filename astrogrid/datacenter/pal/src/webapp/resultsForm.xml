@@ -12,11 +12,10 @@
           <select name='Compression'>
              <option value="NONE">None</option>
           </select>
-          Send them
-          <!-- <input type='radio' name='TargetBrowser' checked='true'/>to Browser -->
-          <!-- <input type='radio' name='TargetURI'/> -->
-          <input type="text" name="Target"/> (Optional)
-          <a href="http://wiki.astrogrid.org/bin/view/Support/HelpTargetIndicators">(Help)</a>
+          <table>
+          <tr><td>Send them to</td><td><input type='radio' name='TargetResponse' value='true' checked='true'/>Browser</tr>
+          <tr><td></td>            <td><input type='radio' name='TargetResponse' value='false'/>URI</td><td><input type="text" name="TargetURI"/>           <a href="http://wiki.astrogrid.org/bin/view/Support/HelpTargetIndicators">(Help)</a></td></tr>
+          </table>
         </p>
 </div>
 
