@@ -5,6 +5,7 @@ import org.apache.cocoon.environment.Request;
 import org.apache.cocoon.environment.Session;
 
 import org.astrogrid.community.User;
+import org.astrogrid.portal.login.common.SessionKeys;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
 
@@ -15,9 +16,9 @@ import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
  * @deprecated From iteration 5 <b>should be</b> using @link org.astrogrid.community.beans.v1.Credentials
  */
 public class UserHelper {
-  private static final String PARAM_ACCOUNT = "username";
-  private static final String PARAM_GROUP = "group";
-  private static final String PARAM_TOKEN = "token";
+  private static final String PARAM_ACCOUNT = SessionKeys.USER; //"username";
+  private static final String PARAM_GROUP = SessionKeys.COMMUNITY_ACCOUNT; //"group";
+  private static final String PARAM_TOKEN = "token"; //@TODO unused
   
 	public static User getCurrentUser(Parameters params, Request request, Session session) {
 		ActionUtils utils = ActionUtilsFactory.getActionUtils();
