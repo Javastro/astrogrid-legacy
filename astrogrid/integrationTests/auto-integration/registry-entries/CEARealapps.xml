@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<vr:VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" 
-	xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" 
-	xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" 
-	xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9">
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<vr:VODescription xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>CrossMatcher</vr:ResourceKey>
@@ -37,68 +33,61 @@
 		<vr:Subject>???</vr:Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="matches" type="VOTable" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="matches" type="VOTable">
 					<ceapd:UI_Name>Match VOTable</ceapd:UI_Name>
 					<ceapd:UI_Description>The VOTable file containing the 
 						sources to match</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="output" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="output" type="text">
 					<ceapd:UI_Name>output type</ceapd:UI_Name>
 					<ceapd:UI_Description>This can be one of HTML VOTable of 
 						Ascii, with the default being 
 						VOTable</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>VOTable</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="merged_output" type="VOTable" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="merged_output" type="VOTable">
 					<ceapd:UI_Name>Resulting VOTable</ceapd:UI_Name>
 					<ceapd:UI_Description>The VOTable file containing result of 
 						the match</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="maxMatches" type="integer" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="maxMatches" type="integer">
 					<ceapd:UI_Name>maximum number of matches per 
 						target</ceapd:UI_Name>
 					<ceapd:UI_Description>maximum number of matches per 
 						target</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="targets" type="VOTable" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="targets" type="VOTable">
 					<ceapd:UI_Name>Target votable</ceapd:UI_Name>
 					<ceapd:UI_Description>The VOTable file containing the 
 						target sources</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="matchRadius" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="matchRadius" type="double">
 					<ceapd:UI_Name>Match Radius</ceapd:UI_Name>
 					<ceapd:UI_Description>??</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="radMax" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="radMax" type="double">
 					<ceapd:UI_Name>Maximum search radius</ceapd:UI_Name>
 					<ceapd:UI_Description>??</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
 			<cea:Interfaces>
@@ -106,13 +95,11 @@
 					<ceab:input>
 						<ceab:pref ref="matches" minoccurs="1" maxoccurs="0"/>
 						<ceab:pref ref="targets" minoccurs="1" maxoccurs="0"/>
-						<ceab:pref ref="matchRadius" minoccurs="0" 
-							maxoccurs="1"/>
+						<ceab:pref ref="matchRadius" minoccurs="0" maxoccurs="1"/>
 						<ceab:pref ref="radMax" minoccurs="0" maxoccurs="1"/>
 					</ceab:input>
 					<ceab:output>
-						<ceab:pref ref="merged_output" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="merged_output" minoccurs="1" maxoccurs="1"/>
 					</ceab:output>
 				</ceab:Interface>
 				<ceab:Interface name="simple">
@@ -121,15 +108,13 @@
 						<ceab:pref ref="targets" minoccurs="1" maxoccurs="0"/>
 					</ceab:input>
 					<ceab:output>
-						<ceab:pref ref="merged_output" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="merged_output" minoccurs="1" maxoccurs="1"/>
 					</ceab:output>
 				</ceab:Interface>
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>BPZ</vr:ResourceKey>
@@ -162,183 +147,163 @@
 		<vr:Subject>???</vr:Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="PROBS_LITE" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PROBS_LITE" type="boolean">
 					<ceapd:UI_Name>PROBS_LITE</ceapd:UI_Name>
 					<ceapd:UI_Description>Save only the final probability 
 						distribution</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>no</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="ZMIN" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="ZMIN" type="double">
 					<ceapd:UI_Name>ZMIN</ceapd:UI_Name>
 					<ceapd:UI_Description>minimum 
 						redshift</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0.01</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="MADAU" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="MADAU" type="boolean">
 					<ceapd:UI_Name>MADAU</ceapd:UI_Name>
 					<ceapd:UI_Description>Apply Madau correction to 
 						spectra</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>yes</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="GET_Z" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="GET_Z" type="boolean">
 					<ceapd:UI_Name>GET_Z</ceapd:UI_Name>
 					<ceapd:UI_Description>Actually obtain 
 						photo-z</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>yes</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DZ" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DZ" type="double">
 					<ceapd:UI_Name>DZ</ceapd:UI_Name>
 					<ceapd:UI_Description>redshift 
 						resolution</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0.01</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PROBS" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PROBS" type="boolean">
 					<ceapd:UI_Name>PROBS</ceapd:UI_Name>
 					<ceapd:UI_Description>Save all the galaxy probability 
 						distributions (very large file 
 						created)</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="MAG" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="MAG" type="boolean">
 					<ceapd:UI_Name>MAG</ceapd:UI_Name>
 					<ceapd:UI_Description>Data in 
 						magnitudes?</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>yes</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="EXCLUDE" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="EXCLUDE" type="text">
 					<ceapd:UI_Name>EXCLUDE</ceapd:UI_Name>
 					<ceapd:UI_Description>Filters to be excluded from the 
 						estimation</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>none</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="Z_THR" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="Z_THR" type="double">
 					<ceapd:UI_Name>Z_THR</ceapd:UI_Name>
 					<ceapd:UI_Description>Integrate likelihood for 
 						z&amp;gt;z_thr</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="ZMAX" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="ZMAX" type="double">
 					<ceapd:UI_Name>ZMAX</ceapd:UI_Name>
 					<ceapd:UI_Description>maximum 
 						redshift</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>6.5</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PRIOR" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PRIOR" type="text">
 					<ceapd:UI_Name>PRIOR</ceapd:UI_Name>
 					<ceapd:UI_Description>prior name</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>hdfn</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="CHECK" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="CHECK" type="boolean">
 					<ceapd:UI_Name>CHECK</ceapd:UI_Name>
 					<ceapd:UI_Description>Perform some checks, compare observed 
 						colors with templates, etc.</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>no</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="COLOR" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="COLOR" type="boolean">
 					<ceapd:UI_Name>COLOR</ceapd:UI_Name>
 					<ceapd:UI_Description>Use colors instead of 
 						fluxes</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>no</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="ONLY_TYPE" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="ONLY_TYPE" type="boolean">
 					<ceapd:UI_Name>ONLY_TYPE</ceapd:UI_Name>
 					<ceapd:UI_Description>Use spectroscopic redshifts instead 
 						of photo-z</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>no</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="SPECTRA" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="SPECTRA" type="text">
 					<ceapd:UI_Name>Spectra</ceapd:UI_Name>
 					<ceapd:UI_Description>template list</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>CWWSB.list</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="NEW_AB" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="NEW_AB" type="boolean">
 					<ceapd:UI_Name>NEW_AB</ceapd:UI_Name>
 					<ceapd:UI_Description>If yes, generate new AB files even if 
 						they already exist</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>no</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="ODDS" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="ODDS" type="double">
 					<ceapd:UI_Name>ODDS</ceapd:UI_Name>
 					<ceapd:UI_Description>Odds threshold: affects confidence 
 						limits definition</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0.95</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="VERBOSE" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="VERBOSE" type="boolean">
 					<ceapd:UI_Name>VERBOSE</ceapd:UI_Name>
 					<ceapd:UI_Description>Print estimated redshifts to the 
 						standard output</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>yes</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="INTERP" type="integer" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="INTERP" type="integer">
 					<ceapd:UI_Name>INTERP</ceapd:UI_Name>
 					<ceapd:UI_Description>Number of interpolated templates 
 						between each of the original ones</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PLOTS" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PLOTS" type="boolean">
 					<ceapd:UI_Name>PLOTS</ceapd:UI_Name>
 					<ceapd:UI_Description>produce plots</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>no</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
 			<cea:Interfaces>
@@ -351,8 +316,7 @@
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>Pegase</vr:ResourceKey>
@@ -393,8 +357,7 @@
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>Starburst99</vr:ResourceKey>
@@ -435,8 +398,7 @@
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>HyperZ</vr:ResourceKey>
@@ -469,84 +431,73 @@
 		<vr:Subject>???</vr:Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="output_catalog" type="VOTable" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="output_catalog" type="VOTable">
 					<ceapd:UI_Name>Redshift Catalogue</ceapd:UI_Name>
 					<ceapd:UI_Description>The catalogue of estimated 
 						redshifts</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="config_file" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="config_file" type="binary">
 					<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
 					<ceapd:UI_Description>A HyperZ configuration 
 						file</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="input_catalog" type="VOTable" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="input_catalog" type="VOTable">
 					<ceapd:UI_Name>Magnitude Catalogue</ceapd:UI_Name>
 					<ceapd:UI_Description>The input catalogue of measured 
 						magnitude</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="FILTERS_RES" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="FILTERS_RES" type="binary">
 					<ceapd:UI_Name>filter res</ceapd:UI_Name>
 					<ceapd:UI_Description>?</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="FILTERS_FILE" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="FILTERS_FILE" type="binary">
 					<ceapd:UI_Name>Filters file</ceapd:UI_Name>
 					<ceapd:UI_Description>?</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="TEMPLATES_FILE" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="TEMPLATES_FILE" type="binary">
 					<ceapd:UI_Name>Templates file</ceapd:UI_Name>
 					<ceapd:UI_Description>?</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="" type="binary" 
-					accept-encodings="" sub-type="">
-					<ceapd:UI_Name></ceapd:UI_Name>
+				<cea:ParameterDefinition name="" type="binary">
+					<ceapd:UI_Name/>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
 			<cea:Interfaces>
 				<ceab:Interface name="simple">
 					<ceab:input>
-						<ceab:pref ref="config_file" minoccurs="1" 
-							maxoccurs="1"/>
-						<ceab:pref ref="input_catalog" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="config_file" minoccurs="1" maxoccurs="1"/>
+						<ceab:pref ref="input_catalog" minoccurs="1" maxoccurs="1"/>
 					</ceab:input>
 					<ceab:output>
-						<ceab:pref ref="output_catalog" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="output_catalog" minoccurs="1" maxoccurs="1"/>
 					</ceab:output>
 				</ceab:Interface>
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>Galexyev</vr:ResourceKey>
@@ -587,8 +538,7 @@
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>SExtractor</vr:ResourceKey>
@@ -621,313 +571,274 @@
 		<vr:Subject>???</vr:Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="CATALOG_NAME" type="VOTable" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="CATALOG_NAME" type="VOTable">
 					<ceapd:UI_Name>Derived output catalogue</ceapd:UI_Name>
 					<ceapd:UI_Description>The catalogue of images derived from 
 						the input images</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="GAIN" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="GAIN" type="double">
 					<ceapd:UI_Name>Gain</ceapd:UI_Name>
 					<ceapd:UI_Description>detector gain in 
 						e-/ADU</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0.0</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="MASK_TYPE" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="MASK_TYPE" type="text">
 					<ceapd:UI_Name>Mask type</ceapd:UI_Name>
 					<ceapd:UI_Description> type of detection MASKing: can be 
 						one of &amp;quot;NONE&amp;quot;, 
 						&amp;quot;BLANK&amp;quot; or 
 						&amp;quot;CORRECT&amp;quot;</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>CORRECT</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="CLEAN" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="CLEAN" type="boolean">
 					<ceapd:UI_Name>Clean?</ceapd:UI_Name>
 					<ceapd:UI_Description>Clean spurious detections? (Y or 
 						N)?</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>Y</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="FILTER" type="boolean" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="FILTER" type="boolean">
 					<ceapd:UI_Name>use filter</ceapd:UI_Name>
 					<ceapd:UI_Description>apply filter for 
 						detection</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="FILTER_NAME" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="FILTER_NAME" type="text">
 					<ceapd:UI_Name>detection filter</ceapd:UI_Name>
 					<ceapd:UI_Description>the convolution 
 						filter</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="MAG_ZEROPOINT" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="MAG_ZEROPOINT" type="double">
 					<ceapd:UI_Name>magnitude zero-point</ceapd:UI_Name>
 					<ceapd:UI_Description> magnitude 
 						zero-point</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0.0</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="BACKPHOTO_TYPE" type="text" 
-					accept-encodings="" sub-type="">
-					<ceapd:UI_Name></ceapd:UI_Name>
+				<cea:ParameterDefinition name="BACKPHOTO_TYPE" type="text">
+					<ceapd:UI_Name/>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="MAG_GAMMA" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="MAG_GAMMA" type="double">
 					<ceapd:UI_Name>MAG_GAMMA</ceapd:UI_Name>
 					<ceapd:UI_Description> gamma of emulsion (for photographic 
 						scans)</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>4.0</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="CHECKIMAGE_NAME" type="FITS" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="CHECKIMAGE_NAME" type="FITS">
 					<ceapd:UI_Name>Checkimage name</ceapd:UI_Name>
 					<ceapd:UI_Description>file containing the 
 						checkimage</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PIXEL_SCALE" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PIXEL_SCALE" type="double">
 					<ceapd:UI_Name>Pixel scale</ceapd:UI_Name>
 					<ceapd:UI_Description>size of pixel in arcsec (0=use FITS 
 						WCS info)</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="FLAG_IMAGE" type="FITS" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="FLAG_IMAGE" type="FITS">
 					<ceapd:UI_Name>flag image</ceapd:UI_Name>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="BACK_SIZE" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="BACK_SIZE" type="text">
 					<ceapd:UI_Name>backgroud mesh size</ceapd:UI_Name>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="IMAGE_BAND" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="IMAGE_BAND" type="text">
 					<ceapd:UI_Name>Input image band</ceapd:UI_Name>
 					<ceapd:UI_Description>The input image measuerment band. 
 						This is used to form the column name in the output 
 						VOTable for the measured photometry. 
 						</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="BACK_FILTERSIZE " type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="BACK_FILTERSIZE " type="text">
 					<ceapd:UI_Name>background filter size</ceapd:UI_Name>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PHOT_AUTOPARAMS" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PHOT_AUTOPARAMS" type="text">
 					<ceapd:UI_Name>Photometry params</ceapd:UI_Name>
 					<ceapd:UI_Description> MAG_AUTO parameters: 
 						&amp;lt;Kron_fact&amp;gt;,&amp;gt;min_radius&amp;gt;</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DETECT_TYPE" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DETECT_TYPE" type="text">
 					<ceapd:UI_Name>detection type</ceapd:UI_Name>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>CCD</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PARAMETERS_NAME" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PARAMETERS_NAME" type="binary">
 					<ceapd:UI_Name>Parameter File</ceapd:UI_Name>
 					<ceapd:UI_Description>A File containing the list of 
 						catalogue paramters that should be 
 						computed</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="config_file" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="config_file" type="binary">
 					<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
 					<ceapd:UI_Description>File containing the main 
 						configuration parameters for 
 						SExtractor</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="SEEING_FWHM" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="SEEING_FWHM" type="double">
 					<ceapd:UI_Name>Seeing</ceapd:UI_Name>
 					<ceapd:UI_Description>stellar FWHM in 
 						arcsec</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>1.2</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DETECT_THRESH" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DETECT_THRESH" type="double">
 					<ceapd:UI_Name>Detection Threshold</ceapd:UI_Name>
 					<ceapd:UI_Description>sigmas or threshold,ZP in 
 						mag.arcsec-2</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>1.5</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DETECT_MINAREA" type="integer" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DETECT_MINAREA" type="integer">
 					<ceapd:UI_Name>minimum detection area</ceapd:UI_Name>
 					<ceapd:UI_Description>minimum number of pixels above 
 						threshold</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>5</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DEBLEND_NTHRESH " type="integer" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DEBLEND_NTHRESH " type="integer">
 					<ceapd:UI_Name>Deblend thresholds</ceapd:UI_Name>
 					<ceapd:UI_Description> Number of deblending 
 						sub-thresholds</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>32</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="CLEAN_PARAM" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="CLEAN_PARAM" type="double">
 					<ceapd:UI_Name>Cleaning efficiency</ceapd:UI_Name>
 					<ceapd:UI_Description>Cleaning 
 						Efficiency</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>1.0</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="STARNNW_NAME" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="STARNNW_NAME" type="binary">
 					<ceapd:UI_Name>neural net file</ceapd:UI_Name>
 					<ceapd:UI_Description> Neural-Network_Weight table 
 						filename</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DetectionImage" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DetectionImage" type="binary">
 					<ceapd:UI_Name>Detection Image</ceapd:UI_Name>
 					<ceapd:UI_Description>The image that is used to detect 
 						sources. Basic position, shape and size informtaion is 
 						derived from this image</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="DEBLEND_MINCONT" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="DEBLEND_MINCONT" type="double">
 					<ceapd:UI_Name>de-blend contrast</ceapd:UI_Name>
 					<ceapd:UI_Description> Minimum contrast parameter for 
 						deblending</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>0.005</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PhotoImage" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PhotoImage" type="binary">
 					<ceapd:UI_Name>Measurement Image</ceapd:UI_Name>
 					<ceapd:UI_Description>The Image that is used to measure 
 						photometric parameters</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="CHECKIMAGE_TYPE" type="text" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="CHECKIMAGE_TYPE" type="text">
 					<ceapd:UI_Name>Check image</ceapd:UI_Name>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="ANALYSIS_THRESH" type="double" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="ANALYSIS_THRESH" type="double">
 					<ceapd:UI_Name>Analysis Threshold</ceapd:UI_Name>
 					<ceapd:UI_Description>sigmas or threshold,ZP in 
 						mag.arcsec-2</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>1.5</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="PHOT_APERTURES" type="integer" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="PHOT_APERTURES" type="integer">
 					<ceapd:UI_Name>Photometry apertures</ceapd:UI_Name>
 					<ceapd:UI_Description> MAG_APER aperture diameter(s) in 
 						pixels</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
+					<ceapd:UCD/>
 					<ceapd:DefaultValue>5</ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
 			<cea:Interfaces>
 				<ceab:Interface name="simple">
 					<ceab:input>
-						<ceab:pref ref="PARAMETERS_NAME" minoccurs="1" 
-							maxoccurs="1"/>
-						<ceab:pref ref="config_file" minoccurs="1" 
-							maxoccurs="1"/>
-						<ceab:pref ref="DetectionImage" minoccurs="1" 
-							maxoccurs="1"/>
-						<ceab:pref ref="FILTER_NAME" minoccurs="1" 
-							maxoccurs="1"/>
-						<ceab:pref ref="PhotoImage" minoccurs="1" 
-							maxoccurs="1"/>
-						<ceab:pref ref="ANALYSIS_THRESH" minoccurs="0" 
-							maxoccurs="1"/>
+						<ceab:pref ref="PARAMETERS_NAME" minoccurs="1" maxoccurs="1"/>
+						<ceab:pref ref="config_file" minoccurs="1" maxoccurs="1"/>
+						<ceab:pref ref="DetectionImage" minoccurs="1" maxoccurs="1"/>
+						<ceab:pref ref="FILTER_NAME" minoccurs="1" maxoccurs="1"/>
+						<ceab:pref ref="PhotoImage" minoccurs="1" maxoccurs="1"/>
+						<ceab:pref ref="ANALYSIS_THRESH" minoccurs="0" maxoccurs="1"/>
 					</ceab:input>
 					<ceab:output>
-						<ceab:pref ref="CATALOG_NAME" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="CATALOG_NAME" minoccurs="1" maxoccurs="1"/>
 					</ceab:output>
 				</ceab:Interface>
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>annz</vr:ResourceKey>
@@ -960,38 +871,33 @@
 		<vr:Subject>???</vr:Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="OUTPUT" type="binary" 
-					accept-encodings="" sub-type="">
-					<ceapd:UI_Name></ceapd:UI_Name>
+				<cea:ParameterDefinition name="OUTPUT" type="binary">
+					<ceapd:UI_Name/>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="NET_WEIGHT" type="binary" 
-					accept-encodings="" sub-type="">
-					<ceapd:UI_Name></ceapd:UI_Name>
+				<cea:ParameterDefinition name="NET_WEIGHT" type="binary">
+					<ceapd:UI_Name/>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="INPUT_PHOTOM" type="binary" 
-					accept-encodings="" sub-type="">
-					<ceapd:UI_Name></ceapd:UI_Name>
+				<cea:ParameterDefinition name="INPUT_PHOTOM" type="binary">
+					<ceapd:UI_Name/>
 					<ceapd:UI_Description/>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
 			<cea:Interfaces>
 				<ceab:Interface name="simple">
 					<ceab:input>
-						<ceab:pref ref="NET_WEIGHT" minoccurs="1" 
-							maxoccurs="0"/>
-						<ceab:pref ref="INPUT_PHOTOM" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="NET_WEIGHT" minoccurs="1" maxoccurs="0"/>
+						<ceab:pref ref="INPUT_PHOTOM" minoccurs="1" maxoccurs="1"/>
 					</ceab:input>
 					<ceab:output>
 						<ceab:pref ref="OUTPUT" minoccurs="1" maxoccurs="1"/>
@@ -1000,8 +906,7 @@
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaApplicationType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaApplicationType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>swarp</vr:ResourceKey>
@@ -1034,53 +939,47 @@
 		<vr:Subject>???</vr:Subject>
 		<cea:ApplicationDefinition>
 			<cea:Parameters>
-				<cea:ParameterDefinition name="IMAGEOUT_NAME" type="FITS" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="IMAGEOUT_NAME" type="FITS">
 					<ceapd:UI_Name>Output Image</ceapd:UI_Name>
 					<ceapd:UI_Description>The resampled and possibly coadded 
 						output image</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="config_file" type="binary" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="config_file" type="binary">
 					<ceapd:UI_Name>Configuration File</ceapd:UI_Name>
 					<ceapd:UI_Description>File containing the main 
 						configuration parameters for 
 						Swarp</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
-				<cea:ParameterDefinition name="Image" type="FITS" 
-					accept-encodings="" sub-type="">
+				<cea:ParameterDefinition name="Image" type="FITS">
 					<ceapd:UI_Name>Detection Image</ceapd:UI_Name>
 					<ceapd:UI_Description>The image that is used to detect 
 						sources. Basic position, shape and size informtaion is 
 						derived from this image</ceapd:UI_Description>
-					<ceapd:UCD></ceapd:UCD>
-					<ceapd:DefaultValue></ceapd:DefaultValue>
-					<ceapd:Units></ceapd:Units>
+					<ceapd:UCD/>
+					<ceapd:DefaultValue/>
+					<ceapd:Units/>
 				</cea:ParameterDefinition>
 			</cea:Parameters>
 			<cea:Interfaces>
 				<ceab:Interface name="simple">
 					<ceab:input>
-						<ceab:pref ref="config_file" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="config_file" minoccurs="1" maxoccurs="1"/>
 						<ceab:pref ref="Image" minoccurs="1" maxoccurs="1"/>
 					</ceab:input>
 					<ceab:output>
-						<ceab:pref ref="IMAGEOUT_NAME" minoccurs="1" 
-							maxoccurs="1"/>
+						<ceab:pref ref="IMAGEOUT_NAME" minoccurs="1" maxoccurs="1"/>
 					</ceab:output>
 				</ceab:Interface>
 			</cea:Interfaces>
 		</cea:ApplicationDefinition>
 	</vr:Resource>
-	<vr:Resource status="active" xsi:type="cea:CeaServiceType" 
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<vr:Resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" status="active" xsi:type="CeaServiceType">
 		<vr:Identifier>
 			<vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
 			<vr:ResourceKey>JBORealCEC</vr:ResourceKey>
@@ -1122,10 +1021,8 @@
 		<vr:Interface>
 			<vr:Invocation>WebService</vr:Invocation>
 			<vr:AccessURL use="base">
-						http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>
-
-<!--				<vr:AccessURL use="base">
-				@TOMCATROOT@/astrogrid-cea-commandline-@VERSION@/services/CommonExecutionConnectorService</vr:AccessURL>
+						http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</vr:AccessURL>			<!--				&lt;vr:AccessURL use="base"&gt;
+				@TOMCATROOT@/astrogrid-cea-commandline-@VERSION@/services/CommonExecutionConnectorService&lt;/vr:AccessURL&gt;
 -->
 
 		</vr:Interface>
