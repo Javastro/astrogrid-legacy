@@ -1,9 +1,0 @@
-build
-.classpath
-.project
-bin
-build.properties
-cvs.log
-maven.log
-*.log
-target
