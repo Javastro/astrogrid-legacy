@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/07/31 10:18:24 $</cvs:author>
-    | <cvs:version>$Revision: 1.37 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/31 14:24:24 $</cvs:author>
+    | <cvs:version>$Revision: 1.38 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.38  2003/07/31 14:24:24  KevinBenson
+    | New build xml files works with the DataQuery that is integrated with cocoon and also now does unzip for axis and cocoon instead of untar.
+    |
     | Revision 1.37  2003/07/31 10:18:24  KevinBenson
     | Change the build.xml file so it will work with the new DataQuery cocoon version.
     | Still had a small error in CreateRequest.java. And also got rid of the WS_FTP files.
@@ -166,10 +169,10 @@
 	<property name="axis.tar"     value="depends/axis/axis-1_1rc2.tar.gz"/>
 	<property name="axis.home"    value="${basedir}/build/axis/axis-1_1RC2"/>
 -->
-	<property name="axis.tar"     value="depends/axis/xml-axis-10.tar.gz"/>
+	<property name="axis.zip"     value="depends/axis/axis-1_1.zip"/>
 	<property name="axis.build"   value="${basedir}/build/axis"/>
-	<property name="axis.home"    value="${basedir}/build/axis/xml-axis-10"/>
-	<property name="axis.webapp"  value="${basedir}/build/axis/xml-axis-10/webapps/axis"/>
+	<property name="axis.home"    value="${basedir}/build/axis/axis-1_1"/>
+	<property name="axis.webapp"  value="${basedir}/build/axis/axis-1_1/webapps/axis"/>
 	<property name="axis.servlet" value="axis"/>
 
 	<property name="axis.host"   value="localhost"/>
@@ -414,9 +417,9 @@
 	</target>
 
 	<!-- Unpack the axis web-app --> 
-	<target name="axis.untar" depends="">
+	<target name="axis.unzip" depends="">
 		<!-- Unpack the Axis tar file -->
-		<untar src="${axis.tar}" dest="${axis.build}" compression="gzip"/>
+		<unzip src="${axis.zip}" dest="${axis.build}" />
 	</target>
 
 	<!-- Install our Axis web-app -->
@@ -466,7 +469,7 @@
 		<!-- Delete the Axis installation -->
 		<antcall target="axis.delete"/>
 		<!-- Unpack the Axis installation -->
-		<antcall target="axis.untar"/>
+		<antcall target="axis.unzip"/>
 		<!-- Add the Axis endorsed classes to Tomcat -->
 		<antcall target="axis.endorsed"/>
 	</target>
@@ -1107,6 +1110,16 @@
 			</classpath>
 		</javac>
 	</target>
+	
+    <!-- Copy our java property files -->
+    <target name="portal.properties" description="Copy our property files.">
+        <copy toDir="${portal.build}/classes">
+            <fileset dir="src/java">
+                <!-- Include our query properties -->
+                <include name="**/query/*.properties"/>
+            </fileset>
+        </copy>
+    </target>	
 
 	<!-- Document our source code -->
 	<target name="portal.javadoc" depends="" description="Build our JavaDoc documentation">
@@ -1205,6 +1218,10 @@
 	<target name="portal.BUILD" depends="init">
 		<!-- Compile our portal components -->
 		<antcall target="portal.javac"/>
+		
+        <!-- Copy our portal property files -->
+        <antcall target="portal.properties"/>
+        		
 		<!-- Test our portal components
 		<antcall target="portal.junit"/>
 		-->
