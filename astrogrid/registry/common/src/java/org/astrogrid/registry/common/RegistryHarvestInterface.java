@@ -20,35 +20,35 @@ public interface RegistryHarvestInterface {
     * The modification date will only be used for Registry Resource entries. Hence it actually is harvestAll if it is not
     * a registry resource entry.  This method when it is not a Registry resource entry can only take Resource entries 
     * managed by this authority.
-    * @param query
+    * @param resources
     * @return
     */
-   public Document harvestResource(Document query) throws RegistryException;
+   public Document harvestResource(Document resources) throws RegistryException;
    
    /**
     * This method takes in a date/timestamp with a Resource entry.
-    * @param query
+    * @param resource
     * @return
     */
-   public Document harvestFromResource(Document query)  throws RegistryException;
+   public Document harvestFromResource(Document resource)  throws RegistryException;
    
    
    /**
     * It can take in just a date/timestamp which will kick off a harvest of
     * this registry.
     * Is equivelant of calling harvestFromResource with the date and this registry resource entry.
-    * @param query
+    * @param dateDom
     * @return
     */
-   public Document harvestFrom(Document query);
+   public Document harvestFrom(Document dateDom);
    
    /**
     * Harvest all information in this registry, takes null as parameter.
     * Is equivelant of calling harvestFromResource with a null date and this registry resource entry.
-    * @param query
+    * @param registry This parameter is normally null.  Kicks off returning everything manged by this registry.
     * @return
     */   
-   public Document harvest(Document query);
+   public Document harvest(Document registry);
    
    
    /**
@@ -56,9 +56,9 @@ public interface RegistryHarvestInterface {
     * take in a Resource entry and attempt to harvest the information from that entry. 
     * This method when it is not a Registry resource entry passed in can only take Resource entries 
     * managed by this authority.
-    * @param query
+    * @param resources
     * @return
     */   
-   public Document harvestAll(Document query) throws RegistryException;
+   public Document harvestAll(Document resources) throws RegistryException;
    
 }

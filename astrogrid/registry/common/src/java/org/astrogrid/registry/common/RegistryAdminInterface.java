@@ -21,12 +21,12 @@ public interface RegistryAdminInterface {
     * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
     * DataCollection 
     * 
-    * @param query Document a XML document dom object to be updated on the registry.
+    * @param update Document a XML document dom object to be updated on the registry.
     * @return the document updated on the registry is returned.
     * @author Kevin Benson
     * 
     */   
-   public Document add(Document query) throws org.exolab.castor.xml.ValidationException;
+   public Document add(Document update) throws org.exolab.castor.xml.ValidationException;
 
 
    /**
@@ -38,20 +38,20 @@ public interface RegistryAdminInterface {
     * Main Pieces: Organisation, Authority, Registry, Resource, Service, SkyService, TabularSkyService, 
     * DataCollection 
     * 
-    * @param query Document a XML document dom object to be updated on the registry.
+    * @param add Document a XML document dom object to be updated on the registry.
     * @return the document updated on the registry is returned.
     * @author Kevin Benson
     * 
     */   
-   public Document update(Document query) throws org.exolab.castor.xml.ValidationException;
+   public Document update(Document add) throws org.exolab.castor.xml.ValidationException;
    
    
    /**
     * 
-    * @param query
+    * @param status
     * @return
     * @throws Exception
     */
-   public Document getStatus(Document query);
+   public Document getStatus(Document status);
    
 }
