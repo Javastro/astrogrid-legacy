@@ -34,6 +34,7 @@ public class LoginAction extends AbstractAction
 
 	private static final String NAME_PARAM = "name" ;
 	private static final String PASS_PARAM = "pass" ;
+	private static final String MESSAGE_PARAM = "message" ;
 
 	private static final String POLICY_GROUP    = "guest" ;
 	private static final String POLICY_ACTION   = "read" ;
@@ -83,7 +84,7 @@ public class LoginAction extends AbstractAction
 		boolean authorized = false ;
 		//
 		// Setup our results map.
-		Map results = new HashMap() ;
+		Map results = null ;
 
 		//
 		// If the request action is login.
@@ -209,11 +210,15 @@ public class LoginAction extends AbstractAction
 				// Set the current account info.
 				session.setAttribute("user", name) ;
 				session.setAttribute("community_account", token.getAccount()) ;
+				//
+				// Add our results.
+				results = new HashMap() ;
+				results.put("account", token.getAccount());
 				}
 
 			//
 			// Add our display message.
-			results.put("message", message);
+			request.setParameter(MESSAGE_PARAM, message);
 
 			}
 
