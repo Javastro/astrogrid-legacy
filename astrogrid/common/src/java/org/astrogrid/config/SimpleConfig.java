@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.5 2003/12/16 13:13:12 mch Exp $
+ * $Id: SimpleConfig.java,v 1.6 2003/12/16 13:57:08 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -104,7 +104,7 @@ public abstract class SimpleConfig
    /**
     * Returns an enumeration of the property <i>keys</i>
     */
-   public Enumeration keys()
+   public static Enumeration keys()
    {
       return instance.keys();
    }
