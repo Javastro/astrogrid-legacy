@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.13 2003/12/16 16:19:27 mch Exp $
+ * $Id: WebDelegate.java,v 1.14 2004/01/05 19:06:26 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,10 +14,15 @@ import java.io.InputStream;
 import java.io.StringBufferInputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-import org.apache.axis.types.URI;
+import org.apache.axis.AxisFault;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.applications.ParameterValues;
+import org.astrogrid.applications.description.SimpleApplicationDescription;
+import org.astrogrid.applications.manager.ApplicationController;
+import org.astrogrid.community.User;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -25,8 +30,8 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
@@ -40,153 +45,50 @@ import org.xml.sax.SAXException;
  * @author Jeff Lusted (from DatasetAgentDelegate)
  */
 
-public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
-{
+public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier, ApplicationController {
+   
+   
    /** Generated binding code that mirrors the service's methods */
    private AxisDataServerSoapBindingStub binding;
-
+   
    /** User certification */
    private Certification certification = null;
    
-
-    /**
-    * Implementation of a query instance, represening the query at the
-    * server side
-    */
-   private class WebQueryDelegate implements DatacenterQuery
-   {
-     String queryId = null;
-      
-      public WebQueryDelegate(String id)
-      {
-         this.queryId = id;
-      }
-      
-      /**
-      * @see DatacenterQuery.getResultsAndClose()
-      */
-      public DatacenterResults getResultsAndClose() throws IOException
-      {
-            return new DatacenterResults(new String[] {binding.getResultsAndClose(queryId)});
-      }
-      
-      /**
-      * Give the datacenter the location of the service that the results should
-      * be sent to when complete.  If none is given, a default one might be used,
-      * or the service may throw an exception when attempting to start the
-      * query
-      */
-      public void setResultsDestination(URL resultsDestination) throws RemoteException
-      {
-         binding.setResultsDestination(queryId,buildURI(resultsDestination));
-      }
-      
-      /**
-      * Starts the query running - eg submits SQL to database.
-      */
-      public void start() throws RemoteException
-      {
-         binding.startQuery(queryId);
-      }
-      
-      /**
-      * Polls the service and asks for the current status.  Used by clients that
-      * spawn asynchronous queries but cannot publish a url for the service to
-      * send status updates to.
-      */
-      public QueryStatus getStatus() throws RemoteException
-      {
-         return QueryStatus.getFor(binding.getStatus(queryId));
-      }
-      
-      /**
-      * Returns some kind of handle to the query
-      */
-      public String getId()
-      {
-         return queryId;
-      }
-      
-      /**
-      * Tells the server to stop running the query.  Don't use the query id after this...
-      */
-      public void abort() throws RemoteException
-      {
-         binding.abortQuery(queryId);
-      }
-      
-      /**
-       * Register a listener with this query delegate, to listen to local
-       * status changes
-       * @todo not implemented yet
-       */
-      public void registerListener(DelegateQueryListener newListener)
-      {
-      }
-      
-      public void registerJobMonitor(URL url) throws RemoteException
-      {
-
-            binding.registerJobMonitor(queryId, buildURI(url));
-      }
-
-      public void registerWebListener(URL url) throws RemoteException
-      {
-         binding.registerWebListener(queryId, buildURI(url));
-      }
-      
-   }
    
-   /** helper method to build a URI from a URL.
-    * @todo could replace URL with URI altogether - a better class in some ways, as URL will barf at protocols it doesn't know. (myspace://)
-    * @param url
-    * @return valid apache uri
-    */
-   private URI buildURI(URL url) {
-       try {
-        URI uri = new URI(url.toString());
-        return uri;
-       } catch (URI.MalformedURIException e) {
-           // very unlikely to happen - just come from a URL, which is stricter..
-           throw new IllegalArgumentException("Malformed URI: " + e.getMessage());
-       }
-   }
    
    /* Returns the metadata
-   */
+    */
    public Metadata getMetadata() throws RemoteException {
-       String metaD = binding.getMetadata(null);
-       ByteArrayInputStream is = new ByteArrayInputStream(metaD.getBytes());
-       try {
-        Document doc = XMLUtils.newDocument(is);
-        return new Metadata(doc.getDocumentElement());
-       } catch (Exception e) {
-           throw new RemoteException("Could not parse document",e);
-       }
-
+      String metaD = binding.getMetadata(null);
+      ByteArrayInputStream is = new ByteArrayInputStream(metaD.getBytes());
+      try {
+         Document doc = XMLUtils.newDocument(is);
+         return new Metadata(doc.getDocumentElement());
+      } catch (Exception e) {
+         throw new RemoteException("Could not parse document",e);
+      }
+      
    } //end WebQueryDelegate
-
+   
    
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public WebDelegate(Certification user, URL givenEndPoint) throws ServiceException
-   {
+   public WebDelegate(Certification user, URL givenEndPoint) throws ServiceException {
       binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
       this.certification = user;
    }
-
+   
    /**
     * Sets the timeout for calling the service - ie how long after the initial call
     * is made before a timeout exception is thrown
     */
-   public void setTimeout(int givenTimeout)
-   {
+   public void setTimeout(int givenTimeout) {
       binding.setTimeout(givenTimeout);
    }
-
-
+   
+   
    
    /**
     * Returns the number of items that match the given query.  This is useful for
@@ -194,8 +96,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     * transferred about the net.
     * @todo implement this.
     */
-   public int countQuery(Select adql) throws DatacenterException
-   {
+   public int countQuery(Select adql) throws DatacenterException {
       throw new UnsupportedOperationException();
    }
    
@@ -208,13 +109,11 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     * @param givenId an id for the query is assigned here rather than
     * generated by the server
     */
-   public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException
-   {
-      try
-      {
-          _query q = new _query();
-          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
-         return new WebQueryDelegate(binding.makeQueryWithId(q, givenId));
+   public DatacenterQuery makeQuery(Select adql, String givenId) throws IOException {
+      try {
+         _query q = new _query();
+         q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
+         return new WebQueryDelegate(binding, binding.makeQueryWithId(q, givenId));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
@@ -228,13 +127,11 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     *
     * @param adql object model
     */
-   public DatacenterQuery makeQuery(Select adql) throws IOException
-   {
-      try
-      {
-          _query q = new _query();
-          q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
-      return new WebQueryDelegate(binding.makeQuery(q));
+   public DatacenterQuery makeQuery(Select adql) throws IOException {
+      try {
+         _query q = new _query();
+         q.setQueryBody(ADQLUtils.marshallSelect(adql).getDocumentElement());
+         return new WebQueryDelegate(binding, binding.makeQuery(q));
       }
       catch (QueryException e) { throw new DatacenterException("Illegal Query", e); }
       catch (SAXException e) { throw new DatacenterException("Illegal Query", e); }
@@ -249,8 +146,7 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     * @param ADQL
     * @todo move adql package into common
     */
-   public DatacenterResults doQuery(String resultsFormat, Select adql) throws DatacenterException
-   {
+   public DatacenterResults doQuery(String resultsFormat, Select adql) throws DatacenterException {
       try {
          //run query on server
          _query q = new _query();
@@ -265,10 +161,13 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
          
       }
       catch (DatacenterException e) {
-          throw e;
+         throw e;
+      }
+      catch (AxisFault e) {
+         throw new DatacenterException(e.getMessage(), e);
       }
       catch (Exception e) {
-          throw new DatacenterException(e.getMessage(), e);
+         throw new DatacenterException(e.getMessage(), e);
       }
    }
    
@@ -284,37 +183,35 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
     * @todo fix botch around returning votable as stream.
     */
    
-   public InputStream coneSearch(double ra, double dec, double sr) throws IOException
-   {
-
+   public InputStream coneSearch(double ra, double dec, double sr) throws IOException {
+      
       //construct adql query
       String adqlString =
-                     "<?xml version='1.0' ?>\n"+
-                     "<query type='adql'>\n"+
-                     "<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+
-                     "   <SelectionAll />\n"+
-                     "   <TableClause>\n"+
-//                   "     <FromClause>\n"+
-//                   "         <TableReference>\n"+
-//                   "            <Table>\n"+
-//                   "               <Name>objects</Name>\n"+
-//                   "               <AliasName>cat</AliasName>\n"+
-//                   "            </Table>\n"+
-//                   "         </TableReference>\n"+
-//                   "      </FromClause>\n"+
-                     "    <WhereClause>\n"+
-                     "         <Circle>\n"+
-                     "            <Ra><Value>"+ra+"</Value></Ra>\n"+
-                     "            <Dec><Value>"+dec+"</Value></Dec>\n"+
-                     "            <Radius><Value>"+sr+"</Value></Radius>\n"+
-                     "          </Circle>\n"+
-                     "    </WhereClause>\n"+
-                     "   </TableClause>\n"+
-                     "</Select>\n"+
-                     "</query>\n";
+         "<?xml version='1.0' ?>\n"+
+         "<query type='adql'>\n"+
+         "<Select xmlns:xsd='http://www.w3.org/2001/XMLSchema' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n"+
+         "   <SelectionAll />\n"+
+         "   <TableClause>\n"+
+         //                   "     <FromClause>\n"+
+         //                   "         <TableReference>\n"+
+         //                   "            <Table>\n"+
+         //                   "               <Name>objects</Name>\n"+
+         //                   "               <AliasName>cat</AliasName>\n"+
+         //                   "            </Table>\n"+
+         //                   "         </TableReference>\n"+
+         //                   "      </FromClause>\n"+
+         "    <WhereClause>\n"+
+         "         <Circle>\n"+
+         "            <Ra><Value>"+ra+"</Value></Ra>\n"+
+         "            <Dec><Value>"+dec+"</Value></Dec>\n"+
+         "            <Radius><Value>"+sr+"</Value></Radius>\n"+
+         "          </Circle>\n"+
+         "    </WhereClause>\n"+
+         "   </TableClause>\n"+
+         "</Select>\n"+
+         "</query>\n";
       
-      try
-      {
+      try {
          Select adql = ADQLUtils.unmarshalSelect(XMLUtils.newDocument(new StringBufferInputStream(adqlString)));
          DatacenterResults results = doQuery(VOTABLE, adql);
          
@@ -325,30 +222,26 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
          
          return new ByteArrayInputStream(xmlDoc.getBytes());
       }
-      catch (SAXException e)
-      {
+      catch (SAXException e) {
          throw new DatacenterException("Invalid ADQL XML created from cone search parameters: "+adqlString, e);
       }
-      catch (ParserConfigurationException e)
-      {
+      catch (ParserConfigurationException e) {
          throw new DatacenterException("XML Parser not setup properly on this machine",e);
       }
-      catch (ADQLException e)
-      {
+      catch (ADQLException e) {
          throw new DatacenterException("Invalid ADQL XML created from cone search parameters: "+adqlString, e);
       }
-  }
-  
-  /**
-   * SqlQuerier implementation - direct pass through of SQL string.
-   * Simple blocking query - takes SQL and submits to the backend database, returning results
-   */
-  public DatacenterResults doSqlQuery(String resultsFormat, String sql) throws IOException
-  {
-     throw new UnsupportedOperationException("Not implemented yet");
-     /*
-     try
-     {
+   }
+   
+   /**
+    * SqlQuerier implementation - direct pass through of SQL string.
+    * Simple blocking query - takes SQL and submits to the backend database, returning results
+    */
+   public DatacenterResults doSqlQuery(String resultsFormat, String sql) throws IOException {
+      
+      throw new UnsupportedOperationException("Not implemented yet");
+      /*
+      try {
          String result = binding.doSqlQuery(resultsFormat, sql);
          InputStream is = new ByteArrayInputStream(result.getBytes());
          Document rDoc = XMLUtils.newDocument(is);
@@ -358,69 +251,183 @@ public class WebDelegate implements AdqlQuerier, ConeSearcher, SqlQuerier
          return new DatacenterResults(rDoc.getDocumentElement());
       }
       catch (Exception e) {
-          throw new DatacenterException(e.getMessage(), e);
+         throw new DatacenterException(e.getMessage(), e);
       }
-      */
-  }
+      /**/
+   }
+ 
+   
+   /**
+    * returns a list of the services that this application delegate can handle
+    */
+   public String[] listApplications() {
+      
+      return new String[] { "Astrogrid Datacenter", "NVO Cone Search" };
+   }
+   
+   /**
+    * Returns a reference to the application description
+    */
+   public SimpleApplicationDescription getApplicationDescription(String applicationID)  {
+
+      SimpleApplicationDescription description = new SimpleApplicationDescription();
+      
+      description.setName("Datacenter");
+//    description.setXmlDescriptor(getMetadata().toString());
+      
+      return description;
+   }
+
+   /** Index of queries for use by ApplicationControllers.  This is not thought
+    * through properly, as it counts on the calling code using the same delegate
+    * to access the query... */
+   private static Hashtable queries = new Hashtable();
+   
+   /**
+    * Initialises a query, returning the query id
+    *
+    */
+   public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, User user, ParameterValues parameters) {
+
+      /*
+      WebQueryDelegate query = makeQuery(parameters.getSomething(), jobstepID);
+
+      queries.put(query.getId(), query);
+
+      query.registerJobMonitor(new URL(jobMonitorURL));
+      
+      return query.getId();
+       */
+      // TODO
+      return "Dummy";
+   }
+
+   /**
+    * Returns the status of a running query
+    *
+    */
+   public String queryApplicationExecutionStatus(String executionId) {
+      WebQueryDelegate query = (WebQueryDelegate) queries.get(executionId);
+
+      if (query == null) {
+         throw new IllegalArgumentException("No Query found for id "+executionId);
+      }
+      
+      try
+      {
+         return query.getStatus().toString();
+      }
+      catch (RemoteException re)
+      {
+         throw new RuntimeException("Could not getStatus on Query '"+executionId+"'", re);
+      }
+   }
+   
+   /**
+    * Runs the given query
+    *
+    */
+   public boolean executeApplication(String executionId) {
+      WebQueryDelegate query = (WebQueryDelegate) queries.get(executionId);
+
+      if (query == null) {
+         throw new IllegalArgumentException("No Query found for id "+executionId);
+      }
+      
+      try
+      {
+         query.start();
+         return true; //for now
+      }
+      catch (RemoteException re)
+      {
+         throw new RuntimeException("Could not start Query '"+executionId+"'", re);
+      }
+   }
+   
+   
+   
+   /**
+    * Method returnRegistryEntry
+    *
+    * @return   a String
+    *
+    */
+   public String returnRegistryEntry() {
+      
+      try {
+         Element voDescription = getMetadata().getVoRegistryMetadata();
+         
+         return XMLUtils.ElementToString(voDescription);
+      }
+      catch (RemoteException re) {
+         throw new RuntimeException("Could not getMetadata", re);
+      }
+      
+   }
+   
    
 }
 
 /*
-$Log: WebDelegate.java,v $
-Revision 1.13  2003/12/16 16:19:27  mch
-minor exception check
+ $Log: WebDelegate.java,v $
+ Revision 1.14  2004/01/05 19:06:26  mch
+ Introduced ApplicationController interface
 
-Revision 1.12  2003/12/15 14:30:50  mch
-Fixes to load doc from string not file, and use correct version of adql
+ Revision 1.13  2003/12/16 16:19:27  mch
+ minor exception check
 
-Revision 1.11  2003/12/03 19:37:03  mch
-Introduced DirectDelegate, fixed DummyQuerier
+ Revision 1.12  2003/12/15 14:30:50  mch
+ Fixes to load doc from string not file, and use correct version of adql
 
-Revision 1.10  2003/12/01 16:53:16  nw
-dropped _QueryId, back to string
+ Revision 1.11  2003/12/03 19:37:03  mch
+ Introduced DirectDelegate, fixed DummyQuerier
 
-Revision 1.9  2003/11/26 16:31:46  nw
-altered transport to accept any query format.
-moved back to axis from castor
+ Revision 1.10  2003/12/01 16:53:16  nw
+ dropped _QueryId, back to string
 
-Revision 1.8  2003/11/25 15:47:17  mch
-Added certification
+ Revision 1.9  2003/11/26 16:31:46  nw
+ altered transport to accept any query format.
+ moved back to axis from castor
 
-Revision 1.7  2003/11/25 11:54:41  mch
-Added framework for SQL-passthrough queries
+ Revision 1.8  2003/11/25 15:47:17  mch
+ Added certification
 
-Revision 1.6  2003/11/21 17:30:19  nw
-improved WSDL binding - passes more strongly-typed data
+ Revision 1.7  2003/11/25 11:54:41  mch
+ Added framework for SQL-passthrough queries
 
-Revision 1.5  2003/11/18 14:25:23  nw
-altered types to fit with new wsdl
+ Revision 1.6  2003/11/21 17:30:19  nw
+ improved WSDL binding - passes more strongly-typed data
 
-Revision 1.4  2003/11/17 20:47:57  mch
-Adding Adql-like access to Nvo cone searches
+ Revision 1.5  2003/11/18 14:25:23  nw
+ altered types to fit with new wsdl
 
-Revision 1.3  2003/11/17 12:32:27  mch
-Moved QueryStatus to query pacakge
+ Revision 1.4  2003/11/17 20:47:57  mch
+ Adding Adql-like access to Nvo cone searches
 
-Revision 1.2  2003/11/17 12:12:28  nw
-first stab at mavenizing the subprojects.
+ Revision 1.3  2003/11/17 12:32:27  mch
+ Moved QueryStatus to query pacakge
 
-Revision 1.1  2003/11/14 00:36:40  mch
-Code restructure
+ Revision 1.2  2003/11/17 12:12:28  nw
+ first stab at mavenizing the subprojects.
 
-Revision 1.4  2003/11/06 22:04:48  mch
-Temporary fixes to work with old version of AxisDataServer
+ Revision 1.1  2003/11/14 00:36:40  mch
+ Code restructure
 
-Revision 1.3  2003/11/05 18:52:53  mch
-Build fixes for change to SOAPy Beans and new delegates
+ Revision 1.4  2003/11/06 22:04:48  mch
+ Temporary fixes to work with old version of AxisDataServer
 
-Revision 1.2  2003/10/13 14:13:47  nw
-massaged one method to fit wih new delegate. still lots more to do here
-- don't understand intentions here myself
+ Revision 1.3  2003/11/05 18:52:53  mch
+ Build fixes for change to SOAPy Beans and new delegates
 
-Revision 1.1  2003/10/06 18:55:21  mch
-Naughtily large set of changes converting to SOAPy bean/interface-based delegates
+ Revision 1.2  2003/10/13 14:13:47  nw
+ massaged one method to fit wih new delegate. still lots more to do here
+ - don't understand intentions here myself
+
+ Revision 1.1  2003/10/06 18:55:21  mch
+ Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 
 
 
-*/
+ */
 
