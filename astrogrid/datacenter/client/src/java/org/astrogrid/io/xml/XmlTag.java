@@ -1,22 +1,23 @@
 /*
-   $Id: XmlTag.java,v 1.1 2003/12/02 19:49:44 mch Exp $
+   $Id: XmlTag.java,v 1.1 2004/03/03 10:08:01 mch Exp $
 
    Date        Author      Changes
    8 Oct 2002  M Hill      Created
 
    (c) Copyright...
 */
+package org.astrogrid.io.xml;
 
-package org.astrogrid.datacenter.snippet.io;
-
-import java.io.IOException;
+import java.io.*;
+import org.astrogrid.log.Log;
 
 /**
- * This represents a single element, with safegaurds against trying to add
- * child elements when it's been closed.
+ * An abstract class defining output methods for XML output streams and tags. By
+ * using this 'intermediary' class, we can define tags or streams as XmlOutput,
+ * and pass them around as the same thing.  Therefore there is no effective
+ * difference between writing a node in a bigger XML file, and writing the
+ * root node.
  *
- * @see XmlOutput for a full explanation of how this is used to help write XML
- * documents safely...
  */
 
 public class XmlTag extends XmlOutput
@@ -65,7 +66,7 @@ public class XmlTag extends XmlOutput
     */
    public void close() throws IOException
    {
-      assert parentOut.getChild() == this : "Closing XML tag but it's not the child of its parent";
+      Log.affirm(parentOut.getChild() == this, "Closing XML tag but it's not the child of its parent");
 
       closeChild();
 
@@ -82,4 +83,5 @@ public class XmlTag extends XmlOutput
    }
    
 }
+
 

@@ -1,5 +1,5 @@
 /*
- * $Id: XmlDocOutputStream.java,v 1.2 2004/01/13 00:32:47 nw Exp $
+ * $Id: XmlDocOutputStream.java,v 1.3 2004/03/03 10:08:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.io.AsciiCodes;
+import org.astrogrid.io.ascii.AsciiCodes;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -1,8 +1,9 @@
 /*
- * $Id: TraceWindow.java,v 1.2 2003/12/02 19:49:44 mch Exp $
+ * $Id: TraceWindow.java,v 1.1 2004/03/03 10:08:01 mch Exp $
  */
 
-package org.astrogrid.datacenter.io;
+package org.astrogrid.io;
+import org.astrogrid.io.ascii.*;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -402,6 +403,9 @@ public class TraceWindow extends JFrame {
 }
 /*
  * $Log: TraceWindow.java,v $
+ * Revision 1.1  2004/03/03 10:08:01  mch
+ * Moved UI and some IO stuff into client
+ *
  * Revision 1.2  2003/12/02 19:49:44  mch
  * Moved snippet and socket-processing stuff into their own packages
  *

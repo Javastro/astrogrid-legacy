@@ -1,14 +1,14 @@
-/*$Id: SimpleQuerier.java,v 1.5 2004/01/14 12:55:28 nw Exp $
+/*$Id: DatacenterCommander.java,v 1.1 2004/03/03 10:08:01 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.tools;
+package org.astrogrid.datacenter.ui;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,20 +49,20 @@ import org.w3c.dom.Element;
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Nov-2003
  *
  */
-public class SimpleQuerier {
+public class DatacenterCommander {
 
     public final static void main(String[] args) throws Exception {
-       SimpleQuerier q = new SimpleQuerier();
+       DatacenterCommander q = new DatacenterCommander();
        try {
           q.parse(args);
           q.doIt();
        } catch (Exception e) {
           System.out.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
           q.usage();
-       }        
+       }
     }
 
-    public SimpleQuerier() {
+    public DatacenterCommander() {
     }
     
     public void parse(String[] args) throws IllegalArgumentException, MalformedURLException{
@@ -77,13 +77,13 @@ public class SimpleQuerier {
            sql = args[2].trim();
            if (sql == null || sql.length() == 0) {
               throw new IllegalArgumentException("Must provide a sql expression");
-           }           
+           }
         } else {
          queryFile = new File(args[1]);
          if (!queryFile.exists()) {
             throw new IllegalArgumentException("Query file does not exist: " + queryFile.getAbsolutePath());
          }
-        }                
+        }
     }
     
     protected URL endpoint;
@@ -104,7 +104,7 @@ public class SimpleQuerier {
            queryBody = SQLUtils.toQueryBody(sql);
         }
         DatacenterResults results = del.doQuery(FullSearcher.VOTABLE,queryBody);
-        XMLUtils.PrettyElementToStream(results.getVotable(), System.out);        
+        XMLUtils.PrettyElementToStream(results.getVotable(), System.out);
     }
 
 
@@ -139,8 +139,11 @@ public class SimpleQuerier {
 }
 
 
-/* 
-$Log: SimpleQuerier.java,v $
+/*
+$Log: DatacenterCommander.java,v $
+Revision 1.1  2004/03/03 10:08:01  mch
+Moved UI and some IO stuff into client
+
 Revision 1.5  2004/01/14 12:55:28  nw
 improved documentation
 

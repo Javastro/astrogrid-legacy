@@ -1,4 +1,4 @@
-package org.astrogrid.datacenter.io;
+package org.astrogrid.io;
 
 /**
  * Insert the type's description here.

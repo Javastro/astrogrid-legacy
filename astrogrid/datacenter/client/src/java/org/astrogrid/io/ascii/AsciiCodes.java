@@ -1,8 +1,8 @@
 /*
- * $Id: AsciiCodes.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: AsciiCodes.java,v 1.1 2004/03/03 10:08:01 mch Exp $
  */
 
-package org.astrogrid.datacenter.io;
+package org.astrogrid.io.ascii;
 
 /**
  * Description: ASCII Codes.  An interface that can be implemented by
@@ -53,6 +53,9 @@ public interface AsciiCodes
 
 /*
 $Log: AsciiCodes.java,v $
+Revision 1.1  2004/03/03 10:08:01  mch
+Moved UI and some IO stuff into client
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

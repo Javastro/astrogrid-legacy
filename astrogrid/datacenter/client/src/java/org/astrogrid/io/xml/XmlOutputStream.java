@@ -1,26 +1,30 @@
 /*
-   $Id: XmlOutputStream.java,v 1.1 2003/12/02 19:49:44 mch Exp $
+   $Id: XmlOutputStream.java,v 1.1 2004/03/03 10:08:01 mch Exp $
 
-   Date        Author      Changes
+  Date        Author      Changes
    8 Oct 2002  M Hill      Created
 
    (c) Copyright...
 */
-package org.astrogrid.datacenter.snippet.io;
+package org.astrogrid.io.xml;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import org.astrogrid.io.ascii.AsciiOutputStream;
+import org.astrogrid.log.Log;
 
 /**
- * Output stream for writing XML files.
- * @see XmlOutput for a full description of how to use this to help write safe
- * XML documents
+ * Output stream for writing XML files.  Probably mostly used as a superclass for
+ * various sepcific XML formats.  Provides helper classes, such as the XmlTagBlock,
+ * to help write blocks correctly, so that closing tags are ensured.
+ * An output stream is slightly pecuiliar in that it can only have one root tag,
+ * preceeded possibly by comments
  *
  */
 
 public class XmlOutputStream extends XmlOutput
 {
-   private OutputStream out = null;
+   private AsciiOutputStream out = null;
    
    private String indentSpaces = "   ";
    private final static int INDENT_SIZE = 3;
@@ -37,7 +41,7 @@ public class XmlOutputStream extends XmlOutput
    public XmlOutputStream(OutputStream anOutStream) throws IOException
    {
       super();
-      this.out = anOutStream;
+      out = new AsciiOutputStream(anOutStream);
       writeLine("<?xml version=\"1.0\"?>");
    }
    
@@ -45,11 +49,11 @@ public class XmlOutputStream extends XmlOutput
     * Should only be able to write comment tags at the root level (ie, at
     * outputstream level) before any child tags are added
     */
-   public void writeCommentTag(String comment) throws IOException
+   public void writeCommentTag(String tag) throws IOException
    {
-      assert state == STATE_PRETAG : "Cannot write comment "+comment+" as tag "+getChild()+" is set";
-
-      writeLine("<!-- "+comment+" -->");
+      Log.affirm(state == STATE_PRETAG, "Cannot write comment "+tag+" as tag "+getChild()+" is set");
+      //       Log.assert( (tag.charAt(0) != '!') && (tag.charAt(0) != '?'), "Can only write comments (! or ?) before root tag, not '"+tag+"'");
+      writeLine("<"+tag+">");
    }
    
    /**
@@ -57,7 +61,7 @@ public class XmlOutputStream extends XmlOutput
     */
    public XmlTag newTag(XmlTag aTag) throws IOException
    {
-      assert state == STATE_PRETAG : "Cannot set new tag - one "+getChild()+" already set";
+      Log.affirm(state == STATE_PRETAG, "Cannot set new tag - one "+getChild()+" already set");
       state = STATE_TAG;
       return super.newTag(aTag);
    }
@@ -69,8 +73,8 @@ public class XmlOutputStream extends XmlOutput
     */
    public void writeString(String s) throws IOException
    {
-      assert state != STATE_POSTTAG : "Cannot write - tag has closed";
-      out.write(s.getBytes());
+      Log.affirm(state != STATE_POSTTAG, "Cannot write - tag has closed");
+      out.write(s);
    }
 
    /**
@@ -80,7 +84,7 @@ public class XmlOutputStream extends XmlOutput
     */
    protected void writeIndentedLine(int indentIndex, String string) throws IOException
    {
-      assert state != STATE_POSTTAG : "Cannot write - tag has closed";
+      Log.affirm(state != STATE_POSTTAG, "Cannot write - tag has closed");
       
       //convert indent index to index spaces
       //there's a bit of a botch here to allow root nodes to be on the same level
@@ -148,4 +152,5 @@ public class XmlOutputStream extends XmlOutput
       
    }
 }
+
 
