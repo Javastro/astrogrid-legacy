@@ -292,11 +292,11 @@ public class RegistryQueryService {
                  "identifier.path.hasauthorityid." + versionNumber,true);
       String xqlIDString = "vr:Identifier/vr:AuthorityID = ";
       if(!hasAuthorityID) {
-          xqlIDString = "vr:Identifier |= ";
+          xqlIDString = "vr:identifier |= ";
       }
       String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
                   " //vr:Resource[" + xqlIDString + "'" + authorityID +
-                  "' and @xsi:type='RegistryType']";      
+                  "' and @xsi:type |= '*Registry*']";      
       log.info("XQL String = " + xqlString);
       Document resultDoc = queryExist(xqlString,collectionName);
       
@@ -397,7 +397,7 @@ public class RegistryQueryService {
       
       //Should declare namespaces, but it is not required so will leave out for now.
       String xqlString = RegistryServerHelper.getXQLDeclarations(versionNumber) + 
-              " for $x in //vr:Resource where @xsi:type='RegistryType' return $x";
+              " for $x in //vr:Resource where @xsi:type |= '*Registry*' return $x";
       log.info("XQL String = " + xqlString);
       
       Document resultDoc = queryExist(xqlString,collectionName);
