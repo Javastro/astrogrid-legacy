@@ -1,4 +1,4 @@
-/*$Id: QueryTranslatorTest.java,v 1.1 2003/09/02 14:42:00 nw Exp $
+/*$Id: QueryTranslatorTest.java,v 1.2 2003/09/05 01:04:02 nw Exp $
  * Created on 02-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ public class QueryTranslatorTest extends TestCase {
     }
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(QuerierTest.class);
+        return new TestSuite(QueryTranslatorTest.class);
     }
     protected void setUp() {
         q = new NullQueryTranslator();
@@ -69,6 +69,9 @@ public class QueryTranslatorTest extends TestCase {
 
 /* 
 $Log: QueryTranslatorTest.java,v $
+Revision 1.2  2003/09/05 01:04:02  nw
+minor bugfix
+
 Revision 1.1  2003/09/02 14:42:00  nw
 added test
  
