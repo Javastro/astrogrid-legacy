@@ -1,5 +1,5 @@
 /*
- * $Id: StoreNodeTreeCellRenderer.java,v 1.1 2005/02/16 19:57:09 mch Exp $
+ * $Id: StoreNodeTreeCellRenderer.java,v 1.1 2005/03/28 02:06:35 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,7 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.storebrowser.swing;
+package org.astrogrid.storebrowser.tree;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -22,8 +22,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.storebrowser.swing.models.StoreFileNode;
+import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.ui.IconFactory;
 
 
 
@@ -40,6 +40,9 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
    
    /** Initialise icons etc */
    public StoreNodeTreeCellRenderer() {
+
+      errorIcon = IconFactory.getIcon("error");
+      
       popupMenu = new JPopupMenu();
 
       JMenuItem refresh = new JMenuItem("Refresh");
@@ -51,9 +54,6 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
                }
                catch (IOException ioe) {
                   JOptionPane.showMessageDialog((Component) e.getSource(), ioe.getMessage(), "Refreshing "+storeFileNode, JOptionPane.ERROR);
-               }
-               catch (URISyntaxException use) {
-                  JOptionPane.showMessageDialog((Component) e.getSource(), use.getMessage(), "Refreshing "+storeFileNode, JOptionPane.ERROR);
                }
             }
          }
@@ -96,11 +96,60 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
    }
 
    public Component getTreeCellRendererComponent(JTree tree, Object storeNode, boolean isSelected, boolean isExpanded, boolean isLeaf, int row, boolean hasFocus) {
-      StoreNodeTreeCellRenderer label = (StoreNodeTreeCellRenderer) super.getTreeCellRendererComponent(tree, storeNode, isSelected, isExpanded, isLeaf, row, hasFocus);
+
+      //Sets all the properties (mostly copied from DefaultTreeCellRenderer)
+      if (isSelected)   setForeground(getTextSelectionColor());
+      else              setForeground(getTextNonSelectionColor());
+
+      // There needs to be a way to specify disabled icons.
+      if (!tree.isEnabled()) {
+         setEnabled(false);
+         if (isLeaf) {
+            setDisabledIcon(getLeafIcon());
+         } else if (isExpanded) {
+            setDisabledIcon(getOpenIcon());
+         } else {
+            setDisabledIcon(getClosedIcon());
+         }
+      }
+      else {
+         setEnabled(true);
+         if (isLeaf) {
+            setIcon(getLeafIcon());
+         } else if (isExpanded) {
+            setIcon(getOpenIcon());
+         } else {
+            setIcon(getClosedIcon());
+         }
+      }
+
+      //so painter knows to colour in background
+      selected = isSelected;
       
+      if (storeNode instanceof StoreFileNode) {
+         storeFileNode = ((StoreFileNode) storeNode);
+         
+         String loading = "";
+         if (storeFileNode.isLoading()) {
+            loading = " [Loading] ";
+         }
+   
+         if (storeFileNode.getError() == null) {
+            setText(storeFileNode.getName()+loading);
+         }
+         else {
+            setIcon(errorIcon);
+            setText(storeFileNode.getName()+" ["+storeFileNode.getError().getMessage()+"]");
+            setToolTipText(storeFileNode.getError().getMessage());
+            tree.validate();
+         }
+      }
+
+      
+      /*
       try {
-         label.storeFileNode = ((StoreFileNode) storeNode);
-         StoreFile file = label.storeFileNode.getFile();
+         StoreFile file = label.storeFileNode.getFile(); //make sure you can get it OK
+         
       }
       catch (IOException e) {
          label.setIcon(errorIcon);
@@ -110,8 +159,9 @@ public class StoreNodeTreeCellRenderer extends DefaultTreeCellRenderer  {
          label.setIcon(errorIcon);
          label.setToolTipText(e.getMessage());
       }
-
-      return label;
+       /**/
+      return this;
    }
+      
 }
 

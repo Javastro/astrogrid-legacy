@@ -1,5 +1,5 @@
 /**
- * $Id: PickerServlet.java,v 1.1 2005/02/16 19:57:13 mch Exp $
+ * $Id: PickerServlet.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  */
 package org.astrogrid.storebrowser.servlet;
 
@@ -12,17 +12,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.tree.DefaultTreeModel;
 import org.astrogrid.account.LoginAccount;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.io.Piper;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.storeclient.api.StoreFileResolver;
 import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.storebrowser.html.PickerRenderer;
 import org.astrogrid.storebrowser.html.RendererSupport;
-import org.astrogrid.storebrowser.swing.models.RootStoreNode;
-import org.astrogrid.storebrowser.swing.models.StoreFileNode;
-import org.astrogrid.storebrowser.swing.models.StoreNode;
+import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.storebrowser.tree.StoreRootNode;
+import org.astrogrid.storebrowser.tree.StoresList;
+import org.astrogrid.storeclient.api.StoreFile;
+import org.astrogrid.storeclient.api.StoreFileResolver;
 
 /**
  * A servlet that displays a file browser suitable for choosing ('picking') a
@@ -47,11 +47,11 @@ public class PickerServlet extends HttpServlet {
          
          setUser(request);
 
-         RootStoreNode root = new RootStoreNode(user);
+         StoresList root = new StoresList(user);
 
          Cookie[] cookies = request.getCookies();
          if (cookies == null) {
-            root.addDefaultStores(false);
+            root.addTestStores();
          }
          else {
             root.addHomespace();
@@ -62,7 +62,7 @@ public class PickerServlet extends HttpServlet {
                   for (int j = 0; j < cookies.length; j++) {
                      if (cookies[j].getName().equals(STORE_COOKIE+"."+storeName)) {
                         String storeUri = cookies[j].getValue();
-                        root.addStore(new StoreNode(root, storeName, storeUri, user));
+                        root.add(new StoreRootNode(null, root, storeName, storeUri, user));
                      }
                   }
                }
@@ -196,7 +196,7 @@ public class PickerServlet extends HttpServlet {
          //get convenient reference to selected File (if there is one) and store
          //its uri in the session so other pages can find it when we're done here
          StoreFile selectedFile = null;
-         StoreFileNode selectedNode = renderer.getStoreNode(renderer.getSelectedPath());
+         StoreFileNode selectedNode = renderer.getStoreRootNode(renderer.getSelectedPath());
          if (selectedNode != null) {
             selectedFile = selectedNode.getFile();
             if (selectedFile == null) {
@@ -209,7 +209,7 @@ public class PickerServlet extends HttpServlet {
          
          //refresh current file tree if refresh pressed or store has changed
          if (request.getParameter("refresh") != null)  {
-            renderer.getStoreNode(renderer.getSelectedPath()).refresh();
+            renderer.getStoreRootNode(renderer.getSelectedPath()).refresh();
             renderer.writeBrowser(request, response);
          }
 
@@ -223,7 +223,7 @@ public class PickerServlet extends HttpServlet {
                }
             }
             selectedFile.delete(user);
-            ((StoreFileNode) renderer.getStoreNode(renderer.getSelectedPath()).getParent()).refresh();
+            ((StoreFileNode) renderer.getStoreRootNode(renderer.getSelectedPath()).getParent()).refresh();
             renderer.writeBrowser(request, response);
          }
          
@@ -244,9 +244,9 @@ public class PickerServlet extends HttpServlet {
             //work out parent directory path
             String newStoreName = request.getParameter("addStore");
             String newStoreUri = request.getParameter("addStoreUri");
-            RootStoreNode root = (RootStoreNode) renderer.treeView.getModel().getRoot();
-            StoreNode newStore = new StoreNode(root, newStoreName, newStoreUri, user);
-            root.addStore(newStore);
+            StoresList root = (StoresList) renderer.treeView.getModel().getRoot();
+            StoreRootNode newStore = new StoreRootNode(null, root, newStoreName, newStoreUri, user);
+            root.add(newStore);
             renderer.writeBrowser(request, response);
             response.addCookie( new Cookie(STORE_COOKIE, newStoreName));
             response.addCookie( new Cookie(STORE_COOKIE+"."+newStoreName, newStoreUri));
@@ -254,7 +254,7 @@ public class PickerServlet extends HttpServlet {
          else if (request.getParameter("removeStore") != null) {
             //work out parent directory path
             String storeName = request.getParameter("removeStore");
-            RootStoreNode root = (RootStoreNode) renderer.treeView.getModel().getRoot();
+            StoresList root = (StoresList) renderer.treeView.getModel().getRoot();
             root.removeStore(storeName);
             renderer.writeBrowser(request, response);
 //            response.removeCookie( new Cookie(STORE_COOKIE, newStoreName));
@@ -262,7 +262,7 @@ public class PickerServlet extends HttpServlet {
          else if (request.getParameter("newFolder") != null) {
             //work out parent directory path
             String newFolderName = request.getParameter("newFolder");
-            StoreFileNode parentNode = renderer.getStoreNode(renderer.getSelectedPath());
+            StoreFileNode parentNode = renderer.getStoreRootNode(renderer.getSelectedPath());
             StoreFile parentFolder = parentNode.getFile();
             parentFolder.makeFolder(newFolderName, user);
             parentNode.refresh();
@@ -271,9 +271,10 @@ public class PickerServlet extends HttpServlet {
          else if (request.getParameter("newFile") != null) {
             //work out parent directory path
             String newFileName = request.getParameter("newFile");
-            StoreFileNode parentNode = renderer.getStoreNode(renderer.getSelectedPath());
+            StoreFileNode parentNode = renderer.getStoreRootNode(renderer.getSelectedPath());
             StoreFile parentFolder = parentNode.getFile();
-            OutputStream out = parentFolder.outputChild(newFileName, user, "text/plain");
+            StoreFile newChild = parentFolder.makeFile(newFileName, user);
+            OutputStream out = newChild.openOutputStream(user, "text/plain", false);
             String contents = request.getParameter("newFileContents");
             Piper.bufferedPipe(new StringReader(contents), new OutputStreamWriter(out));
             out.close();
@@ -310,10 +311,10 @@ public class PickerServlet extends HttpServlet {
    /**
     * for testiong
     */
-   public static void main(String[] args) {
+   public static void main(String[] args) throws IOException {
       PickerServlet servlet = new PickerServlet();
-      RootStoreNode root = new RootStoreNode(LoginAccount.ANONYMOUS);
-      root.addDefaultStores(true);
+      StoresList root = new StoresList(LoginAccount.ANONYMOUS);
+      root.addTestStores();
       System.out.println("done");
    }
       

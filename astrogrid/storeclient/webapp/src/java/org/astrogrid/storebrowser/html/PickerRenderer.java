@@ -1,5 +1,5 @@
 /**
- * $Id: PickerRenderer.java,v 1.1 2005/02/16 19:57:11 mch Exp $
+ * $Id: PickerRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 
@@ -18,16 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import org.astrogrid.slinger.sources.SourceMaker;
-import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
-import org.astrogrid.storebrowser.html.TableHtmlRenderer;
-import org.astrogrid.storebrowser.html.TreeHtmlRenderer;
-import org.astrogrid.storebrowser.swing.models.DirectoryModel;
-import org.astrogrid.storebrowser.swing.models.RootStoreNode;
-import org.astrogrid.storebrowser.swing.models.StoreFileNode;
-import org.astrogrid.storebrowser.swing.models.StoreNode;
-import org.astrogrid.storebrowser.servlet.PickerServlet;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
+import org.astrogrid.storebrowser.folderlist.DirectoryModel;
+import org.astrogrid.storebrowser.html.TableHtmlRenderer;
+import org.astrogrid.storebrowser.html.TreeHtmlRenderer;
+import org.astrogrid.storebrowser.servlet.PickerServlet;
+import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.storebrowser.tree.StoreRootNode;
+import org.astrogrid.storebrowser.tree.StoresList;
+import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
 
 /**
  * An object representing a view onto a store, such as myspace, suitable for
@@ -67,7 +67,7 @@ public class PickerRenderer extends RendererSupport  {
    /** Creates simple 'lite' browser (picker without links from files)
     * Servlet name is used to create links
     */
-   public PickerRenderer(RootStoreNode stores, String servletName, String imageDir, String stylesheet, String chooserUrl, Principal aUser, String theSourcePage) throws IOException {
+   public PickerRenderer(StoresList stores, String servletName, String imageDir, String stylesheet, String chooserUrl, Principal aUser, String theSourcePage) throws IOException {
       
       user = aUser;
       refRoot = servletName;
@@ -96,7 +96,7 @@ public class PickerRenderer extends RendererSupport  {
    /** Creates picker that will create links for the files of the form chooserUrl+"="+fileuri
     *
    public PickerRenderer(String chooserUrl, String servletName) throws IOException {
-      treeView = new TreeHtmlRenderer(new DefaultTreeModel(new RootStoreNode(user)), user);
+      treeView = new TreeHtmlRenderer(new DefaultTreeModel(new StoreRootNode(user)), user);
       treeView.setNodeRenderer(new StoreNodeHtmlRenderer(servletName));
 
       directoryView = new TableHtmlRenderer(new DirectoryModel(), user);
@@ -122,15 +122,10 @@ public class PickerRenderer extends RendererSupport  {
 
    /** Set the currently selected path, updating directory model if necessary */
    public void setSelectedPath(String newPath) throws IOException {
-      StoreFileNode selectedNode = getStoreNode(newPath);
+      StoreFileNode selectedNode = getStoreRootNode(newPath);
       if (newPath != selectedPath) {
-         try {
             DirectoryModel newModel = new DirectoryModel(selectedNode.getFile());
             directoryView.setModel(newModel);
-         }
-         catch (URISyntaxException use) {
-            throw new RuntimeException(use+" getting file of "+selectedNode.getPath());
-         }
       }
       selectedPath = newPath;
       
@@ -160,8 +155,8 @@ public class PickerRenderer extends RendererSupport  {
                            "No path is selected; "+
                            "Please go back and select a folder that you want the new file to be created in");
       }
-      else if ((getStoreNode(getSelectedPath()).getFile() == null) ||
-               (!getStoreNode(getSelectedPath()).getFile().isFolder()))    {
+      else if ((getStoreRootNode(getSelectedPath()).getFile() == null) ||
+               (!getStoreRootNode(getSelectedPath()).getFile().isFolder()))    {
          writeMessageBox(out, "New File", "New File Form",
                            "The currently selected path '"+getSelectedPath()+" is not a folder; "+
                            "Please go back and select a folder that you want the new file to be created in");
@@ -174,7 +169,7 @@ public class PickerRenderer extends RendererSupport  {
             "<body>"+
             "<img src='"+imageRef+"NewFile.gif' border='0'><h1>New File</h1>\n"+
 //          "<p>Enter the name of the file that you want to create in the folder <pre>"+getSelectedPath(request)+"</pre></p>"+
-            "<p><form action='"+refRoot+"' method='post'>Filename: <tt>"+getStoreNode(getSelectedPath()).getFile().getPath()+
+            "<p><form action='"+refRoot+"' method='post'>Filename: <tt>"+getStoreRootNode(getSelectedPath()).getFile().getPath()+
             "<input type='text' name='newFile'><p>\n"+
             "</tt>"+
             "<textarea name='newFileContents' cols=60 rows=20>Type or cut and paste the contents of the new file in here</textarea><p>\n"+
@@ -225,8 +220,8 @@ public class PickerRenderer extends RendererSupport  {
                            "No path is selected; "+
                            "Please go back and select a folder that you want the new folder to be created in");
       }
-      else if ((getStoreNode(getSelectedPath()).getFile() == null) ||
-               (!getStoreNode(getSelectedPath()).getFile().isFolder()))    {
+      else if ((getStoreRootNode(getSelectedPath()).getFile() == null) ||
+               (!getStoreRootNode(getSelectedPath()).getFile().isFolder()))    {
          writeMessageBox(out, "New Folder", "New Folder Form",
                            "The currently selected path '"+getSelectedPath()+" is not a folder; "+
                            "Please go back and select a folder that you want the new folder to be created in");
@@ -239,7 +234,7 @@ public class PickerRenderer extends RendererSupport  {
             "<body>"+
             "<img src='"+imageRef+"NewFolder.gif' border='0'><h1>New Folder</h1>\n"+
 //          "<p>Enter the name of the file that you want to create in the folder <pre>"+getSelectedPath(request)+"</pre></p>"+
-            "<p><form action='"+refRoot+"' method='post'>Folder: <tt>"+getStoreNode(getSelectedPath()).getFile().getPath()+
+            "<p><form action='"+refRoot+"' method='post'>Folder: <tt>"+getStoreRootNode(getSelectedPath()).getFile().getPath()+
             "<input type='text' name='newFolder'><p>\n"+
             "</tt>"+
             "<input type='submit' value='Create'>"+
@@ -251,14 +246,14 @@ public class PickerRenderer extends RendererSupport  {
 
    /**
     * Returns the StoreNode for the given path */
-   public StoreFileNode getStoreNode(String path) throws IOException {
+   public StoreRootNode getStoreRootNode(String path) throws IOException {
 
       if ((path == null) || (path.trim().length()==0)) {
          return null;
       }
       
       TreeModel model = treeView.getModel();
-      StoreFileNode node = (RootStoreNode) model.getRoot();
+      StoreRootNode node = (StoreRootNode) model.getRoot();
       StringTokenizer slasher = new StringTokenizer(path, "/");
       String rootName = slasher.nextToken();
       if (!rootName.equals(node.getName())) {
@@ -266,24 +261,18 @@ public class PickerRenderer extends RendererSupport  {
       }
       while (slasher.hasMoreTokens()) {
          String token = slasher.nextToken();
-         try {
-            StoreFileNode[] children = node.getChildNodes();
-            StoreFileNode found = null;
-            for (int i = 0; i < children.length; i++) {
-               if (children[i].getName().equals(token)) {
-                  found = children[i];
-               }
+         StoreRootNode found = null;
+         for (int i = 0; i < node.getChildCount(); i++) {
+            if ( ((StoreRootNode) node.getChildAt(i)).getName().equals(token)) {
+               found = (StoreRootNode) node.getChildAt(i);
             }
-            if (found == null) {
+         }
+         if (found == null) {
 //               throw new IllegalArgumentException("Path "+path+" not valid; no child "+token+" of "+node.getPath());
-               //return as far as we've got to, as the path may now be deleted, etc
-               return node;
-            }
-            node = found;
+            //return as far as we've got to, as the path may now be deleted, etc
+            return node;
          }
-         catch (URISyntaxException use) {
-            throw new IOException(use+" getting children of "+node.getPath());
-         }
+         node = found;
       }
       return node;
    }
@@ -293,7 +282,7 @@ public class PickerRenderer extends RendererSupport  {
     * */
    public void writeBrowser(HttpServletRequest request, HttpServletResponse response) throws IOException, URISyntaxException  {
       
-      StoreFileNode selectedNode = getStoreNode(getSelectedPath());
+      StoreFileNode selectedNode = getStoreRootNode(getSelectedPath());
       
       response.setContentType("text/html");
 
@@ -368,11 +357,11 @@ public class PickerRenderer extends RendererSupport  {
       if ((selectedNode != null) && (selectedNode.getFile() != null)) {
          StoreFileNode node = selectedNode;
          String resourceName = null;
-         while ((node != null) && (!(node instanceof StoreNode))) {
+         while ((node != null) && (!(node instanceof StoreFileNode))) {
             node = (StoreFileNode) node.getParent();
          }
          if (node != null) {
-            resourceName = ((StoreNode) node).getUri();
+            resourceName = ((StoreRootNode) node).getUri();
             if ((IVOSRN.isIvorn(resourceName) || (HomespaceName.isHomespaceName(resourceName)))) {
                if (resourceName.indexOf("#") == -1) {
                   resourceName = resourceName +"#";

@@ -1,13 +1,13 @@
 /**
- * $Id: StoreCellHtmlRenderer.java,v 1.1 2005/02/16 19:57:11 mch Exp $
+ * $Id: StoreCellHtmlRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 import java.io.IOException;
 import java.net.URLEncoder;
 import javax.swing.table.TableModel;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.storebrowser.swing.models.DirectoryModel;
+import org.astrogrid.storebrowser.folderlist.DirectoryModel;
 import org.astrogrid.storebrowser.servlet.PickerServlet;
+import org.astrogrid.storeclient.api.StoreFile;
 
 /**
  * Renders a StoreNode in HTML for a table cell

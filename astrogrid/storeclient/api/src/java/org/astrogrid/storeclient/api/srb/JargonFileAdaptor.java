@@ -1,5 +1,5 @@
 /*
- * $Id: JargonFileAdaptor.java,v 1.1 2005/02/16 19:57:06 mch Exp $
+ * $Id: JargonFileAdaptor.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  */
 
 package org.astrogrid.storeclient.api.srb;
@@ -167,6 +167,13 @@ public class JargonFileAdaptor implements StoreFile
       return new JargonFileAdaptor(childFolder);
    }
    
+   /** IF this is a folder, creats a file */
+   public StoreFile makeFile(String newFileName, Principal user) throws IOException
+   {
+      GeneralFile childFolder = FileFactory.newFile(jargonFile, newFileName);
+      return new JargonFileAdaptor(childFolder);
+   }
+
    /** Returns the creation date  (null if unknown) */
    public Date getCreated()
    {

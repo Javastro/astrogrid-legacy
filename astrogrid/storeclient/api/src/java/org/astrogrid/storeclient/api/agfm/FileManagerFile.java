@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerFile.java,v 1.2 2005/03/26 13:09:57 mch Exp $
+ * $Id: FileManagerFile.java,v 1.3 2005/03/28 02:06:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -18,9 +18,10 @@ import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.slinger.StoreException;
+import org.astrogrid.slinger.agfm.FMCompleterStream;
+import org.astrogrid.slinger.mime.MimeFileExts;
 import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.storeclient.api.StoreFile;
-import java.rmi.RemoteException;
 
 /**
  * Wrapper around the FileManagerNode that is used to access AstroGrid's FileManager
@@ -34,7 +35,7 @@ public class FileManagerFile implements StoreFile {
    
    FileManagerClientFactory factory = new FileManagerClientFactory();
    FileManagerClient client = null;
-   FileManagerNode node = null;;
+   FileManagerNode node = null;
    
    IVOSRN id = null;
    
@@ -94,7 +95,7 @@ public class FileManagerFile implements StoreFile {
    public String getName()       {  return node.getName();    }
    
    /** Returns the mime type (null if unknown) */
-   public String getMimeType()   {  return null;  }
+   public String getMimeType()   {  return MimeFileExts.guessMimeType(getName());  }
    
    /** Returns the size of the file in bytes (-1 if unknown) */
    public long getSize()         {  return node.getMetadata().getSize().longValue();   }
@@ -130,15 +131,14 @@ public class FileManagerFile implements StoreFile {
    /** Renames the file to the given filename. Affects only the name, not the
     * path */
    public void renameTo(String newFilename, Principal user) throws IOException {
-//    node.copy();
-//    node.delete();
-      throw new UnsupportedOperationException("Todo");
+//       node.copy();
+//       node.delete();
+     throw new UnsupportedOperationException("Todo");
    }
    
    /** If this is a folder, creates an output stream to a child file */
-   public OutputStream outputChild(String filename, Principal user, String mimeType) throws IOException {
-      FileManagerNode newChild = node.addFile(filename);
-      return newChild.writeContent();
+   public StoreFile makeFile(String filename, Principal user) throws IOException {
+      return new FileManagerFile(client, node.addFile(filename));
    }
    
    /** Used to set the mime type of the data about to be sent to the target. . */
@@ -152,9 +152,9 @@ public class FileManagerFile implements StoreFile {
          throw new UnsupportedOperationException("Cannot open streams to folders. (Path "+getPath()+")");
       }
       if (append) {
-         return node.appendContent();
+         return new FMCompleterStream(node, node.appendContent());
       }
-      return node.writeContent();
+      return new FMCompleterStream(node, node.writeContent());
    }
    
    /** Returns parent folder of this file/folder, if permission granted */
@@ -213,6 +213,9 @@ public class FileManagerFile implements StoreFile {
 
 /*
 $Log: FileManagerFile.java,v $
+Revision 1.3  2005/03/28 02:06:35  mch
+Major lump: split picker and browser and added threading to seperate UI interations from server interactions
+
 Revision 1.2  2005/03/26 13:09:57  mch
 Minor fixes for accessing FileManager
 

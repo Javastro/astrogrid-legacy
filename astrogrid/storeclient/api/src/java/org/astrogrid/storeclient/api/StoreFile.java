@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFile.java,v 1.1 2005/02/16 19:57:05 mch Exp $
+ * $Id: StoreFile.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -91,8 +91,9 @@ public interface StoreFile  {
    /** IF this is a folder, creats a subfolder */
    public StoreFile makeFolder(String newFolderName, Principal user) throws IOException;
    
-   /** If this is a folder, creates an output stream to a child file */
-   public OutputStream outputChild(String filename, Principal user, String mimeType) throws IOException;
+   /** If this is a folder, creates 'an entry' for a child file with the given name.  It may not create this
+    * as an entry on the server; it may just be a handle for a new file to output to */
+   public StoreFile makeFile(String filename, Principal user) throws IOException;
 
    /** If this is not a folder, creates a stream that outputs to it */
    public OutputStream openOutputStream(Principal user, String mimeType, boolean append) throws IOException;

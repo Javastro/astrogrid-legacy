@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.1 2005/02/16 19:57:05 mch Exp $
+ * $Id: LocalFile.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -208,8 +208,8 @@ public class LocalFile implements StoreFile {
    }
    
    /** If this is a folder, creates an output stream to a child file */
-   public OutputStream outputChild(String childFilename, Principal user, String mimeType) throws IOException {
-      return new FileOutputStream(new File(file, childFilename));
+   public StoreFile makeFile(String childFilename, Principal user) throws IOException {
+      return new LocalFile(new File(file, childFilename));
    }
    
    /** IF this is a folder, creats a subfolder */
@@ -226,8 +226,11 @@ public class LocalFile implements StoreFile {
 
 /*
 $Log: LocalFile.java,v $
-Revision 1.1  2005/02/16 19:57:05  mch
-*** empty log message ***
+Revision 1.2  2005/03/28 02:06:35  mch
+Major lump: split picker and browser and added threading to seperate UI interations from server interactions
+
+Revision 1.1.1.1  2005/02/16 19:57:05  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 15:02:46  mch
 Initial Checkin

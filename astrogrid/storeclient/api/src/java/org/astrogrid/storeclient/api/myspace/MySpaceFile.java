@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.1 2005/02/16 19:57:06 mch Exp $
+ * $Id: MySpaceFile.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -307,7 +307,14 @@ public class MySpaceFile implements StoreFile {
       return new MySpaceFile(this, getPath()+newFolderName, user);
    }
 
-   /** Returns true if this represents the same file as the given one, within
+   /** IF this is a folder, creats a file, returning link to it */
+   public StoreFile makeFile(String newFileName, Principal user) throws IOException {
+      if (!isFolder()) {
+         throw new UnsupportedOperationException("Cannot make a folder in a file "+getPath());
+      }
+      return new MySpaceFile(this, getPath()+newFileName, user);
+   }
+      /** Returns true if this represents the same file as the given one, within
     * this server.  This
     * won't check for references from different stores to the same file */
    public boolean equals(StoreFile anotherFile) {
@@ -335,8 +342,11 @@ public class MySpaceFile implements StoreFile {
 
 /*
 $Log: MySpaceFile.java,v $
-Revision 1.1  2005/02/16 19:57:06  mch
-*** empty log message ***
+Revision 1.2  2005/03/28 02:06:35  mch
+Major lump: split picker and browser and added threading to seperate UI interations from server interactions
+
+Revision 1.1.1.1  2005/02/16 19:57:06  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 15:02:46  mch
 Initial Checkin

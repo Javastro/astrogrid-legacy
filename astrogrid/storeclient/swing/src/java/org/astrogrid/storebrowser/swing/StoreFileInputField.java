@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileInputField.java,v 1.1 2005/02/16 19:57:08 mch Exp $
+ * $Id: StoreFileInputField.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -20,6 +20,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.security.Principal;
 import org.astrogrid.account.LoginAccount;
+import org.astrogrid.storeclient.api.StoreFile;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.JPasteButton;
@@ -45,7 +46,7 @@ public class StoreFileInputField extends JPanel implements KeyListener {
    
    boolean isValid = false;
 
-   private String browserAction = StoreBrowser.OPEN_ACTION;
+   private String browserAction = "Select";
    
    //the person operating the browser is not nec the same as the owner of
    //the files we are using
@@ -56,7 +57,8 @@ public class StoreFileInputField extends JPanel implements KeyListener {
    /** action is SAVE_ACTION or OPEN_ACTION from MySpaceBrowser */
    public StoreFileInputField(String label, String action, Principal aUser ) {
 
-      this.browserAction = action;
+
+     this.browserAction = action;
       this.operator = aUser;
       
       fileEntryField.setEditable(true);
@@ -79,15 +81,7 @@ public class StoreFileInputField extends JPanel implements KeyListener {
       myspaceBrowserBtn.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               browseStores();
-            }
-         }
-      );
-      
-      fileBrowserBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               browseFiles();
+               choose();
             }
          }
       );
@@ -141,15 +135,15 @@ public class StoreFileInputField extends JPanel implements KeyListener {
    }
 
    /** Start Store Browser */
-   public void browseStores()
+   public void choose()
    {
       try
       {
          
-         StoreBrowser browser = StoreBrowser.showDialog(operator, browserAction);
-         if (!browser.isCancelled())
+         StoreFile chosen = StorePicker.choose(operator, browserAction);
+         if (chosen != null)
          {
-            fileEntryField.setItem(browser.getSelectedFile().getUri());
+            fileEntryField.setItem(chosen.getUri());
             validate();
          }
       } catch (IOException ioe)
@@ -158,15 +152,6 @@ public class StoreFileInputField extends JPanel implements KeyListener {
       }
    }
 
-   /** Start local file chooser */
-   public void browseFiles()
-   {
-      int response = fileChooser.showOpenDialog(this);
-      
-      if ((response != JFileChooser.CANCEL_OPTION) && (response != JFileChooser.ERROR_OPTION)) {
-         fileEntryField.setItem("file://"+fileChooser.getSelectedFile());
-      }
-   }
    
    /** Checks (1) that the given reference is valid, and (2) that it exists */
    public void validate()
@@ -233,41 +218,10 @@ public class StoreFileInputField extends JPanel implements KeyListener {
 
 /*
 $Log: StoreFileInputField.java,v $
-Revision 1.1  2005/02/16 19:57:08  mch
-*** empty log message ***
-
-Revision 1.1.1.1  2005/02/16 15:02:46  mch
-Initial Checkin
-
-Revision 1.1.2.1  2005/01/26 14:48:05  mch
-Separating slinger and scapi
-
-Revision 1.1.2.2  2004/11/29 19:30:13  mch
-Some fixes to myspace source resolving, and moved loginaccount to a new directory
-
-Revision 1.1.2.1  2004/11/22 00:46:28  mch
-New Slinger Package
-
-Revision 1.1  2004/04/15 17:24:31  mch
-Moved myspace ui to store ui
-
-Revision 1.1  2004/03/03 17:40:58  mch
-Moved ui package
-
-Revision 1.3  2004/03/02 01:33:24  mch
-Updates from chagnes to StoreClient and Agsls
-
-Revision 1.2  2004/02/24 16:04:02  mch
-Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
-
-Revision 1.1  2004/02/17 16:04:06  mch
-New Desktop GUI
-
-Revision 1.2  2004/02/17 03:47:04  mch
-Naughtily large lump of various fixes for demo
-
-Revision 1.1  2004/02/15 23:25:30  mch
-Datacenter and MySpace desktop client GUIs
+Revision 1.2  2005/03/28 02:06:35  mch
+Major lump: split picker and browser and added threading to seperate UI interations from server interactions
 
  */
+
+
 

@@ -1,5 +1,5 @@
 /**
- * $Id: ToolbarRenderer.java,v 1.1 2005/02/16 19:57:12 mch Exp $
+ * $Id: ToolbarRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 
@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Hashtable;
-import org.astrogrid.storebrowser.swing.models.StoreFileNode;
+import org.astrogrid.storebrowser.tree.StoreFileNode;
 
 /**
  * An object representing a set of 'actions' that are displayed as a 'toolbar'

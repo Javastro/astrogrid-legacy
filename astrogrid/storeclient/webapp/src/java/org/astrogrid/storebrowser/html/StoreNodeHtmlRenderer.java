@@ -1,10 +1,9 @@
 /**
- * $Id: StoreNodeHtmlRenderer.java,v 1.1 2005/02/16 19:57:12 mch Exp $
+ * $Id: StoreNodeHtmlRenderer.java,v 1.2 2005/03/28 02:06:35 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -12,13 +11,13 @@ import javax.swing.tree.TreeNode;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.slinger.vospace.HomespaceName;
-import org.astrogrid.storeclient.api.StoreFile;
-import org.astrogrid.storebrowser.swing.models.StoreFileNode;
-import org.astrogrid.storebrowser.swing.models.StoreNode;
 import org.astrogrid.storebrowser.servlet.PickerServlet;
+import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.storebrowser.tree.StoreRootNode;
+import org.astrogrid.storeclient.api.StoreFile;
 
 /**
- * Renders a StoreNode in HTML
+ * Renders a StoreRootNode in HTML
  */
 
 public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
@@ -39,7 +38,7 @@ public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
       this.imageRef = imageDirectory;
    }
    
-   /** renders the given StoreNode in html */
+   /** renders the given StoreRootNode in html */
    public void writeNode(TreeNode node, String[] openPaths, String selectedPath, Writer out) throws IOException {
       
       StoreFileNode storeFileNode = (StoreFileNode) node;
@@ -65,7 +64,7 @@ public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
 //      }
 
       //saves building it a lot, and useful for debug
-      String nodePath = storeFileNode.getPath();
+      String nodePath = storeFileNode.getFilePath();
       
       //String cellColour = "#FFFFFF";  //white
       //String inkColour = "#000000";  //black
@@ -102,9 +101,9 @@ public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
          if (isOpen) {
             imageSrc = imageRef+"OpenFolder.png";
          }
-         if (node instanceof StoreNode) {
+         if (node instanceof StoreRootNode) {
             imageSrc = imageRef+"Store.gif";
-            if ( HomespaceName.isHomespaceName(((StoreNode) node).getUri())) {
+            if ( HomespaceName.isHomespaceName(((StoreRootNode) node).getUri())) {
                imageSrc = imageRef+"Home.gif";
             }
          }
@@ -116,7 +115,8 @@ public class StoreNodeHtmlRenderer implements NodeHtmlRenderer {
          
          if (isOpen) {
             //folder is open
-            if (storeFileNode.getPath().length()>0) {
+            if (storeFileNode.getFilePath().length()>0) {
+               //not the root
                out.write("<tr class='"+trClass+"'><td><table><tr>"+
                             "<td class='indent'>"+
                             "<a name='"+anchor+"'> </a>"+

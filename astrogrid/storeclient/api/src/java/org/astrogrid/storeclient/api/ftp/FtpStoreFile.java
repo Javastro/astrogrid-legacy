@@ -1,12 +1,14 @@
 /*
- $Id: FtpFile.java,v 1.1 2005/02/16 19:57:06 mch Exp $
+ $Id: FtpStoreFile.java,v 1.1 2005/03/28 02:06:35 mch Exp $
 
  (c) Copyright...
  */
 
 package org.astrogrid.storeclient.api.ftp;
-import java.io.*;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.security.Principal;
 import java.util.Date;
@@ -23,7 +25,7 @@ import org.astrogrid.storeclient.api.StoreFile;
  * <p>
  */
 
-public class FtpFile implements StoreFile {
+public class FtpStoreFile implements StoreFile {
    
    private SlingerFtpClient ftpClient = null;
 
@@ -33,17 +35,19 @@ public class FtpFile implements StoreFile {
    String path = null;
 
    /** Cache to parents/children */
-   FtpFile parent = null;
-   FtpFile[] children = null;
+   FtpStoreFile parent = null;
+   FtpStoreFile[] children = null;
 
    Hashtable properties = null;
    
+   Principal user = null;
    
    /**
     * Construct a FtpFile that represents a file at the given URL
     */
-   public FtpFile(URL url, Principal user) throws IOException
+   public FtpStoreFile(URL url, Principal givenUser) throws IOException
    {
+      user = givenUser;
       if (!url.getProtocol().equals("ftp")) {
          throw new IllegalArgumentException(url+" is not an FTP target");
       }
@@ -69,18 +73,19 @@ public class FtpFile implements StoreFile {
     * Construct a FtpFile with an existing ftp client.  Normally used by
     * parent/child creaters
     */
-   private FtpFile(SlingerFtpClient client, String aPath, Principal user) throws IOException
+   private FtpStoreFile(SlingerFtpClient client, String aPath, Principal givenUser) throws IOException
    {
       ftpClient = client;
       path = aPath;
       file = ftpClient.getFile(path);
+      user = givenUser;
    }
 
    /**
     * Construct a FtpFile with an existing ftp client and file.  Normally used by
     * parent/child creaters
     */
-   private FtpFile(FtpFile aParent, FTPFile aFile, String aPath, Principal user) throws IOException
+   private FtpStoreFile(FtpStoreFile aParent, FTPFile aFile, String aPath, Principal user) throws IOException
    {
       parent = aParent;
       ftpClient = parent.ftpClient;
@@ -108,11 +113,9 @@ public class FtpFile implements StoreFile {
 
    /** Clears the cached children and regets the details on this instance. */
    public void refresh()  throws IOException {
-      for (int i = 0; i < children.length; i++) {
-         children[i].refresh();
-      }
-      children = null;
       file = getFtp().getFile(path);
+      children = null;
+      listFiles(user); //bit of a botch
    }
    
    /**
@@ -135,7 +138,7 @@ public class FtpFile implements StoreFile {
          //remove last path token, not including slash
          parentPath = parentPath.substring(0, parentPath.lastIndexOf("/")+1);
          
-         parent = new FtpFile(getFtp(), parentPath, user);
+         parent = new FtpStoreFile(getFtp(), parentPath, user);
       }
       return parent;
    }
@@ -175,7 +178,6 @@ public class FtpFile implements StoreFile {
 //    return file.getTimestamp();
       return null;
    }
-   
    
    /** Used to set the mime type of the file. Does nothing */
    public void setMimeType(String mimeType, Principal user) throws IOException {
@@ -242,9 +244,9 @@ public class FtpFile implements StoreFile {
          FTPFile[] c = getFtp().listFiles(path);
          System.out.println("..done");
          if (c!=null) {
-            children = new FtpFile[c.length];
+            children = new FtpStoreFile[c.length];
             for (int i = 0; i < c.length; i++) {
-               children[i] = new FtpFile(this, c[i], path+c[i].getName(), user);
+               children[i] = new FtpStoreFile(this, c[i], path+c[i].getName(), user);
             }
          }
       }
@@ -270,18 +272,17 @@ public class FtpFile implements StoreFile {
          if (!success) {
             throw new IOException("Could not create folder "+newPath+" on "+getFtp().getUrl());
          }
-         return new FtpFile(ftpClient, newPath, user);
+         return new FtpStoreFile(ftpClient, newPath, user);
       }
       throw new IllegalArgumentException(this+" is not a folder; cannot make subfolder "+newFolderName);
    }
 
-   /** If this is a folder, creates an output stream to a child file */
-   public OutputStream outputChild(String filename, Principal user, String mimeType) throws IOException {
+   /** If this is a folder, creates an node to a child file */
+   public StoreFile makeFile(String filename, Principal user) throws IOException {
       if (!isFolder()) {
          throw new IllegalArgumentException(path+" is not a folder; cannot create child "+filename);
       }
-      getFtp().setFileTransferMode(SlingerFtpClient.BINARY_FILE_TYPE);
-      return getFtp().storeFileStream(path+filename);
+      return new FtpStoreFile(this, ftpClient.getFile(path+filename), path+filename, user);
    }
    
    
@@ -290,7 +291,7 @@ public class FtpFile implements StoreFile {
     */
    public static void main(String[] args) throws IOException {
       
-      StoreFile file = new FtpFile(new URL("ftp://ftp.roe.ac.uk/pub/"), LoginAccount.ANONYMOUS);
+      StoreFile file = new FtpStoreFile(new URL("ftp://ftp.roe.ac.uk/pub/"), LoginAccount.ANONYMOUS);
       System.out.println(file);
       StoreFile parent = file.getParent(LoginAccount.ANONYMOUS);
       System.out.println("Parent: "+parent);

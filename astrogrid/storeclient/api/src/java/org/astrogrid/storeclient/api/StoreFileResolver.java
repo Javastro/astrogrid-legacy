@@ -1,5 +1,5 @@
 /*
- * $Id: StoreFileResolver.java,v 1.3 2005/03/26 13:09:57 mch Exp $
+ * $Id: StoreFileResolver.java,v 1.4 2005/03/28 02:06:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.storeclient.api.agfm.FileManagerFile;
 import org.astrogrid.storeclient.api.file.LocalFile;
-import org.astrogrid.storeclient.api.ftp.FtpFile;
+import org.astrogrid.storeclient.api.ftp.FtpStoreFile;
 import org.astrogrid.storeclient.api.myspace.MySpaceFile;
 import org.astrogrid.storeclient.api.srb.JargonFileAdaptor;
 
@@ -36,7 +36,7 @@ public class StoreFileResolver {
          return new LocalFile(url);
       }
       else if (url.getProtocol().equals("ftp")) {
-         return new FtpFile(url, user);
+         return new FtpStoreFile(url, user);
       }
       else {
          throw new UnsupportedOperationException("No StoreFile implemented for "+url.getProtocol());
@@ -101,6 +101,9 @@ public class StoreFileResolver {
 
 /*
 $Log: StoreFileResolver.java,v $
+Revision 1.4  2005/03/28 02:06:35  mch
+Major lump: split picker and browser and added threading to seperate UI interations from server interactions
+
 Revision 1.3  2005/03/26 13:09:57  mch
 Minor fixes for accessing FileManager
 

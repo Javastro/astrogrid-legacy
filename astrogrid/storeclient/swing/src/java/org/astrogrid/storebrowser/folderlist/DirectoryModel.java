@@ -1,8 +1,8 @@
 /*
- * $Id: DirectoryModel.java,v 1.1 2005/02/16 19:57:09 mch Exp $
+ * $Id: DirectoryModel.java,v 1.1 2005/03/28 02:06:35 mch Exp $
  */
 
-package org.astrogrid.storebrowser.swing.models;
+package org.astrogrid.storebrowser.folderlist;
 
 /**
  * Models a single directory listing . From java sun 'using JTrees'.
@@ -11,6 +11,7 @@ package org.astrogrid.storebrowser.swing.models;
 import java.io.IOException;
 import java.security.Principal;
 import javax.swing.table.AbstractTableModel;
+import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.storeclient.api.StoreFile;
 
 public class DirectoryModel extends AbstractTableModel {
@@ -73,6 +74,9 @@ public class DirectoryModel extends AbstractTableModel {
             return file.getName();
          case 2: //size column
             if ( file.isFolder() ) {
+               /* This takes far too long on some servers as it has to read all
+                the children of the folder
+               
                try {
                   if (file.listFiles(user) == null) {
                      return "(0)";
@@ -82,6 +86,8 @@ public class DirectoryModel extends AbstractTableModel {
                } catch (IOException ioe) {
                   return "(?)";
                }
+                */
+               return "(?)";
             }
             else {
                long size = file.getSize();
@@ -122,8 +128,22 @@ public class DirectoryModel extends AbstractTableModel {
       }
       else {
          String mime = file.getMimeType();
+         if (mime != null) {
+            if (mime.equals(MimeTypes.PLAINTEXT)) {
+               return "x";
+            }
+            else if (mime.equals(MimeTypes.HTML)) {
+               return "h";
+            }
+            else if (mime.equals(MimeTypes.VOTABLE)) {
+               return "v";
+            }
+            else if (mime.equals(MimeTypes.ADQL)) {
+               return "q";
+            }
+         }
       }
-      return "x";
+      return "?";
    }
    
    public String getColumnName( int column ) {

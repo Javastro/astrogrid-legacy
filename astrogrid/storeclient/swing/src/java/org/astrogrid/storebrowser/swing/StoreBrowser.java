@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.3 2005/03/26 13:09:57 mch Exp $
+ * $Id: StoreBrowser.java,v 1.4 2005/03/28 02:06:35 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,52 +8,45 @@
  */
 
 package org.astrogrid.storebrowser.swing;
-
+import java.io.*;
 import javax.swing.*;
 
 import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.Principal;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.account.IvoAccount;
-import org.astrogrid.account.LoginAccount;
 import org.astrogrid.cfg.ConfigFactory;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.io.Piper;
 import org.astrogrid.slinger.Slinger;
 import org.astrogrid.slinger.mime.MimeFileExts;
+import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.sources.SourceIdentifier;
 import org.astrogrid.slinger.sources.SourceMaker;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.targets.TargetMaker;
-import org.astrogrid.storebrowser.swing.models.DirectoryModel;
-import org.astrogrid.storebrowser.swing.models.RootStoreNode;
+import org.astrogrid.storebrowser.folderlist.DirectoryModel;
+import org.astrogrid.storebrowser.folderlist.DirectoryView;
+import org.astrogrid.storebrowser.tree.StoreFileNode;
+import org.astrogrid.storebrowser.tree.StoreTreeView;
+import org.astrogrid.storebrowser.tree.StoresList;
 import org.astrogrid.storeclient.api.StoreFile;
 import org.astrogrid.ui.EscEnterListener;
-import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 
 /**
- * A Dialog Box that provides a client view onto a myspace.  Uses myspace
- * delegates so should work with any of the delegate implementations.
- *
- * It is supposed to reflect the layout and features of JFileChooser
- *
- * (NB 15/2/04 runs off temporary datacenter 'Iteration 6' myspace delegates)
+ * A non-modal window for managing files in stores. Uses storeclient
+ * package so should work with anything that that package can handle.
  *
  * @author mch
  */
@@ -63,22 +56,18 @@ public class StoreBrowser extends JDialog
 {
    JHistoryComboBox addressPicker = new JHistoryComboBox();
 
+   JSplitPane splitter = null;
+   
    //left hand panel - tree view
    StoreTreeView treeView = null;
 
-   //right hand panel - directory table list
-   JTable directoryView = null;
+   /** Right hand panel shows folder or file contents */
+   JScrollPane contentPanel = new JScrollPane();
    
-   //action buttons & file selected - if present
-   JButton actBtn = null;
-   JButton cancelBtn = new JButton("Cancel");
-   JTextField filenameField = new JTextField();
-   JComboBox filetypePicker = new JComboBox();
-
-   String browserAction = NO_ACTION; //default
-
-   boolean isCancelled = false;
-
+   /** Special case of contentPanel holding lists of files, so that we can
+    examine it for selections, etc */
+   DirectoryView directoryView = new DirectoryView();
+   
    //toolbar buttons
    JButton refreshBtn = null;
    JButton uploadBtn = null;
@@ -92,14 +81,6 @@ public class StoreBrowser extends JDialog
    public static final int DEF_SIZE_X = 550;
    public static final int DEF_SIZE_Y = 350;
    
-   public static final String SAVE_ACTION = "Save";
-   public static final String OPEN_ACTION = "Open";
-   public static final String NO_ACTION = null;
-   
-//   public static final int CANCEL_OPTION = JFileChooser.CANCEL_OPTION;
-//   public static final int ERROR_OPTION = JFileChooser.ERROR_OPTION;
-//   public static final int APPROVE_OPTION = JFileChooser.APPROVE_OPTION;
-   
    //used to lookup files on disk
    JFileChooser chooser = new JFileChooser();
 
@@ -108,40 +89,9 @@ public class StoreBrowser extends JDialog
    //component operator
    Principal operator = null;
 
-   /** Static browser, so when user asks for browser he gets it in same state as before */
-   private static StoreBrowser browser = null;
-   
-   /** Constructor - returns an instance of this tied correctly to the parent frame/dialog owner
-    * of the calling Component
-    */
-   public static StoreBrowser showDialog(Principal user, String action) throws IOException
-   {
-      if (browser == null) {
-
-         browser = new StoreBrowser(user, action);
-         browser.setModal(true);
-   
-         //if it's still got bounds of 0,0, set them to center on the component
-         /*
-         if (owner != null)¦
-         {
-            browser.setLocation(owner.getLocationOnScreen().x - DEF_SIZE_X/2,
-                                owner.getLocationOnScreen().y - DEF_SIZE_Y/2);
-         }
-          */
-         browser.setSize(DEF_SIZE_X, DEF_SIZE_Y);
-      }
-      
-      browser.show();
-      return browser;
-   }
-
-   /** Constructor - private, use showDialog() */
-   private StoreBrowser(Principal user, String action) throws IOException
-   {
+   private StoreBrowser(Principal user) throws IOException   {
       super();
       this.operator = user;
-      this.browserAction = action;
       initComponents();
    }
 
@@ -152,7 +102,6 @@ public class StoreBrowser extends JDialog
    private void initComponents() throws IOException
    {
       setTitle("Browsing Stores as "+operator.getName());
-      setModal(true);
       
       addressPicker.addItem(""); //empty one to start with
       
@@ -176,40 +125,11 @@ public class StoreBrowser extends JDialog
       iconBtnPanel.add(deleteBtn);
       iconBtnPanel.add(copyBtn);
 
-      //action panel
-      filetypePicker.addItem("All Files");
-      actBtn = new JButton(browserAction);
-      JPanel blPanel = new JPanel(new GridBagLayout());
-      GridBagConstraints constraints = new GridBagConstraints();
-      GridBagHelper.setLabelConstraints(constraints);
-      constraints.gridy++;
-      blPanel.add(new JLabel("File Name: "), constraints);
-      GridBagHelper.setEntryConstraints(constraints);
-      blPanel.add(filenameField, constraints);
-      constraints.gridy++;
-      GridBagHelper.setLabelConstraints(constraints);
-      blPanel.add(new JLabel("File Types: "), constraints);
-      GridBagHelper.setEntryConstraints(constraints);
-      blPanel.add(filetypePicker, constraints);
-
-      JPanel actbtnPanel = new JPanel();
-      actbtnPanel.add(actBtn);
-      actbtnPanel.add(cancelBtn);
-      
-      JPanel actionPanel = new JPanel(new BorderLayout());
-      actionPanel.add(actbtnPanel, BorderLayout.EAST);
-      actionPanel.add(blPanel, BorderLayout.CENTER);
-
       //tree view
       treeView = new StoreTreeView(operator);
       JScrollPane treePanel = new JScrollPane();
       treePanel.getViewport().setView(treeView);
 
-      //directory view
-      directoryView = new JTable(new DirectoryModel());
-      JScrollPane dirPanel = new JScrollPane();
-      dirPanel.getViewport().setView(directoryView);
-      
       //address pciker and toolbar combined
       JPanel topPanel = new JPanel(new BorderLayout());
       topPanel.add(new JLabel("Address"), BorderLayout.WEST);
@@ -217,21 +137,17 @@ public class StoreBrowser extends JDialog
       topPanel.add(iconBtnPanel, BorderLayout.EAST);
 
       topPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-      actionPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
       getContentPane().setLayout(new BorderLayout());
       JPanel RHS = new JPanel(new BorderLayout());
       JPanel LHS = new JPanel(new BorderLayout());
       LHS.add(treePanel, BorderLayout.CENTER);
-      RHS.add(dirPanel, BorderLayout.CENTER);
+      RHS.add(contentPanel, BorderLayout.CENTER);
 
       getContentPane().add(topPanel, BorderLayout.NORTH);
-      JSplitPane splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LHS, RHS);
+      splitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, LHS, RHS);
       getContentPane().add(splitter);
       splitter.setDividerLocation(0.35);
-      if (browserAction != NO_ACTION) {
-         RHS.add(actionPanel, BorderLayout.SOUTH);
-      }
       
       refreshBtn.addActionListener(
          new ActionListener() {
@@ -273,14 +189,6 @@ public class StoreBrowser extends JDialog
          }
       );
       
-      cancelBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               isCancelled = true;
-            }
-         }
-      );
-      
       deleteBtn.addActionListener(
          new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -306,40 +214,22 @@ public class StoreBrowser extends JDialog
          }
       );
       
-      actBtn.addActionListener(
-         new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-               actBtnPressed();
-            }
-         }
-      );
 
       treeView.addTreeSelectionListener(
          new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                StoreFile f = treeView.getSelectedFile();
                if (f!= null) {
-                  try {
-                     directoryView.setModel(new DirectoryModel(f));
-                     addressPicker.addItem(f.getUri());
-                     addressPicker.setSelectedItem(f.getUri());
-                  }
-                  catch (IOException ioe) {
-                     log.error(ioe+" Making model of "+f,ioe);
-                     JOptionPane.showMessageDialog(null, ioe, "Error making model of "+f, JOptionPane.ERROR);
-                  }
+                  addressPicker.addItem(f.getUri());
+                  addressPicker.setSelectedItem(f.getUri());
                }
-               if ((f!=null) && (f.isFile())) {
-                  filenameField.setText(f.toString());
-               }
+               setContentPane();
             }
          }
       );
       
       
-      new EscEnterListener(this, actBtn, cancelBtn, true);
-      
-      isCancelled = false;
+      new EscEnterListener(this, null, null, true);
       
       pack();
       invalidate();
@@ -350,18 +240,76 @@ public class StoreBrowser extends JDialog
    public Principal getOperator() {
       return operator;
    }
-   
+  
+   /** Sets the content pane depending on the selected file/folder */
+   protected void setContentPane() {
+               StoreFile f = treeView.getSelectedFile();
+
+      if (f == null) {
+         contentPanel.getViewport().setView(null);
+      }
+      else {
+                  if (f.isFolder()) {
+                     //show directory view
+                     try {
+                        directoryView = new DirectoryView();
+                        directoryView.setModel(new DirectoryModel(f));
+                        contentPanel.getViewport().setView(directoryView);
+                     }
+                     catch (IOException ioe) {
+                        log.error(ioe+" Making model of "+f,ioe);
+                        JOptionPane.showMessageDialog(null, ioe, "Error making model of "+f, JOptionPane.ERROR);
+                     }
+                  }
+                  else {
+                     directoryView = null; //there is no directory view
+                     
+                     //show file contents if possible
+                     if (f.getMimeType() == null) {
+                        contentPanel.getViewport().setView(null);
+                     }
+                     else {
+                        if (f.getMimeType().equals(MimeTypes.PLAINTEXT)) {
+                           JTextArea textDisplay = new JTextArea();
+                           contentPanel.getViewport().setView(textDisplay);
+                           try {
+                              //could really do with spawning this as a separate thread in case it's really long
+                              ByteArrayOutputStream out = new ByteArrayOutputStream();
+                              Piper.bufferedPipe(f.openInputStream(operator), out);
+                              textDisplay.setText(out.toString());
+                           }
+                           catch (IOException ioe) {
+                              log.error(ioe+" Reading contents of "+f,ioe);
+                              textDisplay.setText("ERROR: "+ioe+" reading contents of "+f);
+                           }
+                           
+                        }
+                        else {
+                           contentPanel.getViewport().setView(null);
+                        }
+
+                        
+                     }
+                  }
+               }
+   }
    
    public void refresh() {
-      StoreFile file = getSelectedFile();
+      StoreFileNode node = treeView.getSelectedNode();
+      TreePath path = treeView.getSelectionPath();
       
-      if (file != null) {
-         try {
-            file.refresh();
-            repaint();
+      if (node != null) {
+         if (node.isLeaf()) {
+            node = (StoreFileNode) node.getParent(); //refresh folder rather than file
+            path = path.getParentPath();
          }
-         catch (IOException ioe) {
-         }
+         
+            node.refresh();
+            
+            treeView.reload(node);
+            
+            //refresh content pane
+            setContentPane();
       }
    }
    
@@ -384,15 +332,11 @@ public class StoreBrowser extends JDialog
          
          File target   = chooser.getSelectedFile();
          try {
-            Slinger.sling(SourceMaker.makeSource(file.getUri()), TargetMaker.makeTarget(new FileOutputStream(target)), operator);
-         }
-         catch (URISyntaxException e) {
-            log.error("Failed to resolve source from file '"+file+"', uri '"+file.getUri()+"'",e);
-            JOptionPane.showMessageDialog(this, "Failed to resolve source from file '"+file+"', uri '"+file.getUri()+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+            Piper.bufferedPipe(file.openInputStream(operator), new FileOutputStream(target));
          }
          catch (IOException e) {
             log.error("Failed to copy/download file from '"+file+"' to '"+target+"'",e);
-            JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to download '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          }
       }
    }
@@ -416,7 +360,8 @@ public class StoreBrowser extends JDialog
          try {
             OutputStream out = null;
             if (target.isFolder()) {
-               out = target.outputChild(source.getName(), operator, ""); //unknown mime type
+               StoreFile targetChild = target.makeFile(source.getName(), operator);
+               out = targetChild.openOutputStream(operator, MimeFileExts.guessMimeType(source.getName()), false);
             }
             else {
                out = target.openOutputStream(operator, MimeFileExts.guessMimeType(source.getName()), false);
@@ -427,17 +372,12 @@ public class StoreBrowser extends JDialog
             }
 
             Slinger.sling(SourceMaker.makeSource(new FileInputStream(source)), TargetMaker.makeTarget(out), operator);
+            refresh();
             
          } catch (IOException e) {
             log.error(e+" Uploading "+source+" to "+target,e);
             JOptionPane.showMessageDialog(this, "Failed to upload '"+target+"': "+e, "MySpace Browser", JOptionPane.ERROR_MESSAGE);
          }
-         try {
-            target.refresh();
-         } catch (IOException e) {
-            log.error(e+" Refreshing "+target,e);
-         }
-         repaint();
       }
    }
 
@@ -469,6 +409,7 @@ public class StoreBrowser extends JDialog
             }
             TargetIdentifier target = TargetMaker.makeTarget(file.getUri());
             Slinger.sling(source, target, operator);
+            refresh();
 
          } catch (URISyntaxException mue) {
             log.error("Invalid URL '"+urlEntry+"' ", mue);
@@ -480,12 +421,6 @@ public class StoreBrowser extends JDialog
             log.error("Upload of '"+urlEntry+"' failed", e);
             JOptionPane.showMessageDialog(this, e+", uploading "+source+" to '"+urlEntry+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
          }
-         try {
-            file.refresh();
-         } catch (IOException e) {
-            log.error(e+" Refreshing "+file,e);
-         }
-         repaint();
       }
    }
 
@@ -512,6 +447,7 @@ public class StoreBrowser extends JDialog
          try {
             target.getParent(operator).refresh();
             target.delete(operator);
+            refresh();
          }
          catch (IOException ioe) {
             log.error(ioe+", deleting "+target, ioe);
@@ -538,7 +474,7 @@ public class StoreBrowser extends JDialog
          //create folder
          try {
             target.makeFolder(newFoldername, operator);
-            target.refresh();
+            refresh();
          } catch (IOException ioe) {
             log.error(ioe+", creating new folder '"+newFoldername+"'", ioe);
             JOptionPane.showMessageDialog(this, ioe+", creating new folder '"+newFoldername+"'", "StoreBrowser", JOptionPane.ERROR_MESSAGE);
@@ -584,34 +520,12 @@ public class StoreBrowser extends JDialog
       
    }
    
-   /** Action button pressed - ie Open or Save */
-   public void actBtnPressed()   {
-      if (browserAction == OPEN_ACTION) {
-         if (getSelectedFile() != null) {
-            hide();
-         }
-         else {
-            JOptionPane.showMessageDialog(this.getContentPane(), "Select a file to open");
-         }
-      }
-      if (browserAction == SAVE_ACTION) {
-         if (getSelectedFile() != null) {
-            hide();
-         }
-         else {
-            JOptionPane.showMessageDialog(this, "Enter a filename to save to");
-         }
-      }
-   }
-   
-   
-   /** Set if the window is exited via Cancel/Close. */
-   public boolean isCancelled()   {      return isCancelled;   }
-   
-   /** Returns the currently selected file */
+   /** Returns the currently selected file, which may be selected on the tree view,
+    * or may be selected via a folder on teh tree view and a row selection on the folder
+    * contents view */
    public StoreFile getSelectedFile() {
       StoreFile file = treeView.getSelectedFile();
-      if ((file != null) && (file.isFolder()) && (directoryView.getSelectedRow()>-1)) {
+      if ((file != null) && (file.isFolder()) && (directoryView != null) && (directoryView.getSelectedRow()>-1)) {
          try {
             file = file.listFiles(operator)[directoryView.getSelectedRow()];
          }
@@ -626,25 +540,23 @@ public class StoreBrowser extends JDialog
     /**
      * Standalone
      */
-   public static void main(String[] args)  {
+   public static void main(String[] args) throws IOException, URISyntaxException, IOException {
 
       SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
       ConfigFactory.getCommonConfig().setProperty(Slinger.PERMIT_LOCAL_ACCESS_KEY, "true");
 
-      try
-      {
-         StoreBrowser browser = StoreBrowser.showDialog(new IvoAccount("DSATEST1", "uk.ac.le.star", null), NO_ACTION);
-         browser.setLocation(100,100);
-         ((RootStoreNode) browser.treeView.getModel().getRoot()).addDefaultStores(true);
-      } catch (IOException ioe)
-      {
-         ioe.printStackTrace();
-      }
+      StoreBrowser browser = new StoreBrowser(new IvoAccount("DSATEST1", "uk.ac.le.star", null));
+      browser.setLocation(100,100);
+      ((StoresList) browser.treeView.getModel().getRoot()).addTestStores();
+      browser.show();
    }
 }
 
 /*
 $Log: StoreBrowser.java,v $
+Revision 1.4  2005/03/28 02:06:35  mch
+Major lump: split picker and browser and added threading to seperate UI interations from server interactions
+
 Revision 1.3  2005/03/26 13:09:57  mch
 Minor fixes for accessing FileManager
 
