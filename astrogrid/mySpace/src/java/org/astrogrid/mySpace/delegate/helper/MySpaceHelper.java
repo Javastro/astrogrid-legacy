@@ -5,6 +5,8 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
+import org.astrogrid.community.User;
+
 import java.util.Vector;
 
 /**
@@ -446,5 +448,10 @@ public class MySpaceHelper{
 		}		
 		return doc;	
 	}	
+   
+   public static String formatMyspaceReference(User user, String server, String container, String file)
+   {
+      return "/"+user.getAccount()+"@"+user.getGroup()+"/"+server+"/"+container+"/"+file;
+   }
 	
 }	
