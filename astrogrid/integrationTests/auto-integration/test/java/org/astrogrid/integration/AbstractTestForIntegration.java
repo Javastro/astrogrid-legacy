@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.8 2004/09/09 01:19:50 dave Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.9 2004/09/13 18:14:53 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,7 +27,9 @@ import junit.framework.TestCase;
  *
  */
 public class AbstractTestForIntegration extends IntegrationTestCase {
-   /**
+
+
+/**
      * Constructor for AbstractTestForIntegration.
      * @param arg0
      */
@@ -81,6 +83,7 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
     public static final String HTTP_HELLO_WORLD=COMMUNITY+"/HelloWorldHttpApp";
     public static final String HTTP_ADDER = COMMUNITY+"/AdderHttpApp";
     public static final String HTTP_INVALID = COMMUNITY+"/InvalidHttpApp";
+    public static final String HTTP_HELLO_YOU = COMMUNITY+"/HelloYouXMLHttpApp";
     
    protected Ivorn createIVORN(String path)
    {
@@ -124,6 +127,10 @@ public class AbstractTestForIntegration extends IntegrationTestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.9  2004/09/13 18:14:53  jdt
+Added a new cea-http integration test to see if saving xml to
+mySpace is causing any problems.
+
 Revision 1.8  2004/09/09 01:19:50  dave
 Updated MIME type handling in MySpace.
 Extended test coverage for MIME types in FileStore and MySpace.

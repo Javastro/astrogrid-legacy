@@ -1,4 +1,4 @@
-/*$Id: HttpProviderServerInfo.java,v 1.3 2004/09/13 18:14:53 jdt Exp $
+/*$Id: HttpProviderServerInfo.java,v 1.1 2004/09/13 18:14:53 jdt Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.integration.http;
+package org.astrogrid.applications.integration.http.helloYou;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.ServerInfo;
@@ -25,8 +25,7 @@ public class HttpProviderServerInfo implements ServerInfo {
      * @see org.astrogrid.applications.integration.ServerInfo#getApplicationName()
      */
     public String getApplicationName() {
-    	assert false : "I shouldn't be called";
-    	return AbstractTestForIntegration.HTTP_ADDER;
+        return AbstractTestForIntegration.HTTP_HELLO_YOU;
     }
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#getServerSearchString()
@@ -38,42 +37,40 @@ public class HttpProviderServerInfo implements ServerInfo {
      * @see org.astrogrid.applications.integration.ServerInfo#getApplicationNames()
      */
     public String[] getApplicationNames() {
-        return new String[]{AbstractTestForIntegration.HTTP_HELLO_WORLD, AbstractTestForIntegration.HTTP_ADDER, AbstractTestForIntegration.HTTP_HELLO_YOU};
+    	assert false : "I really don't expect to be called";
+        return new String[]{AbstractTestForIntegration.HTTP_HELLO_YOU};
     }
   
 
-        /**
+    public static final String TEST_CONTENTS = "Hello Boys";
+    /**
      * @see org.astrogrid.applications.integration.ServerInfo#populateDirectTool(org.astrogrid.workflow.beans.v1.Tool)
      */
     public void populateDirectTool(Tool tool) {
-    	assert false : "I shouldn't be called";
+    	ParameterValue pval_name = (ParameterValue)tool.findXPathValue("input/parameter[name='name']");
+    	pval_name.setValue("Boys");
+    	pval_name.setIndirect(false);
     }
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#populateIndirectTool(org.astrogrid.workflow.beans.v1.Tool, java.lang.String, java.lang.String)
      */
     public void populateIndirectTool(Tool tool, String inputURI, String outputURI) {
-    	assert false : "I shouldn't be called";
+    	ParameterValue pval_name = (ParameterValue)tool.findXPathValue("input/parameter[name='name']");
+    	pval_name.setValue("Boys");
+    	pval_name.setIndirect(false);
+    	
+        ParameterValue pval = (ParameterValue)tool.findXPathValue("output/parameter[name='reply']");
+        pval.setValue(outputURI);
+        pval.setIndirect(true);
     }
 }
 
 
 /* 
 $Log: HttpProviderServerInfo.java,v $
-Revision 1.3  2004/09/13 18:14:53  jdt
+Revision 1.1  2004/09/13 18:14:53  jdt
 Added a new cea-http integration test to see if saving xml to
 mySpace is causing any problems.
 
-Revision 1.2  2004/09/02 11:18:09  jdt
-Merges from case 3 branch for SIAP.
 
-Revision 1.1.2.2  2004/08/20 00:36:19  jdt
-moved HelloWorld tests
-
-Revision 1.1.2.1  2004/08/18 11:34:32  jdt
-First integration tests - check that the server is up and OK.  And
-test the hello world app.....more to follow
-
-Revision 1.1  2004/07/01 11:43:33  nw
-cea refactor
- 
 */
