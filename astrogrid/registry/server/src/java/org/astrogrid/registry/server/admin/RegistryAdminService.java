@@ -77,6 +77,7 @@ public class RegistryAdminService implements
     Document xsDoc = xs.transformDatabaseProcess(update);
     //System.out.println("This is xsDoc = " + XMLUtils.DocumentToString(xsDoc));
     doc = RegistryFileHelper.updateResources(xsDoc,true, true);
+    RegistryFileHelper.writeRegistryFile();
     return doc;
   }
 

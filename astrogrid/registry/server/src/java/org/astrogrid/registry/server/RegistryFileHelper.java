@@ -92,7 +92,12 @@ public class RegistryFileHelper {
          regEntry = null;   
       }
       if(regEntry != null) {         
-         NodeList nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
+         //Okay for some reason vg seems to pick up the ManagedAuthority.
+         //Lets try to find it by the url namespace.
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         }
          if(nl.getLength() > 0) {
             statusMessage += "Authorities owned by this Registry: |";
             for(int i=0;i < nl.getLength();i++) {
@@ -362,7 +367,8 @@ public class RegistryFileHelper {
       registryFile = new File(path);
       try {
          FileOutputStream fos = new FileOutputStream(registryFile,false);
-         XMLUtils.DocumentToStream(loadRegistryFile(),fos);                  
+         XMLUtils.DocumentToStream(loadRegistryFile(),fos);
+         //System.out.println("here is the registry file written");                  
       }catch(FileNotFoundException e) {
          e.printStackTrace();
       }
@@ -438,7 +444,13 @@ public class RegistryFileHelper {
          //System.out.println("The Registry entry = " + XMLUtils.DocumentToString(regEntry));
          //TODO fix this so it uses namespaces instead.  This should go away anyways with the new db.
          //NodeList nl =  regEntry.getElementsByTagNameNS("*","ManagedAuthority" );
-         NodeList nl = regEntry.getElementsByTagName("vg:ManagedAuthority");
+         NodeList nl = regEntry.getElementsByTagNameNS("vg","ManagedAuthority" );
+         //Okay for some reason vg seems to pick up the ManagedAuthority.
+         //Lets try to find it by the url namespace.
+         if(nl.getLength() == 0) {
+            nl = regEntry.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         }
+
          
          //System.out.println("the nodelist size for getting manageauthority2 = " + nl2.getLength());
          System.out.println("the nodelist size for getting manageauthority = " + nl.getLength());
@@ -468,8 +480,8 @@ public class RegistryFileHelper {
             System.out.println("okay ole regEntry = " + XMLUtils.DocumentToString(regEntry));
             while(parentNode != null) {
                Node nd = findElementNode("AuthorityID",parentNode);
-               Node refChild = findElementNode("ManagedAuthority",regEntry.getDocumentElement());
-               Element elem = regEntry.createElement("ManagedAuthority");
+               Node refChild = findElementNode("ManagedAuthority",regEntry.getDocumentElement());               
+               Element elem = regEntry.createElementNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
                childName = nd.getFirstChild().getNodeValue();
                elem.appendChild(regEntry.createTextNode(childName));
                System.out.println("new element node name = "  + elem.getNodeName() + " and node value = " + childName);

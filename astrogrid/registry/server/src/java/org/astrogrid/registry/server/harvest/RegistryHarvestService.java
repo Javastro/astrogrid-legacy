@@ -17,6 +17,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.astrogrid.registry.server.RegistryFileHelper;
 import org.astrogrid.registry.server.query.RegistryService;
@@ -80,7 +81,13 @@ public class RegistryHarvestService implements
       try {
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
-         NodeList regNL = registryDoc.getElementsByTagName("vg:ManagedAuthority");
+         NodeList regNL = registryDoc.getElementsByTagNameNS("vg","ManagedAuthority" );
+         //Okay for some reason vg seems to pick up the ManagedAuthority.
+         //Lets try to find it by the url namespace.
+         if(regNL.getLength() == 0) {
+            regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         }
+         
          //NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority");
          String selectQuery = "<query><selectionSequence>" +
               "<selection item='searchElements' itemOp='EQ' value='all'/>" +
@@ -129,7 +136,13 @@ public class RegistryHarvestService implements
          RegistryService rs = new RegistryService();         
          Document registryDoc = rs.loadRegistry(null);
         
-         NodeList regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","ManagedAuthority");
+         NodeList regNL = registryDoc.getElementsByTagNameNS("vg","ManagedAuthority" );
+         //Okay for some reason vg seems to pick up the ManagedAuthority.
+         //Lets try to find it by the url namespace.
+         if(regNL.getLength() == 0) {
+            regNL = registryDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","ManagedAuthority" );
+         }
+         
          String selectQuery = "<query><selectionSequence>" +
              "<selection item='searchElements' itemOp='EQ' value='all'/>" +
              "<selectionOp op='AND'/>" + 
@@ -371,7 +384,8 @@ public class RegistryHarvestService implements
                   doc.createElementNS(wsdlBasic.getTargetNameSpace(),interfaceMethod);
                   doc.appendChild(root);
                   SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
-                  sbeRequest.setName("harvestAll");               
+                  //sbeRequest.setName("harvestAll");
+                  sbeRequest.setName(interfaceMethod);
                   sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
                   Vector result = (Vector) callObj.invoke (new Object[] {sbeRequest});
                   SOAPBodyElement sbe = (SOAPBodyElement) result.get(0);
@@ -392,11 +406,39 @@ public class RegistryHarvestService implements
          
       }else if(InvocationType.WEBBROWSER_TYPE == st.getInterface().getInvocation().getType()) {
          try {
+            String ending = "";
             //might need to put some oai date stuff on the end.  This is unknown.
             System.out.println("inside the web broser");
-            doc = DomHelper.newDocument(new URL(st.getInterface().getAccessURL().getContent()));
+            
+            if(accessURL.indexOf("?") == -1) {
+               ending = "?verb=ListRecords"; //&from=" + date;   
+            }else {
+               /*
+               if(accessURL.indexOf("verb") == -1)
+                  ending = "&verb=ListRecords&from=" + date;
+               else
+                  ending = "&from=" + date;
+               */
+            }
+            
+            
+            doc = DomHelper.newDocument(new URL(accessURL + ending));
             System.out.println("Okay got this far to reading the url doc = " + DomHelper.DocumentToString(doc));
             RegistryFileHelper.updateResources(doc,true,false);
+            RegistryFileHelper.writeRegistryFile();
+            
+            NodeList moreTokens = null;
+            while( (moreTokens = doc.getElementsByTagName("resumptionToken")).getLength() > 0) {
+               Node nd = moreTokens.item(0);
+               if(accessURL.indexOf("?") != -1) {
+                  accessURL = accessURL.substring(0,accessURL.indexOf("?"));
+               }
+               ending = "?verb=ListRecords&resumptionToken=" + nd.getFirstChild().getNodeValue();
+               System.out.println("the harvestcallregistry's accessurl for resumptionToken = " + accessURL + ending);
+               doc = DomHelper.newDocument(new URL(accessURL + ending));
+               //System.out.println("in harvestcallregistry the harvestDoc2 = " + XMLUtils.DocumentToString(harvestDoc));
+               RegistryFileHelper.updateResources(doc,true,false);
+            }//while
             RegistryFileHelper.writeRegistryFile();
          }catch(ParserConfigurationException pce) {
             pce.printStackTrace();
