@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.6 2003/12/16 13:57:08 nw Exp $
+ * $Id: SimpleConfig.java,v 1.7 2004/02/24 15:29:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,15 +7,21 @@
 package org.astrogrid.config;
 
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
 
 /**
- * A static singleton so that all packages have access to the *same*
+ * A static singleton for easy one-line access to an application-global
+ * configuration file.
+ * <p>
+ * Use like this:
+ *    SimpleConfig.getSingleton().getProperty(key);
+ * <p>
+ * A static singleton so that all packages have easy access to the *same*
  * configuration set in one runtime environment, although this may be loaded
  * from several files.  So although this configuration is a common access point, it can be used to
- * access several configuration files.  Any application can call the 'loadXxxx'
+ * access several configuration files.  Any application can call the 'load'
  * methods and properties will be loaded from the given file/url/etc.
  * <p/>
  * This does mean that packages using the configuration file must make sure their
@@ -23,7 +29,7 @@ import java.util.Enumeration;
  * the package name (ie the code namespace) but this doesn't produce very nice
  * property files for humans to edit.
  * <p/>
- * @todo work out a nice way of ensuring keys are unique.
+ * @todo work out a nice way of ensuring keys are unique or throw exceptions if not.
  * <p/>
  * Not entirely happy with the mixed static/instanceness of this - maybe ought
  * to break it into two but don't see it's necessary yet...
@@ -34,26 +40,27 @@ import java.util.Enumeration;
 public abstract class SimpleConfig
 {
    /** Singleton Instance used to provide load methods */
-   private static final PropertyConfig instance = ConfigFactory.getPropertyConfig(SimpleConfig.class);
+   private static final Config instance = ConfigFactory.getConfig(SimpleConfig.class);
    
    /**
-    * Autoload looks for the properties file in jndi, then the environment variables,
-    * then the classpath, then the local (working) directory
-    */
-   public static void autoLoad() throws IOException {
-      instance.autoLoad();
+    * Returns the instance for applications to work with - saves having to
+    * mirror-implement all the instance methods here */
+   public static Config getSingleton() {
+      return instance;
    }
-
+   
    /**
-    * Static access to load from a file
+    * Static access to load from a file at the given filepath
     */
    public static void load(String filepath) throws IOException
    {
-      instance.loadFile(filepath);
+      File f = new File(filepath);
+      load(f.toURL());
    }
 
    /**
     * Static access to load from a url
+    * @deprecated use getSingleton().getProperty()
     */
    public static void load(URL url) throws IOException
    {
@@ -61,22 +68,17 @@ public abstract class SimpleConfig
    }
    
    /**
-    * Load config filename from jndi, then load properties from that
-    */
-   public static boolean loadJndiUrl(String jndiKey) throws IOException {
-      return instance.loadJndiUrl(jndiKey);
-   }
-
-   /**
     * Static access to the instance method
+    * @deprecated use getSingleton().loadedFrom()
     */
-   public static String getLocations()
+   public static String loadedFrom()
    {
-      return instance.getLocations();
+      return instance.loadedFrom();
    }
 
    /**
     * Sets the given property - useful for tests.
+    * @deprecated use getSingleton().setProperty()
     */
    public static void setProperty(String key, String value)
    {
@@ -84,29 +86,24 @@ public abstract class SimpleConfig
    }
 
    /**
-    * Returns the property value of the given key.
+    * Returns the property value of the given key; throws an exception if the
+    * key is not set
+    * @deprecated use getSingleton().getProperty()
     */
    public static String getProperty(String key)
    {
-      return instance.getProperty(key);
+      return instance.getProperty(key).toString();
    }
 
    /**
     * Returns the property value of the given key, or the given default if
     * the key is not found or the properties file has not been created (eg
     * this has not been initialised)
+    * @deprecated use getSingleton().getProperty()
     */
-   public static String getProperty(String key, String defaultValue)
+   public static String getProperty(String key, Object defaultValue)
    {
-      return instance.getProperty(key, defaultValue);
-   }
-
-   /**
-    * Returns an enumeration of the property <i>keys</i>
-    */
-   public static Enumeration keys()
-   {
-      return instance.keys();
+      return instance.getProperty(key, defaultValue).toString();
    }
 
 }

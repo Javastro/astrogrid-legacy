@@ -1,5 +1,5 @@
 /*
- * $Id: ConfigFactory.java,v 1.3 2003/10/07 22:21:27 mch Exp $
+ * $Id: ConfigFactory.java,v 1.4 2004/02/24 15:29:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,8 +13,10 @@ import java.util.Hashtable;
  * this factory can be used.  NB multiple configuration <i>files</i> can be
  * read into a single instance.
  * <p>
- * The simplest configuration to use is SimpleConfig, a static Singleton for
+ * Alternatively use is SimpleConfig, a static Singleton for
  * easy key/value property getting and setting.
+ * <p>
+ * If Astrogrid's config implementation changes, change this factory method.
  * <p>
  *
  * @author M Hill
@@ -24,38 +26,20 @@ import java.util.Hashtable;
 public class ConfigFactory
 {
    /** Created PropertyConfig instances */
-   private static final Hashtable propConfigs = new Hashtable();
-   /** Created XmlConfig instances */
-   private static final Hashtable xmlConfigs = new Hashtable();
-   
-   /**
-    * Creates an instance of a Property-based (ie key/value pairs) configuration.
-    * @param id specifies a particular instance
-    */
-   public static synchronized PropertyConfig getPropertyConfig(Object id)
-   {
-      PropertyConfig config = (PropertyConfig) propConfigs.get(id);
-   
-      if (config == null) {
-         config = new PropertyConfig();
-         propConfigs.put(id, config);
-      }
-
-      return config;
-   }
+   private static final Hashtable configs = new Hashtable();
    
    /**
     * Creates an instance of an XML/Document-based (ie XPath/Node list)
     * configuration
     * @param id specifies a particular instance
     */
-   public static synchronized XmlConfig getXmlConfig(Object id)
+   public static synchronized Config getConfig(Object id)
    {
-      XmlConfig config = (XmlConfig) xmlConfigs.get(id);
+      Config config = (Config) configs.get(id);
    
       if (config == null) {
-         config = new XmlConfig();
-         xmlConfigs.put(id, config);
+         config = new FailbackConfig(id);
+         configs.put(id, config);
       }
 
       return config;
