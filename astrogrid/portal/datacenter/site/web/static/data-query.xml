@@ -1,0 +1,54 @@
+<div
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd">
+  <div id="ag-content-panelbar">
+    <div id="ag-content-panelbar-header">
+      Data Query Helper
+    </div>
+    
+    <div class="ag-content-panelbar-separator"><hr/></div>
+    
+    <div class="ag-content-panelbar-tabs">
+      <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-1');">
+        ADQL XML
+      </span>
+      <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-2');">
+        ADQL SQL
+      </span>
+      <span class="ag-content-panelbar-tab" onclick="ag_content_panelbar_tab_click('ag-content-panelbar-content-3');">
+        Meta Data
+      </span>
+    </div>
+
+    <div id="ag-content-panelbar-content">
+      <div id="ag-content-panelbar-content-1" class="ag-content-panelbar-content">
+        PanelBar Content<br/>
+        PanelBar Content<br/>
+        PanelBar Content<br/>
+        PanelBar Content<br/>
+        PanelBar Content<br/>
+        PanelBar Content<br/>
+      </div>
+      
+      <div id="ag-content-panelbar-content-2" class="ag-content-panelbar-content">
+        <select>
+          <option>One</option>
+          <option>Two</option>
+          <option>Three</option>
+        </select>
+        <input type="button" value="insert"/>
+     </div>
+      
+      <div id="ag-content-panelbar-content-3" class="ag-content-panelbar-content">
+        PanelBar Content
+      </div>
+    </div>
+  </div>
+  
+  <form action="">
+    <p>Data Query Builder</p>
+    <textarea cols="50" rows="20" name="query" style="ag-form"> </textarea>
+    <p>ADQL Query</p>
+  </form>
+</div>

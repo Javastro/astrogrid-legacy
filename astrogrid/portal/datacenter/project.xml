@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
+  <extend>../project.xml</extend>
+  
+  <id>astrogrid-portal-datacenter</id>
+  <name>AstroGrid Portal DataCenter</name>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/java</unitTestSourceDirectory>
+  </build>
+</project>
