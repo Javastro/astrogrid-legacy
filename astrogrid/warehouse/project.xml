@@ -207,7 +207,7 @@
       <resource>
         <directory>ogsadai/target</directory>
         <includes>
-          <include>astrogrid-datawarehouse-ogsadai-app-HEAD.jar</include>
+          <include>astrogrid-ogsadai-delegates.jar</include>
         </includes>
       </resource>
       
