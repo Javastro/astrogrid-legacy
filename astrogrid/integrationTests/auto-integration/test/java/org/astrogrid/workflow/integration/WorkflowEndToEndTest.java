@@ -1,4 +1,4 @@
-/*$Id: WorkflowEndToEndTest.java,v 1.2 2004/04/14 10:16:40 nw Exp $
+/*$Id: WorkflowEndToEndTest.java,v 1.3 2004/04/14 15:28:47 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,7 +89,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
            wf.getSequence().addActivity(step);
            assertTrue("workflow is not valid",wf.isValid());
            // save it in the store,
-           store.saveWorkflow(acc,wf); 
+          // store.saveWorkflow(acc,wf); 
     }
 
     /** the name / registry key of the dataset provided by the local datacenter 
@@ -127,7 +127,7 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
         
         // finally.
         assertTrue("workflow document not valid",wf.isValid());
-        store.saveWorkflow(acc,wf);
+       // store.saveWorkflow(acc,wf);
         
     }    
 
@@ -154,8 +154,8 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
            assertNotNull("null workflow returned",w1);
             assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
         // dump it to myspace store - then we can look at it later.
-        w1.setName(workflowName + urn.getContent());
-        store.saveWorkflow(acc,w1);       
+       // w1.setName(workflowName + urn.getContent());
+       // store.saveWorkflow(acc,w1);       
         return w1;
     }    
 
@@ -165,6 +165,9 @@ public class WorkflowEndToEndTest extends AbstractTestForIntegration {
 
 /* 
 $Log: WorkflowEndToEndTest.java,v $
+Revision 1.3  2004/04/14 15:28:47  nw
+updated tests to fit with new WorkspaceStore interface
+
 Revision 1.2  2004/04/14 10:16:40  nw
 added to the workflow integration tests
 

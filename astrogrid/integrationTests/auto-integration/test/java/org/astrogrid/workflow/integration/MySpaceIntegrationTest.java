@@ -1,4 +1,4 @@
-/*$Id: MySpaceIntegrationTest.java,v 1.2 2004/04/08 14:50:54 nw Exp $
+/*$Id: MySpaceIntegrationTest.java,v 1.3 2004/04/14 15:28:47 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,9 +10,13 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.community.User;
 import org.astrogrid.portal.workflow.intf.WorkflowStore;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
+import java.net.URL;
 import java.util.Arrays;
 
 /** Test interactions between workflow and myspace
@@ -36,29 +40,31 @@ public class MySpaceIntegrationTest extends AbstractTestForIntegration {
     protected WorkflowStore store;
     
     public void testStore() throws Exception{
-        store.saveWorkflow(acc,wf);
+        User user = new User();
+        user.setAccount(creds.getAccount().getName() + "@" + creds.getAccount().getCommunity());
+        user.setAccount(creds.getGroup().getName() + "@" + creds.getGroup().getCommunity());
+        user.setToken(creds.getSecurityToken());
+        VoSpaceClient client = new VoSpaceClient(user);
+        //client.
+        Ivorn location = new Ivorn("ivo://fred","/" + user.getUserId() + "/test/MySpaceIntegrationTest");
+         
+        store.saveWorkflow(user,location,wf);
         
         // get it back again.
         
-        Workflow wf1 = store.readWorkflow(acc,wf.getName());
+        Workflow wf1 = store.readWorkflow(user,location);
         assertNotNull("read workflow is null",wf1);
         assertEquals("name of read workflow does not match",wf1.getName(),wf.getName());
-        
-        // list it
-        String[] arr = store.listWorkflows(acc);
-        assertNotNull("workflow list is null",arr);
-        assertTrue("workflow list is empty",arr.length > 0);
-        assertTrue("workflow list does not contain required name",Arrays.asList(arr).contains(wf.getName()));
-        // delete it.
-        store.deleteWorkflow(acc,wf.getName());
-        // check its not there.
-        assertFalse("name not deleted",Arrays.asList(store.listWorkflows(acc)).contains(wf.getName()));
+
     }
 }
 
 
 /* 
 $Log: MySpaceIntegrationTest.java,v $
+Revision 1.3  2004/04/14 15:28:47  nw
+updated tests to fit with new WorkspaceStore interface
+
 Revision 1.2  2004/04/08 14:50:54  nw
 polished up the workflow integratioin tests
 
