@@ -105,6 +105,7 @@ public class QueryParser
     
 	private static String xmlToXQL(Node node) {
 		String response = "";
+		nodeDetails = "";
 		response = response + "(";
 		NodeList nlSS = node.getChildNodes();
 		for (int z=0; z < nlSS.getLength(); z++){
