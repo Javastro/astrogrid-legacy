@@ -5,6 +5,9 @@
   </properties>
   <body>
   <release version="HEAD">
+        <action dev="jdt" type="fix" issue="902"> 
+            An update to cea-http (ie SIAP applications), required following changes to the registry.
+        </action>        
         <action dev="nww" type="add" issue="890"> 
             A fix to the myspace interface requested by the Aladin team.
              </action>    
