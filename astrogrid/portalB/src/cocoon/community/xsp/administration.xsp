@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java" xmlns:xsp="http://apache.org/xsp">
+			
+	<!--+
+	    | The XSP page needs one non-xsp tag.
+	    | Anything in here gets added inside the Generator generate() method.
+	    +-->
+	<admin>
+		<options>
+			<resources>
+				<resource val="jes" name="JES System" />
+				<resource val="registry" name="Registry" />
+				<resource val="myspace" name="myspace" />
+				<resource val="jobdb" name="Job Controller Database" />
+			</resources>
+		</options>
+		<options>
+			<multigroups>
+				<group val="lostinspace" name="Lost in Space" />
+				<group val="solarflares" name="Solar Flares" />
+				<group val="dwstars" name="Brown Dwarf Stars" />
+				<group val="bigbang" name="Big Bang" />												
+			</multigroups>
+		</options>
+		<options>
+			<singlegroups>
+				<group val="kevinbrenson" name="Kevin Benson" />
+				<group val="davemorris" name="Dave Morris" />
+				<group val="paulharrison" name="Paul Harrison" />
+				<group val="brianmciwrath" name="Brian McIwrath" />
+			</singlegroups>
+		</options>
+	</admin>
+</xsp:page>
