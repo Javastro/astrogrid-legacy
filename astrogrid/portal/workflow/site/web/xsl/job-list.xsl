@@ -80,7 +80,10 @@
                                   </xsl:element>                                                                                                        
                                   <input type="submit" name="action" value="delete-job"/>                          
                               </form>
-                          </xsl:when>                                                                              
+                          </xsl:when> 
+                          <xsl:when test="@status = 'n/a'">  <!--  EMPLTY LIST -->
+                              ----
+                          </xsl:when>                                                                                                       
                           <xsl:otherwise>
                               <form action="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html" name="job_form">
                                   <xsl:element name="input">                              
