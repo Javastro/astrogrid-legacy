@@ -3,7 +3,12 @@ import javax.servlet.http.*;
 
 import java.io.*;
 import java.util.*;
-
+/**
+Servlet to process jnlp files before serving to client - allows values to be filled in
+based on url-request parameters
+<p>
+from <a href="http://lopica.sourceforge.net/faq.html">http://lopica.sourceforge.net/faq.html</a>
+*/
 public class JnlpServlet extends HttpServlet
 {
   private HashMap   jnlpMap = new HashMap();
