@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceWiper.java,v 1.1 2004/02/16 15:53:17 jdt Exp $ Created on
+ * $Id: MySpaceWiper.java,v 1.1 2004/02/17 02:03:03 jdt Exp $ Created on
  * Feb 16, 2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.

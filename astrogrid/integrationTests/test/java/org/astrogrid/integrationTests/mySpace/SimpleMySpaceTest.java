@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.9 2004/02/16 15:53:17 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.10 2004/02/17 02:03:03 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,10 @@
  * LICENSE.txt file.
  */
 package org.astrogrid.integrationTests.mySpace;
-import java.io.DataInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Vector;
 
@@ -220,8 +220,8 @@ public final class SimpleMySpaceTest extends TestCase {
 	 */
 	public void testImportExportDeleteSimpleText() throws Exception {
 		for (int i =0;i<10;++i) {
-			String name="foo_"+Integer.toString(i)+"_"+Long.toString(System.currentTimeMillis());
-			String string = "argle"+Integer.toString(i);
+			final String name="foo_"+Integer.toString(i)+"_"+Long.toString(System.currentTimeMillis());
+			final String string = "argle"+Integer.toString(i);
 			importExportDelete(getFullPath(defaultUser, defaultCommunity, name), string);
 		}
 	}
@@ -231,8 +231,8 @@ public final class SimpleMySpaceTest extends TestCase {
 	 * @throws Exception no idea
 	 */
 	public void testImportExportDeleteXMLTextAgain() throws Exception {
-		String name="bar"+Long.toString(System.currentTimeMillis());
-		String xml="<?xml version=\"1.0\"?><properties><title>Integration Tests</title><author email=\"jdt@roe.ac.uk\">John Taylor</author></properties>";
+		final String name="bar"+Long.toString(System.currentTimeMillis());
+		final String xml="<?xml version=\"1.0\"?><properties><title>Integration Tests</title><author email=\"jdt@roe.ac.uk\">John Taylor</author></properties>";
 		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
 	}
 
@@ -241,8 +241,8 @@ public final class SimpleMySpaceTest extends TestCase {
 	 * @throws Exception no idea
 	 */
 	public void testImportExportDeleteXMLText() throws Exception {
-		String name="foo"+Long.toString(System.currentTimeMillis());
-		String xml="<?xml version='1.0'?><properties><title>Integration Tests</title><author email='jdt@roe.ac.uk'>John Taylor</author></properties>";
+		final String name="foo"+Long.toString(System.currentTimeMillis());
+		final String xml="<?xml version='1.0'?><properties><title>Integration Tests</title><author email='jdt@roe.ac.uk'>John Taylor</author></properties>";
 		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
 	}	
 	
@@ -252,8 +252,8 @@ public final class SimpleMySpaceTest extends TestCase {
 	 * @throws Exception nfi
 	 */
 	public void testImportExportDeleteMultilineText() throws Exception {
-		String name="foo"+Long.toString(System.currentTimeMillis());
-		String xml="<?xml version=\"1.0\"?>\n<properties>\n<title>Integration Tests</title>\n<author email=\"jdt@roe.ac.uk\">John Taylor</author>\n</properties>";
+		final String name="foo"+Long.toString(System.currentTimeMillis());
+		final String xml="<?xml version=\"1.0\"?>\n<properties>\n<title>Integration Tests</title>\n<author email=\"jdt@roe.ac.uk\">John Taylor</author>\n</properties>";
 		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), xml);
 	}
 	
@@ -269,22 +269,60 @@ public final class SimpleMySpaceTest extends TestCase {
 	}
 	/**
 	 * Utility method extracting the commonality of the saveDataHolding tests
+	 * @param name full path name to save into myspace
+	 * @param text the text to store
+	 * @throws Exception who knows
+	 * 
+	 */
+	private void importExportDelete(final String name, final String text) throws Exception  {
+		importExportDeleteDelayed(name, text, 0);
+	}
+	
+	/**
+	 * Just as importExportDelete, except a random delay is inserted between the calls to import/export/delete
+	 * @see importExportDelete(String, String)
+	 * @param name full myspace path name
+	 * @param text text to insert
+	 * @param maxDelay maximum delay in milliseconds between calls
 	 * @throws Exception who knows
 	 */
-	private void importExportDelete(final String name, final String text) throws  Exception {
-		MySpaceClient client = getDelegate(mySpaceEndPoint);
+	private void importExportDeleteDelayed(final String name, final String text, final int maxDelay) throws Exception {
+		try {
+			Thread.sleep((int) (maxDelay*Math.random()));
+		} catch (InterruptedException e) {
+			;
+		}
+		
+		final MySpaceClient client = getDelegate(mySpaceEndPoint);
+		try {
+			Thread.sleep((int) (maxDelay*Math.random()));
+		} catch (InterruptedException e) {
+			;
+		}
+		
 		boolean ok = client.saveDataHolding(defaultUser, defaultCommunity, defaultCredential, name,text,"any",MySpaceClient.OVERWRITE);
 		assertTrue("saveDataHolding problem - note test database may now be corrupt", ok);
+		try {
+			Thread.sleep((int) (maxDelay*Math.random()));
+		} catch (InterruptedException e) {
+			;
+		}
+		
 		String result = client.getDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
 		assertNotNull("Returned result from getDataHolding was null", result);
 		log.debug("Attempted to save '"+text+"' under name "+name);
 		log.debug("Received back '" + result+"'");
 		String testText = text +"\n"; //@TODO see bug 119
 		assertEquals("data returned from myspace not same as saved",result,testText);
+		try {
+			Thread.sleep((int) (maxDelay*Math.random()));
+		} catch (InterruptedException e) {
+			;
+		}
+		
 		String ok2 = client.deleteDataHolding(defaultUser, defaultCommunity, defaultCredential, name);
 		assertTrue("deleteDataHolding should return success ", ok2.indexOf("SUCCESS")!=-1);
 	}
-	
 	/**
 	 * Utility method extracting the commonality of the saveDataHolding tests
 	 * @throws Exception who knows
@@ -297,8 +335,8 @@ public final class SimpleMySpaceTest extends TestCase {
 		assertNotNull("Returned result from getDataHolding was null", result);
 		URL url = new URL(urlTxt);
 		InputStream is = url.openStream();
-		DataInputStream dis = new DataInputStream(is);
-		String text = dis.readLine(); 
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		String text = reader.readLine(); //@TODO - readline isn't enough...got toread the lot
 		
 		log.debug("Attempted to save from'"+url+"' under name "+name);
 		log.debug("Received back '" + result+"'");
@@ -313,7 +351,42 @@ public final class SimpleMySpaceTest extends TestCase {
 	 */
 	public void testImportExportDeleteURL() throws Exception {
 		String name="foo"+Long.toString(System.currentTimeMillis());
-		String url = "http://www.google.com";
-		importExportDelete(getFullPath(defaultUser, defaultCommunity, name), url);
+		String url = "http://wiki.astrogrid.org/pub/Main/JohnTaylor/urlTestConfig.xml";
+		importURLExportDelete(getFullPath(defaultUser, defaultCommunity, name), url);
 	}
+	/**
+	 * Create a number of threads all trying to read, write and delete and watch the
+	 * chaos.  @TODO consider moving the threaded tests to another class
+	 * @throws Exception no idea
+	 */
+	public void testImportExportDeleteSimpleTextThreaded() throws Exception {
+		final int nTheads = 100;
+		final int maxDelay = 1000; //milliseconds
+		for (int i =0;i<nTheads;++i) {
+			final String name="foo_"+Integer.toString(i)+"_"+Long.toString(System.currentTimeMillis());
+			final String text = "argle"+Integer.toString(i);
+			new Thread() {
+				public void run()  {
+					try {
+						threadCount++;
+						importExportDeleteDelayed(getFullPath(defaultUser, defaultCommunity, name), text, maxDelay);
+					} catch (Exception e) {
+						fail("Exception in testImportExportDeleteSimpleTextThreaded" +e);
+					} finally {
+						threadCount--;
+						this.notify(); //@TODO blurgh this lot needs fixing- synch methods etc...manana manana
+					}
+				}
+			}.start();
+		}
+		while(threadCount>0) {
+			try {
+				wait();
+			} catch (InterruptedException ie) {
+				; //do nothing
+			}
+		}
+	} 
+	private int threadCount=0;
+	
 }

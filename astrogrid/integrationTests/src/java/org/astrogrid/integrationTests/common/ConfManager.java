@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.3 2004/02/14 16:03:25 jdt Exp $ Created on
+ * $Id: ConfManager.java,v 1.1 2004/02/17 02:03:03 jdt Exp $ Created on
  * 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -122,6 +122,10 @@ public final class ConfManager {
 
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.1  2004/02/17 02:03:03  jdt
+ * Moved some things around, and added more mySpace tests. 
+ * URL tests, and threaded tests not yet complete.
+ *
  * Revision 1.3  2004/02/14 16:03:25  jdt
  * refactored
  * Revision 1.2 2004/01/22 16:14:18 nw added conf
