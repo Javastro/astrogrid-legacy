@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/28 10:24:19 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/10/05 15:39:29 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterMock.java,v $
+ *   Revision 1.3  2004/10/05 15:39:29  dave
+ *   Merged changes to AladinAdapter ...
+ *
+ *   Revision 1.2.4.1  2004/10/05 15:30:44  dave
+ *   Moved test base from test to src tree ....
+ *   Added MimeTypeUtil
+ *   Added getMimeType to the adapter API
+ *   Added logout to the adapter API
+ *
  *   Revision 1.2  2004/09/28 10:24:19  dave
  *   Added AladinAdapter interfaces and mock implementation.
  *
@@ -62,6 +71,8 @@ import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
 import org.astrogrid.community.common.exception.CommunityServiceException  ;
 import org.astrogrid.community.common.exception.CommunitySecurityException ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
+
+import org.astrogrid.store.util.MimeTypeUtil ;
 
 /**
  * A mock implementation of the AladinAdapter interface.
@@ -179,6 +190,15 @@ public class AladinAdapterMock
 	public SecurityToken getToken()
 		{
 		return this.token ;
+		}
+
+	/**
+	 * Logout from the AstroGrid community.
+	 *
+	 */
+	public void logout()
+		{
+		this.token = null ;
 		}
 
 	/**
@@ -449,6 +469,18 @@ public class AladinAdapterMock
 		public boolean isContainer()
 			{
 			return false ;
+			}
+
+		/**
+		 * Get the mime type for the file.
+		 * @return The mime type for the file contents, or null if is not set..
+		 *
+		 */
+		public String getMimeType() {
+			MimeTypeUtil util = new MimeTypeUtil() ;
+			return util.resolve(
+				this.getName()
+				) ;
 			}
 
 		/**

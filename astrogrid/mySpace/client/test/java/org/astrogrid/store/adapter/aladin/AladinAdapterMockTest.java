@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/test/java/org/astrogrid/store/adapter/aladin/Attic/AladinAdapterMockTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/28 10:24:19 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/10/05 15:39:29 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: AladinAdapterMockTest.java,v $
+ *   Revision 1.3  2004/10/05 15:39:29  dave
+ *   Merged changes to AladinAdapter ...
+ *
+ *   Revision 1.2.4.1  2004/10/05 15:30:44  dave
+ *   Moved test base from test to src tree ....
+ *   Added MimeTypeUtil
+ *   Added getMimeType to the adapter API
+ *   Added logout to the adapter API
+ *
  *   Revision 1.2  2004/09/28 10:24:19  dave
  *   Added AladinAdapter interfaces and mock implementation.
  *
@@ -40,7 +49,7 @@ import org.astrogrid.community.common.security.service.SecurityServiceMock ;
  *
  */
 public class AladinAdapterMockTest
-	extends AladinAdapterTestBase
+	extends AladinAdapterTest
 	{
 
 	/**
