@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.6 2004/01/08 21:19:30 pah Exp $
+ * $Id: User.java,v 1.7 2004/01/08 22:14:32 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -123,17 +123,40 @@ public class User {
       return account;
    }
    
+   /**
+    * Create a "community snippet" from this User.
+    * @return The XML string that is the community snippet.
+    */
    public String toSnippet()
    {
       return CommunityMessage.getMessage(token, account, group);
    }
    
+   /**
+    * Return the community part of the account string
+    * @return will return null if the account is null or the community part does not exist - i.e. there is no @ in the string.
+    */
+   public String getCommunity()
+   {
+      if(account != null)
+      {
+         int i;
+         if((i= account.indexOf("@"))!= -1)
+         {
+            return account.substring(i+1);
+         }
+      }
+      return null;
+   }
 }
 
 /* $Log: User.java,v $
- * Revision 1.6  2004/01/08 21:19:30  pah
- * changed to reflect the fact that the account should be user@community
+ * Revision 1.7  2004/01/08 22:14:32  pah
+ * add a method to return the community part of the user account
  *
+/* Revision 1.6  2004/01/08 21:19:30  pah
+/* changed to reflect the fact that the account should be user@community
+/*
 /* Revision 1.5  2003/12/30 10:40:02  pah
 /* made the default constructor non-deprecated - this is a bean it has to have a default constructor - make it acutally put in some values
 /*
