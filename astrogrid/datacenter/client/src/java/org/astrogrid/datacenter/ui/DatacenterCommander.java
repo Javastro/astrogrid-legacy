@@ -1,4 +1,4 @@
-/*$Id: DatacenterCommander.java,v 1.9 2004/10/06 21:12:17 mch Exp $
+/*$Id: DatacenterCommander.java,v 1.10 2004/10/08 15:17:54 mch Exp $
  * Created on 24-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.rmi.MarshalException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
@@ -24,8 +25,6 @@ import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.io.Piper;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.ValidationException;
 
 /** Simple tool to fire a query at a server, and print out the response.
  * Currently accepts queries in ADQL and SQL
@@ -97,7 +96,7 @@ public class DatacenterCommander {
       System.out.println("   cone: do cone search; give serviceurl as base?RA=20;DEC=30;SR=4 as normal NVO");
    }
    
-   public static void doAdql(String endpoint, String[] args) throws ServiceException, MarshalException, ValidationException, IOException {
+   public static void doAdql(String endpoint, String[] args) throws ServiceException, IOException {
       
       if (args.length<3) {
          System.out.println("No ADQL file given");
@@ -139,7 +138,7 @@ public class DatacenterCommander {
             
 
    
-   public static void doSql(String endpoint, String sql) throws ServiceException, MarshalException, ValidationException, IOException {
+   public static void doSql(String endpoint, String sql) throws ServiceException, IOException {
       
       System.out.println("Connecting to server...");
       QuerySearcher del = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS, endpoint.toString(), DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
@@ -158,6 +157,9 @@ public class DatacenterCommander {
 
 /*
  $Log: DatacenterCommander.java,v $
+ Revision 1.10  2004/10/08 15:17:54  mch
+ Some updates to try and reach SSA/etc at ROE
+
  Revision 1.9  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 
