@@ -22,7 +22,7 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 #from which other projects may inherit
 $SCRIPTHOME/maven-build-tagged-new.sh maven-base $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 #Now the "real" projects.
-$SCRIPTHOME/maven-build-tagged.sh common $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-tagged-new.sh common $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh applications $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh community $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged-new.sh datacenter $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
