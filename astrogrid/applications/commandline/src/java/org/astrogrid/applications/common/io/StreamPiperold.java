@@ -1,5 +1,5 @@
 /*
- * $Id: StreamPiper.java,v 1.1 2004/07/23 07:46:13 nw Exp $
+ * $Id: StreamPiperold.java,v 1.1 2004/08/24 11:18:50 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk) adapted from original in ACE package by Martin Hill
  *
@@ -23,11 +23,14 @@ import java.io.OutputStream;
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
+ * @deprecated there is another copy of this in org.astrogrid.applications.commandline
+ *
  */
-public class StreamPiper implements Runnable
+public class StreamPiperold implements Runnable
 {
+    //FIXME delete me
    static private org.apache.commons.logging.Log logger =
-      org.apache.commons.logging.LogFactory.getLog(StreamPiper.class);
+      org.apache.commons.logging.LogFactory.getLog(StreamPiperold.class);
    private String name = null;
    private InputStream in = null;
    private OutputStream out = null;
@@ -41,7 +44,7 @@ public class StreamPiper implements Runnable
     * pipes are handy for tracking errors, as they run in their own thread and
     * so report errors on their own.
     */
-   public StreamPiper(String aName, InputStream source, OutputStream redirect)
+   public StreamPiperold(String aName, InputStream source, OutputStream redirect)
    {
  
       this.name = aName;
