@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 16:17:23 $</cvs:author>
-    | <cvs:version>$Revision: 1.27 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/30 17:03:08 $</cvs:author>
+    | <cvs:version>$Revision: 1.28 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.28  2003/06/30 17:03:08  dave
+    | Added script to build DataQuery release
+    |
     | Revision 1.27  2003/06/30 16:17:23  dave
     | Added project release task
     |
@@ -2173,7 +2176,7 @@
 	</target>
 
 	<!-- Build our new Cocoon web-app for release as a WAR file  -->
-	<target name="cocoon.release" depends="init, cocoon.init">
+	<target name="cocoon.release/cocoon" depends="init, cocoon.init">
 		<!-- Delete the export directories -->
 		<delete dir="build/release" failonerror="false"/>
 		<!-- Create the export directories -->
@@ -2246,6 +2249,41 @@
 		<antcall target="cocoon.release"/>
 		<antcall target="project.webapp.install"/>
 	</target>
+
+
+	<!-- Build the DataQuery servlets for release as a WAR file  -->
+	<target name="query.release" depends="init, cocoon.init">
+		<!-- Delete the export directories -->
+		<delete dir="build/release/DataQuery" failonerror="false"/>
+		<!-- Create the export directories -->
+		<mkdir dir="build/release"/>
+		<mkdir dir="build/release/DataQuery"/>
+		<mkdir dir="build/release/DataQuery/webapp"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF"/>
+		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/classes"/>
+		<!-- Copy our site files across -->
+		<copy verbose="true" toDir="build/release/DataQuery/webapp">
+			<fileset dir="src/site/DataQuery">
+				<exclude name="**/CVS/**"/>
+			</fileset>
+		</copy>
+		<!-- Compile our java classes -->
+		<antcall target="portal.javac"/>
+		<!-- Copy our java files across -->
+		<copy verbose="true" toDir="build/release/DataQuery/webapp/WEB-INF/classes">
+			<fileset dir="build/portal/classes">
+				<include name="**/portal/query/**"/>
+			</fileset>
+		</copy>
+		<!-- Copy the web.xml file -->
+		<copy verbose="true" file="src/site/WEB-INF/web.xml" toFile="build/release/DataQuery/webapp/WEB-INF/web.xml"/>
+		<!-- Wrap everything up as a WAR fil -->
+		<jar destfile="build/release/DataQuery/DataQuery.war">
+			<fileset dir="build/release/DataQuery/webapp">
+			</fileset>
+		</jar>
+	</target>
+
 
 
 </project>
