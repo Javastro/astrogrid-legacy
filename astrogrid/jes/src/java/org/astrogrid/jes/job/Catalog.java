@@ -1,0 +1,127 @@
+/*
+ * @(#)Catalog.java   1.0
+ *
+ * AstroGrid Copyright notice.
+ * 
+ */
+
+package org.astrogrid.jes.job;
+
+import org.apache.log4j.Logger;
+import org.astrogrid.jes.i18n.*;
+import org.w3c.dom.* ;
+import java.util.Set ;
+import java.util.HashSet; 
+
+/**
+ * The <code>Catalog</code> class represents operations within an 
+ * SQL query string.
+ * <p>
+ * Some example text. For example:
+ * <p><blockquote><pre>
+ *     
+ * </pre></blockquote>
+ * <p>
+ *
+ * @author  Jeff Lusted
+ * @version 1.0 27-May-2003
+ * @see     org.astrogrid.jes.Query
+ * @since   AstroGrid 1.2
+ */
+public class Catalog {
+	
+	private static final boolean 
+		TRACE_ENABLED = true ;
+	
+	private static Logger 
+		logger = Logger.getLogger( Catalog.class ) ;
+		
+	private static final String
+		ASTROGRIDERROR_COULD_NOT_dosomething = "AGJESE00???" ;	
+		
+    private String
+        name ;
+		
+	private Set
+	    tables = new HashSet() ;
+	    
+	private Set
+	    services = new HashSet() ;
+	       
+	private Query
+	    parent ;
+	    
+	    
+	public Catalog( Query parent, Element catalogElement ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "Catalog(Element): entry") ;
+		   
+		setParent(parent) ;
+		   		
+		try {
+			
+			setName(catalogElement.getAttribute( JobDocDescriptor.CATALOG_NAME_ATTR )) ;
+			   
+			Element
+				element ;
+				
+			NodeList
+			   nodeList = catalogElement.getElementsByTagName( JobDocDescriptor.TABLE_ELEMENT ) ;
+			   
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				
+				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {				
+				
+				    element = (Element) nodeList.item(i) ;
+				
+				    if( element.getTagName().equals( JobDocDescriptor.TABLE_ELEMENT ) ) {
+                        getTables().add( new Table( this, element ) ) ;
+				    }
+
+				}
+
+				
+			} // end for		
+			
+			nodeList = catalogElement.getElementsByTagName( JobDocDescriptor.SERVICE_ELEMENT ) ;
+
+			for( int i=0 ; i < nodeList.getLength() ; i++ ) {
+				
+				if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {				
+				
+					element = (Element) nodeList.item(i) ;
+				
+					if( element.getTagName().equals( JobDocDescriptor.SERVICE_ELEMENT ) ) {
+						getServices().add( new Service( this, element ) ) ;
+					}
+
+				}
+
+				
+			} // end for				   
+	
+		}
+		catch( Exception ex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_COULD_NOT_dosomething ) ;
+			logger.error( message.toString(), ex ) ;
+			throw new JobException( message, ex );    		
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "Catalog(Element): exit") ;   	
+		}
+		
+	} // end of Catalog( Element )
+
+
+	public void setName(String name) { this.name = name; }
+	public String getName() { return name; }
+
+	public Set getTables() { return tables; }
+
+	public Set getServices() { return services; }
+
+	public void setParent(Query parent) { this.parent = parent; }
+	public Query getParent() { return parent; }	
+
+	
+} // end of class Catalog

@@ -7,6 +7,8 @@
 package org.astrogrid.jes.jobcontroller ;
 
 import org.astrogrid.jes.i18n.* ;
+import org.astrogrid.jes.job.Job ;
+import org.astrogrid.jes.job.JobFactory ;
 
 import org.apache.log4j.Logger;
 
@@ -226,24 +228,33 @@ public class JobController {
     	
         String
 	        response = null ;
-//        Job
-//	        job = null ;
+		JobFactory
+		   factory = null ;
+        Job
+	        job = null ;
+	    boolean
+	        bCommit = false ; // We assume things go wrong! 
 			
         try { 
 	        // If properties file is not loaded, we bail out...
 	        // Each JES MUST be properly initialized! 
 	        checkPropertiesLoaded() ;
     		
-	        // Parse the request and create the necessary Job structures...
+	        // Parse the request... 
 	        Document
 	           submitDoc = parseRequest( jobXML ) ;
-//	        job = Job.getFactory().createJob( submitDoc ) ;
+	           
+			// Create the necessary Job structures.
+			// This involves persistence, so we bracket the transaction before creating...
+	        factory = Job.getFactory() ;
+	        factory.begin() ;
+	        job = factory.createJob( submitDoc ) ;
                     			
 	        // Inform JobScheduler (within JES) that job requires scheduling...
-//	        job.informJobScheduler() ;
+	        informJobScheduler( job ) ;
 
-            response = submitStubResponse_success ;
-			
+            response = formatGoodResponse( job ) ;
+			bCommit = true ;  // Successful completion!!!
         }
         catch( JesException jex ) {
 	        Message
@@ -253,14 +264,11 @@ public class JobController {
 	        logger.error( generalMessage.toString() ) ;
 					
 	        // Format our error response here...
-	        if( response == null ) {
-		        // response = generalMessage.toString() + "/n" + detailMessage.toString();
-				response = submitStubResponse_failure ;
-	        }
+			formatBadResponse( job, detailMessage ) ;
 	        
         }
         finally {
-	        // resourceCleanup() ;
+			factory.end ( bCommit ) ;   // Commit or rollback as appropriate
 	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
@@ -270,4 +278,19 @@ public class JobController {
     } // end of submitJob()
     
     
+    private String formatGoodResponse( Job job ) {
+        return new String() ;
+    }
+  
+    
+	private String formatBadResponse( Job job, Message errorMessage ) {
+		return new String() ;
+	}   
+	
+	
+	private void informJobScheduler( Job job ) throws JesException { 
+		
+	}
+	
+	
 } // end of class JobController
