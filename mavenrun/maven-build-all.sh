@@ -17,8 +17,8 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 #from which other projects may inherit
 $SCRIPTHOME/cvs-checkout.sh maven-base >> $BUILD_DIR/$LOG_FILE 2>&1
 #Now the "real" projects.
-$SCRIPTHOME/maven-build.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh datacenter >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh jes >> $BUILD_DIR/$LOG_FILE 2>&1
