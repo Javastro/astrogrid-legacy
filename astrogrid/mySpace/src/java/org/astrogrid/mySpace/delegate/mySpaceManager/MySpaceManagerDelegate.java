@@ -365,7 +365,7 @@ public class MySpaceManagerDelegate {
 	 * @return
 	 * @throws Exception
 	 */
-	public String createUser(String userID, Vector servers) throws Exception {
+	public boolean createUser(String userID, Vector servers) throws Exception {
 		org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
 		boolean isUserCreated = false;
 		try {
