@@ -38,42 +38,46 @@
 
    KernelResults results = manager.getEntriesList("*", false);
 
-   int resultsSize = results.getEntries().length;
-// StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
-
-//  StoreFile[] files = client.listFiles("*");
-
-//  int resultsSize = files.length;
-
+   if ((results == null) || (results.getEntries() == null)) {
+         out.println("No entries in myspace");
+   }
+   else {
+      int resultsSize = results.getEntries().length;
+   // StoreClient client = StoreDelegateFactory.createDelegate(user, new Agsl("myspace:"+serviceURL));
    
-  if (resultsSize > 0)
-  {
-     for (int i=0; i<resultsSize; i++)
+   //  StoreFile[] files = client.listFiles("*");
+   
+   //  int resultsSize = files.length;
+   
+      
+     if (resultsSize > 0)
      {
-         EntryRecord msnode = new EntryRecord ( (EntryResults) results.getEntries()[i]);
-         
-         out.println("<tr>");
-         if (msnode.isFolder()) {
-            out.println("<td>"+msnode.getName()+"</td>");
-         }
-         else {
-         
-         out.println("<td><a href='"+msnode.getEntryUri()+"'>"+ msnode.getName() + "</a></td>"+
-                     "<td>"+ msnode.getSize() + "</a></td>"+
-                     "<td>"+ msnode.getCreationDate().toGMTString() + "</a></td>"+
-                     "<td>"+
-                        "<a href='viewFile.jsp?file="+ msnode.getName()+"' target='actions'>View</a> "+
-                        "<a href='deleteFile.jsp?file="+ msnode.getName()+"' target='actions'>Delete</a>"+
-                     "</td>");
-         }
-         out.println("</tr>");
+        for (int i=0; i<resultsSize; i++)
+        {
+            EntryRecord msnode = new EntryRecord ( (EntryResults) results.getEntries()[i]);
+            
+            out.println("<tr>");
+            if (msnode.isFolder()) {
+               out.println("<td>"+msnode.getName()+"</td>");
+            }
+            else {
+            
+            out.println("<td><a href='"+msnode.getEntryUri()+"'>"+ msnode.getName() + "</a></td>"+
+                        "<td>"+ msnode.getSize() + "</a></td>"+
+                        "<td>"+ msnode.getCreationDate().toGMTString() + "</a></td>"+
+                        "<td>"+
+                           "<a href='viewFile.jsp?file="+ msnode.getName()+"' target='actions'>View</a> "+
+                           "<a href='deleteFile.jsp?file="+ msnode.getName()+"' target='actions'>Delete</a>"+
+                        "</td>");
+            }
+            out.println("</tr>");
+        }
+     }
+     else
+     {
+        out.print("No entries satisfied the query." + "<BR>");
      }
   }
-  else
-  {
-     out.print("No entries satisfied the query." + "<BR>");
-  }
-
 %>
 </pre>
 
