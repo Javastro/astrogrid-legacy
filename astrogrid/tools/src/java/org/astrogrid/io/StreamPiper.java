@@ -21,6 +21,8 @@ public class StreamPiper implements Runnable
    private OutputStream out = null;
    private Thread t = null;
    
+   private boolean terminated = false;
+   
    /**
     * Constructor - also a creates a thread to run this and starts it.  Naming
     * pipes are handy for tracking errors, as they run in their own thread and
@@ -43,6 +45,12 @@ public class StreamPiper implements Runnable
       t.setPriority(newPriority);
    }
    
+   public void terminate()
+   {
+      terminated = true;
+      //t.stop(); //unnecessary? depricated...
+   }
+
    /**
     * method run by the thread.  This method will run 'forever' until the
     * thread is terminated or the source stream is empty.  Only problems at
@@ -56,7 +64,7 @@ public class StreamPiper implements Runnable
       try
       {
          int i = 0;
-         while ( (i = br.read()) != -1)
+         while (( (i = br.read()) != -1) && (!terminated))
          {
             if (out != null)
             {
