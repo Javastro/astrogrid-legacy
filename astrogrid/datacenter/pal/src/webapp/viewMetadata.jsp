@@ -90,7 +90,8 @@
 
 <h2>Raw Metadata</h2>
 
-<p>Download the raw metadata document <a href='GetMetadata'>here</a></p>
+<p>Download the metadata document <a href='GetMetadata'>here</a></p>
+<p>Download the raw metadata document <a href='getRawMetadata.jsp'>here</a></p>
 <%-- <p>If you have access to administrator functions, you can download regenerated metadata <a href='admin/generateMetadata.jsp'>here</a></p> --%>
 </div>
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.3 2004/09/06 21:03:55 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.4 2004/09/06 21:34:47 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -41,7 +41,15 @@ public class VoDescriptionServer {
     */
    public synchronized static Document getVoDescription() throws IOException {
       if (cache == null) {
-         cache = makeVoDescription();
+         try {
+            cache = DomHelper.newDocument(makeVoDescription().toString());
+         }
+         catch (ParserConfigurationException e) {
+            throw new RuntimeException("Server not setup properly: "+e,e);
+         }
+         catch (SAXException e) {
+            throw new MetadataException("XML error with Metadata: "+e,e);
+         }
       }
       return cache;
    }
@@ -99,9 +107,10 @@ public class VoDescriptionServer {
    }
    
    /**
-    * Make a VODescription document out of all the voResourcePlugins. The default
-    * is to use the aut*/
-   protected static Document makeVoDescription() throws IOException, MetadataException {
+    * Make a VODescription document out of all the voResourcePlugins, returning an
+    * unvalidated string.  This means we can view the made (finsihed) docuemnt
+    * separate from the validating process. */
+   public static String makeVoDescription() throws IOException, MetadataException {
 
       StringBuffer vod = new StringBuffer();
       vod.append("<VODescription  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>\n");
@@ -132,16 +141,7 @@ public class VoDescriptionServer {
 
       vod.append("</VODescription>");
 
-      
-      try {
-         return DomHelper.newDocument(vod.toString());
-      }
-      catch (ParserConfigurationException e) {
-         throw new RuntimeException("Server not setup properly: "+e,e);
-      }
-      catch (SAXException e) {
-         throw new MetadataException("XML error with Metadata: "+e,e);
-      }
+      return vod.toString();
    }
    
    
@@ -236,6 +236,7 @@ public class VoDescriptionServer {
     /**/
    
 }
+
 
 
 
