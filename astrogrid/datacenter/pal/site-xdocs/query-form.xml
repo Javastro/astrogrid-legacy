@@ -7,9 +7,21 @@
 </properties>
 
 <body>
+  <section name="Results">
+    <p>
+    Format
+    <select name='Format'>
+       <option selected value='VOTABLE'>VOTable</option>
+       <option value='CSV'>CSV</option>
+    </select>
+    Send them to
+    <input type="text" name="Target"/>
+    </p>
+ </section>
+
   <section name="Submit an ADQL/sql Query">
     <p>
-      <form action="askAdqlSql.jsp" method="POST">
+      <form action="submitAdqlSql.jsp" method="POST">
        <p>
          ADQL/sql <textarea name="AdqlSql" rows='1' cols='100%'/><br />
        </p>
@@ -24,7 +36,7 @@
       (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
       (<a href="adql">Sample queries</a>)
       <br />
-      <form action="askAdqlXml.jsp" method="POST">
+      <form action="submitAdqlXml.jsp" method="POST">
         <textarea name="AdqlXml" rows="20" cols="100%"></textarea>
         <p/>
         <input type="submit" value="Submit ADQL" />
@@ -34,7 +46,7 @@
 
   <section name="Submit a Region Query">
     <p>
-      <form action="searchCone.jsp" method="POST">
+      <form action="submitCone.jsp" method="POST">
        <p>
          Right Ascension in decimal degrees, J2000 <input type="text" name="RA"/><br />
          Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />

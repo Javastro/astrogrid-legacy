@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.5 2004/03/12 04:45:26 mch Exp $
+ * $Id: WarehouseResults.java,v 1.6 2004/03/14 02:17:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,11 +7,10 @@
 package org.astrogrid.datacenter.queriers.ogsadai;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
 /**
@@ -26,7 +25,7 @@ import org.w3c.dom.Document;
  * @see WarehouseQuerier
  */
 
-public class WarehouseResults implements QueryResults
+public class WarehouseResults extends QueryResults
 {
   protected Document results = null;
    
@@ -37,43 +36,34 @@ public class WarehouseResults implements QueryResults
     this.results = results;
   }
    
-  /**
-   * Return the VOTable document on demand.
-   */
-  public Document toVotable(QuerierProcessingResults statusToUpdate) {
-    return this.results;
-  }
-
-  /** Stream version of the writer */
-   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
-      toVotable(new OutputStreamWriter(out), statusToUpdate);
-   }
-   
    /** Count */
    public int getCount() {
       return -1;
    }
-   
    
   /**
    * Return VOTable results to given outputstream.
    */
   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
   {
-    throw new IOException("Not implemented yet");
-    /*
-    try
-    {
-       PrintStream printOut = new PrintStream(new BufferedOutputStream(out));
-      //DO SOMETHING
-       printOut.flush();
-    }
-    */
+      DomHelper.DocumentToWriter(results, out);
   }
+  
+  /**
+   * Return results as CSV to given outputstream.
+   */
+  public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+  {
+     throw new UnsupportedOperationException("Not yet implemented - use VOTABLE format");
+  }
+  
 }
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.6  2004/03/14 02:17:07  mch
+ Added CVS format and emailer
+
  Revision 1.5  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

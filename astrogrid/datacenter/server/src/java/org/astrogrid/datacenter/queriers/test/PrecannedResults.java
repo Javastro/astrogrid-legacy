@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedResults.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: PrecannedResults.java,v 1.2 2004/03/14 02:17:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class PrecannedResults implements QueryResults
+public class PrecannedResults extends QueryResults
 {
    private String id = null;
 
@@ -33,8 +33,8 @@ public class PrecannedResults implements QueryResults
    {
       this.id = someIdentifyingMark;
 
-      if (getExampleStream() == null)
-         throw new RuntimeException("Could not find example votable");
+//      if (getExampleStream() == null)
+//         throw new RuntimeException("Could not find example votable");
    }
 
    /** Returns any old number */
@@ -42,54 +42,40 @@ public class PrecannedResults implements QueryResults
       return 15;
    }
    
+
    /**
-    * Returns InputStream to results raw data.  In this case to the example
-    * votable file.
+    * Writes out a completely different file as CSV...
     */
-   public InputStream getExampleStream()
+   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       //example is in same directory
-      InputStream table = getClass().getResourceAsStream("ExampleVotable.xml");
+      InputStream csv = getClass().getResourceAsStream("ExampleResults.txt");
       
-      //sometimes it cant' find stuff int he local directory if it's in a jar - try the classpath
-      if (table == null) {
-         table = this.getClass().getClassLoader().getResourceAsStream("ExampleVotable.xml");
+      if (csv == null) {
+           throw new RuntimeException("Could not find example votable");
       }
       
-      return table;
+      Reader in = new InputStreamReader(csv);
+
+      Piper.bufferedPipe(in, out);
+      in.close();
+      out.close();
    }
-
-   /**
-    * Returns the example file as a DOM structure - this means the example
-    * will also be validated
-    */
-   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException
-   {
-      try
-      {
-         return DomHelper.newDocument(getExampleStream());
-      }
-      catch (javax.xml.parsers.ParserConfigurationException pce)
-      {
-         //should never happen, so rethrow as runtime (is this naughty?)
-         throw new RuntimeException(pce);
-      }
-
-   }
-
-   /** Stream version of the writer */
-   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
-      toVotable(new OutputStreamWriter(out), statusToUpdate);
-   }
-
+   
    /**
     * Pipes the example file to the given output stream
     */
    public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
+      //example is in same directory
+      InputStream table = getClass().getResourceAsStream("ExampleVotable.xml");
       
-      Reader in = new InputStreamReader(getExampleStream());
-
+      if (table == null) {
+           throw new RuntimeException("Could not find example votable");
+      }
+      
+      Reader in = new InputStreamReader(table);
+      
       Piper.bufferedPipe(in, out);
       in.close();
       out.close();

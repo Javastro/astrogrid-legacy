@@ -1,16 +1,24 @@
 /*
- * $Id: QuerierPlugin.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.2 2004/03/14 02:17:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 
+import javax.mail.*;
+
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.util.Properties;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.StoreClient;
@@ -72,12 +80,18 @@ public abstract class QuerierPlugin  {
          
          log.info(querier+", sending results to "+targetAgsl);
       
-         StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), targetAgsl);
+         if (targetAgsl.getEndpoint().toLowerCase().startsWith("mailto")) {
+            
+            emailResults(results, targetAgsl.getEndpoint().substring(Agsl.SCHEME.length()+1), resultsStatus);
+         }
+         else {
+            StoreClient store = StoreDelegateFactory.createDelegate(Account.ANONYMOUS.toUser(), targetAgsl);
 
-         OutputStream out = store.putStream(targetAgsl.getPath());
-         
-         results.toVotable(out, resultsStatus);
-         out.close();
+            OutputStream out = store.putStream(targetAgsl.getPath());
+            
+            results.write(new OutputStreamWriter(out), resultsStatus, querier.getRequestedFormat());
+            out.close();
+         }
          
          log.info(querier+" results sent");
 
@@ -95,11 +109,54 @@ public abstract class QuerierPlugin  {
       }
       
    }
+
+   /**
+    * Experimental emailler
+    */
+   protected void emailResults(QueryResults results, String targetAddress, QuerierProcessingResults resultsStatus) throws IOException {
+
+      // Get email server from configuration file
+      String emailServer = SimpleConfig.getSingleton().getString("datacenter.emailserver.address");
+      String emailUser = SimpleConfig.getSingleton().getString("datacenter.emailserver.user");
+      String emailPassword = SimpleConfig.getSingleton().getString("datacenter.emailserver.password");
+         
+      try {
+         // create some properties and get the default Session
+         Properties props = new Properties();
+         props.put("mail.smtp.host", emailServer);
+         Session session = Session.getDefaultInstance(props, null);
    
-   
+         //create message
+         Message message = new MimeMessage(session);
+         message.setFrom(new InternetAddress("Datacenter"));
+         message.setRecipient(Message.RecipientType.TO, new InternetAddress(targetAddress));
+         message.setSubject("Results of Query "+querier.getId());
+         //message.setSentDate(new Date());
+      
+         // Set message contents - should really do this as a ZIP filed attachment. Later...
+         StringWriter sw = new StringWriter();
+         results.write(sw, resultsStatus, querier.getRequestedFormat());
+         message.setText(sw.toString());
+
+         // Send
+         Transport transport = session.getTransport(emailServer);
+         transport.connect(emailServer, emailUser, emailPassword);
+         transport.sendMessage(message, new Address[] { new InternetAddress(targetAddress) });
+         
+         
+      } catch (MessagingException e)
+      {
+         log.error(e);
+         throw new IOException(e+", mailing to "+emailServer);
+      }
+   }
+     
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.2  2004/03/14 02:17:07  mch
+ Added CVS format and emailer
+
  Revision 1.1  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

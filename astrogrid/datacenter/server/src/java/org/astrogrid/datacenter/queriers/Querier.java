@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.40 2004/03/14 01:10:00 mch Exp $
+ * $Id: Querier.java,v 1.41 2004/03/14 02:17:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -230,6 +230,10 @@ public class Querier implements Runnable {
     */
    public Writer getResultsTargetStream()       {   return resultsTargetStream;  }
 
+   /**
+    * Returns the requested results format
+    */
+   public String getRequestedFormat()           {  return requestedFormat; }
    
    public void close() {
       setStatus(new QuerierComplete(this));
@@ -379,6 +383,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.41  2004/03/14 02:17:07  mch
+ Added CVS format and emailer
+
  Revision 1.40  2004/03/14 01:10:00  mch
  Defaults to VOTable
 

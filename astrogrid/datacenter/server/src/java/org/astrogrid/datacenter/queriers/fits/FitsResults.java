@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.6 2004/03/12 04:45:26 mch Exp $
+ * $Id: FitsResults.java,v 1.7 2004/03/14 02:17:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class FitsResults implements QueryResults {
+public class FitsResults extends QueryResults {
    
    /** List of FITS files - probably URLs */
    protected String[] filenames;
@@ -40,29 +40,6 @@ public class FitsResults implements QueryResults {
       return filenames.length;
    }
 
-   /**
-    * Converts the resultset to VOTable Document.
-    */
-   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException {
-      try {
-         ByteArrayOutputStream ba = new ByteArrayOutputStream();
-         toVotable(ba, statusToUpdate);
-         ba.close();
-         statusToUpdate.setProgress("Converting to DOM");
-         return DomHelper.newDocument(new ByteArrayInputStream(ba.toByteArray()));
-      }
-      catch (ParserConfigurationException e) {
-         RuntimeException ioe = new RuntimeException("Error in program configuration: "+e.toString());
-         ioe.setStackTrace(e.getStackTrace());
-         throw ioe;
-      }
-   }
-   
-   /** Stream version of the writer */
-   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
-      toVotable(new OutputStreamWriter(out), statusToUpdate);
-   }
-   
 
   /**
     * Converts results to VOTable to given outputstream.  I (MCH) don't think this
@@ -114,12 +91,29 @@ public class FitsResults implements QueryResults {
       printOut.flush();
    }
    
+
+  /**
+    * Converts results to CSV; just lists the files found (ie one col)
+    */
+   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+
+      PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
+
+      printOut.println("Found Files");
+      for (int i=0;i<filenames.length;i++) {
+         printOut.println(filenames);
+      }
+      printOut.flush();
+   }
    
    
 }
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.7  2004/03/14 02:17:07  mch
+ Added CVS format and emailer
+
  Revision 1.6  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

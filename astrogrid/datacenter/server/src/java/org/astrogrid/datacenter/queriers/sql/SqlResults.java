@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.15 2004/03/12 04:45:26 mch Exp $
+ * $Id: SqlResults.java,v 1.16 2004/03/14 02:17:07 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class SqlResults implements QueryResults
+public class SqlResults extends QueryResults
 {
    protected ResultSet sqlResults;
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(SqlResults.class);
@@ -61,34 +61,7 @@ public class SqlResults implements QueryResults
    }
    
    /**
-    * Converts the resultset to VOTable Document; this is likely to break if
-    * the table is large.  Should pipe in that case...
-    */
-   public Document toVotable(QuerierProcessingResults statusToUpdate) throws IOException, SAXException
-   {
-      try
-      {
-         StringWriter sw = new StringWriter();
-         toVotable(sw, statusToUpdate);
-         return DomHelper.newDocument(sw.toString());
-      }
-      catch (ParserConfigurationException e)
-      {
-         RuntimeException ioe = new RuntimeException("Error in program configuration: "+e.toString());
-         ioe.setStackTrace(e.getStackTrace());
-         throw ioe;
-      }
-   }
-
-   /** Stream version of the writer */
-   public void toVotable(OutputStream out, QuerierProcessingResults statusToUpdate) throws IOException {
-      toVotable((Writer) new OutputStreamWriter(out), statusToUpdate);
-   }
-   
-   /**
-    * Converts results to VOTable to given outputstream.  I (MCH) don't think this
-    * is very pleasant, and will break when the votable format changes, but
-    * is easy to fix...
+    * Converts results to VOTable to given writer
     */
    public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
@@ -126,22 +99,24 @@ public class SqlResults implements QueryResults
                                 + getVotableType(i)
                                 +" ucd='"+getUcdFor(metadata.getColumnName(i))+"' "
                                 +"/>");
-            statusToUpdate.setProgress("Processng Record "+i+" of "+getCount());
          }
 
          printOut.println("<DATA>");
          printOut.println("<TABLEDATA>");
          
 //         sqlResults.beforeFirst();
+         int row = 0;
+         int maxRow = getCount();
          while (sqlResults.next())
          {
+            row++;
+            statusToUpdate.setProgress("Processing Row "+row+" of "+maxRow);
+
             printOut.println("               <TR>");
-            
             for (int i=1;i<=cols;i++)
             {
                printOut.println("                  <TD>"+sqlResults.getString(i)+"</TD>");
             }
-
             printOut.println("               </TR>");
          }
          
@@ -160,6 +135,50 @@ public class SqlResults implements QueryResults
       {
          log.error("Could not convert results",sqle);
          throw new IOException(sqle+", converting to VOtable");
+      }
+   }
+
+   
+   /**
+    * Converts results to CSV to given writer
+    */
+   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   {
+      try
+      {
+         PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
+         
+         //list columns
+         ResultSetMetaData metadata = sqlResults.getMetaData();
+         
+         int cols = metadata.getColumnCount();
+         for (int i=1;i<=cols;i++)
+         {
+            printOut.print(metadata.getColumnName(i)+", ");
+         }
+
+         printOut.println();
+
+         int row = 0;
+         int maxRow = getCount();
+         while (sqlResults.next())
+         {
+            row++;
+            statusToUpdate.setProgress("Processing Row "+row+" of "+maxRow);
+
+            for (int c=1;c<=cols;c++)
+            {
+               printOut.print(sqlResults.getString(c)+", ");
+            }
+            printOut.println();
+         }
+         
+         printOut.flush();
+      }
+      catch (SQLException sqle)
+      {
+         log.error("Could not convert results",sqle);
+         throw new IOException(sqle+", converting to CSV");
       }
    }
    
@@ -201,6 +220,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.16  2004/03/14 02:17:07  mch
+ Added CVS format and emailer
+
  Revision 1.15  2004/03/12 04:45:26  mch
  It05 MCH Refactor
 

@@ -1,11 +1,12 @@
 /*
- * $Id: DummyPluginsTest.java,v 1.2 2004/03/12 20:11:09 mch Exp $
+ * $Id: DummyPluginsTest.java,v 1.3 2004/03/14 02:17:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -30,7 +31,7 @@ public class DummyPluginsTest extends TestCase
 
        //test the fixed example ones
        QueryResults results = new PrecannedResults("test");
-       results.toVotable(null);
+       results.toVotable(new StringWriter(), null);
 
        //test the dummy sql ones
        DummySqlPlugin.populateDb();

@@ -20,7 +20,6 @@
    /*
     * Non-blocking cone search
     */
-   String param_sendTo = request.getParameter("SENDTO");
    String param_ra = request.getParameter("RA");
    String param_dec = request.getParameter("DEC");
    String param_sr = request.getParameter("SR");
@@ -32,16 +31,16 @@
       double dec = Double.parseDouble(param_dec);
       double sr = Double.parseDouble(param_sr);
 
-      Agsl agsl = new Agsl(param_sendTo);
+      Agsl agsl = new Agsl(resultsTarget);
 
       String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), agsl, resultsFormat);
       
       URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
       //redirect to status
-      out.write("<a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
+      out.write("Cone Query has been submitted, and assigned ID "+id+".  <a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtml("Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+param_sendTo,th));
+      out.write(server.exceptionAsHtml("Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+resultsTarget,th));
    }
       
 
