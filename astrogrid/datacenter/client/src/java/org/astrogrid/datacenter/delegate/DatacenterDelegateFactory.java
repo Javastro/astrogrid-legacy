@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.10 2004/01/13 00:32:47 nw Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.11 2004/01/22 14:57:55 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -37,7 +37,7 @@ public class DatacenterDelegateFactory {
    /**
     * For backwards compatibility - call without user & type info.  It makes
     * best attempt to work out type but it's not safe
-    * @deprecated
+    * @deprecated use method that accepts user parameter
     */
    public static ConeSearcher makeConeSearcher(String givenEndPoint)
       throws MalformedURLException, DatacenterException {
@@ -82,7 +82,7 @@ public class DatacenterDelegateFactory {
    /**
     * For backwards compatibility - call without user & type info.  It makes
     * best attempt to work out type but it's not safe
-    * @deprecated
+    * @deprecated use method that accepts user
     */
    public static FullSearcher makeFullSearcher(String givenEndPoint)
       throws ServiceException, MalformedURLException, IOException {
@@ -162,8 +162,7 @@ public class DatacenterDelegateFactory {
     * (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
-    *    * @deprecated {@link AdqlQuerier}  is deprecated. Instead use {@link FullSearcher} and {@link #makeFullSearcher}
-   
+    *  @deprecated {@link AdqlQuerier}  is deprecated. Instead use {@link FullSearcher} and {@link #makeFullSearcher}   
     */
    public static AdqlQuerier makeAdqlQuerier(Certification cert, String givenEndPoint, String serviceType)
       throws ServiceException, MalformedURLException, IOException {
@@ -229,6 +228,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.11  2004/01/22 14:57:55  nw
+ minor doc fix
+
  Revision 1.10  2004/01/13 00:32:47  nw
  Merged in branch providing
  * sql pass-through
