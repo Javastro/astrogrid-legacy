@@ -1,4 +1,4 @@
-/*$Id: TranslatorMap.java,v 1.2 2004/01/13 00:33:14 nw Exp $
+/*$Id: TranslatorMap.java,v 1.3 2004/01/15 12:00:55 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,20 @@ package org.astrogrid.datacenter.queriers.spi;
 
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 
-/**
+/** A container for language translators
+ * <p>
+ * Allows access to translators keyed by xmlns namespace IDs.
+ * @see Translator
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
  *
  */
 public interface TranslatorMap {
     
+    /** 
+     * Select an appropriate translator to convert a query document, based on its namespace id. 
+     * @param namespace the xmlns namespace of the query document
+     * @return a translator that will convert from this form of query document to the required intermediate representation.
+     */
     public Translator lookup(String namespace);
     
     /** output the contents of the translator map - supported namespaces, schemas and implementing classes */
@@ -30,6 +38,9 @@ public interface TranslatorMap {
 
 /* 
 $Log: TranslatorMap.java,v $
+Revision 1.3  2004/01/15 12:00:55  nw
+improved documentation
+
 Revision 1.2  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through

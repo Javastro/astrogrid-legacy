@@ -1,4 +1,4 @@
-/*$Id: QuerierSPI.java,v 1.3 2003/12/01 16:11:30 nw Exp $
+/*$Id: QuerierSPI.java,v 1.4 2004/01/15 11:56:59 nw Exp $
  * Created on 26-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.datacenter.queriers.spi;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.util.Workspace;
 
-/** Interface to the plugin system
+/** Interface that a back-end plugin should implement
  * @author Noel Winstanley nw@jb.man.ac.uk 26-Nov-2003
  *
  */
@@ -62,6 +62,9 @@ public interface QuerierSPI {
 
 /* 
 $Log: QuerierSPI.java,v $
+Revision 1.4  2004/01/15 11:56:59  nw
+improved documentation
+
 Revision 1.3  2003/12/01 16:11:30  nw
 removed config interface.
 
