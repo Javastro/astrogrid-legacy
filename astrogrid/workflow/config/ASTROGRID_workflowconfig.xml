@@ -64,7 +64,7 @@
         This is the URL for the Jes facility
     <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" />
      -->
-    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/axis/services/JobControllerService" />  
+    <property name="URL" value="http://astrogrid1.jb.man.ac.uk:8080/jes-SNAPSHOT/services/JobControllerService" />  
   </category>
   
   <!-- TOOLS LIST CATEGORY ========================================================== -->
