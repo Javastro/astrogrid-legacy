@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.18 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 17:02:02 $</cvs:date>
+ * <cvs:version>$Revision: 1.19 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.19  2004/09/02 17:02:02  dave
+ *   Fixed myspace account creation problem.
+ *
+ *   Revision 1.18.70.2  2004/09/02 16:22:11  dave
+ *   Fixed create myspace account ....
+ *
+ *   Revision 1.18.70.1  2004/09/02 15:48:48  dave
+ *   Moved commit to after allocate space ....
+ *
  *   Revision 1.18  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -229,26 +238,26 @@ account.setIdent(string) ;
                 database.begin();
                 //
                 // Try creating the account in the database.
+if (DEBUG_FLAG) System.out.println("Creating community account") ;
                 database.create(account);
+if (DEBUG_FLAG) System.out.println("Ok - Created community account") ;
                 //
                 // Try creating the group in the database.
                 database.create(group);
                 //
                 // Try adding the account to the groups.
                 database.create(groupmember);
-                
-               // Commit the transaction.
-               database.commit() ;
-                
 // TODO BUG
 // Not sure why this one fails the tests.
 // Something about invalid primary key.
 //                        database.create(guestmember);
-
                 //
                 // Try creating the home space for the Account.
                 try {
-                    this.allocateSpace(account) ;
+if (DEBUG_FLAG) System.out.println("Creating myspace account") ;
+                    allocateSpace(account) ;
+if (DEBUG_FLAG) System.out.println("Ok - Created myspace account") ;
+if (DEBUG_FLAG) System.out.println("Home : " + account.getHomeSpace()) ;
                     }
                 catch (Exception ouch)
                     {
@@ -259,6 +268,9 @@ account.setIdent(string) ;
                         "AccountManagerImpl.addAccount.allocateSpace()"
                         ) ;
                     }
+                //
+                // Commit the transaction.
+                database.commit() ;
                 }
             //
             // If we already have an object with that ident.

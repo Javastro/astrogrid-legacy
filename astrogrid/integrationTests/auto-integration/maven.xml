@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.89 2004/09/02 10:25:41 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.90 2004/09/02 17:02:02 dave Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -760,14 +760,33 @@
 </goal>
 
 <goal name="filestore-undeploy" >
-        <j:catch>
-        <tomcat-remove
-                url="${tomcat.manager.url}"
-                username="${tomcat.manager.username}"
-                password="${tomcat.manager.password}"
-                path="/${filestore.webapp}"
-                />
-        </j:catch>
+    <!--+
+        | Deploy filestore one.
+        +-->
+    <j:set var="filestore.name" value="filestore-one"/>
+    <attainGoal name="filestore-undeploy-sub"/>
+    <!--+
+        | Deploy filestore two.
+        +-->
+    <j:set var="filestore.name" value="filestore-two"/>
+    <attainGoal name="filestore-undeploy-sub"/>
+</goal>
+
+<goal name="filestore-undeploy-sub" >
+    <echo>UnDeploying ${filestore.name} ....</echo>
+    <!--+
+        | Setup the params.
+        +-->
+    <j:set var="filestore.webapp"    value="astrogrid-${filestore.name}-${pom.currentVersion}"/>
+    <!--+
+        | Undeploy the webapp.
+        +-->
+    <tomcat-remove
+        url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/${filestore.webapp}"
+        />
 </goal>
 
 <goal name="cea-server-undeploy" >

@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/CommunityAccountSpaceResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/06/18 13:45:20 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/02 17:02:02 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountSpaceResolver.java,v $
+ *   Revision 1.6  2004/09/02 17:02:02  dave
+ *   Fixed myspace account creation problem.
+ *
+ *   Revision 1.5.70.2  2004/09/02 14:49:20  dave
+ *   Added debug ....
+ *
+ *   Revision 1.5.70.1  2004/09/02 14:21:42  dave
+ *   Added debug ....
+ *
  *   Revision 1.5  2004/06/18 13:45:20  dave
  *   Merged development branch, dave-dev-200406081614, into HEAD
  *
@@ -144,8 +153,10 @@ public class CommunityAccountSpaceResolver
         //
         // Resolve the ivorn into an AccountData.
         AccountData account = resolver.resolve(parser) ;
-        if (DEBUG_FLAG) System.out.println("PASS : Got Account.") ;
+        if (DEBUG_FLAG) System.out.println("CommunityAccountSpaceResolver.resolve()") ;
+        if (DEBUG_FLAG) System.out.println("Got Account") ;
         if (DEBUG_FLAG) System.out.println("Account : " + account.getIdent()) ;
+        if (DEBUG_FLAG) System.out.println("Home    : " + account.getHomeSpace()) ;
         //
         // Get the Account home space Ivorn.
         String home = account.getHomeSpace() ;
