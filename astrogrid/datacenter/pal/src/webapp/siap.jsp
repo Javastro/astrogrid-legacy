@@ -4,12 +4,13 @@
        org.astrogrid.io.*,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.ConeQuery,
-       org.astrogrid.datacenter.service.HtmlDataServer"
+       org.astrogrid.datacenter.returns.*,
+       org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
 %><%@ page language="java" %><%!
-    HtmlDataServer server = new HtmlDataServer();
+    DataServer server = new DataServer();
 %><%
    /*
     * Simple image access protocol - similar to cone search but different
@@ -25,14 +26,14 @@
       double dec = Double.parseDouble(pos.substring(comma+1));
       
       try {
-         server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, size), out, formatList);
+         server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, size), new ReturnTable(new TargetIndicator(out), formatList));
       } catch (Exception e) {
          LogFactory.getLog(request.getContextPath()).error(e);
-         out.write(server.exceptionAsHtmlPage("SIAP; Searching Cone (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList, e));
+         out.write(ServletHelper.exceptionAsHtmlPage("SIAP; Searching Cone (RA="+ra+", DEC="+dec+", SIZE="+size+", FORMAT="+formatList, e));
       }
       
    } catch (NumberFormatException e) {
-      out.write(server.exceptionAsHtmlPage("Input Error", e));
+      out.write(ServletHelper.exceptionAsHtmlPage("Input Error", e));
    }
 
 

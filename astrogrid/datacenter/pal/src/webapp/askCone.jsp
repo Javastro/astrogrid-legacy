@@ -4,12 +4,13 @@
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.ConeQuery,
-       org.astrogrid.datacenter.service.HtmlDataServer"
+       org.astrogrid.datacenter.returns.*,
+       org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
 %><%@ page language="java" %><%!
-    HtmlDataServer server = new HtmlDataServer();
+    DataServer server = new DataServer();
 %><%
    /*
     * NVO Compliant cone search
@@ -17,14 +18,13 @@
    double ra = Double.parseDouble(request.getParameter("RA"));
    double dec = Double.parseDouble(request.getParameter("DEC"));
    double sr = Double.parseDouble(request.getParameter("SR"));
-   String resultsFormat = request.getParameter("Format");
-   String resultsTarget = request.getParameter("Target");
+   ReturnSpec returns = ServletHelper.makeReturnSpec(request);
 
    try {
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, resultsFormat);
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), returns);
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtmlPage("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
+      out.write(ServletHelper.exceptionAsHtmlPage("Searching Cone (RA="+ra+", DEC="+dec+", SR="+sr, th));
    }
       
 

@@ -26,7 +26,8 @@
 
   <h1>Submit an ADQL/sql Query to <%=DataServer.getDatacenterName() %></h1>
   <p>
-  <b>Enter your ADQL/sql query here:</b>
+  <b>Enter your ADQL/sql query here <a href='http://wiki.astrogrid.org/bin/view/Support/HelpAdqlSql'>(Help)</a>
+</b>
   
     <form method="get" onSubmit="
       this.action=formAction;
@@ -34,11 +35,10 @@
       ">
         <p>
         <textarea name="AdqlSql" rows="4" cols="100%"></textarea>
-        <a href='http://wiki.astrogrid.org/bin/view/Support/HelpAdqlSql'>(Help)</a>
         </p>
         <p>
           <%@ include file='resultsForm.xml' %>
-          <input type="submit" name='SubmitSql' value="Submit Query" onclick='formAction="askAdqlSql.jsp";' />
+          <input type="submit" name='SubmitSql' value="Submit Query" onclick='formAction="submitAdqlSql.jsp";' />
           (If you get an invalid XML error, this is your browser being 'safe'.  Use the buttons below to
           translate the query then check the XML)
         </p>

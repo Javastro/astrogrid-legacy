@@ -5,44 +5,57 @@
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.queriers.status.*,
-       org.astrogrid.datacenter.service.HtmlDataServer"
+       org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false"
 %>
 <%@ page language="java" %>
 <%!
-    HtmlDataServer server = new HtmlDataServer();
+    DataServer server = new DataServer();
 %>
 <html>
-<head><title>Status of Query
-<%
-   request.getParameter("ID");
-%>
+<head><title>Status of Query<%= request.getParameter("ID") %>
+<style type="text/css" media="all">
+          @import url("./style/maven-base.css");
+          @import url("./style/maven-theme.css");
+</style>
 </title></head>
 <body>
+<%@ include file="header.xml" %>
+<%@ include file="navigation.xml" %>
 <%
-   /*
-    * Returns the status of the given query
-    */
-   String id = request.getParameter("ID");
-
-   URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
-
-   //URL serverStatusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/serverStatus.jsp");
-
+   String queryId = request.getParameter("ID");
    try {
-      QuerierStatus status = server.getQuerierStatus(Account.ANONYMOUS, id);
-      out.write(server.queryStatusAsHtml(id, status));
+      QuerierStatus status = server.getQueryStatus(Account.ANONYMOUS, queryId);
+%>
+<h1>Status of Query <%=ServletHelper.makeSafeForHtml(queryId) %></h1>
 
+<%   if (status == null) { %>
+         <b>No Query found for that ID</b>
+<%   } %>
+     
+<h2> <%= ServletHelper.makeSafeForHtml(status.getState().toString()) %></h2>
+
+<p>
+<b>  <%= ServletHelper.makeSafeForHtml(status.getNote().replaceAll("\n","<br/>")) %></b>
+</p>
+      
+<%
+      String[] details= status.getDetails();
+      
+      for (int i=0;i<details.length;i++) {
+         out.write("<p>"+ServletHelper.makeSafeForHtml(details[i])+"</p>\n");
+      }
+      
       if (!(status instanceof QuerierClosed)) {
          //automatic refresh
-         out.write(server.makeRefreshSnippet(3, statusUrl+"?ID="+id));
+         URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
+         out.write(ServletHelper.makeRefreshSnippet(3, statusUrl+"?ID="+queryId));
       }
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtmlPage("Getting status of query '"+id+"'", th));
+      out.write(ServletHelper.exceptionAsHtmlPage("Getting status of query '"+queryId+"'", th));
    }
-    
 
 %>
 </body>

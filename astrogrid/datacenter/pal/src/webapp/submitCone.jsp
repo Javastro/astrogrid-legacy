@@ -6,13 +6,13 @@
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.ConeQuery,
        org.astrogrid.store.Agsl,
-       org.astrogrid.datacenter.returns.TargetIndicator,
-       org.astrogrid.datacenter.service.HtmlDataServer"
+       org.astrogrid.datacenter.returns.*,
+       org.astrogrid.datacenter.service.*"
    isThreadSafe="false"
    session="false" %>
 <%@ page language="java" %>
 <%!
-    HtmlDataServer server = new HtmlDataServer();
+    DataServer server = new DataServer();
 %>
 <%
    /*
@@ -29,10 +29,11 @@
       double dec = Double.parseDouble(param_dec);
       double sr = Double.parseDouble(param_sr);
 
-      TargetIndicator target = server.makeTarget(resultsTarget);
+      ReturnSpec returns = ServletHelper.makeReturnSpec(request);
 
-      if (target == null) {
-         server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), out, resultsFormat);
+      if (returns.getTarget() == null) {
+         returns.setTarget(new TargetIndicator(out));
+         server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), returns);
       }
       else {
 %>
@@ -40,7 +41,7 @@
 <head><title>Submitting Query</title></head>
 <body>
 <%
-         String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), target, resultsFormat);
+         String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), returns);
       
          URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
          //indicate status
@@ -54,7 +55,7 @@
       }
    } catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtmlPage("Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+resultsTarget,th));
+      out.write(ServletHelper.exceptionAsHtmlPage("Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+resultsTarget,th));
    }
       
 

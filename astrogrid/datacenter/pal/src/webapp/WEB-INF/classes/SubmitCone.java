@@ -1,0 +1,86 @@
+/*
+ * $Id: SubmitCone.java,v 1.1 2004/08/27 17:47:19 mch Exp $
+ */
+
+import java.io.IOException;
+import java.net.URL;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.returns.ReturnSpec;
+import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.datacenter.service.DataServer;
+import org.astrogrid.datacenter.service.ServletHelper;
+
+/**
+ * A servlet for processing Cone Queries.
+ * Takes three parameters (RA, DEC and SR) that define the query, and
+ * the standard returns definition parameters (see ???)
+ *
+ * @author mch
+ */
+public class SubmitCone extends HttpServlet {
+   
+   DataServer server = new DataServer();
+ 
+   public void doGet(HttpServletRequest request,
+                     HttpServletResponse response) throws ServletException, IOException {
+
+      ReturnSpec tableDef = ServletHelper.makeReturnSpec(request);
+
+      String param_ra = request.getParameter("RA");
+      String param_dec = request.getParameter("DEC");
+      String param_sr = request.getParameter("SR");
+
+      try {
+         double ra = Double.parseDouble(param_ra);
+         double dec = Double.parseDouble(param_dec);
+         double sr = Double.parseDouble(param_sr);
+
+         //if a target is not given, we do an asynchronous (ask) Query to the response
+         //stream.
+         if (tableDef.getTarget() == null) {
+            tableDef.setTarget(new TargetIndicator(response.getWriter()));
+            server.askQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), tableDef);
+         }
+         else {
+            response.setContentType("text/html");
+            response.getWriter().println(
+               "<html>"+
+               "<head><title>Submitting Query</title></head>"+
+               "<body>");
+
+            String id = server.submitQuery(Account.ANONYMOUS, new ConeQuery(ra, dec, sr), tableDef);
+      
+            URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
+            //indicate status
+            response.getWriter().println("Cone Query has been submitted, and assigned ID "+id+"."+
+                                          "<a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
+            //redirect to status
+            response.getWriter().write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>"+
+                                      "</body></html>");
+         }
+      }
+      catch (Throwable th) {
+         LogFactory.getLog(request.getContextPath()).error(th);
+         doError(response, "Searching Cone (RA="+param_ra+", DEC="+param_dec+", SR="+param_sr+") -> "+tableDef,th);
+      }
+   }
+   
+   /** Need to do something better than this... */
+   private void doError(HttpServletResponse response, String msg, Throwable th) throws IOException {
+      try {
+         response.setContentType("text/plain");
+      }
+      catch (RuntimeException re) {
+         //ignore - some stuff might already have been written out.
+      }
+      response.getWriter().println(msg);
+      th.printStackTrace(response.getWriter());
+   }
+}

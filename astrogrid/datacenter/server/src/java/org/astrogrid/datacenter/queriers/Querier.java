@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.57 2004/08/25 23:38:34 mch Exp $
+ * $Id: Querier.java,v 1.58 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -72,12 +72,11 @@ public class Querier implements Runnable {
    
    /** status of query */
    private QuerierStatus status;
-   
-   /** Format requested by user */
-   private String requestedFormat = QueryResults.FORMAT_VOTABLE; //by default
-   
-   /** Where the result should be sent (could be set as well as writer) */
-   private TargetIndicator resultsTarget = null;
+
+   /** Specification for where the results are to be sent, what form, what should
+    * be included, etc
+    */
+   private ReturnSpec returns = null;
 
    /** For measuring how long the query took - calculated from status change times*/
    private Date timeQueryStarted = null;
@@ -89,26 +88,18 @@ public class Querier implements Runnable {
    /** temporary used for generating unique handles - see generateHandle() */
    private static java.util.Random random = new java.util.Random();
 
-   /** Key to configuration entry for the default target myspace for this server */
-   public static final String DEFAULT_MYSPACE = "DefaultMySpace";
 
-   /** Convenience constructor for other constructors, makers, etc */
-   protected Querier(Account forUser, Query query, TargetIndicator whereToSendResults, String resultsFormat) throws IOException {
+   /** Can't remember why this is private  - there was a reason... */
+   protected Querier(Account forUser, Query query, ReturnSpec resultsDefinition) throws IOException {
       this.id = generateQueryId();
-      this.requestedFormat = resultsFormat;
+      this.returns = resultsDefinition;
       this.user = forUser;
       this.query = query;
-      this.resultsTarget = whereToSendResults;
       
 
       //check raw sql
       if ((query instanceof RawSqlQuery) && (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false))) {
          throw new IllegalArgumentException("This datacenter does not allow raw SQL Queriers to be constructed");
-      }
-      
-      //default to votable
-      if ((resultsFormat == null) || (resultsFormat.trim().length() ==0)) {
-         resultsFormat = QueryResults.FORMAT_VOTABLE;
       }
       
       //default results destination is taken from default myspace given in config
@@ -125,14 +116,20 @@ public class Querier implements Runnable {
       setStatus(new QuerierConstructed(this));
    }
    
-   /** Convenience constructor for struct a querier from the given details. Takes a writer so generally used
-    * for blocking queries where the results have to be sent back to the calling client */
-   public static Querier makeQuerier(Account forUser, Query query, TargetIndicator whereToSendResults, String resultsFormat) throws IOException {
-      Querier querier = new Querier(forUser, query, whereToSendResults, resultsFormat);
+   /** Factory method   */
+   public static Querier makeQuerier(Account forUser, Query query, ReturnSpec resultsDefinition) throws IOException {
+      Querier querier = new Querier(forUser, query, resultsDefinition);
 
       return querier;
    }
    
+   /** Old Factory method  @deprecated  */
+   public static Querier makeQuerier(Account forUser, Query query, TargetIndicator target, String format) throws IOException {
+      Querier querier = new Querier(forUser, query, new ReturnTable(target, format));
+
+      return querier;
+   }
+
    /** Returns this instances handle    */
    public String getId() {       return id;   }
 
@@ -193,6 +190,9 @@ public class Querier implements Runnable {
     * @throws IOException if the operation fails for any reason
     */
    protected void testResultsDestination() throws IOException {
+      
+      TargetIndicator resultsTarget = returns.getTarget();
+      
       if ((resultsTarget == null)) {
          throw new IllegalStateException("no results destination");
       }
@@ -245,15 +245,18 @@ public class Querier implements Runnable {
 
    /** Sets results target.
     * @deprecated - should be set in constructor - but v4.1 interface uses it */
-   public void setResultsTarget(TargetIndicator target)  { this.resultsTarget = target; }
+   public void setResultsTarget(TargetIndicator target)  { this.returns.setTarget(target); }
    
-   /** Returns where the results are to be sent    */
-   public TargetIndicator getResultsTarget()             {   return resultsTarget;  }
+   /** Returns where the results are to be sent
+    * @deprecated use getReturnSpec */
+   public TargetIndicator getResultsTarget()    {   return this.returns.getTarget();  }
 
    /**
     * Returns the requested results format
-    */
-   public String getRequestedFormat()           {  return requestedFormat; }
+    * @deprecated use getReturnSpec */
+   public String getRequestedFormat()           {  return ((ReturnTable) this.returns).getFormat(); }
+
+   public ReturnSpec getReturnSepc()            { return this.returns; }
    
    /**
     * Closes & tidies up
@@ -416,6 +419,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.58  2004/08/27 17:47:19  mch
+ Added first servlet; started making more use of ReturnSpec
+
  Revision 1.57  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

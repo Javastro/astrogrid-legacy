@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.21 2004/08/19 19:48:43 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.22 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,7 +38,8 @@ import org.xml.sax.SAXException;
  * <p>
  * NWW: altered to delay creating jdbcConnection until required by {@link #queryDatabase}. DatabaseQueriers are one-shot
  * beasts anyhow, so this isn't a problem, but it fixes problems of moving jdbcConnection across threads when non-blocking querying is done.
- * @author M Hill
+ * <p>
+ *  * @author M Hill
  */
 
 public class JdbcPlugin extends QuerierPlugin  {

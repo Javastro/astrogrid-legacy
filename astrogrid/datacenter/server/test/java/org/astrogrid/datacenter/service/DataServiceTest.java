@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.9 2004/08/25 23:38:34 mch Exp $
+/*$Id: DataServiceTest.java,v 1.10 2004/08/27 17:47:19 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,6 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.metadata.FileServer;
 import org.astrogrid.datacenter.metadata.MetadataPlugin;
 import org.astrogrid.datacenter.metadata.MetadataServer;
@@ -24,6 +23,8 @@ import org.astrogrid.datacenter.queriers.sql.SqlPluginTest;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -93,7 +94,7 @@ public class DataServiceTest extends ServerTestCase {
     public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
-       server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), new TargetIndicator(sw), "VOTABLE");
+       server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
        String results = sw.toString();
 
        Document doc = DomHelper.newDocument(results);
@@ -107,7 +108,7 @@ public class DataServiceTest extends ServerTestCase {
    {
       //submit query
       StringWriter sw = new StringWriter();
-      server.askQuery(Account.ANONYMOUS, query1, new TargetIndicator(sw), "VOTABLE");
+      server.askQuery(Account.ANONYMOUS, query1, new ReturnTable(new TargetIndicator(sw), "VOTABLE"));
       String result = sw.toString();
        
       assertNotNull(result);
@@ -159,6 +160,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.10  2004/08/27 17:47:19  mch
+Added first servlet; started making more use of ReturnSpec
+
 Revision 1.9  2004/08/25 23:38:34  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.21 2004/08/25 23:38:34 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.22 2004/08/27 17:47:19 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,6 @@
  *
  **/
 package org.astrogrid.datacenter;
-import org.astrogrid.datacenter.returns.*;
-
-import org.astrogrid.datacenter.queriers.*;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -22,7 +18,14 @@ import org.astrogrid.community.Account;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.metadata.MetadataServer;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
+import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
 import org.astrogrid.datacenter.service.v041.AxisDataServer_v0_4_1;
 import org.astrogrid.store.Agsl;
@@ -80,7 +83,8 @@ public class InstallationSelfCheck extends TestCase {
    public void testConeSearch() throws Throwable {
       StringWriter sw = new StringWriter(); //although we throw away the results
       DataServer server = new DataServer();
-      server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
+      server.askQuery(Account.ANONYMOUS, new ConeQuery(30,30,2),
+                      new ReturnTable(new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE));
    }
 
    public void testCanCreateWorkspace() throws IOException {
@@ -117,6 +121,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.22  2004/08/27 17:47:19  mch
+ Added first servlet; started making more use of ReturnSpec
+
  Revision 1.21  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

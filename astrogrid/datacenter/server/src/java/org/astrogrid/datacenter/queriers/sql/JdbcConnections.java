@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.4 2004/03/18 14:20:03 mch Exp $
+ * $Id: JdbcConnections.java,v 1.5 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -28,9 +28,11 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
  * the connection details in the configuration file
  * <p>
  *
- * For the moment, makes a new connection each time; DataSource implmeentations
- * already manage pooled connections, and I am assuming (!) that
- * the DriverManager does the sam etoo.
+ * For the moment, makes a new connection each time -
+ * ie One jdbcConnection is used for each query because there appear to be some
+ * issues with tidying up resultsets before another
+ * query can be run, rather than just abandoning the connection...
+ *
  * <p>
  * Remember to close the connection when you're finished!
  */

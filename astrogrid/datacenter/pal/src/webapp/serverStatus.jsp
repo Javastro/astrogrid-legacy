@@ -4,13 +4,13 @@
        org.astrogrid.io.*,
        org.apache.commons.logging.LogFactory,
        org.astrogrid.community.Account,
-       org.astrogrid.datacenter.service.HtmlDataServer"
+       org.astrogrid.datacenter.service.ServletHelper"
    isThreadSafe="false"
    session="false"
 %>
 <%@ page language="java" %>
 <%!
-    HtmlDataServer server = new HtmlDataServer();
+    ServletHelper server = new ServletHelper();
 %>
 <html>
 <head><title>Datacenter Server Status</title></head>

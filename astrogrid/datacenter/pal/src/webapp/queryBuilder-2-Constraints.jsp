@@ -1,7 +1,7 @@
 <%@ page language="java"
     import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*,
     org.astrogrid.datacenter.returns.*, org.astrogrid.datacenter.query.condition.*,
-    org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer,
+    org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.ServletHelper,
     org.astrogrid.datacenter.service.DataServer,
     org.w3c.dom.*, org.astrogrid.util.* "
     %>
@@ -142,15 +142,14 @@ or a <input type='radio' name='combine' value='Union' <%=getChecked(request.getP
 </p>
 
 <!-- Preserve all page parameters -->
-<p>(Ignore these, will work out how to hide them one day...
 <%
    for(int i = 0; i < searchCols.length; i++) {
-      out.print("  <input type='checkBox' name='searchColumn' value='"+searchCols[i]+"' checked='true' type='hidden' />");
+      out.print("  <input type='hidden' name='searchColumn' value='"+searchCols[i]+"' />");
    }
    for(int i = 0; i < resultCols.length; i++) {
-      out.print("  <input type='checkBox' name='resultColumn' value='"+resultCols[i]+"' checked='true' type='hidden' />");
+      out.print("  <input type='hidden' name='resultColumn' value='"+resultCols[i]+"'  />");
    }
-%>)
+%>
 
 </form>
 

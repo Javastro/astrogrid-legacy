@@ -1,19 +1,18 @@
 /*
- * $Id: MetadataServer.java,v 1.12 2004/08/20 16:42:20 mch Exp $
+ * $Id: MetadataServer.java,v 1.13 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.metadata;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -50,7 +49,12 @@ public class MetadataServer
    public synchronized static Document getOrGenerateMetadata() throws IOException
    {
       if (cache == null) {
-        cache = createPlugin().getMetadata();
+         try {
+           cache = createPlugin().getMetadata();
+         }
+         catch (FileNotFoundException fnfe) {
+            cache = MetadataGenerator.generateMetadata();
+         }
       }
       return cache;
    }

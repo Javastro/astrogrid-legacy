@@ -6,27 +6,28 @@
        org.astrogrid.community.Account,
        org.astrogrid.datacenter.query.AdqlQuery,
        org.astrogrid.datacenter.sqlparser.Sql2Adql074,
-       org.astrogrid.datacenter.service.HtmlDataServer,
+       org.astrogrid.datacenter.service.*,
+       org.astrogrid.datacenter.returns.*,
        org.astrogrid.io.*"
    isThreadSafe="false"
    session="false"
    contentType="text/xml"
 %><%@ page language="java" %><%!
-    HtmlDataServer server = new HtmlDataServer();
+    DataServer server = new DataServer();
 %><%
    /*
     * Runs query from given ADQL/SQL string directly on server
     */
    String adqlSql = request.getParameter("AdqlSql");
-   String resultsFormat = request.getParameter("Format");
-   String resultsTarget = request.getParameter("Target");
+   ReturnSpec returns = ServletHelper.makeReturnSpec(request);
+
 
    try {
-     server.askQuery(Account.ANONYMOUS, new AdqlQuery(Sql2Adql074.translate(adqlSql)), out, resultsFormat);
+     server.askQuery(Account.ANONYMOUS, new AdqlQuery(Sql2Adql074.translate(adqlSql)), returns);
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
-      out.write(server.exceptionAsHtmlPage("Asking ADQL/sql: "+adqlSql, th));
+      out.write(ServletHelper.exceptionAsHtmlPage("Asking ADQL/sql: "+adqlSql, th));
    }
 
 %>

@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.26 2004/08/25 23:38:34 mch Exp $
+ * $Id: DataServer.java,v 1.27 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,11 +14,12 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.returns.ReturnSpec;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 
 /**
  * Framework for managing a datacenter.
@@ -66,7 +67,7 @@ public class DataServer
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
     */
-   public void askQuery(Account user, Query query, TargetIndicator target, String requestedFormat) throws Throwable {
+   public void askQuery(Account user, Query query, ReturnSpec resultsDef) throws Throwable {
 
       Querier querier = null;
       try {
@@ -74,13 +75,13 @@ public class DataServer
             throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
          }
    
-         querier = Querier.makeQuerier(user, query, target, requestedFormat);
+         querier = Querier.makeQuerier(user, query, resultsDef);
          querierManager.askQuerier(querier);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         String msg = "askQuery("+user+", "+query+", "+target+", "+requestedFormat+")";
+         String msg = "askQuery("+user+", "+query+", "+resultsDef+")";
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
@@ -95,16 +96,16 @@ public class DataServer
     * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
     * reference id.  Results will be output to given Agsl
     */
-   public String submitQuery(Account user, Query query, TargetIndicator target, String requestedFormat) throws Throwable {
+   public String submitQuery(Account user, Query query, ReturnSpec resultsDef) throws Throwable {
 
       Querier querier = null;
       try {
-         querier = Querier.makeQuerier(user, query, target, requestedFormat);
+         querier = Querier.makeQuerier(user, query, resultsDef);
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         String msg = "submitQuery("+user+", "+query+", "+target+", "+requestedFormat+")";
+         String msg = "submitQuery("+user+", "+query+", "+resultsDef+")";
          log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {

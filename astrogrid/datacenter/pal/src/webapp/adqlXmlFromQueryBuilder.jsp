@@ -1,14 +1,39 @@
 <%@ page language="java"
     import="java.util.*, org.astrogrid.config.SimpleConfig, java.io.*, org.astrogrid.datacenter.sqlparser.*,
     org.astrogrid.datacenter.returns.*, org.astrogrid.datacenter.query.condition.*,
-    org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.HtmlDataServer,
+    org.astrogrid.datacenter.metadata.*, org.astrogrid.datacenter.service.ServletHelper,
     org.astrogrid.datacenter.service.DataServer,
     org.w3c.dom.*, org.astrogrid.util.* " %>
 
 <%-- This page takes the entries from the queryBuilder forms, creates an ADQL/xml
      query from it, and forwards the user to the ADQL/xml entry form page to
      submit it --%>
+<html>
+<head></head>
+<body>
+Creating query...
+
+<hr>
+<h2>Debug</h2>
+Parameter names in this request:
+<p>
+<pre>
 <%
+   Enumeration e = request.getParameterNames();
+   while (e.hasMoreElements()) {
+      String key = (String)e.nextElement();
+      String[] values = request.getParameterValues(key);
+      out.print(" " + key + " = ");
+      for(int i = 0; i < values.length; i++) {
+         out.print(values[i] + " ");
+      }
+      out.println();
+   }
+%>
+</pre>
+
+<%
+   out.flush();
    String[] searchCols = request.getParameterValues("searchColumn");
    if (searchCols == null) { searchCols = new String[0]; }  //don't have to check for nulls
    String[] resultCols = request.getParameterValues("resultColumn");
@@ -56,16 +81,24 @@
             criteria = newCriteria;
          }
          else {
-            if (request.getParameterValues("combine").equals("Intersection")) {
+            if (request.getParameter("combine") == null) {
+               out.write("ERROR: 'Combine' not selected - select 'Intersection' or 'Union'");
+               out.flush();
+               throw new IllegalArgumentException("'Combine' not selected - select 'Intersection' or 'Union'");
+            }
+               
+            if (request.getParameter("combine").equals("Intersection")) {
                //add as AND to previous
                criteria = new LogicalExpression(criteria, "AND", newCriteria);
             }
-            else if (request.getParameterValues("combine").equals("Union")) {
+            else if (request.getParameter("combine").equals("Union")) {
                //add as OR to previous
                criteria = new LogicalExpression(criteria, "OR", newCriteria);
             }
             else  {
-               throw new IllegalArgumentException("'Combine' not selected - select 'Intersection' or 'Union'");
+               out.write("ERROR: Unknown value for 'Combine':"+request.getParameter("combine"));
+               out.flush();
+               throw new IllegalArgumentException("Unknown value for 'Combine':"+request.getParameter("combine"));
             }
          }
       }
@@ -129,10 +162,18 @@
    else {  //default to makign latest
       adqlXml = Query2Adql074.makeAdql(query, comment);
    }
+   out.flush();
 
 %>
-<jsp:forward page="adqlXmlForm.jsp" >
+<form action='adqlXmlForm.jsp'>
+  <textarea name="AdqlXml" rows="5" cols="100"><%= adqlXml %></textarea>
+  <hr>
+  ...Done.  Please press Next
+  <input type='submit' value='Next'>
+</form>
+
+<%-- jsp:forward page="adqlXmlForm.jsp" >
    <jsp:param name="AdqlXml" value="<%= adqlXml %>" />
 </jsp:forward>
-
+--%>
 

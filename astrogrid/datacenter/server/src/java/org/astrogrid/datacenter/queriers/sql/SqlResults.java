@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.32 2004/08/27 11:20:43 mch Exp $
+ * $Id: SqlResults.java,v 1.33 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -161,6 +161,8 @@ public class SqlResults extends QueryResults
          log.error("Could not convert results",sqle);
          throw new IOException(sqle+", converting to VOtable");
       }
+      
+      //don't close sqlResults - seems to cause the results to cycle through
    }
 
    
@@ -236,6 +238,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.33  2004/08/27 17:47:19  mch
+ Added first servlet; started making more use of ReturnSpec
+
  Revision 1.32  2004/08/27 11:20:43  mch
  Fix to remove comma at end of lines in a CSV
 

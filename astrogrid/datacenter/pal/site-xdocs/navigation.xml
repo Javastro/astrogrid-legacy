@@ -11,7 +11,7 @@
       <item name="Fingerprint" href="fingerprint.jsp" />
    </menu>
    <menu name="Query">
-      <item name="Cone Search" href="cone-form.html" />
+      <item name="Cone Search" href="coneForm.jsp" />
       <item name="Build Query" href="queryBuilder-1-SelectFrom.jsp" />
       <item name="Ask Adql/Sql Query" href="adqlSqlForm.jsp" />
       <item name="Ask Adql/Xml Query" href="adqlXmlForm.jsp" />

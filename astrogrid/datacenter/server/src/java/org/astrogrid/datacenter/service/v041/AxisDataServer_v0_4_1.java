@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.12 2004/08/25 23:38:34 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.13 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,7 +7,6 @@
 package org.astrogrid.datacenter.service.v041;
 
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.Hashtable;
 import org.apache.axis.AxisFault;
 import org.apache.axis.types.URI;
@@ -18,8 +17,9 @@ import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.store.Agsl;
 
@@ -73,8 +73,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
          StringWriter sw = new StringWriter();
          server.askQuery(Account.ANONYMOUS,
                           new AdqlQuery(axisQ.getQueryBody()),
-                          new TargetIndicator(sw),
-                          QueryResults.FORMAT_VOTABLE);
+                          new ReturnTable(new TargetIndicator(sw)));
          return sw.toString();
          
       }
@@ -259,6 +258,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.13  2004/08/27 17:47:19  mch
+Added first servlet; started making more use of ReturnSpec
+
 Revision 1.12  2004/08/25 23:38:34  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 

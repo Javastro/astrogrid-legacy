@@ -1,5 +1,5 @@
 /*
- * $Id: ReturnTable.java,v 1.2 2004/08/27 09:31:16 mch Exp $
+ * $Id: ReturnTable.java,v 1.3 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,6 +25,13 @@ public class ReturnTable  extends ReturnSpec {
 
    NumericExpression[] sortOrder = null;
    
+   String format = VOTABLE; //defaults to VOTABLE
+   
+   public static final String VOTABLE  = "VOTable";
+   public static final String HTML     = "Html";
+   public static final String CSV      = "CSV";
+   
+   
    /** Creates a definitiont hat will return all columns */
    public ReturnTable(TargetIndicator aTarget) {
       this.target = aTarget;
@@ -37,6 +44,12 @@ public class ReturnTable  extends ReturnSpec {
       setColDefs(someColDefs);
    }
    
+   /** Creates a definitiont hat will return all the columns in the requested format */
+   public ReturnTable(TargetIndicator aTarget, String givenFormat) {
+      this(aTarget);
+      this.format = givenFormat;
+   }
+
    public NumericExpression[] getColDefs() { return colDefs; }
 
    public void setColDefs(NumericExpression[] cols )  {
@@ -57,10 +70,14 @@ public class ReturnTable  extends ReturnSpec {
    public NumericExpression[] getSortOrder() { return sortOrder; }
 
    public void setSortOrder(NumericExpression[] order )  { this.sortOrder = order; }
-
+   
    public boolean returnAll() {
       return all;
    }
+
+   public void setFormat(String aFormat)  {  this.format = aFormat; }
+
+   public String getFormat()              {  return format; }
    
    /** For debug & reference */
    public String toString() {
@@ -78,6 +95,9 @@ public class ReturnTable  extends ReturnSpec {
 }
 /*
  $Log: ReturnTable.java,v $
+ Revision 1.3  2004/08/27 17:47:19  mch
+ Added first servlet; started making more use of ReturnSpec
+
  Revision 1.2  2004/08/27 09:31:16  mch
  Added limit, order by, some page tidying, etc
 

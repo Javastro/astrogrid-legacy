@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataService_v05.java,v 1.5 2004/08/25 23:38:34 mch Exp $
+ * $Id: AxisDataService_v05.java,v 1.6 2004/08/27 17:47:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,13 +12,14 @@ import java.net.URISyntaxException;
 import org.apache.axis.AxisFault;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.axisdataserver.v05.AxisDataServer_v05_Port;
 import org.astrogrid.datacenter.axisdataserver.v05.QueryStatusSoapyBean;
 import org.astrogrid.datacenter.queriers.status.QuerierStatus;
 import org.astrogrid.datacenter.query.AdqlQuery;
 import org.astrogrid.datacenter.query.ConeQuery;
 import org.astrogrid.datacenter.query.RawSqlQuery;
+import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.datacenter.service.DataServer;
 
@@ -40,8 +41,10 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
     */
    public String askAdqlQuery(String query, String requestedFormat) throws AxisFault {
       try {
+         
+         
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new AdqlQuery(query), new TargetIndicator(sw), requestedFormat);
+         server.askQuery(getUser(), new AdqlQuery(query), new ReturnTable(new TargetIndicator(sw), requestedFormat));
          return sw.toString();
       }
       catch (Throwable e) {
@@ -59,7 +62,7 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
          }
          
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new RawSqlQuery(sql), new TargetIndicator(sw), requestedFormat);
+         server.askQuery(getUser(), new RawSqlQuery(sql), new ReturnTable(new TargetIndicator(sw), requestedFormat));
          return sw.toString();
       }
       catch (Throwable e) {
@@ -73,7 +76,7 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
    public String askCone(double ra, double dec, double radius, String requestedFormat) throws AxisFault {
       try {
          StringWriter sw = new StringWriter();
-         server.askQuery(getUser(), new ConeQuery(ra, dec, radius), new TargetIndicator(sw), requestedFormat);
+         server.askQuery(getUser(), new ConeQuery(ra, dec, radius), new ReturnTable(new TargetIndicator(sw), requestedFormat));
          return sw.toString();
       }
       catch (Throwable e) {
@@ -130,6 +133,9 @@ public class AxisDataService_v05 extends AxisDataServer implements AxisDataServe
 
 /*
 $Log: AxisDataService_v05.java,v $
+Revision 1.6  2004/08/27 17:47:19  mch
+Added first servlet; started making more use of ReturnSpec
+
 Revision 1.5  2004/08/25 23:38:34  mch
 (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 
