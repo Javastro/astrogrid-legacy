@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.2 2005/03/30 15:18:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -91,6 +91,13 @@ public class HtmlTableWriter extends AsciiTableSupport {
       printOut.println("</TR>");
 
       printOut.println("</TR>");
+      printOut.println("<TH>Java Class</TH>");
+      for (int i = 0; i < cols.length; i++) {
+         printOut.print("<TH>"+cols[i].getJavaType()+"</TH>");
+      }
+      printOut.println("</TR>");
+
+      printOut.println("</TR>");
       printOut.println("<TH>UCD</TH>");
       for (int i = 0; i < cols.length; i++) {
          printOut.print("<TH>"+emptyIfNull(cols[i].getUcd("1"))+"</TH>");
@@ -100,7 +107,12 @@ public class HtmlTableWriter extends AsciiTableSupport {
       printOut.println("</TR>");
       printOut.println("<TH>Units</TH>");
       for (int i = 0; i < cols.length; i++) {
-         printOut.print("<TH>"+emptyIfNull(cols[i].getUnits().toString())+"</TH>");
+         if (cols[i].getUnits() == null) {
+            printOut.print("<TH/>");
+         }
+         else {
+            printOut.print("<TH>"+cols[i].getUnits().toString()+"</TH>");
+         }
       }
       printOut.println("</TR>");
 
@@ -154,6 +166,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.2  2005/03/30 15:18:55  mch
+ debug etc for bad sql types
+
  Revision 1.1  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

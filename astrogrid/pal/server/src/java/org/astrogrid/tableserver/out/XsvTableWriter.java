@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.1 2005/03/21 18:45:55 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.2 2005/03/30 15:18:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -73,7 +73,9 @@ public class XsvTableWriter extends AsciiTableSupport {
       
       //ucds, line 2
       for (int i = 0; i < cols.length; i++) {
-         printOut.print(cols[i].getUcd("1"));
+         if (cols[i].getUcd("1") != null) {
+            printOut.print(cols[i].getUcd("1"));
+         }
          if (i < cols.length-1) {
             printOut.print(separator);
          }
@@ -135,6 +137,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.2  2005/03/30 15:18:55  mch
+ debug etc for bad sql types
+
  Revision 1.1  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 

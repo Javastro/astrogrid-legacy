@@ -1,5 +1,5 @@
 /*
- * $Id: RdbmsTableMetaDocGenerator.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: RdbmsTableMetaDocGenerator.java,v 1.4 2005/03/30 15:18:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -139,7 +139,7 @@ public class RdbmsTableMetaDocGenerator extends DefaultServlet {
                   colTag.writeTag("Name", colName);
                   colTag.writeTag("Datatype", getType(sqlType));  //duplicate of attribute above, which includes width where nec,
                   colTag.writeTag("Description", getColumnValue(columns, "REMARKS")+" "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
-//                  colTag.writeTag("Link", new String[] { "text=''" }, " "); //add space so we don't get an empty tag <Description/> which is a pain to fill in
+//                  colTag.writeTag("Link", new String[] { "text=''" }, " ");
                   colTag.writeTag("Units", " "); //for humans
                   colTag.writeTag("DimEq", " "); //Dimension Equation
                   colTag.writeTag("Scale", " "); //Scaling Factor for dimension equation

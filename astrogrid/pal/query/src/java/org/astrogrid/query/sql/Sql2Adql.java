@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: Sql2Adql.java,v 1.2 2005/03/30 15:18:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,12 +25,21 @@ public class Sql2Adql {
       return Adql074Writer.makeAdql(SqlParser.makeQuery(sql));
    }
 
+   public static void main(String[] args) throws QueryException, IOException {
+      System.out.println(
+      translateToAdql074("SELECT * from TraceData As T1 WHERE T1.Keywords/date_obs > '2002-07-28T05:00:00.000' AND T1.Keywords/date_obs <= '2002-07-28T06:00:00.000'")
+      );
+      
    
+   }
 }
 /*
  $Log: Sql2Adql.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/30 15:18:55  mch
+ debug etc for bad sql types
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:23  mch
  Initial checkin

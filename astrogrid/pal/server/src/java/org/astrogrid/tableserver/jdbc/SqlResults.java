@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: SqlResults.java,v 1.4 2005/03/30 15:18:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -154,6 +154,11 @@ public class SqlResults extends TableResults {
                   colValues[i-1] = sqlResults.getObject(i);
                }
                catch (SQLException se) {
+                  log.error(se+" reading value of column "+i+" row "+row,se);
+                  colValues[i-1] = se.toString();
+               }
+               catch (Exception se) {
+                  log.error(se+" reading value of column "+i+" row "+row,se);
                   colValues[i-1] = se.toString();
                }
             }
@@ -210,6 +215,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.4  2005/03/30 15:18:55  mch
+ debug etc for bad sql types
+
  Revision 1.3  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 
