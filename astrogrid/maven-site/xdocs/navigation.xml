@@ -38,5 +38,8 @@
        <item name="Integration Tests" href="http://www.astrogrid.org/maven/build/log/maven-build-integrationTests.log" />
       </item>
     </menu>
+        <menu name="Releases">
+    	<item name="Itn05 Snapshots> href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05Snapshots"/>
+    </menu>
   </body>
 </project>
