@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcConnections.java,v 1.2 2004/03/15 17:07:25 mch Exp $
+ * $Id: JdbcConnections.java,v 1.3 2004/03/15 17:10:51 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -186,7 +186,9 @@ public class JdbcConnections {
       if (!driversStarted) {
          //read value
          String drivers = SimpleConfig.getSingleton().getString(JDBC_DRIVERS_KEY, null);
-         if (drivers != null) {
+         if (drivers == null) {
+            log.warn("No SQL drivers found from key "+JDBC_DRIVERS_KEY);
+         } else {
             //break down into lines
             StringTokenizer tokenizer = new StringTokenizer(drivers, ",");
             while (tokenizer.hasMoreTokens()) {
