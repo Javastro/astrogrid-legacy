@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.4 2004/08/18 16:27:15 mch Exp $
+ * $Id: SqlParser.java,v 1.5 2004/08/18 22:56:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -174,9 +174,11 @@ public class SqlParser  {
       if (broken.operand.length() == 0) {
          broken = breakExpression(expression.trim(), new String[] { ">=", "<=", "=", "<", ">"} );
       }
-      
+
+      //atomic, so might be a boolean function
       if (broken.operand.length() == 0) {
-         throw new IllegalArgumentException("'"+expression+"' is not a boolean expression (no space-separated logical/comparison operator AND, OR, <, > or =)");
+//         throw new IllegalArgumentException("'"+expression+"' is not a boolean expression (no space-separated logical/comparison operator AND, OR, <, > or =)");
+          return parseFunction(expression);
       }
       
       if (broken.operand.trim().equals("AND") || broken.operand.trim().equals("OR")) {
@@ -200,11 +202,13 @@ public class SqlParser  {
     */
    private NumericExpression parseNumeric(String expression) {
 
+      expression = expression.trim();
+      
       BrokenExpression broken = breakExpression(expression.trim(), new String[] {" - ", " + ", " / ", " * "} );
 
       if (broken.operand.length() == 0) {
+
          //atomic expression
-      
          try {
             Double.parseDouble(expression.trim());
             
@@ -212,7 +216,12 @@ public class SqlParser  {
          }
          catch (NumberFormatException nfe) {
             
-            //wasn't a number, must be a column reference
+            //wasn't a number, must be a column reference or a function
+            if ((expression.indexOf('(') > -1) &&
+                (expression.indexOf('(') < new String(expression+" ").indexOf(' '))) {
+               return parseFunction(expression);
+            }
+            
             return parseColumnRef(expression);
          }
       }
@@ -238,6 +247,29 @@ public class SqlParser  {
          tableName = (String) colAlias.get(tableName);
       }
       return new ColumnReference(tableName, colName);
+   }
+
+   /**
+    * Parses a function, ie a function name and a list of comma separated
+    * arguments within following brackets
+    */
+   private Function parseFunction(String expression) {
+      String funcName = expression.substring(0,expression.indexOf('(')).trim().toUpperCase();
+
+      String bracketed = expression.substring(expression.indexOf('(')+1).trim();
+      
+      assert bracketed.endsWith(")") : "Closing brackets not at end of function '"+expression+"'";
+
+      StringTokenizer argList = new StringTokenizer(bracketed.substring(1,bracketed.length()-1), ",");
+      Vector args = new Vector();
+      
+      while (argList.hasMoreTokens()) {
+         NumericExpression arg = parseNumeric(argList.nextToken());
+         args.add(arg);
+      }
+      
+      return new Function(funcName, (NumericExpression[]) args.toArray(new NumericExpression[] {}));
+      
    }
    
    /** Adds a table alias - these will be resolved to table names for the
@@ -417,6 +449,13 @@ public class SqlParser  {
       
       System.out.println(parser.whereClause);
       
+      //-- circle --
+      s = "CIRCLE(J2000, 12, 30, 6)";
+      
+      parser.parseWhere(s);
+      
+      System.out.println(parser.whereClause);
+
       //-- from --
       s = "STARS AS S, WIBBLES AS WI ,GALAXIES as g";
       parser.parseFrom(s);
@@ -435,12 +474,36 @@ public class SqlParser  {
       parser.parseStatement(s);
   
       System.out.println(parser);
+
+      //-- proper SQL --
+      s = "SELECT * FROM TABLE WHERE CIRCLE(J2000, 12, 30, 6)";
+      
+      parser.parseStatement(s);
+  
+      System.out.println(parser);
+
+      //-- proper SQL --
+      s = "SELECT * FROM TABLE WHERE AVG(TABLE.RA) > 12";
+      
+      parser.parseStatement(s);
+  
+      System.out.println(parser);
+
+      //-- proper SQL --
+      s = "SELECT * FROM TABLE WHERE SUM(TABLE.RA * 2) > 12 AND (TABLE.T * 4 > LOG(TABLE.V) )";
+      
+      parser.parseStatement(s);
+  
+      System.out.println(parser);
    }
    
 }
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.5  2004/08/18 22:56:18  mch
+ Added Function parsing
+
  Revision 1.4  2004/08/18 16:27:15  mch
  Combining ADQL generators from SQL parser and query builder
 

@@ -1,5 +1,5 @@
 /*
- * $Id: NumericFunction.java,v 1.1 2004/08/18 09:17:36 mch Exp $
+ * $Id: Function.java,v 1.1 2004/08/18 22:56:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,22 +11,22 @@ package org.astrogrid.datacenter.query.criteria;
  * Represents a general numeric function with a name and a list of arguments
  */
 
-public class NumericFunction implements NumericExpression {
+public class Function implements NumericExpression, Condition, StringExpression {
    
    String funcName = null;
    NumericExpression[] funcArgs = null;
    
-   public NumericFunction(String name, NumericExpression[] args) {
+   public Function(String name, NumericExpression[] args) {
       this.funcName = name;
       this.funcArgs = args;
    }
    
    public String toString() {
-      String s = "[FUNC '"+funcName+"'] ";
+      String s = "[FUNC '"+funcName+"'  ";
       for (int i = 0; i < funcArgs.length; i++) {
          s = s + funcArgs[i]+", ";
       }
-      return s;
+      return s.substring(0, s.length()-2)+"]";
    }
 
    public String getName() { return funcName; }
@@ -35,7 +35,10 @@ public class NumericFunction implements NumericExpression {
 }
 
 /*
-$Log: NumericFunction.java,v $
+$Log: Function.java,v $
+Revision 1.1  2004/08/18 22:56:18  mch
+Added Function parsing
+
 Revision 1.1  2004/08/18 09:17:36  mch
 Improvement: split literals to strings vs numerics, added functions, better class/interface structure, brackets, etc
 
