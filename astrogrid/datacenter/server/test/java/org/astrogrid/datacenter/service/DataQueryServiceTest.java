@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.11 2003/12/01 20:58:42 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.12 2003/12/02 18:00:03 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,7 +31,7 @@ import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
+import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
@@ -190,6 +190,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.12  2003/12/02 18:00:03  mch
+Moved MySpaceDummyDelegate
+
 Revision 1.11  2003/12/01 20:58:42  mch
 Abstracting coarse-grained plugin
 
