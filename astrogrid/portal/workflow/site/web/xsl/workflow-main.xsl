@@ -52,7 +52,15 @@
          <xsl:if test="$action = 'view'">
             <xsl:call-template name="list_workflow"/>
             <xsl:call-template name="view_workflow" />             
-         </xsl:if>   
+         </xsl:if>
+         <xsl:if test="$action = 'edit'">
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="edit_workflow" />             
+         </xsl:if>
+         <xsl:if test="$action = 'copy'">
+            <xsl:call-template name="list_workflow"/>
+            <xsl:call-template name="copy_workflow" />             
+         </xsl:if>                     
          <xsl:if test="$action = 'delete'">
             <xsl:call-template name="list_workflow"/>
             <xsl:call-template name="delete_workflow" />             
@@ -63,11 +71,17 @@
          <xsl:if test="$action = 'submit-workflow'">
             <xsl:call-template name="list_workflow"/>             
          </xsl:if>
+         <xsl:if test="$action = 'copy-workflow'">
+            <xsl:call-template name="list_workflow"/>             
+         </xsl:if>                  
          <xsl:if test="$action = 'save-workflow'">
             <xsl:call-template name="list_workflow"/>
             <xsl:call-template name="list_query" />
             <xsl:call-template name="list_tools" />                         
          </xsl:if>
+         <xsl:if test="$action = 'edit-workflow'">
+            <xsl:call-template name="create_workflow"/>             
+         </xsl:if>                  
          <xsl:if test="$action = 'remove-workflow-from-session'">
             <xsl:call-template name="list_workflow"/>
             <xsl:call-template name="list_query" />
@@ -118,11 +132,14 @@
                <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=new">New</a></td>
                <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=submit">Submit</a></td>
                <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=view">View</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=edit">Edit</a></td>
+               <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=copy">Copy</a></td>               
                <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=delete">Delete</a></td>                  
                <td class="ag-content-tab-bottom"><a class="ag-content-tab-link" href="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=templates">Templates</a></td>
             </tr>
          </table>
       </xsl:template>  
+
   
       <!--+
           | Display workflows currently stored in MySpace
@@ -406,6 +423,44 @@
                   <td><input type="text" name="workflow-name" /></td>
                   <td><input type="submit" value="Delete" /></td>
                   <input type="hidden" name="action" value="delete-workflow" />
+               </tr>                                                              
+            </table> 
+         </form>
+      </xsl:template>
+
+      <!--+
+          | Edit workflow
+          +-->   
+      <xsl:template name="edit_workflow">
+         <form name="edit_form" method="get">               
+            <table cellpadding="0" cellspacing="0">                      
+               <p />                                     
+               <tr>
+                  <td>Job Name:</td>
+                  <td><input type="text" name="workflow-name" /></td>
+                  <td><input type="submit" value="Edit" /></td>
+                  <input type="hidden" name="action" value="edit-workflow" />
+               </tr>                                                              
+            </table> 
+         </form>
+      </xsl:template>
+
+      <!--+
+          | Copy workflow
+          +-->   
+      <xsl:template name="copy_workflow">
+         <form name="edit_form" method="get">               
+            <table cellpadding="0" cellspacing="0">                      
+               <p />                                     
+               <tr>
+                  <td>Job Name:</td>
+                  <td><input type="text" name="workflow-name" /></td>
+               </tr>
+               <tr>
+                  <td>New Job Name:</td>
+                  <td><input type="text" name="workflow-new-name" /></td>
+                  <td><input type="submit" value="Copy" /></td>                   
+                  <input type="hidden" name="action" value="copy-workflow" />
                </tr>                                                              
             </table> 
          </form>
