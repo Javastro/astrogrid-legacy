@@ -22,11 +22,11 @@ $SCRIPTHOME/maven-build-new.sh workflow-objects >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh datacenter >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build.sh jes >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh jes >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh portal >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
-$SCRIPTHOME/maven-build.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-maven-site.sh >> $BUILD_DIR/$LOG_FILE 2>&1
