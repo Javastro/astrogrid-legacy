@@ -3,11 +3,7 @@ package org.astrogrid.jes.impl;
 import org.apache.log4j.Logger;
 import org.astrogrid.jes.jobcontroller.JobController;
 import org.astrogrid.jes.i18n.*;
-import org.astrogrid.jes.job.JobFactory ;
-import org.astrogrid.jes.job.Job ;
-import org.astrogrid.jes.job.JobStep ;
-import org.astrogrid.jes.job.JobDocDescriptor ;
-import org.astrogrid.jes.job.JobException ;
+import org.astrogrid.jes.job.* ;
 
 import org.w3c.dom.* ;
 
@@ -339,10 +335,12 @@ public class JobFactoryImpl implements JobFactory {
 			   count = 0 ;
 			Iterator
 			   iterator = job.getJobSteps() ;
+			JobStep
+			   jobStep = null ;
 		   
 			while ( iterator.hasNext() ) {
-				count++ ;
-			    insertOneJobStep( (JobStep)iterator.next(), count ) ;			
+				jobStep.setStepNumber( ++count ) ;
+			    insertOneJobStep( (JobStep)iterator.next() ) ;			
 			} 
 
 		}
@@ -353,7 +351,7 @@ public class JobFactoryImpl implements JobFactory {
 	} // end of createJobSteps(Job)
   
   
-	private void insertOneJobStep ( JobStep jobStep, int stepId ) throws JobException {
+	private void insertOneJobStep ( JobStep jobStep ) throws JobException {
 		if( TRACE_ENABLED ) logger.debug( "insertOneJobStep(): exit") ;   
 			
 		Statement   
@@ -364,7 +362,7 @@ public class JobFactoryImpl implements JobFactory {
 			Object []
 			   inserts = new Object[6] ;
 			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
-			inserts[1] = new Integer( stepId ) ;  // unique for step within job
+			inserts[1] = jobStep.getStepNumber() ;  // unique for step within job
 			inserts[2] = jobStep.getName() ;
 			inserts[3] = jobStep.getParent().getId() ;            // foreign key to parent
 
@@ -372,7 +370,7 @@ public class JobFactoryImpl implements JobFactory {
 			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
 			statement = getConnection().createStatement() ;
 			statement.executeUpdate( updateString );
-			createQuery( jobStep ) ;
+			createQuery( jobStep.getQuery() ) ;
 		}
 		catch( SQLException sex ) {
 			Message
@@ -388,29 +386,26 @@ public class JobFactoryImpl implements JobFactory {
 	} // end of insertOneJobStep()
 	
   
-	public void createQuery( JobStep jobStep ) throws JobException  {
+	public void createQuery( Query query ) throws JobException  {
 		 if( TRACE_ENABLED ) logger.debug( "createQuery(): entry") ;  
 		 	
-		 Statement   
+		 Statement    
 			statement = null ;
     	   
 		 try {
 			
 			 Object []
-				inserts = new Object[6] ;
-			 inserts[0] = JobController.getProperty( JOB_TABLENAME ) ;
-			 inserts[1] = job.getId() ;
-			 inserts[2] = job.getName() ;
-			 inserts[3] = new Timestamp( job.getDate().getTime() ).toString(); //JBL Note: this may give us grief
-			 inserts[4] = job.getUserId() ;
-			 inserts[5] = job.getCommunity() ;
+				inserts = new Object[3] ;
+			 inserts[0] = JobController.getProperty( QUERY_TABLENAME ) ;
+			 inserts[1] = query.getParent().getParent().getId() ;
+			 inserts[2] = query.getParent().getStepNumber() ;
 
 			 String
 				updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
 			 statement = getConnection().createStatement() ;
 			 statement.executeUpdate( updateString );
-			 job.setDirty( false ) ;
-			 createJobSteps( job ) ;
+			 createCatalogs( query ) ;
+
 		 }
 		 catch( SQLException sex ) {
 			 Message
@@ -424,7 +419,177 @@ public class JobFactoryImpl implements JobFactory {
 		 }
 		
 	 } // end of createJob()  
-	 
+	
+	
+	private void createCatalogs( Query query ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   
+					
+		try {
+			
+			int
+			   count = 0 ;
+			Iterator
+			   iterator = query.getCatalogs() ;
+		   
+			while ( iterator.hasNext() ) {
+				insertOneCatalog( (Catalog)iterator.next() ) ;			
+			} 
+
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "createJobSteps(): exit") ;   	
+		}
+			
+	} // end of createCatalogs(Job)
+
+
+	private void insertOneCatalog ( Catalog catalog ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "insertOneCatalog(): exit") ;   
+			
+		Statement   
+		   statement = null ;
+					
+		try {
+
+			Object []
+			   inserts = new Object[6] ;
+			inserts[0] = JobController.getProperty( CATALOG_TABLENAME ) ;
+			inserts[1] = catalog.getName() ;
+			inserts[2] = catalog.getParent().getParent().getStepNumber() ;
+			inserts[3] = catalog.getParent().getParent().getParent().getId() ;            
+
+			String
+			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			statement = getConnection().createStatement() ;
+			statement.executeUpdate( updateString );
+			createTables( catalog ) ;
+			createServices( catalog ) ;
+		}
+		catch( SQLException sex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			logger.error( message.toString(), sex ) ;
+			throw new JobException( message, sex );    		
+		}
+		finally {
+			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+			if( TRACE_ENABLED ) logger.debug( "insertOneCatalog(): exit") ;   	
+		}
+				
+	} // end of insertOneCatalog()
+	
+	
+	private void createTables( Catalog catalog ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "createTables(): exit") ;   
+					
+		try {
+			
+			Iterator
+			   iterator = catalog.getTables() ;
+		   
+			while ( iterator.hasNext() ) {
+				insertOneTable( (Table)iterator.next() ) ;			
+			} 
+
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "createTables(): exit") ;   	
+		}
+			
+	} // end of createTables(Job) 
+	
+	
+	private void createServices( Catalog catalog ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "createServices(): exit") ;   
+					
+		try {
+			
+			Iterator
+			   iterator = catalog.getServices() ;
+		   
+			while ( iterator.hasNext() ) {
+				insertOneService( (Service)iterator.next() ) ;			
+			} 
+
+		}
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "createServices(): exit") ;   	
+		}
+			
+	} // end of createTables(Job) 
+	
+	
+	private void insertOneTable( Table table ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "insertOneTable(): exit") ;   
+			
+		Statement   
+		   statement = null ;
+					
+		try {
+
+			Object []
+			   inserts = new Object[6] ;
+			inserts[0] = JobController.getProperty( TABLE_TABLENAME ) ;
+			inserts[1] = table.getName() ;
+			inserts[2] = table.getParent().getName() ;     
+			inserts[3] = table.getParent().getParent().getParent().getStepNumber() ;
+			inserts[4] = table.getParent().getParent().getParent().getParent().getId() ;                
+
+			String
+			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			statement = getConnection().createStatement() ;
+			statement.executeUpdate( updateString );
+		}
+		catch( SQLException sex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			logger.error( message.toString(), sex ) ;
+			throw new JobException( message, sex );    		
+		}
+		finally {
+			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+			if( TRACE_ENABLED ) logger.debug( "insertOneTable(): exit") ;   	
+		}
+				
+	} // end of insertOneTable()
+	
+
+	private void insertOneService( Service service ) throws JobException {
+		if( TRACE_ENABLED ) logger.debug( "insertOneService(): exit") ;   
+			
+		Statement   
+		   statement = null ;
+					
+		try {
+
+			Object []
+			   inserts = new Object[6] ;
+			inserts[0] = JobController.getProperty( SERVICE_TABLENAME ) ;
+			inserts[1] = service.getName() ;
+			inserts[2] = service.getUrl() ;            
+			inserts[3] = service.getParent().getName() ;     
+			inserts[4] = service.getParent().getParent().getParent().getStepNumber() ;
+			inserts[5] = service.getParent().getParent().getParent().getParent().getId() ;   
+			 
+			String
+			   updateString = MessageFormat.format( JOB_INSERT_TEMPLATE, inserts ) ; 			
+			statement = getConnection().createStatement() ;
+			statement.executeUpdate( updateString );
+		}
+		catch( SQLException sex ) {
+			Message
+				message = new Message( ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT ) ;
+			logger.error( message.toString(), sex ) ;
+			throw new JobException( message, sex );    		
+		}
+		finally {
+			if( statement != null) { try { statement.close(); } catch( SQLException sex ) {;} }
+			if( TRACE_ENABLED ) logger.debug( "insertOneService(): exit") ;   	
+		}
+				
+	} // end of insertOneService()
+	
+		
 	 
 	private String generateUniqueJobURN( Job job )  {
 		

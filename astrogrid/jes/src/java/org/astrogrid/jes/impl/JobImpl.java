@@ -58,7 +58,8 @@ public class JobImpl extends Job {
 	   jobURN = "",
 	   name = "",
 	   community = "",
-	   userId = "" ;
+	   userId = "",
+	   status ;
 	   
 	private Date
 	   date = null ;
@@ -191,5 +192,8 @@ public class JobImpl extends Job {
 
 	public void setDocument( Document submitDoc ) { this.submitDoc = submitDoc; }
 	public Document getDocument() { return submitDoc; }
+
+	public void setStatus(String status) { this.status = status; }
+	public String getStatus() {	return status; }
 
 } // end of class JobImpl

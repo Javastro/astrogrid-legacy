@@ -21,6 +21,12 @@ public abstract class Job {
 	private static Logger 
 		logger = Logger.getLogger( Job.class ) ;
 		
+	public static  final String
+		STATUS_INITIALIZED = "INITIALIZED",  // Created but not yet running
+		STATUS_RUNNING = "RUNNING",          // Currently executing
+		STATUS_COMPLETED = "COMPLETED",      // Completed OK
+		STATUS_IN_ERROR = "ERROR" ;          // Something bad happened
+		
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL = "AGJESE00140" ;
         
@@ -85,5 +91,9 @@ public abstract class Job {
 	
 	public abstract void setDocument( Document submitDoc ) ; 
 	public abstract Document getDocument() ;
+	
+	public abstract void setStatus(String status) ;
+	public abstract String getStatus() ;
+
 		
 } // end of class Job

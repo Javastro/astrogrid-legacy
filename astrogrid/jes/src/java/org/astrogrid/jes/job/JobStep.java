@@ -13,12 +13,24 @@ public class JobStep {
 	
 	private static Logger 
 		logger = Logger.getLogger( JobStep.class ) ;
+		
+	public static  final String
+		STATUS_INITIALIZED = "INITIALIZED",  // Created but not yet running
+		STATUS_RUNNING = "RUNNING",          // Currently executing
+		STATUS_COMPLETED = "COMPLETED",      // Completed OK
+		STATUS_IN_ERROR = "ERROR" ;          // Something bad happened
+		
+    private Integer
+        stepNumber = null ;
 	 
 	private String
 		name = null ;
 	    
 	private Query
 		query = null ;
+		
+	private String
+	    status ;
 		
 	private Job
 	    parent ;
@@ -66,6 +78,13 @@ public class JobStep {
 
 	public void setParent(Job parent) { this.parent = parent; }
 	public Job getParent() { return parent; }
+
+	public void setStepNumber(int stepNumber) {	this.stepNumber = new Integer( stepNumber ) ; }
+	public void setStepNumber( Integer stepNumber ) { this.stepNumber = stepNumber ; }
+	public Integer getStepNumber() { return stepNumber ; }
+
+	public void setStatus(String status) { this.status = status; }
+	public String getStatus() {	return status; }
 
     
 } // end of class JobStep 

@@ -11,7 +11,8 @@ import org.apache.log4j.Logger;
 import org.astrogrid.jes.i18n.*;
 import org.w3c.dom.* ;
 import java.util.Set ;
-import java.util.HashSet; 
+import java.util.HashSet;
+import java.util.Iterator ; 
 
 /**
  * The <code>Catalog</code> class represents operations within an 
@@ -74,7 +75,7 @@ public class Catalog {
 				    element = (Element) nodeList.item(i) ;
 				
 				    if( element.getTagName().equals( JobDocDescriptor.TABLE_ELEMENT ) ) {
-                        getTables().add( new Table( this, element ) ) ;
+                        tables.add( new Table( this, element ) ) ;
 				    }
 
 				}
@@ -91,7 +92,7 @@ public class Catalog {
 					element = (Element) nodeList.item(i) ;
 				
 					if( element.getTagName().equals( JobDocDescriptor.SERVICE_ELEMENT ) ) {
-						getServices().add( new Service( this, element ) ) ;
+						services.add( new Service( this, element ) ) ;
 					}
 
 				}
@@ -116,9 +117,9 @@ public class Catalog {
 	public void setName(String name) { this.name = name; }
 	public String getName() { return name; }
 
-	public Set getTables() { return tables; }
+	public Iterator getTables() { return tables.iterator() ; }
 
-	public Set getServices() { return services; }
+	public Iterator getServices() { return services.iterator() ; }
 
 	public void setParent(Query parent) { this.parent = parent; }
 	public Query getParent() { return parent; }	

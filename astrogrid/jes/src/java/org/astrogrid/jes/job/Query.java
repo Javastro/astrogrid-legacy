@@ -12,6 +12,7 @@ import org.astrogrid.jes.i18n.*;
 import org.w3c.dom.* ;
 import java.util.Set ;
 import java.util.HashSet ;
+import java.util.Iterator ;
 
 public class Query {
 	
@@ -105,6 +106,8 @@ public class Query {
 
 	public void setParent(JobStep parent) {	this.parent = parent; }
 	public JobStep getParent() { return parent; }
+
+	public Iterator getCatalogs() { return catalogs.iterator() ;	}
 	
 
 } // end of class Query
