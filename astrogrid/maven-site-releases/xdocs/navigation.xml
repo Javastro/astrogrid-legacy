@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: navigation.xml,v 1.1 2004/03/04 02:26:21 jdt Exp $ -->
+<!-- $Id: navigation.xml,v 1.2 2004/03/04 10:53:50 jdt Exp $ -->
 <project name="AstroGrid">
 
   <title>AstroGrid Project</title>
@@ -10,8 +10,8 @@
        <item name="AstroGrid Wiki" href="http://wiki.astrogrid.org/"/>
     </links>
     <menu name="Release Documentation">
-      <item name="Itn05 SNAPSHOT"     href="http://www.astrogrid.org/maven/docs/snapshot/index.html"/>
-      <item name="Itn04_1"     href="http://www.astrogrid.org/maven/docs/releases/index.html"/>
+      <item name="Itn05 SNAPSHOT"     href="http://www.astrogrid.org/maven/docs/snapshot/"/>
+      <item name="Itn04_1"     href="http://www.astrogrid.org/maven/docs/release/"/>
       <item name="Itn04"     href="http://wiki.astrogrid.org/bin/view/Astrogrid/SoftwareRelease"/>
     </menu>
     <menu name="Binaries">
