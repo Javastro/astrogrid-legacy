@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.4 2004/03/01 23:35:40 mch Exp $
+ * $Id: Agsl.java,v 1.5 2004/03/02 01:27:00 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -127,7 +127,8 @@ public class Agsl
    /** Returns true if the given string is an attempt to be an agsl */
    public static boolean isAgsl(String agsl)
    {
-      return agsl.toLowerCase().startsWith(SCHEME+":");
+      return agsl.toLowerCase().startsWith(SCHEME+":") ||
+         agsl.toLowerCase().startsWith("vospace:"); //it04.1 scheme
    }
    
    /** Returns the myspace reference */
@@ -139,7 +140,7 @@ public class Agsl
          return url.getProtocol()+"://"+url.getAuthority()+url.getPath();
       }
       else {
-         return msrl.getDelegateEndpoint().toString();
+         return msrl.SCHEME+":"+msrl.getDelegateEndpoint().toString();
       }
    }
    
@@ -216,6 +217,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.5  2004/03/02 01:27:00  mch
+Minor fixes
+
 Revision 1.4  2004/03/01 23:35:40  mch
 Added getFilename
 

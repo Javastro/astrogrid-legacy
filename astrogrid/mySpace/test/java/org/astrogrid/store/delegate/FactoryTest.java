@@ -1,5 +1,5 @@
 /*
- * $Id: FactoryTest.java,v 1.1 2004/03/01 22:35:09 mch Exp $
+ * $Id: FactoryTest.java,v 1.2 2004/03/02 01:25:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -38,7 +38,7 @@ public class FactoryTest extends TestCase {
       //test passing in a reference just to the service
       assertTrue(StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("astrogrid:store:file://")) instanceof LocalFileStore);
       assertTrue(StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("astrogrid:store:ftp://a.server.authority/path/path/file.ext")) instanceof FtpStore);
-      assertTrue(StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("astrogrid:store:myspace:http://a.delegate/endpoint#path/path/file.ext")) instanceof MySpaceIt04ServerDelegate);
+      assertTrue(StoreDelegateFactory.createDelegate(User.ANONYMOUS, new Agsl("astrogrid:store:myspace:http://a.delegate/endpoint#path/path/file.ext")) instanceof MySpaceIt04Delegate);
    }
 
    public void testVoSpaceResolver() throws IOException
@@ -62,6 +62,9 @@ public class FactoryTest extends TestCase {
 
 /*
  $Log: FactoryTest.java,v $
+ Revision 1.2  2004/03/02 01:25:39  mch
+ Minor fixes
+
  Revision 1.1  2004/03/01 22:35:09  mch
  Tests for StoreClient
 

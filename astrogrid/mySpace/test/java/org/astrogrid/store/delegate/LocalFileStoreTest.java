@@ -1,4 +1,4 @@
-/*$Id: LocalFileStoreTest.java,v 1.2 2004/03/01 23:44:10 mch Exp $
+/*$Id: LocalFileStoreTest.java,v 1.3 2004/03/02 01:25:39 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,9 +25,9 @@ import org.astrogrid.store.Agsl;
 public class LocalFileStoreTest extends StoreClientTest {
 
    
-   private static final String TESTSTORE = "astrogrid:store:file://LocalFileStoreTest";
+   private static final String TESTSTORE = "file://LocalFileStoreTest";
 
-   private static final String TESTSTORE2 = "astrogrid:store:file://LocalFileStoreTest2";
+   private static final String TESTSTORE2 = "file://LocalFileStoreTest2";
    
    public void testStoreAccess() throws IOException
    {
@@ -95,6 +95,9 @@ public class LocalFileStoreTest extends StoreClientTest {
 
 /*
 $Log: LocalFileStoreTest.java,v $
+Revision 1.3  2004/03/02 01:25:39  mch
+Minor fixes
+
 Revision 1.2  2004/03/01 23:44:10  mch
 Factored out common myspace tests
 

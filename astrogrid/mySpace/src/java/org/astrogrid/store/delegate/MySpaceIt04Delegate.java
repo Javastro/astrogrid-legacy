@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.1 2004/03/02 00:15:39 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.2 2004/03/02 01:27:00 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -48,6 +48,10 @@ public class MySpaceIt04Delegate implements StoreClient
    {
       operator = anOperator;
       
+      if (endPoint.startsWith(Msrl.SCHEME)) {
+         endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
+      }
+      
       if (endPoint.startsWith("http") && (endPoint.indexOf("/services/MySpaceManager") == -1))
       {
          endPoint = endPoint + "/services/MySpaceManager";
@@ -73,14 +77,15 @@ public class MySpaceIt04Delegate implements StoreClient
     * Puts the given string into the given location
     */
    public void putString(String contents, String targetPath, boolean append) throws StoreException {
-      
+ 
+      boolean success = false;
       try {
          String action = MySpaceClient.OVERWRITE;
          if (append) action = MySpaceClient.APPEND;
          
          Log.trace("saveDataHolding("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+contents+",not used,"+action);
 
-         depIt04Delegate.saveDataHolding(operator.getUserId(),
+         success = depIt04Delegate.saveDataHolding(operator.getUserId(),
                                      operator.getCommunity(),
                                      operator.getToken(),
                                      targetPath,
@@ -90,7 +95,10 @@ public class MySpaceIt04Delegate implements StoreClient
                                     );
       }
       catch (Exception e) {
-         throw new StoreException("Failed to putString", e);
+         throw new StoreException("Failed to putString to '"+targetPath+"'", e);
+      }
+      if (!success) {
+         throw new StoreException("Failed to putString to "+targetPath+"'");
       }
    }
    
@@ -201,11 +209,12 @@ public class MySpaceIt04Delegate implements StoreClient
 
       String action = MySpaceClient.OVERWRITE;
       if (append) action = MySpaceClient.APPEND;
-         
+      boolean success = false;
+      
       try {
          Log.trace("saveDataHoldingURL("+operator.getUserId()+","+operator.getCommunity()+","+operator.getToken()+","+targetPath+","+source+",not used,"+action);
 
-         depIt04Delegate.saveDataHoldingURL(
+         success = depIt04Delegate.saveDataHoldingURL(
                                      operator.getUserId(),
                                      operator.getCommunity(),
                                      operator.getToken(),
@@ -217,6 +226,9 @@ public class MySpaceIt04Delegate implements StoreClient
       }
       catch (Exception e) {
          throw new StoreException("Failed to saveDataHoldingURL from source '"+source+"' to '"+targetPath, e);
+      }
+      if (!success) {
+         throw new StoreException("Failed to putString to "+targetPath+"'");
       }
    }
 
@@ -351,6 +363,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.2  2004/03/02 01:27:00  mch
+Minor fixes
+
 Revision 1.1  2004/03/02 00:15:39  mch
 Renamed MyspaceIt04Delegate from misleading ServerDelegate
 
