@@ -148,34 +148,39 @@
       </properties>
     </dependency>
     <!-- fits small dependency for exist db -->
-	<dependency>
-	    <groupId>org.astrogrid</groupId>
-	    <artifactId>astrogrid-exist-server</artifactId>
-		<version>${pom.currentVersion}</version>
-	    <type>jar</type>
-	    <url>http://www.astrogrid.org/</url>
-	    <properties>
-		    <war.bundle>true</war.bundle>
-		</properties>            
-	</dependency>
-    
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-exist-server</artifactId>
+                <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                    <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+
     <!-- dsa back ends -->
-    <dependency>
+    <dependency><!-- again, has a fake artifactId, so we can depend on the jar and zip -->
       <groupId>org.astrogrid</groupId>
-      <artifactId>cdsdelegate</artifactId>
+      <artifactId>cdsdelegate-jar</artifactId>
       <version>${pom.currentVersion}</version>
+      <type>jar</type>
+      <jar>cdsdelegate-${pom.currentVersion}.jar</jar>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-    <dependency>
+    <dependency><!-- ditto -->
       <groupId>org.astrogrid</groupId>
-      <artifactId>secdelegate</artifactId>
+      <artifactId>secdelegate-jar</artifactId>
       <version>${pom.currentVersion}</version>
+      <type>jar</type>
+      <jar>secdelegate-${pom.currentVersion}.jar</jar>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
+
     <dependency> <!-- needs to be in WEB-INF/classes, apparently.-->
       <groupId>org.astrogrid</groupId>
       <type>jar</type>
