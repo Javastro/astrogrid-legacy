@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/01/09 07:25:42 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/01/09 07:28:23 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.5  2004/01/09 07:28:23  dave
+    |   Fixed duplicate generator error
+    |
     |   Revision 1.4  2004/01/09 07:25:42  dave
     |   Changed redirect to welcome page
     |
@@ -89,6 +92,7 @@
 						| If we are logged in, display the nice page.
 						+-->
 					<map:generate type="file" src="xml/login-pass.xml"/>
+					<map:serialize type="xml"/>
 				</map:act>
 				<!--+
 					| If we are not logged in, display the login form.
