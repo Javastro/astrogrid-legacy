@@ -190,11 +190,18 @@ To install an AstroGrid MySpace service proceed as follows.
 
      astrogrid/mySpace/xdocs/createregistry_v02.lis
 
-8. Go to directory:
+8.  Move the file
+
+    $CATALINA_HOME/webapps/astrogrid-mySpace/ASTROGRID_myspacemanagerconfig.xml
+
+    to the directory:
 
      $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes
+     
+     (The file is not automatically placed in this directory so that existing configurations are not lost if you are
+     updating an installation)
 
-   and edit file:
+   and then edit file:
 
      ASTROGRID_myspacemanagerconfig.xml
 
