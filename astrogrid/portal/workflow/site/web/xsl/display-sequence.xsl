@@ -76,9 +76,9 @@
        |
        +-->
     <xsl:template match="sequence" mode="job-status">
-      <div style="display:none "><xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
         <xsl:choose>        
-          <xsl:when test="@key = '/sequence'"> 
+          <xsl:when test="@key = '/sequence'">
+         <div style="display: "><xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
             <form name="sequence_form" id="sequence_form">            
               <table border="2" cellspacing="0" cellpadding="0">
                 <tr>
@@ -142,9 +142,11 @@
                   </td>
                 </tr>                        
               </table>           
-            </form> 
+            </form>
+            </div> 
           </xsl:when>
           <xsl:otherwise>
+          <div style="display: none"><xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>              
             <form name="sequence_form" id="sequence_form">
               <table width="10%"  border="2" cellspacing="0" cellpadding="0">
                 <tr>                
@@ -165,9 +167,10 @@
                 </tr>
               </table>
             </form>
+          </div>
           </xsl:otherwise>
         </xsl:choose>               
-      </div>
+      
     <xsl:apply-templates select="*" mode="job-status"/>      
     </xsl:template>            
                         

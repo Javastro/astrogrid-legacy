@@ -28,8 +28,8 @@
      * @param id        id of div
      * @param count     count of executionRecord an activity contains - if greater than 10 do not show footer
      */
-    var table_selected = false;
-	var previously_selected_table = null;
+    var table_selected = true;
+	var previously_selected_table = '/sequence';
     function show_table(id, footer)    
     {     
         if (table_selected==false) 
