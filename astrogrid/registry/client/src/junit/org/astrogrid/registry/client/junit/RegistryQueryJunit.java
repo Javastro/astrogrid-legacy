@@ -64,6 +64,7 @@ public class RegistryQueryJunit extends TestCase{
        rs = RegistryDelegateFactory.createQuery();
        rs.conf.setProperty("vm05.astrogrid.org/MyspaceManager",cacheDir+"/Myspace.xml");
        rs.conf.setProperty("org.astrogrid.registry.junit.authQuery1",junitDir+"/AuthorityQuery1.xml");
+       rs.conf.setProperty("org.astrogrid.registry.junit.basicQuery1",junitDir+"/BasicQuery1.xml");       
        junitEndPoint = rs.conf.getUrl("org.astrogrid.registry.admin.junit.endpoint",null);       
        assertNotNull(rs);
        if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -127,6 +128,18 @@ public class RegistryQueryJunit extends TestCase{
       assertNotNull(responseDoc);
       if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
    }
+
+   public void testSubmitQueryContainsBasicQuery() throws Exception {
+      if (DEBUG_FLAG) System.out.println("Begin testSubmitQueryContainsBasicQuery");
+      if(junitEndPoint == null) return;      
+      rs = RegistryDelegateFactory.createQuery(rs.conf.getUrl("org.astrogrid.registry.query.junit.endpoint"));
+      if (DEBUG_FLAG) System.out.println("Endpoint = " + rs.conf.getString("org.astrogrid.registry.query.junit.endpoint"));             
+      Document doc = rs.conf.getDom("org.astrogrid.registry.junit.basicQuery1");  
+      Document responseDoc = rs.submitQueryDOM(doc);
+      assertNotNull(responseDoc);
+      if (DEBUG_FLAG) System.out.println("received " + XMLUtils.DocumentToString(responseDoc));         
+   }
+ 
  
    
 } 
