@@ -1,4 +1,4 @@
-/* $Id: ReminderPageTest.java,v 1.2 2004/04/21 14:23:39 jdt Exp $
+/* $Id: ReminderPageTest.java,v 1.3 2004/04/21 15:50:17 jdt Exp $
  * Created on Apr 7, 2004 by jdt
  * 
  * Copyright (C) AstroGrid. All rights reserved. 
@@ -120,7 +120,7 @@ public final class ReminderPageTest extends WebTestCase {
      * this is called. I think I might regret this one.
      *
      */
-    public void testRegister() {
+    public void testReminder() {
         setFormElement(NAME,"Ma Baker");
         setFormElement(EMAIL,"boney@emm.com"); 
         submit();
@@ -132,6 +132,9 @@ public final class ReminderPageTest extends WebTestCase {
 
 /*
  *  $Log: ReminderPageTest.java,v $
+ *  Revision 1.3  2004/04/21 15:50:17  jdt
+ *  rename of method
+ *
  *  Revision 1.2  2004/04/21 14:23:39  jdt
  *  typos in test names.
  *
