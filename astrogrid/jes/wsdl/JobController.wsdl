@@ -1,35 +1,45 @@
-<?xml version="1.0"?>
-<definitions    name="JobControllerService"
-                targetNameSpace="http//www.astrogrid.org/wsdl/JobController.wsdl"
-                xmlns="http//schemas.xmlsoap.org/wsdl/"
-                xmlns:soap="http//schemas.xmlsoap.org/wsdl/soap"
-                xmlns:tns="http//www.astrogrid.org/wsdl/JobController.wsdl"
-                xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-
-        <message name="submitJobRequest">
-                <part name="submitXML" type="xsd:string"/>
-        </message>
-        <message name="submitJobResponse">
-                <part name="submitXML" type="xsd:string"/>
-        </message>
-
-        <portType name="JobControllerPortType">
-                <operation name="submitJob">
-                        <input message="tns:submitJobRequest" />
-                        <output message="tns:submitJobResponse" />
-                </operation>
-        </portType>
-
-        <binding name="JobControllerBinding" type="tns:JobControllerPortType">
-                <soap:binding style ="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
-        </binding>
-
-        <service name="JobControllerService"> 
-                <port binding="tns:JobControllerBinding" name="JobControllerPortType">
-                <documentation>The JobControllerService is the interface whereby jobs
-                are submitted for processing within AstroGrid. Internally AstroGrid will store,
-                schedule and monitor their execution.  
-                </documentation>
-                <soap:address location="http://hydra.star.le.ac.uk:8080/axis/services/JobController">
-        </service>
-</definitions>
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="jobController.astrogrid.org" 
+                  xmlns:impl="jobController.astrogrid.org" 
+                  xmlns:intf="jobController.astrogrid.org" 
+                  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns="http://schemas.xmlsoap.org/wsdl/">
+   <wsdl:types/>
+   <wsdl:message name="submitJobRequest">
+      <wsdl:part name="jobXML" type="xsd:string"/>
+   </wsdl:message>
+   <wsdl:message name="submitJobResponse">
+      <wsdl:part name="submitJobReturn" type="xsd:string"/>
+   </wsdl:message>
+   <wsdl:portType name="JobController">
+      <wsdl:operation name="submitJob" parameterOrder="jobXML">
+         <wsdl:input name="submitJobRequest" message="impl:submitJobRequest"/>
+         <wsdl:output name="submitJobResponse" message="impl:submitJobResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="JobControllerServiceSoapBinding" type="impl:JobController">
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="submitJob">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="submitJobRequest">
+            <wsdlsoap:body use="encoded" 
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+                           namespace="jobController.astrogrid.org"/>
+         </wsdl:input>
+         <wsdl:output name="submitJobResponse">
+            <wsdlsoap:body use="encoded" 
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+                           namespace="jobController.astrogrid.org"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="JobControllerService">
+      <wsdl:port name="JobControllerService" binding="impl:JobControllerServiceSoapBinding">
+         <wsdlsoap:address location="localhost://8080/axis/services/JobControllerService"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="jobMonitor.astrogrid.org" 
+                  xmlns:impl="jobMonitor.astrogrid.org" 
+                  xmlns:intf="jobMonitor.astrogrid.org" 
+                  xmlns:apachesoap="http://xml.apache.org/xml-soap" 
+                  xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" 
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+                  xmlns="http://schemas.xmlsoap.org/wsdl/">
+ <wsdl:types/>
+   <wsdl:message name="monitorJobResponse">
+   </wsdl:message>
+   <wsdl:message name="monitorJobRequest">
+      <wsdl:part name="monitorJobXML" type="xsd:string"/>
+   </wsdl:message>
+   <wsdl:portType name="JobMonitor">
+      <wsdl:operation name="monitorJob" parameterOrder="monitorJobXML">
+         <wsdl:input name="monitorJobRequest" message="impl:monitorJobRequest"/>
+         <wsdl:output name="monitorJobResponse" message="impl:monitorJobResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+   <wsdl:binding name="JobMonitorServiceSoapBinding" type="impl:JobMonitor">
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="monitorJob">
+         <wsdlsoap:operation soapAction=""/>
+         <wsdl:input name="monitorJobRequest">
+            <wsdlsoap:body use="encoded" 
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+                           namespace="jobMonitor.astrogrid.org"/>
+         </wsdl:input>
+         <wsdl:output name="monitorJobResponse">
+            <wsdlsoap:body use="encoded" 
+                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+                           namespace="jobMonitor.astrogrid.org"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+   <wsdl:service name="JobMonitorService">
+      <wsdl:port name="JobMonitorService" binding="impl:JobMonitorServiceSoapBinding">
+         <wsdlsoap:address location="localhost://8080/axis/services/JobMonitorService"/>
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>
