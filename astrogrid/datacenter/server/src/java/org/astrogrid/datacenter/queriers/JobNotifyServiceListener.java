@@ -1,5 +1,5 @@
 /*
- * $Id: JobNotifyServiceListener.java,v 1.3 2004/03/13 23:38:46 mch Exp $
+ * $Id: JobNotifyServiceListener.java,v 1.4 2004/03/17 13:53:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -15,9 +15,7 @@ import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
 
 /**
- * Very much like the WebNotifyServiceListener, this one creates a special
- * Iteration 02 document specifically made for notifying the job execution system
- * @deprecated
+ * A QuerierListener that lets a Job Monitor know of status changes
  *
  * @author M Hill
  */
@@ -62,6 +60,9 @@ public class JobNotifyServiceListener implements QuerierListener
 
 /*
 $Log: JobNotifyServiceListener.java,v $
+Revision 1.4  2004/03/17 13:53:55  mch
+undeprecated
+
 Revision 1.3  2004/03/13 23:38:46  mch
 Test fixes and better front-end JSP access
 
