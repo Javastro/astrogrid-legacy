@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.5 2004/08/03 14:04:34 KevinBenson Exp $ -->
+<!-- $Id: project.xml,v 1.6 2004/09/28 10:24:19 dave Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
     <!--will eventually extend from /base when Maven RC3 installed-->
@@ -49,6 +49,22 @@
             </properties>
         </dependency>
         -->
+		<!--+
+			| The Jakarta commons collection tools.
+			+-->
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
+			<type>jar</type>
+			<url>http://jakarta.apache.org/commons/collections/</url>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+		<!--+
+			| The Jakarta commons discover tools.
+			+-->
         <dependency>
             <artifactId>commons-discovery</artifactId>
             <groupId>commons-discovery</groupId>
@@ -224,9 +240,8 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-
         <!--+
-            | The Community client components.
+            | The Community resolver components.
             +-->
         <dependency>
             <groupId>org.astrogrid</groupId>
@@ -235,8 +250,6 @@
             <type>jar</type>
             <url>http://www.astrogrid.org/</url>
         </dependency>
-        
-        
         <!--+
             | The JXpath library - required for Registry delegate.
             +-->
