@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/CommunityManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManager.java,v $
+ *   Revision 1.4  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.3  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -55,7 +60,7 @@ public interface CommunityManager
 	 * Delete an Community.
 	 *
 	 */
-	public boolean delCommunity(String ident)
+	public CommunityData delCommunity(String ident)
 		throws RemoteException ;
 
 	/**

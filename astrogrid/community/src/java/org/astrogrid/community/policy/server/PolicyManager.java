@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManager.java,v $
+ *   Revision 1.13  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.12  2003/09/10 17:21:43  dave
  *   Added remote functionality to groups.
  *
@@ -82,7 +87,7 @@ public interface PolicyManager
 	 * Request a list of Accounts, given a remote Community name.
 	 *
 	 */
-	public Object[] getRemoteAccounts(String name)
+	public Object[] getRemoteAccounts(String community)
 		throws RemoteException ;
 
 	/**
@@ -96,7 +101,7 @@ public interface PolicyManager
 	 * Request a list of Groups, given a remote Community name.
 	 *
 	 */
-	public Object[] getRemoteGroups(String name)
+	public Object[] getRemoteGroups(String community)
 		throws RemoteException ;
 
 	/**
@@ -117,7 +122,21 @@ public interface PolicyManager
 	 * Get a list of Group members, given the Group name.
 	 *
 	 */
-	public Object[] getGroupMembers(String name)
+	public Object[] getGroupMembers(String group)
+		throws RemoteException;
+
+	/**
+	 * Get a list of local Groups that an Account belongs to, given the Account name.
+	 *
+	 */
+	public Object[] getLocalAccountGroups(String account)
+		throws RemoteException;
+
+	/**
+	 * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
+	 *
+	 */
+	public Object[] getRemoteAccountGroups(String account, String community)
 		throws RemoteException;
 
 	}

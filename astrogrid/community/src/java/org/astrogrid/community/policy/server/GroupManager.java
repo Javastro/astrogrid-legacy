@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManager.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.6 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManager.java,v $
+ *   Revision 1.6  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.5  2003/09/10 17:21:43  dave
  *   Added remote functionality to groups.
  *
@@ -72,10 +77,17 @@ public interface GroupManager
 		throws RemoteException ;
 
 	/**
-	 *
+	 * Get a list of local Groups that an Account belongs to, given the Account name.
 	 *
 	 */
+	public Object[] getLocalAccountGroups(String account)
+		throws RemoteException ;
+
+	/**
+	 *
+	 *
 	public Object[] getAccountGroupList(String account)
 		throws RemoteException;
+	 */
 
 	}

@@ -1,11 +1,16 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/10 20:49:57 $</cvs:date>
-    | <cvs:version>$Revision: 1.26 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+    | <cvs:version>$Revision: 1.27 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.27  2003/09/11 03:15:06  dave
+    |   1) Implemented PolicyService internals - no tests yet.
+    |   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+    |   3) Added remote access to groups.
+    |
     |   Revision 1.26  2003/09/10 20:49:57  pah
     |   Authentication Service without database backend
     |
@@ -1898,6 +1903,7 @@
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.client.base}/classes">
+					<include name="org/astrogrid/community/policy/client/junit/**/JUnitRemoteGroup*.class"/>
 					<include name="org/astrogrid/community/policy/client/junit/**/JUnitRemoteAccount*.class"/>
 				</fileset>
 			</batchtest>

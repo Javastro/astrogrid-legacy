@@ -124,7 +124,14 @@ public class AdministrationDelegate {
       return service.setResource(ad);  
    }
    
-   
+/*
+ * Commented out, not sure if this worked.
+ * Not practical to get ALL the Groups an Account is a member of.
+ * I tried it, but needs to make calls to all of the know communities to build the list.
+ * Is there a use-case that actually needs this ?
+ *
+ * PolicyManager now has getLocalAccountGroups(account) and getRemoteAccountGroups(account, community)
+ *
    public ArrayList getAccountGroupList(String account) throws Exception {
       Object []list = getAccountGroupList(account,localUrl);
       ArrayList al = new ArrayList(list.length);
@@ -134,11 +141,14 @@ public class AdministrationDelegate {
       return al;
       
    }
-   
+ *
+ *
    public Object[] getAccountGroupList(String account,String url) throws Exception  {
       service = getService(url);
       return service.getAccountGroupList(account);
    }
+ *
+ */
    
    public ArrayList getGroupList() throws Exception  {
       Object []list = service.getLocalGroups();
@@ -178,7 +188,7 @@ public class AdministrationDelegate {
    }
    
    public boolean delCommunity(String ident) throws Exception  {
-      return service.delCommunity(ident);
+      return (null != service.delCommunity(ident));
    }
    
    public ArrayList getCommunityList()  throws Exception {

@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.11  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.10  2003/09/10 17:21:43  dave
  *   Added remote functionality to groups.
  *
@@ -818,7 +823,7 @@ public class GroupManagerImpl
 
 	/**
 	 * Remove an Account from a Group, given the Account and Group idents.
-	 * Group must be local, but Account can be anything (local, remote, or deleted).
+	 * Group should be local, but Account can be anything (local, remote, or deleted).
 	 *
 	 */
 	protected GroupMemberData delGroupMember(CommunityIdent account, CommunityIdent group)
@@ -834,26 +839,6 @@ public class GroupManagerImpl
 		// Still want to delete the record even if the ident is invalid.
 		//
 
-		//
-		// Exit if the group is not valid.
-		if (false == group.isValid())
-			{
-			//
-			// TODO
-			// Should return a DataObject with the reason.
-			if (DEBUG_FLAG) System.out.println("Exit - Group is not valid") ;
-			return null ;
-			}
-		//
-		// Exit if the group ident is not local.
-		if (false == group.isLocal())
-			{
-			//
-			// TODO
-			// Should return a DataObject with the reason.
-			if (DEBUG_FLAG) System.out.println("Exit - Group is not local") ;
-			return null ;
-			}
 //
 // Check the group isn't an account group.
 // But, still proceed if the group does not exist.
@@ -945,6 +930,101 @@ public class GroupManagerImpl
 				}
 			}
 
+		//
+		// TODO
+		// Should return a DataObject with status response.
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return member ;
+		}
+
+	/**
+	 * Get a GroupMemberData, given the Account and Group idents.
+	 * Group should be local, but Account can be anything.
+	 *
+	 */
+	protected GroupMemberData getGroupMember(CommunityIdent account, CommunityIdent group)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMember()") ;
+		if (DEBUG_FLAG) System.out.println("  account  : " + account) ;
+		if (DEBUG_FLAG) System.out.println("  group    : " + group) ;
+
+		GroupMemberData member = null ;
+		try {
+			//
+			// Begin a new database transaction.
+			database.begin();
+			//
+			// Create the database key.
+			Complex key = new Complex(
+				new Object[]
+					{
+					account.toString(),
+					group.toString()
+					}
+				) ;
+			//
+			// Load the GroupMember from the database.
+			member = (GroupMemberData) database.load(GroupMemberData.class, key) ;
+			}
+		//
+		// If we couldn't find the object.
+		catch (ObjectNotFoundException ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("ObjectNotFoundException in getGroupMember()") ;
+
+			//
+			// Set the response to null.
+			member = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// If anything else went bang.
+		catch (Exception ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("") ;
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("Generic exception in getGroupMember()") ;
+
+			//
+			// Set the response to null.
+			member = null ;
+
+			if (DEBUG_FLAG) System.out.println("  ----") ;
+			if (DEBUG_FLAG) System.out.println("") ;
+			}
+		//
+		// Commit the transaction.
+		finally
+			{
+			try {
+				if (null != member)
+					{
+					database.commit() ;
+					}
+				else {
+					database.rollback() ;
+					}
+				}
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("") ;
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("Generic exception in getGroupMember() finally clause") ;
+
+				//
+				// Set the response to null.
+				member = null ;
+
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("") ;
+				}
+			}
 		//
 		// TODO
 		// Should return a DataObject with status response.
@@ -1053,7 +1133,115 @@ public class GroupManagerImpl
 		return array;
 		}
 
+	/**
+	 * Get a list of local Groups that an Account belongs to, given the Account name.
+	 *
+	 */
+	public Object[] getLocalAccountGroups(String account)
+		throws RemoteException
+		{
+		return this.getLocalAccountGroups(new CommunityIdent(account)) ;
+		}
 
+	/**
+	 * Get a list of local Groups that an Account belongs to, given the Account ident.
+	 *
+	 */
+	protected Object[] getLocalAccountGroups(CommunityIdent account)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getLocalAccountGroups()") ;
+		if (DEBUG_FLAG) System.out.println("  account   : " + account) ;
+		Object[] array = null ;
+		//
+		// If the Account ident is valid.
+		if (account.isValid())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Account is valid") ;
+			//
+			// Try to query the database.
+			try {
+				//
+				// Begin a new database transaction.
+				database.begin();
+				//
+				// Create our OQL query.
+				OQLQuery query = database.getOQLQuery(
+					"SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.account = $1"
+					);
+				//
+				// Bind the query param.
+				query.bind(account.toString()) ;
+				//
+				// Execute our query.
+				QueryResults results = query.execute();
+				//
+				// Transfer our results to a vector.
+				Collection collection = new Vector() ;
+				while (results.hasMore())
+					{
+					collection.add(results.next()) ;
+					}
+				// 
+				// Convert it into an array.
+				array = collection.toArray() ;
+				}
+			//
+			// If anything went bang.
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("") ;
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("Generic exception in getLocalAccountGroups()") ;
+
+				//
+				// Set the response to null.
+				array = null ;
+
+				if (DEBUG_FLAG) System.out.println("  ----") ;
+				if (DEBUG_FLAG) System.out.println("") ;
+				}
+			//
+			// Commit the transaction.
+			finally
+				{
+				try {
+					if (null != array)
+						{
+						database.commit() ;
+						}
+					else {
+						database.rollback() ;
+						}
+					}
+				catch (Exception ouch)
+					{
+					if (DEBUG_FLAG) System.out.println("") ;
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("Generic exception in getLocalAccountGroups() finally clause") ;
+
+					//
+					// Set the response to null.
+					array = null ;
+
+					if (DEBUG_FLAG) System.out.println("  ----") ;
+					if (DEBUG_FLAG) System.out.println("") ;
+					}
+				}
+			}
+		//
+		// If the Account ident is not valid.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Account is not valid") ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return array ;
+		}
+
+/*
+ *
    public Object[] getAccountGroupList(String account) throws RemoteException {
       if (DEBUG_FLAG) System.out.println("") ;
       if (DEBUG_FLAG) System.out.println("----\"----") ;
@@ -1135,6 +1323,7 @@ public class GroupManagerImpl
       return array;
       
    }
-
+ *
+ */
 
 	}

@@ -1,21 +1,15 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitRemoteAccountTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitRemoteGroupTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
  * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.1 $</cvs:version>
  *
  * <cvs:log>
- *   $Log: JUnitRemoteAccountTest.java,v $
- *   Revision 1.3  2003/09/11 03:15:06  dave
+ *   $Log: JUnitRemoteGroupTest.java,v $
+ *   Revision 1.1  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
  *   3) Added remote access to groups.
- *
- *   Revision 1.2  2003/09/10 06:19:14  dave
- *   Fixed typos ...
- *
- *   Revision 1.1  2003/09/10 06:03:27  dave
- *   Added remote capability to Accounts
  *
  * </cvs:log>
  *
@@ -27,7 +21,7 @@ import junit.framework.TestCase ;
 import java.util.Iterator ;
 import java.util.Collection ;
 
-import org.astrogrid.community.policy.data.AccountData ;
+import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.CommunityData ;
 
@@ -40,7 +34,7 @@ import org.astrogrid.community.policy.server.PolicyManagerServiceLocator ;
  * JUnit test for the policy client components.
  *
  */
-public class JUnitRemoteAccountTest
+public class JUnitRemoteGroupTest
 	extends TestCase
 	{
 
@@ -51,10 +45,10 @@ public class JUnitRemoteAccountTest
 	private static final String TEST_COMMUNITY = "capc49.ast.cam.ac.uk" ;
 
 	/**
-	 * Our test account.
+	 * Our test group.
 	 *
 	 */
-	private static final String TEST_ACCOUNT = "junit@capc49.ast.cam.ac.uk" ;
+	private static final String TEST_GROUP = "junit@capc49.ast.cam.ac.uk" ;
 
 	/**
 	 * Our test description.
@@ -135,7 +129,7 @@ public class JUnitRemoteAccountTest
 		}
 
 	/**
-	 * Check we can create the Community object.
+	 * Check we can create a Community data.
 	 *
 	 */
 	public void testAddCommunity()
@@ -162,88 +156,88 @@ public class JUnitRemoteAccountTest
 		}
 
 	/**
-	 * Check we can create a remote Account object.
+	 * Check we can create a remote Group object.
 	 *
 	 */
-	public void testAddAccount()
+	public void testAddGroup()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testAddAccount()") ;
+		if (DEBUG_FLAG) System.out.println("testAddGroup()") ;
 
 		//
-		// Try creating the Account.
-		AccountData account = manager.addAccount(TEST_ACCOUNT);
-		assertNotNull("Failed to create account", account) ;
+		// Try creating the Group.
+		GroupData group = manager.addGroup(TEST_GROUP);
+		assertNotNull("Failed to create group", group) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("  Group") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can modify a remote Account object.
+	 * Check we can modify a remote Group object.
 	 *
 	 */
-	public void testSetAccount()
+	public void testSetGroup()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testSetAccount()") ;
+		if (DEBUG_FLAG) System.out.println("testSetGroup()") ;
 
 		//
-		// Try locating the Account.
-		AccountData account = manager.getAccount(TEST_ACCOUNT);
-		assertNotNull("Failed to locate account", account) ;
+		// Try locating the Group.
+		GroupData group = manager.getGroup(TEST_GROUP);
+		assertNotNull("Failed to locate group", group) ;
 		//
-		// Modify the Account.
-		account.setDescription(TEST_DESCRIPTION) ;
+		// Modify the Group.
+		group.setDescription(TEST_DESCRIPTION) ;
 		//
-		// Try updating the Account.
-		account = manager.setAccount(account);
-		assertNotNull("Failed to update account", account) ;
+		// Try updating the Group.
+		group = manager.setGroup(group);
+		assertNotNull("Failed to update group", group) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("  Group") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}
 
 	/**
-	 * Check we can get a list of remote Accounts.
+	 * Check we can get a list of remote Groups.
 	 *
 	 */
-	public void testGetRemoteAccounts()
+	public void testGetRemoteGroups()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testGetRemoteAccounts()") ;
+		if (DEBUG_FLAG) System.out.println("testGetRemoteGroups()") ;
 
 		//
-		// Try getting the list of Accounts.
+		// Try getting the list of Groups.
 		Object[] list ;
-		list = manager.getRemoteAccounts(TEST_COMMUNITY);
-		assertNotNull("Failed to get the list of Accounts", list) ;
+		list = manager.getRemoteGroups(TEST_COMMUNITY);
+		assertNotNull("Failed to get the list of Groups", list) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("  ----") ;
 		if (DEBUG_FLAG) System.out.println("  List") ;
 		for (int i = 0 ; i < list.length ; i++)
 			{
-			AccountData account = (AccountData) list[i] ;
-			if (DEBUG_FLAG) System.out.println("    Account[" + i + "]") ;
-			if (DEBUG_FLAG) System.out.println("      ident : " + account.getIdent()) ;
-			if (DEBUG_FLAG) System.out.println("      desc  : " + account.getDescription()) ;
+			GroupData group = (GroupData) list[i] ;
+			if (DEBUG_FLAG) System.out.println("    Group[" + i + "]") ;
+			if (DEBUG_FLAG) System.out.println("      ident : " + group.getIdent()) ;
+			if (DEBUG_FLAG) System.out.println("      desc  : " + group.getDescription()) ;
 			}
 		if (DEBUG_FLAG) System.out.println("  ----") ;
 
@@ -252,25 +246,25 @@ public class JUnitRemoteAccountTest
 		}
 
 	/**
-	 * Check we can delete a remote Account object.
+	 * Check we can delete a remote Group object.
 	 *
 	 */
-	public void testDelAccount()
+	public void testDelGroup()
 		throws Exception
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("testDelAccount()") ;
+		if (DEBUG_FLAG) System.out.println("testDelGroup()") ;
 
 		//
-		// Try deleting the Account.
-		AccountData account = manager.delAccount(TEST_ACCOUNT);
-		assertNotNull("Failed to delete account", account) ;
+		// Try deleting the Group.
+		GroupData group = manager.delGroup(TEST_GROUP);
+		assertNotNull("Failed to delete group", group) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("  Account") ;
-		if (DEBUG_FLAG) System.out.println("    ident : " + account.getIdent()) ;
-		if (DEBUG_FLAG) System.out.println("    desc  : " + account.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("  Group") ;
+		if (DEBUG_FLAG) System.out.println("    ident : " + group.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc  : " + group.getDescription()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -289,8 +283,6 @@ public class JUnitRemoteAccountTest
 
 		//
 		// Try deleting the Community.
-		//
-		// Try deleting the Community.
 		manager.delCommunity(TEST_COMMUNITY);
 /*
  * Need to update the delCommunity API to return the deleted object.
@@ -305,7 +297,6 @@ public class JUnitRemoteAccountTest
 		if (DEBUG_FLAG) System.out.println("    manager : " + community.getManagerUrl()) ;
  *
  */
-
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;
 		}

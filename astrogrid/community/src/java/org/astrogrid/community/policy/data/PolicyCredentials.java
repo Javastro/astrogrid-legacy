@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyCredentials.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/06 20:10:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyCredentials.java,v $
+ *   Revision 1.4  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.3  2003/09/06 20:10:07  dave
  *   Split PolicyManager into separate components.
  *
@@ -26,19 +31,19 @@ public class PolicyCredentials
 	 * Status code for valid credentials.
 	 *
 	 */
-	public static final int STATUS_CREDENTIALS_VALID = 0xFF ;
+	public static final int STATUS_VALID = 0xFF ;
 
 	/**
 	 * Status code for credentials unchecked.
 	 *
 	 */
-	public static final int STATUS_CREDENTIALS_UNCHECKED = 0x00 ;
+	public static final int STATUS_NOT_KNOWN = 0x00 ;
 
 	/**
 	 * Status code for credentials invalid.
 	 *
 	 */
-	public static final int STATUS_CREDENTIALS_INVALID = 0x01 ;
+	public static final int STATUS_NOT_VALID = 0x01 ;
 
 	/**
 	 * Public constructor.
@@ -57,6 +62,7 @@ public class PolicyCredentials
 		{
 		this.group   = group   ;
 		this.account = account ;
+		this.status  = STATUS_NOT_KNOWN ;
 		}
 
 	/**
@@ -129,6 +135,15 @@ public class PolicyCredentials
 	public void setStatus(int value)
 		{
 		this.status = value ;
+		}
+
+	/**
+	 * Access to the status.
+	 *
+	 */
+	public boolean isValid()
+		{
+		return (STATUS_VALID == this.status) ;
 		}
 
 	/**

@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/CommunityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.5  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.4  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -451,7 +456,7 @@ public class CommunityManagerImpl
 	 * Delete an Community.
 	 *
 	 */
-	public boolean delCommunity(String ident)
+	public CommunityData delCommunity(String ident)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
@@ -459,9 +464,9 @@ public class CommunityManagerImpl
 		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.delCommunity()") ;
 		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
 
+		CommunityData community = null ;
 		//
 		// Try update the database.
-		CommunityData community = null ;
 		try {
 			//
 			// Begin a new database transaction.
@@ -533,57 +538,144 @@ public class CommunityManagerImpl
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 
-		return true ;
+		return community ;
 		}
 
 	/**
 	 * Get a PolicyManager for a remote community.
 	 *
 	 */
-	public PolicyManager getPolicyManager(String ident)
+	public PolicyManager getPolicyManager(String name)
 		throws RemoteException
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyManager()") ;
-		if (DEBUG_FLAG) System.out.println("  ident : " + ident) ;
-		PolicyManager manager = null ;
+		if (DEBUG_FLAG) System.out.println("  name : " + name) ;
 		//
 		// Get the CommunityData.
-		CommunityData data = this.getCommunity(ident) ;
+		CommunityData community = this.getCommunity(name) ;
 		//
 		// If we found the CommunityData.
-		if (null != data)
+		if (null != community)
 			{
 			if (DEBUG_FLAG) System.out.println("PASS : Found CommunityData") ;
-			//
-			// If we have a manager URL.
-			if (null != data.getManagerUrl())
-				{
-				if (DEBUG_FLAG) System.out.println("PASS : Found manager URL " + data.getManagerUrl()) ;
-				//
-				// Try creating our manager.
-				try {
-					PolicyManagerService locator = new PolicyManagerServiceLocator() ;
-					manager = locator.getPolicyManager(new URL(data.getManagerUrl())) ;
-					}
-				catch (Exception ouch)
-					{
-					if (DEBUG_FLAG) System.out.println("Exception when creating remote manager.") ;
-					if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
-					if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
-					}
-				if (DEBUG_FLAG) System.out.println("PASS : Created manager ...") ;
-				}
+			return getPolicyManager(community) ;
 			}
 		//
 		// If we didn't find the CommunityData.
 		else {
 			if (DEBUG_FLAG) System.out.println("FAIL : Unknown CommunityData") ;
+			return null ;
 			}
+		}
 
+	/**
+	 * Get a PolicyManager for a remote community.
+	 *
+	 */
+	public PolicyManager getPolicyManager(CommunityData community)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyManager()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + community.getIdent()) ;
+		PolicyManager manager = null ;
+		//
+		// If we have a manager URL.
+		if (null != community.getManagerUrl())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Found manager URL " + community.getManagerUrl()) ;
+			//
+			// Try creating our manager.
+			try {
+				PolicyManagerService locator = new PolicyManagerServiceLocator() ;
+				manager = locator.getPolicyManager(new URL(community.getManagerUrl())) ;
+				}
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("Exception when creating remote manager.") ;
+				if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+				if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+				}
+			if (DEBUG_FLAG) System.out.println("PASS : Created manager ...") ;
+			}
+		//
+		// If we don't have a manager URL
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : NULL manager URL") ;
+			}
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return manager ;
 		}
 
+	/**
+	 * Get a PolicyService for a remote community.
+	 *
+	 */
+	public PolicyService getPolicyService(String name)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyService()") ;
+		if (DEBUG_FLAG) System.out.println("  name : " + name) ;
+		//
+		// Get the CommunityData.
+		CommunityData community = this.getCommunity(name) ;
+		//
+		// If we found the CommunityData.
+		if (null != community)
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Found CommunityData") ;
+			return getPolicyService(community) ;
+			}
+		//
+		// If we didn't find the CommunityData.
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : Unknown CommunityData") ;
+			return null ;
+			}
+		}
+
+	/**
+	 * Get a PolicyService for a remote community.
+	 *
+	 */
+	public PolicyService getPolicyService(CommunityData community)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("CommunityManagerImpl.getPolicyService()") ;
+		if (DEBUG_FLAG) System.out.println("  ident : " + community.getIdent()) ;
+		PolicyService service = null ;
+		//
+		// If we have a service URL.
+		if (null != community.getServiceUrl())
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Found service URL " + community.getServiceUrl()) ;
+			//
+			// Try creating our service.
+			try {
+				PolicyServiceService locator = new PolicyServiceServiceLocator() ;
+				service = locator.getPolicyService(new URL(community.getServiceUrl())) ;
+				}
+			catch (Exception ouch)
+				{
+				if (DEBUG_FLAG) System.out.println("Exception when creating remote service.") ;
+				if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+				if (DEBUG_FLAG) System.out.println("  Message   : " + ouch.getMessage()) ;
+				}
+			if (DEBUG_FLAG) System.out.println("PASS : Created service ...") ;
+			}
+		//
+		// If we don't have a service URL
+		else {
+			if (DEBUG_FLAG) System.out.println("FAIL : NULL service URL") ;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return service ;
+		}
 	}

@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 17:21:43 $</cvs:date>
- * <cvs:version>$Revision: 1.15 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.16 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.16  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.15  2003/09/10 17:21:43  dave
  *   Added remote functionality to groups.
  *
@@ -62,18 +67,18 @@ package org.astrogrid.community.policy.server ;
 
 import java.rmi.RemoteException ;
 
-import java.util.Vector ;
-import java.util.Collection ;
+//import java.util.Vector ;
+//import java.util.Collection ;
 
-import org.exolab.castor.jdo.Database;
-import org.exolab.castor.jdo.OQLQuery;
-import org.exolab.castor.jdo.QueryResults;
-import org.exolab.castor.jdo.PersistenceException ;
-import org.exolab.castor.jdo.ObjectNotFoundException ;
-import org.exolab.castor.jdo.DatabaseNotFoundException ;
-import org.exolab.castor.jdo.DuplicateIdentityException ;
-import org.exolab.castor.jdo.TransactionNotInProgressException ;
-import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
+//import org.exolab.castor.jdo.Database;
+//import org.exolab.castor.jdo.OQLQuery;
+//import org.exolab.castor.jdo.QueryResults;
+//import org.exolab.castor.jdo.PersistenceException ;
+//import org.exolab.castor.jdo.ObjectNotFoundException ;
+//import org.exolab.castor.jdo.DatabaseNotFoundException ;
+//import org.exolab.castor.jdo.DuplicateIdentityException ;
+//import org.exolab.castor.jdo.TransactionNotInProgressException ;
+//import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.ServiceData ;
@@ -902,6 +907,10 @@ public class PolicyManagerImpl
 	public Object[] getRemoteGroups(String name)
 		throws RemoteException
 		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getRemoteGroups()") ;
+		if (DEBUG_FLAG) System.out.println("  community : " + name) ;
 		Object[] results = null ;
 		//
 		// If the community is local.
@@ -1162,7 +1171,7 @@ public class PolicyManagerImpl
 		{
 		if (DEBUG_FLAG) System.out.println("") ;
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("GroupManagerImpl.getGroupMembers()") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getGroupMembers()") ;
 		if (DEBUG_FLAG) System.out.println("  group    : " + ident) ;
 
 		Object[] results = null ;
@@ -1225,10 +1234,99 @@ public class PolicyManagerImpl
 	/**
 	 *
 	 *
-	 */
 	public Object[] getAccountGroupList(String account) throws RemoteException
 		{
 		return groupManager.getAccountGroupList(account) ;
+		}
+	 */
+
+	/**
+	 * Get a list of local Groups that an Account belongs to, given the Account name.
+	 *
+	 */
+	public Object[] getLocalAccountGroups(String account)
+		throws RemoteException
+		{
+		return this.getLocalAccountGroups(new CommunityIdent(account)) ;
+		}
+
+	/**
+	 * Get a list of local Groups that an Account belongs to, given the Account ident.
+	 *
+	 */
+	protected Object[] getLocalAccountGroups(CommunityIdent account)
+		throws RemoteException
+		{
+		return groupManager.getLocalAccountGroups(account) ;
+		}
+
+	/**
+	 * Get a list of remote Groups that an Account belongs to, given the Account and Community names.
+	 *
+	 */
+	public Object[] getRemoteAccountGroups(String account, String community)
+		throws RemoteException
+		{
+		return this.getRemoteAccountGroups(new CommunityIdent(account), community) ;
+		}
+
+	/**
+	 * Get a list of remote Groups that an Account belongs to, given the Account and Community idents.
+	 *
+	 */
+	protected Object[] getRemoteAccountGroups(CommunityIdent account, String community)
+		throws RemoteException
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("PolicyManagerImpl.getRemoteAccountGroups()") ;
+		if (DEBUG_FLAG) System.out.println("  account   : " + account) ;
+		if (DEBUG_FLAG) System.out.println("  community : " + community) ;
+		Object[] results = null ;
+		//
+		// If the community is local.
+		if (CommunityConfig.getConfig().getCommunityName().equals(community))
+			{
+			if (DEBUG_FLAG) System.out.println("PASS : Community is local") ;
+			//
+			// Call our local manager.
+			results = groupManager.getLocalAccountGroups(account) ;
+			}
+		//
+		// If the Community is not local.
+		else {
+			if (DEBUG_FLAG) System.out.println("PASS : Community is remote") ;
+			//
+			// Get a manager for the remote community.
+			PolicyManager remote = communityManager.getPolicyManager(community) ;
+			//
+			// If we got a remote manager.
+			if (null != remote)
+				{
+				if (DEBUG_FLAG) System.out.println("PASS : Found remote manager") ;
+				//
+				// Use the remote manager.
+				results = remote.getLocalAccountGroups(account.toString()) ;
+				//
+				// If we got a result.
+				if (null != results)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Found remote groups") ;
+					}
+				//
+				// If we didn't get a result.
+				else {
+					if (DEBUG_FLAG) System.out.println("FAIL : Missing remote groups") ;
+					}
+				}
+			//
+			// If we didn't get a remote manager.
+			else {
+				if (DEBUG_FLAG) System.out.println("FAIL : Unknown remote manager") ;
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		return results ;
 		}
 
 //
@@ -1269,7 +1367,7 @@ public class PolicyManagerImpl
 	 * Delete an Community.
 	 *
 	 */
-	public boolean delCommunity(String ident)
+	public CommunityData delCommunity(String ident)
 		throws RemoteException
 		{
 		return communityManager.delCommunity(ident) ;

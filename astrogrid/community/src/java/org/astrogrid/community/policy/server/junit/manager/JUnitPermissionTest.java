@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitPermissionTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitPermissionTest.java,v $
+ *   Revision 1.2  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.1  2003/09/10 02:56:03  dave
  *   Added PermissionManager and tests
  *
@@ -206,7 +211,7 @@ public class JUnitPermissionTest
 		assertNotNull("Failed to find the real permission", result) ;
 		//
 		// Modify the permission.
-		result.setStatus(PolicyPermission.PERMISSION_GRANTED) ;
+		result.setStatus(PolicyPermission.STATUS_PERMISSION_GRANTED) ;
 		result.setReason(TEST_REASON);
 		//
 		// Try updating the Resource.

@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/junit/manager/Attic/JUnitCommunityTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/09 14:51:47 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitCommunityTest.java,v $
+ *   Revision 1.4  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.3  2003/09/09 14:51:47  dave
  *   Added delGroupMember - only local accounts and groups to start with.
  *
@@ -185,7 +190,7 @@ public class JUnitCommunityTest
 		//
 		// Try getting the real Community.
 		community = manager.getCommunity(TEST_COMMUNITY_IDENT);
-		assertNotNull("Failed to find the real community", community) ;
+		assertNotNull("Failed to find community", community) ;
 
 		if (DEBUG_FLAG) System.out.println("  Community") ;
 		if (DEBUG_FLAG) System.out.println("    ident   : " + community.getIdent()) ;
@@ -212,13 +217,14 @@ public class JUnitCommunityTest
 		// Try getting the real Community.
 		CommunityData community ;
 		community = manager.getCommunity(TEST_COMMUNITY_IDENT);
-		assertNotNull("Failed to find the real community", community) ;
+		assertNotNull("Failed to find community", community) ;
 		//
 		// Modify the community.
 		community.setDescription("Modified description") ;
 		//
 		// Try updating the Community.
-		manager.setCommunity(community);
+		community = manager.setCommunity(community);
+		assertNotNull("Failed to modify community", community) ;
 
 		if (DEBUG_FLAG) System.out.println("  Community") ;
 		if (DEBUG_FLAG) System.out.println("    ident   : " + community.getIdent()) ;
@@ -276,16 +282,26 @@ public class JUnitCommunityTest
 		if (DEBUG_FLAG) System.out.println("testDelCommunity()") ;
 
 		//
-		// Delete the real community (no return data).
-		manager.delCommunity(TEST_COMMUNITY_IDENT);
+		// Delete the real community.
+		CommunityData community ;
+		community = manager.delCommunity(TEST_COMMUNITY_IDENT);
+		assertNotNull("Failed to delete community", community) ;
+
+		if (DEBUG_FLAG) System.out.println("  Community") ;
+		if (DEBUG_FLAG) System.out.println("    ident   : " + community.getIdent()) ;
+		if (DEBUG_FLAG) System.out.println("    desc    : " + community.getDescription()) ;
+		if (DEBUG_FLAG) System.out.println("    service : " + community.getServiceUrl()) ;
+		if (DEBUG_FLAG) System.out.println("    manager : " + community.getManagerUrl()) ;
 
 		//
-		// Delete the real community again (no return data).
-		manager.delCommunity(TEST_COMMUNITY_IDENT);
+		// Delete the real community again.
+		community = manager.delCommunity(TEST_COMMUNITY_IDENT);
+		assertNull("Deleted same community twice", community) ;
 
 		//
-		// Delete the fake community (no return data).
-		manager.delCommunity(FAKE_COMMUNITY_IDENT);
+		// Delete the fake community.
+		community = manager.delCommunity(FAKE_COMMUNITY_IDENT);
+		assertNull("Deleted fake community", community) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		if (DEBUG_FLAG) System.out.println("") ;

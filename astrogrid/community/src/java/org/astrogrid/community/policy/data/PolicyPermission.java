@@ -1,11 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyPermission.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 02:56:03 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyPermission.java,v $
+ *   Revision 1.4  2003/09/11 03:15:06  dave
+ *   1) Implemented PolicyService internals - no tests yet.
+ *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
+ *   3) Added remote access to groups.
+ *
  *   Revision 1.3  2003/09/10 02:56:03  dave
  *   Added PermissionManager and tests
  *
@@ -26,25 +31,44 @@ public class PolicyPermission
 	 * Status code for permission granted.
 	 *
 	 */
-	public static final int PERMISSION_GRANTED = 0xFF ;
+	public static final int STATUS_PERMISSION_GRANTED = 0xFF ;
 
 	/**
 	 * Status code for no permission.
 	 *
 	 */
-	public static final int PERMISSION_UNKNOWN = 0x00 ;
+	public static final int STATUS_PERMISSION_UNKNOWN = 0x00 ;
 
 	/**
 	 * Status code for permission revoked.
 	 *
 	 */
-	public static final int PERMISSION_REVOKED = 0x01 ;
+	public static final int STATUS_PERMISSION_REVOKED = 0x01 ;
 
 	/**
-	 * The default reason, no permission set.
+	 * Status code for credentials invalid.
 	 *
 	 */
-	public static final String DEFAULT_REASON = "No permissions set" ;
+	public static final int STATUS_CREDENTIALS_INVALID = 0x02 ;
+
+	/**
+	 * Permission unknown.
+	 *
+	 */
+	public static final String REASON_PERMISSION_UNKNOWN = "Permissions unknown" ;
+
+	/**
+	 * No permission set.
+	 *
+	 */
+	public static final String REASON_NO_PERMISSION = "No permissions set" ;
+
+	/**
+	 * Invalid credentials.
+	 *
+	 */
+	public static final String REASON_CREDENTIALS_INVALID = "Credentials invalid" ;
+
 
 	/**
 	 * Public constructor.
@@ -63,8 +87,8 @@ public class PolicyPermission
 		this.group    = group    ;
 		this.action   = action   ;
 		this.resource = resource ;
-		this.status   = PERMISSION_UNKNOWN ;
-		this.reason   = DEFAULT_REASON ;
+		this.status   = STATUS_PERMISSION_UNKNOWN ;
+		this.reason   = REASON_PERMISSION_UNKNOWN ;
 		}
 
 	/**
@@ -169,7 +193,7 @@ public class PolicyPermission
 	 */
 	public boolean isValid()
 		{
-		return (PERMISSION_GRANTED == this.status) ;
+		return (STATUS_PERMISSION_GRANTED == this.status) ;
 		}
 
 	/**
