@@ -543,36 +543,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public URL getUrl(String sourcePath) throws IOException
-   {  URL url = null;
-      boolean conformingUrl = true;
-      String uri = "";
-
-      try
-      {  EntryRecord file = (EntryRecord)this.getFile(sourcePath);
-         uri = file.getEntryUri();
-
-         try
-         {  url = new URL(uri);
-         }
-         catch (Exception e)
-         {  conformingUrl = false;
-            throw new IOException ();
-         }
-      }
-      catch (Exception e)
-      {  url = null;
-
-         if (!conformingUrl)
-         {  throw new IOException ("File has invalid URL: " + uri);
-         }
-         else
-         {  throw new IOException (
-              "Failed to obtain URL for file on service: " +
-              this.endPoint);
-         }
-      }
-
-      return url;
+   {
+      EntryRecord file = (EntryRecord)this.getFile(sourcePath);
+      return new URL(file.getEntryUri());
    }
 
 
