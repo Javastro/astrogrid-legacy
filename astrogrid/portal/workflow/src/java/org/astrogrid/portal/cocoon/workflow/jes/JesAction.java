@@ -90,7 +90,8 @@ public class JesAction extends AbstractAction {
                                COMMUNITY_ACCOUNT_TAG = "user" ,
                                COMMUNITY_NAME_TAG = "community_name" ,
                                CREDENTIAL_TAG = "credential" ,
-                               COMMUNITY_TOKEN_TAG = "community-token";
+                               COMMUNITY_TOKEN_TAG = "community-token",
+	                           USER_TAG = "user";
     
     public static final String ERROR_MESSAGE_PARAMETER = "ErrorMessage";
     
@@ -266,7 +267,7 @@ public class JesAction extends AbstractAction {
 
                                 
                 this.userid =
-                   (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );
+                   (String)session.getAttribute( USER_TAG );
 			debug( "userid: " + this.userid );
                 this.community =
                    (String)session.getAttribute( COMMUNITY_NAME_TAG );
@@ -422,11 +423,14 @@ public class JesAction extends AbstractAction {
         
         private String communitySnippet() {
         
-            return CommunityMessage.getMessage(
-                    (String)session.getAttribute( CREDENTIAL_TAG ),
-                    (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG ),
-                    (String)session.getAttribute( CREDENTIAL_TAG ) );
-                    
+					String message = CommunityMessage.getMessage(
+													 (String)session.getAttribute( CREDENTIAL_TAG ),
+													 (String)session.getAttribute( CREDENTIAL_TAG ),
+													 (String)session.getAttribute( COMMUNITY_NAME_TAG ) );
+            
+					if (TRACE_ENABLED ) trace("communitySnippet: " + message );
+                                
+					return message ;
         }
    
    
