@@ -35,7 +35,7 @@ public class WorkspaceTest extends TestCase
    public static File setUpWorkspaceArea() throws IOException {
 
       Workspace.PERSIST = false; //make sure they tidy up properly
-      String workspaceProperty = AttomConfig.getString(Workspace.WORKSPACE_DIRECTORY_KEY);
+      String workspaceProperty = AttomConfig.getString(Workspace.WORKSPACE_DIRECTORY_KEY, null);
       File dir = null;
       if ( workspaceProperty == null)
       {
@@ -267,6 +267,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.3  2004/02/17 14:59:14  mch
+Fix for new AttomConfig getString throwing exception
+
 Revision 1.2  2004/02/17 03:40:21  mch
 Changed to use AttomConfig
 
