@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/04/15 12:12:28 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/04/15 12:27:11 nw Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,6 +28,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.installation.integration.AllTests.suite());
         suite.addTest(org.astrogrid.registry.integration.AllTests.suite());
         suite.addTest(org.astrogrid.workflow.integration.AllTests.suite());
+        suite.addTest(org.astrogrid.portal.integration.AllTests.suite());
         return suite;
     }
 }
@@ -35,6 +36,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/04/15 12:27:11  nw
+drags tests together
+
 Revision 1.2  2004/04/15 12:12:28  nw
 testing
 
