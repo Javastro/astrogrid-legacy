@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.2 2004/03/29 17:47:58 jdt Exp $
+/* $Id: InstallationTest.java,v 1.3 2004/03/30 00:17:31 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -62,6 +62,8 @@ public final class InstallationTest extends TestCase {
      */
     private Collection getURLKeys() {
         final Collection keys = new ArrayList();
+        keys.add("appController.endPoint");
+        keys.add("community.endPoint");
         keys.add("mySpaceEndPoint");
         keys.add("merlinDatacenterEndPoint");
         keys.add("portalWebSite");
@@ -108,13 +110,17 @@ public final class InstallationTest extends TestCase {
         }
         final String response = conn.getHeaderField(null);
         assertEquals("Checking "+urlString,"HTTP/1.1 200 OK", response);
-        
+       
     }
+    
 }
 
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.3  2004/03/30 00:17:31  jdt
+ *  added a couple more urls to test.
+ *
  *  Revision 1.2  2004/03/29 17:47:58  jdt
  *  Made it a bit more general.
  *
