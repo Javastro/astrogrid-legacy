@@ -7,7 +7,12 @@
     <xsl:param name="display_tool_values" />
     
     <xsl:template match="workflow">
-    <ag-div>        
+    <ag-div>
+    
+       <script type="text/javascript">
+         window.name = "workflowOuterFrame";
+       </script>
+                    
        <agComponentTitle>Workflow</agComponentTitle>
          <ag-onload>
            <xsl:attribute name="function">nofooter();</xsl:attribute>                 	
