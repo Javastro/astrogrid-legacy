@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.29 2004/10/08 17:12:26 mch Exp $
+ * $Id: FailbackConfig.java,v 1.30 2004/11/07 16:44:25 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -498,13 +498,22 @@ public class FailbackConfig extends Config {
       //first look in jndi
       try {
          if (!jndiInitialised) { initialiseJndi(); }
-      
+
          if (jndiContext != null) {
             lookedIn = lookedIn + ", JNDI";
+            Context javacontext = (Context)jndiContext.lookup(jndiPrefix);
             NamingEnumeration en = jndiContext.list(jndiPrefix+key);
             Vector values = new Vector();
             while (en.hasMoreElements()) {
-               values.add(en.nextElement());
+               NameClassPair pair = (NameClassPair) en.next();
+               String value = null;
+               //not sure how all this works, so for now will ignore naming exceptions
+               try {
+                  value = javacontext.lookup(pair.getName()).toString();
+               } catch (NamingException ne) {
+                  value="??Failed lookup: "+ne;
+               } //ignore - value=??failed
+               values.add(value);
             }
             return values.toArray();
          }
@@ -732,6 +741,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.30  2004/11/07 16:44:25  mch
+fix to multi-value getProperties for JNDI
+
 Revision 1.29  2004/10/08 17:12:26  mch
 Fix to getting sets of property when that property has been set to a set thpththh
 
