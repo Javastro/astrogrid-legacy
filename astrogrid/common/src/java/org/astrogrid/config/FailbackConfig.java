@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.8 2004/03/03 17:11:07 mch Exp $
+ * $Id: FailbackConfig.java,v 1.9 2004/03/03 17:29:00 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -136,8 +136,16 @@ public class FailbackConfig extends Config {
             
             log.info("Config access to JNDI initialised ("+jndiContext+")");
          }
-         catch (ServiceUnavailableException sue) { jndiContext = null; } //not a problem
-         catch (NoInitialContextException nice)  { jndiContext = null; } //not a problem
+         catch (ServiceUnavailableException sue) {
+            //not a problem, but note
+            log.debug("No JNDI service found ("+sue+") so will not use JNDI for config...");
+            jndiContext = null;
+         }
+         catch (NoInitialContextException nice)  {
+            //not a problem
+            log.debug("No JNDI service found ("+nice+") so will not use JNDI for config...");
+            jndiContext = null;
+         }
          catch (NamingException ne) {
             throw new ConfigException("Initialising Jndi Access", ne);
          }
@@ -165,9 +173,15 @@ public class FailbackConfig extends Config {
             String filename = null;
             
             try {
-               urlValue = jndiContext.lookup(jndiUrlKey).toString();//so we can report in exception
-               fileUrl = new URL(urlValue);
-               filename = jndiContext.lookup(jndiFileKey).toString();
+               try {
+                  urlValue = jndiContext.lookup(jndiUrlKey).toString();//so we can report in exception
+                  fileUrl = new URL(urlValue);
+               } catch (NameNotFoundException nnfe) { } //ignore carry on
+               log.debug("Config: JNDI key "+jndiUrlKey+" => "+fileUrl);
+               try {
+                  filename = jndiContext.lookup(jndiFileKey).toString();
+               } catch (NameNotFoundException nnfe) { } //ignore carry on
+               log.debug("Config: JNDI key "+jndiFileKey+" => "+filename);
                
                //if they are both defined, throw an exception - sysadmin should only
                //define one, then we know where we are
@@ -182,13 +196,14 @@ public class FailbackConfig extends Config {
                   keyUsed = jndiFileKey;
                }
 
-               loadFromUrl(fileUrl);
+               if (fileUrl != null) {
+                  loadFromUrl(fileUrl);
 
-               log.info("Configuration file loaded from '"+fileUrl.toString()+"' (from JNDI Key="+keyUsed+")");
-               
-               return;
+                  log.info("Configuration file loaded from '"+fileUrl.toString()+"' (from JNDI Key="+keyUsed+")");
+                  
+                  return;
+               }
             }
-            catch (NameNotFoundException nnfe) { } //not a problem, continue on
             catch (MalformedURLException mue) {
                throw new ConfigException("Configuration file url ("+urlValue+") given in JNDI (key="+jndiUrlKey+") is malformed",mue);
             }
@@ -196,7 +211,7 @@ public class FailbackConfig extends Config {
                throw new ConfigException("Configuration file ("+filename+") given in JNDI (key="+jndiFileKey+") cannot be found",fnfe);
             }
             catch (NamingException ne) {
-               throw new ConfigException("Could not find key '"+jndiUrlKey+"' or '"+jndiFileKey+"' in JNDI", ne);
+               throw new ConfigException("Using key '"+jndiUrlKey+"' or '"+jndiFileKey+"' in JNDI gave: ", ne);
             }
             catch (IOException ioe) {
                throw new ConfigException("Exception loading property file at '"+fileUrl+
@@ -205,8 +220,9 @@ public class FailbackConfig extends Config {
          }
 
          //look up url in system environment
-         String sysEnvKey = propertyKey;
+         String sysEnvKey = propertyUrlKey;
          String sysEnvUrl = System.getProperty(sysEnvKey);
+         log.debug("Config: Sys Env key "+sysEnvKey+" => "+sysEnvUrl);
          if (sysEnvUrl != null) {
             try {
                fileUrl = new URL(sysEnvUrl);
@@ -229,7 +245,7 @@ public class FailbackConfig extends Config {
          
          //look for file in classpath.
          //see http://www.javaworld.com/javaworld/javaqa/2003-08/01-qa-0808-property.html
-//         log.info("Looking for '"+configFilename+"' on classpath");
+         log.debug("Looking for '"+configFilename+"' on classpath");
          URL configUrl = ClassLoader.getSystemResource(configFilename);
          if (configUrl != null) {
             try {
@@ -246,6 +262,7 @@ public class FailbackConfig extends Config {
          
          
          //look for it in the working directory
+         log.debug("Looking for '"+configFilename+"' in working directory");
          File f = new File(configFilename);
          if (f.exists()) {
             try {
@@ -260,7 +277,8 @@ public class FailbackConfig extends Config {
          
          //well we haven't found one anywhere - this may not be an error (as none may be desired) but
          //it should be reported...
-         log.warn("No configuration file found; make sure "+configFilename+" is in your classpath, "+
+         log.warn("No configuration file found; if you need one, "+
+                     "make sure "+configFilename+" is in your classpath, "+
                      "or set the JNDI key "+propertyUrlKey+" to it's URL, "+
                      "or set the JNDI key "+propertyKey+" to it's file location");
       }
@@ -454,6 +472,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.9  2004/03/03 17:29:00  mch
+Added debug statements
+
 Revision 1.8  2004/03/03 17:11:07  mch
 Added command line dump and tested
 
@@ -491,6 +512,7 @@ Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
  */
+
 
 
 
