@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleSiapWorkflowTest.java,v 1.1 2004/10/13 12:01:51 pah Exp $
+ * $Id: SimpleSiapWorkflowTest.java,v 1.2 2004/10/18 14:51:45 pah Exp $
  * 
  * Created on 13-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -12,6 +12,10 @@
 
 package org.astrogrid.workflow.externaldep.avodemo;
 
+
+import org.apache.axis.utils.XMLUtils;
+import org.exolab.castor.xml.Marshaller;
+import org.w3c.dom.Document;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.store.Ivorn;
@@ -80,9 +84,12 @@ public class SimpleSiapWorkflowTest extends AbstractTestForWorkflow {
       outvot.setValue(outputIvorn.toString());
       outvot.setIndirect(true);
       Step step = new Step();
+      step.setDescription("siap call to CASU");
+      step.setName("siap");
       step.setTool(siapTool);
       step.setResultVar("source");
       wf.getSequence().addActivity(step);
+      
       
     }
 }
