@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.8 2004/07/21 10:37:52 nw Exp $
+/* $Id: AllTests.java,v 1.9 2004/08/31 21:52:28 jdt Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -24,7 +24,6 @@ public class AllTests {
         suite.addTest(AdqlTest.suite());
         suite.addTest(ConeTest.suite());
         suite.addTest(IvoQuery2MySpaceTest.suite());
-        suite.addTest(Jes2QueryTest.suite());
         suite.addTest(Query2MySpaceTest.suite());
         //$JUnit-END$
         return suite;
@@ -32,6 +31,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.9  2004/08/31 21:52:28  jdt
+ *  fixed compile error
+ *
  *  Revision 1.8  2004/07/21 10:37:52  nw
  *  regenerated
  *
