@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceDelegateFactory.java,v 1.1 2004/02/15 23:16:06 mch Exp $
+ * $Id: VoSpaceDelegateFactory.java,v 1.2 2004/02/16 23:33:42 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,9 +8,10 @@
  */
 
 package org.astrogrid.vospace.delegate;
-
 import java.io.IOException;
-import org.astrogrid.community.User;
+import java.net.URL;
+import org.astrogrid.community.Account;
+import org.astrogrid.vospace.VoRL;
 
 /**
  * Creates the appropriate delegates to access the various vospace servers
@@ -27,13 +28,13 @@ public class VoSpaceDelegateFactory
     * myspace.  We could also add a FTP and GridFTP delegates for services
     * without accounts on MySpace servers.
     */
-   public static VoSpaceClient createDelegate(User operator, String endPoint) throws IOException
+   public static VoSpaceClient createDelegate(Account operator, String endPoint) throws IOException
    {
       if (endPoint.toLowerCase().startsWith("http:")) {
          return new MySpaceIt04ServerDelegate(operator, endPoint);
       }
-      else if (endPoint.toLowerCase().startsWith("myspace:")) {
-         return new MySpaceIt04ServerDelegate(operator, MySpaceReference.getDelegateEndpoint(endPoint));
+      else if (endPoint.toLowerCase().startsWith("vospace:")) {
+         return new MySpaceIt04ServerDelegate(operator, new VoRL(new URL(endPoint), null).getDelegateEndpoint().toString());
       }
       throw new IllegalArgumentException("Unknown endpoint '"+endPoint+"', don't know which delegate to create for this");
    }
@@ -41,6 +42,9 @@ public class VoSpaceDelegateFactory
 }
 
 /*
+$Log: VoSpaceDelegateFactory.java,v $
+Revision 1.2  2004/02/16 23:33:42  mch
+Changed to use Account and AttomConfig
 
  */
 

@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceClient.java,v 1.1 2004/02/15 23:16:06 mch Exp $
+ * $Id: VoSpaceClient.java,v 1.2 2004/02/16 23:33:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 
 /**
  * These are the methods that vospace delegates must implement.
@@ -33,7 +33,7 @@ public interface VoSpaceClient {
    /**
     * Returns the user of this delegate - ie the account it is being used by
     */
-   public User getOperator();
+   public Account getOperator();
    
    /**
     * Returns a list of all the files that match the expression
@@ -43,12 +43,12 @@ public interface VoSpaceClient {
    /**
     * Returns a tree representation of the files that match the expression
     */
-   public File getEntries(User forAccount, String filter) throws IOException;
+   public File getEntries(Account forAccount, String filter) throws IOException;
 
    /**
     * getEntry obtain the details of a single, specified entry,
     *
-   public Tree getEntries(User forAccount, String path);
+   public File getEntry(User forAccount, String path);
     /**/
 
    /**
@@ -82,6 +82,11 @@ public interface VoSpaceClient {
     */
    public void delete(String deletePath) throws IOException;
 
+   /**
+    * Copy a file
+    */
+   public void copy(String sourcePath, String targetPath) throws IOException;
+   
    /**
     * Create a container
     *

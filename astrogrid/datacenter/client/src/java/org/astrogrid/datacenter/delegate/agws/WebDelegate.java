@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.19 2004/02/15 23:16:06 mch Exp $
+ * $Id: WebDelegate.java,v 1.20 2004/02/16 23:33:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -19,10 +19,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.apache.axis.AxisFault;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.applications.ParameterValues;
-import org.astrogrid.applications.description.SimpleApplicationDescription;
-import org.astrogrid.applications.manager.ApplicationController;
-import org.astrogrid.community.User;
+import org.astrogrid.applications.delegate.ApplicationController;
+import org.astrogrid.applications.delegate.beans.ParameterValues;
+import org.astrogrid.applications.delegate.beans.SimpleApplicationDescription;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
@@ -33,7 +33,7 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.vospace.delegate.MySpaceReference;
+import org.astrogrid.vospace.VoRL;
 import org.astrogrid.vospace.delegate.VoSpaceClient;
 import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
 import org.w3c.dom.Document;
@@ -60,7 +60,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
    private AxisDataServerSoapBindingStub binding;
    
    /** User certification */
-   private User user = null;
+   private Account user = null;
    
    
    
@@ -83,7 +83,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public WebDelegate(User user, URL givenEndPoint) throws ServiceException
+   public WebDelegate(Account user, URL givenEndPoint) throws ServiceException
    {
       binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
       this.user = user;
@@ -264,7 +264,7 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
     *
     */
    public String initializeApplication(String applicationID, String jobstepID, String jobMonitorURL,
-                                       User user, ParameterValues parameters) {
+                                       org.astrogrid.applications.delegate.beans.User user, ParameterValues parameters) {
       
       try {
          Document doc = null;
@@ -306,10 +306,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
          }
 
          //convert myspace references to urls
-         if (MySpaceReference.isMySpaceRef(queryUri))
+         if (VoRL.isVoRL(queryUri))
          {
-            VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, MySpaceReference.getDelegateEndpoint(queryUri));
-            queryUri = myspace.getUrl(MySpaceReference.getDelegateFileRef(queryUri)).toString();
+            queryUri = new VoRL(queryUri).resolveURL().toString();
          }
          
          assert queryUri != null : "Query URI not givem in parameters";
@@ -414,6 +413,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.20  2004/02/16 23:33:42  mch
+ Changed to use Account and AttomConfig
+
  Revision 1.19  2004/02/15 23:16:06  mch
  New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 
@@ -429,6 +431,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.20  2004/02/16 23:33:42  mch
+Changed to use Account and AttomConfig
+
 Revision 1.19  2004/02/15 23:16:06  mch
 New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 

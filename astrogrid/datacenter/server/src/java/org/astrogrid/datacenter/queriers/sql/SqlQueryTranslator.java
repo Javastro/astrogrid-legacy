@@ -1,11 +1,11 @@
-/*$Id: SqlQueryTranslator.java,v 1.6 2004/01/15 14:49:47 nw Exp $
+/*$Id: SqlQueryTranslator.java,v 1.7 2004/02/16 23:34:35 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.sql;
@@ -14,7 +14,7 @@ import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.apache.commons.logging.*;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 
 /** Pass-through SQL translator.
  * <p>
@@ -27,7 +27,7 @@ import org.astrogrid.config.SimpleConfig;
  * {@link #SQL_PASSTHRU_ENABLED_KEY} = "true" in the configuration. Otherwise
  * any SQL queries will be aborted with a {@link java.lang.SecurityException}
  * <p>
- * Override  {@link #inspectSQL(String)} to perform validation checks of the SQL before execution. 
+ * Override  {@link #inspectSQL(String)} to perform validation checks of the SQL before execution.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Nov-2003
  */
 public class SqlQueryTranslator implements Translator {
@@ -38,7 +38,7 @@ public class SqlQueryTranslator implements Translator {
      * @see org.astrogrid.datacenter.queriers.spi.Translator#translate(org.w3c.dom.Element)
      */
     public Object translate(Element e) throws Exception {
-       String val = SimpleConfig.getProperty(SQL_PASSTHRU_ENABLED_KEY,"false");
+       String val = AttomConfig.getString(SQL_PASSTHRU_ENABLED_KEY,"false");
        if (val.trim().equalsIgnoreCase("true")) {
           log.debug("SQL passthru enabled");
        } else {
@@ -58,7 +58,7 @@ public class SqlQueryTranslator implements Translator {
             String sql = null;
             if (nodes.item(0).getFirstChild() != null) {
                 sql = nodes.item(0).getFirstChild().getNodeValue();
-            } else {                
+            } else {
                sql =  nodes.item(0).getNodeValue();
             }
             inspectSQL(sql);
@@ -68,10 +68,10 @@ public class SqlQueryTranslator implements Translator {
     }
        /** method that verifies the SQL statement is not malicious or harmful to the server
         * <p>
-        * Blank implementation  - Can be overridden to provide additional checking. 
+        * Blank implementation  - Can be overridden to provide additional checking.
         * @throws SecurityException if the sql is judged to be dodgy
         * @todo add sensible default implementation - blank for now.
-        */ 
+        */
       protected void inspectSQL(String sql) throws SecurityException {
       }
     
@@ -79,15 +79,18 @@ public class SqlQueryTranslator implements Translator {
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.queriers.spi.Translator#getResultType()
      */
-    public Class getResultType() {        
+    public Class getResultType() {
         return String.class;
     }
 
 }
 
 
-/* 
+/*
 $Log: SqlQueryTranslator.java,v $
+Revision 1.7  2004/02/16 23:34:35  mch
+Changed to use Account and AttomConfig
+
 Revision 1.6  2004/01/15 14:49:47  nw
 improved documentation
 

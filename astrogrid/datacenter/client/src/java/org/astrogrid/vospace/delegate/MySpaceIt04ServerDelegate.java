@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04ServerDelegate.java,v 1.1 2004/02/15 23:16:06 mch Exp $
+ * $Id: MySpaceIt04ServerDelegate.java,v 1.2 2004/02/16 23:33:42 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -22,7 +22,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.StringTokenizer;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.log.Log;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
@@ -34,9 +34,9 @@ public class MySpaceIt04ServerDelegate implements VoSpaceClient
    private MySpaceClient depIt04Delegate = null;//deprecated It04 delegate
 
    //the person/account using this delegate
-   private User operator = null;
+   private Account operator = null;
 
-   public MySpaceIt04ServerDelegate(User anOperator, String endPoint) throws IOException
+   public MySpaceIt04ServerDelegate(Account anOperator, String endPoint) throws IOException
    {
       operator = anOperator;
       
@@ -50,7 +50,7 @@ public class MySpaceIt04ServerDelegate implements VoSpaceClient
    /**
     * Returns the user of this delegate - ie the account it is being used by
     */
-   public User getOperator() { return operator; }
+   public Account getOperator() { return operator; }
    
 
    /**
@@ -81,7 +81,7 @@ public class MySpaceIt04ServerDelegate implements VoSpaceClient
     /**
     * Returns a tree representation of the files that match the expression
     */
-   public File getEntries(User forAccount, String filter) throws VoSpaceException {
+   public File getEntries(Account forAccount, String filter) throws VoSpaceException {
 
       MySpaceFolder rootFolder = new MySpaceFolder(null,depIt04Delegate.toString());
       
@@ -93,7 +93,7 @@ public class MySpaceIt04ServerDelegate implements VoSpaceClient
             entries = (String) depIt04Delegate.listDataHoldingsGen(
                   operator.getIndividual(),
                   operator.getCommunity(), operator.getToken(),
-                  "/"+forAccount.getIvoRef()+"/*").elementAt(0);
+                  "/"+forAccount.getAstrogridId()+"/*").elementAt(0);
          } else {
             entries = (String) depIt04Delegate.listDataHoldingsGen(
                   operator.getIndividual(),
@@ -261,10 +261,27 @@ public class MySpaceIt04ServerDelegate implements VoSpaceClient
       }
    }
    
+   /**
+    * Copies the given file to the given location
+    */
+   public void copy(String originalPath, String copyPath) throws IOException {
+
+      try {
+         depIt04Delegate.copyDataHolding(operator.getIndividual(), operator.getCommunity(), operator.getToken(),
+                                                           originalPath, copyPath);
+      }
+      catch (Exception e) {
+         throw new VoSpaceException("Failed to copy '"+originalPath+"' to '"+copyPath+"'", e);
+      }
+   }
+   
 }
 
 /*
 $Log: MySpaceIt04ServerDelegate.java,v $
+Revision 1.2  2004/02/16 23:33:42  mch
+Changed to use Account and AttomConfig
+
 Revision 1.1  2004/02/15 23:16:06  mch
 New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 

@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.3 2004/02/15 23:17:05 mch Exp $
+ * $Id: DirectDelegate.java,v 1.4 2004/02/16 23:34:35 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
@@ -54,7 +54,7 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
    ServiceServer service = null;
 
    /** User certification */
-   private User user = null;
+   private Account user = null;
    
 
     /**
@@ -149,7 +149,7 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public DirectDelegate(User givenUser)
+   public DirectDelegate(Account givenUser)
    {
       this.user = givenUser;
       service = new ServiceServer();
@@ -331,6 +331,9 @@ public class DirectDelegate implements FullSearcher, ConeSearcher
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.4  2004/02/16 23:34:35  mch
+Changed to use Account and AttomConfig
+
 Revision 1.3  2004/02/15 23:17:05  mch
 Naughty Big Lump of Changes cont: fixes for It04.1 myspace
 

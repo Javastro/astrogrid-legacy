@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.4 2004/01/13 00:33:14 nw Exp $
+ * $Id: SqlQuerierSPI.java,v 1.5 2004/02/16 23:34:35 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,7 +22,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -68,7 +68,7 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
       map.add(SQLUtils.SQL_XMLNS,new SqlQueryTranslator());
   }
 
-/** 
+/**
  *     * Looks for JNDI connection, if that fails look for JDBC connection
     * <p>
     * Behaviour.
@@ -77,7 +77,7 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
     * <li>Otherwise, checks for a database url in configuration under {@link #JDBC_URL}, and
     * optional connection properties under {@link #CONNECTION_PROPERTIES}. If url is present, this is used to initialize the querier
     * </ul>
- * 
+ *
  * @todo this rigmarole is gone through every time a DatabaseQuerier is created. Factor out into a factory for efficiency.
  * @todo introduce a jdbc connection pool - new connection is currently made for each database querier. then discarded after a single query.
  * @return
@@ -85,8 +85,8 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
  */
 protected Connection createConnection() throws DatabaseAccessException {
     log.debug("Creating Connection");
-      String userId = SimpleConfig.getProperty(USER_KEY);
-      String password = SimpleConfig.getProperty(PASSWORD_KEY);
+      String userId = AttomConfig.getString(USER_KEY);
+      String password = AttomConfig.getString(PASSWORD_KEY);
     Connection conn = null;
     conn = createConnectionFromJNDI(userId,password);
     if (conn == null) {
@@ -124,14 +124,14 @@ protected Connection createConnection() throws DatabaseAccessException {
     protected Connection createConnectionFromProperties(String userId,String password) throws DatabaseAccessException {
           log.debug("Looking in configuration");
 
-         String jdbcURL = SimpleConfig.getProperty(JDBC_URL_KEY);
+         String jdbcURL = AttomConfig.getString(JDBC_URL_KEY, null);
          if ( jdbcURL == null || jdbcURL.length() == 0)  {
              return null;
          }
 
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
-            String connectionPropertyValue = SimpleConfig.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
+            String connectionPropertyValue = AttomConfig.getString(JDBC_CONNECTION_PROPERTIES_KEY, null);
             if (connectionPropertyValue != null) {
                try  {
                   Properties connectionProperties = new Properties();
@@ -178,12 +178,12 @@ protected Connection createConnection() throws DatabaseAccessException {
     * horribly.
     * @modified - made a object method - not being called at present.
     * @todo create a spi factory, move call to this method there.
-    * 
+    *
     */
    public   void startDrivers() throws DatabaseAccessException
    {
          //read value
-         String drivers = SimpleConfig.getProperty(JDBC_DRIVERS_KEY);
+         String drivers = AttomConfig.getString(JDBC_DRIVERS_KEY, null);
          if (drivers != null)
          {
             //break down into lines
@@ -248,8 +248,8 @@ protected Connection createConnection() throws DatabaseAccessException {
         if (! type.equals(String.class) || ! (o instanceof String)) {
             throw new IllegalArgumentException("Translator passed unexpected intermediate type" + o.getClass().getName());
         }
-        String sql = (String)o;  
-        try {      
+        String sql = (String)o;
+        try {
           log.debug("Queying the database");
           jdbcConnection = createConnection();
           Statement statement = jdbcConnection.createStatement();

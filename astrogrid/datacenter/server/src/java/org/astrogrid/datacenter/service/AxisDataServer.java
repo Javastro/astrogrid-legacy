@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.22 2004/01/14 17:41:18 nw Exp $
+ * $Id: AxisDataServer.java,v 1.23 2004/02/16 23:34:36 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,7 +19,7 @@ import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.DatacenterException;
@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 /**
  * The implementation of the Datacenter web service
  * <p>
- * When Axis receives a SOAP message from the client it is routed to this class for processing. 
+ * When Axis receives a SOAP message from the client it is routed to this class for processing.
  * It is a singleton
  * - all state depends on the DataService instances, one of
  * which is created for each data query call.
@@ -59,19 +59,19 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
    
    public static Log log = LogFactory.getLog(AxisDataServer.class);
    
-//   public static String CONFIG_URL = SimpleConfig.CONFIG_URL;//"java:comp/env/org.astrogrid.config.url";
+//   public static String CONFIG_URL = AttomConfig.CONFIG_URL;//"java:comp/env/org.astrogrid.config.url";
    
    /**
     * Initialises the configuration.
-    * @todo NW this is a quick hack to get config from JNDI, as code in SImpleConfig doesn't want to work.
+    * extodo NW this is a quick hack to get config from JNDI, as code in AttomConfig doesn't want to work.
     * later find out why the library code isn't doing the job.
-    * @todo MCH another hack to see if the SimpleConfig.loadJndi is now OK
-    */
+    * extodo MCH another hack to see if the SimpleConfig.loadJndi is now OK
+    * I think this is now solved by the new lazyloading AttomConfig...
    public AxisDataServer()  throws IOException {
 
-      SimpleConfig.autoLoad();
+      AttomConfig.autoLoad();
    }
-   
+    */
    /**
     * Returns the metadata file
     * NWW - at present pass in a dummy parameter - haven't worked out how to say 'no parameters please' yet.

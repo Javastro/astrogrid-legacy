@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.12 2004/01/15 17:38:25 nw Exp $
+/*$Id: QuerierManager.java,v 1.13 2004/02/16 23:34:35 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,11 +19,11 @@ import java.util.Hashtable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 
 /** Manages the construction and initialization of Queriers, and maintains a collection of current Queriers
- * 
+ *
  * <p>
  * @author Noel Winstanley nw@jb.man.ac.uk 24-Sep-2003
  * @see Querier
@@ -73,7 +73,7 @@ public class QuerierManager {
       //assigns handle
       try {
          String handle = generateHandle();
-         String resultsDestination = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
+         String resultsDestination = AttomConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
          // extract values from document, if present.
          if (rootElement != null) {
             String aHandle = DocHelper.getTagValue(rootElement, DocMessageHelper.ASSIGNQuery_ID_TAG);
@@ -203,12 +203,15 @@ public class QuerierManager {
     */
    public static Querier instantiateQuerier(Query query, String id) throws DatabaseAccessException {
       
-      String querierClass = SimpleConfig.getProperty(DATABASE_QUERIER_KEY);
-      
+      String querierClass = AttomConfig.getString(DATABASE_QUERIER_KEY);
+
+      /*
+      happens automatically now
       if (querierClass == null) {
          throw new DatabaseAccessException(" Server not configured properly: Querier key [" + DATABASE_QUERIER_KEY + "] "
-                                              + "cannot be found in the configuration file(s) '"  + SimpleConfig.getLocations() + "'");
+                                              + "cannot be found in the configuration file(s) '"  + AttomConfig.getLocations() + "'");
       }
+       */
 
       try {
          Class qClass = Class.forName(querierClass);
@@ -272,6 +275,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.13  2004/02/16 23:34:35  mch
+ Changed to use Account and AttomConfig
+
  Revision 1.12  2004/01/15 17:38:25  nw
  adjusted how queriers close() themselves - altered so it
  works no matter if Querier.close() or QuerierManager.closeQuerier(q)

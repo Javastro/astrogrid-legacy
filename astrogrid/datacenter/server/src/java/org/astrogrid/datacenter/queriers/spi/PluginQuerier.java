@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -21,16 +21,16 @@ import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 
 /** Back-end Plugin Adapter - loads & wraps a {@link QuerierSPI} so that it appears as a {@link org.astrogrid.datacenter.queriers.Querier}
- * 
+ *
  * <p>
  *  This class extends{@link org.astrogrid.datacenter.queriers.Querier} and  acts as an
- * adapter between the structured plugin system provided by this package, and the 
- * monolithic plugin system provided by extending <tt>Querier</tt> 
+ * adapter between the structured plugin system provided by this package, and the
+ * monolithic plugin system provided by extending <tt>Querier</tt>
  * <p>
- * Loads a selected <tt>QuerierSPI</tt> from classpath. Plugin to load is determined by value of {@link #QUERIER_SPI_KEY} in the 
+ * Loads a selected <tt>QuerierSPI</tt> from classpath. Plugin to load is determined by value of {@link #QUERIER_SPI_KEY} in the
  * system configuration.
- * 
- *  
+ *
+ *
  * @see package documentation
  * @author N Winstanley
  * @todo give it a better name?
@@ -67,7 +67,7 @@ public class PluginQuerier extends Querier {
     * Extracts the namespace attribute of the query document, and uses this to select the appropriate language translator from the plugin.
     * After applying a language translator, the resulting object is passed to the plugin's <tt>doQuery</tt> method.
     * <p>
-    * Meanwhile, it ensures that the right status-change events are fired, times the execution, and catches and logs all errors raised by the plugin. 
+    * Meanwhile, it ensures that the right status-change events are fired, times the execution, and catches and logs all errors raised by the plugin.
      */
     public QueryResults doQuery() throws DatabaseAccessException {
         // initialize the spi.
@@ -119,12 +119,14 @@ public class PluginQuerier extends Querier {
    /** method that handles the business of instantiating the querier object */
    public static QuerierSPI instantiateQuerierSPI()
       throws DatabaseAccessException {
-      String querierSpiClass = SimpleConfig.getProperty(QUERIER_SPI_KEY);
-      
+      String querierSpiClass = AttomConfig.getString(QUERIER_SPI_KEY);
+
+       /** automatic now
       if (querierSpiClass == null) {
          throw new DatabaseAccessException(" Querier key [" + QUERIER_SPI_KEY + "] "
-                                              + "cannot be found in the configuration file(s) '"  + SimpleConfig.getLocations() + "'");
+                                              + "cannot be found in the configuration file(s) '"  + AttomConfig.getLocations() + "'");
       }
+        */
       
       //create querier implementation
       try {
@@ -171,7 +173,7 @@ public class PluginQuerier extends Querier {
       
        
 /** calls close method on querierSPI before closing Querier itself */
-   public void close() throws IOException {      
+   public void close() throws IOException {
       try {
          if (spi != null) {
             try {
@@ -189,6 +191,9 @@ public class PluginQuerier extends Querier {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.5  2004/02/16 23:34:35  mch
+ Changed to use Account and AttomConfig
+
  Revision 1.4  2004/01/15 17:37:14  nw
  overrode default close() method - so now querierSPI.close()
  is called first too.

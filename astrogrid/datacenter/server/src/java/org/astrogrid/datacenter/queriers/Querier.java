@@ -13,8 +13,8 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
-import org.astrogrid.community.User;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.Account;
+import org.astrogrid.config.AttomConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
@@ -65,7 +65,7 @@ public abstract class Querier implements Runnable {
    private final String id;
    
    /** certification information */
-   private final User user;
+   private final Account user;
 
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();
@@ -81,7 +81,7 @@ public abstract class Querier implements Runnable {
     * server URL
     * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY}
     */
-   private String resultsDestination = SimpleConfig.getProperty(QuerierManager.RESULTS_TARGET_KEY);
+   private String resultsDestination = AttomConfig.getString(QuerierManager.RESULTS_TARGET_KEY);
    
    /** Handle to the results from the query - the location (prob myspace) where
     * the results can be found */
@@ -97,7 +97,7 @@ public abstract class Querier implements Runnable {
        this.query = query;
        workspace = new Workspace(queryId);
        if ((query == null) || (query.getUser() == null)) {
-           this.user = User.ANONYMOUS;
+           this.user = Account.ANONYMOUS;
        } else {
            this.user = query.getUser();
        }
@@ -253,7 +253,7 @@ public abstract class Querier implements Runnable {
       
       VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination);
   
-      String myspaceFilename = "/"+user.getIvoRef()+"/"+getQueryId()+"_results";
+      String myspaceFilename = "/"+user.getAstrogridId()+"/"+getQueryId()+"_results";
       
       try {
          //stream results to string for outputting to myspace.   At
@@ -264,7 +264,7 @@ public abstract class Querier implements Runnable {
          ba.close();
          myspace.putString(ba.toString(), myspaceFilename, false);
          
-         resultsLoc = myspace.getUrl("/"+user.getIvoRef()+"/"+myspaceFilename).toString();
+         resultsLoc = myspace.getUrl("/"+user.getAstrogridId()+"/"+myspaceFilename).toString();
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -422,6 +422,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.19  2004/02/16 23:34:35  mch
+ Changed to use Account and AttomConfig
+
  Revision 1.18  2004/02/15 23:17:05  mch
  Naughty Big Lump of Changes cont: fixes for It04.1 myspace
 

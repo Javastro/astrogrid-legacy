@@ -21,7 +21,7 @@ import javax.xml.rpc.ServiceException;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Circle;
@@ -55,7 +55,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
    Log log = LogFactory.getLog(AdqlNvoConeDelegate.class);
 
    /** User certification - for myspace */
-   private User user = null;
+   private Account user = null;
    
    
    /** @todo - adjust to use the MySpaceDummyDelegate */
@@ -230,7 +230,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
       {
          VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, destinationServer.toString());
          
-         String myspaceFilename = "/"+user.getIvoRef()+"/"+getId()+"_results";
+         String myspaceFilename = "/"+user.getAstrogridId()+"/"+getId()+"_results";
 
          OutputStream myspaceOut = new BufferedOutputStream(myspace.putStream(myspaceFilename));
 
@@ -357,6 +357,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.11  2004/02/16 23:33:42  mch
+Changed to use Account and AttomConfig
+
 Revision 1.10  2004/02/15 23:16:06  mch
 New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
 

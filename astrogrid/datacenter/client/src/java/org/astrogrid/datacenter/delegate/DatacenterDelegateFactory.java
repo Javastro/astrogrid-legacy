@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.12 2004/02/15 23:09:04 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.13 2004/02/16 23:33:42 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,7 +11,7 @@ import java.net.URL;
 import javax.xml.rpc.ServiceException;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.community.User;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -45,13 +45,13 @@ public class DatacenterDelegateFactory {
       // The urls of nvo cone-search servers and adql servers may be similar.
       // only adql servers return metadata.
       if (givenEndPoint == null) {
-         return makeConeSearcher(User.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
+         return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
       } else if (givenEndPoint.toUpperCase().indexOf("?CAT=") > -1) {
          //if the url includes ?CAT it's an nvo-server
-         return makeConeSearcher(User.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+         return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       } else {
          //pants, should really now query the service...
-         return makeConeSearcher(User.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+         return makeConeSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       }
    }
    /** Creates a ConeSearcher-implementing delegate given an endpoint
@@ -60,7 +60,7 @@ public class DatacenterDelegateFactory {
     * does not need access to any datacenter servers.
     * @todo make CatalogDelegate implement ConeSearcher and add here
     */
-   public static ConeSearcher makeConeSearcher(User user, String givenEndPoint, String serviceType)
+   public static ConeSearcher makeConeSearcher(Account user, String givenEndPoint, String serviceType)
       throws MalformedURLException, DatacenterException {
       if (serviceType.equals(DUMMY_SERVICE)) {
          //easy one, return a dummy
@@ -71,7 +71,7 @@ public class DatacenterDelegateFactory {
       }
       if (serviceType.equals(ASTROGRID_WEB_SERVICE)) {
          try {
-            return new WebDelegate(User.ANONYMOUS, new URL(givenEndPoint));
+            return new WebDelegate(Account.ANONYMOUS, new URL(givenEndPoint));
          } catch (ServiceException e) {
             throw new DatacenterException("Could not connect to " + givenEndPoint, e);
          }
@@ -90,23 +90,23 @@ public class DatacenterDelegateFactory {
       // The urls of nvo cone-search servers and adql servers may be similar.
       // only adql servers return metadata.
       if (givenEndPoint == null) {
-         return makeFullSearcher(User.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
+         return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
       }
       //if the url includes ?CAT it's an nvo-server
       if (givenEndPoint.indexOf("?") > -1) {
-         return makeFullSearcher(User.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
+         return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, NVO_CONE_SERVICE);
       }
       if (givenEndPoint.startsWith("socket")) {
-         return makeFullSearcher(User.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
+         return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_SOCKET_SERVICE);
       }
-      return makeFullSearcher(User.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
+      return makeFullSearcher(Account.ANONYMOUS, givenEndPoint, ASTROGRID_WEB_SERVICE);
    }
    /** Creates an  delegate given an endpoint
     * (a url to the service). If the endPoint
     * is null, creates a dummy delegate that can be used to test against, which
     * does not need access to any datacenter servers.
     */
-   public static FullSearcher makeFullSearcher(User user, String givenEndPoint, String serviceType)
+   public static FullSearcher makeFullSearcher(Account user, String givenEndPoint, String serviceType)
       throws ServiceException, MalformedURLException, IOException {
       if (serviceType.equals(DUMMY_SERVICE)) {
          //easy one, return a dummy
@@ -124,7 +124,7 @@ public class DatacenterDelegateFactory {
          //right yet - we ought to be able to check and then fallback.  Later.
          try {
             Class delegate = Class.forName("org.astrogrid.datacenter.delegate.agdirect.DirectDelegate");
-            Constructor constr = delegate.getConstructor(new Class[] { User.class });
+            Constructor constr = delegate.getConstructor(new Class[] { Account.class });
             return (FullSearcher) constr.newInstance(new Object[] { user });
          } catch (Exception e) {
             //other exceptions raised by constructor of the direct delegate
@@ -138,6 +138,9 @@ public class DatacenterDelegateFactory {
 }
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.13  2004/02/16 23:33:42  mch
+ Changed to use Account and AttomConfig
+
  Revision 1.12  2004/02/15 23:09:04  mch
  Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 
