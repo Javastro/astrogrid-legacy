@@ -1,4 +1,4 @@
-/* $Id: FactoryManager.java,v 1.6 2003/08/27 22:40:13 mch Exp $
+/* $Id: FactoryManager.java,v 1.7 2003/08/28 15:28:48 nw Exp $
  * Created on 19-Aug-2003
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -25,7 +25,7 @@ import org.astrogrid.i18n.AstroGridMessage;
  * Maintains a reference to a {@link Configuration}, and has member fields for each factory (plus a {@link java.util.Map} of additional query factories.
  * <p>
  * Provides a  bean-style getter and setter for each member field. Setter methods also ensures that factories are correctly configured by calling
- * {@link Configurable.setConfiguration} on factories as they are being added.
+ * {@link Configurable#setConfiguration} on factories as they are being added.
  * @author Noel Winstanley nw@jb.man.ac.uk 20-Aug-2003
  *@see org.astrogrid.datacenter.FactoryProvider
  */
@@ -125,8 +125,8 @@ public class FactoryManager implements FactoryProvider {
 }
 /*
  * $Log: FactoryManager.java,v $
- * Revision 1.6  2003/08/27 22:40:13  mch
- * todo javadocced
+ * Revision 1.7  2003/08/28 15:28:48  nw
+ * fixed link in javadoc
  *
  * Revision 1.5  2003/08/25 22:00:55  mch
  * Removed DatacenterException
