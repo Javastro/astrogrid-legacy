@@ -46,13 +46,15 @@ test queries on it before connecting up to a real dataset.</p>
 
 <p>Many datasets are stored in Relational Database Management Systems (RDBMSs) such as SQL
 Server, Postgres, etc.  PAL includes mechanisms to connect to any RDBMS that provides a
-    <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following</p>
-   <ul>
-   <li><a href="http://www.mysql.com/">MySQL</a> - the MM-MySQL JDBC Driver
-   </li><li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java RDBMS. For testing purposes or serving small databases based on textfiles.
-   </li><li>Microsoft SQL Server </i>
-   </li></ul>
-   <p />
+    <a href="http://java.sun.com/products/jdbc/">JDBC</a> driver; it has been tested with the following
+	<ul>
+		<li><a href="http://www.mysql.com/">MySQL</a> - the MM-MySQL JDBC 
+			Driver </li>
+		<li><a href="http://hsqldb.sourceforge.net/">HSQL</a> - pure-Java 
+			RDBMS. For testing purposes or serving small databases based on 
+			textfiles. </li>
+	</ul>
+   </p>
 
 <subsection name="Preparing your database">
   <p>
