@@ -1,4 +1,4 @@
-/*$Id: Jes2QueryTest.java,v 1.4 2004/05/13 12:25:04 mch Exp $
+/*$Id: Jes2QueryTest.java,v 1.5 2004/05/23 11:08:42 jdt Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -117,7 +117,8 @@ public class Jes2QueryTest extends TestCase {
      **/
     
     public void testSubmit() throws Exception {
-
+fail("This is jamming up the integration tests for some reason");
+/*
        Ivorn workflowIvorn = new Ivorn("ivo://org.astrogrid.localhost/myspace#Jes2QueryTest.workflow");
  
        
@@ -164,7 +165,7 @@ public class Jes2QueryTest extends TestCase {
        // dump it to myspace store - then we can look at it later.
        w1.setName("execution results:" + urn.getContent());
        manager.getWorkflowStore().saveWorkflow(user, workflowIvorn, w1);
-       
+       */
        
     }
     
@@ -186,6 +187,10 @@ public class Jes2QueryTest extends TestCase {
 
 /*
 $Log: Jes2QueryTest.java,v $
+Revision 1.5  2004/05/23 11:08:42  jdt
+Disabled this test because it seems to be causing the whole suite
+to seize up.
+
 Revision 1.4  2004/05/13 12:25:04  mch
 Fixes to create user, and switched to mostly testing it05 interface
 
