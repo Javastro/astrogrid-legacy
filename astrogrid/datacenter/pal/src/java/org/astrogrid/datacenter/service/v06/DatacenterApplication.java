@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+/*$Id: DatacenterApplication.java,v 1.4 2004/10/20 08:10:55 pah Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -96,10 +96,10 @@ public class DatacenterApplication extends AbstractApplication implements Querie
            try {
               return AdqlQueryMaker.makeQuery(queryString);
            }
-           catch (SAXException e) { throw new IllegalArgumentException("Invalid ADQL"+e); }
-           catch (IOException e) { throw new RuntimeException("Server error:"+e,e); }
-           catch (ParserConfigurationException e) { throw new RuntimeException("Server error:"+e,e); }
-           catch (QueryException e) { throw new IllegalArgumentException("Query Error: "+e); }
+           catch (SAXException e) { throw new CeaException("Invalid ADQL",e); }
+           catch (IOException e) { throw new CeaException("Server error:",e); }
+           catch (ParserConfigurationException e) { throw new CeaException("Server error:",e); }
+           catch (QueryException e) { throw new CeaException("Query Error: ", e); }
         } else { // can't get here - as would have barfed during 'initializeApplication' in DatacenterApplicatonDescription
            logger.fatal("Programming logic error - unknown interface" + interf.getName());
            throw new IllegalArgumentException("Programming logic error - unknown interface" + interf.getName());
@@ -127,7 +127,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
             return true;
         }
         catch (Throwable e) {
-           logger.error("Datacenter.execute() could not execute application",e);
+           reportError("Datacenter.execute() could not execute application",e);
            throw new CeaException("Could not execute application",e);
         }
     }
@@ -158,8 +158,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
     public void queryStatusChanged(final Querier querier) {
        QuerierStatus qs = querier.getStatus();
        QueryState state = qs.getState();
+       logger.debug("CEA seen DSA state="+state);
        // would be nice to use a switch here, but can't.
-       if (state.equals(QueryState.CONSTRUCTED)) {
+       if (state.equals(QueryState.CONSTRUCTED) || state.equals(QueryState.QUEUED)) {
            this.setStatus(Status.INITIALIZED);
            
        } else if (state.equals(QueryState.STARTING) || state.equals(QueryState.RUNNING_QUERY)) {
@@ -239,6 +240,9 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /*
 $Log: DatacenterApplication.java,v $
+Revision 1.4  2004/10/20 08:10:55  pah
+taken account of new backend phase and tidied up some logging
+
 Revision 1.3  2004/10/07 10:34:44  mch
 Fixes to Cone maker functions and reading/writing String comparisons from Query
 
