@@ -1,4 +1,4 @@
-/*$Id: Services.java,v 1.10 2004/07/01 11:36:25 nw Exp $
+/*$Id: Services.java,v 1.11 2004/08/09 09:11:24 nw Exp $
  * Created on 27-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.scripting;
+
+import org.apache.log4j.Logger;
 
 import org.astrogrid.config.SimpleConfig;
 
@@ -25,10 +27,13 @@ import org.xml.sax.SAXException;
  * The list of services is loaded from an xml file. This can either loaded from the default location on the classpath,
  * or by specifying a URL.
  * @author Noel Winstanley nw@jb.man.ac.uk 27-Jan-2004
- * @todo add community delegates - tricky - don't have an endpoint specified.
  *
  */
 public class Services {
+    /**
+     * Commons Logger for this class
+     */
+    private static final Logger logger = Logger.getLogger(Services.class);
 
    
    /** default location of service list document - in this package on the classpath */
@@ -72,12 +77,11 @@ public class Services {
       if (serviceListDocument == null){
           serviceListDocument = SimpleConfig.getSingleton().getUrl(SERVICE_LIST_URL_KEY,this.getClass().getResource(DEFAULT_SERVICE_LIST));
       }
-            is = serviceListDocument.openStream();
-            if (is == null) {
-               throw new IllegalArgumentException("No Service document present at " + serviceListDocument);
-            }
-
-
+      logger.info("Reading service list from " + serviceListDocument);
+      is = serviceListDocument.openStream();
+      if (is == null) {
+          logger.warn("No Service document present at " + serviceListDocument + " - service list will be empty");
+      }
       dig.parse(is);
       is.close();
       
@@ -85,10 +89,11 @@ public class Services {
    
    
    protected List datacenters = new ArrayList();
-   protected List applications = new ArrayList();
+   protected List cea = new ArrayList();
    protected List registries = new ArrayList();
    protected List registryAdmins = new ArrayList();
-   protected List jes = new ArrayList();
+   protected List jobcontrollers = new ArrayList();
+   protected List jobmonitors = new ArrayList();
    protected List unknownServices = new ArrayList();
    
    /** helper method to create a service 
@@ -106,16 +111,17 @@ public class Services {
    
    /** add a service to the list */
    public void addService(Service s) {
-      if (Service.APPLICATION_SERVICE.equals(s.getType())) {
-         applications.add(s);
+      if (Service.CEA_SERVICE.equals(s.getType())) {
+         cea.add(s);
       } else if (Service.DATACENTER_SERVICE.equals(s.getType())) {
          datacenters.add(s);
-      } else if (Service.JOBCONTROL_SERVICE.equals(s.getType()) 
-            || Service.JOBMONITOR_SERVICE.equals(s.getType())){
-         jes.add(s);
+      } else if (Service.JOBCONTROL_SERVICE.equals(s.getType())){
+          jobcontrollers.add(s);
+      } else if (Service.JOBMONITOR_SERVICE.equals(s.getType())){
+         jobmonitors.add(s);
       } else if (Service.REGISTRY_SERVICE.equals(s.getType())) {
          registries.add(s);
-            } else if (Service.REGISTRYADMIN_SERVICE.equals(s.getType())) {
+      } else if (Service.REGISTRYADMIN_SERVICE.equals(s.getType())) {
                registryAdmins.add(s);
       } else {
          unknownServices.add(s);
@@ -128,10 +134,11 @@ public class Services {
    public List getAllServices() {
       List allServices = new ArrayList();
       allServices.addAll(datacenters);
-      allServices.addAll(applications);
+      allServices.addAll(cea);
       allServices.addAll(registries);
       allServices.addAll(registryAdmins);
-      allServices.addAll(jes);
+      allServices.addAll(jobcontrollers);
+      allServices.addAll(jobmonitors);
       allServices.addAll(unknownServices);
       return allServices;
    }
@@ -140,7 +147,7 @@ public class Services {
     * @return
     */
    public List getApplications() {
-      return applications;
+      return cea;
    }
 
    /**access list of all datacenter services
@@ -150,16 +157,27 @@ public class Services {
       return datacenters;
    }
 
-   /** access list of all jes services - job controllers, job monitors, job schedulers
+   /** access list of all jes services - job controllers, job monitors,
     * @return
+    * @deprecated use {@link #getJobControllers()} or {@link #getJobMonitors()} instead
     */
    public List getJes() {
-      return jes;
+       List a = new ArrayList(jobcontrollers);
+       a.addAll(jobmonitors);
+      return a;
+   }
+   
+   public List getJobControllers() {
+       return jobcontrollers;
+   }
+   
+   public List getJobMonitors() {
+       return jobmonitors;
    }
 
 
    /**access list of all registry services
-    * @return
+    * @return list of {@link Service} objects
     */
    public List getRegistries() {
       return registries;
@@ -179,18 +197,52 @@ public class Services {
       return unknownServices;
    }
 
-   /* (non-Javadoc)
-    * @see java.lang.Object#toString()
-    */
-   public String toString() {
-      return this.getAllServices().toString();
-   }
 
+
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("[Services:");
+        if (datacenters.size() > 0) {
+            buffer.append(" datacenters: ");
+            buffer.append(datacenters);
+        }
+        if (cea.size() > 0) {
+            buffer.append(" cea: ");
+            buffer.append(cea);
+        }
+        if (registries.size() > 0) {
+            buffer.append(" registries: ");
+            buffer.append(registries);
+        }
+        if (registryAdmins.size() > 0) {
+            buffer.append(" registryAdmins: ");
+            buffer.append(registryAdmins);
+        }
+        if (jobcontrollers.size() > 0) {
+            buffer.append(" jobcontrollers: ");
+            buffer.append(jobcontrollers);
+        } 
+        if (jobmonitors.size() > 0) {
+            buffer.append(" jobmonitors: ");
+            buffer.append(jobmonitors);
+        }
+        if (unknownServices.size() > 0) {
+            buffer.append(" unknownServices: ");
+            buffer.append(unknownServices);
+        }
+        buffer.append("]");
+        return buffer.toString();
+    }
 }
 
 
 /* 
 $Log: Services.java,v $
+Revision 1.11  2004/08/09 09:11:24  nw
+added logging.
+improved toString()
+altered so that it degrades gracefully if service list document cannot be found
+
 Revision 1.10  2004/07/01 11:36:25  nw
 fixed for removal of myspace delegate
 
