@@ -235,9 +235,11 @@
     <report>
       maven-javadoc-plugin
     </report>
+	<!-- breaks the build. still
     <report>
       maven-jdepend-plugin
     </report>
+	-->
     <report>
       maven-junit-report-plugin
     </report>
