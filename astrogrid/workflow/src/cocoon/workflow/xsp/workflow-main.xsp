@@ -143,6 +143,64 @@
       } // end of outputTool()
       
       //====================================================================================================
+
+
+<!--      public void inputParamList( Iterator iterator ) throws SAXException {
+         if( TRACE_ENABLED ) trace("workflow-main-xsp.inputParamList() entry");
+        	
+         xspAttrInputParam = new AttributesImpl();
+
+         try {
+            Parameter
+               param;
+
+            while( iterator.hasNext() ) {
+               param = (Parameter)iterator.next();
+               outputInputParam( param, xspAttrInputParam );
+            } // end of while
+         } // end of try
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.inputParamList() exit");
+         }
+      } // end of inputParamList()      	
+
+      private void outputInputParam( Parameter param, AttributesImpl xspAttr )
+                                              throws SAXException {	
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputInputParam() entry");
+
+		 try {
+            <content>
+               <xsp:element name="inputParam">
+                  <xsp:attribute name="param-name"><xsp:expr>param.getName()</xsp:expr></xsp:attribute>													
+				  <xsp:attribute name="param-documentation"><xsp:expr>param.getDocumentation()</xsp:expr></xsp:attribute>
+               </xsp:element>
+			</content>
+         }
+         catch(Exception e) {
+            e.printStackTrace() ;
+         }         
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.outpuInputParam() exit");
+         }
+      } // end of outputInputParam()
+      
+      //====================================================================================================
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       
       public void activityTree ( Activity activity ) throws SAXException {
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.activityTree() entry") ; 
@@ -218,19 +276,36 @@
          private void step( Step step, AttributesImpl xspAttr ) throws SAXException {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.step() entry") ; 
         	
-        	try {
-        	
-               <content>	
+                try {
+if(step.getTool() == null){
+trace("========================");
+trace("tool was null");
+trace("key: "+step.getKey());
+               <content>
                   <xsp:element name="step">
-                     <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
-					 <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
-					 <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-					 <xsp:attribute name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:attribute>
-					 <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="tool">null</xsp:attribute>
+                                         <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
                   </xsp:element>
-			   </content>
-            
-            }
+               </content>
+}
+else {
+trace("========================");
+trace("tool was present, name: " + step.getTool().getName());
+trace("key: "+step.getKey());
+               <content>
+                  <xsp:element name="step">
+                                         <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="tool"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:attribute>
+                                         <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                   </xsp:element>
+                </content>
+      }
+      }
             catch(Exception e) {
                e.printStackTrace() ;
             }
@@ -274,43 +349,99 @@
 
    <workflow>
       <xsp:logic>
-      
-      //================================================================================
-      Workflow
-         workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
+         
+         try{
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving workflow from request object start") ;
+            //================================================================================
+            Workflow
+               workflow = (Workflow)session.getAttribute( DesignAction.HTTP_WORKFLOW_TAG ) ;
 		
-      //================================================================================
+            //================================================================================
 	
-	  if (workflow != null) {
-         <xsp:attribute name="template"><xsp:expr>workflow.getTemplateName()</xsp:expr></xsp:attribute>
-         <xsp:attribute name="workflow-name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute> 
-         <xsp:attribute name="workflow-description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute> 
+	        if (workflow != null){
+trace("============================");
+trace("template: " + workflow.getTemplateName());
+trace("workflow name: " + workflow.getName());
+trace("workflow desc: " + workflow.getDescription());
+trace("============================");	        
+               <xsp:attribute name="template"><xsp:expr>workflow.getTemplateName()</xsp:expr></xsp:attribute>
+               <xsp:attribute name="workflow-name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute> 
+               <xsp:attribute name="workflow-description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute> 
 		
 
-         //========================================================================
+               //========================================================================
 			
-         activityTree( workflow.getChild() ) ;
+               activityTree( workflow.getChild() ) ;
 		
-         //========================================================================
-      } 
-   </xsp:logic>
+               //========================================================================
+            } 
+         }
+         catch(Exception e) {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Error retrieving workflow from request object:") ;
+            e.printStackTrace() ;
+         }         
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving workflow from request object finish ") ;
+         }
+
+
+         try{
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving tool from request object start") ;   
+            //====================================================================================
+   	     
+	        Tool
+	           toolObject = (Tool)request.getAttribute( DesignAction.HTTP_TOOL_TAG );
+	        
+	        //===================================================================================
+
+	        if (toolObject != null){
+               <xsp:attribute name="toolObject-name"><xsp:expr>toolObject.getName()</xsp:expr></xsp:attribute> 
+               <xsp:attribute name="toolObject-documentation"><xsp:expr>toolObject.getDocumentation()</xsp:expr></xsp:attribute>
+                                          
+<!--               Iterator 
+                  listIt = toolObject.getInputParameters() ;
+
+               inputParamList( listIt ) ;
+                                                            	  
+--}            } // end of if            
+         } // end of try
+         catch(Exception e) {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Error retrieving tool from request object:") ;
+            e.printStackTrace() ;
+         }         
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving tool from request object finish ") ;
+         }
+
+	  
+      </xsp:logic>
    
-   <xsp:logic>      	
-      
-         Iterator workflowIterator = 		
-            (Iterator)request.getAttribute( DesignAction.WORKFLOW_LIST_PARAMETER );			
+      <xsp:logic>      	
+         try{
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving Workflow/Query/Tool lists from request object start") ; 
+            
+            Iterator workflowIterator = 		
+               (Iterator)request.getAttribute( DesignAction.WORKFLOW_LIST_PARAMETER );			
 
-		 workflowList( workflowIterator );
+		    workflowList( workflowIterator );
 		
-		 Iterator queryIterator =
-            (Iterator)request.getAttribute( DesignAction.QUERY_LIST_PARAMETER );			
+		    Iterator queryIterator =
+               (Iterator)request.getAttribute( DesignAction.QUERY_LIST_PARAMETER );			
 
-	     queryList( queryIterator );
+	        queryList( queryIterator );
 	     
-		 Iterator toolIterator =
-            (Iterator)request.getAttribute( DesignAction.TOOL_LIST_PARAMETER );			
+		    Iterator toolIterator =
+                (Iterator)request.getAttribute( DesignAction.TOOL_LIST_PARAMETER );			
 
-	     toolList( toolIterator );	     		
+	        toolList( toolIterator );
+         }
+         catch(Exception e) {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Error retrieving Workflow/Query/Tool lists from request object:") ;
+            e.printStackTrace() ;
+         }         
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp: Retrieving Workflow/Query/Tool lists from request object finish ") ;
+         }	     		
 
       </xsp:logic>
    </workflow>
