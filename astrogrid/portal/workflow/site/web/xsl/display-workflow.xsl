@@ -22,7 +22,7 @@
         <table border="1">
             <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form">
                 <tr>
-                    <td colspan="3">
+                    <td colspan="5">
                         <ag-menu name="workflow-menu"/>
                     </td>
                 </tr>
@@ -39,6 +39,20 @@
                     <td rowspan="2">                        
                         <input type="submit" name="action" value="add-name-description" />
                     </td>
+                    <td rowspan="2">
+                        <xsl:call-template name="workflow-map"/>
+                    </td>
+                    <td rowspan="2">
+                      <table>
+                        <tr>
+                          <td>
+                            <font color="RED" size="-2"><img src="/astrogrid-portal/mount/workflow/red.gif"/> Sequence</font><br/>
+                            <font color="GREEN" size="-2"><img src="/astrogrid-portal/mount/workflow/green.gif"/> Flow</font><br/>
+                            <font color="YELLOW" size="-2"><img src="/astrogrid-portal/mount/workflow/yellow.gif"/> Step</font><br/>                    
+                          </td>
+                        </tr>
+                      </table>
+                    </td>                    
                 <input type="hidden" name="open-workflow-ivorn" id="open-workflow-ivorn"/>
                 <input type="hidden" name="open-workflow-agsl" id="open-workflow-agsl"/>                        
                 </tr>
@@ -51,13 +65,13 @@
                             <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
                             <xsl:attribute name="name">workflow-description</xsl:attribute>
                         </xsl:element>                  
-                    </td>                
+                    </td>                            
                 <input type="hidden" name="save-workflow-ivorn" id="save-workflow-ivorn"/>
                 <input type="hidden" name="save-workflow-agsl" id="save-workflow-agsl"/>
                 <input type="hidden" name="action" id="workflow_action"/>                        
                 </tr>
             </form>                    
-        </table>                     
+        </table>                             
         <table border="0" cellpadding="0" cellspacing="0">  
             <tr>
                 <xsl:apply-templates select="*"/>
@@ -233,6 +247,7 @@
  
     <xsl:include href="display-tool.xsl"/>
     <xsl:include href="display-parameters.xsl"/>
+    <xsl:include href="display-workflow-map.xsl"/>   
 
 
     <!-- Default, copy all and apply templates -->
