@@ -14,7 +14,7 @@
     <!--xsp-formval:results/-->
     <agComponentTitle>Password reminder</agComponentTitle>
     <content>
-     <login-form action="reminder" method="get" message="Please enter your name and email address.">
+     <login-form action="reminder" method="post" message="Please enter your name and email address.">
        <login-input type="text" name="name" size="60" caption="Name:">
            <xsp:attribute name="value"><xsp-request:get-parameter name="name" default=""/></xsp:attribute>
        </login-input> 
