@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.3 2003/09/15 15:37:45 mch Exp $
+ * $Id: WebDelegate.java,v 1.4 2003/09/15 16:06:11 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -11,8 +11,8 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.common.DocHelper;
-import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.common.ServiceIdHelper;
+import org.astrogrid.datacenter.common.ServiceStatus;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.delegate.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.query.QueryException;
@@ -30,18 +30,16 @@ import org.w3c.dom.Element;
 
 public class WebDelegate extends DatacenterDelegate
 {
-   private URL endpoint = null;
-   AxisDataServerSoapBindingStub binding;
+   /** Generated binding code that mirrors the service's methods */
+   private AxisDataServerSoapBindingStub binding;
 
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
     * of datacenter delegates in the future...
     */
-   public WebDelegate(URL givenEndPoint) throws MalformedURLException, ServiceException
+   public WebDelegate(URL givenEndPoint) throws ServiceException
    {
-      this.endpoint = givenEndPoint;
-
-      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( endpoint );
+      binding =(AxisDataServerSoapBindingStub) new AxisDataServerServiceLocator().getAxisDataServer( givenEndPoint );
    }
 
    /**
@@ -148,6 +146,9 @@ public class WebDelegate extends DatacenterDelegate
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.4  2003/09/15 16:06:11  mch
+Fixes to make maven happ(ier)
+
 Revision 1.3  2003/09/15 15:37:45  mch
 Implemented asynch queries
 

@@ -1,12 +1,10 @@
 /*
- * $Id: DatacenterStatusListener.java,v 1.7 2003/09/09 17:50:07 mch Exp $
+ * $Id: DatacenterStatusListener.java,v 1.8 2003/09/15 16:06:11 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
-
-import org.astrogrid.datacenter.common.ServiceStatus;
 
 /**
  * Classes that implement this interface, and register with the
@@ -27,6 +25,9 @@ public interface DatacenterStatusListener
 
 /*
 $Log: DatacenterStatusListener.java,v $
+Revision 1.8  2003/09/15 16:06:11  mch
+Fixes to make maven happ(ier)
+
 Revision 1.7  2003/09/09 17:50:07  mch
 Class renames, configuration key fixes, registry/metadata methods and spawning query methods
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.6 2003/09/15 13:17:36 mch Exp $
+ * $Id: SocketDelegate.java,v 1.7 2003/09/15 16:06:11 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -48,10 +48,10 @@ public class SocketDelegate extends DatacenterDelegate
    private SocketXmlInputStream in = null;
 
    /** String used to request registry metadata */
-   public final static String REQ_REG_METADATA_TAG = "RequestRegistryMetata";
+   public static final String REQ_REG_METADATA_TAG = "RequestRegistryMetata";
 
    /** String used to request metadata */
-   public final static String REQ_METADATA_TAG = "RequestMetata";
+   public static final String REQ_METADATA_TAG = "RequestMetata";
 
    /** Don't use this directly - use the factory method
     * DatacenterDelegate.makeDelegate() in case we need to create new sorts
@@ -224,6 +224,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.7  2003/09/15 16:06:11  mch
+Fixes to make maven happ(ier)
+
 Revision 1.6  2003/09/15 13:17:36  mch
 Changed RemoteException thrown to more appropriate IOException
 

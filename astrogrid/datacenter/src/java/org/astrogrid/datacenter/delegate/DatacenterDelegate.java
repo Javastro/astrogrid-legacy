@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegate.java,v 1.12 2003/09/15 15:23:59 mch Exp $
+ * $Id: DatacenterDelegate.java,v 1.13 2003/09/15 16:01:21 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,14 +7,13 @@
 package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Vector;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.common.ServiceIdHelper;
-import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.delegate.dummy.DummyDelegate;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,6 +34,8 @@ import org.w3c.dom.NodeList;
 
 public abstract class DatacenterDelegate
 {
+   /** list of DatacenterStatusListener instances that have registered to listen
+    * to status changes */
    private Vector statusListeners = new Vector();
 
    /** Creates a delegate given an endpoint (a url to the service). If the endPoint
@@ -167,6 +168,9 @@ public abstract class DatacenterDelegate
 
 /*
 $Log: DatacenterDelegate.java,v $
+Revision 1.13  2003/09/15 16:01:21  mch
+Fixes to make maven happ(ier)
+
 Revision 1.12  2003/09/15 15:23:59  mch
 Added doc and framework for future grid/direct delegates
 
