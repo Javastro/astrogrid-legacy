@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.1 2003/09/09 17:50:07 mch Exp $
+ * $Id: DummyDelegate.java,v 1.2 2003/09/15 15:22:20 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,16 +9,17 @@ package org.astrogrid.datacenter.delegate.dummy;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.common.DocHelper;
+import org.astrogrid.datacenter.common.ResponseHelper;
+import org.astrogrid.datacenter.common.ServiceIdHelper;
+import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import org.apache.axis.utils.XMLUtils;
 
-import org.astrogrid.datacenter.delegate.DatacenterDelegate;
-import org.astrogrid.datacenter.delegate.DatacenterStatusListener;
-import org.astrogrid.datacenter.common.ServiceStatus;
 /**
  * An implementation of the DatacenterDelegate that validates inputs and
  * returns valid results, but does not call any datacenter services.
@@ -41,6 +42,8 @@ public class DummyDelegate extends DatacenterDelegate
    public static final String POST_PROCESSING = "Processing Results";
    public static final String FINISHED = "Processing Results";
 
+
+   public static final String SERVICE_ID = "DummyId";
 
    /** Generally speaking don't use this directly - use the factory
     * method DatacenterDelegate.makeDelegate(null), which is a
@@ -87,48 +90,65 @@ public class DummyDelegate extends DatacenterDelegate
 
       fireStatusChanged(POST_PROCESSING);
 
-      try
-      {
-         //load example response votable
-         URL url = getClass().getResource("ExampleVotable.xml");
-         Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
-
-         fireStatusChanged(FINISHED);
-
-         return resultsDoc.getDocumentElement();
-
-      }
-      catch (SAXException se)
-      {
-         //rethrow as runtime exception - somethings gone wrong that shouldn't
-         throw new RuntimeException(se);
-      }
-      catch (IOException ioe)
-      {
-         //rethrow as runtime exception - somethings gone wrong that shouldn't
-         throw new RuntimeException(ioe);
-      }
-      catch (ParserConfigurationException pce)
-      {
-         //should never happen, so rethrow as runtime (is this naughty?)
-         throw new RuntimeException(pce);
-      }
-
+      return getSampleResults();
 
    }
 
    /**
-    * Dummy spawn query method - kicks off query
+    * Dummy spawn query method - returns an example 'started' response
     */
    public Element spawnAdqlQuery(Element adql) throws RemoteException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      try
+      {
+         return DocHelper.wrap(ServiceIdHelper.makeServiceIdTag(SERVICE_ID)).getDocumentElement();
+      }
+      catch (SAXException e)
+      {
+         throw new RuntimeException("Failed to create valid dummy id tag");
+      }
    }
 
+   /**
+    * private method for loading the example results document
+    */
+   private Element getSampleResults()
+   {
+      //load example response votable
+      URL url = null;
+      try
+      {
+         url = getClass().getResource("ExampleResults.xml");
+         Document resultsDoc = XMLUtils.newDocument(url.openConnection().getInputStream());
 
+         return resultsDoc.getDocumentElement();
+      }
+      catch (Exception e)
+      {
+         if (url == null)
+         {
+            throw new RuntimeException("ExampleResults.xml not found",e);
+         }
+         else
+         {
+            throw new RuntimeException("Failed to create dummy/example results",e);
+         }
+      }
+   }
+
+   /**
+    * Returns a sample votable
+    */
    public Element getResults(String id) throws RemoteException
    {
-      throw new UnsupportedOperationException("Not implemented yet");
+      if (id.equals(SERVICE_ID))
+      {
+         return getSampleResults();
+      }
+      else
+      {
+         return ResponseHelper.makeUnknownIdResponse(id).getDocumentElement();
+      }
    }
 
 
@@ -141,15 +161,14 @@ public class DummyDelegate extends DatacenterDelegate
    }
 
    /**
-    * returns an example metadata file.
-    * @todo not supported yet.  Need to make a metadata file and return it
+    * returns example voregistry - formatted metadata file.
     */
    public Element getRegistryMetadata() throws IOException
    {
          //load example response votable
       try
       {
-         URL url = getClass().getResource("ExampleVotable.xml");
+         URL url = getClass().getResource("ExampleVoRegistry.xml");
          return XMLUtils.newDocument(url.openConnection().getInputStream()).getDocumentElement();
       }
       catch (ParserConfigurationException e)
@@ -163,6 +182,7 @@ public class DummyDelegate extends DatacenterDelegate
          throw new IOException("Example dummy VoRegistry metadata is invalid:"+e);
       }
    }
+
 
    /**
     * Returns unknown
@@ -186,6 +206,9 @@ public class DummyDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.2  2003/09/15 15:22:20  mch
+Implemented asynch queries; improved dummy results
+
 Revision 1.1  2003/09/09 17:50:07  mch
 Class renames, configuration key fixes, registry/metadata methods and spawning query methods
 

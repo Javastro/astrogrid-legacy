@@ -1,4 +1,5 @@
-<!DOCTYPE VOTABLE SYSTEM "http://us-vo.org/xml/VOTable.dtd">
+<DatacenterResults serviceid="DummyId">
+<Status>Finished</Status>
 <VOTABLE version="1.0">
    <DESCRIPTION>Output from the messier catalog at VirtualSky.org</DESCRIPTION>
    <DEFINITIONS>
@@ -266,4 +267,5 @@
       </TABLE>
    </RESOURCE>
 </VOTABLE>
+</DatacenterResults>
 
