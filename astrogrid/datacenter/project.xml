@@ -38,6 +38,11 @@
       <id>jl99</id>
       <email>jl99@star.le.ac.uk</email>
     </developer>
+    <developer>
+    	<name>Noel Winstanley</name>
+    	<id>nw</id>
+    	<email>nw@jb.man.ac.uk</email>
+    </developer>
   </developers>
   
   <dependencies>
