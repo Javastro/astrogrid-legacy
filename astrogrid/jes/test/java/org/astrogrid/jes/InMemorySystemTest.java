@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.16 2004/07/01 11:19:57 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.17 2004/07/01 21:15:00 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,27 +9,6 @@
  *
 **/
 package org.astrogrid.jes;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Iterator;
-
-import javax.xml.parsers.ParserConfigurationException;
-
-import EDU.oswego.cs.dl.util.concurrent.CyclicBarrier;
-import EDU.oswego.cs.dl.util.concurrent.Sync;
-import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
-
-import org.apache.axis.utils.XMLUtils;
-import org.exolab.castor.xml.MarshalException;
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
-import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.defaults.CachingComponentAdapter;
-import org.picocontainer.defaults.DefaultComponentAdapterFactory;
-import org.w3c.dom.Document;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.common.bean.Axis2Castor;
@@ -49,6 +28,27 @@ import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
+
+import org.apache.axis.utils.XMLUtils;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.defaults.CachingComponentAdapter;
+import org.picocontainer.defaults.DefaultComponentAdapterFactory;
+import org.w3c.dom.Document;
+
+import EDU.oswego.cs.dl.util.concurrent.CyclicBarrier;
+import EDU.oswego.cs.dl.util.concurrent.Sync;
+import EDU.oswego.cs.dl.util.concurrent.TimeoutException;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Iterator;
+
+import javax.xml.parsers.ParserConfigurationException;
 
 /** Test that builds entire system (out of in-memory components), and feeds workflow documents into it.
  * <p>
@@ -194,6 +194,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.17  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.16  2004/07/01 11:19:57  nw
 fix for change in picocontainer
 

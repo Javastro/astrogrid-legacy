@@ -1,4 +1,4 @@
-/*$Id: MockJobFactoryImpl.java,v 1.6 2004/03/15 01:29:13 nw Exp $
+/*$Id: MockJobFactoryImpl.java,v 1.7 2004/07/01 21:15:00 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -122,6 +122,9 @@ public class MockJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: MockJobFactoryImpl.java,v $
+Revision 1.7  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.6  2004/03/15 01:29:13  nw
 factored component descriptor out into separate package
 

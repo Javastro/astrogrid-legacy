@@ -1,4 +1,4 @@
-/*$Id: BasicComponentManager.java,v 1.8 2004/07/01 11:19:05 nw Exp $
+/*$Id: BasicComponentManager.java,v 1.9 2004/07/01 21:15:00 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,8 @@
 **/
 package org.astrogrid.jes.component;
 
-import org.astrogrid.jes.component.descriptor.*;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -25,7 +26,8 @@ import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.JoinPolicy;
-import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
+import org.astrogrid.jes.resultlistener.JesResultsListener;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
@@ -48,6 +50,7 @@ public class BasicComponentManager extends EmptyComponentManager {
         super();
         try {
         defaultCallbackURL = new URI("http://localhost:8080/astrogrid-jes/services/JobMonitor");
+        defaultResultListenerURL = new URI("http://localhost:8080/astrogrid-jes/service/CEAResultsListenerService");
         pico.registerComponentInstance("jes-meta",JES_META);
         pico.registerComponentImplementation(JobScheduler.class,SchedulerTaskQueueDecorator.class,
         new Parameter[] {
@@ -58,11 +61,15 @@ public class BasicComponentManager extends EmptyComponentManager {
         pico.registerComponentImplementation(SCHEDULER_ENGINE,org.astrogrid.jes.jobscheduler.impl.SchedulerImpl.class);
         pico.registerComponentImplementation(Policy.class,JoinPolicy.class);
         pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
-        pico.registerComponentInstance(ApplicationControllerDispatcher.MonitorEndpoint.class, 
-            new ApplicationControllerDispatcher.MonitorEndpoint() {
-            public URI getURI() {
+        pico.registerComponentInstance(ApplicationControllerDispatcher.Endpoints.class, 
+            new ApplicationControllerDispatcher.Endpoints() {
+            public URI monitorEndpoint() {
                 return defaultCallbackURL;
             }
+
+            public URI resultListenerEndpoint() {
+                return defaultResultListenerURL;
+            }            
         });
         pico.registerComponentImplementation(Locator.class,XMLFileLocator.class);
         pico.registerComponentInstance(XMLFileLocator.ToolList.class,
@@ -76,6 +83,7 @@ public class BasicComponentManager extends EmptyComponentManager {
         pico.registerComponentImplementation(BeanFacade.class,CastorBeanFacade.class);
         pico.registerComponentImplementation(AbstractJobFactoryImpl.class,InMemoryJobFactoryImpl.class); // could possibly get away with file here..
         pico.registerComponentImplementation(JobMonitor.class,org.astrogrid.jes.jobmonitor.JobMonitor.class);
+        pico.registerComponentImplementation(ResultsListener.class,JesResultsListener.class);
         pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);       
         } catch (Exception e) {
             log.fatal("Could not create component manager",e);
@@ -85,7 +93,7 @@ public class BasicComponentManager extends EmptyComponentManager {
 
     // will do something better here later.
     protected final URI defaultCallbackURL; 
-    
+    protected final URI defaultResultListenerURL;
     /** @todo add config tests for a basic system in here */
     private static final ComponentDescriptor JES_META = new SimpleComponentDescriptor(
         "Basic Job Execution System",
@@ -99,6 +107,9 @@ public class BasicComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: BasicComponentManager.java,v $
+Revision 1.9  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.8  2004/07/01 11:19:05  nw
 updated interface with cea - part of cea componentization
 

@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForJobController.java,v 1.6 2004/03/18 16:42:52 pah Exp $
+/*$Id: AbstractTestForJobController.java,v 1.7 2004/07/01 21:15:00 nw Exp $
  * Created on 17-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,6 @@ import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.io.IOException;
@@ -115,6 +114,9 @@ public abstract class AbstractTestForJobController extends AbstractTestWorkflowI
 
 /* 
 $Log: AbstractTestForJobController.java,v $
+Revision 1.7  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.6  2004/03/18 16:42:52  pah
 moved the axis2castor stuff to the common project under beans package
 

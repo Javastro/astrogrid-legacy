@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForPolicy.java,v 1.1 2004/03/18 10:56:19 nw Exp $
+/*$Id: AbstractTestForPolicy.java,v 1.2 2004/07/01 21:15:00 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,11 @@
 **/
 package org.astrogrid.jes.jobscheduler.policy;
 
-import org.astrogrid.jes.AbstractTestWorkflowInputs;
-
-import java.io.InputStream;
-
-import junit.framework.TestCase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.AbstractTestWorkflowInputs;
-import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -100,6 +93,9 @@ public abstract class AbstractTestForPolicy extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: AbstractTestForPolicy.java,v $
+Revision 1.2  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.1  2004/03/18 10:56:19  nw
 factored out an abstract test class
  

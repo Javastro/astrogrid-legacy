@@ -10,20 +10,21 @@
  */
 package org.astrogrid.jes.jobscheduler.impl;
 
+import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
 import org.astrogrid.common.bean.Axis2Castor;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -32,6 +33,7 @@ import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -151,6 +153,79 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
         }
     }
 
+
+    /** Record results of a job step execution
+     * @todo implement
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#reportResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.ResultListType)
+     */
+    public void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
+        logger.debug("reporting results of " + id.toString());
+        Workflow job = null;
+        JobFactory factory = null;
+        try {
+            factory = facade.getJobFactory();
+            org.astrogrid.workflow.beans.v1.execution.JobURN urn = null;          
+            try {
+                 urn = JesUtil.extractURN(id);
+               job = factory.findJob(urn ) ;
+            } catch (NotFoundException e) {
+                logger.error("Could not find job for urn" + urn.getContent());
+                return;
+            }
+            String xpath = JesUtil.extractXPath(id);
+            Step jobStep = (Step)job.findXPathValue(xpath);
+            if (jobStep == null) {
+                logger.error("Culd not find step " + xpath + " for urn " + urn.getContent());
+                return;
+            } 
+            // ok, found the job step this results are bound for.
+            // going to do two things now - record results as comment in the executionRecord.
+            StepExecutionRecord er =JesUtil.getLatestOrNewRecord(jobStep);       
+            MessageType resultsMessage = buildResultsMessage(results);
+            er.addMessage(resultsMessage);
+                        
+
+            // and then set results parameters to values in results message - nice, although some issues for looping, etc - only last set will be recorded.
+            // results shold be placed in the execution record somehow - but that's a todo for when we have loops.                        
+            org.astrogrid.applications.beans.v1.cea.castor.ResultListType castorResults =  Axis2Castor.convert(results);
+            ParameterValue[] resultValues =  results.getResult();
+            for (int i = 0; i < resultValues.length; i++) {
+                if (!resultValues[i].isIndirect()) { // only if its a direct parameter
+                    org.astrogrid.applications.beans.v1.parameters.ParameterValue stepParameter 
+                        = (org.astrogrid.applications.beans.v1.parameters.ParameterValue) jobStep.findXPathValue("tool/output/parameter[name='" + resultValues[i].getName() + "']");
+                    if (stepParameter != null && ! stepParameter.getIndirect()) {// only if we found one.., and we agree its indirect.
+                        stepParameter.setValue(resultValues[i].getValue());
+                     }
+                } 
+            }
+            // wonder if we want to update step status too?
+             factory.updateJob(job); // save our changes.                                                                         
+        } catch (JesException e) {
+            // somthing badly wrong.
+            logger.fatal("report results - jes exception",e);
+        }
+    }
+
+    /** build an execution message from the resultslist
+     * @param results
+     * @return
+     */
+    private MessageType buildResultsMessage(ResultListType results) {
+        MessageType resultsMessage = new MessageType();
+        resultsMessage.setLevel(LogLevel.INFO);
+        resultsMessage.setPhase(ExecutionPhase.COMPLETED);
+        resultsMessage.setSource("CEA");
+        resultsMessage.setTimestamp(new Date());   
+        StringWriter content = new StringWriter(); 
+        try {
+            Axis2Castor.convert(results).marshal(content);
+        } catch (CastorException e) { 
+            e.printStackTrace(new PrintWriter(content));
+        }
+
+        resultsMessage.setContent(content.toString());
+        return resultsMessage;
+    }
 
     /** resume executioin of a job
      * <p>
@@ -321,11 +396,6 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
     public Test getInstallationTest() {
         return null;
     }
-
-
-
-
-
 
 
 } // end of class JobScheduler

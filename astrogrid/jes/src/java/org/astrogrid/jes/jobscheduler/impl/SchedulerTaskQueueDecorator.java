@@ -1,4 +1,4 @@
-/*$Id: SchedulerTaskQueueDecorator.java,v 1.4 2004/04/08 14:43:26 nw Exp $
+/*$Id: SchedulerTaskQueueDecorator.java,v 1.5 2004/07/01 21:15:00 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,12 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,6 +78,13 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
     public void deleteJob(JobURN jobURN) throws Exception {
         executor.execute(factory.createDeleteJobTask(jobURN));
     }    
+
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#reportResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.ResultListType)
+     */
+    public void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
+        executor.execute(factory.createReportResultsJobTask(id,results));
+    }
     
     /** general method to add another runnable to the queue. useful for testing - i.e. can insert a 'end of test' runnable 
      * after all other tasks.
@@ -96,6 +104,24 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
             this.js = js;
         }
         final JobScheduler js;
+                
+        /**
+         * @param id
+         * @param results
+         * @return
+         */
+        public Runnable createReportResultsJobTask(final JobIdentifierType id, final ResultListType results) {
+            return new Runnable() {
+                public void run() {
+                    try {
+                        js.reportResults(id,results);
+                    } catch (Exception e) {
+                        logger.error("report results",e);
+                    }
+                }
+            };
+        }
+
         
         private static final Log logger = LogFactory.getLog("TaskQueue");
         /** create a task to schedule new job */
@@ -166,12 +192,16 @@ public class SchedulerTaskQueueDecorator implements JobScheduler , ComponentDesc
     }
 
 
+
     }
 
 
 
 /* 
 $Log: SchedulerTaskQueueDecorator.java,v $
+Revision 1.5  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.4  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

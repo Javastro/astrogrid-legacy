@@ -1,4 +1,4 @@
-/*$Id: BaseDirectoryFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
+/*$Id: BaseDirectoryFromConfig.java,v 1.5 2004/07/01 21:15:00 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.component.production;
 
+import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.config.Config;
-import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.impl.workflow.FileJobFactoryImpl.BaseDirectory;
 
 import java.io.File;
@@ -44,6 +44,9 @@ public class BaseDirectoryFromConfig extends SimpleComponentDescriptor implement
 
 /* 
 $Log: BaseDirectoryFromConfig.java,v $
+Revision 1.5  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.4  2004/03/15 23:45:07  nw
 improved javadoc
 

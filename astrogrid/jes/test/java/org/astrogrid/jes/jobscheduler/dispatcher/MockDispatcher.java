@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.7 2004/03/15 01:29:13 nw Exp $
+/*$Id: MockDispatcher.java,v 1.8 2004/07/01 21:15:00 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.dispatcher;
 
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -81,6 +81,9 @@ public class MockDispatcher implements Dispatcher, ComponentDescriptor {
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.8  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.7  2004/03/15 01:29:13  nw
 factored component descriptor out into separate package
 

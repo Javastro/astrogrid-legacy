@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.6 2004/04/21 10:05:51 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.7 2004/07/01 21:15:00 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,30 +10,25 @@
 **/
 package org.astrogrid.jes.jobscheduler.locator;
 
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.IdentifierType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
-import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.Step;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.xml.CastorException;
-import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
-import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.StringTokenizer;
 
 import junit.framework.Test;
 
@@ -203,6 +198,9 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.7  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.6  2004/04/21 10:05:51  nw
 implemented correctly - passes integration testing
 

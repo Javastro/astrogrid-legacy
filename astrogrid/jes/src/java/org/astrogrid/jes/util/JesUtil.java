@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.5 2004/03/18 16:41:57 pah Exp $
+/*$Id: JesUtil.java,v 1.6 2004/07/01 21:15:00 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,18 +10,12 @@
 **/
 package org.astrogrid.jes.util;
 
-import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
-import org.astrogrid.jes.types.v1.cea.axis.LogLevel;
-import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
-import java.util.Calendar;
 import java.util.Iterator;
 
 /** class of static helper methods.
@@ -109,6 +103,9 @@ public class JesUtil {
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.6  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.5  2004/03/18 16:41:57  pah
 moved the axis2castor stuff to the common project under beans package
 

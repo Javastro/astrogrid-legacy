@@ -1,4 +1,4 @@
-/*$Id: JoinPolicy.java,v 1.3 2004/04/21 16:39:53 nw Exp $
+/*$Id: JoinPolicy.java,v 1.4 2004/07/01 21:15:00 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,15 +11,11 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNode;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.StepActivityNode;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 import org.astrogrid.workflow.beans.v1.types.JoinType;
-
-import java.util.Iterator;
 
 /** Sequential Policy that takes join conditions into account
  * @see LinearPolicy - based on this.
@@ -138,6 +134,9 @@ public class JoinPolicy extends AbstractPolicy {
 
 /* 
 $Log: JoinPolicy.java,v $
+Revision 1.4  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.3  2004/04/21 16:39:53  nw
 rewrote policy implementations to use object models
 

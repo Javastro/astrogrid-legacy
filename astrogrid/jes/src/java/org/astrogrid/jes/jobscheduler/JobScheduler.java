@@ -1,4 +1,4 @@
-/*$Id: JobScheduler.java,v 1.53 2004/04/08 14:43:26 nw Exp $
+/*$Id: JobScheduler.java,v 1.54 2004/07/01 21:15:00 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.jobscheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 /** Interface to a component that executes jobs.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Mar-2004
  *
@@ -47,5 +48,13 @@ public interface JobScheduler {
      * <p>
      * aborts if still running, then deletes the job record from the store */
     public abstract void deleteJob(JobURN jobURN) throws Exception;
+ 
+    /** report results of a job step
+     * 
+     * @param id unique id of the job and step
+     * @param results results information for this step.
+     * @throws Exception
+     */
+    public abstract void reportResults(JobIdentifierType id,ResultListType results) throws Exception;
     
 }

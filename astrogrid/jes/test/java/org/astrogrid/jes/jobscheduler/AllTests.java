@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/03/15 00:32:01 nw Exp $
+/*$Id: AllTests.java,v 1.5 2004/07/01 21:15:00 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,6 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler;
-import org.astrogrid.jes.jobscheduler.impl.*;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
 /**
@@ -34,6 +32,9 @@ public class AllTests {
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.5  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.4  2004/03/15 00:32:01  nw
 merged contents of comm package into jobscheduler package.
 

@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.7 2004/03/15 01:31:12 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.8 2004/07/01 21:15:00 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,7 @@
 package org.astrogrid.jes.impl.workflow;
 
 import org.astrogrid.community.beans.v1.Account;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -240,6 +240,9 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.8  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.7  2004/03/15 01:31:12  nw
 jazzed up javadoc
 

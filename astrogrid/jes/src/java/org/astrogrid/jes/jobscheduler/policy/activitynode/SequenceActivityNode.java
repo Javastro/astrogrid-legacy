@@ -1,4 +1,4 @@
-/*$Id: SequenceActivityNode.java,v 1.1 2004/04/21 16:38:48 nw Exp $
+/*$Id: SequenceActivityNode.java,v 1.2 2004/07/01 21:15:00 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.jobscheduler.policy.activitynode;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.workflow.beans.v1.Sequence;
 
 /** Implementation of an activity node for a sequence.
@@ -51,6 +50,9 @@ public class SequenceActivityNode extends AbstractActivityNode implements Activi
 
 /* 
 $Log: SequenceActivityNode.java,v $
+Revision 1.2  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.1  2004/04/21 16:38:48  nw
 object model to make interrogating a workflow structure easier
  

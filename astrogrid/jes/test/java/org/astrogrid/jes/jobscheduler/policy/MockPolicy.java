@@ -1,4 +1,4 @@
-/*$Id: MockPolicy.java,v 1.8 2004/03/18 01:29:17 nw Exp $
+/*$Id: MockPolicy.java,v 1.9 2004/07/01 21:15:00 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,9 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-
-import junit.framework.Test;
 
 /** Mock policy - will retun all jobs that aren;'t marked as completed.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
@@ -51,6 +48,9 @@ public class MockPolicy extends AbstractPolicy implements Policy{
 
 /* 
 $Log: MockPolicy.java,v $
+Revision 1.9  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.8  2004/03/18 01:29:17  nw
 tidied
 

@@ -1,4 +1,4 @@
-/*$Id: ComponentManager.java,v 1.8 2004/03/15 23:45:07 nw Exp $
+/*$Id: ComponentManager.java,v 1.9 2004/07/01 21:15:00 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.Startable;
@@ -40,6 +41,8 @@ public interface ComponentManager extends Startable{
      */
     /** access the job monitor component */
     public abstract JobMonitor getMonitor();
+    /** access the results listener component */
+    public abstract ResultsListener getResultsListener();
     /** access the job controller component */
     public abstract JobController getController();
     /** output human-readable description of contents of container as HTML
@@ -58,6 +61,9 @@ public interface ComponentManager extends Startable{
 }
 /* 
 $Log: ComponentManager.java,v $
+Revision 1.9  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.8  2004/03/15 23:45:07  nw
 improved javadoc
 

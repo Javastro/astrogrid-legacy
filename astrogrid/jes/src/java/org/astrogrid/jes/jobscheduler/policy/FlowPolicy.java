@@ -1,4 +1,4 @@
-/*$Id: FlowPolicy.java,v 1.4 2004/04/21 17:09:18 nw Exp $
+/*$Id: FlowPolicy.java,v 1.5 2004/07/01 21:15:00 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,14 +12,9 @@ package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNode;
-import org.astrogrid.jes.jobscheduler.policy.activitynode.FlowActivityNode;
-import org.astrogrid.jes.jobscheduler.policy.activitynode.SequenceActivityNode;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.StepActivityNode;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.types.JoinType;
-
-import java.util.Iterator;
 
 /** Policy implementation that executes flows in parallel, and respects join conditions.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2004
@@ -82,6 +77,9 @@ public class FlowPolicy extends LinearPolicy {
 
 /* 
 $Log: FlowPolicy.java,v $
+Revision 1.5  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.4  2004/04/21 17:09:18  nw
 provided implementation of flow policy
 

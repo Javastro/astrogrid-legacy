@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.10 2004/04/21 17:09:18 nw Exp $
+/*$Id: LinearPolicy.java,v 1.11 2004/07/01 21:15:00 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,15 +13,9 @@ package org.astrogrid.jes.jobscheduler.policy;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNode;
-import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNodeVisitor;
-import org.astrogrid.jes.jobscheduler.policy.activitynode.FlowActivityNode;
-import org.astrogrid.jes.jobscheduler.policy.activitynode.SequenceActivityNode;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.StepActivityNode;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
-
-import java.util.Iterator;
 
 /** Policy that executes all jobs in a  purely linear fashion, with no concurrency.
  * <p>
@@ -115,6 +109,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.11  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.10  2004/04/21 17:09:18  nw
 provided implementation of flow policy
 

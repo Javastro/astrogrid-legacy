@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.6 2004/04/08 14:43:26 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.7 2004/07/01 21:15:00 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.locator;
 
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
 
@@ -77,6 +77,9 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.7  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.6  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

@@ -1,4 +1,4 @@
-/*$Id: CastorBeanFacade.java,v 1.8 2004/03/15 01:31:12 nw Exp $
+/*$Id: CastorBeanFacade.java,v 1.9 2004/07/01 21:15:00 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.impl.workflow;
 
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
@@ -82,6 +82,9 @@ public class CastorBeanFacade implements BeanFacade, ComponentDescriptor {
 
 /* 
 $Log: CastorBeanFacade.java,v $
+Revision 1.9  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.8  2004/03/15 01:31:12  nw
 jazzed up javadoc
 

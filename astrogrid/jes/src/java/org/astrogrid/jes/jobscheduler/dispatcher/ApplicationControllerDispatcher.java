@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.12 2004/07/01 11:19:05 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.13 2004/07/01 21:15:00 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,8 +13,8 @@ package org.astrogrid.jes.jobscheduler.dispatcher;
 import org.astrogrid.applications.delegate.CEADelegateException;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.applications.delegate.DelegateFactory;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobMonitor;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
@@ -27,11 +27,8 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.StringWriter;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLConnection;
-import java.rmi.RemoteException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -48,24 +45,30 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
     * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
     *
     */
-   public interface MonitorEndpoint {
-      URI getURI();
+   public interface Endpoints {
+      URI monitorEndpoint();
+      URI resultListenerEndpoint();
    }
    /** Construct a new ApplicationControllerDispatcher    
     * @param locator tool locator component to use to resolve endpoints
     * @param endpoint configuration component that specifies the endpoint of the JobMonitor service. This is used by the ApplicationController to 
     * return execution information back to the JES server.
     */
-   public ApplicationControllerDispatcher(Locator locator, MonitorEndpoint endpoint) {
+   public ApplicationControllerDispatcher(Locator locator, Endpoints endpoint) {
       this.locator = locator;
-      this.monitorURL = endpoint.getURI();
-      assert monitorURL != null;
-      logger.info("monitor URL set to " + monitorURL.toString());
+      this.monitorURI = endpoint.monitorEndpoint();
+      this.resultListenerURI = endpoint.resultListenerEndpoint();
+      assert monitorURI != null;
+      assert resultListenerURI != null;
+      logger.info("monitor URL set to " + monitorURI.toString());
+      logger.info("result URL set to " + resultListenerURI.toString());
    }
    /** tool locator component */
    protected final Locator locator;
    /** endpoint of local jobmonitor service - used as a callback */
-   protected final URI monitorURL;
+   protected final URI monitorURI;
+   /** endpoint of local result listener servuce - again, used as a callback */
+   protected final URI resultListenerURI;
    /**
     * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
     */
@@ -91,7 +94,9 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
          //String applicationID =
          //   appController.execute(js.getTool(), id, monitorURL.toString());
          String applicationId = appController.init(js.getTool(),id);
-         appController.registerProgressListener(applicationId,monitorURL);
+         appController.registerProgressListener(applicationId,monitorURI);
+         appController.registerResultsListener(applicationId,resultListenerURI);
+         appController.execute(applicationId);
 
       }
       catch (CEADelegateException e) {
@@ -118,7 +123,7 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
    public String getDescription() {
       return "Dispatcher that executes job steps by calling application controllers"
          + " Configured to tell application controllers to call back to:\n"
-         + monitorURL.toString();
+         + monitorURI.toString();
    }
 
    /**
@@ -136,13 +141,13 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
          super(s);
       }
       public void testCanConnectMonitorURL() throws Exception {
-         URLConnection conn = monitorURL.toURL().openConnection();
+         URLConnection conn = monitorURI.toURL().openConnection();
          assertNotNull(conn);
          conn.connect();
 
       }
       public void testCanCallMonitorURL() throws Exception {
-         JobMonitor mon = JesDelegateFactory.createJobMonitor(monitorURL.toString());
+         JobMonitor mon = JesDelegateFactory.createJobMonitor(monitorURI.toString());
          assertNotNull(mon);
          // call, with null parameters. will be ignored by other end - if it gets there. we're checking it gets there..
          mon.monitorJob(null, null);
@@ -153,6 +158,9 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.13  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.12  2004/07/01 11:19:05  nw
 updated interface with cea - part of cea componentization
 

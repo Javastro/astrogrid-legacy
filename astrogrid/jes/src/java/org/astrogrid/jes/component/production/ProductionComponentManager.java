@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.9 2004/04/21 17:08:51 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.10 2004/07/01 21:15:00 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,13 +9,13 @@
  *
 **/
 package org.astrogrid.jes.component.production;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
+import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.jes.component.ComponentManagerException;
 import org.astrogrid.jes.component.EmptyComponentManager;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
-import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.impl.workflow.AbstractJobFactoryImpl;
@@ -35,6 +35,8 @@ import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.FlowPolicy;
 import org.astrogrid.jes.jobscheduler.policy.JoinPolicy;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
+import org.astrogrid.jes.resultlistener.JesResultsListener;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 
 import org.picocontainer.Parameter;
 import org.picocontainer.defaults.ComponentParameter;
@@ -67,7 +69,7 @@ public final class ProductionComponentManager extends EmptyComponentManager {
          registerPolicy();
          
          pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
-         pico.registerComponentImplementation(ApplicationControllerDispatcher.MonitorEndpoint.class,MonitorEndpointFromConfig.class);
+         pico.registerComponentImplementation(ApplicationControllerDispatcher.Endpoints.class,EndpointsFromConfig.class);
          
          registerLocator();
             
@@ -76,6 +78,7 @@ public final class ProductionComponentManager extends EmptyComponentManager {
          
          pico.registerComponentImplementation(JobMonitor.class,org.astrogrid.jes.jobmonitor.JobMonitor.class);
          pico.registerComponentImplementation(JobController.class,org.astrogrid.jes.jobcontroller.JobController.class);       
+         pico.registerComponentImplementation(ResultsListener.class,JesResultsListener.class);
          } catch (Exception e) {
              log.fatal("Could not create component manager",e);
              throw new ComponentManagerException(e);
@@ -217,6 +220,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.10  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.9  2004/04/21 17:08:51  nw
 updated to use flow scheduler
 

@@ -1,4 +1,4 @@
-/*$Id: EmptyComponentManager.java,v 1.6 2004/03/15 23:45:07 nw Exp $
+/*$Id: EmptyComponentManager.java,v 1.7 2004/07/01 21:15:00 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,12 @@
 **/
 package org.astrogrid.jes.component;
 
-import org.astrogrid.jes.component.descriptor.*;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JobController;
 import org.astrogrid.jes.delegate.v1.jobmonitor.JobMonitor;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
+import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,6 +65,12 @@ public class EmptyComponentManager implements ComponentManager {
       public JobController getController() {
           return (JobController)pico.getComponentInstanceOfType(JobController.class);
       }
+    /**
+     * @see org.astrogrid.jes.component.ComponentManager#getResultsListener()
+     */
+    public ResultsListener getResultsListener() {
+        return (ResultsListener)pico.getComponentInstanceOfType(ResultsListener.class);
+    }     
     
       public String informationHTML() {
           getNotifier();
@@ -149,13 +156,18 @@ public class EmptyComponentManager implements ComponentManager {
      */
     public MutablePicoContainer getContainer() {
         return pico;
-    }      
+    }
+
+ 
     
 }
 
 
 /* 
 $Log: EmptyComponentManager.java,v $
+Revision 1.7  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.6  2004/03/15 23:45:07  nw
 improved javadoc
 

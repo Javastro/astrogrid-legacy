@@ -1,4 +1,4 @@
-/*$Id: CancelJobTest.java,v 1.2 2004/04/08 14:47:12 nw Exp $
+/*$Id: CancelJobTest.java,v 1.3 2004/07/01 21:15:00 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,8 @@
 **/
 package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.impl.MockSchedulerImpl;
 import org.astrogrid.jes.util.JesUtil;
-import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** test behaviour of cancel job
@@ -40,6 +38,9 @@ public class CancelJobTest extends AbstractTestForJobController {
 
 /* 
 $Log: CancelJobTest.java,v $
+Revision 1.3  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.2  2004/04/08 14:47:12  nw
 added delete and abort job functionality
 

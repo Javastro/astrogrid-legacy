@@ -1,4 +1,4 @@
-/*$Id: MonitorEndpointFromConfig.java,v 1.6 2004/07/01 11:19:05 nw Exp $
+/*$Id: EndpointsFromConfig.java,v 1.1 2004/07/01 21:15:00 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,23 +10,18 @@
 **/
 package org.astrogrid.jes.component.production;
 
+import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.config.Config;
-import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
-import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.MonitorEndpoint;
+import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.Endpoints;
 
-import org.apache.axis.AxisFault;
 import org.apache.axis.ConfigurationException;
 import org.apache.axis.MessageContext;
 import org.apache.axis.description.ServiceDesc;
-import org.apache.axis.server.AxisServer;
-
-import com.sun.corba.se.connection.GetEndPointInfoAgainException;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
 
 /** Configuration object for {@link org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher}
@@ -36,13 +31,19 @@ import java.util.Iterator;
  * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
  *
  */
-public class MonitorEndpointFromConfig extends SimpleComponentDescriptor implements MonitorEndpoint {
+public class EndpointsFromConfig extends SimpleComponentDescriptor implements Endpoints {
     /** key to look in config for  job monitor endpoint */
     public static final String MONITOR_ENDPOINT_KEY = "jes.monitor.endpoint.url";
+    /** key to look in config for results listener endpoint */
+    public static final String RESULTS_ENDPOINT_KEY = "jes.results.endpoint.url";
+    
     /** absolute fallback endpoint - if no value specified in config, and we can't calculate value by querying axis message endpoint */
     public static final String MONITOR_DEFAULT_ENDPOINT ="http://localhost:8080/jes/services/JobMonitorService" ;
-    public MonitorEndpointFromConfig(Config conf) throws MalformedURLException, URISyntaxException {
-        URL defaultURL = new URL(MONITOR_DEFAULT_ENDPOINT);
+    public static final String RESULTS_DEFAULT_ENDPOINT = "http://localhost:8080/jes/services/CEAResultsListenerService";
+    
+    public EndpointsFromConfig(Config conf) throws MalformedURLException, URISyntaxException {
+        URL monitorURL = new URL(MONITOR_DEFAULT_ENDPOINT);
+        URL resultsURL = new URL(RESULTS_DEFAULT_ENDPOINT);
         try {
         Iterator i = MessageContext.getCurrentContext().getAxisEngine().getConfig().getDeployedServices();
         // instead try
@@ -50,8 +51,11 @@ public class MonitorEndpointFromConfig extends SimpleComponentDescriptor impleme
         while (i.hasNext()) {
             ServiceDesc sDesc = (ServiceDesc)i.next();
             if (sDesc.getName().equals("JobMonitorService") && sDesc.getEndpointURL() != null) {
-                    defaultURL = new URL(sDesc.getEndpointURL());               
-            }            
+                    monitorURL = new URL(sDesc.getEndpointURL());               
+            }      
+            if (sDesc.getName().equals("ResultsListenerService") && sDesc.getEndpointURL() != null) {
+                    resultsURL = new URL(sDesc.getEndpointURL());               
+            }                    
         }      
         } catch (ConfigurationException e ) {
             // oh well.
@@ -59,24 +63,36 @@ public class MonitorEndpointFromConfig extends SimpleComponentDescriptor impleme
             // oh well
         }
 
-         URL url = conf.getUrl(MONITOR_ENDPOINT_KEY,defaultURL);
-         uri = new URI(url.toString());
-        name = "ApplicationControllerDispatcher - Monitor Endpoint configuration";
-             description = "Loads job-monitor endpoint (used by callback from application controller) from Config\n" +
-                 "key :" + MONITOR_ENDPOINT_KEY
-                 + "\n current value:" + url.toString();        
+         URL url = conf.getUrl(MONITOR_ENDPOINT_KEY,monitorURL);
+         finalMonitorEndpoint = new URI(url.toString());
+        url = conf.getUrl(RESULTS_ENDPOINT_KEY,resultsURL);
+        finalResultsEndpoint = new URI(url.toString());
+       name = "ApplicationControllerDispatcher - Monitor Endpoint configuration";
+       description = "Loads job-monitor endpoint (used by callback from application controller) from Config\n" +
+                "key :" + MONITOR_ENDPOINT_KEY+ " current value:" + finalMonitorEndpoint.toString() 
+                + "\n key : "+ RESULTS_ENDPOINT_KEY + "current value:" + finalResultsEndpoint.toString();                           
     }
 
-    protected final URI uri;
+    protected final URI finalMonitorEndpoint;
+    protected final URI finalResultsEndpoint;
 
-    public URI getURI() {
-        return uri;
+    public URI monitorEndpoint() {
+        return finalMonitorEndpoint;
+    }
+    /**
+     * @see org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher.Endpoints#resultListenerEndpoint()
+     */
+    public URI resultListenerEndpoint() {
+        return finalResultsEndpoint;
     }
 }
 
 
 /* 
-$Log: MonitorEndpointFromConfig.java,v $
+$Log: EndpointsFromConfig.java,v $
+Revision 1.1  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.6  2004/07/01 11:19:05  nw
 updated interface with cea - part of cea componentization
 

@@ -1,4 +1,4 @@
-/*$Id: HTMLDriver.java,v 1.3 2004/04/08 14:43:26 nw Exp $
+/*$Id: HTMLDriver.java,v 1.4 2004/07/01 21:15:00 nw Exp $
  * Created on 05-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,7 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -199,6 +198,9 @@ public class HTMLDriver extends HttpServlet {
 
 /* 
 $Log: HTMLDriver.java,v $
+Revision 1.4  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.3  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

@@ -12,8 +12,8 @@ package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.community.beans.v1.axis._Account;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobException;

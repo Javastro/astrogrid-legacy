@@ -1,4 +1,4 @@
-/*$Id: AbstractPolicy.java,v 1.5 2004/04/21 16:39:53 nw Exp $
+/*$Id: AbstractPolicy.java,v 1.6 2004/07/01 21:15:00 nw Exp $
  * Created on 05-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,10 @@
 **/
 package org.astrogrid.jes.jobscheduler.policy;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.component.descriptor.SimpleComponentDescriptor;
+import org.astrogrid.component.descriptor.SimpleComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNodeBuilder;
 import org.astrogrid.jes.util.JesFunctions;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.commons.logging.Log;
@@ -54,6 +52,9 @@ public abstract class AbstractPolicy extends SimpleComponentDescriptor implement
 
 /* 
 $Log: AbstractPolicy.java,v $
+Revision 1.6  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.5  2004/04/21 16:39:53  nw
 rewrote policy implementations to use object models
 

@@ -1,4 +1,4 @@
-/*$Id: MockSchedulerImpl.java,v 1.4 2004/04/08 14:43:26 nw Exp $
+/*$Id: MockSchedulerImpl.java,v 1.5 2004/07/01 21:15:00 nw Exp $
  * Created on 18-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,12 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
+import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
 
 import junit.framework.Test;
 
@@ -56,6 +57,16 @@ public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
             throw new Exception("you wanted me to fail");
         }
     }
+
+    /**
+     * @see org.astrogrid.jes.jobscheduler.JobScheduler#reportResults(org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.ResultListType)
+     */
+    public void reportResults(JobIdentifierType id, ResultListType results) throws Exception {
+        callCount++;
+        if (! willSucceed) {
+            throw new Exception("you wanted me to fail");
+        }
+    }    
     /**
      * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
      */
@@ -99,11 +110,15 @@ public class MockSchedulerImpl implements JobScheduler , ComponentDescriptor{
     public void resetCallCount() {
         callCount = 0;
     }
+
 }
 
 
 /* 
 $Log: MockSchedulerImpl.java,v $
+Revision 1.5  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.4  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

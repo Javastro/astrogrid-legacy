@@ -1,4 +1,4 @@
-/*$Id: SqlCommandsFromConfig.java,v 1.4 2004/03/15 23:45:07 nw Exp $
+/*$Id: SqlCommandsFromConfig.java,v 1.5 2004/07/01 21:15:00 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.component.production;
 
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.config.Config;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.impl.workflow.DefaultSqlCommands;
 import org.astrogrid.jes.impl.workflow.SqlCommands;
 
@@ -67,6 +67,9 @@ public Test getInstallationTest() {
 
 /* 
 $Log: SqlCommandsFromConfig.java,v $
+Revision 1.5  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.4  2004/03/15 23:45:07  nw
 improved javadoc
 

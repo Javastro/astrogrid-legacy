@@ -1,4 +1,4 @@
-/*$Id: DeleteJobTest.java,v 1.1 2004/04/08 14:47:12 nw Exp $
+/*$Id: DeleteJobTest.java,v 1.2 2004/07/01 21:15:00 nw Exp $
  * Created on 08-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,6 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.common.bean.Axis2Castor;
-import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -47,6 +45,9 @@ public class DeleteJobTest extends AbstractTestForSchedulerImpl {
 
 /* 
 $Log: DeleteJobTest.java,v $
+Revision 1.2  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.1  2004/04/08 14:47:12  nw
 added delete and abort job functionality
  

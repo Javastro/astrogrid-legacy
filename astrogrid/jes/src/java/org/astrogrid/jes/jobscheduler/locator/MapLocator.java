@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.8 2004/03/16 01:21:12 nw Exp $
+/*$Id: MapLocator.java,v 1.9 2004/07/01 21:15:00 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.locator;
 
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
@@ -181,6 +181,9 @@ public class MapLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.9  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.8  2004/03/16 01:21:12  nw
 fixed bug
 

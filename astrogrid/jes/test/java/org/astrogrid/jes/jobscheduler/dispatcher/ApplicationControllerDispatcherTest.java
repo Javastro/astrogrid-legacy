@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcherTest.java,v 1.8 2004/07/01 11:20:07 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.9 2004/07/01 21:15:00 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URL;
 
 /** Unit test for the application controller dispatcher.
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
@@ -40,9 +39,13 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
     protected void setUp() throws Exception {
         Locator locator = new MockLocator();
         final URI monitorURL =  new URI("http://www.nowhere.org");
-        ApplicationControllerDispatcher.MonitorEndpoint monitor = new ApplicationControllerDispatcher.MonitorEndpoint() {
+        ApplicationControllerDispatcher.Endpoints monitor = new ApplicationControllerDispatcher.Endpoints() {
 
-            public URI getURI() {
+            public URI monitorEndpoint() {
+                return monitorURL;
+            }
+
+            public URI resultListenerEndpoint() {
                 return monitorURL;
             }
         };
@@ -79,6 +82,9 @@ public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInp
 
 /* 
 $Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.9  2004/07/01 21:15:00  nw
+added results-listener interface to jes
+
 Revision 1.8  2004/07/01 11:20:07  nw
 updated interface with cea - part of cea componentization
 
