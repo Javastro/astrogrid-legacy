@@ -208,7 +208,23 @@
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
 
-    <unitTest/>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>      
+      <resources>
+        <resource>
+          <directory>${basedir}/test/java</directory>
+          <includes>
+            <include>**/*.xml</include>
+            <include>**/*.xmltemplate</include>
+            <include>**/*.properties</include>
+            <include>**/*.sql</include>
+            <include>**/*.ddl</include>
+          </includes>
+        </resource>
+      </resources>  
+    </unitTest>
   </build>
   
   <reports>
