@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.9 2004/04/21 16:39:53 nw Exp $
+/*$Id: LinearPolicy.java,v 1.10 2004/04/21 17:09:18 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -84,9 +84,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
 
     }
     
-    private static class FindNextExecutableStepVisitor extends BaseActivityNodeVisitor {
+    protected static class FindNextExecutableStepVisitor extends BaseActivityNodeVisitor {
 
-        private boolean justSeenComplete = true;
+        protected boolean justSeenComplete = true;
         Step result = null;
         
         public void visit(StepActivityNode node) {
@@ -115,6 +115,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy {
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.10  2004/04/21 17:09:18  nw
+provided implementation of flow policy
+
 Revision 1.9  2004/04/21 16:39:53  nw
 rewrote policy implementations to use object models
 

@@ -1,4 +1,4 @@
-/*$Id: FlowPolicy.java,v 1.3 2004/04/21 16:39:53 nw Exp $
+/*$Id: FlowPolicy.java,v 1.4 2004/04/21 17:09:18 nw Exp $
  * Created on 18-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,10 @@
 package org.astrogrid.jes.jobscheduler.policy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.ActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.FlowActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.SequenceActivityNode;
+import org.astrogrid.jes.jobscheduler.policy.activitynode.StepActivityNode;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.types.JoinType;
@@ -21,7 +25,7 @@ import java.util.Iterator;
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Mar-2004
  *
  */
-public class FlowPolicy extends AbstractPolicy {
+public class FlowPolicy extends LinearPolicy {
     /** Construct a new FlowPolicy
      * 
      */
@@ -36,20 +40,51 @@ public class FlowPolicy extends AbstractPolicy {
     * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
     */
    public ExecutionPhase currentJobStatus(Workflow job) {
-       return null;
+       // same rules as for the linear policy - if there's something that's not been run yet, run it.
+       return super.currentJobStatus(job);
   }      
 
-   /** Returns a step that either has no execution record, or an execution record that has pending status.
-    * @see org.astrogrid.jes.jobscheduler.Policy#nextExecutableStep(org.astrogrid.workflow.beans.v1.Workflow)
-    */
-   public Step nextExecutableStep(Workflow job) {
-       return null;
-   }
+  public Step nextExecutableStep(Workflow job) {
+         logger.debug("LinearPolicy::nextExecutableStep");
+         ActivityNode node = builder.buildTree(job);
+         FindNextExecutableStepVisitor visitor = new FindNextExecutableStepVisitor();
+         node.accept(visitor);
+         return visitor.result;
+
+     }
+    
+     protected static class FindNextExecutableStepVisitor extends LinearPolicy.FindNextExecutableStepVisitor {
+
+         public void visit(StepActivityNode node) {
+             if (result != null) { // found one already. leave it.
+                 return;
+             }
+             Step s = node.getStep();
+             ExecutionPhase phase = getLatestExecutionPhase(s,ExecutionPhase.PENDING);
+
+                if (justSeenComplete && phase.equals(ExecutionPhase.PENDING)) {
+                             logger.debug("found candidate");
+                             result = s;                
+                }
+             if (node.getParent().getNodeType() == ActivityNode.SEQUENCE) { // don't do this in a flow.
+                if (phase.equals(ExecutionPhase.COMPLETED)) {
+                             justSeenComplete = true;
+                } else {
+                             justSeenComplete = false;
+                }
+             }               
+        }
+
+
+     }
 }
 
 
 /* 
 $Log: FlowPolicy.java,v $
+Revision 1.4  2004/04/21 17:09:18  nw
+provided implementation of flow policy
+
 Revision 1.3  2004/04/21 16:39:53  nw
 rewrote policy implementations to use object models
 
