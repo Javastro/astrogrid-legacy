@@ -7,7 +7,7 @@
             <item name="Projects" href="index.html"/>
         </links>
 	    <menu name="Overview">
-		  <item name="Downloading and installing Astrogrid" 
+		  <item name="Information for Users" 
                 href="install.html"/>
 		  <item name="Information for Developers" 
                 href="developers.html"/>
