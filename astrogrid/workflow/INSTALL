@@ -1,0 +1,55 @@
+#=============================================================================#
+#                    AstroGrid Workflow INSTALL.                     
+#=============================================================================#
+
+1.0 SOFTWARE PREREQUISITES:
+*****************************
+
+1.1 Externals.
+----------------
+
+These are the environments under which JES was developed:
+. RedHat Linux 8
+. Java sdk j2sdk1.4.1_02
+. Tomcat 4.1.24
+
+
+1.2 The  astrogrid-portal-workflow.War file
+--------------------------------------------
+
+Contains all the runtime files required for workflow apart from the external prerequisites.
+
+
+2.0 Deploying the War file:
+****************************
+Note: the astrogrid portal is designed to accept pluggable components, workflow is one such component.
+Before workflow can be installed the astrogrid-portal must be installed and working.
+Copy the astrogrid-portal-workflow war file into the Tomcat webapps directory. Unjar this
+war file, creating the following directory structure under the webapps directory...
+
+astrogrid-portal-workflow
+  |
+  +__mount
+  |
+  +__WEB-INF
+      |
+      +__classes
+      |
+      +__lib
+      
+      
+The astrogrid-portal-workflow directory (or similarly named) will contain contain the following important file:
+ASTROGRID_workflowconfig.xml    - the workflow configuration file
+
+The configuration file needs to be altered or merged with any already existing JES configuration file
+before being moved into the WEB-INF/classes directory. See the README for extra details on this step.
+
+
+4.0 Edit the ASTROGRID_workflowconfig.xml file
+********************************************
+See the accompanying README for this information.
+
+
+5.0 Shutdown and restart Tomcat.
+**********************************
+Log into the portal as normal, the job manager option should now be available from the menu.
