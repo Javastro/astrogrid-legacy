@@ -1,4 +1,4 @@
-/* $Id: FileResourceLoader.java,v 1.2 2003/11/10 18:45:52 jdt Exp $*
+/* $Id: FileResourceLoader.java,v 1.3 2004/02/27 00:46:03 nw Exp $*
  * Created on 08-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,7 +59,7 @@ public final class FileResourceLoader {
    * @return said String
    * @throws IOException if there's a problem with the InputStream
    */
-  private String streamToString(final InputStream is) throws IOException {
+  public static String streamToString(final InputStream is) throws IOException {
     assert(is != null);
     BufferedReader r = new BufferedReader(new InputStreamReader(is));
     StringWriter sw = new StringWriter();
@@ -76,6 +76,12 @@ public final class FileResourceLoader {
 }
 /*
 *$Log: FileResourceLoader.java,v $
+*Revision 1.3  2004/02/27 00:46:03  nw
+*merged branch nww-itn05-bz#91
+*
+*Revision 1.2.8.1  2004/02/17 12:57:11  nw
+*improved documentation
+*
 *Revision 1.2  2003/11/10 18:45:52  jdt
 *Minor bits and pieces to satisfy the coding standards
 *

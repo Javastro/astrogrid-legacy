@@ -20,6 +20,7 @@ import org.astrogrid.Configurator;
  * @see     
  * @see     
  * @since   AstroGrid 1.2
+ * @deprecated Want to replace use of this by SimpleConfig instead.
  */
 public class JES extends org.astrogrid.Configurator {
     

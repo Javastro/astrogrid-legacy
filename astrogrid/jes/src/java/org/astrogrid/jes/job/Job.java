@@ -1,5 +1,5 @@
-/*
- * @(#)Job.java   1.0
+/*$Id: Job.java,v 1.10 2004/02/27 00:46:03 nw Exp $
+ * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -7,123 +7,63 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
+**/
 package org.astrogrid.jes.job;
 
-import org.astrogrid.Configurator;
-import org.astrogrid.i18n.AstroGridMessage;
-import org.astrogrid.jes.JES;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.Status;
 
 import java.util.Date;
 import java.util.Iterator;
+/** Interface the services require to a job.
+ * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2004
+ *
+ */
+public interface Job {
 
+    public abstract JobURN getId();
+    public abstract String getName();
+    //public abstract void setName(String name);
+    public abstract String getDescription();
+   // public abstract void setDescription(String description);
+    public abstract Date getDate();
+    //public abstract void setDate(Date date);
+    public abstract String getUserId();
+   // public abstract void setUserId(String name);
+    public abstract String getCommunity();
+   // public abstract void setCommunity(String community);
+    public abstract String getGroup();
+    public abstract void setGroup(String group);
+    public abstract String getToken();
+    //public abstract void setToken(String token);
+    //public abstract Object getImplementation();
+    public abstract Iterator getJobSteps();
+    //public abstract boolean addJobStep(JobStep jobStep);
+    //public abstract boolean removeJobStep(JobStep jobStep);
+    //public abstract void setDocumentXML(String docXML);
+    public abstract String getDocumentXML();
+    public abstract void setStatus(Status status);
+    public abstract Status getStatus();
+}
+/* 
+$Log: Job.java,v $
+Revision 1.10  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
 
-public abstract class Job {
-	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-	
-	private static Log
-		logger = LogFactory.getLog( Job.class ) ;
-        
-    private final static String 
-        SUBCOMPONENT_NAME = Configurator.getClassName( Job.class );                  
-		
-	public static  final String
-		STATUS_INITIALIZED = "INITIALIZED",  // Created but not yet running
-		STATUS_RUNNING = "RUNNING",          // Currently executing
-		STATUS_COMPLETED = "COMPLETED",      // Completed OK
-		STATUS_IN_ERROR = "ERROR" ;          // Something bad happened
-		
-	private static final String
-		ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL = "AGJESE00140" ;
-        
-	private static final String
-		JOBFACTORY_KEY = "JOB.FACTORY" ; 
-	
-	private static Class
-	    factoryBuilder ;
-		
+Revision 1.9.2.4  2004/02/19 13:34:23  nw
+cut out useless classes,
+moved constants into generated code.
 
-	public static JobFactory getFactory() throws JobException  { 
-		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
-    	
-		String
-			implementationFactoryName = JES.getProperty( JES.JOB_FACTORY
-                                                       , JES.JOB_CATEGORY ) ;
-			
-		// JBL Note: We are holding txn state (the Connection) within JobFactoryImpl
-		// and therefore we must return a new factory for each invocation! 
-		// We may be able to get around this later and have the factory as basically
-		// a single-instance object.
-		JobFactory
-		    factory = null ;
-    	
-		try{
-			// Note the double lock strategy				
-			if( factoryBuilder == null ){
-				synchronized ( Job.class ) {
-					if( factoryBuilder == null ){
-						factoryBuilder = Class.forName( implementationFactoryName ) ;			    			
-					}
-				} // end synchronized
-			}
-			factory = (JobFactory) factoryBuilder.newInstance() ;
-		}
-		catch( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_COULD_NOT_CREATE_JOBFACTORY_IMPL
-                                              , SUBCOMPONENT_NAME
-                                              , implementationFactoryName ) ;
-			logger.error( message.toString(), ex ) ;
-			throw new JobException( message, ex );
-		}
-		finally{
-			if( TRACE_ENABLED ) logger.debug( "getFactory(): exit") ; 	
-		}    
-					
-		return factory; 
-	
-	} // end of getFactory()   	
-    	
+Revision 1.9.2.3  2004/02/17 12:25:38  nw
+improved javadocs for classes
 
-	public abstract String getId() ;   // Job URN
-    
-	public abstract String getName() ;
-	public abstract void setName( String name ) ;
-    
-    public abstract String getDescription() ;
-    public abstract void setDescription( String description ) ;
-    
-	public abstract Date getDate() ;
-	public abstract void setDate( Date date ) ;
-    
-	public abstract String getUserId() ;
-	public abstract void setUserId( String name ) ;
-    
-	public abstract String getCommunity() ;
-	public abstract void setCommunity( String community ) ;
-	
-    public abstract String getGroup() ;
-    public abstract void setGroup( String group ) ;
-    
-    public abstract String getToken() ;
-    public abstract void setToken( String token ) ;
-    
-	public abstract Object getImplementation() ;
-	
-	public abstract Iterator getJobSteps() ;
-	public abstract boolean addJobStep( JobStep jobStep ) ;
-	public abstract boolean removeJobStep( JobStep jobStep ) ;
-	
-	public abstract void setDocumentXML( String docXML ) ; 
-	public abstract String getDocumentXML() ;
-	
-	public abstract void setStatus(String status) ;
-	public abstract String getStatus() ;
+Revision 1.9.2.2  2004/02/12 01:16:08  nw
+analyzed code, stripped interfaces of all unused methods.
 
-		
-} // end of class Job
+Revision 1.9.2.1  2004/02/09 12:39:06  nw
+isolated existing datamodel.
+refactored to extract interfaces from all current datamodel classes in org.astrogrid.jes.job.
+moved implementation of interfaces to org.astrogrid.jes.impl
+refactored so services reference interface rather than current implementation
+ 
+*/

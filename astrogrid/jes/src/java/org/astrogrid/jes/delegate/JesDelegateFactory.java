@@ -1,4 +1,4 @@
-/*$Id: JesDelegateFactory.java,v 1.2 2004/02/09 11:41:44 nw Exp $
+/*$Id: JesDelegateFactory.java,v 1.3 2004/02/27 00:46:03 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,11 @@
 **/
 package org.astrogrid.jes.delegate;
 
-import org.astrogrid.jes.delegate.jobController.JobControllerDelegate;
-import org.astrogrid.jes.delegate.jobMonitor.JobMonitorDelegate;
-import org.astrogrid.jes.delegate.jobScheduler.JobSchedulerDelegate;
+import org.astrogrid.jes.delegate.impl.JobControllerDelegate;
+import org.astrogrid.jes.delegate.impl.JobMonitorDelegate;
+import org.astrogrid.jes.delegate.impl.JobSchedulerDelegate;
 
 /** Factory / facade class that draws all the different delegate factories together.
- * @future - draw all backend implementation classes together into a single package - too spread out at present.
- * have deprecated all the individual delegate classes to encourage use of this class.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
  */
@@ -44,6 +42,15 @@ public class JesDelegateFactory {
 
 /* 
 $Log: JesDelegateFactory.java,v $
+Revision 1.3  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.2.2.2  2004/02/17 12:25:38  nw
+improved javadocs for classes
+
+Revision 1.2.2.1  2004/02/11 16:09:10  nw
+refactored delegates (again)
+
 Revision 1.2  2004/02/09 11:41:44  nw
 merged in branch nww-it05-bz#85
 

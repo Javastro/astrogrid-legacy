@@ -1,47 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.47 2004/02/19 16:02:04 jdt Exp $ -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<!-- $Id: project.xml,v 1.48 2004/02/27 00:46:03 nw Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes</id>
     <name>AstroGrid Job Management</name>
     <description>
-	This work package provides AstroGrid with the facility to
-        submit jobs. Jobs will initially consist of a query to be run 
-        asynchronously against one or more catalogues held at a particular data 
-        centre. Hence the package is closely associated with the 
-        AgCd08DataCentre package. The facility covers job submission, job 
-        scheduling and job monitoring. A job consists of one or more job steps, 
-        run in parallel or - where there is a dependency - in sequence, or some 
-        mixture of the two. Although a job may be submitted, it may not be 
-        until the job is scheduled that the location where an actual job step 
-        runs is identified. Job monitoring is important in simple terms to 
-        track the progress of a job through its job steps, e.g. in order to 
+        This work package provides AstroGrid with the facility to
+        submit jobs. Jobs will initially consist of a query to be run
+        asynchronously against one or more catalogues held at a particular data
+        centre. Hence the package is closely associated with the
+        AgCd08DataCentre package. The facility covers job submission, job
+        scheduling and job monitoring. A job consists of one or more job steps,
+        run in parallel or - where there is a dependency - in sequence, or some
+        mixture of the two. Although a job may be submitted, it may not be
+        until the job is scheduled that the location where an actual job step
+        runs is identified. Job monitoring is important in simple terms to
+        track the progress of a job through its job steps, e.g. in order to
         trigger subsequent steps.</description>
     <shortDescription>AstroGrid Job Management Components</shortDescription>
-    <!-- Temporary Overrides till we get consistent artifactIds-->
+    <!-- overrides -->
     <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
     <repository>
-        <connection> 
+        <connection>
             scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes
             </connection>
-        <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes 
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes
             </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/jes/ 
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/jes/
             </url>
     </repository>
     <!-- end of overrides -->
     <build>
         <sourceDirectory>src/java</sourceDirectory>
-        <resources>
-	        <resource>
-		        <directory>${basedir}/src/java</directory>
-	            <includes>
-	                <include>**/*.properties</include>
-	            </includes>
-	        </resource>
-	    </resources>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
         <unitTest>
             <includes>
@@ -60,23 +52,42 @@
                 </resource>
             </resources>
         </unitTest>
+                <resources>
+                        <resource>
+                                <directory>${basedir}/src/java</directory>
+                                <includes>
+                                        <include>**/*.xml</include>
+                                        <include>**/*.properties</include>
+                                </includes>
+                        </resource>
+                </resources>
     </build>
     <dependencies>
-
-		<!-- astrogrid components -->
+            <!--
+        <dependency>
+            <artifactId>axisfull</artifactId>
+            <groupId>axis</groupId>
+            <version>1.1</version>
+            <type>zip</type>
+        </dependency>
+        -->
+                <!-- astrogrid components -->
         <dependency>
             <artifactId>astrogrid-common</artifactId>
-            <groupId>astrogrid-common</groupId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
         <dependency>
-			<artifactId>astrogrid-mySpace</artifactId>
-			<groupId>astrogrid-mySpace</groupId>
-			<version>SNAPSHOT</version>
-		</dependency>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
         <dependency>
             <artifactId>ApplicationControllerDelegate</artifactId>
             <groupId>astrogrid-applications</groupId>
@@ -87,7 +98,7 @@
         </dependency>
         <dependency>
             <artifactId>astrogrid-datacenter-client</artifactId>
-            <groupId>astrogrid-datacenter</groupId>
+            <groupId>org.astrogrid</groupId>
             <version>SNAPSHOT</version>
             <properties>
                 <war.bundle>true</war.bundle>
@@ -111,40 +122,77 @@
         </dependency>
         <!-- helper for object models -->
         <dependency>
-        	<artifactId>commons-jxpath</artifactId>
-        	<groupId>commons-jxpath</groupId>
-        	<version>1.1</version>
+                <artifactId>commons-jxpath</artifactId>
+                <groupId>commons-jxpath</groupId>
+                <version>1.1</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
         </dependency>
         <!-- required by castor -->
         <dependency>
-        	<artifactId>castor</artifactId>
-        	<groupId>castor</groupId>
-        	<version>0.9.5</version>
-        	<properties>
-        		<war.bundle>true</war.bundle>
-        	</properties>
+                <artifactId>castor</artifactId>
+                <groupId>castor</groupId>
+                <version>0.9.5</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
         </dependency>
-   		<dependency>
-			<id>xerces</id>
-			<version>2.4.0</version>
-	    	<properties>
-      			<war.bundle>true</war.bundle>
-    		</properties>
-    	</dependency>
-    	<dependency>
-      	<id>xml-apis</id>
-      	<version>1.0.b2</version>
+                   <dependency>
+                        <id>xerces</id>
+                        <version>2.4.0</version>
+                    <properties>
+                              <war.bundle>true</war.bundle>
+                    </properties>
+            </dependency>
+            <dependency>
+              <id>xml-apis</id>
+              <version>1.0.b2</version>
           <properties>
-      		<war.bundle>true</war.bundle>
-    	 </properties>
-    	</dependency>
+                      <war.bundle>true</war.bundle>
+             </properties>
+            </dependency>
+        <!-- digester stuff -->
+    <dependency>
+        <id>commons-digester</id>
+        <version>1.5</version>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+    <dependency>
+        <id>commons-beanutils</id>
+        <version>1.6</version>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+    <dependency>
+        <id>commons-collections</id>
+        <version>2.1</version>
+        <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+
+                <!-- days are numbered.. -->
         <dependency>
-            <artifactId>axisfull</artifactId>
-            <groupId>axis</groupId>
-            <version>1.1</version>
-            <type>zip</type>
-        </dependency>    	
-        <!-- axis stuff -->
+            <artifactId>jconfig</artifactId>
+            <groupId>jconfig</groupId>
+            <version>2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <!-- concurrency lib - for thread pools, factories, queues, etc. -->
+        <dependency>
+                <id>concurrent</id>
+                <version>1.3.1</version>
+                <properties>
+                        <war.bundle>true</war.bundle>
+                </properties>
+        </dependency>
+       <!-- axis stuff -->
         <dependency>
             <artifactId>axis</artifactId>
             <groupId>axis</groupId>
@@ -153,23 +201,11 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-		<!-- don't want to have this around.
         <dependency>
-            <artifactId>log4j</artifactId>
-            <groupId>log4j</groupId>
-            <version>1.2.4 </version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-		-->
-        <dependency>
-            <artifactId>servletapi</artifactId>
-            <groupId>servletapi</groupId>
-            <version>2.2</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
+                <artifactId>axis-ant</artifactId>
+                <groupId>axis</groupId>
+                <version>1.1</version>
+                <!-- not needed in war file -->
         </dependency>
         <dependency>
             <artifactId>commons-logging</artifactId>
@@ -187,16 +223,6 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-		<!-- days are numbered.. I'll be back.  You cannot kill me... -->
-        <dependency>
-            <artifactId>jconfig</artifactId>
-            <groupId>jconfig</groupId>
-            <version>2.1</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-
         <dependency>
             <id>jaxrpc-api</id>
             <version>1.0.3</version>
@@ -204,15 +230,14 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-	<dependency>
-		<id>saaj</id>
-		<version>1.0</version>
-		<jar>saaj.jar</jar>
-		    <properties>
+        <dependency>
+                <id>saaj</id>
+                <version>1.0</version>
+                <jar>saaj.jar</jar>
+                    <properties>
       <war.bundle>true</war.bundle>
     </properties>
-	</dependency>
-
+        </dependency>
     <dependency>
       <id>wsdl4j</id>
       <version>1.0</version>
@@ -220,15 +245,20 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
-
+    <dependency>
+            <id>log4j</id>
+        <version>1.2.8</version>
+        <properties>
+        <war.bundle>true</war.bundle>
+        </properties>
+    </dependency>
+        <!-- for development -->
         <dependency>
             <artifactId>catalina-ant</artifactId>
             <groupId>catalina-ant</groupId>
             <version>4.1.24</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
         </dependency>
+        <!--
         <dependency>
             <artifactId>mysql-connector-java-3.0.8-stable-bin</artifactId>
             <groupId>mysql</groupId>
@@ -238,6 +268,7 @@
             </properties>
             <jar>mysql-connector-java-3.0.8-stable-bin.jar</jar>
         </dependency>
+        -->
         <dependency>
             <artifactId>junitee</artifactId>
             <groupId>junitee</groupId>
@@ -262,6 +293,7 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+        <!-- keep out for now - this is a pain with maven/eclpse -->
         <dependency>
             <artifactId>taglibs-input-tld</artifactId>
             <groupId>jakarta-taglibs</groupId>
@@ -271,11 +303,7 @@
             </properties>
             <type>tld</type>
         </dependency>
-        <!--This is for testing only and can be removed from the released build.
-     **WARNING** For reasons best known to themselves, the HSQLDB people have omitted to
-       package their jdbcDataSource class in this jar.  Hence I've added it explicitly to the
-       test directory.  This is going to give us all sorts of annoying headaches with versions
-       in the future, but I can't think of anything else to do right now. -->
+
         <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/02/06 12:39:37 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/02/27 00:46:03 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,8 @@
  *
 **/
 package org.astrogrid.jes.delegate;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
@@ -25,14 +23,19 @@ public class AllTests {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.delegate");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(JesDelegateExceptionTest.class));
+        suite.addTest(new TestSuite(JesDelegateFactoryTest.class));
         //$JUnit-END$
         return suite;
     }
 }
-
-
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.2.4.1  2004/02/17 12:41:06  nw
+added test for JesDelegateFactory
+
 Revision 1.2  2004/02/06 12:39:37  nw
 merged in nww-it05-bz#85a branch (trim down unit tests)
 

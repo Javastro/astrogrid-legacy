@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/02/06 12:39:37 nw Exp $
+/*$Id: AllTests.java,v 1.3 2004/02/27 00:46:03 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,8 @@
  *
 **/
 package org.astrogrid.jes.jobcontroller;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
@@ -22,18 +20,28 @@ public class AllTests {
         junit.textui.TestRunner.run(AllTests.class);
     }
     public static Test suite() {
-        TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobcontroller");
+        TestSuite suite = new TestSuite("Tests for jobcontroller service");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(JobControllerExceptionTest.class));
-        suite.addTest(new TestSuite(JobControllerTest.class));
+        suite.addTest(new TestSuite(SubmitSuccessTest.class));
+        suite.addTest(new TestSuite(SubmitNotifierFailureTest.class));
+        suite.addTest(new TestSuite(SubmitStoreFailureTest.class));
+        suite.addTest(new TestSuite(ListJobsSuccessTest.class));
+        suite.addTest(new TestSuite(ListJobsStoreFailureTest.class));
         //$JUnit-END$
         return suite;
     }
 }
-
-
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.2.4.2  2004/02/17 16:51:02  nw
+thorough unit testing for job controller
+
+Revision 1.2.4.1  2004/02/12 01:13:31  nw
+removed tests that test noddy classes - like exceptions - only get in the way
+
 Revision 1.2  2004/02/06 12:39:37  nw
 merged in nww-it05-bz#85a branch (trim down unit tests)
 

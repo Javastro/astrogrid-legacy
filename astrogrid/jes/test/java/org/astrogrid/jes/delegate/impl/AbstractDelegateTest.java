@@ -1,4 +1,4 @@
-/*$Id: AbstractDelegateTest.java,v 1.2 2004/02/09 11:41:44 nw Exp $
+/*$Id: AbstractDelegateTest.java,v 1.3 2004/02/27 00:46:03 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.jes.delegate.Delegate;
 
 import junit.framework.TestCase;
 
-/**
+/** Check abstgractr delegate getter/setters work, and test rules for creating a test-endpoint.
  * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2004
  *
  */
@@ -57,6 +57,12 @@ public class AbstractDelegateTest extends TestCase {
 
 /* 
 $Log: AbstractDelegateTest.java,v $
+Revision 1.3  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.2.2.1  2004/02/17 12:57:11  nw
+improved documentation
+
 Revision 1.2  2004/02/09 11:41:44  nw
 merged in branch nww-it05-bz#85
 

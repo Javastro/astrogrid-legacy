@@ -1,242 +1,56 @@
-/*
- * @(#)Tool.java   1.0
+/*$Id: Tool.java,v 1.5 2004/02/27 00:46:03 nw Exp $
+ * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
- * Software License version 1.3, a copy of which has been included 
+ * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
+**/
+package org.astrogrid.jes.job;
 
-package org.astrogrid.jes.job ;
-
-import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
-import org.astrogrid.jes.jobscheduler.ScheduleRequestDD;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-
-/**
- * The <code>Tool</code> class represents... 
- * <p>
+/** Interface defining what the services require of a tool
+ * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2004
  *
- * <p>
- * The class... 
- * 
- *
- * @author  Jeff Lusted
- * @version 1.0 20-Nov-2003
- * @see     
- * @see     
- * @since   AstroGrid 1.4
  */
-public class Tool {
-  
-    /** Compile-time switch used to turn tracing on/off. 
-      * Set this to false to eliminate all trace statements within the byte code.*/         
-    private static final boolean 
-        TRACE_ENABLED = true ;
-        
-    private static Log
-        logger = LogFactory.getLog( Tool.class ) ; 
-             
-    private List createParameters( Element element ){
-        if( TRACE_ENABLED ) trace( "Tool.createParameters() entry") ;
-        
-        List
-            list = new ArrayList() ;
-        
-        try {
-            
-            NodeList
-               nodeList = element.getChildNodes() ; 
-                           
-            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
-                
-                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                    
-                    element = (Element) nodeList.item(i) ;
-                
-                    if ( element.getTagName().equals( SubmissionRequestDD.PAREMETER_ELEMENT ) ) {
-                           list.add( new Parameter( this, element ) )  ;
-                    }
-                    
-                } // end if
-                                
-            } // end for       
-             
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Tool.createParameters() exit") ;
-        }
-
-        return list ;
-        
-    } // end of Tool.createParameters()  
-    
-    private JobStep
-        parent ;
-    
-    private String
-        name ;
-        
-    private List
-        inputParameters = new ArrayList(),
-        outputParameters = new ArrayList() ;    
-        
-        
-    public Tool() {
-    }
-    
-    public Tool( String name ) {
-        this.name = name ;
-    }
-        
-         
-    public Tool( JobStep parent, Element element ) {
-        if( TRACE_ENABLED ) trace( "Tool( Element ) entry") ;  
-        
-        try {
-            
-            this.parent = parent ;
-            name = element.getAttribute( SubmissionRequestDD.TOOL_NAME_ATTR ) ;
-            
-            NodeList
-               nodeList = element.getChildNodes() ; 
-                           
-            for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
-                
-                if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
-                    
-                    element = (Element) nodeList.item(i) ;
-                
-                    if ( element.getTagName().equals( SubmissionRequestDD.INPUT_ELEMENT ) ) {
-                        this.inputParameters = this.createParameters( element ) ;   
-                    }
-                    else if ( element.getTagName().equals( SubmissionRequestDD.OUTPUT_ELEMENT ) ) {
-                        this.outputParameters = this.createParameters( element ) ;   
-                    }  
-                    
-                } // end if
-                                
-            } // end for        
-           
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Tool(Element) exit") ;
-        }
-                   
-    }
-    
-    
-
+public interface Tool {
     /**
       */
-    public String getName() {
-        return this.name;
-    }
-    
-    
-    public ListIterator getInputParameters() {
-        if( TRACE_ENABLED ) trace( "Tool.getInputParameters() entry") ; 
-        return this.inputParameters.listIterator() ;
-    }
-    
-    
-    public ListIterator getOutputParameters() {
-        if( TRACE_ENABLED ) trace( "Tool.getOutputParameters() entry") ; 
-        return this.outputParameters.listIterator() ;
-    }
-    
-     
-    private static void trace( String traceString ) {
-        // System.out.println( traceString ) ;
-        logger.debug( traceString ) ;
-    }
-    
-    
-    private static void debug( String logString ){
-        // System.out.println( logString ) ;
-        logger.debug( logString ) ;
-    }
+    public abstract String getName();
+    //public abstract Iterator getInputParameters();
+   // public abstract Iterator getOutputParameters();
+    /**
+       */
+   // public abstract void setInputParameters(List list);
+    /**
+       */
+   // public abstract void setName(String string);
+    /**
+       */
+    //public abstract void setOutputParameters(List list);
+    //public abstract void setParent(JobStep parent);
+    //public abstract JobStep getParent();
+    public abstract String toXML() throws ConversionException ;
+}
+/* 
+$Log: Tool.java,v $
+Revision 1.5  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
 
+Revision 1.4.2.4  2004/02/27 00:24:43  nw
+refined tool interface
 
-	/**
-	   */
-	public void setInputParameters(List list) {
-		inputParameters = list;
-	}
+Revision 1.4.2.3  2004/02/17 12:25:38  nw
+improved javadocs for classes
 
-	/**
-	   */
-	public void setName(String string) {
-		name = string;
-	}
+Revision 1.4.2.2  2004/02/12 01:16:08  nw
+analyzed code, stripped interfaces of all unused methods.
 
-	/**
-	   */
-	public void setOutputParameters(List list) {
-		outputParameters = list;
-	}
-
-	public void setParent(JobStep parent) {
-		this.parent = parent;
-	}
-
-	public JobStep getParent() {
-		return parent;
-	}
-    
-    public String toJESXMLString() {
-        if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() entry") ;
-        
-        String 
-            response = null,
-            inputParams,
-            outputParams ;
-        StringBuffer
-            buffer = null ;
-                                     
-        try {
-            
-            buffer = new StringBuffer(128) ;
-            ListIterator
-                it = inputParameters.listIterator();
-            while( it.hasNext() ) {
-                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
-            }
-            inputParams = buffer.toString() ;
-            buffer = new StringBuffer(128) ;
-            it = outputParameters.listIterator();
-            while( it.hasNext() ) {
-                buffer.append( ((Parameter)it.next()).toJESXMLString()) ;
-            }
-            outputParams = buffer.toString() ;
-            
-            Object []
-                inserts = new Object[3] ;
-            inserts[0] = this.getName() ;
-            inserts[1] = inputParams ;
-            inserts[2] = outputParams ;
-
-            response = MessageFormat.format( ScheduleRequestDD.JOBTOOL_TEMPLATE, inserts ) ;
-
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Tool.toJESXMLString() exit") ;    
-        }       
-        
-        return response ;      
-
-    }
-
-} // end of class Tool
+Revision 1.4.2.1  2004/02/09 12:39:06  nw
+isolated existing datamodel.
+refactored to extract interfaces from all current datamodel classes in org.astrogrid.jes.job.
+moved implementation of interfaces to org.astrogrid.jes.impl
+refactored so services reference interface rather than current implementation
+ 
+*/

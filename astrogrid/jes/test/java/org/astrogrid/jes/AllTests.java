@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2004/02/09 11:51:24 nw Exp $
+/*$Id: AllTests.java,v 1.4 2004/02/27 00:46:03 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,10 +9,8 @@
  *
 **/
 package org.astrogrid.jes;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
@@ -25,21 +23,32 @@ public class AllTests {
         TestSuite suite = new TestSuite("JES Tests");
         //$JUnit-BEGIN$
         suite.addTest(new TestSuite(JESTest.class));
-        suite.addTest(new TestSuite(JesExceptionTest.class));
+        suite.addTest(new TestSuite(InMemorySystemTest.class));
         //$JUnit-END$
         suite.addTest(org.astrogrid.jes.delegate.AllTests.suite());
-        suite.addTest(org.astrogrid.jes.impl.AllTests.suite());
-        suite.addTest(org.astrogrid.jes.job.AllTests.suite());
         suite.addTest(org.astrogrid.jes.jobcontroller.AllTests.suite());
         suite.addTest(org.astrogrid.jes.delegate.impl.AllTests.suite());
-        
+        suite.addTest(org.astrogrid.jes.impl.workflow.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobmonitor.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.jobscheduler.AllTests.suite());
+        suite.addTest(org.astrogrid.jes.comm.AllTests.suite());
         return suite;
     }
 }
-
-
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.3.2.3  2004/02/19 13:41:25  nw
+added tests for everything :)
+
+Revision 1.3.2.2  2004/02/17 12:57:11  nw
+improved documentation
+
+Revision 1.3.2.1  2004/02/12 01:13:31  nw
+removed tests that test noddy classes - like exceptions - only get in the way
+
 Revision 1.3  2004/02/09 11:51:24  nw
 fixed glitch
 

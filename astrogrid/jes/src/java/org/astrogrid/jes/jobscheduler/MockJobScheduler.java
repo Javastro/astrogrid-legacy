@@ -1,0 +1,70 @@
+/*$Id: MockJobScheduler.java,v 1.2 2004/02/27 00:46:03 nw Exp $
+ * Created on 18-Feb-2004
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.jes.jobscheduler;
+
+import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
+import org.astrogrid.jes.types.v1.JobInfo;
+import org.astrogrid.jes.types.v1.JobURN;
+
+import java.rmi.RemoteException;
+
+/**
+ * @author Noel Winstanley nw@jb.man.ac.uk 18-Feb-2004
+ *
+ */
+public class MockJobScheduler implements JobScheduler {
+    /** Construct a new MockJobScheduler
+     * 
+     */
+    public MockJobScheduler() {
+        this(true);
+    }
+    public MockJobScheduler(boolean willSucceed) {
+        this.willSucceed = willSucceed;
+    }
+    protected final boolean willSucceed;
+    protected int callCount = 0;
+    public int getCallCount() {
+        return callCount;
+    }
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler#scheduleNewJob(org.astrogrid.jes.types.v1.JobURN)
+     */
+    public void scheduleNewJob(JobURN request) throws RemoteException {
+        callCount++;
+        if (! willSucceed) {
+            throw new RemoteException("You wanted me to fail");
+        }
+    }
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.JobInfo)
+     */
+    public void resumeJob(JobInfo jobInfo) throws RemoteException {
+        callCount++;
+        if (! willSucceed) {
+            throw new RemoteException("you wanted me to fail");
+        }
+    }
+}
+
+
+/* 
+$Log: MockJobScheduler.java,v $
+Revision 1.2  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.1.2.1  2004/02/27 00:27:42  nw
+moved from test hierarchy.
+
+Revision 1.1.2.1  2004/02/19 13:41:25  nw
+added tests for everything :)
+ 
+*/

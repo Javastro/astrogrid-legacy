@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+      http://www.astrogrid.org/schema/AGWorkflow/  file://localhost/home/noel/.eclipse/jes/schema/Workflow.xsd
+      http://www.astrogrid.org/schema/AGParameterDefinition/  AGParameterDefinition.xsd
+  " name="">
+  <community>
+    <token>dummytoken</token>
+  </community>
+  <sequence>
+    <flow>
+      <step name="a" sequenceNumber="1" stepNumber="1">
+        <tool interface="bar" name="foo"/>
+
+      </step>
+      <flow>
+        <step name="b" sequenceNumber="1" stepNumber="2">
+          <tool interface="bar" name="foo"/>
+
+        </step>
+      </flow>
+    </flow>
+  </sequence>
+  <description
+    xmlns="">document with (pointless) nested flows. - should produce 2 jobs in parallel</description>
+</workflow>

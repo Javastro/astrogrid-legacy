@@ -1,273 +1,202 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
-<!-- location of generated source tree -->
-<property name="generated.src" location="${basedir}/generated/java" />
-<property name="generated.dir" location="${basedir}/generated" />
-<!-- Tomcat properties -->
-<property name="appint.webapp.name" value="${pom.artifactId}"/><!-- use the standard application id -->
-<property name="appint.service.name" value="JobMonitor"/>
+
+<property name="webapp.root" location="${basedir}/target/astrogrid-jes" />
+<property name="webapp.docs" location="${basedir}/target/webapp-docs" />
+<property name="working.dir" location="${basedir}/target/tmp" />
+<goal name="jes" prereqs="clean,site,webapp-site,war:war" />
+
+<!-- astrogrid standard goals -->
+
+<goal name="astrogrid-clean" prereqs="clean"/>
+
+<goal name="astrogrid-build-site">
+        <!-- would be nice to add info on delegate project.xml to this site too -->
+        <attainGoal name="site" />
+</goal>
+
+<goal name="astrogrid-build-artifact">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar" />
+        <attainGoal name="jar" />
+        <attainGoal name="war" />
+</goal>
+
+<goal name="astrogrid-build-snapshot">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:snapshot" />
+        <attainGoal name="jar:snapshot" />
+        <!-- no goal to build a snapshot in target directory - gah -->
+        <attainGoal name="war" />
+</goal>
+
+<goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
+
+<goal name="astrogrid-install-artifact">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install" />
+        <attainGoal name="jar:install" />
+        <attainGoal name="war:install" />
+</goal>
+
+<goal name="astrogrid-install-snapshot">
+        <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install-snapshot" />
+        <attainGoal name="jar:install-snapshot" />
+        <attainGoal name="war:install-snapshot" />
+</goal>
+
+<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
+        <attainGoal name="site:fs-deploy" />
+</goal>
+
+<goal name="astrogrid-deploy-snapshot">
+        <attainGoal name="jar:deploy-snapshot" />
+        <attainGoal name="war:deploy-snapshot" />
+</goal>
+
+
+<goal name="astrogrid-deploy-artifact">
+        <attainGoal name="jar:deploy" />
+        <attainGoal name="war:deploy" />
+</goal>
+
+
+<!-- end astrogrid standard goals -->
+
+
+<!-- hooks into existing goals -->
+
+<preGoal name="war:war" >
+        <attainGoal name="configure-webapp" />
+        <attainGoal name="site-webapp" />
+        <copy todir="${maven.war.build.dir}/${pom.artifactId}" overwrite="yes">
+                <fileset dir="${webapp.docs}" />
+        </copy>
+</preGoal>
+
+
+<goal name="grab-schema" description="grab schema, wsdl from workflow-objects">
+        <echo> grabbing schema, wsdd and wsdl from workflow-object.jar</echo>
+        <mkdir dir="${working.dir}" />
+        <deploy:copy-deps todir="${working.dir}" />
+        <unjar dest="${working.dir}" overwrite="true">
+                <fileset dir="${working.dir}">
+                        <include name="*workflow-objects*.jar" />
+                </fileset>
+                <patternset>
+                        <include name="wsdd/**" />
+                        <include name="schema/**" />
+                        <include name="wsdl/**" />
+                </patternset>
+        </unjar>
+        <!-- clean up rest of stuff -->
+        <delete>
+                <fileset dir="${working.dir}">
+                        <include name="*.jar" />
+                </fileset>
+        </delete>
+</goal>
+
+<goal name="configure-webapp" prereqs="grab-schema" description="assemble individual wsdd into server-config.wsdd">
+        <!-- need to concat xml files together first.. watch this.. -->
+        <property name="all.wsdd" location="${working.dir}/all.wsdd" />
+        <!-- header -->
+        <echo file="${all.wsdd}" message="&lt;services&gt;" />
+        <!-- body -->
+        <concat destfile="${all.wsdd}" append="true">
+                <fileset dir="${working.dir}/wsdd">
+                        <include name="JobController-deploy.wsdd" />
+                        <include name="JobMonitor-deploy.wsdd" />
+                </fileset>
+        </concat>
+        <!-- footer -->
+        <echo file="${all.wsdd}" append="true" message="&lt;/services&gt;" />
+          <!-- hack from mailing list to fix Maven XLST bug -->
+        ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+        <!-- now transform -->
+        <xslt in="${all.wsdd}"
+              out="${webapp.root}/WEB-INF/server-config.wsdd"
+              extension=".wsdd"
+              style="${basedir}/build/server-config.xsl"
+        />
+        <delete file="${all.wsdd}"/><!-- clean up -->
+
+</goal>
+
+
+<goal name="site-webapp" prereqs="grab-schema"
+        description="generate webapp docs to a temp direcotry, for inclusion later in webapp - work around for a bug that stops build">
+
+        <echo> generating webapp site into ${webapp.docs}" </echo>
+        <!-- first merge two doc sets - site xdocs take precendence  -->
+        <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
+        <mkdir dir="${tmp.docs}" />
+        <copy todir="${tmp.docs}">
+                <fileset dir="${basedir}/site-xdocs" />
+        </copy>
+        <copy overwrite="false" todir="${tmp.docs}">
+                <fileset dir="${basedir}/xdocs" />
+        </copy>
+        <!-- now copy in schema and stuff extracted by grab-schema-->
+        <copy overwrite="false" todir="${tmp.docs}">
+                <fileset dir="${working.dir}" />
+        </copy>
+        <j:set var="maven.docs.dest" value="${webapp.docs}" />
+        <j:set var="maven.docs.src" value="${tmp.docs}" />
+        <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
+        <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
+        <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
+        <j:set var="maven.ui.banner.background" value="#FF0000" />
+        <j:set var="maven.ui.banner.foreground" value="#000000" />
+        <mkdir dir="${webapp.docs}" />
+        <attainGoal name="site:generate" />
+        <!-- site:generate contains too much. would prefer to do..
+        <attainGoal name="javadoc" />
+        <attainGoal name="maven-jxr-plugin:report" />
+        <attainGoal name="license" />
+        <attainGoal name="xdoc" />
+        but need to sort out a custom navigation first - otherwise we've got links to the reports nwe didn't generate -->
+
+
+</goal>
+
+
+
+
+
+
+<!-- end of war stuff -->
+
+  <preGoal name="java:compile">
+     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
+  </preGoal>
+
+<!-- stand - alone goals - not addons to main build -->
 <property name="tomcat.host" value="localhost"/>
 <property name="tomcat.port" value="8080"/>
 
 <property name="tomcat.url" value="http://${tomcat.host}:${tomcat.port}"/>
 <property name="tomcat.manager.url" value="${tomcat.url}/manager"/>
- <!-- Axis properties-->
-<property name="axis.base"     value="${basedir}/build/axis"/>
-<property name="axis.webapp.srcdir"  value="${axis.base}/${appint.webapp.name}"/>
-<property name="axis.url"     value="${tomcat.url}/${appint.webapp.name}"/>
-<property name="axis.timeout" value="60"/>
+<property name="tomcat.path" value="/astrogrid-jes" />
 
-<!-- this classpath comes from the files that are extracted from the axis distro -->
-    <path id="axis.classpath">
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis.jar"/>
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/axis-ant.jar"/>
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/saaj.jar"/>
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/wsdl4j.jar"/>
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/jaxrpc.jar"/>
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-logging.jar"/>
-        <pathelement location="${axis.webapp.srcdir}/WEB-INF/lib/commons-discovery.jar"/>
-    </path>
-
-   <!--<property name="maven.war.src" value="${axis.webapp.srcdir}"/> deleted by JDT for quick and dirty war-->
-
-<postGoal name="war:webapp">
-	<j:set var="classes.dir" value="${pom.getPluginContext('maven-war-plugin').getVariable('webapp.build.classes')}" />
-	<echo message="Copying xml templates and properties across from ${maven.conf.dir} to ${classes.dir} directory"/>
-  	<copy todir="${classes.dir}" overwrite="yes">
-		<fileset dir="${maven.conf.dir}">
-			<exclude name = "ASTROGRID_jesconfig.xml"/> <!-- exclude this because we don't want to overwrite an edited one-->
-		</fileset>
-	</copy>
-	<echo message="Copying generated site ${maven.docs.dest} across to webapp ${maven.war.webapp.dir}/maven"/>
-	<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
-		<fileset dir="${maven.docs.dest}"/>
-	</copy>
-
-	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
-		<fileset dir="${maven.conf.dir}">
-			<include name="ASTROGRID_jesconfig.xml"/>
-		</fileset>
-	    <fileset dir="${basedir}/dbscripts">
-			<include name="mysql_jes_database.ddl"/>
-		</fileset>
-	</copy>
-</postGoal>
-
-
-<!-- hooks into existing goals -->
-  <preGoal name="java:compile"><!-- generate classes from schema and wsdl first -->
-     <mkdir dir="${generated.src}" />
-     <mkdir dir="${basedir}/target/classes" />     <!-- Clover fails if this dir is not present -->
-     <path id="generated.src.path" location="${generated.src}"/>
-    <maven:addPath id="maven.compile.src.set" refid="generated.src.path"/>  <!-- declares new src tree to maven -->
-    <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
-<!-- don't do this for now....
-  	-->
-  </preGoal>
-
-
-<!-- hook to get my own stuff run before xdocs binds the site together-->
-  <preGoal name="xdoc">
- <!--
-        <attainGoal name="ant" />
-  	<attainGoal  name="pal-zip" />
-	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
-	 -->
-  </preGoal>
-
-<!-- new goals -->
-<!-- castor object model generation -->
-  <goal name="run-castor" description="generate classes from schema using castor" prereqs="castor-cleanout,castor-generate"/>
-
-  <goal name="castor-cleanout">
-  	<delete>
-		<fileset dir="${generated.src}">
-			<include name="org/astrogrid/workflow/beans/v1/**" />
-			<include name="org/astrogrid/applications/beans/v1/**" />
-		</fileset>
-	</delete>
-  </goal>
-
-  <goal name="castor-generate">
-  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
-		<classpath>
-			<pathelement location="${basedir}/build" />
-			<path refid="maven.dependency.classpath" />
-		</classpath>
-  	  	<arg value="-i"/>
-  	  	<arg file="${basedir}/schema/AGParameterDefinition.xsd" />
-		<arg value="-binding-file" />
-		<arg file="${basedir}/build/castor-binding.xml" />
-  	  	<arg value="-dest" />
-  	  	<arg file="${generated.src}" />
-		<arg value="-verbose" />
-		<arg value="-typesj2"/>
-	</java>
-
-	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
-		<classpath>
-			<pathelement location="${basedir}/build" />
-			<path refid="maven.dependency.classpath" />
-		</classpath>
-  	  	<arg value="-i"/>
-  	  	<arg file="${basedir}/schema/Workflow.xsd" />
-		<arg value="-binding-file" />
-		<arg file="${basedir}/build/castor-binding.xml" />
-  	  	<arg value="-dest" />
-  	  	<arg file="${generated.src}" />
-		<arg value="-verbose" />
-		<arg value="-typesj2" />
-	</java>
-  </goal>
-
-
-
-
-
-  <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
-  	<delete><!-- clean out to start with -->
-  	     <!-- need to save the server side skeleton -->
-		<fileset dir="${generated.src}" >
-			<include name="**/*.java" />
-			<include name="**/*.class" />
-			<include name="**/*.wsdd" />
-		</fileset>
-	</delete>
-	<attainGoal name="JobMontorWsdl2java" />
-   </goal>
-
-
-   <property name="wsdl.file" value="${generated.dir}/wsdl/${appint.service.name}.wsdl"/>
-   <goal name="JobMontorWsdl2java" prereqs="axis-declare-tasks">
-   <maven:addPath id="maven.dependency.classpath" refid="axis.classpath"/>
-   <axis-wsdl2java output="${generated.src}"             verbose="true"
-            serverside="false"
-            skeletondeploy="false"
-            testcase="true"
-		url="${wsdl.file}">
-           <mapping namespace="urn:jobMonitor.delegate.jes.astrogrid.org" package="org.astrogrid.jes.delegate.jobmonitor"/>
-           <mapping namespace="urn:jobMonitor.delegate.jes.astrogrid.org"   package="org.astrogrid.jes.delegate.jobmonitor.impl"/>
-           <mapping namespace="urn:beans.applications.astrogrid.org"   package="org.astrogrid.jes.delegate.jobmonitor.beans"/>
-
-	</axis-wsdl2java>
-	<!-- generate the server side stuff -->
-  	<axis-wsdl2java output="${generated.src}"             verbose="true"
-            serverside="true"
-            skeletondeploy="false"
-            testcase="false"
-		url="${wsdl.file}">
-           <mapping namespace="urn:jobMonitor.delegate.jes.astrogrid.org" package="org.astrogrid.jes.service.jobmonitor"/>
-           <mapping namespace="urn:jobMonitor.delegate.jes.astrogrid.org"   package="org.astrogrid.jes.service.jobmonitor.impl"/>
-           <mapping namespace="urn:beans.applications.astrogrid.org"   package="org.astrogrid.jes.service.jobmonitor.beans"/>
-		
-	</axis-wsdl2java>
-	<delete>
-	 <fileset dir="${generated.src}">
-	    <include name="**/service/*Locator.java" />
-	    <include name="**/service/*Stub.java" />
-	    <include name="**/service/*Service.java" />
-	 </fileset>
-	</delete>
-	<!-- do some tidying -->
-	<mkdir dir="${basedir}/wsdd/${appint.service.name}"/>
-	<move todir="${generated.dir}/wsdd/${appint.service.name}" flatten="true">
-	  <fileset dir="${generated.src}">
-	    <include name="**/*.wsdd" />
-	  </fileset>
-	</move>
-   </goal>
-   
-   <goal name="service-prepare-dependencies" prereqs="jar">
-   <!-- do not really need to to this with the maven war goal - use that instead....-->
-   </goal>
-
-
-<!-- stand - alone goals - not addons to main build -->
      <goal name="showconfig" description="A goal to show important configuration settings">
- 		<echo message="tomcat.home    : ${tomcat.home}"/>
-		<echo message="tomcat.manager.username     : ${tomcat.manager.username}"/>
-		<echo message="tomcat.manager.password     : ${tomcat.manager.password}"/>
-		<echo message="maven.war.src               : ${maven.war.src}"/>
- 		<echo message=""/>
+                 <echo message="tomcat.home    : ${tomcat.home}"/>
+                <echo message="tomcat.manager.username     : ${tomcat.manager.username}"/>
+                <echo message="tomcat.manager.password     : ${tomcat.manager.password}"/>
+                <echo message="maven.war.src               : ${maven.war.src}"/>
+                 <echo message=""/>
     </goal>
 
-<!-- tasks for deployment / distribution -->
-    <goal name="axis.unpack" description="download the full axis distribution and ">
-        <delete dir="${axis.base}"/>        
-        <mkdir dir="${axis.base}"/>
-        <!-- there must be a way to reference this directly surely? does it use the JSTL expression language? what is the key?-->
-        <j:forEach var="deps" items="${pom.artifacts}">
-         <j:if test="${deps.dependency.artifactId=='axisfull' &amp;&amp; deps.dependency.type=='zip'}">
-         <echo message="found full axis distribution"/>
-          <unzip src="${deps.path}" dest="${axis.base}" >
-          <patternset>
-            <include name="**/webapps/**" />
-          </patternset>
-          </unzip>
-          </j:if>
-        </j:forEach>
-        <echo message="${axis.webapp.srcdir}" />
-        <mkdir dir="${axis.webapp.srcdir}" />
-        <!--move the webapps stuff into the correct place -->
-         <move  todir="${axis.webapp.srcdir}" >
-           <fileset dir="${axis.base}/axis-1_1/webapps/axis" >
-                        <exclude name="**/samples/**"/>
-           </fileset>
-         </move>
-         <!-- copy local changes on top -->
-         <move  todir="${axis.webapp.srcdir}">
-            <fileset dir="${basedir}/src/webapp">
-            </fileset>
-            
-         </move>
-            <!--  <java classname="org.apache.axis.utils.Admin"
-            dir="${tomcat.home}/webapps/ogsa/WEB-INF"
-            classpathref="classpath" fork="yes" failonerror="true">
-        <arg value="server"/>
-        <arg value="${basedir}/build/server-deploy.wsdd"/>
-        -->
-        
-    </goal>
-    
-    <goal name="webapp.install" prereqs="tomcat-declare-tasks, war">
-         <echo message="installing applications integration webapp (with axis)"/>
-        <tomcat-install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${appint.webapp.name}" war="file://${maven.build.dir}/${appint.webapp.name}"/>
-    </goal>
-        <goal name="webapp.patch" prereqs="java:compile">
-        <copy todir="${maven.war.webapp.dir}/WEB-INF/classes">
-          <fileset dir="${maven.build.dir}/classes"/>
-        </copy>
-        <copy todir="${maven.war.webapp.dir}/">
-          <fileset dir="src/webapp">
-          <exclude name="WEB-INF/**"/>
-          </fileset>
-        </copy>
-        
-    </goal>
-    
-    
-    <goal name="service-deploy" prereqs="axis-declare-tasks">
-         <axis-admin
-            port="${tomcat.port}"
-            hostname="${tomcat.host}"
-            servletpath="/${appint.webapp.name}/services/AdminService"
-            debug="true"
-            xmlfile="${generated.dir}/wsdd/${appint.service.name}/deploy.wsdd"
-            />
-    </goal>
+<goal name="jes-undeploy" prereqs="tomcat-declare-tasks">
+  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="${tomcat.path}" />
+</goal>
+
+<goal name="jes-deploy" prereqs="tomcat-declare-tasks">
+  <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+          path="${tomcat.path}" war="file://${basedir}/target/astrogrid-jes.war"/>
+</goal>
 
 <!-- boilerplate below here -->
- <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
-  	prereqs="axis-declare-tasks">
-  	<axis-admin xmlfile="wsdd/AxisDataServer-deploy.wsdd" />
-  </goal>
 
-  <goal name="dataserver-undeploy" description="fire wsdd at axis to undeploy dataserver"
-   	prereqs="axis-declare-tasks">
-  	<axis-admin xmlfile="wsdd/AxisDataServer-undeploy.wsdd" />
-  </goal>
--->
   <goal name="axis-declare-tasks">
      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
   </goal>
@@ -286,6 +215,5 @@
   <taskdef name="tomcat-stop"      classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath"/>
   <taskdef name="tomcat-undeploy"  classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath"/>
 </goal>
-
 
 </project>

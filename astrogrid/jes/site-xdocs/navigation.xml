@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Astrogrid Jes">
+
+  <title>Astrogrid JES Webapp</title>
+
+  <body>
+     <menu name="Documentation">
+       <item name="Install" href="INSTALL"/>
+       <item name="Read me" href="README"/>
+    </menu>
+
+    <menu name="Installation Checks">
+            <item name="Axis Check" href="happyaxis.jsp" />
+        <item name="Fingerprint" href="fingerprint.jsp" />
+        <item name="View web services" href="servlet/AxisServlet" />
+        <item name="Jes Check" href="happyJes.jsp" />
+        <item name="Configuration" href="configuration.jsp" />
+    </menu>
+    <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+    </links>
+  </body>
+</project>

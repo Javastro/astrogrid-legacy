@@ -10,17 +10,16 @@
  */
 package org.astrogrid.jes;
 
-import org.astrogrid.i18n.AstroGridMessage;
 
 
-public class JesException extends org.astrogrid.AstroGridException {
-	
-	public JesException( AstroGridMessage message ) { 
-		super( message ) ;
-	}
+public class JesException extends Exception {
 
-	public JesException( AstroGridMessage message, Exception exception ) {
-		super( message, exception ) ;
-	}
+    public JesException(String s) {
+        super(s);
+    }
+    
+    public JesException(String s,Exception e) {
+        super(s,e);
+    }
     
 }

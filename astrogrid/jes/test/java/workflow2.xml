@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+      http://www.astrogrid.org/schema/AGWorkflow/  file://localhost/home/noel/.eclipse/jes/schema/Workflow.xsd
+      http://www.astrogrid.org/schema/AGParameterDefinition/  AGParameterDefinition.xsd
+  " name="token authentication">
+  <community>
+    <token>tokenvalue</token>
+  </community>
+  <sequence>
+    <step name="first step" sequenceNumber="1" stepNumber="1">
+      <tool interface="com.foo.bar.wibble" name="another tool"/>
+
+    </step>
+    <sequence>
+      <step name="nested step one" sequenceNumber="1" stepNumber="2">
+        <tool interface="dunno what's required here" name="a tool"/>
+
+      </step>
+      <step name="nested step two" sequenceNumber="2" stepNumber="3">
+        <tool interface="something" name="something"/>
+
+      </step>
+    </sequence>
+    <step name="final step" sequenceNumber="2" stepNumber="4">
+      <tool interface="blah" name="foo"/>
+
+    </step>
+  </sequence>
+  <description
+    xmlns="">document with (pointlessly) nested sequences, and token authentication.</description>
+</workflow>

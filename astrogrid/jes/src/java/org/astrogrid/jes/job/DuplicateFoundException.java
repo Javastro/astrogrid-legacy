@@ -10,7 +10,6 @@
  */
 package org.astrogrid.jes.job;
 
-import org.astrogrid.i18n.AstroGridMessage;
 
 /**
  * The <code>DuplicateJobFoundException</code> class represents 
@@ -28,7 +27,7 @@ public class DuplicateFoundException extends JobException {
 	     * 
 	     * 
 	     */
-	public DuplicateFoundException(AstroGridMessage message) {
+	public DuplicateFoundException(String message) {
 		super(message);
 	}
 
@@ -36,7 +35,7 @@ public class DuplicateFoundException extends JobException {
 	     * 
 	     * 
 	     */
-	public DuplicateFoundException(AstroGridMessage message, Exception exception) {
+	public DuplicateFoundException(String  message, Exception exception) {
 		super(message, exception);
 	}
 

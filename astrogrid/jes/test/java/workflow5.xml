@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+      http://www.astrogrid.org/schema/AGWorkflow/  file://localhost/home/noel/.eclipse/jes/schema/Workflow.xsd
+      http://www.astrogrid.org/schema/AGParameterDefinition/  AGParameterDefinition.xsd
+  " name="total tool">
+  <community>
+    <token>dummytoken</token>
+  </community>
+  <sequence>
+    <step joinCondition="any" name="detailed step" sequenceNumber="1" status="RUNNING" stepNumber="1">
+      <tool interface="com.foo.tool" name="a tool">
+        <input>
+          <parameter name="var1" type="xs:anyURI"></parameter>
+          <parameter name="var2" type="agpd:MySpace_VOTableReference"></parameter>
+        </input>
+        <output>
+          <parameter name="result" type="agpd:MySpace_FileReference"></parameter>
+        </output>
+      </tool>
+      <description
+        xmlns="">description of the tool.</description>
+    </step>
+  </sequence>
+  <description
+    xmlns="">test document with full definition of a tool.</description>
+</workflow>

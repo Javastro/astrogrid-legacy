@@ -1,4 +1,4 @@
-/*$Id: JobSchedulerDelegateImpl.java,v 1.2 2004/02/09 11:41:44 nw Exp $
+/*$Id: JobSchedulerDelegateImpl.java,v 1.3 2004/02/27 00:46:03 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,20 +10,21 @@
 **/
 package org.astrogrid.jes.delegate.impl;
 
-import org.astrogrid.jes.beans.v1.Job;
 import org.astrogrid.jes.delegate.JesDelegateException;
-import org.astrogrid.jes.delegate.jobScheduler.JobSchedulerDelegate;
-import org.astrogrid.jes.delegate.jobScheduler.JobSchedulerServiceLocator;
-import org.astrogrid.jes.delegate.jobScheduler.JobSchedulerServiceSoapBindingStub;
-
-import org.exolab.castor.xml.CastorException;
+import org.astrogrid.jes.delegate.v1.jobscheduler.JobScheduler;
+import org.astrogrid.jes.delegate.v1.jobscheduler.JobSchedulerServiceLocator;
+import org.astrogrid.jes.delegate.v1.jobscheduler.JobSchedulerServiceSoapBindingStub;
+import org.astrogrid.jes.types.v1.JobInfo;
+import org.astrogrid.jes.types.v1.JobURN;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.xml.rpc.ServiceException;
+
 /**
+ * SOAP-based implementation of a job scheduler delegate.
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
  */
@@ -43,18 +44,12 @@ public class JobSchedulerDelegateImpl extends JobSchedulerDelegate {
         this.timeout= timeout;
     }
     /** schedule a job */
-     public void scheduleJob(Job j) throws JesDelegateException { 
+     public void scheduleNewJob(JobURN r) throws JesDelegateException { 
             
          try {
-            
-             StringWriter sw = new StringWriter();
-             j.marshal(sw);
-             sw.close();
-             String req = sw.toString(); 
-             JobSchedulerServiceSoapBindingStub binding = (JobSchedulerServiceSoapBindingStub)
-                           new JobSchedulerServiceLocator().getJobSchedulerService( new URL( targetEndPoint ) );                        
-             binding.setTimeout( timeout ) ;    
-             binding.scheduleJob(req);
+
+            JobScheduler binding = createDelegate();  
+            binding.scheduleNewJob(r);
          }
          catch( MalformedURLException mex ) {
              throw new JesDelegateException( mex ) ;
@@ -65,17 +60,48 @@ public class JobSchedulerDelegateImpl extends JobSchedulerDelegate {
          catch( javax.xml.rpc.ServiceException sex ) {
              throw new JesDelegateException( sex ) ;    
          }
-         catch (CastorException cax) {
-             throw new JesDelegateException("Could not marhsall job to xml",cax);
-         }
-
   
-     } // end of scheduleJob()
+     }
+    protected JobScheduler createDelegate() throws ServiceException, MalformedURLException {
+         JobSchedulerServiceSoapBindingStub binding = (JobSchedulerServiceSoapBindingStub)
+                       new JobSchedulerServiceLocator().getJobSchedulerService( new URL( targetEndPoint ) );                        
+         binding.setTimeout( timeout ) ;    
+        
+        return binding;
+    }
+    /**
+     * @see org.astrogrid.jes.delegate.JobScheduler#resumeJob(org.astrogrid.jes.types.v1.JobInfo)
+     */
+    public void resumeJob(JobInfo info) throws JesDelegateException {
+        try {
+            JobScheduler binding = createDelegate();
+            binding.resumeJob(info);
+        } catch (IOException e) {
+            throw new JesDelegateException(e);
+        } catch (ServiceException e) {
+            throw new JesDelegateException(e);
+        }
+    } 
 }
 
 
 /* 
 $Log: JobSchedulerDelegateImpl.java,v $
+Revision 1.3  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
+
+Revision 1.2.2.4  2004/02/19 13:40:49  nw
+updated to match new interfaces for scheduler
+
+Revision 1.2.2.3  2004/02/17 12:25:38  nw
+improved javadocs for classes
+
+Revision 1.2.2.2  2004/02/17 11:00:15  nw
+altered delegate interfaces to fit strongly-types wsdl2java classes
+
+Revision 1.2.2.1  2004/02/11 16:09:10  nw
+refactored delegates (again)
+
 Revision 1.2  2004/02/09 11:41:44  nw
 merged in branch nww-it05-bz#85
 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow
+  xmlns="http://www.astrogrid.org/schema/AGWorkflow/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-intance"
+  xsi:schemaLocation="
+      http://www.astrogrid.org/schema/AGWorkflow/  file://localhost/home/noel/.eclipse/jes/schema/Workflow.xsd
+      http://www.astrogrid.org/schema/AGParameterDefinition/  AGParameterDefinition.xsd
+  "    name="testWorkflow1">
+  <community>
+    <credentials>
+      <account>nww74</account>
+      <group>jodrell</group>
+    </credentials>
+  </community>
+  <sequence>
+    <step joinCondition="any" name="single step" sequenceNumber="1" stepNumber="1">
+      <tool interface="iface1" name="dummyTool"/>
+
+      <description
+        xmlns="">a simple dummy tool</description>
+    </step>
+  </sequence>
+  <description
+    xmlns="">some descriptive text
+</description>
+</workflow>

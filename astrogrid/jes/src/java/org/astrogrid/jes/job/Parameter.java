@@ -1,220 +1,53 @@
-/*
- * @(#)Parameter.java   1.0
+/*$Id: Parameter.java,v 1.7 2004/02/27 00:46:03 nw Exp $
+ * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
  * This software is published under the terms of the AstroGrid 
- * Software License version 1.3, a copy of which has been included 
+ * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file.  
  *
- */
-
+**/
 package org.astrogrid.jes.job;
 
-import org.astrogrid.jes.jobcontroller.SubmissionRequestDD;
-import org.astrogrid.jes.jobscheduler.ScheduleRequestDD;
 
-import org.apache.axis.utils.XMLUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Element;
-
-import java.text.MessageFormat;
 
 /**
- * The <code>Parameter</code> class represents... 
- * <p>
- *
- * <p>
- * The class... 
- * 
- *
- * @author  Jeff Lusted
- * @version 1.0 18-Nov-2003
- * @see     
- * @see     
- * @since   AstroGrid 1.4
+ * Interface defining what controller requires from a parameter.
+ * absolutely nothing in this interface is used outside the o-model implementation. not accessed by the controller at all !
+ * @author Noel Winstanley nw@jb.man.ac.uk 09-Feb-2004
  */
-public class Parameter {
-    
-    /** Compile-time switch used to turn tracing on/off. 
-      * Set this to false to eliminate all trace statements within the byte code.*/         
-    private static final boolean 
-        TRACE_ENABLED = true ;
-        
-    private static Log
-        logger = LogFactory.getLog( Parameter.class ) ;    
-    
-    private Tool
-        parent ;
-    
-    private String
-        name = null,
-        type = null;
-        
-    private String
-        location = null ;
-        
-    private String
-        contents = null ;
-        
-    public Parameter() {
-    }
-     
-    public Parameter( String name ) {
-        this.name = name ;   
-    }
-    
-    public Parameter( Tool parent, Element element ) {
-        if( TRACE_ENABLED ) trace( "Parameter(Element) exit") ; 
-             
-        try {
-            
-            trace( "Parameter: " + XMLUtils.ElementToString( element ) ) ;
-            
-            this.parent = parent ;
-            this.name = element.getAttribute( SubmissionRequestDD.PAREMETER_NAME_ATTR ) ;
-            this.type = element.getAttribute( SubmissionRequestDD.PAREMETER_TYPE_ATTR ) ;
-//            this.location = element.getAttribute( SubmissionRequestDD.PAREMETER_LOCATION_ATTR ) ;
-//            this.contents = element.getNodeValue() ;
-           
-            // If the parameter is instream, the parameter contents is given by the node value, but...
-            // If the parameter is a remote reference (to a file within MySpace),
-            // then the location is set by the node value.
-            if( this.isRemoteReference() ) {
-                trace( "parameter is remote reference") ;
-                //bug#106
-                this.location = XMLUtils.getChildCharacterData( element ) ;
-                this.contents = "" ;    
-            }
-            else {
-                trace( "parameter contents is instream") ;
-                //bug#106
-                this.contents = XMLUtils.getChildCharacterData( element ) ;
-                this.location = "" ;
-            }
-                       
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Parameter(Element)() exit") ;
-        }
+public interface Parameter {
+    //public abstract void setName(String name);
+    //public abstract String getName();
+   // public abstract String getType();
+    //public abstract String getContents();
+    //public abstract String getLocation();
+    //public abstract void setContents(String string);
+    //public abstract void setLocation(String url);
+    /**
+       */
+   // public abstract void setType(String string);
+    //public abstract void setParent(Tool parent);
+    //public abstract Tool getParent();
+   // public abstract boolean isRemoteReference();
+  //  public abstract boolean isInStream();
+}
+/* 
+$Log: Parameter.java,v $
+Revision 1.7  2004/02/27 00:46:03  nw
+merged branch nww-itn05-bz#91
 
-    } // end of Parameter(Element)
-        
-  
-    public void setName( String name ){
-        this.name = name ;
-    }
-  
-    public String getName() {
-        return this.name ;  
-    }
-    
+Revision 1.5.2.3  2004/02/17 12:25:38  nw
+improved javadocs for classes
 
-    public String getType() {
-        return this.type ;
-    }
-   
-   
-	public String getContents() {
-		return contents;
-	}
+Revision 1.5.2.2  2004/02/12 01:16:08  nw
+analyzed code, stripped interfaces of all unused methods.
 
-
-	public String getLocation() {
-		return location;
-	}
-
-
-	public void setContents(String string) {
-		contents = string;
-	}
-
-
-	public void setLocation( String url ) {
-		location = url;
-	}
-    
-     
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }
-
-
-	/**
-	   */
-	public void setType(String string) {
-		type = string;
-	}
-
-    public void setParent(Tool parent) {
-		this.parent = parent;
-	}
-
-    public Tool getParent() {
-		return parent;
-	}
-    
-    
-    protected String toJESXMLString() {
-        if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() entry") ;
-        String 
-         response = null ;
-                                     
-        try {
-            
-            Object []
-                inserts = new Object[3] ;
-            inserts[0] = this.getName() ;
-            inserts[1] = this.getType() ;
-//            inserts[2] = ( this.getLocation() == null ) ? " " :  "location=\"" + this.getLocation() + "\"" ;
-//            inserts[3] = ( this.getContents() == null ) ? " " :  this.getContents() ;
-
-            if( this.isRemoteReference() ) {
-                inserts[2] = ( this.getLocation() == null ) ? " " :  this.getLocation() ;
-            }
-            else {
-                inserts[2] = ( this.getContents() == null ) ? " " :  this.getContents() ;
-            }          
-
-            response = MessageFormat.format( ScheduleRequestDD.JOBPARAMETER_TEMPLATE, inserts ) ;
-
-        }
-        finally {
-            if( TRACE_ENABLED ) trace( "Parameter.toJESXMLString() exit") ;    
-        }       
-        
-        return response ;  
-             
-    }
-    
-    
-    public boolean isRemoteReference() {
-        boolean
-            bRemoteRef = false ;
-            
-        if( this.type != null
-            &&
-            ( this.type.indexOf( "MySpace_FileReference") != -1 
-              ||
-              this.type.indexOf( "MySpace_VOTableReference") != -1 ) ) {
-                  
-            bRemoteRef = true ;   
-             
-        }
-        return bRemoteRef ;
-    }
-    
-    public boolean isInStream() {
-        return !isRemoteReference() ;
-    }
-    
-     
-} // end of class Parameter
+Revision 1.5.2.1  2004/02/09 12:39:06  nw
+isolated existing datamodel.
+refactored to extract interfaces from all current datamodel classes in org.astrogrid.jes.job.
+moved implementation of interfaces to org.astrogrid.jes.impl
+refactored so services reference interface rather than current implementation
+ 
+*/

@@ -1,9 +1,0 @@
-<!-- Web Services Deployment Descriptor for the undeploying JobMonitor service
-     1) Ensure Tomcat is running
-     2) Enter the following:
-              java org.apache.axis.client.AdminClient -l http://localhost:8080/axis/services/AdminService JobMonitor-undeploy.wsdd
--->
-
-<undeployment xmlns="http://xml.apache.org/axis/wsdd/">
-  <service name="JobMonitorService"/>
-</undeployment>

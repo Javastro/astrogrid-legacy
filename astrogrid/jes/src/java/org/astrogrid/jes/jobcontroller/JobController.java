@@ -8,36 +8,25 @@
  * with this distribution in the LICENSE.txt file.  
  *
  */
-package org.astrogrid.jes.jobcontroller ;
+package org.astrogrid.jes.jobcontroller;
 
-import org.astrogrid.AstroGridException;
-import org.astrogrid.community.common.util.CommunityMessage;
-import org.astrogrid.i18n.AstroGridMessage;
-import org.astrogrid.jes.JES;
 import org.astrogrid.jes.JesException;
+import org.astrogrid.jes.comm.SchedulerNotifier;
+import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.Job;
+import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
+import org.astrogrid.jes.job.SubmitJobRequest;
+import org.astrogrid.jes.types.v1.ListCriteria;
+import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.types.v1.WorkflowList;
 
-import org.apache.axis.client.Call;
-import org.apache.axis.client.Service;
-import org.apache.axis.encoding.XMLType;
-import org.apache.axis.message.SOAPBodyElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
 
-import java.io.StringReader;
-import java.net.URL;
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.util.Date;
-import java.util.ListIterator;
+import java.rmi.RemoteException;
+import java.util.Iterator;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.rpc.ParameterMode;
 
 
 /**
@@ -74,76 +63,29 @@ import javax.xml.rpc.ParameterMode;
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
  * @since   AstroGrid 1.2
- * 
  * Bug#12   Jeff Lusted - 30-June-2003   NullPointerException under error conditions.
  */
-public class JobController {
-
-	/** Compile-time switch used to turn tracing on/off. 
-	  * Set this to false to eliminate all trace statements within the byte code.*/	 	
-	private static final boolean 
-		TRACE_ENABLED = true ;
-		
-	/** Compile-time switch used to turn assertions on/off. 
-	  * Set this to false to eliminate all assertions statements within the byte code.*/	 	
-	private static final boolean 
-		ASSERTIONS_ENABLED = true ;
-	    
-	private static final String
-        ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
-		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
-	    ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED    = "AGJESI00050",
-		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
-	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
-	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420",
-        ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00060",
-        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00070",
-        ASTROGRIDERROR_ULTIMATE_LISTFAILURE         = "AGJESE00830" ; ;
-		
-	/** Log4J logger for this class. */    			    			
-	private static Log
-		logger = LogFactory.getLog( JobController.class ) ;
-        
-
-    public JobController(){
-        if( TRACE_ENABLED ) logger.debug( "JobController() entry/exit") ;
+public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController{
+    
+    public JobController(BeanFacade facade,SchedulerNotifier nudger) {
+        this.facade = facade;
+        this.nudger = nudger;
     }
-		
-        
-	private Document parseRequest( String jobXML ) throws JobControllerException {  	
-		if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
-		
-		Document 
-		   submitDoc = null;
-		DocumentBuilderFactory 
-		   factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder 
-		   builder = null;
-	       
-		try {
-		   factory.setValidating( Boolean.getBoolean( JES.getProperty( JES.CONTROLLER_PARSER_VALIDATION
-		                                                             , JES.CONTROLLER_CATEGORY )  )  ) ; 		    
-		   builder = factory.newDocumentBuilder(); 
-		   logger.debug( jobXML ) ;
-		   InputSource
-			  jobSource = new InputSource( new StringReader( jobXML ) );
-			submitDoc = builder.parse( jobSource );
-		}
-		catch ( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST
-                                              , this.getComponentName() ) ; 
-			logger.error( message.toString(), ex ) ;
-			throw new JobControllerException( message, ex );
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "parseRequest() exit") ;	
-		}
-		
-		return submitDoc ;
+    protected final BeanFacade facade;
+    protected final SchedulerNotifier nudger;
 
-	} // end parseRequest()
-	
+	private static final Log
+		logger = LogFactory.getLog( JobController.class ) ;
+    
+    /** adapter, to enable this class to implement the generated JobController interface */
+    public SubmissionResponse submitJob(String workflowXML) throws RemoteException{
+        try {
+            SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML);
+            return this.submitJob(req);
+        }  catch (JesException e) {
+            throw new RemoteException("Could not submit job",e);
+        }
+    }
 	
 	/**
 	  * <p> 
@@ -161,194 +103,40 @@ public class JobController {
 	  * 
 	  * Bug#12   Jeff Lusted - 30-June-2003
 	  **/     
-    public String submitJob( String jobXML ) {
-		if( TRACE_ENABLED ) logger.debug( "submitJob() entry") ;
-    	
-        String
-	        response = " response from JobController" ;
-		JobFactory
-		    factory = null ;
-        Job
-	        job = null ;
-	    boolean
-	        bCleanCommit = false ;    // We assume things go badly wrong! 
+    public SubmissionResponse submitJob( SubmitJobRequest req ) {
+		JobFactory factory = null ;
+        Job job= null;
+
 			
         try { 
 	        // If properties file is not loaded, we bail out...
 	        // Each JES MUST be properly initialized! 
-	        JES.getInstance().checkPropertiesLoaded() ;   
-    		
-	        // Parse the request... 
-	        Document
-	           submitDoc = parseRequest( jobXML ) ;
+	       // JES.getInstance().checkPropertiesLoaded() ;       		
 	           
 			// Create the necessary Job structures.
 			// This involves persistence, so we bracket the transaction before creating...
-	        factory = Job.getFactory() ;
+	        factory = facade.getJobFactory() ;
 	        factory.begin() ;
-	        job = factory.createJob( submitDoc, jobXML ) ;
-                    		
-			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
-                    			
-            response = formatGoodResponse( job ) ;
-//            response = "Good" + response ;
+	        job = factory.createJob( req) ;
+            nudger.scheduleNewJob(job.getId());                    		
+			factory.end ( true ) ;   // Commit and cleanup                    		
+            return facade.createSubmitJobSuccessResponse(job);
+        }
+        catch(Exception jex ) {
+        	logger.error(jex);
+            if (job != null) {
+                try {
+                   factory.deleteJob(job);
+                } catch (JobException e) {
+                    logger.warn("failed to delete corrupted job - " + job.getId() );
+                }
+            }
+            return facade.createSubmitJobErrorResponse( job, jex.getMessage() ) ;
+        }
 
-        }
-        catch( AstroGridException jex ) {
-        	
-	        AstroGridMessage
-		       detailMessage = jex.getAstroGridMessage() ,  
-		       generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE
-                                                    , this.getComponentName() ) ;
-	        logger.error( detailMessage.toString(), jex ) ;
-	        logger.error( generalMessage.toString() ) ;
-					
-	        // Format our error response here (partly Bug#12:  generate <<<some>>> response)...
-			if( job != null ) 
-			    response = formatBadResponse( job, detailMessage ) ;
-                
-//            response = "Bad" + response ;
-	        
-        }
-        finally {
-        	if( bCleanCommit == false ) {
-				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
-        	}
-			// Inform JobScheduler (within JES) that a job may require scheduling...
-			if( job != null ) informJobScheduler( job ) ;
-			// And finally, inform the AstroGrid message log of the submission details...
-//			if( job != null ) informAstroGridMessageLog( job ) ;
-			
-			// (partly Bug#12) Log some response, even when response is null...
-	        logger.debug(  (response != null)  ?  response.toString()  :  "reponse is null" );
-	        
-	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
-        }
-    	
-        return response ;  
          	
     } // end of submitJob()
     
-    
-	/**
-	  * <p> 
-	  * Formats the "good" response to the web service - Job successfully submitted. 
-	  * <p>
-	  * 
-	  * @param job - The job entity
-	  * @return A String containing the message.
-	  * 
-	  * @see <code>String formatResponse( Job job, String aMessage )</code>
-	  **/      
-    private String formatGoodResponse( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatGoodResponse() entry") ;
-		
-		String
-		    retValue = null ;
-		AstroGridMessage
-			message = null ;
-		try {
-			message = new AstroGridMessage( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED
-                                          , this.getComponentName() ) ; 
-			retValue = formatResponse( job, message.toString() ) ;
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatGoodResponse() exit") ;
-		}
-		
-        return  retValue ;
-        
-    }
-  
-  
-	/**
-	  * <p> 
-	  * Formats a "bad" response to the web service. 
-	  * <p>
-	  * 
-	  * @param job - The job entity
-	  * @param errorMessage - appropriate error message
-	  * @return A String containing the formatted message.
-	  * 
-	  * @see org.astrogrid.jes.i18n.Message
-	  * @see <code>String formatResponse( Job job, String aMessage )</code>
-	  **/         
-	private String formatBadResponse( Job job, AstroGridMessage errorMessage ) {
-		if( TRACE_ENABLED ) logger.debug( "formatBadResponse() entry") ;
-		String
-		   retValue = null ;
-		try {
-		   retValue = formatResponse( job, errorMessage.toString() ) ;
-		}
-		finally {
-		   if( TRACE_ENABLED ) logger.debug( "formatBadResponse() exit") ;
-		}		
-		return retValue ;
-	}   
-
-
-	/**
-	  * <p> 
-	  * Worker routine for formatting the web service response document.
-	  * <p>
-	  * The response document is a simple XML document and this 
-	  * routine uses an appropriately simple technique for 
-	  * producing it, requiring a template loaded from a properties'
-	  * file, together with the use of class <code>MessageFormat</code>.
-	  * 
-	  * @param job - The job entity
-	  * @param aMessage - an appropriate message as a String
-	  * @return A String containing the formatted document.
-	  * 
-	  * @see SubmitJobResponse.xsd in CVS
-	  * @see java.text.MessageFormat
-	  * @see the appropriate properties' file.
-	  **/         
-	private String formatResponse( Job job, String aMessage ) {
-		if( TRACE_ENABLED ) logger.debug( "JobController.formatResponse() entry") ;
-		
-        String 
-            response = null ;
-              
-		try {
-            
-            response = JES.getProperty( JES.CONTROLLER_SUBMIT_JOB_RESPONSE_TEMPLATE
-                                      , JES.CONTROLLER_CATEGORY ) ;
-        
-            logger.debug( "response template: " + response ) ;
-			 
-			Object []
-			   inserts = new Object[5] ;
-			inserts[0] = job.getUserId() ;
-			inserts[1] = job.getCommunity() ;
-			inserts[2] = job.getDate() ;
-			inserts[3] = job.getId() ;
-			inserts[4] = aMessage ;
-            
-            logger.debug( "inserts[0]: " + inserts[0] ) ;
-            logger.debug( "inserts[1]: " + inserts[1] ) ;
-            logger.debug( "inserts[2]: " + inserts[2] ) ;
-            logger.debug( "inserts[3]: " + inserts[3] ) ;
-            logger.debug( "inserts[4]: " + inserts[4] ) ;
-            
-			response = MessageFormat.format( response, inserts ) ;
-
-		}
-		catch ( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE
-                                              , this.getComponentName() ) ; 
-			logger.error( message.toString(), ex ) ;
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "JobController.formatResponse() exit") ;	
-		}		
-		
-		return response ;
-		
-	} // end of formatResponse()
-
-
     /**
       * <p> 
       * Represents a main service call against the JobController. 
@@ -361,416 +149,28 @@ public class JobController {
       * @see ?Response.xsd in CVS
       * 
       **/     
-    public String readJobList( String jobListXML ) {
-        if( TRACE_ENABLED ) logger.debug( "jobList() entry") ;
-        
-        String
-            response = null ;
-        JobFactory
-            factory = null ;
-        Document
-            listRequestDocument = null ;
-        ListIterator
-            iterator = null ;
-        String
-            userid = null,
-            community = null ;
+    public WorkflowList readJobList( ListCriteria req ) {
+
             
         try { 
             // If properties file is not loaded, we bail out...
             // Each JES MUST be properly initialized! 
-            JES.getInstance().checkPropertiesLoaded() ;   
+           // JES.getInstance().checkPropertiesLoaded() ;   
             
-            // Parse the request... 
-            listRequestDocument = parseRequest( jobListXML ) ;
-            userid = extractUserid( listRequestDocument ) ;
-            community = extractCommunity( listRequestDocument ) ;
-            factory = Job.getFactory() ;
-            iterator = factory.findUserJobs( userid, community, jobListXML ) ; 
-            response = formatListGoodResponse( userid, community, iterator ) ;
-
+            JobFactory factory = facade.getJobFactory() ;
+            Iterator iterator = factory.findUserJobs( req.getUserId(), req.getCommunity(),null) ; 
+            return  facade.createListJobsSuccessResponse(req.getUserId(), req.getCommunity(), iterator ) ;
         }
-        catch( AstroGridException jex ) {
-            
-            AstroGridMessage
-               detailMessage = jex.getAstroGridMessage() ,  
-               generalMessage = new AstroGridMessage( ASTROGRIDERROR_ULTIMATE_LISTFAILURE
-                                                    , this.getComponentName()
-                                                    , userid + "@" + community ) ;
-            logger.error( generalMessage.toString() ) ;
-            response = formatListErrorResponse( userid, community, detailMessage ) ;
+        catch( Exception jex ) {
+            logger.error(jex);
+            return facade.createListJobsErrorResponse( req.getUserId(), req.getCommunity(), jex.getMessage()) ;
                               
-        }
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "jobList() exit") ;
-        }
-        
-        return response ;  
+        }        
+
             
     } // end of jobList()
-    
-    
-    private String extractUserid( Document doc ) {
-        if( TRACE_ENABLED ) logger.debug( "extractUserid() entry") ;
-        
-        String
-            name ;
-        
-        try {
-            Element
-               element = doc.getDocumentElement() ;   
-               
-            name = element.getAttribute( JobListRequestDD.JOBLIST_USERID_ATTR ).trim() ;
-        }
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "extractUserid() exit") ;
-        }
-        
-        return name ;
-        
-    }
-    
-    
-    private String extractCommunity( Document doc ) {
-        if( TRACE_ENABLED ) logger.debug( "extractCommunity() entry") ;
-        
-       String
-           community ;
-        
-       try {
-           Element
-              element = doc.getDocumentElement() ;   
-               
-           community = element.getAttribute( JobListRequestDD.JOBLIST_COMMUNITY_ATTR ).trim() ;
-       }
-       finally {
-           if( TRACE_ENABLED ) logger.debug( "extractCommunity() exit") ;
-       }
-        
-       return community ;
-    }
-    
-    
-    private String formatListGoodResponse( String userid, String community, ListIterator iterator ) {
-         if( TRACE_ENABLED ) logger.debug( "formatListGoodResponse() entry") ;
-        
-        String
-            response = null ;
-        // append is here to allow for an empty list (i.e. no jobs)
-        StringBuffer
-            rBuffer = new StringBuffer( 256 ).append(" ") ; 
-        Job
-            job = null ;
-            
-        Object []
-            inserts = new Object[ 5 ] ;
-      
-        try {
-            
-            // Format the list itself ...
-            while( iterator.hasNext() ) {
-                
-                job = (Job)iterator.next() ;
-                inserts[0] = job.getName() ;                 
-                inserts[1] = job.getDescription() ; 
-                inserts[2] = job.getStatus() ;           
-                inserts[3] = job.getDate() ;
-                inserts[4] = job.getId() ;
-                
-                rBuffer.append( MessageFormat.format( JobListResponseDD.JOB_TEMPLATE, inserts ) ) ;
-                 
-            } // end while
-            
-            // Format the header details ...
-            inserts = new Object[ 4 ] ;
-            inserts[0] = "" ; // no message                 
-            inserts[1] = userid ;           
-            inserts[2] = community ;
-            inserts[3] = rBuffer.toString() ;
-             
-            response = MessageFormat.format( JobListResponseDD.RESPONSE_TEMPLATE, inserts ) ;
-
-        }
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "formatListGoodResponse() exit") ;
-        }
-        
-        return response ;
-        
-    } // end of formatListGoodResponse()
-    
-    
-    private String formatListErrorResponse( String userid, String community, AstroGridMessage message ) {
-        if( TRACE_ENABLED ) logger.debug( "formatListErrorResponse() entry") ;
-        
-        String
-            response = null ;
-                   
-        try {
-            
-            Object []
-                inserts = new Object[ 4 ] ;
-            inserts[0] = message.toString() ;                 
-            inserts[1] = userid ;           
-            inserts[2] = community ;
-            inserts[3] = "" ; // no list
-             
-            response = MessageFormat.format( JobListResponseDD.RESPONSE_TEMPLATE, inserts ) ;
-            
-        }
-        finally {
-            if( TRACE_ENABLED ) logger.debug( "formatListErrorResponse() exit") ;
-        }
-        
-        return response ;
-        
-    } // end of formatListErrorResponse()
-    
-    
-    
-	/**
-	  * <p> 
-	  * Invokes the web service for job scheduling.
-	  * <p>
-	  * JobController, JobScheduler and JobMonitor are fairly
-	  * loosely coupled components linked together by their
-	  * shared use of the Job database. Here the JobController
-	  * is touching the Scheduler with a oneway call to see
-	  * whether the given Job (passed with this call) can be 
-	  * appropriately scheduled to run somewhere.
-	  * 
-	  * The call itself is timely rather than system significant.
-	  * It informs the scheduler that something is ready <code>now</code>.
-	  * The system will eventually schedule the Job even if the
-	  * call fails.
-	  * 
-	  * JBL Note: A candidate for refactoring.
-	  * 
-	  * @param job - The job entity
-	  * @return void
-	  * 
-	  * @see ScheduleJobRequest.xsd in CVS
-	  * @see java.text.MessageFormat
-	  * @see the appropriate properties' file.
-	  * @see formatScheduleRequest( job )
-	  **/           	
-	private void informJobScheduler( Job job ) { 
-		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() entry") ;
-
-		try {
-
-			Object []
-			   parms = new Object[] { formatScheduleRequest( job ) } ;
-			   
-			Call 
-			   call = (Call) new Service().createCall() ;			  
-
-			call.setTargetEndpointAddress( new URL( JES.getProperty( JES.SCHEDULER_URL
-			                                                       , JES.SCHEDULER_CATEGORY )  )  ) ;
-			call.setOperationName( "scheduleJob" ) ;  // Set method to invoke		
-			call.addParameter("scheduleJobXML", XMLType.XSD_STRING,ParameterMode.IN);
-			call.setReturnType(XMLType.XSD_STRING);
-			
-			// JBL Note: Axis documentation states the immediate return aspect is
-			// not yet implemented, so we may need a fudge here.
-			call.invokeOneWay( parms ) ;
-
-		}
-		catch ( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER
-                                              , this.getComponentName()) ; 
-			logger.error( message.toString(), ex ) ;
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "informJobScheduler(): exit") ;	
-		}					
-		
-	} // end informJobScheduler()
-	
-	
-	/**
-	  * <p> 
-	  * Worker routine for formatting the job scheduling web service 
-	  * response document.
-	  * <p>
-	  * The scheduling request document is a simple XML document 
-	  * and this routine uses an appropriately simple technique for 
-	  * producing it, requiring a template loaded from a properties'
-	  * file, together with the use of class <code>MessageFormat</code>.
-	  * 
-	  * @param job - The job entity
-	  * @return A String containing the formatted request document.
-	  * 
-	  * @see SubmitJobResponse.xsd in CVS
-	  * @see java.text.MessageFormat
-	  * @see the appropriate properties' file.
-	  **/         
-	private String formatScheduleRequest( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() entry") ;
-		
-		String 
-		   response = JES.getProperty( JES.SCHEDULER_JOB_REQUEST_TEMPLATE
-		                             , JES.SCHEDULER_CATEGORY ),
-           communitySnippet ;
-		
-		try {
-            
-            communitySnippet = CommunityMessage.getMessage( job.getToken()
-                                                          , job.getUserId() + "@" + job.getCommunity()
-                                                          , job.getGroup() ) ;
-			
-			Object []
-			   inserts = new Object[4] ;
-			inserts[0] = job.getName() ;
-//			inserts[1] = job.getUserId() ;
-//			inserts[2] = job.getCommunity() ;
-			inserts[1] = job.getDate() ;
-			inserts[2] = job.getId() ;
-            inserts[3] = communitySnippet ;
-			
-			response = MessageFormat.format( response, inserts ) ;
-
-		}
-		catch ( Exception ex ) {
-			AstroGridMessage
-				message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE
-                                              , this.getComponentName() ) ; 
-			logger.error( message.toString(), ex ) ;
-		} 
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() exit") ;	
-		}		
-		
-		return response ;
-		
-	} // end of formatScheduleRequest()
-	
-	
-	/**
-	  * <p> 
-	  * Invokes the web service for using the AstroGrid message log.
-	  * <p>
-	  * The message log is the AstroGrid way of informing users 
-	  * of significant events, e.g. in this case the submission 
-	  * details of a job (successful or otherwise). 
-	  * This is an AstroGrid service over and above the normal 
-	  * component contract, which for JobController is discharged 
-	  * by the reponse document to the JobController submission web service.
-	  * 
-	  * JBL Note: A candidate for refactoring.
-	  * 
-	  * @param job - The job entity
-	  * @return void
-	  * 
-	  * @see formatStatusMessage( Job job )
-	  **/           	
-	private void informAstroGridMessageLog( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): entry") ;
-		
-		try {
-			
-			Call 
-			   call = (Call) new Service().createCall() ;
-			   
-			// We keep the appropriate end-point in a properties' file.
-			// JBL note: Is this sufficient?
-			call.setTargetEndpointAddress( new URL( JES.getProperty( JES.MESSAGE_LOG_URL
-			                                                       , JES.MESSAGE_LOG_CATEGORY )  )  ) ;
-      
-			SOAPBodyElement[] 
-			   bodyElement = new SOAPBodyElement[1];
-			   
-			// The request document is simple enough to keep a template of it in 
-			// a properties' file and use the MessageFormat class to complete it...
-			String
-				requestString = JES.getProperty( JES.MESSAGE_LOG_REQUEST_TEMPLATE
-				                               , JES.MESSAGE_LOG_CATEGORY ) ;
-			Object []
-				inserts = new Object[ 5 ] ;
-			inserts[0] = JES.getProperty( JES.CONTROLLER_URL
-			                            , JES.CONTROLLER_CATEGORY ) ;             // source
-			inserts[1] = JES.getProperty( JES.MESSAGE_LOG_URL
-                                        , JES.MESSAGE_LOG_CATEGORY ) ;            // destination
-			inserts[2] = new Timestamp( new Date().getTime() ).toString() ;       // timestamp - is this OK?
-			inserts[3] = "Job submitted" ;                                        // subject
-			
-			// We use a worker routine to format the actual message log message...
-			// JBL Note: this requires elucidation...
-			inserts[4] = formatStatusMessage( job ) ;
-			 
-			InputSource
-				requestSource = new InputSource( new StringReader( MessageFormat.format( requestString, inserts ) ) ) ;
-				
-// JBL Note: the following is giving errors. Talk to Peter S' ...
-//			bodyElement[0] = new SOAPBodyElement( XMLUtils.newDocument( requestSource ).getDocumentElement() ) ;
-    
-//			logger.debug( "[call] url: " + JobController.getProperty( MESSAGE_LOG_URL ) ) ;
-//			logger.debug( "[call] msg: " + bodyElement[0] ) ;
        
-//			Object 
-//			   result = call.invoke(bodyElement);
 
-//			logger.debug( "[call] res: " + result ) ;
-    
-		}
-		catch( Exception ex ) {
-			AstroGridMessage
-			   message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG
-                                             , this.getComponentName() ) ;
-			logger.debug( message.toString(), ex ) ;
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): exit") ;	
-		}
-					
-	} // end of informAstroGridMessageLog()
-	
-	
-	/**
-	  * <p> 
-	  * Worker routine for formatting the job status message passed 
-	  * within the AstroGrid message log request document.
-	  * <p>
-	  * 
-	  * @param job - The job entity
-	  * @return A String containing the formatted job status message.
-	  * 
-	  * @see java.text.MessageFormat
-	  * @see the appropriate messages' properties' file.
-	  **/         
-	private String formatStatusMessage ( Job job ) {
-		if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): entry") ;	
-		
-		AstroGridMessage
-		   message = null ;	
-		
-		try {
-			// AGJESI00070=:JobController: Job status [{0}] job name [{1}] userid [{2}] community [{3}] job id [{4}] 
-			Object []
-				inserts = new Object[ 6 ] ;
-            inserts[0] = this.getComponentName() ;                 
-			inserts[1] = job.getStatus() ;           
-			inserts[2] = job.getName() ;
-			inserts[3] = job.getUserId() ;
-			inserts[4] = job.getCommunity() ;
-			inserts[5] = job.getId() ;
-			 
-			message = new AstroGridMessage( ASTROGRIDINFO_JOB_STATUS_MESSAGE, inserts ) ;
-					
-		}
-		catch( Exception ex ) {
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): exit") ;		
-		}
-		
-		return message.toString() ;
-		
-	} // end of formatStatusMessage()
-	
-
-	protected String getComponentName() { return JES.getClassName( this.getClass() ); }
 
 
 } // end of class JobController

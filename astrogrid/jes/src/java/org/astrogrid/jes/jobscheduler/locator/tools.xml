@@ -1,0 +1,28 @@
+<tools>
+    <tool 
+    	name="testapp" 
+    	location="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" 
+    	interface="I1" 
+    	/>
+    <tool 
+    	name="QueryTool" 
+    	location="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" 
+    	interface="simple"
+    	/>
+    <tool 
+    	name="DataFederation" 
+    	location="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" 
+    	interface="Smain"
+    	/>
+    <tool 
+    	name="SExtractor"
+    	 location="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" 
+    	 interface="Simple" 
+    	/>
+    <tool 
+    	name="HyperZ" 
+    	location="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService"
+    	interface="simple" 
+    	 />
+
+</tools>

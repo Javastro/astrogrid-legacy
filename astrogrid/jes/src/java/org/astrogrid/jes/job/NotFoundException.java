@@ -10,7 +10,6 @@
  */
 package org.astrogrid.jes.job;
 
-import org.astrogrid.i18n.AstroGridMessage;
 
 /**
  * The <code>JobNotFoundException</code> class represents 
@@ -31,7 +30,7 @@ public class NotFoundException extends JobException {
 	     *
 	     * 
 	     */
-	public NotFoundException( AstroGridMessage message ) {
+	public NotFoundException( String  message ) {
 		super(message);
 	}
 
@@ -41,7 +40,7 @@ public class NotFoundException extends JobException {
 	     * 
 	     * 
 	     */
-	public NotFoundException( AstroGridMessage message, Exception exception ) {
+	public NotFoundException( String message, Exception exception ) {
 		super(message, exception);
 	}
 
