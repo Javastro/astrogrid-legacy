@@ -38,7 +38,7 @@
                                         <ceapd:UI_Description>Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>
                                 </ParameterDefinition>
                                 <ParameterDefinition name="Format" type="string">
-                                        <ceapd:DefaultValue>Results Format</ceapd:DefaultValue>
+                                        <ceapd:DefaultValue>VOTABLE</ceapd:DefaultValue>
                                         <ceapd:UI_Description>How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>
                                 </ParameterDefinition>
                                 <ParameterDefinition name="Target" type="IVORN">
