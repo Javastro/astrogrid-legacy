@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.16 2004/07/04 22:59:14 jdt Exp $ 
+# $Id: autorun.sh,v 1.17 2004/07/04 23:05:45 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -42,7 +42,7 @@ rm -r $TESTMODULE >> $LOGFILE 2>&1
 cvs checkout -P $TESTMODULE >> $LOGFILE 2>&1
 
 #run maven goals
-
+cd $BUILDHOME >> $LOGFILE 2>&1
 echo $BUILDHOME >> $LOGFILE
 maven CLEANTOMCAT >> $LOGFILE 2>&1
 echo "Starting Tomcat" >> $LOGFILE
