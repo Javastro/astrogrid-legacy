@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.8 2003/12/09 12:19:34 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.9 2003/12/10 12:27:56 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -212,8 +212,9 @@ public class WarehouseQuerier extends Querier
     else {
       cmdArgs = new String[5];
     }
-    cmdArgs[0] = serviceProperties.getProperty(
-                  "WarehouseJvm", DEFAULT_WAREHOUSE_JVM);
+    //cmdArgs[0] = serviceProperties.getProperty(
+     //             "WarehouseJvm", DEFAULT_WAREHOUSE_JVM);
+    cmdArgs[0] = getJavaBinary();
     cmdArgs[1] = "-jar";
     cmdArgs[2] = getExecutableJar();
     cmdArgs[3] = sql;
@@ -221,9 +222,15 @@ public class WarehouseQuerier extends Querier
       cmdArgs[4] = tempFile.getAbsolutePath();
       log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
             " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
+      // TOFIX REMOVE
+      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+            " " + cmdArgs[2] + " " + cmdArgs[3] + " " + cmdArgs[4]);
     } 
     else {
       log.debug("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
+            " " + cmdArgs[2] + " " + cmdArgs[3]);
+      // TOFIX REMOVE
+      System.out.println("Command is: " + cmdArgs[0] + " " + cmdArgs[1] + 
             " " + cmdArgs[2] + " " + cmdArgs[3]);
     }
 
@@ -324,6 +331,63 @@ public class WarehouseQuerier extends Querier
   }
 
   /* 
+   * Assembles the fully-qualified path of the Java JVM to be shelled
+   * out to.
+   * 
+   * By default, looks for the environment variable JAVA_HOME and figures
+   * out the path from that.
+   *
+   * If JAVA_HOME is not defined, looks for a local property instead.
+   * 
+   * @return  String holding full path of the Java JVM binary
+   * @throws DatabaseAccessException
+   */
+  protected String getJavaBinary() throws DatabaseAccessException {
+    // First, check if user has customised the JVM location 
+    //  in the WarehouseQuerier.properties file
+    String customJVM = serviceProperties.getProperty("WarehouseJvm");
+    if (customJVM != null) {
+      return customJVM;  // Use customised JVM if it exists
+    }
+    else {
+      // No custom JVM - use JVM in JAVA_HOME
+      String javaHome = System.getProperty("java.home");
+      if (javaHome == null) {  //Shouldn't happen
+        String errorMessage = 
+          "Fatal error: System property 'java.home' not defined! "+
+             "Please set WarehouseJvm property in " +
+             "'WarehouseQuerier.properties' file";
+        log.error(errorMessage);
+        throw new DatabaseAccessException(errorMessage);
+      }
+      String separator = System.getProperty("file.separator");
+      if (separator == null) {
+        log.warn("Warning, couldn't get system file.separator, assuming '/'");
+        separator = "/";
+      }
+      // Assume JVM binary is called java and is in bin dir of JAVA_HOME
+      String fullPath = javaHome + separator + "bin" + separator + "java"; 
+      File testFile = new File(fullPath);
+      if (!(testFile.exists())) {
+        //Try looking for a .exe version - might be running under Windows
+        testFile = new File(fullPath + ".exe");
+        if (!(testFile.exists())) {
+          String errorMessage = 
+            "Fatal error: Java binary '" + fullPath + "[.exe]' not found! "+
+               "Please set WarehouseJvm property in " +
+               "'WarehouseQuerier.properties' file";
+          log.error(errorMessage);
+          throw new DatabaseAccessException(errorMessage);
+        }
+        else {
+          return fullPath + ".exe";
+        }
+      }
+      return fullPath;
+    }
+  }
+
+  /* 
    * Assembles the fully-qualified path of the Java executable jar 
    * containing the OGSA-DAI GdsQueryDelegate.
    * 
@@ -336,27 +400,27 @@ public class WarehouseQuerier extends Querier
   protected String getExecutableJar() throws DatabaseAccessException {
     // Extract path to directory containing executable jar 
     String jarPath = serviceProperties.getProperty("ExecutableJarPath");
-    if (jarPath.equals(null)) {
+    if (jarPath == null) {
       String errorMessage = "Property 'ExecutableJarPath' not set in " +
           "properties file 'WarehouseQuerier.properties'";
       log.error(errorMessage);
       throw new DatabaseAccessException(errorMessage);
     }
     String sep = System.getProperty("file.separator");
-    if (sep.equals(null)) {
+    if (sep == null) {
       log.warn("Warning, couldn't get system file.separator, assuming " +
           "ExecutableJarPath is properly terminated with file separator");
     }
     else {
       int pathlen = jarPath.length();
       // If last char in path not separator, add separator
-      if (! jarPath.substring(pathlen-1,pathlen).equalsIgnoreCase(sep)) {
+      if (!(jarPath.substring(pathlen-1,pathlen).equalsIgnoreCase(sep))) {
         jarPath = jarPath + sep;
       }
     }
     // Extract name of executable jar
     String jarName = serviceProperties.getProperty("ExecutableJarName");
-    if (jarName.equals(null)) {
+    if (jarName == null) {
       String errorMessage = "Property 'ExecutableJarName' not set in " +
           "properties file 'WarehouseQuerier.properties'";
       log.error(errorMessage);
@@ -382,6 +446,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.9  2003/12/10 12:27:56  kea
+Finding JVM to shell out to from JAVA_HOME.
+
 Revision 1.8  2003/12/09 12:19:34  kea
 Changed shelling-out to use executable jar (including adjustments
 to properties file).
