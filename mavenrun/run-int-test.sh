@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-int-test.sh,v 1.1 2004/11/28 21:22:03 jdt Exp $ 
+# $Id: run-int-test.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
 ######################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results

@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.1 2004/11/28 21:22:03 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly

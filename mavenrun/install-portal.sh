@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: install-portal.sh,v 1.1 2004/11/28 21:22:03 jdt Exp $ 
+# $Id: install-portal.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
 ######################################################
 # Script to install the portal only,
 # Temporary measure while we're having memory problems

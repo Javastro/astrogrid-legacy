@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: cvs-checkout.sh,v 1.3 2004/11/28 21:22:03 jdt Exp $ 
+# $Id: cvs-checkout.sh,v 1.4 2004/11/28 21:27:04 jdt Exp $ 
 ##############################################################
 # Script to checkout a module, and maven-base
 # First argument is module name

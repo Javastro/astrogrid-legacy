@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: run-and-publish-tests.sh,v 1.1 2004/11/28 21:22:03 jdt Exp $ 
+# $Id: run-and-publish-tests.sh,v 1.2 2004/11/28 21:27:04 jdt Exp $ 
 ######################################################
 # Run the tests and publish the results to Uluru
 # (or wherever)
