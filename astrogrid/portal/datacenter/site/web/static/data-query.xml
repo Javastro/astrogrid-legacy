@@ -37,7 +37,7 @@ test
 -->
 <tr valign="bottom"><td>
 
-        <textarea class="areaInput" id="ag_data-query" cols="50" rows="8" name="adqlQuery"> </textarea>
+        <textarea class="areaInput" id="ag_data-query" cols="50" rows="8" name="adql-query"> </textarea>
 </td>
 <td>
 <table border="0" cellpadding="1" cellspacing="0">

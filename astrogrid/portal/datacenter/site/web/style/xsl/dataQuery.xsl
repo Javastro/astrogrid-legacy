@@ -188,7 +188,7 @@ Cone Search<br />
 </table>
 
 <div width="100%" id="adqlSection" style="display: show">
-<form action="/astrogrid-portal/main/mount/datacenter/forms/adql" name="main" method="POST">
+<form action="/astrogrid-portal/bare/mount/datacenter/forms/adql" name="main" method="POST" target="_top" >
 <center>
 <table border="0" cellspacing="1" cellpadding="1" bgcolor="#ffffcc">
 <tr valign="bottom"><td rowspan="2">

@@ -65,7 +65,7 @@ variable, which could be used by invoking some xpath way
      if(quString.equals(nada)){
 <OneTableID>NoSource</OneTableID>
 <QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50" rows="8">
+<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">
 </textarea>
 </QUERYAREA>
      } else {
@@ -75,7 +75,7 @@ variable, which could be used by invoking some xpath way
            <util:href><xsp:expr>myURL</xsp:expr></util:href>
         </util:include-uri>
 <QUERYAREA>
-<textarea name="adqlQuery" class="areaInput" id="ag_data-query" cols="50" rows="8">FROM <xsp:expr>quString</xsp:expr> </textarea>
+<textarea name="adql-query" class="areaInput" id="ag_data-query" cols="50" rows="8">FROM <xsp:expr>quString</xsp:expr> </textarea>
 </QUERYAREA>
      }
   </xsp:logic>
