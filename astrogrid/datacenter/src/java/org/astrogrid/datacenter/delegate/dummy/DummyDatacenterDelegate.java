@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDatacenterDelegate.java,v 1.3 2003/08/29 07:57:01 maven Exp $
+ * $Id: DummyDatacenterDelegate.java,v 1.4 2003/09/05 12:01:56 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -70,7 +70,7 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
       catch (QueryException e)
       {
          //rethrow as runtime exception - somethings gone wrong that shouldn't
-         throw new RuntimeException(e);
+         throw new RuntimeException("Query='"+adql+"',",e);
       }
 
       fireStatusChanged(DatacenterStatusListener.RUNNING_RESULTS);
@@ -134,6 +134,9 @@ public class DummyDatacenterDelegate extends DatacenterDelegate
 
 /*
 $Log: DummyDatacenterDelegate.java,v $
+Revision 1.4  2003/09/05 12:01:56  mch
+Minor doc/error changes
+
 Revision 1.3  2003/08/29 07:57:01  maven
 - changed '&' to '&amp;'
 
