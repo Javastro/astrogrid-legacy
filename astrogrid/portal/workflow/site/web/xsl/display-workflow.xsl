@@ -41,7 +41,7 @@
                     </td>
                     <td>
                         ivorn:<input type="text" name="workflow-ivorn" id="open-workflow-ivorn"/>
-                        agsl:<input type="text" name="save-workflow-agsl" id="save-workflow-agsl"/>                        
+                        agsl:<input type="text" name="open-workflow-agsl" id="open-workflow-agsl"/>                        
                         <input type="submit" name="action" value="read-workflow" />                        
                     </td>                                
                 </tr>
