@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.3 2004/07/09 14:48:24 nw Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -133,9 +133,9 @@ public class CommonExecutionConnectorServiceSoapBindingImpl implements CommonExe
 /**
  * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#registerResultsListener(java.lang.String, org.apache.axis.types.URI)
  */
-public void registerResultsListener(String arg0, URI arg1) throws RemoteException, CeaFault {
+public boolean registerResultsListener(String arg0, URI arg1) throws RemoteException, CeaFault {
     try {
-        query.registerResultsListener(arg0,new java.net.URI(arg1.toString()));
+        return query.registerResultsListener(arg0,new java.net.URI(arg1.toString()));
     } catch (Exception e) {
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {
@@ -146,9 +146,9 @@ public void registerResultsListener(String arg0, URI arg1) throws RemoteExceptio
 /**
  * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#registerProgressListener(java.lang.String, org.apache.axis.types.URI)
  */
-public void registerProgressListener(String arg0, URI arg1) throws RemoteException, CeaFault {
+public boolean registerProgressListener(String arg0, URI arg1) throws RemoteException, CeaFault {
     try {
-        query.registerProgressListener(arg0,new java.net.URI(arg1.toString()));
+        return query.registerProgressListener(arg0,new java.net.URI(arg1.toString()));
     } catch (Exception e) {
         throw CeaFault.makeFault(e);
     } catch (Throwable e) {

@@ -40,15 +40,15 @@
    <parameter qname="ns4:executionId" type="xsd:string"/>
    <fault class="org.astrogrid.applications.service.v1.cea.CeaFault" qname="message" type="xsd:string"/>
   </operation>
-  <operation name="registerResultsListener" qname="ns5:registerResultsListener" xmlns:ns5="urn:impl.cea.applications.astrogrid.org">
-   <parameter qname="ns5:executionId" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <parameter qname="ns5:endpoint" type="xsd:anyURI" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <fault class="org.astrogrid.applications.service.v1.cea.CeaFault" qname="message" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <operation name="registerResultsListener" qname="ns5:registerResultsListener" returnQName="ns5:registerReturn" returnType="xsd:boolean" xmlns:ns5="urn:impl.cea.applications.astrogrid.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <parameter qname="ns5:executionId" type="xsd:string"/>
+   <parameter qname="ns5:endpoint" type="xsd:anyURI"/>
+   <fault class="org.astrogrid.applications.service.v1.cea.CeaFault" qname="message" type="xsd:string"/>
   </operation>
-  <operation name="registerProgressListener" qname="ns6:registerProgressListener" xmlns:ns6="urn:impl.cea.applications.astrogrid.org">
-   <parameter qname="ns6:executionId" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <parameter qname="ns6:endpoint" type="xsd:anyURI" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
-   <fault class="org.astrogrid.applications.service.v1.cea.CeaFault" qname="message" type="xsd:string" xmlns:xsd="http://www.w3.org/2001/XMLSchema"/>
+  <operation name="registerProgressListener" qname="ns6:registerProgressListener" returnQName="ns6:registerReturn" returnType="xsd:boolean" xmlns:ns6="urn:impl.cea.applications.astrogrid.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <parameter qname="ns6:executionId" type="xsd:string"/>
+   <parameter qname="ns6:endpoint" type="xsd:anyURI"/>
+   <fault class="org.astrogrid.applications.service.v1.cea.CeaFault" qname="message" type="xsd:string"/>
   </operation>
   <operation name="execute" qname="ns7:execute" returnQName="ns7:abortReturn" returnType="xsd:boolean" xmlns:ns7="urn:impl.cea.applications.astrogrid.org" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
    <parameter qname="ns7:executionId" type="xsd:string"/>
@@ -74,17 +74,17 @@
   <parameter name="wsdlServicePort" value="CommonExecutionConnectorService"/>
   <parameter name="wsdlTargetNamespace" value="urn:cea.applications.astrogrid.org"/>
   <parameter name="wsdlServiceElement" value="CommonExecutionConnectorService"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns15:output" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.workflow.beans.v1.axis._output" xmlns:ns15="http://www.astrogrid.org/schema/AGWorkflow/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns16:execution-phase" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase" xmlns:ns16="http://www.astrogrid.org/schema/CEATypes/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns17:job-identifier-type" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType" xmlns:ns17="http://www.astrogrid.org/schema/CEATypes/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns18:tool" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.workflow.beans.v1.axis._tool" xmlns:ns18="http://www.astrogrid.org/schema/AGWorkflow/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns19:input" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.workflow.beans.v1.axis._input" xmlns:ns19="http://www.astrogrid.org/schema/AGWorkflow/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns20:log-level" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.LogLevel" xmlns:ns20="http://www.astrogrid.org/schema/CEATypes/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns21:input-list-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.InputListType" xmlns:ns21="http://www.astrogrid.org/schema/CEATypes/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns22:parameterValue" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue" xmlns:ns22="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns23:result-list-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ResultListType" xmlns:ns23="http://www.astrogrid.org/schema/CEATypes/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns24:execution-summary-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType" xmlns:ns24="http://www.astrogrid.org/schema/CEATypes/v1"/>
-  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns25:message-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType" xmlns:ns25="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.SimpleDeserializerFactory" encodingStyle="" qname="ns15:job-identifier-type" serializer="org.apache.axis.encoding.ser.SimpleSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType" xmlns:ns15="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns16:input" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.workflow.beans.v1.axis._input" xmlns:ns16="http://www.astrogrid.org/schema/AGWorkflow/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns17:input-list-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.InputListType" xmlns:ns17="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns18:result-list-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ResultListType" xmlns:ns18="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns19:message-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.MessageType" xmlns:ns19="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns20:output" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.workflow.beans.v1.axis._output" xmlns:ns20="http://www.astrogrid.org/schema/AGWorkflow/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns21:execution-phase" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase" xmlns:ns21="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns22:tool" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.workflow.beans.v1.axis._tool" xmlns:ns22="http://www.astrogrid.org/schema/AGWorkflow/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.EnumDeserializerFactory" encodingStyle="" qname="ns23:log-level" serializer="org.apache.axis.encoding.ser.EnumSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.LogLevel" xmlns:ns23="http://www.astrogrid.org/schema/CEATypes/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns24:parameterValue" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue" xmlns:ns24="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+  <typeMapping deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory" encodingStyle="" qname="ns25:execution-summary-type" serializer="org.apache.axis.encoding.ser.BeanSerializerFactory" type="java:org.astrogrid.jes.types.v1.cea.axis.ExecutionSummaryType" xmlns:ns25="http://www.astrogrid.org/schema/CEATypes/v1"/>
  </service>
  <transport name="http">
   <requestFlow>

@@ -1,4 +1,4 @@
-/*$Id: DefaultQueryService.java,v 1.3 2004/07/02 09:11:13 nw Exp $
+/*$Id: DefaultQueryService.java,v 1.4 2004/07/09 14:48:24 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -105,24 +105,25 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
     /**
      * @see org.astrogrid.applications.manager.QueryService#registerProgressListener(java.lang.String, java.net.URI)
      */
-    public void registerProgressListener(String executionId, URI endpoint) throws CeaException {
+    public boolean registerProgressListener(String executionId, URI endpoint) throws CeaException {
         logger.debug("Registering progress listener for " + executionId + " at " + endpoint);
         if (! executionHistory.isApplicationInCurrentSet(executionId)) {
             logger.warn("applicaiton not in current set - no point registering listener, already finished");
-            return;
+            return false;
         }
         Application app = executionHistory.getApplicationFromCurrentSet(executionId);
         Observer obs = new RemoteProgressListener(endpoint);
-        app.addObserver(obs); 
+        app.addObserver(obs);
+        return true; 
     }
     /**
      * @see org.astrogrid.applications.manager.QueryService#registerResultsListener(java.lang.String, java.net.URI)
      */
-    public void registerResultsListener(String executionId, URI endpoint) throws CeaException {
+    public boolean registerResultsListener(String executionId, URI endpoint) throws CeaException {
         logger.debug("Registering results listener for " + executionId + " at " + endpoint);
         if (! executionHistory.isApplicationInCurrentSet(executionId)) {
             logger.warn("application not in current set - no point registering listener, its finished already");
-            return;
+            return false;
         }
         Application app = executionHistory.getApplicationFromCurrentSet(executionId);
         Observer obs;
@@ -136,7 +137,8 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
             throw new CeaException("Could not create client for remote service",e);
             
         }
-        app.addObserver(obs); 
+        app.addObserver(obs);
+        return true; 
     }
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
@@ -162,6 +164,9 @@ public class DefaultQueryService implements QueryService, ComponentDescriptor {
 
 /* 
 $Log: DefaultQueryService.java,v $
+Revision 1.4  2004/07/09 14:48:24  nw
+updated to match change in type of register*Listener methods in cec wsdl
+
 Revision 1.3  2004/07/02 09:11:13  nw
 improved logging
 

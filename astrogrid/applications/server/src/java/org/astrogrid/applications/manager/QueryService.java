@@ -1,4 +1,4 @@
-/*$Id: QueryService.java,v 1.2 2004/07/01 11:16:22 nw Exp $
+/*$Id: QueryService.java,v 1.3 2004/07/09 14:48:24 nw Exp $
  * Created on 16-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -28,16 +28,18 @@ public interface QueryService {
      * @param endpoint endpoint of a webservice implementing the {@link JobMonitor} interface. This webservice will be
      * notified whenever the application changes state.
      * @throws CeaException
+     * @return true if registered successfully.
      */
-    public void registerProgressListener(String executionId,URI endpoint) throws CeaException;
+    public boolean registerProgressListener(String executionId,URI endpoint) throws CeaException;
     /** register a remote result listener with an application
      * 
      * @param executionId the server-assigned id of a current application (which may either be running, or waiting to run)
      * @param endpoint endpoint of a webservice implementing the {@link CEAResultListener} interface. This webservice will be
      * notified when the exection results for the application become available.
+     * @return true if registered successfully
      * @throws CeaException
      */    
-    public void registerResultsListener(String executionId,URI endpoint) throws CeaException;
+    public boolean registerResultsListener(String executionId,URI endpoint) throws CeaException;
     
     // direct query methods
     /** query the status of a running application */
@@ -56,6 +58,9 @@ public interface QueryService {
 
 /* 
 $Log: QueryService.java,v $
+Revision 1.3  2004/07/09 14:48:24  nw
+updated to match change in type of register*Listener methods in cec wsdl
+
 Revision 1.2  2004/07/01 11:16:22  nw
 merged in branch
 nww-itn06-componentization
