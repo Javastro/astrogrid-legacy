@@ -6,59 +6,13 @@
 </properties>
 <body>
 
-<section name="CAUTION"><p>
-The following is well out of date. Take with a pinch of salt until it is re-written
-</p>
-</section>
-<section name="Prerequisites">
-
-<subsection name="Externals"><p>
-
-These are the environments under which JES was developed:
-<ul>
-<li>Java sdk j2sdk1.4.1_02</li>
-<li>Tomcat 4.1.24</li>
-<li>Axis-1_1</li>
-</ul>
-</p>
-</subsection>
-
-<subsection name="The Jes War file"><p>
-
-Contains all the runtime files required for JES apart from the external prerequisites.
-</p></subsection>
-
-</section>
-
-<section name="Deploying the War file"><p>
-
-Tomcat must be installed and running in order to achieve this step.
-Copy the jes war file into the Tomcat webapps directory. Tomcat will automatically
-deploy the war file, creating the following directory structure under the webapps directory...
-</p>
-<p>
-At the same time, the JES web services will be deployed automatically.
-
+<section name="Installation"><p>
+Install the jes WAR file to your servlet container in the usual manner
 </p></section>
-<section name="3.0 The JES Database"><p>
 
-A Job database is required to keep track of jobs entered into the AstroGrid system.
-MySQL or a similar relational database is required.
-</p>
-</section>
-<section name="JNDI"><p>
-
-For reference see:
-<a href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/jndi-datasource-examples-howto.html">here</a>
-</p><p>
-JES uses JNDI to lookup it's associated database. One file requires
-altering to enable this to happen:
-
-The Tomcat SERVER.XML file - $CATALINA_HOME/conf/server.xml
-</p>
-</section>
-<section name="Shutdown and restart Tomcat"><p>
-JES should be ready to run.
+<section name="Configuration"><p>
+JES is configured via the standard <tt>org.astrogrid.config</tt> Package.
+See the <a href="astrogrid.properties">example configuration file</a> for the settings relatinig to JES.
 </p>
 </section>
 </body>
