@@ -2,9 +2,19 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 
     <xsl:param name="image_path">/astrogrid-portal/mount/test/</xsl:param>  <!-- path to images -->
+    
     <xsl:template match="/*">
-
+      <link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/test/workflow.css"/>
         <html>
+        
+        <style type="text/css">
+            div.agWorkflow_table_header
+            {
+              background-color:    blue;
+              color:               lightblue;
+              text-align:               center;
+            }
+         </style>
         
             <script language="javascript">
                 var image_selected=false;
@@ -114,6 +124,19 @@
                    else if (document.all)
                        document.all[object].style.visibility = 'hidden';
                    }
+                   
+                   
+                   
+var popUpWin=0;
+function popUpWindow(URLStr, left, top, width, height)
+{
+  if(popUpWin)
+  {
+    if(!popUpWin.closed) popUpWin.close();
+  }
+  popUpWin = open(URLStr, 'popUpWin', 'toolbar=no,location=no,directories=no,status=no,menub ar=no,scrollbar=yes,resizable=yes,copyhistory=yes,width='+width+',height='+height+',left='+left+', top='+top+',screenX='+left+',screenY='+top+'');
+}                   
+                   
 
             </script>        
         
@@ -143,6 +166,9 @@
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
             <td valign="top" align="left">
+                <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                    <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                </xsl:attribute>            
                 <xsl:choose>          
                             
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->
@@ -170,6 +196,8 @@
                     </xsl:when>
                             
                     <xsl:when test="name() = 'step'">  <!-- STEP -->
+                        <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed - not req'd with step -->
+                        </xsl:attribute>                    
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>step.gif</xsl:attribute>
                             <xsl:attribute name="id"><xsl:value-of select="@stepNumber"/></xsl:attribute>
@@ -211,6 +239,7 @@
         <tr>
             <xsl:apply-templates select="*"/>
         </tr>
+
         
     </xsl:template>
 
@@ -222,15 +251,18 @@
         <xsl:param name="count"/>                         <!-- No. of ancestors for this node = no. columns required prior to displaying it-->
         <xsl:param name="counter" select="1"/>      <!-- Loop counter (needs to increment so that table can be formatted correctly -->
             <xsl:if test="$counter != $count">             <!-- Test to see if column should display details -->
-                <td valign="top">                                
+                <td valign="top">               
                     <xsl:for-each select="ancestor::*">    <!-- Display horizontal sequence image in relevant column -->
                         <xsl:if test="name() = 'sequence'">
                             <xsl:if test="count(ancestor::*) = $counter -1">
+                                <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                                    <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                                </xsl:attribute> 
                                 <xsl:element name="img">
                                     <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence_trunk.gif</xsl:attribute>
                                     <xsl:attribute name="width">70</xsl:attribute>
                                     <xsl:attribute name="height">25</xsl:attribute>
-                                </xsl:element>                                                                                                                                                                                                                                                           
+                                </xsl:element>                                
                             </xsl:if>
                         </xsl:if>
                     </xsl:for-each>                                                              
@@ -243,7 +275,10 @@
         <xsl:if test="$counter = $count">
             <td valign="top" align="center">
                 <xsl:choose>                        
-                    <xsl:when test="count(following-sibling::*) != 0">                      
+                    <xsl:when test="count(following-sibling::*) != 0">                     
+                        <xsl:attribute name="background">  <!-- prevent gaps appearing in 'trunk' when parameters are viewed -->
+                            <xsl:value-of select="$image_path"/>sequence_trunk.gif
+                        </xsl:attribute>                                              
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>arrow.gif</xsl:attribute>
                             <xsl:attribute name="width">70</xsl:attribute>
