@@ -6,13 +6,11 @@
    - Ramon Williamson, National Center for SuperComputing Applications
    - April 1, 2004
    - Based on the schema: http://www.ivoa.net/internal/IVOA/IvoaVOQL/ADQL-0.7.4.xsd
+   - Mods by MCH, ROE in order to get SELECT, FROM and AS to appear; not sure why they didn't already...
    -->
-   <xsl:output method="text"/>
-   <xsl:template match="/">
-      <xsl:apply-templates select="/*"/>
-   </xsl:template>
-   <xsl:template match="/*">
-      <xsl:text>SELECT </xsl:text>
+   <!-- Define order of output -->
+   <xsl:template match="ad:Select" >
+      <xsl:text>  SELECT </xsl:text>
       <xsl:apply-templates select="ad:Allow"/>
       <xsl:apply-templates select="ad:Restrict"/>
       <xsl:apply-templates select="ad:SelectionList"/>
@@ -93,7 +91,7 @@
       <xsl:variable name="string">
          <xsl:for-each select="ad:Table">
             <xsl:value-of select="@Name"/>
-            <xsl:text> </xsl:text>
+            <xsl:text> AS </xsl:text>
             <xsl:value-of select="@Alias"/>
             <xsl:text>, </xsl:text>
          </xsl:for-each>
