@@ -1,5 +1,5 @@
 /*
- $Id: FtpStore.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ $Id: FtpStore.java,v 1.2 2004/03/17 15:17:29 mch Exp $
 
  (c) Copyright...
  */
@@ -373,6 +373,14 @@ public class FtpStore implements StoreClient
       pushStream(targetPath, source.openStream(), append);
    }
    
+   /**
+    * Puts the given byte buffer into the given location
+    */
+   public void putBytes(byte[] bytes, int offset, int length, String targetPath, boolean append) throws IOException {
+
+      putString(targetPath, new String(bytes, offset, length), append);
+   }
+
    /**
     * Puts the given string into the given location
     */

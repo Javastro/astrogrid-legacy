@@ -1,5 +1,5 @@
 /*
- * $Id: StoreClient.java,v 1.4 2004/03/01 22:38:46 mch Exp $
+ * $Id: StoreClient.java,v 1.5 2004/03/17 15:17:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,6 +55,11 @@ public interface StoreClient {
    public StoreFile getFile(String path) throws IOException;
 
    /**
+    * Puts the given byte buffer from offset of length bytes, to the given target
+    */
+   public void putBytes(byte[] bytes, int offset, int length, String targetPath, boolean append) throws IOException;
+
+   /**
     * Puts the given string into the given location
     */
    public void putString(String contents, String targetPath, boolean append) throws IOException;
@@ -103,6 +108,9 @@ public interface StoreClient {
 
 /*
 $Log: StoreClient.java,v $
+Revision 1.5  2004/03/17 15:17:29  mch
+Added putBytes
+
 Revision 1.4  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.3 2004/03/14 13:30:08 mch Exp $
+ * $Id: LocalFileStore.java,v 1.4 2004/03/17 15:17:29 mch Exp $
  *
  */
 
@@ -143,6 +143,19 @@ public class LocalFileStore implements StoreClient
 
       DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target, append)));
       out.writeBytes(contents);
+      out.close();
+   }
+   
+   /**
+    * Puts the given bytes into the given location
+    */
+   public void putBytes(byte[] bytes, int offset, int length, String targetPath, boolean append) throws IOException {
+
+      //remove colons, spaces and slashes from filename
+      File target = makeLocalPath(targetPath);
+
+      DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target, append)));
+      out.write(bytes, offset, length);
       out.close();
    }
    
@@ -339,6 +352,9 @@ public class LocalFileStore implements StoreClient
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.4  2004/03/17 15:17:29  mch
+Added putBytes
+
 Revision 1.3  2004/03/14 13:30:08  mch
 Fix for unix rootDir not created and so not being deleted
 
