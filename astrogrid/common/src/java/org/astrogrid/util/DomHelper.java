@@ -1,5 +1,5 @@
 /*
-   $Id: DomHelper.java,v 1.2 2004/03/14 02:15:59 mch Exp $
+   $Id: DomHelper.java,v 1.3 2004/06/14 16:41:03 KevinBenson Exp $
 
    (c) Copyright...
 */
@@ -103,6 +103,15 @@ public class DomHelper
       //naughtily implemented as an XMLUtil call until I work out how to do it independently
       return XMLUtils.DocumentToString(doc);
    }
+   
+   /**
+    * Writes document to string
+    */
+   public static void ElementToStream(Element body,OutputStream out) {
+      //naughtily implemented as an XMLUtil call until I work out how to do it independently
+      XMLUtils.ElementToStream(body,out);
+   }
+   
    
    /**
     * Writes document to string
