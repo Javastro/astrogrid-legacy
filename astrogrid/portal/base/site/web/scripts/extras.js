@@ -71,3 +71,23 @@ function hinter(elem){
 		}
 	}
 }
+
+/* ------------------------------------------------*/
+
+function footer(fuss){
+	var qposx = findPosX(fuss);
+	var qposy = findPosY(fuss);
+	getOzSize();
+	var gypos = winH-30;
+	if(document.getElementById("imgfootbar")!= null) {
+		var fussimg = document.getElementById("imgfootbar");
+		if(qposy < gypos){
+			fussimg.style.left = "0px";
+			fussimg.style.top = gypos + "px";
+			fussimg.style.display = "";
+			fussimg.style.position="absolute";
+		} else {
+			fussimg.style.display = "";
+		}
+	}
+}
