@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.8 2004/12/21 12:14:14 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.9 2004/12/21 12:17:19 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly
@@ -12,7 +12,7 @@ echo Trying to shutdown Exist:
 # Will need to customise this for different servers
 BACK=$PWD
 cd $CATALINA_HOME/webapps/exist/
-java -jar start.jar shutdown --url=xmldb:exist://127.0.0.1:8888/exist/xmlrpc/db
+java -jar start.jar shutdown --uri=xmldb:exist://127.0.0.1:8888/exist/xmlrpc/db
 cd $BACK
 
 echo Shutting down tomcat
