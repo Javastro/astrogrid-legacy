@@ -1,6 +1,8 @@
 package org.astrogrid.integrationtest.security;
 
 import junit.framework.TestCase;
+import org.astrogrid.config.Config;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.security.ClientSecurityGuard;
 import org.astrogrid.security.NonceToken;
 import org.astrogrid.security.Password;
@@ -13,6 +15,19 @@ import org.astrogrid.security.Password;
  * @author Guy Rixon
  */
 public class SingleSignOnTest extends TestCase {
+
+  /**
+   * Loads the configuration from file.
+   */
+  public void setUp () throws Exception {
+
+    // Load properties from file.
+    // Assume that the the file is in a subdirectory called config
+    // of the current directory.  This holds when the tests are run
+    // from a Maven project.
+    SimpleConfig.load("config/security.properties");
+  }
+
 
   /**
    * Tests signing on to the grid and getting an initial
@@ -38,8 +53,9 @@ public class SingleSignOnTest extends TestCase {
 
     // These credentials will address a mock delegate.  They
     // won't actually address a commmunity service.
-    String username = "ivo://test.site/test/user";
-    String password = "secret";
+    Config config = SimpleConfig.getSingleton();
+    String username = config.getString("org.astrogrid.security.sso.username");
+    String password = config.getString("org.astrogrid.security.sso.password");
     String account = this.signOn(username, password);
     assertNotNull("Account name", account);
     assertEquals("Names match", username, account);
