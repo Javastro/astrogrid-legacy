@@ -111,6 +111,7 @@
 				</xsl:for-each>
 			</select>
 			<br />
+			<strong>Choose a Column, UCD, Function to filter on:</strong>
 			<select name="FilterColumn">
 				<xsl:for-each select="//query/options/subofdatasets/returncolumn">
 					<xsl:element name="option">
@@ -154,7 +155,7 @@
 			<br />
 			<input type="submit" name="AddCriteria" value="Add Criteria" />
 			<input type="submit" name="RemoveCriteria" value="Remove Criteria" />
-			<xsl:if test="$queryString">
+			<xsl:if test="$QueryString != ''">
 				<hr />
 				<h1>The Query</h1>
 				$queryString

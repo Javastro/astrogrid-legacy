@@ -32,19 +32,21 @@
 		    +-->
 		<xsp:logic>
 			<![CDATA[
-				ArrayList dsInfoArrayList = request.getAttribute("DataSetArrayList");
-				Integer criteriaNumber = request.getAttribute("CriteriaNumber");
+				ArrayList dsInfoArrayList = (ArrayList)request.getAttribute("DataSetArrayList");
+				Integer criteriaNumber = (Integer)request.getAttribute("CriteriaNumber");
 				DataSetInformation dsInfo = null;
+				DataSetColumn dsCol = null;
+				Iterator iter = null;
 			]]>
 		</xsp:logic>
-		
+	
 		<options>
 			<datasets>
 			<xsp:logic>
 				<![CDATA[
-					Iterator iter = dsInfoArrayList;
+					iter = dsInfoArrayList.iterator();
 					while (iter.hasNext()) {
-						dsInfo = (DataSetInformation)info.next();
+						dsInfo = (DataSetInformation)iter.next();
 						]]>
 						<xsp:element name="datasetname">
 							<xsp:attribute name="name"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
@@ -60,15 +62,18 @@
 			<subofdatasets>
 			<xsp:logic>
 				<![CDATA[
-					Iterator iter = dsInfoArrayList;
-					while (iter.hasNext()) {
-						dsInfo = (DataSetInformation)info.next();
-						]]>
-						<xsp:element name="returncolumn">
-							<xsp:attribute name="name"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
-							<xsp:attribute name="val"><xsp:expr>dsInfo.getName()</xsp:expr></xsp:attribute>
-						</xsp:element>
-						<![CDATA[
+					if(dsInfoArrayList != null && dsInfoArrayList.size() > 0 ) {
+						dsInfo = (DataSetInformation)dsInfoArrayList.get(0);
+						iter = dsInfo.getDataSetColumns().iterator();
+						while (iter.hasNext()) {
+							dsCol = (DataSetColumn)iter.next();
+							]]>
+							<xsp:element name="returncolumn">
+								<xsp:attribute name="name"><xsp:expr>dsCol.getType()</xsp:expr>-<xsp:expr>dsCol.getName()</xsp:expr></xsp:attribute>
+								<xsp:attribute name="val"><xsp:expr>dsCol.getType()</xsp:expr>-<xsp:expr>dsCol.getName()</xsp:expr></xsp:attribute>
+							</xsp:element>
+							<![CDATA[
+						}
 					}
 				]]>					
 			</xsp:logic>
@@ -122,6 +127,6 @@
 					<xsp:attribute name="val">NONE</xsp:attribute>
 				</xsp:element>
 			</operators>
-		<options>
+		</options>
 	</query>
 </xsp:page>

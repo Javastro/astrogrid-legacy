@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/30 12:42:31 $</cvs:author>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/07/24 11:29:27 $</cvs:author>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.7  2003/07/24 11:29:27  KevinBenson
+    | A new DataQuery for cocoon still has a few problems, but it is getting their
+    |
     | Revision 1.6  2003/06/30 12:42:31  dave
     | Added user name session attribute
     |
@@ -32,195 +35,237 @@
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- =========================== Components ================================ -->
 
-	<map:components>
-		<map:generators   default="file"/>
-		<map:transformers default="xslt"/>
-		<map:readers      default="resource"/>
-		<map:serializers  default="html"/>
-		<map:matchers     default="wildcard"/>
-		<map:selectors    default="browser"/>
+   <map:components>
+      <map:generators   default="file"/>
+      <map:transformers default="xslt"/>
+      <map:readers      default="resource"/>
+      <map:serializers  default="html"/>
+      <map:matchers     default="wildcard"/>
+      <map:selectors    default="browser"/>
 
-		<map:actions>
-			<map:action name="astrogrid-explorer" src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
-		</map:actions>
-	</map:components>
+      <map:actions>
+         <map:action name="astrogrid-explorer" src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
+      </map:actions>
+      <map:actions>
+         <map:action name="astrogrid-query" src="org.astrogrid.portal.cocoon.query.QueryAction"/>
+      </map:actions>
+      
+   </map:components>
 
 <!-- =========================== Views =================================== -->
 
-	<map:views>
-		<!-- Original XML displayed as XML -->
-		<map:view name="000" from-label="000">
-			<map:serialize type="xml"/>
-		</map:view>
-		<!-- Original XML, displayed as XML/HTML -->
-		<map:view name="001" from-label="001">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="common/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-		<!-- XML processed into a page, displayed as XML/HTML -->
-		<map:view name="002" from-label="002">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="common/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-		<!-- Page wrapped in our template, displayed as XML/HTML -->
-		<map:view name="003" from-label="003">
-			<!-- Convert into XML/HTML -->
-			<map:transform src="common/xsl/xml-html.xsl"/>
-			<map:serialize type="html"/>
-		</map:view>
-	</map:views>
+   <map:views>
+      <!-- Original XML displayed as XML -->
+      <map:view name="000" from-label="000">
+         <map:serialize type="xml"/>
+      </map:view>
+      <!-- Original XML, displayed as XML/HTML -->
+      <map:view name="001" from-label="001">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- XML processed into a page, displayed as XML/HTML -->
+      <map:view name="002" from-label="002">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+      <!-- Page wrapped in our template, displayed as XML/HTML -->
+      <map:view name="003" from-label="003">
+         <!-- Convert into XML/HTML -->
+         <map:transform src="common/xsl/xml-html.xsl"/>
+         <map:serialize type="html"/>
+      </map:view>
+   </map:views>
 
 <!-- =========================== Resources ================================= -->
 
-	<map:resources>
-	</map:resources>
+   <map:resources>
+   </map:resources>
 
 <!-- =========================== Pipelines ================================= -->
 
-	<map:pipelines>
-		<map:pipeline>
+   <map:pipelines>
+      <map:pipeline>
 
-			<!-- Explorer page -->
-			<map:match pattern="agmyspace.html">
-				<!-- Call our explorer action -->
-				<map:act type="astrogrid-explorer">
-					<!-- Set the session attribute to check for the user name -->
-					<map:parameter name="user-param"  value="user"/>
-					<!-- Generate our page XML -->
-					<map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
-					<!-- Convert the data into a page -->
-					<map:transform src="explorer/xsl/explorer.xsl" label="002">
-						<!-- Add the action params -->
-						<map:parameter name="action"  value="{action}"/>
-						<map:parameter name="confirm" value="{confirm}"/>
-						<!-- Add the explorer page names -->
-						<map:parameter name="explorer-page" value="agmyspace.html"/>
-						<map:parameter name="votable-page"  value="agvotable.html"/>
-					</map:transform>
-				</map:act>
-				<!-- Wrap the page in our HTML template -->
-				<map:transform src="common/xsl/astrogrid.xsl" label="003">
-					<!-- Add the explorer page names -->
-					<map:parameter name="explorer-page" value="agmyspace.html"/>
-					<map:parameter name="votable-page"  value="agvotable.html"/>
-					<!-- Add the rest of the page names -->
-					<map:parameter name="home-page"     value="agindex.html"/>
-					<map:parameter name="help-page"     value="agmyspacehelp.html"/>
-					<map:parameter name="registry-page" value="agregistry.html"/>
-					<map:parameter name="query-page"    value="agdataquery.html"/>
-					<map:parameter name="monitor-page"  value="agjobmonitor.html"/>
-					<map:parameter name="tools-page"    value="agtools.html"/>
-					<map:parameter name="logout-page"   value="aglogout.html"/>
-				</map:transform>
-				<!-- Serialize as HTML -->
-				<map:serialize type="html"/>
-			</map:match>
+         <!-- Explorer page -->
+         <map:match pattern="agmyspace.html">
+            <!-- Call our explorer action -->
+            <map:act type="astrogrid-explorer">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="explorer/xsl/explorer.xsl" label="002">
+                  <!-- Add the action params -->
+                  <map:parameter name="action"  value="{action}"/>
+                  <map:parameter name="confirm" value="{confirm}"/>
+                  <!-- Add the explorer page names -->
+                  <map:parameter name="explorer-page" value="agmyspace.html"/>
+                  <map:parameter name="votable-page"  value="agvotable.html"/>
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
+               <!-- Add the explorer page names -->
+               <map:parameter name="explorer-page" value="agmyspace.html"/>
+               <map:parameter name="votable-page"  value="agvotable.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agmyspacehelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <!-- Explorer page -->
+         <map:match pattern="agdataquery.html">
+            <!-- Call our explorer action -->
+            <map:act type="astrogrid-query">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="query/xsp/query.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="query/xsl/query.xsl" label="002">
+                  <!-- Add the action params -->
+                  <map:parameter name="QueryString" value="{QueryString}"/>
+                  <!--
+                  <map:parameter name="dsInfo"  value="{DataSetArrayList}"/>
+                  <map:parameter name="errorMessage" value="{ErrorMessage}"/>
 
-			<!-- VoTable data pages -->
-			<map:match pattern="agvotable.html">
-				<map:act type="request">
-					<map:parameter name="parameters" value="true"/>
-					<map:generate src="{data}"/>
-					<!-- Convert the VoTable data into HTML -->
-					<map:transform src="explorer/xsl/votable.xsl">
-						<map:parameter name="explorer-page" value="agmyspace.html"/>
-						<map:parameter name="votable-page"  value="agvotable.html"/>
-					</map:transform>
-					<!-- Wrap the page in our HTML template -->
-					<map:transform src="common/xsl/astrogrid.xsl" label="003">
-						<!-- Add the explorer page names -->
-						<map:parameter name="explorer-page" value="agmyspace.html"/>
-						<map:parameter name="votable-page"  value="agvotable.html"/>
-						<!-- Add the rest of the page names -->
-						<map:parameter name="home-page"     value="agindex.html"/>
-						<map:parameter name="help-page"     value="agmyspacehelp.html"/>
-						<map:parameter name="registry-page" value="agregistry.html"/>
-						<map:parameter name="query-page"    value="agdataquery.html"/>
-						<map:parameter name="monitor-page"  value="agjobmonitor.html"/>
-						<map:parameter name="tools-page"    value="agtools.html"/>
-						<map:parameter name="logout-page"   value="aglogout.html"/>
-					</map:transform>
-					<!-- Serialize as HTML -->
-					<map:serialize type="html"/>
-				</map:act>
-			</map:match>
+                  <map:parameter name="lastWebCall" value="{LastWebServiceXML}"/>
+                  -->
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:transform src="query/xsl/astrogrid.xsl" label="003">
+               <!-- Add the explorer page names -->
+               <map:parameter name="explorer-page" value="agmyspace.html"/>
+               <map:parameter name="votable-page"  value="agvotable.html"/>
+               <!-- Add the rest of the page names -->
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
+         
+         <!-- VoTable data pages -->
+         <map:match pattern="agvotable.html">
+            <map:act type="request">
+               <map:parameter name="parameters" value="true"/>
+               <map:generate src="{data}"/>
+               <!-- Convert the VoTable data into HTML -->
+               <map:transform src="explorer/xsl/votable.xsl">
+                  <map:parameter name="explorer-page" value="agmyspace.html"/>
+                  <map:parameter name="votable-page"  value="agvotable.html"/>
+               </map:transform>
+               <!-- Wrap the page in our HTML template -->
+               <map:transform src="common/xsl/astrogrid.xsl" label="003">
+                  <!-- Add the explorer page names -->
+                  <map:parameter name="explorer-page" value="agmyspace.html"/>
+                  <map:parameter name="votable-page"  value="agvotable.html"/>
+                  <!-- Add the rest of the page names -->
+                  <map:parameter name="home-page"     value="agindex.html"/>
+                  <map:parameter name="help-page"     value="agmyspacehelp.html"/>
+                  <map:parameter name="registry-page" value="agregistry.html"/>
+                  <map:parameter name="query-page"    value="agdataquery.html"/>
+                  <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                  <map:parameter name="tools-page"    value="agtools.html"/>
+                  <map:parameter name="logout-page"   value="aglogout.html"/>
+               </map:transform>
+               <!-- Serialize as HTML -->
+               <map:serialize type="html"/>
+            </map:act>
+         </map:match>
 
-			<!-- Site images -->
-			<map:match pattern="*.gif">
-				<map:read src="images/{1}.gif" mime-type="images/gif"/>
-			</map:match>
-			<map:match pattern="*.png">
-				<map:read src="images/{1}.png" mime-type="images/png"/>
-			</map:match>
+         <!-- Site images -->
+         <map:match pattern="*.gif">
+            <map:read src="images/{1}.gif" mime-type="images/gif"/>
+         </map:match>
+         <map:match pattern="*.png">
+            <map:read src="images/{1}.png" mime-type="images/png"/>
+         </map:match>
 
-			<!-- Explorer images -->
-			<map:match pattern="explorer/images/*.gif">
-				<map:read src="explorer/images/{1}.gif" mime-type="images/gif"/>
-			</map:match>
+         <!-- Explorer images -->
+         <map:match pattern="explorer/images/*.gif">
+            <map:read src="explorer/images/{1}.gif" mime-type="images/gif"/>
+         </map:match>
 
-			<!-- HTML pages -->
-			<map:match pattern="*.html">
-				<map:read mime-type="text/html" src="html/{1}.html"/>
-			</map:match>
+         <!-- HTML pages -->
+         <map:match pattern="*.html">
+            <map:read mime-type="text/html" src="html/{1}.html"/>
+         </map:match>
 
-			<!-- VoTable test data -->
-			<map:match pattern="explorer/data/*">
-				<!-- Generate our XML data -->
-				<map:generate src="explorer/xml/votable.{1}.xml" label="000, 001"/>
-				<!-- Convert the VoTable data into HTML -->
-				<map:transform src="explorer/xsl/votable.xsl" label="002"/>
-				<!-- Wrap the page in our HTML template -->
-				<map:transform src="common/xsl/astrogrid.xsl" label="003"/>
-				<!-- Serialize as HTML -->
-				<map:serialize type="html"/>
-			</map:match>
+         <!-- VoTable test data -->
+         <map:match pattern="explorer/data/*">
+            <!-- Generate our XML data -->
+            <map:generate src="explorer/xml/votable.{1}.xml" label="000, 001"/>
+            <!-- Convert the VoTable data into HTML -->
+            <map:transform src="explorer/xsl/votable.xsl" label="002"/>
+            <!-- Wrap the page in our HTML template -->
+            <map:transform src="common/xsl/astrogrid.xsl" label="003"/>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
 
-			<!-- MySpace test data -->
-			<map:match pattern="explorer/myspace/*">
-				<!-- Generate our XML data -->
-				<map:generate src="/var/projects/astrogrid/astrogrid/portalB/build/myspace/live/service/temp/{1}" label="000, 001"/>
-				<!-- Serialize as XML -->
-				<map:serialize type="xml"/>
-			</map:match>
+         <!-- MySpace test data -->
+         <map:match pattern="explorer/myspace/*">
+            <!-- Generate our XML data -->
+            <map:generate src="/var/projects/astrogrid/astrogrid/portalB/build/myspace/live/service/temp/{1}" label="000, 001"/>
+            <!-- Serialize as XML -->
+            <map:serialize type="xml"/>
+         </map:match>
 
-			<!-- Session attribute test -->
-			<map:match pattern="session">
-				<!-- Generate our XML data -->
-				<map:generate src="explorer/xsp/session.xsp" type="serverpages" label="000, 001"/>
-				<!-- Serialize as XML -->
-				<map:serialize type="html"/>
-			</map:match>
+         <!-- Session attribute test -->
+         <map:match pattern="session">
+            <!-- Generate our XML data -->
+            <map:generate src="explorer/xsp/session.xsp" type="serverpages" label="000, 001"/>
+            <!-- Serialize as XML -->
+            <map:serialize type="html"/>
+         </map:match>
 
-			<!-- Explorer test -->
-			<map:match pattern="explorer">
-				<!-- Call our explorer action -->
-				<map:act type="astrogrid-explorer">
-					<!-- Set the session attribute to check for the user name -->
-					<map:parameter name="user-param"  value="user"/>
-					<!-- Generate our page XML -->
-					<map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
-					<!-- Convert the data into a page -->
-					<map:transform src="explorer/xsl/explorer.xsl" label="002">
-						<!-- Add the action params -->
-						<map:parameter name="action"  value="{action}"/>
-						<map:parameter name="confirm" value="{confirm}"/>
-						<!-- Add the explorer page names -->
-						<map:parameter name="explorer-page" value="explorer"/>
-						<map:parameter name="votable-page"  value="votable"/>
-					</map:transform>
-				</map:act>
-				<!-- Wrap the page in our HTML template -->
-				<map:transform src="common/xsl/template.xsl" label="003">
-					<!-- Add the explorer page names -->
-					<map:parameter name="explorer-page" value="explorer"/>
-					<map:parameter name="votable-page"  value="votable"/>
-				</map:transform>
-				<!-- Serialize as HTML -->
-				<map:serialize type="html"/>
-			</map:match>
+         <!-- Explorer test -->
+         <map:match pattern="explorer">
+            <!-- Call our explorer action -->
+            <map:act type="astrogrid-explorer">
+               <!-- Set the session attribute to check for the user name -->
+               <map:parameter name="user-param"  value="user"/>
+               <!-- Generate our page XML -->
+               <map:generate src="explorer/xsp/explorer.xsp" type="serverpages" label="000, 001"/>
+               <!-- Convert the data into a page -->
+               <map:transform src="explorer/xsl/explorer.xsl" label="002">
+                  <!-- Add the action params -->
+                  <map:parameter name="action"  value="{action}"/>
+                  <map:parameter name="confirm" value="{confirm}"/>
+                  <!-- Add the explorer page names -->
+                  <map:parameter name="explorer-page" value="explorer"/>
+                  <map:parameter name="votable-page"  value="votable"/>
+               </map:transform>
+            </map:act>
+            <!-- Wrap the page in our HTML template -->
+            <map:transform src="common/xsl/template.xsl" label="003">
+               <!-- Add the explorer page names -->
+               <map:parameter name="explorer-page" value="explorer"/>
+               <map:parameter name="votable-page"  value="votable"/>
+            </map:transform>
+            <!-- Serialize as HTML -->
+            <map:serialize type="html"/>
+         </map:match>
 
-		</map:pipeline>
-	</map:pipelines>
+      </map:pipeline>
+   </map:pipelines>
 </map:sitemap>
