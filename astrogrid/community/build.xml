@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/17 14:07:08 $</cvs:date>
-    | <cvs:version>$Revision: 1.36 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/17 15:15:11 $</cvs:date>
+    | <cvs:version>$Revision: 1.37 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.37  2003/09/17 15:15:11  pah
+    |   got the server side authentication tests task to work
+    |
     |   Revision 1.36  2003/09/17 14:07:08  pah
     |   updated where the jars are built to
     |
@@ -2915,14 +2918,14 @@ Start of Authentication "auth" tasks
 	</target>
 	
 	<!-- Authentication tasks -->
-	<property name="authentication.base" value="${basedir}/build/authentication"/>
+	<property name="authentication.build" value="${basedir}/build/authentication"/>
 	<property name="authentication.classes" value="${basedir}/build/authentication/classes"></property> <!-- use the eclipse build for now -->
 
 	<property name="authentication.server.jar"  value="authentication-server-${project.version}.jar"/>
 	<property name="authentication.client.jar"  value="authentication-client-${project.version}.jar"/>
 	
 		<target name="authentication.delete" depends="">
-		<delete dir="${authentication.base}" failonerror="false"/>
+		<delete dir="${authentication.build}" failonerror="false"/>
 	</target>
 	
 	
@@ -2930,20 +2933,38 @@ Start of Authentication "auth" tasks
 		<!-- The Axis libraries -->
 		<path refid="axis.classpath"/>
 		<!-- Our client classes -->
-		<pathelement path="${authentication.base}/install/${authentication.client.jar}"/>
+		<pathelement path="${authentication.build}/install/${authentication.client.jar}"/>
+	</path>
+	<path id="authentication.server.classpath">
+	<path refid="axis.classpath"></path>
+	<pathelement path="${authentication.build}/install/${authentication.server.jar}"/>
 	</path>
 	
 	
 	<target name="authentication.testSetup" description="moves various config files from the main tree into the test tree prior to testing">
-	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testdir}/java/org/astrogrid/community/common/db/"></copy>
+		    <antcall target="authentication.genTestSetup">
+	    <param name="testbase" value="${testdir}/java"/>
+	    </antcall>
+	</target>
+	
+	<target name="authentication.junitSetup" description="sets up test file for the ant junit tests">
+	    <antcall target="authentication.genTestSetup">
+	    <param name="testbase" value="${authentication.build}/testclasses"/>
+	    </antcall>
+	</target>	
+
+	
+	
+	<target name="authentication.genTestSetup">
+	    <copy file="${basedir}/src/sql/hsqldb/create.sql" todir="${testbase}/org/astrogrid/community/common/db/"></copy>
 	    <copy file="${basedir}/src/castor/hsqldb/mapping.xml" todir="${testdir}/config/"></copy>
-	    <echo file="${testdir}/java/org/astrogrid/community/common/Test.properties" append="false">
+	    <echo file="${testbase}/org/astrogrid/community/common/Test.properties" append="false">
 database.mapping=file://${testdir}/config/mapping.xml
 database.config=file://${testdir}/config/databaseonlocalhost.xml
 database.name=${hsqldb.database}
 database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			</echo>
-
+	
 	</target>
 	
 	<!--+
@@ -2952,10 +2973,10 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 	
 		<target name="authentication.server.javac" depends="">
 		<!-- Create our build directory -->
-		<mkdir dir="${authentication.base}/classes"/>
+		<mkdir dir="${authentication.build}/classes"/>
 		<!-- Compile the interface classes -->
 		<javac srcdir="src/java"
-		       destdir="${authentication.base}/classes"
+		       destdir="${authentication.build}/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
@@ -2992,7 +3013,7 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			<mapping package="org.astrogrid.community.authentication.data" namespace="urn:data.authentication.community.astrogrid.org" />
 			<!-- The classpath to find the authenticationService classes -->
 			<classpath>
-				<path location="${authentication.base}/classes"/>
+				<path location="${authentication.build}/classes"/>
 				<path refid="castor.classpath"></path>
 				<path refid="logging.classpath"/>
 			</classpath>
@@ -3053,10 +3074,10 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		+-->
 	<target name="authentication.javac" depends="" description="compile all the classes related to authentication">
 		<!-- Create our build directory -->
-		<mkdir dir="${authentication.base}/classes"/>
+		<mkdir dir="${authentication.build}/classes"/>
 		<!-- Compile the server classes -->
 		<javac srcdir="${basedir}/src/java"
-		       destdir="${authentication.base}/classes"
+		       destdir="${authentication.build}/classes"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
@@ -3082,10 +3103,10 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 
 	<target name="authentication.test.javac" depends="authentication.javac" description="compile all the test case classes related to authentication">
 		<!-- Create our build directory -->
-		<mkdir dir="${authentication.base}/testclasses"/>
+		<mkdir dir="${authentication.build}/testclasses"/>
 		<!-- Compile the server classes -->
 		<javac srcdir="${basedir}/test/java"
-		       destdir="${authentication.base}/testclasses"
+		       destdir="${authentication.build}/testclasses"
 		       debug="on"
 		       deprecation="on"
 		       optimize="on"
@@ -3093,7 +3114,7 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		       >
 		     <include name="org/astrogrid/community/**"/>
 			<classpath>
-				<pathelement location="${authentication.base}/classes"/>
+				<pathelement location="${authentication.build}/classes"/>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
 				<!-- Include the Castor libraries -->
@@ -3112,8 +3133,8 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		+-->
 	<target name="authentication.server.jar" depends="authentication.javac">
 		<!-- Create our jar file -->
-		<mkdir dir="${authentication.base}/install"/>
-		<jar destfile="${authentication.base}/install/${authentication.server.jar}">
+		<mkdir dir="${authentication.build}/install"/>
+		<jar destfile="${authentication.build}/install/${authentication.server.jar}">
 			<!-- Copy our own Java source -->
 			<fileset dir="${authentication.classes}">
 				<include name="org/astrogrid/community/authentication/**"/>
@@ -3131,10 +3152,10 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 	<target name="authentication.client.jar" depends="">
 		<!-- Create our build directory -->
 
-		<mkdir dir="${authentication.base}/install"/>
+		<mkdir dir="${authentication.build}/install"/>
 		
 		<!-- Create our jar file -->
-		<jar destfile="${authentication.base}/install/${authentication.client.jar}">
+		<jar destfile="${authentication.build}/install/${authentication.client.jar}">
 			<!-- Copy our own Java source -->
 			<fileset dir="${authentication.classes}">
 				<include name="org/astrogrid/community/authentication/data/**"/>
@@ -3155,9 +3176,9 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		+-->
 	<target name="authentication.server.config" depends="">
 		<!-- Create our config directory -->
-		<mkdir dir="${authentication.base}/config"/>
+		<mkdir dir="${authentication.build}/config"/>
 		<!-- Copy our database mapping files -->
-		<copy verbose="false" overwrite="true" toDir="${authentication.base}/config">
+		<copy verbose="false" overwrite="true" toDir="${authentication.build}/config">
 			<fileset dir="src/castor/hsqldb">
 				<include name="database.xml"/>
 				<include name="mapping.xml"/>
@@ -3209,7 +3230,7 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		</copy>
 		<!-- Copy our jar into the Axis WEB-INF/lib directory -->
 		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
-			<fileset dir="${authentication.base}/install">
+			<fileset dir="${authentication.build}/install">
 				<include name="${authentication.server.jar}"/>
 			</fileset>
 		</copy>
@@ -3259,11 +3280,11 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		<echo message=""/>
 		<echo message="Requesting WSDL from Axis ...."/>
 		<!-- Create our wsdl directory -->
-		<mkdir dir="${authentication.base}/wsdl/axis2wsdl"/>
+		<mkdir dir="${authentication.build}/wsdl/axis2wsdl"/>
 		<!-- Request our WSDL description -->
 		<get verbose="true" usetimestamp="true"
 			src="${axis.url}/services/AuthenticationService?wsdl"
-			dest="${authentication.base}/wsdl/axis2wsdl/AuthenticationService.wsdl"
+			dest="${authentication.build}/wsdl/axis2wsdl/AuthenticationService.wsdl"
 			/>
 	</target>
 	
@@ -3306,30 +3327,23 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 	<!--+
 		| Run our server side JUnit tests.
 		+-->
-	<target name="authentication.server.junit" depends="">
+	<target name="authentication.server.junit" depends="authentication.test.javac,authentication.junitSetup">
 		<!-- Create our reports directory -->
-		<mkdir dir="${authentication.base}/junit"/>
+		<mkdir dir="${authentication.build}/junit"/>
 		<!-- Run our JUnitTestCase tests -->
 		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
 			<classpath>
 				<!-- The Policy classes -->
 				<path refid="authentication.server.classpath"/>
+				<pathelement location="${authentication.build}/testclasses/"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Pass in the server config properties -->
-			<sysproperty key="org.astrogrid.authentication.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
-			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
-			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
 			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${authentication.base}/junit">
-				<fileset dir="${authentication.server.base}/classes">
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroup*.class"/>
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitAccount*.class"/>
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitResource*.class"/>
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitCommunity*.class"/>
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitPermission*.class"/>
-					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroupMember*.class"/>
+			<batchtest todir="${authentication.build}/junit">
+				<fileset dir="${authentication.build}/testclasses">
+				   <exclude name="**/delegate/**"/>
 				</fileset>
 			</batchtest>
 		</junit>
@@ -3340,21 +3354,21 @@ database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		+-->
 	<target name="authentication.client.junit" depends="authentication.test.javac">
 		<!-- Create our reports directory -->
-		<mkdir dir="${authentication.base}/junit"/>
+		<mkdir dir="${authentication.build}/junit"/>
 		<antcall target="authentication.database.showtestdata"></antcall>
 		<!-- Run our JUnitTestCase tests -->
 		<junit printsummary="yes" haltonfailure="true" haltonerror="true" showoutput="true" fork="true">
 			<classpath>
 				<!-- The Policy classes -->
 				<path refid="authentication.client.classpath"/>
-				<pathelement location="${authentication.base}/testclasses/"/>
+				<pathelement location="${authentication.build}/testclasses/"/>
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
 			<!-- Run the target JUnitTestCase tests -->
-			<batchtest todir="${authentication.base}/junit" haltonfailure="no">
-				<fileset dir="${authentication.base}/testclasses/">
-								
+			<batchtest todir="${authentication.build}/junit" haltonfailure="no">
+				<fileset dir="${authentication.build}/testclasses/">
+					<include name="**/delegate/**"/>			
 				</fileset>
 			</batchtest>
 		</junit>
