@@ -2181,7 +2181,7 @@ public class DesignAction extends AbstractAction {
            
            
                           
-    } // end of inner class DesignActionImpl
+    } // end of inner class DesignActionImpl   
     
     
     private class ConsistencyException extends Exception {
