@@ -1,4 +1,4 @@
-/*$Id: AbstractQOM.java,v 1.3 2003/09/03 13:42:31 nw Exp $
+/*$Id: AbstractQOM.java,v 1.4 2003/09/04 09:22:10 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -93,8 +93,7 @@ public abstract class AbstractQOM implements QOM {
    * most specific type, and then traversing up the QOM class hierarchy.
    * If no other more type-specific mathc is found, will call {@link DynamicVisitor#visit}
    * @param v the visiting object.
-   * @throws InvocationTargetException if the method cannot be called
-   * @throws IllegalAccessException if the method cannot be called.
+   * @todo - finesse the exception types returned here - so can differentiate between user fault and fault in dynamic machinery
    */
   public void callVisitor(DynamicVisitor v)  throws Exception{
       Method m = null;
@@ -121,6 +120,9 @@ public abstract class AbstractQOM implements QOM {
 
 /* 
 $Log: AbstractQOM.java,v $
+Revision 1.4  2003/09/04 09:22:10  nw
+documentation fix
+
 Revision 1.3  2003/09/03 13:42:31  nw
 documentation fixes
 
