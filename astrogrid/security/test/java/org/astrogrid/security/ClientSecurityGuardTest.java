@@ -17,13 +17,15 @@ public class ClientSecurityGuardTest extends TestCase {
   public void testSignOn () throws Exception {
     ClientSecurityGuard sg = new ClientSecurityGuard();
     sg.setUsername("Fred");
-    sg.setPassword("secret");
+    sg.setPassword(new Password("secret", false));
     System.out.println("Username before sign-on: " + sg.getUsername());
-    System.out.println("Password before sign-on: " + sg.getPassword());
+    System.out.println("Password before sign-on: " + sg.getPassword().getPlainPassword());
     sg.signOn();
-    System.out.println("Username after sign-on: " + sg.getUsername());
-    System.out.println("Password after sign-on: " + sg.getPassword());
-    this.assertFalse("secret".equals(sg.getPassword()));
+    NonceToken t = sg.getNonceToken();
+    assertNotNull("NonceToken", t);
+    System.out.println("Account after sign-on: " + t.getAccount());
+    System.out.println("Password after sign-on: " + sg.getPassword().getPlainPassword());
+    this.assertEquals("Names match", "Fred", t.getAccount());
   }
 
 }

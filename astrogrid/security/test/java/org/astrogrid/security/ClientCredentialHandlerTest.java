@@ -6,6 +6,7 @@ import javax.xml.namespace.QName;
 import javax.xml.rpc.handler.HandlerInfo;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.handler.soap.SOAPMessageContext;
+import javax.security.auth.Subject;
 import javax.xml.soap.MessageFactory;
 import javax.xml.soap.SOAPMessage;
 import junit.framework.TestCase;
@@ -104,12 +105,12 @@ public class ClientCredentialHandlerTest extends TestCase {
   /**
    * Generates a HandlerInfo object set up for the SUT.
    */
-  private HandlerInfo createHandlerInfo () {
-    SecurityGuard sg = new SecurityGuard();
-    sg.setUsername("Fred");
-    sg.setPassword("secret");
+  private HandlerInfo createHandlerInfo () throws Exception {
+    Subject s = new Subject();
+    s.getPrivateCredentials().add(new Password("secret", false));
+    s.getPrincipals().add(new AccountName("Fred"));
     Map m = new Hashtable();
-    m.put("SecurityGuard", sg);
+    m.put("Subject", s);
     HandlerInfo hi = new HandlerInfo();
     hi.setHandlerConfig(m);
     return hi;

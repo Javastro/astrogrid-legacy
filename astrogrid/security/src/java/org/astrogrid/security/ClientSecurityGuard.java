@@ -74,7 +74,7 @@ public class ClientSecurityGuard extends SecurityGuard {
     // Create the configuration for the handler. This is always the
     // same and applies to any number of web-service port-types.
     Hashtable config = new Hashtable();
-    config.put("SecurityGuard", this);
+    config.put("Subject", this.getSubject());
     QName[] handlers = new QName[] {};
     HandlerInfo info = new HandlerInfo(ClientCredentialHandler.class,
                                        config,
@@ -102,9 +102,11 @@ public class ClientSecurityGuard extends SecurityGuard {
     // Get the inital token (i.e. one-use password from the community
     // service.
     SecurityServiceDelegate ssd = new SecurityServiceMockDelegate();
-    SecurityToken st = ssd.checkPassword(this.username, this.password);
-    this.username = st.getAccount();
-    this.password = st.toString();
+    String   u = this.getUsername();
+    Password p = this.getPassword();
+    NonceToken t
+        = new NonceToken(ssd.checkPassword(u, p.getPlainPassword()));
+    this.setNonceToken(t);
   }
 
 }

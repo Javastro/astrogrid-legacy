@@ -1,6 +1,8 @@
 package org.astrogrid.security;
 
+import java.security.Principal;
 import java.util.Iterator;
+import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 import javax.xml.soap.Name;
 import javax.xml.soap.SOAPElement;
@@ -44,6 +46,12 @@ public class WsseHeaderElement {
   private static final String wssuNamespace
       = "http://schemas.xmlsoap.org/ws/2002/07/utility";
 
+  /**
+   * The URI for the namespace for AG extensions to WSSE.
+   */
+  private static final String agNamespace
+      = "urn:astrogrid:security:wsse";
+
 
   /**
    * A formatter for using ISO8601 timestamps.
@@ -58,10 +66,13 @@ public class WsseHeaderElement {
   }
 
 
+
   /**
    * Adds a WSSE header to the SOAP message.
+   * This method does only the AstroGrid security token and
+   * the JAAS principals.
    */
-  public static void write (SecurityGuard sg,
+  public static void write (Subject subject,
                             SOAPMessage sm) throws SOAPException {
     SOAPPart sp = sm.getSOAPPart();
     assert (sp != null);
@@ -85,43 +96,48 @@ public class WsseHeaderElement {
                                             "wsse",
                                             WsseHeaderElement.wsseNamespace);
 
-    // Add the actual username to the token.
-    if (sg.getUsername() != null) {
+    // Add the username elements: one per JAAS principal.
+    Iterator principals = subject.getPrincipals().iterator();
+    while (principals.hasNext()) {
+      Principal p = (Principal) principals.next();
+      System.out.println("Principal: " + p.getName());
       SOAPElement username
         = WsseHeaderElement.addChildElement(envelope,
                                             usernameToken,
                                             "Username",
                                             "wsse",
                                             WsseHeaderElement.wsseNamespace);
-      username.addTextNode(sg.getUsername());
+      username.addTextNode(p.getName());
     }
 
-    // If the password is going as a hash, add the hash, the nonce
-    // and the timestamp. All these are generated inside the Password object.
-    if (sg.getPassword() != null) {
-      if (sg.isPasswordHashing()) {
-        PasswordEncoding pe = new PasswordEncoding(sg.getPassword());
-        SOAPElement password
-            = WsseHeaderElement.addChildElement(envelope,
-                                                usernameToken,
-                                                "Password",
-                                                "wsse",
-                                                WsseHeaderElement.wsseNamespace);
-        password.addTextNode(pe.getEncodedPassword());
+    // Add the password elements.
+    Iterator passwords
+        = subject.getPrivateCredentials(Password.class).iterator();
+    while (passwords.hasNext()) {
+      Password p = (Password) passwords.next();
+      SOAPElement password
+          = WsseHeaderElement.addChildElement(envelope,
+                                              usernameToken,
+                                              "Password",
+                                              "wsse",
+                                              WsseHeaderElement.wsseNamespace);
+      if (p.isEncodable()) {
+        p.renewNonceAndTimestamp();
+        password.addTextNode(p.getEncodedPassword());
         SOAPElement nonce
             = WsseHeaderElement.addChildElement(envelope,
                                                 usernameToken,
                                                 "Nonce",
                                                 "wsse",
                                                 WsseHeaderElement.wsseNamespace);
-        nonce.addTextNode(pe.getNonce());
+        nonce.addTextNode(p.getNonce());
         SOAPElement created
             = WsseHeaderElement.addChildElement(envelope,
                                                 usernameToken,
                                                 "Created",
                                                 "wssu",
                                                 WsseHeaderElement.wssuNamespace);
-        created.addTextNode(pe.getTimestamp());
+        created.addTextNode(p.getTimestamp());
         WsseHeaderElement.addAttribute(envelope,
                                        password,
                                        "Type",
@@ -129,27 +145,32 @@ public class WsseHeaderElement {
                                        WsseHeaderElement.wsseNamespace,
                                        "wsse:PasswordDigest");
       }
-
-      // If the password is going as plain text, add it directly.
       else {
-        SOAPElement password
-           = WsseHeaderElement.addChildElement(envelope,
-                                               usernameToken,
-                                               "Password",
-                                               "wsse",
-                                               WsseHeaderElement.wsseNamespace);
-        password.addTextNode(sg.getPassword());
+        password.addTextNode(p.getPlainPassword());
       }
     }
 
+    // Add the nonce tokens. These are an AstroGrid extension to WSS.
+    Iterator tokens
+        = subject.getPrivateCredentials(NonceToken.class).iterator();
+    while (tokens.hasNext()) {
+      NonceToken t = (NonceToken) tokens.next();
+      SOAPElement nonceToken
+          = WsseHeaderElement.addChildElement(envelope,
+                                              usernameToken,
+                                              "NonceToken",
+                                              "ag",
+                                              WsseHeaderElement.agNamespace);
+      nonceToken.addTextNode(t.toString());
+    }
   }
 
 
   /**
    * Parses credentials from the SOAP message.
    */
-  public static void parse (SOAPMessage   sm,
-                            SecurityGuard sg) throws SOAPException {
+  public static void parse (SOAPMessage sm,
+                            Subject     subject) throws SOAPException {
 
     // Find the header unit.
     SOAPPart sp = sm.getSOAPPart();
@@ -175,8 +196,6 @@ public class WsseHeaderElement {
       assert(he != null);
     }
 
-    // At this point, we have a header element of the right type.
-    System.out.println("Found /Security");
 
     SOAPElement usernameToken
         = WsseHeaderElement.getChildElement(se,
@@ -187,33 +206,80 @@ public class WsseHeaderElement {
 
     if (usernameToken != null) {
       System.out.println("Found /Security/UsernameToken");
+
+      // Locate all the sub-elements.
       SOAPElement username
           = WsseHeaderElement.getChildElement(se,
                                               usernameToken,
                                               "Username",
                                               "wsse",
                                               WsseHeaderElement.wsseNamespace);
-      sg.setUsername(username.getValue());
+
       SOAPElement password
           = WsseHeaderElement.getChildElement(se,
                                               usernameToken,
                                               "Password",
                                               "wsse",
                                               WsseHeaderElement.wsseNamespace);
-      sg.setPassword(password.getValue());
+
+
+      SOAPElement nonce
+          = WsseHeaderElement.getChildElement(se,
+                                              usernameToken,
+                                              "Nonce",
+                                              "wsse",
+                                              WsseHeaderElement.wsseNamespace);
+
+      SOAPElement created
+          = WsseHeaderElement.getChildElement(se,
+                                              usernameToken,
+                                              "Created",
+                                              "wssu",
+                                              WsseHeaderElement.wssuNamespace);
+
+      SOAPElement nonceToken
+          = WsseHeaderElement.getChildElement(se,
+                                              usernameToken,
+                                              "NonceToken",
+                                              "ag",
+                                              WsseHeaderElement.agNamespace);
+
+      // Extract values from the sub-elements.
+      if (nonceToken != null) {
+        NonceToken t = new NonceToken(nonceToken.getValue());
+        subject.getPrivateCredentials().add(t);
+        subject.getPrincipals().add(new AccountName(t.getAccount()));
+      }
+
+      if (username != null) {
+        subject.getPrincipals().add(new AccountName(username.getValue()));
+      }
+
       if (password != null) {
-        String passwordType
-           =  WsseHeaderElement.getAttribute(se,
-                                             password,
-                                             "Type",
-                                             "wsse",
-                                             WsseHeaderElement.wsseNamespace);
+        String passwordType = WsseHeaderElement.getAttribute(se,
+                                                             password,
+                                                             "Type",
+                                                             "wsse",
+                                                             WsseHeaderElement.wsseNamespace);
         if (passwordType != null && passwordType.equals("wsse:PasswordDigest")) {
-          sg.setPasswordHashing(true);
+          if (nonce == null || created == null) {
+            throw new SOAPException("Digested password is unreadable; " +
+                                    "need both nonce and timestamp");
+          }
+          else {
+            Password p = new Password(password.getValue(),
+                                      nonce.getValue(),
+                                      created.getValue(),
+                                      true);
+            subject.getPrivateCredentials().add(p);
+          }
+        }
+        else {
+          Password p = new Password(password.getValue(), false);
+          subject.getPrivateCredentials().add(p);
         }
       }
     }
-
   }
 
 

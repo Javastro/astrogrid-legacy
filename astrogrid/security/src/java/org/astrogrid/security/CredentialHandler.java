@@ -1,6 +1,7 @@
 package org.astrogrid.security;
 
 import java.util.Map;
+import javax.security.auth.Subject;
 import javax.xml.namespace.QName;
 import javax.xml.rpc.handler.GenericHandler;
 import javax.xml.rpc.handler.HandlerInfo;
@@ -23,18 +24,18 @@ public abstract class CredentialHandler extends GenericHandler {
   /**
    * The object through which the security parameters can be got.
    */
-  protected SecurityGuard guard;
+  protected Subject subject;
 
 
   /**
-   * Recovers the ClientSecurityGuard resource from the configuration.
+   * Recovers the JAAS Subject resource from the configuration.
    */
   public void init (HandlerInfo i) throws JAXRPCException {
     Map m = i.getHandlerConfig();
-    Object g = m.get("SecurityGuard");
-    assert(g != null);
-    assert(SecurityGuard.class.isInstance(g));
-    this.guard = (SecurityGuard)g;
+    Object s = m.get("Subject");
+    assert(s != null);
+    assert(Subject.class.isInstance(s));
+    this.subject = (Subject)s;
   }
 
   /**
@@ -73,7 +74,7 @@ public abstract class CredentialHandler extends GenericHandler {
     if (sm == null) {
       // SOAP context but no message present.
       throw new JAXRPCException("Invalid use of JAX-RPC: " +
-                                "the handler was invoked when there was" +
+                                "the handler was invoked when there was " +
                                 "no message to handle.");
     }
     return sm;

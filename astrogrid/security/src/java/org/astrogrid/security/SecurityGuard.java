@@ -1,5 +1,10 @@
 package org.astrogrid.security;
 
+import java.util.Set;
+import java.security.Principal;
+import javax.security.auth.Subject;
+
+
 /**
  * Access to the security credentials pertaining web-service operations.
  *
@@ -22,9 +27,9 @@ public class SecurityGuard {
 
 
   /**
-   * The username to go into the messages.
+   * The JAAS subject.
    */
-  protected String username;
+  protected Subject subject;
 
   /**
    * The clear-text password to go into the messages.
@@ -40,12 +45,23 @@ public class SecurityGuard {
 
 
   /**
+   * Constructs a SecurityGuard. Sets an
+   * empty JAAS subject such that requests for
+   * the subject never return null.
+   */
+  public SecurityGuard () {
+    this.subject = new Subject();
+  }
+
+
+  /**
    * Sets the username property.
    *
    * @param name the user-name
    */
   public void setUsername (String name) {
-    this.username = name;
+    AccountName account = new AccountName(name);
+    this.subject.getPrincipals().add(account);
   }
 
   /**
@@ -54,17 +70,21 @@ public class SecurityGuard {
    * @return the user-name (may be null if the property is not set)
    */
   public String getUsername () {
-    return this.username;
+    Set names = this.subject.getPrincipals();
+    if (names.size() == 0) {
+      return null;
+    }
+    else {
+      return ((Principal) names.iterator().next()).getName();
+    }
   }
 
 
   /**
    * Sets the password property.
-   *
-   * @param name the password in clear text
    */
-  public void setPassword (String pass) {
-    this.password = pass;
+  public void setPassword (Password pass) {
+    this.subject.getPrivateCredentials().add(pass);
   }
 
   /**
@@ -72,23 +92,59 @@ public class SecurityGuard {
    *
    * @return the password (may be null if the property is not set)
    */
-   public String getPassword () {
-     return this.password;
+   public Password getPassword () {
+     Set passwords = this.subject.getPrivateCredentials(Password.class);
+     if (passwords.size() == 0) {
+       return null;
+     }
+     else {
+       return (Password) passwords.iterator().next();
+     }
    }
 
 
   /**
-   * Sets whether the password is to be hashed.
+   * Sets an AstroGrid security token.  The token as a
+   * whole is set as a private credential and the
+   * account name derivd from the token is set as
+   * a Principal.
    */
-  public void setPasswordHashing (boolean hashed) {
-    this.hashPassword = hashed;
+  public void setNonceToken(NonceToken t) {
+    this.subject.getPrivateCredentials().add(t);
+    AccountName n = new AccountName(t.getAccount());
+    this.subject.getPrincipals().add(n);
   }
 
+
   /**
-   * Returns whether the password is to be hashed.
+   * Returns an AstroGrid scurity token.
+   *
+   * @return the token (null if no token is set)
    */
-  public boolean isPasswordHashing () {
-    return this.hashPassword;
+  public NonceToken getNonceToken () {
+    Set tokens = this.subject.getPrivateCredentials(NonceToken.class);
+    if (tokens.size() > 0) {
+      return (NonceToken) tokens.iterator().next();
+    }
+    else {
+      return null;
+    }
+  }
+
+
+  /**
+   * Returns the JAAS Subject.  The Subject
+   * contains the credentials and "principals"
+   * (i.e. identities) already set on the SecurityGuard.
+   * If this method is called immediately after construction
+   * then an empty Subject is returned. Note that altering
+   * the returned subject alters the information
+   * inside the SecurityGuard.
+   *
+   * @return the subject (never null)
+   */
+  public Subject getSubject () {
+    return this.subject;
   }
 
 }

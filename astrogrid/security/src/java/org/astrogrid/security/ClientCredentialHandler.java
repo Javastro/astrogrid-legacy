@@ -1,5 +1,6 @@
 package org.astrogrid.security;
 
+import javax.security.auth.Subject;
 import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.JAXRPCException;
 import javax.xml.soap.SOAPMessage;
@@ -12,7 +13,7 @@ import javax.xml.soap.SOAPMessage;
  * Response messages are passed through unchanged.
  *
  * The credentials to be set in the SOAP messages are derived from
- * properties of a {@link SecurityGuard} that is set as a
+ * properties of a JAAS Subject that is set as a
  * resource in the initialization of this handler.
  *
  * @author Guy Rixon
@@ -34,14 +35,15 @@ public class ClientCredentialHandler extends CredentialHandler {
   public boolean handleRequest (MessageContext mc) throws JAXRPCException {
     System.out.println("Entering ClientCredentialHandler.handleRequest()");
     SOAPMessage sm = this.getMessage(mc);
-    assert (this.guard != null);
+    assert (sm != null);
 
     // Write a WS-Security header.
     try {
-      WsseHeaderElement.write(this.guard, sm);
-      System.out.println(sm.getSOAPPart().getEnvelope());
+      assert(this.subject != null);
+      WsseHeaderElement.write(this.subject, sm);
     }
     catch (Exception e1) {
+      System.out.println(e1);
       throw new JAXRPCException("Failed to write a WS-Security header", e1);
     }
 
