@@ -77,6 +77,7 @@
         	<artifactId>castor</artifactId>
         	<groupId>castor</groupId>
         	<version>0.9.5</version>
+        	<jar>castor-0.9.5-xml.jar</jar>
         	<properties>
         		<war.bundle>true</war.bundle>
         	</properties>
