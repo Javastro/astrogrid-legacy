@@ -1,4 +1,18 @@
 <?xml version="1.0" ?>
+
+<!-- to use:
+  check that tomcat is 'clean' and running - ie has no astrogrid components
+  installed that will interfere with the deployment (use maven undeploy-all then
+  manually check that it's worked).
+  
+   Run 'maven deploy-all'.  If it completes successfully, run 'maven int-test'.
+
+   The deployer checks the astrogrid repository and your local one as normal to find the latest wars to
+   deploy, so if you have local changes to a component you will need to rebuild that component separately.
+   When the auto builds happen, the astrogrid repository version will become 'newer' and you will need to
+   rebuild your locally changed component.
+   -->
+
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:util="jelly:util" xmlns:deploy="deploy" default="jar:jar">
 
