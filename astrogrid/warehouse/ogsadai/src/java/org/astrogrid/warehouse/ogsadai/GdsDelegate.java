@@ -290,45 +290,21 @@ public class GdsDelegate extends GridServiceDelegate {
   }
 
 
-/**
- * Obtains the grid data service factory handle from the specified registry and sets it
- * to a factory service handle. 
- * @param registryUrl The URL of the registry.
- * @param timeoutValue The timeout value in seconds
- * @return The factory handle of the grid data servce
- * @throws Exception
- */
-  public static ExtensibilityType setFactoryGdsFromRegistry( 
-	  String registryUrl, int timeoutValue ) throws Exception
-  {
-	// Ask the GDSR for information about registered GDSFs 
-	DAIServiceGroupRegistrationServiceLocator gdsrLocator = null;
-	DAIServiceGroupRegistrationPortType gdsrGpt = null;
-  
-	try {
-		gdsrLocator = new DAIServiceGroupRegistrationServiceLocator();
-		gdsrGpt = gdsrLocator.getDAIServiceGroupRegistrationPort(
-			  new URL(registryUrl));
-   
-		// Set timeout of SOAP calls
-		((Stub) gdsrGpt).setTimeout(timeoutValue * 1000);
-	}
-	catch (Exception e) {
-	  logger.error("Could not locate registry at: " + registryUrl,e);
-	  throw new Exception(
-		"Could not locate registry at: " + registryUrl,e);
-	}
-      
-	QName[] portTypes = new QName[1];
-	portTypes[0] = OGSADAIConstants.GDSF_PORT_TYPE;
-	ExtensibilityType query = 
-		DAIServiceGroupQueryHelper.getPortTypeQuery(portTypes);
-	ExtensibilityType result;
-	result = gdsrGpt.findServiceData(query);          
-    factoryHandle = result;
-    
-	return factoryHandle;
+  /**
+   * Obtains the grid data service factory handle from the specified 
+   * registry and sets it to a factory service handle. 
+   * @param registryUrl The URL of the registry.
+   * @param timeoutValue The timeout value in seconds
+   * @return The factory handle of the grid data servce
+   * @throws Exception
+   */
+  public void setFactoryGshFromRegistry( 
+	  String registryUrl, int timeoutValue ) throws Exception {
+    String gsh =
+        GdsDelegate.getFactoryUrlFromRegistry(registryUrl, timeoutValue);
+    this.setFactoryHandle(gsh);
   }
+
 
   /**
    * Converts an SQL string into an XML Perform document for OGSA-DAI.
