@@ -28,7 +28,7 @@
                 
                 Workflow workflow = null;
             
-                for( int i=0; i<workflows.length; i++ ) {
+                for( int i=0; i &lt; workflows.length; i++ ) {
                     outputJob( workflows[i], xspAttr ); 
                 }
 
@@ -60,7 +60,7 @@
                         	
 			          <content>	
                          <xsp:element name="job">
-		 			        <xsp:attribute name="name"><xsp:expr>workflow.getName()()</xsp:expr></xsp:attribute>
+		 			        <xsp:attribute name="name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute>
 					        <xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>
 					        <xsp:attribute name="time"><xsp:expr>job.getStartTime()</xsp:expr></xsp:attribute>
 					        <xsp:attribute name="status"><xsp:expr>job.getStatus()</xsp:expr></xsp:attribute>	
@@ -73,11 +73,11 @@
                        
                       <content>    
                           <xsp:element name="job">
-                             <xsp:attribute name="name"><xsp:expr>workflow.getName()()</xsp:expr></xsp:attribute>
+                             <xsp:attribute name="name"><xsp:expr>workflow.getName()</xsp:expr></xsp:attribute>
                              <xsp:attribute name="description"><xsp:expr>workflow.getDescription()</xsp:expr></xsp:attribute>
-                             <xsp:attribute name="time"><xsp:expr>n/a</xsp:expr></xsp:attribute>
-                             <xsp:attribute name="status"><xsp:expr>n/a</xsp:expr></xsp:attribute>   
-                             <xsp:attribute name="jobid"><xsp:expr>n/a</xsp:expr></xsp:attribute>                                                         
+                             <xsp:attribute name="time">n/a</xsp:attribute>
+                             <xsp:attribute name="status">n/a</xsp:attribute>   
+                             <xsp:attribute name="jobid">n/a</xsp:attribute>                                                         
                           </xsp:element>
                       </content>                       
                        
