@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.5 2004/04/21 13:44:47 pah Exp $
+ * $Id: CommonExecutionConnectorDelegateImpl.java,v 1.6 2004/04/22 15:18:00 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -36,8 +36,6 @@ import org
    .v1
    .cea
    .CommonExecutionConnectorServiceSoapBindingStub;
-import org.astrogrid.applications.service.v1.cea.impl._ceaFault;
-import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -167,8 +165,7 @@ public class CommonExecutionConnectorDelegateImpl
       String result;
       CommonExecutionConnector cec = getBinding();
       try {
-        _returnRegistryEntryResponse_returnRegistryEntryReturn _result = cec.returnRegistryEntry();
-        result = _result.toString();//FIXME this is not the registry entry....
+       result = cec.returnRegistryEntry();
       }
       catch (RemoteException e) {
          throw new CEADelegateException("problem getting registry entry", e);

@@ -1,5 +1,5 @@
 /*
- * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.5 2004/04/21 09:10:02 pah Exp $
+ * $Id: CommonExecutionConnectorServiceSoapBindingImpl.java,v 1.6 2004/04/22 15:18:00 pah Exp $
  * 
  * Created on 25-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -23,8 +23,6 @@ import org.astrogrid.applications.beans.v1.ApplicationList;
 import org.astrogrid.applications.beans.v1.axis.ceabase.ApplicationBase;
 import org.astrogrid.applications.beans.v1.axis.ceabase._ApplicationList;
 import org.astrogrid.applications.manager.CommandLineApplicationController;
-import org.astrogrid.applications.service.v1.cea.impl._ceaFault;
-import org.astrogrid.applications.service.v1.cea.impl._returnRegistryEntryResponse_returnRegistryEntryReturn;
 import org.astrogrid.common.bean.Axis2Castor;
 import org.astrogrid.common.bean.Castor2Axis;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -70,7 +68,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
     * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#execute(org.astrogrid.workflow.beans.v1.axis._tool, org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType, java.lang.String)
     */
    public String execute(_tool tool, JobIdentifierType jobstepID, String jobMonitorURL)
-      throws RemoteException, _ceaFault {
+      throws RemoteException, CeaFault {
          Tool ctool = Axis2Castor.convert(tool);
          
          String executionId = null;
@@ -79,7 +77,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
             executionId = clec.execute(ctool, jobstepID.toString(), jobMonitorURL);
          }
          catch (Exception e) {
-           throw _ceaFault.makeFault(e);
+           throw CeaFault.makeFault(e);
          }
          return executionId;
    }
@@ -87,7 +85,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
    /** 
     * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#abort(java.lang.String)
     */
-   public boolean abort(String executionId) throws RemoteException, _ceaFault {
+   public boolean abort(String executionId) throws RemoteException, CeaFault {
       boolean result = false;
       result = clec.abort(executionId);
      return result;
@@ -96,7 +94,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
    /** 
     * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#listApplications()
     */
-   public _ApplicationList listApplications() throws RemoteException, _ceaFault {
+   public _ApplicationList listApplications() throws RemoteException, CeaFault {
       _ApplicationList applist = null;
       
       ApplicationList outlist;
@@ -104,7 +102,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
          outlist = clec.listApplications();
       }
       catch (Exception e) {
-         throw _ceaFault.makeFault(e);
+         throw CeaFault.makeFault(e);
       }
       applist = Castor2Axis.convert(outlist);
       return applist;
@@ -121,7 +119,7 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
             ab = clec.getApplicationDescription(applicationID);
          }
          catch (Exception e) {
-            throw _ceaFault.makeFault(e);
+            throw CeaFault.makeFault(e);
          }
          result = Castor2Axis.convert(ab);
          return result;
@@ -131,14 +129,14 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
     * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#queryExecutionStatus(java.lang.String)
     */
    public MessageType queryExecutionStatus(String executionId)
-      throws RemoteException, _ceaFault {
+      throws RemoteException, CeaFault {
          MessageType result = null;
          try {
             org.astrogrid.applications.beans.v1.cea.castor.MessageType mess = clec.queryExecutionStatus(executionId);
             result = Castor2Axis.convert(mess);
          }
          catch (Exception e) {
-            throw _ceaFault.makeFault(e);
+            throw CeaFault.makeFault(e);
          }
          return result;
    }
@@ -146,11 +144,10 @@ public class CommonExecutionConnectorServiceSoapBindingImpl
    /** 
     * @see org.astrogrid.applications.service.v1.cea.CommonExecutionConnector#returnRegistryEntry()
     */
-   public _returnRegistryEntryResponse_returnRegistryEntryReturn returnRegistryEntry()
-      throws RemoteException {
-      // FIXME Auto-generated method stub
-      throw new UnsupportedOperationException("CommonExecutionConnectorServiceSoapBindingImpl.returnRegistryEntry() not implemented");
-   }
+   public String returnRegistryEntry()
+   {
+   return "this is not implemented yet";
+    }
    
 
 

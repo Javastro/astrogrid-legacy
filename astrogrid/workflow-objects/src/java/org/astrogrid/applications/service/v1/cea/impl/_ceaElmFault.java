@@ -1,5 +1,5 @@
 /**
- * _ceaFault.java
+ * _ceaElmFault.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis WSDL2Java emitter.
@@ -7,29 +7,24 @@
 
 package org.astrogrid.applications.service.v1.cea.impl;
 
-public class _ceaFault  extends org.apache.axis.AxisFault  implements java.io.Serializable {
-    private java.lang.String messy;
+public class _ceaElmFault  implements java.io.Serializable {
+    private java.lang.String mess;
 
-    public _ceaFault() {
+    public _ceaElmFault() {
     }
 
-    public _ceaFault(
-           java.lang.String messy) {
-        this.messy = messy;
+    public java.lang.String getMess() {
+        return mess;
     }
 
-    public java.lang.String getMessy() {
-        return messy;
-    }
-
-    public void setMessy(java.lang.String messy) {
-        this.messy = messy;
+    public void setMess(java.lang.String mess) {
+        this.mess = mess;
     }
 
     private java.lang.Object __equalsCalc = null;
     public synchronized boolean equals(java.lang.Object obj) {
-        if (!(obj instanceof _ceaFault)) return false;
-        _ceaFault other = (_ceaFault) obj;
+        if (!(obj instanceof _ceaElmFault)) return false;
+        _ceaElmFault other = (_ceaElmFault) obj;
         if (obj == null) return false;
         if (this == obj) return true;
         if (__equalsCalc != null) {
@@ -38,9 +33,9 @@ public class _ceaFault  extends org.apache.axis.AxisFault  implements java.io.Se
         __equalsCalc = obj;
         boolean _equals;
         _equals = true && 
-            ((this.messy==null && other.getMessy()==null) || 
-             (this.messy!=null &&
-              this.messy.equals(other.getMessy())));
+            ((this.mess==null && other.getMess()==null) || 
+             (this.mess!=null &&
+              this.mess.equals(other.getMess())));
         __equalsCalc = null;
         return _equals;
     }
@@ -52,8 +47,8 @@ public class _ceaFault  extends org.apache.axis.AxisFault  implements java.io.Se
         }
         __hashCodeCalc = true;
         int _hashCode = 1;
-        if (getMessy() != null) {
-            _hashCode += getMessy().hashCode();
+        if (getMess() != null) {
+            _hashCode += getMess().hashCode();
         }
         __hashCodeCalc = false;
         return _hashCode;
@@ -61,13 +56,13 @@ public class _ceaFault  extends org.apache.axis.AxisFault  implements java.io.Se
 
     // Type metadata
     private static org.apache.axis.description.TypeDesc typeDesc =
-        new org.apache.axis.description.TypeDesc(_ceaFault.class);
+        new org.apache.axis.description.TypeDesc(_ceaElmFault.class);
 
     static {
-        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "ceaFault"));
+        typeDesc.setXmlType(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "ceaElmFault"));
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
-        elemField.setFieldName("messy");
-        elemField.setXmlName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "messy"));
+        elemField.setFieldName("mess");
+        elemField.setXmlName(new javax.xml.namespace.QName("urn:impl.cea.applications.astrogrid.org", "mess"));
         elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(elemField);
     }
@@ -103,11 +98,4 @@ public class _ceaFault  extends org.apache.axis.AxisFault  implements java.io.Se
             _javaType, _xmlType, typeDesc);
     }
 
-
-    /**
-     * Writes the exception data to the faultDetails
-     */
-    public void writeDetails(javax.xml.namespace.QName qname, org.apache.axis.encoding.SerializationContext context) throws java.io.IOException {
-        context.serialize(qname, null, this);
-    }
 }

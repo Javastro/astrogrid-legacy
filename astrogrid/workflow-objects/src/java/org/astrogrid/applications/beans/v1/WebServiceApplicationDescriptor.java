@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WebServiceApplicationDescriptor.java,v 1.20 2004/04/21 13:42:52 pah Exp $
+ * $Id: WebServiceApplicationDescriptor.java,v 1.21 2004/04/22 15:13:37 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class WebServiceApplicationDescriptor.
  * 
- * @version $Revision: 1.20 $ $Date: 2004/04/21 13:42:52 $
+ * @version $Revision: 1.21 $ $Date: 2004/04/22 15:13:37 $
  */
 public class WebServiceApplicationDescriptor extends org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor {
 

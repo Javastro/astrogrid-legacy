@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.22 2004/04/21 09:10:02 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.23 2004/04/22 15:18:00 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -128,7 +128,7 @@ public abstract class AbstractApplicationController
          logger.error("failed to load application config", e);
       }
 
-      register();
+//TODO      register();
    }
 
    /**
@@ -237,7 +237,6 @@ public abstract class AbstractApplicationController
 
          result.addApplicationDefn(app);
       }
-      register();//FIXME this should be removed when working
       return result;
 
    }
