@@ -1,42 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!-- $id$ -->
+<xsd:schema targetNamespace="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:er="http://www.astrogrid.org/schema/ExecutionRecord/v1" xmlns:agwf="http://www.astrogrid.org/schema/AGWorkflow/v1" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:agcred="http://www.astrogrid.org/schema/Credentials/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:import namespace="http://www.astrogrid.org/schema/Credentials/v1" schemaLocation="Credentials.xsd"/>
 	<xsd:import namespace="http://www.astrogrid.org/schema/AGParameterDefinition/v1" schemaLocation="AGParameterDefinition.xsd"/>
-	<xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" schemaLocation="ExecutionRecord.xsd" />
+	<xsd:import namespace="http://www.astrogrid.org/schema/ExecutionRecord/v1" schemaLocation="ExecutionRecord.xsd"/>
 	<xsd:element name="workflow">
+		<xsd:annotation>
+			<xsd:documentation>General representation of a workflow</xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element ref="agwf:sequence"/>
+				<xsd:element name="Activities">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
 				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
 				<xsd:element name="Credentials" type="agcred:Credentials"/>
-				<xsd:element ref="er:job-execution-record" minOccurs="0" />
+				<xsd:element ref="er:job-execution-record" minOccurs="0"/>
 			</xsd:sequence>
 			<xsd:attribute name="name" type="xsd:string" use="required"/>
 		</xsd:complexType>
 	</xsd:element>
-	
-	<xsd:element name="sequence">
+	<xsd:element name="sequence" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>a sequential sequence of activities</xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:group ref="agwf:activitySequence"/>
+				<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="flow">
+	<xsd:element name="flow" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>a parallel group of activities</xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:group ref="agwf:activitySequence"/>
+				<xsd:element ref="agwf:Activity" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
-	<xsd:element name="step">
+	<xsd:element name="step" substitutionGroup="agwf:Activity">
+		<xsd:annotation>
+			<xsd:documentation>an acitity to be performed</xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="agwf:tool"/>
 				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
-				<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded" />
+				<xsd:element ref="er:step-execution-record" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 			<xsd:attribute name="name" type="xsd:string" use="required"/>
 			<xsd:attribute name="joinCondition" use="optional" default="any">
@@ -52,9 +69,10 @@
 			<xsd:attribute name="sequenceNumber" type="xsd:int" use="optional"/>
 		</xsd:complexType>
 	</xsd:element>
-
-
 	<xsd:element name="tool">
+		<xsd:annotation>
+			<xsd:documentation>the CEA definition of the tool to be run </xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="agwf:input" minOccurs="0"/>
@@ -66,6 +84,9 @@
 	</xsd:element>
 	<!-- NWW - gave these some simple content - before were empty -->
 	<xsd:element name="input">
+		<xsd:annotation>
+			<xsd:documentation>the list of input parameters</xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="agwf:parameter" minOccurs="0" maxOccurs="unbounded"/>
@@ -73,24 +94,28 @@
 		</xsd:complexType>
 	</xsd:element>
 	<xsd:element name="output">
+		<xsd:annotation>
+			<xsd:documentation>the list of output paramters</xsd:documentation>
+		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence>
 				<xsd:element ref="agwf:parameter" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	<xsd:element name="parameter" type="agpd:parameterValue"/>
-	<xsd:group name="activityChoice">
-		<xsd:choice>
-			<xsd:element ref="agwf:sequence" minOccurs="0"/>
-			<xsd:element ref="agwf:flow" minOccurs="0"/>
-			<xsd:element ref="agwf:step" minOccurs="0"/>
-		</xsd:choice>
-	</xsd:group>
-	<xsd:group name="activitySequence">
-		<xsd:sequence>
-			<xsd:group ref="agwf:activityChoice" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:group>
-
+	<xsd:element name="parameter" type="agpd:parameterValue">
+		<xsd:annotation>
+			<xsd:documentation>a parameter that should be based to an CEA tool</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Activity" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>The abstract base class of all activities that can be performed in a workflow</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:any/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
 </xsd:schema>
