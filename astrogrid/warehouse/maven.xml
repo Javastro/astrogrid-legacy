@@ -6,7 +6,6 @@
 	<!-- Customise standard maven tasks -->
 
 	<preGoal name="java:compile">
-
 		<mkdir dir="${basedir}/target/src/java" />
 
 		<!-- declares new src tree to maven -->
@@ -15,10 +14,15 @@
 
 		<!-- generate classes from schema and wsdl before compiling -->
 		<attainGoal name="generateStubs" />
-    <!--
-    -->
-
 	</preGoal>
+
+	<postGoal name="java:compile">
+     <copy toDir="${basedir}/target/classes">
+       <fileset dir="src/java">
+         <include name="**/*.properties"/> 
+       </fileset>
+     </copy>
+	</postGoal>
 
 	<preGoal name="clean">
 		<delete dir="${basedir}/target/src" />
@@ -95,6 +99,7 @@
      <copy toDir="${tomcat.home}/webapps/axis/WEB-INF/classes">
        <fileset dir="target/classes">
          <include name="**/*.class"/> 
+         <include name="**/*.properties"/> 
        </fileset>
      </copy>
      <java classname="org.apache.axis.utils.Admin" 

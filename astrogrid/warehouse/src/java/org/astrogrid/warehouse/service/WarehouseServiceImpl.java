@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseServiceImpl.java,v 1.7 2003/11/05 20:38:11 gtr Exp $
+ * $Id: WarehouseServiceImpl.java,v 1.8 2003/11/06 12:55:39 kea Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -94,45 +94,7 @@ public class WarehouseServiceImpl
      * the location of the OGSA-DAI warehouse services, configure 
      * OGSA-DAI input etc.
      */
-    private Properties serviceProperties = null;
-
-    // ----------------------------------------------------------
-    // Fallback defaults for values that should be configured on a
-    // per-installation basis in the WarehouseServiceImpl.properties 
-    // file.
-    //
-    private final String DEFAULT_HOST_STRING = 
-        "http://astrogrid.ast.cam.ac.uk:4040";
-    private final String DEFAULT_REGISTRY_STRING = 
-        "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
-    private final String DEFAULT_WAREHOUSE_JVM = 
-        "/data/cass123a/gtr/jdk-ogsa/bin/java";
-    private final String DEFAULT_WAREHOUSE_CLASSPATH =
-        "/data/cass123a/kea/tomcat_cass111/webapps/axis/WEB-INF/classes";
-    private final String DEFAULT_WAREHOUSE_SERVICE =
-        "org.astrogrid.warehouse.service.WarehouseServiceImpl";
-
-    private final String DEFAULT_PERFORM_HEAD = 
-      "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
-      "<gridDataServicePerform " +
-      "xmlns=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types\" " +
-      "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
-      "xsi:schemaLocation=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types"+
-      //" ../../../../schema/ogsadai/xsd/activities/activities.xsd\">";
-      // TOFIX HOW SHOULD WE SET THIS PATH?  VIA PROPERTIES?
-      // SHOULD WE PUT THE SCHEMA ON AN ASTROGRID URL?
-      " /data/cass123a/kea/ogsadai-src/schema/ogsadai/xsd/activities/activities.xsd\">";
-
-    private final String DEFAULT_PERFORM_QUERY_START = 
-      "<sqlQueryStatement name=\"statement\"><expression>";
-
-    private final String DEFAULT_PERFORM_QUERY_END = 
-      "</expression><webRowSetStream name=\"statementOutput\"/>" +
-      "</sqlQueryStatement>";
-
-    private final String DEFAULT_PERFORM_FOOT = "</gridDataServicePerform>";
-
-    // ----------------------------------------------------------
+    protected Properties serviceProperties = null;
 
     // ----------------------------------------------------------
     // TOFIX - HORRIBLE HACKS FOR TRACKING QUERY STATUS ETC
@@ -153,10 +115,8 @@ public class WarehouseServiceImpl
   // create and load default properties
     serviceProperties = new Properties();
     try {
-      FileInputStream in = 
-          new FileInputStream("WarehouseServiceImpl.properties");
-      serviceProperties.load(in);
-      in.close();
+     serviceProperties.load(WarehouseServiceImpl.class.getResourceAsStream(
+        "WarehouseServiceImpl.properties")); 
     }
     catch (FileNotFoundException e) {
       throw new RemoteException(
@@ -300,7 +260,7 @@ public class WarehouseServiceImpl
       }
       catch (IOException e) {
         throw new RemoteException(
-            "Couldn't open destination file /tmp/WS_OGSA_OUTPUT", e);
+            "Couldn't open destination file /tmp/WS_OGSA_OUTPUT_GTR", e);
       }
 
       // Finished with the GDS.
@@ -465,9 +425,30 @@ public class WarehouseServiceImpl
     // TOFIX - need to have proper destination URL from command-line
     service.startQuery(jobID);
   }
+
+  // ----------------------------------------------------------
+  // Fallback defaults for values that should be configured on a
+  // per-installation basis in the WarehouseServiceImpl.properties 
+
+  private final String DEFAULT_HOST_STRING = 
+        "http://astrogrid.ast.cam.ac.uk:4040";
+  private final String DEFAULT_REGISTRY_STRING = 
+        "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
+
+  private final String DEFAULT_WAREHOUSE_JVM = 
+        "/data/cass123a/gtr/jdk-ogsa/bin/java";
+  private final String DEFAULT_WAREHOUSE_CLASSPATH =
+        "/data/cass123a/kea/tomcat_cass111/webapps/axis/WEB-INF/classes";
+  private final String DEFAULT_WAREHOUSE_SERVICE =
+        "org.astrogrid.warehouse.service.WarehouseServiceImpl";
 }
 /*
 $Log: WarehouseServiceImpl.java,v $
+Revision 1.8  2003/11/06 12:55:39  kea
+Moved various string constants into properties files.
+Took out OGSA-DAI cruft from WarehouseServiceImpl (OGSA-DAI-specific
+code had already moved to GdsDelegate).
+
 Revision 1.7  2003/11/05 20:38:11  gtr
 Access to the GDS is now through a GdsDelegate. The invokedViaAxis attribute
 is changed to protected so that the Server class can set it.

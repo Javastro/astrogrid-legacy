@@ -2,6 +2,9 @@ package org.astrogrid.warehouse.service;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.globus.ogsa.impl.core.service.ServiceLocator;
 import org.globus.ogsa.utils.AnyHelper;
 import org.globus.ogsa.utils.GridServiceFactory;
@@ -37,6 +40,36 @@ import uk.org.ogsadai.common.XMLUtilities;
  * inherited by the current class.
  */
 public class GdsDelegate extends GridServiceDelegate {
+  /**
+   * Configuration properties for the service.
+   * These use the GdsDelegate.properties file to discover
+   * the location of the OGSA-DAI warehouse services, configure
+   * OGSA-DAI input etc.
+   */
+    private Properties serviceProperties = null;
+
+  /**
+   * Initialises the GdsDelegate using values in its properties file
+   * GdsDelegate.properties.
+   */
+  public GdsDelegate() throws Exception {
+
+    // Create and load default properties
+    serviceProperties = new Properties();
+    try {
+      serviceProperties.load(WarehouseServiceImpl.class.getResourceAsStream(
+          "GdsDelegate.properties"));
+    }
+    catch (FileNotFoundException e) {
+      throw new Exception(
+        "Couldn't find properties file GdsDelegate.properties", e);
+    }
+    catch (IOException e) {
+      throw new Exception(
+        "Couldn't load properties from GdsDelegate.properties: " +
+           e.getMessage(), e);
+    }
+  }
 
   /**
    * Invokes an SQL select statement on the GDS instance. The
@@ -103,22 +136,36 @@ public class GdsDelegate extends GridServiceDelegate {
    * @param sqlString  A string containing a pure SQL query.
    */
   private String makeXMLPerformDoc(String sqlString) {
-    return PERFORM_HEAD + PERFORM_QUERY_START  + sqlString +
-        PERFORM_QUERY_END  + PERFORM_FOOT;
+
+    return
+
+      serviceProperties.getProperty(
+          "PERFORM_HEAD", DEFAULT_PERFORM_HEAD) +
+
+      serviceProperties.getProperty(
+          "PERFORM_QUERY_START", DEFAULT_PERFORM_QUERY_START) +
+
+      sqlString +
+
+      serviceProperties.getProperty(
+          "PERFORM_QUERY_END", DEFAULT_PERFORM_QUERY_END) +
+
+      serviceProperties.getProperty(
+          "PERFORM_FOOT", DEFAULT_PERFORM_FOOT);
   }
 
-
-    // ----------------------------------------------------------
-    // TOFIX: All these strings should be in a Properties file
-    //
-    private final String HOST_STRING = 
+  // ----------------------------------------------------------
+  // Fallback defaults for values that should be configured on a
+  // per-installation basis in the GdsDelegate.properties file.
+  //
+  private final String DEFAULT_HOST_STRING = 
         "http://astrogrid.ast.cam.ac.uk:4040";
-    private final String REGISTRY_STRING = 
+  private final String DEFAULT_REGISTRY_STRING = 
         "/ogsa/services/ogsadai/DAIServiceGroupRegistry";
-    private final String FACTORY_STRING = 
+  private final String DEFAULT_FACTORY_STRING = 
         "/ogsa/services/ogsadai/GridDataServiceFactory";
 
-    private final String PERFORM_HEAD = 
+  private final String DEFAULT_PERFORM_HEAD = 
       "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + 
       "<gridDataServicePerform " +
       "xmlns=\"http://ogsadai.org.uk/namespaces/2003/07/gds/types\" " +
@@ -129,14 +176,13 @@ public class GdsDelegate extends GridServiceDelegate {
       // SHOULD WE PUT THE SCHEMA ON AN ASTROGRID URL?
       " /data/cass123a/kea/ogsadai-src/schema/ogsadai/xsd/activities/activities.xsd\">";
 
-    private final String PERFORM_QUERY_START = 
+  private final String DEFAULT_PERFORM_QUERY_START = 
       "<sqlQueryStatement name=\"statement\"><expression>";
 
-    private final String PERFORM_QUERY_END = 
+  private final String DEFAULT_PERFORM_QUERY_END = 
       "</expression><webRowSetStream name=\"statementOutput\"/>" +
       "</sqlQueryStatement>";
 
-    private final String PERFORM_FOOT = "</gridDataServicePerform>";
-
+  private final String DEFAULT_PERFORM_FOOT = "</gridDataServicePerform>";
   
 }
