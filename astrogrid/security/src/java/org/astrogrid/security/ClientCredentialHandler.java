@@ -6,6 +6,7 @@ import javax.xml.rpc.handler.MessageContext;
 import javax.xml.rpc.JAXRPCException;
 import javax.xml.soap.SOAPMessage;
 import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
+import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
 import org.astrogrid.store.Ivorn;
 
@@ -44,7 +45,7 @@ public class ClientCredentialHandler extends CredentialHandler {
     // Write a WS-Security header.
     try {
       assert(this.subject != null);
-      WsseHeaderElement.write(this.subject, sm);
+      WsseHeaderElement.write(this.getSubject(), sm);
     }
     catch (Exception e1) {
       System.out.println(e1);
@@ -63,6 +64,7 @@ public class ClientCredentialHandler extends CredentialHandler {
    * that stored Subject.
    */
   private Subject getSubject () {
+    System.out.println("Entering ClientCredentialHandler.getSubject()");
     try {
 
       // Clone the existing, shared Subject.
@@ -89,8 +91,8 @@ public class ClientCredentialHandler extends CredentialHandler {
         SecurityServiceDelegate ssd = ssr.resolve(account);
         Object[] o = ssd.splitToken(n, 2);
         assert(o.length == 2);
-        NonceToken n1 = (NonceToken) o[0];
-        NonceToken n2 = (NonceToken) o[1];
+        NonceToken n1 = new NonceToken((SecurityToken)o[0]);
+        NonceToken n2 = new NonceToken((SecurityToken)o[1]);
         System.out.println("ClientCredentialHandler.getSubject(): "
                          + "nonce token was split successfully.");
 
@@ -101,8 +103,12 @@ public class ClientCredentialHandler extends CredentialHandler {
 
       return subject;
     } catch (Exception e) {
-      throw new JAXRPCException("Failed to prepare credentials "
-                             +  "(failed to split a NonceToken)");
+      String message = "Failed to prepare credentials "
+                     + "(failed to split a NonceToken)";
+      System.out.println(message);
+      System.out.println("Cause:");
+      System.out.println(e.toString());
+      throw new JAXRPCException(message, e);
     }
   }
 
