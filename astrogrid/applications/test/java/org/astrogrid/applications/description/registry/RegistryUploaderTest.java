@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryUploaderTest.java,v 1.2 2004/03/29 12:38:56 pah Exp $
+ * $Id: RegistryUploaderTest.java,v 1.3 2004/03/31 16:26:19 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -19,10 +19,13 @@ import org.exolab.castor.xml.ValidationException;
 import org.astrogrid.applications.description.DescriptionBaseTestCase;
 import org.astrogrid.applications.manager.externalservices.RegistryAdminFromConfig;
 import org.astrogrid.applications.manager.externalservices.RegistryAdminLocator;
+import org.astrogrid.applications.manager.externalservices.RegistryFromConfig;
+import org.astrogrid.applications.manager.externalservices.RegistryQueryLocator;
 import org.astrogrid.applications.manager.externalservices.ServiceNotFoundException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.query.RegistryService;
 
 import junit.framework.TestCase;
 
@@ -60,6 +63,22 @@ public class RegistryUploaderTest extends RegEntryBaseTestCase {
       RegistryUploader reguploader = new RegistryUploader(regentry, reglocator);
       assertNotNull(reguploader);
       reguploader.write();
+      
+      // try to get the entries back...
+      String selectQuery = "<query><selectionSequence>" +
+           "<selection item='searchElements' itemOp='EQ' value='Resource'/>" +
+           "<selection item='@*:type' itemOp='EQ' value='CeaApplicationType'/>"
+     +
+           "<selectionOp op='OR'/>" +
+           "<selection item='@*:type' itemOp='EQ' value='CeaServiceType'/>"  +
+           "</selectionSequence></query>";
+           
+           RegistryQueryLocator rqloc = new RegistryFromConfig(config);
+           RegistryService rquery = rqloc.getClient();
+           VODescription result = rquery.submitQueryString(selectQuery);
+           assertNotNull(result);
+
+
       
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTest.java,v 1.3 2004/03/30 22:45:09 pah Exp $
+ * $Id: RegistryEntryBuilderTest.java,v 1.4 2004/03/31 16:26:19 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,9 +13,12 @@
 
 package org.astrogrid.applications.description.registry;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,12 +40,16 @@ import org.astrogrid.registry.beans.resource.VODescription;
  */
 public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
 
+   private File testfile;
+
    /**
     * Constructor for RegistryEntryBuilderTest.
     * @param arg0
     */
    public RegistryEntryBuilderTest(String arg0) {
       super(arg0);
+      //TODO should make this an os independent path - want to look at the file contents at the moment though
+      testfile = new File("/tmp/CeaRegEntry.xml");
    }
 
    public static void main(String[] args) {
@@ -52,7 +59,15 @@ public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
    final public void testMakeEntry() throws MarshalException, ValidationException, IOException {
      VODescription entry = builder.makeEntry();
      assertNotNull(entry);
-     entry.marshal(new FileWriter("/tmp/CeaRegEntry.xml"));
+     FileWriter writer = new FileWriter(testfile);
+     entry.marshal(writer);
+     writer.close();
+     Unmarshaller um = new Unmarshaller(VODescription.class);
+     
+     //TODO Castor bug -will not round trip....
+//     VODescription reentry = (VODescription)um.unmarshal(new FileReader(testfile));
+     
+     
      //TODO - should make more extensive tests....
    }
 
