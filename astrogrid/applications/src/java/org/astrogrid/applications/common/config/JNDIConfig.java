@@ -1,5 +1,5 @@
 /*
- * $Id: JNDIConfig.java,v 1.4 2004/03/23 12:51:25 pah Exp $
+ * $Id: JNDIConfig.java,v 1.5 2004/04/02 20:48:15 pah Exp $
  * 
  * Created on 15-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -116,7 +116,7 @@ public class JNDIConfig implements RawPropertyConfig {
 
       }
       catch (NamingException e) {
-         logger.info("problem finding the jndi name="+jndiName, e); // changed to info because do not want the fallback to look like error
+         logger.info("cannot find the jndi name="+jndiName); // changed to info because do not want the fallback to look like error
  
       }
       catch (MalformedURLException e) {

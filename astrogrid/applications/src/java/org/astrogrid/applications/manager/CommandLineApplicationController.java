@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.23 2004/04/01 09:53:02 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.24 2004/04/02 20:48:15 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -88,7 +88,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
     */
    public CommandLineApplicationController() {
 
-      this(new ServiceDesc()); // make a dummy service description...
+      this(null); // make a dummy service description...
 
    }
 

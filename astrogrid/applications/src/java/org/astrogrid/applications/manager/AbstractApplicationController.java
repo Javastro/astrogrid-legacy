@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.19 2004/04/02 17:45:42 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.20 2004/04/02 20:48:15 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -133,12 +133,16 @@ public abstract class AbstractApplicationController
          InputSource saxis =
             new InputSource(config.getRegistryTemplateURL().openStream());
          VODescription template = (VODescription)um2.unmarshal(saxis);
-         URL endpointURL = new URL(serviceDesc.getEndpointURL());
-         RegistryEntryBuilder builder =
-            new RegistryEntryBuilder(applist, template, endpointURL);
-         VODescription regEntry = builder.makeEntry();
-         RegistryUploader uploader = new RegistryUploader(regEntry, registryAdminLocator);
-         uploader.write();
+         
+         if (serviceDesc != null) { // if running within the axis container....
+            URL endpointURL = new URL(serviceDesc.getEndpointURL());
+            RegistryEntryBuilder builder =
+               new RegistryEntryBuilder(applist, template, endpointURL);
+            VODescription regEntry = builder.makeEntry();
+            RegistryUploader uploader =
+               new RegistryUploader(regEntry, registryAdminLocator);
+            uploader.write();
+         }
 
       }
       catch (CastorException e) {
@@ -146,7 +150,7 @@ public abstract class AbstractApplicationController
          logger.error("failed to read in the castor template registry descriptio", e);
       }
       catch (MalformedURLException e) {
-         status.addError("problem with the registry URL");
+         status.addError("problem with the service endpoint URL");
          logger.error("problem with the registry URL", e);
       }
       catch (IOException e) {
