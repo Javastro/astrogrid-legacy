@@ -237,16 +237,15 @@
           | View workflow details
           +-->          
       <xsl:template name="view_workflow_details">               
-         <table cellpadding="0" cellspacing="0">                                                           
+         <table border="1" cellpadding="0" cellspacing="0">                                                           
             <tr>
                <td>Workflow Name:</td>
-               <td><xsl:value-of select="@workflow-name" /></td>                                    
+               <td><xsl:value-of select="@workflow-name" /></td>
             </tr>
             <tr>
                <td>Workflow Description:</td>
                <td><xsl:value-of select="@workflow-description" /></td>                  
             </tr>
-            <p />
             <tr>
                <td>
                   <xsl:if test="@template = 'OneStepJob'"><img src="OneStepJob.gif" alt="OneStepJob" /></xsl:if>
@@ -256,14 +255,57 @@
                </td>
                <td>
                   <xsl:for-each select="//step">
-                     <tr>
-                        <td>
-                           key: <xsl:value-of select="@key"/>
-                           step-name: <xsl:value-of select="@step-name"/>
-                           step desc: <xsl:value-of select="@step-description"/>
-                           tool: <xsl:value-of select="@tool"/>
-                        </td>
-                     </tr>
+                     <table border="1" cellpadding="0" cellspacing="0">
+                        <tr>
+                           <td>
+                              <table>
+                                 <tr>
+                                    <td align="center">Step:</td>
+                                 </tr>
+                                 <tr>
+                                    <td>Name: <xsl:value-of select="@step-name"/></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Desc: <xsl:value-of select="@step-description"/></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Tool: <xsl:value-of select="@tool"/></td>
+                                 </tr>
+                                 <tr>
+                                    <td>Join: <xsl:value-of select="@joinCondition"/> </td>
+                                 </tr>
+                              </table>
+                           </td>
+                           <td>
+                              <table>
+                                 <tr>
+                                    <td align="center" colspan="3">Input parameters:</td>
+                                 </tr>
+                                 <xsl:for-each select="//inputParam">
+                                    <tr> 
+                                       <td>Name: <xsl:value-of select="@param-name"/></td>
+                                       <td>Type: <xsl:value-of select="@param-type"/></td>
+                                       <td>Location: <xsl:value-of select="@param-location"/></td>
+                                    </tr>
+                                 </xsl:for-each>  
+                              </table>
+                           </td>
+                           <td>
+                              <table>
+                                 <tr>
+                                    <td align="center" colspan="3">Output parameters:</td>
+                                 </tr>
+                                 <xsl:for-each select="//outputParam">
+                                    <tr>
+                                       <td>Name: <xsl:value-of select="@param-name"/></td>
+                                       <td>Type: <xsl:value-of select="@param-type"/></td>
+                                       <td>Location: <xsl:value-of select="@param-location"/></td>
+                                    </tr>
+                                 </xsl:for-each>                                 
+                              </table>                                                      
+                           </td>
+                        </tr>
+                     </table>                  
                   </xsl:for-each>    
                </td>
             </tr>
@@ -416,7 +458,7 @@
           | Monitor jobs
           +-->   
       <xsl:template name="monitor_jobs">
-         <table cellpadding="0" cellspacing="0">
+         <table border="1" cellpadding="0" cellspacing="0">
             <tr>
                <td>Name</td>
                <td>Description</td>
@@ -425,11 +467,13 @@
                <td>Job ID</td> 
             </tr>
             <xsl:for-each select="//job">
-               <td><xsl:value-of select="@name"/></td>
-               <td><xsl:value-of select="@description"/></td>
-               <td><xsl:value-of select="@time"/></td>
-               <td><xsl:value-of select="@status"/></td>
-               <td><xsl:value-of select="@jobid"/></td>               
+               <tr>    
+                  <td><xsl:value-of select="@name"/></td>
+                  <td><xsl:value-of select="@description"/></td>
+                  <td><xsl:value-of select="@time"/></td>
+                  <td><xsl:value-of select="@status"/></td>
+                  <td><xsl:value-of select="@jobid"/></td>               
+               </tr>
             </xsl:for-each>
          </table>
       </xsl:template>
