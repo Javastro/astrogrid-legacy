@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.3 2004/04/15 14:54:57 mch Exp $
+/*$Id: MySpaceTest.java,v 1.4 2004/04/15 15:38:56 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -37,7 +37,7 @@ public class MySpaceTest extends StoreClientTestHelper {
    }
 
    public void setUp() throws IOException {
-      MYSPACE= new Agsl("myspace:http://grendel12.roe.ac.uk:8080/MySpaceManager/services/Manager");
+      MYSPACE= new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager");
       //MYSPACE = ConfManager.getInstance().getMySpaceEndPoint();
       
       //MYSPACE = new Agsl("myspace:http://vm05.astrogrid.org:8080/astrogrid-mySpace/services/MySpaceManager");
@@ -121,6 +121,9 @@ public class MySpaceTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.4  2004/04/15 15:38:56  mch
+Changed address to localhost myspace
+
 Revision 1.3  2004/04/15 14:54:57  mch
 Fixed some tests
 
@@ -138,4 +141,5 @@ Added Vm05 Myspace tests
 
 
 */
+
 
