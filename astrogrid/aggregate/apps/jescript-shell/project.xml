@@ -62,17 +62,21 @@
        <groupId>org.astrogrid</groupId>
        <artifactId>astrogrid-workflow-objects</artifactId>
        <version>${astrogrid.workflowobjects.version}</version>
-                <properties><!-- redundant, testing -->
+       <!--
+                <properties>
                     <jnlp.jar>true</jnlp.jar>
                 </properties>
+                -->
     </dependency>
     <dependency>
         <groupId>org.astrogrid</groupId>
         <artifactId>astrogrid-common</artifactId>
         <version>${astrogrid.common.version}</version>
-                        <properties><!-- redundant, testing -->
+        <!--
+                        <properties>
                     <jnlp.jar>true</jnlp.jar>
                 </properties>
+                -->
     </dependency>
 
 
