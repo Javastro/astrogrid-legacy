@@ -12,10 +12,12 @@ public class RegistryManager {
     }
 
     public DataItemRecord[] lookUpDataItemRecord1(String msRegistryID, String dataHolderExpr, DataItemRecord dataitemrecord) {
+        DataItemRecord[] vec = null;
         return vec;
     }
 
     public DataItemRecord[] lookUpDataItemRecord(String msRegistryID, int dataHolderID, DataItemRecord dataitemrecord) {
+        DataItemRecord[] vec = null;
         return vec;
     }
 

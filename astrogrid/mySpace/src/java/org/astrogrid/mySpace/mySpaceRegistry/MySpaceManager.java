@@ -94,6 +94,7 @@ public class MySpaceManager {
         //lookUpDataItem
         //ServerManager.lookUpData(String usrID, String communityID, String dataItemID)
         //}catch(Status s){return the error messages to user }
+        DataItemRecord[] vec = null;
         return vec;
     }
 
@@ -149,6 +150,7 @@ public class MySpaceManager {
     }
 
     public boolean tidyMySpace() {
+       return false;
     }
 
     private String community;

@@ -5,5 +5,7 @@ package org.astrogrid.mySpace.mySpaceServer;
 import java.io.File;
 
 public class DataHolder extends File {
-	
+    public DataHolder(String name) {
+        super(name);
+    }
 }
