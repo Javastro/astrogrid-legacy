@@ -1,7 +1,7 @@
 #A master script to build a set of jars
 #based on their cvs tags
 #Be sure that the dependencies in the POMs are correct
-TAG_TO_BUILD=Itn04_1
+TAG_TO_BUILD=$1
 
 BUILD_DIR=/home/maven/build
 SCRIPTHOME=/home/maven/mavenrun
@@ -33,8 +33,8 @@ $SCRIPTHOME/maven-build-tagged.sh registry $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE
 $SCRIPTHOME/maven-build-tagged.sh scripting $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh warehouse $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-tagged.sh workflow $TAG_TO_BUILD >> $BUILD_DIR/$LOG_FILE 2>&1
-#this last one also needs attention
-$SCRIPTHOME/maven-build-maven-site.sh >> $BUILD_DIR/$LOG_FILE 2>&1
+#don't need this one, because we don't want to publish the docs for the branch
+#$SCRIPTHOME/maven-build-maven-site.sh >> $BUILD_DIR/$LOG_FILE 2>&1
 
 
 echo >> $BUILD_DIR/$LOG_FILE 2>&1
