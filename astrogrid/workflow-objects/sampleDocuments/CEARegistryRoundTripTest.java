@@ -30,7 +30,7 @@ import org.astrogrid.registry.beans.resource.VODescription;
 import junit.framework.TestCase;
 
 /*
- * $Id: CEARegistryRoundTripTest.java,v 1.3 2004/05/06 13:40:02 pah Exp $
+ * $Id: CEARegistryRoundTripTest.java,v 1.4 2004/08/28 07:29:32 pah Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -97,7 +97,7 @@ public class CEARegistryRoundTripTest extends TestCase {
       BaseParameterDefinition vParameterDefinition = new BaseParameterDefinition();
       parameters.addParameterDefinition(vParameterDefinition);
       vParameterDefinition.setName("par1");
-      vParameterDefinition.setType(ParameterTypes.FILEREFERENCE);
+      vParameterDefinition.setType(ParameterTypes.BINARY);
       vParameterDefinition.setUCD("sillyucd");
       
       InterfacesType interfaces = new InterfacesType();

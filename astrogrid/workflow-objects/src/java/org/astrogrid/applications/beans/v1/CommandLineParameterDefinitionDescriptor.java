@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.28 2004/08/04 13:58:39 nw Exp $
+ * $Id: CommandLineParameterDefinitionDescriptor.java,v 1.29 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CommandLineParameterDefinitionDescriptor.
  * 
- * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:39 $
+ * @version $Revision: 1.29 $ $Date: 2004/08/28 07:29:31 $
  */
 public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinitionDescriptor {
 
@@ -212,6 +212,47 @@ public class CommandLineParameterDefinitionDescriptor extends org.astrogrid.appl
         //-- validation code for: _switchType
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         { //-- local scope
+        }
+        desc.setValidator(fieldValidator);
+        //-- _fileRef
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.Boolean.TYPE, "_fileRef", "fileRef", org.exolab.castor.xml.NodeType.Attribute);
+        handler = (new org.exolab.castor.xml.XMLFieldHandler() {
+            public java.lang.Object getValue( java.lang.Object object ) 
+                throws IllegalStateException
+            {
+                CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
+                if(!target.hasFileRef())
+                    return null;
+                return new Boolean(target.getFileRef());
+            }
+            public void setValue( java.lang.Object object, java.lang.Object value) 
+                throws IllegalStateException, IllegalArgumentException
+            {
+                try {
+                    CommandLineParameterDefinition target = (CommandLineParameterDefinition) object;
+                    // if null, use delete method for optional primitives 
+                    if (value == null) {
+                        target.deleteFileRef();
+                        return;
+                    }
+                    target.setFileRef( ((Boolean)value).booleanValue());
+                }
+                catch (java.lang.Exception ex) {
+                    throw new IllegalStateException(ex.toString());
+                }
+            }
+            public java.lang.Object newInstance( java.lang.Object parent ) {
+                return null;
+            }
+        } );
+        desc.setHandler(handler);
+        addFieldDescriptor(desc);
+        
+        //-- validation code for: _fileRef
+        fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        { //-- local scope
+            BooleanValidator typeValidator = new BooleanValidator();
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
         //-- initialize element descriptors

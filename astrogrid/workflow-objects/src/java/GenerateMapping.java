@@ -9,7 +9,7 @@ import org.exolab.castor.tools.MappingTool;
 import org.astrogrid.registry.beans.cea.CeaApplicationType;
 
 /*
- * $Id: GenerateMapping.java,v 1.1 2004/03/16 13:51:04 pah Exp $
+ * $Id: GenerateMapping.java,v 1.2 2004/08/28 07:29:32 pah Exp $
  * 
  * Created on 15-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,10 +51,8 @@ public class GenerateMapping {
          maptool.write(w);
       }
       catch (IOException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
       } catch (MappingException e) {
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }
       

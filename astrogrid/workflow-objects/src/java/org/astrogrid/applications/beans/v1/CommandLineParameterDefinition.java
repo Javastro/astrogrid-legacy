@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinition.java,v 1.28 2004/08/04 13:58:39 nw Exp $
+ * $Id: CommandLineParameterDefinition.java,v 1.29 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what it is to be a command line parameter - needs more
  * thought with experience
  * 
- * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:39 $
+ * @version $Revision: 1.29 $ $Date: 2004/08/28 07:29:31 $
  */
 public class CommandLineParameterDefinition extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition 
 implements java.io.Serializable
@@ -45,7 +45,7 @@ implements java.io.Serializable
     /**
      * Field _commandPosition
      */
-    private int _commandPosition;
+    private int _commandPosition = -1;
 
     /**
      * keeps track of state for field: _commandPosition
@@ -66,6 +66,16 @@ implements java.io.Serializable
      * Field _switchType
      */
     private org.astrogrid.applications.beans.v1.types.SwitchTypes _switchType = org.astrogrid.applications.beans.v1.types.SwitchTypes.valueOf("normal");
+
+    /**
+     * Field _fileRef
+     */
+    private boolean _fileRef = false;
+
+    /**
+     * keeps track of state for field: _fileRef
+     */
+    private boolean _has_fileRef;
 
 
       //----------------/
@@ -89,6 +99,14 @@ implements java.io.Serializable
     {
         this._has_commandPosition= false;
     } //-- void deleteCommandPosition() 
+
+    /**
+     * Method deleteFileRef
+     */
+    public void deleteFileRef()
+    {
+        this._has_fileRef= false;
+    } //-- void deleteFileRef() 
 
     /**
      * Method deleteStdio
@@ -136,6 +154,10 @@ implements java.io.Serializable
             }
             else if (temp._switchType != null)
                 return false;
+            if (this._fileRef != temp._fileRef)
+                return false;
+            if (this._has_fileRef != temp._has_fileRef)
+                return false;
             return true;
         }
         return false;
@@ -160,6 +182,16 @@ implements java.io.Serializable
     {
         return this._commandSwitch;
     } //-- java.lang.String getCommandSwitch() 
+
+    /**
+     * Returns the value of field 'fileRef'.
+     * 
+     * @return the value of field 'fileRef'.
+     */
+    public boolean getFileRef()
+    {
+        return this._fileRef;
+    } //-- boolean getFileRef() 
 
     /**
      * Returns the value of field 'stdio'.
@@ -188,6 +220,14 @@ implements java.io.Serializable
     {
         return this._has_commandPosition;
     } //-- boolean hasCommandPosition() 
+
+    /**
+     * Method hasFileRef
+     */
+    public boolean hasFileRef()
+    {
+        return this._has_fileRef;
+    } //-- boolean hasFileRef() 
 
     /**
      * Method hasStdio
@@ -255,6 +295,17 @@ implements java.io.Serializable
     {
         this._commandSwitch = commandSwitch;
     } //-- void setCommandSwitch(java.lang.String) 
+
+    /**
+     * Sets the value of field 'fileRef'.
+     * 
+     * @param fileRef the value of field 'fileRef'.
+     */
+    public void setFileRef(boolean fileRef)
+    {
+        this._fileRef = fileRef;
+        this._has_fileRef = true;
+    } //-- void setFileRef(boolean) 
 
     /**
      * Sets the value of field 'stdio'.

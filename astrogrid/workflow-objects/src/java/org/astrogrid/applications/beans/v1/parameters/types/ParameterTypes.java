@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterTypes.java,v 1.28 2004/08/04 13:58:40 nw Exp $
+ * $Id: ParameterTypes.java,v 1.29 2004/08/28 07:29:32 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters.types;
@@ -22,7 +22,7 @@ import org.exolab.castor.xml.Unmarshaller;
  * should have the namespace appended? I have removed them to make
  * castor generate nicer objects
  * 
- * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:40 $
+ * @version $Revision: 1.29 $ $Date: 2004/08/28 07:29:32 $
  */
 public class ParameterTypes implements java.io.Serializable {
 

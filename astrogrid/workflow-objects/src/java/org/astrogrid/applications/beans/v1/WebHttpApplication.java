@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: WebHttpApplication.java,v 1.2 2004/08/03 10:08:34 jdt Exp $
+ * $Id: WebHttpApplication.java,v 1.3 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Description of an HTTP Application
+ * Class WebHttpApplication.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/08/03 10:08:34 $
+ * @version $Revision: 1.3 $ $Date: 2004/08/28 07:29:31 $
  */
 public class WebHttpApplication extends org.astrogrid.applications.beans.v1.ApplicationBase 
 implements java.io.Serializable
@@ -39,16 +39,6 @@ implements java.io.Serializable
      * Field _URL
      */
     private java.lang.String _URL;
-
-    /**
-     * Field _processInputsXSLT
-     */
-    private java.lang.String _processInputsXSLT;
-
-    /**
-     * Field _postprocessScript
-     */
-    private java.lang.String _postprocessScript;
 
 
       //----------------/
@@ -87,44 +77,10 @@ implements java.io.Serializable
             }
             else if (temp._URL != null)
                 return false;
-            if (this._processInputsXSLT != null) {
-                if (temp._processInputsXSLT == null) return false;
-                else if (!(this._processInputsXSLT.equals(temp._processInputsXSLT))) 
-                    return false;
-            }
-            else if (temp._processInputsXSLT != null)
-                return false;
-            if (this._postprocessScript != null) {
-                if (temp._postprocessScript == null) return false;
-                else if (!(this._postprocessScript.equals(temp._postprocessScript))) 
-                    return false;
-            }
-            else if (temp._postprocessScript != null)
-                return false;
             return true;
         }
         return false;
     } //-- boolean equals(java.lang.Object) 
-
-    /**
-     * Returns the value of field 'postprocessScript'.
-     * 
-     * @return the value of field 'postprocessScript'.
-     */
-    public java.lang.String getPostprocessScript()
-    {
-        return this._postprocessScript;
-    } //-- java.lang.String getPostprocessScript() 
-
-    /**
-     * Returns the value of field 'processInputsXSLT'.
-     * 
-     * @return the value of field 'processInputsXSLT'.
-     */
-    public java.lang.String getProcessInputsXSLT()
-    {
-        return this._processInputsXSLT;
-    } //-- java.lang.String getProcessInputsXSLT() 
 
     /**
      * Returns the value of field 'URL'.
@@ -173,28 +129,6 @@ implements java.io.Serializable
         
         Marshaller.marshal(this, handler);
     } //-- void marshal(org.xml.sax.ContentHandler) 
-
-    /**
-     * Sets the value of field 'postprocessScript'.
-     * 
-     * @param postprocessScript the value of field
-     * 'postprocessScript'.
-     */
-    public void setPostprocessScript(java.lang.String postprocessScript)
-    {
-        this._postprocessScript = postprocessScript;
-    } //-- void setPostprocessScript(java.lang.String) 
-
-    /**
-     * Sets the value of field 'processInputsXSLT'.
-     * 
-     * @param processInputsXSLT the value of field
-     * 'processInputsXSLT'.
-     */
-    public void setProcessInputsXSLT(java.lang.String processInputsXSLT)
-    {
-        this._processInputsXSLT = processInputsXSLT;
-    } //-- void setProcessInputsXSLT(java.lang.String) 
 
     /**
      * Sets the value of field 'URL'.

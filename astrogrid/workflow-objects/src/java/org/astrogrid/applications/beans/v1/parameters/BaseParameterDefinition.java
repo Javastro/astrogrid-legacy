@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseParameterDefinition.java,v 1.28 2004/08/04 13:58:39 nw Exp $
+ * $Id: BaseParameterDefinition.java,v 1.29 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class BaseParameterDefinition.
  * 
- * @version $Revision: 1.28 $ $Date: 2004/08/04 13:58:39 $
+ * @version $Revision: 1.29 $ $Date: 2004/08/28 07:29:31 $
  */
 public class BaseParameterDefinition extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -86,6 +86,11 @@ implements java.io.Serializable
      * types of units?
      */
     private java.lang.String _units;
+
+    /**
+     * For parameters that can only have one of a list of values
+     */
+    private org.astrogrid.applications.beans.v1.parameters.OptionList _optionList;
 
 
       //----------------/
@@ -220,6 +225,13 @@ implements java.io.Serializable
             }
             else if (temp._units != null)
                 return false;
+            if (this._optionList != null) {
+                if (temp._optionList == null) return false;
+                else if (!(this._optionList.equals(temp._optionList))) 
+                    return false;
+            }
+            else if (temp._optionList != null)
+                return false;
             return true;
         }
         return false;
@@ -284,6 +296,18 @@ implements java.io.Serializable
     {
         return this._name;
     } //-- java.lang.String getName() 
+
+    /**
+     * Returns the value of field 'optionList'. The field
+     * 'optionList' has the following description: For parameters
+     * that can only have one of a list of values
+     * 
+     * @return the value of field 'optionList'.
+     */
+    public org.astrogrid.applications.beans.v1.parameters.OptionList getOptionList()
+    {
+        return this._optionList;
+    } //-- org.astrogrid.applications.beans.v1.parameters.OptionList getOptionList() 
 
     /**
      * Returns the value of field 'subType'.
@@ -455,6 +479,18 @@ implements java.io.Serializable
     {
         this._name = name;
     } //-- void setName(java.lang.String) 
+
+    /**
+     * Sets the value of field 'optionList'. The field 'optionList'
+     * has the following description: For parameters that can only
+     * have one of a list of values
+     * 
+     * @param optionList the value of field 'optionList'.
+     */
+    public void setOptionList(org.astrogrid.applications.beans.v1.parameters.OptionList optionList)
+    {
+        this._optionList = optionList;
+    } //-- void setOptionList(org.astrogrid.applications.beans.v1.parameters.OptionList) 
 
     /**
      * Sets the value of field 'subType'.

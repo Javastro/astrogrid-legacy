@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ManagedApplications.java,v 1.13 2004/08/04 13:58:39 nw Exp $
+ * $Id: ManagedApplications.java,v 1.14 2004/08/28 07:29:32 pah Exp $
  */
 
 package org.astrogrid.registry.beans.cea;
@@ -28,7 +28,7 @@ import org.xml.sax.ContentHandler;
  * Ths list of applications that a Common Execution Controller
  * Manages
  * 
- * @version $Revision: 1.13 $ $Date: 2004/08/04 13:58:39 $
+ * @version $Revision: 1.14 $ $Date: 2004/08/28 07:29:32 $
  */
 public class ManagedApplications extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable

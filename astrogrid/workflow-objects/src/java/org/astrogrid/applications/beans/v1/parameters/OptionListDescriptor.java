@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: XhtmlDocumentationDescriptor.java,v 1.29 2004/08/28 07:29:31 pah Exp $
+ * $Id: OptionListDescriptor.java,v 1.1 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class XhtmlDocumentationDescriptor.
+ * Class OptionListDescriptor.
  * 
- * @version $Revision: 1.29 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.1 $ $Date: 2004/08/28 07:29:31 $
  */
-public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class OptionListDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,29 +53,36 @@ public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XML
      //- Constructors -/
     //----------------/
 
-    public XhtmlDocumentationDescriptor() {
+    public OptionListDescriptor() {
         super();
         nsURI = "http://www.astrogrid.org/schema/AGParameterDefinition/v1";
-        xmlName = "xhtmlDocumentation";
+        xmlName = "OptionList";
+        
+        //-- set grouping compositor
+        setCompositorAsSequence();
         org.exolab.castor.xml.util.XMLFieldDescriptorImpl  desc           = null;
         org.exolab.castor.xml.XMLFieldHandler              handler        = null;
         org.exolab.castor.xml.FieldValidator               fieldValidator = null;
-        //-- _content
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_content", "PCDATA", org.exolab.castor.xml.NodeType.Text);
+        //-- initialize attribute descriptors
+        
+        //-- initialize element descriptors
+        
+        //-- _optionValList
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_optionValList", "OptionVal", org.exolab.castor.xml.NodeType.Element);
         desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                XhtmlDocumentation target = (XhtmlDocumentation) object;
-                return target.getContent();
+                OptionList target = (OptionList) object;
+                return target.getOptionVal();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    XhtmlDocumentation target = (XhtmlDocumentation) object;
-                    target.setContent( (java.lang.String) value);
+                    OptionList target = (OptionList) object;
+                    target.addOptionVal( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -86,21 +93,21 @@ public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XML
             }
         } );
         desc.setHandler(handler);
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/AGParameterDefinition/v1");
+        desc.setRequired(true);
+        desc.setMultivalued(true);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _content
+        //-- validation code for: _optionValList
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
+        fieldValidator.setMinOccurs(1);
         { //-- local scope
             StringValidator typeValidator = new StringValidator();
             typeValidator.setWhiteSpace("preserve");
             fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-        //-- initialize attribute descriptors
-        
-        //-- initialize element descriptors
-        
-    } //-- org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentationDescriptor()
+    } //-- org.astrogrid.applications.beans.v1.parameters.OptionListDescriptor()
 
 
       //-----------/
@@ -136,7 +143,7 @@ public class XhtmlDocumentationDescriptor extends org.exolab.castor.xml.util.XML
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.applications.beans.v1.parameters.XhtmlDocumentation.class;
+        return org.astrogrid.applications.beans.v1.parameters.OptionList.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowCastorRoundTripTest.java,v 1.2 2004/05/04 11:30:06 pah Exp $
+ * $Id: WorkFlowCastorRoundTripTest.java,v 1.3 2004/08/28 07:29:32 pah Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -126,7 +126,6 @@ public class WorkFlowCastorRoundTripTest extends TestCase {
 
       ParameterValue param = new ParameterValue();
       param.setName("P1");
-      param.setType(ParameterTypes.INTEGER);
       
       param.setValue("15");
       inputs.addParameter(param);
@@ -134,17 +133,15 @@ public class WorkFlowCastorRoundTripTest extends TestCase {
       
       param = new ParameterValue();
       param.setName("P2");
-      param.setType(ParameterTypes.DOUBLE);
       param.setValue("25.4");
 
       param = new ParameterValue();
       param.setName("P4");
-      param.setType(ParameterTypes.STRING);
       param.setValue("Hello World");
 
       param = new ParameterValue();
       param.setName("p9");
-      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+      param.setIndirect(true);
       param.setValue(infileName);
       
       
@@ -153,7 +150,7 @@ public class WorkFlowCastorRoundTripTest extends TestCase {
      
       param = new ParameterValue();
       param.setName("P3");
-      param.setType(ParameterTypes.MYSPACE_FILEREFERENCE);
+      param.setIndirect(true);
       param.setValue(outFilename);
       
       

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ScopeDescriptor.java,v 1.2 2004/08/04 13:58:39 nw Exp $
+ * $Id: ScopeDescriptor.java,v 1.3 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ScopeDescriptor.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/08/04 13:58:39 $
+ * @version $Revision: 1.3 $ $Date: 2004/08/28 07:29:31 $
  */
 public class ScopeDescriptor extends org.astrogrid.workflow.beans.v1.AbstractActivityDescriptor {
 

@@ -2,10 +2,10 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: TABLEDATA.java,v 1.7 2004/08/28 07:29:31 pah Exp $
+ * $Id: OptionList.java,v 1.1 2004/08/28 07:29:31 pah Exp $
  */
 
-package org.astrogrid.registry.beans.resource.votable;
+package org.astrogrid.applications.beans.v1.parameters;
 
   //---------------------------------/
  //- Imported classes and packages -/
@@ -24,11 +24,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * Class TABLEDATA.
+ * For parameters that can only have one of a list of values
  * 
- * @version $Revision: 1.7 $ $Date: 2004/08/28 07:29:31 $
+ * @version $Revision: 1.1 $ $Date: 2004/08/28 07:29:31 $
  */
-public class TABLEDATA extends org.astrogrid.registry.beans.resource.votable.TABLEFORMATType 
+public class OptionList extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
 
@@ -38,19 +38,19 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _TRList
+     * Field _optionValList
      */
-    private java.util.ArrayList _TRList;
+    private java.util.ArrayList _optionValList;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public TABLEDATA() {
+    public OptionList() {
         super();
-        _TRList = new ArrayList();
-    } //-- org.astrogrid.registry.beans.resource.votable.TABLEDATA()
+        _optionValList = new ArrayList();
+    } //-- org.astrogrid.applications.beans.v1.parameters.OptionList()
 
 
       //-----------/
@@ -58,43 +58,43 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Method addTR
+     * Method addOptionVal
      * 
-     * @param vTR
+     * @param vOptionVal
      */
-    public void addTR(org.astrogrid.registry.beans.resource.votable.TR vTR)
+    public void addOptionVal(java.lang.String vOptionVal)
         throws java.lang.IndexOutOfBoundsException
     {
-        _TRList.add(vTR);
-    } //-- void addTR(org.astrogrid.registry.beans.resource.votable.TR) 
+        _optionValList.add(vOptionVal);
+    } //-- void addOptionVal(java.lang.String) 
 
     /**
-     * Method addTR
+     * Method addOptionVal
      * 
      * @param index
-     * @param vTR
+     * @param vOptionVal
      */
-    public void addTR(int index, org.astrogrid.registry.beans.resource.votable.TR vTR)
+    public void addOptionVal(int index, java.lang.String vOptionVal)
         throws java.lang.IndexOutOfBoundsException
     {
-        _TRList.add(index, vTR);
-    } //-- void addTR(int, org.astrogrid.registry.beans.resource.votable.TR) 
+        _optionValList.add(index, vOptionVal);
+    } //-- void addOptionVal(int, java.lang.String) 
 
     /**
-     * Method clearTR
+     * Method clearOptionVal
      */
-    public void clearTR()
+    public void clearOptionVal()
     {
-        _TRList.clear();
-    } //-- void clearTR() 
+        _optionValList.clear();
+    } //-- void clearOptionVal() 
 
     /**
-     * Method enumerateTR
+     * Method enumerateOptionVal
      */
-    public java.util.Enumeration enumerateTR()
+    public java.util.Enumeration enumerateOptionVal()
     {
-        return new org.exolab.castor.util.IteratorEnumeration(_TRList.iterator());
-    } //-- java.util.Enumeration enumerateTR() 
+        return new org.exolab.castor.util.IteratorEnumeration(_optionValList.iterator());
+    } //-- java.util.Enumeration enumerateOptionVal() 
 
     /**
      * Note: hashCode() has not been overriden
@@ -109,15 +109,15 @@ implements java.io.Serializable
         if (super.equals(obj)==false)
             return false;
         
-        if (obj instanceof TABLEDATA) {
+        if (obj instanceof OptionList) {
         
-            TABLEDATA temp = (TABLEDATA)obj;
-            if (this._TRList != null) {
-                if (temp._TRList == null) return false;
-                else if (!(this._TRList.equals(temp._TRList))) 
+            OptionList temp = (OptionList)obj;
+            if (this._optionValList != null) {
+                if (temp._optionValList == null) return false;
+                else if (!(this._optionValList.equals(temp._optionValList))) 
                     return false;
             }
-            else if (temp._TRList != null)
+            else if (temp._optionValList != null)
                 return false;
             return true;
         }
@@ -125,41 +125,41 @@ implements java.io.Serializable
     } //-- boolean equals(java.lang.Object) 
 
     /**
-     * Method getTR
+     * Method getOptionVal
      * 
      * @param index
      */
-    public org.astrogrid.registry.beans.resource.votable.TR getTR(int index)
+    public java.lang.String getOptionVal(int index)
         throws java.lang.IndexOutOfBoundsException
     {
         //-- check bounds for index
-        if ((index < 0) || (index > _TRList.size())) {
+        if ((index < 0) || (index > _optionValList.size())) {
             throw new IndexOutOfBoundsException();
         }
         
-        return (org.astrogrid.registry.beans.resource.votable.TR) _TRList.get(index);
-    } //-- org.astrogrid.registry.beans.resource.votable.TR getTR(int) 
+        return (String)_optionValList.get(index);
+    } //-- java.lang.String getOptionVal(int) 
 
     /**
-     * Method getTR
+     * Method getOptionVal
      */
-    public org.astrogrid.registry.beans.resource.votable.TR[] getTR()
+    public java.lang.String[] getOptionVal()
     {
-        int size = _TRList.size();
-        org.astrogrid.registry.beans.resource.votable.TR[] mArray = new org.astrogrid.registry.beans.resource.votable.TR[size];
+        int size = _optionValList.size();
+        java.lang.String[] mArray = new java.lang.String[size];
         for (int index = 0; index < size; index++) {
-            mArray[index] = (org.astrogrid.registry.beans.resource.votable.TR) _TRList.get(index);
+            mArray[index] = (String)_optionValList.get(index);
         }
         return mArray;
-    } //-- org.astrogrid.registry.beans.resource.votable.TR[] getTR() 
+    } //-- java.lang.String[] getOptionVal() 
 
     /**
-     * Method getTRCount
+     * Method getOptionValCount
      */
-    public int getTRCount()
+    public int getOptionValCount()
     {
-        return _TRList.size();
-    } //-- int getTRCount() 
+        return _optionValList.size();
+    } //-- int getOptionValCount() 
 
     /**
      * Method isValid
@@ -200,56 +200,56 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Method removeTR
+     * Method removeOptionVal
      * 
-     * @param vTR
+     * @param vOptionVal
      */
-    public boolean removeTR(org.astrogrid.registry.beans.resource.votable.TR vTR)
+    public boolean removeOptionVal(java.lang.String vOptionVal)
     {
-        boolean removed = _TRList.remove(vTR);
+        boolean removed = _optionValList.remove(vOptionVal);
         return removed;
-    } //-- boolean removeTR(org.astrogrid.registry.beans.resource.votable.TR) 
+    } //-- boolean removeOptionVal(java.lang.String) 
 
     /**
-     * Method setTR
+     * Method setOptionVal
      * 
      * @param index
-     * @param vTR
+     * @param vOptionVal
      */
-    public void setTR(int index, org.astrogrid.registry.beans.resource.votable.TR vTR)
+    public void setOptionVal(int index, java.lang.String vOptionVal)
         throws java.lang.IndexOutOfBoundsException
     {
         //-- check bounds for index
-        if ((index < 0) || (index > _TRList.size())) {
+        if ((index < 0) || (index > _optionValList.size())) {
             throw new IndexOutOfBoundsException();
         }
-        _TRList.set(index, vTR);
-    } //-- void setTR(int, org.astrogrid.registry.beans.resource.votable.TR) 
+        _optionValList.set(index, vOptionVal);
+    } //-- void setOptionVal(int, java.lang.String) 
 
     /**
-     * Method setTR
+     * Method setOptionVal
      * 
-     * @param TRArray
+     * @param optionValArray
      */
-    public void setTR(org.astrogrid.registry.beans.resource.votable.TR[] TRArray)
+    public void setOptionVal(java.lang.String[] optionValArray)
     {
         //-- copy array
-        _TRList.clear();
-        for (int i = 0; i < TRArray.length; i++) {
-            _TRList.add(TRArray[i]);
+        _optionValList.clear();
+        for (int i = 0; i < optionValArray.length; i++) {
+            _optionValList.add(optionValArray[i]);
         }
-    } //-- void setTR(org.astrogrid.registry.beans.resource.votable.TR) 
+    } //-- void setOptionVal(java.lang.String) 
 
     /**
-     * Method unmarshalTABLEDATA
+     * Method unmarshalOptionList
      * 
      * @param reader
      */
-    public static org.astrogrid.registry.beans.resource.votable.TABLEDATA unmarshalTABLEDATA(java.io.Reader reader)
+    public static org.astrogrid.applications.beans.v1.parameters.OptionList unmarshalOptionList(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.registry.beans.resource.votable.TABLEDATA) Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.votable.TABLEDATA.class, reader);
-    } //-- org.astrogrid.registry.beans.resource.votable.TABLEDATA unmarshalTABLEDATA(java.io.Reader) 
+        return (org.astrogrid.applications.beans.v1.parameters.OptionList) Unmarshaller.unmarshal(org.astrogrid.applications.beans.v1.parameters.OptionList.class, reader);
+    } //-- org.astrogrid.applications.beans.v1.parameters.OptionList unmarshalOptionList(java.io.Reader) 
 
     /**
      * Method validate

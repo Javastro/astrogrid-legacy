@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: FIELDItem.java,v 1.6 2004/08/04 13:58:38 nw Exp $
+ * $Id: FIELDItem.java,v 1.7 2004/08/28 07:29:31 pah Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -20,7 +20,7 @@ import org.exolab.castor.xml.Unmarshaller;
 /**
  * Class FIELDItem.
  * 
- * @version $Revision: 1.6 $ $Date: 2004/08/04 13:58:38 $
+ * @version $Revision: 1.7 $ $Date: 2004/08/28 07:29:31 $
  */
 public class FIELDItem implements java.io.Serializable {
 
