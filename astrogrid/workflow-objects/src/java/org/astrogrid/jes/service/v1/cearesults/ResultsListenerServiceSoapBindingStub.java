@@ -61,16 +61,16 @@ public class ResultsListenerServiceSoapBindingStub extends org.apache.axis.clien
             cachedSerFactories.add(simplesf);
             cachedDeserFactories.add(simpledf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue.class;
+            cls = org.astrogrid.jes.types.v1.cea.axis.ResultListType.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);
 
-            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/CEATypes/v1", "result-list-type");
+            qName = new javax.xml.namespace.QName("http://www.astrogrid.org/schema/AGParameterDefinition/v1", "parameterValue");
             cachedSerQNames.add(qName);
-            cls = org.astrogrid.jes.types.v1.cea.axis.ResultListType.class;
+            cls = org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue.class;
             cachedSerClasses.add(cls);
             cachedSerFactories.add(beansf);
             cachedDeserFactories.add(beandf);

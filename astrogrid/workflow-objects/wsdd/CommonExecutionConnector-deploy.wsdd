@@ -22,12 +22,12 @@
 <parameter xmlns:pns="urn:impl.cea.applications.astrogrid.org" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:executionId" type="tns:string"/>
 <fault xmlns:tns="http://www.w3.org/2001/XMLSchema" name="ceaFault" qname="message" class="org.astrogrid.applications.service.v1.cea.CeaFault" type="tns:string"/>
 </operation>
-<operation xmlns:operNS="urn:impl.cea.applications.astrogrid.org" name="registerResultsListener" qname="operNS:registerResultsListener">
+<operation xmlns:operNS="urn:impl.cea.applications.astrogrid.org" xmlns:retNS="urn:impl.cea.applications.astrogrid.org" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="registerResultsListener" qname="operNS:registerResultsListener" returnQName="retNS:registerReturn" returnType="rtns:boolean">
 <parameter xmlns:pns="urn:impl.cea.applications.astrogrid.org" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:executionId" type="tns:string"/>
 <parameter xmlns:pns="urn:impl.cea.applications.astrogrid.org" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:endpoint" type="tns:anyURI"/>
 <fault xmlns:tns="http://www.w3.org/2001/XMLSchema" name="ceaFault" qname="message" class="org.astrogrid.applications.service.v1.cea.CeaFault" type="tns:string"/>
 </operation>
-<operation xmlns:operNS="urn:impl.cea.applications.astrogrid.org" name="registerProgressListener" qname="operNS:registerProgressListener">
+<operation xmlns:operNS="urn:impl.cea.applications.astrogrid.org" xmlns:retNS="urn:impl.cea.applications.astrogrid.org" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="registerProgressListener" qname="operNS:registerProgressListener" returnQName="retNS:registerReturn" returnType="rtns:boolean">
 <parameter xmlns:pns="urn:impl.cea.applications.astrogrid.org" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:executionId" type="tns:string"/>
 <parameter xmlns:pns="urn:impl.cea.applications.astrogrid.org" xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="pns:endpoint" type="tns:anyURI"/>
 <fault xmlns:tns="http://www.w3.org/2001/XMLSchema" name="ceaFault" qname="message" class="org.astrogrid.applications.service.v1.cea.CeaFault" type="tns:string"/>

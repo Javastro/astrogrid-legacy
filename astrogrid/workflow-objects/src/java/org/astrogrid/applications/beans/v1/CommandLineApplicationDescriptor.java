@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineApplicationDescriptor.java,v 1.25 2004/07/09 09:35:53 nw Exp $
+ * $Id: CommandLineApplicationDescriptor.java,v 1.26 2004/07/09 14:44:42 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CommandLineApplicationDescriptor.
  * 
- * @version $Revision: 1.25 $ $Date: 2004/07/09 09:35:53 $
+ * @version $Revision: 1.26 $ $Date: 2004/07/09 14:44:42 $
  */
 public class CommandLineApplicationDescriptor extends org.astrogrid.applications.beans.v1.ApplicationBaseDescriptor {
 

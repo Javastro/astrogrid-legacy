@@ -128,6 +128,17 @@
                     </xsd:sequence>       
                  </xsd:complexType>    	
            </xsd:element>
+           <xsd:element name="registerProgressListenerResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="registerReturn" type="xsd:boolean">
+                            <xsd:annotation>
+                                <xsd:documentation>returns true if the listener was successfully registered</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>            
            <xsd:element name="registerResultsListener">
                <xsd:complexType>
                     <xsd:sequence>
@@ -144,6 +155,17 @@
                     </xsd:sequence>   
                  </xsd:complexType>        	
            </xsd:element>           
+           <xsd:element name="registerResultsListenerResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="registerReturn" type="xsd:boolean">
+                            <xsd:annotation>
+                                <xsd:documentation>returns true if the listener was successfully registered</xsd:documentation>
+                            </xsd:annotation>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>  
            <xsd:element name="execute">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -279,8 +301,16 @@
     <wsdl:message name="registerResultsListenerRequest">
         <wsdl:part element="impl:registerResultsListener" name="parameters"/>
     </wsdl:message>
+    <wsdl:message name="registerResultsListenerResponse">
+    	<wsdl:part element="impl:registerResultsListenerResponse" name="parameters" />
+    </wsdl:message>
+    
     <wsdl:message name="registerProgressListenerRequest">
         <wsdl:part element="impl:registerProgressListener" name="parameters"/>
+    </wsdl:message>
+    
+    <wsdl:message name="registerProgressListenerResponse">
+    	<wsdl:part element="impl:registerProgressListenerResponse" name="parameters" />
     </wsdl:message>
             
     <wsdl:message name="returnRegistryEntryRequest">
@@ -325,10 +355,12 @@
         </wsdl:operation>
        <wsdl:operation name="registerResultsListener" parameterOrder="">
             <wsdl:input message="intf:registerResultsListenerRequest" name="registerResultsListenerRequest"/>
+            <wsdl:output message="intf:registerResultsListenerResponse" name="registerResultsListenerResponse" />
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>
        <wsdl:operation name="registerProgressListener" parameterOrder="">
             <wsdl:input message="intf:registerProgressListenerRequest" name="registerProgressListenerRequest"/>
+            <wsdl:output message="intf:registerProgressListenerResponse" name="registerProgressListenerResponse" />
             <wsdl:fault message="intf:ceaFault" name="ceaFault"/>
         </wsdl:operation>                
         <wsdl:operation name="queryExecutionStatus" parameterOrder="">
@@ -413,6 +445,13 @@
                     parts="parameters"
                     use="literal"/>
              </wsdl:input>
+             <wsdl:output>
+             	<wsdlsoap:body 
+             		namespace="urn:cea.applications.astrogrid.org"
+             		parts="parameters"
+             		use="literal"
+             		/>
+             </wsdl:output>
             <wsdl:fault name="ceaFault">
                 <wsdlsoap:fault name="ceaFault" use="literal"/>
             </wsdl:fault>
@@ -425,6 +464,13 @@
                     parts="parameters"
                     use="literal"/>
              </wsdl:input>
+             <wsdl:output>
+             	<wsdlsoap:body 
+             		namespace="urn:cea.applications.astrogrid.org"
+             		parts="parameters"
+             		use="literal"
+             		/>
+             </wsdl:output>             
             <wsdl:fault name="ceaFault">
                 <wsdlsoap:fault name="ceaFault" use="literal"/>
             </wsdl:fault>

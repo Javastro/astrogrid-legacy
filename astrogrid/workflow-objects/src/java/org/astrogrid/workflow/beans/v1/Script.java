@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Script.java,v 1.2 2004/07/09 09:35:54 nw Exp $
+ * $Id: Script.java,v 1.3 2004/07/09 14:44:42 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * script text to be executed
  * 
- * @version $Revision: 1.2 $ $Date: 2004/07/09 09:35:54 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/09 14:44:42 $
  */
 public class Script extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable

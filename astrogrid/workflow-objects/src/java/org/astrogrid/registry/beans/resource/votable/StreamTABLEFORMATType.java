@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StreamTABLEFORMATType.java,v 1.3 2004/07/09 09:35:52 nw Exp $
+ * $Id: StreamTABLEFORMATType.java,v 1.4 2004/07/09 14:44:42 nw Exp $
  */
 
 package org.astrogrid.registry.beans.resource.votable;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class StreamTABLEFORMATType.
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/09 09:35:52 $
+ * @version $Revision: 1.4 $ $Date: 2004/07/09 14:44:42 $
  */
 public class StreamTABLEFORMATType extends org.astrogrid.registry.beans.resource.votable.TABLEFORMATType 
 implements java.io.Serializable
