@@ -174,7 +174,8 @@
                                         warRoot="${war.dir}"
                                 />
                         </j:forEach>
-                        <!-- instrument the jars - takes a very very long time - so only do the ag ones -->.
+                        <!-- instrument the jars - takes a very very long time - so only do the ag ones
+                        commented it out for now...
                         <echo>instrumenting WEB-INF/lib</echo>
                         <fileScanner var="libs">
                                 <fileset dir="${war.dir}/WEB-INF/lib">
