@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry components.
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project group.
+        | This value is used to group all jars for a project in one directory.
+        +-->
+    <groupId>astrogrid-registry</groupId>
+
+    <!--+
+        | The current version of the project.
+        | This value is used when naming jars and distribution files.
+        +-->
+    <currentVersion>1.5.0</currentVersion>
+
+    <!--+
+        | The cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/registry
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/registry
+        </developerConnection>
+    </repository>
+
+    <!--+
+        | Bugzilla URL.
+        +-->
+	<issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+
+    <!--+
+        | The project developers.
+        +-->
+	<developers>
+	    <!--+
+	        | Kevin Benson
+	        +-->
+		<developer>
+			<name>Kevin Benson</name>
+			<id>KevinBenson</id>
+			<email>kmb@mssl.ucl.ac.uk</email>
+			<organization>MSSL</organization>
+			<roles>
+				<role>Work group leader</role>
+			</roles>
+		</developer>
+	    <!--+
+	        | Brian McIlwrath
+	        +-->
+		<developer>
+			<name>Brian McIlwrath</name>
+			<id>bkm</id>
+			<email>bkm@star.rl.ac.uk</email>
+			<organization>CCLRC/RAL/SSTD/Astrogrid</organization>
+			<roles>
+				<role>Software developer</role>
+			</roles>
+		</developer>
+	    <!--+
+	        | Dave Morris
+	        +-->
+		<developer>
+			<name>Dave Morris</name>
+			<id>dave</id>
+			<email>maven-report@codon.demon.co.uk</email>
+			<organization>IoA Cambridge</organization>
+			<roles>
+				<role>Software developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+    <!--+
+        | Describes the licenses for this project.
+    <licenses>
+    </licenses>
+        +-->
+
+    <!--+
+        | The external libraries required to build our components.
+        +-->
+    <dependencies>
+        <!--+
+            | The Axis webapp war file.
+            +-->
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.1</version>
+            <type>war</type>
+            <url>http://ws.apache.org/axis/index.html</url>
+        </dependency>
+        <!--+
+            | The 3rd party jars that Axis depends on.
+            +-->
+        <dependency>
+            <groupId>jaf</groupId>
+            <artifactId>jaf</artifactId>
+            <version>1.0.2</version>
+            <type>jar</type>
+        </dependency>
+        <!--+
+            | The JConfig jars.
+            | Soon to be replaced by the AstroGrid common tools.
+            +-->
+        <dependency>
+            <groupId>jconfig</groupId>
+            <artifactId>jconfig</artifactId>
+            <version>2.2</version>
+            <type>jar</type>
+            <url>http://www.jconfig.org/</url>
+            <properties>
+                <dist.zip>true</dist.zip>
+            </properties>
+        </dependency>
+    </dependencies>
+
+    <!--+
+        | The list of reports to generate for each component.
+        +-->
+    <reports>
+        <report>
+            maven-changelog-plugin
+        </report>
+        <report>
+            maven-changes-plugin
+        </report>
+        <report>
+            maven-checkstyle-plugin
+        </report>
+        <report>
+            maven-clover-plugin
+        </report>
+        <report>
+            maven-developer-activity-plugin
+        </report>
+        <report>
+            maven-file-activity-plugin
+        </report>
+        <report>
+            maven-javadoc-plugin
+        </report>
+        <report>
+            maven-junit-report-plugin
+        </report>
+        <report>
+            maven-jxr-plugin
+        </report>
+        <report>
+            maven-license-plugin
+        </report>
+        <report>
+            maven-pmd-plugin
+        </report>
+        <report>
+            maven-tasklist-plugin
+        </report>
+        <report>
+            maven-simian-plugin
+        </report>
+    </reports>
+
+</project>

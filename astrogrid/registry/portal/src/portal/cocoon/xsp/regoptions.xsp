@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsp:page language="java"
+		create-session="true"
+		xmlns:xsp="http://apache.org/xsp"
+		xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+		xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+		>
+		
+		<!--+
+	    | Import any java classes here.
+	    +-->
+
+	<xsp:structure>
+		<xsp:include>java.util.Iterator</xsp:include>
+		<xsp:include>java.util.ArrayList</xsp:include>
+	</xsp:structure>	    
+	
+	<registryoptions>
+	
+		<regoptions>
+			<xsp:logic>
+			<![CDATA[
+				ArrayList mainList = (ArrayList)request.getAttribute("MainQueryPieces");
+				Iterator iter = null;
+				String val = null;
+				if(mainList != null && mainList.size() > 0 ) {
+				iter = mainList.iterator();				
+				while (iter.hasNext()) {
+					val = (String)iter.next();
+			]]>
+					<xsp:element name="regoption">
+						<xsp:attribute name="name"><xsp:expr>val</xsp:expr></xsp:attribute>
+						<xsp:attribute name="val"><xsp:expr>val</xsp:expr></xsp:attribute>
+					</xsp:element>
+			<![CDATA[
+				}
+					}
+			]]>
+			</xsp:logic>
+		</regoptions>
+	</registryoptions>
+</xsp:page>

@@ -1,0 +1,87 @@
+<div>
+<center><h1>Registry Help</h1></center>
+<br /><br />
+
+<ul>
+  <li><a href="#queryregistry">How do you Query the Registry?</a></li>
+  <li><a href="#updateregistry">How do I update?</a></li>
+  <li><a href="#createcopy">What is Create Copy for?</a></li>
+  <li><a href="#harvestregistry">How do I harvest (Assume the entry is already in the Registry)?</a></li>
+  <li><a href="#harvestregistry2">How do I harvest (Assume the entry is not in the Registry)?</a></li>
+  <li><a href="#registrystatus">What is the status page for?</a></li>
+  <li><a href="#addregistry">How do I Add to a registry?</a></li>
+  <li><a href="#addauthority">How do I make my Authority ID managed by this Registry?</a></li>
+  <li><a href="#noaddregistry">Why we can't add and update a Registry entry</a></li>
+</ul>
+<br /><br /><br />
+
+
+
+<a name="queryregistry" />
+<i>How do you Query the Registry?</i>
+<p>
+The query page is quite simple in the fact that you construct your query a lot like an SQL statement. The first text box is what you are criteria your searching on, drop-down box is how you compare the search, and the last text box is the value for the comparison. 
+The drop-down box defaults to "contains" since that is the most used comparison type query.
+A button for restricting the query even more is created allowing you to place "And/OR" constraints on the query.
+When you have filled out all your criteria hit the "Query" button and your results will be shown below.
+</p>
+
+<a name="updateregistry" />
+<i>How do I update?</i>
+<p>
+You can only update the registry by going through the query.  You must query for the data you desire, and then cosidering this registry has ownership or management of that authority id an update button will appear.  This will take you to an update screen with all the text boxes filled out with the data.  Allowing you to make changes to the data and hit the "Update Registry" button.
+</p>
+
+<a name="createcopy" />
+<i>What is Create Copy for?</i>
+<p>
+Create Copy is nothing more than an add, but with the data pre-loaded into the text boxes, but the authority id's are already emptied because it was detected you do not manage this Authority ID.
+</p>
+
+<a name="harvestregistry" />
+<i>How do I harvest (Assume the entry is already in the Registry)?</i>
+<p>
+This requires querying the registry by choosing the "Registry" option on the query page. Now query for the entry, when querying a "Registry" entry you will notice that a text box with a "Harvest" button displays.  The text box must have a particular date.  The format of the date is YYYY-MM-dd ex: 1987-04-02.  When the date is entered and "Harvest" button is clicked, a harvest on that registry wil begin.  But any updates/adds from harvesting the registry can only be seen on the status page (see the next question).
+
+</p>
+
+<a name="harvestregistry2" />
+<i>How do I harvest (Assume the entry is not in the Registry)?</i>
+<p>
+It is assumed that all registries know about themselves hence a Registry entry should be able to be obtained.  On the main registry screen again you will see a text box that allows you to place in a URL.  When you place a url (full url) in their it looks for a Registry entry to come back which is then placed into the local Registry for harvesting.  See the above question for harvesting.  
+<i>side note: It has come to our attention at this early stage that most registries do not have a "Registry" entry meaning an entry is added manually to the registry for accessing the url. <a href="#noaddregistry">Why we can't add and update a Registry entry</a></i>
+</p>
+
+
+<a name="registrystatus" />
+<i>What is the status page for?</i>
+<p>
+The status page contains the last 50 notable entries that has happened on the Registry.  These normally include Harvesting, Adds, and Updates.  Along with General information about the registry that can be used.  For example after a harvest has begun looking at the Registry size and see if it increases can be useful.
+</p>
+
+<a name="addregistry" />
+<i>How do I Add to a registry?</i>
+<p>
+Nothing to say here you choose what you would like to add on the options screen and hit the "Add" button.  This takes you to a screen for you to fill out and hit "Update Registry" for adding into the registry.  
+Be warn an AuthorityID, Title, Description, and Subject are required.
+Also be warned once you do an "Add" the same screen comes back and is in "update" mode, so don't expect to fill out again and have an add happen.  You must go back to the main registry screen and hit "add".  If you don't then an error will appear saying your entry is not in the registry for doing an "update".
+</p>
+
+
+<a name="addauthority" />
+<i>How do I make my Authority ID managed by this Registry?</i>
+<p>
+Go to the main registry screen and perform an "add" on an "Authority" option.  By adding an authority to the registry it inserts the authority id as a "Managed" authority for this particular registry.  Then you will be able to perform adds and updates for this authority id.
+</p>
+
+<a name="noaddregistry" />
+<i>Why we can't add and update a Registry entry?</i>
+<p>
+An actual Registry resource entry was expected to be very rare to ever update.  Also it was expected Registries would know about themselves hence you can harvest for a Registry resource entry hence no need to ever add a Registry resource.  So that is why you are not able to add or update a Registry resource.
+</p>
+
+
+
+
+
+</div>
