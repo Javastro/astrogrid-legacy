@@ -1,4 +1,4 @@
-/*$Id: AnnoyPaulWorkflowTest.java,v 1.1 2004/09/03 14:07:12 nw Exp $
+/*$Id: AnnoyPaulWorkflowTest.java,v 1.2 2004/09/03 14:10:27 nw Exp $
  * Created on 03-Sep-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,7 @@ public class AnnoyPaulWorkflowTest extends AbstractTestForWorkflow {
  
         ParameterValue message = (ParameterValue)mailTool.findXPathValue("input/parameter[name='message']");
         message.setIndirect(false);
-        message.setValue("Helloooooo. ");
+        message.setValue("Helloooooo.\n You have won 10 Million pounds\n send me your credit card details to claim your prize\nthis email is sent to you by an Astrogrid Workflow. ");
 
         ParameterValue subject = (ParameterValue)mailTool.findXPathValue("input/parameter[name='subject']");
         subject.setIndirect(false);
@@ -71,6 +71,9 @@ public class AnnoyPaulWorkflowTest extends AbstractTestForWorkflow {
 
 /* 
 $Log: AnnoyPaulWorkflowTest.java,v $
+Revision 1.2  2004/09/03 14:10:27  nw
+improved message.
+
 Revision 1.1  2004/09/03 14:07:12  nw
 because we can...
  
