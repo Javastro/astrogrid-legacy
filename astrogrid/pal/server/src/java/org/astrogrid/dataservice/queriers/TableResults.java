@@ -1,15 +1,12 @@
 /*
- * $Id: TableResults.java,v 1.7 2005/03/30 21:51:25 mch Exp $
+ * $Id: TableResults.java,v 1.8 2005/03/31 15:06:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.dataservice.queriers;
 
-import org.astrogrid.tableserver.out.*;
-
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
@@ -26,7 +23,11 @@ import org.astrogrid.slinger.SRI;
 import org.astrogrid.slinger.targets.TargetIdentifier;
 import org.astrogrid.slinger.vospace.HomespaceName;
 import org.astrogrid.slinger.vospace.IVOSRN;
-import uk.ac.starlink.fits.FitsTableWriter;
+import org.astrogrid.tableserver.out.FilteredTableWriter;
+import org.astrogrid.tableserver.out.HtmlTableWriter;
+import org.astrogrid.tableserver.out.TableWriter;
+import org.astrogrid.tableserver.out.VoTableWriter;
+import org.astrogrid.tableserver.out.XsvTableWriter;
 
 /** A container interface that holds the results of a query that is in some
  * way a table.  Implementations might be SqlResults.
@@ -90,6 +91,9 @@ public abstract class TableResults implements QueryResults
       else if (requestedFormat.equals(ReturnTable.HTML)) {
          return new HtmlTableWriter(target, "Query Results", querier.getQuery().toString(), user);
       }
+//      else if (requestedFormat.equals(ReturnCount.COUNT)) {
+//         return new HtmlTableWriter(target, "Query Results", querier.getQuery().toString(), user);
+//      }
 //      else if (format.equals(ReturnTable.FITS)) {
 //         tableWriter = new StilStarTableWriter(new FitsTableWriter(), out);
 //      }

@@ -1,5 +1,5 @@
 /*
- * $Id: XsvTableWriter.java,v 1.6 2005/03/31 12:10:28 mch Exp $
+ * $Id: XsvTableWriter.java,v 1.7 2005/03/31 15:06:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -94,6 +94,8 @@ public class XsvTableWriter extends AsciiTableSupport {
          }
       }
  
+      printOut.println();
+
       //types
       for (int i = 0; i < cols.length; i++) {
          printOut.print(cols[i].getPublicType());
@@ -101,6 +103,7 @@ public class XsvTableWriter extends AsciiTableSupport {
             printOut.print(separator);
          }
       }
+      printOut.println();
       for (int i = 0; i < cols.length; i++) {
          if (cols[i].getJavaType() != null) {
             printOut.print(cols[i].getJavaType().getName());
@@ -146,6 +149,9 @@ public class XsvTableWriter extends AsciiTableSupport {
 
 /*
  $Log: XsvTableWriter.java,v $
+ Revision 1.7  2005/03/31 15:06:16  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.6  2005/03/31 12:10:28  mch
  Fixes and workarounds for null values, misisng metadoc columns
 

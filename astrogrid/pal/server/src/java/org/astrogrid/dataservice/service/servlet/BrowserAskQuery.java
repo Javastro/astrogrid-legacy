@@ -1,5 +1,5 @@
 /*
- * $Id: BrowserAskQuery.java,v 1.2 2005/03/30 18:54:03 mch Exp $
+ * $Id: BrowserAskQuery.java,v 1.3 2005/03/31 15:06:16 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.servlet;
@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.service.DataServer;
 import org.astrogrid.dataservice.service.ServletHelper;
 import org.astrogrid.query.Query;
+import org.astrogrid.slinger.mime.MimeTypes;
 import org.astrogrid.slinger.targets.TargetMaker;
 import org.astrogrid.webapp.DefaultServlet;
 
@@ -40,6 +41,7 @@ public class BrowserAskQuery extends DefaultServlet {
          
          if (ServletHelper.isCountReq(request)) {
             long count = server.askCount(user, query, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via BrowserAskQuery servlet");
+            response.setContentType(MimeTypes.PLAINTEXT);
             response.getWriter().write(""+count);
          }
          else {

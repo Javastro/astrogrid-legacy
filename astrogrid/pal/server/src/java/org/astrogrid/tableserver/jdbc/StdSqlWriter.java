@@ -1,5 +1,5 @@
 /*
- * $Id: StdSqlWriter.java,v 1.3 2005/03/24 17:50:48 mch Exp $
+ * $Id: StdSqlWriter.java,v 1.4 2005/03/31 15:06:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -82,7 +82,7 @@ public class StdSqlWriter implements QueryVisitor {
 
    public String getSql() {
       String sql = "SELECT "+select.toString()+" FROM "+from.toString();
-      if (orderby.toString().trim().length()>0) {
+      if (where.toString().trim().length()>0) {
          sql = sql +" WHERE "+where.toString();
       }
       if (orderby.toString().trim().length()>0) {
@@ -450,6 +450,9 @@ public class StdSqlWriter implements QueryVisitor {
 
 /*
  $Log: StdSqlWriter.java,v $
+ Revision 1.4  2005/03/31 15:06:16  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.3  2005/03/24 17:50:48  mch
  Fixed various resource bits
 

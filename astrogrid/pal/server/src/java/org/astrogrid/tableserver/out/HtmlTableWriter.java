@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlTableWriter.java,v 1.5 2005/03/31 12:10:28 mch Exp $
+ * $Id: HtmlTableWriter.java,v 1.6 2005/03/31 15:06:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -143,7 +143,14 @@ public class HtmlTableWriter extends AsciiTableSupport {
       for (int i=0;i<colValues.length;i++) {
          align="";
          if (cols[i].getJavaType() == Date.class) {
-            printOut.println("<TD align='right'>"+dateFormat.format(colValues[i])+"</TD>");
+            printOut.print("<TD align='right'>");
+            try {
+               printOut.print(dateFormat.format(colValues[i]));
+            }
+            catch (IllegalArgumentException iae) {
+               printOut.print(colValues[i]+" ["+iae.toString()+"]");
+            }
+            printOut.println("</TD>");
          }
          else {
             if (cols[i].getJavaType() != null) {
@@ -178,6 +185,9 @@ public class HtmlTableWriter extends AsciiTableSupport {
 
 /*
  $Log: HtmlTableWriter.java,v $
+ Revision 1.6  2005/03/31 15:06:16  mch
+ Fixes and workarounds for null values, misisng metadoc columns
+
  Revision 1.5  2005/03/31 12:10:28  mch
  Fixes and workarounds for null values, misisng metadoc columns
 

@@ -1,5 +1,5 @@
 /*
- * $Id: SubmitCone.java,v 1.3 2005/03/11 14:23:21 mch Exp $
+ * $Id: SubmitCone.java,v 1.4 2005/03/31 15:06:16 mch Exp $
  */
 
 package org.astrogrid.dataservice.service.cone;
@@ -51,7 +51,15 @@ public class SubmitCone extends DefaultServlet {
             //if a target is not given, we do an asynchronous (ask) Query to the response
             //stream.
             tableDef.setTarget(TargetMaker.makeTarget(response.getWriter(), false));
-            server.askQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
+            
+            if (ServletHelper.isCountReq(request)) {
+               long count = server.askCount(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
+               response.setContentType(MimeTypes.PLAINTEXT);
+               response.getWriter().write(""+count);
+            }
+            else {
+               server.askQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
+            }
          }
          else {
             //otherwise we direct the response to the target and put status info to the browser
@@ -59,7 +67,8 @@ public class SubmitCone extends DefaultServlet {
             response.getWriter().println(
                "<html>"+
                "<head><title>Submitting Query</title></head>"+
-               "<body>");
+               "<body>"+
+               "<p>Submitting, please wait...</p>");
             response.getWriter().flush();
 
             String id = server.submitQuery(ServletHelper.getUser(request), coneQuery, request.getRemoteHost()+" ("+request.getRemoteAddr()+") via SubmitCone servlet");
@@ -68,6 +77,8 @@ public class SubmitCone extends DefaultServlet {
             //indicate status
             response.getWriter().println("Cone Query has been submitted, and assigned ID "+id+"."+
                                           "<a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
+            response.getWriter().flush();
+
             //redirect to status
             response.getWriter().write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>"+
                                       "</body></html>");
