@@ -3,4 +3,8 @@
 <Context path="/astrogrid-jes-SNAPSHOT">
    <Environment name="org.astrogrid.config.url" override="false" type="java.lang.String"
            value="@CONFIGPATH@/AstroGridConfig.properties"/>
+    <!-- uncomment this to enable the scripting-language workflow interpreter - not ready for the bigtime yet.. 
+   <Environment name="jes.component.manager.class" override="false" type="java.lang.String"
+           value="org.astrogrid.jes.component.production.ScriptDrivenComponentManager"/>
+   -->
 </Context>
