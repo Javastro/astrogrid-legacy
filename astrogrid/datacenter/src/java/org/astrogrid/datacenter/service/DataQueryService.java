@@ -1,13 +1,21 @@
 /*
- * $Id: DataQueryService.java,v 1.1 2003/08/27 09:58:07 mch Exp $
+ * $Id: DataQueryService.java,v 1.2 2003/08/28 13:25:19 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
 
+import java.io.IOException;
 import java.util.Date;
+import java.util.Vector;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Element;
+import org.astrogrid.datacenter.servicestatus.ServiceStatus;
 
 /**
  * Manages a single query being made on the dataset.  Made from a combination
@@ -16,10 +24,14 @@ import org.w3c.dom.Element;
  * @author M Hill
  */
 
-public class DataQueryService
+public class DataQueryService implements ServiceStatus
 {
    /** temporary used for generating unique handles - see generateHandle() */
-   protected static java.util.Random random = new java.util.Random();
+   private static java.util.Random random = new java.util.Random();
+
+   private Vector serviceListeners = new Vector();
+
+   private String status = UNKNOWN;
 
    /**
     * A handle is used to identify a particular service.  It is also used as the
@@ -63,9 +75,48 @@ public class DataQueryService
     * Runs a blocking query.  NB the given DOM document may include other tags, so we need
     * to extract the right elements
     */
-   public Element runQuery(Element domContainingQuery)
+   public Element runQuery(Element domContainingQuery) throws QueryException, DatabaseAccessException, IOException
    {
-      return null;
+      fireStatusChanged(STARTING);
+      Query query = new Query(domContainingQuery);
+
+      DatabaseQuerier querier = DatabaseQuerier.createQuerier();
+
+      QueryResults results = querier.queryDatabase(query);
+
+      return results.toVotable().getDocumentElement();
    }
+
+   /**
+    * Returns the current status
+    */
+   public String getStatus()
+   {
+      return status;
+   }
+
+   /**
+    * Register a status listener.  This will be informed of changes in status
+    * to the service - IF the service supports such info.  Otherwise it will
+    * just get 'starting', 'working' and 'completed' messages based around the
+    * basic http exchange.
+    */
+   public void registerServiceListener(ServiceListener aListener)
+   {
+      serviceListeners.add(aListener);
+   }
+
+   /** informs all listeners of the new status change. Not threadsafe...
+    */
+   protected void fireStatusChanged(String newStatus)
+   {
+      status = newStatus;
+
+      for (int i=0;i<serviceListeners.size();i++)
+      {
+         ((ServiceListener) serviceListeners.get(i)).serviceStatusChanged(newStatus);
+      }
+   }
+
 }
 
