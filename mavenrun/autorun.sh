@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.8 2004/05/24 12:30:06 jdt Exp $ 
+# $Id: autorun.sh,v 1.9 2004/05/24 12:32:01 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -40,7 +40,7 @@ else
    echo "*** FAILURE ***\n" >> $LOGFILE
    cat $LOGFILE | mail -s "undeploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
-if maven maven deploy-all >> $LOGFILE 2>&1
+if maven  deploy-all >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***\n" >> $LOGFILE
 else
