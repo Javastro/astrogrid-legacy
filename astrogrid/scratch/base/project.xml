@@ -2,19 +2,6 @@
     <extend>${basedir}/../basebase/project.xml</extend>
     <pomVersion>3</pomVersion>
     <name>Base Project</name>
-    <currentVersion>basecurrentversion</currentVersion>
     <artifactId>Base</artifactId>
-    <developers>
-        <developer>
-            <name>Brian McIlwrath</name>
-            <id>bkm</id>
-            <email>bkm@star.rl.ac.uk</email>
-            <organization> Leicester </organization>
-            <roles>
-                <role> Data Software Developer </role>
-            </roles>
-        </developer>
-    </developers>
-    <build/>
     <properties/>
 </project>

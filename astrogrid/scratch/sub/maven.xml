@@ -1,20 +1,9 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project default="astrogrid-build-site" xmlns:j="jelly:core">
-
-	<postGoal name="clean:clean">
-		<attainGoal name="showprops"/>
-    </postGoal>
-    
     <goal name="showprops">
         <echo message="====Properties visible in Sub POM==="/>
-        <echo message="Defined in master props: astrogrid.master= ${astrogrid.master}"/>
         <echo message="Defined in super-super props: astrogrid.basebase= ${astrogrid.basebase}"/>         
-        <echo message="Defined in super props: astrogrid.base= ${astrogrid.base}"/>
-        <echo message="Defined in sub props: astrogrid.sub= ${astrogrid.sub}"/>
         <echo message="Defined in super props: maven.repo.central= ${maven.repo.central}"/>
-        <echo message="Defined in super POM: currentVersion= ${pom.currentVersion}"/>
-        <echo message="Defined in super-super POM: groupId=${pom.groupId}"/>
 	</goal>
-	
 </project>

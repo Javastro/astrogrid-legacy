@@ -1,24 +1,7 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project xmlns:maven="jelly:maven">
-
-	<goal name="multiclean" prereqs="multiproject:clean">
-		<attainGoal name="showprops"/>
-    </goal>
-    
-    <goal name="showprops">
-        <echo message="====Properties visible in Master POM===="/>
-        <echo message="Defined in master props: astrogrid.master= ${astrogrid.master}"/>
-        <echo message="Defined in super-super props: astrogrid.basebase= ${astrogrid.basebase}"/>         
-        <echo message="Defined in super props: astrogrid.base= ${astrogrid.base}"/>
-        <echo message="Defined in sub props: astrogrid.sub= ${astrogrid.sub}"/>
-        <echo message="Defined in super props: maven.repo.central= ${maven.repo.central}"/>
-        <echo message="Defined in super POM: currentVersion= ${pom.currentVersion}"/>
-        <echo message="Defined in super-super POM: groupId=${pom.groupId}"/>
-    </goal>
-    
     <goal name="usereactor">
-    	<attainGoal name="showprops"/>
 		 <maven:reactor
 		     basedir="${basedir}"
 		     postProcessing="false"
@@ -27,6 +10,4 @@
 		     banner="running subprojects"
 		     ignoreFailures="true" />
 	</goal>
-
-	
 </project>
