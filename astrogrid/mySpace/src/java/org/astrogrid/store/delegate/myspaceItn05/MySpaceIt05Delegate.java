@@ -1,22 +1,17 @@
 package org.astrogrid.store.delegate.myspaceItn05;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.ByteArrayInputStream;
-
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-
 import org.astrogrid.community.User;
-
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Msrl;
-
 import org.astrogrid.store.delegate.StoreAdminClient;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreException;
@@ -24,7 +19,7 @@ import org.astrogrid.store.delegate.StoreFile;
 
 
 /**
- * <code>MySpaceIt05Delegate</code> is the delegate class which 
+ * <code>MySpaceIt05Delegate</code> is the delegate class which
  * applications invoke in order to access a MySpace service.
  *
  * @author A C Davenhall (Edinburgh)
@@ -72,12 +67,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * Constructor with specified User and endPoint.
  */
 
-   public MySpaceIt05Delegate(User operator, String endPoint) 
+   public MySpaceIt05Delegate(User operator, String endPoint)
      throws IOException
    {
       this.operator = operator;
       this.endPoint = endPoint;
-//      System.out.println("entered MyspaceIt05Delegate: operator = " 
+//      System.out.println("entered MyspaceIt05Delegate: operator = "
 //        + operator.toString() + " endpoint = " + endPoint);
 
       //managerMsrl = new Msrl(new URL(endPoint));
@@ -92,7 +87,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
             new java.net.URL(endPoint) );
       }
       catch (Exception e)
-      {  throw new IOException 
+      {  throw new IOException
            ("Failed to create delegate for service: " + endPoint );
       }
    }
@@ -187,7 +182,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public void resetStatusList()
-   {  statusList.clear(); 
+   {  statusList.clear();
    }
 
 
@@ -215,9 +210,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @return The Agsl of the service to which this client is connected.
  */
    public Agsl getEndpoint()
-   {  
+   {
       try {
-         Agsl agsl = new Agsl( Msrl.SCHEME + ":" + endPoint );      
+         Agsl agsl = new Agsl( Msrl.SCHEME + ":" + endPoint );
          return agsl;
       }catch(MalformedURLException mue) {
          mue.printStackTrace();
@@ -250,7 +245,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
       {  ArrayList fileList = new ArrayList();
 
          for(int loop=0; loop<numFiles; loop++)
-         {  EntryResults file = 
+         {  EntryResults file =
               (EntryResults)fileResults[loop];
             fileList.add(file);
          }
@@ -277,8 +272,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 /**
  * Return a list of all the files that match the expression
  *
- * @param filter Filter (or query) which the files must match.  Queries 
- *   take the form of entry names which may optionally include a 
+ * @param filter Filter (or query) which the files must match.  Queries
+ *   take the form of entry names which may optionally include a
  *   wild-card character.  This wild-card character is an asterisk and
  *   it must occur at the end of the name.
  * @return Array of <code>EntryRecord</code>s which satisfy the query.
@@ -328,32 +323,26 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  */
 
    public StoreFile getFile(String path) throws IOException
-   {  EntryRecord requestedFile = new EntryRecord();
+   {
 
       KernelResults results = innerDelegate.getEntriesList(path,
         isTest);
-
-//
-//   Obtain the file which matched the query.  This file is taken
-//   to be the first entry in the return array.
-
-      Object[] fileResults = results.getEntries();
-      int numFiles = Array.getLength(fileResults);
-
-      if (numFiles > 0)
-      {  requestedFile = new EntryRecord(
-           (EntryResults)fileResults[0] );
-      }
-      else
-      { requestedFile  = null;
-      }
 
 //
 //   Append and check any status messages.
 
       this.appendAndCheckStatusMessages(results);
 
-      return requestedFile;
+//
+//   Obtain the file which matched the query.  This file is taken
+//   to be the first entry in the return array.
+
+      if (results.getEntries() == null) {
+         return null;
+      }
+      else  {
+         return new EntryRecord( (EntryResults) results.getEntries()[0]);
+      }
    }
 
 
@@ -362,7 +351,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 /**
  * Put the given byte buffer from offset of length bytes, to the given target
  */
-   public void putBytes(byte[] bytes, int offset, int length, 
+   public void putBytes(byte[] bytes, int offset, int length,
      String targetPath, boolean append) throws IOException
    {
 //
@@ -386,7 +375,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 //   Extract the subset of the array which is to be sent.
 
       int numBytes = length - offset;
-      byte[] subsetToSend = new byte[length]; 
+      byte[] subsetToSend = new byte[length];
 
       for (int loop=0; loop<numBytes; loop++)
       {  subsetToSend[loop] = bytes[loop + offset];
@@ -457,9 +446,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 
 /**
  * Copy the contents of the file at the given source url to the given
- * location. 
+ * location.
  */
-   public void putUrl(URL source, String targetPath, boolean append) 
+   public void putUrl(URL source, String targetPath, boolean append)
      throws IOException
    {
 //
@@ -505,7 +494,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * given location.
  */
 
-   public OutputStream putStream(String targetPath, boolean append) 
+   public OutputStream putStream(String targetPath, boolean append)
      throws IOException
    {  return new MySpaceOutputStream(targetPath, append);
    }
@@ -575,7 +564,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
          }
          else
          {  throw new IOException (
-              "Failed to obtain URL for file on service: " + 
+              "Failed to obtain URL for file on service: " +
               this.endPoint);
          }
       }
@@ -737,7 +726,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * removes all extant containers belonging to an account.  Any files
  * belonging to the account must have been removed previously.  However,
  * the method will remove any remaining arbitrarily complex tree of
- * containers.  If any files are found the account will be left 
+ * containers.  If any files are found the account will be left
  * untouched.
  * </p>
  *
@@ -869,7 +858,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @param newExpiryDate New expiry date for the file.
  */
 
-   public void extendLifetime(String fileName, Date newExpiryDate) 
+   public void extendLifetime(String fileName, Date newExpiryDate)
      throws IOException
    {  long expiry = newExpiryDate.getTime();
       KernelResults results = innerDelegate.extendLifetime(
@@ -897,7 +886,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
  * @param newOwner Account of the new owner.
  */
 
-   public void changeOwner(String fileName, User newOwner) 
+   public void changeOwner(String fileName, User newOwner)
      throws IOException
    {  String owner = newOwner.getAccount();
       KernelResults results = innerDelegate.changeOwner(
@@ -939,7 +928,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
       {  StatusMessage status = new StatusMessage();
 
          for(int loop=0; loop<numStatus; loop++)
-         {  
+         {
 //
 //         Convert each statusResults object to a StatusMessage.
 
@@ -972,7 +961,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
 // ----------------------------------------------------------------------
 
 /**
- * Special OutputStream which writes to a String, then sends it when the 
+ * Special OutputStream which writes to a String, then sends it when the
  * stream is closed.
  */
 
@@ -983,7 +972,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
       private int cursor = 0;  //insert point
 
 
-      public MySpaceOutputStream(String aTargetPath, boolean append) 
+      public MySpaceOutputStream(String aTargetPath, boolean append)
         throws IOException
       {  this.targetPath = aTargetPath;
 
