@@ -1,4 +1,4 @@
-/*$Id: LinearPolicy.java,v 1.5 2004/03/15 23:45:07 nw Exp $
+/*$Id: LinearPolicy.java,v 1.6 2004/03/18 01:28:43 nw Exp $
  * Created on 04-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,25 +13,33 @@ package org.astrogrid.jes.jobscheduler.policy;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.jobscheduler.Policy;
+import org.astrogrid.jes.util.JesUtil;
+import org.astrogrid.workflow.beans.v1.AbstractActivity;
+import org.astrogrid.workflow.beans.v1.ActivityContainer;
+import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import java.util.Iterator;
 
 import junit.framework.Test;
 
 /** Policy that executes all jobs in a  purely linear fashion, with no concurrency.
- * @todo add handling of join conditions.
+ * <p>
+ * Doesn't consider join conditions - will run all steps.
  * @author Noel Winstanley nw@jb.man.ac.uk 04-Mar-2004
  *
  */
-public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDescriptor{
+public class LinearPolicy extends AbstractPolicy implements Policy {
     /** Construct a new LinearPolicy
      * 
      */
     public LinearPolicy() {
         super();
         logger.info("Creating Linear Policy");
+        this.name =  "LinearPolicy";
+        this.description = "Executes job steps in a top-to-bottom, purely sequential manner. treats flows as sequences. ignores join conditions.";       
     }
     /** 
      * @see org.astrogrid.jes.jobscheduler.Policy#currentJobStatus(org.astrogrid.workflow.beans.v1.Workflow)
@@ -42,13 +50,21 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
         if (job.findXPathValue("//*[jes:isStep()]") == null) {
             return ExecutionPhase.COMPLETED;
         }  
-        Iterator i = job.findXPathIterator("//*[jes:isStep()]/stepExecutionRecord/status");
+        Iterator i = job.findXPathIterator("//*[jes:isStep()]");
+        
         boolean runningFound = false;       
         boolean pendingFound = false;
         boolean noStatusFound = true;
         while (i.hasNext()) {
             noStatusFound = false;
-            ExecutionPhase s = (ExecutionPhase)i.next();
+            Step step = (Step)i.next();
+            int count = step.getStepExecutionRecordCount();
+            ExecutionPhase s = null;
+            if (count ==0) {
+                s = ExecutionPhase.PENDING;
+            } else {
+                s = step.getStepExecutionRecord(count-1).getStatus();
+            }
             if (s.equals(ExecutionPhase.ERROR) || s.equals(ExecutionPhase.UNKNOWN)) {
                 return s;
             }
@@ -75,26 +91,34 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
      */
     public Step nextExecutableStep(Workflow job) {
         registerFunctions(job);
-        return (Step)job.findXPathValue("//*[jes:isPendingStep()]");
-    }
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
-     */
-    public String getName() {
-        return "LinearPolicy";
-    }
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getDescription()
-     */
-    public String getDescription() {
-        return "Executes job steps in a top-to-bottom, purely sequential manner. treats flows as sequences";
-    }
-    /**
-     * @see org.astrogrid.jes.component.ComponentDescriptor#getInstallationTest()
-     */
-    public Test getInstallationTest() {
+
+        Iterator i = job.findXPathIterator("//*[jes:isStep()]"); // returns flattened list of all steps - we are relying on the order these are returned in really.
+        boolean justSeenComplete = true; // necessary, special case for first step.
+        while (i.hasNext()) {
+            Step s = (Step)i.next();
+            int count = s.getStepExecutionRecordCount();
+            if (count == 0) {
+                if (justSeenComplete) {
+                    return s;
+                } else {
+                    justSeenComplete = false;
+                }
+            } else {
+                StepExecutionRecord er = s.getStepExecutionRecord(count-1);
+                if (justSeenComplete && er.getStatus().getType() == ExecutionPhase.PENDING_TYPE) {
+                    return s;                
+                }
+                if (er.getStatus().getType()   == ExecutionPhase.COMPLETED_TYPE) {
+                    justSeenComplete = true;
+                } else {
+                    justSeenComplete = false;
+                }         
+          }
+        }
         return null;
     }
+    
+
     
    
     
@@ -103,6 +127,9 @@ public class LinearPolicy extends AbstractPolicy implements Policy , ComponentDe
 
 /* 
 $Log: LinearPolicy.java,v $
+Revision 1.6  2004/03/18 01:28:43  nw
+corrected implement - does what it claims to now.
+
 Revision 1.5  2004/03/15 23:45:07  nw
 improved javadoc
 
