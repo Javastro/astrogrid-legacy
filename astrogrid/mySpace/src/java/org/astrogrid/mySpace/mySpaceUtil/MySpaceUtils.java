@@ -35,9 +35,15 @@ public class MySpaceUtils {
     private static boolean DEBUG = true;
 	private static String catalinaHome = AxisProperties.getProperty("catalina.home");
 	private static String responseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MySpaceManagerResponse.properties";
+	private static String responseTemplate_header = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseHeader.properties";
+	private static String responseTemplate_element = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseElements.properties";
+	private static String responseTemplate_foot = catalinaHome+"/conf/astrogrid/mySpace/" +"MSResponseFooter.properties";
 	private static String requestTemplate = "catalinaHome"+"/conf/astrogrid/mySpace/"+"MySpaceManagerRequest.properties";
     private static Properties conProperties = new Properties();
     private static final String RESPONSE = "MYSPACEMANAGER_RESPONSE";
+    private static final String D_RESPONSE_HEAD ="MYSPACEMANAGER_D_RESPONSE_HEAD";
+    private static final String D_RESPONSE_ELEMENT ="MYSPACEMANAGER_D_ELEMENT";
+    private static final String D_RESPONSE_FOOT ="MYSPACEMANAGER_D_FOOT";
 	private static MySpaceStatus msstatus = new MySpaceStatus();
 	private static String response = " ";
 	private static final String SUCCESS = "SUCCESS";
@@ -151,6 +157,96 @@ public class MySpaceUtils {
 		}
 		
 	}
+	
+	public String buildMySpaceManagerResponseFooter(){
+		//conProperties = new Properties();
+		String response = "";
+		try {
+			MySpaceUtils.readFromFile(new File(responseTemplate_foot));
+			FileInputStream istream = new FileInputStream( responseTemplate_foot );
+			conProperties.load(istream);
+			istream.close();
+			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Footer: " +conProperties.toString() ) ;
+			response = conProperties.getProperty( D_RESPONSE_FOOT );
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Footer = "+response);
+	
+			return response;
+		}
+		catch ( IOException ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+			return response;
+		}
+		
+	}
+	
+	public String buildMySpaceManagerResponseHeader(String status, String details){
+		//conProperties = new Properties();
+		String response = "";
+		try {
+			FileInputStream istream = new FileInputStream( responseTemplate_header );
+			conProperties.load(istream);
+			istream.close();
+			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Header: " +conProperties.toString() ) ;
+			String template = conProperties.getProperty( D_RESPONSE_HEAD );
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Header = "+response);
+			
+			Object [] inserts = new Object[3] ;
+			inserts[0] = status;
+			inserts[1] = details;
+			inserts[2] = Calendar.getInstance().getTime();
+					
+			response = MessageFormat.format( template, inserts ) ;
+			return response;
+		}
+		catch ( IOException ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+			return response;
+		}
+		
+	}	
+	
+	public String buildMySpaceManagerResponseElement(DataItemRecord record, String status, String details){
+		//conProperties = new Properties();
+		String response = "";
+		try {
+			FileInputStream istream = new FileInputStream( responseTemplate_element );
+			conProperties.load(istream);
+			istream.close();
+			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Element: " +conProperties.toString() ) ;
+			String template = conProperties.getProperty( D_RESPONSE_ELEMENT );
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+response);
+			
+			Object [] inserts = new Object[8] ;
+
+			if(record != null){
+				inserts[0] = record.getDataItemName();				
+				inserts[1] = new Integer(record.getDataItemID()).toString();
+				inserts[2] = record.getOwnerID();
+				inserts[3] = record.getCreationDate();
+				inserts[4] = record.getExpiryDate();
+				inserts[5] = new Integer(record.getSize()).toString();
+				inserts[6] = new Integer(record.getType()).toString();
+				inserts[7] = record.getPermissionsMask();
+			}
+					
+			response = MessageFormat.format( template, inserts ) ;
+			return response;
+		}
+		catch ( IOException ex ) {
+			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ex.getMessage());
+			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ex.toString());
+			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
+			return response;
+		}
+		
+	}		
 	
 	public HashMap getRequestAttributes( String xmlRequest ){
 		HashMap request = new HashMap();
