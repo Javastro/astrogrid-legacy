@@ -3,7 +3,6 @@ package org.astrogrid.warehouse.service;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Properties;
-import org.globus.ogsa.impl.security.authorization.NoAuthorization;
 import org.globus.ogsa.utils.AnyHelper;
 import org.gridforum.ogsi.ExtensibilityType;
 import org.w3c.dom.Document;
