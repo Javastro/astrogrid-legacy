@@ -14,12 +14,17 @@
          The integration tests consist of a number of <a href ="junit-report.html">JUnit tests</a>.
       </p>
     </section>
-    <section name="What's next?">
+    <section name="Automatic redeployment">
       <p>
-         Automatic deployment of war files following maven builds.  This might mean that 
-         the integration tests are best executed from a separate cron job rather than
-         the maven script....
+         The maven builds produce wars for (almost) all components.  Before the integration tests are run these wars are grabbed
+         from the repository and (re-)deployed to a variety of test machines.  You can find out what goes where by looking at the ant 
+         script deployWebapps.xml.
        </p>
+       <subsection name="What's next?"/>
+       	<P>
+       		All components bar registry are being deployed, but only mySpace and JES are configured correctly.  Rest are pending....
+       	</P>
+       </subsection>
     </section>
   </body>
 </document>
