@@ -43,7 +43,7 @@ a PC) running the following:
   http://httpd.apache.org/).
 
 * A copy of the MySpace war file, which can be obtained from
-  http://www.astrogrid.org/maven/build/mySpace/index.html
+  http://www.astrogrid.org/maven/docs/snapshot/mySpace/index.html
 
 You need to be able to log in to Tomcat with the role of `Manager'.  A
 list of Tomcat users can be found in file:

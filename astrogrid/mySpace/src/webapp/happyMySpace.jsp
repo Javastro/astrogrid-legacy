@@ -184,13 +184,13 @@
       |
       
       
-      <a href="http://www.astrogrid.org/maven/build/index.html"><img class="handle" src="maven/images/none.png" alt=""></img>Projects</a>
+      <a href="http://www.astrogrid.org/maven/docs/snapshot/index.html"><img class="handle" src="maven/images/none.png" alt=""></img>Projects</a>
       
     
       |
       
       
-      <a href="http://www.astrogrid.org/maven/build/mySpace/index.html"><img class="handle" src="maven/images/none.png" alt=""></img>mySpace</a>
+      <a href="http://www.astrogrid.org/maven/docs/snapshot/mySpace/index.html"><img class="handle" src="maven/images/none.png" alt=""></img>mySpace</a>
       
     
   

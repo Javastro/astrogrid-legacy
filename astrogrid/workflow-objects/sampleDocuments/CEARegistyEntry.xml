@@ -13,7 +13,7 @@
 		<vr:ShortName>SExtractor</vr:ShortName>
 		<vr:Summary>
 			<vr:Description>Sextractor</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</vr:Summary>
 		<vr:Curation>
 			<vr:Publisher>
@@ -73,7 +73,7 @@
 		<vr:ShortName>HyperZ</vr:ShortName>
 		<vr:Summary>
 			<vr:Description>HyperZ</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</vr:Summary>
 		<vr:Curation>
 			<vr:Publisher>
@@ -123,7 +123,7 @@
 		<vr:ShortName>CrossMatcher</vr:ShortName>
 		<vr:Summary>
 			<vr:Description>CrossMatcher</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</vr:Summary>
 		<vr:Curation>
 			<vr:Publisher>
@@ -188,7 +188,7 @@
 		<vr:ShortName>CLEC1</vr:ShortName>
 		<vr:Summary>
 			<vr:Description>Run command line applications     </vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</vr:ReferenceURL>
 		</vr:Summary>
 		<vr:Curation>
 			<vr:Publisher>
@@ -235,7 +235,7 @@
 		<vr:ShortName>CLEC2</vr:ShortName>
 		<vr:Summary>
 			<vr:Description>Run command line applications     </vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</vr:ReferenceURL>
 		</vr:Summary>
 		<vr:Curation>
 			<vr:Publisher>

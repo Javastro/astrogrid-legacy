@@ -13,7 +13,7 @@
     </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
-       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="Projects"   href="../index.html"/>
        <item name="Registry" href="./index.html"/>
     </links>
   </body>

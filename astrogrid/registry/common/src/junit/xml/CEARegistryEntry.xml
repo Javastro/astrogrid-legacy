@@ -16,7 +16,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ShortName>SExtractor</ShortName>
 		<Summary>
 			<vr:Description>Sextractor</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</Summary>
 		<Curation>
 			<vr:Publisher>
@@ -74,7 +74,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ShortName>HyperZ</ShortName>
 		<Summary>
 			<vr:Description>HyperZ</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</Summary>
 		<Curation>
 			<vr:Publisher>
@@ -122,7 +122,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ShortName>CrossMatcher</ShortName>
 		<Summary>
 			<vr:Description>CrossMatcher</vr:Description>
-			<vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+			<vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
 		</Summary>
 		<Curation>
 			<vr:Publisher>
@@ -187,7 +187,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ShortName>CLEC1</ShortName>
 		<Summary>
 			<Description>Run command line applications     </Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications</ReferenceURL>
+			<ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</ReferenceURL>
 		</Summary>
 		<Curation>
 			<Publisher>
@@ -234,7 +234,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<ShortName>CLEC2</ShortName>
 		<Summary>
 			<Description>Run command line applications     </Description>
-			<ReferenceURL>http://www.astrogrid.org/maven/build/applications</ReferenceURL>
+			<ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications</ReferenceURL>
 		</Summary>
 		<Curation>
 			<Publisher>

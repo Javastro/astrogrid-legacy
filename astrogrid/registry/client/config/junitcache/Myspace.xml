@@ -30,7 +30,7 @@
       <Description>
          This entry is a Myspace manager entry which is a particular service dealing with a user's VOSpace.
       </Description>
-      <ReferenceURL>http://www.astrogrid.org/maven/build/myspace</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/myspace</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
     <RelatedResource>
