@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.25 2004/03/16 16:19:51 mch Exp $
+ * $Id: SqlResults.java,v 1.26 2004/03/16 17:05:38 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -117,10 +117,12 @@ public class SqlResults extends QueryResults
 //         sqlResults.beforeFirst();
          int row = 0;
          int maxRow = getCount();
+         String ofMax = " of "+maxRow;
+         if (maxRow == -1) ofMax = "";
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote(note+"\nProcessing Row "+row+" of "+maxRow);
+            statusToUpdate.setNote(note+"\nProcessing Row "+row+ofMax);
 
             printOut.println("               <TR>");
             for (int i=1;i<=cols;i++)
@@ -181,10 +183,12 @@ public class SqlResults extends QueryResults
 
          int row = 0;
          int maxRow = getCount();
+         String ofMax = " of "+maxRow;
+         if (maxRow == -1) ofMax = "";
          while (sqlResults.next())
          {
             row++;
-            statusToUpdate.setNote(note+"\nProcessing Row "+row+" of "+maxRow);
+            statusToUpdate.setNote(note+"\nProcessing Row "+row+ofMax);
 
             for (int c=1;c<=cols;c++)
             {
@@ -247,6 +251,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.26  2004/03/16 17:05:38  mch
+ Prettified of max
+
  Revision 1.25  2004/03/16 16:19:51  mch
  Fix to limits stopping everything...
 
