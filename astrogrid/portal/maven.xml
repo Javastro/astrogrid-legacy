@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<project
+    xmlns:j="jelly:core"
+    xmlns:maven="jelly:maven"
+    xmlns:ant="jelly:ant"
+    xmlns:deploy="deploy"
+    xmlns:util="jelly:util"
+    xmlns:doc="doc">
+  <preGoal name="jar:deploy-snapshot">
+    <maven:reactor
+        basedir="${basedir}"
+        postProcessing="false"
+        includes="*/project.xml"
+        goals="jar:deploy-snapshot"
+        banner="Deploy Portal Component JARs"
+        ignoreFailures="true"/>
+  </preGoal>
+
+  <preGoal name="jar:install-snapshot">
+    <maven:reactor
+        basedir="${basedir}"
+        postProcessing="false"
+        includes="*/project.xml"
+        goals="jar:install-snapshot"
+        banner="Install Portal Component JARs"
+        ignoreFailures="true"/>
+  </preGoal>
+
+  <preGoal name="site:generate">
+    <attainGoal name="multiproject:site"/>
+  </preGoal>
+
+  <preGoal name="site:fsdeploy">
+    <attainGoal name="multiproject:site"/>
+  </preGoal>
+</project>
