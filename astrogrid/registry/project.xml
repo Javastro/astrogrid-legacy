@@ -5,7 +5,7 @@
 
 <!--
   Temporary Test
---
+-->
   <pomVersion>3</pomVersion>
   <id>astrogrid-registry</id>
   <name>AstroGrid Registry</name>
