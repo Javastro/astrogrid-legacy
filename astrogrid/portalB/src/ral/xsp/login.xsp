@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java"
+ xmlns:xsp="http://apache.org/xsp"
+>
+<xsp:comment>
+
+XSP page to process the Astrogrid login form.
+
+Brian McIlwrath, Astrogrid, RAL>
+
+30th June 2003
+</xsp:comment>
+
+<xsp:structure>
+   <xsp:include>org.apache.cocoon.environment.Session</xsp:include>
+   <xsp:include>java.io.*</xsp:include>
+   <xsp:include>java.text.*</xsp:include>
+   <xsp:include>java.net.URL</xsp:include>
+   <xsp:include>java.util.Date</xsp:include>
+</xsp:structure>
+
+<page>
+   <title>Login results</title>
+
+<xsp:logic>
+   String pwdURL = null;
+   Session session = null;
+   String user      = request.getParameter("Username");
+   String pwd       = request.getParameter("Password");
+   String community = request.getParameter("Community");
+   String redirect  = "agnologin.html";
+
+   DateFormat timestamp = DateFormat.getDateTimeInstance();
+   String now = timestamp.format(new Date());
+
+   if( (pwdURL = parameters.getParameter("pwdfile", null)) == null) {
+      pwdURL = 
+       "http://stargrid1.bnsc.rl.ac.uk:8080/org/astrogrid/portal/password.txt";
+      System.out.println("Used backup password URL");
+   }
+   try {
+     URL url = new URL(pwdURL);
+     BufferedReader in = new BufferedReader(new 
+           InputStreamReader(url.openStream()));
+     String str;
+     while((str=in.readLine()) != null){
+        String[] fields = str.split(",");
+        if(fields.length == 2 &amp;&amp;
+           fields[0].equals(user) &amp;&amp;
+           fields[1].equals(pwd)){
+              redirect = "agindex.html";
+              break;
+        }
+     }
+     in.close();
+   }   
+   catch(Exception e) {
+        System.out.println(e);
+   }
+
+   if (redirect.equals("agindex.html")) {
+      System.out.println(now + " AGLOGIN " + user + " has been authenticed");
+      session = request.getSession(true);
+      session.setAttribute("user", user);
+      session.setAttribute("community", community);
+   } else {
+      session = request.getSession(false);
+      if(session != null) {
+         if(session.getAttribute("name") != null)
+            session.removeAttribute("name");
+      }
+      System.out.println(now + " AGLOGIN " + user +
+                        " has failed to authenticate");
+   }
+ 
+   xspAttr.clear();
+
+   xspAttr.addAttribute(
+                        "",
+                        "url",
+                        "url",
+                        "CDATA",
+                        redirect
+                        );
+   this.contentHandler.startElement(
+                                    "",
+                                    "redirect",
+                                    "redirect",
+                                    xspAttr
+                                    );
+
+   xspAttr.clear();
+   this.contentHandler.endElement(
+                                  "",
+                                  "redirect",
+                                  "redirect"
+                                  );
+</xsp:logic>
+
+</page>
+
+</xsp:page>
