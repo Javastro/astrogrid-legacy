@@ -340,10 +340,10 @@ public class MySpaceDummyDelegate implements MySpaceClient
 
       boolean append = false;
 
-      if (action.toLowerCase().equals(OVERWRITE)) {
+      if (action.equals(OVERWRITE)) {
          append = false;
       }
-      else if (action.toLowerCase().equals(APPEND)) {
+      else if (action.equals(APPEND)) {
          append = true;
       }
       else {
