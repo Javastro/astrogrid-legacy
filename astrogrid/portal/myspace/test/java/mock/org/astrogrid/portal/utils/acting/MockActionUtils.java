@@ -426,4 +426,32 @@ public class MockActionUtils implements ActionUtils{
       myShouldBeNSAwareCalls.verify();
       myShouldBeNSAwareParameter0Values.verify();
    }
+  /* (non-Javadoc)
+   * @see org.astrogrid.portal.utils.acting.ActionUtils#getSessionObject(java.lang.String, java.lang.String, org.apache.avalon.framework.parameters.Parameters, org.apache.cocoon.environment.Session)
+   */
+  public Object getSessionObject(String arg0, String arg1, Parameters arg2, Session arg3) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  /* (non-Javadoc)
+   * @see org.astrogrid.portal.utils.acting.ActionUtils#getSessionObject(java.lang.String, org.apache.avalon.framework.parameters.Parameters, org.apache.cocoon.environment.Session)
+   */
+  public Object getSessionObject(String arg0, Parameters arg1, Session arg2) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  /* (non-Javadoc)
+   * @see org.astrogrid.portal.utils.acting.ActionUtils#getAnyParameterObject(java.lang.String, org.apache.avalon.framework.parameters.Parameters, org.apache.cocoon.environment.Request, org.apache.cocoon.environment.Session)
+   */
+  public Object getAnyParameterObject(String arg0, Parameters arg1, Request arg2, Session arg3) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  /* (non-Javadoc)
+   * @see org.astrogrid.portal.utils.acting.ActionUtils#getAnyParameterObject(java.lang.String, java.lang.String, org.apache.avalon.framework.parameters.Parameters, org.apache.cocoon.environment.Request, org.apache.cocoon.environment.Session)
+   */
+  public Object getAnyParameterObject(String arg0, String arg1, Parameters arg2, Request arg3, Session arg4) {
+    // TODO Auto-generated method stub
+    return null;
+  }
 }

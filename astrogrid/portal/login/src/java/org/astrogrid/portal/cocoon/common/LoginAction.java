@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.28 2004/05/27 17:17:13 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.29 2004/10/05 14:32:55 gps Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
- * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/05/27 17:17:13 $</cvs:date>
- * <cvs:version>$Revision: 1.28 $</cvs:version>
+ * <cvs:author>$Author: gps $</cvs:author>
+ * <cvs:date>$Date: 2004/10/05 14:32:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.29 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import java.net.MalformedURLException;
@@ -22,11 +22,13 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.astrogrid.community.common.config.CommunityConfig;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
+import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
 import org.astrogrid.community.common.exception.CommunityServiceException;
 import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.common.security.service.SecurityServiceMock;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
 import org.astrogrid.community.resolver.CommunityPasswordResolver;
 import org.astrogrid.community.resolver.exception.CommunityResolverException;
 import org.astrogrid.config.Config;
@@ -210,6 +212,28 @@ public final class LoginAction extends AbstractAction {
         log.debug("  Token   : " + token);
         log.debug("  Token   : " + token.getToken());
         log.debug("  Account : " + token.getAccount());
+        
+        // Get MySpace Manager end point.
+        final Ivorn accountSpace;
+        try {
+          final Config config = SimpleConfig.getSingleton();
+          final String endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
+          
+          CommunityAccountSpaceResolver accSpaceResolver = new CommunityAccountSpaceResolver(new URL(endpoint));
+          accountSpace = accSpaceResolver.resolve(ivorn);
+        }
+        catch(MalformedURLException e) {
+        }
+        catch(CommunityPolicyException e) {
+        }
+        catch(CommunityServiceException e) {
+        }
+        catch(CommunityResolverException e) {
+        }
+        catch(CommunityIdentifierException e) {
+        }
+        catch(RegistryException e) {
+        }
 
         // We pass the tests so set the current account info in our session.
         session.setAttribute(SessionKeys.USER, name);
@@ -220,6 +244,7 @@ public final class LoginAction extends AbstractAction {
         session.setAttribute(
             SessionKeys.COMMUNITY_NAME,
             CommunityConfig.getCommunityName());
+        session.setAttribute(SessionKeys.IVORN, ivorn);
             
         session.setAttribute("community_authority",community);
         //
@@ -273,6 +298,9 @@ public final class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.29  2004/10/05 14:32:55  gps
+ * - myspace end point changes
+ *
  * Revision 1.28  2004/05/27 17:17:13  jdt
  * removed obsolete reference to CommunityConfig
  *

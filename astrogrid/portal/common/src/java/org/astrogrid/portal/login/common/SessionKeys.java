@@ -1,5 +1,5 @@
 /* <cvs:id> 
- * $Id: SessionKeys.java,v 1.3 2004/03/29 23:19:51 gps Exp $
+ * $Id: SessionKeys.java,v 1.4 2004/10/05 14:32:55 gps Exp $
  * </cvs:id>
  * Created on Mar 26, 2004 by jdt 
  * 
@@ -34,12 +34,18 @@ public final class SessionKeys {
      * Parameter names to look for in the session object.
      */
     public static final String USER = "user";
-    
+    /**
+     * Parameter names to look for in the session object.
+     */
+    public static final String IVORN = "ivorn";
 }
 
 
 /*
  *  $Log: SessionKeys.java,v $
+ *  Revision 1.4  2004/10/05 14:32:55  gps
+ *  - myspace end point changes
+ *
  *  Revision 1.3  2004/03/29 23:19:51  gps
  *  - merged PCMN_GPS_bz283
  *

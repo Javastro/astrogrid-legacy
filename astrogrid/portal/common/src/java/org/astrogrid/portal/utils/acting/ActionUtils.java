@@ -50,8 +50,29 @@ public interface ActionUtils {
    */
   public String getSessionAttribute(String sitemapParam, Parameters params, Session session);
   
+  /**
+   * Get a session object given a attribute passed into the action via the sitemap.
+   * 
+   * @param sitemapParam sitemap given attribute whose value is the session attribute name
+   * @param defaultValue default value of session attribute name
+   * @param params sitemap parameters
+   * @param session session context object
+   * 
+   * @return value of session object
+   */
+  public Object getSessionObject(String sitemapParam, String defaultValue, Parameters params, Session session);
+
+  /**
+   * @see ActionUtils#getSessionObject(String, String, Parameters, Session)
+   */
+  public Object getSessionObject(String sitemapParam, Parameters params, Session session);
+  
   public String getAnyParameter(String sitemapParam, Parameters params, Request request, Session session);
   public String getAnyParameter(String sitemapParam, String defaultValue, Parameters params, Request request, Session session);
+
+  public Object getAnyParameterObject(String sitemapParam, Parameters params, Request request, Session session);
+  public Object getAnyParameterObject(String sitemapParam, String defaultValue, Parameters params, Request request, Session session);
+
   /**  
    * @see ActionUtils#getNewObject(String, String, Parameters, Object[])
    */

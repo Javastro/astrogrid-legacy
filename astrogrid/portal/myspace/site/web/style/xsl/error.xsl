@@ -3,7 +3,19 @@
   <xsl:output method="xml"/>
   
   <xsl:template match="/">
+<!-- XXX1
     <xsl:apply-templates/>
+XXX1 -->
+    <ag-link href="/astrogrid-portal/mount/myspace/error.css" rel="stylesheet" type="text/css"/>
+    <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/error.js"/>
+    <xsl:for-each select="//node()[local-name() = 'ag-error']/@field">
+      <xsl:call-template name="set-errors"/>
+    </xsl:for-each>
+    
+    <div class="ag-errors" name="ag-errors" id="ag-errors">
+      <span class="ag-errors-heading">Errors:</span>
+      <xsl:apply-templates/>
+    </div>
   </xsl:template>
   
   <xsl:template name="set-errors">
@@ -12,6 +24,7 @@
     </ag-onload>
   </xsl:template>
   
+<!-- XX1
   <xsl:template match="node()[local-name() = 'ag-errors']">
     <ag-link href="/astrogrid-portal/mount/myspace/error.css" rel="stylesheet" type="text/css"/>
     <ag-script type="text/javascript" src="/astrogrid-portal/mount/myspace/error.js"/>
@@ -19,11 +32,12 @@
       <xsl:call-template name="set-errors"/>
     </xsl:for-each>
     
-    <div class="ag-errors">
+    <div class="ag-errors" name="ag-errors" id="ag-errors">
       <span class="ag-errors-heading">Errors:</span>
       <xsl:apply-templates/>
     </div>
   </xsl:template>
+XXX1 -->
 
   <xsl:template match="node()[local-name() = 'ag-error']">
     <div class="ag-error">

@@ -1,5 +1,6 @@
 package org.astrogrid.portal.myspace.acting.framework;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.astrogrid.community.User;
@@ -44,19 +45,12 @@ public interface ContextWrapper {
   public User getUser();
 
   /**
-   * Return the MySpace end point.
-   * 
-   * @return MySpace end point
-   */
-  public String getEndPoint();
-
-  
-  /**
    * Return the AstroGrid storage location.
    * 
    * @return AstroGrid storage location
+   * @throws IOException
    */
-  public Agsl getAgsl();
+  public Agsl getAgsl() throws IOException;
 
   /**
    * Return the AstroGrid storage client.

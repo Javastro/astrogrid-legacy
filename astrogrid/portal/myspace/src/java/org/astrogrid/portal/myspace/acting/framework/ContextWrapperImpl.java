@@ -11,10 +11,13 @@ import org.apache.cocoon.servlet.multipart.MultipartHttpServletRequest;
 import org.apache.cocoon.servlet.multipart.Part;
 import org.astrogrid.community.User;
 import org.astrogrid.portal.common.user.UserHelper;
+import org.astrogrid.portal.login.common.SessionKeys;
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
+import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
  * Default implementation of <code>org.astrogrid.portal.myspace.acting.framework.ContextWrapper</code>.
@@ -29,6 +32,7 @@ public class ContextWrapperImpl implements ContextWrapper {
   private Session session;
   private User user;
   private String endPoint;
+  private Ivorn ivorn;
   private Agsl agsl;
   private StoreClient storeClient;
   
@@ -54,9 +58,16 @@ public class ContextWrapperImpl implements ContextWrapper {
 	    
 	    // Get the storage client.
 	    storeClient = StoreDelegateFactory.createDelegate(user, agsl);
+      
+      // Get the store client from the VOSpaceResolver.
+      ivorn = (Ivorn) utils.getAnyParameterObject(
+          SessionKeys.IVORN,
+          params, request, session);
+
+      storeClient = VoSpaceResolver.resolveStore(user, ivorn);
     }
 	  catch(Throwable t) {
-	    // do nothing.
+      throw new IOException("Could not create a valid context: " + t.getLocalizedMessage());
 	  }
   }
   
@@ -72,12 +83,8 @@ public class ContextWrapperImpl implements ContextWrapper {
     return user;
   }
   
-  public String getEndPoint() {
-    return endPoint;
-  }
-  
-  public Agsl getAgsl() {
-    return agsl;
+  public Agsl getAgsl() throws IOException {
+    return VoSpaceResolver.resolveAgsl(ivorn);
   }
   
   public StoreClient getStoreClient() {

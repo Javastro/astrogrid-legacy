@@ -93,6 +93,23 @@ public class ActionUtilsDefault implements ActionUtils {
     return getSessionAttribute(param, "", params, session);
   }
   
+  public Object getSessionObject(String sitemapParam, String defaultValue, Parameters params, Session session) {
+    Object result = defaultValue;
+    
+    if(session != null) {
+      Object attribute = session.getAttribute(sitemapParam);
+      if(attribute != null) {
+        result = attribute;
+      }
+    }
+    
+    return result;
+  }
+  
+  public Object getSessionObject(String sitemapParam, Parameters params, Session session) {
+    return getSessionObject(sitemapParam, null, params, session);
+  }
+
   public String getAnyParameter(String param, Parameters params, Request request, Session session) {
     return getAnyParameter(param, "", params, request, session);
   }
@@ -124,6 +141,24 @@ public class ActionUtilsDefault implements ActionUtils {
     return result;
   }
 
+  public Object getAnyParameterObject(String sitemapParam, String defaultValue, Parameters params, Request request, Session session) {
+    Object result = defaultValue;
+    
+    Object sessionObject = getSessionObject(sitemapParam, params, session);
+    if(sessionObject == null) {
+      result = getAnyParameterObject(sitemapParam, params, request, session);
+    }
+    else {
+      result = sessionObject;
+    }
+    
+    return result;
+  }
+
+  public Object getAnyParameterObject(String sitemapParam, Parameters params, Request request, Session session) {
+    return getAnyParameterObject(sitemapParam, null, params, request, session);
+  }
+  
   /**  
    * @see ActionUtils#getNewObject(String, String, Parameters, Object[])
    */
