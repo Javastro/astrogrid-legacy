@@ -147,11 +147,11 @@
       </table>
       </p>
       <p>    
-        <input type="submit" name="queryregistry" value="Search" />
+        <input class="agActionButton" type="submit" name="queryregistry" value="Search" />
         <xsl:text>          </xsl:text>
-        <input type="reset" value="Clear"/>
+        <input class="agActionButton" type="reset" value="Clear"/>
         <xsl:text>          </xsl:text>
-        <input type="button" value="Close" onclick="window.close()"/>
+        <input class="agActionButton" type="button" value="Close" onclick="window.close()"/>
       </p>
     </form>
   </xsl:template>
@@ -196,9 +196,9 @@
                 </xsl:for-each>
               </xsl:for-each>
             </table>
-            <input name="queryregistry" type="button" value="Select..." onclick="findSelection()"/>
+            <input class="agActionButton" name="queryregistry" type="button" value="Select..." onclick="findSelection()"/>
             <xsl:text>          </xsl:text>
-            <input type="button" value="Cancel" onclick="window.close()"/>
+            <input class="agActionButton" type="button" value="Cancel" onclick="window.close()"/>
           </form>
         </p> 
         </xsl:when>
@@ -242,9 +242,9 @@
                 </xsl:attribute>                              
               </input>                                             
               <xsl:text>          </xsl:text>
-              <input type="submit" name="queryregistry" value="Restart" />
+              <input class="agActionButton" type="submit" name="queryregistry" value="Restart" />
               <xsl:text>          </xsl:text>
-              <input type="button" value="Cancel" onclick="window.close()"/>
+              <input class="agActionButton" type="button" value="Cancel" onclick="window.close()"/>
             </form>
           </p>
           </xsl:otherwise>
