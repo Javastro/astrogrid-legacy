@@ -29,7 +29,7 @@
 		</menu>
 		<menu name="Clients">
 			<!-- nasty, but only way to have img and text at same time -->
-			<item name="Web Start" img="/images/new.png" href="/jnlp/index.html">
+			<item name="Web Start" img="/images/new.png" href="/jnlp/index.html" collapse="true">
 				<item name="Web Start" href="/jnlp/index.html"  />		
 				<item name="Client Development Kit" href="/cdk.html"  />			
 			</item>
