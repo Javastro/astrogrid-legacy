@@ -13,6 +13,7 @@
     xmlns:define="jelly:define"
     xmlns:artifact="artifact"    
     xmlns:deploy="deploy"
+	default="astrogrid-install-snapshot"		
     >
 
     <!--+
@@ -100,33 +101,54 @@
     </goal>
     
 
-    <!--+
-        | Build and install our snapshot jar.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="install-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Building snapshot artifact ...."/>
-        <attainGoal name="jar:install-snapshot"/>
-    </goal>
+	   <!--+
+	        | Build and install our snapshot jar(s).
+	        +-->
+	    <goal name="astrogrid-install-snapshot">
+	        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+	        <ant:echo message="Build version   : ${pom.currentVersion}"/>
+	        <ant:echo message="Build directory : ${maven.build.dir}"/>
+	        <!--+
+	            | Create our snapshot name.
+	            +-->
+	        <maven:snapshot project="${pom}"/>
+	        <core:set var="maven.final.name" value="${snapshotSignature}"/>
+	        <!--+
+	            | Build our snapshot jar.
+	            +-->
+	        <attainGoal name="jar:jar"/>
+	        <!--+
+	            | Install our snapshot jar(s).
+	            +-->
+			<artifact:install-snapshot
+				artifact="${maven.build.dir}/${maven.final.name}.jar"
+				project="${pom}"
+				type="jar"
+				/>
+	    </goal>
 
-    <!--+
-        | Deploy our snapshot jar.
-        | (required as a target goal for the reactor)
-        +-->
-    <goal name="deploy-snapshot">
-        <ant:echo message="Build artifact  : ${pom.artifactId}"/>
-        <ant:echo message="Build version   : ${pom.currentVersion}"/>
-        <ant:echo message="Build directory : ${maven.build.dir}"/>
-        <ant:echo message="Deploying snapshot artifact ...."/>
-        <attainGoal name="jar:deploy-snapshot"/>
-    </goal>
-    
-    <goal name="astrogrid-deploy-snapshot">
-    	<attainGoal name="deploy-snapshot" />
-    </goal>
+ 
+ <goal name="astrogrid-deploy-snapshot">
+     <ant:echo message="Build artifact  : ${pom.artifactId}"/>
+     <ant:echo message="Build version   : ${pom.currentVersion}"/>
+     <ant:echo message="Build directory : ${maven.build.dir}"/>
+     <ant:echo message="Deploying snapshot artifact ...."/>
+ 
+     <!--+
+         | Create our snapshot jar.
+         +-->
+     <attainGoal name="astrogrid-install-snapshot"/>
+     <!--+
+         | Deploy our snapshot jar(s).
+         +-->
+		<artifact:deploy-snapshot
+			artifact="${maven.build.dir}/${maven.final.name}.jar"
+			project="${pom}"
+			type="jar"
+			/>
+
+	</goal>
+ 
 
     <!--+
         | Build our project website.

@@ -12,13 +12,8 @@
     xmlns:log="jelly:log"
     xmlns:define="jelly:define"
     xmlns:deploy="deploy"
+	default="astrogrid-install-snapshot"	
     >
-
-
-
-
-
-
     
     <goal name="astrogrid-deploy-site">
     	<attainGoal name="astrogrid-build-site" />
@@ -118,7 +113,7 @@
             basedir="${basedir}"
             postProcessing="false"
             includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
-            goals="install-snapshot"
+            goals="astrogrid-install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
             />
