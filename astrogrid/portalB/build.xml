@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/22 04:03:41 $</cvs:author>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/22 19:22:25 $</cvs:author>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.10  2003/06/22 19:22:25  dave
+    | Included the generated stubs in the build
+    |
     | Revision 1.9  2003/06/22 04:03:41  dave
     | Added actions and parsers for MySpace messages
     |
@@ -733,8 +736,9 @@
 				<exclude name="**/services/**"/>
 				<!-- Exclude any mock service classes -->
 				<exclude name="**/mock/**"/>
-				<!-- Exclude the generated classes -->
+				<!-- Exclude the generated classes
 				<exclude name="**/generated/**"/>
+				-->
 			</fileset>
 		</copy>
 		<!-- Create our java classes directory -->
