@@ -105,7 +105,7 @@
        build time or at run time. Therefore, Maven's normal mechanism 
        for loading dependent jars cannot be used. -->
   <goal name="webapp:copy-app">
-    <copy file="ogsadai/target/astrogrid-ogsadai-app-HEAD.jar"
+    <copy file="ogsadai/target/astrogrid-ogsadai-app-${pom.currentVersion}.jar"
           tofile="target/webapp/WEB-INF/classes/astrogrid-ogsadai-app.jar"/>
   </goal>
     
