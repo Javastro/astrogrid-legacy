@@ -113,6 +113,35 @@
                         <groupId>axis</groupId>
                         <version>1.1</version>
                 </dependency>
+       <!-- helper for object models -->
+        <dependency>
+        	<artifactId>commons-jxpath</artifactId>
+        	<groupId>commons-jxpath</groupId>
+        	<version>1.1</version>
+        </dependency>
+        <!-- required by castor -->
+        <dependency>
+        	<artifactId>castor</artifactId>
+        	<groupId>castor</groupId>
+        	<version>0.9.5-xml</version>
+        	<properties>
+        		<war.bundle>true</war.bundle>
+        	</properties>
+        </dependency>
+   		<dependency>
+			<id>xerces</id>
+			<version>2.4.0</version>
+	    	<properties>
+      			<war.bundle>true</war.bundle>
+    		</properties>
+    	</dependency>
+    	<dependency>
+      	<id>xml-apis</id>
+      	<version>1.0.b2</version>
+          <properties>
+      		<war.bundle>true</war.bundle>
+    	 </properties>
+    	</dependency>                
                 <!-- only used on the cocoon side - which shouldn't be in this project
                 <dependency>
                         <artifactId>cocoon</artifactId>
