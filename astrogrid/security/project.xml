@@ -50,6 +50,14 @@
     </dependency>
     
     <dependency>
+      <groupId>castor</groupId>
+      <type>jar</type>
+      <artifactId>castor-xml</artifactId>
+      <version>0.9.5</version>
+      <jar>castor-0.9.5-xml.jar</jar>
+    </dependency>
+    
+    <dependency>
       <id>jaxrpc-api</id>
       <version>1.0.3</version>
     </dependency>
