@@ -276,7 +276,7 @@ public class Workflow extends Activity {
         userid,
         community ;
         
-    private Sequence 
+    private ActivityContainer 
         child = null ;
         
     private Map 
@@ -345,7 +345,12 @@ public class Workflow extends Activity {
                     else if ( element.getTagName().equals( WorkflowDD.SEQUENCE_ELEMENT ) ) {
                         // We must be certain these appear in StepNumber order!
                         setChild(new Sequence( element )) ;   
-                    }                   
+                    } 
+                    else if ( element.getTagName().equals( WorkflowDD.FLOW_ELEMENT ) ) {
+                         // We must be certain these appear in StepNumber order!
+                         setChild(new Flow( element )) ;   
+                     } 
+                                      
                     
                 } // end if
                                 
@@ -532,11 +537,11 @@ public class Workflow extends Activity {
         // logger.debug( logString ) ;
     }
 
-	public void setChild(Sequence child) {
-		this.child = child;
+	public void setChild( Activity child ) {
+		this.child = (ActivityContainer)child;
 	}
 
-	public Sequence getChild() {
+	public Activity getChild() {
 		return child;
 	}  
 /*     
