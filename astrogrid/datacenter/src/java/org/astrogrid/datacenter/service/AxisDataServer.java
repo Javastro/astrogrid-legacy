@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.10 2003/09/10 12:08:44 mch Exp $
+ * $Id: AxisDataServer.java,v 1.11 2003/09/10 14:53:05 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -45,7 +45,9 @@ public class AxisDataServer extends ServiceServer
    public AxisDataServer() throws IOException
    {
         java.net.URL res = this.getClass().getResource("/" + Configuration.DEFAULT_FILENAME);
-        Configuration.load(res);
+        if (res != null) {
+            Configuration.load(res);
+        }
 
    }
 
