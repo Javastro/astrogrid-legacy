@@ -29,8 +29,8 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.io.Piper;
-import org.astrogrid.myspace.delegate.VoSpaceClient;
-import org.astrogrid.myspace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.vospace.delegate.VoSpaceClient;
+import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -357,6 +357,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.10  2004/02/15 23:16:06  mch
+New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
+
 Revision 1.9  2004/02/15 23:09:04  mch
 Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 

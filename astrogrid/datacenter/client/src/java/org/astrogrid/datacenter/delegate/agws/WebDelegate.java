@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.18 2004/02/15 23:09:04 mch Exp $
+ * $Id: WebDelegate.java,v 1.19 2004/02/15 23:16:06 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -33,9 +33,9 @@ import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.myspace.delegate.MySpaceReference;
-import org.astrogrid.myspace.delegate.VoSpaceClient;
-import org.astrogrid.myspace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.vospace.delegate.MySpaceReference;
+import org.astrogrid.vospace.delegate.VoSpaceClient;
+import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -414,6 +414,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
 
 /*
  $Log: WebDelegate.java,v $
+ Revision 1.19  2004/02/15 23:16:06  mch
+ New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
+
  Revision 1.18  2004/02/15 23:09:04  mch
  Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 
@@ -426,6 +429,9 @@ public class WebDelegate implements FullSearcher, ConeSearcher, ApplicationContr
  Revision 1.16  2004/01/08 15:48:17  mch
  Allow myspace references to be given
 $Log: WebDelegate.java,v $
+Revision 1.19  2004/02/15 23:16:06  mch
+New-style VoSpace delegates.  Not agreed so private to datacenter for the moment
+
 Revision 1.18  2004/02/15 23:09:04  mch
 Naughty Big Lump of changes: Updated myspace access, applicationcontroller interface, some tidy ups.
 
