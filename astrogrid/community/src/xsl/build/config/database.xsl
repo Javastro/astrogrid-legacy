@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/release/webapp/config/Attic/database.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xsl/build/config/Attic/database.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 16:44:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.3 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 16:44:30 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
     |   $Log: database.xsl,v $
-    |   Revision 1.3  2003/12/16 16:44:29  dave
+    |   Revision 1.1  2003/12/16 16:44:30  dave
     |   Added deployment test data
     |
     | </cvs:log>

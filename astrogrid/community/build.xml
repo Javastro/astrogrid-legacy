@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/12/16 15:08:06 $</cvs:date>
-    | <cvs:version>$Revision: 1.50 $</cvs:version>
+    | <cvs:date>$Date: 2003/12/16 16:44:29 $</cvs:date>
+    | <cvs:version>$Revision: 1.51 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.51  2003/12/16 16:44:29  dave
+    |   Added deployment test data
+    |
     |   Revision 1.50  2003/12/16 15:08:06  dave
     |   Updated the release jars
     |
@@ -3229,14 +3232,25 @@ To repeat
         <copy verbose="false" overwrite="true"
             file="${jar.cache.local}/hsqldb/jars/hsqldb-${hsqldb.version}.jar"
             toDir="release/webapp/config/jars"/>
+        <!-- Copy the axis jar -->
+        <copy verbose="false" overwrite="true"
+            file="${axis.webapp}/WEB-INF/lib/axis.jar"
+            toDir="release/webapp/config/jars"/>
         <!-- Copy our server jar -->
         <copy verbose="false" overwrite="true"
             file="${policy.base}/jar/${policy.server.jar}"
             toDir="release/webapp/config/jars/"/>
+        <!-- Copy our client jar -->
+        <copy verbose="false" overwrite="true"
+            file="${policy.base}/jar/${policy.client.jar}"
+            toDir="release/webapp/config/jars/"/>
+
+        <!-- Copy our test community data -->
+        <copy verbose="false" overwrite="true"
+            file="src/xml/policy/data/test.astrogrid.org.xml"
+            toFile="release/webapp/config/test.astrogrid.org.xml"/>
+
     </target>
-
-
-
 
 </project>
 
