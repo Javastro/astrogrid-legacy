@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Project</title>
+
+  <body>
+  <!--
+    <menu name="Publishers Astrogrid Library">
+    	<item name="Download PAL snapshot" href="pal.zip" />
+    </menu>
+  -->
+    <menu name="Subprojects">
+    	<item name="Client Delegate" href="multiproject/astrogrid-datacenter-client/index.html" />
+	<item name="Server Engine" href="multiproject/astrogrid-datacenter-server/index.html" />
+	<item name="Implementations" href="multiproject/astrogrid-datacenter-implementations/index.html" />
+	<item name="PAL" href="multiproject/astrogrid-datacenter-pal/index.html" />
+    </menu>
+    <links>
+       <item name="AstroGrid"  href="http://www.astrogrid.org"/>
+       <item name="Projects"   href="http://www.astrogrid.org/maven/build/index.html"/>
+       <item name="DataCenter" href="./index.html"/>
+    </links>
+  </body>
+</project>

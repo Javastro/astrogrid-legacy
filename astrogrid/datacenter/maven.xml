@@ -1,15 +1,32 @@
 <?xml version="1.0" ?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
+<!-- hooks to farm out everything to subprojects -->
+<preGoal name="jar">
+	<attainGoal name="multiproject:artifact" />
+</preGoal>
 
-<!-- hook to get my own stuff run before xdocs binds the site together-->
-<!--
-  <preGoal name="xdoc">
-  	<attainGoal name="ant" />
-  	<attainGoal  name="pal-zip" />
-	<copy file="${maven.build.dir}/pal.zip" tofile="${maven.build.dir}/docs/pal.zip" />
-  </preGoal>
-  -->
+<preGoal name="jar:deploy">
+	<attainGoal name="multiproject:deploy" />
+</preGoal>
+
+<preGoal name="jar:deploy-snapshot">
+	<attainGoal name="multiproject:deploy-snapshot" />
+</preGoal>
+
+<preGoal name="jar:install">
+	<attainGoal name="multiproject:install" />
+</preGoal>
+
+<preGoal name="jar:install-snapshot">
+	<attainGoal name="multiproject:install-snapshot" />
+</preGoal>
+
+<preGoal name="site:fsdeploy">
+	<attainGoal name="multiproject:site" />
+</preGoal>
+
+
 
 <!--
 new goals
@@ -17,6 +34,7 @@ new goals
 
 <!--
 distribution - tasks to assemble build products.
+move all this into the pal distro.
 -->
 <goal name="axis-zip" description="create zipped axis web-archive">
 <!-- copy dependent jars into template webapp, zip up into target directory-->

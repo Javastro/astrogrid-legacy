@@ -19,11 +19,8 @@
 	 <p/>
 	 Still to do:
 	 <ul>
-	 	<li>add unit testing of serialization mechanisms (auto generate tests?)</li>
-	 	<li>Sort licesnse</li>
-	 	<li>sort header</li>
-	 	<li>refine tasklist tags</li>
-	 	
+	 	<li>get serialization / deserialization test to pass</li>
+
 	 </ul>
 	 	]]>
 	</description>
