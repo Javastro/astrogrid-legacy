@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.28 2003/09/24 14:37:44 mch Exp $
+ * $Id: DatabaseQuerier.java,v 1.29 2003/09/24 21:02:45 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,17 +7,13 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Vector;
+
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.ADQLException;
-import org.astrogrid.datacenter.common.CommunityHelper;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.DocMessageHelper;
 import org.astrogrid.datacenter.common.QueryStatus;
@@ -48,6 +44,8 @@ import org.w3c.dom.NodeList;
  * can't throw catchable Exceptions easily as the factory method uses
  * introspection to get at it)
  *
+ *@todo - a candidate for refactoring? there's a mix of factory, container, blocking query and non-blocking query behaviour here.
+ *
  * @see doQueryGetVotable()
  * @see spawnQuery
  * <p>
@@ -56,13 +54,6 @@ import org.w3c.dom.NodeList;
 
 public abstract class DatabaseQuerier implements Runnable
 {
-   /** Key to configuration files' entry that tells us what database querier
-    * to use with this service   */
-   public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
-
-   /** Key to configuration entry for the default target myspace for this server */
-   public static final String RESULTS_TARGET_KEY = "DefaultMySpace";
-
    /** List of serviceListeners who will be updated when the status changes */
    private Vector serviceListeners = new Vector();
 
@@ -79,15 +70,6 @@ public abstract class DatabaseQuerier implements Runnable
    /** A handle is used to identify a particular service.  It is also used as the
     * basis for any temporary storage. */
    private String handle = null;
-
-   /** temporary used for generating unique handles - see generateHandle() */
-   private static java.util.Random random = new java.util.Random();
-
-   /** lookup table of all the current queriers indexed by their handle*/
-   private static Hashtable queriers = new Hashtable();
-
-   /** The document containing the query */
-   //protected Element domContainingQuery = null;
 
    /** The query object model */
    private Query query = null;
@@ -113,142 +95,46 @@ public abstract class DatabaseQuerier implements Runnable
    private Date timeQueryCompleted = null;
 
    /**
-    * Constructor - creates a handle to identify this instance
-    */
-   protected DatabaseQuerier(Element givenDOM) throws IOException
-   {
-      //assigns handle
-      handle = DocHelper.getTagValue(givenDOM, DocMessageHelper.ASSIGN_QUERY_ID_TAG);
-
-      if (handle == null)
-      {
-         handle = generateHandle();
-      }
-
-      Log.affirm(queriers.get(handle) == null, "Handle '"+handle+"' already in use");
-
-      queriers.put(handle, this);
-      workspace = new Workspace(handle);
-
-      // work out myspace stuff
-      setResultsDestination(givenDOM);
-
-      // work out user & community
-      userid = CommunityHelper.getUserId(givenDOM);
-      communityid = CommunityHelper.getCommunityId(givenDOM);
-   }
-
-   /**
     * Returns this instances handle
     */
    public String getHandle()
    {
       return handle;
    }
-
-   /**
-    * Generates a handle for use by a particular instance; uses the current
-    * time to help us debug (ie we can look at the temporary directories and
-    * see which was the last run). Later we could add service/user information
-    * if available
-    */
-   private static String generateHandle()
-   {
-      Date todayNow = new Date();
-
-      return todayNow.getYear()+"-"+todayNow.getMonth()+"-"+todayNow.getDate()+"_"+
-               todayNow.getHours()+"."+todayNow.getMinutes()+"."+todayNow.getSeconds()+
-               "_"+(random.nextInt(8999999) + 1000000); //plus botched bit... not really unique
-
+   
+   /** set the handle for this querier */
+   void setHandle(String handle) {
+       this.handle = handle;
    }
-
-   /** Class method that returns the querier instance with the given handle
-    */
-   public static DatabaseQuerier getQuerier(String aHandle)
-   {
-      return (DatabaseQuerier) queriers.get(aHandle);
-   }
-
-   /** Class method that returns a list of all the currently running queriers
-    */
-   public static Collection getQueriers()
-   {
-      return queriers.values();
-   }
-
-   /**
-    * A factory method that Returns a Querier implementation based on the
-    * settings in the configuration file.
-    * @throws DatabaseAccessException on error (contains cause exception)
-    *
-    */
-   public static DatabaseQuerier createQuerier(Element domContainingQuery) throws DatabaseAccessException, MalformedURLException, ADQLException, QueryException
-   {
-      String querierClass = Configuration.getProperty(DATABASE_QUERIER_KEY);
-//       "org.astrogrid.datacenter.queriers.sql.SqlQuerier"    //default to general SQL querier
-
-      if (querierClass == null)
-      {
-         throw new DatabaseAccessException(
-            "Database Querier key ["+DATABASE_QUERIER_KEY+"] "+
-            "cannot be found in the configuration file(s) '"+Configuration.getLocations()+"'"
-         );
+       
+      /** set the workspace for this querier */
+      void setWorkspace(Workspace workspace) {
+          this.workspace = workspace;
       }
-
-      //create querier implementation
-      try
-      {
-         Class qClass =  Class.forName(querierClass);
-         /* NWW - interesting bug here.
-         original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
-         however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
-         worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
-         invocationTargetExcetpion - as it thinks it cannot be thrown.
-         this means the exception boils out of the code, and is unstoppable - dodgy
-         work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-         // Original Code
-         //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
-         // safe equivalent
-         Constructor constr= qClass.getConstructor(new Class[]{ Element.class });
-         DatabaseQuerier querier = (DatabaseQuerier)constr.newInstance(new Object[]{domContainingQuery});
-
-         querier.setQuery(domContainingQuery);
-         querier.registerWebListeners(domContainingQuery); //looks through dom for web listeners
-
-         return querier;
-      } // NWW - temporarily added more to messages being thrown back - as we're not getting the embedded exceptions back on the server side.
-       // think this is an issue with WSDL and DatabaseAccessException not having a null constructor - because is subclass of IOException.
-      catch (InvocationTargetException e) {
-          // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
-          throw new DatabaseAccessException(e.getCause(),"Could not load DatabaseQuerier '" + querierClass + "' :" + e.getCause().getMessage());
-      }
-      catch (Exception e)
-      {
-         throw new DatabaseAccessException(e,"Could not load DatabaseQuerier '"+querierClass+"' :" + e.getMessage());
-      }
-   }
-
-
+     /** set the userid for this querier */
+     void setCommunityId(String communityid) {
+         this.communityid = communityid;
+     }
+     
+     /** set the userid for this querier */
+     void setUserId(String userid) {
+         this.userid = userid;
+     }
    /**
-    * Creates the query model based on the given DOM.  Publicso we can reach
-    * it for testing
+    * Creates the query model based on the given DOM. 
     */
-   public void setQuery(Element givenDOM) throws ADQLException, QueryException
+ void setQuery(Element givenDOM) throws ADQLException, QueryException
    {
       query = new Query(givenDOM);
+      setStatus(QueryStatus.CONSTRUCTED);
    }
 
    /**
     * Sets up the target of where the results will be sent to
     */
-   private void setResultsDestination(Element givenDOM)
+   void setResultsDestination(String resultsDestination)
    {
-      resultsDestination = DocHelper.getTagValue(givenDOM, DocMessageHelper.RESULTS_TARGET_TAG);
-
-      if (resultsDestination == null)
-      {
-         resultsDestination = Configuration.getProperty(RESULTS_TARGET_KEY);
-      }
+      this.resultsDestination = resultsDestination;
 
       //doesn't matter here - might be a synchronous call
       //    Log.affirm(resultsDestination != null,
@@ -337,7 +223,7 @@ public abstract class DatabaseQuerier implements Runnable
    protected void testResultsDestination() throws IOException
    {
       Log.affirm(resultsDestination != null,
-                 "No Result target (eg myspace) given in config file (key "+RESULTS_TARGET_KEY+"), "+
+                 "No Result target (eg myspace) given in config file (key "+DatabaseQuerierManager.RESULTS_TARGET_KEY+"), "+
                  "and no key "+DocMessageHelper.RESULTS_TARGET_TAG+" in given DOM ");
 
       MySpaceDummyDelegate myspace = new MySpaceDummyDelegate(resultsDestination);
@@ -376,9 +262,9 @@ public abstract class DatabaseQuerier implements Runnable
    public QueryResults doQuery() throws QueryException, DatabaseAccessException
    {
       setStatus(QueryStatus.RUNNING_QUERY);
-
+      this.timeQueryStarted = new Date();
       QueryResults results = queryDatabase(query);
-
+      this.timeQueryCompleted = new Date();
       setStatus(QueryStatus.QUERY_COMPLETE);
 
       return results;
@@ -451,12 +337,12 @@ public abstract class DatabaseQuerier implements Runnable
    /** close the querier - removes itself from the list and so will eventually
     * be garbaged collected.  Subclasses should override to release eg database
     * connection resources
-    *
+    * @todo - ikky hack to remove self from the manager.
     */
    public void close() throws IOException
    {
       //remove from list
-      queriers.remove(getHandle());
+     DatabaseQuerierManager.queriers.remove(getHandle());
 
       //clean up workspace
       workspace.close();
