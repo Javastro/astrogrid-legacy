@@ -26,7 +26,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
-import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -39,11 +38,23 @@ public class IndexGenerator
     */
    public static Log log = LogFactory.getLog(IndexGenerator.class);
    
+   /** Should we test for extensions.  There is no standard way of checking if
+    * a FITS file has extensions (the EXTEND keyword merely says that it *may*
+    * have extensions), and for large FITS files where you *know* there are no
+    * extensions, this can take some time.  So set this to false */
+   public boolean checkForExtensions = true;
+
+   /** Configures which axis is the RA (if any) */
+   public int raAxis = -1;
+
+   /** Configures which axis is the DEC (if any) */
+   public int decAxis = -1;
+   
    /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
     * given url
     */
-   public static String makeIndexSnippet(URL fitsUrl) throws IOException
+   public String makeIndexSnippet(URL fitsUrl) throws IOException
    {
       assert fitsUrl != null;
       
@@ -57,7 +68,7 @@ public class IndexGenerator
     * @todo tidy up so that, for example, multiline comments become one tag
     * @TODO max pixels are WRONG
     */
-   public static String makeIndexSnippet(FitsReader reader, String filename) throws IOException
+   public String makeIndexSnippet(FitsReader reader, String filename) throws IOException
    {
       StringBuffer snippet = new StringBuffer();
       
@@ -69,7 +80,7 @@ public class IndexGenerator
       FitsHdu primaryHdu = new FitsHdu(header);
 
       //now look for extensions
-      if (primaryHdu.getHeader().getValue("EXTEND").equals("T"))
+      if ((checkForExtensions) && primaryHdu.getHeader().getValue("EXTEND").equals("T"))
       {
          //read data into HDU
          reader.readData(primaryHdu);
@@ -101,7 +112,7 @@ public class IndexGenerator
    /**
     * Generates an index snippet for the given header
     */
-   public static String makeIndexSnippet(FitsHeader header, String fileLocation) throws IOException
+   public String makeIndexSnippet(FitsHeader header, String fileLocation) throws IOException
    {
       StringBuffer keywordSnippet = new StringBuffer();
       StringBuffer coverageSnippet = new StringBuffer();
@@ -127,10 +138,14 @@ public class IndexGenerator
          double[] point4 = wcsCalculator.toWCS( new double[] {maxPixelX,0});
          
          //NB origin pixels might not be the min RA & DEC - the picture might be 'upside down'
-         coverageSnippet.append( "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
-                                 "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
-                                 "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
-                                 "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n");
+         coverageSnippet.append(
+            "   <Coverage shape='Polygon'>\n"+
+            "      <Point><RA>"+point1[0]+"</RA><Dec>"+point1[1]+"</Dec></Point>\n"+
+            "      <Point><RA>"+point2[0]+"</RA><Dec>"+point2[1]+"</Dec></Point>\n"+
+            "      <Point><RA>"+point3[0]+"</RA><Dec>"+point3[1]+"</Dec></Point>\n"+
+            "      <Point><RA>"+point4[0]+"</RA><Dec>"+point4[1]+"</Dec></Point>\n"+
+            "   </Coverage>\n"
+         );
       }//if
                                 
       //run trhough all keywords adding them
@@ -140,24 +155,26 @@ public class IndexGenerator
          FitsKeyword keyword = (FitsKeyword) enum.nextElement();
          val = keyword.getValue();
          try {
-           if(keyword.isDate()) {
-             val = keyword.toUTCStringDate();
+           if (keyword.isDate()) {
+              keywordSnippet.append("      <"+keyword.getKey()+" units='s'>"+keyword.toDate().getTime()+"</"+keyword.getKey()+">\n");
+              val = keyword.toUTCStringDate();
            }
          }catch(ParseException pe) {
             //it is not a date or cannot be parsed into a date that is okay.
             //pe.printStackTrace();
          }
          //could probably do with tidying this up a bit, for example so that multiline comments become one tag
-         keywordSnippet.append("      <"+keyword.getKey()+">"+val+"</"+keyword.getKey()+">\n");
+         if (val == null) {
+            keywordSnippet.append("      <"+keyword.getKey()+"/>\n");
+         } else {
+            keywordSnippet.append("      <"+keyword.getKey()+">"+val+"</"+keyword.getKey()+">\n");
+         }
       }
       
       
       //assemble snippet
       String snippet = "<FitsFile>\n"+
                "   <Filename>"+fileLocation+"</Filename>\n"+
-               "   <Coverage shape='Polygon'>\n"+
-               coverageSnippet.toString()+
-               "   </Coverage>\n"+
                "   <Keywords>\n"+
                keywordSnippet.toString()+
                "   </Keywords>\n"+
@@ -183,7 +200,7 @@ public class IndexGenerator
    /**
     * Generates an index XML file for the FITS files at the given urls
     */
-   public static String generateIndex(Object[] urls) throws IOException
+   public String generateIndex(Object[] urls) throws IOException
    {
       StringBuffer index = new StringBuffer("<FitsDataCenterIndex>\n");
       
@@ -203,13 +220,18 @@ public class IndexGenerator
     * Generates an index XML file for the FITS files at the URLs listed in the
     * given file, writing them out to the target stream
     */
-   public static void generateIndex(InputStream urlsIn, OutputStream out) throws IOException
+   public void generateIndex(InputStream urlsIn, OutputStream out) throws IOException
    {
          BufferedReader in
             = new BufferedReader(new InputStreamReader(urlsIn));
          String line = null;
          while( (line = in.readLine()) != null) {
-            out.write(makeIndexSnippet(new URL(line)).getBytes());
+            try {
+               out.write(makeIndexSnippet(new URL(line)).getBytes());
+               out.flush();
+            } catch (IOException ioe) {
+               log.error("Could not read file at "+line, ioe);
+            }
          }
          in.close();
    }
@@ -225,18 +247,7 @@ public class IndexGenerator
 //                             }));
       //this is a bit of a botch so that if there's no log4j.properties around, it
       //makes one
-      File log4jproperties = new File("log4j.properties");
-      if (!log4jproperties.exists()) {
-         FileOutputStream out = new FileOutputStream(log4jproperties);
-         String contents =
-            "log4j.rootCategory=DEBUG, CONSOLE\n"+
-            "log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender\n"+
-            "log4j.appender.CONSOLE.Threshold=DEBUG\n"+
-            "log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout\n"+
-            "log4j.appender.CONSOLE.layout.ConversionPattern=%d{dd-MM-yy HH:mm:ss} PAL: %p %m%n\n";
-         out.write(contents.getBytes());
-         out.close();
-      }
+      IndexGenerator generator = new IndexGenerator();
       
       Locale.setDefault(Locale.UK);
       Document indexDoc = null;
@@ -248,14 +259,14 @@ public class IndexGenerator
       String indexFile = null;
       if("-f".equals(args[0])) {
          OutputStream out = new ByteArrayOutputStream();
-         generateIndex(new FileInputStream(args[1]), out);
+         generator.generateIndex(new FileInputStream(args[1]), out);
          indexFile = out.toString();
       } else if("-u".equals(args[0])) {
          Object []fitsURLS = new Object[(args.length-1)];
          for(int i = 1;i < args.length;i++) {
             fitsURLS[(i-1)] = new URL(args[i]);
          }
-         indexFile = generateIndex(fitsURLS);
+         indexFile = generator.generateIndex(fitsURLS);
          log.trace(indexFile);
       }
       
@@ -351,6 +362,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.19  2004/09/07 13:50:43  mch
+Added fix so generator continues even if there's a problem reading a file
+
 Revision 1.18  2004/09/07 09:48:34  mch
 Logging updates
 
