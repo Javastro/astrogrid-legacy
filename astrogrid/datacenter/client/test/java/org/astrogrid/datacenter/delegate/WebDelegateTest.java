@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegateTest.java,v 1.10 2004/08/19 14:56:47 mch Exp $
+ * $Id: WebDelegateTest.java,v 1.11 2004/08/19 19:47:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,7 +34,7 @@ public class WebDelegateTest extends TestCase
 
    /**
     * Tests a cone search on the old delegate
-    */
+    * This is really an integration test - requires a PAL to be running
    public void testConeSearch041() throws IOException
    {
       WebDelegate_v041 delegate = (WebDelegate_v041) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, TEST_PAL_041, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
@@ -47,7 +47,7 @@ public class WebDelegateTest extends TestCase
    
    /**
     * Tests a cone search on the itn05 delegate
-    */
+    * This is really an integration test - requires a PAL to be running
    public void testConeSearch05() throws IOException
    {
       WebDelegate_v05 delegate = (WebDelegate_v05) DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, TEST_PAL_05, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
@@ -57,7 +57,12 @@ public class WebDelegateTest extends TestCase
       assertNotNull(results);
       
    }
-
+    */
+   public void testDelegateFactory() throws IOException
+   {
+      fail("No suitable tests written yet");
+   }
+   
 
 
    public static Test suite()
@@ -77,6 +82,9 @@ public class WebDelegateTest extends TestCase
 
 /*
  * $Log: WebDelegateTest.java,v $
+ * Revision 1.11  2004/08/19 19:47:55  mch
+ * Removed old temporary sql parser
+ *
  * Revision 1.10  2004/08/19 14:56:47  mch
  * Update to connect to twmbarlwm:8888
  *
@@ -133,6 +141,7 @@ public class WebDelegateTest extends TestCase
  * Added Log to end
  *
  */
+
 
 
 
