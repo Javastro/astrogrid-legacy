@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<xsp:page
+    language="java"
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-formval="http://apache.org/xsp/form-validator/2.0"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  <xsp:structure>
+    <xsp:include>java.util.Map</xsp:include>
+    <xsp:include>java.util.Iterator</xsp:include>
+    <xsp:include>org.apache.cocoon.acting.ValidatorActionResult</xsp:include>
+    
+  </xsp:structure>
+  
+  <xsp:logic><![CDATA[
+    private org.apache.log4j.Category logger = org.apache.log4j.Category.getInstance(getClass());
+    
+    private boolean formOK(Map params)
+    {
+      boolean result = true;
+      
+      logger.debug("[formOK] params: " + params);
+
+      if(params == null || params.size() == 0)
+      {
+        logger.debug("[formOK] early bath: " + result);
+        return result;
+      }
+      
+      try
+      {
+        Object key = null;
+        Object value = null;
+        
+        Iterator paramNameIt = params.keySet().iterator();
+        while(paramNameIt.hasNext() && result)
+        {
+          key = paramNameIt.next();
+          logger.debug("key: " + key);
+          if(key != null)
+          {
+            logger.debug("key: " + key + ", class: " + key.getClass().getName());
+          }
+
+          value = params.get(key);
+          logger.debug("value: " + value);
+          if(value != null)
+          {
+            logger.debug("value: " + value + ", class: " + value.getClass().getName());
+          }
+
+          if(ValidatorActionResult.ERROR.equals(value))
+          {
+            result = false;
+            logger.debug("[formOK] form error - key: " + key + ", value: " + value + ", result: " + result);
+          }
+        }
+      }
+      catch(Exception e)
+      {
+        logger.debug("[formOK] exception: " + e.getClass().getName() + ", message: " + e.getLocalizedMessage());
+        result = false;
+        e.printStackTrace();
+      }
+      
+      logger.debug("[formOK] result: " + result);
+      return result;
+    }]]>
+  </xsp:logic>
+
+    <html>
+    <head>
+      <link rel="stylesheet" type="text/css" href="/ag-datacenter-ui/datastyle.css"/>
+      <title>AstroGrid Data QueryBuilder</title>
+    </head>
+    <body>
+      <table class="header">
+        <tr>
+          <td><a href="http://www.astrogrid.org"><img alt="AstroGrid" src="/ag-datacenter-ui/aglogo.png" class="logo"/></a></td>
+          <td class="h1"><h1>AstroGrid Data QueryBuilder</h1></td>
+        </tr>
+        <tr>
+          <td class="space" colspan="2"><br/></td>
+        </tr>
+      </table>
+      
+      <xsp:logic>
+        if("POST".equals(<xsp-request:get-method/>))
+        {
+          if("false".equals(<xsp-request:get-attribute name="xml-valid"/>))
+          {
+            <p class="caption">XML Errors:</p>
+          
+            if("true".equals(<xsp-request:get-attribute name="xml-errors"/>))
+            {
+              <p class="error-text">
+                <a href="#query-field">Query field</a> XML errors: <xsp-request:get-attribute name="xml-validation-errors"/>
+              </p>
+            }
+            if("true".equals(<xsp-request:get-attribute name="xml-warnings"/>))
+            {
+              <p class="error-text">
+                <a href="#query-field">Query field</a> XML warnings: <xsp-request:get-attribute name="xml-validation-warnings"/>
+              </p>
+            }
+            if("true".equals(<xsp-request:get-attribute name="xml-fatal-errors"/>))
+            {
+              <p class="error-text">
+                <a href="#query-field">Query field</a> XML fatal errors: <xsp-request:get-attribute name="xml-validation-fatal-errors"/>
+              </p>
+            }
+          }
+
+          <xsp-formval:descriptor name="defs/adql-def.xml" constraint-set="submit-adql">
+            <xsp:logic>
+              if(!formOK(<xsp-formval:results/>))
+              {
+                <p class="caption">Form Validation Errors:</p>
+                
+                <xsp-formval:validate name="query">
+                  <xsp-formval:on-toosmall>
+                    <p class="error-text"><a href="#query-field">Query field</a> is too small - minimum length is: <xsp-formval:get-attribute name="min-len"/></p>
+                  </xsp-formval:on-toosmall>
+            
+                  <xsp-formval:on-toolarge>
+                    <p class="error-text"><a href="#query-field">Query field</a> is too large - maximum length is: <xsp-formval:get-attribute name="max-len"/></p>
+                  </xsp-formval:on-toolarge>
+            
+                  <xsp-formval:on-null>
+                    <p class="error-text"><a href="#query-field">Query field</a> is null</p>
+                  </xsp-formval:on-null>
+            
+                  <xsp-formval:on-notpresent>
+                    <p class="error-text"><a href="#query-field">Query field</a> is not present</p>
+                  </xsp-formval:on-notpresent>
+                </xsp-formval:validate>
+    
+                <xsp-formval:validate name="name">
+                  <xsp-formval:on-toosmall>
+                    <p class="error-text"><a href="#name-field">Name field</a> is too small - minimum length is: <xsp-formval:get-attribute name="min-len"/></p>
+                  </xsp-formval:on-toosmall>
+            
+                  <xsp-formval:on-toolarge>
+                    <p class="error-text"><a href="#name-field">Name field</a> is too large - maximum length is: <xsp-formval:get-attribute name="max-len"/></p>
+                  </xsp-formval:on-toolarge>
+            
+                  <xsp-formval:on-null>
+                    <p class="error-text"><a href="#name-field">Name field</a> is null</p>
+                  </xsp-formval:on-null>
+            
+                  <xsp-formval:on-notpresent>
+                    <p class="error-text"><a href="#name-field">Name field</a> is not present</p>
+                  </xsp-formval:on-notpresent>
+                </xsp-formval:validate>
+    
+                <xsp-formval:validate name="description">
+                  <xsp-formval:on-toosmall>
+                    <p class="error-text"><a href="#description-field">Description field</a> is too small - minimum length is: <xsp-formval:get-attribute name="min-len"/></p>
+                  </xsp-formval:on-toosmall>
+            
+                  <xsp-formval:on-toolarge>
+                    <p class="error-text"><a href="#description-field">Description field</a> is too large - maximum length is: <xsp-formval:get-attribute name="max-len"/></p>
+                  </xsp-formval:on-toolarge>
+            
+                  <xsp-formval:on-null>
+                    <p class="error-text"><a href="#description-field">Description field</a> is null</p>
+                  </xsp-formval:on-null>
+
+                  <xsp-formval:on-notpresent>
+                    <p class="error-text"><a href="#description-field">Description field</a> is not present</p>
+                  </xsp-formval:on-notpresent>
+                </xsp-formval:validate>
+              }
+            </xsp:logic>
+          </xsp-formval:descriptor>
+          
+          if("false".equals(<xsp-request:get-attribute name="adql-document-saved"/>))
+          {
+            <p class="error-text"><xsp-request:get-attribute name="adql-document-error-message"/></p>
+<!--
+            <xsp-request:remove-attribute name="adql-document-saved"/>
+-->
+          }
+          else if("true".equals(<xsp-request:get-attribute name="adql-document-saved"/>))
+          {
+            <p class="caption">ADQL saved!!</p>
+<!--
+            <xsp-request:remove-attribute name="adql-document-saved"/>
+-->
+          }
+        }
+      </xsp:logic>
+
+      <form action="/ag-datacenter-ui/forms/adql" method="POST">
+        <center>
+          <table class="form">
+            <tr>
+              <xsp:logic>
+              if("true".equals(<xsp-request:get-attribute name="adql-document-loaded"/>))
+              {
+                <td><a name="query-field"/>
+                  <textarea name="query" cols="100" rows="20" class="code">
+<xsp-request:get-attribute name="adql-document"/></textarea></td>
+              }
+              else
+              {
+                <td><a name="query-field"/>
+                  <textarea name="query" cols="100" rows="20" class="code"><xsp-request:get-parameter name="query">
+                    <xsp-request:default><![CDATA[" +
+                      "<Select xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n" +
+                      "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+                      "  <Selection>\n" +
+                      "    <AllSelectionItem />\n" +
+                      "  </Selection>\n" +
+                      "  <TableClause>\n" +
+                      "    <FromClause>\n" +
+                      "      <TableReference>\n" +
+                      "        <Table>\n" +
+                      "          <Name>Tab</Name>\n" +
+                      "          <AliasName>t</AliasName>\n" +
+                      "        </Table>\n" +
+                      "      </TableReference>\n" +
+                      "    </FromClause>\n" +
+                      "  </TableClause>\n" +
+                      "</Select>]]></xsp-request:default>
+                  </xsp-request:get-parameter></textarea></td>
+                }
+              </xsp:logic>
+            </tr>
+            <tr>
+              <td><p class="caption">Astronomical Data Query Language (ADQL)</p></td>
+            </tr>
+            <tr>
+              <td><table>
+                <tr>
+                  <td><p class="question">Name</p></td>
+                  <td><a name="name-field">
+                      <input name="name" class="fieldtext" type="text">
+                        <xsp:attribute name="value"><xsp-request:get-parameter name="name" default="sample1"/></xsp:attribute>
+                      </input></a></td>
+                </tr>
+                <tr>
+                  <td><p class="question">Description</p></td>
+                  <td><a name="description-field"/>
+                      <textarea name="description" cols="50" rows="5" class="fieldtext"><xsp-request:get-parameter name="description">
+                        <xsp-request:default><![CDATA[A sample query that does some stuff]]></xsp-request:default>
+                      </xsp-request:get-parameter></textarea></td>
+                </tr></table></td>
+            </tr>
+            <tr>
+              <td><center>
+                  <input name="action" type="submit" class="submit" value="Load"/>
+                  <input name="reset" type="reset" class="submit" value="Reset"/>
+                  <input name="action" type="submit" class="submit" value="Save"/></center></td>
+            </tr>
+            <xsp:logic>
+              String datacenter = <xsp-request:get-parameter name="datacenter"/>;
+            </xsp:logic>
+<!--
+            <tr>
+              <td><center><table>
+                  <tr>
+                    <td><p class="question">DataCenter</p></td>
+                    <td><select name="datacenter">
+                        <option value="6df">
+                          <xsp:logic>
+                            if("6df".equals(datacenter))
+                            {
+                              <xsp:attribute name="selected">true</xsp:attribute>
+                            }
+                          </xsp:logic>
+                          6DF
+                        </option>
+                        <option value="merlin">
+                          <xsp:logic>
+                            if("merlin".equals(datacenter))
+                            {
+                              <xsp:attribute name="selected">true</xsp:attribute>
+                            }
+                          </xsp:logic>
+                         Merlin
+                        </option>
+                        </select></td>
+                    <td><input name="action" type="submit" class="submit" value="Test"/></td>
+                  </tr></table></center></td>
+            </tr>
+-->
+            <tr>
+              <td><center><table>
+                  <tr>
+                    <td><p class="question">URI</p></td>
+                    <td><a name="uri-field">
+                        <input name="uri" class="fieldtext" type="text">
+                          <xsp:attribute name="value"><xsp-request:get-parameter name="uri" default="http://localhost:8080/datacenter"/></xsp:attribute>
+                        </input></a></td>
+                    <td><input name="action" type="submit" class="submit" value="URI"/></td>
+                  </tr></table></center></td>
+            </tr>
+          </table>
+        </center>
+      </form>
+    </body>
+  </html>
+</xsp:page>

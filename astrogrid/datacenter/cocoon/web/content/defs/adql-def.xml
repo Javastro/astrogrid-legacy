@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<root>
+  <parameter
+      name="name"
+      type="string"
+      max-len="256"
+      min-len="3"
+      nullable="no"/>
+      
+  <parameter
+      name="description"
+      type="string"
+      max-len="1000"
+      min-len="10"
+      nullable="no"/>
+      
+  <parameter
+      name="query"
+      type="string"
+      max-len="1000"
+      min-len="50"
+      nullable="no"/>
+      
+  <constraint-set name="load">
+    <validate name="name"/>
+    
+    <validate
+        name="query"
+        nullable="yes"/>
+    
+    <validate
+        name="description"
+        nullable="yes"/>
+  </constraint-set>
+      
+  <constraint-set name="save">
+    <validate name="name"/>
+    <validate name="query"/>
+    <validate name="description"/>
+  </constraint-set>
+      
+  <constraint-set name="test">
+    <validate name="query"/>
+
+    <validate
+        name="name"
+        nullable="yes"/>
+    
+    <validate
+        name="description"
+        nullable="yes"/>
+  </constraint-set>
+</root>

@@ -181,6 +181,30 @@
     </dependency>
 	<!-- add entry for ms sql server -->
 
+    <dependency>
+      <id>avalon-framework</id>
+      <version>20020627</version>
+    </dependency>
+
+    <dependency>
+      <id>cocoon</id>
+      <version>2.0.4</version>
+    </dependency>
+
+    <dependency>
+      <id>jdom</id>
+      <version>1.0b8</version>
+    </dependency>
+
+    <dependency>
+      <id>logkit</id>
+      <version>20020529</version>
+    </dependency>
+
+    <dependency>
+      <id>mmmockobjects</id>
+      <version>1.11.0</version>
+    </dependency>
   </dependencies>
 
   <build>

@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<project
+    name="astrogrid-datacenter-ui"
+    basedir="."
+    default="all">
+  <target name="init">
+    <property name="project.name" value="ag-datacenter-ui"/>
+    
+    <property environment="env"/>
+    
+    <property name="catalina.home" value="${env.CATALINA_HOME}"/>
+    <property name="catalina.work.dir" value="${catalina.home}/work"/>
+    
+    <property name="cocoon.base.dir" value="${catalina.home}/webapps"/>
+    <property name="deploy.dir" value="${cocoon.base.dir}/${project.name}"/>
+    <property name="deploy.webinf.dir" value="${deploy.dir}/WEB-INF"/>
+    <property name="deploy.classes.dir" value="${deploy.webinf.dir}/classes"/>
+    <property name="deploy.lib.dir" value="${deploy.webinf.dir}/lib"/>
+    
+    <property name="src.dir" value="${basedir}/src"/>
+    <property name="lib.dir" value="${basedir}/lib"/>
+    <property name="build.dir" value="${basedir}/build"/>
+  </target>
+  
+  <target name="prepare" depends="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${deploy.dir}"/>
+    <mkdir dir="${deploy.webinf.dir}"/>
+    <mkdir dir="${deploy.classes.dir}"/>
+    <mkdir dir="${deploy.lib.dir}"/>
+    
+    <copy
+        todir="${basedir}/src">
+      <fileset dir="${basedir}/../src/java"/>
+    </copy>
+    
+    <copy
+        todir="${basedir}/lib">
+      <fileset dir="${basedir}/../lib"/>
+    </copy>
+  </target>
+  
+  <target name="compile" depends="prepare">
+    <javac
+        srcdir="${src.dir}"
+        destdir="${build.dir}"
+        debug="on"
+        optimize="off"
+        deprecation="off">
+      <classpath>
+        <fileset dir="${lib.dir}">
+          <include name="**/*.jar"/>
+          <include name="**/*.zip"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+  
+  <target name="deploy-site" depends="prepare">
+    <copy todir="${deploy.dir}">
+      <fileset dir="${basedir}/web"/>
+
+      <fileset dir="${basedir}">
+        <include name="sitemap.xmap"/>
+      </fileset>
+    </copy>
+
+    <copy todir="${deploy.webinf.dir}">
+      <fileset dir="${basedir}">
+        <include name="cocoon.xconf"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="deploy-code" depends="compile">
+    <copy todir="${deploy.classes.dir}">
+      <fileset dir="${basedir}/build"/>
+    </copy>
+
+    <copy todir="${deploy.lib.dir}">
+      <fileset dir="${basedir}/lib"/>
+    </copy>
+  </target>
+  
+  <target name="all" depends="deploy-site, deploy-code"/>
+</project>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<xsp:page
+    language="java"
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  <results>
+    <xsp:logic>
+      if("true".equals(<xsp-request:get-attribute name="adql-query-errors"/>))
+      {
+        <error><xsp-request:get-attribute name="adql-query-error-message"/></error>
+      }
+      else
+      {
+        <result><xsp-request:get-attribute name="adql-query-result"/></result>
+      }
+    </xsp:logic>
+  </results>
+</xsp:page>
