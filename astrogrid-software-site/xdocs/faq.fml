@@ -1,22 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-/*
- * Copyright 2001-2004 The Apache Software Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
- -->
-
 <faqs title="Frequently Asked Questions">
     <part id="general">
         <title>General</title>
@@ -36,7 +18,9 @@
         <faq id="general-when">
             <question> When will AstroGrid be ready? </question>
             <answer>
-                <p>Late 2004</p>
+                <p>AstroGrid 1 will finish in December 2004, but software is available for download now. Preview installations of the software are listed below 
+                    in <a href="#access-prototype">How do I obtain access to AstroGrid</a>. The software will continue to be developed during AstroGrid 2, 
+                    starting January 2005.</p>
             </answer>
         </faq>
     </part>
