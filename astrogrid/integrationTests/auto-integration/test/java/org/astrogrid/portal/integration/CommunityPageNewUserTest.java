@@ -1,9 +1,12 @@
 /*
- * $Id: CommunityPageNewUserTest.java,v 1.1 2004/06/07 18:51:12 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
+ * $Id: CommunityPageNewUserTest.java,v 1.2 2004/07/05 11:53:15 jdt Exp $ Created on Jun 7, 2004 by jdt@roe.ac.uk The auto-integration project
  * Copyright (c) Astrigrid 2004. All rights reserved.
  *  
  */
 package org.astrogrid.portal.integration;
+
+import java.util.Date;
+
 /**
  * Check that we can create a new user
  * 
@@ -117,7 +120,7 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
      *
      */
     public void testCreateNewAccount() {
-        final String testUser = "Herbert";
+        final String testUser = "Herbert"+new Date();
         final String testCommunity = TEST_COMMUNITY;        
         final String testPassword = "Sapo";
         final String testDisplayName = "Hyla Cinerea";       
@@ -271,6 +274,10 @@ public final class CommunityPageNewUserTest extends AstrogridPortalWebTestCase {
 }
 /*
  * $Log: CommunityPageNewUserTest.java,v $
+ * Revision 1.2  2004/07/05 11:53:15  jdt
+ * Attempt to fix CreateNewAccount test.  It seems that user names
+ * might be persisting between installs....
+ *
  * Revision 1.1  2004/06/07 18:51:12  jdt
  * Name change
  *
