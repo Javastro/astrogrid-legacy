@@ -321,6 +321,7 @@ public class DatasetAgent {
 			Message
 				message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
 			logger.error( message.toString() ) ;
+			throw new DatasetAgentException( message ) ;
 		}
 		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
     } // end checkPropertiesLoaded()
