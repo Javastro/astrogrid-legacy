@@ -21,18 +21,19 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 #from which other projects may inherit
 $SCRIPTHOME/maven-build-new.sh maven-base >> $BUILD_DIR/$LOG_FILE 2>&1
 #Now the "real" projects.
-#$SCRIPTHOME/maven-build-new.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh workflow-objects >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh datacenter >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh jes >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build.sh portal >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
-#$SCRIPTHOME/maven-build-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh workflow-objects >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build.sh community >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh datacenter >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh jes >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build.sh portal >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
+
 $SCRIPTHOME/maven-build-new.sh maven-site >> $BUILD_DIR/$LOG_FILE 2>&1
 
 echo "Moving docs to snapshot location" >> $BUILD_DIR/$LOG_FILE 2>&1
