@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.134 2005/01/17 16:02:08 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.135 2005/02/15 12:43:25 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -134,6 +134,8 @@
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
+        <attainGoal name="exist-deploy" />
+        <sleep seconds="4" />	
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -172,6 +174,8 @@
         <sleep seconds="2" />
         <attainGoal name="reg-deploy" />
         <sleep seconds="4" />
+	    <attainGoal name="exist-deploy" />
+    	<sleep seconds="4" />
         <attainGoal name="jes-deploy" />
         <sleep seconds="2" />
         <attainGoal name="cea-server-deploy" />
@@ -210,6 +214,7 @@
         <attainGoal name="cea-commandline-undeploy" />
         <attainGoal name="cea-http-undeploy" />
         <attainGoal name="reg-undeploy" />
+		<attainGoal name="exist-undeploy" />
         <attainGoal name="myspace-undeploy" />
         <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
@@ -230,6 +235,7 @@
         <attainGoal name="cea-commandline-undeploy" />
         <attainGoal name="cea-http-undeploy" />
         <attainGoal name="reg-undeploy" />
+	    <attainGoal name="exist-undeploy" />
         <attainGoal name="myspace-undeploy" />
         <attainGoal name="filestore-undeploy" />
         <attainGoal name="pal-undeploy" />
@@ -447,8 +453,8 @@
 
             <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
                      <ag:register file="${entryr}" />
-
         </j:forEach>
+
 </goal>
 
 <!--+
@@ -739,33 +745,27 @@
 
 
 <goal name="reg-deploy" >
-                <!--
-        <copy todir="${temporary.dir}/registry" filtering="true">
-                <fileset dir="contexts/registry" />
-        </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-registry-${pom.currentVersion}.war">
-                <metainf dir="${temporary.dir}/registry"/>
-        </war>
-                -->
-        <copy todir="${temporary.dir}/registry" filtering="true" overwrite="true">
-            <fileset dir="webapps/astrogrid-configuration/registry">
-                <include name="astro*.prop*"/>
-            </fileset>
-    </copy>
-    <ag:maybe-enable-cougaar webapp="registry" />
+    	<copy todir="${temporary.dir}/registry" filtering="true">
+            <fileset dir="contexts/registry" />
+	    </copy>
 
-    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war">
-                <classes dir="${temporary.dir}/registry"/>
-    </war>
+    	<ag:maybe-enable-cougaar webapp="registry" />
+
+	    <war update="true" destfile="${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war">
+    		<metainf dir="${temporary.dir}/registry"/>
+	    </war>
 
           <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-${pom.currentVersion}" war="file:///${temporary.dir}/astrogrid-registry-${astrogrid.registry.version}.war"/>
-
-
-          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
-
 </goal>
+	
+	<goal name="exist-deploy" >
+	          <tomcat-deploy update="true" url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	     path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
+	</goal>
+			
+	
+	
 
 <goal name="myspace-deploy" >
         <copy todir="${temporary.dir}/myspace" filtering="true">
@@ -1010,12 +1010,14 @@
 
   <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
           path="/astrogrid-registry-${pom.currentVersion}" />
-
-
-  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" />
-
 </goal>
+	
+	<goal name="exist-undeploy" >
+
+	  <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
+	          path="/exist" />
+
+	</goal>	
 
 <goal name="myspace-undeploy" >
 

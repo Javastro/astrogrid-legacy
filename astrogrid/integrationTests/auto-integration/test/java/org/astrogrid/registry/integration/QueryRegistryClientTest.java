@@ -1,4 +1,4 @@
-/*$Id: QueryRegistryClientTest.java,v 1.13 2004/12/18 18:30:16 jdt Exp $
+/*$Id: QueryRegistryClientTest.java,v 1.14 2005/02/15 12:43:24 clq2 Exp $
  * Created on 15-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -45,7 +45,7 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
         super(arg0);
     }
       
-    
+
     public void testLoadRegistry() throws RegistryException
     {
        //HashMap auth = delegate.managedAuthorities();
@@ -54,8 +54,8 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
        DomHelper.DocumentToStream(result,System.out);
        assertVODescription(result);
     }
-    
-    
+
+/*    
     public void testLocalHostResources() throws Exception {
        Document queryDoc = askQueryFromFile("GetLocalHostResources.xml");
        Document  result = rs.submitQuery(queryDoc);
@@ -64,7 +64,7 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
        //assertNonEmptyVODescription(result);
        assertVODescription(result);
     }
-    
+*/    
     
    public void testContainsResources() throws Exception {
       Document queryDoc = askQueryFromFile("GetContainsResources.xml");
@@ -75,15 +75,14 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
       assertVODescription(result);
    }
    
-
-   /*
+/*
    public void testFindFileStoreInterfaceType() throws Exception {
        Document  result = rs.getResourcesByInterfaceType(new FileStoreInterfaceType());
        assertNotNull(result);
        DomHelper.DocumentToStream(result,System.out);
        assertNonEmptyVODescription(result);      
    }
-   */
+*/
 /*
    public void testFindMyspaceInterfaceType() throws Exception {
        ServiceData []sd = rs.getResourcesByInterfaceType(new MyspaceInterfaceType());
@@ -96,7 +95,8 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
 /*
  *  Some Typical Queries
  */
-    
+  
+
    public void testBasicCatalogueQuery() throws Exception {
       Document queryDoc = askQueryFromFile("BasicCatalogueQuery.xml");
       Document  result = rs.submitQuery(queryDoc);
@@ -132,6 +132,7 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
       //assertNonEmptyVODescription(result);
       assertVODescription(result);
    }
+
    /*
    public void testUCDQuery() throws Exception {
       Document queryDoc = askQueryFromFile("UCDQuery.xml");
@@ -142,7 +143,7 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
       assertVODescription(result);
    }
    */
-   
+   /*
    public void testResourceByIdentifier() throws Exception {
       Document result =
          rs.getResourceByIdentifier("org.astrogrid.localhost/noaa_trace");
@@ -150,7 +151,8 @@ public class QueryRegistryClientTest extends AbstractTestForRegistry {
       DomHelper.DocumentToStream(result,System.out);
     //  assertSingletonVODescription(result);
       assertVODescription(result);
-   }       
+   } 
+   */      
     
    protected Document askQueryFromFile(String queryFile) throws Exception {
       assertNotNull(queryFile);
