@@ -36,6 +36,7 @@
       <xsp:include>org.astrogrid.workflow.beans.v1.While</xsp:include>               
       <xsp:include>org.astrogrid.workflow.beans.v1.Workflow</xsp:include>
       <xsp:include>org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord</xsp:include>
+      <xsp:include>org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord</xsp:include>
       <xsp:include>org.astrogrid.applications.beans.v1.cea.castor.MessageType</xsp:include>
    </xsp:structure>
 
@@ -220,6 +221,7 @@
 		        	
 		    try {
                  <xsp:element name="sequence">
+                    <xsp:attribute name="key"><xsp:expr>getXPathKey( aSequence )</xsp:expr></xsp:attribute>
                     <xsp:logic>activityContainer( aSequence ) ;</xsp:logic>
                  </xsp:element>
 		    }
@@ -597,6 +599,35 @@
          
          
        //====================================================================		
+         private void executionRecordJob( JobExecutionRecord executionRecord ) throws SAXException {
+            if( TRACE_ENABLED ) trace( "job-status-xsp.executionRecordJob() entry") ; 
+            
+            AttributesImpl xspAttr = new AttributesImpl();
+        	
+        	try {
+                 <xsp:element name="workflowExecutionRecord">
+                    <xsp:attribute name="execution-start"><xsp:expr>executionRecord.getStartTime()</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="execution-finish"><xsp:expr>executionRecord.getFinishTime()</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="execution-status"><xsp:expr>executionRecord.getStatus()</xsp:expr></xsp:attribute>                                        
+                    <xsp:logic>
+                        for (int i=0; i &lt; executionRecord.getMessageCount(); ++i)
+                        {
+                            message(executionRecord.getMessage(i));
+                        }                    
+                      </xsp:logic>
+                 </xsp:element>
+        	}
+            catch(Exception e) {
+               e.printStackTrace() ;
+            }        	
+        	finally {
+        	   xspAttr = null;
+               if( TRACE_ENABLED ) trace( "job-status-xsp.executionRecordJob() exit") ;
+            }		
+         } // end of executionRecord()         
+         
+         
+       //====================================================================		
          private void message( MessageType message ) throws SAXException {
             if( TRACE_ENABLED ) trace( "job-status-xsp.message entry") ; 
             
@@ -688,10 +719,11 @@
       </xsp:logic>
 
 	  <xsp:logic>
-        for (int i=0; i &lt; workflow.getJobExecutionRecord().getMessageCount(); ++i)
-        {
-          message( workflow.getJobExecutionRecord().getMessage(i) );
-        }                    
+	  
+          if (workflow.getJobExecutionRecord() != null) {
+              executionRecordJob( workflow.getJobExecutionRecord() );
+          }     
+
       </xsp:logic>
       
       <xsp:logic>
