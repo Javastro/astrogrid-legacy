@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.10 2004/08/18 16:17:07 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.11 2004/08/19 16:27:26 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -125,9 +125,11 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
             // dump workflow to output, so we can see whats been going on.
             Document doc = XMLUtils.newDocument();
             Marshaller.marshal(result,doc);
-            System.err.println("**********************************");
-            System.err.println(urn.toString());            
+
+            System.err.println(urn.toString());                        
+            System.err.print("***WORKFLOW***");
             XMLUtils.PrettyDocumentToStream(doc,System.err);
+            System.err.println("***WORKFLOW-END***");
             assertNotNull("null workflow returned", result);
             checkExecutionResults(result);
  
@@ -249,6 +251,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.11  2004/08/19 16:27:26  nw
+added delimiters around workflow document
+
 Revision 1.10  2004/08/18 16:17:07  nw
 added printout of workflow to system.err, so it gets picked up in tests.
 
