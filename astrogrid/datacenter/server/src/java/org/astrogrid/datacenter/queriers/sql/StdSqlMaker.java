@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.4 2004/03/17 01:47:26 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.5 2004/03/17 18:03:20 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -142,14 +142,14 @@ public class StdSqlMaker  extends SqlMaker {
       if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
          xsltDoc = "adql073-2-sql.xsl";
       }
-//      if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
-//         xsltDoc = "adql073-2-sql.xsl";
-//      }
+      if (namespaceURI.equals("http://adql.ivoa.net/v0.8")) {
+         xsltDoc = "adql08-2-sql.xsl";
+      }
 
       if (namespaceURI.equals("http://astrogrid.org/sadql/v1.1")) {
          xsltDoc = "sadql1.1-2-sql.xsl";
       }
-      
+      //look up in config but using above softcoded as defaults
       String key = "datacenter.sqlmaker.xslt."+namespaceURI;
       xsltDoc = SimpleConfig.getSingleton().getString(key, xsltDoc);
       
@@ -160,9 +160,10 @@ public class StdSqlMaker  extends SqlMaker {
       URL xsltUrl = null;
       Transformer transformer = null;
       try {
-         //find specified sheet
+         //find specified sheet on classpath/working directory
          xsltUrl = Config.resolveFilename(xsltDoc);
       
+         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+xsltUrl+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
          transformer = tFactory.newTransformer(new StreamSource(xsltUrl.openStream()));
          
@@ -202,6 +203,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.5  2004/03/17 18:03:20  mch
+Added v0.8 ADQL
+
 Revision 1.4  2004/03/17 01:47:26  mch
 Added v05 Axis web interface
 
