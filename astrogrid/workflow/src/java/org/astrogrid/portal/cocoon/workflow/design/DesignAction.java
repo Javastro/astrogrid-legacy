@@ -65,6 +65,11 @@ public class DesignAction extends AbstractAction {
 	 */
 	public static final String USER_PARAM_NAME = "user-param" ;
 
+	/**
+	 * Cocoon param for the user param in the session.
+	 *
+	 */
+	public static final String COMMUNITY_PARAM_TAG = "community" ;
 
 	/**
 	 * Http request param for the action.
@@ -83,6 +88,8 @@ public class DesignAction extends AbstractAction {
         
     public static final String
         WORKFLOW_NAME_PARAMETER = "workflow-name" ; 
+    public static final String    
+	    WORKFLOW_DESCRIPTION_PARAMETER = "workflow-description" ;
 
     public static final String 
         ACTION_CREATE_WORKFLOW = "create-workflow" ,
@@ -170,11 +177,8 @@ public class DesignAction extends AbstractAction {
                 // Get user and community 
                 this.retrieveUserDetails() ;
             
-                this.action = request.getParameter( ACTION_PARAM_TAG ) ; 
+                this.action = request.getParameter( ACTION_PARAM_TAG ) ;
                 this.bConfirm = new Boolean ( request.getParameter(CONFIRM_PARAM_TAG) ).booleanValue() ;
-                
-                debug( request.getParameter(CONFIRM_PARAM_TAG) ) ;
-                debug( "request: " + request.toString() ) ;
                 
                 // Load current Workflow - if any - from our HttpSession.
                 this.workflow = (Workflow) session.getAttribute( HTTP_WORKFLOW_TAG ) ;
@@ -191,6 +195,8 @@ public class DesignAction extends AbstractAction {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.act() entry" ) ;      
         
             try {
+            	
+				debug( "action is: " + action ) ;
                 
                 this.consistencyCheck() ;
                     
@@ -225,10 +231,12 @@ public class DesignAction extends AbstractAction {
                     debug( "unsupported action") ; 
                 }
                 
-                // Save the workflow in the session object...
-                debug( "about to set session attribute..." ) ;
-                session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
-                debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ) ;
+                if (workflow != null ){
+	                // Save the workflow in the session object...
+    	            debug( "about to set session attribute..." ) ;
+        	        session.setAttribute( HTTP_WORKFLOW_TAG, workflow ) ;
+            	    debug( session.getAttribute(HTTP_WORKFLOW_TAG).toString() ) ;
+                }
             }
             catch( ConsistencyException cex ) {
                 debug( "ConsistencyException occurred");
@@ -260,8 +268,9 @@ public class DesignAction extends AbstractAction {
 
             try {
                 tag = params.getParameter( USER_PARAM_NAME ) ;
-                userid = (String) session.getAttribute( tag ) ;
-                community = "leicester" ; //JBL ???????????????
+                this.userid = (String) session.getAttribute( tag ) ;
+				tag = params.getParameter( COMMUNITY_PARAM_TAG ) ;
+				this.community = (String) session.getAttribute( tag ) ;
             }
             catch( ParameterException pex ) {
                 ; // some logging here
@@ -274,8 +283,13 @@ public class DesignAction extends AbstractAction {
         
         
         private void consistencyCheck() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "consistencyCheck() entry" ) ;
+			debug( "userid: " + this.userid ) ;
+			debug( "community: " + this.community ) ;
+			debug( "name: "  ) ; 
+			debug( "description: "  ) ; 
             
-            userid = "jl99" ;   //JBL note.
+            
             
             if( userid == null ) {
                 ; // redirection required 
@@ -287,7 +301,7 @@ public class DesignAction extends AbstractAction {
                 // throw new ConsistencyException() ;
      
             }
-
+			if( TRACE_ENABLED ) trace( "consistencyCheck()) exit" ) ;
         }
         
         
@@ -299,22 +313,29 @@ public class DesignAction extends AbstractAction {
                 String
                     name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
                     
+				String
+					description = request.getParameter( WORKFLOW_DESCRIPTION_PARAMETER ) ;                    
+                    
                 if( name == null ) {
                     ; // some logging here
                     throw new ConsistencyException() ;
                 }
                 
+				if( description == null ) {
+					description = "no description entered" ;
+				}                
+                
                 if( workflow == null ) {
                     workflow = Workflow.createWorkflow( userid, community, name ) ;
-                    workflow.setDescription( "Some Query against USNOB" ) ; 
+                    workflow.setDescription( description ) ; 
                 }
                 else if( workflow.isDirty() && (bConfirm == true) ) {
                     workflow = Workflow.createWorkflow( userid, community, name ) ;
-                    workflow.setDescription( "Some Query against USNOB" ) ;
+                    workflow.setDescription( description ) ;
                 }
                 else if( !workflow.isDirty() ) {
                     workflow = Workflow.createWorkflow( userid, community, name ) ;
-                    workflow.setDescription( "Some Query against USNOB" ) ;
+                    workflow.setDescription( description ) ;
                 }
                 else {
                     debug( "Create ignored - bConfirm == false" ) ;
@@ -356,7 +377,7 @@ public class DesignAction extends AbstractAction {
                 String
                     name = request.getParameter( WORKFLOW_NAME_PARAMETER ) ;
                   
-                 name = "jeff1" ;
+                // name = "jeff1" ;
                     
                 if( name == null ) {
                     ; // some logging here
