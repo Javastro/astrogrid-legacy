@@ -250,6 +250,19 @@
     </waitfor>
 </goal>
 
+<!--+
+    | Upload a Registry Entry to the local service.
+    +-->
+<goal name="registry.upload.test">
+    <echo message="Uploading Registry Entry .."/>
+    <ant
+        target="register"
+        antfile="register.xml"
+        >
+	    <property name="register.entry" value="file://./tmp/community/config/service/policy.manager.xml"/>
+	</ant>
+</goal>
+
 <!-- pregoals ///////////////////////////////////////////////////////////////////////////////////////////////// -->
 
   <preGoal name="java:compile">
