@@ -29,9 +29,9 @@ public class ClientCredentialHandler extends CredentialHandler {
    *         This handler never returns false to stop processing.
    *
    * @throws JAXRPCException if the message context is inappropriate
-   *         JAXRPCException if the construction of the header fails
+   * @throws JAXRPCException if the construction of the header fails
    */
-  public boolean handleRequest (MessageContext mc) throws JAXRPCException {
+  public final boolean handleRequest (final MessageContext mc) {
     System.out.println("Entering ClientCredentialHandler.handleRequest()");
     SOAPMessage sm = this.getMessage(mc);
     assert (sm != null);
