@@ -1,4 +1,4 @@
-/*$Id: Dispatcher.java,v 1.5 2004/03/15 23:45:07 nw Exp $
+/*$Id: Dispatcher.java,v 1.6 2004/08/03 16:31:25 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.jes.JesException;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 /** Interface to a component that dispatches (executes) a job step.
  * This may be done by communicating with a remote service, such as an application controller, to by other means. 
@@ -24,14 +25,19 @@ public interface Dispatcher {
      * Implementations should not alter the workflow and step objects - recording execution information is the responsibility of the scheduler engine. 
      * @param wf workflow document the step is from
      * @param js the job step to execute
+     * @param tool the tool to use to perform the call.
      * @throws JesException
      */
-    void dispatchStep(Workflow wf, Step js) throws JesException;
+    void dispatchStep(Workflow wf, Step js,Tool tool) throws JesException;
 }
 
 
 /* 
 $Log: Dispatcher.java,v $
+Revision 1.6  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.5  2004/03/15 23:45:07  nw
 improved javadoc
 

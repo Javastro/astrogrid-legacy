@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.7 2004/07/01 21:15:00 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.8 2004/08/03 16:31:25 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,17 +42,12 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(Step js) throws JesException {
-        logger.debug("constant tool locator: for " + js.getTool().getName() + " returning " + endpoint.toString());
+    public String locateTool(Tool tool) throws JesException {
+        logger.debug("constant tool locator: for " + tool.getName() + " returning " + endpoint.toString());
         return endpoint.toString();
         
     }
-    /**
-     * @see org.astrogrid.jes.jobscheduler.Locator#getToolInterface(org.astrogrid.jes.job.JobStep)
-     */
-    public String getToolInterface(Step js) throws JesException {
-        return interfaceName;
-    }
+
     /**
      * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
      */
@@ -77,6 +73,10 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.8  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.7  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.4 2004/07/30 15:42:34 nw Exp $
+/*$Id: AllTests.java,v 1.5 2004/08/03 16:31:25 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,13 +22,17 @@ public class AllTests {
     public static Test suite() {
         TestSuite suite = new TestSuite("Test for org.astrogrid.jes.jobscheduler.dispatcher");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(ApplicationControllerIdDispatcherTest.class));
+        suite.addTest(new TestSuite(ApplicationControllerDispatcherTest.class));
         //$JUnit-END$
         return suite;
     }
 }
 /* 
 $Log: AllTests.java,v $
+Revision 1.5  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.4  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

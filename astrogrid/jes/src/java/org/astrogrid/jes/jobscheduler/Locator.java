@@ -1,4 +1,4 @@
-/*$Id: Locator.java,v 1.4 2004/03/15 23:45:07 nw Exp $
+/*$Id: Locator.java,v 1.5 2004/08/03 16:31:25 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,6 +12,7 @@ package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.jes.JesException;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Interface to a component that will retreive details / location for a tool
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Feb-2004
@@ -21,14 +22,16 @@ public interface Locator {
     /** resolve a tool name into an endpoint of a service that provides the tool 
      * @todo return url? or something more abstract
      * */
-    String locateTool(Step js) throws JesException;
-    /** @deprecated - don't know what use this is */
-    String getToolInterface(Step js) throws JesException;
+    String locateTool(Tool  js) throws JesException;
 }
 
 
 /* 
 $Log: Locator.java,v $
+Revision 1.5  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.4  2004/03/15 23:45:07  nw
 improved javadoc
 

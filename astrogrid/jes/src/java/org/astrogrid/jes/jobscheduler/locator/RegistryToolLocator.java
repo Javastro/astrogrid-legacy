@@ -1,4 +1,4 @@
-/*$Id: RegistryToolLocator.java,v 1.7 2004/07/01 21:15:00 nw Exp $
+/*$Id: RegistryToolLocator.java,v 1.8 2004/08/03 16:31:25 nw Exp $
  * Created on 08-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,6 +18,7 @@ import org.astrogrid.registry.beans.resource.IdentifierType;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -54,8 +55,8 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
     /**
      * @see org.astrogrid.jes.jobscheduler.Locator#locateTool(org.astrogrid.workflow.beans.v1.Step)
      */    
-    public String locateTool(Step js) throws JesException{
-            String name = js.getTool().getName();
+    public String locateTool(Tool tool) throws JesException{
+            String name =tool.getName();
             if (name == null ) {
                 throw reportError("Unnamed tool - cannot locate it");
             }
@@ -198,6 +199,10 @@ public class RegistryToolLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: RegistryToolLocator.java,v $
+Revision 1.8  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.7  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

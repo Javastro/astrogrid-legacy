@@ -1,4 +1,4 @@
-/*$Id: MapLocatorTest.java,v 1.4 2004/03/04 01:57:35 nw Exp $
+/*$Id: MapLocatorTest.java,v 1.5 2004/08/03 16:31:25 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -52,15 +52,12 @@ public class MapLocatorTest extends TestCase {
     protected final static String UNKNOWN_TOOL = "UNKNOWN_TOOL";
     
     public void testLocationSuccess() throws Exception {
-        Step js = buildJobStep(KNOWN_TOOL);
+        Tool js = buildTool(KNOWN_TOOL);
         assertNotNull(l.locateTool(js));
     }
-    public void testInterfaceSuccess() throws Exception {
-        Step js = buildJobStep(KNOWN_TOOL);
-        assertNotNull(l.getToolInterface(js));
-    }
+
     public void testLocationFailure() throws Exception {
-        Step js = buildJobStep(UNKNOWN_TOOL);
+        Tool js = buildTool(UNKNOWN_TOOL);
          try {
              l.locateTool(js);
              fail("expected to fail");
@@ -68,36 +65,26 @@ public class MapLocatorTest extends TestCase {
              // ok.
          }        
     }
-    public void testInterfaceFailure() throws Exception{
-        Step js = buildJobStep(UNKNOWN_TOOL);
-        try {
-            l.getToolInterface(js);
-            fail("expected to fail");
-        } catch (NotFoundException e) {
-            // ok
-        }
-    }
+
+ 
     
     /**
-    Build a noddy implementation of a job step.
+    Build a noddy instance of a tool for testing.
      */
-    private Step buildJobStep(final String name) {
+    private Tool buildTool(final String name) {
          Tool t = new Tool();
          t.setName(name);
-        Step js = new Step();
-        js.setTool(t);
-        StepExecutionRecord rec = new StepExecutionRecord();
-        js.addStepExecutionRecord(rec);
-        rec.setStatus(ExecutionPhase.INITIALIZING);
-
-
-        return js;
+         return t;
     }
 }
 
 
 /* 
 $Log: MapLocatorTest.java,v $
+Revision 1.5  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.4  2004/03/04 01:57:35  nw
 major refactor.
 upgraded to latest workflow object model.

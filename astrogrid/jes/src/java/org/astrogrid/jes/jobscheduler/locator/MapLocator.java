@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.9 2004/07/01 21:15:00 nw Exp $
+/*$Id: MapLocator.java,v 1.10 2004/08/03 16:31:25 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -55,15 +55,14 @@ public class MapLocator implements Locator, ComponentDescriptor {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(Step js) throws JesException{
-        ToolInfo nfo = getToolInfo(js);
-        logger.debug("tool location for " + js.getTool().getName() + " :=" + nfo.getLocation());
+    public String locateTool(Tool tool) throws JesException{
+        ToolInfo nfo = getToolInfo(tool);
+        logger.debug("tool location for " + tool.getName() + " :=" + nfo.getLocation());
         return nfo.getLocation();
         
     }
     /** return tool for this job step, or throw not found excepton */
-    private ToolInfo getToolInfo(Step js) throws JesException {
-        Tool tool = js.getTool();
+    private ToolInfo getToolInfo(Tool tool) throws JesException {
         if (tool == null) {
             throw new JesException("Job Step contains no tool");
         }
@@ -74,13 +73,7 @@ public class MapLocator implements Locator, ComponentDescriptor {
         }
         return nfo;
     }
-    /**
-     * @see org.astrogrid.jes.jobscheduler.ToolLocator#getToolInterface(org.astrogrid.jes.job.JobStep)
-     */
-    public String getToolInterface(Step js) throws JesException {
-        ToolInfo nfo = getToolInfo(js);
-        return nfo.getInterface();
-    }
+
     
     public static class ToolInfo {
         private String location;
@@ -181,6 +174,10 @@ public class MapLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.10  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.9  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

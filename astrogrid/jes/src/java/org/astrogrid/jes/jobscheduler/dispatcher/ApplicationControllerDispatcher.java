@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.16 2004/07/30 15:42:34 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.17 2004/08/03 16:31:25 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,6 +22,7 @@ import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +39,7 @@ import junit.framework.TestSuite;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
-public abstract class ApplicationControllerDispatcher implements Dispatcher, ComponentDescriptor {
+public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDescriptor {
    private static final Log logger =
       LogFactory.getLog(ApplicationControllerDispatcher.class);
    /** Configuration component for Application Controller Dispatcher
@@ -70,46 +71,27 @@ public abstract class ApplicationControllerDispatcher implements Dispatcher, Com
    /** endpoint of local result listener servuce - again, used as a callback */
    protected final URI resultListenerURI;
    
-   protected JobIdentifierType createToken(Workflow job, Step js) {
-
-       String xpath = job.getXPathFor(js);
-       return        JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), xpath);
-   }
       
    /**
     * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
     */
-   public void dispatchStep(Workflow job, Step js) throws JesException {
+   public void dispatchStep(Workflow job, Step js, Tool tool) throws JesException {
       boolean succeeded = false;
 
-      String toolLocation = locator.locateTool(js);    
-      CommonExecutionConnectorClient appController =
-         DelegateFactory.createDelegate(toolLocation);
+      String toolLocation = locator.locateTool(tool);    
+      CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocation);
 
-      JobIdentifierType id = createToken(job,js);
-      logger.debug(
-         "Calling application controller at "
-            + toolLocation
-            + " for "
-            + js.getTool().getName()
-            + ", "
-            + id.getValue());
+      JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), js.getId());
+      logger.debug(         "Calling application controller at " + toolLocation + " for "
+            + tool.getName() + ", "+ id.getValue());
       try {
-          // iteration 5
-         //String applicationID =
-         //   appController.execute(js.getTool(), id, monitorURL.toString());
-         String applicationId = appController.init(js.getTool(),id);
+         String applicationId = appController.init(tool,id);
          appController.registerResultsListener(applicationId,resultListenerURI);         
          appController.registerProgressListener(applicationId,monitorURI);
          appController.execute(applicationId);
 
       }
       catch (CEADelegateException e) {
-          /* don't want to log error here - propagate upwards instead
-         logger.error(
-            id.getValue() + " : Failed to communitcate with application controller",
-            e);
-            */
          throw new JesException("Failed to communicate with application controller", e);
       }
 
@@ -159,10 +141,16 @@ public abstract class ApplicationControllerDispatcher implements Dispatcher, Com
       }
    }
 
+
+
 }
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.17  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.16  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

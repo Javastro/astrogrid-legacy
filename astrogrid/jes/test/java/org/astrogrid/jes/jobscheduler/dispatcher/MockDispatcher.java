@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.8 2004/07/01 21:15:00 nw Exp $
+/*$Id: MockDispatcher.java,v 1.9 2004/08/03 16:31:25 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.Test;
@@ -41,6 +42,8 @@ public class MockDispatcher implements Dispatcher, ComponentDescriptor {
     protected final boolean willSucceed;
     protected int callCount;
 
+    protected Tool latestTool;
+    protected Step latestStep;
     public int getCallCount() {
         return callCount;
     }
@@ -48,9 +51,11 @@ public class MockDispatcher implements Dispatcher, ComponentDescriptor {
      * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
 
      */
-    public void dispatchStep(Workflow job, Step js) throws JesException {
+    public void dispatchStep(Workflow job, Step js, Tool t) throws JesException {
         
         callCount ++;
+        latestTool = t;
+        latestStep = js;
             if (!willSucceed) {
                 throw new JesException("You wanted me to barf");
             }
@@ -76,11 +81,27 @@ public class MockDispatcher implements Dispatcher, ComponentDescriptor {
     public Test getInstallationTest() {
         return null;
     }
+    /**
+     * @return Returns the latestStep.
+     */
+    public Step getLatestStep() {
+        return this.latestStep;
+    }
+    /**
+     * @return Returns the latestTool.
+     */
+    public Tool getLatestTool() {
+        return this.latestTool;
+    }
 }
 
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.9  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.8  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

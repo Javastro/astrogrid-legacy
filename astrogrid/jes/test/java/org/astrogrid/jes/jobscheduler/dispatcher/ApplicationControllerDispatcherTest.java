@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerIdDispatcherTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: ApplicationControllerDispatcherTest.java,v 1.11 2004/08/03 16:31:25 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,12 +27,12 @@ import java.net.URI;
  * @author Noel Winstanley nw@jb.man.ac.uk 25-Feb-2004
  *
  */
-public class ApplicationControllerIdDispatcherTest extends AbstractTestWorkflowInputs{
+public class ApplicationControllerDispatcherTest extends AbstractTestWorkflowInputs{
     /**
      * Constructor for ApplicationControllerDispatcherTest.
      * @param arg0
      */
-    public ApplicationControllerIdDispatcherTest(String arg0) {
+    public ApplicationControllerDispatcherTest(String arg0) {
         super(arg0);
     }
     
@@ -49,12 +49,12 @@ public class ApplicationControllerIdDispatcherTest extends AbstractTestWorkflowI
                 return monitorURL;
             }
         };
-        disp = new ApplicationControllerIdDispatcher(locator,monitor);
+        disp = new ApplicationControllerDispatcher(locator,monitor);
     }
     protected ApplicationControllerDispatcher disp;
     
     public void testDispatchStep(Workflow w,Step js) throws Exception {
-        disp.dispatchStep(w,js);
+        disp.dispatchStep(w,js,js.getTool());
     }
 
     /**
@@ -81,7 +81,11 @@ public class ApplicationControllerIdDispatcherTest extends AbstractTestWorkflowI
 
 
 /* 
-$Log: ApplicationControllerIdDispatcherTest.java,v $
+$Log: ApplicationControllerDispatcherTest.java,v $
+Revision 1.11  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

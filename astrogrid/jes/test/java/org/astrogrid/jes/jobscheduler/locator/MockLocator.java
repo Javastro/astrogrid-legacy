@@ -1,4 +1,4 @@
-/*$Id: MockLocator.java,v 1.5 2004/07/01 11:20:07 nw Exp $
+/*$Id: MockLocator.java,v 1.6 2004/08/03 16:31:25 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,6 +14,7 @@ import org.astrogrid.common.delegate.Delegate;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
+import org.astrogrid.workflow.beans.v1.Tool;
 
 /** mock implementation of a tool locator.
  * <p />
@@ -36,7 +37,7 @@ public class MockLocator implements Locator {
     /**
      * @see org.astrogrid.jes.jobscheduler.ToolLocator#locateTool(org.astrogrid.jes.job.JobStep)
      */
-    public String locateTool(Step js) throws JesException {
+    public String locateTool(Tool t) throws JesException {
         return willSucceed ? Delegate.TEST_URI : null;
     }
     /**
@@ -50,6 +51,10 @@ public class MockLocator implements Locator {
 
 /* 
 $Log: MockLocator.java,v $
+Revision 1.6  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.5  2004/07/01 11:20:07  nw
 updated interface with cea - part of cea componentization
 

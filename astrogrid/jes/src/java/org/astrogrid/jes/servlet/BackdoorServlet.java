@@ -1,4 +1,4 @@
-/*$Id: BackdoorServlet.java,v 1.2 2004/07/09 09:30:28 nw Exp $
+/*$Id: BackdoorServlet.java,v 1.3 2004/08/03 16:31:25 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -48,12 +48,10 @@ public class BackdoorServlet extends HttpServlet {
             if (locator == null) {
                 throw new ServletException("locator object was null");
             }
-            Step step = new Step();
             Tool tool = new Tool();
             tool.setName(toolName);
-            step.setTool(tool);
             try {
-                String url = locator.locateTool(step);
+                String url = locator.locateTool(tool);
                 PrintWriter writer = response.getWriter();
                 writer.println(url);
             } catch (JesException e) {
@@ -67,6 +65,10 @@ public class BackdoorServlet extends HttpServlet {
 
 /* 
 $Log: BackdoorServlet.java,v $
+Revision 1.3  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.2  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

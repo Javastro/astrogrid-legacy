@@ -1,4 +1,4 @@
-/*$Id: BasicJesComponentManager.java,v 1.3 2004/07/30 15:42:34 nw Exp $
+/*$Id: BasicJesComponentManager.java,v 1.4 2004/08/03 16:31:25 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -22,7 +22,6 @@ import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
-import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerIdDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.SchedulerTaskQueueDecorator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.resultlistener.JesResultsListener;
@@ -58,7 +57,7 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
         );
 
          GroovyComponentManager.registerGroovyEngine(pico);
-        pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerIdDispatcher.class);
+        pico.registerComponentImplementation(Dispatcher.class,ApplicationControllerDispatcher.class);
         pico.registerComponentInstance(ApplicationControllerDispatcher.Endpoints.class, 
             new ApplicationControllerDispatcher.Endpoints() {
             public URI monitorEndpoint() {
@@ -104,6 +103,10 @@ public class BasicJesComponentManager extends EmptyJesComponentManager {
 
 /* 
 $Log: BasicJesComponentManager.java,v $
+Revision 1.4  2004/08/03 16:31:25  nw
+simplified interface to dispatcher and locator components.
+removed redundant implementations.
+
 Revision 1.3  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 
