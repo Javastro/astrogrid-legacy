@@ -32,7 +32,6 @@
    NodeList tableNodes = metadata.getElementsByTagName("Table");
    for (int table=0;table<tableNodes.getLength();table++) {
      String name = ((Element) tableNodes.item(table)).getAttribute("name");
-
       %>
       <h2>Table '<%=name %>'</h2>
       <p><%= DomHelper.getValue((Element) tableNodes.item(table), "Description") %></p>
