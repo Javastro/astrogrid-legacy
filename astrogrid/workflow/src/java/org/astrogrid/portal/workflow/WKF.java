@@ -115,6 +115,16 @@ public class WKF extends org.astrogrid.Configurator {
  
     protected String getConfigFileName() { return CONFIG_FILENAME ; }    
     protected String getSubsystemAcronym() { return SUBSYSTEM_ACRONYM ; }
+
+
+    /**
+     * Name bound in server.xml of URL of config file
+     * @return JNDI name
+     * @see org.astrogrid.Configurator#getJNDIName()
+     */
+    protected String getJNDIName() {
+      return "org.astrogrid.workflow.config.url";
+    }
     
 	 
 } // end of class WKF
