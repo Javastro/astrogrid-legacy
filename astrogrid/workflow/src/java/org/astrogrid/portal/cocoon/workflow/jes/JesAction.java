@@ -345,7 +345,7 @@ public class JesAction extends AbstractAction {
   
         private void checkPermissions ( String someResource, String anAction ) throws WorkflowException {
             if( TRACE_ENABLED ) trace( "JesActionImpl.checkPermission() entry" ) ;
-                        
+/*                        
             PolicyServiceDelegate 
                 ps = null ;
             String
@@ -408,7 +408,7 @@ public class JesAction extends AbstractAction {
             finally {
                 if( TRACE_ENABLED ) trace( "JesActionImpl.checkPermission() exit" ) ;  
             }
-             
+*/           
         } // end of checkPermission() 
         
         

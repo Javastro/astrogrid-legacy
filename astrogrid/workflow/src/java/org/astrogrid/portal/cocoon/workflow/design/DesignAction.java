@@ -809,7 +809,7 @@ public class DesignAction extends AbstractAction {
         
         private void checkPermissions ( String someResource, String anAction ) throws WorkflowException {
             if( TRACE_ENABLED ) trace( "DesignActionImpl.checkPermission() entry" ) ;
-                        
+/*                        
             PolicyServiceDelegate 
                 ps = null ;
             String
@@ -872,6 +872,8 @@ public class DesignAction extends AbstractAction {
             finally {
                 if( TRACE_ENABLED ) trace( "DesignActionImpl.checkPermission() exit" ) ;  
             }
+            
+*/
              
         } // end of checkPermission()
   		
