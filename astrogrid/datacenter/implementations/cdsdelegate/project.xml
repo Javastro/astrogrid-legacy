@@ -10,18 +10,18 @@
   <currentVersion>HEAD</currentVersion>
 
   <description><![CDATA[
-	Astrogrid Datacenter implementation that acts as a 'gateway' (ahem) for the CDS Vizier catalogue
-	<p />
-	Makes use of the Vizier Web service provided by CDS. Documented <a href="http://cdsweb.u-strasbg.fr/cdsws.gml">here</a>
-	<p />
-	This project also provides stand-alone java delegates for the other web services provided by CDS -
-	<ul>
-	<li>Vizier Catalogue Search</li>
-	<li>UCD List</li>
-	<li>UCD Resolver</li>
-	<li>Sesame Name Resolver</li>
-	<li> Aladin image server (under development) </li>
-	</ul>
+   Astrogrid Datacenter implementation that acts as a 'gateway' (ahem) for the CDS Vizier catalogue
+   <p />
+   Makes use of the Vizier Web service provided by CDS. Documented <a href="http://cdsweb.u-strasbg.fr/cdsws.gml">here</a>
+   <p />
+   This project also provides stand-alone java delegates for the other web services provided by CDS -
+   <ul>
+   <li>Vizier Catalogue Search</li>
+   <li>UCD List</li>
+   <li>UCD Resolver</li>
+   <li>Sesame Name Resolver</li>
+   <li> Aladin image server (under development) </li>
+   </ul>
   ]]></description>
 
   <shortDescription>Astrogrid wrapper around CDS</shortDescription>
@@ -38,21 +38,29 @@
 
   <!-- jar files the project is dependent on -->
   <dependencies>
-	<dependency>
-		<groupId>axis</groupId>
-		<artifactId>axis-ant</artifactId>
-		<version>1.1</version>
-	</dependency>
-	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>astrogrid-datacenter-server</artifactId>
-		<version>SNAPSHOT</version>
-	</dependency>
-	<dependency>
-		<groupId>astrogrid-datacenter</groupId>
-		<artifactId>astrogrid-datacenter-client</artifactId>
-		<version>SNAPSHOT</version>
-	</dependency>
+   <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-ant</artifactId>
+      <version>1.1</version>
+   </dependency>
+   <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-server</artifactId>
+      <version>SNAPSHOT</version>
+   </dependency>
+   <dependency>
+      <groupId>astrogrid-datacenter</groupId>
+      <artifactId>astrogrid-datacenter-client</artifactId>
+      <version>SNAPSHOT</version>
+   </dependency>
+       <dependency>
+        <id>astrogrid-mySpace</id>
+        <version>SNAPSHOT</version>
+       <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+    
 
   </dependencies>
 
