@@ -66,7 +66,7 @@ cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site" 
 echo "Executing astrogrid-deploy-site" >> $LOG_FILE 2>&1 
-if maven -Dastrogrid.iteration=$ASTROGRID_VERSION -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
+if maven  -Dmaven.site.central.directory=$DOC_HOME astrogrid-deploy-site >> $LOG_FILE 2>&1 
 then
    echo "*** SUCCESS ***\n" >> $LOG_FILE
 else
