@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.115 2004/09/21 18:23:09 clq2 Exp $ -->
+<!-- $Id: maven.xml,v 1.116 2004/09/22 11:43:35 nw Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -79,7 +79,7 @@
 
 <!-- setup -->
 <goal name="astrogrid-clean" prereqs="clean:clean">
-       <delete dir="${temporary.dir}" />	
+       <delete dir="${temporary.dir}" />
 </goal>
 
 <goal name="init" prereqs="declare-tasks">
@@ -105,9 +105,9 @@
         <attainGoal name="deploy-all" />
         <attainGoal name="int-test" />
 </goal>
- 
+
 <goal name="deploy-all" prereqs="init">
-		<echo>*** Deploying all webapps...</echo>
+                <echo>*** Deploying all webapps...</echo>
         <attainGoal name="common-libs-deploy" />
         <attainGoal name="configuration-deploy" />
         <sleep seconds="2" />
@@ -137,7 +137,7 @@
         <sleep seconds="2" />
         <attainGoal name="portal-deploy" />
         <sleep seconds="4" />
-        <attainGoal name="setup" />	
+        <attainGoal name="setup" />
 </goal>
 <goal name="deploy-all-except-portal" prereqs="init" description="deploy all webapps except the portal, setup environment.">
         <echo>*** Deploying all webapps except the portal...</echo>
@@ -270,7 +270,7 @@
 
 <goal name="setup-working-dir" description="create working dir, copy across templates">
         <echo>Setting up working directory</echo>
-		<!-- do not delete the working dir here -->
+                <!-- do not delete the working dir here -->
         <mkdir dir="${work.dir}" />
         <copy todir="${work.dir}" overwrite="false" filtering="true">
             <fileset dir="work">
@@ -481,9 +481,9 @@
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
         >
-		<!-- load the community from a file local to the autointegration rather than out of the community install kit -->
-		<property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
-		</ant>
+                <!-- load the community from a file local to the autointegration rather than out of the community install kit -->
+                <property name="community.xmlfile" value="file:///${work.dir}/community/demoaccounts.xml"/>
+                </ant>
 </goal>
 
 <!--+
@@ -969,7 +969,7 @@
         </delete>
                 <!-- clean the temp dir here as well -->
                 <delete dir="${temporary.dir}" />
-				<delete dir="${work.dir}"/>
+                                <delete dir="${work.dir}"/>
 </goal>
 
 
@@ -1090,7 +1090,7 @@
                         <jsl:template match="testsuite">
                                 <jxml:copy select=".">
                                         <jxml:set var="currentSuite" select="." />
-                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[@name=$currentSuite/@name and @package=$currentSuite/@package" />
+                                        <jxml:set var="suiteSummary" select="$baseline/testsuites/testsuite[@name=$currentSuite/@name and @package=$currentSuite/@package]" />
 
                                           <jxml:element name="baseline">
                                                 <jxml:attribute name="name">${baselineName}</jxml:attribute>
