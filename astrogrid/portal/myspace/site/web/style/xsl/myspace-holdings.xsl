@@ -58,7 +58,7 @@
               <tr>
                 <td colspan="3"><hr class="agbar"/></td>
               </tr>
-<!--
+<!-- un comment it for the Source box to show -->
               <tr>
                 <td>Source:</td>
                 <td style="width:100%"></td>
@@ -69,7 +69,7 @@
                 <td style="width:100%"><input name="myspace-dest" id="myspace-dest" type="text" style="width:100%"/></td>
                 <td>&#160;</td>
               </tr>
--->
+
               <tr>
                 <td>Upload File:</td>
                 <td style="width:100%"><input name="myspace-file" id="myspace-file" type="file" style="width:100%"/></td>
