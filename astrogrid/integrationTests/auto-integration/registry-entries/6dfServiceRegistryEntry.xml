@@ -45,7 +45,7 @@
                 <ManagedApplications>
                         <ApplicationReference>
                                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                                <vr:ResourceKey>6df</vr:ResourceKey>
+                                <vr:ResourceKey>query-6df</vr:ResourceKey>
                         </ApplicationReference>
                 </ManagedApplications>
         </vr:Resource>

@@ -3,7 +3,7 @@
         <vr:Resource xsi:type="CeaApplicationType">
                 <vr:Identifier>
                         <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
-                        <vr:ResourceKey>6df</vr:ResourceKey>
+                        <vr:ResourceKey>query-6df</vr:ResourceKey>
                 </vr:Identifier>
                 <vr:Title>TemplateEntry</vr:Title>
                 <vr:ShortName>TemplateEntry</vr:ShortName>
