@@ -1,5 +1,5 @@
 /*
- * $Id: AttomConfig.java,v 1.4 2004/02/17 14:31:49 mch Exp $
+ * $Id: AttomConfig.java,v 1.5 2004/02/17 14:47:15 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -397,7 +397,7 @@ public class AttomConfig {
     */
    public static int getInt(String key) {
       
-      String value = getProperty(key).toString();
+      String value = getProperty(key).toString().trim();
       try {
          return Integer.parseInt(value);
       }
@@ -428,6 +428,9 @@ public class AttomConfig {
 }
 /*
 $Log: AttomConfig.java,v $
+Revision 1.5  2004/02/17 14:47:15  mch
+Increased test coverage
+
 Revision 1.4  2004/02/17 14:31:49  mch
 Minor changes to please checkstyle
 

@@ -2,8 +2,7 @@ package org.astrogrid.config;
 
 
 import java.io.IOException;
-import java.net.URL;
-
+import java.net.MalformedURLException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -84,7 +83,7 @@ public class AttomTest extends TestCase
    /**
     * test that properties are got and sot propertly...
     */
-   public void testConfiguration() throws IOException
+   public void testStore() throws IOException
    {
       //check it's loaded a value
       String fruit = AttomConfig.getProperty("TEST.FRUIT").toString();
@@ -112,6 +111,55 @@ public class AttomTest extends TestCase
       
    }
 
+   /**
+    * test property types
+    */
+   public void testTypes() throws IOException
+   {
+      String okUrl = "http://www.google.com";
+      
+      //set some properties so we *know* the types are correct
+      AttomConfig.setProperty("TEST.URL.OK", okUrl);
+      AttomConfig.setProperty("TEST.URL.BAD", "bad:/very.bad");
+      
+      AttomConfig.setProperty("TEST.INT", "12  "); //includes spaces as this should not cause problems
+
+      //check URL gets expected
+      assertEquals("Unexpected value", okUrl, AttomConfig.getUrl("TEST.URL.OK").toString());
+      
+      //check bad urls throw exception
+      try {
+         AttomConfig.getUrl("TEST.URL.BAD");
+         fail("Did not throw exception for bad url");
+      }
+      catch (ConfigException ce) {
+         if (!(ce.getCause() instanceof MalformedURLException)) {
+            fail("Unexpected failure reading bad url");
+         }
+      }
+      
+      //check int gets expected
+      assertEquals("Unexpected value", 12, AttomConfig.getInt("TEST.INT"));
+      
+      //check bad int throws exception
+      try {
+         AttomConfig.getInt("TEST.URL.BAD");
+         fail("Did not throw exception for bad int");
+      }
+      catch (ConfigException ce) {
+         if (!(ce.getCause() instanceof NumberFormatException)) {
+            fail("Unexpected failure reading bad int");
+         }
+      }
+
+      //check strings work OK...
+      assertEquals("Unexpected value", "APPLE", AttomConfig.getString("TEST.FRUIT"));
+
+      //..even for non-strings
+      AttomConfig.setProperty("TEST.URL.INTOBJ", new Integer(12));
+      assertEquals("Unexpected value", "12", AttomConfig.getString("TEST.URL.INTOBJ"));
+   }
+   
     /**
      * Assembles and returns a test suite made up of all the testXxxx() methods
       * of this class.
@@ -132,6 +180,9 @@ public class AttomTest extends TestCase
 
 /*
  $Log: AttomTest.java,v $
+ Revision 1.2  2004/02/17 14:46:51  mch
+ Increased test coverage
+
  Revision 1.1  2004/02/17 03:40:21  mch
  Changed to use AttomConfig
 
