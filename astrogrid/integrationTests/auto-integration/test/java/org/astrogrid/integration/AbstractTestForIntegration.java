@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForIntegration.java,v 1.5 2004/04/19 11:42:41 pah Exp $
+/*$Id: AbstractTestForIntegration.java,v 1.1 2004/04/21 13:42:26 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.workflow.integration;
+package org.astrogrid.integration;
 
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
@@ -20,7 +20,7 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.TestCase;
 
-/** abstract test for integration - just sets up the Astorgrid scripting object
+/** abstract test for integration - sets up the Astorgrid scripting object, commonly used objects, etc.
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
@@ -74,6 +74,9 @@ public class AbstractTestForIntegration extends TestCase {
 
 /* 
 $Log: AbstractTestForIntegration.java,v $
+Revision 1.1  2004/04/21 13:42:26  nw
+moved abstract test up to root of package hierarchy
+
 Revision 1.5  2004/04/19 11:42:41  pah
 added createIVORN
 
