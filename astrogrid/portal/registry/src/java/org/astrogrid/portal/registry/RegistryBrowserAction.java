@@ -106,6 +106,10 @@ public class RegistryBrowserAction extends AbstractAction
 
    public static final String ERROR_MESSAGE = "errormessage";
    
+   public static final String SESSION_TABLEID = "tableID";
+   public static final String SESSION_SINGLE_CATALOG = "resultSingleCatalog";
+   public static final String SESSION_UNIQUEID = "uniqueID";   
+   
    public static Config conf = null;   
      
    static {
@@ -246,8 +250,9 @@ public class RegistryBrowserAction extends AbstractAction
 			 
 			  //request.setAttribute("tableID", table);			  
 			  //request.setAttribute("resultSingleCatalog", doc);
-			  session.setAttribute("tableID", table);
-			  session.setAttribute("resultSingleCatalog", doc);
+			  session.setAttribute(SESSION_TABLEID, table);
+			  session.setAttribute(SESSION_SINGLE_CATALOG, doc);
+			  session.setAttribute(SESSION_UNIQUEID, uniqueID);
 			  
           } 
           catch( NoResourcesFoundException nrfe ) 
