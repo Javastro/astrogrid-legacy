@@ -206,7 +206,7 @@ public class GridServiceDelegateTest extends TestCase {
    * Creates a fresh delegate for a unit test and sets up that delegate
    * according to the test configuration listed above.
    */
-  /*
+  
   private GridServiceDelegate getConfiguredDelegate() throws Exception {
     GridServiceDelegate d = new GridServiceDelegate();
     d.setSimulating(this.simulating);
@@ -214,5 +214,5 @@ public class GridServiceDelegateTest extends TestCase {
     d.setFactoryHandle(this.factoryGsh);
     return d;
   }
-  */
+  
 }
