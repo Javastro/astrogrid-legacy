@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: DatacenterApplicationDescriptionLibrary.java,v 1.2 2004/12/03 15:39:05 jdt Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,7 +35,7 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
      * 
      */       
     public DatacenterApplicationDescriptionLibrary(DatacenterMetadata md,DataServer ds,ApplicationDescriptionEnvironment env,QueuedExecutor qe) {
-        super();       
+        super(env);       
         addApplicationDescription(new DatacenterApplicationDescription(md.getName(), ds,env,qe));
     }
     /**
@@ -50,6 +50,9 @@ public class DatacenterApplicationDescriptionLibrary extends BaseApplicationDesc
 
 /* 
 $Log: DatacenterApplicationDescriptionLibrary.java,v $
+Revision 1.2  2004/12/03 15:39:05  jdt
+Fix to keep pace with changes in applications
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 
