@@ -15,7 +15,8 @@
                         <xsl:attribute name="type">text</xsl:attribute>
                         <xsl:attribute name="size">40</xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="@workflow-name"/></xsl:attribute>
-                        <xsl:attribute name="name">workflow-name</xsl:attribute>                            
+                        <xsl:attribute name="name">workflow-name</xsl:attribute>
+                        <xsl:attribute name="READONLY">true</xsl:attribute>                            
                     </xsl:element>           
                 </td>
                 <td nowrap="true">Workflow submitted: </td>
@@ -25,6 +26,7 @@
                         <xsl:attribute name="size">40</xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="@workflow-start-time"/></xsl:attribute>
                         <xsl:attribute name="name">workflow-start-time</xsl:attribute>
+                        <xsl:attribute name="READONLY">true</xsl:attribute>
                     </xsl:element>                  
                 </td>
             </tr>            
@@ -36,6 +38,7 @@
                         <xsl:attribute name="size">40</xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="@workflow-description"/></xsl:attribute>
                         <xsl:attribute name="name">workflow-description</xsl:attribute>
+                        <xsl:attribute name="READONLY">true</xsl:attribute>
                     </xsl:element>                  
                 </td>
                 <td nowrap="true">Overall status: </td>
@@ -45,6 +48,7 @@
                         <xsl:attribute name="size">40</xsl:attribute>
                         <xsl:attribute name="value"><xsl:value-of select="@workflow-status"/></xsl:attribute>
                         <xsl:attribute name="name">workflow-status</xsl:attribute>
+                        <xsl:attribute name="READONLY">true</xsl:attribute>
                     </xsl:element>                  
                 </td>
             </tr>                                                           
