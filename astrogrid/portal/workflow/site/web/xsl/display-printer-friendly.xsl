@@ -10,7 +10,7 @@
  >
 
 
-<xsl:template match="/">
+<xsl:template match="/printer">
   <html>
    <head>
    <style type="text/css">
