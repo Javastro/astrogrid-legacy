@@ -1,4 +1,8 @@
 <Context path="/astrogrid-portal">
+	<!--FIXME - remove this entry when myspaces can be looked up from the registry -->
+   <Environment name="@REGAUTHORITY@/myspacenull" override="true" type="java.lang.String" value="astrogrid:store:myspace:@TOMCATROOT@/astrogrid-mySpace-@VERSION@/services/Manager" 
+        description="Nasty agsl hack - remove me when myspaces can be properly searched for in the registry"/>
+ 	
     <!--@TODO - merge the following with the endpoint property required by community (below)-->
     <Environment name="org.astrogrid.portal.registry.url" override="false" type="java.lang.String" value="@CENTRALREGISTRY@Query" 
         description="Registry Query 
