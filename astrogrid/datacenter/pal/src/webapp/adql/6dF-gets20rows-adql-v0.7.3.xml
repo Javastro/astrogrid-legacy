@@ -1,0 +1,16 @@
+<!-- Returns around 20 rows -->
+<Select  xmlns="http://adql.ivoa.net/v0.73">
+   <SelectionList>
+      <All />
+   </SelectionList>
+   <From>
+      <Table Name="SPECTRA" Alias="t"/>
+   </From>
+   <Where>
+      <Compare Comparison="&gt;">
+         <Column Table="t" Name="OBSDEC"/>
+         <Atom><Real>-22</Real></Atom>
+      </Compare>
+   </Where>
+</Select>
+
