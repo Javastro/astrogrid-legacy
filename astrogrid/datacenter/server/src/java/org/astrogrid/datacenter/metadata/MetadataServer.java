@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.4 2004/03/13 23:38:46 mch Exp $
+ * $Id: MetadataServer.java,v 1.5 2004/03/14 00:47:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -87,6 +87,7 @@ public class MetadataServer
          }
       }
       
+      log.info("Returning metadata from "+url);
       return url;
    }
    
