@@ -90,7 +90,7 @@
 		</xsl:element>
 		</center>
 		   <br />
-		   If your new to Astrogrid please sign in here click: <a href="agadministration.html?action=insertaccount">Register</a>
+		   If you are new to Astrogrid please sign in here click: <a href="agadministration.html?action=insertaccount">Register</a>
 		                              <!-- End Real  pages go here -->
 	
 	</xsl:template>
