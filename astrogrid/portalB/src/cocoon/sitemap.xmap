@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
-    | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/05 08:21:44 $</cvs:author>
-    | <cvs:version>$Revision: 1.12 $</cvs:version>
+    | <cvs:date>$Author: rtp $</cvs:date>
+    | <cvs:author>$Date: 2003/09/10 16:04:15 $</cvs:author>
+    | <cvs:version>$Revision: 1.13 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.13  2003/09/10 16:04:15  rtp
+    | Add registry browser and adn=min pages.
+    |
     | Revision 1.12  2003/09/05 08:21:44  KevinBenson
     | Okay did a few things here.  First the topcat plug in had a small xsp mistake causing the select boxes to have some unneeded data in it.
     | Also made a common QueryAction.java file that will just set the current session Credential in the Hashmap so it can be displayed on all pages.
@@ -61,7 +64,7 @@
       <map:selectors    default="browser"/>
 
       <map:actions>
-	     <map:action name="astrogrid" src="org.astrogrid.portal.cocoon.common.AstrogridAction"/>
+        <map:action name="astrogrid" src="org.astrogrid.portal.cocoon.common.AstrogridAction"/>
          <map:action name="astrogrid-explorer" src="org.astrogrid.portal.cocoon.explorer.ExplorerAction"/>
          <map:action name="astrogrid-query" src="org.astrogrid.portal.cocoon.query.QueryAction"/>
          <map:action name="astrogrid-admin" src="org.astrogrid.portal.cocoon.community.AdministrationAction"/>
@@ -270,6 +273,13 @@
                <map:serialize type="html"/>
             </map:act>
          </map:match>
+
+            <!-- Registry browser and admin pages -->
+         <map:match pattern="agregistry.html">
+             <map:mount uri-prefix="registry" src="registry/sitemap.xmap"
+                          check-reload="yes" reload-method="synchron"/>
+         </map:match>
+
 
          <!-- Site images -->
          <map:match pattern="*.gif">
