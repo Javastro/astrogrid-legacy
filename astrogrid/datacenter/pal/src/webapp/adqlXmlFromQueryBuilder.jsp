@@ -156,9 +156,9 @@ Parameter names in this request:
    if (request.getParameter("MakeAdql074") != null) {
       adqlXml = Query2Adql074.makeAdql(query, comment);
    }
-   else if (request.getParameter("MakeAdql05") != null) {
-      adqlXml = Query2Adql05.makeAdql(query, comment);
-   }
+//   else if (request.getParameter("MakeAdql05") != null) {
+//      adqlXml = Query2Adql05.makeAdql(query, comment);
+//   }
    else {  //default to makign latest
       adqlXml = Query2Adql074.makeAdql(query, comment);
    }

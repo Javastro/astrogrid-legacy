@@ -12,10 +12,10 @@
    String adqlSql = request.getParameter("AdqlSql");
    String adqlXml = request.getParameter("AdqlXml");
    if (adqlSql != null) {
-      if (request.getParameter("MakeAdql05") != null) {
-         adqlXml = Sql2Adql05.translate(adqlSql);
-      }
-      else if (request.getParameter("MakeAdql074") != null) {
+      //if (request.getParameter("MakeAdql05") != null) {
+      //   adqlXml = Sql2Adql05.translate(adqlSql);
+     // }
+      if (request.getParameter("MakeAdql074") != null) {
          adqlXml = Sql2Adql074.translate(adqlSql);
       }
       else {

@@ -43,7 +43,7 @@
           translate the query then check the XML)
         </p>
         <p>
-           <input type='submit' name='MakeAdql05' value='Make ADQL v0.5' onclick='formAction="adqlXmlFromSql.jsp";' />
+           <!-- <input type='submit' name='MakeAdql05' value='Make ADQL v0.5' onclick='formAction="adqlXmlFromSql.jsp";' /> -->
            <input type='submit' name='MakeAdql074' value='Make ADQL v0.7.4' onclick='formAction="adqlXmlFromSql.jsp";' />
         </p>
    </form>

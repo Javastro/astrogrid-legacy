@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql074.java,v 1.9 2004/09/06 20:42:34 mch Exp $
+ * $Id: Query2Adql074.java,v 1.10 2004/09/07 11:17:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,9 +25,9 @@ public class Query2Adql074  {
    
    protected static Log log = LogFactory.getLog(Query2Adql074.class);
    
-   private static final String aggregateFuncs=" AVG MIN MAX SUM COUNT";
+   private static final String aggregateFuncs=" AVG MIN MAX SUM COUNT ";
    private static final String trigFuncs=" SIN COS TAN COT ASIN ACOS ATAN ATAN2 ";
-   private static final String mathFuncs=" ABS CEILING DEGREES EXP FLOOR LOG PI POWER RADIANS SQRT SQUARE LOG10 RAND ROUND TRUNCATE ";
+   private static final String mathFuncs=" ABS CEILING DEGREES EXP FLOOR LOG PI POWER RADIANS SQRT SQUARE LOG10 RAND ROUND TRUNCATE AVG ";
 
    public static String makeAdql(Query query, String comment) throws IOException {
 
@@ -235,6 +235,9 @@ public class Query2Adql074  {
 
 /*
  $Log: Query2Adql074.java,v $
+ Revision 1.10  2004/09/07 11:17:25  mch
+ Removed old 0.5 adql
+
  Revision 1.9  2004/09/06 20:42:34  mch
  Changed XmlPrinter attrs argument to array of attrs to avoid programmer errors mistaking attr for value...
 

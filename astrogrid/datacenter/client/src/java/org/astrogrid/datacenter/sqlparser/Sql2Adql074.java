@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074.java,v 1.5 2004/08/25 23:38:34 mch Exp $
+ * $Id: Sql2Adql074.java,v 1.6 2004/09/07 11:17:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -35,25 +35,25 @@ public class Sql2Adql074  {
       
       if ((args != null) && (args.length>0) && (args[0] != null) ) {
          
-         System.out.println(Sql2Adql05.translate(args[0]));
+         System.out.println(Sql2Adql074.translate(args[0]));
          
       }
       else {
-         System.out.println("Usage: "+Sql2Adql05.class+" <sql> ");
+         System.out.println("Usage: "+Sql2Adql074.class+" <sql> ");
          System.out.println("");
          System.out.println("eg: ");
          
          //-- proper SQL --
          String s = "SELECT * FROM CHARLIE";
          
-         String adql = Sql2Adql05.translate(s);
+         String adql = Sql2Adql074.translate(s);
      
          System.out.println(adql);
          
          //-- proper SQL --
          s = "SELECT S.RA,    T.WIBBLE, UNDIE.PANTS, ETC.ETC FROM A, B,  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
          
-         adql = Sql2Adql05.translate(s);
+         adql = Sql2Adql074.translate(s);
      
          System.out.println(adql);
       }
@@ -62,6 +62,9 @@ public class Sql2Adql074  {
 
 /*
  $Log: Sql2Adql074.java,v $
+ Revision 1.6  2004/09/07 11:17:25  mch
+ Removed old 0.5 adql
+
  Revision 1.5  2004/08/25 23:38:34  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 
