@@ -10,7 +10,6 @@ import javax.security.auth.spi.LoginModule;
 import org.astrogrid.community.client.security.service.SecurityServiceDelegate;
 import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.exception.CommunitySecurityException;
-import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.resolver.security.service.SecurityServiceResolver;
 import org.astrogrid.security.AccountName;
 import org.astrogrid.security.NonceToken;

@@ -60,7 +60,6 @@ public class ServiceSecurityGuard extends SecurityGuard {
    * from the message context of the call to the web service.
    */
   public static ServiceSecurityGuard getInstanceFromContext () {
-    ServiceSecurityGuard g = new ServiceSecurityGuard();
     Subject s
         = (Subject) MessageContext.getCurrentContext().getProperty("Subject");
     if (s == null) {
