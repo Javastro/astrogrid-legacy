@@ -20,6 +20,8 @@ import java.io.Reader;
 import java.io.BufferedReader;
 import junit.framework.TestCase;
 import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.query.QueryException;
 
 public class PostgresSqlMakerTest extends TestCase{
 	
@@ -34,8 +36,7 @@ public class PostgresSqlMakerTest extends TestCase{
 	public void test1() throws Exception {
 		processFile("sample1.xml");
 	}
-	
-    
+
 	public void test2() throws Exception {
 		processFile("sample2.xml");
 	}
@@ -52,12 +53,10 @@ public class PostgresSqlMakerTest extends TestCase{
 	public void test4() throws Exception {
 		processFile("sample4.xml");
 	}
-
     
 	public void test5() throws Exception {
 		processFile("sample5.xml");
 	}
-    
     
 	public void test6() throws Exception {
 		processFile("sample6.xml");
@@ -101,8 +100,12 @@ public class PostgresSqlMakerTest extends TestCase{
 
 	public void test11() throws Exception {		
 		processFile("bad_adql.xml");
+		
 	}	
-	protected void processFile(String path) throws Exception {
+		
+	protected void processFile(String path) throws Exception, RuntimeException {
+		
+
 		
 		InputStream is = this.getClass().getResourceAsStream(path);
 		assertNotNull(is);
@@ -126,6 +129,17 @@ public class PostgresSqlMakerTest extends TestCase{
 		   String expectedSQL = results.getProperty(path);
 		   assertNotNull(expectedSQL);
 		   assertEquals(expectedSQL.trim(),sql.trim());
+		} catch (QueryException qe) {
+			System.out.println(qe.getMessage());
+			assertTrue("PostgresSqlMaker caught a database access exception while translating" +
+				"the ADQL query as expected", qe.getMessage().indexOf("Bad ADQL/XML") >= 0);
+
+		} catch (RuntimeException re) {
+			System.out.println("PostgresSqlMaker caught a runtime exception during" +
+			"ADQL translation phase as expected: \n" + re.getMessage());
+			assertTrue("PostgresSqlMaker caught a runtime exception during" +
+				"ADQL translation phase as expected", re.getMessage().indexOf("Translation phase failed") >= 0);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Caught Exception " + e.getMessage());
