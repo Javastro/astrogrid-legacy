@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.6 2004/02/16 23:07:05 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.7 2004/02/24 16:03:48 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,7 @@
 **/
 package org.astrogrid.datacenter.queriers.sql;
 
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.astrogrid.datacenter.sql.SQLUtils;
@@ -40,7 +40,7 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         trans = new SqlQueryTranslator();
-        AttomConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
+        SimpleConfig.setProperty(SqlQueryTranslator.SQL_PASSTHRU_ENABLED_KEY,"true");
     }
     protected Translator trans;
     /*
@@ -107,6 +107,9 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.7  2004/02/24 16:03:48  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.6  2004/02/16 23:07:05  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

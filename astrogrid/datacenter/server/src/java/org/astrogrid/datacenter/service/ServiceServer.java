@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.12 2004/02/16 23:34:36 mch Exp $
+ * $Id: ServiceServer.java,v 1.13 2004/02/24 16:04:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xpath.XPathAPI;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
@@ -59,7 +59,7 @@ public class ServiceServer
    protected InputStream getMetadataStream() throws IOException {
 
       // search for file, then for resource on classpath - fits better with appservers / servlet containers
-      String location = AttomConfig.getString(METADATA_FILE_LOC_KEY,"metadata.xml");
+      String location = SimpleConfig.getSingleton().getString(METADATA_FILE_LOC_KEY,"metadata.xml");
       String trying = location; //for  error reporting
       File metaFile = new File(location);
       InputStream is = null;

@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.21 2004/02/24 11:03:03 mch Exp $
+ * $Id: Querier.java,v 1.22 2004/02/24 16:04:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
@@ -23,10 +23,10 @@ import org.astrogrid.datacenter.service.JobNotifyServiceListener;
 import org.astrogrid.datacenter.service.WebNotifyServiceListener;
 import org.astrogrid.datacenter.snippet.DocMessageHelper;
 import org.astrogrid.util.Workspace;
-import org.astrogrid.vospace.IvoRN;
-import org.astrogrid.vospace.VospaceRL;
-import org.astrogrid.vospace.delegate.VoSpaceClient;
-import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.store.IvoRN;
+import org.astrogrid.store.AGSL;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -84,7 +84,7 @@ public abstract class Querier implements Runnable {
     * server URL
     * initialized to value stored in configuration under {@link QuerierManager#RESULTS_TARGET_KEY}
     */
-   private VospaceRL resultsDestination = null;
+   private AGSL resultsDestination = null;
    
    /** Handle to the results from the query - the location (prob myspace) where
     * the results can be found */
@@ -107,9 +107,9 @@ public abstract class Querier implements Runnable {
        }
        
        //default results destination
-       URL defaultMySpace = AttomConfig.getUrl(QuerierManager.DEFAULT_MYSPACE);
+       URL defaultMySpace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE);
        IvoRN ivorn = new IvoRN(user.getCommunity(), user.getIndividual(), "/votable/"+queryId+".vot");
-       resultsDestination = new VospaceRL(defaultMySpace, ivorn);
+       resultsDestination = new AGSL(defaultMySpace, ivorn);
    }
 
    /**
@@ -144,7 +144,7 @@ public abstract class Querier implements Runnable {
     * Sets up the target of where the results will be sent to
     */
    public void setResultsDestination(String resultsDestination) throws MalformedURLException {
-      this.resultsDestination = new VospaceRL(resultsDestination);
+      this.resultsDestination = new AGSL(resultsDestination);
    }
    
    /**
@@ -243,7 +243,7 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("no results destination");
       }
       
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
       
       myspace.putString("This is a test file to make sure we can create a file in the given myspace, so our query results are not lost",
                         "testFile", false);
@@ -260,7 +260,7 @@ public abstract class Querier implements Runnable {
          throw new IllegalStateException("No results to send");
       }
       
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(user, resultsDestination.getDelegateEndpoint().toString());
   
       try {
          //stream results to string for outputting to myspace.   At
@@ -437,6 +437,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.22  2004/02/24 16:04:18  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.21  2004/02/24 11:03:03  mch
  Temp fix to ignore Query.Unit
 

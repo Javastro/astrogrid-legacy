@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.8 2004/02/16 23:07:05 mch Exp $
+/*$Id: HsqlTestCase.java,v 1.9 2004/02/24 16:03:48 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.hsql.HsqlQuerier;
@@ -66,13 +66,13 @@ public abstract class HsqlTestCase extends TestCase {
     {
        //register HSQLDB driver with driver key in configration file
        //put driver into config file
-       AttomConfig.setProperty(SqlQuerierSPI.JDBC_DRIVERS_KEY, JDBC_DRIVER );
-       AttomConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY,HsqlQuerier.class.getName());
-       AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
+       SimpleConfig.setProperty(SqlQuerierSPI.JDBC_DRIVERS_KEY, JDBC_DRIVER );
+       SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY,HsqlQuerier.class.getName());
+       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
 
        //register where to find database
-       AttomConfig.setProperty(SqlQuerierSPI.JDBC_URL_KEY, JDBC_URL );
-       AttomConfig.setProperty(SqlQuerierSPI.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+       SimpleConfig.setProperty(SqlQuerierSPI.JDBC_URL_KEY, JDBC_URL );
+       SimpleConfig.setProperty(SqlQuerierSPI.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
 
 
     }
@@ -142,6 +142,9 @@ public abstract class HsqlTestCase extends TestCase {
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.9  2004/02/24 16:03:48  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.8  2004/02/16 23:07:05  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

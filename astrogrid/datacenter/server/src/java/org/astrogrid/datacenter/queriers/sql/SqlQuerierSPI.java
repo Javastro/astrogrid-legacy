@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerierSPI.java,v 1.5 2004/02/16 23:34:35 mch Exp $
+ * $Id: SqlQuerierSPI.java,v 1.6 2004/02/24 16:04:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -22,7 +22,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -85,8 +85,8 @@ public final static String JNDI_DATASOURCE = "java:comp/env/jdbc/pal-datasource"
  */
 protected Connection createConnection() throws DatabaseAccessException {
     log.debug("Creating Connection");
-      String userId = AttomConfig.getString(USER_KEY);
-      String password = AttomConfig.getString(PASSWORD_KEY);
+      String userId = SimpleConfig.getSingleton().getString(USER_KEY);
+      String password = SimpleConfig.getSingleton().getString(PASSWORD_KEY);
     Connection conn = null;
     conn = createConnectionFromJNDI(userId,password);
     if (conn == null) {
@@ -124,14 +124,14 @@ protected Connection createConnection() throws DatabaseAccessException {
     protected Connection createConnectionFromProperties(String userId,String password) throws DatabaseAccessException {
           log.debug("Looking in configuration");
 
-         String jdbcURL = AttomConfig.getString(JDBC_URL_KEY, null);
+         String jdbcURL = SimpleConfig.getSingleton().getString(JDBC_URL_KEY, null);
          if ( jdbcURL == null || jdbcURL.length() == 0)  {
              return null;
          }
 
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
-            String connectionPropertyValue = AttomConfig.getString(JDBC_CONNECTION_PROPERTIES_KEY, null);
+            String connectionPropertyValue = SimpleConfig.getSingleton().getString(JDBC_CONNECTION_PROPERTIES_KEY, null);
             if (connectionPropertyValue != null) {
                try  {
                   Properties connectionProperties = new Properties();
@@ -183,7 +183,7 @@ protected Connection createConnection() throws DatabaseAccessException {
    public   void startDrivers() throws DatabaseAccessException
    {
          //read value
-         String drivers = AttomConfig.getString(JDBC_DRIVERS_KEY, null);
+         String drivers = SimpleConfig.getSingleton().getString(JDBC_DRIVERS_KEY, null);
          if (drivers != null)
          {
             //break down into lines

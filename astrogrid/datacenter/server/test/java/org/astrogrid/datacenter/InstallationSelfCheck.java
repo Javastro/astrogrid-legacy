@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.8 2004/02/17 03:38:40 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.9 2004/02/24 16:03:48 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,15 +15,15 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import junit.framework.TestCase;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.astrogrid.util.Workspace;
-import org.astrogrid.vospace.delegate.VoSpaceClient;
-import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 /** Unit test for checking an installation - checks location of config files, etc.
  * <p>
@@ -56,7 +56,7 @@ public class InstallationSelfCheck extends TestCase {
    
    
    public void testLoadPlugin() throws Exception {
-      String pluginClass = AttomConfig.getString(QuerierManager.DATABASE_QUERIER_KEY);
+      String pluginClass = SimpleConfig.getSingleton().getString(QuerierManager.DATABASE_QUERIER_KEY);
       assertNotNull(QuerierManager.DATABASE_QUERIER_KEY + " is not defined",pluginClass);
       // try to load plugin class.
       Class plugin = null;
@@ -78,7 +78,7 @@ public class InstallationSelfCheck extends TestCase {
 //         fail("Plugin class "+pluginClass+" missing correct constructor ");
 //      }
       // else, go on and check the SPI too.
-      String spiClass = AttomConfig.getString(PluginQuerier.QUERIER_SPI_KEY);
+      String spiClass = SimpleConfig.getSingleton().getString(PluginQuerier.QUERIER_SPI_KEY);
       assertNotNull(PluginQuerier.QUERIER_SPI_KEY + " is not defined",spiClass);
       Class clazz = null;
 //      try {
@@ -106,13 +106,13 @@ public class InstallationSelfCheck extends TestCase {
     */
    public void testCanSeeMySpace() throws IOException, Exception {
 
-      URL defaultMyspace = AttomConfig.getUrl(QuerierManager.DEFAULT_MYSPACE, null);
+      URL defaultMyspace = SimpleConfig.getSingleton().getUrl(QuerierManager.DEFAULT_MYSPACE, null);
 
       if (defaultMyspace == null) {
          return;
       }
 
-      VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(Account.ANONYMOUS, defaultMyspace.toString());
+      StoreClient myspace = StoreDelegateFactory.createDelegate(Account.ANONYMOUS, defaultMyspace.toString());
       
       myspace.getEntries(Account.ANONYMOUS, "*");
    }
@@ -123,6 +123,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.9  2004/02/24 16:03:48  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.8  2004/02/17 03:38:40  mch
  Various fixes for demo
 

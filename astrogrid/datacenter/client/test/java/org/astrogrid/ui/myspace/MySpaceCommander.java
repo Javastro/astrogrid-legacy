@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommander.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: MySpaceCommander.java,v 1.2 2004/02/24 16:04:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,11 +24,11 @@ import java.io.*;
 
 import org.astrogrid.community.Account;
 import org.astrogrid.io.Piper;
-import org.astrogrid.vospace.VospaceRL;
-import org.astrogrid.vospace.delegate.MySpaceEntry;
-import org.astrogrid.vospace.delegate.MySpaceFolder;
-import org.astrogrid.vospace.delegate.VoSpaceClient;
-import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.store.AGSL;
+import org.astrogrid.store.delegate.MySpaceFile;
+import org.astrogrid.store.delegate.MySpaceFolder;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 
 public class MySpaceCommander
 {
@@ -49,18 +49,18 @@ public class MySpaceCommander
       System.out.println("eg    vospace://http.grendel12.roe.ac.uk:8080/astrogrid-mySpace#test.astrogrid.org/avodemo/serv1/votable/6dfResults");
    }
 
-   public static VoSpaceClient contactServer(VospaceRL vorl) throws IOException {
+   public static StoreClient contactServer(AGSL vorl) throws IOException {
       System.out.println("Connecting to myspace...");
-      return VoSpaceDelegateFactory.createDelegate(Account.ANONYMOUS, vorl.getDelegateEndpoint().toString());
+      return StoreDelegateFactory.createDelegate(Account.ANONYMOUS, vorl.getDelegateEndpoint().toString());
       
    }
    
    /**
     * Deletes the file at the given VoRL
     */
-   public static void delete(VospaceRL vorl) throws IOException
+   public static void delete(AGSL vorl) throws IOException
    {
-      VoSpaceClient delegate = contactServer(vorl);
+      StoreClient delegate = contactServer(vorl);
       
       System.out.println("...deleting...");
       delegate.delete(vorl.getDelegateFileRef());
@@ -71,9 +71,9 @@ public class MySpaceCommander
    /**
     * Lists the files at the given VoRL
     */
-   public static void list(VospaceRL server, String filter) throws IOException
+   public static void list(AGSL server, String filter) throws IOException
    {
-      VoSpaceClient delegate = contactServer(server);
+      StoreClient delegate = contactServer(server);
       
       System.out.println("Getting List (filter='"+filter+"')...");
       File root = delegate.getEntries(null, filter);
@@ -88,9 +88,9 @@ public class MySpaceCommander
    private static void printListEntry(File entry) {
       System.out.print(entry.getPath());
       
-      if (entry instanceof MySpaceEntry) {
+      if (entry instanceof MySpaceFile) {
          //print more file details
-         MySpaceEntry mse = (MySpaceEntry) entry;
+         MySpaceFile mse = (MySpaceFile) entry;
          System.out.print( ",   "+mse.getType()+",  "+mse.getOwner()+", "+
                              mse.getCreated()+", "+mse.getExpires()+", "+
                              mse.getSize()+", "+mse.getPermissions());
@@ -110,9 +110,9 @@ public class MySpaceCommander
    /**
     * Gets the files from the given VoRL to the given File
     */
-   public static void get(VospaceRL source, File target) throws IOException
+   public static void get(AGSL source, File target) throws IOException
    {
-      VoSpaceClient delegate = contactServer(source);
+      StoreClient delegate = contactServer(source);
       
       System.out.println("Connecting to source...");
       InputStream in = new BufferedInputStream(delegate.getStream(source.getDelegateFileRef()));
@@ -136,12 +136,12 @@ public class MySpaceCommander
       String command = args[0].toLowerCase().trim();
 
       if (command.equals("delete")) {
-         delete(new VospaceRL(args[1]));
+         delete(new AGSL(args[1]));
       }
       else if (command.equals("list")) {
          String filter = "*";
          if (args.length>2) filter = args[2];
-         list(new VospaceRL(args[1]), filter);
+         list(new AGSL(args[1]), filter);
       }
       else if (command.equals("get")) {
          if (args.length<3) {
@@ -149,7 +149,7 @@ public class MySpaceCommander
             printHelp();
          }
          else {
-            get(new VospaceRL(args[1]), new File(args[2]));
+            get(new AGSL(args[1]), new File(args[2]));
          }
       }
       else {
@@ -161,6 +161,9 @@ public class MySpaceCommander
 
 /*
 $Log: MySpaceCommander.java,v $
+Revision 1.2  2004/02/24 16:04:02  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 

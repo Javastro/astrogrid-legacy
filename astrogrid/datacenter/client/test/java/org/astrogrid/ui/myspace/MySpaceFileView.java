@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileView.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: MySpaceFileView.java,v 1.2 2004/02/24 16:04:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,11 +24,11 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.community.Account;
-import org.astrogrid.vospace.delegate.MySpaceEntry;
-import org.astrogrid.vospace.delegate.MySpaceFileType;
-import org.astrogrid.vospace.delegate.MySpaceFolder;
-import org.astrogrid.vospace.delegate.VoSpaceClient;
-import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.store.delegate.MySpaceFile;
+import org.astrogrid.store.delegate.MySpaceFileType;
+import org.astrogrid.store.delegate.MySpaceFolder;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -39,7 +39,7 @@ import org.w3c.dom.NodeList;
 
 
 public class MySpaceFileView extends JPanel {
-   VoSpaceClient delegate = null;
+   StoreClient delegate = null;
    
    //the operator of this view, not (necessarily) the owner of the files
    Account operator = null;
@@ -68,7 +68,7 @@ public class MySpaceFileView extends JPanel {
          if ((server == null) || (server.trim().length() == 0)) {
             setDelegate(null);
          } else {
-            setDelegate(VoSpaceDelegateFactory.createDelegate(getOperator(), server));
+            setDelegate(StoreDelegateFactory.createDelegate(getOperator(), server));
          }
       }
       catch (IOException ioe)
@@ -78,7 +78,7 @@ public class MySpaceFileView extends JPanel {
       }
    }
    
-   public void setDelegate(VoSpaceClient aDelegate)  {
+   public void setDelegate(StoreClient aDelegate)  {
       delegate = aDelegate;
       refreshList();
    }
@@ -128,7 +128,7 @@ public class MySpaceFileView extends JPanel {
       return false;
    }
    
-   public VoSpaceClient getDelegate()
+   public StoreClient getDelegate()
    {
       return delegate;
    }
@@ -141,9 +141,9 @@ public class MySpaceFileView extends JPanel {
    
    private class MySpaceFileModel extends DefaultTreeModel {
       MySpaceFolder rootFolder = null;
-      VoSpaceClient delegate = null;
+      StoreClient delegate = null;
       
-      public MySpaceFileModel(VoSpaceClient aDelegate)  throws IOException {
+      public MySpaceFileModel(StoreClient aDelegate)  throws IOException {
          super(null);
          this.delegate = aDelegate;
          refresh();
@@ -171,7 +171,7 @@ public class MySpaceFileView extends JPanel {
        * @return  the number of children of the node <code>parent</code>
        */
       public int getChildCount(Object parent) {
-         if (parent instanceof MySpaceEntry) {
+         if (parent instanceof MySpaceFile) {
             return 0;
          }
          else {
@@ -216,7 +216,7 @@ public class MySpaceFileView extends JPanel {
        * @return  true if <code>node</code> is a leaf
        */
       public boolean isLeaf(Object node) {
-         return (node instanceof MySpaceEntry)
+         return (node instanceof MySpaceFile)
             || ( ((MySpaceFolder) node).getChildCount() ==0);
       }
       
@@ -274,7 +274,7 @@ public class MySpaceFileView extends JPanel {
                setIcon(closedIcon);
             }
         } else {
-            setToolTipText(((MySpaceEntry) value).getPath());
+            setToolTipText(((MySpaceFile) value).getPath());
         }
 
         return this;
@@ -287,6 +287,9 @@ public class MySpaceFileView extends JPanel {
 
 /*
  $Log: MySpaceFileView.java,v $
+ Revision 1.2  2004/02/24 16:04:02  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.1  2004/02/17 16:04:06  mch
  New Desktop GUI
 

@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
@@ -119,7 +119,7 @@ public class PluginQuerier extends Querier {
    /** method that handles the business of instantiating the querier object */
    public static QuerierSPI instantiateQuerierSPI()
       throws DatabaseAccessException {
-      String querierSpiClass = AttomConfig.getString(QUERIER_SPI_KEY);
+      String querierSpiClass = SimpleConfig.getSingleton().getString(QUERIER_SPI_KEY);
 
        /** automatic now
       if (querierSpiClass == null) {
@@ -191,6 +191,9 @@ public class PluginQuerier extends Querier {
 }
 /*
  $Log: PluginQuerier.java,v $
+ Revision 1.6  2004/02/24 16:04:18  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.5  2004/02/16 23:34:35  mch
  Changed to use Account and AttomConfig
 

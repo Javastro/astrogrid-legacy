@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.15 2004/02/17 03:38:40 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.16 2004/02/24 16:03:48 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -60,8 +60,8 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.setUp();
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        AttomConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
-        AttomConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
+        SimpleConfig.setProperty(QuerierManager.DEFAULT_MYSPACE, MySpaceDummyDelegate.DUMMY);
+        SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
         conn = ds.getConnection();
@@ -193,6 +193,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.16  2004/02/24 16:03:48  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.15  2004/02/17 03:38:40  mch
 Various fixes for demo
 

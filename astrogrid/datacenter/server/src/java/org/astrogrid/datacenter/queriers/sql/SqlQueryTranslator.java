@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslator.java,v 1.7 2004/02/16 23:34:35 mch Exp $
+/*$Id: SqlQueryTranslator.java,v 1.8 2004/02/24 16:04:18 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import org.astrogrid.datacenter.queriers.spi.Translator;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.apache.commons.logging.*;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 
 /** Pass-through SQL translator.
  * <p>
@@ -38,7 +38,7 @@ public class SqlQueryTranslator implements Translator {
      * @see org.astrogrid.datacenter.queriers.spi.Translator#translate(org.w3c.dom.Element)
      */
     public Object translate(Element e) throws Exception {
-       String val = AttomConfig.getString(SQL_PASSTHRU_ENABLED_KEY,"false");
+       String val = SimpleConfig.getSingleton().getString(SQL_PASSTHRU_ENABLED_KEY,"false");
        if (val.trim().equalsIgnoreCase("true")) {
           log.debug("SQL passthru enabled");
        } else {
@@ -88,6 +88,9 @@ public class SqlQueryTranslator implements Translator {
 
 /*
 $Log: SqlQueryTranslator.java,v $
+Revision 1.8  2004/02/24 16:04:18  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.7  2004/02/16 23:34:35  mch
 Changed to use Account and AttomConfig
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceBrowser.java,v 1.2 2004/02/24 11:30:41 mch Exp $
+ * $Id: MySpaceBrowser.java,v 1.3 2004/02/24 16:04:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -27,10 +27,10 @@ import org.astrogrid.ui.EscEnterListener;
 import org.astrogrid.ui.GridBagHelper;
 import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
-import org.astrogrid.vospace.IvoRN;
-import org.astrogrid.vospace.VospaceRL;
-import org.astrogrid.vospace.delegate.MySpaceEntry;
-import org.astrogrid.vospace.delegate.MySpaceFolder;
+import org.astrogrid.store.IvoRN;
+import org.astrogrid.store.AGSL;
+import org.astrogrid.store.delegate.MySpaceFile;
+import org.astrogrid.store.delegate.MySpaceFolder;
 
 /**
  * A Dialog Box that provides a client view onto a myspace.  Uses myspace
@@ -79,21 +79,21 @@ public class MySpaceBrowser extends JDialog
    Log log = LogFactory.getLog(MySpaceBrowser.class);
    
    /** Constructor - private, use showDialog() */
-   private MySpaceBrowser(Dialog owner, VospaceRL vorl, Account user, String action) throws IOException
+   private MySpaceBrowser(Dialog owner, AGSL vorl, Account user, String action) throws IOException
    {
       super( owner);
       init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(Frame owner, VospaceRL vorl, Account user, String action) throws IOException
+   private MySpaceBrowser(Frame owner, AGSL vorl, Account user, String action) throws IOException
    {
       super( owner);
       init(vorl, user, action);
    }
    
    /** Constructor - private, use showDialog */
-   private MySpaceBrowser(VospaceRL vorl, Account user, String action) throws IOException
+   private MySpaceBrowser(AGSL vorl, Account user, String action) throws IOException
    {
       super();
       init(vorl, user, action);
@@ -102,7 +102,7 @@ public class MySpaceBrowser extends JDialog
    /** Constructor - returns an instance of this tied correctly to the parent frame/dialog owner
     * of the calling Component
     */
-   public static MySpaceBrowser showDialog(Component owner, VospaceRL vorl, Account user, String action) throws IOException
+   public static MySpaceBrowser showDialog(Component owner, AGSL vorl, Account user, String action) throws IOException
    {
       MySpaceBrowser browser = null;
 
@@ -144,7 +144,7 @@ public class MySpaceBrowser extends JDialog
    /**
     * Builds GUI and initialises components
     */
-   private void init(VospaceRL vorl, Account user, String action) throws IOException
+   private void init(AGSL vorl, Account user, String action) throws IOException
    {
       setTitle("Browsing MySpace as "+user);
       setModal(true);
@@ -300,7 +300,7 @@ public class MySpaceBrowser extends JDialog
          new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
                File f = fileView.getSelectedFile();
-               if (f instanceof MySpaceEntry) {
+               if (f instanceof MySpaceFile) {
                   filenameField.setText(f.toString());
                }
             }
@@ -585,7 +585,7 @@ public class MySpaceBrowser extends JDialog
     */
    
    /** Returns myspace reference to selected file */
-   public VospaceRL getMySpaceRef() throws MalformedURLException
+   public AGSL getMySpaceRef() throws MalformedURLException
    {
       //need to change the myspace individual@community to /community/individual for the ivo ref
       String account = getFullPath().substring(0,getFullPath().indexOf("/",2));
@@ -595,7 +595,7 @@ public class MySpaceBrowser extends JDialog
 
       IvoRN ivorn = new IvoRN(community, individual, getPath());
       
-      return new VospaceRL(new URL(getServer()), ivorn);
+      return new AGSL(new URL(getServer()), ivorn);
    }
    
    /**
@@ -666,6 +666,9 @@ public class MySpaceBrowser extends JDialog
 
 /*
 $Log: MySpaceBrowser.java,v $
+Revision 1.3  2004/02/24 16:04:02  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.2  2004/02/24 11:30:41  mch
 Removed self import
 

@@ -1,4 +1,4 @@
-/*$Id: DirectDelegateTest.java,v 1.3 2004/02/16 23:07:04 mch Exp $
+/*$Id: DirectDelegateTest.java,v 1.4 2004/02/24 16:03:48 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
 
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
@@ -49,7 +49,7 @@ public class DirectDelegateTest  extends TestCase {
     */
    public void testQuery() throws ServiceException, MalformedURLException, IOException, ParserConfigurationException, SAXException, ADQLException
    {
-      AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, DummyQuerier.class.getName());
+      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, DummyQuerier.class.getName());
       
       FullSearcher delegate = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, "local", DatacenterDelegateFactory.ASTROGRID_DIRECT);
       
@@ -82,6 +82,9 @@ public class DirectDelegateTest  extends TestCase {
 
 /*
 $Log: DirectDelegateTest.java,v $
+Revision 1.4  2004/02/24 16:03:48  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.3  2004/02/16 23:07:04  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

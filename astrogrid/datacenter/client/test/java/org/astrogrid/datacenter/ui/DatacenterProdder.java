@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.3 2004/02/19 23:28:55 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.4 2004/02/24 16:04:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -38,9 +38,9 @@ import org.astrogrid.ui.Splash;
 import org.astrogrid.ui.myspace.MySpaceBrowser;
 import org.astrogrid.ui.myspace.VoFileSelector;
 import org.astrogrid.ui.votable.JVotBox;
-import org.astrogrid.vospace.VospaceRL;
-import org.astrogrid.vospace.delegate.VoSpaceClient;
-import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.store.AGSL;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.w3c.dom.Element;
 
 /**
@@ -153,8 +153,12 @@ public class DatacenterProdder extends JFrame
       contents.add(queryLocator.getControls(), constraints);
 
       constraints.gridy++;
+      GridBagHelper.setLabelConstraints(constraints);
+      contents.add(datacenterLocator.getLabel(), constraints);
       GridBagHelper.setEntryConstraints(constraints);
-      contents.add(datacenterPanel, constraints);
+      contents.add(datacenterLocator.getEntryField(), constraints);
+      GridBagHelper.setControlConstraints(constraints);
+      contents.add(datacenterLocator.getControls(), constraints);
 
       constraints.gridy++;
       GridBagHelper.setLabelConstraints(constraints);
@@ -253,7 +257,7 @@ public class DatacenterProdder extends JFrame
          if (queryLocator.getFileLoc().startsWith("file")) {
             inQuery = new URL(queryLocator.getFileLoc()).openStream();
          } else {
-            inQuery = new VospaceRL(queryLocator.getFileLoc()).openStream();
+            inQuery = new AGSL(queryLocator.getFileLoc()).openStream();
          }
 
          progBox.setProgress(2);
@@ -318,7 +322,7 @@ public class DatacenterProdder extends JFrame
          if (queryLocator.getFileLoc().startsWith("file")) {
             inQuery = new URL(queryLocator.getFileLoc()).openStream();
          } else {
-            inQuery = new VospaceRL(queryLocator.getFileLoc()).openStream();
+            inQuery = new AGSL(queryLocator.getFileLoc()).openStream();
          }
 
          progBox.setProgress(2);
@@ -348,9 +352,9 @@ public class DatacenterProdder extends JFrame
                throw new UnsupportedOperationException("Not yet implemented local file save");
             } else {
                log.info("Sending results to myspace...");
-               VospaceRL resultsRL = new VospaceRL(resultsLocator.getFileLoc());
+               AGSL resultsRL = new AGSL(resultsLocator.getFileLoc());
 
-               VoSpaceClient vos = VoSpaceDelegateFactory.createDelegate(user, resultsRL.getDelegateEndpoint().toString());
+               StoreClient vos = StoreDelegateFactory.createDelegate(user, resultsRL.getDelegateEndpoint().toString());
                vos.putString(xml, resultsRL.getDelegateFileRef(), false);
                log.info("...results gone");
             }
@@ -452,6 +456,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.4  2004/02/24 16:04:02  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.3  2004/02/19 23:28:55  mch
  Nicer Splash
 

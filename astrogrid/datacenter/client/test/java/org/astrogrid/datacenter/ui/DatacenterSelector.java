@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterSelector.java,v 1.1 2004/02/17 03:39:13 mch Exp $
+ * $Id: DatacenterSelector.java,v 1.2 2004/02/24 16:04:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -17,17 +17,9 @@ package org.astrogrid.datacenter.ui;
  * @author M Hill
  */
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.astrogrid.ui.GridBagHelper;
@@ -39,6 +31,8 @@ public class DatacenterSelector extends JPanel  {
    JHistoryComboBox serverEntryField = new JHistoryComboBox();
    JPasteButton serverPasteBtn = null;
    JLabel validLabel = new JLabel("Valid");
+   JLabel mainLabel = new JLabel("Server");
+   JPanel btnPanel = new JPanel();
 
    boolean isValid = false;
    
@@ -56,15 +50,17 @@ public class DatacenterSelector extends JPanel  {
             } );
       serverPasteBtn = new JPasteButton(serverEntryField);
 
+      btnPanel.add(serverPasteBtn);
+      
       //layout components - grid
       setLayout(new GridBagLayout());
       GridBagConstraints constraints = new GridBagConstraints();
 
       constraints.gridy ++;
       
-      GridBagHelper.setLabelConstraints(constraints); add(new JLabel("Server"), constraints);
+      GridBagHelper.setLabelConstraints(constraints); add(mainLabel, constraints);
       GridBagHelper.setEntryConstraints(constraints); add(serverEntryField, constraints);
-      GridBagHelper.setControlConstraints(constraints); add(serverPasteBtn, constraints);
+      GridBagHelper.setControlConstraints(constraints); add(btnPanel, constraints);
       
       constraints.gridy ++;
 
@@ -88,10 +84,24 @@ public class DatacenterSelector extends JPanel  {
    {
       return serverEntryField.getText();
    }
+   
+   /** Returns label so that owning components can lay out differently */
+   public JComponent getLabel() {   return mainLabel; }
+   
+   /** Returns entry field so that owning components can lay out differently */
+   public JComponent getEntryField() { return serverEntryField;  }
+   
+   /** Returns control buttons so that owning components can lay out differently */
+   public JComponent getControls() {   return btnPanel;  }
+
+   
 }
 
 /*
 $Log: DatacenterSelector.java,v $
+Revision 1.2  2004/02/24 16:04:02  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.1  2004/02/17 03:39:13  mch
 New Datacenter UIs
 

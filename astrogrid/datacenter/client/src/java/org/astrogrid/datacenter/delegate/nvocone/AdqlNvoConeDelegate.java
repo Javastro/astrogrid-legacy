@@ -29,8 +29,8 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.webnotify.WebNotifier;
 import org.astrogrid.io.Piper;
-import org.astrogrid.vospace.delegate.VoSpaceClient;
-import org.astrogrid.vospace.delegate.VoSpaceDelegateFactory;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreDelegateFactory;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -228,7 +228,7 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
        */
       public void sendResults(InputStream resultsIn) throws IOException
       {
-         VoSpaceClient myspace = VoSpaceDelegateFactory.createDelegate(user, destinationServer.toString());
+         StoreClient myspace = StoreDelegateFactory.createDelegate(user, destinationServer.toString());
          
          String myspaceFilename = "/"+user.getAstrogridId()+"/"+getId()+"_results";
 
@@ -357,6 +357,9 @@ public class AdqlNvoConeDelegate extends NvoConeSearchDelegate implements FullSe
 
 /*
 $Log: AdqlNvoConeDelegate.java,v $
+Revision 1.12  2004/02/24 16:04:29  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.11  2004/02/16 23:33:42  mch
 Changed to use Account and AttomConfig
 

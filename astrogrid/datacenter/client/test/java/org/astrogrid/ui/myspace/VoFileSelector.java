@@ -1,5 +1,5 @@
 /*
- * $Id: VoFileSelector.java,v 1.1 2004/02/17 16:04:06 mch Exp $
+ * $Id: VoFileSelector.java,v 1.2 2004/02/24 16:04:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -34,7 +34,7 @@ import org.astrogrid.ui.IconButtonHelper;
 import org.astrogrid.ui.JHistoryComboBox;
 import org.astrogrid.ui.JPasteButton;
 import org.astrogrid.ui.myspace.MySpaceBrowser;
-import org.astrogrid.vospace.VospaceRL;
+import org.astrogrid.store.AGSL;
 
 public class VoFileSelector extends JPanel implements KeyListener {
 
@@ -145,10 +145,10 @@ public class VoFileSelector extends JPanel implements KeyListener {
    }
 
    /** Returns the full vospace reference for the entry */
-   public VospaceRL toVospaceRL() throws MalformedURLException {
-        VospaceRL vorl = null;
+   public AGSL toVospaceRL() throws MalformedURLException {
+        AGSL vorl = null;
         if ((getFileLoc() != null) && (getFileLoc().trim().length()>0)) {
-           vorl = new VospaceRL(getFileLoc());
+           vorl = new AGSL(getFileLoc());
         }
         return vorl;
    }
@@ -156,7 +156,7 @@ public class VoFileSelector extends JPanel implements KeyListener {
    /** Start MySpace Browser */
    public void browseMySpace()
    {
-      VospaceRL vorl;
+      AGSL vorl;
       try {
          vorl = toVospaceRL();
       }
@@ -198,10 +198,10 @@ public class VoFileSelector extends JPanel implements KeyListener {
       }
       
       //is it valid?
-      if (VospaceRL.isVoRL(loc))
+      if (AGSL.isVoRL(loc))
       {
          try {
-            new VospaceRL(loc);
+            new AGSL(loc);
             setValid(true);
          } catch (MalformedURLException me) {
             setValid(false);
@@ -270,6 +270,9 @@ public class VoFileSelector extends JPanel implements KeyListener {
 
 /*
 $Log: VoFileSelector.java,v $
+Revision 1.2  2004/02/24 16:04:02  mch
+Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
 Revision 1.1  2004/02/17 16:04:06  mch
 New Desktop GUI
 

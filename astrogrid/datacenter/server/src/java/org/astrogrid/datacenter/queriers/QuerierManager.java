@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.14 2004/02/17 03:38:05 mch Exp $
+/*$Id: QuerierManager.java,v 1.15 2004/02/24 16:04:18 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import java.util.Hashtable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 
 /** Manages the construction and initialization of Queriers, and maintains a collection of current Queriers
@@ -203,7 +203,7 @@ public class QuerierManager {
     */
    public static Querier instantiateQuerier(Query query, String id) throws DatabaseAccessException {
       
-      String querierClass = AttomConfig.getString(DATABASE_QUERIER_KEY, org.astrogrid.datacenter.sitedebug.DummyQuerier.class.getName());
+      String querierClass = SimpleConfig.getSingleton().getString(DATABASE_QUERIER_KEY, org.astrogrid.datacenter.sitedebug.DummyQuerier.class.getName());
 
       /*
       happens automatically now
@@ -275,6 +275,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.15  2004/02/24 16:04:18  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.14  2004/02/17 03:38:05  mch
  Various fixes for demo
 

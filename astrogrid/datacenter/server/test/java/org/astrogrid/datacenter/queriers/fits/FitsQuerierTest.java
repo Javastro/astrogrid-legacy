@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.7 2004/02/16 23:07:05 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.8 2004/02/24 16:03:48 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -18,7 +18,7 @@ import java.net.URL;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.astrogrid.config.AttomConfig;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -83,7 +83,7 @@ public class FitsQuerierTest extends OptionalTestCase
     */
    public void testPlugin() throws DatabaseAccessException
    {
-      AttomConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
+      SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
       
       Querier querier = QuerierManager.createQuerier(null);
       
@@ -111,6 +111,9 @@ public class FitsQuerierTest extends OptionalTestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.8  2004/02/24 16:03:48  mch
+ Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
+
  Revision 1.7  2004/02/16 23:07:05  mch
  Moved DummyQueriers to std server and switched to AttomConfig
 
