@@ -1,0 +1,49 @@
+/*$Id: ToolRegistry.java,v 1.2 2004/03/03 01:36:38 nw Exp $
+ * Created on 01-Mar-2004
+ *
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
+package org.astrogrid.portal.workflow.intf;
+
+import org.astrogrid.workflow.beans.v1.Tool;
+
+import java.util.Iterator;
+
+/** Interface to a component that queries a registry for information about tools.
+ * @author Noel Winstanley nw@jb.man.ac.uk 01-Mar-2004
+ *
+ */
+public interface ToolRegistry {
+    /** return list of names of known tools  
+     * @deprecated - use {@link listTools} which returns a strongly-typed result */ 
+    Iterator readToolList( ) throws WorkflowInterfaceException;
+    
+    /** list names of known tools */
+    String[] listTools() throws WorkflowInterfaceException;
+
+    /**
+     * Create a tool object
+     */
+    public Tool createTool( String name);
+      
+}
+
+
+
+/* 
+$Log: ToolRegistry.java,v $
+Revision 1.2  2004/03/03 01:36:38  nw
+merged interfaces in from branch nww-int05-bz#146
+
+Revision 1.1.2.2  2004/03/03 01:18:00  nw
+commited first draft of interface design
+
+Revision 1.1.2.1  2004/03/01 19:02:57  nw
+refined interfaces. almost ready to publish
+ 
+*/
