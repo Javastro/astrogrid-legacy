@@ -12,12 +12,11 @@ package org.astrogrid.datacenter.votable ;
 
 import org.astrogrid.datacenter.config.Configurable;
 import org.astrogrid.datacenter.myspace.Allocation;
-import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.datacenter.query.Query;
 /** a factory for VOTable objects must implememnt this interface */
 public interface VOTableFactory extends Configurable {
 	/** TODO document me */
-    void stream( Query query, Allocation allocation, MySpaceFactory fac ) throws VOTableException ;
+    void stream( Query query, Allocation allocation ) throws VOTableException ;
 	/** TODO document me */
     VOTable createVOTable( Query query ) throws VOTableException ;
     

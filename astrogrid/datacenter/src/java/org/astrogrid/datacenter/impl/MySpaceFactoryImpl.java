@@ -10,18 +10,13 @@
  */
 package org.astrogrid.datacenter.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import java.io.File;
 
 import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.config.ConfigurableImpl;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.myspace.Allocation;
 import org.astrogrid.datacenter.myspace.AllocationException;
@@ -29,7 +24,7 @@ import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.i18n.AstroGridMessage;
 
 /** implementation of MySpaceFactory 
- * 
+ * each allocation is a file in a specified myspace cache directory. 
  */
 public class MySpaceFactoryImpl
     extends ConfigurableImpl
@@ -39,69 +34,38 @@ public class MySpaceFactoryImpl
 
     private static Logger logger = Logger.getLogger(MySpaceFactoryImpl.class);
 
-    private final static String SUBCOMPONENT_NAME =
-        Util.getComponentName(MySpaceFactoryImpl.class);
+    private final static String SUBCOMPONENT_NAME =  Util.getComponentName(MySpaceFactoryImpl.class);
 
-    private static String ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION =
-        "AGDTCE00100",
-        ASTROGRIDERROR_COULD_NOT_DESTROY_COMPRESSED_STREAM = "AGDTCE00110";
+    private static String ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION =   "AGDTCE00100";
+ 
+    /** directory to place query results in, to be accesed by myspace */
+    private File baseDir;
 
-    // Compression constants.
-    private static final String GZIP_COMPRESSION = "gzip";
-    private static final String ZIP_COMPRESSION = "zip";
-
-    public Allocation allocateCacheSpace(String jobID)
-        throws AllocationException {
-        if (TRACE_ENABLED)
-            logger.debug("allocateCacheSpace(): entry");
-
-        Allocation allocation = null;
-
+    public Allocation allocateCacheSpace(String jobID)   throws AllocationException {
+        if (TRACE_ENABLED) logger.debug("allocateCacheSpace(): entry");
         try {
-            String fileName = produceFileName(jobID);
-
-            OutputStream out =
-                createCompressedOutputStream(fileName, "uncompressed");
-
-            allocation = new Allocation(fileName, out);
+            File fileName = produceFile(jobID);
+            return new AllocationImpl(fileName, AllocationImpl.NO_COMPRESSION);
 
         } catch (Exception ex) {
-            AstroGridMessage message =
-                new AstroGridMessage(
+            AstroGridMessage message =     new AstroGridMessage(
                     ASTROGRIDERROR_COULD_NOT_CREATE_ALLOCATION,
-                    SUBCOMPONENT_NAME,
-                    jobID);
+                    SUBCOMPONENT_NAME, jobID);
             logger.error(message.toString(), ex);
             throw new AllocationException(message, ex);
         } finally {
             if (TRACE_ENABLED)
                 logger.debug("allocateCacheSpace(): exit");
         }
-
-        return allocation;
-
     } // end of allocateCacheSpace()
 
-    public void close(Allocation allocation) throws AllocationException {
-        if (TRACE_ENABLED)
-            logger.debug("close(): entry");
 
-        try {
-            destroyCompressedOutputStream(allocation.getOutputStream());
-        } catch (IOException ex) {
-            AstroGridMessage message =
-                new AstroGridMessage(
-                    ASTROGRIDERROR_COULD_NOT_DESTROY_COMPRESSED_STREAM,
-                    SUBCOMPONENT_NAME);
-            logger.error(message.toString(), ex);
-            throw new AllocationException(message, ex);
-        } finally {
-            if (TRACE_ENABLED)
-                logger.debug("close(): exit");
-        }
 
-    } // end of close()
-
+    /** @deprecated - use produceFile instead. Just kept around to compare how things were done -
+     * dunno if there's any MySpace specific bits here..
+     * @param jobID
+     * @return
+     */
     private String produceFileName(String jobID) {
 
         StringBuffer buffer = new StringBuffer(64);
@@ -119,45 +83,28 @@ public class MySpaceFactoryImpl
         return buffer.toString();
 
     } // end of produceFileName()
-
-    protected OutputStream createCompressedOutputStream(
-        String outputfilename,
-        String compression)
-        throws IOException, FileNotFoundException {
-
-        OutputStream out =
-            new BufferedOutputStream(new FileOutputStream(outputfilename));
-
-        if (compression
-            .equalsIgnoreCase(MySpaceFactoryImpl.GZIP_COMPRESSION)) {
-            out = new GZIPOutputStream(out);
-        } else if (
-            compression.equalsIgnoreCase(MySpaceFactoryImpl.ZIP_COMPRESSION)) {
-            String internalfilename = "tmp.xml";
-
-            int index = outputfilename.indexOf('.');
-            if (index > -1) {
-                internalfilename = outputfilename.substring(0, index) + ".xml";
-            }
-
-            ZipOutputStream zipOut = new ZipOutputStream(out);
-            zipOut.putNextEntry(new ZipEntry(internalfilename));
-            out = zipOut;
-        }
-
-        return out;
-
+    
+    protected File produceFile(String jobID) {
+        String filename = jobID.replace(':','.') + ".xml";
+        return new File(baseDir,filename);
     }
 
-    protected void destroyCompressedOutputStream(OutputStream compressedOutputStream)
-        throws IOException {
+    /** Extended to initialize value of {@link #baseDir}
+     * 
+     * @see org.astrogrid.datacenter.config.Configurable#setConfiguration(org.astrogrid.datacenter.config.Configuration)
+     */
+    public void setConfiguration(Configuration conf) {
+        super.setConfiguration(conf);
+        // initialize our own fields here.
+        baseDir = new File (getConfiguration().getProperty(
+                    ConfigurationKeys.MYSPACE_CACHE_DIRECTORY,ConfigurationKeys.MYSPACE_CATEGORY));
 
-        if (compressedOutputStream instanceof ZipOutputStream) {
-            ZipOutputStream zipOutputStream =
-                (ZipOutputStream) compressedOutputStream;
-            zipOutputStream.closeEntry();
-        }
-
+        // should check whetehr this exists, and is writable.
+        if ( ! ( baseDir.exists() && baseDir.isDirectory() && baseDir.canRead()) ) {
+            throw new IllegalArgumentException("MYSPACE cache Directory does not exist");
+        }                    
     }
+    
+ 
 
 } // end of class MySpaceFactoryImpl

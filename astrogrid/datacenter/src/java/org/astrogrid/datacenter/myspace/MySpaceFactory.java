@@ -20,12 +20,7 @@ public interface MySpaceFactory extends Configurable {
 	 * @throws AllocationException
 	 */
     public Allocation allocateCacheSpace(String jobURN) throws AllocationException ;
-    /** close / free up some allocated space
-     * 
-     * @param allocation
-     * @throws AllocationException
-     */
-    public void close( Allocation allocation ) throws AllocationException ;
+
     
     
 }

@@ -1,4 +1,4 @@
-/*$Id: NullVOTableFactory.java,v 1.1 2003/08/21 12:27:24 nw Exp $
+/*$Id: NullVOTableFactory.java,v 1.2 2003/08/22 15:49:48 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.datacenter.impl.empty;
 
 import org.astrogrid.datacenter.config.ConfigurableImpl;
 import org.astrogrid.datacenter.myspace.Allocation;
-import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.datacenter.votable.VOTableException;
@@ -27,25 +26,33 @@ public class NullVOTableFactory
     implements VOTableFactory {
 
     /* (non-Javadoc)
-     * @see org.astrogrid.datacenter.votable.VOTableFactory#stream(org.astrogrid.datacenter.query.Query, org.astrogrid.datacenter.myspace.Allocation, org.astrogrid.datacenter.myspace.MySpaceFactory)
+     * @see org.astrogrid.datacenter.votable.VOTableFactory#stream(org.astrogrid.datacenter.query.Query, org.astrogrid.datacenter.myspace.Allocation)
      */
-    public void stream(Query query, Allocation allocation, MySpaceFactory fac)
-        throws VOTableException {
+    public void stream(Query query, Allocation allocation) throws VOTableException {
 
+        
     }
 
     /* (non-Javadoc)
      * @see org.astrogrid.datacenter.votable.VOTableFactory#createVOTable(org.astrogrid.datacenter.query.Query)
      */
     public VOTable createVOTable(Query query) throws VOTableException {
+
         return null;
     }
+
+
 
 }
 
 
 /* 
 $Log: NullVOTableFactory.java,v $
+Revision 1.2  2003/08/22 15:49:48  nw
+refactored MySpace module - replaced Allocation class by
+an interface and implementaiton class, calling to a helper class.
+simplified interface and implementation of MySpaceFactory.
+
 Revision 1.1  2003/08/21 12:27:24  nw
 added set of null-factory implementations.
  

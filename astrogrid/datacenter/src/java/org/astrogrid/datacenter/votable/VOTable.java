@@ -47,7 +47,7 @@ public class VOTable {
 
 /** TODO: move me where I belong */
     public void stream(Allocation allocation, FactoryProvider facMan) throws VOTableException  {
-    	facMan.getVOTableFactory().stream( query, allocation,facMan.getMySpaceFactory() ) ;
+    	facMan.getVOTableFactory().stream( query, allocation ) ;
     }
 
 

@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.Util;
 import org.astrogrid.datacenter.config.ConfigurableImpl;
 import org.astrogrid.datacenter.myspace.Allocation;
-import org.astrogrid.datacenter.myspace.MySpaceFactory;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.votable.VOTable;
 import org.astrogrid.datacenter.votable.VOTableException;
@@ -57,7 +56,7 @@ public class VOTableFactoryImpl extends ConfigurableImpl implements VOTableFacto
     }
 
 
-    public void stream( Query query, Allocation allocation, MySpaceFactory fac ) throws VOTableException { 
+    public void stream( Query query, Allocation allocation ) throws VOTableException { 
 		if( TRACE_ENABLED ) logger.debug( "VOTableFactoryImpl.stream(): entry") ; 
 		  
 		ResultSetConverter 
@@ -87,8 +86,7 @@ public class VOTableFactoryImpl extends ConfigurableImpl implements VOTableFacto
 		finally {
 			if( out != null ) {  
 			    try {
-				   out.flush();
-				   fac.close( allocation );
+				   out.flush();				 
 				   out.close();                                       
 			    }
 			    catch( Exception ex ) {
