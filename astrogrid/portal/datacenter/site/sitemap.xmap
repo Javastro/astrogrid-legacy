@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.5 2003/12/18 10:57:51 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.6 2004/01/13 10:54:51 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -105,20 +105,12 @@
           | AstroGrid Actions.
           +-->
       <!--
-        Validate XML from a form.
-        -->
-      <map:action
-          name="xml-validator"
-          logger="sitemap.action.xml-validator"
-          src="org.astrogrid.portal.xml.acting.XMLValidatorAction"/>
-      
-      <!--
         Save ADQL to MySpace from a form.
         -->
       <map:action
           name="save-adql"
           logger="sitemap.action.save-adql"
-          src="org.astrogrid.portal.myspace.acting.SaveAction"/>
+          src="org.astrogrid.portal.datacenter.acting.MySpaceSaveAction"/>
           
       <!--
         Load ADQL from MySpace into a form.
@@ -126,7 +118,7 @@
       <map:action
           name="load-adql"
           logger="sitemap.action.load-adql"
-          src="org.astrogrid.portal.myspace.acting.LoadAction"/>
+          src="org.astrogrid.portal.datacenter.acting.MySpaceLoadAction"/>
           
       <!--
         Submit ADQL from a form to a Datacenter end-point.
@@ -199,12 +191,23 @@
       | Hence I will explain what's inside below for pipelines.
       +-->
   <map:resources>
-    <map:resource name="test-adql-results">
+    <map:resource name="test-results">
       <map:generate type="request">
         <map:parameter name="generate-attributes" value="true"/>
       </map:generate>
       
-      <map:transform src="cocoon:/test-adql-results.xsl"/>
+      <map:transform src="cocoon:/test-results.xsl"/>
+  
+      <map:serialize type="xml"/>
+    </map:resource>
+
+    <map:resource name="load-results">
+      <map:generate type="file" src="{results-display}"/>
+      
+      <map:transform src="cocoon:/load-adql.xsl">
+        <map:parameter name="adql-document" value="{adql-document}"/>
+        <map:parameter name="adql-document-errors" value="{adql-document-errors}"/>
+      </map:transform>
   
       <map:serialize type="xml"/>
     </map:resource>
@@ -264,9 +267,39 @@
         <map:select type="request-parameter">
           <map:parameter name="parameter-name" value="action"/>
           
+          <map:when test="Load">
+            <map:act type="load-adql">
+              <map:parameter name="myspace-end-point" value="http://Dummy.address/"/>
+              <map:parameter name="username" value="Anon"/>
+              <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
+              <map:parameter name="password" value="None"/>
+              <map:parameter name="myspace-name" value="myspace-name"/>
+            </map:act>
+            
+            <map:call resource="load-results">
+              <map:parameter name="results-display" value="web/static/data-query.xml"/>
+            </map:call>
+          </map:when>
+          
+          <map:when test="Save">
+            <map:act type="save-adql">
+              <map:parameter name="myspace-end-point" value="http://Dummy.address/"/>
+              <map:parameter name="username" value="Anon"/>
+              <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
+              <map:parameter name="password" value="None"/>
+              <map:parameter name="myspace-name" value="myspace-name"/>
+              <map:parameter name="adql-query" value="query"/>
+              
+              <map:call resource="test-results"/>
+            </map:act>
+          </map:when>
+          
           <map:when test="Test">
             <map:act type="test-adql">
+<!--
               <map:parameter name="datacenter-delegate-service" value="NVO Cone Service"/>
+-->
+              <map:parameter name="datacenter-delegate-service" value="Dummy"/>
               <map:parameter name="datacenter-end-point" value="http://virtualsky.org/servlet/cover?CAT=messier&amp;"/>
               <map:parameter name="username" value="Anon"/>
               <map:parameter name="community-id" value="gps@star.le.ac.uk"/>
@@ -280,16 +313,16 @@
               
               <map:serialize type="xml"/>
 -->
-              <map:call resource="test-adql-results"/>
+              <map:call resource="test-results"/>
             </map:act>
           </map:when>
           
           <map:otherwise>
-              <map:call resource="test-adql-results"/>
+              <map:call resource="test-results"/>
           </map:otherwise>
         </map:select>
 
-        <map:call resource="test-adql-results"/>
+        <map:call resource="test-results"/>
       </map:match>
       
       <!-- xml -->

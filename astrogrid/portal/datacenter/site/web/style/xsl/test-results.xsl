@@ -1,9 +1,8 @@
 <xsl:stylesheet
     version="1.0"
     xmlns:xsp-request="http://apache.org/cocoon/request/2.0"
-    xmlns:XSLTExtension="org.astrogrid.portal.xslt.XSLTExtension"
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    exclude-result-prefixes="xsp-request XSLTExtension">
+    exclude-result-prefixes="xsp-request">
     
   <xsl:output
       encoding="UTF-8"
@@ -12,15 +11,14 @@
       
   <xsl:param name="css-url"/>
   
-  <xsl:variable
-      name="extension"
-      select="XSLTExtension:new()"
-      xmlns:XSLTExtension="org.astrogrid.portal.xslt.XSLTExtension"/>
-  
   <xsl:template match="/">
-    <div>
-      <xsl:apply-templates select="//xsp-request:attribute"/>
-    </div>
+    <ag-div>
+      <ag-link href="/astrogrid-portal/mount/datacenter/test-results.css" rel="stylesheet" type="text/css"/>
+      
+      <div>
+        <xsl:apply-templates select="//xsp-request:attribute"/>
+      </div>
+    </ag-div>
   </xsl:template>
   
   <xsl:template match="xsp-request:attribute">
@@ -32,7 +30,7 @@
       </xsl:if>
       
       <xsl:if test="./xsp-request:value/DatacenterResults">
-        <textarea rows="10" cols="80" readonly="readonly">
+        <textarea id="ag-data-results" rows="10" cols="80" readonly="readonly">
           <xsl:copy-of select="./xsp-request:value/DatacenterResults"/>
         </textarea>
       </xsl:if>

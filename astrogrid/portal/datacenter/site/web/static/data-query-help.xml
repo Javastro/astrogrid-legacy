@@ -3,20 +3,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/2002/08/xhtml/xhtml1-transitional.xsd">
   <div id="ag-content">
-    <div id="ag-content-tab-top">
-      <span class="ag-content-tab-top"><a class="ag-content-tab-link" href="">Welcome</a></span>
-      <span class="ag-content-tab-top"><a class="ag-content-tab-link" href="data-query-help.xml">Help</a></span>
-    </div>
-
-    <span>Some help text</span>
-
-    <div id="ag-content-tab-bottom">
-      <span class="ag-content-tab-bottom">
-        <a class="ag-content-tab-link" href="">Welcome</a>
-      </span>
-      <span class="ag-content-tab-bottom">
-        <a class="ag-content-tab-link" href="">Help</a>
-      </span>
-    </div>
+    The Data Query Builder accepts ADQL input in XML form which should be typed in to the text box.  To use this ADQL
+    later in a job step, save the ADQL to MySpace using the 'Save' button.  To load an existing ADQL document, use the 'Load'
+    button.
+    
+    <p/>
+    
+    The 'Test' button is in place that you might run your ADQL against a pre-defined DataCenter.  You should not use this
+    functionality to run queries.  Please use your ADQL as part of a job step.
   </div>
 </div>

@@ -1,0 +1,35 @@
+h1.ag-data-h1
+{
+  /*
+    Alignment.
+    */
+  text-align:                     center;
+  
+  /*
+    Borders.
+    */
+  border-bottom-width:            2;
+  border-bottom-style:            solid;
+}
+
+#ag-data-query
+{
+  /*
+    Dimensions.
+    */
+  width:                          100%;
+}
+
+#ag-data-results
+{
+  /*
+    Colors.
+    */
+  background-color:               green;
+  color:                          yellow;
+  
+  /*
+    Dimensions.
+    */
+  width:                          100%;
+}
