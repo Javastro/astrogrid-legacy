@@ -181,7 +181,8 @@ public class DesignAction extends AbstractAction {
         ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
         ACTION_INSERT_STEP = "insert-step",
         ACTION_INSERT_SEQUENCE = "insert-sequence", 
-        ACTION_INSERT_FLOW = "insert-flow",                 
+        ACTION_INSERT_FLOW = "insert-flow",
+		ACTION_INSERT_PARAMETER = "insert-parameter-value",
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
 	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
@@ -372,6 +373,9 @@ public class DesignAction extends AbstractAction {
 				}                
 				else if( action.equals( ACTION_INSERT_OUTPUT_PARAMETER ) ) {
 					this.insertOutputValue();
+				}
+				else if( action.equals( ACTION_INSERT_PARAMETER ) ) {
+					this.insertValue();
 				}
 				else if( action.equals( ACTION_RESET_PARAMETER ) ) {
 				    this.resetParameter();         	
@@ -894,31 +898,61 @@ this.readToolList(); // temp PJN
 		} // end of removeToolFromStep() 
 
 
+		private void insertValue() throws ConsistencyException {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertValue() entry" ) ;
+			try {		
+				String direction = request.getParameter( DIRECTION_PARAMETER ) ;
+				debug("direction: " + direction);
+				if (direction.equalsIgnoreCase("input")) 
+				{
+					insertInputValue() ;
+				}
+				else if (direction.equalsIgnoreCase("output"))
+				{
+					insertOutputValue() ;
+				}
+				else
+				{
+					debug("Direction of parameter not available");
+				}
+			}
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.insertValue() exit" ) ;
+			}
+        }  	  	
+
+
       private void insertInputValue() throws ConsistencyException {
          if( TRACE_ENABLED ) trace( "DesignActionImpl.insertInputValue() entry" ) ;
-			
-         Step step = null;
-         Tool tool = null ;
+					
+         Step step = null;         
+         Tool tool = null ;        
          ParameterValue p = null ;
-              
+
          try {
             // Tool should already have been inserted into step
 									
-		    String parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
-            String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
+			String parameterName = request.getParameter( PARAM_NAME_PARAMETER ) ;				    					
+			String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
+			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
+			debug( "parameterName:" + parameterName ) ;
+			debug( "parameterValue: " + parameterValue ) ;
+			debug( "activityKey: " + activityKey ) ;    
                             
-            if ( parameterName == null) {
-                debug( "parameterName is null" ) ;
-            }
-            else if ( parameterValue == null) {
-                debug( "parameterValue is null" ) ;
-            }
+			if ( parameterName == null) {
+				debug( "parameterName is null" ) ;
+			}
+			else if ( parameterValue == null) {
+				debug( "parameterValue is null" ) ;
+			}
+			else if ( activityKey == null) {
+				debug( "activityKey is null" ) ;
+			}            
 
             step = locateStep( workflow, request.getParameter( ACTIVITY_KEY_PARAMETER ) );
             tool = step.getTool() ;
             ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
-            ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
-				
+            ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );	
             WorkflowHelper.insertInputParameterValue( applDescription
                                                     , tool
                                                     , parameterName
