@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConePlugin.java,v 1.1 2004/03/13 01:06:03 mch Exp $
+ * $Id: NvoConePlugin.java,v 1.2 2004/08/02 11:34:33 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,13 +7,18 @@
 package org.astrogrid.datacenter.queriers.nvocone;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.query.ConeQueryMaker;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.io.Piper;
 
 /**
  * The National Virtual Observatory, an American effort, defined a simple
@@ -60,7 +65,8 @@ public class NvoConePlugin extends QuerierPlugin
    
    
    /**
-    * Simple blocking query; submit Query
+    * Simple blocking query; submit Query.  NB this routes the results through
+    * this server, which is not necesssarily the best thing.  Ho hum.
     */
    public void askQuery() throws IOException {
       
@@ -70,8 +76,14 @@ public class NvoConePlugin extends QuerierPlugin
       
       URL url = makeUrl(coneQuery);
       
-      //test url
-      url.openConnection();
+      //start query
+      InputStream source = url.openStream();
+      
+      //where to send to
+      Writer target = querier.getResultsTarget().resolveWriter(Account.ANONYMOUS);
+      
+      //pipe
+      Piper.pipe(new InputStreamReader(source), target);
    }
    
    /**
@@ -87,28 +99,8 @@ public class NvoConePlugin extends QuerierPlugin
 
 /*
 $Log: NvoConePlugin.java,v $
-Revision 1.1  2004/03/13 01:06:03  mch
-It05 Refactor (Client)
-
-Revision 1.5  2003/11/26 16:31:46  nw
-altered transport to accept any query format.
-moved back to axis from castor
-
-Revision 1.4  2003/11/18 00:34:37  mch
-New Adql-compliant cone search
-
-Revision 1.3  2003/11/17 16:59:12  mch
-ConeSearcher.coneSearch now returns stream not parsed element, throws IOException
-
-Revision 1.2  2003/11/17 12:32:27  mch
-Moved QueryStatus to query pacakge
-
-Revision 1.1  2003/11/14 00:36:40  mch
-Code restructure
-
-Revision 1.1  2003/10/06 18:55:21  mch
-Naughtily large set of changes converting to SOAPy bean/interface-based delegates
-
+Revision 1.2  2004/08/02 11:34:33  mch
+Completed the askQuery
 
 
 */
