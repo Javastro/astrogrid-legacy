@@ -63,7 +63,7 @@ variable, which could be used by invoking some xpath way
      String quString, myURL, nada, errorMessage;
      nada = new String("null");
      quString = (String) <xsp-session:get-attribute name="adqlQuery"/>;
-     ErrorMessage = (String) <xsp-session:get-attribute name="query-builder-adql-error"/>;
+     errorMessage = (String) <xsp-session:get-attribute name="query-builder-adql-error"/>;
      if( quString == null ) {
 <OneTableID>NoSource</OneTableID>
 <QUERYAREA>
@@ -78,8 +78,8 @@ variable, which could be used by invoking some xpath way
 </QUERYAREA>
      }
 
-     if( ErrorMessage != null ) {
-<ErrorMsg><xsp:expr>ErrorMessage</xsp:expr></ErrorMsg>
+     if( errorMessage != null ) {
+<ErrorMsg><xsp:expr>errorMessage</xsp:expr></ErrorMsg>
      }
 
   </xsp:logic>
