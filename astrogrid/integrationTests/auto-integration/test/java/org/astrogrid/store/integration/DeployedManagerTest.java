@@ -1,14 +1,15 @@
 package org.astrogrid.store.integration;
 
-import junit.framework.*;
-import java.io.*;
-import java.util.*;
-import java.net.URL;
-
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.astrogrid.community.User;
-
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
@@ -24,6 +25,11 @@ import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
 
 public class DeployedManagerTest extends TestCase
 {  
+    /**
+     * Commons logger
+     */
+    private static final org.apache.commons.logging.Log log =
+        org.apache.commons.logging.LogFactory.getLog(DeployedManagerTest.class);
 
 /**
  * Standard constructor for JUnit test classes.
@@ -66,11 +72,9 @@ public class DeployedManagerTest extends TestCase
 //
 //      Create a delegate to access the remote Manager.
 //
-//      [TODO]: The Manager end-point should be obtained from a properties
-//      file rather than hard-wired.
 
-         String endPoint =
-   "http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager";
+         final String endPoint = SimpleConfig.getSingleton().getString("org.astrogrid.myspace.endpoint");
+         log.debug("Running test against endpoint "+endPoint);
 
          User operator = new User("someuser", "group", "token");
 
