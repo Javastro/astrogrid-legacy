@@ -1008,7 +1008,9 @@ public class MySpaceManager {
 		}  
 		boolean isUserCreated = false;
 			try{			
-				setUp();		
+				setUp();
+				logger.debug("registry name in MySpaceManager:createUser is "+ registryName);
+				msA.setRegistryName(registryName);		
 				isUserCreated = msA.createUser(userid, communityid, credential, servers);
 			}catch(Exception e){
 				logger.error("ERROR CREATEUSER MYSPACEMANAGER" +e.toString());
@@ -1111,7 +1113,8 @@ public class MySpaceManager {
 		
 		private void setUp()throws Exception{
 			MMC.getInstance().checkPropertiesLoaded();
-			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);	
+			registryName = MMC.getProperty(MMC.REGISTRYCONF, MMC.CATLOG);
+			msA.setRegistryName(registryName);
 		}
 		
 		public Vector getServerURLs() throws Exception{

@@ -6,6 +6,7 @@ import java.util.*;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatus;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
 
+import org.apache.log4j.Logger;
 /**
  * The <code>RegistryManager</code> class is used to access entries in
  * a MySpace registry and to access details of the servers in the MySpace
@@ -60,7 +61,8 @@ import org.astrogrid.mySpace.mySpaceStatus.MySpaceStatusCode;
  */
 
 public class RegistryManager
-{  private boolean DEBUG = false;
+{  private boolean DEBUG = true;
+	private static Logger logger = Logger.getLogger(RegistryManager.class);
 
    private String jdbcDriverClass = "org.hsqldb.jdbcDriver";
 
@@ -183,10 +185,10 @@ public class RegistryManager
  * Dummy constructor with no arguments.
  */
 
-   public RegistryManager()
-   {  registryName = null;
-      registryDBName = null;
-   }
+//   private RegistryManager()
+//   {  registryName = null;
+//      registryDBName = null;
+//   }
 
 //
 // -- Methods --------------------------------------------------------
@@ -339,7 +341,9 @@ public class RegistryManager
       catch (Exception all)
       {  returnDataItem = null;
 
-         if (DEBUG) all.printStackTrace();
+         if (DEBUG) 	logger.error("16thDecDebug"); 
+         all.printStackTrace();
+         
 
          MySpaceStatus exStatus = new MySpaceStatus(
            MySpaceStatusCode.AGMMCE00106, MySpaceStatusCode.ERROR,
@@ -857,7 +861,9 @@ public class RegistryManager
 
 //
 //      Establish a connection to the database.
-
+		logger.debug("RegistryDBName: " + registryDBName);
+		logger.debug("RegistryName: " + registryName);
+		
          Connection conn = DriverManager.getConnection(
            registryDBName, "sa", "");
 
