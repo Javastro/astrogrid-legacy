@@ -9,8 +9,6 @@
 	    <menu name="Overview">
 		  <item name="Information for Users" 
                 href="install.html"/>
-		  <item name="Information for Developers" 
-                href="developers.html"/>
 		  <item name="Latest news" 
                 href="http://news.astrogrid.org/"/>				
           <item name="About this documentation" 
