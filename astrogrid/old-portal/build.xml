@@ -2,10 +2,13 @@
 <!--
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/09 23:37:56 $</cvs:author>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/10 10:39:18 $</cvs:author>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.10  2003/06/10 10:39:18  dave
+    | Fixed bad URL in WSDL to Java task
+    |
     | Revision 1.9  2003/06/09 23:37:56  dave
     | Added type binding to mock MySpace and updated build file to remove hard coded localhost
     |
@@ -138,7 +141,7 @@
 	<property name="axis.servlet" value="axis"/>
 	<property name="axis.webapp"  value="${basedir}/build/axis/axis-1_1RC2/webapps/axis"/>
 
-	<property name="axis.host"   value="localhost"/>
+	<property name="axis.host"   value="tyrosine.codon.demon.co.uk"/>
 	<property name="axis.port"   value="8080"/>
 	<property name="axis.server" value="${axis.host}:${axis.port}"/>
 	<property name="axis.url"    value="http://${axis.server}/${axis.servlet}"/>
@@ -1011,6 +1014,9 @@
 
 	<!-- Generate the client stubs for our mock MySpace service -->
 	<target name="myspace.client.wsdl2java" depends="axis.tasks">
+		<echo message=""/>
+		<echo message="Creating client stubs from WSDL ...."/>
+		<echo message="URL : ${axis.url}/services/myspace"/>
 		<!-- Create our client directory -->
 		<mkdir dir="build/myspace/client/java"/>
 		<!-- Generate our client stubs -->
@@ -1019,7 +1025,7 @@
 			output="build/myspace/client/java"
 			url="${axis.url}/services/myspace?wsdl"
 			>
-			<mapping namespace="${axis.url}/axis/services/myspace" package="org.astrogrid.portal.mock.myspace.client"/>
+			<mapping namespace="${axis.url}/services/myspace" package="org.astrogrid.portal.mock.myspace.client"/>
 			<mapping namespace="http://service.myspace.mock.portal.astrogrid.org" package="org.astrogrid.portal.mock.myspace.client"/>
 		</axis.wsdl2java>
 	</target>
