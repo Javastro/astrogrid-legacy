@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.8 2004/07/01 22:37:47 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.9 2004/07/02 16:52:44 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,8 +24,8 @@ import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQueried;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
-import org.astrogrid.io.xml.XmlTagWriter;
-import org.astrogrid.io.xml.XmlWriter;
+import org.astrogrid.io.xml.XmlTagPrinter;
+import org.astrogrid.io.xml.XmlPrinter;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -195,15 +195,15 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          /** Alternative XmlWriter form */
          StringWriter sw = new StringWriter();
-         XmlWriter xw = new XmlWriter(sw);
+         XmlPrinter xw = new XmlPrinter(sw);
 
-         XmlTagWriter metaTag = xw.newTag("TabularMetadata");
+         XmlTagPrinter metaTag = xw.newTag("TabularMetadata");
 
          //get all tables
          ResultSet tables = metadata.getTables(null, null, "*", null);
 
          while (tables.next()) {
-            XmlTagWriter tableTag = metaTag.newTag("Table", "name='"+tables.getString("TABLE_NAME")+"'");
+            XmlTagPrinter tableTag = metaTag.newTag("Table", "name='"+tables.getString("TABLE_NAME")+"'");
             tableTag.writeTag("Description", tables.getString("REMARKS"));
             tableTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
             tableTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"' -->\n");
@@ -217,7 +217,7 @@ public class JdbcPlugin extends QuerierPlugin  {
             ResultSet columns = metadata.getColumns("*", "*", tables.getString("TABLE_NAME"), "*");
             
             while (columns.next()) {
-               XmlTagWriter colTag = tableTag.newTag("Column", "name='"+columns.getString("COLUMN_NAME")+"'");
+               XmlTagPrinter colTag = tableTag.newTag("Column", "name='"+columns.getString("COLUMN_NAME")+"'");
                colTag.writeComment("schema='"+tables.getString("TABLE_SCHEM")+"'");
                colTag.writeComment("cat='"+tables.getString("TABLE_CAT")+"' -->\n");
                colTag.writeComment("table='"+tables.getString("TABLE_NAME")+"'");
