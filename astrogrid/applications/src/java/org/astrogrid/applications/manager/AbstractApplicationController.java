@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.23 2004/04/22 15:18:00 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.24 2004/04/30 18:02:21 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,7 +23,9 @@ import javax.sql.DataSource;
 
 import org.apache.axis.description.ServiceDesc;
 import org.exolab.castor.xml.CastorException;
+import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
 
 import org.astrogrid.applications.CeaException;
@@ -35,6 +37,7 @@ import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.SimpleDescriptionLoader;
+import org.astrogrid.applications.description.registry.RegEntryBaseTestCase;
 import org.astrogrid.applications.description.registry.RegistryEntryBuilder;
 import org.astrogrid.applications.description.registry.RegistryUploader;
 import org.astrogrid.applications.manager.externalservices.MySpaceLocator;
@@ -136,21 +139,11 @@ public abstract class AbstractApplicationController
     */
    protected void register() {
       try {
-         ApplicationList applist = RegistryEntryBuilder.makeApplist(clconf);
-         // create the builder....
-         Unmarshaller um2 = new Unmarshaller(VODescription.class);
-         logger.info("using "+config.getRegistryTemplateURL()+ " as registry template");
-        InputStreamReader istream = new InputStreamReader(config.getRegistryTemplateURL().openStream());
-      
-         VODescription template = (VODescription)um2.unmarshal(istream);
          
          if (serviceDesc != null) { // if running within the axis container....
-            logger.info("registering the server to "+serviceDesc.getEndpointURL());
-            URL endpointURL = new URL(serviceDesc.getEndpointURL());
-            RegistryEntryBuilder builder =
-               new RegistryEntryBuilder(applist, template, endpointURL);
-            VODescription regEntry = builder.makeEntry();
-            RegistryUploader uploader =
+             URL endpoint = new URL(serviceDesc.getEndpointURL());
+             VODescription regEntry = createRegistryEntry(endpoint);
+             RegistryUploader uploader =
                new RegistryUploader(regEntry, registryAdminLocator);
             uploader.write();
          }
@@ -180,6 +173,26 @@ public abstract class AbstractApplicationController
          status.addError("Totally unknown error"); //TODO perhaps remove me...
          logger.error("Totally unknown problem creating registry entry", e);
       }
+   }
+   
+   VODescription createRegistryEntry(URL endpointURL) throws MarshalException, IndexOutOfBoundsException, ValidationException, IOException, MalformedURLException
+   {
+      ApplicationList applist = RegistryEntryBuilder.makeApplist(clconf);
+       // create the builder....
+       Unmarshaller um2 = new Unmarshaller(VODescription.class);
+      logger.info("using "+config.getRegistryTemplateURL()+ " as registry template");
+      InputStreamReader istream = new InputStreamReader(config.getRegistryTemplateURL().openStream());
+      
+       VODescription template = (VODescription)um2.unmarshal(istream);
+         
+       
+          logger.info("registering the server to "+serviceDesc.getEndpointURL());
+          
+          RegistryEntryBuilder builder =
+             new RegistryEntryBuilder(applist, template, endpointURL);
+          VODescription regEntry = builder.makeEntry();
+         return regEntry;
+       
    }
 
    /**
