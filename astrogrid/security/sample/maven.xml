@@ -19,5 +19,15 @@
     <mkdir dir="${basedir}/target/classes"/>
     <!-- JDepend fails if this dir is not present.  Hack to fix it. -->
   </preGoal>
+  
+  <goal name="whoAmI">
+    <java classname="org.astrogrid.security.sample.WhoAmITest"
+          classpath="${maven.dependency.classpath}"
+          fork="true">
+      <arg>Fred</arg>
+      <arg>secret</arg>
+      <arg>http://localhost:8080/astrogrid-security-sample-service-/services/security-sample</arg>
+    </java>
+  </goal>
 	
 </project>
