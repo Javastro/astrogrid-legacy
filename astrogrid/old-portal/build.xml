@@ -2,13 +2,16 @@
 <!--
 <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/old-portal/Attic/build.xml,v $</cvs:source>
 <cvs:date>$Author: dave $</cvs:date>
-<cvs:author>$Date: 2003/06/04 10:00:25 $</cvs:author>
-<cvs:version>$Revision: 1.5 $</cvs:version>
+<cvs:author>$Date: 2003/06/04 10:38:34 $</cvs:author>
+<cvs:version>$Revision: 1.6 $</cvs:version>
 <cvs:log>
 	$Log: build.xml,v $
+	Revision 1.6  2003/06/04 10:38:34  dave
+	Added Axis deployment tasks
+
 	Revision 1.5  2003/06/04 10:00:25  dave
 	Removed reference to lib directory
-
+	
 	Revision 1.4  2003/06/03 13:45:22  dave
 	Removed lib from classpath reference
 	
@@ -115,11 +118,14 @@
 	<property name="tomcat.manager.password" value="please"/>
 
 	<!-- Axis properties -->
-	<property name="axis.tar"     value="depends/axis/axis-1_1rc2.tar.gz"/>
-	<property name="axis.untar"   value="build/axis"/>
-	<property name="axis.build"   value="build/axis/axis-1_1RC2"/>
-	<property name="axis.url"     value="/axis"/>
+	<property name="axis.src"    value="depends/axis/axis-1_1rc2.tar.gz"/>
+	<property name="axis.build"  value="${basedir}/build/axis"/>
+	<property name="axis.home"   value="${basedir}/build/axis/axis-1_1RC2"/>
+	<property name="axis.base"   value="/axis"/>
 	<property name="axis.webapp" value="${basedir}/build/axis/axis-1_1RC2/webapps/axis"/>
+
+	<property name="axis.host"   value="localhost"/>
+	<property name="axis.port"   value="8080"/>
 
 	<!-- JAF properties -->
 	<property name="jaf.zip"   value="depends/jaf/jaf-1.0.2.zip"/>
@@ -240,7 +246,7 @@
 
 	<!-- Delete the Tomcat working files -->
 	<target name="tomcat.clean" depends="">
-		<delete verbose="true" includeEmptyDirs="true" failonerror="false">
+		<delete includeEmptyDirs="true" failonerror="false">
 			<fileset dir="${tomcat.home}/work" includes="**"/>
 			<fileset dir="${tomcat.home}/logs" includes="*"/>
 		</delete>
@@ -398,17 +404,42 @@
 
 	<!-- ================ Axis tasks ================ -->
 
+	<!-- Define the Tomcat manager tasks -->
+	<target name="axis.tasks" depends="">
+		<path id="axis.client.classpath">
+			<pathelement location="${axis.home}/lib/axis.jar"/>
+			<pathelement location="${axis.home}/lib/axis-ant.jar"/>
+			<pathelement location="${axis.home}/lib/jaxrpc.jar"/>
+			<pathelement location="${axis.home}/lib/commons-logging.jar"/>
+			<pathelement location="${axis.home}/lib/commons-discovery.jar"/>
+			<pathelement location="${axis.home}/lib/saaj.jar"/>
+		</path>
+		<taskdef name="axis.admin" classpathref="axis.client.classpath" classname="org.apache.axis.tools.ant.axis.AdminClientTask"/>
+	</target>
+
 	<!-- Delete the Axis build -->
 	<target name="axis.delete" depends="">
-		<delete dir="${axis.untar}" failonerror="false"/>
+		<delete dir="${axis.build}" failonerror="false"/>
 	</target>
 
 	<!-- Unpack the axis web-app --> 
 	<target name="axis.untar" depends="">
 		<!-- Unpack the Axis tar file -->
-		<untar src="${axis.tar}" dest="${axis.untar}" compression="gzip"/>
+		<untar src="${axis.src}" dest="${axis.build}" compression="gzip"/>
+	</target>
+
+	<!-- Deploy the axis services --> 
+	<target name="axis.service.install" depends="axis.tasks">
 		<!-- Copy the calculator example -->
-		<copy verbose="true" file="${axis.build}/samples/userguide/example2/Calculator.java" tofile="${axis.webapp}/Calculator.jws"/>
+		<copy verbose="true" file="${axis.home}/samples/userguide/example2/Calculator.java" tofile="${axis.webapp}/Calculator.jws"/>
+		<!-- Deploy the echo message example --> 
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="${axis.base}/services/AdminService"
+			debug="true"
+			xmlfile="${axis.home}/samples/message/deploy.wsdd"
+			/>
 	</target>
 
 	<!-- Install our Axis web-app -->
@@ -418,7 +449,7 @@
 			<http url="${tomcat.manager.url}"/>
 		</waitfor>
 		<!-- Install our web-app -->
-		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.url}" war="file://${axis.webapp}"/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}" war="file://${axis.webapp}"/>
 	</target>
 
 	<!-- Start the Axis web-app -->
@@ -428,7 +459,7 @@
 			<http url="${tomcat.manager.url}"/>
 		</waitfor>
 		<!-- Start our web-app -->
-		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.url}"/>
+		<tomcat.start username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
 	</target>
 
 	<!-- Stop the Axis web-app -->
@@ -438,7 +469,7 @@
 			<http url="${tomcat.manager.url}"/>
 		</waitfor>
 		<!-- Stop our web-app -->
-		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.url}"/>
+		<tomcat.stop username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
 	</target>
 
 	<!-- Reload the Axis web-app -->
@@ -448,7 +479,7 @@
 			<http url="${tomcat.manager.url}"/>
 		</waitfor>
 		<!-- Reload our web-app -->
-		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.url}"/>
+		<tomcat.reload username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
 	</target>
 
 	<!-- Remove the Axis web-app -->
@@ -458,7 +489,7 @@
 			<http url="${tomcat.manager.url}"/>
 		</waitfor>
 		<!-- Remove our web-app -->
-		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.url}"/>
+		<tomcat.remove username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="${axis.base}"/>
 	</target>
 
 	<!-- Build our Axis webapp from clean -->
@@ -663,7 +694,7 @@
 				    +-->
 				<!-- Install the Axis web-app -->
 				<echo message=""/>
-				<echo message="Installing Axis ...."/>
+				<echo message="Installing Axis webapp ...."/>
 				<antcall target="axis.webapp.install"/>
 
 				<!--+
@@ -672,12 +703,17 @@
 				    +-->
 				<!-- Wait for Axis to startup -->
 				<echo message=""/>
-				<echo message="Waiting for Axis ...."/>
+				<echo message="Waiting for Axis webapp ...."/>
 				<waitfor maxwait="60" maxwaitunit="second" checkevery="500">
 					<http url="${tomcat.home.url}/axis/happyaxis.jsp"/>
 				</waitfor>
 				<echo message=""/>
 				<echo message="Axis happy"/>
+
+				<!-- Install the Axis services -->
+				<echo message=""/>
+				<echo message="Installing Axis services ...."/>
+				<antcall target="axis.service.install"/>
 				<echo message=""/>
 				<echo message="Ok ... Astrogrid portal is running."/>
 
