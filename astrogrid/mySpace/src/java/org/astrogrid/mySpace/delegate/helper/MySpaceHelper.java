@@ -30,7 +30,7 @@ public class MySpaceHelper{
 	//Constructor
 	public MySpaceHelper (){}
 		
-    public String buildSave(String userid, String communityid, String fileName, String fileContent, String category, String action){
+    public String buildSave(String userid, String communityid, String credential, String fileName, String fileContent, String category, String action){
         String fileFullName = "/"+userid.trim()+"/"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
 		StringBuffer request = new StringBuffer() ;
 		try {		
@@ -43,9 +43,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 			
-			request.append("<jobID>");
-			request.append("UPLOAD");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 
 			request.append("<fileContent>") ;
 			request.append(fileContent) ;
@@ -67,7 +67,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}
 	
-	public String buildSaveURL(String userid, String communityid, String fileName, String importURL, String category, String action){
+	public String buildSaveURL(String userid, String communityid, String credential, String fileName, String importURL, String category, String action){
 		String fileFullName = "/"+userid.trim()+"/"+communityid.trim()+"/serv1/"+category.toLowerCase().trim()+"/"+fileName.trim();
 		StringBuffer request = new StringBuffer() ;
 		try {		
@@ -80,9 +80,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 			
-			request.append("<jobID>");
-			request.append("UPLOAD");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 
 			request.append("<importURL>") ;
 			request.append(importURL) ;
@@ -104,7 +104,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}
 	
-	public String buildDownload(String userid, String communityid, String fullFileName){
+	public String buildDownload(String userid, String communityid, String credential, String fullFileName){
 		StringBuffer request = new StringBuffer() ;
 		try {		
 			request.append("<request>") ;
@@ -116,9 +116,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 			
-			request.append("<jobID>");
-			request.append("DOWNLOAD");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 
 			request.append("<serverFileName>") ;
 			request.append(fullFileName) ;
@@ -133,7 +133,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}
 	
-	public String buildListDataHoldings(String userid, String communityid, String criteria){
+	public String buildListDataHoldings(String userid, String communityid, String credential, String criteria){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -146,9 +146,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 				
-			request.append("<jobID>");
-			request.append("LOOKUPDATAHOLDERsDETAILS");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<query>") ;
 			request.append(criteria) ;
@@ -164,7 +164,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}
 	
-	public String buildListDataHolding(String userid, String communityid, String serverFileName){
+	public String buildListDataHolding(String userid, String communityid, String credential, String serverFileName){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -177,9 +177,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 				
-			request.append("<jobID>");
-			request.append("LOOKUPDATAHOLDERDETAILS");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -195,7 +195,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}	
 	
-	public String buildCopy(String userid, String communityid, String serverFileName, String newDataHolderName){
+	public String buildCopy(String userid, String communityid, String credential, String serverFileName, String newDataHolderName){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -208,9 +208,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 				
-			request.append("<jobID>");
-			request.append("COPY");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -230,7 +230,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}	
 	
-	public String buildDelete(String userid, String communityid, String serverFileName){
+	public String buildDelete(String userid, String communityid, String credential, String serverFileName){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -243,9 +243,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 				
-			request.append("<jobID>");
-			request.append("DELETE");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -261,7 +261,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}	
 	
-	public String buildRename(String userid, String communityid, String serverFileName, String newDataHolderName){
+	public String buildRename(String userid, String communityid, String credential, String serverFileName, String newDataHolderName){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -274,9 +274,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 				
-			request.append("<jobID>");
-			request.append("RENAME");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -296,7 +296,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}	
 	
-	public String buildExtendlease(String userid, String communityid, String serverFileName, int extentionPeriod){
+	public String buildExtendlease(String userid, String communityid, String credential, String serverFileName, int extentionPeriod){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -309,9 +309,9 @@ public class MySpaceHelper{
 			request.append(communityid);
 			request.append("</communityID>");
 				
-			request.append("<jobID>");
-			request.append("EXTENDLEASE");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<serverFileName>") ;
 			request.append(serverFileName) ;
@@ -331,7 +331,7 @@ public class MySpaceHelper{
 		return request.toString();
 	}	
 	
-	public String buildContainer(String userid, String communityid, String newContainerName){
+	public String buildContainer(String userid, String communityid, String credential, String newContainerName){
 		StringBuffer request = new StringBuffer() ;
 		Vector vector = new Vector();
 		try {		
@@ -343,9 +343,9 @@ public class MySpaceHelper{
 			request.append("<communityID>") ;
 			request.append(communityid);
 			request.append("</communityID>");
-			request.append("<jobID>");
-			request.append("BUILDCONTAINER");
-			request.append("</jobID>");
+			request.append("<credential>");
+			request.append(credential);
+			request.append("</credential>");
 	
 			request.append("<newContainerName>") ;
 			request.append(newContainerName) ;

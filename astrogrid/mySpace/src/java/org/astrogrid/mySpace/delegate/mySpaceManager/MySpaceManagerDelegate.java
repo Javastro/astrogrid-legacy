@@ -179,14 +179,14 @@ public class MySpaceManagerDelegate {
  * containing the MySpace names which matched the query.
  */
  
-    public Vector listDataHoldings(String userId, String communityId, 
+    public Vector listDataHoldings(String userId, String communityId, String credential,
       String query)throws Exception {
         Vector returnList = new Vector();
         if (DEBUG) System.out.println("listDataholdings..."+userId +":   :"+communityId+": query:"+query);
         try {
             for (int loop = 0; loop<queryMssUrl.size(); loop++) {
                 String currentResponse = this.internalDataHoldings(
-                  userId, communityId, query,
+                  userId, communityId, credential, query,
                   (String)queryMssUrl.elementAt(loop) );
                 MySpaceHelper helper = new MySpaceHelper();
 				if (DEBUG) System.out.println("currentResponse from internalDataHoldings: "+currentResponse);
@@ -233,7 +233,7 @@ public class MySpaceManagerDelegate {
  *which matched the query.
  */
 
-    public Vector listDataHoldingsGen(String userId, String communityId, 
+    public Vector listDataHoldingsGen(String userId, String communityId, String credential,
       String query)throws Exception {
       	System.out.println("xxxxxxxxxxxxxxxxx");
         Vector returnList = new Vector();
@@ -244,7 +244,7 @@ public class MySpaceManagerDelegate {
             	
 				System.out.println("before call internalDataHoldings "+ userId +"  :"+communityId +"  query: "+query);
                 String currentResponse = this.internalDataHoldings(
-                  userId, communityId, query,
+                  userId, communityId, credential, query,
                   (String)queryMssUrl.elementAt(loop) );
                   System.out.println("yyyyyyyy"+(String)queryMssUrl.elementAt(loop) );
 
@@ -274,7 +274,7 @@ public class MySpaceManagerDelegate {
      * @return
      * @throws Exception
      */
-    public String listDataHolding(String userId, String communityId, String serverFileName) throws Exception {
+    public String listDataHolding(String userId, String communityId, String credential, String serverFileName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -287,7 +287,7 @@ public class MySpaceManagerDelegate {
         
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildListDataHolding(userId, communityId, serverFileName);
+            String jobDetails = helper.buildListDataHolding(userId, communityId, credential, serverFileName);
             value = binding.lookupDataHolderDetails(jobDetails);
         }catch(java.rmi.RemoteException re) {
                     re.printStackTrace();
@@ -306,7 +306,7 @@ public class MySpaceManagerDelegate {
      * @return
      * @throws Exception
      */
-    public String copyDataHolding(String userId, String communityId, String serverFileName, String newDataItemName) throws Exception {
+    public String copyDataHolding(String userId, String communityId, String credential, String serverFileName, String newDataItemName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -318,7 +318,7 @@ public class MySpaceManagerDelegate {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildCopy(userId, communityId, serverFileName, newDataItemName);
+            String jobDetails = helper.buildCopy(userId, communityId, credential, serverFileName, newDataItemName);
             value = binding.copyDataHolder(jobDetails);
         }catch(java.rmi.RemoteException re) {
         re.printStackTrace();
@@ -345,7 +345,7 @@ public class MySpaceManagerDelegate {
  * @throws Exception
  */
 
-    public boolean copyRemoteDataHolding(String userId, String communityId,
+    public boolean copyRemoteDataHolding(String userId, String communityId, String credential,
       String remoteMssUrl, String remoteMySpaceName,
       String newMySpaceName) throws Exception {
         boolean isSaved = false;
@@ -374,7 +374,7 @@ public class MySpaceManagerDelegate {
         try{
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails =
-              helper.buildDownload(userId, communityId, remoteMySpaceName);
+              helper.buildDownload(userId, communityId, credential, remoteMySpaceName);
             remoteURL = binding.exportDataHolder(jobDetails);
         }catch(java.rmi.RemoteException re) {
             re.printStackTrace();
@@ -409,7 +409,7 @@ public class MySpaceManagerDelegate {
             try{
                 MySpaceHelper helper = new MySpaceHelper();
                 String jobDetails = helper.buildSaveURL(userId,
-                  communityId,  newMySpaceName, remoteURL, " ", " ");
+                  communityId, credential, newMySpaceName, remoteURL, " ", " ");
                 binding.upLoadURL(jobDetails);
                 isSaved = true;
             }catch(java.rmi.RemoteException re) {
@@ -433,7 +433,7 @@ public class MySpaceManagerDelegate {
      * @throws Exception
      */    
  
-    public String renameDataHolding(String userId, String communityId, String serverFileName, String newDataItemName) throws Exception {
+    public String renameDataHolding(String userId, String communityId, String credential, String serverFileName, String newDataItemName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -446,7 +446,7 @@ public class MySpaceManagerDelegate {
 
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildRename(userId, communityId, serverFileName, newDataItemName);
+            String jobDetails = helper.buildRename(userId, communityId, credential, serverFileName, newDataItemName);
             value = binding.moveDataHolder(jobDetails);
         }catch(java.rmi.RemoteException re) {
                     re.printStackTrace();
@@ -465,7 +465,7 @@ public class MySpaceManagerDelegate {
      * @return
      * @throws Exception
      */
-    public String deleteDataHolding(String userId, String communityId, String serverFileName) throws Exception {
+    public String deleteDataHolding(String userId, String communityId, String credential, String serverFileName) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -478,7 +478,7 @@ public class MySpaceManagerDelegate {
         
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildDelete(userId, communityId, serverFileName);
+            String jobDetails = helper.buildDelete(userId, communityId, credential, serverFileName);
             value = binding.deleteDataHolder(jobDetails);
         }catch(java.rmi.RemoteException re) {
                 re.printStackTrace();
@@ -499,7 +499,7 @@ public class MySpaceManagerDelegate {
     * @return: boolean true if file successfully stored in MySapce false otherwise.
     */
     
-    public boolean saveDataHolding(String userId, String communityId, String fileName, String fileContent, 
+    public boolean saveDataHolding(String userId, String communityId, String credential, String fileName, String fileContent, 
                                    String category, String action) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         boolean isSaved = false;
@@ -516,7 +516,7 @@ public class MySpaceManagerDelegate {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildSave(userId, communityId, fileName, fileContent, category, action);
+            String jobDetails = helper.buildSave(userId, communityId, credential, fileName, fileContent, category, action);
             binding.upLoad(jobDetails);
             isSaved = true;
         }catch(java.rmi.RemoteException re) {
@@ -541,7 +541,7 @@ public class MySpaceManagerDelegate {
      * @throws Exception
      */
     
-    public boolean saveDataHoldingURL(String userId, String communityId, String fileName, String importURL, 
+    public boolean saveDataHoldingURL(String userId, String communityId, String credential, String fileName, String importURL, 
                                    String category, String action) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         boolean isSaved = false;
@@ -558,7 +558,7 @@ public class MySpaceManagerDelegate {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildSaveURL(userId, communityId, fileName, importURL, category, action);
+            String jobDetails = helper.buildSaveURL(userId, communityId, credential, fileName, importURL, category, action);
             binding.upLoadURL(jobDetails);
             isSaved = true;
         }catch(java.rmi.RemoteException re) {
@@ -582,7 +582,7 @@ public class MySpaceManagerDelegate {
  *
  * @return: A String containing the contents of the specified dataHolder.
  */
-    public String getDataHolding(String userId, String communityId,
+    public String getDataHolding(String userId, String communityId, String credential,
       String mySpaceName) throws Exception {
         String contents = null;
         org.astrogrid.mySpace.delegate.mySpaceManager.
@@ -612,7 +612,7 @@ public class MySpaceManagerDelegate {
         try{
             MySpaceHelper helper = new MySpaceHelper();
             String jobDetails = helper.buildDownload(userId,
-              communityId, mySpaceName);
+              communityId, credential, mySpaceName);
             dataHolderUrl = binding.exportDataHolder(jobDetails);
             if (dataHolderUrl != null) {
                isOk = true;
@@ -661,7 +661,7 @@ public class MySpaceManagerDelegate {
      * @return
      * @throws Exception
      */
-    public String extendLease(String userId, String communityId, String serverFileName, int extentionPeriod) throws Exception {
+    public String extendLease(String userId, String communityId, String credential, String serverFileName, int extentionPeriod) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -674,7 +674,7 @@ public class MySpaceManagerDelegate {
 
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildExtendlease(userId, communityId, serverFileName, extentionPeriod);
+            String jobDetails = helper.buildExtendlease(userId, communityId, credential, serverFileName, extentionPeriod);
             value = binding.extendLease(jobDetails);
         }catch(java.rmi.RemoteException re) {
                 re.printStackTrace();
@@ -720,7 +720,7 @@ public class MySpaceManagerDelegate {
      * @param newContainerName
      * @return
      */
-    public String createContainer(String userId, String communityId, String newContainerName)throws Exception {
+    public String createContainer(String userId, String communityId, String credential, String newContainerName)throws Exception {
     //public String createFolder(String jobDetails) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
@@ -733,7 +733,7 @@ public class MySpaceManagerDelegate {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildContainer(userId, communityId, newContainerName);
+            String jobDetails = helper.buildContainer(userId, communityId, credential, newContainerName);
             value = binding.createContainer(jobDetails);
         }catch(java.rmi.RemoteException re) {
                 re.printStackTrace();
@@ -755,7 +755,7 @@ public class MySpaceManagerDelegate {
  * @throws Exception
  */
 
-    public boolean createUser(String userId, String communityId, Vector servers) throws Exception {
+    public boolean createUser(String userId, String communityId, String credential, Vector servers) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         boolean isUserCreated = false;
         try {
@@ -787,7 +787,7 @@ public class MySpaceManagerDelegate {
  * @throws Exception
  */
     
-    public boolean deleteUser(String userId, String communityId) throws Exception {
+    public boolean deleteUser(String userId, String communityId, String credential) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         boolean isUserDeleted = false;
         try {
@@ -818,7 +818,7 @@ public class MySpaceManagerDelegate {
      * @return
      * @throws Exception
      */
-    public String changeOwner(String userId, String communityId, String dataHolderName,String newOwnerID) throws Exception {
+    public String changeOwner(String userId, String communityId, String credential, String dataHolderName,String newOwnerID) throws Exception {
         org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub binding = null;
         try {
             binding = (org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerSoapBindingStub)
@@ -842,7 +842,7 @@ public class MySpaceManagerDelegate {
 // ==========================================================================
 
     private String internalDataHoldings(String userId,
-      String communityId, String criteria, String currentURL)
+      String communityId, String credential, String criteria, String currentURL)
       throws Exception {
 
         String response = null;
@@ -859,7 +859,7 @@ public class MySpaceManagerDelegate {
         }
         try{
             MySpaceHelper helper = new MySpaceHelper();
-            String jobDetails = helper.buildListDataHoldings(userId, communityId, criteria);
+            String jobDetails = helper.buildListDataHoldings(userId, communityId, credential, criteria);
             response = binding.lookupDataHoldersDetails(jobDetails);
             
         }   
