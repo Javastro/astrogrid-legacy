@@ -1,4 +1,4 @@
-/*$Id: XStreamPickler.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: XStreamPickler.java,v 1.3 2004/08/05 07:39:37 nw Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,19 +25,20 @@ import java.io.Writer;
  */
 public class XStreamPickler implements Pickler {
 
-    /** Construct a new XStreamPickler
-     * 
+
+    /** made xstream static, for efficiencies sake - don't know how expensive it is to create this object,
+     * but only one instance is ever needed, and is only ever called from the scheduler thread.
      */
-    public XStreamPickler() {
+    protected final static XStream xstream;
+    static {
         xstream = new XStream(new PureJavaReflectionProvider(),new DomDriver());
         xstream.alias("interpreter",GroovyInterpreter.class);
         xstream.alias("rules",RuleStore.class);
         xstream.alias("rule",Rule.class);
         xstream.alias("state",ActivityStatus.class);
         xstream.alias("states",ActivityStatusStore.class);
-        xstream.alias("vars",Vars.class);
+        xstream.alias("vars",Vars.class);        
     }
-    protected final XStream xstream;
 
     /**
      * @see org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory.Pickler#marshallInterpreter(java.io.Writer, org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreter)
@@ -65,6 +66,9 @@ public class XStreamPickler implements Pickler {
 
 /* 
 $Log: XStreamPickler.java,v $
+Revision 1.3  2004/08/05 07:39:37  nw
+made xstream static for same reasons
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 
