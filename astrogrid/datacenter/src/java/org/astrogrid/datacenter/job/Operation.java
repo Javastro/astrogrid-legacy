@@ -15,6 +15,11 @@ import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Iterator ;
+
+
 /**
  * The <code>Operation</code> class represents operations within an 
  * SQL query string.
@@ -43,13 +48,13 @@ public class Operation {
 		ASTROGRIDERROR_COULD_NOT_dosomething = "AGDTCE00???" ;	
 		
     private String
-        name ;
+        name = null ;
 		
-	private Field []
-	    fields ;
+	private List
+	    fields = new ArrayList() ;
 	    
-	private Operation []
-	    subservientOperations ;
+	private List
+	    subservientOperations = new ArrayList() ;
 	    
 	private Catalog
 	    catalog;    
@@ -71,13 +76,10 @@ public class Operation {
 				
 			this.catalog = catalog;				
 				
-		    subservientOperations = new Operation[ nodeList.getLength() ];
-
-			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				opElement = (Element) nodeList.item(i) ;				
 				if( opElement.getTagName().equals( RunJobRequestDD.OP_ELEMENT ) ) {
-					subservientOperations[i] = new Operation( opElement , catalog) ;
+					subservientOperations.add ( new Operation( opElement , catalog) ) ;
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -86,12 +88,11 @@ public class Operation {
 			} // end for		
 			
 			nodeList = operationElement.getElementsByTagName( RunJobRequestDD.FIELD_ELEMENT ) ;
-			fields = new Field[ nodeList.getLength() ];
 			   
 			for( int i=0 ; i < nodeList.getLength() ; i++ ) {				
 				fieldElement = (Element) nodeList.item(i) ;
 				if( fieldElement.getTagName().equals( RunJobRequestDD.FIELD_ELEMENT ) ) {
-					fields[i] = new Field( fieldElement, catalog ) ;						
+					fields.add( new Field( fieldElement, catalog ) ) ;						
 				}
 				else  {
 					; // JBL Note: What do I do here?
@@ -113,32 +114,21 @@ public class Operation {
 	} // end of Operation( Element )
 	
 
-	public void setFields(Field[] fields) {
-		this.fields = fields;
-	}
+	public Iterator getFields() { return this.fields.iterator() ; }
+	public boolean addField( Field field ) { return this.fields.add( field ); }
+	public Field removeField( int index ) { return (Field)this.fields.remove( index ) ; }
+	public Field getField( int index ) { return (Field)this.fields.get( index ) ; }
+	public int getNumberFields() { return this.fields.size() ; }
 
-	public Field[] getFields() {
-		return fields;
-	}
+	public Iterator getOperations() { return this.subservientOperations.iterator() ; }
+	public boolean addOperation( Operation operation ) { return this.subservientOperations.add( operation ); }
+	public Operation removeOperation( int index ) { return (Operation)this.subservientOperations.remove( index ) ; }
+	public Operation getOperation( int index ) { return (Operation)this.subservientOperations.get( index ) ; }
+	public int getNumberOperations() { return this.subservientOperations.size() ; }
 
-	public void setOperations(Operation[] operations) {
-		this.subservientOperations = operations ;
-	}
-
-	public Operation[] getOperations() {
-		return subservientOperations ;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
+	public void setName(String name) { this.name = name; }
+	public String getName() { return name; }
 	
-	public Catalog getCatalog() {
-		return catalog;
-	}
+	public Catalog getCatalog() { return catalog; }
 	
 } // end of class Operation

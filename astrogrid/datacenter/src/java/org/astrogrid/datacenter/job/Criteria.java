@@ -14,6 +14,9 @@ import org.apache.log4j.Logger;
 import org.astrogrid.datacenter.datasetagent.*;
 import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
+
+import java.util.ArrayList ;
+import java.util.List ;
 import java.util.Iterator ;
 
 import java.text.MessageFormat;
@@ -112,194 +115,222 @@ public class Criteria {
 	public String toSQLString() {		
 		if( TRACE_ENABLED ) logger.debug( "Criteria.toSQLString(): entry") ;
    		
-		    StringBuffer
-		        buffer = new StringBuffer(64) ;		    
-		    Operation 
-		        operation = this.getOperation();		    
-		    Operation[] 
-		        subserviantOperations = operation.getOperations();
+		StringBuffer
+		    buffer = new StringBuffer(64) ;		    
+		Operation 
+		    operation = this.getOperation();
 		    
-		    if (subserviantOperations.length <= 1) {
-			    subserviantOperations = new Operation[1];
-			    subserviantOperations[0] = operation;
-		    } // end of if	
+		Object[] 
+			inserts ;
+			
+		List
+            opsList = null ;
+                 
+        Iterator
+		    subserviantOperations = operation.getOperations(),
+		    fields = null;
 		    
-		try {			    					
-		    for (int i=0; i < subserviantOperations.length; i++ ) {			
+		Field
+		    field = null ;
+		    
+		if ( operation.getNumberOperations() <= 1 ) {
+			
+			opsList = new ArrayList() ;
+			opsList.add( operation ) ;
+			subserviantOperations = opsList.iterator() ;
+			
+		} // end of if	
+		    
+		try {	
+				
+			while( subserviantOperations.hasNext() ) {		    					
+			
+		  //  for (int i=0; i < subserviantOperations.length; i++ ) {			
 			    Operation 
-			        subserviantOperation = subserviantOperations[i];
+			        subserviantOperation = (Operation) subserviantOperations.next() ;
 			    String 
 			        subOpName = subserviantOperation.getName();
 			    catalog = subserviantOperation.getCatalog();
 
 				if (subOpName.equals(RunJobRequestDD.OP_NAME_NOT)) {
 					buffer.append(" !");
+					continue ;
+					/*
 					Operation[] 
 					    tempOperation = subserviantOperation.getOperations();
 					subserviantOperations[i] = tempOperation[0];
 					subserviantOperation = subserviantOperations[i];
-					subOpName = subserviantOperation.getName();						
+					subOpName = subserviantOperation.getName();		
+					*/				
 				} //end of not
 
 				
 			    if ( subOpName.equals( RunJobRequestDD.OP_NAME_AVERAGE )) {
-						Object[] 
-							inserts = new Object[1];
-						Field 
-							fields[] = subserviantOperation.getFields();
-						if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-						inserts[0] = getColumnHeading(catalog,fields[0].getName());	
-						}
-						else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-							inserts[0] = fields[0].getName();
-						}
-						buffer.append(MessageFormat.format( OP_NAME_AVERAGE_TEMPLATE, inserts ));	
+			    	
+					inserts = new Object[1];
+					fields = subserviantOperation.getFields();
+					field = (Field)fields.next() ;
+					if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					    inserts[0] = getColumnHeading( catalog,field.getName() ) ;	
+					}
+					else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName() ;
+					}
+					buffer.append(MessageFormat.format( OP_NAME_AVERAGE_TEMPLATE, inserts ));
+						
 			    } // end of else if AVERAGE
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_CONE)) {
-				    Object[] 
-				        inserts = new Object[3];
-				    Field 
-				        fields[] = subserviantOperation.getFields();
-				    for (int k = 0; k < fields.length; k++) {
-					    if (fields[k].getName().equals("RA"))
-					        inserts[0] = fields[k].getValue();
-					    if (fields[k].getName().equals("DEC"))
-						    inserts[1] = fields[k].getValue();
-					    if (fields[k].getName().equals("RADIUS"))
-						    inserts[2] = fields[k].getValue();
-				    } // end of for
+			    	
+				    inserts = new Object[3] ;
+				    fields = subserviantOperation.getFields();
+				    while( fields.hasNext() ) {
+				    	field = (Field)fields.next() ;
+					    if (field.getName().equals("RA"))
+					        inserts[0] = field.getValue();
+					    if (field.getName().equals("DEC"))
+						    inserts[1] = field.getValue();
+					    if (field.getName().equals("RADIUS"))
+						    inserts[2] = field.getValue();
+				    } // end of while
 				    buffer.append(MessageFormat.format( OP_NAME_CONE_TEMPLATE, inserts ));
+				    
 			    } // end of else if CONE
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_DIFFERENCE)) {
-					Object[] 
-						inserts = new Object[1];
-					Field 
-						fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
+			    	
+					inserts = new Object[1];
+					fields = subserviantOperation.getFields();
+					field = (Field)fields.next() ;
+					if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					inserts[0] = getColumnHeading(catalog,field.getName());	
 					}
-					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-						inserts[0] = fields[0].getName();
+					else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName();
 					}
-					buffer.append(MessageFormat.format( OP_NAME_DIFFERENCE, inserts ));							
+					buffer.append(MessageFormat.format( OP_NAME_DIFFERENCE, inserts ));
+												
 			    } // end of else if DIFFERENCE
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_EQUALS)) {
-				    Object[] 
-				        inserts = new Object[2];
-				    Field 
-				        fields[] = subserviantOperation.getFields();				    
-				    if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-						inserts[0] = getColumnHeading(catalog,fields[0].getName());	
+			    	
+				    inserts = new Object[2];
+				    fields = subserviantOperation.getFields();
+				    field = (Field)fields.next() ;				    
+				    if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+						inserts[0] = getColumnHeading(catalog,field.getName());	
 				    }
-				    else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-						inserts[0] = fields[0].getName();
+				    else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName();
 				    }
-				    inserts[1] = fields[1].getValue();
+				    inserts[1] = ((Field)fields.next()).getValue();
 				    buffer.append(MessageFormat.format( OP_NAME_EQUALS_TEMPLATE, inserts )); 
 			    } // end of else if EQUALS
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_GT)) {
-				    Object[] 
-				        inserts = new Object[2];
-				    Field 
-				        fields[] = subserviantOperation.getFields();
-				    inserts[0] = fields[0].getName();
-					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
+			    	
+				    inserts = new Object[2];
+				    fields = subserviantOperation.getFields();
+				    field = (Field)fields.next() ;
+				    inserts[0] = field.getName();
+					if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					    inserts[0] = getColumnHeading(catalog,field.getName());	
 					}
-					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-						inserts[0] = fields[0].getName();
+					else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName();
 					}
-				    inserts[1] = fields[1].getValue();
+				    inserts[1] = ((Field)fields.next()).getValue();
 				    buffer.append(MessageFormat.format( OP_NAME_GT_TEMPLATE, inserts ));
+				    
 			    } // end of else if GT
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_GTE)) {
-				    Object[] 
-				        inserts = new Object[2];
-				    Field 
-				        fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
+				    
+				    inserts = new Object[2];
+				    fields = subserviantOperation.getFields();
+				    field = (Field)fields.next() ;
+					if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					    inserts[0] = getColumnHeading(catalog,field.getName());	
 					}
-					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-						inserts[0] = fields[0].getName();
+					else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName();
 					}
-				    inserts[1] = fields[1].getValue();
+				    inserts[1] = ((Field)fields.next()).getValue();
 				    buffer.append(MessageFormat.format( OP_NAME_GTE_TEMPLATE, inserts ));
+				    
 			    } // end of else if GTE
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_IN)) {
-				    Object[] 
-				        inserts = new Object[2];
-				    Field 
-				        fields[] = subserviantOperation.getFields();
-				    inserts[0] = fields[0].getName();
-				    inserts[1] = fields[1].getName();
+				    
+                    inserts = new Object[2];
+				    fields = subserviantOperation.getFields();
+				    inserts[0] = ((Field)fields.next()).getName() ;
+				    inserts[1] = ((Field)fields.next()).getName() ;
 				    buffer.append(MessageFormat.format( OP_NAME_IN_TEMPLATE, inserts ));
+				    
 			    } // end of else if IN
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_LT)) {
-				    Object[] 
-				        inserts = new Object[2];
-				    Field 
-				        fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
+			    	
+				    inserts = new Object[2];
+				    fields = subserviantOperation.getFields();
+					field = (Field)fields.next() ;
+					
+					if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					    inserts[0] = getColumnHeading(catalog,field.getName());	
 					}
-					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-						inserts[0] = fields[0].getName();
+					else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName();
 					}
-				    inserts[1] = fields[1].getValue();
+				    inserts[1] = ((Field)fields.next()).getValue();
 				    buffer.append(MessageFormat.format( OP_NAME_LT_TEMPLATE, inserts ));
+				    
 			    } // end of else if LT
 			    
 			    
 			    else if ( subOpName.equals( RunJobRequestDD.OP_NAME_LTE)) {
-				    Object[] 
-				        inserts = new Object[2];
-				    Field 
-				        fields[] = subserviantOperation.getFields();
-					if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
-					inserts[0] = getColumnHeading(catalog,fields[0].getName());	
+				    
+				    inserts = new Object[2];
+				    fields = subserviantOperation.getFields();
+				    field = (Field)fields.next() ;
+				    
+					if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_UCD)) {
+					    inserts[0] = getColumnHeading(catalog,field.getName());	
 					}
-					else if (fields[0].getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
-						inserts[0] = fields[0].getName();
+					else if (field.getType().equals(RunJobRequestDD.FIELD_TYPE_COLUMN)) {
+						inserts[0] = field.getName();
 					}
-				    inserts[1] = fields[1].getValue();
+				    inserts[1] = ((Field)fields.next()).getValue();
 				    buffer.append(MessageFormat.format( OP_NAME_LTE_TEMPLATE, inserts ));
+				    
 			    } // end of else if LTE
 			    
 			    
 			    else {
-				    logger.debug("Unsupported query");
+			    	
+					Message
+						message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_CRITERIA, subOpName ) ;
+					logger.error( message.toString() ) ;
+				    throw new UnsupportedOperationException( message.toString() ) ;
+				    
 			    } // end of else
 			    
 			    buffer.append(" ");
 			    buffer.append(operation.getName());
 			    buffer.append(" ");
 			
-		    } // end for
+		    } // end while
 		    			
 			buffer.delete(buffer.length()-(operation.getName().length() + 2), buffer.length()); // remove trailing operation
 		    
    		} // end of try
-   		catch (Exception ex) {
-			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_SQL_FOR_CRITERIA ) ;
-			logger.error( message.toString(), ex ) ;
-		}
-		
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "Criteria.toSQLString(): exit") ;
 		}
@@ -374,14 +405,10 @@ public class Criteria {
 			if( TRACE_ENABLED ) logger.debug( "getColumnHeading(): exit") ;
 		}
 		return (columnHeading=="")?UCD:columnHeading;
+		
 	} // end of getColumnHeading()
 
-	public void setOperation(Operation operation) {
-		this.operation = operation;
-	}
-
-	public Operation getOperation() {
-		return operation;
-	}	
+	public void setOperation(Operation operation) { this.operation = operation; }
+	public Operation getOperation() { return operation; }	
 		
 } // end of class Criteria 
