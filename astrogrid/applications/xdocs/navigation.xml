@@ -8,7 +8,9 @@
     	<item name="Workgroup" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationIntegrationItn04" />
     	<item name="Component Description" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ApplicationsIntegration" />
     	<item name="UML Design" href="http://www.astrogrid.org/maven/design/applications/" />   
-    	<item name="Schema"  href=""/>	
+    	<item name="Schema"  href="http://www.astrogrid.org/viewcvs/astrogrid/applications/schema/"/>
+     	<item name="Parameter Schema Documentation"  href="http://www.astrogrid.org/schema/documentation/AGParameterDefinition/"/>
+    		
     </menu>
     <links>
        <item name="AstroGrid"  href="http://www.astrogrid.org"/>
