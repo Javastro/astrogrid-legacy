@@ -8,7 +8,8 @@ import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
-
+import org.exolab.castor.types.Date;
+import org.exolab.castor.types.Time;
 
 /**
  * A SOAP-header element matching the WS-Security specification of OASIS.
@@ -76,26 +77,54 @@ public class WsseHeaderElement {
                                                      "UsernameToken",
                                                      "wsse",
                                                      this.WsseNamespace);
+
+    // Add a Nonce, generated randomly here.
+    String nonceValue = "123456789"; // @TODO: generate a proper nonce.
+    SOAPElement nonce = this.addChildElement(se,
+                                             usernameToken,
+                                             "Nonce",
+                                             "wsse",
+                                             this.WsseNamespace);
+    nonce.addTextNode(nonceValue);
+
+    // Add a creation timestamp.
+    java.util.Date d = new java.util.Date();
+    Date date = new Date(d);
+    Time time = new Time(d.getTime());
+    //String createdValue = date.toString() + time.toString();
+    SOAPElement created = this.addChildElement(se,
+                                               usernameToken,
+                                               "Created",
+                                               "wsse",
+                                               this.WsseNamespace);
+    created.addTextNode(createdValue);
+
     // Add the actual username to the token.
-    String un = this.guard.getUsername();
-    if (un != null) {
+    String usernameValue = this.guard.getUsername();
+    if (usernameValue != null) {
       SOAPElement username = this.addChildElement(se,
                                                   usernameToken,
                                                   "Username",
                                                   "wsse",
                                                   this.WsseNamespace);
-      username.addTextNode(un);
+      username.addTextNode(usernameValue);
     }
 
-    // Add the password to the token.
-    String pw = this.guard.getPassword();
-    if (pw != null) {
-      SOAPElement username = this.addChildElement(se,
+    // Add the password to the token.  If password hashing is turned on,
+    // concatenate the password with the nonce and timestamp and hash the
+    // result.
+    String passwordValue = this.guard.getPassword();
+    if (passwordValue != null) {
+     SOAPElement password = this.addChildElement(se,
                                                   usernameToken,
                                                   "Password",
                                                   "wsse",
                                                   this.WsseNamespace);
-      username.addTextNode(pw);
+     if (this.guard.isPasswordHashing()) {
+       // @TODO: add hashing algorithm.
+       // @TODO: add type attribute to password element.
+     }
+     password.addTextNode(passwordValue);
     }
 
   }
