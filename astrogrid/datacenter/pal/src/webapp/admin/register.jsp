@@ -32,7 +32,7 @@
   You can send the Registry details from this datacenter to a remote Registry using this form:
          <form action="Register" method="POST">
           <p>
-            Registry URL <input type="text" name="RegistryUrl"/>
+            Registry URL <input type="text" name="RegistryUrl" size="60"/>
             (leave blank to register at <%= SimpleConfig.getSingleton().getString(RegistryDelegateFactory.ADMIN_URL_PROPERTY, "[WARNING: Property "+RegistryDelegateFactory.ADMIN_URL_PROPERTY+" not set]") %>)<br />
           </p>
            <p>
