@@ -1,5 +1,5 @@
 /*
- * $Id: ServletHelper.java,v 1.4 2004/10/12 23:09:53 mch Exp $
+ * $Id: ServletHelper.java,v 1.5 2004/10/13 01:01:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -157,7 +157,7 @@ public class ServletHelper
    public static String exceptionAsHtmlPage(String title, Throwable th, String details) {
       return
          "<html>\n"+
-         "<head><title>ERROR: "+title+"</title></head>\n"+
+         "<head><title>ERROR: "+makeSafeForHtml(title)+"</title></head>\n"+
          "<body>\n"+
          exceptionAsHtml(title, th, details)+
          "</body>\n"+
@@ -169,7 +169,7 @@ public class ServletHelper
 
       String s =
          "<h1>ERROR REPORT</h1>\n"+
-         "<h2>"+title+"</h2>\n";
+         "<h2>"+makeSafeForHtml(title)+"</h2>\n";
       if (th != null) {
          StringWriter sw = new StringWriter();
          th.printStackTrace(new PrintWriter(sw));

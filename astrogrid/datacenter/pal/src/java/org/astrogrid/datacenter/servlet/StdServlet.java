@@ -1,5 +1,5 @@
 /*
- * $Id: StdServlet.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: StdServlet.java,v 1.2 2004/10/13 01:01:36 mch Exp $
  */
 
 package org.astrogrid.datacenter.servlet;
@@ -40,7 +40,7 @@ public abstract class StdServlet extends HttpServlet {
             //if we can't set the type, some stuff has probably already been written out. Write out the message in plain
             response.getWriter().println("------------------------------------------------------------------");
             if (title != null) {
-               response.getWriter().println(title);
+               response.getWriter().println(ServletHelper.makeSafeForHtml(title));
             }
             if (th != null) {
                th.printStackTrace(response.getWriter());
