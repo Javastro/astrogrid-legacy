@@ -48,6 +48,7 @@
 </goal>
 
 <goal name="astrogrid-deploy-snapshot">
+		<maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot" />
         <attainGoal name="jar:deploy-snapshot" />
         <attainGoal name="war:deploy-snapshot" />
 </goal>
