@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFileStore.java,v 1.1 2004/03/04 12:51:31 mch Exp $
+ * $Id: LocalFileStore.java,v 1.2 2004/03/13 22:58:43 mch Exp $
  *
  */
 
@@ -307,14 +307,15 @@ public class LocalFileStore implements StoreClient
     */
    protected File makeLocalPath(String path)
    {
-      //remove colons, spaces and slashes from filename
-      path = path.replace(':','_');
-      path = path.replaceAll("\\\\","_");
-      path = path.replace(' ','_');
-      path = path.replace('?','_');
-      path = path.replace('&','_');
-      path = path.replace('=','_');
-      
+      if (path != null) {
+         //remove colons, spaces and slashes from filename
+         path = path.replace(':','_');
+         path = path.replaceAll("\\\\","_");
+         path = path.replace(' ','_');
+         path = path.replace('?','_');
+         path = path.replace('&','_');
+         path = path.replace('=','_');
+      }
       return new File(rootDir, path);
    }
 
@@ -336,6 +337,9 @@ public class LocalFileStore implements StoreClient
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.2  2004/03/13 22:58:43  mch
+Fixed nul pointer exception when path is empty
+
 Revision 1.1  2004/03/04 12:51:31  mch
 Moved delegate implementations into subpackages
 
