@@ -190,41 +190,23 @@ To install an AstroGrid MySpace service proceed as follows.
 
      astrogrid/mySpace/xdocs/createregistry_v02.lis
 
-8. Move the file:
+8. Open the configuration file:
 
-   $CATALINA_HOME/webapps/astrogrid-mySpace/ASTROGRID_myspacemanagerconfig.xml
+   ASTROGRID_myspacemanagerconfig.xml
 
-   to the directory:
+   in the directory:
 
      $CATALINA_HOME/webapps/astrogrid-mySpace/WEB-INF/classes
      
-   Alternatively, place the file on a Web server and place its URL in
-   JNDI by editing file $CATALINA_HOME/conf/servers.xml; make an
-   environment entry org.astrogrid.mySpace.config.url, for example,
-   under <DefaultContext> place:
-
-     <Environment description="MySpace Config URL"
-        name="org.astrogrid.mySpace.config.url" 
-        override="false" type="java.lang.String" 
-        value="http://localhost:8080/ASTROGRID_myspacemanagerconfig.xml"
-     />
-
-   and restart the Web server.  This latter approach will ensure that the 
-   configuration file will not get wiped between installations.
-
-   Next edit the file:
-
-     ASTROGRID_myspacemanagerconfig.xml
-
    Edit the properties MYSPACEMANAGERURL and MYSPACEMANAGERURLs and set
    both their values to:
 
-     http://<your host>:8080/astrogrid-mySpace/services/MySpaceManager
+     http://<your host>:8080/astrogrid-mySpace/services/Manager
 
    Note that MYSPACEMANAGERURLs should have a comma (`,') after the
    entry, eg:
 
-     http://<your host>:8080/astrogrid-mySpace/services/MySpaceManager,
+     http://<your host>:8080/astrogrid-mySpace/services/Manager,
 
    This requirement is, ahem, a feature, which will be addressed shortly.
 
@@ -241,6 +223,21 @@ To install an AstroGrid MySpace service proceed as follows.
    It is sensible to make a copy of ASTROGRID_myspacemanagerconfig.xml
    outside the MySpace server directories, so that you retain a copy
    when you remove the Web service.
+      
+   Alternatively, move the file onto a Web server and place its URL in
+   JNDI by editing file $CATALINA_HOME/conf/servers.xml; make an
+   environment entry org.astrogrid.mySpace.config.url, for example,
+   under <DefaultContext> place:
+
+     <Environment description="MySpace Config URL"
+        name="org.astrogrid.mySpace.config.url" 
+        override="false" type="java.lang.String" 
+        value="http://localhost:8080/ASTROGRID_myspacemanagerconfig.xml"
+     />
+
+   and restart the Web server.  This latter approach will ensure that the 
+   configuration file will not get wiped between installations.
+
 
 9. You can optionally customise the introductory Web page for your
    MySpace service.  Edit file:
