@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:19:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerImpl.java,v $
+ *   Revision 1.14  2003/09/10 06:19:14  dave
+ *   Fixed typos ...
+ *
  *   Revision 1.13  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -517,7 +520,7 @@ public class PolicyManagerImpl
 	public Object[] getRemoteAccounts(String name)
 		throws RemoteException
 		{
-		Object[] reults = null ;
+		Object[] results = null ;
 		//
 		// If the community is local.
 		if (CommunityConfig.getConfig().getCommunityName().equals(name))

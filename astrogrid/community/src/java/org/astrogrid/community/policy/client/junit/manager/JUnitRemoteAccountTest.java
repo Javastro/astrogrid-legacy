@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/client/junit/manager/Attic/JUnitRemoteAccountTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/10 06:19:14 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: JUnitRemoteAccountTest.java,v $
+ *   Revision 1.2  2003/09/10 06:19:14  dave
+ *   Fixed typos ...
+ *
  *   Revision 1.1  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -224,7 +227,7 @@ public class JUnitRemoteAccountTest
 		//
 		// Try getting the list of Accounts.
 		Object[] list ;
-		list = manager.testGetRemoteAccounts(TEST_COMMUNITY);
+		list = manager.getRemoteAccounts(TEST_COMMUNITY);
 		assertNotNull("Failed to get the list of Accounts", list) ;
 
 		if (DEBUG_FLAG) System.out.println("") ;
