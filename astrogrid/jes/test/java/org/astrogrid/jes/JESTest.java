@@ -1,4 +1,4 @@
-/* $Id: JESTest.java,v 1.2 2003/10/28 12:28:53 jdt Exp $
+/* $Id: JESTest.java,v 1.3 2003/10/29 12:09:17 jdt Exp $
  * Created on 27-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,8 +9,8 @@
  */
 package org.astrogrid.jes;
 
-import java.io.File;
-import java.io.IOException;
+//import java.io.File;
+//import java.io.IOException;
 
 import org.astrogrid.AstroGridException;
 
@@ -38,6 +38,9 @@ public class JESTest extends TestCase {
     junit.textui.TestRunner.run(JESTest.class);
   }
 
+  /**
+   * The instance of JES under test
+   */
   private JES jes;
   /**
    * Load up a JES
@@ -45,15 +48,15 @@ public class JESTest extends TestCase {
    * automatically tests that they're being picked up.
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  protected final void setUp() throws Exception {
     super.setUp();
     jes = JES.getInstance();
 
   }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
+  //  protected final void tearDown() throws Exception {
+  //    super.tearDown();
+  //  }
 
   /**
   * Test that the singleton pattern has been implemented correctly - Don't 
@@ -64,7 +67,7 @@ public class JESTest extends TestCase {
   * @TODO wonder why JES is a singleton since pretty much all the important
   * methods are static anyway.
    */
-  public void testSingleton() {
+  public final void testSingleton() {
     assertEquals("Should only ever be one JES", jes, JES.getInstance());
   }
 
@@ -72,18 +75,25 @@ public class JESTest extends TestCase {
    * Try getting the property "VERSION"
    *
    */
-  public void testGetVersion() {
+  public final void testGetVersion() {
     String value = JES.getProperty("VERSION", "GENERAL");
     assertEquals("Property VERSION should be 1.2", "1.2", value);
   }
 
-  public void testPropertyNoExist() {
+  /**
+   * When a requested property doesn't exist we expect the empty string back.
+   *
+   */
+  public final void testPropertyNoExist() {
     String value = JES.getProperty("asdl;fj", "ald;adlsfj");
     assertEquals("Property value should be empty string", "", value);
   }
 
-
-  private final static File TEMP = new File("temp");
+  /**
+   * @throws IOException
+   * @throws AstroGridException
+   */
+  //  private final static File TEMP = new File("temp");
   /**
    * Make sure that things fall over properly if the config files aren't there.
    * Currently test won't work, because once the properties are loaded, that's
@@ -104,14 +114,23 @@ public class JESTest extends TestCase {
       moveFile(TEMP, file);
     }
   }
-*/
-  public void testCanWeFindTheTestConfigFiles() throws IOException, AstroGridException {
+  */
+  /**
+   * Make sure that the config files have loaded
+   * @throws AstroGridException if the config file isn't loaded
+   */
+
+  public final void testCanWeFindTheTestConfigFiles()
+    throws AstroGridException {
     jes.checkPropertiesLoaded();
   }
 }
 
 /*
 *$Log: JESTest.java,v $
+*Revision 1.3  2003/10/29 12:09:17  jdt
+*Some minor tidying to satisfy the coding standards.
+*
 *Revision 1.2  2003/10/28 12:28:53  jdt
 *Better way of putting the test config files in place, using the build.xml file.
 *

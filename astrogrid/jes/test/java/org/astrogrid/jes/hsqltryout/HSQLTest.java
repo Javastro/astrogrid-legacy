@@ -1,4 +1,4 @@
-/* $Id: HSQLTest.java,v 1.1 2003/10/28 17:27:54 jdt Exp $
+/* $Id: HSQLTest.java,v 1.2 2003/10/29 12:09:17 jdt Exp $
  * Created on 28-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -58,7 +58,7 @@ public class HSQLTest extends TestCase {
    * Set up the database connection
    * @see TestCase#setUp()
    */
-  protected void setUp() throws Exception {
+  protected final void setUp() throws Exception {
     super.setUp();
     try {
       Class driver = Class.forName("org.hsqldb.jdbcDriver");
@@ -75,7 +75,7 @@ public class HSQLTest extends TestCase {
    * Close the database connection
    * @see TestCase#tearDown()
    */
-  protected void tearDown() throws Exception {
+  protected final void tearDown() throws Exception {
     super.tearDown();
     conn.close();
   }
@@ -102,7 +102,7 @@ public class HSQLTest extends TestCase {
       createTable();
       fail("Expected an SQLException since the table already exists");
     } catch (SQLException expected) {
-      //ignored
+      return;
     }
 
     //createTable();
@@ -138,11 +138,11 @@ public class HSQLTest extends TestCase {
     ResultSet results = statement.executeQuery("SELECT * FROM DEVELOPERS");
     List forenames = new ArrayList();
 
-    int nRows = 0;
     for (; results.next();) {
       forenames.add(results.getString("firstName"));
     }
-    assertEquals("Expect four rows", 4, forenames.size());
+    final int nRowsInTheDatabase = 4;
+    assertEquals("Expect four rows", nRowsInTheDatabase, forenames.size());
     assertTrue("Expect John to be in there", forenames.contains("John"));
     assertFalse("Expect AliG not to be in there", forenames.contains("AliG"));
 
@@ -187,6 +187,9 @@ public class HSQLTest extends TestCase {
 
 /*
 *$Log: HSQLTest.java,v $
+*Revision 1.2  2003/10/29 12:09:17  jdt
+*Some minor tidying to satisfy the coding standards.
+*
 *Revision 1.1  2003/10/28 17:27:54  jdt
 *Going to use HSQL as an in-process database for testing (following 
 *Noel's work in datacenter).
