@@ -1,0 +1,504 @@
+package idjgqudrab7rlbdrafp87j;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node32:oiref><oihard>
+@__modelType reference 
+*/
+class reference33 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node34:oiref><oihard>
+@__modelType reference 
+*/
+class reference35 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node36:oiref><oihard>
+@__modelType reference 
+*/
+class reference37 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node38:oiref><oihard>
+@__modelType reference 
+*/
+class reference39 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node40:oiref><oihard>
+@__modelType reference 
+*/
+class reference41 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node42:oiref><oihard>
+@__modelType reference 
+*/
+class reference43 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node44:oiref><oihard>
+@__modelType reference 
+*/
+class reference45 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node46:oiref><oihard>
+@__modelType reference 
+*/
+class reference47 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node48:oiref><oihard>
+@__modelType reference 
+*/
+class reference49 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node50:oiref><oihard>
+@__modelType reference 
+*/
+class reference51 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node54:oiref><oihard>
+@__modelType reference 
+*/
+class reference55 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node56:oiref><oihard>
+@__modelType reference 
+*/
+class reference57 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node58:oiref><oihard>
+@__modelType reference 
+*/
+class reference59 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node61:oiref><oihard>
+@__modelType reference 
+*/
+class reference62 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node65:oiref><oihard>
+@__modelType reference 
+*/
+class reference66 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node68:oiref><oihard>
+@__modelType reference 
+*/
+class reference69 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node71:oiref><oihard>
+@__modelType reference 
+*/
+class reference72 {
+}/**
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node75:oiref><oihard>
+@__modelType reference 
+*/
+class reference76 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.link60:oiref>=330,970,530,970:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node79.link84:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node80.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node46.link64:oiref>=315,803,830,768:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node54.link:oiref>=323,1077,174,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link:oiref>=280,436,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node68:oiref>=500,490,228,37,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node56.link:oiref>=283,1120,150,1120,150,870,240,870:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node48.link:oiref>=300,883,300,960:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node69.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node46:oiref>=255,793,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node48:oiref>=240,860,149,23,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node72.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75:oiref>=260,580,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node80.link86:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link:oiref>=270,400,270,490:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node54.link:oiref>=313,1063,313,1110:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node46.link:oiref>=285,813,285,860:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node81.link85:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node70.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node44:oiref>=210,720,130,23,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node71:oiref>=26,1217,718,242,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75.link77:oiref>=570,600,29,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65.link:oiref>=849,585,29,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node36.link:oiref>=280,342,189,17,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node44.link:oiref>=295,759,126,17,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75.link:oiref>=290,600,290,630:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node83.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node75.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node40:oiref>=170,490,228,54,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node70.link77:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node42:oiref>=180,630,228,37,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node46.link64:oiref>=582,795,60,17,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node44.link:oiref>=285,743,285,793:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node36.link:oiref>=270,323,270,380:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node56.link63:oiref>=310,1130,310,1160,830,1160,838,775:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node.link:oiref>=:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.link:oiref>=310,1001,34,17,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65.link:oiref>=590,390,840,390,838,760:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node78.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node81.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node73.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node:oiref>=10,10,317,118,0:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node40.link:oiref>=300,545,200,34,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node34.link:oiref>=278,257,278,300:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node56:oiref>=283,1110,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.link:oiref>=300,980,300,1040:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node42.link:oiref>=275,667,275,720:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node58:oiref>=530,960,198,23,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38:oiref>=240,380,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node61.link67:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link67:oiref>=300,390,530,390:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65:oiref>=530,380,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node68.link:oiref>=500,508,398,508:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node54:oiref>=240,1040,154,23,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node56.link63:oiref>=519,1170,102,17,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node68.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node34:oiref>=180,220,228,37,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node36:oiref>=210,300,136,23,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node61:oiref>=830,760,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node65.link70:oiref>=560,400,560,490:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node68.link71:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node40.link:oiref>=290,544,290,580:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node32.link:oiref>=256,162,256,220:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50:oiref>=270,960,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node32:oiref>=250,150,12,12,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node48.link:oiref>=310,904,200,34,1:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node58.link:oiref>=630,983,630,1120,343,1120:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node87.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node79.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node82.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node50.node66.link:oiref>=:oigroup>
+<oigroup:<oiref:design#Class#idjgqudrab7rlbdrafp87j.node75.link77:oiref>=320,590,630,590,834,760:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#idjgqudrab7rlbdrafp87j.node38.link67:oiref>=323,400,183,17,1:oigroup>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+*/
+class __positions {
+}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Their are several harvest web service methods, but this one is the more difficult.  One detail not mentioned in the diagram below, is that it will use its own modificationDate for a Registry Resource entry(only) if one is avaliable. A "Note" has been given below of a quick detail of the other interfaces
+*/
+class node {
+}/**
+@shapeType StartState
+@__modelType node
+@name StartState1
+@backgroundColor 0,0,0 
+*/
+class node32 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node34:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Request comes in to harvest a Resource (1 only) 
+*/
+class node34 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node36:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Get the AuthorityID 
+*/
+class node36 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node38:oiref><oihard>
+@sendClause Do we manage this authority id?
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node38 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node40:oiref><oihard> 
+@sendClause Yes
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node65:oiref><oihard>
+@sendClause Is it a Registry Resource entry? 
+*/
+class link67 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Get Information on how to call the service (Web Service, Web Browser) 
+*/
+class node40 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node75:oiref><oihard>
+@sendClause Has all information needed to make a call? 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call the Resource to get it's metadata 
+*/
+class node42 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node44:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Get the metadata 
+*/
+class node44 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node46:oiref><oihard>
+@sendClause Is the metadata valid 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision2 
+*/
+class node46 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node48:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node61:oiref><oihard>
+@sendClause Not valid 
+*/
+class link64 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Grab Resource entry 
+*/
+class node48 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node50:oiref><oihard>
+@sendClause Entries AuthorityID is managed by some registry? 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision3 
+*/
+class node50 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node54:oiref><oihard>
+@sendClause Yes 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node58:oiref><oihard> 
+*/
+class link60 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Update Registry Entry 
+*/
+class node54 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node56:oiref><oihard>
+@sendClause Has more Resource Entries? 
+*/
+class link {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision4 
+*/
+class node56 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node48:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node61:oiref><oihard> 
+@sendClause No more entries
+*/
+class link63 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Log some error and Continue 
+*/
+class node58 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node56:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1
+@backgroundColor 0,0,0 
+*/
+class node61 {
+}/**
+@shapeType Decision
+@__modelType node
+@name Decision5 
+*/
+class node65 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node61:oiref><oihard>
+@sendClause No 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node68:oiref><oihard> 
+*/
+class link70 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Add/Update Registry with the Registry Resource Entry 
+*/
+class node68 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node40:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text Other web service methods for harvesting: shown above is harvestResource which takes in a Resource entry.  Usually a Registry or Service entry.
+1.) harvestFromResource - same as harvestResource (shown above), but allows you to specify a date for Registry Resource entries only.
+2.) harvestFrom - return the results for this registry of all metadata that has been added/changed since a particular date. And the metadata has an AuthorityID this registry manages.
+3.) harvest - return all metadata that is in this registry and has an AuthorityID that this registry manages.
+4.) harvestAll - supposed to be internal use only, but can be done by client.  Kicks off a harvest for all metadata it is capabile of harvesting.  Services or Registry. 
+*/
+class node71 {
+}/**
+@shapeType Decision
+@__modelType node
+@name Decision6 
+*/
+class node75 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node42:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#idjgqudrab7rlbdrafp87j.node61:oiref><oihard>
+@sendClause No 
+*/
+class link77 {
+}}

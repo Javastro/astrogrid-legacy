@@ -1,0 +1,314 @@
+package id3ngq9drab7rlbdragrvqc;
+
+/**
+@version 2.0
+@__modelType diagram 
+*/
+class diagram {
+/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node:oiref><oihard>
+@__modelType reference 
+*/
+class reference {
+}/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4:oiref><oihard>
+@__modelType reference 
+*/
+class reference5 {
+}/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node6:oiref><oihard>
+@__modelType reference 
+*/
+class reference7 {
+}/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node11:oiref><oihard>
+@__modelType reference 
+*/
+class reference12 {
+}/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17:oiref><oihard>
+@__modelType reference 
+*/
+class reference18 {
+}/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node20:oiref><oihard>
+@__modelType reference 
+*/
+class reference21 {
+}/**
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node30:oiref><oihard>
+@__modelType reference 
+*/
+class reference31 {
+}}/**
+
+@__tags
+@shapeType ActivityDiagram 
+*/
+class __tags {
+}/**
+@__options 
+*/
+class __options {
+}/**
+@__positions <oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17.node:oiref>=920,140,133,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node6:oiref>=10,60,110,90,0:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node16.link:oiref>=679,233,679,260:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node11:oiref>=340,120,6,60,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node15:oiref>=610,140,6,110,0:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node25.link:oiref>=740,350,661,380:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node14.link:oiref>=488,221,610,221:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node19.link:oiref>=690,463,544,485:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node:oiref>=660,160,80,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node16:oiref>=640,210,157,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node13:oiref>=390,130,80,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node25.link29:oiref>=755,350,755,450:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node14:oiref>=340,210,148,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node.link:oiref>=700,183,700,210:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node11.link:oiref>=346,141,390,141:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node15.link:oiref>=616,171,660,171:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node23:oiref>=630,260,147,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node13.link:oiref>=430,153,430,210:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node20:oiref>=529,477,15,15,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node19:oiref>=690,450,155,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node22.link:oiref>=205,104,205,140:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node27.link:oiref>=661,403,537,477:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node25:oiref>=710,330,60,20,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node8:oiref>=170,140,137,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17:oiref>=890,50,190,380,1:oigroup>
+<oigroup:Composite#$transitionInplaceEditing#<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node23.link26:oiref>=750,297,182,17,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node22:oiref>=199,92,12,12,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node8.link:oiref>=307,151,340,151:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node23.link:oiref>=728,260,969,163:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node27:oiref>=602,380,119,23,1:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node:oiref>=150,50,340,380,0:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17.node.link:oiref>=1019,163,1019,210:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4:oiref>=600,50,260,450,0:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node23.link26:oiref>=740,283,740,330:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node30:oiref>=153,475,227,135,0:oigroup>
+<oigroup:<oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17.node24:oiref>=920,210,132,23,1:oigroup>
+ 
+*/
+class __positions {
+}/**
+@shapeType SwimLane
+@__modelType node
+@name Component A (portal)
+@backgroundColor 200,200,200 
+*/
+class node {
+/**
+@shapeType Activity
+@__modelType node
+@name Call Component B 
+*/
+class node8 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node11:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Handler 
+*/
+class node13 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node14:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Attach SOAP Header 
+*/
+class node14 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node15:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType StartState
+@__modelType node
+@name StartState1 
+*/
+class node22 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node8:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType SwimLane
+@__modelType node
+@name Component B (jes)
+@backgroundColor 200,200,200 
+*/
+class node4 {
+/**
+@shapeType Activity
+@__modelType node
+@name Handler 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node16:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar2
+@vertical 
+*/
+class node15 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Get SOAP Header Info 
+*/
+class node16 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node23:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Component B Service 
+*/
+class node19 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node20:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Call Security Service 
+*/
+class node23 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17.node:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node25:oiref><oihard>
+@sendClause Authenticated with new Token? 
+*/
+class link26 {
+}}/**
+@shapeType Decision
+@__modelType node
+@name Decision1 
+*/
+class node25 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node27:oiref><oihard> 
+*/
+class link {
+}/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node4.node19:oiref><oihard> 
+*/
+class link29 {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Error/Exception 
+*/
+class node27 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node20:oiref><oihard> 
+*/
+class link {
+}}}/**
+@shapeType Note
+@__modelType node
+@name Note1
+@text Assumed a person
+ has logged in 
+*/
+class node6 {
+}/**
+@shapeType SyncBar
+@__modelType node
+@name SyncBar1
+@vertical
+@backgroundColor 0,0,0 
+*/
+class node11 {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node.node13:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType SwimLane
+@__modelType node
+@name Security/Community
+@backgroundColor 200,200,200 
+*/
+class node17 {
+/**
+@shapeType Activity
+@__modelType node
+@name Authenticate User 
+*/
+class node {
+/**
+@shapeType TransitionLink
+@__modelType link
+@__ref <oiref:design#Class#id3ngq9drab7rlbdragrvqc.node17.node24:oiref><oihard> 
+*/
+class link {
+}}/**
+@shapeType Activity
+@__modelType node
+@name Issue New Token 
+*/
+class node24 {
+}}/**
+@shapeType EndState
+@__modelType node
+@name EndState1
+@backgroundColor 0,0,0 
+*/
+class node20 {
+}/**
+@shapeType Note
+@__modelType node
+@name Note2
+@text The black Syncbar's are to represent the calls to the handler happening automatically without the other components knowing. 
+*/
+class node30 {
+}
