@@ -1,4 +1,4 @@
-/* $Id: TrivialTest.java,v 1.3 2003/10/20 15:08:30 jdt Exp $ 
+/* $Id: TrivialTest.java,v 1.4 2003/10/21 16:36:37 jdt Exp $ 
  * Created on 20/10/03 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,22 +12,27 @@ package org.astrogrid.jes;
 import junit.framework.TestCase;
 
 /**
- * @author jdt
- *
  * Trivial test simply to force CVS to create the test directory structure so I 
  * can run Maven.
+ *  
+ *  @author jdt
+ *
  */
 public class TrivialTest extends TestCase {
 
   /**
    * Constructor for TrivialTest.
-   * @param arg0
+   * @param arg0 Unused
    */
-  public TrivialTest(String arg0) {
+  public TrivialTest(final String arg0) {
     super(arg0);
   }
 
-  public static void main(String[] args) {
+/**
+ * Launch the JUnit Text UI
+ * @param args Unused
+ */
+  public static void main(final String[] args) {
     junit.textui.TestRunner.run(TrivialTest.class);
   }
   
@@ -42,6 +47,9 @@ public class TrivialTest extends TestCase {
 }
 /*
  * $Log: TrivialTest.java,v $
+ * Revision 1.4  2003/10/21 16:36:37  jdt
+ * Updated to comply with our coding standards.
+ *
  * Revision 1.3  2003/10/20 15:08:30  jdt
  * trivial change
  *
