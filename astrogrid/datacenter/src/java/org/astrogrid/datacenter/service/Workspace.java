@@ -1,5 +1,5 @@
 /**
- * $Id: Workspace.java,v 1.1 2003/08/27 17:39:22 mch Exp $
+ * $Id: Workspace.java,v 1.2 2003/08/27 18:11:07 mch Exp $
  */
 
 package org.astrogrid.datacenter.service;
@@ -14,8 +14,11 @@ import org.astrogrid.datacenter.config.DTC;
  * and removing directories in the temporary workspace.  Create one of these
  * to manage one temporary directory - once 'close' is called, it should not
  * be used again.
+ * <p>
  * NB the 'close' operation is not threadsafe (ie if other methods are called
  * while the close operation is running, behaviour is undefined....)
+ * <p>
+ * NB2 - File has a method .createTempFile() that might be better used...
  */
 
 public class Workspace
@@ -23,19 +26,19 @@ public class Workspace
    protected final DTC config = DTC.getInstance();
    private static final String WORKSPACE_DIRECTORY_KEY = "Workspace Directory";
    private static final String WORKSPACE_DIRECTORY_CAT = "Service";
-
+   
    private static final String ERR_WORKSPACE_ALREADY_IN_USE = "Workspace Already In Use";
-
+   
    /** Path to this workspace instance */
    protected String workspacePath = null;
-
+   
    /** File representation of this workspace instance */
    protected File workspaceFile = null;
-
+   
    /** Used to mark when the directory has been closed (deleted) */
-   protected boolean closed = false;
-
-
+//   protected boolean closed = false; this is meaningless if we expose workspaceFile
+   
+   
    /**
     * Creates a temporary directory with the name given by workspaceId
     * in the workspace directory given in the configuration file
@@ -43,83 +46,94 @@ public class Workspace
    public Workspace(String workspaceId)
    {
       String workRoot = config.getProperty( WORKSPACE_DIRECTORY_KEY, WORKSPACE_DIRECTORY_CAT);
-
+      
       workspacePath = workRoot + File.separator + workspaceId;
-
+      
       File workspaceFile = new File(workspacePath);
-
+      
       if (workspaceFile.exists())
       {
          throw new IllegalArgumentException(ERR_WORKSPACE_ALREADY_IN_USE);
       }
-
+      
       workspaceFile.mkdir();
-  }
-
-  /**
-   * Use when you've finished with the space and you want to tidy up
-   */
-  public void close() throws IOException
-  {
-     //emptyDir(workspacePath);  //commented out at the moment so we can debug contents
-
-      closed = true;
-  }
-
-  /**
-   * Returns the path to the workspace
-   */
-  public File getWorkspace()
-  {
-     return workspaceFile;
-  }
-
+      
+      //workspaceFile.deleteOnExit(); nb for debug we let it carry on existing
+   }
+   
    /**
-    * Deletes the contents of the given directory
+    * Use when you've finished with the space and you want to tidy up
     */
-   public void emptyDir(String path) throws IOException
+   public void close() throws IOException
    {
-      File f = new File(path);
-      if (f.exists())
+      //empty(workspacePath);  //commented out at the moment so we can debug contents
+      
+//      closed = true;
+   }
+   
+   /**
+    * Returns the path to the workspace
+    */
+   public File getWorkspace()
+   {
+      return workspaceFile;
+   }
+   
+   /**
+    * Deletes the contents of the workspace
+    */
+   public void empty() throws IOException
+   {
+//      if (closed)
+//      {
+//         throw new UnsupportedOperationException("This workspace has been closed");
+//      }
+
+      emptyDirectory(workspaceFile);
+   }
+   
+   /**
+    * General purpose method that deletes the contents of the given directory
+    */
+   public static void emptyDirectory(File dir) throws IOException
+   {
+      if (!dir.exists())
       {
-         if (f.isDirectory())
-         {
-            String[] contents = f.list();
-            for (int i = 0; i < contents.length; i++)
-            {
-               removeFileOrDir(path + File.pathSeparator + contents[i]);
-            }
-         }
-         else
-         {
-            throw new IOException("'"+path + "' does not seem to be a directory");
-         }
+         throw new IOException("'"+dir + "' does not exist");
       }
-      else
+      if (!dir.isDirectory())
       {
-         throw new IOException("'"+path + "' does not exist");
+         throw new IOException("'"+dir + "' is not a directory");
+      }
+
+      File[] contents = dir.listFiles();
+      for (int i = 0; i < contents.length; i++)
+      {
+          removeFileOrDir(contents[i]);
       }
    }
-
+   
    /**
     * Deletes the given path - if the path refers to a directory, the directory
     * is emptied and removed, so it will recursively remove a tree.
     */
-   protected void removeFileOrDir(String path) throws IOException
+   protected static void removeFileOrDir(File fod) throws IOException
    {
-      File f = new File(path);
-
       //if it's a directory, empty it first
-      if (f.isDirectory())
+      if (fod.isDirectory())
       {
-         emptyDir(path);
+         emptyDirectory(fod);
       }
 
-      f.delete();
-      if (f.exists())
+      //delete it
+      fod.delete();
+
+      //check it's worked
+      if (fod.exists())
       {
-         throw new IOException("Couldn't delete '"+path+"' (don't know why)");
+         throw new IOException("Couldn't delete '"+fod+"' (don't know why)");
       }
    }
 }
+
 
