@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.12 2003/09/16 15:23:16 mch Exp $
+ * $Id: SocketDelegate.java,v 1.13 2003/09/16 16:56:07 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -254,7 +254,10 @@ public class SocketDelegate extends DatacenterDelegate
          String queryId = status.getAttribute(QueryIdHelper.QUERY_ID_ATT);
 
          DatacenterStatusListener listener = (DatacenterStatusListener) listeners.get(queryId);
-         listener.datacenterStatusChanged(queryId, StatusHelper.getServiceStatus(status));
+         if (listener != null)
+         {
+            listener.datacenterStatusChanged(queryId, StatusHelper.getServiceStatus(status));
+         }
       }
    }
 
@@ -331,6 +334,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.13  2003/09/16 16:56:07  mch
+Fix for no listeners
+
 Revision 1.12  2003/09/16 15:23:16  mch
 Listener fixes and rationalisation
 
