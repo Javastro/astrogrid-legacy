@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.94 2004/09/09 01:19:50 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.95 2004/09/09 09:19:36 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -335,24 +335,6 @@
     | Unpack our Community install toolkit.
     +-->
 <goal name="community-toolkit">
-<<<<<<< maven.xml
-    <echo message=""/>
-    <echo message="Installing community toolkit ...."/>
-    <!--+
-        | Unpack our toolkit.
-        +-->
-    <unzip src="${temporary.dir}/astrogrid-community-install-${pom.currentVersion}.zip"
-        dest="${temporary.dir}/community/toolkit"
-        />
-    <!--+
-        | Set the community ident.
-        +-->
-    <propertyfile
-        file="${temporary.dir}/community/toolkit/install.properties">
-        <entry key="org.astrogrid.community.ident"
-            value="${registry.authorityid}"/>
-    </propertyfile>
-=======
     <echo message=""/>
     <echo message="Installing community toolkit ...."/>
     <!--+
@@ -372,41 +354,12 @@
         <entry key="org.astrogrid.community.ident"
             value="${registry.authorityid}"/>
     </propertyfile>
->>>>>>> 1.91
 </goal>
 
 <!--+
     | Initialise our Community database.
     +-->
 <goal name="community-database">
-<<<<<<< maven.xml
-        <echo message=""/>
-        <echo message="Installing community database ...."/>
-        <!--+
-            | Wait for our service to respond.
-            +-->
-        <attainGoal name="community-wait"/>
-        <!--+
-            | Reset our database tables.
-            +-->
-        <j:catch>
-        <ant
-            target="database.reset"
-            dir="${temporary.dir}/community/toolkit"
-            antfile="${temporary.dir}/community/toolkit/install.xml"
-            />
-        </j:catch>
-        <!--+
-            | Load our database tables.
-            +-->
-        <j:catch>
-        <ant
-            target="database.load"
-            dir="${temporary.dir}/community/toolkit"
-            antfile="${temporary.dir}/community/toolkit/install.xml"
-            />
-         </j:catch>
-=======
     <echo message=""/>
     <echo message="Installing community database ...."/>
     <!--+
@@ -429,65 +382,12 @@
         dir="${temporary.dir}/community/toolkit"
         antfile="${temporary.dir}/community/toolkit/install.xml"
         />
->>>>>>> 1.91
 </goal>
 
 <!--+
     | Register the Community.
     +-->
 <goal name="community-register">
-<<<<<<< maven.xml
-        <echo message=""/>
-        <echo message="Registering community service ...."/>
-        <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
-        <echo message=""/>
-        <!--+
-            | Set the community ident.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/toolkit/install.properties">
-            <entry key="org.astrogrid.community.ident"
-                value="${registry.authorityid}"/>
-        </propertyfile>
-        <!--+
-            | Set the registry endpoint.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/toolkit/install.properties">
-            <entry key="org.astrogrid.registry.url"
-                value="${tomcat.url}//astrogrid-registry-${pom.currentVersion}/services/Registry"/>
-        </propertyfile>
-        <!--+
-            | Set the registry admin endpoint.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/toolkit/install.properties">
-            <entry key="org.astrogrid.registry.admin"
-                value="${tomcat.url}//astrogrid-registry-${pom.currentVersion}/services/RegistryUpdate"/>
-        </propertyfile>
-        <!--+
-            | Set the local hostname.
-            +-->
-        <propertyfile
-            file="${temporary.dir}/community/toolkit/install.properties">
-            <entry key="service.host"
-                value="${tomcat.host}"/>
-        </propertyfile>
-        <!--+
-            | Wait for our service to respond.
-            +-->
-        <attainGoal name="community-wait"/>
-        <!--+
-            | Register our service.
-            +-->
-        <j:catch>
-        <ant
-            target="service.register"
-            dir="${temporary.dir}/community/toolkit"
-            antfile="${temporary.dir}/community/toolkit/install.xml"
-            />
-         </j:catch>
-=======
     <echo message=""/>
     <echo message="Registering community service ...."/>
     <j:expr value="${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}"/>
@@ -538,7 +438,6 @@
 	        antfile="${temporary.dir}/community/toolkit/install.xml"
 	        />
     
->>>>>>> 1.91
 </goal>
 <!--+
     | Wait for the Community service to respond.
@@ -833,23 +732,8 @@
    
 </goal>
 
+
 <goal name="community-deploy">
-<<<<<<< maven.xml
-    <copy todir="${temporary.dir}/community/context" filtering="true">
-        <fileset dir="contexts/community/context"/>
-    </copy>
-    <war update="true" destfile="${temporary.dir}/astrogrid-community-${pom.currentVersion}.war">
-        <metainf dir="${temporary.dir}/community/context"/>
-    </war>
-    <j:catch>
-        <tomcat-deploy
-            url="${tomcat.manager.url}"
-            username="${tomcat.manager.username}"
-            password="${tomcat.manager.password}"
-            path="/astrogrid-community-${pom.currentVersion}"
-            war="file:///${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"/>
-    </j:catch>
-=======
     <copy todir="${temporary.dir}/community/webapp" filtering="true">
         <fileset dir="contexts/community" />
     </copy>
@@ -863,7 +747,6 @@
         path="/astrogrid-community-${pom.currentVersion}"
         war="file:///${temporary.dir}/astrogrid-community-${pom.currentVersion}.war"
         />
->>>>>>> 1.91
 </goal>
 
 <!-- undeploy ///////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
