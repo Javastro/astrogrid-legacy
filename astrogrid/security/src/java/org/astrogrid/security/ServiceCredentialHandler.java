@@ -62,6 +62,15 @@ public class ServiceCredentialHandler extends CredentialHandler {
       System.out.println("Authentication OK.");
     }
     catch (Exception e3) {
+      System.out.println("ServiceCredentialHandler.handleRequest(): authentication failed.");
+      System.out.println("Here's the rejected message:");
+      try {
+        sm.writeTo(System.out);
+      }
+      catch (Exception e4) {
+        // Ignore this.
+      }
+      System.out.println("");
       throw new JAXRPCException("Authentication failed", e3);
     }
 
