@@ -86,6 +86,7 @@ public class CastorDeserializer
         this.xmlType = xmlType;
         this.javaType = javaType;
     }
+    
 
     /**
      * Return something even if no characters were found.
@@ -95,10 +96,8 @@ public class CastorDeserializer
             String localName,
             DeserializationContext context)
             throws SAXException {
-
         try {
-            MessageElement msgElem = context.getCurElement();
-            System.out.println("Unmarshalling " + javaType.getName() + " " + localName + " " + namespace );            
+            MessageElement msgElem = context.getCurElement();         
             if (msgElem != null)
             {
                 // Unmarshall the nested XML element into a castor object of type 'javaType'

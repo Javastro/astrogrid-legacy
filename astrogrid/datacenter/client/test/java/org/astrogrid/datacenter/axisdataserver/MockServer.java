@@ -1,4 +1,4 @@
-/*$Id: MockServer.java,v 1.2 2003/11/18 14:27:39 nw Exp $
+/*$Id: MockServer.java,v 1.3 2003/11/19 18:48:47 nw Exp $
  * Created on 16-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -41,7 +41,6 @@ public class MockServer implements InvocationHandler {
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // check each of object args is not-null and of correct type.
-        System.out.println("Server method invoked " + method.getName());
         Class[] formalParams = method.getParameterTypes();
         Assert.assertEquals(formalParams.length,args.length);
         for (int i = 0; i < args.length; i++) {
@@ -58,7 +57,6 @@ public class MockServer implements InvocationHandler {
                     + " " + formalParams[i].getClass().getName());
             }                                 
         }
-        System.out.println("returning type");
         Class retType = method.getReturnType();
         if (retType.equals(Void.TYPE)) {
             return null;
@@ -70,9 +68,7 @@ public class MockServer implements InvocationHandler {
         } else if ( retType.equals(Document.class)) {
             return XMLUtils.newDocument();
         } else {
-            System.out.println("Don't know how to create return type " + retType.getName() + " for method " + method.getName());
-            // never reached
-            return null;
+            throw new RemoteException("Don't know how to create return type " + retType.getName() + " for method " + method.getName());
         }
         
     }
@@ -82,6 +78,9 @@ public class MockServer implements InvocationHandler {
 
 /* 
 $Log: MockServer.java,v $
+Revision 1.3  2003/11/19 18:48:47  nw
+fixed transport bug
+
 Revision 1.2  2003/11/18 14:27:39  nw
 code to test the serialization and deserialization mechanism
 

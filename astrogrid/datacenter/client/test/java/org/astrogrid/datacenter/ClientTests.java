@@ -1,4 +1,4 @@
-/*$Id: ClientTests.java,v 1.2 2003/11/17 15:40:51 mch Exp $
+/*$Id: ClientTests.java,v 1.3 2003/11/19 18:48:47 nw Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,8 @@
  *
 **/
 package org.astrogrid.datacenter;
+
+import org.astrogrid.datacenter.axisdataserver.TransportTest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -37,6 +39,7 @@ public class ClientTests {
         suite.addTest(org.astrogrid.datacenter.delegate.DelegateTest.suite());
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.snippet.AllTests.suite());
+        suite.addTest(new TestSuite(TransportTest.class));
         return suite;
     }
 }
@@ -44,6 +47,9 @@ public class ClientTests {
 
 /*
 $Log: ClientTests.java,v $
+Revision 1.3  2003/11/19 18:48:47  nw
+fixed transport bug
+
 Revision 1.2  2003/11/17 15:40:51  mch
 Package movements
 

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StartQuery.java,v 1.2 2003/11/19 15:26:41 nw Exp $
+ * $Id: StartQuery.java,v 1.3 2003/11/19 18:44:51 nw Exp $
  */
 
 package org.astrogrid.datacenter.axisdataserver.types;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class StartQuery.
  * 
- * @version $Revision: 1.2 $ $Date: 2003/11/19 15:26:41 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/19 18:44:51 $
  */
 public class StartQuery implements java.io.Serializable {
 

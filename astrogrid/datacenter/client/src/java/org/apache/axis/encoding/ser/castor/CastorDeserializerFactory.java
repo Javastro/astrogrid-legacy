@@ -63,9 +63,9 @@ import javax.xml.namespace.QName;
  * A CastorDeserializer Factory
  *
  * @author Olivier Brand (olivier.brand@vodafone.com)
- */
+ */ 
 public class CastorDeserializerFactory extends BaseDeserializerFactory {
-
+    
     public CastorDeserializerFactory(Class javaType, QName xmlType) {
         super(CastorDeserializer.class, xmlType, javaType);
     }

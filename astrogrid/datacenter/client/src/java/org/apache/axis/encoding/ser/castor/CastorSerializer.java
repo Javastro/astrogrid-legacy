@@ -102,7 +102,6 @@ public class CastorSerializer implements Serializer {
        // context.startElement(name, attributes);
         String fdate;
         StringWriter writer = null;
-
         try {
             writer = new StringWriter();
 
@@ -116,8 +115,6 @@ public class CastorSerializer implements Serializer {
 
             // Marshall the Castor object into the stream (sink)
             marshaller.marshal(value);
-            System.out.println(" **Serializing " + value.getClass().getName());
-            System.out.println(writer.toString());
 
             context.writeString(writer.toString());
         } catch (MarshalException me) {
