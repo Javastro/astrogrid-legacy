@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/09/15 14:35:17 mch Exp $
+/*$Id: AllTests.java,v 1.3 2003/09/15 17:39:18 mch Exp $
  * Created on 11-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ public class AllTests {
         suite.addTest(DocHelperTest.suite());
         suite.addTest(ServiceIdHelperTest.suite());
         suite.addTest(StatusHelperTest.suite());
+        suite.addTest(ResponseHelperTest.suite());
         //$JUnit-END$
         return suite;
     }
@@ -38,6 +39,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2003/09/15 17:39:18  mch
+Better test coverage
+
 Revision 1.2  2003/09/15 14:35:17  mch
 Fixes to reading status id and service id & AllTests now tests package
 
