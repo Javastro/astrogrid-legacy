@@ -709,18 +709,18 @@ function OutMouseSingle(destiny){
 
 function findSelection() {
   var choice=false;
-  selector = document.RegistryBrowser.selection;
-  if ( selector.length > 1 ) {
-    for ( var i=0; i < selector.length; i++ ) {
-       if ( selector[i].checked ) {
+  var selektor = document.RegistryBrowser.selektion;
+  if ( selektor.length > 1 ) {
+    for ( var i=0; i < selektor.length; i++ ) {
+       if ( selektor[i].checked ) {
           choice = true;
-          identifier = selector[i].value;
+          identifier = selektor[i].value;
           break;
        }
     }
   } else {
     choice = true;
-    identifier = document.RegistryBrowser.selection.value
+    identifier = document.RegistryBrowser.selektion.value
   }
   if ( !choice ) alert( "Please select a resource" );
   else {
@@ -739,18 +739,18 @@ function getSelectionId(authId, resourceKey) {
   parentKey = parentDoc.getElementById(resourceKey);
 
   var choice=false;
-  selector = document.RegistryBrowser.selection;
-  if ( selector.length > 1 ) {
-    for ( var i=0; i < selector.length; i++ ) {
-       if ( selector[i].checked ) {
+  selektor = document.RegistryBrowser.selektion;
+  if ( selektor.length > 1 ) {
+    for ( var i=0; i < selektor.length; i++ ) {
+       if ( selektor[i].checked ) {
           choice = true;
-          identifier = selector[i].value;
+          identifier = selektor[i].value;
           break;
        }
     }
   } else {
     choice = true;
-    identifier = document.RegistryBrowser.selection.value
+    identifier = document.RegistryBrowser.selektion.value
   } 
   if ( !choice ) alert( "Please select a resource" );
   else {
