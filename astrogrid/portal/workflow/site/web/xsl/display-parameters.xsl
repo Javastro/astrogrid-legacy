@@ -69,13 +69,38 @@
                             <xsl:variable name="ivorn-id"><xsl:value-of select="../../@key"/><xsl:value-of select="@param-name" />ivorn</xsl:variable>
                             <xsl:variable name="agsl-id"><xsl:value-of select="../../@key"/><xsl:value-of select="@param-name" />agsl</xsl:variable>
                             <td>
-                                <xsl:element name="input">
-                                  <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
-                                  <xsl:attribute name="type">text</xsl:attribute>
-                                  <xsl:attribute name="name">param-value</xsl:attribute>
-                                  <xsl:attribute name="size">30</xsl:attribute>
-                                  <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
-                                </xsl:element>
+                                <xsl:choose>
+                                    <xsl:when test="@param-type = 'FileReference'">                                
+                                        <xsl:element name="input">
+                                            <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
+                                            <xsl:attribute name="type">text</xsl:attribute>
+                                            <xsl:attribute name="name">param-value</xsl:attribute>
+                                            <xsl:attribute name="size">30</xsl:attribute>
+                                            <xsl:attribute name="readonly">true</xsl:attribute>
+                                            <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+                                        </xsl:element>
+                                    </xsl:when>
+                                    <xsl:when test="@param-type = 'MySpace_FileReference'">
+                                        <xsl:element name="input">
+                                            <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
+                                            <xsl:attribute name="type">text</xsl:attribute>
+                                            <xsl:attribute name="name">param-value</xsl:attribute>
+                                            <xsl:attribute name="size">30</xsl:attribute>
+                                            <xsl:attribute name="readonly">true</xsl:attribute>                                  
+                                            <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+                                        </xsl:element>
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:element name="input">
+                                            <xsl:attribute name="id"><xsl:value-of select="$agsl-id"/></xsl:attribute>
+                                            <xsl:attribute name="type">text</xsl:attribute>
+                                            <xsl:attribute name="name">param-value</xsl:attribute>
+                                            <xsl:attribute name="size">30</xsl:attribute>
+                                            <xsl:attribute name="value"><xsl:value-of select="@param-value" /></xsl:attribute>
+                                        </xsl:element>
+                                    </xsl:otherwise>
+                                </xsl:choose>                                
+                                                                                                    
                                 <xsl:element name="input">
                                   <xsl:attribute name="type">hidden</xsl:attribute>
                                   <xsl:attribute name="name">original-param-value</xsl:attribute>
@@ -86,8 +111,7 @@
                                   <xsl:attribute name="type">hidden</xsl:attribute>
                                   <xsl:attribute name="name">ivorn-value</xsl:attribute>
                                 </xsl:element>
-                            </td>
-                            <td><input type="submit" value="submit" /></td>
+                            </td>                            
                             <td>
                                 <xsl:choose>
                                     <xsl:when test="@param-type = 'FileReference'">
@@ -105,6 +129,7 @@
                                     </xsl:otherwise>
                                 </xsl:choose>
                             </td>
+                            <td><input type="submit" value="submit" /></td>
 <!--                        </xsl:when>
                         <xsl:otherwise>
                             <td><xsl:value-of select="@param-value" /></td>
