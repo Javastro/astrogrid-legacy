@@ -188,7 +188,7 @@ Cone Search<br />
 </table>
 
 <div width="100%" id="adqlSection" style="display: show">
-<form action="/astrogrid-portal/bare/mount/datacenter/forms/adql" name="main" method="POST" target="_top" >
+<form action="/astrogrid-portal/bare/mount/datacenter/forms/adql" name="main" onSubmit="return validateLS()" method="POST" target="_top" >
 <center>
 <table border="0" cellspacing="1" cellpadding="1" bgcolor="#ffffcc">
 <tr valign="bottom"><td rowspan="2">
@@ -221,6 +221,20 @@ class="agResetButton">Clear</span></td></tr>
 </table>
 </td>
 </tr>
+
+<script language="JavaScript">
+function validateLS() {
+        var retVal = false ;
+        var entryField = document.getElementById('myspace-agsl').value;
+        if(entryField=='') {
+            alert('Please enter path and file name \nOr\n Browse MySpace');
+        }
+        else {
+            retVal = true;
+        }
+        return retVal;
+}
+</script>
 
 <tr><td align="center">
 	  <img src="/astrogrid-portal/x.gif" width="0" id="HMarker" />
