@@ -1,4 +1,4 @@
-/*$Id: PostgresSqlMaker.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+/*$Id: PostgresSqlMaker.java,v 1.2 2004/03/12 05:01:22 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,7 @@ import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
 
 /**
- * A 'standard' translator that creates 'standard' SQL
+ * Produced Postgres-specific SQL
  */
 public class PostgresSqlMaker extends StdSqlMaker {
 
@@ -109,6 +109,9 @@ public class PostgresSqlMaker extends StdSqlMaker {
 
 /*
 $Log: PostgresSqlMaker.java,v $
+Revision 1.2  2004/03/12 05:01:22  mch
+Changed doc
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 
