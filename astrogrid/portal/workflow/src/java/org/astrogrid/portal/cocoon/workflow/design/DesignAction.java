@@ -354,7 +354,7 @@ public class DesignAction extends AbstractAction {
                     this.createWorkflow();
                 }
                 else if( action.equals( ACTION_SAVE_WORKFLOW ) ) { 
-                    this.saveWorkflow();
+                    this.saveWorkflow();                   
                 }
                 else if( action.equals( ACTION_READ_WORKFLOW ) ) {
                     this.readWorkflow(); 
@@ -604,8 +604,6 @@ public class DesignAction extends AbstractAction {
                     WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
                     debug( "wfStore: " + wfStore );
                     wfStore.saveWorkflow( user, ivorn, workflow ) ;
-                    session.removeAttribute( HTTP_WORKFLOW_TAG );
-					workflow = null ;
                 }            
             }
             catch( CommunityIdentifierException cix ) {
