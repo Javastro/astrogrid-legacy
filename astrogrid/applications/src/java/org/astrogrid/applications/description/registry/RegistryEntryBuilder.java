@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilder.java,v 1.2 2004/03/29 12:35:12 pah Exp $
+ * $Id: RegistryEntryBuilder.java,v 1.3 2004/04/02 11:55:36 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,11 +13,13 @@
 
 package org.astrogrid.applications.description.registry;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
@@ -172,17 +174,46 @@ public class RegistryEntryBuilder {
    }
 
    /**
-    * Make an ApplicationList from a full configuration. This is a not a deep copy - references to the applicationDescription objects are placed in the ApplicationList
+    * Make an ApplicationList from a full configuration. This is a deep copy - new instances of the ApplicationBase objecst are created.
     * @param clecConfig a configuration for a command line execution controller
     * @return
     * @TODO might be better to refactor the original schema so that there was a base type for the common execution contoller configs...
     */
-   public static ApplicationList makeApplist(CommandLineExecutionControllerConfig clecConfig) {
+   public static ApplicationList makeApplist(CommandLineExecutionControllerConfig clecConfig) throws MarshalException, IndexOutOfBoundsException, ValidationException, IOException {
       ApplicationList result = new ApplicationList();
 
       for (int i = 0; i < clecConfig.getApplicationCount(); i++) {
-         result.addApplicationDefn(clecConfig.getApplication(i));
+         result.addApplicationDefn(cloneApplication(clecConfig.getApplication(i)));
       }
+      return result;
+   }
+   
+   /**
+    * Create a clone of an ApplicationBase object. This is done via the castor marshalling framework. In most cases this will be a downcast copy.
+    * @param in This can (and in most cases will) be one of the derived classes from ApplicationBase
+    * @return
+    */
+   private static ApplicationBase cloneApplication(ApplicationBase in) throws IOException, MarshalException, ValidationException
+   {
+      ApplicationBase result = null;
+// TODO write a castor wiki page about this....      
+      StringWriter sw = new StringWriter();
+      Marshaller mar = new Marshaller(sw);
+      mar.setMarshalExtendedType(false);
+      mar.setSuppressXSIType(false);
+      mar.setMarshalAsDocument(true);
+      mar.marshal(in);
+//      System.err.print(sw.toString());
+      
+     Unmarshaller um = new Unmarshaller(ApplicationBase.class);
+     um.setIgnoreExtraAttributes(true);
+     um.setIgnoreExtraElements(true);
+     StringReader sr = new StringReader(sw.toString());
+     InputSource is = new InputSource(sr);
+     result = (ApplicationBase)um.unmarshal(is);
+
+      
+      
       return result;
    }
 }

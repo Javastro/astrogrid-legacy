@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryEntryBuilderTest.java,v 1.4 2004/03/31 16:26:19 pah Exp $
+ * $Id: RegistryEntryBuilderTest.java,v 1.5 2004/04/02 11:55:36 pah Exp $
  * 
  * Created on 24-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,6 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
@@ -60,12 +61,24 @@ public class RegistryEntryBuilderTest extends RegEntryBaseTestCase {
      VODescription entry = builder.makeEntry();
      assertNotNull(entry);
      FileWriter writer = new FileWriter(testfile);
-     entry.marshal(writer);
+
+     Marshaller mar = new Marshaller(writer);
+     mar.setDebug(true);
+     mar.setMarshalExtendedType(true);
+     mar.setSuppressXSIType(false);
+     mar.setLogWriter(new PrintWriter(System.out));
+     mar.setMarshalAsDocument(true);
+//   TODO write a castor wiki page about this....      
+     mar.setNamespaceMapping("cea", "http://www.ivoa.net/xml/CEAService/v0.1");
+
+
+     mar.marshal(entry);
+     
      writer.close();
      Unmarshaller um = new Unmarshaller(VODescription.class);
      
      //TODO Castor bug -will not round trip....
-//     VODescription reentry = (VODescription)um.unmarshal(new FileReader(testfile));
+     VODescription reentry = (VODescription)um.unmarshal(new FileReader(testfile));
      
      
      //TODO - should make more extensive tests....
