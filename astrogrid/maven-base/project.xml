@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.14 2004/04/29 15:56:05 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.15 2004/05/07 16:01:58 jdt Exp $ -->
 <project>
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
@@ -43,7 +43,7 @@
             </includes>
         </unitTest>
     </build>
-    <url>http://www.astrogrid.org/maven/build/${astrogrid.name}/index.html</url>
+    <url>http://www.astrogrid.org/maven/docs/${astrogrid.iteration}/${astrogrid.name}/index.html</url>
     <developers>
         <developer>
             <name> Brian McIlwrath </name>
@@ -245,5 +245,6 @@
         <report> maven-pmd-plugin </report>
         <report> maven-tasklist-plugin </report>
         <report> maven-simian-plugin </report>
+        <report> maven-dashboard-plugin </report>    
     </reports>
 </project>
