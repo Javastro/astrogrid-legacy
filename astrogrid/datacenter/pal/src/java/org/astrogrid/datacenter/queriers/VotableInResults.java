@@ -1,4 +1,4 @@
-/*$Id: VotableInResults.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: VotableInResults.java,v 1.2 2004/09/29 18:43:51 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,8 @@ import org.astrogrid.io.Piper;
 
 /**
  * A results wrapper around results that are already of VOTable form; eg
- * those returned from another service
+ * those returned from another service, where the table is referred to by a
+ * stream rather than a parsed document.
  *
  */
 public class VotableInResults extends QueryResults {
@@ -69,6 +70,9 @@ public class VotableInResults extends QueryResults {
 
 /*
 $Log: VotableInResults.java,v $
+Revision 1.2  2004/09/29 18:43:51  mch
+doc change
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 
