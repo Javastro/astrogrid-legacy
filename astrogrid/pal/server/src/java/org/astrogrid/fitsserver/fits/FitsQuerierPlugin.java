@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.1 2005/03/10 16:42:55 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.2 2005/03/11 14:50:59 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -135,23 +135,6 @@ public class FitsQuerierPlugin extends DefaultPlugin
       return files;
    }
    
-   public static void upload(String collName, org.w3c.dom.Node doc) {
-       XMLDBFactory xdb2 = new XMLDBFactory();
-       Collection coll = null;       
-       try {
-           coll = xdb2.openAdminCollection(FITS_DEFAULT_COLLECTION + "/" + collName);
-           xdb2.storeXMLResource(coll,doc);
-       }catch(Exception e) {
-           e.printStackTrace();
-       }finally {
-           try {
-               xdb2.closeCollection(coll);
-           }catch(Exception e1) {
-               e1.printStackTrace();
-           }
-       }
-   }
-
    
    /**
     * locates all the fits files in this dataset that overlap the given
@@ -252,6 +235,9 @@ public class FitsQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.2  2005/03/11 14:50:59  KevinBenson
+ added catch for parserconfigurationexception
+
  Revision 1.1  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

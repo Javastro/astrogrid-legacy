@@ -1,5 +1,5 @@
 /*
- * $Id: TableMetaDocInterpreter.java,v 1.3 2005/03/10 22:39:17 mch Exp $
+ * $Id: TableMetaDocInterpreter.java,v 1.4 2005/03/11 14:50:59 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -62,6 +62,8 @@ public class TableMetaDocInterpreter
       }
       catch (SAXException e) {
          throw new MetadataException("Server's TableMetaDoc at "+url+" is invalid XML: "+e);
+      } catch (javax.xml.parsers.ParserConfigurationException e) {
+          throw new MetadataException(e+" parser configuration error ",e);
       }
    }
    

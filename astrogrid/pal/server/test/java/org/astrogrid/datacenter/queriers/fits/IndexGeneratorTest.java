@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.5 2005/03/10 16:42:55 mch Exp $
+/*$Id: IndexGeneratorTest.java,v 1.6 2005/03/11 14:50:59 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -21,6 +21,7 @@ import org.astrogrid.datacenter.fits.FitsTestSupport;
 import org.astrogrid.fitsserver.setup.IndexGenerator;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
+import java.io.File;
 
 /** Test the Fits processing classes
  */
@@ -33,17 +34,21 @@ public class IndexGeneratorTest extends TestCase
       IndexGenerator generator = new IndexGenerator();
       generator.raAxis = 1;
       generator.decAxis = 2;
-      String index = generator.generateIndex(FitsTestSupport.getTestFits());
-      assertNotNull(index);
+      File indexDir = generator.generateIndex(FitsTestSupport.getTestFits());
+      assertNotNull(indexDir);
+      assertTrue(indexDir.isDirectory());
+      assertEquals(FitsTestSupport.getTestFits().length,indexDir.list().length);
+      //make sure they are xml documents.
       try {
-         DomHelper.newDocument(index);  //check its' a valid XML doc
+         File fi = (indexDir.listFiles())[0];
+         DomHelper.newDocument(fi);  //check its' a valid XML doc
       }
       catch (SAXException e) {
          fail("Generated index is not valid xml"+e);
       }
    }
 
-   /** Tests generating indexes from the test fits files.   */
+   /** Tests generating indexes from the test fits files.   
    public void testToStream() throws Exception
    {
       DataOutputStream out = new DataOutputStream(new FileOutputStream("IndexGeneratorTestList.urls"));
@@ -65,7 +70,7 @@ public class IndexGeneratorTest extends TestCase
          fail("Generated index is not valid xml"+e);
       }
    }
-
+*/
 
    
    
@@ -89,6 +94,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.6  2005/03/11 14:50:59  KevinBenson
+ added catch for parserconfigurationexception
+
  Revision 1.5  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

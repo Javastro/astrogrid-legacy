@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.7 2005/03/10 16:42:55 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.8 2005/03/11 14:50:59 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -33,6 +33,7 @@ import org.astrogrid.xmldb.client.XMLDBFactory;
 import org.w3c.dom.Document;
 import org.astrogrid.util.DomHelper;
 import java.io.*;
+import org.xmldb.api.base.Collection;
 
 /** Test the Fits processing classes
  */
@@ -43,6 +44,23 @@ public class FitsQuerierTest extends TestCase
    
    public FitsQuerierTest() {
        
+   }
+   
+   public static void upload(String collName, org.w3c.dom.Node doc) {
+       XMLDBFactory xdb2 = new XMLDBFactory();
+       Collection coll = null;       
+       try {
+           coll = xdb2.openAdminCollection(FitsQuerierPlugin.FITS_DEFAULT_COLLECTION + "/" + collName);
+           xdb2.storeXMLResource(coll,doc);
+       }catch(Exception e) {
+           e.printStackTrace();
+       }finally {
+           try {
+               xdb2.closeCollection(coll);
+           }catch(Exception e1) {
+               e1.printStackTrace();
+           }
+       }
    }
    
    public void setUp() throws Exception {
@@ -70,36 +88,9 @@ public class FitsQuerierTest extends TestCase
            Document fitsFile = askQueryFromFile("SampleFits.xml");
            System.out.println("Got xml sample document now upload to exist db");
            System.out.println("the fitsFile = " + DomHelper.DocumentToString(fitsFile));
-           FitsQuerierPlugin.upload("CDSDataTest",fitsFile);
+           upload("CDSDataTest",fitsFile);
            uploadedFiles = true;
-       }
-       
-       /*
-        *     SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
-        * xmldb.uri=xmldb:exist://
-xmldb.driver=org.exist.xmldb.DatabaseImpl
-xmldb.query.service=XQueryService
-xmldb.admin.user=admin
-xmldb.admin.password=
-      
-        File fi = new File("target/test-classes/exist.xml");
-        if(fi != null) {
-          XMLDBFactory.registerDB(fi.getAbsolutePath());
-        }
-     
-      //set up test index first if not already done
-      if (indexFile == null) {
-         indexFile = new File("fitsTestIndex.xml");
-         IndexGenerator generator = new IndexGenerator();
-         generator.raAxis = 1;
-         generator.decAxis = 2;
-         FileWriter out = new FileWriter(indexFile);
-         generator.generateIndex(FitsTestSupport.getTestFits(), out);
-         out.close();
-      }
-      
-      SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, indexFile.getCanonicalPath());
-      */
+       }       
    }
 
    /** Check to see the right plugin is made */
@@ -160,6 +151,9 @@ xmldb.admin.password=
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.8  2005/03/11 14:50:59  KevinBenson
+ added catch for parserconfigurationexception
+
  Revision 1.7  2005/03/10 16:42:55  mch
  Split fits, sql and xdb
 

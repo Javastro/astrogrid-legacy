@@ -32,6 +32,7 @@ import nom.tam.fits.Header;
 import nom.tam.fits.HeaderCard;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.dataservice.queriers.QuerierPluginException;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -153,14 +154,14 @@ public class IndexGenerator
             try {
                //if it's a date, we store two key entries, one with a unit attribute set to 's' and the time in ms since/before 1970
                Date dateVal = fitsDateFormat.parse(value);
-               //keywordSnippet.append("      <"+key+" unit='s'"+commentAtt+">"+dateVal.getTime()+"</"+key+">\n");
-               keywordSnippet.append("      <"+key+ " unit='s'>"+dateVal.getTime()+"</"+key+">\n");
+               keywordSnippet.append("      <"+key+" unit='s'"+commentAtt+">"+dateVal.getTime()+"</"+key+">\n");
+               //keywordSnippet.append("      <"+key+ " unit='s'>"+dateVal.getTime()+"</"+key+">\n");
                value = indexDateFormat.format(dateVal);
             } catch (ParseException e) {
                //ignore
             }
-            //keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
-            keywordSnippet.append("      <"+key+">"+value+"</"+key+">\n");
+            keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
+            //keywordSnippet.append("      <"+key+">"+value+"</"+key+">\n");
          }
       }
       
@@ -219,70 +220,75 @@ public class IndexGenerator
      catch (javax.xml.parsers.ParserConfigurationException e) { throw new IOException(e.toString()); }
       
    }
-
-   /**
-    * Generates an index XML file for the FITS files at the given urls
-    */
-   public String generateIndex(Object[] urls) throws IOException, FitsException
-   {
-      StringBuffer index = new StringBuffer(ROOT_START+"\n");
-      
-      for (int i=0;i<urls.length;i++)
-      {
-         assert urls[i] != null;  //or could report it and continue?
-         index.append(makeIndexSnippet((URL)urls[i]));
-      }
-
-      index.append(ROOT_END+"\n");
-      
-      return index.toString();
-      
+   
+   private static File fileIndexDir = null;
+   private File getIndexDirectory() {
+       String indexPath = String.valueOf(System.currentTimeMillis());       
+       String indexGenHomePath = SimpleConfig.getProperty("indexgen.path", ("." + File.separator) );
+       if(!indexGenHomePath.endsWith(File.separator))
+           indexGenHomePath += File.separator;
+       fileIndexDir = new File(indexGenHomePath + indexPath);
+       if(!fileIndexDir.exists())
+           fileIndexDir.mkdir();
+       return fileIndexDir;
    }
+
    
    /**
     * Generates an index XML file for the FITS files at the URLs listed in the
     * given file, writing them out to the target stream
     */
-   public void generateIndex(InputStream urlsIn) throws IOException, FitsException
+   public File generateIndex(InputStream urlsIn) throws IOException, FitsException
    {
       BufferedReader in = new BufferedReader(new InputStreamReader(urlsIn));
       String line = null;
       while( (line = in.readLine()) != null) {
             generateIndex(new URL(line));
       }
+      return fileIndexDir;
    }
+   
+   /**
+    * Generates an index XML file for the FITS files at the URLs listed in the
+    * given file, writing them out to the target stream
+    */
+   public File generateIndex(URL []urls) throws IOException, FitsException
+   {
+      for(int i = 0; i < urls.length;i++) {
+            generateIndex(urls[i]);
+      }//for
+      return fileIndexDir;
+   }
+   
 
    /**
     * Generates an index XML file for the FITS files at the given URLs, writing it out to the target stream
     */
-   public void generateIndex(URL url) throws IOException, FitsException
+   public File generateIndex(URL url) throws IOException, FitsException
    {
        Calendar rightNow = Calendar.getInstance();
        int year = rightNow.get(Calendar.YEAR);
        int month = rightNow.get(Calendar.MONTH);
        int day = rightNow.get(Calendar.DATE);
        String dirPath = String.valueOf(year) + "_" + String.valueOf(month) + "_" + String.valueOf(day);
-       File fileDir = new File(dirPath);
-       if(!fileDir.exists())
-           fileDir.mkdir();
        
+       if(fileIndexDir == null)
+           getIndexDirectory();
        File xmlFile = null;
        FileWriter fw = null;
        PrintWriter pw = null;
        long seqNum = System.currentTimeMillis();
-       int counter = 0;
        String xmlSnippet = null;
           try {
              xmlSnippet = makeIndexSnippet(url);
-             String fileName = dirPath + String.valueOf((seqNum + counter)) + ".xml";
-             xmlFile = new File(fileDir,fileName);
+             String fileName = dirPath + String.valueOf((seqNum)) + ".xml";
+             xmlFile = new File(fileIndexDir,fileName);
              fw = new FileWriter(xmlFile);
              pw = new PrintWriter(fw);
              try {
                  DomHelper.DocumentToWriter(DomHelper.newDocument(xmlSnippet),pw);
              }catch(Exception e) {
                  e.printStackTrace();
-                 
              }
              pw.flush();
              fw.close();
@@ -291,14 +297,23 @@ public class IndexGenerator
              //log as an error but try next URL
              log.error(ioe+", processing URL "+url.toString(), ioe);
           }
+          return fileIndexDir;
    }
    
    private static void updateXMLDB(String directoryName) throws Exception {
+
        
        File fi = new File(directoryName);
-       if(!fi.exists()) {
-           System.out.println("The directory or path does not seem to exist: directory=" + directoryName);
-           System.exit(1);
+       if(!fi.exists()) {           
+           String indexGenHomePath = SimpleConfig.getProperty("indexgen.path", ("." + File.separator));
+           if(!indexGenHomePath.endsWith(File.separator))
+               indexGenHomePath += File.separator;
+           fi = new File(indexGenHomePath + directoryName);
+           if(!fi.exists()) {
+               System.out.println("The directory or path does not seem to exist: directory=" + directoryName +
+                       "or " + indexGenHomePath + directoryName);               
+               System.exit(1);
+           }//if
        }
        if(!fi.isDirectory()) {
            System.out.println("There is a file that exists here, but is reported to not be a directory.  Now exiting");
@@ -362,12 +377,13 @@ public class IndexGenerator
            }//if
        }//while
        
-       XMLDBFactory xdb = new XMLDBFactory();
+
+       SimpleConfig.setProperty("xmldb.uri", xmldbURI);
+       SimpleConfig.setProperty("xmldb.driver", xmldbDriver);
+       SimpleConfig.setProperty("xmldb.admin.user", adminUser);
+       SimpleConfig.setProperty("xmldb.admin.password", adminPass);
        //commented out until latest dependency arrives
-//       xdb.setXMLDBDriver(xmldbDriver);
-//       xdb.setAdminUser(adminUser);
-//       xdb.setAdminPassword(adminPass);
-//       xdb.setXMLDBURI(xmldbURI);
+       XMLDBFactory xdb = new XMLDBFactory();
        System.out.println("Now Registering the database");
        xdb.registerDB(xmldbConfig);
        File []xmlFiles = fi.listFiles();
@@ -384,8 +400,6 @@ public class IndexGenerator
                xdb.closeCollection(coll);
            }//if
        }
-       
-       
    }
    
    private static String askQuestion(String question) throws Exception {
@@ -429,6 +443,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.2  2005/03/11 14:50:59  KevinBenson
+added catch for parserconfigurationexception
+
 Revision 1.1  2005/03/10 16:42:55  mch
 Split fits, sql and xdb
 
