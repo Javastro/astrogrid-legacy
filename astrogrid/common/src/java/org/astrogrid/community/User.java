@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.11 2004/02/15 23:18:17 mch Exp $
+ * $Id: User.java,v 1.12 2004/02/16 18:26:37 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,149 +16,124 @@ package org.astrogrid.community;
 import org.astrogrid.community.common.util.CommunityMessage;
 
 /**
- * Represents an individual user account.
- *
- * An individual consists of an account and a community, where the account
- * identifies the individual within a community.  The individual may be an
- * automaton (eg a server) rather than human.
- *
- * IVO references to users/accounts are of the form individual@community.
- *
- * While an individual can belong to one and only one community, he/she/it may
- * belong to several 'groups'.  A group may cross community boundaries.
- *
- * [MCH: I'm not sure if group should be specified here - it may be that the user
- * has picked which is the relevent group that has the right credentials for the
- * task.  On the other hand it should probably be the community that looks to see if
- * any of the groups the account belongs to have the right permissions]
- *
- * [MCH: There seems to have been some confusion between 'group' and 'community' in this
- * object.  The old 'group' term later came to represent a community, and now we
- * have a different thing called group.  In adding community to this, the way the datacenter
- * calls myspace has changed...  I've made the terms more explicit by adding
- * a commnunity property; hopefully this won't break anything... 14/2/04]
- *
- * The token is some kind of certification that is carried along with the account
- * and community identifiers to prove that this individual really is this individual...
-
- * @todo merge with @link org.astrogrid.community.common.util.CommunityMessage, which effectively does xml deserializtion
- *
+ * A bean to hold what is passed in the "community snippet".
+ * 
+ * Note that the current interpretation of this is that the account contains an identifier of the form user@community - The group relates to the
+ *  group that the user wishes to use for its credentials, this may be a cross community group. 
+ * 
+ * note that this should really be merged with the @link org.astrogrid.community.common.util.CommunityMessage class, which effectively does xml deserializtion
  * @author Paul Harrison (pah@jb.man.ac.uk), mch
+ * @version $Name:  $
  * @since iteration4
  */
 public class User {
 
-    String individual = null;
-    String community = null;
+    String account = null;
+    String group = null;
     String token = null;
-    String group = null; //deprecated?
    
-    public final static User ANONYMOUS = new User("Anonymous","Unknown","None",null);
+    public final static User ANONYMOUS = new User("Anon@nowhere","Anonymous","None");
 
    /** Default constructor - creates null user
-    * @deprecated - use ANONYMOUS
     */
     public User(){
-       this("Anonymous","Unknown", "None", null);
+       this("Anon@nowhere","Anonymous", "None");
     }
 
     /**
-     * Creates a user from the given full account details. Account and
-     * community *must* be specified.
+     * Creates a user from the given account group & token.  The account &
+     * group cannot be null
+     * @param givenAccount the account in the form userid@community.
+     * @param givenGroup The group credential.
+     * @param givenToken The security token.
      */
-    public User(String anIndividual, String aCommunity, String aGroup, String aToken)
+    public User(String givenAccount, String givenGroup, String givenToken)
     {
-       assert (anIndividual != null) && (anIndividual.length()>0) : "an Individual must be given";
-       assert (aCommunity != null) && (aCommunity.length()>0) : "a Community must be given";
-
-       //@todo should now check the token matches the account & community...
-       
-       this.individual = anIndividual;
-       this.community = aCommunity;
-       this.group = aGroup;
-       this.token = aToken;
+       this.account = givenAccount;
+       this.group = givenGroup;
+       this.token = givenToken;
     }
     
+    /**
+    * @param userId the user part of the account
+    * @param community the community part of the account
+    * @param group the group
+    * @param token the security token
+    */
+   public User(String userId, String community, String group, String token)
+    {
+       this.account = userId+"@"+community;
+       this.group = group;
+       this.token = token;
+    }
     
     /**
-     * Creates a user from the "community snippet" xml representation.
+     * Creates a user from "community snippet" representation.
      * @param snippet The community snippet - this is an xml fragment.
      */
     public User(String snippet)
     {
-       this(CommunityMessage.getIndividual(snippet), CommunityMessage.getCommunity(snippet), CommunityMessage.getGroup(snippet),CommunityMessage.getToken(snippet));
+       this(CommunityMessage.getAccount(snippet),CommunityMessage.getGroup(snippet),CommunityMessage.getToken(snippet));
     }
     
-    /** Returns the individual reference within the community */
-    public String getIndividual() {
-       return individual;
-    }
+   /**
+    * @return
+    */
+   public String getAccount() {
+      return account;
+   }
 
-    /** Returns the vo reference
-     * @deprecated - use getVOReference or getIndividual so we are explicit...
-     */
-    public String getAccount() {
-       return getIvoRef();
-    }
-
-    /**
-     * Returns the individual
-     * @deprecated - use getIndividual
-     */
-    public String getUserId() {
-       return individual;
-    }
-    
-    /** Returns the IVO format used to refer to an account - ie individual@community
-     */
-    public String getIvoRef() {
-       return individual+"@"+community;
-    }
-    
+   /**
+    * @return
+    */
    public String getGroup() {
       return group;
    }
 
-   public String getCommunity() {
-      return community;
-   }
-
-   /** Returns the token that certifies this instance as really representing
-    * the individual given by account & community */
+   /**
+    * @return
+    */
    public String getToken() {
       return token;
    }
 
-   public void setIndividual(String string) {
-      individual = string;
+   /**
+    * @param string
+    */
+   public void setAccount(String string) {
+      account = string;
    }
 
+   /**
+    * @param string
+    */
    public void setGroup(String string) {
       group = string;
    }
 
+   /**
+    * @param string
+    */
    public void setToken(String string) {
       token = string;
    }
 
 
    /**
-    * Checks to see if this user refers to the same party as the given user.
-    * Compares only individual and commnunity - the same individual might belong
-    * to several groups but is still the same individual.
+    * Checks to see if this user refers to the same account as the given
+    * user
     */
    public boolean equals(User user)
    {
-      return (user.getIvoRef().equals(this.getIvoRef()));
+      return (user.getAccount().equals(this.account) && (user.getGroup().equals(this.group)));
    }
 
    /**
-    * Returns a string with the 'normal' representation of account@community, with
-    * group
+    * Returns a string with the 'normal' representation of account@community
     */
    public String toString()
    {
-      return getIvoRef() +" ("+group+")";
+      return account;
    }
    
    /**
@@ -167,18 +142,55 @@ public class User {
     */
    public String toSnippet()
    {
-      return CommunityMessage.getMessage(token, getIvoRef(), group);
+      return CommunityMessage.getMessage(token, account, group);
    }
    
+   /**
+    * Return the community part of the account string
+    * @return will return null if the account is null or the community part does not exist - i.e. there is no @ in the string.
+    */
+   public String getCommunity()
+   {
+      if(account != null)
+      {
+         int i;
+         if((i= account.indexOf("@"))!= -1)
+         {
+            return account.substring(i+1);
+         }
+      }
+      return null;
+   }
+   /**
+    * gets the userid part of the account string - i.e. that before the @
+    * @return
+    */
+   public String getUserId()
+   {
+      if(account!=null)
+      {
+         int i;
+         if((i= account.indexOf("@"))!= -1)
+         {
+            return account.substring(0, i);
+         }
+         else
+         {
+            return account;
+         }
+      }
+      return null;
+   }
 }
 
 /* $Log: User.java,v $
- * Revision 1.11  2004/02/15 23:18:17  mch
- * minor doc changes
+ * Revision 1.12  2004/02/16 18:26:37  pah
  *
-/* Revision 1.10  2004/02/14 17:15:56  mch
-/* Added assertions and made community, individual, ivoreference etc explicit
-/*
+ *
+ * 1. This is a bean - it needs a default constructor
+ * 2. His idea of what a group was is wrong - this represents an instance of the credentials - a user can only  have present themselves in one group
+ * 3. The meanings of terms/methods it is defined in this bean are used throughout jes/mySpace and applicationController - any changes here must be debugged with full integration tests of these three components
+ *
 /* Revision 1.9  2004/01/09 21:38:13  pah
 /* added new constructor
 /*
@@ -200,5 +212,4 @@ public class User {
 /* Revision 1.3  2003/12/16 13:35:06  mch
 /* Added anonymous class constant for 'default' user
 /* */
-
 
