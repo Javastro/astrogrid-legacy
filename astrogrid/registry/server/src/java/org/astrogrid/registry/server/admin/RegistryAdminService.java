@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilder;
 import org.astrogrid.registry.server.RegistryFileHelper;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.HashMap;
+import java.util.Date;
+import java.text.DateFormat;
 import org.astrogrid.config.Config;
 import org.astrogrid.registry.common.XSLHelper;
 import org.astrogrid.registry.server.XQueryExecution;
@@ -205,9 +207,9 @@ public class RegistryAdminService implements
    public Document updateResource(Document update) {
       log.debug("start updateResource");
       long beginUpdate = System.currentTimeMillis();
-      //transform the xml document into a consistent way.
-      //xml can come in a few various forms.  This xsl will make it
-      //consistent in the db and throughout this registry.
+      // Transform the xml document into a consistent way.
+      // xml can come in a few various forms.  This xsl will make it
+      // consistent in the db and throughout this registry.
       XSLHelper xs = new XSLHelper();      
       Document xsDoc = xs.transformDatabaseProcess((Node)update.
                                                          getDocumentElement());
@@ -215,11 +217,10 @@ public class RegistryAdminService implements
                DomHelper.DocumentToString(xsDoc));
       NodeList nl = getNodeListTags(xsDoc,"Resource","vr");
       
-      //get the managing authority id's and the authority id's that
-      //other registries used.
+      // Get the managing authority id's and the authority id's that
+      // other registries used.
       HashMap manageAuths = RegistryFileHelper.getManagedAuthorities();
-      HashMap otherAuths = RegistryFileHelper.getOtherManagedAuthorities();
-          
+      HashMap otherAuths  = RegistryFileHelper.getOtherManagedAuthorities();
       ArrayList al = new ArrayList();
       String xql = null;
       DocumentFragment df = null;
@@ -256,10 +257,12 @@ public class RegistryAdminService implements
                                                 tempIdent);
             XQueryExecution.updateQuery("xml","astrogridv" + versionNumber,
                                         tempIdent,root);
+            XQueryExecution.updateQuery("xml","statv" + versionNumber,
+                                        tempIdent,createStats(tempIdent));
          }else {
-            //it is not one this registry manages, so check it's attributes
-            //and if it is a Registyr type then go ahead and updat eit
-            //if it isa n authoritytype
+            // It is not one this registry manages, so check it's attributes
+            // and if it is a Registry type then go ahead and update it
+            // if it is an authoritytype
             addManageError = true;
             if(currentResource.hasAttributes()) {
                NamedNodeMap nnm = currentResource.getAttributes();
@@ -281,49 +284,54 @@ public class RegistryAdminService implements
                      //update this registry resource into our registry.
                      XQueryExecution.updateQuery("xml","astrogridv" +
                                                  versionNumber,tempIdent,root);
+                     XQueryExecution.updateQuery("xml","statv" +
+                                                 versionNumber,tempIdent,
+                                                 createStats(tempIdent));
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("AuthorityType") != -1)
                   {
-                     //Okay it is an AuthorityType and if no other registries manage
-                     //this authority then we can place it in this registry as a new
-                     //managed authority.
+                     // Okay it is an AuthorityType and if no other registries 
+                     // manage this authority then we can place it in this 
+                     // registry as a new managed authority.
                      if(!otherAuths.containsKey((String)ident)) {
                         log.info(
               "This is an AuthorityType and not managed by other authorities");
                         addManageError = false;
-                        //Grab our current Registry resource we need to add
-                        //a new managed authority tag.
+                        // Grab our current Registry resource we need to add
+                        // a new managed authority tag.
                         RegistryService rs = new RegistryService();
                         Document loadedRegistry = rs.loadRegistry(null);
                         
-                        //get a ManagedAuthority Node region/area
-                        //so we can append a sibling to it, and
-                        //use its info for creating another ManagedAuthority
-                        //element.
+                        // Get a ManagedAuthority Node region/area
+                        // so we can append a sibling to it, and
+                        // use its info for creating another ManagedAuthority
+                        // element.
+
                         Node manageNode = 
                                         getManagedAuthorityID(loadedRegistry);
                         if(manageNode != null) {
                            log.info(
                      "creating new manage element for authorityid = " + ident);
-                           //Create a new ManagedAuthority element.
+                           // Create a new ManagedAuthority element.
                            Element newManage = loadedRegistry.
                                                createElementNS(
                                                  manageNode.getNamespaceURI(),
                                                  manageNode.getNodeName());
-                           //put in the text node the new ident.
+                           // Put in the text node the new ident.
                            newManage.appendChild(loadedRegistry.
                                                  createTextNode(ident));
-                           //For some reason the DOM model threw exceptions when
-                           //I tried to insert it as a sibling after another
-                           //existing ManagedAuthority tag, so just add it to the
-                           //end for now.
+                           // For some reason the DOM model threw exceptions 
+                           // when I tried to insert it as a sibling after 
+                           // another existing ManagedAuthority tag, so just 
+                           // add it to the end for now.
                            loadedRegistry.getDocumentElement().
                                         getFirstChild().appendChild(newManage);
 
-                           //TODO: Need to check this next line I believe is useless.
+                           // TODO: Need to check this next line I believe is 
+                           // useless.
                            df = xsDoc.createDocumentFragment();
                            
-                           //Update our currentResource into the db.                           
+                           // Update our currentResource into the database
                            root = xsDoc.createElement("AstrogridResource");
                            root.appendChild(currentResource);
                            log.info(
@@ -334,8 +342,12 @@ public class RegistryAdminService implements
                            XQueryExecution.updateQuery("xml","astrogridv" +
                                                         versionNumber,
                                                         tempIdent,root);
-                           //Now get the information to re-update the
-                           //Registry Resource which is for this registry.
+                           XQueryExecution.updateQuery("xml","statv" +
+                                                       versionNumber,
+                                                       tempIdent,
+                                                       createStats(tempIdent));
+                           // Now get the information to re-update the
+                           // Registry Resource which is for this registry.
                            ident = getAuthorityID(loadedRegistry.
                                                   getDocumentElement());
                            resKey = getResourceKey(loadedRegistry.
@@ -352,13 +364,15 @@ public class RegistryAdminService implements
                            XQueryExecution.updateQuery("xml","astrogridv" + 
                                                        versionNumber,tempIdent,
                                                        elem);
-                           //reset our hashmap of the managed authorities.
-                           //TODO: this is wrong should just add the new ident to
-                           //the hashmap not re-query the db all over again.
+                           // reset our hashmap of the managed authorities.
+                           // TODO: this is wrong should just add the new 
+                           // ident to the hashmap and not re-query the db all
+                           // over again.
                            manageAuths = RegistryFileHelper.
                                          doManageAuthorities();
                         }else {
-                           //This resource is already owned by another Registry.
+                           // This resource is already owned by another 
+                           // Registry.
                            log.info(
                            "IN THE AUTO-INTEGRATION YOU SHOULD NOT GET HERE, "+
                            "Removing Resource and not updating this Resource");
@@ -381,8 +395,8 @@ public class RegistryAdminService implements
                   " for ident  = " + tempIdent);
       }//for
        
-      //Constructgs a small RegistryError element with all the
-      //errored Resource that was not able to be updated in the db. 
+      // Constructs a small RegistryError element with all the
+      // errored Resource that was not able to be updated in the db. 
       if(al != null && al.size() > 0) {
          try {
             Document errorDoc = DomHelper.newDocument();
@@ -401,7 +415,7 @@ public class RegistryAdminService implements
          }
       }
       log.info("Time taken to complete update on server = " +
-               (System.currentTimeMillis() - beginUpdate));
+               (System.currentTimeMillis() - beginUpdate) + "milliseconds");
       log.debug("end updateResource");
       return update;
    }
@@ -544,9 +558,40 @@ public class RegistryAdminService implements
       }//for
       log.debug("end updateNoCheck");
    }
-  
+
    /**
-    * Need to use REgistryFileHelper class to get the NodeList.
+    * Create statistical data to store in the eXist database when each 
+    * managed or registry Resource entry is either created or updated. This
+    * will shortly be used to drive Harvesting so that only appropriate
+    * entries will be extracted.
+    *
+    * @param tempIdent The identifier for this Resource
+    * @return Node representing the <ResourceStat> Element
+    */     
+   private Node createStats( String tempIdent ) {
+      log.debug("start createStats");
+      Date statsTimeMillis = new Date();
+      DateFormat shortDT = DateFormat.getDateTimeInstance();
+      String statsXML = "<ResourceStat><Identifier>" + tempIdent +
+                               "</Identifier><StatsDateMillis>" +
+                               statsTimeMillis.getTime() +
+                               "</StatsDateMillis><StatsDate>" +
+                               shortDT.format(statsTimeMillis) +
+                               "</StatsDate></ResourceStat>";
+      try {
+         log.debug("end createStats");
+         return DomHelper.newDocument(statsXML).getDocumentElement();
+      }
+      catch ( Exception e ) {
+      // This will be improved shortly with other Exception handling!
+         e.printStackTrace();
+         log.error(e);
+     }
+     return null;
+   }
+
+   /**
+    * Need to use RegistryFileHelper class to get the NodeList.
     * But leave for the moment.
     * @param doc
     * @return
