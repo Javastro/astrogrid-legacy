@@ -1,4 +1,4 @@
-/*$Id: TestInstallation.java,v 1.2 2003/11/24 21:03:44 nw Exp $
+/*$Id: TestInstallation.java,v 1.3 2003/12/09 12:39:59 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
  * - deliberately not called *Test - as we dont want it automatically run via maven
  *  - just that junit is a nice way to present these installation tests 
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2003
+ * @deprecated replaced by installation tests  and query form inside datacenter war. more useable than this stand-alone client.
 
  */
 public class TestInstallation extends AbstractTestInstallation { 
@@ -138,6 +139,9 @@ public class TestInstallation extends AbstractTestInstallation {
 
 /* 
 $Log: TestInstallation.java,v $
+Revision 1.3  2003/12/09 12:39:59  nw
+deprecated - obsoleted by stuff in pal
+
 Revision 1.2  2003/11/24 21:03:44  nw
 got compiling again
 

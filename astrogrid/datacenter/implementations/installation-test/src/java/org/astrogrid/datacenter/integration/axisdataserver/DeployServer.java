@@ -1,4 +1,4 @@
-/*$Id: DeployServer.java,v 1.1 2003/11/18 12:14:14 nw Exp $
+/*$Id: DeployServer.java,v 1.2 2003/12/09 12:39:59 nw Exp $
  * Created on 16-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,7 +18,7 @@ import org.apache.axis.utils.Options;
  *  -- wraps around classes supplied by axis - hence accepts all parameters (port, host, password, etc) that
  * original {@link org.apache.axis.client.AdminClient} does.
  * @author Noel Winstanley nw@jb.man.ac.uk 16-Sep-2003
- *
+ * @deprecated no use to us anymore, as datacenter war comes pre-configured
  */
 public class DeployServer {
     public static final String SERVER_DEPLOY_WSDD="/wsdd/AxisDataServer-deploy.wsdd";
@@ -45,6 +45,9 @@ public class DeployServer {
 
 /* 
 $Log: DeployServer.java,v $
+Revision 1.2  2003/12/09 12:39:59  nw
+deprecated - obsoleted by stuff in pal
+
 Revision 1.1  2003/11/18 12:14:14  nw
 mavenized installation-test
 
