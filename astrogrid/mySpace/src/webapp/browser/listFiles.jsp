@@ -62,7 +62,7 @@
             }
             else {
             
-            out.println("<td><a href='"+msnode.getEntryUri()+"'>"+ msnode.getName() + "</a></td>"+
+            out.println("<td><a href='"+msnode.getEntryUri()+"'>"+ msnode.getPath() + "</a></td>"+
                         "<td>"+ msnode.getSize() + "</a></td>"+
                         "<td>"+ msnode.getCreationDate().toGMTString() + "</a></td>"+
                         "<td>"+
