@@ -1,4 +1,4 @@
-/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.1 2004/08/17 15:38:23 nw Exp $
+/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.2 2004/09/08 14:13:56 nw Exp $
  * Created on 17-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,13 +65,14 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
         wf.setName(this.getClass().getName());
         ApplicationDescription desc = reg.getDescriptionFor(MPEG_APP);
         Tool movieTool = desc.createToolFromDefaultInterface();
+
         // populate tool.
-        ParameterValue movie = (ParameterValue)movieTool.findXPathValue("output/parameter[name='Movie']");
+        ParameterValue movie = (ParameterValue)movieTool.findXPathValue("output/parameter[name='OutputFile']");
         assertNotNull(movie);
         movie.setIndirect(true); // sending movie to a location somewhere 
         movie.setValue(target.toString());
         
-        ParameterValue image= (ParameterValue)movieTool.findXPathValue("input/parameter[name='Image']");
+        ParameterValue image= (ParameterValue)movieTool.findXPathValue("input/parameter[name='InputFiles']");
         assertNotNull(image);
         image.setIndirect(true);
         image.setValue(fits1);
@@ -84,6 +85,7 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
         // add to the workflow.
         Step s = new Step();
         s.setDescription("Movie tool");
+        s.setName("movie tool");
         s.setTool(movieTool);
         wf.getSequence().addActivity(s);
     }
@@ -104,6 +106,9 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
 
 /* 
 $Log: SimpleMovieMakerWorkflowTest.java,v $
+Revision 1.2  2004/09/08 14:13:56  nw
+fixed invalid workflow problem
+
 Revision 1.1  2004/08/17 15:38:23  nw
 set of integration tests that require external resources.
  
