@@ -74,7 +74,7 @@ public class DesignAction extends AbstractAction {
 	 * Cocoon param for the user param in the session.
 	 *
 	 */
-	public static final String COMMUNITY_PARAM_TAG = "community" ;
+	public static final String COMMUNITY_PARAM_TAG = "community_account" ;
 
 	/**
 	 * Http request param for the action.
