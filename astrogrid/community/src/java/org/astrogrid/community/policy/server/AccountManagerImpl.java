@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.7 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.8 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.8  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.7  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -51,7 +54,6 @@ import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.AccountData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
-import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class AccountManagerImpl
 	implements AccountManager

@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/09/12 11:16:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.28 $</cvs:version>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+    | <cvs:version>$Revision: 1.29 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.29  2003/09/13 02:18:52  dave
+    |   Extended the jConfig configuration code.
+    |
     |   Revision 1.28  2003/09/12 11:16:09  KevinBenson
     |   added the jconfig into it.
     |
@@ -372,10 +375,11 @@
 			<sysproperty key="java.io.tmpdir"     path="${tomcat.home}/temp"/>
 
 			<!-- Setup our server config -->
+<!-- ZRQ
 			<sysproperty key="org.astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
 			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
 			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
-
+-->
 			<!-- Select the server JVM (fails on Linux JDK 1.4.0) -->
 			<!-- <jvmarg value="-server"/> -->
 			<!-- Args for the Tomcat Bootstrap class -->
@@ -622,6 +626,76 @@
 		<antcall target="tomcat.manager.wait"/>
 		<!-- Install our webapp -->
 		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/xerces-docs" war="file://${xerces.home}/docs"/>
+	</target>
+
+	<!-- ================ JConfig tasks ================ -->
+	<!--+
+		| JConfig properties.
+		+-->
+	<property name="jconfig.base"    value="${basedir}/build/jconfig"/>
+	<property name="jconfig.name"    value="jConfig"/>
+	<property name="jconfig.version" value="2.2"/>
+	<property name="jconfig.dist"    value="http://belnet.dl.sourceforge.net/sourceforge/jconfig/jconfig-bin-v${jconfig.version}.zip"/>
+	<property name="jconfig.home"    value="${jconfig.base}/${jconfig.name}"/>
+
+	<!--+
+		| The JConfig library classpath.
+		+-->
+	<path id="jconfig.classpath">
+		<pathelement location="${jconfig.home}/dist/jconfig.jar"/>
+	</path>
+
+	<!--+
+		| Delete the JConfig directory.
+		+-->
+	<target name="jconfig.delete" depends="">
+		<delete dir="${jconfig.base}"/>
+	</target>
+
+	<!--+
+		| Download the JConfig binary.
+		+-->
+	<target name="jconfig.dist.fetch" depends="">
+		<mkdir dir="${jconfig.base}"/>
+		<get verbose="true" usetimestamp="true"
+			src="${jconfig.dist}"
+			dest="${jconfig.base}/jconfig-${jconfig.version}.zip"
+			/>
+	</target>
+
+	<!--+
+		| Unzip the JConfig binary.
+		+-->
+	<target name="jconfig.dist.unzip" depends="">
+		<unzip src="${jconfig.base}/jconfig-${jconfig.version}.zip" dest="${jconfig.base}"/>
+	</target>
+
+	<!--+
+		| Install JConfig.
+		+-->
+	<target name="jconfig.INSTALL" depends="">
+		<antcall target="jconfig.dist.fetch"/>
+		<antcall target="jconfig.dist.unzip"/>
+	</target>
+
+	<!--+
+		| Prepare JConfig.
+		+-->
+	<target name="jconfig.PREPARE" depends="">
+	</target>
+
+	<!--+
+		| Install the JConfig docs as a webapp.
+		+-->
+	<target name="jconfig.docs.install" depends="tomcat.tasks">
+		<echo message=""/>
+		<echo message="Installing JConfig documentation ...."/>
+		<!-- Copy the web.xml file -->
+		<copy file="src/webapps/docs/WEB-INF/web.xml" todir="${jconfig.home}/javadoc/WEB-INF"/>
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our webapp -->
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/jconfig-docs" war="file://${jconfig.home}/javadoc"/>
 	</target>
 
 	<!-- ================ Hsqldb tasks ================ -->
@@ -1141,13 +1215,6 @@
 
 	<property name="policy.server.jar"  value="policy-server-${project.version}.jar"/>
 	<property name="policy.client.jar"  value="policy-client-${project.version}.jar"/>
-	<property name="jconfig.jar" value="${basedir}/depends/jconfig/jconfig.jar" />
-
-	
-	<path id="jconfig.classpath">
-		<pathelement location="${jconfig.jar}"/>
-	</path>
-
 
 	<!--+
 		| The Policy server classpath.
@@ -1161,7 +1228,7 @@
 		<path refid="xerces.classpath"/>
 		<!-- The Hsqldb libraries -->
 		<path refid="hsqldb.classpath"/>
-		<!-- Jconfig libraries -->
+		<!-- The JConfig libraries -->
 		<path refid="jconfig.classpath"/>
 		<!-- Our server jar -->
 		<pathelement path="${policy.base}/jar/${policy.server.jar}"/>
@@ -1173,7 +1240,7 @@
 	<path id="policy.client.classpath">
 		<!-- The Axis libraries -->
 		<path refid="axis.classpath"/>
-		<!-- Jconfig libraries -->		
+		<!-- The JConfig libraries -->
 		<path refid="jconfig.classpath"/>
 		<!-- Our client classes -->
 		<pathelement path="${policy.base}/jar/${policy.client.jar}"/>
@@ -1203,7 +1270,8 @@
 			<include name="org/astrogrid/community/policy/data/*.java"/>
 			<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 			<classpath>
-			
+				<!-- The JConfig libraries -->
+				<path refid="jconfig.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -1225,6 +1293,8 @@
 			<include name="org/astrogrid/community/policy/data/*.java"/>
 			<include name="org/astrogrid/community/policy/server/PolicyManager.java"/>
 			<classpath>
+				<!-- The JConfig libraries -->
+				<path refid="jconfig.classpath"/>
 			</classpath>
 		</javac>
 	</target>
@@ -1402,10 +1472,6 @@
 			</fileset>
 			<!-- Copy our own Java source -->
 			<fileset dir="src/java">
-			
-				<!-- Include our common objects -->
-	  	        <include name="org/astrogrid/community/common/*.java"/>
-
 				<!-- Include our PolicyService interface and implementation -->
 				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 				<include name="org/astrogrid/community/policy/server/PolicyServiceImpl.java"/>
@@ -1436,6 +1502,8 @@
 				<!-- Include our Configuration implementation -->
 				<include name="org/astrogrid/community/policy/server/CommunityConfigImpl.java"/>
 
+				<!-- Include our common objects -->
+				<include name="org/astrogrid/community/common/**"/>
 				<!-- Include our data objects -->
 				<include name="org/astrogrid/community/policy/data/*.java"/>
 				<!-- Include our JUnit tests -->
@@ -1484,8 +1552,6 @@
 			<fileset dir="src/java">
 				<!-- Include our delegate objects -->
 				<include name="org/astrogrid/community/delegate/policy/*.java"/>
-				<!-- Include our common objects -->
-	  	        <include name="org/astrogrid/community/common/*.java"/>
 				<!-- Include our PolicyService interface -->
 				<include name="org/astrogrid/community/policy/server/PolicyService.java"/>
 				<!-- Include our PolicyManager interface -->
@@ -1501,8 +1567,10 @@
 				<!-- Include our PermissionManager interface -->
 				<include name="org/astrogrid/community/policy/server/PermissionManager.java"/>
 
+				<!-- Include our common objects -->
+				<include name="org/astrogrid/community/common/**"/>
 				<!-- Include our data objects -->
-				<include name="org/astrogrid/community/policy/data/*.java"/>
+				<include name="org/astrogrid/community/policy/data/**"/>
 				<!-- Include our JUnit tests -->
 				<include name="org/astrogrid/community/policy/client/junit/**"/>
 
@@ -1523,7 +1591,7 @@
 		       deprecation="on"
 		       optimize="on"
 		       >
-   	        <include name="org/astrogrid/community/common/*.java"/>		       
+			<include name="org/astrogrid/community/common/**"/>
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<!--+
@@ -1540,9 +1608,8 @@
 				<path refid="castor.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
-				
+				<!-- Include the JConfig libraries -->
 				<path refid="jconfig.classpath"/>
-				
 			</classpath>
 		</javac>
 	</target>
@@ -1560,7 +1627,7 @@
 		       deprecation="on"
 		       optimize="on"
 		       >
-  	        <include name="org/astrogrid/community/common/*.java"/>		       		       
+			<include name="org/astrogrid/community/common/*.java"/>
 			<include name="org/astrogrid/community/policy/data/**"/>
 			<include name="org/astrogrid/community/policy/server/**"/>
 			<include name="org/astrogrid/community/policy/client/**"/>
@@ -1568,7 +1635,7 @@
 			<classpath>
 				<!-- Include the JUnit libraries -->
 				<path refid="junit.classpath"/>
-				
+				<!-- Include the JConfig libraries -->
 				<path refid="jconfig.classpath"/>
 				<!-- Include the Axis libraries -->
 				<path refid="axis.classpath"/>
@@ -1619,24 +1686,6 @@
 	</target>
 
 	<!--+
-		| Build our server config files.
-		| Not sure of the best place to put these at the moment.
-		| The mapping file should not change, so probably should be in the jar.
-		| The database file should be user configurable, so should NOT be in the jar.
-		+-->
-	<target name="policy.server.config" depends="">
-		<!-- Create our config directory -->
-		<mkdir dir="${policy.server.base}/config"/>
-		<!-- Copy our database mapping files -->
-		<copy verbose="false" overwrite="true" toDir="${policy.server.base}/config">
-			<fileset dir="src/castor/hsqldb">
-				<include name="database.xml"/>
-				<include name="mapping.xml"/>
-			</fileset>
-		</copy>
-	</target>
-
-	<!--+
 	    | Build our policy service.
 	    +-->
 	<target name="policy.BUILD" depends="">
@@ -1654,7 +1703,6 @@
 
 		<antcall target="policy.server.prepare"/>
 		<antcall target="policy.server.javac"/>
-		<antcall target="policy.server.config"/>
 		<antcall target="policy.server.jar"/>
 
 		<antcall target="policy.client.prepare"/>
@@ -1679,6 +1727,9 @@
 			</fileset>
 			<fileset dir="${hsqldb.home}/lib">
 				<include name="hsqldb.jar"/>
+			</fileset>
+			<fileset dir="${jconfig.home}/dist">
+				<include name="jconfig.jar"/>
 			</fileset>
 		</copy>
 		<!-- Copy our jar into the Axis WEB-INF/lib directory -->
@@ -1870,13 +1921,12 @@
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
-			<!-- Pass in the server config properties -->
-			<sysproperty key="org.astrogrid.policy.server.mapping"          value="file://${policy.server.base}/config/mapping.xml"/>
-			<sysproperty key="org.astrogrid.policy.server.database.config"  value="file://${policy.server.base}/config/database.xml"/>
-			<sysproperty key="org.astrogrid.policy.server.database.name"    value="${hsqldb.database}"/>
+			<!-- Pass in the location of the config file -->
+			<sysproperty key="org.astrogrid.community.config" value="${config.file}"/>
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.server.base}/classes">
+					<include name="org/astrogrid/community/common/junit/**/JUnit*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitGroup*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitAccount*.class"/>
 					<include name="org/astrogrid/community/policy/server/junit/**/JUnitResource*.class"/>
@@ -1902,6 +1952,8 @@
 			</classpath>
 			<!-- Generate an XML log file -->
 			<formatter type="xml"/>
+			<!-- Pass in the location of the config file -->
+			<sysproperty key="org.astrogrid.community.config" value="${config.file}"/>
 			<!-- Run the target JUnitTestCase tests -->
 			<batchtest todir="${policy.base}/junit">
 				<fileset dir="${policy.client.base}/classes">
@@ -1949,9 +2001,9 @@
 		<!-- Run our server side tests -->
 		<antcall target="policy.server.junit"/>
 		<!-- Run our client side tests -->
-		<antcall target="policy.client.junit"/>
+	<antcall target="policy.client.junit"/>
 		<!-- Display our database -->
-		<antcall target="hsqldb.database.select"/>
+	<antcall target="hsqldb.database.select"/>
 	</target>
 
 	<!--+
@@ -2573,6 +2625,85 @@ Start of Authentication "auth" tasks
 	End of Authentication tasks
 -->
 
+
+	<!-- ================ Configuration tasks ================ -->
+	<!--+
+	    | Configuration properties.
+	    +-->
+	<property name="config.base" value="${basedir}/build/config"></property>
+	<property name="config.name" value="frog.xml"></property>
+	<property name="config.file" value="${config.base}/${config.name}"></property>
+
+	<!--+
+		| Delete our configuration files.
+		+-->
+	<target name="config.delete" depends="">
+		<delete dir="${config.base}" failonerror="false"/>
+	</target>
+
+	<!--+
+		| Build our jConfig configuration file(s).
+		| This uses an XSL transform to set the correct paths in our jConfig configuration file.
+		+-->
+	<target name="config.jconfig" depends="">
+		<echo message=""/>
+		<echo message="Building community config ...."/>
+		<!-- Create our config directory -->
+		<mkdir dir="${config.base}"/>
+		<!-- Copy our database mapping files -->
+		<copy verbose="false" overwrite="true" toDir="${config.base}">
+			<fileset dir="src/castor/hsqldb">
+				<include name="database.xml"/>
+				<include name="mapping.xml"/>
+			</fileset>
+		</copy>
+		<!-- Transform our template config file, filling in the correct values -->
+		<xslt style="src/xsl/build/config/config.xsl"
+		      in="src/config/config.xml"
+		      out="${config.file}">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="category"         expression="org.astrogrid.community"/>
+			<param name="database.name"    expression="${hsqldb.database}"/>
+			<param name="database.config"  expression="${config.base}/database.xml"/>
+			<param name="database.mapping" expression="${config.base}/mapping.xml"/>
+		</xslt>
+	</target>
+
+	<!--+
+		| Modify the Axis web.xml to include our JNDI property.
+		| This uses an XSL transform to add the path to our config file to the Axis web.xml.
+		| This will be picked up by our WebService using a JNDI lookup call.
+		+-->
+	<target name="config.axis.jndi" depends="">
+		<echo message=""/>
+		<echo message="Modifying Axis web.xml ...."/>
+		<!-- Move the existing web.xml to a backup file -->
+		<move file="${axis.webapp}/WEB-INF/web.xml" tofile="${axis.webapp}/WEB-INF/web.tmp" overwrite="true" failonerror="false"/>
+		<!-- Transform the Axis web.xml, adding our JNDI property -->
+		<xslt style="src/xsl/build/config/webapp.xsl"
+		      in="${axis.webapp}/WEB-INF/web.tmp"
+		      out="${axis.webapp}/WEB-INF/web.xml">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="property.name"  expression="org.astrogrid.community.config"/>
+			<param name="property.value" expression="${config.file}"/>
+		</xslt>
+		<!-- Remove the temp file -->
+		<delete file="${axis.webapp}/WEB-INF/web.tmp"/>
+	</target>
+
+	<!--+
+		| Build our jConfig configuration.
+		+-->
+	<target name="config.BUILD" depends="">
+		<antcall target="config.delete"/>
+		<antcall target="config.jconfig"/>
+		<antcall target="config.axis.jndi"/>
+	</target>
+
 	<!-- ================ Project tasks ================ -->
 	<!--+
 	    | Download our 3rd party components.
@@ -2583,6 +2714,7 @@ Start of Authentication "auth" tasks
 		<antcall target="junit.INSTALL"/>
 		<antcall target="castor.INSTALL"/>
 		<antcall target="xerces.INSTALL"/>
+		<antcall target="jconfig.INSTALL"/>
 		<antcall target="hsqldb.INSTALL"/>
 		<antcall target="tomcat.INSTALL"/>
 	</target>
@@ -2611,6 +2743,7 @@ Start of Authentication "auth" tasks
 		<antcall target="junit.PREPARE"/>
 		<antcall target="castor.PREPARE"/>
 		<antcall target="xerces.PREPARE"/>
+		<antcall target="jconfig.PREPARE"/>
 		<antcall target="hsqldb.PREPARE"/>
 		<antcall target="tomcat.PREPARE"/>
 		<echo message=""/>
@@ -2632,6 +2765,7 @@ Start of Authentication "auth" tasks
 		<antcall target="castor.docs.install"/>
 		<antcall target="xerces.docs.install"/>
 		<antcall target="hsqldb.docs.install"/>
+		<antcall target="jconfig.docs.install"/>
 		<echo message=""/>
 		<echo message="Ok, project WebApps installed."/>
 	</target>
@@ -2692,6 +2826,7 @@ Start of Authentication "auth" tasks
 	    | Build our project components.
 	    +-->
 	<target name="project.BUILD" depends="init">
+		<antcall target="config.BUILD"/>
 		<antcall target="policy.BUILD"/>
 	</target>
 

@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/DatabaseManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/08 20:28:50 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: DatabaseManagerImpl.java,v $
+ *   Revision 1.3  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.2  2003/09/08 20:28:50  dave
  *   Added CommunityIdent, with isLocal() and isValid()
  *
@@ -31,7 +34,7 @@ import org.exolab.castor.util.Logger;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 
-import org.astrogrid.community.policy.data.CommunityConfig ;
+import org.astrogrid.community.common.CommunityConfig ;
 
 public class DatabaseManagerImpl
 	implements DatabaseManager
@@ -43,10 +46,22 @@ public class DatabaseManagerImpl
 	protected static final boolean DEBUG_FLAG = true ;
 
 	/**
-	 * The name of our system property to read the location of our JDO mapping from.
+	 * The name of our config property to read the location of our JDO mapping from.
 	 *
 	 */
-	private static final String MAPPING_CONFIG_PROPERTY = "org.astrogrid.policy.server.mapping" ;
+	private static final String MAPPING_CONFIG_PROPERTY = "database.mapping" ;
+
+	/**
+	 * The name of our config property to read the location of our JDO config from.
+	 *
+	 */
+	private static final String DATABASE_CONFIG_PROPERTY = "database.config" ;
+
+	/**
+	 * The name of our config property to read our database name from.
+	 *
+	 */
+	private static final String DATABASE_NAME_PROPERTY = "database.name" ;
 
 	/**
 	 * Our log writer.
@@ -103,12 +118,13 @@ public class DatabaseManagerImpl
 		if (DEBUG_FLAG) System.out.println("DatabaseManagerImpl.init()") ;
 
 		//
-		// Get the local configuration instance.
-		CommunityConfig config = CommunityConfig.getConfig() ;
-
-		if (DEBUG_FLAG) System.out.println("    Mapping  : " + System.getProperty(MAPPING_CONFIG_PROPERTY)) ;
-		if (DEBUG_FLAG) System.out.println("    Database : " + config.getDatabaseName())   ;
-		if (DEBUG_FLAG) System.out.println("    Database : " + config.getDatabaseConfig()) ;
+		// Initialise our configuration.
+		CommunityConfig.loadConfig() ;
+		//
+		// Get the database configuration.
+		if (DEBUG_FLAG) System.out.println("  Mapping  : " + CommunityConfig.getProperty(MAPPING_CONFIG_PROPERTY)) ;
+		if (DEBUG_FLAG) System.out.println("  Database : " + CommunityConfig.getProperty(DATABASE_CONFIG_PROPERTY)) ;
+		if (DEBUG_FLAG) System.out.println("  Database : " + CommunityConfig.getProperty(DATABASE_NAME_PROPERTY)) ;
 
 		try {
 			//
@@ -117,14 +133,14 @@ public class DatabaseManagerImpl
 			//
 			// Load our object mapping.
 			mapping = new Mapping(getClass().getClassLoader());
-			mapping.loadMapping(System.getProperty(MAPPING_CONFIG_PROPERTY));
+			mapping.loadMapping(CommunityConfig.getProperty(MAPPING_CONFIG_PROPERTY));
 
 			//
 			// Create our JDO engine.
 			jdo = new JDO();
 			jdo.setLogWriter(logger);
-			jdo.setConfiguration(config.getDatabaseConfig());
-			jdo.setDatabaseName(config.getDatabaseName());
+			jdo.setConfiguration(CommunityConfig.getProperty(DATABASE_CONFIG_PROPERTY));
+			jdo.setDatabaseName(CommunityConfig.getProperty(DATABASE_NAME_PROPERTY));
 			//
 			// Create our database connection.
 			database = jdo.getDatabase();

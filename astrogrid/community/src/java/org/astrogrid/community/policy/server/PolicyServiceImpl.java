@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/PolicyServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyServiceImpl.java,v $
+ *   Revision 1.5  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.4  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -29,10 +32,11 @@ import java.rmi.RemoteException ;
 
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
-import org.astrogrid.community.policy.data.CommunityConfig ;
 import org.astrogrid.community.policy.data.GroupMemberData ;
 import org.astrogrid.community.policy.data.PolicyPermission  ;
 import org.astrogrid.community.policy.data.PolicyCredentials ;
+
+import org.astrogrid.community.common.CommunityConfig ;
 
 public class PolicyServiceImpl
 	implements PolicyService
@@ -84,7 +88,7 @@ public class PolicyServiceImpl
 		{
 		//
 		// Initialise our configuration.
-		CommunityConfig.setConfig(new CommunityConfigImpl()) ;
+		CommunityConfig.loadConfig() ;
 		//
 		// Initialise our DatabaseManager.
 		databaseManager = new DatabaseManagerImpl() ;
@@ -113,7 +117,7 @@ public class PolicyServiceImpl
 		if (DEBUG_FLAG) System.out.println("PolicyServiceImpl.getServiceStatus()") ;
 
 		ServiceData result =  new ServiceData() ;
-		result.setIdent(CommunityConfig.getConfig().getCommunityName()) ;
+		result.setIdent(CommunityConfig.getCommunityName()) ;
 
 		if (DEBUG_FLAG) System.out.println("----\"----") ;
 		return result ;

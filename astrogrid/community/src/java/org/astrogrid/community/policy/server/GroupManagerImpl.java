@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/GroupManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.13  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.12  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -70,7 +73,6 @@ import org.exolab.castor.persist.spi.Complex ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.GroupData ;
 import org.astrogrid.community.policy.data.CommunityIdent ;
-import org.astrogrid.community.policy.data.CommunityConfig ;
 import org.astrogrid.community.policy.data.GroupMemberData ;
 
 import java.util.ArrayList;

@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
 	| <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xsl/build/policy/Attic/wsdd.xsl,v $</cvs:source>
-	| <cvs:date>$Author: dave $</cvs:date>
-	| <cvs:author>$Date: 2003/09/03 06:39:13 $</cvs:author>
-	| <cvs:version>$Revision: 1.1 $</cvs:version>
+	| <cvs:author>$Author: dave $</cvs:author>
+	| <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+	| <cvs:version>$Revision: 1.2 $</cvs:version>
 	| <cvs:log>
 	|   $Log: wsdd.xsl,v $
+	|   Revision 1.2  2003/09/13 02:18:52  dave
+	|   Extended the jConfig configuration code.
+	|
 	|   Revision 1.1  2003/09/03 06:39:13  dave
 	|   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
 	|

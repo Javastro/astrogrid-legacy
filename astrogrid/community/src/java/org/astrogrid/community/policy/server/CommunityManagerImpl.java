@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/CommunityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
+ *   Revision 1.7  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.6  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -52,7 +55,6 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 import java.util.ArrayList;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.CommunityData ;
-import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class CommunityManagerImpl
 	implements CommunityManager
@@ -115,8 +117,8 @@ public class CommunityManagerImpl
 		CommunityData community = new CommunityData(name) ;
 		//
 		// Set the default endpoint urls.
-		community.setServiceUrl("http://" + community.getIdent() + ":8080/axis/services/PolicyService") ;
-		community.setManagerUrl("http://" + community.getIdent() + ":8080/axis/services/PolicyManager") ;
+		community.setServiceUrl("http://" + name + ":8080/axis/services/PolicyService") ;
+		community.setManagerUrl("http://" + name + ":8080/axis/services/PolicyManager") ;
 		//
 		// Try performing our transaction.
 		try {

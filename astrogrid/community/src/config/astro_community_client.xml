@@ -1,7 +1,0 @@
-<?xml version="1.0" ?>
-<properties> 
-  <category name="community">
-    <property name="community_url" value="c:\\database.xml" />
-    <property name="myspace_url" value="c:\\databasemyspace.xml" />
-  </category> 
-</properties>

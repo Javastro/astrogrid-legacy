@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<properties> 
-  <category name="community">
-    <property name="org.astrogrid.policy.server.database.config" value="c:\\database.xml" />
-    <property name="org.astrogrid.policy.server.database.name" value="policy" />
-    <property name="org.astrogrid.policy.server.mapping" value="c:\\mapping.xml" />
-  </category> 
-</properties>

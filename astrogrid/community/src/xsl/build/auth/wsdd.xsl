@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
 	| <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xsl/build/auth/Attic/wsdd.xsl,v $</cvs:source>
-	| <cvs:date>$Author: KevinBenson $</cvs:date>
-	| <cvs:author>$Date: 2003/09/08 16:02:47 $</cvs:author>
-	| <cvs:version>$Revision: 1.1 $</cvs:version>
+	| <cvs:author>$Author: dave $</cvs:author>
+	| <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+	| <cvs:version>$Revision: 1.2 $</cvs:version>
 	| <cvs:log>
 	|   $Log: wsdd.xsl,v $
+	|   Revision 1.2  2003/09/13 02:18:52  dave
+	|   Extended the jConfig configuration code.
+	|
 	|   Revision 1.1  2003/09/08 16:02:47  KevinBenson
 	|   finally an authentication piece that is building.
 	|

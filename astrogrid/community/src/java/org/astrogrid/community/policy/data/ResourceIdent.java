@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/ResourceIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 00:08:45 $</cvs:date>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceIdent.java,v $
+ *   Revision 1.2  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.1  2003/09/10 00:08:45  dave
  *   Added getGroupMembers, ResourceIdent and JUnit tests for ResourceManager
  *
@@ -14,7 +17,7 @@
  */
 package org.astrogrid.community.policy.data ;
 
-import org.astrogrid.community.policy.data.CommunityConfig ;
+import org.astrogrid.community.common.CommunityConfig ;
 
 public class ResourceIdent
 	{
@@ -84,7 +87,7 @@ public class ResourceIdent
 //
 				//
 				// Check if the community is local.
-				if (CommunityConfig.getConfig().getCommunityName().equals(this.community))
+				if (CommunityConfig.getCommunityName().equals(this.community))
 					{
 					this.valid = true ;
 					this.local = true ;
@@ -111,7 +114,7 @@ public class ResourceIdent
 			//
 			// Use the local community ident.
 			this.name = ident ;
-			this.community = CommunityConfig.getConfig().getCommunityName() ;
+			this.community = CommunityConfig.getCommunityName() ;
 			this.ident = this.community +  IDENT_SEPARATOR + this.name ;
 			this.valid = true ;
 			this.local = true ;

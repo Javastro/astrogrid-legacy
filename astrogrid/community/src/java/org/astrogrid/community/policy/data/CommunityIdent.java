@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/CommunityIdent.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/10 06:03:27 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityIdent.java,v $
+ *   Revision 1.3  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.2  2003/09/10 06:03:27  dave
  *   Added remote capability to Accounts
  *
@@ -17,7 +20,7 @@
  */
 package org.astrogrid.community.policy.data ;
 
-import org.astrogrid.community.policy.data.CommunityConfig ;
+import org.astrogrid.community.common.CommunityConfig ;
 
 public class CommunityIdent
 	{
@@ -87,7 +90,7 @@ public class CommunityIdent
 //
 				//
 				// Check if the community is local.
-				if (CommunityConfig.getConfig().getCommunityName().equals(this.community))
+				if (CommunityConfig.getCommunityName().equals(this.community))
 					{
 					this.valid = true ;
 					this.local = true ;
@@ -114,7 +117,7 @@ public class CommunityIdent
 			//
 			// Use the local community ident.
 			this.name = ident ;
-			this.community = CommunityConfig.getConfig().getCommunityName() ;
+			this.community = CommunityConfig.getCommunityName() ;
 			this.ident = this.name +  IDENT_SEPARATOR + this.community ;
 			this.valid = true ;
 			this.local = true ;

@@ -1,0 +1,358 @@
+/*
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/common/Attic/CommunityConfig.java,v $</cvs:source>
+ * <cvs:author>$Author: dave $</cvs:author>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
+ *
+ * <cvs:log>
+ *   $Log: CommunityConfig.java,v $
+ *   Revision 1.3  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
+ * </cvs:log>
+ *
+ */
+package org.astrogrid.community.common ;
+
+import java.io.File ;
+import java.net.InetAddress ;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+import org.jconfig.Configuration ;
+import org.jconfig.ConfigurationManager ;
+import org.jconfig.handler.URLHandler ;
+import org.jconfig.handler.XMLFileHandler ;
+
+/**
+ * Class to encapsulate the Community configuration.
+ *
+ */
+public class CommunityConfig
+	{
+	/**
+	 * Switch for our debug statements.
+	 *
+	 */
+	private static final boolean DEBUG_FLAG = true ;
+
+	/**
+	 * The configuration name to use within jConfig.
+	 *
+	 */
+	public static final String CONFIG_NAME = "org.astrogrid.community";
+
+	/**
+	 * The default category to use in the config file.
+	 * Corresponds to the name of the category element in the config file.
+	 * <pre>
+	 *     &lt;properties&gt;
+	 *         &lt;category name="org.astrogrid.community"&gt;
+	 *         ....
+	 *     &lt;/properties&gt;
+	 * </pre>
+	 *
+	 */
+	public static final String DEFAULT_CATEGORY = "org.astrogrid.community";
+
+	/**
+	 * The default JNDI name.
+	 * Corresponds to the name in the env-entry-name entry in your web.xml.
+	 * <pre>
+	 *     &lt;env-entry&gt;
+	 *         &lt;env-entry-name&gt;org.astrogrid.community.config&lt;/env-entry-name&gt;
+	 *         &lt;env-entry-value&gt;....&lt;/env-entry-value&gt;
+	 *         &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+	 *     &lt;/env-entry&gt;
+	 * </pre>
+	 *
+	 */
+	public static final String DEFAULT_JNDI_NAME = "org.astrogrid.community.config";
+
+	/**
+	 * The default system property name.
+	 *
+	 */
+	public static final String DEFAULT_PROPERTY_NAME = "org.astrogrid.community.config";
+
+	/**
+	 * Our JConfig Configuration.
+	 *
+	 */
+	private static Configuration config = null ;
+
+	/**
+	 * Static method to read a JNDI property.
+	 *
+	 */
+	public static String getJndiProperty(String name)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("CommunityConfig.getJndiProperty()") ;
+		String value = null ;
+		try {
+			if (DEBUG_FLAG) System.out.println("  JNDI name  : " + DEFAULT_JNDI_NAME) ;
+			Context initCtx = new InitialContext();
+			Context envCtx = (Context) initCtx.lookup("java:comp/env");
+			value = (String) envCtx.lookup(DEFAULT_JNDI_NAME);
+			if (DEBUG_FLAG) System.out.println("  JNDI value : " + value) ;
+			}
+		catch(Exception ouch)
+			{
+			if (DEBUG_FLAG) System.out.println("Exception while trying JNDI lookup") ;
+			value = null;
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		return value ;
+		}
+
+	/**
+	 * Static method to load our configuration.
+	 * Tries using the the default JNDI name, and then reverts to the default system property.
+	 * The JNDI name corresponds to the name in the env-entry-name entry in your web.xml.
+	 * <pre>
+	 *     &lt;env-entry&gt;
+	 *         &lt;env-entry-name&gt;org.astrogrid.community.config&lt;/env-entry-name&gt;
+	 *         &lt;env-entry-value&gt;....&lt;/env-entry-value&gt;
+	 *         &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+	 *     &lt;/env-entry&gt;
+	 * </pre>
+	 *
+	 */
+	public static Configuration loadConfig()
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("CommunityConfig.loadConfig()") ;
+		//
+		// If we havn't already loaded our config.
+		if (null == config)
+			{
+			String path = null ;
+			//
+			// Try using the JNDI lookup.
+			if (null == path)
+				{
+				if (DEBUG_FLAG) System.out.println("Trying JNDI property") ;
+				path = getJndiProperty(DEFAULT_JNDI_NAME) ;
+				if (null != path)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Got JNDI property") ;
+					}
+				}
+			//
+			// Try using the System property.
+			if (null == path)
+				{
+				if (DEBUG_FLAG) System.out.println("Trying system property") ;
+				path = System.getProperty(DEFAULT_PROPERTY_NAME) ;
+				if (null != path)
+					{
+					if (DEBUG_FLAG) System.out.println("PASS : Got system property") ;
+					}
+				}
+			//
+			// If we still don't have a path.
+			if (null == path)
+				{
+				if (DEBUG_FLAG) System.out.println("FAIL : Unable to get config file path") ;
+				}
+			//
+			// Try loading our config file.
+			if (null != path)
+				{
+				loadConfig(path) ;
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		return config ;
+		}
+
+	/**
+	 * Static method to load our configuration, given the config file location.
+	 *
+	 */
+	public static Configuration loadConfig(String path)
+		{
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("CommunityConfig.loadConfig()") ;
+		if (DEBUG_FLAG) System.out.println("  Path  : " + path) ;
+		//
+		// If we havn't already loaded our config.
+		if (null == config)
+			{
+			//
+			// If the path is not null.
+			if (null != path)
+				{
+				ConfigurationManager manager = ConfigurationManager.getInstance();
+				try {
+					if (null != path)
+						{
+						if (path.startsWith("http"))
+							{
+							URLHandler handler = new URLHandler();
+							handler.setURL(path);
+							manager.load(handler, CONFIG_NAME);
+							}
+						else {
+							File file = new File(path);
+							XMLFileHandler handler = new XMLFileHandler();
+							handler.setFile(file);
+							handler.load(file);
+							manager.load(handler, CONFIG_NAME);
+							}
+						config = ConfigurationManager.getConfiguration(CONFIG_NAME);
+						}
+					}
+				catch(Exception e)
+					{
+					e.printStackTrace();
+					config = null;
+					}
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		return config ;
+		}
+
+	/**
+	 * Static method to get a config property.
+	 *
+	 */
+	public static String getProperty(String propName)
+		{
+		return getProperty(propName, null, DEFAULT_CATEGORY);
+		}
+
+	/**
+	 * Static method to get a config property.
+	 *
+	 */
+	public static String getProperty(String propName, String defaultVal)
+		{
+		return getProperty(propName, defaultVal, DEFAULT_CATEGORY);
+		}
+
+	/**
+	 * Static method to get a config property.
+	 *
+	 */
+	public static String getProperty(String propName, String defaultVal, String category)
+		{
+		if (null == config)
+			{
+			config = ConfigurationManager.getConfiguration(CONFIG_NAME);
+			}
+		return (null != config) ? config.getProperty(propName, defaultVal, category) : null ;
+		}
+
+	/**
+	 * The name of the property for our local community name.
+	 *
+	 */
+	public static final String COMMUNITY_PROPERTY_NAME = "community.name";
+
+	/**
+	 * Our local community name.
+	 *
+	 */
+	private static String community = null ;
+
+	/**
+	 * Static method to get our community name.
+	 * If not specified in the config file, defaults to our local host name.
+	 *
+	 */
+	public static String getCommunityName()
+		{
+		//
+		// Try reading our config property.
+		if (null == community)
+			{
+			community = getProperty(COMMUNITY_PROPERTY_NAME) ;
+			}
+		//
+		// Try our local host address.
+		try {
+			community = InetAddress.getLocalHost().getHostName() ;
+			}
+		catch (Exception ouch)
+			{
+			community = "localhost" ;
+			}
+		return community ;
+		}
+
+	/**
+	 * Our local manager URL.
+	 *
+	 */
+	private static String manager = null ;
+
+	/**
+	 * The name of the property for our policy manager URL.
+	 *
+	 */
+	public static final String POLICY_MANAGER_PROPERTY_NAME = "policy.manager.url";
+
+	/**
+	 * Static method to get our local manager URL.
+	 *
+	 */
+	public static String getManagerUrl()
+		{
+		//
+		// Try reading our config property.
+		if (null == manager)
+			{
+			manager = getProperty(POLICY_MANAGER_PROPERTY_NAME) ;
+			}
+		//
+		// Try using our local host name.
+		if (null == manager)
+			{
+			manager = "http://" + getCommunityName() + ":8080/axis/services/PolicyManager" ;
+			}
+		return manager ;
+		}
+
+	/**
+	 * Our local service URL.
+	 *
+	 */
+	private static String service = null ;
+
+	/**
+	 * The name of the property for our service URL.
+	 *
+	 */
+	public static final String POLICY_SERVICE_PROPERTY_NAME = "policy.service.url";
+
+	/**
+	 * Static method to get our local service URL.
+	 *
+	 */
+	public static String getServiceUrl()
+		{
+		//
+		// Try reading our config property.
+		if (null == service)
+			{
+			service = getProperty(POLICY_SERVICE_PROPERTY_NAME) ;
+			}
+		//
+		// Try using our local host name.
+		if (null == service)
+			{
+			service = "http://" + getCommunityName() + ":8080/axis/services/PolicyService" ;
+			}
+		return service ;
+		}
+	}

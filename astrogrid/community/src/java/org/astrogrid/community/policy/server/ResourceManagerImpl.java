@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/server/Attic/ResourceManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/12 12:59:17 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/13 02:18:52 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
+ *   Revision 1.4  2003/09/13 02:18:52  dave
+ *   Extended the jConfig configuration code.
+ *
  *   Revision 1.3  2003/09/12 12:59:17  dave
  *   1) Fixed RemoteException handling in the manager and service implementations.
  *
@@ -38,7 +41,6 @@ import org.exolab.castor.jdo.ClassNotPersistenceCapableException ;
 import org.astrogrid.community.policy.data.ServiceData ;
 import org.astrogrid.community.policy.data.ResourceData ;
 import org.astrogrid.community.policy.data.ResourceIdent ;
-import org.astrogrid.community.policy.data.CommunityConfig ;
 
 public class ResourceManagerImpl
    implements ResourceManager
