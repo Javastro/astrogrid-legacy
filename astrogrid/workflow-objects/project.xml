@@ -108,8 +108,8 @@
         <dependency>
                 <artifactId>castor</artifactId>
                 <groupId>castor</groupId>
-                <version>0.9.5</version>
-                <jar>castor-0.9.5-xml.jar</jar>
+                <version>0.9.5.3</version>
+<!--                <jar>castor-0.9.5-xml.jar</jar> -->
                 <properties>
                         <war.bundle>true</war.bundle>
                 </properties>
@@ -181,6 +181,92 @@
       <war.bundle>true</war.bundle>
     </properties>
     </dependency>
+    
+    <!-- some experiments with other systems -->
+
+    <dependency>
+      <id>jaxme</id>
+      <version>0.2</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+    
+    <!-- jaxb and required jars -->
+     <dependency>
+      <groupId>jaxb</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>1.0.2</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+     <dependency>
+      <groupId>jaxb</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>1.0.2</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+     <dependency>
+      <groupId>jaxb</groupId>
+      <artifactId>jaxb-libs</artifactId>
+      <version>1.0.2</version>
+          <properties>
+      <war.bundle>true</war.bundle>
+    </properties>
+    </dependency>
+    
+     <dependency>
+      <groupId>jaxb</groupId>
+      <artifactId>jaxb-xjc</artifactId>
+      <version>1.0.2</version>
+          <properties>
+      <war.bundle>false</war.bundle>
+    </properties>
+    </dependency>
+<!-- jaxb dependencies -->
+    
+     <dependency>
+      <artifactId>jax-qname</artifactId>
+      <groupId>jwsdp</groupId>
+      <version>1.3</version>
+          <properties>
+      <war.bundle>false</war.bundle>
+    </properties>
+    </dependency>
+    
+      <dependency>
+      <artifactId>namespace</artifactId>
+      <groupId>jwsdp</groupId>
+      <version>1.3</version>
+          <properties>
+      <war.bundle>false</war.bundle>
+    </properties>
+    </dependency>
+    
+      <dependency>
+      <artifactId>relaxngDatatype</artifactId>
+      <groupId>jwsdp</groupId>
+      <version>1.3</version>
+          <properties>
+      <war.bundle>false</war.bundle>
+    </properties>
+    </dependency>
+    
+      <dependency>
+      <artifactId>xsdlib</artifactId>
+      <groupId>jwsdp</groupId>
+      <version>1.3</version>
+          <properties>
+      <war.bundle>false</war.bundle>
+    </properties>
+    </dependency>
+    
+    
+    
+    
 
         <dependency>
             <artifactId>junit</artifactId>

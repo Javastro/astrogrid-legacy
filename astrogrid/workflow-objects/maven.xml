@@ -358,9 +358,23 @@
           </fileset>
       </delete>
   </goal>
+  
+  <goal name="jaxb-generate" description="use jaxb to generate sources" prereqs="jaxb-declare-tasks">
+  	<mkdir dir="jaxbsrc"/>
+  	<xjc target="jaxbsrc">
+      <schema dir="schema" includes="**/*.xsd" excludes="**/debug.xsd"/>
+      <arg value="-extension" />
+    </xjc>     
+  </goal>
 
   <goal name="axis-declare-tasks">
      <taskdef resource="axis-tasks.properties"  classpathref="maven.dependency.classpath" />
+  </goal>
+  
+  <goal name="jaxb-declare-tasks">
+  	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask"  classpathref="maven.dependency.classpath" >
+  </taskdef>
+        
   </goal>
 
 
