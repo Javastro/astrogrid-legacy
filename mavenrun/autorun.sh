@@ -1,4 +1,5 @@
 #!/bin/bash
+# $Id: autorun.sh,v 1.7 2004/05/24 12:25:26 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -6,11 +7,18 @@ source /etc/profile
 CHECKOUTHOME=/data/cvsDownloads/itn05
 SCRIPTHOME=/home/integration/autobuilds
 BUILDHOME=/data/cvsDownloads/itn05/astrogrid/integrationTests/auto-integration
-LOGFILE=/home/integration/autobuilds/auto.log
-
-
+LOGFILE=/home/integration/mavenrun/auto.log
+DATE=`date`
+TIMESTAMP=`date +%Y%m%d-%T`
+ADMIN_EMAIL=jdt@roe.ac.uk
 export CVS_RSH=ssh
 export CVSROOT=:pserver:anoncvs@cvs.astrogrid.org:/devel
+
+
+rm $LOGFILE
+echo "Integration Test Log $DATE" >> $LOGFILE
+echo "=============================" >> $LOGFILE
+
 # Restart tomcat
 $CATALINA_HOME/bin/shutdown.sh >> $LOGFILE 2>&1
 echo "Waiting for tomcat to shutdown...." >> $LOGFILE
@@ -24,7 +32,30 @@ cvs update -PCd  >> $LOGFILE 2>&1
 #run maven goals
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo $BUILDHOME >> $LOGFILE
-maven undeploy-all >> $LOGFILE 2>&1
-maven deploy-all >> $LOGFILE 2>&1
-maven astrogrid-deploy-site >> $LOGFILE 2>&1
+
+if maven undeploy-all >> $LOGFILE 2>&1
+then
+   echo "*** SUCCESS ***\n" >> $LOG_FILE
+else
+   echo "*** FAILURE ***\n" >> $LOG_FILE
+   cat $LOG_FILE | mail -s "undeploy-all Failure in integration tests" $ADMIN_EMAIL 
+fi
+if maven maven deploy-all >> $LOGFILE 2>&1
+then
+   echo "*** SUCCESS ***\n" >> $LOG_FILE
+else
+   echo "*** FAILURE ***\n" >> $LOG_FILE
+   cat $LOG_FILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
+fi
+if maven -Dorg.astrogrid.autobuild=true astrogrid-deploy-site >> $LOGFILE 2>&1
+then
+   echo "*** SUCCESS ***\n" >> $LOG_FILE
+else
+   echo "*** FAILURE ***\n" >> $LOG_FILE
+   cat $LOG_FILE | mail -s "astrogrid-deploy-site Failure in integration tests" $ADMIN_EMAIL 
+fi
+
+scp $LOGFILE maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/log/integration.log
+
+
 cd $OLDDIR
