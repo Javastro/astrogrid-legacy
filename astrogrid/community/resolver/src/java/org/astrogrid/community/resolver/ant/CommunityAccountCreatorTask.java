@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/resolver/src/java/org/astrogrid/community/resolver/ant/Attic/CommunityAccountCreatorTask.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/16 13:28:57 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/16 13:50:31 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountCreatorTask.java,v $
+ *   Revision 1.3  2004/04/16 13:50:31  dave
+ *   Added create account tool.
+ *
  *   Revision 1.2  2004/04/16 13:28:57  dave
  *   Added create account tool.
  *
@@ -137,16 +140,19 @@ public class CommunityAccountCreatorTask
             else {
                 resolver = new PolicyManagerResolver() ;
                 }
+        	if (DEBUG_FLAG) System.out.println("  PASS : Got resolver");
             //
             // Ask our resolver for a manager delegate.
 	        PolicyManagerDelegate delegate = resolver.resolve(
 				new Ivorn(this.account)
 	        	) ;
+        	if (DEBUG_FLAG) System.out.println("  PASS : Got delegate");
 	        //
 	        // Ask the PolicyManagerDelegate to create the Account.
 	        AccountData account =  delegate.addAccount(
 	            this.account
 	            ) ;
+        	if (DEBUG_FLAG) System.out.println("  PASS : Got account");
             if (DEBUG_FLAG) System.out.println("----");
             if (DEBUG_FLAG) System.out.println("Account - " + account.getIdent());
             if (DEBUG_FLAG) System.out.println("  Display name : " + account.getDisplayName());
