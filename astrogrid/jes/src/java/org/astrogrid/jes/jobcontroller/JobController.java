@@ -270,12 +270,19 @@ public class JobController {
 
 	private void checkPropertiesLoaded() throws JobControllerException {
 		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() entry") ;
-		if( configurationProperties == null ) {
-			Message
-				message = new Message( ASTROGRIDERROR_JES_NOT_INITIALIZED ) ;
-			logger.error( message.toString() ) ;
+		
+		try{
+			if( configurationProperties == null ) {
+				Message
+					message = new Message( ASTROGRIDERROR_JES_NOT_INITIALIZED ) ;
+				logger.error( message.toString() ) ;
+				throw new JobControllerException( message ) ;
+			}
 		}
-		if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
+		finally {
+			if( TRACE_ENABLED ) logger.debug( "checkPropertiesLoaded() exit") ;
+		}
+
 	} // end checkPropertiesLoaded()
 	
 	

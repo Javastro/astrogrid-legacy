@@ -142,11 +142,10 @@ public class JobFactoryImpl implements JobFactory {
 
 	//JBL Note: this is a fudge for the moment		
 	private static int
-	    uniqueID =  new Double( Math.random() ).intValue()  ;
-	    	    
+	    uniqueID =  ( new Double( Math.random() * Integer.MAX_VALUE ) ).intValue() ;
+	    
 	private Connection
 		connection = null ;
-
 
     //JBL Note: this is a fudge for the moment
     private int generateUniqueInt() {

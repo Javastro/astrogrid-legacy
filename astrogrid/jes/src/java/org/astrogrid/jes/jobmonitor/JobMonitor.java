@@ -406,7 +406,7 @@ public class JobMonitor {
 	  	
 	  	
 	private void scheduleJob( Job job ) throws JesException { 
-		if( TRACE_ENABLED ) logger.debug( "scheduleJob(): exit") ;
+		if( TRACE_ENABLED ) logger.debug( "scheduleJob(): entry") ;
 		
 		try {
 			
