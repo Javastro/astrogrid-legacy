@@ -44,7 +44,7 @@
 </goal>
 
 <goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-        <attainGoal name="site:fsdeploy" />
+        <attainGoal name="site:sshdeploy" />
 </goal>
 
 <goal name="astrogrid-deploy-snapshot">
