@@ -1,4 +1,4 @@
-/*$Id: FactoryProviderTestSpec.java,v 1.3 2003/08/25 21:47:36 mch Exp $
+/*$Id: FactoryProviderTestSpec.java,v 1.4 2003/08/28 16:12:03 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -36,12 +36,9 @@ public abstract class FactoryProviderTestSpec extends TestCase {
      * */
     protected abstract FactoryProvider createPopulatedFactoryProvider();
     public static final String TEST_QUERY_FACTORY_KEY = "someCatalog";
+
     protected void setUp() {
-        conf = new Configuration() {
-        public String getProperty(String k,String v) {
-                return null;
-            }
-        };
+        //Configuration.load();
     }
     protected Configuration conf;
 
@@ -77,6 +74,9 @@ public abstract class FactoryProviderTestSpec extends TestCase {
 
 /*
 $Log: FactoryProviderTestSpec.java,v $
+Revision 1.4  2003/08/28 16:12:03  mch
+New Configuration package
+
 Revision 1.3  2003/08/25 21:47:36  mch
 Removed VOTable-middleman classes (to replace with more general ResultSet)
 

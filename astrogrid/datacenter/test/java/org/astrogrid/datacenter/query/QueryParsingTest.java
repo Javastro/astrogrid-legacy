@@ -9,6 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.impl.QueryFactoryImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -637,7 +638,10 @@ public class QueryParsingTest extends TestCase {
     /**
      * Runs the test case.
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException
+    {
+      //if this throws a NulPointerException the test properties file is probably missing
+      Configuration.load(QueryParsingTest.class.getResource("test.properties"));
 
             junit.textui.TestRunner.run(suite());
     }
