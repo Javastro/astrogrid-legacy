@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xs:schema targetNamespace="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1">
+<xs:schema targetNamespace="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.9" xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.1" xmlns:vt="http://www.ivoa.net/xml/VOTable/v1.0" xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="0.1">
 	<xs:annotation>
 		<xs:appinfo>
-			<vm:SchemaName>VODataService</vm:SchemaName>
+			<vm:SchemaName>VOCEA</vm:SchemaName>
 			<vm:schemaPrefix>xs</vm:schemaPrefix>
 			<vm:targetPrefix>vs</vm:targetPrefix>
 		</xs:appinfo>
 		<xs:documentation>
         An extension to the core resource metadata (VOResource) for 
-      	describing data collections and services.
-      </xs:documentation>
-		<xs:documentation>
-      	Diff 0.2-0.1: Service and subelements moved to VOResource core
+      	describing applications and server within the Common Execution Architecture
       </xs:documentation>
 	</xs:annotation>
 	<xs:import namespace="http://www.ivoa.net/xml/VOResource/v0.9" schemaLocation="./externalSchema/VOResource-v0.9.xsd"/>
 	<xs:import namespace="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" schemaLocation="AGApplicationBase.xsd"/>
 	<xs:import namespace="http://www.ivoa.net/xml/VOTable/v1.0" schemaLocation="./externalSchema/VOTable.xsd"/>
 	<xs:element name="CeaApplication" type="cea:CeaApplicationType" substitutionGroup="vr:Resource"/>
+	<!-- This schema would benefit from some constraints being added to do better validation on the cross references within it -->
 	<xs:complexType name="CeaApplicationType">
 		<xs:complexContent>
 			<xs:extension base="vr:ResourceType">
