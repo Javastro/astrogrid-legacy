@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.43 2004/12/03 14:23:17 jdt Exp $ -->
+<!-- $Id: tests-project.xml,v 1.44 2005/02/09 14:29:52 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>${basedir}/../../maven-base/project.xml</extend>
     <id>auto-integration-tests</id>
     <name>Tests for Automated Integration.</name>
+    <logo>/images/catsEye_hst_c1.jpg</logo>    
     <description> This project document defines the tests to execute against
         the installed local astorgrid setup. In a separate project, so that the
         parent project can be used in isolation, just to set up an integration
         machine. </description>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
@@ -548,12 +548,7 @@
     </developers>
     <!-- A mini set of reports -->
     <reports>
-        <report>maven-javadoc-plugin</report>
-        <report>maven-junit-report-plugin</report>
         <report>maven-changelog-plugin</report>
-        <report>maven-developer-activity-plugin</report>
-        <report>maven-file-activity-plugin</report>
-        <report>maven-jxr-plugin</report>
     </reports>
 </project>
 
