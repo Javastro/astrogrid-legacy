@@ -115,7 +115,7 @@ public class VotTag extends AbstractVotTag
 
       public void writeCooSys(String id, String system, String equinox, String epoch) throws IOException
       {
-         xmlOut.writeLine("<COOSYS ID=\""+id+"\" system=\""+system+"\" equinox=\""+equinox+"\" epoch=\""+epoch+"\"/>");
+         xmlOut.writeIndentedLine("<COOSYS ID=\""+id+"\" system=\""+system+"\" equinox=\""+equinox+"\" epoch=\""+epoch+"\"/>");
       }
    }
 
@@ -134,11 +134,11 @@ public class VotTag extends AbstractVotTag
 
       public void writeParam(String id, String datatype, String value) throws IOException
       {
-         xmlOut.writeLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" value=\""+value+"\"/>");
+         xmlOut.writeIndentedLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" value=\""+value+"\"/>");
       }
       public void writeParam(String id, String datatype, String arraysize, String value) throws IOException
       {
-         xmlOut.writeLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" arraysize=\""+arraysize+"\" value=\""+value+"\"/>");
+         xmlOut.writeIndentedLine("<PARAM ID=\""+id+"\" datatype=\""+datatype+"\" arraysize=\""+arraysize+"\" value=\""+value+"\"/>");
       }
       public TableTag newTableTag() throws IOException
       {
@@ -177,11 +177,11 @@ public class VotTag extends AbstractVotTag
             else
                line = line + " arraysize=\""+fieldDesc.getArraysize()+"\"";
 
-         xmlOut.writeLine(line + ">");
+         xmlOut.writeIndentedLine(line + ">");
 
-         xmlOut.writeIndentedLine(fieldDesc.getDescription());
+         xmlOut.writeIndentedLine("   "+fieldDesc.getDescription());
 
-         xmlOut.writeLine("</FIELD>");
+         xmlOut.writeIndentedLine("</FIELD>");
 
          addFieldDescriptor(fieldDesc); //so we can validate table cell values
       }
