@@ -29,24 +29,24 @@
                                     <td width="70%">
                                         <input type="text" name="step_name" size="34"></input>
                                         <a style="visibility: hidden" id="step_name_button">
-                                            <input type="submit" value="Submit " action="add-step-description" onClick="hide_select('tool_name_button');"/>
-                                            <input type="hidden" name="activity_key"></input>                                            
+                                            <input type="submit" name="action" value="add-step-name" onClick="hide_select('tool_name_button');"/>
+                                            <input type="hidden" name="activity_key"/>                                            
                                         </a>                                     
                                         </td>
                                 </tr>
                                 <tr>
                                     <td width="30%">Join:</td>
-                                    <td><input type="text" name="join_condition" size="10" />
-                                        any <input type="radio" onClick="document.properties_form.join_condition.value = 'any'; "/>
-                                        true <input type="radio" onClick="document.properties_form.join_condition.value = 'true'; " />
-                                        false <input type="radio" onClick="document.properties_form.join_condition.value = 'false';" />
-                                        <input type="submit" value="change " action="edit-join-condition" />
+                                    <td><input type="text" name="edit_condition" size="10" />
+                                        any <input type="radio" onClick="document.properties_form.edit_condition.value = 'any'; "/>
+                                        true <input type="radio" onClick="document.properties_form.edit_condition.value = 'true'; " />
+                                        false <input type="radio" onClick="document.properties_form.edit_condition.value = 'false';" />
+                                        <input type="submit" name="action" value="edit-join-condition"/>
                                     </td>
                                 </tr>                                     
                                 <tr>
                                     <td>Description:</td>
                                     <td><textarea name="step_description" cols="50" rows="2" >...</textarea>
-                                    <input type="submit" value="Submit " action="add-step-description" /></td>
+                                    <input type="submit" name="action" value="add-step-description" /></td>
                                 </tr>
                             </table>
                         </td>
@@ -82,20 +82,27 @@
                             </td>
                         </tr>
                     </table>                    
-                </form>
-<!--                <form name="container_insert_form">
-                   <input type="hidden" name="action"/>
-                   <input type="hidden" name="id"/>
-                   <input type="hidden" name="index"/>
-                </form>
--->                
+                </form>                
             </div>
-                <form name="container_insert_form">
-                   <input type="text" name="activity_key"/>
-                   <input type="text" name="activity_index_key"/>
+<!-- temp - until I can get page menus going -->            
+                <form name="activity_container_insert_form1">
+                   <input type="hidden" name="activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden"  name="action" value="insert-sequence"/>
+                   <input type="submit" value="insert sequence"/>                                      
+                </form>            
+                <form name="activity_container_insert_form2">
+                   <input type="hidden" name="activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>
                    <input type="hidden"  name="action" value="insert-flow"/>
                    <input type="submit" value="insert flow"/>                                      
-                </form>            
+                </form>
+                <form name="activity_container_insert_form3">
+                   <input type="hidden" name="activity_key"/>
+                   <input type="hidden" name="activity_index_key"/>
+                   <input type="hidden"  name="action" value="insert-step"/>
+                   <input type="submit" value="insert step"/>                                      
+                </form>                                
         </xsl:template>
         
 </xsl:stylesheet>
