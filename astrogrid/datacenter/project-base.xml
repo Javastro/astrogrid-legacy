@@ -227,9 +227,11 @@
     <report>
       maven-license-plugin
     </report>
+    <!-- what's the point?
     <report>
       maven-linkcheck-plugin
     </report>
+    -->
     <report>
       maven-pmd-plugin
     </report>

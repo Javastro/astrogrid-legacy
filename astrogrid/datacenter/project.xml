@@ -45,9 +45,6 @@
     <report>
       maven-license-plugin
     </report>
-    <report>
-      maven-linkcheck-plugin
-    </report>
   </reports>
 
 
