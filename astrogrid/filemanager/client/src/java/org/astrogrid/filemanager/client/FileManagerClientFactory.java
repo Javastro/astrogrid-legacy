@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientFactory.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:57 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/10 12:44:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientFactory.java,v $
+ *   Revision 1.3  2005/02/10 12:44:10  jdt
+ *   Merge from dave-dev-200502010902
+ *
+ *   Revision 1.2.2.1  2005/02/01 16:10:51  dave
+ *   Updated FileManagerClient and factory to support full mock services ..
+ *
  *   Revision 1.2  2005/01/28 10:43:57  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -31,6 +37,7 @@ import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.community.resolver.CommunityTokenResolver;
 import org.astrogrid.community.resolver.CommunityPasswordResolver;
 
+import org.astrogrid.filemanager.resolver.FileManagerDelegateResolver;
 import org.astrogrid.filemanager.client.exception.FileManagerLoginException;
 
 /**
@@ -40,7 +47,7 @@ import org.astrogrid.filemanager.client.exception.FileManagerLoginException;
 public class FileManagerClientFactory
     {
     /**
-     * Public constructor using the default Registry endpoint.
+     * Public constructor using the default Registry endpoint and resolver.
      *
      */
     public FileManagerClientFactory()
@@ -50,6 +57,7 @@ public class FileManagerClientFactory
         // Create our resolvers.
         tokenResolver = new CommunityTokenResolver();
         loginResolver = new CommunityPasswordResolver();
+		managerResolver = null ;
         }
 
     /**
@@ -67,6 +75,39 @@ public class FileManagerClientFactory
         loginResolver = new CommunityPasswordResolver(
             this.registry
             );
+		this.managerResolver = null ;
+        }
+
+    /**
+     * Public constructor using a specific Registry endpoint and FileManager delegate  resolver.
+     *
+     */
+    public FileManagerClientFactory(URL registry, FileManagerDelegateResolver resolver)
+        {
+        this.registry = registry;
+        //
+        // Create our resolvers.
+        tokenResolver = new CommunityTokenResolver(
+            this.registry
+            );
+        loginResolver = new CommunityPasswordResolver(
+            this.registry
+            );
+		this.managerResolver = resolver ;
+        }
+
+    /**
+     * Public constructor using a specific FileManager delegate resolver.
+     *
+     */
+    public FileManagerClientFactory(FileManagerDelegateResolver resolver)
+        {
+        this.registry = null;
+		this.managerResolver = resolver ;
+        //
+        // Create our resolvers.
+        tokenResolver = new CommunityTokenResolver();
+        loginResolver = new CommunityPasswordResolver();
         }
 
     /**
@@ -86,6 +127,12 @@ public class FileManagerClientFactory
      *
      */
     private CommunityPasswordResolver loginResolver ;
+
+	/**
+	 * Our FileManager delegate resolver.
+	 *
+	 */
+	private FileManagerDelegateResolver managerResolver;
 
     /**
      * Login to a Community account using acciunt the identifier and password.
@@ -110,7 +157,8 @@ public class FileManagerClientFactory
             // Create a FileManagerClient with the new token.
             return new FileManagerClientImpl(
                 this.registry,
-                token
+                token,
+				managerResolver
                 );
             }
         catch (Exception ouch)
@@ -140,7 +188,8 @@ public class FileManagerClientFactory
             // Create a FileManagerClient with the new token.
             return new FileManagerClientImpl(
                 this.registry,
-                token
+                token,
+				managerResolver
                 );
             }
         catch (Exception ouch)
@@ -162,7 +211,9 @@ public class FileManagerClientFactory
         //
         // Create a FileManagerClient with no authentication.
         return new FileManagerClientImpl(
-            this.registry
+            this.registry,
+			null,
+			managerResolver
             );
         }
     }

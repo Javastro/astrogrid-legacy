@@ -1,11 +1,17 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/resolver/Attic/FileManagerDelegateResolverMock.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/10 12:44:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileManagerDelegateResolverMock.java,v $
+ *   Revision 1.5  2005/02/10 12:44:10  jdt
+ *   Merge from dave-dev-200502010902
+ *
+ *   Revision 1.4.2.1  2005/02/01 16:10:53  dave
+ *   Updated FileManagerClient and factory to support full mock services ..
+ *
  *   Revision 1.4  2005/01/28 10:43:58  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -87,8 +93,28 @@ public class FileManagerDelegateResolverMock
     public void register(FileManagerDelegate delegate)
         throws FileManagerServiceException
         {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileManagerDelegateResolverMock.register()") ;
+        //
+        // Parse the ivorn.
+        Ivorn  ivorn = delegate.getServiceIvorn();
+        String ident = null ;
+        try {
+            ident = new FileManagerIvornParser(
+                ivorn
+                ).getServiceIdent() ;
+            }
+        catch (FileManagerIdentifierException ouch)
+            {
+            throw new FileManagerServiceException(
+                "Unable to parse service ivorn : " + ivorn.toString()
+                ) ;
+            }
+		//
+		// Add the delegate to our map.
         map.put(
-            delegate.getServiceIvorn().toString(),
+            ident,
             delegate
             );
         }

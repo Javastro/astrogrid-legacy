@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filemanager/client/src/java/org/astrogrid/filemanager/client/FileManagerClientImpl.java,v $</cvs:source>
- * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2005/02/10 12:44:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileManagerClientImpl.java,v $
+ *   Revision 1.3  2005/02/10 12:44:10  jdt
+ *   Merge from dave-dev-200502010902
+ *
+ *   Revision 1.2.2.1  2005/02/01 16:10:52  dave
+ *   Updated FileManagerClient and factory to support full mock services ..
+ *
  *   Revision 1.2  2005/01/28 10:43:58  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -47,6 +53,7 @@ import org.astrogrid.filemanager.client.delegate.FileManagerDelegate;
 import org.astrogrid.filemanager.client.exception.FileManagerLoginException;
 
 import org.astrogrid.filemanager.resolver.FileManagerResolverException;
+import org.astrogrid.filemanager.resolver.FileManagerDelegateResolver;
 import org.astrogrid.filemanager.resolver.FileManagerDelegateResolverImpl;
 
 /**
@@ -83,7 +90,8 @@ public class FileManagerClientImpl
         {
         this(
             registry,
-            null
+            null,
+			null
             );
         }
 
@@ -96,7 +104,8 @@ public class FileManagerClientImpl
         {
         this(
             null,
-            token
+            token,
+            null
             );
         }
 
@@ -107,6 +116,22 @@ public class FileManagerClientImpl
      *
      */
     protected FileManagerClientImpl(URL registry, SecurityToken token)
+        {
+        this(
+            registry,
+            token,
+            null
+            );
+		}
+
+    /**
+     * Protected constructor, with a specific registry endpoint and security token.
+     * @param registry The registry endpoint URL.
+     * @param token    A valid security token.
+     * @param resolver The FileManagerDelegateResolver to use.
+     *
+     */
+    protected FileManagerClientImpl(URL registry, SecurityToken token, FileManagerDelegateResolver resolver)
         {
         this.token    = token ;
         this.registry = registry ;
@@ -134,15 +159,21 @@ public class FileManagerClientImpl
             }
         //
         // Create our filemanager resolver.
-        if (null != registry)
-            {
-            managerResolver = new FileManagerDelegateResolverImpl(
-                registry
-                );
-            }
-        else {
-            managerResolver = new FileManagerDelegateResolverImpl();
-            }
+		if (null != resolver)
+			{
+			managerResolver = resolver ;
+			}
+		else {
+	        if (null != registry)
+	            {
+	            managerResolver = new FileManagerDelegateResolverImpl(
+	                registry
+	                );
+	            }
+	        else {
+	            managerResolver = new FileManagerDelegateResolverImpl();
+	            }
+			}
         }
 
     /**
@@ -167,7 +198,7 @@ public class FileManagerClientImpl
      * Our filemanager resolver.
      *
      */
-    private FileManagerDelegateResolverImpl managerResolver ;
+    private FileManagerDelegateResolver managerResolver ;
 
     /**
      * Our current security token.
