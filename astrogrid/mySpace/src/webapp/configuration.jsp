@@ -39,26 +39,13 @@ MySpaceServerURL:  <input type="text" name="mss_url" value="<%=MMC.getProperty(M
 MySpaceServerURLs: <input type="text" name="msss_url" value="<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%>" size="30"/><BR>
 <button type="submit" >Change</button>
 </form>
+(button is a dummy at the moment - these props are readonly....)
 <!--
 Version in property file is: "<%=MMC.getProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY) %>" - should be "1.2".<P>
 MySpaceManagerURL :<%=MMC.getProperty(MMC.mySpaceManagerLoc,MMC.CATLOG)%><P>
 MySpaceServerURL :<%=MMC.getProperty(MMC.serverManagerLoc,MMC.CATLOG)%><P>
 MySpaceServerURLs :<%=MMC.getProperty(MMC.MYSPACEMANAGERURLs,MMC.CATLOG)%><P>
 <P>-->
-<h3>MySpace Server</h3>
-<%
-//First check the properties file has been found:
-try {
-	MSC.getInstance().checkPropertiesLoaded();
-	%>MySpaceServer Configuration file located<%
-	} catch (Exception e) {
-	%>Exception locating MySpaceServer configuration file:<P><%
-	e.printStackTrace(new PrintWriter(out));
-	}
-%>
-<P>
-Version in property file is: "<%=MSC.getProperty(MMC.GENERAL_VERSION_NUMBER, MMC.GENERAL_CATEGORY) %>" - should be "1.2".<P>
-DATAHOLDERFOLDER :<%=MSC.getProperty(MSC.dataHolderFolder,MSC.CATLOG)%><P>
 <P>
 Back to <A href="index.html">index page</a>.
 </body>

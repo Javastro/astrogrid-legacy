@@ -15,7 +15,7 @@
 <h1>MySpace Happiness Page</h1>
 <h2>Configuration, Testing and Web Services</h2>
 <li><a href="configuration.jsp">Check and modify MySpace configuration</a></li>
-<li><a href="TestServlet?suite=org.astrogrid.mySpace.installationTests.DeploymentTests">Run tests</a></li>
+<li><a href="TestServlet?suite=org.astrogrid.mySpace.installationTests.DeploymentTests">Run installation tests</a> to ensure that all config files and database files are located</li>
 <li><a href="functions.html">Execute MySpace Service</a></li>
 </body>
 </html>
