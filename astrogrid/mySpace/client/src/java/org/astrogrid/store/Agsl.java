@@ -1,5 +1,5 @@
 /*
- * $Id: Agsl.java,v 1.3 2004/06/16 21:17:02 jdt Exp $
+ * $Id: Agsl.java,v 1.4 2004/07/06 19:37:19 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -108,12 +108,6 @@ public class Agsl
          rl = "astrogrid:store:"+rl;
       }
       
-      if (rl.toLowerCase().startsWith(Vorl.SCHEME+":"))
-      {
-         //work out agsl from vorl
-         rl = new Vorl(rl).toAgsl().toString();
-      }
-
       //check it's valid
       if (!rl.toLowerCase().startsWith(SCHEME+":")) {
          throw new MalformedURLException("AGSL '"+rl+"' is not of the right form: "+FORM);
@@ -326,7 +320,7 @@ public class Agsl
     * resolved to by that community server
     */
    public Ivorn toIvorn(User user) {
-      return new Ivorn(user.getCommunity()+"/"+user.getUserId(), getPath());
+      return new Ivorn(user.getCommunity(), user.getUserId(), getPath());
    }
    
    
@@ -339,6 +333,9 @@ public class Agsl
 
 /*
 $Log: Agsl.java,v $
+Revision 1.4  2004/07/06 19:37:19  mch
+Removed Vorl
+
 Revision 1.3  2004/06/16 21:17:02  jdt
 Merged from branch MySpace_JDT_BZ340
 
@@ -357,7 +354,7 @@ and a server/manager war
 astrogrid-myspace-server-<version>.war
 
 Revision 1.1.2.1  2004/06/14 22:33:21  jdt
-Split into delegate jar and server war.  
+Split into delegate jar and server war.
 Delegate: astrogrid-myspace-SNAPSHOT.jar
 Server/Manager: astrogrid-myspace-server-SNAPSHOT.war
 
