@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResourceServer.java,v 1.6 2004/11/03 01:35:18 mch Exp $
+ * $Id: CeaResourceServer.java,v 1.7 2004/11/04 18:25:50 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -88,7 +88,7 @@ public class CeaResourceServer implements VoResourcePlugin {
       StringWriter sw = new StringWriter();
       XmlPrinter printer = new XmlPrinter(sw, false);
       XmlTagPrinter appType = printer.newTag("Resource", new String[] {
-               "xsi:type='cea:CeaApplicationType'",
+               "xsi:type='CeaApplicationType'",
                "status='active'",
                "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
@@ -96,6 +96,8 @@ public class CeaResourceServer implements VoResourcePlugin {
 
       VoDescriptionServer.writeSummary(appType);
       VoDescriptionServer.writeCuration(appType);
+
+      appType.writeTag("Type", "Other"); //for the workflow builder
 
       NodeList appDefs = resource.getElementsByTagName("cea:ApplicationDefinition");
       if (appDefs.getLength() == 0) {
@@ -115,7 +117,7 @@ public class CeaResourceServer implements VoResourcePlugin {
       StringWriter sw = new StringWriter();
       XmlPrinter printer = new XmlPrinter(sw, false);
       XmlTagPrinter servType = printer.newTag("Resource", new String[] {
-               "xsi:type='cea:CeaServiceType'",
+               "xsi:type='CeaServiceType'",
                "status='active'",
                "updated='"+VoDescriptionServer.REGISTRY_DATEFORMAT.format(new Date())+"'"
             });
@@ -124,6 +126,8 @@ public class CeaResourceServer implements VoResourcePlugin {
       VoDescriptionServer.writeSummary(servType );
       VoDescriptionServer.writeCuration(servType );
 
+      servType.writeTag("Type", "Other"); //for the workflow builder
+      
       XmlTagPrinter capabilityTag = servType.newTag("vr:Capability");
       capabilityTag.writeTag("vr:StandardURL",  "http://www.astrogrid.org/maven/build/applications/");
       XmlTagPrinter sidTag = capabilityTag.newTag("vr:StandardID");
