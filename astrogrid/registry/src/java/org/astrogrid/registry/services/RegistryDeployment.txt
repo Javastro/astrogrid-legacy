@@ -14,4 +14,12 @@ Elizabeth Auden
 	import org.w3c.dom.*;
 
 4. Run RegistryService.java from the command line: 
-	java org.astrogrid.registry.RegistryService <methodName> <queryElement>
+	java org.astrogrid.registry.RegistryService <methodName>
+
+	where method name is one of:
+
+		queryServices
+		listAllServices
+		listServiceMetadata
+		listRegistryMetadata
+		listServiceMetadataFormat
