@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlQueryMaker.java,v 1.5 2004/10/13 01:25:46 mch Exp $
+ * $Id: AdqlQueryMaker.java,v 1.6 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,7 +9,7 @@ package org.astrogrid.datacenter.query;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
-import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
+import org.apache.axis.encoding.Serializer;
 import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Element;
@@ -34,6 +34,8 @@ public class AdqlQueryMaker  {
     */
    public static Query makeQuery(net.ivoa.www.xml.ADQL.v0_7_4.SelectType adql) {
       
+//    Serializer s = net.ivoa.www.xml.ADQL.v0_7_4.SelectType.getSerializer();
+//    s.serialize();
       Adql074Parser maker = new Adql074Parser();
       return maker.makeQuery(adql);
    }
@@ -42,12 +44,17 @@ public class AdqlQueryMaker  {
    /** Constructs a Query from the given ADQL DOM.  Nasty horrible thing converts
     * to SQL and parses it... */
    public static Query makeQuery(Element adql) throws QueryException {
+      
+      return AdqlXml074Parser.makeQuery(adql);
+      
+      /*
       //yeuch
       StdSqlMaker maker = new StdSqlMaker();
       
       String sql = maker.getAdqlSql(adql);
       
       return SqlQueryMaker.makeQuery(sql);
+       */
    }
 
    /** Convenience routine - creates a Query (object model) from the given ADQL string.
@@ -89,6 +96,12 @@ public class AdqlQueryMaker  {
 }
 /*
  $Log: AdqlQueryMaker.java,v $
+ Revision 1.6  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.5.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.5  2004/10/13 01:25:46  mch
  makes ADQL/sql rather than std sql (leave in CIRCLE)
 

@@ -1,12 +1,12 @@
 <!-- Select t.a, g.d from Tab a, Tab d where a.d < d.e and a.f < d.f order by t.f, g.b -->
 <Select  xmlns="http://adql.ivoa.net/v0.73">
    <SelectionList>
-      <Column Table="t" Name="a"/>
-      <Column Table="g" Name="d"/>
+      <Column Table="Ford" Name="a"/>
+      <Column Table="Prefect" Name="d"/>
    </SelectionList>
    <From>
-      <Table Name="Tab" Alias="a"/>
-      <Table Name="Tab" Alias="d"/>
+      <Table Name="Arthur" Alias="a"/>
+      <Table Name="Dent" Alias="d"/>
    </From>
    <Where>
       <And>

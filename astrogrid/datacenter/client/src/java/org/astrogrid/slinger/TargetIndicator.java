@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.2 2004/10/12 17:41:41 mch Exp $
+ * $Id: TargetIndicator.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,8 +30,8 @@ public abstract class TargetIndicator  {
     * Tests the string & creates the right kind of TargetIndicator
     */
    public static TargetIndicator makeIndicator(String id) throws MalformedURLException, URISyntaxException {
-      if ((id == null) || (id.length() == 0)) {
-         return null;
+      if ((id == null) || (id.length() == 0) || (id.toLowerCase().equals("null")) || (id.toLowerCase().equals(NullTarget.NULL_TARGET_URI.toString().toLowerCase()))) {
+         return new NullTarget();
       }
       else if (id.startsWith("mailto:")) {
          return new EmailTarget(id);
@@ -100,6 +100,15 @@ public abstract class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.2.2  2004/10/16 14:29:07  mch
+ Forwardable null targets
+
+ Revision 1.2.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/12 17:41:41  mch
  added isForwardable
 

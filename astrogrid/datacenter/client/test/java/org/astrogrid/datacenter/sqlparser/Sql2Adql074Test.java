@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql074Test.java,v 1.6 2004/10/12 23:09:53 mch Exp $
+ * $Id: Sql2Adql074Test.java,v 1.7 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -69,6 +69,10 @@ public class Sql2Adql074Test extends TestCase   {
 
    public void testConvertedCircle() throws IOException, ParserConfigurationException {
       SimpleConfig.setProperty(StdSqlMaker.DB_TRIGFUNCS_IN_RADIANS, "true");
+      SimpleConfig.setProperty(StdSqlMaker.CONE_SEARCH_TABLE_KEY, "ConeTable");
+      SimpleConfig.setProperty(StdSqlMaker.CONE_SEARCH_RA_COL_KEY, "RA");
+      SimpleConfig.setProperty(StdSqlMaker.CONE_SEARCH_DEC_COL_KEY, "DEC");
+      SimpleConfig.setProperty(StdSqlMaker.CONE_SEARCH_COL_UNITS_KEY, "deg");
       String s = "SELECT * FROM table WHERE "+new StdSqlMaker().makeSqlCircleCondition(new Angle(25.0), new Angle(35), new Angle(6));
       assertValidXml(translate(s));
    }
@@ -173,6 +177,12 @@ public class Sql2Adql074Test extends TestCase   {
 
 /*
  $Log: Sql2Adql074Test.java,v $
+ Revision 1.7  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.6.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.6  2004/10/12 23:09:53  mch
  Lots of changes to querying to get proxy querying to SSA, and registry stuff
 

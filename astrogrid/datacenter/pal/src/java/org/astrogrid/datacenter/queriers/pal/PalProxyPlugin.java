@@ -1,5 +1,5 @@
 /*
- * $Id: PalProxyPlugin.java,v 1.2 2004/10/13 01:29:43 mch Exp $
+ * $Id: PalProxyPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,11 +12,14 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.queriers.status.QuerierStatus;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.Query2Adql074;
 import org.astrogrid.slinger.UriTarget;
 
@@ -26,26 +29,22 @@ import org.astrogrid.slinger.UriTarget;
  *  * @author M Hill
  */
 
-public class PalProxyPlugin extends QuerierPlugin {
+public class PalProxyPlugin extends DefaultPlugin {
    
    public static final String PAL_TARGET = "datacenter.palproxy.targetstem";
    
-   public PalProxyPlugin(Querier querier)  {
-      super(querier);
-   }
-   
-
    /** performs a synchronous call to the database, submitting the given query
     *
     */
-   public void askQuery() throws IOException {
-      useServlet();
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
 
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+      useServlet(query, querier);
    }
    
    
    /** Use the remote PAL's servlet interface */
-   public void useServlet() throws IOException {
+   public void useServlet(Query query, Querier querier) throws IOException {
       URL targetPal = new URL(SimpleConfig.getSingleton().getUrl(PAL_TARGET)+"/SubmitAdql");
       
       querier.getStatus().addDetail("Proxying to: "+targetPal);
@@ -62,12 +61,12 @@ public class PalProxyPlugin extends QuerierPlugin {
       //write POST parameters
       DataOutputStream out = new DataOutputStream(connection.getOutputStream());
 //      out.writeBytes( "AdqlSql="+URLEncoder.encode(new StdSqlMaker().getSql(querier.getQuery()))+
-      out.writeBytes( "AdqlXml="+URLEncoder.encode(Query2Adql074.makeAdql(querier.getQuery()))+
+      out.writeBytes( "AdqlXml="+URLEncoder.encode(Query2Adql074.makeAdql(query))+
                       "&Format="+URLEncoder.encode("VOTABLE")
                     );
 
-      if (querier.getQuery().getTarget() instanceof UriTarget) {
-         out.writeBytes("&Target="+URLEncoder.encode( ((UriTarget) querier.getQuery().getTarget()).toURI().toString()));
+      if (query.getTarget() instanceof UriTarget) {
+         out.writeBytes("&Target="+URLEncoder.encode( ((UriTarget) query.getTarget()).toURI().toString()));
       }
       out.flush();
       out.close();
@@ -76,9 +75,9 @@ public class PalProxyPlugin extends QuerierPlugin {
       
       InputStream in = connection.getInputStream();
 
-      if (!querier.getQuery().getTarget().isForwardable()) {
+      if (!query.getTarget().isForwardable()) {
          VotableInResults vot = new VotableInResults(querier, in);
-         vot.send(querier.getQuery().getResultsDef(), querier.getUser());
+         vot.send(query.getResultsDef(), querier.getUser());
       }
       
    }

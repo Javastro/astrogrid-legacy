@@ -1,4 +1,4 @@
-/*$Id: SqlQueryTranslatorTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,11 +75,11 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
        String filename = "sample-"+ver+"-"+testNum+".xml";
        InputStream in = this.getClass().getResourceAsStream(filename);
        assertNotNull(in);
-       Query adqlQuery = AdqlQueryMaker.makeQuery(in);
+       Query query = AdqlQueryMaker.makeQuery(in);
        
-       String result = translator.getSql(adqlQuery).trim();
+       String result = translator.getSql(query).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
-       assertEquals(correct.trim().toLowerCase(), result.trim().toLowerCase());
+       assertEquals("Returned incorrect '"+result+"'; ", correct.trim().toLowerCase(), result.trim().toLowerCase());
     }
 
 
@@ -92,6 +92,12 @@ public class SqlQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: SqlQueryTranslatorTest.java,v $
+Revision 1.3  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.2.2.1  2004/10/15 19:59:06  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,4 +1,4 @@
-/*$Id: VotableInResults.java,v 1.2 2004/09/29 18:43:51 mch Exp $
+/*$Id: VotableInResults.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -33,6 +33,13 @@ public class VotableInResults extends QueryResults {
       this.in = votableIn;
     }
 
+    /**  Constructor where the votable is in the given string.
+     */
+    public VotableInResults(Querier querier, String votableDoc) {
+      super(querier);
+      this.in = new StringBufferInputStream(votableDoc);
+    }
+
     /**  Constructor where the votable is in the given File
      */
     public VotableInResults(Querier querier, File votableFile) throws IOException {
@@ -45,23 +52,30 @@ public class VotableInResults extends QueryResults {
     }
     
     /**
-     * Easy one - writes out VOTable in memory to writer
+     * Easy one - pipes out VOTable to writer
      */
-    public void toVotable(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+    public void writeVotable(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+        Piper.bufferedPipe(new InputStreamReader(in), out);
+    }
+
+    /**
+     * Easy one - pipes out VOTable to writer
+     */
+    public void writeRaw(Writer out, QuerierProcessingResults querierStatus) throws IOException {
         Piper.bufferedPipe(new InputStreamReader(in), out);
     }
     
     /**
      * Not quite so easy one - HTML
      */
-    public void toHtml(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+    public void writeHtml(Writer out, QuerierProcessingResults querierStatus) throws IOException {
         throw new UnsupportedOperationException("Not yet implemeneted");
     }
 
     /**
-     * writes out VOTable in memory to writer in CSV form
+     * writes out VOTable to writer in CSV form
      */
-    public void toCSV(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+    public void writeCSV(Writer out, QuerierProcessingResults querierStatus) throws IOException {
         throw new UnsupportedOperationException("Not yet implemeneted");
     }
     
@@ -70,6 +84,12 @@ public class VotableInResults extends QueryResults {
 
 /*
 $Log: VotableInResults.java,v $
+Revision 1.3  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.2.6.1  2004/10/15 19:59:05  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.2  2004/09/29 18:43:51  mch
 doc change
 

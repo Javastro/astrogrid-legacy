@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.5 2004/10/07 10:34:44 mch Exp $
+ * $Id: Querier.java,v 1.6 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,11 +14,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.datacenter.query.condition.Condition;
-import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.slinger.Slinger;
-import org.astrogrid.slinger.TargetIndicator;
 
 /**
  * Represents a single running query.
@@ -41,7 +37,8 @@ import org.astrogrid.slinger.TargetIndicator;
  * @author M Hill
  */
 
-public class Querier implements Runnable {
+public class Querier implements Runnable, PluginListener {
+   
    
    protected static final Log log = org.apache.commons.logging.LogFactory.getLog(Querier.class);
        
@@ -81,33 +78,11 @@ public class Querier implements Runnable {
       this.id = generateQueryId();
       this.user = forUser;
       this.query = query;
-      
 
-      //check raw sql
-      /*
-      if ((query instanceof RawSqlQuery) && (!SimpleConfig.getSingleton().getBoolean(DataServer.SQL_PASSTHROUGH_ENABLED, false))) {
-         throw new IllegalArgumentException("This datacenter does not allow raw SQL Queriers to be constructed");
-      }
-       */
-      //default results destination is taken from default myspace given in config
-      /** don't do this, as it means queries that have not been given an AGSL try to send to mysapce...
-      URL defaultMySpace = SimpleConfig.getSingleton().getUrl(DEFAULT_MYSPACE, null);
-      if (defaultMySpace != null) {
-          String path = user.getIndividual()+"@"+user.getCommunity()+"/serv1/votable/"+id+".vot";
-          resultsTargetAgsl = new Agsl(new Msrl(defaultMySpace, path));
-       }
-       **/
-       //make plugin
+      //make plugin
       plugin = QuerierPluginFactory.createPlugin(this);
       
       setStatus(new QuerierConstructed(this));
-   }
-   
-   /** Factory method, builds query from components  - use the QueryMakers sintead
-   public static Querier makeQuerier(Account forUser, Condition condition, ReturnSpec resultsDefinition) throws IOException {
-      Querier querier = new Querier(forUser, new Query(null, condition, resultsDefinition));
-
-      return querier;
    }
    
    /** Factory method   */
@@ -117,29 +92,13 @@ public class Querier implements Runnable {
       return querier;
    }
 
-   /** Old Factory method  @deprecated  - removed - use the QueryMakers instead
-   public static Querier makeQuerier(Account forUser, Condition condition, TargetIndicator target, String format) throws IOException {
-      Querier querier = new Querier(forUser, new Query(condition, new ReturnTable(target, format)));
-
-      return querier;
-   }
-
-   /** Old Factory method  @deprecated  removed - use the QueryMakers instead
-   public static Querier makeQuerier(Account forUser, Query query, TargetIndicator target, String format) throws IOException {
-      query.getResultsDef().setTarget(target);
-      query.getResultsDef().setFormat(format);
-      Querier querier = new Querier(forUser, query);
-
-      return querier;
-   }
-
    /** Returns this instances handle    */
    public String getId() {       return id;   }
 
-   /** Returns the query for subclasses   */
+   /** Returns the query for subclasses */
    public Query getQuery() { return query; }
    
-   /** Returns the query for subclasses   */
+    /** Returns the account the querier is being run for  */
    public Account getUser() { return user; }
    
    /** Returns the plugin - this is *only* for testing @todo a nicer way of doing this */
@@ -169,41 +128,27 @@ public class Querier implements Runnable {
 
    /** Carries out the query via the plugin to do the query.
     * The plugin does the complete conversion, query and
-    * results processing but there are helper methods here for it
+    * results processing
      */
    public void ask() throws IOException {
-      Slinger.testConnection(query.getTarget(), getUser());
+      
+      Slinger.testConnection(query.getTarget(), user);
 
  //     plugin = QuerierPluginFactory.createPlugin(this);
       
-      plugin.askQuery();
-
+      plugin.askQuery(user, query, this);
+      
       close();
    }
    
 
-   /** Sets results target.
-    * @deprecated - should be set in constructor - but v4.1 interface uses it
-   public void setResultsTarget(TargetIndicator target)  { this.returns.setTarget(target); }
-   
-   /** Returns where the results are to be sent
-    * @deprecated use getReturnSpec
-   public TargetIndicator getResultsTarget()    {   return this.returns.getTarget();  }
-
-   /**
-    * Returns the requested results format
-    * @deprecated use getReturnSpec
-   public String getRequestedFormat()           {  return ((ReturnTable) this.returns).getFormat(); }
-
-    /** Returns the specification of the results */
-   public ReturnSpec getReturnSpec()            { return this.query.getResultsDef(); }
-   
    /**
     * Closes & tidies up
     */
    public void close() {
-      setStatus(new QuerierComplete(getStatus()));
-      if (plugin != null) plugin.close();
+      if (!getStatus().isFinished()) {
+         setStatus(new QuerierComplete(getStatus()));
+      }
       plugin = null;  //release plugin reference (-> can be garbage collected)
    }
    
@@ -261,8 +206,16 @@ public class Querier implements Runnable {
     * Returns if the querier is closed and no more operations are possible
     */
    public boolean isClosed() {
-      return (status instanceof QuerierClosed);
+      return (status.isFinished());
    }
+   
+   /** Called by the plugin to register a status change
+    */
+   public void pluginStatusChanged(QuerierStatus newStatus) {
+      setStatus(newStatus);
+   }
+   
+   
    
    /**
     * Sets the status.  NB if the new status is ordered before the existing one,
@@ -359,6 +312,12 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.6  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.5.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.5  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

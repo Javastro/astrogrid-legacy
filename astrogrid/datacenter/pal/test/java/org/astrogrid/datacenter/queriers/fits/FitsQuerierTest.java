@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.4 2004/10/08 17:14:23 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.5 2004/10/18 13:11:30 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -11,6 +11,7 @@ package org.astrogrid.datacenter.queriers.fits;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import junit.framework.Test;
@@ -25,27 +26,33 @@ import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.slinger.NullTarget;
 import org.astrogrid.slinger.TargetIndicator;
+import java.net.URISyntaxException;
 
 /** Test the Fits processing classes
  */
 public class FitsQuerierTest extends TestCase
 {
+   private static File indexFile = null;
    
    protected void setUp() throws Exception{
       SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
+     
+      //set up test index first if not already done
+      if (indexFile == null) {
+         indexFile = new File("fitsTestIndex.xml");
+         IndexGenerator generator = new IndexGenerator();
+         generator.raAxis = 1;
+         generator.decAxis = 2;
+         FileWriter out = new FileWriter(indexFile);
+         generator.generateIndex(FitsTest.getTestFits(), out);
+         out.close();
+      }
       
-      //set up test index first
-      String index = new FitsTest().generateTestIndex();
-
-      File indexFile = new File("fitsIndex.xml");
-      FileOutputStream out = new FileOutputStream(indexFile);
-      out.write(index.getBytes());
-      out.close();
-      
-      SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, "fitsIndex.xml");
+      SimpleConfig.setProperty(FitsQuerierPlugin.FITS_INDEX_FILENAME, indexFile.getCanonicalPath());
    }
 
-   public void testPluginClass() throws IOException {
+   /** Check to see the right plugin is made */
+   public void testPluginClass() throws IOException, IOException, URISyntaxException {
       Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE));
       
       assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
@@ -54,14 +61,13 @@ public class FitsQuerierTest extends TestCase
    public void testCone() throws IOException
    {
       StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, new NullTarget(), ReturnTable.VOTABLE));
-      
-      assertTrue("Plugin '"+querier.getPlugin()+"' not FitsQuerierPlugin", querier.getPlugin() instanceof FitsQuerierPlugin);
+      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(300, 60, 12, TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
       
       querier.ask();
-      
+
       //have a look in sw for results
-   }
+      String results = sw.toString();
+  }
 
    
    public static Test suite()
@@ -85,6 +91,15 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.5  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.4.2.2  2004/10/16 14:35:53  mch
+ Forwardable null targets
+
+ Revision 1.4.2.1  2004/10/15 19:59:06  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.4  2004/10/08 17:14:23  mch
  Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
 

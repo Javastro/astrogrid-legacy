@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPlugin.java,v 1.2 2004/10/08 17:14:22 mch Exp $
+ * $Id: SampleStarsPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,10 +30,8 @@ public class SampleStarsPlugin extends JdbcPlugin
    
    private static boolean populated = false;
    
-   public SampleStarsPlugin(Querier querier) throws IOException
+   public SampleStarsPlugin() throws IOException
    {
-      super(querier);
-      
       if (!populated) { populateDb(); }
       
    }
@@ -201,6 +199,12 @@ public class SampleStarsPlugin extends JdbcPlugin
 }
    /*
    $Log: SampleStarsPlugin.java,v $
+   Revision 1.3  2004/10/18 13:11:30  mch
+   Lumpy Merge
+
+   Revision 1.2.2.1  2004/10/15 19:59:06  mch
+   Lots of changes during trip to CDS to improve int test pass rate
+
    Revision 1.2  2004/10/08 17:14:22  mch
    Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
 

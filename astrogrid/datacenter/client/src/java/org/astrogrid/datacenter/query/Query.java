@@ -1,17 +1,14 @@
 /*
- * $Id: Query.java,v 1.4 2004/10/12 22:46:42 mch Exp $
+ * $Id: Query.java,v 1.5 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.query;
-import org.astrogrid.datacenter.query.condition.*;
-
-import java.util.StringTokenizer;
-import java.util.Vector;
-import org.astrogrid.slinger.TargetIndicator;
+import java.util.Hashtable;
+import org.astrogrid.datacenter.query.condition.Condition;
 import org.astrogrid.datacenter.returns.ReturnSpec;
-import org.astrogrid.datacenter.returns.ReturnTable;
+import org.astrogrid.slinger.TargetIndicator;
 
 
 /**
@@ -35,6 +32,9 @@ public class Query  {
    /** maximum number of results. -1 = unlimited */
    long limit = -1;
 
+   /** lookup of aliases *by table* if any are given.  This might only be used for human-readable
+    * queries or where we want the exact same output as was input.  */
+   Hashtable aliases = new Hashtable();
    
    public Query(String[] givenScope, Condition someCriteria, ReturnSpec aResultsDef) {
       this.scope = givenScope;
@@ -69,6 +69,18 @@ public class Query  {
    public void setResultsDef(ReturnSpec spec) {
       this.results = spec;
    }
+
+   public void addAlias(String table, String alias)
+   {
+      //note that this is indexed *by table*, so that we can look up which alias
+      //to use on writing out
+      aliases.put(table, alias);
+   }
+   
+   /** Returns the alias of the given table, if any */
+   public String getAlias(String table) {
+      return (String) aliases.get(table);
+   }
    
    /**
     * For humans/debuggign
@@ -95,6 +107,12 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.5  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.4.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.4  2004/10/12 22:46:42  mch
  Introduced typed function arguments
 

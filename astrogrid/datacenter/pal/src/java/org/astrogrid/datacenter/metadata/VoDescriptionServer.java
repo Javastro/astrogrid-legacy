@@ -1,5 +1,5 @@
 /*
- * $Id: VoDescriptionServer.java,v 1.4 2004/10/12 23:09:53 mch Exp $
+ * $Id: VoDescriptionServer.java,v 1.5 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.CEAComponentManagerFactory;
+import org.astrogrid.config.PropertyNotFoundException;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
@@ -125,9 +126,18 @@ public class VoDescriptionServer {
     * separate from the validating process. */
    public static String makeVoDescription() throws IOException, MetadataException {
 
-      //get plugin list from config
-      Object[] plugins = SimpleConfig.getSingleton().getProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY);
-      
+      //get plugin list from config - need to add a default to the common method...
+      Object[] plugins  = null;
+      try {
+         plugins = SimpleConfig.getSingleton().getProperties(VoResourcePlugin.RESOURCE_PLUGIN_KEY);
+      } catch (PropertyNotFoundException pnfe)
+      {
+         //for backwards compatibility, look for old datacenter.metadata.plugin
+         String s = SimpleConfig.getSingleton().getString("datacenter.metadata.plugin",null);
+         if (s != null) {
+            plugins = new String[] { s };
+         }
+      }
       //if they are not specified, assume one AuthorityConfigPlugin and a FileResourcePlugin
       if ((plugins == null) || (plugins.length==0)) {
          plugins = new String[] {
@@ -168,7 +178,7 @@ public class VoDescriptionServer {
             vod.append(DomHelper.ElementToString((Element) ceaResources.item(i)));
          }
       } catch (Throwable th) {
-        log.error(th);
+        log.error(th+" getting CEA resources",th);
       }
 
       //finish vod element

@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -82,7 +82,7 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
        
        String result = translator.getSql(adqlQuery).trim();
        String correct = correctSql.getProperty("sample"+testNum).trim();
-       assertEquals(correct.trim().toLowerCase(), result.trim().toLowerCase());
+       assertEquals("Returned incorrect '"+result+"'; ", correct.trim().toLowerCase(), result.trim().toLowerCase());
     }
 
 
@@ -95,6 +95,12 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.3  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.2.2.1  2004/10/15 19:59:06  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

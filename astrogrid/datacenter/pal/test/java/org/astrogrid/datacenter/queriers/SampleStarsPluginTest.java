@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsPluginTest.java,v 1.5 2004/10/08 17:14:23 mch Exp $
+ * $Id: SampleStarsPluginTest.java,v 1.6 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -46,7 +46,7 @@ public class SampleStarsPluginTest extends TestCase {
       
       //test the fixed example ones
       QueryResults results = new PrecannedResults(null, "test");
-      results.toVotable(new StringWriter(), null);
+      results.writeVotable(new StringWriter(), null);
    }
 
    /** Test that we can connect to the dummy database */
@@ -76,7 +76,8 @@ public class SampleStarsPluginTest extends TestCase {
       StringWriter sw = new StringWriter();
       Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(30,30,6, TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE));
       manager.askQuerier(q);
-      Document results = DomHelper.newDocument(sw.toString());
+      String results = sw.toString();
+      Document resultsDom = DomHelper.newDocument(sw.toString());
    }
       
    
@@ -89,7 +90,14 @@ public class SampleStarsPluginTest extends TestCase {
       String[] metadata = plugin.getVoResources();
       
       //debug
-      System.out.print(metadata);
+      System.out.println("AutoMetadata:");
+      for (int i = 0; i < metadata.length; i++) {
+         System.out.print(metadata[i]);
+
+         //check valid xml
+         //ocument resultsDom = DomHelper.newDocument(metadata[i]);
+      }
+
       
    }
    

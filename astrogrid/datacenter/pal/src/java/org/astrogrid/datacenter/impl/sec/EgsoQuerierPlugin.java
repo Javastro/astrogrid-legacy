@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierPlugin.java,v 1.2 2004/10/07 10:34:44 mch Exp $
+/*$Id: EgsoQuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,30 +16,31 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
+import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.impl.sec.SEC_Port;
 import org.astrogrid.datacenter.impl.sec.SEC_Service;
 import org.astrogrid.datacenter.impl.sec.SEC_ServiceLocator;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
-import org.astrogrid.datacenter.queriers.VotableResults;
+import org.astrogrid.datacenter.queriers.VotableDomResults;
 import org.astrogrid.datacenter.queriers.sql.StdSqlMaker;
-import org.astrogrid.util.DomHelper;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier that performs queries against SEC webservice.
  * @author Kevin Benson kmb@mssl.ucl.ac.uk
  * @author mch
  */
-public class EgsoQuerierPlugin extends QuerierPlugin {
+public class EgsoQuerierPlugin extends DefaultPlugin {
    
    public final static String SEC_URL = "http://radiosun.ts.astro.it/sec/sec_server.php";
-   
+ 
    /** WSDL-generated binding to the service */
    protected SEC_Port secPort;
    
-   public EgsoQuerierPlugin(Querier querier) throws ServiceException, MalformedURLException {
-      super(querier);
+   public EgsoQuerierPlugin() throws ServiceException, MalformedURLException {
       SEC_Service service = new SEC_ServiceLocator();
       secPort = service.getSECPort(new URL(SEC_URL));
    }
@@ -47,24 +48,29 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
    /** Called by the querier plugin mechanism to do the query.
     * The EGSO service takes an SQL string and returns a VOTable.
     */
-   public void askQuery() throws IOException {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
       //convert query to SQL
       StdSqlMaker ssm = new StdSqlMaker();
-      String sql = ssm.getSql(querier.getQuery());
+      String sql = ssm.getSql(query);
 
       try {
+         //call SEC - results come back as a complete String
          String resultsVot = secPort.sql(sql);
-         VotableResults results = new VotableResults(querier, DomHelper.newDocument(resultsVot));
-         results.send(querier.getReturnSpec(), querier.getUser());
+         VotableDomResults results = new VotableDomResults(querier, resultsVot);
+         if (!aborted) {
+            results.send(query.getResultsDef(), querier.getUser());
+         }
       }
       catch (RemoteException e) {
-         throw new QuerierPluginException("Submitting '"+sql+"' to EGSO service at "+SEC_URL+" failed with "+e,e);
+         throw new QuerierPluginException(e+" from PAL to EGSO, Submitting '"+sql+"' to EGSO service at "+SEC_URL,e);
       }
       catch (SAXException e) {
-         throw new QuerierPluginException("Submitting '"+sql+"' to Egso service at "+SEC_URL+" did not return valid VOTable XML: "+e,e);
+         throw new QuerierPluginException(e+" parsing results from submitting '"+sql+"' to EGSO service at "+SEC_URL,e);
       }
       catch (ParserConfigurationException e) {
-         throw new QuerierPluginException("Server not configured correctly",e);
+         throw new QuerierPluginException(e+", Server Configuration Error",e);
       }
    }
 }
@@ -72,6 +78,12 @@ public class EgsoQuerierPlugin extends QuerierPlugin {
 
 /*
  $Log: EgsoQuerierPlugin.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

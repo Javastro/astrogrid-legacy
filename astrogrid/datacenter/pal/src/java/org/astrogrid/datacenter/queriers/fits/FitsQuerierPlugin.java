@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,10 +14,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.community.Account;
 import org.astrogrid.config.ConfigException;
 import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.queriers.xql.XqlMaker;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.xmldb.eXist.server.QueryDBService;
@@ -27,49 +30,52 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
+ * The Standard Fits Querier plugin uses an XML 'index' document to search on.
+ * This index is generated once by running the IndexGenerator in this package
+ * across all the files. A configuration setting points to this index file, which
+ * is loaded into memory at the first query.
+ *
+ * However some indexes are too big to load, in which case the eXist XML database
+ * might be used.  (This also gives better query options).  In this case, leave
+ * the index references blank, and this class will send the query to the
+ * org.astrogrid.xmldb.eXist.server.QueryDBService; see elsewhere (unhelpful) for
+ * how to configure that.
  *
  *
  * @author M Hill
  */
 
-public class FitsQuerierPlugin extends QuerierPlugin
+public class FitsQuerierPlugin extends DefaultPlugin
 {
    private static Document index = null;
 
-   private static boolean indexLoaded = false;
-   
    public final static String FITS_INDEX_URL = "datacenter.fits.index.url";
    public final static String FITS_INDEX_FILENAME = "datacenter.fits.index.filename";
    
-   public FitsQuerierPlugin(Querier querier) throws IOException
-   {
-      super(querier);
-   }
 
    /** Plugin implementation - carries out query.
-    * Should get an XPath from the query and apply that; but at the moment just
-    * does a cone search.
     */
-   public void askQuery() throws IOException
-   {
-      if (!indexLoaded) {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
+
+      if (index == null) {
          loadIndex();
       }
-      Query qr = querier.getQuery();
       String[] filenames = null;
 
-      FitsMaker fm = new FitsMaker();
-      String xql = fm.fromAdql(qr);
+      XqlMaker maker = new XqlMaker();
+      String xql = maker.getXql(query);
       
-      filenames = doQuery(xql);
+      filenames = useeXist(xql);
       
       if ((!aborted) && (filenames != null)) {
          FitsResults results = new FitsResults(querier, filenames);
-         results.send(querier.getReturnSpec(), querier.getUser());
+         results.send(query.getResultsDef(), querier.getUser());
       }
    }
    
-   private String[] doQuery(String xql) throws IOException {
+   private String[] useeXist(String xql) throws IOException {
       Document resultDoc = null;
       String []files = null;
       try {
@@ -174,10 +180,11 @@ public class FitsQuerierPlugin extends QuerierPlugin
     * Loads the index - one off operation
     */
    protected synchronized void loadIndex() throws IOException {
-      if (indexLoaded) return;
+      if (index != null) return;
 
       //find the index
       URL url = SimpleConfig.getSingleton().getUrl(FITS_INDEX_URL, null);
+      
       if (url == null) {
          String filename = SimpleConfig.getSingleton().getString(FITS_INDEX_FILENAME, null);
          if (filename != null) {
@@ -208,7 +215,7 @@ public class FitsQuerierPlugin extends QuerierPlugin
       }
       catch (SAXException e) {
          //throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",e);
-         throw new IOException("FitsQuerierPlugin");
+         throw new IOException(e+"reading index from "+url);
 
       }
    }
@@ -219,6 +226,12 @@ public class FitsQuerierPlugin extends QuerierPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

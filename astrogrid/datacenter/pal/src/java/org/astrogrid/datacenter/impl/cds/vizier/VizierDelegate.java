@@ -1,4 +1,4 @@
-/*$Id: VizierDelegate.java,v 1.1 2004/10/05 19:19:18 mch Exp $
+/*$Id: VizierDelegate.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,26 +57,26 @@ public class VizierDelegate {
         return vizier.metaAll();
     }
 
-    public Document cataloguesData(Target target,double radius,Unit unit) throws RemoteException, ParserConfigurationException, SAXException, IOException {
+    public String cataloguesData(Target target,double radius,Unit unit) throws RemoteException, ParserConfigurationException, SAXException, IOException {
         return cataloguesData(target,radius,unit,"");
     }
 
-    public Document cataloguesData(Target target, double radius, Unit unit, String text) throws RemoteException, ParserConfigurationException, SAXException, IOException {
+    public String cataloguesData(Target target, double radius, Unit unit, String text) throws RemoteException, ParserConfigurationException, SAXException, IOException {
         if (log.isDebugEnabled()) {
             log.debug("cataloguesData " + target.toString() + " " + radius + " " + unit.toString() + " " + text);
         }
-        return DomHelper.newDocument(vizier.cataloguesData(target.toString(),radius,unit.toString(),text));
+        return vizier.cataloguesData(target.toString(),radius,unit.toString(),text);
     }
     
-    public Document cataloguesData(Target target,double radius,Unit unit,Wavelength wavelength) throws RemoteException, ParserConfigurationException, SAXException, IOException {
+    public String cataloguesData(Target target,double radius,Unit unit,Wavelength wavelength) throws RemoteException, ParserConfigurationException, SAXException, IOException {
         return cataloguesData(target,radius,unit,wavelength,"");
     }
     
-    public Document cataloguesData(Target target, double radius, Unit unit, Wavelength wavelength, String text) throws RemoteException, ParserConfigurationException, SAXException, IOException {
+    public String cataloguesData(Target target, double radius, Unit unit, Wavelength wavelength, String text) throws RemoteException, ParserConfigurationException, SAXException, IOException {
         if (log.isDebugEnabled()) {
             log.debug("cataloguesData " + target.toString() + " " + radius + " " + unit.toString() + " " + wavelength.toString() + " " + text);
         }
-        return DomHelper.newDocument(vizier.cataloguesData(target.toString(),radius,unit.toString(),text,wavelength.toString()));
+        return vizier.cataloguesData(target.toString(),radius,unit.toString(),text,wavelength.toString());
     }
 
 }
@@ -84,6 +84,12 @@ public class VizierDelegate {
 
 /*
 $Log: VizierDelegate.java,v $
+Revision 1.2  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.1.4.1  2004/10/15 19:59:05  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.1  2004/10/05 19:19:18  mch
 Merged CDS implementation into PAL
 

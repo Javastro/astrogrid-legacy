@@ -27,7 +27,7 @@ public class WarehouseQuerierClient
     // We're not running within a datacenter;  throw junk
     // parameters at the constructor as we won't be using them.
     // TOFIX this may break in the future.
-    WarehouseQuerier querier = new WarehouseQuerier(null);
+    WarehouseQuerier querier = new WarehouseQuerier();
 
     String sql;
     String propertiesFile;

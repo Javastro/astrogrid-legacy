@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.11 2004/10/12 23:09:53 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.12 2004/10/18 13:11:30 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -76,7 +76,7 @@ public class InstallationSelfCheck extends TestCase {
       // check its type
       assertTrue(QuerierPluginFactory.QUERIER_PLUGIN_KEY + " does not extend QuerierPlugin",QuerierPlugin.class.isAssignableFrom(plugin));
       // we expect a contructor as follows
-      Constructor constr = plugin.getConstructor(new Class[]{ Querier.class });
+      Constructor constr = plugin.getConstructor(new Class[]{  });
       assertNotNull("Plugin class must provide constructor(String,Query)",constr);
    }
 
@@ -106,7 +106,7 @@ public class InstallationSelfCheck extends TestCase {
    public void testSoapDelegate() throws Throwable {
       
       //this test is called as a servlet, so get url stem from servlet context
-      String endpoint = ServletHelper.getUrlStem()+"/services/AxisDataServer05";
+      String endpoint = ServletHelper.getUrlStem()+"/services/AxisDataService05";
       
       ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS,
                                                                          endpoint,
@@ -184,6 +184,12 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.12  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.11.2.1  2004/10/16 09:54:27  mch
+ Fix to plugin constructor and SOAP endpoint
+
  Revision 1.11  2004/10/12 23:09:53  mch
  Lots of changes to querying to get proxy querying to SSA, and registry stuff
 

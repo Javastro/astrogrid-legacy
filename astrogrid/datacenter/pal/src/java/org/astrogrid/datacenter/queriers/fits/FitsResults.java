@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: FitsResults.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -40,13 +40,16 @@ public class FitsResults extends QueryResults {
       return filenames.length;
    }
 
+   public void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+      writeCSV(out, statusToUpdate);
+   }
 
   /**
     * Converts results to VOTable to given outputstream.  I (MCH) don't think this
     * is very pleasant, and will break when the votable format changes, but
     * is easy to fix...
     */
-   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+   public void writeVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
 
       PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
       
@@ -97,7 +100,7 @@ public class FitsResults extends QueryResults {
   /**
     * Converts results to HTML to given outputstream.
     */
-   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+   public void writeHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
       
       PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
       
@@ -130,7 +133,7 @@ public class FitsResults extends QueryResults {
   /**
     * Converts results to CSV; just lists the files found (ie one col)
     */
-   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+   public void writeCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
 
       PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
 
@@ -153,6 +156,12 @@ public class FitsResults extends QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.2  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.1.6.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 

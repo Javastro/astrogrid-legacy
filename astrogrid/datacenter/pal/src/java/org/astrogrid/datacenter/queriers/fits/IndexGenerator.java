@@ -59,6 +59,10 @@ public class IndexGenerator
    /** Defines the format of the dates in the index - although they will also be output in seconds */
    public SimpleDateFormat indexDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
+   /** The root element */
+   public static final String ROOT_START = "<FitsIndex>";
+   public static final String ROOT_END = "</FitsIndex>";
+   
    /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
     * given url
@@ -215,7 +219,7 @@ public class IndexGenerator
     */
    public String generateIndex(Object[] urls) throws IOException
    {
-      StringBuffer index = new StringBuffer("<FitsDataCenterIndex>\n");
+      StringBuffer index = new StringBuffer(ROOT_START+"\n");
       
       for (int i=0;i<urls.length;i++)
       {
@@ -223,7 +227,7 @@ public class IndexGenerator
          index.append(makeIndexSnippet((URL)urls[i]));
       }
 
-      index.append("</FitsDataCenterIndex>\n");
+      index.append(ROOT_END+"\n");
       
       return index.toString();
       
@@ -233,22 +237,45 @@ public class IndexGenerator
     * Generates an index XML file for the FITS files at the URLs listed in the
     * given file, writing them out to the target stream
     */
-   public void generateIndex(InputStream urlsIn, OutputStream out) throws IOException
+   public void generateIndex(InputStream urlsIn, Writer out) throws IOException
    {
-         BufferedReader in
-            = new BufferedReader(new InputStreamReader(urlsIn));
-         String line = null;
-         while( (line = in.readLine()) != null) {
-            try {
-               out.write(makeIndexSnippet(new URL(line)).getBytes());
-               out.flush();
-            } catch (IOException ioe) {
-               log.error("Could not read file at "+line, ioe);
-            }
+      PrintWriter dout = new PrintWriter(new BufferedWriter(out));
+      dout.println(ROOT_START);
+      
+      BufferedReader in = new BufferedReader(new InputStreamReader(urlsIn));
+
+      String line = null;
+      while( (line = in.readLine()) != null) {
+         try {
+            dout.println(makeIndexSnippet(new URL(line)).getBytes());
+            dout.flush(); //so that if we crash we can see where we got to
+         } catch (IOException ioe) {
+            //log as an error but try next URL
+            log.error(ioe+", processing URL "+line, ioe);
          }
-         in.close();
+      }
+      in.close();
+      dout.println(ROOT_END);
+      dout.flush();
    }
 
+   /**
+    * Generates an index XML file for the FITS files at the given URLs, writing it out to the target stream
+    */
+   public void generateIndex(URL[] urls, Writer out) throws IOException
+   {
+      PrintWriter dout = new PrintWriter(new BufferedWriter(out));
+      dout.println(ROOT_START);
+      
+      for (int i=0;i<urls.length;i++)
+      {
+         assert urls[i] != null;  //or could report it and continue?
+         dout.println(makeIndexSnippet(urls[i]));
+         dout.flush();
+      }
+      dout.println(ROOT_END);
+      dout.flush();
+   }
    
    /**
      * Test harness
@@ -271,7 +298,7 @@ public class IndexGenerator
       }
       String indexFile = null;
       if("-f".equals(args[0])) {
-         OutputStream out = new ByteArrayOutputStream();
+         StringWriter out = new StringWriter();
          generator.generateIndex(new FileInputStream(args[1]), out);
          indexFile = out.toString();
       } else if("-u".equals(args[0])) {
@@ -375,6 +402,12 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.2  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.1.6.1  2004/10/15 19:59:06  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedResults.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: PrecannedResults.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,7 +48,7 @@ public class PrecannedResults extends QueryResults
    /**
     * Writes out a completely different file as CSV...
     */
-   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void writeCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       //example is in same directory
       InputStream csv = getClass().getResourceAsStream("ExampleResults.txt");
@@ -68,7 +68,7 @@ public class PrecannedResults extends QueryResults
    /**
     * Converts results to HTML to given writer
     */
-   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void writeHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       throw new UnsupportedOperationException("Don't support HTML yet");
    }
@@ -76,7 +76,7 @@ public class PrecannedResults extends QueryResults
    /**
     * Pipes the example file to the given output stream
     */
-   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void writeVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       //example is in same directory
       InputStream table = getClass().getResourceAsStream("ExampleVotable.xml");
@@ -92,6 +92,10 @@ public class PrecannedResults extends QueryResults
       /**NWW:  shouldn't close output stream - causes failure in QueryerPlugin.processResults(line 104) */
       //out.close();
    }
-   
+
+   public void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException {
+      writeVotable(out, statusToUpdate);
+   }
+
 }
 

@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.2 2004/10/05 16:37:45 mch Exp $
+/*$Id: Initialise.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.datacenter.impl.trace.initialiser;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 
@@ -28,13 +29,19 @@ public class Initialise {
       IndexGenerator generator = new IndexGenerator();
       generator.checkForExtensions = false;
       generator.fitsDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-      generator.generateIndex(Initialise.class.getResourceAsStream("traceUrls.txt"), System.out);
+      generator.generateIndex(Initialise.class.getResourceAsStream("traceUrls.txt"), new OutputStreamWriter(System.out));
    }
 }
 
 
 /*
 $Log: Initialise.java,v $
+Revision 1.3  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.2.4.1  2004/10/15 19:59:05  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.2  2004/10/05 16:37:45  mch
 Merged with PAL
 

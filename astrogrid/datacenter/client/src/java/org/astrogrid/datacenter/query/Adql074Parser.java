@@ -1,5 +1,5 @@
 /*
- * $Id: Adql074Parser.java,v 1.2 2004/10/12 22:46:42 mch Exp $
+ * $Id: Adql074Parser.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,13 +9,13 @@ package org.astrogrid.datacenter.query;
 import net.ivoa.www.xml.ADQL.v0_7_4.*;
 import org.astrogrid.datacenter.query.condition.*;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import org.apache.axis.encoding.Deserializer;
 import org.astrogrid.datacenter.returns.ReturnTable;
 
 /**
- * Makes an Query from an ADQL document or auto-generated model
+ * Makes an Query from an ADQL 0.7.4 object model
  *
  * @author M Hill
  */
@@ -25,13 +25,6 @@ public class Adql074Parser  {
 
    Hashtable alias = new Hashtable();
 
-   /** Static convenience method, creates an instance, parses the given string
-    * and returns a Query model */
-   public static Query makeQuery(String adql) {
-      Adql074Parser parser = new Adql074Parser();
-      return parser.parse(adql);
-   }
-   
    /** Static convenience method, creates an instance, parses the given ADQL object model
     * and returns a Query model */
    public static Query makeQuery(SelectType adql) {
@@ -39,11 +32,6 @@ public class Adql074Parser  {
       return parser.parse(adql);
    }
    
-   
-   /** Constructs a Query from the given ADQL 0.7.4 document */
-   public Query parse(String adql) {
-      throw new UnsupportedOperationException();
-   }
    
    /** Constructs a Query from the given ADQL (0.7.4) OM which is generated from the
     * SkyNode (0.7.4) WSDL
@@ -112,6 +100,12 @@ public class Adql074Parser  {
                condition,
                new ReturnTable(null, (Expression[]) returnCols.toArray(new Expression[] {}))
               );
+      Enumeration keys = alias.keys();
+      while (keys.hasMoreElements()) {
+         String a = (String) keys.nextElement();
+         String t = (String) alias.get(a);
+         query.addAlias(t, a);
+      }
       query.setLimit(limit);
       return query;
    }
@@ -250,6 +244,12 @@ public class Adql074Parser  {
 }
 /*
  $Log: Adql074Parser.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/12 22:46:42  mch
  Introduced typed function arguments
 

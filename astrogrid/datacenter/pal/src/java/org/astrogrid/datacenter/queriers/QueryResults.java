@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.4 2004/10/08 09:42:58 mch Exp $
+ * $Id: QueryResults.java,v 1.5 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -58,16 +58,20 @@ public abstract class QueryResults
     * format.  The statusToUpdate can be used to change the querier's status so that
     * monitors can see how things are going.
     */
-   public abstract void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
+   public abstract void writeVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
    
    /** HTML output suitable for display in a browser
     */
-   public abstract void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
+   public abstract void writeHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
 
    /** Comma Seperated Variable format does not contain the metadata of VOtable, but is
     * very common and can be put straight into spreadsheets, etc.
     */
-   public abstract void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
+   public abstract void writeCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
+
+   /** Write out in the native form produced by the backend.
+    */
+   public abstract void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
    
    /** Returns the number of results - or -1 if unknown */
    public abstract int getCount() throws IOException;
@@ -82,21 +86,24 @@ public abstract class QueryResults
          format = ReturnTable.VOTABLE; //default to votable
       }
       
-      if (format.toUpperCase().equals(ReturnTable.VOTABLE.toUpperCase())) {
-         toVotable(out, statusToUpdate);
+      if (format.toUpperCase().equals(ReturnSpec.RAW.toUpperCase())) {
+         writeRaw(out, statusToUpdate);
+      }
+      else if (format.toUpperCase().equals(ReturnSpec.VOTABLE.toUpperCase())) {
+         writeVotable(out, statusToUpdate);
       }
       else if (format.toUpperCase().equals(ReturnTable.CSV.toUpperCase())) {
-         toCSV(out, statusToUpdate);
+         writeCSV(out, statusToUpdate);
       }
-      else if (format.toUpperCase().equals(ReturnTable.HTML.toUpperCase())) {
-         toHtml(out, statusToUpdate);
+      else if (format.toUpperCase().equals(ReturnSpec.HTML.toUpperCase())) {
+         writeHtml(out, statusToUpdate);
       }
       else {
          throw new IllegalArgumentException("Unknown results format "+format+" given");
       }
    }
 
-   /** This is a helper method for subclasses; it is meant to be called
+   /** This is a helper method for plugins; it is meant to be called
     * from the askQuery method.  It transforms the results and sends them
     * as required, updating the querier status appropriately.
     */

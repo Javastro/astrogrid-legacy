@@ -1,4 +1,4 @@
-/*$Id: MetadataTest.java,v 1.3 2004/10/08 17:14:23 mch Exp $
+/*$Id: MetadataTest.java,v 1.4 2004/10/18 13:11:30 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -112,18 +112,20 @@ public class MetadataTest extends TestCase {
       } catch (FileNotFoundException fnfe) {
          //ignore, supposed to happen
       }
-      SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, null);
-      
-      SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
-      Document metadata = VoDescriptionServer.getVoDescription();
-      assertNotNull(metadata);
       
       SimpleConfig.setProperty(FileResourcePlugin.METADATA_FILE_LOC_KEY, "org/astrogrid/datacenter/metadata/metadata.xml");
-      SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, null);
       FileResourcePlugin plugin = (FileResourcePlugin) VoDescriptionServer.createPlugin(FileResourcePlugin.class.getName());
       assertNotNull(plugin.getVoResources());
    }
    
+   public void testMetatdataUrlServer() throws Throwable{
+      SimpleConfig.setProperty(VoResourcePlugin.RESOURCE_PLUGIN_KEY, UrlResourcePlugin.class.getName());
+
+      SimpleConfig.setProperty(FileResourcePlugin.METADATA_URL_LOC_KEY, this.getClass().getResource("metadata.xml").toString());
+      Document metadata = VoDescriptionServer.getVoDescription();
+      assertNotNull(metadata);
+   }
+
    public static void main(String[] args) {
       junit.textui.TestRunner.run(MetadataTest.class);
    }
@@ -134,6 +136,12 @@ public class MetadataTest extends TestCase {
 
 /*
  $Log: MetadataTest.java,v $
+ Revision 1.4  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.3.2.1  2004/10/15 19:59:06  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.3  2004/10/08 17:14:23  mch
  Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
 

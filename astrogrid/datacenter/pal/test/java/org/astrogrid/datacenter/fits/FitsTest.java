@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.1 2004/09/28 15:11:33 mch Exp $
+/*$Id: FitsTest.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -37,20 +37,13 @@ public class FitsTest extends OptionalTestCase
       assertNotNull(header.get("END"));
    }
 
-   /** Tests generating indexes from three fits files.  This will test also
-    * the full keyword/etc parsing */
-   public void testIndexGenerator() throws IOException
+   /** Returns a list of the test URLS
+    * NB These are all the same files at the moment
+    * @todo - get some (small) samples
+    */
+   public static URL[] getTestFits()
    {
-      String index = generateTestIndex();
-      assertNotNull(index);
-   }
-
-   /** Used by other tests too - but for some reason it's not happy finding
-    * these files on a static method... */
-   public static String generateTestIndex() throws IOException
-   {
-      // NB These are all the same files at the moment @todo - get some (small) samples
-      URL[] fits = new URL[] {
+      return new URL[] {
             FitsTest.class.getResource("examples/sample1.fits"),
             FitsTest.class.getResource("examples/sample2.fits"),
             FitsTest.class.getResource("examples/sample3.fits"),
@@ -58,11 +51,6 @@ public class FitsTest extends OptionalTestCase
             FitsTest.class.getResource("examples/sample5.fits"),
             FitsTest.class.getResource("examples/sample6.fits")
       };
-
-      IndexGenerator generator = new IndexGenerator();
-      generator.raAxis = 1;
-      generator.decAxis = 2;
-      return generator.generateIndex(fits);
    }
    
    public static Test suite()
@@ -85,6 +73,12 @@ public class FitsTest extends OptionalTestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.2  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.1.6.1  2004/10/15 19:59:06  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.1  2004/09/28 15:11:33  mch
  Moved server test directory to pal
 

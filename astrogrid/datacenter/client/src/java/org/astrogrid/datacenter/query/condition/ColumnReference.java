@@ -1,5 +1,5 @@
 /*
- * $Id: ColumnReference.java,v 1.4 2004/10/07 10:34:44 mch Exp $
+ * $Id: ColumnReference.java,v 1.5 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,9 +16,8 @@ package org.astrogrid.datacenter.query.condition;
 
 import org.astrogrid.datacenter.query.QueryException;
 
-public class ColumnReference implements SearchFieldReference {
+public class ColumnReference extends SearchFieldReference {
    
-   String datasetName = null;
    String tableName = null;
    String colName = null;
    
@@ -40,7 +39,6 @@ public class ColumnReference implements SearchFieldReference {
       this.datasetName = dataset;
    }
 
-   public String getDatasetName() { return datasetName; }
    public String getTableName() { return tableName; }
    public String getColName() { return colName; }
    
@@ -57,6 +55,12 @@ public class ColumnReference implements SearchFieldReference {
 
 /*
 $Log: ColumnReference.java,v $
+Revision 1.5  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.4.2.1  2004/10/15 19:59:05  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.4  2004/10/07 10:34:44  mch
 Fixes to Cone maker functions and reading/writing String comparisons from Query
 

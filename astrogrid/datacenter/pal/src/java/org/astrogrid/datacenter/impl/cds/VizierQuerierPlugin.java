@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierPlugin.java,v 1.2 2004/10/05 20:26:43 mch Exp $
+/*$Id: VizierQuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,52 +14,53 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.impl.cds.vizier.VizierDelegate;
 import org.astrogrid.datacenter.delegate.DatacenterException;
-import org.astrogrid.datacenter.metadata.VoResourcePlugin;
+import org.astrogrid.datacenter.impl.cds.vizier.VizierDelegate;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.VotableResults;
-import org.w3c.dom.Document;
+import org.astrogrid.datacenter.queriers.VotableDomResults;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query;
 import org.xml.sax.SAXException;
 
 /** Datacenter querier SPI that performs queries against CDS Vizier webservice.
  * @see AdqlVizierTranslator
  * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
  */
-public class VizierQuerierPlugin extends QuerierPlugin  {
+public class VizierQuerierPlugin extends DefaultPlugin  {
 
   /** Key specifying which Vizier catalogue to query. */
    public static final String CATALOGUE_NAME =
      "datacenter.vizier.querier.catalogueName";
 
-  /** Flag indicating whether the query is to return metadata only, or
-      perform a real query. */
-   //public static final String METADATA = "datacenter.querier.metadata";
-
-
+   /** delegate */
+   VizierDelegate delegate;
+   
 
    /** @todo check configuration for endpoint setting before settling with default */
-   public VizierQuerierPlugin(Querier querier) throws ServiceException {
-      super(querier);
+   public VizierQuerierPlugin() throws ServiceException {
+      super();
    }
    
    /* (non-Javadoc)
     * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#doQuery(java.lang.Object, java.lang.Class)
     */
-   public void askQuery() throws IOException {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
 
       try {
-         VizierDelegate delegate = new VizierDelegate();
+         delegate = new VizierDelegate();
 
          VizierQueryMaker translator = new VizierQueryMaker();
-         VizierQuery query = translator.getVizierQuery(querier.getQuery());
+         VizierQuery vquery = translator.getVizierQuery(query);
    
-         Document votableDoc = query.askQuery(delegate);
+         String votableDoc = vquery.askQuery(delegate);
          
-         VotableResults results = new VotableResults(querier, votableDoc);
-         
-         results.send(querier.getReturnSpec(), Account.ANONYMOUS);
+         if (!aborted) {
+            VotableDomResults results = new VotableDomResults(querier, votableDoc);
+            results.send(query.getResultsDef(), Account.ANONYMOUS);
+         }
 
       }
       catch (ServiceException e) {
@@ -73,7 +74,6 @@ public class VizierQuerierPlugin extends QuerierPlugin  {
       }
       
    }
-   
    
    /**
     * Returns the VOResource element of the metadata.  Returns a string (rather than
@@ -101,6 +101,12 @@ public class VizierQuerierPlugin extends QuerierPlugin  {
 
 /*
  $Log: VizierQuerierPlugin.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.4.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/05 20:26:43  mch
  Prepared for better resource metadata generators
 

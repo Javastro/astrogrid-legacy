@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleQueryMaker.java,v 1.3 2004/10/07 10:34:44 mch Exp $
+ * $Id: SimpleQueryMaker.java,v 1.4 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -52,11 +52,16 @@ public class SimpleQueryMaker  {
    }
 
    /** Constructs a query with a condition 'circle' of the given parameters, returning the given returnspec.
-    * The scope ('FROM') is loaded from the configuration file
+    * The scope ('FROM') is loaded from the configuration file, if given
     */
    public static Query makeConeQuery(double givenRa, double givenDec, double givenRadius, ReturnSpec returns) {
-      String coneTable = SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY);
-      return makeConeQuery(new String[] { coneTable }, givenRa, givenDec, givenRadius, returns);
+      String coneTable = SimpleConfig.getSingleton().getString(SqlMaker.CONE_SEARCH_TABLE_KEY, null);
+      if (coneTable != null) {
+         return new Query(new String[] { coneTable }, makeConeCondition(givenRa, givenDec, givenRadius), returns);
+      }
+      else {
+         return new Query(makeConeCondition(givenRa, givenDec, givenRadius), returns);
+      }
    }
 
    /** Convenience method for constructing a cone query returning a VOTable to the given target
@@ -95,6 +100,15 @@ public class SimpleQueryMaker  {
 }
 /*
  $Log: SimpleQueryMaker.java,v $
+ Revision 1.4  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.3.2.2  2004/10/16 14:28:36  mch
+ Fixed recursion problem for some cone generation
+
+ Revision 1.3.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.3  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

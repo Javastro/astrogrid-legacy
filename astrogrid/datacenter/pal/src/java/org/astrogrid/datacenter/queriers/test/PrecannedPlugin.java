@@ -1,14 +1,17 @@
 /*
- * $Id: PrecannedPlugin.java,v 1.2 2004/09/28 16:37:57 mch Exp $
+ * $Id: PrecannedPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.test;
-import org.astrogrid.datacenter.queriers.*;
-
 import java.io.IOException;
 import java.util.Date;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
+import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query;
 
 
 /**
@@ -18,19 +21,16 @@ import java.util.Date;
  * @author M Hill
  */
 
-public class PrecannedPlugin extends QuerierPlugin
+public class PrecannedPlugin extends DefaultPlugin
 {
-   public PrecannedPlugin(Querier querier) throws IOException
-   {
-      super(querier);
-   }
 
-   public void askQuery() throws IOException
-   {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
       Date today = new Date();
       PrecannedResults results = new PrecannedResults(querier, "Created "+ today.getDate()+"-"+today.getMonth()+"-"+today.getYear()+" "+today.getHours()+":"+today.getMinutes()+":"+today.getSeconds());
       
-      results.send(querier.getReturnSpec(), querier.getUser());
+      results.send(query.getResultsDef(), querier.getUser());
    }
 
 

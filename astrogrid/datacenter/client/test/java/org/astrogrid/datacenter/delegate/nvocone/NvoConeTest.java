@@ -36,7 +36,7 @@ public class NvoConeTest extends OptionalTestCase
     */
    public void testFactory() throws MalformedURLException, DatacenterException
    {
-      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://dummy.nvoconesearch/cone?cat=mycatalogue", DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
+      ConeSearcher searcher = DatacenterDelegateFactory.makeConeSearcher(Account.ANONYMOUS, "http://dummy.nvoconesearch/cone?cat=mycatalogue", DatacenterDelegateFactory.NVO_CONE_SERVICE);
       
       assertTrue(searcher instanceof NvoConeSearchDelegate);
    }
@@ -104,6 +104,12 @@ public class NvoConeTest extends OptionalTestCase
 
 /*
  $Log: NvoConeTest.java,v $
+ Revision 1.9  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.8.6.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.8  2004/09/28 15:50:50  mch
  Removed calls to deprecated methods
 

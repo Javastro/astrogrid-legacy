@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ * $Id: WarehouseQuerier.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,12 +8,15 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 
 import java.io.File;
 import java.io.IOException;
+import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.VotableInResults;
 import org.astrogrid.datacenter.queriers.sql.postgres.PostgresSqlMaker;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.util.Workspace;
 
 /**
@@ -54,25 +57,10 @@ import org.astrogrid.util.Workspace;
  * @version 1.1
  * @see GdsQueryDelegate
  */
-public class WarehouseQuerier extends QuerierPlugin {
+public class WarehouseQuerier extends DefaultPlugin {
    
    Workspace workspace = null;
    
-  /**
-   * Default constructor initialises parent with query data.
-   * Datacenter infrastructure takes care of loading config parameters
-   * from toplevel AstroGridConfig.properties file.
-   *
-   * @param queryId  String identifier for tracking this query
-   * @param query  Query representation in datacenter internal format
-   * @throws DatabaseAccessException
-   * @throws IOException
-   * @throws SAXException
-   */
-  public WarehouseQuerier(Querier querier) throws IOException {
-    super(querier);
-    log.debug("Constructing WarehouseQuerier");
-  }
 
   /**
    * Performs an actual database query (by shelling out to a
@@ -83,11 +71,13 @@ public class WarehouseQuerier extends QuerierPlugin {
    *
    * @throws IOException, DatabaseAccessException
    */
-  public void askQuery() throws IOException, DatabaseAccessException {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
 
     //Convert to SQL
     PostgresSqlMaker sqlMaker = new PostgresSqlMaker();
-    String sql = escapeXmlSpecialChars(sqlMaker.getSql(querier.getQuery()));
+    String sql = escapeXmlSpecialChars(sqlMaker.getSql(query));
      
     log.debug("Successfully created SQL query from input ADQL");
 
@@ -122,7 +112,7 @@ public class WarehouseQuerier extends QuerierPlugin {
     }
     doShelledOutQuery(sql, tempFile);
     VotableInResults results = new VotableInResults(querier, tempFile);
-    results.send(querier.getReturnSpec(), querier.getUser());
+    results.send(query.getResultsDef(), querier.getUser());
     workspace.close();
   }
 
@@ -360,6 +350,12 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.2  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.1.6.1  2004/10/15 19:59:06  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

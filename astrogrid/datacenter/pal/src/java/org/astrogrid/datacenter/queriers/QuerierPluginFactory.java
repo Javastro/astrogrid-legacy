@@ -1,4 +1,4 @@
-/*$Id: QuerierPluginFactory.java,v 1.4 2004/10/08 17:14:22 mch Exp $
+/*$Id: QuerierPluginFactory.java,v 1.5 2004/10/18 13:11:30 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -83,8 +83,10 @@ public class QuerierPluginFactory {
           this means the exception boils out of the code, and is unstoppable - dodgy
           work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
 
-         Constructor constr = qClass.getConstructor(new Class[] {Querier.class});
-         return (QuerierPlugin) constr.newInstance(new Object[] {querier});
+//         Constructor constr = qClass.getConstructor(new Class[] {Querier.class});
+//         return (QuerierPlugin) constr.newInstance(new Object[] {querier});
+         Constructor constr = qClass.getConstructor(new Class[] {});
+         return (QuerierPlugin) constr.newInstance(new Object[] {});
       }
       catch (ClassNotFoundException cnfe) {
          throw new QuerierPluginException("Server not configured properly: plugin '"+querierClass+"' not found", cnfe);
@@ -106,6 +108,12 @@ public class QuerierPluginFactory {
 
 /*
  $Log: QuerierPluginFactory.java,v $
+ Revision 1.5  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.4.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.4  2004/10/08 17:14:22  mch
  Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
 

@@ -1,4 +1,4 @@
-/*$Id: FitsResultsTest.java,v 1.2 2004/10/08 17:14:23 mch Exp $
+/*$Id: FitsResultsTest.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -30,16 +30,11 @@ public class FitsResultsTest extends TestCase
                             "http://msslxy.mssl.ucl.ac.uk:8080/TraceFits/ObtainFITS?_file=trace4a/tri/week20020728/tri20020728.0600"};
 
    FitsResults fixedResults = new FitsResults(null, exampleUrls);
-   FitsResults coneResults;
                             
-   protected void setUp() throws Exception{
-      SimpleConfig.setProperty(QuerierPluginFactory.QUERIER_PLUGIN_KEY, FitsQuerierPlugin.class.getName());
-   }
-
    public void testToVotable() throws IOException, SAXException, ParserConfigurationException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.toVotable(sw, null);
+      fixedResults.writeVotable(sw, null);
       
       //check results
       DomHelper.newDocument(sw.toString());
@@ -50,7 +45,7 @@ public class FitsResultsTest extends TestCase
    public void testToHtml() throws IOException, SAXException, ParserConfigurationException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.toHtml(sw, null);
+      fixedResults.writeHtml(sw, null);
       
       //check results
       DomHelper.newDocument(sw.toString());
@@ -59,23 +54,13 @@ public class FitsResultsTest extends TestCase
    public void testToCSV() throws IOException
    {
       StringWriter sw = new StringWriter();
-      fixedResults.toCSV(sw, null);
+      fixedResults.writeCSV(sw, null);
    }
 
-   /*
-   public void testConeToVotable() throws IOException, IOException, SAXException, ParserConfigurationException {
-      StringWriter sw = new StringWriter();
-      Querier querier = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(30,30,6), new TargetIndicator(sw), ReturnTable.VOTABLE);
-      
-      //check results
-      DomHelper.newDocument(sw.toString());
-   }
-    */
    
-   
+   // Reflection is used here to add all the testXXX() methods to the suite.
    public static Test suite()
    {
-      // Reflection is used here to add all the testXXX() methods to the suite.
       return new TestSuite(FitsResultsTest.class);
    }
    
@@ -83,9 +68,7 @@ public class FitsResultsTest extends TestCase
    /**
     * Runs the test case.
     */
-   public static void main(String args[]) throws IOException
-   {
-      org.astrogrid.log.Log.logToConsole();
+   public static void main(String args[])    {
       junit.textui.TestRunner.run(suite());
    }
    
@@ -94,6 +77,12 @@ public class FitsResultsTest extends TestCase
 
 /*
  $Log: FitsResultsTest.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.2.1  2004/10/15 19:59:06  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/08 17:14:23  mch
  Clearer separation of metadata and querier plugins, and improvements to VoResource plugin mechanisms
 

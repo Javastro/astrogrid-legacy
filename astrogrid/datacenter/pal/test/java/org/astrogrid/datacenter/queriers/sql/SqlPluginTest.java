@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.5 2004/10/07 10:34:44 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.6 2004/10/18 13:11:30 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,10 +24,9 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.SimpleQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.service.DataServer;
-import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.slinger.WriterTarget;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -84,9 +83,10 @@ public class SqlPluginTest extends ServerTestCase {
       SampleStarsPlugin.initConfig();
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, SimpleQueryMaker.makeConeQuery(ra,dec,r, new WriterTarget(sw), ReturnTable.VOTABLE));
-      manager.askQuerier(q);
+      Query q = SimpleQueryMaker.makeConeQuery(ra,dec,r, new WriterTarget(sw), ReturnTable.VOTABLE);
+      manager.askQuerier(Querier.makeQuerier(Account.ANONYMOUS, q));
       log.info("Checking results...");
+      System.out.println(sw.toString());
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
       long numResults = results.getElementsByTagName("TR").getLength();
@@ -221,6 +221,12 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.6  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.5.2.1  2004/10/15 19:59:06  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.5  2004/10/07 10:34:44  mch
  Fixes to Cone maker functions and reading/writing String comparisons from Query
 

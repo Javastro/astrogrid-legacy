@@ -1,5 +1,5 @@
 /*
- * $Id: NullTarget.java,v 1.1 2004/10/06 21:12:17 mch Exp $
+ * $Id: NullTarget.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,10 +7,10 @@
 package org.astrogrid.slinger;
 
 import java.io.IOException;
-import java.io.Writer;
-import org.astrogrid.community.Account;
-import org.astrogrid.slinger.TargetIndicator;
 import java.io.OutputStream;
+import java.net.URI;
+import org.astrogrid.community.Account;
+import java.net.URISyntaxException;
 
 /**
  * Convenience null target for testing - output is written out to NullWriter and
@@ -18,15 +18,37 @@ import java.io.OutputStream;
  *
  */
 
-public class NullTarget extends WriterTarget {
+public class NullTarget extends UriTarget {
+
+   public static final String NULL_TARGET_URI = "target:null";
    
-   public NullTarget() {
-      super(new NullWriter());
+   public NullTarget() throws URISyntaxException {
+      super(NULL_TARGET_URI);
+   }
+   
+   /** All targets must be able to resolve to a stream.  The user is required
+    * for permissioning. */
+   public OutputStream resolveStream(Account user) throws IOException {
+      return new NullOutputStream();
+   }
+   
+   /** Returns true if the target indicator is forwardable.  That is to say, if
+    * it is a reference to a target that can be passed on to a remote service.
+    * WriterTargets for example are not forwardable, as they hold a reference to
+    * a java object, which does not survive remote requests */
+   public boolean isForwardable() {
+      return true;
    }
    
 }
 /*
  $Log: NullTarget.java,v $
+ Revision 1.2  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.1.2.1  2004/10/16 14:36:30  mch
+ Forwardable null targets
+
  Revision 1.1  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

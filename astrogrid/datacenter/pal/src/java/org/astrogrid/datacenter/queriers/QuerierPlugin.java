@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -9,21 +9,8 @@ package org.astrogrid.datacenter.queriers;
 
 
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Properties;
-import javax.mail.Address;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
-import org.w3c.dom.Document;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.query.Query;
 
 /**
  * Querier Plugins are used to carry out all the database specific backend
@@ -33,47 +20,28 @@ import org.w3c.dom.Document;
  *
  */
 
-public abstract class QuerierPlugin  {
+public interface QuerierPlugin  {
 
-   protected Querier querier;
-
-   /** Marker used to indicate an abort has been requested */
-   protected boolean aborted = false;
-   
-   protected static final Log log = LogFactory.getLog(QuerierPlugin.class);
-
-   /** All Plugins implementations will have to have the same constructor as this */
-   public QuerierPlugin(Querier givenParent) {
-      this.querier = givenParent;
-   }
-
-   /** Subclasses override this method to carry out the query.
+   /** This is the method called to carry out the query.
      * Used by both synchronous (blocking) and asynchronous (threaded) querying
      * through processQuery. Should run the query and send the results although
      * the parent has methods to help with this.  The plugin should have everyting
      * tidied up and discarded as nec before returning - there is no close() method
      */
-   public abstract void askQuery() throws IOException;
+   public void askQuery(Account user, Query query, Querier querier) throws IOException;
    
-   /** Abort - if this is called, try and top the query and tidy up.  This
-    * default implementation sets the 'aborted' flag for the askQuery to
-    * check for */
-   public void abort() {
-      aborted = true;
-   }
+   /** Abort - if this is called, try and top the query and tidy up.   */
+   public void abort();
    
-
-   /**
-    * While the 'askQuery' should do all tidying up required, this method
-    * exists just to separate the plugin from the Querier when the querier
-    * closes, ready for garbage collection
-    */
-   public void close() {
-      querier = null;
-   }
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.3  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.2.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.2  2004/10/06 21:12:17  mch
  Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Circle.java,v 1.1 2004/10/06 21:12:16 mch Exp $
+ * $Id: Circle.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -20,7 +20,7 @@ public class Circle extends Function  {
    /** Create Circle function with given parameters, assuming J2000 */
    public Circle(double ra, double dec, double radius) {
       super("CIRCLE", new Expression[] {
-                  new LiteralNumber("J2000"),
+                  new LiteralString("J2000"),
                   new LiteralNumber(""+ra),
                   new LiteralNumber(""+dec),
                   new LiteralNumber(""+radius) }
@@ -30,7 +30,7 @@ public class Circle extends Function  {
    /** Create Circle function with given parameters */
    public Circle(String coordSys, double ra, double dec, double radius) {
       super("CIRCLE", new Expression[] {
-                  new LiteralNumber(coordSys),
+                  new LiteralString(coordSys),
                   new LiteralNumber(""+ra),
                   new LiteralNumber(""+dec),
                   new LiteralNumber(""+radius) }
@@ -81,6 +81,12 @@ public class Circle extends Function  {
 
 /*
 $Log: Circle.java,v $
+Revision 1.2  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.1.2.1  2004/10/15 19:59:05  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.1  2004/10/06 21:12:16  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

@@ -1,4 +1,4 @@
-/*$Id: AxisDataService05QueryTest.java,v 1.3 2004/10/13 01:27:24 mch Exp $
+/*$Id: AxisDataService05QueryTest.java,v 1.4 2004/10/18 13:11:30 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -65,7 +65,7 @@ public class AxisDataService05QueryTest extends ServerTestCase {
        
        Query query1 = AdqlQueryMaker.makeQuery(SqlPluginTest.class.getResourceAsStream("sample-adql0.7.4-1.xml"));
 
-       String qid = server.submitAdqlQuery(Query2Adql074.makeAdql(query1), "astrogrid:store:myspace:http://wibble/wobble#some/path", "VOTABLE");
+       String qid = server.submitAdqlQuery(Query2Adql074.makeAdql(query1), "null", "VOTABLE");
        assertNotNull(qid);
        server.abortQuery(qid);
 
@@ -98,6 +98,12 @@ public class AxisDataService05QueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataService05QueryTest.java,v $
+Revision 1.4  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.3.2.1  2004/10/15 19:59:06  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.3  2004/10/13 01:27:24  mch
 removed query createion in setup (which sometimes crashed)
 

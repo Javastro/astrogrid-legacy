@@ -1,4 +1,4 @@
-/*$Id: VotableResults.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: VotableDomResults.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,60 +11,82 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.Writer;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
+import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import javax.xml.parsers.ParserConfigurationException;
 
-/** Trivial Implementation of {@link org.astrogrid.datacenter.queriers.QueryResults} backed by a {@link org.w3c.dom.Document}
- * @author Noel Winstanley nw@jb.man.ac.uk 13-Nov-2003
+/** Trivial Implementation of {@link org.astrogrid.datacenter.queriers.QueryResults} backed by a
+ * document object model containing a VOTable document
  *
  */
-public class VotableResults extends QueryResults {
+public class VotableDomResults extends QueryResults {
 
     protected final Document doc;
 
     /**
-     *
+     * Std constructor
      */
-    public VotableResults(Querier querier, Document doc) {
+    public VotableDomResults(Querier querier, Document doc) {
       super(querier);
       this.doc = doc;
     }
+
+    /**
+     * construct from document in given string
+     */
+    public VotableDomResults(Querier querier, String doc) throws SAXException, IOException, ParserConfigurationException {
+      super(querier);
+      this.doc = DomHelper.newDocument(doc);
+    }
     
     public int getCount() {
-       return -1;
+       return doc.getDocumentElement().getElementsByTagName("TR").getLength();
     }
     
     /**
      * Easy one - writes out VOTable in memory to writer
      */
-    public void toVotable(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+    public void writeVotable(Writer out, QuerierProcessingResults querierStatus) throws IOException {
         XMLUtils.DocumentToWriter(doc,out);
     }
     
     /**
+     * Easy one - writes out VOTable in memory to writer
+     */
+    public void writeRaw(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+        XMLUtils.DocumentToWriter(doc,out);
+    }
+
+    /**
      * Not quite so easy one - HTML
      */
-    public void toHtml(Writer out, QuerierProcessingResults querierStatus) throws IOException {
-        throw new UnsupportedOperationException("Not yet implemeneted");
+    public void writeHtml(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+        throw new UnsupportedOperationException("HTML Output Not yet implemeneted");
     }
 
     /**
      * writes out VOTable in memory to writer in CSV form
      */
-    public void toCSV(Writer out, QuerierProcessingResults querierStatus) throws IOException {
-        throw new UnsupportedOperationException("Not yet implemeneted");
+    public void writeCSV(Writer out, QuerierProcessingResults querierStatus) throws IOException {
+        throw new UnsupportedOperationException("CSV Output Not yet implemeneted");
     }
     
 }
 
 
 /*
-$Log: VotableResults.java,v $
+$Log: VotableDomResults.java,v $
+Revision 1.2  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.1.2.1  2004/10/15 19:59:05  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 

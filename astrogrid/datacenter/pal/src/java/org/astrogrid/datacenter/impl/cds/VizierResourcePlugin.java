@@ -1,4 +1,4 @@
-/*$Id: VizierResourcePlugin.java,v 1.1 2004/10/05 20:26:43 mch Exp $
+/*$Id: VizierResourcePlugin.java,v 1.2 2004/10/18 13:11:30 mch Exp $
  * Created on 13-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,17 +11,9 @@
 package org.astrogrid.datacenter.impl.cds;
 
 import java.io.IOException;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
-import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.impl.cds.vizier.VizierDelegate;
-import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
-import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
-import org.astrogrid.datacenter.queriers.VotableResults;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /** returns resources for Vizier service
  */
@@ -54,6 +46,12 @@ public class VizierResourcePlugin implements VoResourcePlugin {
 
 /*
  $Log: VizierResourcePlugin.java,v $
+ Revision 1.2  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.1.4.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.1  2004/10/05 20:26:43  mch
  Prepared for better resource metadata generators
 

@@ -1,30 +1,27 @@
 /*
- * $Id: JdbcPlugin.java,v 1.6 2004/10/13 01:28:06 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.7 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.sql;
-import org.astrogrid.datacenter.queriers.sql.*;
-
-import java.sql.*;
-
 import java.io.IOException;
-import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.StringTokenizer;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.queriers.status.QuerierError;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.io.xml.XmlPrinter;
-import org.astrogrid.io.xml.XmlTagPrinter;
 
 /**
  * A general purpose SQL Querier that will (hopefully) produce bog standard
@@ -39,7 +36,7 @@ import org.astrogrid.io.xml.XmlTagPrinter;
  *  * @author M Hill
  */
 
-public class JdbcPlugin extends QuerierPlugin {
+public class JdbcPlugin extends DefaultPlugin {
    
    
    /** Adql -> SQL translator class */
@@ -48,17 +45,17 @@ public class JdbcPlugin extends QuerierPlugin {
    /** Connection manager */
    private static JdbcConnections connectionManager = null;
    
-   public JdbcPlugin(Querier querier)  {
-      super(querier);
-   }
-   
 
    /** performs a synchronous call to the database, submitting the given query
     * in sql form and retiirning the results as a SqlResults wrapper arond the JDBC result set.
     * @param o a string
     */
-   public void askQuery() throws IOException {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      //check to see if the query is OK to run - eg the tables are valid
+      assertQueryLegal(query);
       
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
       String sql = "(not set)";
       Connection jdbcConnection = null;
       
@@ -66,10 +63,10 @@ public class JdbcPlugin extends QuerierPlugin {
          //convert to SQL
          SqlMaker sqlMaker = makeSqlMaker();
                   
-         sql = sqlMaker.getSql(querier.getQuery());
+         sql = sqlMaker.getSql(query);
          
          if ((sql == null) || (sql.length() == 0)) {
-            throw new QueryException("SqlMaker returned empty SQL string for query "+querier.getQuery());
+            throw new QueryException("SqlMaker returned empty SQL string for query "+query);
          }
          
          querier.getStatus().addDetail("SQL: "+sql);
@@ -95,7 +92,7 @@ public class JdbcPlugin extends QuerierPlugin {
             }
             
             //sort out results
-            new SqlResults(querier, results).send(querier.getReturnSpec(), querier.getUser());
+            new SqlResults(querier, results).send(query.getResultsDef(), querier.getUser());
          }
          
       }
@@ -112,6 +109,14 @@ public class JdbcPlugin extends QuerierPlugin {
       }
 
    }
+   
+   /**
+    * Checks to see if the query is legal on this database - ie the tables
+    * specified are allowed to be queried, etc.  Throws an exception if not.
+    */
+   public void assertQueryLegal(Query query) {
+   }
+   
    
    /**
     * Makes the right SqlQueryMaker for this database

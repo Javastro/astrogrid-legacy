@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.7 2004/10/08 14:07:02 mch Exp $
+ * $Id: SqlResults.java,v 1.8 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -66,9 +66,9 @@ public class SqlResults extends QueryResults
    }
    
    /**
-    * Converts results to VOTable to given writer
+    * Converts results to VOTable to given writer.  All done by hand :-(
     */
-   public void toVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void writeVotable(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       assert (out != null);
       
@@ -132,13 +132,12 @@ public class SqlResults extends QueryResults
             row++;
             statusToUpdate.setProgress(row);
 
-            printOut.println("  <TR>");
-            printOut.print("     ");
+            printOut.print("  <TR> ");
             for (int i=1;i<=cols;i++)
             {
                printOut.print("<TD>"+sqlResults.getString(i)+"</TD>");
             }
-            printOut.println("  </TR>");
+            printOut.println(" </TR>");
             
             if ((localLimit!=-1) && (row>localLimit)) {
                //deliberately don't finish table properly
@@ -172,7 +171,7 @@ public class SqlResults extends QueryResults
    /**
     * Converts results to HTML to given writer
     */
-   public void toHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void writeHtml(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       assert (out != null);
       
@@ -245,7 +244,7 @@ public class SqlResults extends QueryResults
    /**
     * Converts results to CSV to given writer
     */
-   public void toCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   public void writeCSV(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
    {
       long maxAllowed = SimpleConfig.getSingleton().getInt(MAX_RETURN_ROWS_KEY, DEFAULT_MAX_RETURN_ROWS);
       
@@ -303,6 +302,12 @@ public class SqlResults extends QueryResults
       }
    }
    
+   /** Native form is/will be webrowresults (or whatever it's called)
+    */
+   public void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException
+   {
+      throw new UnsupportedOperationException("Raw (WebRowXml) not yet supported");
+   }
    
    public String getUcdFor(String columnName)
    {
@@ -315,6 +320,12 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.8  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.7.2.1  2004/10/15 19:59:06  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.7  2004/10/08 14:07:02  mch
  Fixed max limit bug
 

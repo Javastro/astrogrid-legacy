@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConePlugin.java,v 1.2 2004/10/06 21:12:17 mch Exp $
+ * $Id: NvoConePlugin.java,v 1.3 2004/10/18 13:11:30 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -10,9 +10,12 @@ import java.io.IOException;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.VotableInResults;
+import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.condition.Circle;
 import org.astrogrid.datacenter.query.condition.Condition;
@@ -32,24 +35,11 @@ import org.astrogrid.datacenter.query.condition.Function;
  * @author M Hill
  */
 
-public class NvoConePlugin extends QuerierPlugin
+public class NvoConePlugin extends DefaultPlugin
 {
-   Log log = LogFactory.getLog(NvoConePlugin.class);
 
    /** base url to service */
    protected String serverUrl = null;
-
-   public NvoConePlugin(Querier querier)  {
-      super(querier);
-      
-      Condition cone = querier.getQuery().getCriteria();
-      
-      //check that the query is simple and only a cone search
-      if (!(cone instanceof Function) ||
-           !( ((Function) cone).getName().equals("CIRCLE"))) {
-         throw new QueryException("Only simple circle criteria are available on NVO cone search catalogues.  Specify one condition that is a circle function");
-      }
-   }
 
    /**
     * Makes the URL required to talk to the server
@@ -74,17 +64,27 @@ public class NvoConePlugin extends QuerierPlugin
     * Simple blocking query; submit Query.  NB this routes the results through
     * this server, which is not necesssarily the best thing.  Ho hum.
     */
-   public void askQuery() throws IOException {
+   public void askQuery(Account user, Query query, Querier querier) throws IOException {
+
+      querier.setStatus(new QuerierQuerying(querier.getStatus()));
       
-      Circle cone = Circle.makeCircle( (Function) querier.getQuery().getCriteria());
+      Condition coneFunc = query.getCriteria();
       
-      URL url = makeUrl(cone);
+      //check that the query is simple and only a cone search
+      if (!(coneFunc instanceof Function) ||
+           !( ((Function) coneFunc).getName().equals("CIRCLE"))) {
+         throw new QueryException("Only simple circle criteria are available on NVO cone search catalogues.  Specify one condition that is a circle function");
+      }
+
+      Circle circle = Circle.makeCircle( (Function) coneFunc );
+      
+      URL url = makeUrl(circle);
       
       //start query & pick up handle to results
       VotableInResults results = new VotableInResults(querier, url.openStream());
 
       if (!aborted) {
-         results.send(querier.getQuery().getResultsDef(), querier.getUser());
+         results.send(query.getResultsDef(), querier.getUser());
       }
    }
    
@@ -93,6 +93,12 @@ public class NvoConePlugin extends QuerierPlugin
 
 /*
 $Log: NvoConePlugin.java,v $
+Revision 1.3  2004/10/18 13:11:30  mch
+Lumpy Merge
+
+Revision 1.2.2.1  2004/10/15 19:59:06  mch
+Lots of changes during trip to CDS to improve int test pass rate
+
 Revision 1.2  2004/10/06 21:12:17  mch
 Big Lump of changes to pass Query OM around instead of Query subclasses, and TargetIndicator mixed into Slinger
 

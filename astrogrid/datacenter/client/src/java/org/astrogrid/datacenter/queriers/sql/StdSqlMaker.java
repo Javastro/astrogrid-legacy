@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.6 2004/10/13 01:30:58 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.7 2004/10/18 13:11:30 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -44,32 +44,6 @@ public class StdSqlMaker  extends SqlMaker {
 
    private static final Log log = LogFactory.getLog(StdSqlMaker.class);
    
-   /**
-    * Constructs an SQL statement for the given cone query. Looks for the HTM
-    * column first - if it finds it, uses that to do the cone search
-    *
-    public String fromCone(SimpleQueryMaker query) {
-    if (SimpleConfig.getSingleton().getString(CONE_SEARCH_HTM_KEY, null) != null) {
-    throw new UnsupportedOperationException("Don't yet support HTM based cone searches");
-    } else {
-    // Work out SQL suitable for doing a cone query on RA & DEC values
-    String table = SimpleConfig.getSingleton().getString(CONE_SEARCH_TABLE_KEY);
-    
-    Angle ra  = Angle.fromDegrees(query.getRa());
-    Angle dec = Angle.fromDegrees(query.getDec());
-    Angle radius = Angle.fromDegrees(query.getRadius());
-    
-    String sql = "SELECT * FROM "+table+" as "+table+
-    " WHERE "+
-    //circle
-    makeSqlCircleCondition(ra, dec, radius);
-    
-    log.info(query+" -> "+sql);
-    
-    return sql;
-    }
-    }
-    
     /** Returns the SQL condition for a circle based on the columns in the
     * configuration file
     */
@@ -96,32 +70,10 @@ public class StdSqlMaker  extends SqlMaker {
       String raColRad = makeColumnRadians(raCol);
       String decColRad = makeColumnRadians(decCol);
       
-      //start with a square - for quicker searches
-      //      String sql = makeSqlBoundsCondition(raCol, decCol, ra, dec, radius);
-      
       //naively, we could use the 'least squares' distance (pythagoros) to see if
       //the objects are within radius distance. However this doesn't work well
-      //except very near the equator, and is useless over the poles. Left here
-      //for reference.
-      /*
-       return sql+"( "+
-       "(POWER("+decCol+" - "+dec.asDegrees()+", 2)"+
-       "+"+
-       "POWER("+raCol+" - "+ra.asDegrees()+", 2))"+
-       " < "+
-       "POWER("+radius.asDegrees()+", 2) "+
-       ")";
-       */
+      //except very near the equator, and is useless over the poles.
       
-      //simple great-circle distance formulare.  Doesn't work well for... er... don't know
-      //Left here for reference.
-      /*
-       return sql+" AND "+
-       "( "+
-       "( SIN("+decColRad+") * SIN("+dec.asRadians()+") + COS("+decColRad+") * COS("+dec.asRadians()+") * COS("+raColRad+" - "+ra.asRadians()+") )"+
-       " < COS("+radius.asRadians()+")"+
-       " )";
-       /**/
       
       //'haversine' distance formulae.  The correct one to use...
       if (funcsInRads) {
@@ -161,8 +113,6 @@ public class StdSqlMaker  extends SqlMaker {
          throw new ConfigException("Unknown units '"+colUnits+"' for conesearch columns, only 'rad', 'deg' or 'marcsec' supported");
       }
    }
-   
-   
    
    
    /** Returns the SQL condition expression for a rectangle <i>in coordinate space</i>.
@@ -317,11 +267,17 @@ public class StdSqlMaker  extends SqlMaker {
             }
             
             //find specified sheet as resource of this class
-            String path = StdSqlMaker.class.getPackage().toString().replace('.', '/').substring(8)+"/xslt/"+xsltDoc;
-            xsltIn = this.getClass().getClassLoader().getResourceAsStream(path);
-            //xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc); this seems to use a different ClassLoader in Tomcat and so fails to find the resource...
+            xsltIn = StdSqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc);
             whereIsDoc = StdSqlMaker.class+" resource ./xslt/"+xsltDoc;
             
+            //if above doesn't work, try doing by hand for Tomcat ClassLoader
+            if (xsltIn == null) {
+               String path = StdSqlMaker.class.getPackage().toString().replace('.', '/').substring(8)+"/xslt/"+xsltDoc;
+               xsltIn = StdSqlMaker.class.getClassLoader().getResourceAsStream(path);
+            }
+
+            //sometimes it won't even find it then if it's in a JAR.  Look in class path.  However
+            //*assume* it's in classpath, as we don't know what the classpath is during unit tests.
             if (xsltIn == null) {
                log.warn("Could not find builtin ADQL->SQL transformer doc '"+whereIsDoc+"', looking in classpath...");
                
@@ -432,6 +388,12 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.7  2004/10/18 13:11:30  mch
+ Lumpy Merge
+
+ Revision 1.6.2.1  2004/10/15 19:59:05  mch
+ Lots of changes during trip to CDS to improve int test pass rate
+
  Revision 1.6  2004/10/13 01:30:58  mch
  Added adqlsql (keeps CIRCLE)
 
