@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<questions>
+
+<Question subject="MySpace">
+<question>
+What can I do with MySpace?
+</question>
+<answer>
+You can do many things with MySpace, I mean YOURSpace...
+</answer>
+</Question>
+
+<Question subject="Registry">
+<question>
+What kind of feature is Registry?
+</question>
+<answer>
+Registry is the mother of all meta-data.<break/>
+<break/>
+You can find information about nearly all the resources participating in
+the Virtual Observatory, therefore asking the registry is like asking the
+oracle in Delphos.
+</answer>
+</Question>
+
+<Question subject="login">
+<question>
+What is the meaning of community? How does it affect my work?
+</question>
+<answer>
+Any takers?
+</answer>
+</Question>
+
+<Question subject="MySpace">
+<question>
+Can I transfer files from my computer to MySpace, and how?
+</question>
+<answer>
+Sure, this is one of the most important features of MySpace (as well as
+downloading those files).
+</answer>
+</Question>
+
+<Question subject="miscellaneous">
+<question>
+Where can I find "pretty pictures" on the web?
+</question>
+<answer>
+In several sites, but this one is particularly good. <a
+href="http://antwrp.gsfc.nasa.gov/apod/astropix.html"
+target="helpWindow">Astronomy Picture of the Day</a>
+</answer>
+</Question>
+
+</questions>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ag-div>
+<agPUBMessage>Locate tables available to AstroGrid</agPUBMessage>
+  <ag-link href="/astrogrid-portal/mount/datacenter/test-results.css" rel="stylesheet" type="text/css"/>
+
+
+<agInstructions>
+<ul>
+<li> Locate catalogues/tables by imposing criteria on the fields listed below.
+</li>
+
+<li> Criteria are ANDed.
+</li>
+
+<li> For string fields, use regular expression notation
+</li>
+
+<li> You will be presented with a list of tables/catalogues which satisfy your criteria
+</li>
+
+</ul>
+</agInstructions>
+
+<center>
+<table width="90%">
+
+<tr>
+<td>
+        
+<form action="/astrogrid-portal/lean/mount/datacenter/getTablesFromRegistry.reg" method="get">
+
+
+<table>
+<tr>
+<td>Catalogue's author</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="author" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td>Catalogue's title</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="title" type="text"/></td><td><span class="sc">string</span></td>
+
+</tr>
+<tr>
+<td>Number of rows in the Catalogue</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="nrecs" type="text"/></td><td><span class="sc">number</span></td>
+</tr>
+<tr>
+<td>Number of variables in the Catalogue</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="nvars" type="text"/></td><td><span class="sc">number</span></td>
+</tr>
+<tr>
+<td>Column Names</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colnames" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+
+<td>Column UCDs</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colUCDs" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td>Column Units</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colUnits" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td>Column Description</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colDescription" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td align="right" colspan="3"><input value="Go, ask! " class="submitButton" name="submit" type="submit"/></td>
+</tr>
+
+<tr>
+<td align="right" colspan="1">
+       Maximum number of tables to show:</td><td colspan="2"><input value="10" size="3" onFocus="focusit(this)" onBlur="defocusit(this)" name="maxTables"/></td>
+</tr>
+<tr>
+<td align="left" colspan="3"><select size="1" onFocus="focusit(this)" onBlur="defocusit(this)" name="mdata"><option value="full">
+       Retrieve ALL metadata (including column)
+       </option><option value="compact">
+       Exclude column metadata from retrieval
+       </option></select></td>
+</tr>
+</table>
+</form>
+</td>
+</tr>
+</table>
+</center>
+
+</ag-div>

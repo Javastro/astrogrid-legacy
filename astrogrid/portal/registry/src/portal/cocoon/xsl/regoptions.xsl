@@ -29,6 +29,7 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="regoptions_form">
+<agComponentTitle>Registry Options</agComponentTitle>
 		<p>
 			This is your Options screen to determine your next task for querying or adding to the Registry.<br />
 			<i>If your interested on how to do "Updates" you must query the registry and then an appropriate 

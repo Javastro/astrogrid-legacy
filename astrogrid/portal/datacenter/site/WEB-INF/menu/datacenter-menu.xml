@@ -6,13 +6,22 @@
       contents="DataCenter"
       contents-hover="DataCenter"
       uri=""
-      target="_self"
+      target="_top"
       status-text="DataCenter...">
     <agp:item
         contents="Query"
         contents-hover="Query"
-        uri="/astrogrid-portal/main/mount/datacenter/data-query.xml"
-        target="_self"
+        uri="/astrogrid-portal/bare/mount/datacenter/xscreen.xsp"
+        target="_top"
         status-text="AstroGrid DataCenter Query"/>
   </agp:menu>
 </agp:menu-def>
+	<!-- junkjard.pfo
+    <agp:item
+        contents="ExperQuery"
+        contents-hover="ExperQuery"
+        uri="/astrogrid-portal/bare/mount/datacenter/xscreen.xsp"
+        target="_top"
+        status-text="AstroGrid DataCenter Experimental Query"/>
+        uri="/astrogrid-portal/main/mount/datacenter/data-query.xml"
+	-->

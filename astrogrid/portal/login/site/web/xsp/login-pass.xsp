@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/web/xsp/login-pass.xsp,v $</cvs:source>
-    | <cvs:author>$Author: pfo $</cvs:author>
-    | <cvs:date>$Date: 2004/04/20 16:55:16 $</cvs:date>
-    | <cvs:version>$Revision: 1.6 $</cvs:version>
+    | <cvs:author>$Author: jl99 $</cvs:author>
+    | <cvs:date>$Date: 2004/07/20 13:37:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.7 $</cvs:version>
     |
     +-->
 <xsp:page language="java"
@@ -16,15 +16,192 @@
 
  
     <!--+
-        | The page content element.
+        |	The page content element.
+        |	You have succesfully logged in. <BR/>
         +-->
+
         <page>
-            <agComponentTitle>
-                    Welcome to Astrogrid, <xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr>
-            </agComponentTitle>
+<agComponentTitle>Welcome to Astrogrid, <xsp:expr><xsp-request:get-attribute name="user"/></xsp:expr></agComponentTitle>
             <content>
+<script language="javascript">
+function toggle(yo, was){
+	var what = document.getElementById(was);
+
+	if(what.style.display == ""){
+		what.style.display = "none";
+	} else {
+		what.style.display = "";
+	}
+	nofooter();
+}
+</script>
+<table class="agSmaller" width="98%" cellspacing="4" cellpadding="4" border="0">
+<tr>
+<td colspan="3" align="center">
+<span style="font-weight: bold; font-size: 25px">Welcome to Astrogrid!</span>
+<span style="font-weight: normal; font-size: 18px">This is your <b>MyAstroGrid</b> page</span>
+</td>
+</tr>
+<tr valign="top">
+<td width="50%">
+<span class="agWelcomeTitle">
+Conventions
+</span>
+<p style="font-weight: bold">
+We use a number of elements throughout these pages which you should be
+aware of and take advantage of them.<p />
+</p>
+
+<table border="0">
+<tr><td>
+<agHint id="test">
+See? We can put any text to guide you in these boxes.
+</agHint>
+</td><td>
+is a Hint button. Click it to activate it, click it to deactivate it.
+</td></tr>
+
+<tr><td colspan="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+</td></tr>
+
+<tr><td>
+<img src="/astrogrid-portal/SubmitGreen.gif" width="50"
+height="20"/>
+</td><td>
+Green buttons, vertical bars or horizontal bars can be clicked to move
+ahead towards the next step.
+</td></tr>
+
+<tr><td colspan="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+</td></tr>
+
+<tr><td>
+<agExplain item="Glossary" />
+</td><td>
+Text highlighted this way is another way for us to give you short
+explanations.
+</td></tr>
+
+<tr><td colspan="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="50" height="1"/>
+</td></tr>
+
+<tr><td>
+<a
+href="javascript:popupBrowser('/astrogrid-portal/bare/mount/help/faq.faq',700, 300)" style="text-decoration: none">FAQ</a> &amp;<br />
+<a
+href="javascript:popupBrowser('/astrogrid-portal/lean/mount/help/cookbook.ckb',700, 300)" style="text-decoration: none" >Cookbook</a>
+</td><td>
+These are two resources where you can find more extended help than in the
+pages themselves.
+</td></tr>
+
+</table>
+
+</td>
+<td width="2" bgcolor="#aaaaaa">
+<img src="/astrogrid-portal/x.gif" width="1" height="1"/>
+</td>
+<td>
+<span class="agWelcomeTitle">
+Shortcut Alley
+</span>
+
+<p>Besides using AstroGrid's flexible functionality to build complex
+queries and workflows (or pipelines),  you may find it convenient to
+access some tasks at once, eg, quick <agExplain item="Cone Search"/>,
+or various <agExplain item="Resource Locator"/>s.</p>
+
+<table width="300" background="/astrogrid-portal/buttonMonoceros.jpg">
+<tr ><td style="color: orange; cursor: pointer; font-weight: bold" onClick="toggle(this, 'ConeSearch')" align="center">
+<img src="/astrogrid-portal/x.fig" width="0" height="30"/>
+Perform a Cone Search
+</td></tr></table>
+<div id="ConeSearch" style="display: none" class="agTip">
+<form name="coneSearch" action="null" method="post">
+Name or (RA, dec) <input name="center" size="40" onFocus="focusit(this)"
+onBlur="defocusit(this)"/><br />
+Radius: <input onFocus="focusit(this)" onBlur="defocusit(this)" name="radius" size="5" value="10"/> <select onFocus="focusit(this)" onBlur="defocusit(this)" name="CSunits">
+<option value="arcsec">Arc Sec</option>
+<option value="arcmin" selected="true">Arc Min</option>
+<option value="degrees">Degrees</option>
+</select> Equinox: <input name="equinox" size="7" onFocus="focusit(this)"
+onBlur="defocusit(this)" value="J2000"/>
+</form>
+</div>
+<p />
+
+<table width="300" background="/astrogrid-portal/tadpoleButton.jpg">
+<tr ><td style="color: white; cursor: pointer; font-weight: bold" onClick="toggle(this, 'CatBrowser')" align="center">
+<img src="/astrogrid-portal/x.fig" width="0" height="30"/>
+Locate Catalogues &amp; extract data
+</td></tr></table>
+<div id="CatBrowser" style="display: none" class="agTip">
+<form name="CatBrowser"
+action="/astrogrid-portal/main/mount/datacenter/getTablesFromRegistryShC.reg" method="get">
+<table>
+<tr>
+<td>Catalogue's author</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="author" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td>Catalogue's title</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="title" type="text"/></td><td><span class="sc">string</span></td>
+
+</tr>
+<tr>
+<td>Number of rows </td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="nrecs" type="text"/></td><td><span class="sc">number</span></td>
+</tr>
+<tr>
+<td>Number of variables </td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="nvars" type="text"/></td><td><span class="sc">number</span></td>
+</tr>
+<tr>
+<td>Column Names</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colnames" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+
+<td>Column <agExplain item="UCD"/>s</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colUCDs" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td>Column Units</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colUnits" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td>Column Description</td><td><input onFocus="focusit(this)" onBlur="defocusit(this)" name="colDescription" type="text"/></td><td><span class="sc">string</span></td>
+</tr>
+<tr>
+<td align="right" colspan="3"><input value="Go, ask! " class="submitButton" name="submit" type="submit"/></td>
+</tr>
+
+<tr>
+<td align="right" colspan="2">
+       Maximum number of tables to show:</td><td colspan="2"><input value="10" size="3" onFocus="focusit(this)" onBlur="defocusit(this)" name="maxTables"/></td>
+</tr>
+<tr>
+<td align="left" colspan="3"><select size="1" onFocus="focusit(this)" onBlur="defocusit(this)" name="mdata"><option value="full">
+       Retrieve ALL metadata (including column)
+       </option><option value="compact">
+       Exclude column metadata from retrieval
+       </option></select></td>
+</tr>
+</table>
+</form>
+</div>
+<p />
+
+<table width="300" background="/astrogrid-portal/spectrumStrip.jpg">
+<tr ><td style="color: white; cursor: pointer; font-weight: bold" align="center">
+<img src="/astrogrid-portal/x.fig" width="0" height="30"/>
+Locate Spectral data
+</td></tr></table>
+<p />
+
+</td>
+</tr>
+</table>
+		<!--
                 You have successfully logged in. <BR/>
                 <a href="logout">Log out</a> again.
+		-->
             </content>
         </page>
 
@@ -33,6 +210,15 @@
 <!--+
     | <cvs:log>
     |   $Log: login-pass.xsp,v $
+    |   Revision 1.7  2004/07/20 13:37:25  jl99
+    |   Query Builder changes - Bugzilla 399 - Enhancements.
+    |   Iteration 6 covering:
+    |   (1) Query Builder (but using test/dummy registry)
+    |   (2) Help System
+    |
+    |   Revision 1.6.24.1  2004/07/09 10:02:33  pfo
+    |   PFO: a warmer (yet crowded) welcome to the portal
+    |
     |   Revision 1.6  2004/04/20 16:55:16  pfo
     |   pfo: changed <title> for <agComponentTitle>
     |

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar  5 17:29:46 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0"
+	  xmlns:xsp-session="http://apache.org/xsp/session/2.0"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0">
+  
+  <!--
+	    create-session="true">
+<xsp:choose>
+  <xsp:when test="tabelID">
+<xsp:logic>
+	{
+	String quString;
+	quString = (String) <jpath:value-of select="tableID"/>;
+	}
+</xsp:logic>
+  </xsp:when>
+  <xsp:otherwise>
+<xsp:logic>
+	{
+	String quString = new String("generic");
+	}
+</xsp:logic>
+  </xsp:otherwise>
+</xsp:choose>
+-->
+  <!--
+	quString = new String("generic");
+	S1 = new String("http://localhost:8080/astrogrid-portal/main/mount/datacenter/data-query.xml?tableID=");
+	S2 = new String("http://localhost:8080/astrogrid-portal/main/mount/datacenter/varShowBox.xsp?tableID=");
+	quString = (String) <jpath:value-of select="tableID"/>;
+	thinFrame = "http://localhost:8080/astrogrid-portal/main/mount/datacenter/varShowBox.xsp?tableID=" + quString;
+<xsp:attribute name="src"><xsp:expr>fatFrame</xsp:expr></xsp:attribute>
+	quString = new String("generic");
+	quString = (String) <xsp-session:get-attribute name="tableID"/>;
+	quString = (String) <xsp-request:get-attribute name="tableID"/>;
+-->
+
+
+<!--
+-->
+
+<xsp:logic>
+	{
+	String quString, fatFrame, thinFrame, S2;
+
+	quString = new String("generic");
+
+	fatFrame = "http://localhost:8080/astrogrid-portal/main/mount/datacenter/data-query.xml?tableID=" + quString;
+
+	}
+</xsp:logic>
+
+<frameset cols="*, 240" frameborder="no" border="0" framespacing="0" id="wholeFrame">
+<noframes>
+In order to access this database you'll need a net-surfer
+capable of handling frames, such as, <b>Netscape 6.0</b>, <b>ie5</b> or
+higher
+</noframes>
+
+<frame id="fatFrame" name="deploy" marginwidth="0" marginheight="0">
+<xsp:attribute name="src">/astrogrid-portal/main/mount/datacenter/dataQuery.xsp?tableID=<xsp-request:get-parameter name="tableID"/></xsp:attribute>
+</frame>
+
+<frameset rows="95, *" frameborder="no" border="0" framespacing="0" id="RightFrame">
+<frame marginwidth="0" marginheight="0" name="varsAid" id="TopSideFrame" scrolling="auto">
+<xsp:attribute name="src">/astrogrid-portal/bare/mount/datacenter/varShowBox.xsp?tableID=<xsp-request:get-parameter name="tableID"/></xsp:attribute>
+</frame>
+
+<frame marginwidth="0" marginheight="0" name="vars" id="BottomSideFrame" scrolling="auto">
+<xsp:attribute name="src">/astrogrid-portal/bare/mount/datacenter/variables.xsp?tableID=<xsp-request:get-parameter name="tableID"/></xsp:attribute>
+</frame>
+</frameset>
+</frameset>
+
+
+<!--
+<xsp:attribute name="src">http://localhost:8080/astrogrid-portal/main/mount/datacenter/dataQuery.xsp?tableID=<xsp-request:get-parameter name="tableID"/></xsp:attribute>
+<xsp:attribute name="src">http://localhost:8080/astrogrid-portal/bare/mount/datacenter/varShowBox.xsp?tableID=<xsp-request:get-parameter name="tableID"/></xsp:attribute>
+<xsp:attribute name="src">http://localhost:8080/astrogrid-portal/bare/mount/datacenter/variables.xsp?tableID=<xsp-request:get-parameter name="tableID"/></xsp:attribute>
+src="http://barbara.star.le.ac.uk:8080/astrogrid-portal/main/mount/datacenter/data-query.xml"
+src="http://barbara.star.le.ac.uk:8080/astrogrid-portal/main/mount/datacenter/data-query.xml" 
+<xsl:attribute name="src">http://barbara.star.le.ac.uk:8080/astrogrid-portal/bare/mount/datacenter/varShowBox.xsp?tableID=<xsp:expr>quString</xsp:expr></xsl:attribute>
+-->
+</xsp:page>

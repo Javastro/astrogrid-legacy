@@ -33,6 +33,7 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="regadmin_form">
+<agComponentTitle>Update the Registry</agComponentTitle>
 		<xsl:if test="$message != ''" >
 			<font color="blue"><xsl:value-of select="$message" /></font>
 		</xsl:if>	

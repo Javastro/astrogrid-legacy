@@ -1,20 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ag-div>
+<agComponentTitle>Retrieve data from the Virtual Observatory</agComponentTitle>
   <ag-link href="/astrogrid-portal/mount/datacenter/test-results.css" rel="stylesheet" type="text/css"/>
 
-  <div>
-    <form action="/astrogrid-portal/main/mount/datacenter/forms/adql">
+    <form action="/astrogrid-portal/main/mount/datacenter/forms/adql" name="main" method="POST">
       <!--
         Text editor.
-        -->
       <div style="clear:both;">
-        <h2 class="ag-db-h1">Data Query Builder</h2>
-        <textarea id="ag-data-query" cols="50" rows="20" name="adql-query"> </textarea>
+        -->
+<script language="javascript">
+function keyDown(evento){
+	window.status = "A key was pressed while under button";
+}
+
+function showKeys(e) {
+	var keycode = e.which
+	var realkey = String.fromCharCode(e.which)
+/*	alert("keycode: " + keycode + "\nrealkey: " + realkey)*/
+	window.status = "keycode: " + keycode + "\nrealkey: " + realkey;
+}
+
+document.onkeydown = showKeys
+document.captureEvents(Event.KEYDOWN)
+
+</script>
+<div height="100px" class="LargeHint" id="scratchArea" style="display: none">
+test
+</div>
+<center>
+<span class="agTitleClass">Data Query Builder (in <a target="Help" href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaVOQL">(s)ADQL</a>)</span><br/>
+<table border="0" cellspacing="1" cellpadding="1" bgcolor="#ffffcc">
+<!--
+<tr><td colspan="2" align="center">
+<span class="agTitleClass">Data Query Builder (in <a target="Help" href="http://www.ivoa.net/twiki/bin/view/IVOA/IvoaVOQL">(s)ADQL</a>)</span>
+</td></tr>
+-->
+<tr valign="bottom"><td>
+
+        <textarea class="areaInput" id="ag_data-query" cols="50" rows="8" name="adqlQuery"> </textarea>
+</td>
+<td>
+<table border="0" cellpadding="1" cellspacing="0">
+<tr><td align="center"><span onclick="expandTextArea('ag_data-query',5);" class="agActiveSpan">5</span></td></tr>
+<tr><td align="center"><span onclick="expandTextArea('ag_data-query',10);" class="agActiveSpan">10</span></td></tr>
+<tr><td align="center"><span onclick="expandTextArea('ag_data-query',20);" class="agActiveSpan">20</span></td></tr>
+<tr><td align="center"><span onclick="expandTextArea('ag_data-query',30);" class="agActiveSpan">30</span><img id="guideImage" src="/astrogrid-portal/x.gif" width="0"/></td></tr>
+<tr><td align="center"><span onclick="expandTextArea('ag_data-query',40);" class="agActiveSpan">40</span></td></tr>
+<tr><td align="center"><span onclick="expandTextArea('ag_data-query',50);" class="agActiveSpan">50</span></td></tr>
+<tr><td align="center"><span onclick="clearTextArea('ag_data-query');"
+class="agResetButton">Clear</span></td></tr>
+</table>
+</td>
+</tr>
 
         <!--
           MySpace actions
-          -->
         <div style="text-align:center;">
+          -->
+<tr><td align="center">
           <input name="action" type="submit" value="Load"/>
           &#160;
           <input name="action" type="submit" value="Save"/>
@@ -22,16 +65,398 @@
           <input id="myspace-agsl" name="myspace-name" type="text"/>
           <input id="myspace-ivorn" name="myspace-name" type="hidden"/>
           &#160;
-          <input name="myspace-name" type="button" value="Browse..." onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"/>
-        </div>
+          <input name="myspace-name" type="button" value="Browse MySpace" onclick="javascript:void(window.open('/astrogrid-portal/mount/myspace/myspace-micro?ivorn=myspace-ivorn&amp;agsl=myspace-agsl', 'mySpaceMicro', 'toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=yes, scrollbars=yes, width=300, height=200'))"/>
 
+</td><td bgcolor="yellow">
+<agHint id="BoxUsage" iconSize="20">
+<ul>
+<li>The query should be entered in the white textarea</li>
+
+<li>The textarea can be resized. (10 rows to 50 rows)</li>
+
+<li>Check the examples for guidance</li>
+
+<li>Use the "Click &amp; Paste" buttons located below (for ADQL) and to the
+right for the variables in the catalogue/table</li>
+
+<li>Click on the name in the C&amp;P buttons to paste the name into the
+textarea</li>
+
+<li>Click on the '...' to get help</li>
+
+</ul>
+</agHint>
+</td></tr>
+</table>
+
+<table border="1" class="examplesBar" cellpadding="1" cellspacing="0" width="100%">
+<tr><td>
+<table border="0" class="examplesBar" cellpadding="0" cellspacing="0"
+width="100%">
+<tr>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab0">
+<span onclick="openUp('exampleExplanation', 0, 6);"
+>Examples</span>
+</td>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab1">
+<span onclick="openUp('exampleExplanation', 1, 6);"
+>Cone Search</span>
+</td>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab2">
+<span onclick="openUp('exampleExplanation', 2, 6);"
+>Example 2</span>
+</td>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab3">
+<span onclick="openUp('exampleExplanation', 3, 6);"
+>Example 3</span>
+</td>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab4">
+<span onclick="openUp('exampleExplanation', 4, 6);"
+>Example 4</span>
+</td>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab5">
+<span onclick="openUp('exampleExplanation', 5, 6);"
+>Example 5</span>
+</td>
+<td class="agInActiveSpan2" align="center" id="exampleExplanationTab6">
+<span onclick="closeAllTabs('exampleExplanation', 6);"
+>X</span>
+</td>
+</tr>
+<tr><td colspan="7" class="agActiveSpan2">
+<div style="display: none" id="exampleExplanationBox0">
+<pre>The following examples may help you to understand how queries in ADQL
+are formed.
+
+Just click on the corresponding tab to see the example.
+
+Use the 'X' at the right hand side of the TABS to close
+any open examples.
+
+</pre>
+</div>
+<div style="display: none" id="exampleExplanationBox1">
+<pre>
+FROM USNO as u SELECT * where u.bmag1 &lt; 11 # this is a comment
+this is a second line
+</pre>
+</div>
+<div style="display: none" id="exampleExplanationBox2">
+<pre>
+FROM USNO as u SELECT * where u.bmag1 &lt; 12
+</pre>
+</div>
+<div style="display: none" id="exampleExplanationBox3">
+<pre>
+FROM USNO as u SELECT * where u.bmag2 &lt; 13
+</pre>
+</div>
+<div style="display: none" id="exampleExplanationBox4">
+<pre>
+FROM USNO as u SELECT * where u.bmag2 &lt; 14
+</pre>
+</div>
+<div style="display: none" id="exampleExplanationBox5">
+<pre>
+FROM USNO as u SELECT * where u.bmag2 &lt; 15
+</pre>
+</div>
+</td>
+</tr>
+</table>
+</td></tr>
+</table>
+
+<table>
+<tr>
+<!--
+<td>
+<img src="/astrogrid-portal/clickNpaste.jpg" width="20px" height="85px"/>
+</td>
+-->
+<td>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer; margin-right: 18px" onClick="TEK('FROM\040')">FROM</span> <span style="cursor: help" onClick="ButtonHelp('Table to use')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer; margin-right: 30px" onClick="TEK('As\040')">As</span> <span style="cursor: help" onClick="ButtonHelp('Way to invoke a table within a script')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer; margin-right: 3px" onClick="TEK('WHERE\040')">WHERE</span> <span style="cursor: help" onClick="ButtonHelp('Condition to impose to select entries in a table')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer; margin-right: 8px" onClick="TEK('SELECT\040')">SELECT</span> <span style="cursor: help" onClick="ButtonHelp('columns to select, * denotes all, tableAs.col is a particular column')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Xmatch\040')">Xmatch</span> <span style="cursor: help" onClick="ButtonHelp('')">...</span></div>
+</td>
+
+<td>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Top\040')">Top</span> <span style="cursor: help; margin-left: 20px" onClick="ButtonHelp('')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Table\040')">Table</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Name\040')">Name</span> <span style="cursor: help; margin-left: 12px" onClick="ButtonHelp('')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Alias\040')">Alias</span> <span style="cursor: help; margin-left: 15px" onClick="ButtonHelp('')">...</span></div>
+<div class="AGwSixty" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Circle\040')">Circle</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('')">...</span></div>
+</td>
+
+<td>
+<div class="AGwTwoEm" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('(\040')">(</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Left parenthesis')">...</span></div>
+<div class="AGwTwoEm" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK(')\040')">)</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Right parenthesis')">...</span></div>
+<div class="AGwTwoEm" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('+\040')">+</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('The addition operator (binary) or the positive number indicator')">...</span></div>
+<div class="AGwTwoEm" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('-\040')">-</span> <span style="cursor: help; margin-left: 5px" onClick="ButtonHelp('The subtraction operator (binary) or the negative number sign')">...</span></div>
+<div class="AGwTwoEm" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('*\040')">*</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('The multiplication operator, or a wildcard denoting all')">...</span></div>
+</td><td>
+<div class="AGwThreeEM" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('/\040')">/</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Division operator')">...</span></div>
+<div class="AGwThreeEM" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('=\040')">=</span> <span style="cursor: help; margin-left: 9px" onClick="ButtonHelp('Conditional equals to')">...</span></div>
+<div class="AGwThreeEM" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&lt;&gt;\040')">&lt;&gt;</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Conditional different from')">...</span></div>
+<div class="AGwThreeEM" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&lt;\040')">&lt;</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Conditional less than')">...</span></div>
+<div class="AGwThreeEM" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&lt;=\040')">&lt;=</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Conditional less than or equal to')">...</span></div>
+</td><td>
+<div style="width: 5em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&gt;\040')">&gt;</span> <span style="cursor: help; margin-left: 18px" onClick="ButtonHelp('Conditional greater than')">...</span></div>
+<div style="width: 5em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&gt;=\040')">&gt;=</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Conditional greater than or equals to')">...</span></div>
+<div style="width: 5em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('And\040')">And</span> <span style="cursor: help; margin-left: 8px" onClick="ButtonHelp('Logical And')">...</span></div>
+<div style="width: 5em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Or\040')">Or</span> <span style="cursor: help; margin-left: 14px" onClick="ButtonHelp('Logical OR')">...</span></div>
+<div style="width: 5em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Not\040')">Not</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Logical negation')">...</span></div>
+</td>
+
+<td>
+<div style="width: 4em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SIN\040')">SIN</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Trigonometric sine')">...</span></div>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('COS\040')">COS</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Trigonometric cosine')">...</span></div>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('TAN\040')">TAN</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Trigonometric tangent')">...</span></div>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('COT\040')">COT</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Trigonometric co-tangent (1/tan)')">...</span></div>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('LOG\040')">LOG</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td>
+
+<td>
+<div style="width: 6em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ASIN\040')">ASIN</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Trigonometric arc-sine')">...</span></div>
+<div style="width: 6em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ACOS\040')">ACOS</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Trigonometric arc-cosine')">...</span></div>
+<div style="width: 6em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ATAN\040')">ATAN</span> <span style="cursor: help; margin-left: 10px" onClick="ButtonHelp('Trigonometric arcTangent (-90 to 90)')">...</span></div>
+<div style="width: 6em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ATAN2\040')">ATAN2</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('Trigonometric arcTangent (0 to 360)')">...</span></div>
+<div style="width: 6em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('LOG10\040')">LOG10</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td>
+
+<td>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ABS\040')">ABS</span> <span style="cursor: help; margin-left: 8px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('CEILING\040')">CEIL</span> <span style="cursor: help; margin-left: 8px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('FLOOR\040')">FLOOR</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('EXP\040')">EXP</span> <span style="cursor: help; margin-left: 8px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('POWER\040')">POW</span> <span style="cursor: help; margin-left: 3px" onClick="ButtonHelp('')">...</span></div>
+</td>
+</tr>
+<tr>
+
+<td colspan="8">
+<table width="100%">
+<tr>
+<td>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SQRT\040')">SQRT</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td><td>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SQUARE\040')">x^2</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td><td>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('MIN\040')">MIN</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td><td>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('AVG\040')">AVG</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td><td>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('MAX\040')">MAX</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td><td>
+<div style="width: 4em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SUM\040')">SUM</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td><td>
+<div style="width: 5em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Sigma\040')">Sigma</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td>
+<td>
+<span onclick="moreOrLess()" class="fakeLink" id="askmore">more ...</span>
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+<div style="display: none" id="moreButtons">
+
+<table border="0" cellpadding="1" cellspacing="1">
+<tr valign="top">
+<td>
+<div style="background-color: wheat; padding-top: 2px; padding-bottom: 2px">
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Order\040')">Order</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('OrderBy\040')">OrderBy</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Direction\040')">Direction</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('DESC\040')">DESC</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ASC\040')">ASC</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('DISTINCT\040')">DISTINCT</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</div>
+
+<div style="background-color: blue; padding-top: 2px; padding-bottom: 2px">
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Between\040')">Between</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('NotBetween\040')">NotBetween</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Like\040')">Like</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('NotLike\040')">NotLike</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</div>
+</td>
+<td>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Aggregate\040')">Aggregate</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('All\040')">All</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Allow\040')">Allow</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Archive\040')">Archive</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ArchiveTable\040')">ArchiveTable</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Atom\040')">Atom</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Closed\040')">Closed</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+
+<div style="background-color: #880000; padding-top: 2px; padding-bottom: 2px">
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('RAND\040')">RAND</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ROUND\040')">ROUND</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('TRUNCATE\040')">TRUNCATE</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</div>
+</td>
+<td>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Column\040')">Column</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Compare\040')">Compare</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Comparison\040')">Comparison</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('COUNT\040')">COUNT</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="background-color: #008800; padding-top: 2px; padding-bottom: 2px">
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('PI\040')">PI</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('DEGREES\040')">DEGREES</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('RADIANS\040')">RADIANS</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Nature\040')">Nature</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Option\040')">Option</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Pattern\040')">Pattern</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td>
+<td>
+
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Drop\040')">Drop</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Function\040')">Function</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('GroupBy\040')">GroupBy</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Having\040')">Having</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Include\040')">Include</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Item\040')">Item</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Math\040')">Math</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Oper\040')">Oper</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Restrict\040')">Restrict</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+<div style="width: 10em;" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SelectionList\040')">SelectionList</span> <span style="cursor: help; margin-left: 1px" onClick="ButtonHelp('')">...</span></div>
+</td>
+</tr>
+</table>
+
+</div>
+<!--
+-->
+
+<!--
+<tr><td align="left">
+<div style="width: 4em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)">
+<span style="cursor: pointer" onClick="TEK('FROM\040')">FROM</span> <span style="cursor: help" onClick="ButtonHelp('FROM')">...</span>
+</div>
+
+<div style="width: 4em" class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)">
+<span style="cursor: pointer" onClick="TEK('FROM\040')">FROM</span>  <span style="cursor: help" onClick="ButtonHelp('Table to use')">...</span>
+</div>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('As\040')">As</span>  <span style="cursor: help" onClick="ButtonHelp('Way to invoke a table within a script')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('WHERE\040')">WHERE</span>  <span style="cursor: help" onClick="ButtonHelp('Condition to impose to select entries in a table')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SELECT\040')">SELECT</span>  <span style="cursor: help" onClick="ButtonHelp('columns to select, * denotes all, tableAs.col is a particular column')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Top\040')">Top</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Xmatch\040')">Xmatch</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Table\040')">Table</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Name\040')">Name</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Alias\040')">Alias</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+</td>
+</tr><tr>
+<td align="left">
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('(\040')">(</span>  <span style="cursor: help" onClick="ButtonHelp('Left parenthesis')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK(')\040')">)</span>  <span style="cursor: help" onClick="ButtonHelp('Right parenthesis')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('+\040')">+</span>  <span style="cursor: help" onClick="ButtonHelp('The addition operator (binary) or the positive number indicator')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('-\040')">-</span>  <span style="cursor: help" onClick="ButtonHelp('The subtraction operator (binary) or the negative number sign')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('*\040')">*</span>  <span style="cursor: help" onClick="ButtonHelp('The multiplication operator, or a wildcard denoting all')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('/\040')">/</span>  <span style="cursor: help" onClick="ButtonHelp('Division operator')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('=\040')">=</span>  <span style="cursor: help" onClick="ButtonHelp('Conditional equals to')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&lt;&gt;\040')">&lt;&gt;</span>  <span style="cursor: help" onClick="ButtonHelp('Conditional different from')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&lt;\040')">&lt;</span>  <span style="cursor: help" onClick="ButtonHelp('Conditional less than')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&lt;=\040')">&lt;=</span>  <span style="cursor: help" onClick="ButtonHelp('Conditional less than or equal to')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&gt;\040')">&gt;</span>  <span style="cursor: help" onClick="ButtonHelp('Conditional greater than')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('&gt;=\040')">&gt;=</span>  <span style="cursor: help" onClick="ButtonHelp('Conditional greater than or equals to')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('And\040')">And</span>  <span style="cursor: help" onClick="ButtonHelp('Logical And')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Or\040')">Or</span>  <span style="cursor: help" onClick="ButtonHelp('Logical OR')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Not\040')">Not</span>  <span style="cursor: help" onClick="ButtonHelp('Logical negation')">...</span> </span>
+</td></tr>
+<tr><td>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SIN\040')">SIN</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric sine')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ASIN\040')">ASIN</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric arc-sine')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('COS\040')">COS</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric cosine')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ACOS\040')">ACOS</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric arc-cosine')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('TAN\040')">TAN</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric tangent')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('COT\040')">COT</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric co-tangent (1/tan)')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ATAN\040')">ATAN</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric arcTangent (-90 to 90)')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ATAN2\040')">ATAN2</span>  <span style="cursor: help" onClick="ButtonHelp('Trigonometric arcTangent (0 to 360)')">...</span> </span>
+</td>
+</tr><tr>
+<td align="left">
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ABS\040')">ABS</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('CEILING\040')">CEILING</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('FLOOR\040')">FLOOR</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('EXP\040')">EXP</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('LOG\040')">LOG</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('LOG10\040')">LOG10</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('POWER\040')">POWER</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SQUARE\040')">SQUARE</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SQRT\040')">SQRT</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+</td>
+</tr><tr>
+<td align="left">
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('MIN\040')">MIN</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('AVG\040')">AVG</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('MAX\040')">MAX</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SUM\040')">SUM</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Sigma\040')">Sigma</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span onclick="moreOrLess()" class="fakeLink" id="askmore">more ...</span>
+</td></tr>
+<tr><td>
+</table>
+<div style="display: none" id="moreButtons">
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Aggregate\040')">Aggregate</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('All\040')">All</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Allow\040')">Allow</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Archive\040')">Archive</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ArchiveTable\040')">ArchiveTable</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ASC\040')">ASC</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Atom\040')">Atom</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Between\040')">Between</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Circle\040')">Circle</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Closed\040')">Closed</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Column\040')">Column</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Compare\040')">Compare</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Comparison\040')">Comparison</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('COUNT\040')">COUNT</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('PI\040')">PI</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('DEGREES\040')">DEGREES</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('RADIANS\040')">RADIANS</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('DESC\040')">DESC</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Direction\040')">Direction</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('DISTINCT\040')">DISTINCT</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Drop\040')">Drop</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Function\040')">Function</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('GroupBy\040')">GroupBy</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Having\040')">Having</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Include\040')">Include</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Item\040')">Item</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Like\040')">Like</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Math\040')">Math</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Nature\040')">Nature</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('NotBetween\040')">NotBetween</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('NotLike\040')">NotLike</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Oper\040')">Oper</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Option\040')">Option</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Order\040')">Order</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('OrderBy\040')">OrderBy</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Pattern\040')">Pattern</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('RAND\040')">RAND</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('Restrict\040')">Restrict</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('ROUND\040')">ROUND</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('SelectionList\040')">SelectionList</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+<span class="AGFitButton" onMouseOver="cabc(this)" onMouseOut="cvbc(this)"> <span style="cursor: pointer" onClick="TEK('TRUNCATE\040')">TRUNCATE</span>  <span style="cursor: help" onClick="ButtonHelp('')">...</span> </span>
+</div>
+</td></tr>
+-->
+</center>
   <!--
+        </div>
           <div style="float:right;width:50%;">
               <input name="myspace-name" type="text"/>
               <input name="action" type="submit" value="Browse"/>
           </div>
-  -->
       </div>
+  -->
       
       
       <!--
@@ -43,5 +468,4 @@
       </div>
 -->
     </form>
-  </div>
 </ag-div>

@@ -42,6 +42,7 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="regquery_form">
+<agComponentTitle>Query the Registry</agComponentTitle>
 		<form method="post" action="registryquery.html" name="RegistryQuery">
 			<input type="hidden" name="action" value="selectquery" />
 			<input type="hidden" name="mainelement">

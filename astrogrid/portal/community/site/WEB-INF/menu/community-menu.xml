@@ -6,13 +6,13 @@
         contents="Community"
         contents-hover="Community"
         uri=""
-        target="_self"
+        target="_top"
         status-text="Community issues...">
       <agp:item
           contents="Administration"
           contents-hover="Administration"
           uri="/astrogrid-portal/main/mount/community/administration.html"
-          target="_self"
+          target="_top"
           status-text="Handle community issues"/>
     </agp:menu>
   </agp:menu-def>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Glossary>
+
+<entry name="Cone Search">
+<meaning>
+
+<p>or "sky position neighbour location". The process of locating celestial
+objects or observation pointings located within a certain distance from
+a reference position. The search is performed in one or more catalogues
+of objects or observations.</p>
+
+<p>The reference location should be expressed in Right Ascention and
+Declination in the J2000 reference frame.
+</p>
+
+<p>Typically you should specify the reference direction (or a file with
+positions) and a distance to perform the search.</p>
+</meaning>
+</entry>
+
+<entry name="Resource Locator">
+<meaning>
+<p> IVO provides you with the possibility of accessing different resources
+around the world.
+
+Locating these resources may be the difference between being able to
+perform a task or not.</p>
+
+<p>Locating Images, spectra, catalogues by different criteria is what we
+offer. You can locate all catalogues related to quasars by searching for
+QSO or quasar in the title, or locate catalogues which contain infrared
+data by looking for a column UCD (which describes the type of quantity a
+column holds) describing infrared quantities.
+</p>
+
+<p> You may be interested in finding images which have intersection with a
+list of positions of your own, ie, you want images of the sky around those
+positions in some wavelength regime.</p>
+</meaning>
+</entry>
+
+<entry name="pending">
+<meaning>
+</meaning>
+</entry>
+
+<entry name="UCD">
+<meaning>
+</meaning>
+</entry>
+
+<entry name="Registry">
+<meaning>
+Is the service which stores and serves information about what's available
+in IVO-land.
+</meaning>
+</entry>
+
+<entry name="Glossary">
+<meaning>
+<span class="courier">[glo za ree]</span> The service which provides
+(short) definitions relevant to all component of astrogrid.<break /><break />
+
+Do not bother moving the mouse to this window only to close it. Click the
+same active area you just used to close this window. This feature works the
+same throughout the different pages of AstroGrid.
+</meaning>
+</entry>
+
+
+</Glossary>

@@ -34,6 +34,7 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="regharvest_form">
+		<agComponentTitle>Registry Harvesting</agComponentTitle>
 		<b>Harvest Information:</b><br />
 		<xsl:if test="$message != ''" >
 			<font color="blue"><xsl:value-of select="$message" /></font>

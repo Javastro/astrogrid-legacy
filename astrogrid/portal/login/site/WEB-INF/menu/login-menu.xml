@@ -6,25 +6,25 @@
       contents="Login"
       contents-hover="Login"
       uri=""
-      target="_self"
+      target="_top"
       status-text="Login...">
     <agp:item
         contents="Login"
         contents-hover="Login"
         uri="/astrogrid-portal/main/mount/login/login-form"
-        target="_self"
+        target="_top"
         status-text="AstroGrid Portal Login"/>
     <agp:item
         contents="Logout"
         contents-hover="Logout"
         uri="/astrogrid-portal/main/mount/login/logout"
-        target="_self"
+        target="_top"
         status-text="Logout of the AstroGrid Portal"/>
     <agp:item
         contents="Register"
         contents-hover="Register"
         uri="/astrogrid-portal/main/mount/login/register"
-        target="_self"
+        target="_top"
         status-text="Register for an AstroGrid account"/>
   </agp:menu>
 </agp:menu-def>

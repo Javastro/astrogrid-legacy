@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../maven-project.xsd">
+  <extend>../maven-base/project.xml</extend>
+  
+  <id>astrogrid-portal-help</id>
+  <name>AstroGrid Portal Help</name>
+
+  <dependencies>
+    <!-- Common -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
+
+    <!-- Portal Common  -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-portal-common</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
+
+    <!-- MySpace -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-store-client</artifactId>
+      <version>${pom.currentVersion}</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- JAX dependencies -->
+    <dependency>
+      <groupId>jaxrpc-api</groupId>
+      <artifactId>jaxrpc-api</artifactId>
+      <version>1.0.3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <groupId>jax-qname</groupId>
+      <artifactId>jax-qname</artifactId>
+      <version>1.0.3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+    
+    <!-- Apache Commons -->
+    <dependency>
+      <groupId>commons-discovery</groupId>
+      <artifactId>commons-discovery</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+  </build>
+</project>

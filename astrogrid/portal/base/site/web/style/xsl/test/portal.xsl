@@ -27,6 +27,15 @@
           <xsl:attribute name="type">text/css</xsl:attribute>
         </xsl:element>
 
+        <!--
+          extras.css stylesheet.
+          -->
+        <xsl:element name="link">
+          <xsl:attribute name="href">/astrogrid-portal/extras.css</xsl:attribute>
+          <xsl:attribute name="rel">stylesheet</xsl:attribute>
+          <xsl:attribute name="type">text/css</xsl:attribute>
+        </xsl:element>
+
         <!-- Process <link/> elements -->
         <xsl:for-each select="//ag-link">
           <xsl:call-template name="ag-link"/>
@@ -43,7 +52,7 @@
             <xsl:for-each select="//ag-onload">
               <xsl:call-template name="ag-onload"/>
             </xsl:for-each>
-            
+           /* xsl/test/portal.xsl */ 
             null;
           }
         </script>

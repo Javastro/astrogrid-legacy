@@ -6,19 +6,19 @@
       contents="Workflow"
       contents-hover="Workflow"
       uri=""
-      target="_self"
+      target="_top"
       status-text="Workflow...">
     <agp:item
         contents="Job Manager"
         contents-hover="Job Monitor"
         uri="/astrogrid-portal/main/mount/workflow/agjobmanager.html?action=create-workflow"
-        target="_self"
+        target="_top"
         status-text="Astrogrid Portal Workflow: Job Manager..."/>
     <agp:item
         contents="Job Monitor"
         contents-hover="Job Monitor"
         uri="/astrogrid-portal/main/mount/workflow/agjobmanager-jes.html?action=read-job-list"
-        target="_self"
+        target="_top"
         status-text="Astrogrid Portal Workflow: Job Monitor..."/>
   </agp:menu>
 </agp:menu-def>

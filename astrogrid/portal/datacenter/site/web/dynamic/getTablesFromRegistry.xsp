@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Sat Mar 13 14:04:42 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
+  
+
+  <getTablesFromRegistry>
+  <agComponentTitle>Selected Catalogues</agComponentTitle>
+
+  <agReference>DataCentrePUB</agReference>
+
+  <laconic>?<xsp-request:get-query-string/></laconic>
+  <!--
+  <laconic><jpath:value-of select="topico" /></laconic>
+  <xsp:logic>
+   String quString, myURL;
+   quString = (String) <jpath:value-of select="stringQuery"/>;
+   myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selcats&amp;" + quString + "last=null";
+  </xsp:logic>
+  -->
+  <xsp:logic>
+   String quString, myURL;
+   quString = (String) <xsp-request:get-query-string/>;
+   myURL = "http://barbara.star.le.ac.uk/datoz-bin/regfake?action=selcats&amp;" + quString + "&amp;last=null";
+  </xsp:logic>
+
+<!--
+           <util:href><xsp:expr>http://barbara.star.le.ac.uk/datoz-bin/regfake?</xsp:expr><xsp-request:get-query-string/>&amp;action=selcats</util:href>
+	-->
+	<util:include-uri>
+           <util:href><xsp:expr>myURL</xsp:expr></util:href>
+	   <util:attribute name="method" value="get"/>
+	</util:include-uri>
+
+  </getTablesFromRegistry>
+</xsp:page>

@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<agADQLkeys>
+<agADQLkey name="FROM" show="FROM">
+<agADQLxplain>
+Table to use
+</agADQLxplain>
+<agADQLxample>
+FROM usnob1.0 as u
+Note that FROM and AS should be used together
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="AS" show="As">
+<agADQLxplain>
+Way to invoke a table within a script
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="WHERE" show="WHERE">
+<agADQLxplain>
+Condition to impose to select entries in a table
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="SELECT" show="SELECT">
+<agADQLxplain>
+columns to select, * denotes all, tableAs.col is a particular column
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="TOP" show="Top">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="XMATCH" show="Xmatch">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="REGION" show="Region">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="TABLE" show="Table">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="NAME" show="Name">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ALIAS" show="Alias">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="LeftParenthesis" show="(">
+<agADQLxplain>
+Left parenthesis
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="RightParenthesis" show=")">
+<agADQLxplain>
+Right parenthesis
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="PLUS" show="+">
+<agADQLxplain>
+The addition operator (binary) or the positive number indicator
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="MINUS" show="-">
+<agADQLxplain>
+The subtraction operator (binary) or the negative number sign
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="TIMES" show="*">
+<agADQLxplain>
+The multiplication operator, or a wildcard denoting all
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="OVER" show="/">
+<agADQLxplain>
+Division operator
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="EQUALS" show="=">
+<agADQLxplain>
+Conditional equals to
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="NOTEQUAL" show="&lt;&gt;">
+<agADQLxplain>
+Conditional different from
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="LESSTHAN" show="&lt;">
+<agADQLxplain>
+Conditional less than
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="LESSTHANEQUAL" show="&lt;=">
+<agADQLxplain>
+Conditional less than or equal to
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="GREATERTHAN" show="&gt;">
+<agADQLxplain>
+Conditional greater than
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="GREATERTHANEQUAL" show="&gt;=">
+<agADQLxplain>
+Conditional greater than or equals to
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="AND" show="And">
+<agADQLxplain>
+Logical And
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="OR" show="Or">
+<agADQLxplain>
+Logical OR
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="NOT" show="Not">
+<agADQLxplain>
+Logical negation
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="SINE" show="SIN">
+<agADQLxplain>
+Trigonometric sine
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ARCSINE" show="ASIN">
+<agADQLxplain>
+Trigonometric arc-sine
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="COSINE" show="COS">
+<agADQLxplain>
+Trigonometric cosine
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ARCCOSINE" show="ACOS">
+<agADQLxplain>
+Trigonometric arc-cosine
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="TAN" show="TAN">
+<agADQLxplain>
+Trigonometric tangent
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="COT" show="COT">
+<agADQLxplain>
+Trigonometric co-tangent (1/tan)
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ARCTANGENT" show="ATAN">
+<agADQLxplain>
+Trigonometric arcTangent (-90 to 90)
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ATAN2" show="ATAN2">
+<agADQLxplain>
+Trigonometric arcTangent (0 to 360)
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ABS" show="ABS">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="CEILING" show="CEILING">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="FLOOR" show="FLOOR">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="EXP" show="EXP">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="LOG" show="LOG">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="LOG10" show="LOG10">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="POWER" show="POWER">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="SQUARE" show="SQUARE">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="SQRT" show="SQRT">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="MIN" show="MIN">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="AVG" show="AVG">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="MAX" show="MAX">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="SUM" show="SUM">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="Sigma" show="Sigma">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="AGGREGATE" show="Aggregate">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ALL" show="All">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ALLOW" show="Allow">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ARCHIVE" show="Archive">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ARCHIVETABLE" show="ArchiveTable">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ASC" show="ASC">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ATOM" show="Atom">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="BETWEEN" show="Between">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="CIRCLE" show="Circle">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="CLOSED" show="Closed">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="COLUMN" show="Column">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="COMPARE" show="Compare">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="COMPARISON" show="Comparison">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="COUNT" show="COUNT">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="PI" show="PI">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="DEGREES" show="DEGREES">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="RADIANS" show="RADIANS">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="DESC" show="DESC">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="DIRECTION" show="Direction">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="DISTINCT" show="DISTINCT">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="DROP" show="Drop">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="FUNCTION" show="Function">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="GROUPBY" show="GroupBy">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="HAVING" show="Having">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="INCLUDE" show="Include">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ITEM" show="Item">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="LIKE" show="Like">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="MATH" show="Math">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="NATURE" show="Nature">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="NOTBETWEEN" show="NotBetween">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="NOTLIKE" show="NotLike">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="OPER" show="Oper">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="OPTION" show="Option">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ORDER" show="Order">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ORDERBY" show="OrderBy">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="PATTERN" show="Pattern">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="RAND" show="RAND">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="RESTRICT" show="Restrict">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="ROUND" show="ROUND">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="SELECTIONLIST" show="SelectionList">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+<agADQLkey name="TRUNCATE" show="TRUNCATE">
+<agADQLxplain>
+
+</agADQLxplain>
+<agADQLxample>
+
+</agADQLxample>
+</agADQLkey>
+</agADQLkeys>

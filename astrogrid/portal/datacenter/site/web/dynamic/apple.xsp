@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<xsp:page
+    xmlns:xsp="http://apache.org/xsp"
+    xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+    >
+<!--
+fruta = (String) <xsp-request:get-parameter name="fruit"/>;
+<xsp:expr>fruta</xsp:expr>
+-->
+
+<AstroGrid>
+<xsp:logic>
+{
+String fruta, fruit;
+fruta = "pera";
+fruit = request.getParameter("tableID");
+}
+</xsp:logic>
+
+<html>
+<b>Request method:</b> <xsp-request:get-method/> <br/>
+<b>Fruit requested:</b> <xsp-request:get-parameter name="fruit"/>
+<b>Fruta provided:</b>:
+</html>
+<fruta>
+</fruta>
+
+</AstroGrid>
+</xsp:page>

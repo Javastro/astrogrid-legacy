@@ -1,14 +1,50 @@
 /* AstroGrid Pfo test Style */
 .agHint {
-    padding: 2px 4px 2px 4px;
+/*    padding: 2px 4px 2px 4px;*/
     font-size: 14px;
     font-family: arial, verdana, sans-serif;
 /*    background-color: lightblue;*/
     background-color: yellow;
     border-color: red;
-    border-left: 2px;
-    border: 2px 2px 2px 2px;
-    width: 400px;
+/*    border-left: 2px;*/
+/*    border: 2px 2px 2px 2px;*/
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-top: solid 3px #990000;
+	border-right: solid 3px #990000;
+	border-bottom: solid 3px #990000;
+	border-left: solid 3px #990000;
+/*    width: 800px;*/
+}
+
+.courier {
+	font-family: courier, verdana, sans-serif;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-right: 4px;
+	padding-left: 4px;
+}
+
+.agTip {
+/*    padding: 2px 4px 2px 4px;*/
+    font-size: 14px;
+    font-family: arial, verdana, sans-serif;
+/*    background-color: lightblue;*/
+    background-color: #ffffff;
+    border-color: #000088;
+/*    border-left: 2px;*/
+/*    border: 2px 2px 2px 2px;*/
+	padding-top: 4px;
+	padding-bottom: 4px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-top: solid 2px #000090;
+	border-right: solid 2px #000090;
+	border-bottom: solid 2px #000090;
+	border-left: solid 2px #000090;
+/*    width: 800px;*/
 }
 
 .HintButton {
@@ -29,15 +65,94 @@
     color: yellow;
     font-style: italic;
     font-weight: bold;
-    border-bottom-width:            2;
-    border-bottom-style:            solid;
-    border-right-width:             2;
-    border-right-style:             solid;
+    border-bottom-width:	    2;
+    border-bottom-style:	    solid;
+    border-right-width:	     2;
+    border-right-style:	     solid;
     padding-right:	40px;
     padding-left:	20px;
 	    
-    margin-left:                    8%;
-    margin-right:                   15%;
+    margin-left:		    8%;
+    margin-right:		   15%;
+}
+
+.agActiveSpan {
+    font-size: 15px;
+    font-family: arial, verdana, sans-serif;
+    color: #000099;
+    font-weight: bold;
+/*    text-decoration: underline;*/
+    cursor: pointer;
+}
+
+.agActiveSpan2 {
+    font-size: 15px;
+    font-family: arial, verdana, sans-serif;
+    color: black;
+    background-color: white;
+    font-weight: bold;
+/*    text-decoration: underline;*/
+    cursor: pointer;
+}
+
+.agInActiveSpan2 {
+    font-size: 15px;
+    font-family: arial, verdana, sans-serif;
+    color: #666666;
+    font-weight: bold;
+/*    text-decoration: underline;*/
+    cursor: pointer;
+}
+
+.agWideText10 {
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.agResetButton {
+    font-size: 14px;
+    font-family: arial, verdana, sans-serif;
+    background-color: white;
+    color: #990000;
+    font-weight: bold;
+/*    text-decoration: underline;*/
+    cursor: pointer;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+}
+
+.agTitleClass {
+    font-size: 15px;
+/*    font-family: arial, verdana, sans-serif;*/
+    color: #000099;
+/*    font-style: italic;*/
+    font-weight: bold;
+    cursor: crosshair;
+    padding-bottom: 3px;
+    /*
+    border-left-width:	    2;
+    border-left-style:	    solid;
+    border-right-width:	     2;
+    border-right-style:	     solid;
+    */
+}
+
+.AGtITLEcLASS {
+    font-size: 15px;
+/*    font-family: arial, verdana, sans-serif;*/
+    color: #000000;
+/*    font-style: italic;*/
+    font-weight: bold;
+    cursor: crosshair;
+    padding-bottom: 3px;
+    /*
+    border-left-width:	    2;
+    border-left-style:	    solid;
+    border-right-width:	     2;
+    border-right-style:	     solid;
+    */
 }
 
 .AGfootsy {
@@ -45,8 +160,332 @@
     font-family: arial, verdana, sans-serif;
     color: orange;
     font-weight: bold;
-            
-    margin-left:                    8%;
-    margin-right:                   15px;
+	    
+    margin-left:		    8%;
+    margin-right:		   15px;
 }
 
+.compact {
+    font-size: 12px;
+    font-family: arial, verdana, sans-serif;
+    font-weight: narrow;
+}
+
+.compactT {
+	font-size: 12px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: narrow;
+	color: blue;
+	background-color: white;
+}
+
+.examplesBar {
+	font-size: 12px;
+	font-family: arial, verdana, sans-serif;
+	font-weight: bold;
+	background-color: wheat;
+}
+
+.AGwideButton {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	padding: 0px;
+	margin: 1px; 
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	width: 100px;
+}
+
+
+.agActionButton {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #eeeeff;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	cursor: pointer;
+/*	text-transform: lowercase;*/
+/*	width: 100px;*/
+}
+
+.sc {
+	font-variant: small-caps;
+}
+
+.agInstructions {
+/*	font-variant: small-caps;*/
+/*	font-size: 14px;*/
+/*	font-weight: bold;*/
+/*	font-family: arial, verdana, sans-serif;*/
+/*    background-color: lightblue;*/
+	background-color: #ffffdd;
+/*	border-color: #ffff00;*/
+/*    border-left: 2px;*/
+/*    border: 2px 2px 2px 2px;*/
+	padding-top: 2px;
+	padding-bottom: 2px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-top: solid 3px #ffee00;
+	border-right: solid 3px #ffee00;
+	border-bottom: solid 3px #ffff00;
+	border-left: solid 3px #ffff00;
+/*    width: 800px;*/
+}
+
+.agShowUnits {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 6px;
+	padding-left: 2px;
+	margin: 1px;
+	border-top: solid 0px #69c;
+	border-right: solid 0px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+}
+
+.inactiveTab {
+	text-align: center;
+	background-color: #e0e0e0;
+	border-left: solid 3px #069;
+	border-bottom: solid 3px #069;
+}
+
+.activeTab {
+	text-align: center;
+	background-color: #ffffff;
+	border-left: solid 3px #069;
+	border-top: solid 3px #069;
+}
+
+.agShowUCDs {
+	background-color: #ffffcc;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 0px #069;
+	border-bottom: solid 0px #069;
+	border-left: solid 1px #69c;
+}
+
+.agShowExplanation {
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 0px;
+	padding-left: 8px;
+	margin: 1px;
+	border-top: solid 0px #69c;
+	border-right: solid 0px #069;
+	border-bottom: solid 0px #069;
+	border-left: solid 1px #69c;
+}
+
+.AGFitButton {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: white;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	text-transform: lowercase;
+/*	width: 100px;*/
+}
+
+.AGwTwoEm {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	text-transform: lowercase;
+	width: 40px;
+}
+
+.AGwThreeEm {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	text-transform: lowercase;
+	width: 48px;
+}
+
+.AGwFourEm {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	text-transform: lowercase;
+	width: 4em;
+}
+
+.AGwSixty {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #fff;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	margin: 1px;
+	border-top: solid 1px #69c;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	text-transform: lowercase;
+	text-align: justify;
+	width: 75px;
+}
+
+.LargeHint {
+	font-family: verdana, arial, sans-serif;
+	font-size: 12px;
+	background-color: #ffffcc;
+	color: #000;
+	font-weight: bold;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	border-top: solid 1px #00ff00;
+	border-right: solid 1px #069;
+	border-bottom: solid 1px #069;
+	border-left: solid 1px #69c;
+	width: 500px;
+	height: 100px;
+}
+
+.fakeLink {
+	font-family: verdana, arial, sans-serif;
+	font-size: 10px;
+	color: #0000aa;
+	cursor: pointer;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 4px;
+	text-decoration: underline;
+}
+
+.agWelcomeTitle {
+/*	font-family: 'Times Roman', arial, sans-serif;*/
+	font-size: larger;
+	font-weight: bold;
+	color: #0000aa;
+/*	cursor: pointer;*/
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 4px;
+	padding-left: 20%;
+/*	text-align: center;*/
+/*	align: center;*/
+/*	text-decoration: underline;*/
+}
+
+.agSmaller {
+	font-size: smaller;
+}
+
+.agExplain {
+	color: #606060;
+	cursor: pointer;
+	font-style: italic;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	padding-right: 3px;
+	padding-left: 3px;
+}
+
+.question {
+	color: #c00;
+	font-weight: bold;
+	margin-left: -1em;
+	margin-right: 2em;
+	text-align: justify;
+}
+
+.answer {
+	color: #000;
+	margin-left: -1em;
+	margin-right: 2em;
+	text-align: justify;
+}
+
+.submitButton {
+	color: #aaffaa;
+	font-weight: bold;
+	background-color: #003300;
+	border-color: lime;
+}
+
+.agHnd {
+	cursor: pointer;
+}
+
+.agHlp {
+	cursor: help;
+	font-weight: bolder;
+}
+
+#reldiv {
+	position: relative;
+	background-color: #ffffff;
+	border:1px solid #000099;
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--+
+    | Author: Patricio F. Ortiz "pfo@star.le.ac.uk"
+    | Date: Fri Mar 19 14:16:05 2004
+    +-->
+
+<xsp:page language="java"
+	  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          xmlns:xsp="http://apache.org/xsp"
+	  xmlns:util="http://apache.org/xsp/util/2.0"
+          xmlns:xsp-request="http://apache.org/xsp/request/2.0"
+          xmlns:jpath="http://apache.org/xsp/jpath/1.0">
+  
+  <AstroGrid>
+  <agPUBMessage>AstroGrid's CookBook</agPUBMessage>
+  <laconic><xsp-request:get-parameter name="item"/></laconic>
+<xsp:logic>
+	String tomcat;
+	tomcat = java.lang.System.getProperty("catalina.home");
+	tomcat +="/webapps/astrogrid-portal/mount/help/web/static/cookbook.xml";
+	<util:include-file>
+	<util:name><xsp:expr>tomcat</xsp:expr></util:name>
+	</util:include-file>
+</xsp:logic>
+
+  </AstroGrid>
+</xsp:page>
+	<!--
+	<util:name>/usr/local/tomcat/webapps/astrogrid-portal/mount/help/web/static/cookbook.xml</util:name>
+	-->

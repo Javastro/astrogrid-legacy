@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<agp:menu-def
+    name="help-menu"
+    xmlns:agp="http://www.astrogrid.org/portal">
+  <agp:menu
+      contents="Help"
+      contents-hover="Help"
+      uri=""
+      target="_self"
+      status-text="Help pages: FAQ and Cookbook...">
+    <agp:item
+        contents="FAQ"
+        contents-hover="FAQ"
+    uri='javascript:popupBrowser(\"/astrogrid-portal/bare/mount/help/faq.faq\")'
+        target="_self"
+        status-text="Astrogrid FAQ ..."/>
+    <agp:item
+        contents="Cookbook"
+        contents-hover="Cookbook"
+    uri='javascript:popupBrowser(\"/astrogrid-portal/lean/mount/help/cookbook.ckb\")'
+        target="_self"
+        status-text="Astrogrid CookBook ..."/>
+    <agp:item
+        contents="Glossary"
+        contents-hover="Glossary"
+    uri='javascript:popupBrowser(\"/astrogrid-portal/lean/mount/help/glossary.glo\")'
+        target="_self"
+        status-text="Astrogrid Glossary ..."/>
+  </agp:menu>
+</agp:menu-def>
+	<!--
+        uri="/astrogrid-portal/main/mount/help/cookbook.ckb"
+	-->

@@ -14,8 +14,8 @@
       indent="yes"
       omit-xml-declaration="yes"/>
       
-  <xsl:param name="ag-css-url" select="'default.css'"/>
-  <xsl:param name="ag-title" select="'AstroGrid'"/>
+  <xsl:param name="ag-css-url" value="default.css"/>
+  <xsl:param name="ag-title" value="AstroGrid"/>
 
   <xsl:template match="/">
     <html>
@@ -27,6 +27,15 @@
           -->
         <xsl:element name="link">
           <xsl:attribute name="href"><xsl:value-of select="$ag-css-url"/></xsl:attribute>
+          <xsl:attribute name="rel">stylesheet</xsl:attribute>
+          <xsl:attribute name="type">text/css</xsl:attribute>
+        </xsl:element>
+        
+        <!--
+          extras stylesheet.
+          -->
+        <xsl:element name="link">
+          <xsl:attribute name="href">/astrogrid-portal/extras.css</xsl:attribute>
           <xsl:attribute name="rel">stylesheet</xsl:attribute>
           <xsl:attribute name="type">text/css</xsl:attribute>
         </xsl:element>
@@ -61,6 +70,7 @@
         <script type="text/javascript">
           function ag_onload()
           {
+/* created by ./web/style/xsl/portal-dmm.xsl */
             <xsl:for-each select="//node()[local-name() = 'ag-onload']">
               <xsl:call-template name="ag-onload"/>
             </xsl:for-each>
