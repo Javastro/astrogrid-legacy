@@ -1,5 +1,5 @@
 /*
- * $Id: MimeFileExts.java,v 1.4 2005/04/01 01:29:54 mch Exp $
+ * $Id: MimeFileExts.java,v 1.5 2005/04/03 22:29:26 mch Exp $
  *
  */
 
@@ -53,6 +53,12 @@ public class MimeFileExts implements MimeTypes  {
       addLookup(ADQL, "adql");
       addLookup(ADQL, "query");
       addLookup(ADQL, "qry");
+      
+      addLookup(ZIP, "zip");
+      addLookup(ZIP, "jar");
+      
+      addLookup(GIF, "gif");
+      addLookup(GIF, "jpg");
    }
       
    /**
