@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.24 2004/09/21 11:39:00 jdt Exp $ 
+# $Id: autorun.sh,v 1.25 2004/09/22 15:55:55 jdt Exp $ 
 # Script to run the integration tests/AGINAB
 OLDDIR=$PWD
 
@@ -26,7 +26,7 @@ MY_OPTS=-Dmaven.download.meter=bootstrap
 
 cd $BUILDHOME >> $LOGFILE 2>&1
 echo "Undeploying old apps..." >> $LOGFILE
-if maven $MY_OPTS undeploy-all-except-portal >> $LOGFILE 2>&1
+if maven $MY_OPTS undeploy-all >> $LOGFILE 2>&1
 then
    echo "*** SUCCESS ***" >> $LOGFILE
 else
@@ -92,6 +92,14 @@ then
 else
    echo "*** FAILURE ***" >> $LOGFILE
    cat $LOGFILE | mail -s "astrogrid-deploy-site Failure in integration tests" $ADMIN_EMAIL 
+fi
+#Only now the tests have finished do we deploy the portal
+if maven $MY_OPTS init portal-deploy >> $LOGFILE 2>&1
+then
+   echo "*** SUCCESS ***" >> $LOGFILE
+else
+   echo "*** FAILURE ***" >> $LOGFILE
+   cat $LOGFILE | mail -s "portal-deploy Failure in integration tests" $ADMIN_EMAIL 
 fi
 
 scp $LOGFILE maven@www.astrogrid.org:/var/www/www/maven/docs/snapshot/log/integration.log
