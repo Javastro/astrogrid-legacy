@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.1 2003/12/08 17:06:35 pah Exp $
+ * $Id: ParameterLoader.java,v 1.2 2003/12/08 23:03:11 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -34,7 +34,7 @@ import org.astrogrid.applications.AbstractApplication;
  */
 public class ParameterLoader {
    
-   private static final String INPUTPARAMETER_ELEMENT = "app/input/parameter";
+   private static final String INPUTPARAMETER_ELEMENT = "tool/input/parameter";
    private Digester digester;
    private AbstractApplication application;
    

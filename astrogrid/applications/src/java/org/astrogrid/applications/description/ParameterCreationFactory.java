@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterCreationFactory.java,v 1.2 2003/12/03 11:48:48 pah Exp $
+ * $Id: ParameterCreationFactory.java,v 1.3 2003/12/08 23:03:11 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -88,6 +88,7 @@ class ParameterCreationFactory extends AbstractObjectCreationFactory {
              }
          else
              if (type.equals("xs:anyURI")) {
+                //TODO this is not really necessary? Should make the myspace file reference cope with http: and myspace: protocols
                 return new URIParameterDescription();
 
              }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.1 2003/12/03 10:31:48 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.2 2003/12/08 23:00:37 pah Exp $-->
 <!--This is the configuration file for the Iteration4 application controller-->
-<ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
-\\pahlaptop\work\astrogrid\src\applications\schema\AGParameterDefinition.xsd">
+<ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
+http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
 	<Application name="SExtractor" instanceClass="org.astrogrid.applications.commandline.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
 		<ExecutionPath>/usr/local/bin/sex</ExecutionPath>
