@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: publish-component.sh,v 1.2 2004/12/01 22:18:01 jdt Exp $ 
+# $Id: publish-component.sh,v 1.3 2004/12/01 23:33:45 jdt Exp $ 
 ####################################################################
 # Build a component into the local repository.
 # First argument (required) cvs name of component _under_ astrogrid
@@ -53,31 +53,29 @@ rm $LOGFILE
 
 
 # Processing Starts Here
-echo "Deploying $COMPONENT_NAME, $2 on $DATE" 
-echo "====================================" 
+echo "Deploying $COMPONENT_NAME, $2 on $DATE" >> $LOGFILE 2>&1
+echo "====================================" >> $LOGFILE 2>&1
 echo "Have you remembered to edit ~/build.properties with the correct version numbers?"
-echo "Checking out maven-base and $COMPONENT_NAME from cvs into $CHECKOUTHOME"
-if cvs-checkout.sh $MODULE $2
+echo "Checking out maven-base and $COMPONENT_NAME from cvs into $CHECKOUTHOME" >> $LOGFILE 2>&1
+if cvs-checkout.sh $MODULE $2 >> $LOGFILE 2>&1
 then
-	echo "OK"
+	echo "OK" >> $LOGFILE 2>&1
 else
-        echo "build-component: cvs failure"
-	exit 1
+        echo "publish-component: cvs failure" >> $LOGFILE 2>&1
 fi
 
 cd $BUILDHOME
-echo
-maven astrogrid-echo-versions
-echo
+echo >> $LOGFILE 2>&1
+maven astrogrid-echo-versions  >> $LOGFILE 2>&1
+echo >> $LOGFILE 2>&1
 
-echo "Building and deploying artifacts"
-if maven $MY_MAVEN_OPTS astrogrid-deploy-artifact
+echo "Building and deploying artifacts" >> $LOGFILE 2>&1
+if maven $MY_MAVEN_OPTS astrogrid-deploy-artifact >> $LOGFILE 2>&1
 then
-    echo "OK"
+    echo "OK" >> $LOGFILE 2>&1
 else
-    echo "build-component: build failure"
+    echo "publish-component: build failure" >> $LOGFILE 2>&1
     cd $OLDDIR
-    exit 1
 fi
-scp $LOG_FILE $DOCMACHINE:$DOCLOCATION/log/maven-build-$COMPONENT_NAME.log
+scp $LOG_FILE $DOCMACHINE:$DOCLOCATION/log/maven-build-$COMPONENT_NAME.log 
 cd $OLDDIR
