@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/install/src/ant/install.xml,v $</cvs:source>
-    | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2004/07/23 11:56:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:author>$Author: pah $</cvs:author>
+    | <cvs:date>$Date: 2004/08/13 13:26:45 $</cvs:date>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     | <cvs:log>
     |   $Log: install.xml,v $
+    |   Revision 1.16  2004/08/13 13:26:45  pah
+    |   -paramterize the input xml file to allow for easy location override
+    |
     |   Revision 1.15  2004/07/23 11:56:09  KevinBenson
     |   Small change to use the new RegistryUpdate delegate and new REgistryUpdate endpoint
     |
@@ -60,6 +63,8 @@
         | Default Community properties.
         +-->
     <property name="org.astrogrid.community.ident" value="org.astrogrid.localhost"/>
+	<!--paramterize the input xml file to allow for easy location override - need to be able to specify file from outside the community source tree in general case-->
+	<property name="community.xmlfile" value="file:///${basedir}/config/community/${org.astrogrid.community.ident}.xml"/>
 
     <!--+
         | Default Registry endpoints.
@@ -359,7 +364,7 @@
             | Call our WebService.
             +-->
         <database.load.task
-            data="file:///${basedir}/config/community/${org.astrogrid.community.ident}.xml"
+            data="${community.xmlfile}"
             policyManager="${service.url}/PolicyManager"
             securityManager="${service.url}/SecurityManager"
             />
