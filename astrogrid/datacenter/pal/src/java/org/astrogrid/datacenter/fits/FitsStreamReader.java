@@ -1,5 +1,5 @@
 /*
- $Id: FitsStreamReader.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+ $Id: FitsStreamReader.java,v 1.2 2004/10/06 21:41:01 mch Exp $
 
  Copyright (c) etc
  */
@@ -119,11 +119,12 @@ public class FitsStreamReader implements FitsReader
          {
             if ( ((block[i] >128) || (block[i] <32)) && (block[i] != 0)   )
             {
-               String msg="Binary data encountered before header END in image "+fitsName+"\n";
-               msg=msg+new String(block)+"\n";
-               for (int j=0;j<block.length;j++) msg=msg+"["+block[j]+"] ";
+               StringBuffer msg= new StringBuffer(
+                  "Binary data encountered before header END in image "+fitsName+"\n"+
+                  new String(block)+"\n");
+               for (int j=0;j<block.length;j++) msg.append("["+block[j]+"] ");
                
-               throw new FitsFormatException(msg);
+               throw new FitsFormatException(msg.toString());
             }
          }
          boolean isNuls = true;
@@ -209,6 +210,9 @@ public class FitsStreamReader implements FitsReader
 
 /*
  $Log: FitsStreamReader.java,v $
+ Revision 1.2  2004/10/06 21:41:01  mch
+ Removed string appending in loop
+
  Revision 1.1  2004/09/28 15:02:13  mch
  Merged PAL and server packages
 
