@@ -12,15 +12,15 @@ package org.astrogrid.portal.cocoon.workflow.design;
 
 import org.apache.log4j.Logger;
 
-import org.astrogrid.i18n.*;
+//import org.astrogrid.i18n.*;
 
 // import org.astrogrid.workflow.*;
 // import org.astrogrid.workflow.design.activity.*;
 
 import org.astrogrid.AstroGridException;
 
-import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
-import org.astrogrid.community.policy.data.PolicyPermission;
+//import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
+//import org.astrogrid.community.policy.data.PolicyPermission;
 import org.astrogrid.community.service.authentication.data.SecurityToken;
 
 // import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate;
@@ -137,8 +137,8 @@ public class DesignAction extends AbstractAction {
         ACTION_INSERT_TOOL_INTO_STEP = "insert-tool-into-step",
 	    ACTION_INSERT_INPUT_PARAMETER_INTO_TOOL = "insert-input-parameter-into-tool",
 	    ACTION_INSERT_OUTPUT_PARAMETER_INTO_TOOL = "insert-output-parameter-into-tool",
-	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-parameter",
-	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-parameter",	    
+	    ACTION_INSERT_INPUT_PARAMETER = "insert-input-value",
+	    ACTION_INSERT_OUTPUT_PARAMETER = "insert-output-value",	    
         ACTION_READ_LISTS = "read-lists";
         
     public static final String
