@@ -19,6 +19,7 @@
         <fileContent>{14}</fileContent>
         <category>{15}{/category}<!-- WF or Query or Votable-->
         <action>{16}{/action}<!--overwrite or append -->
+        <importURL>{17}</importURL>
         <!--for download(get) -->
         <!-- serverFileName -->
         <downloadPath>{17}</downloadPath>
