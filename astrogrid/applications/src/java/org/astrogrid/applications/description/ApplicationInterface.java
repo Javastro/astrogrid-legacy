@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationInterface.java,v 1.4 2003/12/03 11:48:48 pah Exp $
+ * $Id: ApplicationInterface.java,v 1.5 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -122,6 +122,18 @@ public class ApplicationInterface {
          throw new ParameterNotInInterfaceException("unknown parameter="+name);
       }
       return ad;
+   }
+   int parameterType(String name)
+   {
+      int retval = 0;
+      if(inputs.contains(name))
+      {
+         retval = 1;
+      }
+      if (outputs.contains(name)) {
+         retval = -1;
+      }
+      return retval;
    }
    public ParameterDescription getOutputParameter(String name)
        throws ParameterNotInInterfaceException {

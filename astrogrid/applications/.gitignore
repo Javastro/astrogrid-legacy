@@ -4,3 +4,4 @@ build
 target
 tests.log
 server-config.wsdd
+velocity.log

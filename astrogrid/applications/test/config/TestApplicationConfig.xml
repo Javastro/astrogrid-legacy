@@ -24,8 +24,8 @@
 				<Units>String</Units>
 			</Parameter>
 			<Parameter name="P3" type="agpd:MySpace_FileReference" switchType="normal"/>
-			<Parameter name="P4" type="xs:string"/>
-			<Parameter name="P5" type="agpd:MySpace_VOTableReference" commandSwitch="Parameter4" switchType="keyword"/>
+			<Parameter name="P4" type="xs:string" commandSwitch="Parameter4" switchType="keyword"/>
+			<Parameter name="P5" type="agpd:MySpace_VOTableReference" />
 			<Parameter name="P6" type="agpd:RA"/>
 			<Parameter name="P7" type="agpd:Dec"/>
 			<Parameter name="P8" type="agpd:ADQL"/>

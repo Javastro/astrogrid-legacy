@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDescription.java,v 1.4 2003/12/12 21:30:46 pah Exp $
+ * $Id: ParameterDescription.java,v 1.5 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,12 +15,16 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CommandLineParameter;
 import org.astrogrid.applications.Parameter;
+import org.astrogrid.applications.commandline.CmdLineApplication;
 /**
  * The basic parameter definition description. 
  */
 public abstract class ParameterDescription {
+   static protected org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(ParameterDescription.class);
    public String getName(){ return name; }
 
    public void setName(String name){ this.name = name; }
@@ -37,10 +41,10 @@ public abstract class ParameterDescription {
 
    public void setUcd(String ucd){ this.ucd= ucd; }
 
-   private String name;
-   private String displayName;
-   private String displayDescription;
-   private String ucd;
+   protected String name;
+   protected String displayName;
+   protected String displayDescription;
+   protected String ucd;
    
    /**
     * The string that makes up the command switch. If this is not specified then it is assumed that the switch is the same as the name
@@ -59,19 +63,18 @@ public abstract class ParameterDescription {
     * Creates a parameter value object. This should be overriden in subclasses where specialzed behaviour is required.
     * @return
     */
-   public Parameter createValueObject()
+   public Parameter createValueObject(AbstractApplication app)
    {
-      Parameter param = new CommandLineParameter(this);
+      Parameter param = new CommandLineParameter(app, this);
       return param;
    }
 
    /**
-    * 
-    * @param rawValue
+    * @param parameter The actual parameter for this instance...
     * @return a string representing how this parameter should be represented on the command line.
     */
-   public List process(String rawValue) {
-      return addCmdlineAdornment(rawValue);
+   public List process(Parameter parameter) {
+      return addCmdlineAdornment(parameter.getRawValue());
    }
 
 

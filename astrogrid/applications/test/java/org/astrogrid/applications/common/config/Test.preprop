@@ -5,5 +5,5 @@ DB_DRIVER=org.hsqldb.jdbcDriver
 DB_URL=jdbc:hsqldb:test/data/applications
 DB_PASSWORD=
 DB_USER=sa
-
+MySpaceManager=http://Dummy.address/
 

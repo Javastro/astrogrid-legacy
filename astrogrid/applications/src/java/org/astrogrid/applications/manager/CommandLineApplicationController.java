@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.13 2003/12/17 17:16:54 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.14 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,13 +17,14 @@ import java.util.Map;
 
 import org.astrogrid.applications.ApplicationFactory;
 import org.astrogrid.applications.ParameterValues;
-import org.astrogrid.applications.commandline.ApplicationEnvironment;
+import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.commandline.CmdLineApplicationCreator;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.description.ParameterLoader;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.applications.description.exception.InterfaceDescriptionNotFoundException;
 import org.astrogrid.community.User;
 
 public class CommandLineApplicationController extends AbstractApplicationController  {
@@ -84,22 +85,29 @@ public class CommandLineApplicationController extends AbstractApplicationControl
       ParameterValues parameters) {
          int executionId = -1;
          
+         
          // create the application object
-         ApplicationFactory factory = CmdLineApplicationCreator.getInstance(applicationDescriptions);
+         ApplicationFactory factory = CmdLineApplicationCreator.getInstance(this);
         try {
-             CmdLineApplication cmdLineApplication = (CmdLineApplication)factory.createApplication(applicationID);
-            
+             CmdLineApplication cmdLineApplication = (CmdLineApplication)factory.createApplication(applicationID, user);
+             
             
                
             try {
                // create the application environment
-                 ApplicationEnvironment environment = new ApplicationEnvironment();
+                 CmdLineApplicationEnvironment environment = new CmdLineApplicationEnvironment();
                  cmdLineApplication.setApplicationEnvironment(environment);
                  executionId = environment.getExecutionId();
+                 try {
+                  cmdLineApplication.setApplicationInterface(cmdLineApplication.getApplicationDescription().getInterface(parameters.getMethodName()));
+               }
+               catch (InterfaceDescriptionNotFoundException e1) {
+                  logger.error("cannot find interface", e1);
+               }
                  
               //TODO parse the parameter values and set up the parameter array
               ParameterLoader pl = new ParameterLoader(cmdLineApplication);
-              pl.loadParamters(parameters.getParameterSpec());
+              pl.loadParameters(parameters.getParameterSpec());
          
               
             
@@ -126,7 +134,7 @@ public class CommandLineApplicationController extends AbstractApplicationControl
 
    /**
     *@link aggregation 
-    *      @associates org.astrogrid.applications.commandline.ApplicationEnvironment
+    *      @associates org.astrogrid.applications.commandline.CmdLineApplicationEnvironment
     */
     private Map runningApplications;
    /**

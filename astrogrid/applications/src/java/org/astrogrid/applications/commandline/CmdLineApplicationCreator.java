@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplicationCreator.java,v 1.4 2003/12/15 14:29:49 pah Exp $
+ * $Id: CmdLineApplicationCreator.java,v 1.5 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -17,23 +17,25 @@ import org.astrogrid.applications.ApplicationFactory;
 import org.astrogrid.applications.datacentre.DataCentreApplication;
 import org.astrogrid.applications.description.ApplicationDescriptions;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.applications.manager.CommandLineApplicationController;
+import org.astrogrid.community.User;
 
 public class CmdLineApplicationCreator extends ApplicationFactory {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CmdLineApplicationCreator.class);
    private static CmdLineApplicationCreator instance = null;
-   private ApplicationDescriptions ad;
-   private CmdLineApplicationCreator(ApplicationDescriptions appdisc)
+   private CommandLineApplicationController ad;
+   private CmdLineApplicationCreator(CommandLineApplicationController controller)
    {
-      ad = appdisc;
+      ad = controller;
    }
    
-   public static CmdLineApplicationCreator getInstance(ApplicationDescriptions appdisc){
+   public static CmdLineApplicationCreator getInstance(CommandLineApplicationController controller){
       if (instance == null) {
          synchronized(CmdLineApplicationCreator.class)
          {
             if (instance == null) {
-               instance = new CmdLineApplicationCreator(appdisc);
+               instance = new CmdLineApplicationCreator(controller);
             }
          }
          
@@ -46,11 +48,11 @@ public class CmdLineApplicationCreator extends ApplicationFactory {
    /* (non-Javadoc)
     * @see org.astrogrid.applications.ApplicationFactory#createApplication(java.lang.String)
     */
-   public AbstractApplication createApplication(String applicationId) throws ApplicationDescriptionNotFoundException {
+   public AbstractApplication createApplication(String applicationId, User user) throws ApplicationDescriptionNotFoundException {
       //TODO - need to make this create the appropriate application class if required by the applicationDescription
       logger.info("creating application instance of "+applicationId);
-      CmdLineApplication app = new CmdLineApplication();
-         app.setApplicationDescription(ad.getDescription(applicationId));
+      CmdLineApplication app = new CmdLineApplication(ad, user);
+         app.setApplicationDescription(ad.getApplicationDescriptions().getDescription(applicationId));
 
       return app;
    }

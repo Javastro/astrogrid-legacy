@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationFactory.java,v 1.3 2003/12/08 15:00:47 pah Exp $
+ * $Id: ApplicationFactory.java,v 1.4 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications;
 
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
+import org.astrogrid.community.User;
 
 /**
  * A factory for creating application objects
@@ -24,7 +25,7 @@ import org.astrogrid.applications.description.exception.ApplicationDescriptionNo
 public abstract class ApplicationFactory {
    
    // TODO I do not think that this is a very good pattern..
-   public abstract AbstractApplication createApplication(String applicationId) throws ApplicationDescriptionNotFoundException;
+   public abstract AbstractApplication createApplication(String applicationId, User user) throws ApplicationDescriptionNotFoundException;
 
    /**
     * @link

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.7 2003/12/09 23:01:15 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.8 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -14,10 +14,13 @@
 package org.astrogrid.applications.common.config;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.sql.DataSource;
 
 import org.astrogrid.applications.common.ApplicationsConstants;
+import org.astrogrid.mySpace.delegate.MySpaceClient;
+import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 
 /**
  * Important application controller configuration constants. This is a singleton, with the actual configuration that is loaded being controlled by the {@link ConfigLoader} class.
@@ -99,5 +102,13 @@ public class ApplicationControllerConfig {
    }
    public String getDBpwd() {
       return config.getProperty(ApplicationsConstants.DATABASE_PASSWORD_KEY);
+   }
+   
+   public MySpaceClient getMySpaceManager() throws IOException{
+      //TODO need to get this from a registry somewhere really
+      MySpaceClient manager;
+      manager = MySpaceDelegateFactory.createDelegate(
+       config.getProperty(ApplicationsConstants.MySpaceManagerKey));
+       return manager;
    }
 }

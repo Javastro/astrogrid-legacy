@@ -1,5 +1,5 @@
 /*
- * $Id: ADQLParameter.java,v 1.2 2003/12/08 17:06:35 pah Exp $
+ * $Id: ADQLParameter.java,v 1.3 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 21 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -18,8 +18,9 @@ public class ADQLParameter extends Parameter {
    /**
     * @param parameterDescription
     */
-   public ADQLParameter(ParameterDescription parameterDescription) {
-      super(parameterDescription);
+   public ADQLParameter(AbstractApplication application,
+   ParameterDescription parameterDescription) {
+      super(application, parameterDescription);
       // TODO Auto-generated constructor stub
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.4 2003/12/11 13:23:02 pah Exp $
+ * $Id: Parameter.java,v 1.5 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.applications;
 
 import java.util.List;
 
+import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.description.ParameterDescription;
 
 /**
@@ -23,6 +24,8 @@ import org.astrogrid.applications.description.ParameterDescription;
  * @stereotype entity 
  */
 abstract public class Parameter {
+   protected AbstractApplication application;
+
    protected String name;
    
    /**
@@ -41,8 +44,9 @@ abstract public class Parameter {
    protected ParameterDescription parameterDescription;
    
    
-   public Parameter(ParameterDescription parameterDescription)
+   public Parameter(AbstractApplication application, ParameterDescription parameterDescription)
    {
+      this.application = application;
       this.parameterDescription = parameterDescription;
       this.name=parameterDescription.getName(); // just as a shortcut
    }
@@ -72,12 +76,13 @@ abstract public class Parameter {
 
 
    /**
+    * @param app the application that is being used to process the parameter - REFACTORME this should be refactored to the AbsractApplication really - but time constraints have not allowed.
     * Performs whatever actions are necessary for the processing the parameter. Most of the real work is done by looking in the {@link ParameterDescription} object.
     * @return true if the processing did not have any errors
     */
    public boolean process() {
  //TODO need to think about errors  
-      argValue = parameterDescription.process(rawValue);   
+      argValue = parameterDescription.process(this);   
       return true;
 
    }
@@ -103,6 +108,13 @@ abstract public class Parameter {
     */
    public String getName() {
       return name;
+   }
+
+   /**
+    * @return
+    */
+   public AbstractApplication getApplication() {
+      return application;
    }
 
 }

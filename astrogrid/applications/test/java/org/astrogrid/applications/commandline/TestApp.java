@@ -1,5 +1,5 @@
 /*
- * $Id: TestApp.java,v 1.3 2003/12/11 13:23:02 pah Exp $
+ * $Id: TestApp.java,v 1.4 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,9 @@
  */ 
 
 package org.astrogrid.applications.commandline;
+
+import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.community.User;
 
 /**
  * This application does not do anything special - just here to test that the class loading is working...
@@ -27,8 +30,8 @@ public class TestApp extends CmdLineApplication {
    /**
     * constructor - just so that we can see that this is the class that is being instantiated....
     */
-   public TestApp() {
-      super();
+   public TestApp(AbstractApplicationController controller, User user) {
+      super(controller, user);
       logger.info("constructing test application");
    }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.11 2003/12/10 00:18:48 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.12 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -22,53 +22,49 @@ import org.astrogrid.applications.description.DescriptionLoader;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.applications.description.SimpleDescriptionLoader;
 
-abstract public class AbstractApplicationController implements ApplicationController {
+public abstract class AbstractApplicationController implements ApplicationController {
    /**
     * The place where the application controller stores local execution status. 
     */
    protected DataSource db;
-   static private org.apache.commons.logging.Log logger =
-      org.apache.commons.logging.LogFactory.getLog(
-         AbstractApplicationController.class);
+   static protected org.apache.commons.logging.Log logger =
+      org.apache.commons.logging.LogFactory.getLog(AbstractApplicationController.class);
    /**
     * The store for the descriptions of the applications that this application controller manages.
     */
    protected ApplicationDescriptions applicationDescriptions;
    protected Map simpleDescriptions;
-   
-   AbstractApplicationController()
-   {
+
+   AbstractApplicationController() {
       logger.info("initializing application controller");
       simpleDescriptions = new HashMap();
       // get the datasource
       ApplicationControllerConfig config = ApplicationControllerConfig.getInstance();
       db = config.getDataSource();
-      
+
       // load the application descriptions
       DescriptionLoader dl = new DescriptionLoader(this);
-      logger.info("loading application descriptions from "+config.getApplicationConfigFile().getAbsoluteFile());
-      if(dl.loadDescription(config.getApplicationConfigFile()))
-      {
+      logger.info(
+         "loading application descriptions from "
+            + config.getApplicationConfigFile().getAbsoluteFile());
+      if (dl.loadDescription(config.getApplicationConfigFile())) {
          logger.info("application descriptions loaded successfully");
       }
-      else
-      {
+      else {
          logger.error("application descriptions were not loaded properly");
       }
-      
+
       //now the simple descriptions (really just not parsing the input XML as much - this is a bit of a cheat, perhaps there should be a serializer for the ApplicationDescription objects.
       SimpleDescriptionLoader sdl = new SimpleDescriptionLoader(this);
       if (sdl.loadDescription(config.getApplicationConfigFile())) {
          logger.info("loaded simple descriptions");
       }
-      else
-      {
+      else {
          logger.error("simple application descriptions were not loaded properly");
       }
-      
-     
+
    }
-   
+
    /**
     * @return
     */
@@ -88,17 +84,16 @@ abstract public class AbstractApplicationController implements ApplicationContro
    }
 
    public String[] listApplications() {
-       return applicationDescriptions.getApplicationNames();
-      
+      return applicationDescriptions.getApplicationNames();
+
    }
 
    public String returnRegistryEntry() {
       //TODO implement this
       return "this is not implemented yet";
    }
-   
-   public void addSimpleDescription(SimpleApplicationDescription d)
-   {
+
+   public void addSimpleDescription(SimpleApplicationDescription d) {
       simpleDescriptions.put(d.getName(), d);
    }
 

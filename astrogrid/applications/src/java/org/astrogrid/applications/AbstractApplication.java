@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.6 2003/12/12 21:30:46 pah Exp $
+ * $Id: AbstractApplication.java,v 1.7 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -18,45 +19,43 @@ import java.util.Vector;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.description.ApplicationDescription;
 import org.astrogrid.applications.description.ApplicationInterface;
+import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.applications.manager.ApplicationController;
+import org.astrogrid.community.User;
+
 import java.util.List;
 
-public class AbstractApplication implements Application {
+public abstract class AbstractApplication implements Application {
    /**
     *@link aggregation
     *@associates org.astrogrid.applications.Parameter
     */
    protected List parameters; 
+   protected AbstractApplicationController controller;
    protected ApplicationDescription applicationDescription;
+   protected User user;
    
-   public AbstractApplication()
+   public AbstractApplication(AbstractApplicationController controller, User user)
    {
+      this.controller = controller;
+      this.user = user;
       parameters = new ArrayList();
    }
    
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#completionStatus()
     */
-   public int completionStatus() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplication.completionStatus() not implemented");
-   }
-
+   public abstract int completionStatus();
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#execute()
     */
-   public boolean execute() throws ApplicationExecutionException {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplication.execute() not implemented");
-   }
+   public abstract boolean execute() throws ApplicationExecutionException;
 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#retrieveResult()
     */
-   public Result[] retrieveResult() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplication.retrieveResult() not implemented");
-   }
-
+   public abstract Result[] retrieveResult();
+ 
    /* (non-Javadoc)
     * @see org.astrogrid.applications.Application#setParameter()
     */
@@ -92,4 +91,21 @@ public class AbstractApplication implements Application {
    public String toString() {
       return applicationDescription.getName();
    }
+   
+   public abstract File createLocalTempFile();
+   /**
+    * @return
+    */
+   public AbstractApplicationController getController() {
+      return controller;
+   }
+
+   /**
+    * @return
+    */
+   public User getUser() {
+      return user;
+   }
+
 }
+

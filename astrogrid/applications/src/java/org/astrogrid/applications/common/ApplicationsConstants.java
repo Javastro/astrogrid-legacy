@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.4 2003/12/09 23:01:15 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.5 2003/12/31 00:56:18 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -52,4 +52,6 @@ public final static String ApplicationConfigKey="ApplicationConfigFile";
  * The value of the property pointed to bey this key is the directory used as a base for running the applications.
  */
 public final static String WorkingDirectory = "WorkingDirectory";
+
+public final static String MySpaceManagerKey="MySpaceManager";
 }

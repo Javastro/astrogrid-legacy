@@ -1,5 +1,5 @@
 /*
- * $Id: DataCentreApplicationTest.java,v 1.1 2003/12/11 14:36:16 pah Exp $
+ * $Id: DataCentreApplicationTest.java,v 1.2 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 11-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,9 @@
  */ 
 
 package org.astrogrid.applications.datacentre;
+
+import org.astrogrid.applications.manager.CommandLineApplicationController;
+import org.astrogrid.community.User;
 
 import junit.framework.TestCase;
 
@@ -36,7 +39,7 @@ public class DataCentreApplicationTest extends TestCase {
 
    final public void testExecute() {
       //TODO trivial test - datacenter does not really exist yet
-      boolean result = new DataCentreApplication().execute();
+      boolean result = new DataCentreApplication(new CommandLineApplicationController(), new User()).execute();
       assertEquals( false, result); //this will be true when it exists
    }
 

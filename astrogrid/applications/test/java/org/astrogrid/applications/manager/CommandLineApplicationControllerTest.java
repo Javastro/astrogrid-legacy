@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.11 2003/12/17 17:16:54 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.12 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -17,6 +17,7 @@ package org.astrogrid.applications.manager;
 import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.commandline.CmdLineApplication;
+import org.astrogrid.applications.common.config.BaseApplicationTestCase;
 import org.astrogrid.applications.common.config.BaseDBTestCase;
 import org.astrogrid.applications.description.ApplicationDescriptionConstants;
 import org.astrogrid.applications.description.SimpleApplicationDescription;
@@ -30,7 +31,7 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class CommandLineApplicationControllerTest extends BaseDBTestCase {
+public class CommandLineApplicationControllerTest extends BaseApplicationTestCase {
 
    private CommandLineApplicationController controller;
 
@@ -40,7 +41,6 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
 
    private String applicationid = null;
 
-   private User user = null;
 
    private ParameterValues parameters = null;
 
@@ -65,7 +65,6 @@ public class CommandLineApplicationControllerTest extends BaseDBTestCase {
       super.setUp();
       controller = new CommandLineApplicationController();
       //completely bogus community snippet....
-      user = new User("noone","notastrogrid","blah"); 
       monitorURL="JESMonitorDummy";
       applicationid = TestAppConst.TESTAPP_NAME;
       parameters = new ParameterValues();

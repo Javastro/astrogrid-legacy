@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterLoader.java,v 1.4 2003/12/12 21:30:46 pah Exp $
+ * $Id: ParameterLoader.java,v 1.5 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -55,14 +55,14 @@ public class ParameterLoader {
    private void createDigester() throws ParserConfigurationException{
       digester = new Digester();
       digester.setValidating(false);
-      digester.addFactoryCreate(INPUTPARAMETER_ELEMENT, new ParameterFactory(application.getApplicationDescription()));
+      digester.addFactoryCreate(INPUTPARAMETER_ELEMENT, new ParameterFactory(application));
       digester.addSetNext(INPUTPARAMETER_ELEMENT, "addParameter");
       digester.addRule(INPUTPARAMETER_ELEMENT, new NodeCreateRule(Node.ELEMENT_NODE));
       digester.addRule(INPUTPARAMETER_ELEMENT, new AllBodyIncElementsRule("rawValue", true));
       
    }
    
-   public boolean loadParamters(String parameterspec)
+   public boolean loadParameters(String parameterspec)
    {
       boolean success = false;
       

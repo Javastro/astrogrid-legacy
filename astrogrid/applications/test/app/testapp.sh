@@ -1,11 +1,11 @@
 #!/bin/sh
-# $Id: testapp.sh,v 1.6 2003/12/12 21:30:46 pah Exp $
+# $Id: testapp.sh,v 1.7 2003/12/31 00:56:18 pah Exp $
 #Paul Harrison
 #This is a small command line test application - it attempts to parse the major types of command line arguments
 # p1 should be an integer which will be a wait time in seconds
 #p2 should be number
-p3 should be a filename - the output will be written to that file
-p4 should be anything
+#p3 should be a filename - the output will be written to that file
+#p4 should be anything
 #test for a large amount of output
 for (( i = 1; i < 40 ; i++ )) ;do
 echo "test on stdout" 
@@ -34,6 +34,11 @@ do
          shift 2
          
         ;;
+      -P9)
+         P9=$2 
+         shift 2
+         
+        ;;
       Parameter4=*)
          P4=`expr match "$1" '.*[0-9]+*="*\([^"]*\)"*'`
          shift
@@ -59,3 +64,5 @@ do
 eval "echo P$i = \$P$i" >> $P3
 
 done
+
+cat $P9 >> $P3

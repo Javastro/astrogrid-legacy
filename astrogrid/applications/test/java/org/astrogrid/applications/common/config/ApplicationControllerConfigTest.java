@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfigTest.java,v 1.1 2003/12/01 22:24:59 pah Exp $
+ * $Id: ApplicationControllerConfigTest.java,v 1.2 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -41,8 +41,10 @@ public class ApplicationControllerConfigTest extends TestCase {
       super.setUp();
    }
 
-   final public void testGetApplicationConfigFile() {
-      //TODO Implement getApplicationConfigFile().
+   final public void testConfig() {
+      ApplicationControllerConfig config = ApplicationControllerConfig.getInstance();
+      assertNotNull(config);
+       
    }
 
 }

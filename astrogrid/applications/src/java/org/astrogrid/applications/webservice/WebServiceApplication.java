@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplication.java,v 1.2 2003/12/07 01:09:48 pah Exp $
+ * $Id: WebServiceApplication.java,v 1.3 2003/12/31 00:56:18 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,15 +11,53 @@
 
 package org.astrogrid.applications.webservice;
 
+import java.io.File;
 import java.net.URL;
 import org.astrogrid.applications.AbstractApplication;
+import org.astrogrid.applications.Result;
+import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.community.User;
 
 public class WebServiceApplication extends AbstractApplication {
-public WebServiceApplication(){}
+
+
+   /**
+    * @param controller
+    * @param user
+    */
+   public WebServiceApplication(AbstractApplicationController controller, User user) {
+      super(controller, user);
+      // TODO Auto-generated constructor stub
+   }
 
    public boolean execute(){
       return false;
    }
 
    private URL url;
+   
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.Application#completionStatus()
+    */
+   public int completionStatus() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("WebServiceApplication.completionStatus() not implemented");
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.AbstractApplication#createLocalTempFile()
+    */
+   public File createLocalTempFile() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("WebServiceApplication.createLocalTempFile() not implemented");
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.Application#retrieveResult()
+    */
+   public Result[] retrieveResult() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("WebServiceApplication.retrieveResult() not implemented");
+   }
+
 }

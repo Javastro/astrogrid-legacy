@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterFactory.java,v 1.1 2003/12/08 17:06:35 pah Exp $
+ * $Id: ParameterFactory.java,v 1.2 2003/12/31 00:56:17 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -16,6 +16,7 @@ package org.astrogrid.applications.description;
 import org.apache.commons.digester.AbstractObjectCreationFactory;
 import org.xml.sax.Attributes;
 
+import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Parameter;
 
 /**
@@ -27,10 +28,12 @@ import org.astrogrid.applications.Parameter;
 public class ParameterFactory extends AbstractObjectCreationFactory {
    
    private ApplicationDescription applicationDescription;
+   private AbstractApplication application;
    
-   ParameterFactory(ApplicationDescription applicationDescription)
+   ParameterFactory(AbstractApplication app)
    {
-      this.applicationDescription = applicationDescription;
+      this.application = app;
+      this.applicationDescription = app.getApplicationDescription();
    }
 
    /* (non-Javadoc)
@@ -44,7 +47,7 @@ public class ParameterFactory extends AbstractObjectCreationFactory {
 
       if ((name=attr.getValue(ApplicationDescriptionConstants.NAME_ATTR)) != null) {
          pd = applicationDescription.getParameter(name);
-         param = pd.createValueObject();
+         param = pd.createValueObject(application);
       }
       
       return param;

@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.4 2003/12/12 21:30:46 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.5 2003/12/31 00:56:17 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 
 package org.astrogrid.applications.commandline;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,8 +21,11 @@ import java.util.List;
 
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.Parameter;
+import org.astrogrid.applications.Result;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.common.io.StreamPiper;
+import org.astrogrid.applications.manager.AbstractApplicationController;
+import org.astrogrid.community.User;
 /**
  * A generic model for a command line application. This generally assumes that the application can be run from a command line obtaining all of its parameters from commandline arguments and possibly standard in. 
  * The application can interact with the filesystem.
@@ -38,8 +42,7 @@ public class CmdLineApplication extends AbstractApplication {
    private StreamPiper errPiper;
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CmdLineApplication.class);
-   public CmdLineApplication() {
-   }
+ 
 
    protected String[] args = null;
    protected List argvals = new ArrayList();
@@ -47,6 +50,15 @@ public class CmdLineApplication extends AbstractApplication {
    protected Runtime runtime = Runtime.getRuntime();
    protected Process process;
    protected int exitStatus;
+
+   /**
+    * @param controller
+    * @param user
+    */
+   public CmdLineApplication(AbstractApplicationController controller, User user) {
+      super(controller, user);
+      // TODO Auto-generated constructor stub
+   }
 
    public boolean execute() throws ApplicationExecutionException {
 
@@ -143,19 +155,44 @@ public class CmdLineApplication extends AbstractApplication {
 
    }
 
-   private ApplicationEnvironment applicationEnvironment;
+   private CmdLineApplicationEnvironment applicationEnvironment;
    /**
     * @return
     */
-   public ApplicationEnvironment getApplicationEnvironment() {
+   public CmdLineApplicationEnvironment getApplicationEnvironment() {
       return applicationEnvironment;
    }
 
    /**
     * @param environment
     */
-   public void setApplicationEnvironment(ApplicationEnvironment environment) {
+   public void setApplicationEnvironment(CmdLineApplicationEnvironment environment) {
       applicationEnvironment = environment;
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.AbstractApplication#createLocalTempFile()
+    */
+   public File createLocalTempFile() {
+      return applicationEnvironment.getTempFile();
+   }
+   
+   
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.Application#completionStatus()
+    */
+   public int completionStatus() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("CmdLineApplication.completionStatus() not implemented");
+   }
+
+   /* (non-Javadoc)
+    * @see org.astrogrid.applications.Application#retrieveResult()
+    */
+   public Result[] retrieveResult() {
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("CmdLineApplication.retrieveResult() not implemented");
    }
 
 }
