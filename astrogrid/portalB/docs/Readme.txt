@@ -124,7 +124,12 @@ if(!authorized) {
 -------------------------------------------------------
 How to Integrate pages into Astrogrid Cocoon
 
-First create your own page hopefullyin a xsp and xsl pages for cocoon.  With only the content no menus or anything that is common to astrogrid.
+First let me state that currently the portals sitemap.xmap file used for Astrogrid is in portalB/src/ral this is a side 
+affect from iteration 2 and we will be moving into using the one in portalB/src/cocoon/sitemap.xmap at the end of September.
+So when you want your pages working in the portal change the ral/sitemap.xmap and advise duplicating your entry in the 
+src/cocoon/sitemap.xmap.
+
+First create your own page hopefully in a xsp and xsl pages for cocoon.  With only the content no menus or anything that is common to astrogrid.
 Now once you have your page working then in your xsl page put a surrounding page and content tags around your stuff.
 <page>
  	<content>
