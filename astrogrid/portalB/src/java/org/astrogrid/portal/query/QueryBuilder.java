@@ -17,6 +17,8 @@ public class QueryBuilder {
 	private ArrayList dsInformation = new ArrayList();
 	//A name to associate with the Query.
 	private String name = null;
+	private String userName = null;
+	private String community = null;
 
 	public QueryBuilder() {
 
@@ -26,27 +28,60 @@ public class QueryBuilder {
 		this.name = name;
 	}
 
-/**
- * Property method for setting the name.
- * @param name
- */
+	/**
+	 * Property method for setting the name.
+	 * @param name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-/**
- * Property method for getting the name.
- * @return
- */
+	/**
+	 * Property method for getting the name.
+	 * @return
+	 */
 	public String getName() {
 		return this.name;
 	}
+	
+	/**
+	 * Property method for setting the name.
+	 * @param name
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
-/**
- * Lookup in the ArrayList for a DataSetInfomation object with the given name.
- * @param name
- * @return
- */
+	/**
+	 * Property method for getting the name.
+	 * @return
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
+
+	/**
+	 * Property method for setting the name.
+	 * @param name
+	 */
+	public void setCommunity(String community) {
+		this.community = community;
+	}
+
+	/**
+	 * Property method for getting the name.
+	 * @return
+	 */
+	public String getCommunity() {
+		return this.community;
+	}
+	
+
+	/**
+	 * Lookup in the ArrayList for a DataSetInfomation object with the given name.
+	 * @param name
+	 * @return
+	 */
 	public DataSetInformation getDataSetInformation(String name) {
 		int index = dsInformation.indexOf(new DataSetInformation(name));
 		if(index > -1) {
@@ -55,49 +90,49 @@ public class QueryBuilder {
 		return null;
 	}
 
-/**
- * return the full ArrayList.
- * @return
- */
+	/**
+	 * return the full ArrayList.
+	 * @return
+	 */
 	public ArrayList getDataSetInformation() {
 		return this.dsInformation;
 	}
 
-/**
- * Add a new DataSetInformation object to the arrayList.
- * @param name
- * @return
- */
+	/**
+	 * Add a new DataSetInformation object to the arrayList.
+	 * @param name
+	 * @return
+	 */
 	public DataSetInformation addDataSetInformation(String name) {
 		return addDataSetInformation(null,null,name);
 	}
 
-/**
- * No longer used.  Thought the DatasetInformation object might need to hold the servername and dbName, but currently
- * not needed.
- * @param serverName
- * @param dbName
- * @param name
- * @return
- */
+	/**
+	 * No longer used.  Thought the DatasetInformation object might need to hold the servername and dbName, but currently
+	 * not needed.
+	 * @param serverName
+	 * @param dbName
+	 * @param name
+	 * @return
+	 */
 	public DataSetInformation addDataSetInformation(String serverName,String dbName,String name) {
 		return addDataSetInformation(new DataSetInformation(serverName,dbName,name));
 	}
 
-/**
- * The new DataSetInformation object to add to the arraylist.
- * @param dsInfo
- * @return
- */
+	/**
+	 * The new DataSetInformation object to add to the arraylist.
+	 * @param dsInfo
+	 * @return
+	 */
 	public DataSetInformation addDataSetInformation(DataSetInformation dsInfo) {
 		dsInformation.add(dsInfo);
 		return dsInfo;
 	}
 
-/**
- * Remove a DataSetInformation objec from the ArrayList.
- * @param name
- */
+	/**
+	 * Remove a DataSetInformation objec from the ArrayList.
+	 * @param name
+	 */
 	public void removeDataSetInformation(String name) {
 		removeDataSetInformation(null,null,name);
 	}
@@ -113,19 +148,19 @@ public class QueryBuilder {
 		}
 	}
 
-/**
- * Delete all the DataSetInformation object from the ArrayList.  Clear them out.
- *
- */
+	/**
+	 * Delete all the DataSetInformation object from the ArrayList.  Clear them out.
+	 *
+	 */
 	public void clear() {
 		dsInformation.clear();
 	}
 
-/**
- * Go thorugh all the DataSetInformation objects, along with thier DataSetColumns and CriteriaInformation and formulate
- * a general query to be returned.
- * @return
- */
+	/**
+	 * Go thorugh all the DataSetInformation objects, along with thier DataSetColumns and CriteriaInformation and formulate
+	 * a general query to be returned.
+	 * @return
+	 */
 	public String formulateQuery() {
 		String selectClause = null;
 		String fromClause = null;
@@ -179,13 +214,13 @@ public class QueryBuilder {
 		return queryString + "\n";
 	}//formulateQuery
 
-/**
- * CriteriaInformaiton objects may hold another CriteriaInformation object in itself for parenthesis purposes.  So go through those
- * other CriteriaInformation objects putting them inside the correct parenthesis.
- * @param dataSetName
- * @param ci
- * @return
- */
+	/**
+	 * CriteriaInformaiton objects may hold another CriteriaInformation object in itself for parenthesis purposes.  So go through those
+	 * other CriteriaInformation objects putting them inside the correct parenthesis.
+	 * @param dataSetName
+	 * @param ci
+	 * @return
+	 */
 	private String  checkOtherCriteria(String dataSetName, CriteriaInformation ci) {
 		if(ci.getLinkedCriteria() != null) {
 			CriteriaInformation ciLinked = ci.getLinkedCriteria();

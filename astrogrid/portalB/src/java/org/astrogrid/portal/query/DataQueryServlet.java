@@ -115,6 +115,7 @@ public class DataQueryServlet extends HttpServlet {
 			ArrayList dsColumns = QueryRegistryInformation.getItemsFromRegistryResponse(respXmlString);
 			DataSetInformation dsInfo = new DataSetInformation((String)dsItems[i]);
 			dsInfo.setDataSetColumns(dsColumns);
+			dsInfo.addDataSetColumn(new DataSetColumn("CONE","FUNCTION"));
 			ds.add(dsInfo);
 		}
 		return ds;
@@ -139,6 +140,8 @@ public class DataQueryServlet extends HttpServlet {
 		String queryString = (String)session.getAttribute("QueryStringSent");
 		String errorMessage = null;
 		String []reqTemp;
+		String userName = null;
+		String community = null;
 		int iTemp = -1;
 		if(qb == null) {
 			qb = new QueryBuilder("JobTest");
@@ -151,15 +154,33 @@ public class DataQueryServlet extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 							   "Cannot access service to get Data Set List");
 		}
+		
+		if(!validParameter(qb.getUserName())) {
+			userName = request.getParameter("username");
+			if(!validParameter(userName)) {
+				userName = (String)session.getAttribute("username");			
+				if(!validParameter(userName)) {
+					userName = "demouser";
+				}
+			}
+			qb.setUserName(userName);
+		}		
 
-/*
-//Comment out now it was used to print out the request variables that came through.
-		Enumeration en = request.getParameterNames();
-		while(en.hasMoreElements()) {
-			System.out.println(en.nextElement().toString());
+		if(!validParameter(qb.getCommunity())) {
+			community = request.getParameter("community");
+			if(!validParameter(community)) {
+				community = (String)session.getAttribute("community");			
+				if(!validParameter(community)) {
+					community = "democomm";
+				}//if
+				session.setAttribute("community",community);							
+			}//if
+			qb.setCommunity(community);
 		}
-*/
-
+		System.out.println("the username = " + qb.getUserName());
+		System.out.println("the community = " + qb.getCommunity());
+		
+		
 		//Start checking which button was pressed.  
 		//With AddSelection being the first to be checked.
 		if(validParameter(request.getParameter("AddSelection"))) {
@@ -172,10 +193,17 @@ public class DataQueryServlet extends HttpServlet {
 				DataSetInformation dsInfo = null;
 				//heck if this DataSet is already in the QueryBuilder.  If not then add a new DataSet to QueryBuilder.
 				if( (dsInfo = qb.getDataSetInformation(request.getParameter("DataSetName"))) == null) {
-					dsInfo = qb.addDataSetInformation(request.getParameter("DataSetName"));
+					if(qb.getDataSetInformation().size() > 0) {
+						errorMessage = "Currently you cannot Add more than one DataSet to the query.";
+					}else {
+						dsInfo = qb.addDataSetInformation(request.getParameter("DataSetName"));
+					}					
 				}
 				//Add the ReturnColumn.
-				dsInfo.addDataSetColumn(reqTemp[1],reqTemp[0]);
+				if(errorMessage == null || errorMessage.length() <= 0) {
+					dsInfo.addDataSetColumn(reqTemp[1],reqTemp[0]);
+				}
+				
 			}else {
 				errorMessage = "Tried to Add a selection with no datasetname " +					"and/or return column specefied this is not allowed";
 			}
@@ -269,20 +297,46 @@ public class DataQueryServlet extends HttpServlet {
 			session.setAttribute("QueryString",null);
 		}else if(validParameter(request.getParameter("SubmitQuery"))){
 			//submited a query so send it to the JobController.
-				String tempStr = send(qb);
+				String tempStr = "";
 				String jobIDStr = null;
+				ArrayList alErrorQueries = (ArrayList)getServletContext().getAttribute("ErrorQueryBuilders");
+				if(alErrorQueries != null) {				
+					try {
+						while(alErrorQueries.size() > 0) {
+						  send((QueryBuilder)alErrorQueries.get(0));
+						  alErrorQueries.remove(0);
+						}					
+					}catch(Exception wsException) {
+						wsException.printStackTrace();
+						getServletContext().setAttribute("ErrorQueryBuilders",alErrorQueries);
+					}
+				}
+				try {
+					tempStr = send(qb);
+					if(tempStr.indexOf("<jobid>") != -1) {
+						jobIDStr = tempStr.substring((tempStr.indexOf("<jobid>") + 7),tempStr.indexOf("</jobid>"));
+					}					
+					session.setAttribute("jobid",jobIDStr);
+					System.out.println("the jobid is = " + jobIDStr);
+					//now that it is sent blank out the QueryString and put it as part of their Sent Queries.
+					if(queryString == null){queryString = "";}
+					
+					queryString = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + queryString;
+					session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
+					session.setAttribute("QueryString",null);									
+				}catch(Exception wsException) {
+					wsException.printStackTrace();
+					if(alErrorQueries == null) {
+						alErrorQueries = new ArrayList();
+					}
+					alErrorQueries.add(qb);
+					getServletContext().setAttribute("ErrorQueryBuilders",alErrorQueries);
+					errorMessage = "An error happened trying to submit your query to our service" +
+					               "The cause is the service is down.  Your query has been saved and " +
+					               "will be sent when the service comes back up.";
+				}
 				//set a Session of the request in xml format sent.
 				session.setAttribute("LastWebServiceXML",tempStr);
-				if(tempStr.indexOf("<jobid>") != -1) {
-					jobIDStr = tempStr.substring((tempStr.indexOf("<jobid>") + 8),tempStr.indexOf("</jobid>"));
-				} 				
-				session.setAttribute("jobid",jobIDStr);
-				System.out.println("the jobid is = " + jobIDStr);
-				//now that it is sent blank out the QueryString and put it as part of their Sent Queries.
-				if(queryString == null){queryString = "";}
-				queryString = qb.formulateQuery() + "- JobID= " + jobIDStr + "<br />" + queryString;
-				session.setAttribute("QueryStringSent","\nSent Query:" + queryString);
-				session.setAttribute("QueryString",null);
 				qb.clear();
 				qb = null;
 		}else {
@@ -333,11 +387,10 @@ public class DataQueryServlet extends HttpServlet {
 	 * @param qb
 	 * @return
 	 */
-	private String send(QueryBuilder qb) {
+	private String send(QueryBuilder qb) throws Exception {
         JobController binding;
         String xmlBuildResult = null;
         String response = null;
-        try {
         	//CreateRequest is an object that creates the necessary xml document object to send to the job controller.
 			CreateRequest cr = new CreateRequest();
 			Document doc = cr.buildXMLRequest(qb);
@@ -350,9 +403,6 @@ public class DataQueryServlet extends HttpServlet {
 			//submit the request and get a response back.
         	response = binding.submitJob(xmlBuildResult);
 			System.out.println("the response from the call to the webservice = " + response);
-        }catch (Exception e) {
-        	e.printStackTrace();
-        }
         if(xmlBuildResult != null && xmlBuildResult.length() > 0) xmlBuildResult = xmlBuildResult.replaceAll(">",">\n");
         return "XML String sent to webservice = " + xmlBuildResult + "Response = " + response;
 	}

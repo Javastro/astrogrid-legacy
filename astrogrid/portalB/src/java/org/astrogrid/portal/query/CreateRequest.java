@@ -35,6 +35,7 @@ public class CreateRequest {
 	private final String FIELD_ELEMENT = "field";
 	private final String OPERATION_ELEMENT = "operation";
 	private final String CRITERIA_ELEMENT = "criteria";
+	private final String JOBCONTROLLER_URL = "http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService"; 
 
 	public CreateRequest() {
 
@@ -65,12 +66,14 @@ public class CreateRequest {
 		doc.getDocumentElement().setAttribute(NAME_ATTR,qb.getName());
 
 		userElem = doc.createElement(USERID_ELEMENT);
-		userElem.appendChild(doc.createTextNode("jlusted"));
+		userElem.appendChild(doc.createTextNode(qb.getUserName()));
 		doc.getDocumentElement().appendChild(userElem);
 
 		commElem = doc.createElement(COMM_ELEMENT);
-		commElem.appendChild(doc.createTextNode("leicester"));
+		commElem.appendChild(doc.createTextNode(qb.getCommunity()));
 		doc.getDocumentElement().appendChild(commElem);
+//		System.out.println("the username = " + qb.getUserName());
+//		System.out.println("the community = " + qb.getCommunity());
 
 		for(int i=0;i < qb.getDataSetInformation().size();i++) {
 			DataSetInformation dsInfo = (DataSetInformation)qb.getDataSetInformation().get(i);
@@ -84,7 +87,7 @@ public class CreateRequest {
 					catalogElem.setAttribute(NAME_ATTR,dsInfo.getName());
 					catalogElem.appendChild( (serviceElem = doc.createElement(SERVICE_ELEMENT)) );
 						serviceElem.setAttribute(NAME_ATTR,dsInfo.getName());
-						serviceElem.setAttribute(URL_ATTR,"http://hydra.star.le.ac.uk:8080/axis/services/JobControllerService");
+						serviceElem.setAttribute(URL_ATTR,JOBCONTROLLER_URL);
 			queryElem.appendChild ( (returnElem = doc.createElement(RETURN_ELEMENT)) );
 				for(int j=0;j < dsInfo.getDataSetColumns().size();j++) {
 					DataSetColumn dsColumn = (DataSetColumn)dsInfo.getDataSetColumns().get(j);
@@ -193,16 +196,6 @@ public class CreateRequest {
 		ds.addDataSetColumn("ID","COLUMN");
 		ds.addCriteriaInformation("ID","COLUMN","EQUALS","5",null,null);
 
-/*		ds.addCriteriaInformation("CRITCOL","COLUMN","EQUALS","1","AND");
-		ds.addCriteriaInformation("CRITCOL","COLUMN","EQUALS","2","AND");
-		ds.addCriteriaInformation("CRITCOL","COLUMN","EQUALS","3","AND");
-		ds.addCriteriaInformation("CRITCOL","COLUMN","EQUALS","4","AND");
-		ds.addCriteriaInformation("CRITCOL","COLUMN","EQUALS","5","AND");
-		CriteriaInformation ci1 = (CriteriaInformation)ds.getCriteriaInformation().get(1);
-		CriteriaInformation ci2 = (CriteriaInformation)ds.getCriteriaInformation().get(2);
-		ci1.setLinkedCriteria(ci2);
-		ds.getCriteriaInformation().remove(2);
-*/
 		CreateRequest ci = new CreateRequest();
 		Document doc = ci.buildXMLRequest(qb);
 		String res = ci.writeDocument(doc);
