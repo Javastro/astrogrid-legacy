@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+	<!-- Many of the project.xml (aka POM) values are common to all our projects
+  	   and can be set in a parent POM (cf).  However, if you want to change any
+  	   of the parent's values, the values set in your component's POM override them -->
+	<extend>../maven-base/project.xml</extend>
+	<!-- a unique name for this project -->
+	<id>astrogrid-simple</id>
+	<!-- a short but descriptive name for the project -->
+	<name>Simple Example Maven Project</name>
+	<package>org.astrogrid.simple</package>
+	<description> A collection of example projects showing how to use maven in 
+		different situations </description>
+	<!-- a short description of what the project does -->
+	<shortDescription> How to set up Maven. </shortDescription>
+	<!-- Override values in the parent POM-->
+	<!-- Location on Uluru to deploy the site -->
+	<siteDirectory>/var/www/www/maven/build/SimpleMavenProject</siteDirectory>
+	<!-- Connections to CVS -->
+	<repository>
+		<connection> 
+			scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:mavenTemplates/SimpleMavenProject 
+			</connection>
+		<developerConnection> 
+			scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:mavenTemplates/SimpleMavenProject 
+			</developerConnection>
+		<url> 
+			http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject 
+			</url>
+	</repository>
+	<!-- end of overrides -->
+	<!-- build information for the project -->
+	<build>
+		<nagEmailAddress>jdt@roe.ac.uk</nagEmailAddress>
+		<sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+			</includes>
+			<excludes>
+				<exclude>**/NaughtyTest.java</exclude>
+			</excludes>
+		</unitTest>
+		<resources>
+			<resource>
+				<directory>src/conf</directory>
+				<includes>
+					<include>*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+	<!-- jar files the project is dependent on -->
+	<dependencies>
+		<dependency>
+			<artifactId>junit</artifactId>
+			<groupId>junit</groupId>
+			<version>3.8</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+	</dependencies>
+</project>
+
