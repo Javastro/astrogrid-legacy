@@ -26,7 +26,7 @@ public interface RegistryAdminInterface {
     * @author Kevin Benson
     * 
     */   
-   public Document add(Document update) throws org.exolab.castor.xml.ValidationException;
+   public Document add(Document update);
 
 
    /**
@@ -43,7 +43,7 @@ public interface RegistryAdminInterface {
     * @author Kevin Benson
     * 
     */   
-   public Document update(Document add) throws org.exolab.castor.xml.ValidationException;
+   public Document update(Document add);
    
    
    /**

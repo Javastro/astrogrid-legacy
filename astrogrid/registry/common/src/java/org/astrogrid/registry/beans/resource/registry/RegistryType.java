@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: RegistryType.java,v 1.5 2004/03/11 14:08:05 KevinBenson Exp $
+ * $Id: RegistryType.java,v 1.6 2004/03/19 08:16:48 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.beans.resource.registry;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class RegistryType.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/11 14:08:05 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/19 08:16:48 $
  */
 public class RegistryType extends org.astrogrid.registry.beans.resource.ServiceType 
 implements java.io.Serializable

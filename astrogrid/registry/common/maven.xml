@@ -83,6 +83,18 @@
         <ant:echo message="Building snapshot artifact ...."/>
         <attainGoal name="jar:install-snapshot"/>
     </goal>
+    
+    <preGoal name="jar:jar">
+      <!--+
+            | Copy our XSL Files.
+            +-->
+        <ant:copy verbose="false" todir="${maven.build.dest}">
+            <ant:fileset dir="src/xsl">
+                <include name="CastorXSLProcess.xsl"/>
+                <include name="XSLDBProcess.xsl"/>
+            </ant:fileset>
+        </ant:copy>    
+    </preGoal>
 
     <!--+
         | Deploy our snapshot jar.
@@ -260,6 +272,53 @@
             <arg value="arraylist"/>
         </java>
 
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/AGApplicationBase.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/AGParameterDefinition.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
+
+    	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+        	<classpath>
+            	<pathelement location="${basedir}/build" />
+                <path refid="maven.dependency.classpath" />
+            </classpath>
+            <arg value="-i"/>
+            <arg file="${basedir}/../schema/VOCEA.xsd" />
+            <arg value="-binding-file" />
+            <arg file="${basedir}/build/castor-binding.xml" />
+            <arg value="-dest" />
+            <arg file="${generated.src}" />
+            <arg value="-verbose" />
+            <arg value="-types"/>
+            <arg value="arraylist"/>
+        </java>
   </goal>
     
     

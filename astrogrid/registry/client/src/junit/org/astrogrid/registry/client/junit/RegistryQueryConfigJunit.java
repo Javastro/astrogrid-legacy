@@ -26,6 +26,7 @@ import org.astrogrid.registry.client.query.RegistryService;
 import java.util.*;
 import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
+import org.astrogrid.registry.beans.resource.dataservice.*;
 import org.astrogrid.registry.beans.resource.types.*;
 import org.astrogrid.registry.beans.resource.registry.*;
 
@@ -140,15 +141,14 @@ public class RegistryQueryConfigJunit extends TestCase{
    }   
 
    public void testRegistryCastorToXML() throws Exception {
-      /*
+      
       assertNotNull(rs);
       if(rs.conf == null) return;
       System.out.println("entered testRegistryCastorToXML");
       if(rs.conf.getString("vm05.astrogrid.org/RegistryTest",null) == null) return;
-      RegistryType rt;
+      DataCollectionType rt;
       VODescription vodesc = new VODescription();
-      vodesc.addResource(rt = new RegistryType());
-      rt.addManagedAuthority("testauthority");
+      vodesc.addResource(rt = new DataCollectionType());
       rt.addSubject("test subject");
       IdentifierType it = new IdentifierType();
       it.setAuthorityID("TestAuthorityIDFromCastor");
@@ -167,13 +167,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       cct.setName("Castor");
       ct.setContact(cct);
       rt.setCuration(ct);
-      InterfaceType ift = new InterfaceType();
-      ift.setInvocation(InvocationType.WEBSERVICE);
-      AccessURLType act = new AccessURLType();
-      act.setUse(AccessURLTypeUseType.FULL);
-      act.setContent("http://accesurltocastor.org");
-      ift.setAccessURL(act);
-      rt.setInterface(ift);
+      
       
       //FileWriter fw = new FileWriter("c:\\marshalwrite.xml");
       DocumentBuilder registryBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -185,7 +179,7 @@ public class RegistryQueryConfigJunit extends TestCase{
       System.out.println("try unmarshalling back");
       vdTest = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorDoc);
       System.out.println("okay vdtest was written");
-      */
+      
    }
 
    public void testTabularSkyService() throws Exception {

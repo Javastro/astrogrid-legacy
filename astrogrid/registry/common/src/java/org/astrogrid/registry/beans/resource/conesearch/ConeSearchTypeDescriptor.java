@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ConeSearchTypeDescriptor.java,v 1.5 2004/03/11 14:08:05 KevinBenson Exp $
+ * $Id: ConeSearchTypeDescriptor.java,v 1.6 2004/03/19 08:16:48 KevinBenson Exp $
  */
 
 package org.astrogrid.registry.beans.resource.conesearch;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class ConeSearchTypeDescriptor.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/11 14:08:05 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/19 08:16:48 $
  */
 public class ConeSearchTypeDescriptor extends org.astrogrid.registry.beans.resource.CapabilityTypeDescriptor {
 

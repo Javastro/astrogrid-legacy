@@ -73,11 +73,16 @@ public class RegistryHarvestJunit extends TestCase{
    
    public void testHarvestResource() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testHarvestResource");
+      try {
+      
       Document doc = rhs.conf.getDom("registry.junit.test/HarvestVizier");  
       Document responseDoc = rhs.harvestResource(doc);
       //TODO put assert statements here.
       if(responseDoc != null)      
          if (DEBUG_FLAG) System.out.println("harvestResource returned = " + XMLUtils.DocumentToString(responseDoc));
+      }catch(Exception e) {
+         e.printStackTrace();
+      }
    }      
    
    

@@ -29,6 +29,7 @@ import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
 import org.astrogrid.registry.beans.resource.types.InvocationType;
 import org.astrogrid.registry.RegistryException;
+import org.astrogrid.registry.common.XSLHelper;
 
 import javax.xml.namespace.QName;
 import javax.xml.rpc.ServiceException;
@@ -245,8 +246,10 @@ public class RegistryService  {
    public VODescription submitQuery(Document query) throws RegistryException {      
       VODescription vo = null;
       Document resultDoc = submitQueryDOM(query);
-      try {            
-         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
+      try {
+         XSLHelper xs = new XSLHelper();
+         Document castorXS = xs.transformCastorProcess(resultDoc);                     
+         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch(ValidationException ve) {
          vo = null;
          ve.printStackTrace();
@@ -292,8 +295,10 @@ public class RegistryService  {
    public VODescription loadRegistry()  throws RegistryException {
       VODescription vo = null;
       Document resultDoc = loadRegistryDOM();     
-      try {            
-         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,resultDoc);
+      try {
+         XSLHelper xs = new XSLHelper();
+         Document castorXS = xs.transformCastorProcess(resultDoc);                     
+         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch (Exception e) {
          vo = null;
          e.printStackTrace();
@@ -346,7 +351,9 @@ public class RegistryService  {
       VODescription vo = null;
       try {
          Document doc = getResourceByIdentifierDOM(ident);
-         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,doc);
+         XSLHelper xs = new XSLHelper();
+         Document castorXS = xs.transformCastorProcess(doc);         
+         vo = (VODescription)Unmarshaller.unmarshal(org.astrogrid.registry.beans.resource.VODescription.class,castorXS);
       }catch(MarshalException me) {
        throw new RegistryException(me);   
       }catch(ValidationException ve) {
@@ -398,7 +405,7 @@ public class RegistryService  {
       ServiceType st = null; 
       if(rt instanceof ServiceType) {
          st = (ServiceType)rt;
-         String accessURL = st.getInterface().getAccessURL().getContent();         
+         String accessURL = st.getInterface().getAccessURL().getContent();  
          if(InvocationType.WEBSERVICE_TYPE == st.getInterface().getInvocation().getType()) {
             try {
                WSDLFactory wf = WSDLFactory.newInstance();

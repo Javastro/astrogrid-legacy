@@ -42,6 +42,7 @@ import org.astrogrid.registry.RegistryException;
 
 import org.astrogrid.registry.common.WSDLInformation;
 import org.astrogrid.registry.common.WSDLBasicInformation;
+import org.astrogrid.registry.common.XSLHelper;
 
 /**
  * 
@@ -169,7 +170,12 @@ public class RegistryHarvestService implements
       ArrayList al = new ArrayList();
       try {
          System.out.println("what was passed in at harvestResoruce = " + DomHelper.DocumentToString(resources));
-         VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,resources);
+         XSLHelper xs = new XSLHelper();
+         Document resourceChange = xs.transformDatabaseProcess(resources);
+         System.out.println("the resourceChange = " + DomHelper.DocumentToString(resourceChange));
+         Document castorXS = xs.transformCastorProcess(resourceChange);
+         System.out.println("castorxs = " + DomHelper.DocumentToString(castorXS));
+         VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
          HashMap auths = RegistryFileHelper.getManagedAuthorities();
          int count = vodesc.getResourceCount();
 
@@ -254,8 +260,13 @@ public class RegistryHarvestService implements
      */  
    public Document harvestFromResource(Document resource) throws RegistryException {
       try {
+         XSLHelper xs = new XSLHelper();
+         Document resourceChange = xs.transformDatabaseProcess(resource);
+         Document castorXS = xs.transformCastorProcess(resourceChange);
+         
           //Now get the dateFrom element value as well.
-          NodeList nl = resource.getElementsByTagName("VODescription");
+          //NodeList nl = resource.getElementsByTagName("VODescription");
+          NodeList nl = castorXS.getElementsByTagName("VODescription");
           if(nl.getLength() > 0) {
              VODescription vodesc = (VODescription)Unmarshaller.unmarshal(VODescription.class,nl.item(0));
              HashMap auths = RegistryFileHelper.getManagedAuthorities();

@@ -548,6 +548,9 @@ public class RegistryFileHelper {
       //Now find the first AuthorityID.
       NodeList resourceList = resources.getElementsByTagNameNS("http://www.ivoa.net/xml/VOResource/v0.9","Resource");
       System.out.println("the resourcelist size = " + resourceList.getLength());
+      if(resourceList.getLength() == 0) {
+         resourceList = resources.getElementsByTagNameNS("vr","Resource");
+      }
       Node fileFoundNode = null;
       String subAuthorityVal = null;
       String subResourceVal = null;
@@ -562,6 +565,14 @@ public class RegistryFileHelper {
       if(fileHash == null) {
          errorMessage = "Could not load the Registry.";
       }//if
+      
+      try {
+         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         regBuilder = dbf.newDocumentBuilder(); 
+      }catch(Exception e) {
+         e.printStackTrace();
+      }
+      
       
       for(int i = 0;i < resourceList.getLength();i++) {
          Node subRoot = resourceList.item(i);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- $Id: castor-binding.xml,v 1.2 2004/03/03 16:22:09 KevinBenson Exp $
+<!-- $Id: castor-binding.xml,v 1.3 2004/03/19 08:16:48 KevinBenson Exp $
 castor binding file : configures the process of generating java classes from xml schema
 
 
@@ -34,5 +34,17 @@ at present, just defined package - namespace mappings
   <package>
   	<name>org.astrogrid.registry.beans.resource.votable</name>
   	<namespace>http://www.ivoa.net/xml/VOTable/v1.0</namespace>
+  </package>  
+  <package>
+  	<name>org.astrogrid.registry.beans.resource.cea</name>
+  	<namespace>http://www.ivoa.net/xml/CEAService/v0.1</namespace>
+  </package>
+  <package>
+  	<name>org.astrogrid.registry.beans.cea.base</name>
+  	<namespace>http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1</namespace>
+  </package>
+  <package>
+  	<name>org.astrogrid.registry.beans.cea.param</name>
+  	<namespace>http://www.astrogrid.org/schema/AGParameterDefinition/v1</namespace>
   </package>  
 </binding>

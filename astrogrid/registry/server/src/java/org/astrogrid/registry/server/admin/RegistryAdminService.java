@@ -13,6 +13,7 @@ import org.exolab.castor.xml.*;
 import org.astrogrid.registry.beans.resource.*;
 
 import org.astrogrid.config.Config;
+import org.astrogrid.registry.common.XSLHelper;
 
 
 
@@ -51,9 +52,8 @@ public class RegistryAdminService implements
     * @author Kevin Benson
     * 
     */   
-  public Document update(Document update) throws ValidationException {
+  public Document update(Document update) {
     Document doc = null;
-    Document newDoc = null;
     /*
     try {
        VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,query);
@@ -73,7 +73,10 @@ public class RegistryAdminService implements
     //call updateDocument method to go through the document objects
     //and look for the primary key (resourcekey,AuthorityID) and do an update
     //doc = RegistryFileHelper.updateDocument(newDoc.getDocumentElement(),false, true);
-    doc = RegistryFileHelper.updateDocument(update.getDocumentElement(),true, true);
+    XSLHelper xs = new XSLHelper();
+    Document xsDoc = xs.transformDatabaseProcess(update);
+    //System.out.println("This is xsDoc = " + XMLUtils.DocumentToString(xsDoc));
+    doc = RegistryFileHelper.updateResources(xsDoc,true, true);
     return doc;
   }
 
@@ -91,7 +94,7 @@ public class RegistryAdminService implements
    * @author Kevin Benson
    * 
    */   
-   public Document add(Document add) throws ValidationException {
+   public Document add(Document add) {
       Document doc = null;
       Document newDoc = null;
       /*

@@ -145,7 +145,7 @@
             <ant:fileset dir="${maven.src.dir}/wsdd">
                 <include name="**/*.wsdd"/>
             </ant:fileset>
-        </ant:copy>
+        </ant:copy>        
     </preGoal>
     
 

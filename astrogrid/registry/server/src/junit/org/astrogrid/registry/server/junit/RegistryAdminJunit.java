@@ -92,6 +92,7 @@ public class RegistryAdminJunit extends TestCase{
    
    public void testUpdateVizerEntry() throws Exception {
       if (DEBUG_FLAG) System.out.println("Begin testUpdateService");
+      System.out.println("the xml document of harvestvizier = " + XMLUtils.DocumentToString(ras.conf.getDom("registry.junit.test/HarvestVizier")));
       Document doc = ras.update(ras.conf.getDom("registry.junit.test/HarvestVizier"));
       //TODO put assert statements here.      
       if(doc != null)      
@@ -124,5 +125,4 @@ public class RegistryAdminJunit extends TestCase{
    }
   */ 
        
-} 
-
+}

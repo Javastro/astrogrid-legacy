@@ -31,6 +31,7 @@ import java.io.IOException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.config.Config;
 
+import org.astrogrid.registry.common.XSLHelper;
 
 /**
  * Class Name: RegistryAdminService
@@ -135,6 +136,25 @@ public class RegistryAdminService {
          return resultDoc;   
       }
    }
+   
+   public boolean validateDocument(Document validDocument) {
+      boolean valid = false;
+      try {
+         XSLHelper xs = new XSLHelper();
+         Document resultDoc = xs.transformDatabaseProcess(validDocument);
+         Document castorXS = xs.transformCastorProcess(resultDoc);            
+         VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,castorXS);
+         valid = true;
+      }catch(MarshalException me) {
+         valid = false;   
+      }catch(ValidationException ve) {
+         valid = false;   
+      }finally {
+         return valid;   
+      }
+      
+      
+   }
 
    /**
     * Takes an XML Document to send to the update server side web service call.  Establishes
@@ -151,12 +171,8 @@ public class RegistryAdminService {
       Document doc = null;
       Document resultDoc = null;
       if(!validated) {
-         try {
-            VODescription vo = (VODescription)Unmarshaller.unmarshal(VODescription.class,update);
-         }catch(MarshalException me) {
-            throw new RegistryException(me);   
-         }catch(ValidationException ve) {
-            throw new RegistryException(ve);   
+         if(!validateDocument(update)) {
+            throw new RegistryException("This document is not valid");   
          }
       }
       try {

@@ -27,6 +27,7 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import java.util.*;
 import org.astrogrid.registry.common.WSDLBasicInformation;
+import org.astrogrid.registry.RegistryException;
 
 
 public class RegistryQueryJunit extends TestCase{ 
@@ -92,19 +93,27 @@ public class RegistryQueryJunit extends TestCase{
       if(DEBUG_FLAG) System.out.println("entered testMyspaceGetResourceEndPoint");      
       if(rs.conf == null) return;
       if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;
-      String endPoint = rs.getEndPointByIdentifier("vm05.astrogrid.org/MyspaceManager");
-      assertNotNull(endPoint);
-      if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);
+      try {
+         String endPoint = rs.getEndPointByIdentifier("vm05.astrogrid.org/MyspaceManager");
+         assertNotNull(endPoint);
+         if(DEBUG_FLAG) System.out.println("endPoint = " + endPoint);         
+      }catch(RegistryException re) {
+         re.printStackTrace();
+      }
    }
    
    public void testMyspaceGetResourceWSDLBasic() throws Exception {
       assertNotNull(rs);
       if(DEBUG_FLAG) System.out.println("entered testMyspaceGetResourceEndPoint");      
       if(rs.conf == null) return;
-      if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;      
-      WSDLBasicInformation ws  = rs.getBasicWSDLInformation("vm05.astrogrid.org/MyspaceManager");
-      System.out.println("WSDLInfo = " + ws.toString());
-      assertNotNull(ws);
+      if(rs.conf.getString("vm05.astrogrid.org/MyspaceManager",null) == null) return;
+      try {
+         WSDLBasicInformation ws  = rs.getBasicWSDLInformation("vm05.astrogrid.org/MyspaceManager");
+         System.out.println("WSDLInfo = " + ws.toString());
+         assertNotNull(ws);      
+      }catch(RegistryException re) {
+         re.printStackTrace();
+      }
    }   
    
    
