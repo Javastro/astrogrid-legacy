@@ -10,7 +10,7 @@
 <body>
 <h2>AVO Demo - Photometric redshift determination
 </h2>
-<form action="runjob.jsp" enctype="application/x-www-form-urlencoded" method="post" name="jobsubmit">
+<form action="runjob.jsp" enctype="application/x-www-form-urlencoded" method="get" name="jobsubmit">
 
 <table width="90%" border="0" cellspacing="5" cellpadding="2">
   <tr>
@@ -63,7 +63,8 @@
     </td>
   </tr>
 <tr><td>
-<input name="Submit" type="submit" value="submit job" />
+<input name="Submit" type="submit" value="submit and run job" />
+<input name="workflow" type="submit" value="create workflow" />
 </td></tr>
 </table>
 </form>

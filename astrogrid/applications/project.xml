@@ -109,6 +109,14 @@ This functionality is provided with the ApplicationController service, of which 
 	          <war.bundle>true</war.bundle>
 	</properties>
     </dependency>
+    <dependency>
+    <groupId>astrogrid-workflow</groupId>
+<artifactId>astrogrid-workflow</artifactId>
+    <version>SNAPSHOT</version>
+	<properties>
+	          <war.bundle>true</war.bundle>
+	</properties>
+    </dependency>
 
 
     <dependency>
