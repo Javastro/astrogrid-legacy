@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../style/css/astrogrid.css"/>
+    <title>AstroGrid Sample Portal</title>
+  </head>
+  
+  <body>
+    <!--
+      Content.
+      -->
+    <table class="main" height="100%" width="100%">
+
+      <tr>
+        <!--
+          Header.
+          -->
+        <td><a name="home">
+          <img src="../../images/gridworld.jpg" alt="AstroGrid"/></a></td>
+        <td class="main-content-header" colspan="99"><h1 class="main-content-header">AstroGrid Welcome Page</h1>
+          <table class="main-content-header" width="100%">
+            <tr>
+              <td class="main-content-header"><h2 class="main-content-header">Welcome to AstroGrid!!!</h2></td>
+
+            </tr>
+          </table></td>
+      </tr>
+
+     <tr>
+        <!--
+          Menu.
+          -->
+        <td class="main-menu" rowspan="99" valign="top"><p class="main-menu-header">
+          <a name="main-menu">AstroGrid&nbsp;Menu</a>
+
+        </p>
+        <p class="main-menu-body">
+          Home<br/>
+        </p>
+        <p class="main-menu-body">
+          Browse Registry<br/>
+          Registry Admin<br/>
+
+        </p>
+        <p class="main-menu-body">
+          Data Query Builder<br/>
+          Browse MySpace<br/>
+          Job Manager<br/>
+        </p>
+            
+        <p class="main-menu-body">
+
+          Tools<br/>
+          Admin<br/>
+        </p>
+        <p class="main-menu-body">
+          Logout<br/>
+        </p></td>
+
+        <!--
+          Main content.
+          -->
+
+        <td class="main-content"><table class="main-content" width="100%" height="100%">
+          <tr>
+            <td><table cellpadding="0" cellspacing="0"
+                    style="background-color: LightGray;">
+<!--
+                    style="background-color: LightGray; border-top-style: solid; border-right-style: solid;">
+-->
+              <tr>
+                <!--
+                  Left tabs.
+                  -->
+                <td style="border-top-style: solid; border-right-style: double;">Login&nbsp;</td>
+                <td style="border-top-style: solid; border-right-style: solid;">Help&nbsp;</td>
+
+                <!--
+                  Spacing.
+                  -->
+                <td style="border-right-style: none; background-color: white;" width="100%">&nbsp;</td>
+                
+                <!--
+                  Right tabs.
+                  -->
+                <td style="border-left-style: solid; border-top-style: solid;"><a href="#home">Home&nbsp;</a></td>
+                <td style="border-left-style: double; border-top-style: solid;"><a href="#main-menu">Menu&nbsp;</a></td>
+              </tr>
+            </table></td>
+          </tr>
+<!-- Main display body -->          
+          <tr class="main-content" valign="top">
+            <td style="border-top-style: ridge; border-bottom-style: ridge;">
+              <table cellpadding="0" cellspacing="0"
+                     style="background-color: LightGray;">
+                <tr>
+                  <td colspan="5" style="border-top-style: solid; border-right-style: solid;" align="center">
+                    Design Jobs
+                  </td>
+                  <!--
+                    Spacing.
+                    -->
+                  <td style="border-right-style: none;" width="100%">&nbsp;</td>
+                  <td style="border-top-style: solid; border-right-style: solid;" nowrap>
+                    Monitor Jobs
+                  </td>                  
+                </tr>
+                <p>
+                <tr>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="?action=new">&nbsp;New&nbsp;</a>
+                  </td>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="?action=submit">&nbsp;Submit&nbsp;</a>
+                  </td>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="?action=edit">&nbsp;Edit&nbsp;</a>
+                  </td>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="?action=delete">&nbsp;Delete&nbsp;</a>
+                  </td>                  
+                  <td align="center">
+                    <a href="?action=templates">&nbsp;Templates&nbsp;</a>
+                  </td>
+                  <!--
+                    Spacing.
+                    -->
+                  <td style="border-right-style: none;" width="100%">&nbsp;</td>
+                  <td align="center">
+                    <a href="?action=monitor">&nbsp;Monitor&nbsp;</a>               
+                  </td>
+                </tr>
+                </p>
+              </table>
+              <table cellpadding="0" cellspacing="0">
+              <!--
+                List of workflows
+                -->
+                <p/>
+                <tr>
+                  <td>
+                    Workflows currently stored in your mySpace: 
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ul>
+                      <li>workflow name etc</li>
+                      <li>workflow name etc</li>
+                      <li>workflow name etc</li>
+                      <li>workflow name etc</li>                        
+                    </ul>
+                  </td>
+                </tr>
+              <!-- 
+                List of queries
+                -->
+                <tr>
+                  <td>
+                    Queries currently stored in your mySpace: 
+                  </td>
+                </tr>
+                  <tr>
+                    <td>
+                      <ul>
+                        <li>query name etc</li>
+                        <li>query name etc</li>
+                        <li>query name etc</li>
+                        <li>query name etc</li>                        
+                      </ul>
+                    </td>
+                  </tr>                                
+              <!--
+                New
+                -->                 
+                <tr>
+                  <td>
+                    Job Name:          
+                  </td>
+                  <td>
+                    <input type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Job Description:          
+                  </td>
+                  <td>
+                    <input type="text">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="button" value="Create">
+                  </td>
+                </tr>                                                              
+                <!--
+                  Submit
+                  -->
+                <tr>
+                  <td>
+                    Submit
+                  </td>
+                </tr>
+                
+              <!--
+                List of workflows
+                -->
+                <p/>
+                <tr>
+                  <td>
+                    Workflows currently stored in your mySpace: 
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ul>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>                        
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="button" value="Submit"/>
+                  </td>
+                </tr>                
+                 
+                <!--
+                  Edit
+                  -->
+                <tr>
+                  <td>
+                    Edit
+                  </td>
+                </tr>
+                
+              <!--
+                List of workflows
+                -->
+                <p/>
+                <tr>
+                  <td>
+                    Workflows currently stored in your mySpace: 
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ul>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>                        
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="button" value="Edit"/>
+                  </td>
+                </tr>                
+                  
+                <!--
+                  Delete
+                  -->
+                <tr>
+                  <td>
+                    Delete
+                  </td>
+                </tr>
+                
+              <!--
+                List of workflows
+                -->
+                <p/>
+                <tr>
+                  <td>
+                    Workflows currently stored in your mySpace: 
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <ul>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>
+                      <li>workflow name etc &nbsp;<input type="checkbox"></li>                        
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="button" value="Delete"/>
+                  </td>
+                </tr>                
+                
+                <!--
+                  Monitor                          
+                  -->
+                <tr>
+                  <td>
+                    Monitor
+                  </td>
+                </tr>
+              </table>                
+            </td>
+          </tr>         
+<!-- Main display body end -->
+          <tr>
+            <td align="right"><table cellpadding="0" cellspacing="0"
+                    style="background-color: LightGray;">
+<!--
+                    style="background-color: LightGray; border-bottom-style: solid; border-left-style: solid;">
+-->
+              <tr>
+                <!--
+                  Left tabs.
+                  -->
+
+                <td style="border-right-style: double; border-bottom-style: solid;"><a href="#main-menu">Menu&nbsp;</a></td>
+                <td style="border-right-style: solid; border-bottom-style: solid;"><a href="#home">Home&nbsp;</a></td>
+                
+                <!--
+                  Spacing.
+                  -->
+                <td style="border-left-style: none; background-color: white;" width="100%">&nbsp;</td>
+
+                <!--
+                  Right tabs.
+                  -->
+                <td style="border-bottom-style: solid; border-left-style: solid;">Login&nbsp;</td>
+                <td style="border-bottom-style: solid; border-left-style: double;">Help&nbsp;</td>
+
+              </tr>
+            </table></td>
+          </tr>
+        </table></td>
+
+        <!--
+          Panels.
+          -->
+        <td class="main-content-panels" rowspan="99" valign="top">
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+        <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p></td>
+      </tr>
+    </table>
+  </body>
+
+</html>

@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="../../style/css/astrogrid.css"/>
+    <title>AstroGrid Sample Portal</title>
+  </head>
+  
+  <body>
+    <!--
+      Content.
+      -->
+    <table class="main" height="100%" width="100%">
+
+      <tr>
+        <!--
+          Header.
+          -->
+        <td><a name="home">
+          <img src="../../images/gridworld.jpg" alt="AstroGrid"/></a></td>
+        <td class="main-content-header" colspan="99"><h1 class="main-content-header">AstroGrid Welcome Page</h1>
+          <table class="main-content-header" width="100%">
+            <tr>
+              <td class="main-content-header"><h2 class="main-content-header">Welcome to AstroGrid!!!</h2></td>
+
+            </tr>
+          </table></td>
+      </tr>
+
+     <tr>
+        <!--
+          Menu.
+          -->
+        <td class="main-menu" rowspan="99" valign="top"><p class="main-menu-header">
+          <a name="main-menu">AstroGrid&nbsp;Menu</a>
+
+        </p>
+        <p class="main-menu-body">
+          Home<br/>
+        </p>
+        <p class="main-menu-body">
+          Browse Registry<br/>
+          Registry Admin<br/>
+
+        </p>
+        <p class="main-menu-body">
+          Data Query Builder<br/>
+          Browse MySpace<br/>
+          Job Manager<br/>
+        </p>
+            
+        <p class="main-menu-body">
+
+          Tools<br/>
+          Admin<br/>
+        </p>
+        <p class="main-menu-body">
+          Logout<br/>
+        </p></td>
+
+        <!--
+          Main content.
+          -->
+
+        <td class="main-content"><table class="main-content" width="100%" height="100%">
+          <tr>
+            <td><table cellpadding="0" cellspacing="0"
+                    style="background-color: LightGray;">
+<!--
+                    style="background-color: LightGray; border-top-style: solid; border-right-style: solid;">
+-->
+              <tr>
+                <!--
+                  Left tabs.
+                  -->
+                <td style="border-top-style: solid; border-right-style: double;">Login&nbsp;</td>
+                <td style="border-top-style: solid; border-right-style: solid;">Help&nbsp;</td>
+
+                <!--
+                  Spacing.
+                  -->
+                <td style="border-right-style: none; background-color: white;" width="100%">&nbsp;</td>
+                
+                <!--
+                  Right tabs.
+                  -->
+                <td style="border-left-style: solid; border-top-style: solid;"><a href="#home">Home&nbsp;</a></td>
+                <td style="border-left-style: double; border-top-style: solid;"><a href="#main-menu">Menu&nbsp;</a></td>
+              </tr>
+            </table></td>
+          </tr>
+<!-- Main display body -->          
+          <tr class="main-content" valign="top">
+            <td style="border-top-style: ridge; border-bottom-style: ridge;">
+              <table cellpadding="0" cellspacing="0"
+                     style="background-color: LightGray;">
+                <tr>
+                  <td colspan="5" style="border-top-style: solid; border-right-style: solid;" align="center">
+                    Design Jobs
+                  </td>
+                  <!--
+                    Spacing.
+                    -->
+                  <td style="border-right-style: none;" width="100%">&nbsp;</td>
+                  <td style="border-top-style: solid; border-right-style: solid;" nowrap>
+                    Monitor Jobs
+                  </td>                  
+                </tr>
+                <p>
+                <tr>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="workflow_new.html">&nbsp;New&nbsp;</a>
+                  </td>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="workflow_submit.html">&nbsp;Submit&nbsp;</a>
+                  </td>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="workflow_edit.html">&nbsp;Edit&nbsp;</a>
+                  </td>
+                  <td style="border-right-style: double;" align="center">
+                    <a href="workflow_delete.html">&nbsp;Delete&nbsp;</a>
+                  </td>                  
+                  <td align="center">
+                    <a href="workflow_templates.html">&nbsp;Templates&nbsp;</a>
+                  </td>
+                  <!--
+                    Spacing.
+                    -->
+                  <td style="border-right-style: none;" width="100%">&nbsp;</td>
+                  <td align="center">
+                    <a href="workflow_monitor.html">&nbsp;Monitor&nbsp;</a>               
+                  </td>
+                </tr>
+                </p>
+              </table>
+              <table cellpadding="0" cellspacing="0">
+                <p>
+                <tr>
+                  <td>
+                    <img src="../../images/SequenceWithTwoStepFlow.gif" alt="SequenceWithTwoStepFlow"/>
+                  </td>
+                  <td>
+                    <table border="1" cellpadding="0" cellspacing="2">
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          Tool:
+                        </td>
+                        <td>
+                          Cone Search
+                        </td>
+                        <td></td>
+                        <td></td>
+                      </tr>                    
+                      <tr>
+                        <td>
+                          Step 1
+                        </td>
+                        <td>
+                          Input:
+                        </td>
+                        <td>
+                          Name: query
+                        </td>
+                        <td>
+                          Type: adql
+                        </td>
+                        <td>
+                          Location: myspace://query1
+                        </td>                        
+                      </tr>
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          Output:
+                        </td>
+                        <td>
+                          Name: result
+                        </td>         
+                        <td>
+                          Type: votable
+                        </td>
+                        <td>
+                          Location: myspace://votable1
+                        </td>               
+                      </tr>  
+                         
+                      <tr>
+                        <td colspan="5">
+                          &nbsp;
+                        </td>
+                      </tr>
+                                          
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          Tool:
+                        </td>
+                        <td>
+                          Cone Search
+                        <td></td>
+                        <td></td>
+                        </td>
+                      </tr>                    
+                      <tr>
+                        <td>
+                          Step 2
+                        </td>
+                        <td>
+                          Input:
+                        </td>
+                        <td>
+                          Name: query
+                        </td>
+                        <td>
+                          Type: adql
+                        </td>
+                        <td>
+                          Query builder
+                        </td>                        
+                      </tr>
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          Output:
+                        </td>
+                        <td>
+                          Name: result
+                        </td>         
+                        <td>
+                          Type: votable
+                        </td>
+                        <td>
+                          Location: myspace://votable2
+                        </td>               
+                      </tr>
+                        
+                      <tr>
+                        <td colspan="5">
+                          &nbsp;
+                        </td>
+                      </tr>
+                      
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          Tool:
+                        </td>
+                        <td>
+                          VOTable Merge
+                        </td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          Name: in
+                        </td>
+                        <td>
+                          Type: votable
+                        </td>
+                        <td>
+                          Location: myspace://votable1
+                        </td>
+                      </tr>                    
+                      <tr>
+                        <td>
+                          Step 3
+                        </td>
+                        <td>
+                          Input:
+                        </td>
+                        <td>
+                          Name: in
+                        </td>
+                        <td>
+                          Type: votable
+                        </td>
+                        <td>
+                          Location: myspace://votable2
+                        </td>                        
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td>
+                          Name: config
+                        </td>
+                        <td>
+                          Type: Configuration
+                        </td>
+                        <td>
+                          Location: myspace://config1
+                        </td>
+                      </tr>                      
+                      <tr>
+                        <td>
+                        </td>
+                        <td>
+                          Output:
+                        </td>
+                        <td>
+                          Name: out
+                        </td>         
+                        <td>
+                          Type: votable
+                        </td>
+                        <td>
+                          Location: myspace://votable3
+                        </td>               
+                      </tr>
+                    </table>
+                  </td>               
+                </tr>
+                </p>
+              </table>                
+            </td>
+          </tr>     
+    
+<!-- Main display body end -->
+          <tr>
+            <td align="right"><table cellpadding="0" cellspacing="0"
+                    style="background-color: LightGray;">
+<!--
+                    style="background-color: LightGray; border-bottom-style: solid; border-left-style: solid;">
+-->
+              <tr>
+                <!--
+                  Left tabs.
+                  -->
+
+                <td style="border-right-style: double; border-bottom-style: solid;"><a href="#main-menu">Menu&nbsp;</a></td>
+                <td style="border-right-style: solid; border-bottom-style: solid;"><a href="#home">Home&nbsp;</a></td>
+                
+                <!--
+                  Spacing.
+                  -->
+                <td style="border-left-style: none; background-color: white;" width="100%">&nbsp;</td>
+
+                <!--
+                  Right tabs.
+                  -->
+                <td style="border-bottom-style: solid; border-left-style: solid;">Login&nbsp;</td>
+                <td style="border-bottom-style: solid; border-left-style: double;">Help&nbsp;</td>
+
+              </tr>
+            </table>            
+            
+            </td>
+          </tr>
+        </table></td>
+
+        <!--
+          Panels.
+          -->
+        <td class="main-content-panels" rowspan="99" valign="top">
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+          <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p>
+        <p class="panel">
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+            Panel&nbsp;Panel&nbsp;Panel<br/>
+          </p></td>
+      </tr>
+    </table>
+  </body>
+
+</html>
