@@ -16,8 +16,8 @@
 # These scripts need to be on your path!
 
 # Some reminders
-${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
-${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"}
+echo ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
+echo ${DOCLOCATION?"Value of DOCLOCATION (ie where documents should be published) must be set"}
 
 OLDDIR=$PWD
 

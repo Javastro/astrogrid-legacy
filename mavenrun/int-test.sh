@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: int-test.sh,v 1.4 2004/12/02 21:41:10 jdt Exp $ 
+# $Id: int-test.sh,v 1.5 2004/12/03 10:20:04 jdt Exp $ 
 ########################################################
 # Script to install AGINAB, run the integration
 # tests and publish the results
@@ -17,9 +17,9 @@
 # These scripts need to be on your path!
 
 # Some reminders
-${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
-${DOCLOCATION?"Value of DOCLOCATION (ie where to send docs) must be set"}
-${DOCMACHINE?"Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"}
+echo ${CHECKOUTHOME?"Value of CHECKOUTHOME (ie where to checkout sources) must be set"}
+echo ${DOCLOCATION?"Value of DOCLOCATION (ie where to send docs) must be set"}
+echo ${DOCMACHINE?"Value of DOCMACHINE (e.g. maven@www.astrogrid.org) must be set"}
 
 OLDDIR=$PWD
 
