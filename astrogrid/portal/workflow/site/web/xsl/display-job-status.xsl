@@ -82,7 +82,6 @@
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->                             
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>sequence.gif</xsl:attribute>
-                            <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                             <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
@@ -93,7 +92,6 @@
                     <xsl:when test="name() = 'flow'">  <!--  FLOW -->                            
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>flow.gif</xsl:attribute>
-                            <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                             <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
@@ -106,14 +104,17 @@
                         </xsl:attribute>                    
                         <xsl:element name="img">
                             <xsl:attribute name="src"><xsl:value-of select="$image_path"/>step.gif</xsl:attribute>
-                            <xsl:attribute name="id"><xsl:value-of select="@key"/></xsl:attribute>
                             <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
                             <xsl:attribute name="width">70</xsl:attribute>
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
                         </xsl:element>                       
                         <td colspan="30" valign="middle" style="color: blue;">
-                            <font size="-1">Name: <b><xsl:value-of select="@step-name"/></b> Staus: <b><xsl:value-of select="@step-status"/></b> Start time: <b><xsl:value-of select="@start-time"/></b></font>
+                            <font size="-1">Name: <b><xsl:value-of select="@step-name"/></b> 
+                                            Staus: <b><xsl:value-of select="@step-status"/></b> 
+                                            Start time: <b><xsl:value-of select="@step-start-time"/></b>
+                                            Join: <b><xsl:value-of select="@step-join-condition"/></b>
+                            </font>
                         </td>
                     </xsl:when>                                                                            
                 </xsl:choose>
