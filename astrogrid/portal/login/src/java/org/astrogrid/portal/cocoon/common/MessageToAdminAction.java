@@ -1,5 +1,5 @@
 /* <cvs:id> 
- * $Id: MessageToAdminAction.java,v 1.5 2004/03/25 15:18:13 jdt Exp $
+ * $Id: MessageToAdminAction.java,v 1.6 2004/03/26 15:01:05 jdt Exp $
  * </cvs:id>
  * Created on Mar 16, 2004 by jdt Copyright (C) AstroGrid. All rights reserved.
  * 
@@ -114,9 +114,9 @@ public final class MessageToAdminAction extends AbstractAction {
 
         
         final String smtpServer =  config.getString(EMAIL_SERVER,"127.0.0.1");
-        final String smtpUser =  config.getString(EMAIL_USER,"jdt");
+        final String smtpUser =  config.getString(EMAIL_USER,"astrogrid");
         final String smtpPass =  config.getString(EMAIL_PWD,"");
-        final String returnAddress =  config.getString(EMAIL_FROM,"admin@astrogrid.org");
+        final String returnAddress =  config.getString(EMAIL_FROM,"astrogrid@star.le.ac.uk");
         //who should be notified of these messages?
         final String recipient =  config.getString(EMAIL_TO, "jdt@roe.ac.uk");
 
@@ -227,6 +227,9 @@ public final class MessageToAdminAction extends AbstractAction {
 }
 /* <cvs:log>
  * $Log: MessageToAdminAction.java,v $
+ * Revision 1.6  2004/03/26 15:01:05  jdt
+ * Changed the defaults.
+ *
  * Revision 1.5  2004/03/25 15:18:13  jdt
  * Some refactoring of the debugging and added unit tests.
  *

@@ -1,4 +1,4 @@
-/* $Id: MessageToAdminActionNoConfigTest.java,v 1.1 2004/03/26 14:53:19 jdt Exp $
+/* $Id: MessageToAdminActionNoConfigTest.java,v 1.2 2004/03/26 15:01:05 jdt Exp $
  * Created on Mar 22, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -44,16 +44,14 @@ public final class MessageToAdminActionNoConfigTest extends TestCase {
      * Should fall back to some default values.
      */
     public void testEmailConfig() {
-
- 
         final MessageToAdminAction action = new MessageToAdminAction(true);
         final MockEmailMessenger messenger = (MockEmailMessenger) action.getMessenger();
-        // defaults set up in action class
-        Object recipient = "jdt@roe.ac.uk";
-        Object server = "127.0.0.1";
-        Object user = "astrogrid";
-        Object pass = "";
-        Object sender = "astrogrid@astrogrid.org";
+        // these are the defaults set up in action class
+        String recipient = "jdt@roe.ac.uk";
+        String server = "127.0.0.1";
+        String user = "astrogrid";
+        String pass = "";
+        String sender = "astrogrid@star.le.ac.uk";
         assertEquals(messenger.getRecipient(),recipient);
         final Session sesh = messenger.getSession();
         final Properties props = sesh.getProperties();
@@ -95,6 +93,9 @@ public final class MessageToAdminActionNoConfigTest extends TestCase {
 
 /*
  *  $Log: MessageToAdminActionNoConfigTest.java,v $
+ *  Revision 1.2  2004/03/26 15:01:05  jdt
+ *  Changed the defaults.
+ *
  *  Revision 1.1  2004/03/26 14:53:19  jdt
  *  New test
  *
