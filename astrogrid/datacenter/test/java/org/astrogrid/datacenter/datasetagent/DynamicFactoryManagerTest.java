@@ -1,4 +1,4 @@
-/*$Id: DynamicFactoryManagerTest.java,v 1.5 2003/08/25 22:01:17 mch Exp $
+/*$Id: DynamicFactoryManagerTest.java,v 1.6 2003/08/28 16:05:23 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import org.astrogrid.AstroGridException;
 import org.astrogrid.datacenter.FactoryProvider;
 import org.astrogrid.datacenter.FactoryProviderTestSpec;
 import org.astrogrid.datacenter.config.Configuration;
-import org.astrogrid.datacenter.config.ConfigurationKeys;
 import org.astrogrid.datacenter.config.FactoryManagerTest;
 import org.astrogrid.datacenter.impl.empty.NullJobFactory;
 import org.astrogrid.datacenter.impl.empty.NullQueryFactory;
@@ -44,11 +43,11 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
         return new TestSuite(DynamicFactoryManagerTest.class);
     }
     protected FactoryProvider createEmptyFactoryProvider() {
-        return new DynamicFactoryManager(conf);
+        return new DynamicFactoryManager();
     }
     protected FactoryProvider createPopulatedFactoryProvider() {
         populateMap();
-        DynamicFactoryManager fac = new DynamicFactoryManager(conf);
+        DynamicFactoryManager fac = new DynamicFactoryManager();
         try {
              fac.verify();
          } catch (AstroGridException e) {
@@ -68,8 +67,7 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
     /** overridden to provide a configuration with some entries present */
     protected void setUp() {
         internalMap =  new java.util.HashMap();
-        conf = new MapConfiguration(internalMap);
-        dynFacMan = new DynamicFactoryManager(conf);
+        dynFacMan = new DynamicFactoryManager();
         facMan = dynFacMan;
 
     }
@@ -164,32 +162,38 @@ public class DynamicFactoryManagerTest extends FactoryManagerTest {
       * want to load confifgurationdata from the filesystem
       * @author Noel Winstanley nw@jb.man.ac.uk 21-Aug-2003
       *
-      */
-     public static class MapConfiguration implements Configuration {
-         public MapConfiguration(Map m) {
-             this.m = m;
-         }
-         protected final Map m;
+      * hopefully don't need this now... MCH
+     */
+     public static class MapConfiguration {
+//         public MapConfiguration(Map m) {
+//             this.m = m;
+ //        }
+//         protected final Map m;
          /* generates composite key in form <i>category</i>.<i>key</i>,
           * and uses this to look up property in the map.
-          */
+          *
          public String getProperty(String key, String category) {
              Object o = m.get(mkKey(key,category));
              //assertNotNull(category + "." + key,o);
              //return o.toString();
              return (String)o;
          }
+          /**/
          public static String mkKey(String key,String category) {
                 return category + "." + key;
          }
      }
 
+     /**/
 
 }
 
 
 /*
 $Log: DynamicFactoryManagerTest.java,v $
+Revision 1.6  2003/08/28 16:05:23  mch
+New Configuration package
+
 Revision 1.5  2003/08/25 22:01:17  mch
 Removed DatacenterException
 

@@ -29,14 +29,14 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
       return new TestSuite(FactoryManagerTest.class);
    }
     protected void setUp() {
-        facMan = new FactoryManager(conf);
+        facMan = new FactoryManager();
     }
     protected FactoryProvider createEmptyFactoryProvider() {
-        return new FactoryManager(conf);
+        return new FactoryManager();
     }
     protected FactoryProvider createPopulatedFactoryProvider() {
         super.setUp();
-        FactoryManager fac = new FactoryManager(conf);
+        FactoryManager fac = new FactoryManager();
         populateFactoryManager(fac);
         return fac;
     }
