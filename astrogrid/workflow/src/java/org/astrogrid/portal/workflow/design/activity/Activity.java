@@ -68,6 +68,7 @@ public abstract class Activity {
         try {  
             this.parent = parent ;
             this.key = ActivityKey.createKey() ;
+            this.getWorkflow().putActivity( this ) ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Activity() exit") ; 

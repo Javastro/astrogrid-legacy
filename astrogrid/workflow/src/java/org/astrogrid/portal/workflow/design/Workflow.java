@@ -529,8 +529,8 @@ public class Workflow extends Activity {
         
         try{
 		        	
-            this.activities = Collections.synchronizedMap( new HashMap() ) ;
-            this.activities.put( this.getKey(), this ) ;  
+//            this.activities = Collections.synchronizedMap( new HashMap() ) ;
+//            this.activities.put( this.getKey(), this ) ;  
             
             Element
                element = document.getDocumentElement() ;         
@@ -606,7 +606,11 @@ public class Workflow extends Activity {
         boolean
             retValue = false ;
         
-        try {    
+        try { 
+            
+            if( this.activities == null ) {
+                this.activities = Collections.synchronizedMap( new HashMap() ) ;   
+            }
         
             if( !activities.containsKey( activity.getKey() ) ) {
                 this.activities.put( activity.getKey(), activity ) ;
