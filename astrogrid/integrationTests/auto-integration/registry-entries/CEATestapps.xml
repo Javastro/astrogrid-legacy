@@ -370,7 +370,7 @@
         </Capability>
         <Interface>
             <Invocation>WebService</Invocation>
-            <AccessURL use="base">http://locahost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
+            <AccessURL use="base">http://localhost:8080/astrogrid-applications-SNAPSHOT/services/CommonExecutionConnectorService</AccessURL>
         </Interface>
         <cea:ManagedApplications>
             <cea:ApplicationReference>
