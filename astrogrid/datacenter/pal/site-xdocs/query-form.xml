@@ -1,14 +1,16 @@
 <?xml version="1.0" ?>
 <document>
 <properties>
-	<author email="nw@jb.man.ac.uk">Noel Winstanley</author>
-	<title>Datacenter query form</title>
+   <author email="nw@jb.man.ac.uk">Noel Winstanley</author>
+   <title>Datacenter query form</title>
 </properties>
 
 <body>
 <section name="Submit an ADQL Query">
 <p>
-<b>Enter your ADQL query here:</b> (<a href="adql">sample queries</a>)<br />
+<b>Enter your ADQL query here:</b>
+  (<a href="http://skyservice.pha.jhu.edu/devel/AdqlTranslator/Convertor.aspx">Translate from SQL</a>)
+  (<a href="adql">Sample queries</a>)<br />
 <form action="process-form.jsp" method="POST">
 <textarea name="query" rows="20" cols="100%"><![CDATA[
 <Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
