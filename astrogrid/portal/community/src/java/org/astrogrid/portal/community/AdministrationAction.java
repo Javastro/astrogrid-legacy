@@ -65,6 +65,12 @@ public class AdministrationAction extends AbstractAction
 	public static boolean DEBUG_FLAG = true;
    
    /**
+    * Name of JNDI property holding security delegate endpoint URL
+    */
+   public static final String ORG_ASTROGRID_PORTAL_REGISTRY_URL = "org.astrogrid.portal.registry.url";
+   
+	
+	/**
 	 * Cocoon param for the user param in the session.
 	 *
 	 */
@@ -179,9 +185,13 @@ public class AdministrationAction extends AbstractAction
       SecurityServiceResolver ssr = null;
       PolicyManagerResolver pmr = null;
       try {
-          smr = new SecurityManagerResolver();
-          ssr = new SecurityServiceResolver();
-          pmr = new PolicyManagerResolver();
+          final Config config = SimpleConfig.getSingleton();
+          endpoint = config.getString(ORG_ASTROGRID_PORTAL_REGISTRY_URL, null);
+          log.debug("Registry endpoint:"+endpoint);
+          System.out.println("the endpoint = " + endpoint);
+          smr = new SecurityManagerResolver(new URL(endpoint));
+          ssr = new SecurityServiceResolver(new URL(endpoint));
+          pmr = new PolicyManagerResolver(new URL(endpoint));
       } catch (MalformedURLException e1) {
           log.error("Unable to create registry URL", e1);
           errorMessage = "No registry url foSecurityManagerResolverund";
