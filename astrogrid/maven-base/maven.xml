@@ -1,32 +1,18 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.4 2004/03/03 21:42:52 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.5 2004/06/28 15:23:48 jdt Exp $ -->
 <!-- extension maven script -->
 <project>
 	<!-- This is just the base project for inheritance - it shouldn't be mavened-->
 	<!-- astrogrid goals for nightly build -->
-	<goal name="astrogrid-clean" prereqs="clean"/>
-	<goal name="astrogrid-deploy-site">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-build-site">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-deploy-snapshot">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-build-snapshot">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-install-snapshot">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-deploy-artifact">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-build-artifact">
-		<echo message="nothing to do"/>
-	</goal>
-	<goal name="astrogrid-install-artifact">
-		<echo message="nothing to do"/>
-	</goal>
+    <!-- astrogrid goals for nightly build -->
+    <goal name="astrogrid-clean" prereqs="clean"/>
+    <goal name="astrogrid-deploy-site" 
+        prereqs="astrogrid-build-site,site:fsdeploy" />
+    <goal name="astrogrid-build-site" prereqs="site"/>
+    <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
+    <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot"/>
+    <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
+    <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
+    <goal name="astrogrid-build-artifact" prereqs="jar:jar"/>
+    <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
 </project>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.18 2004/06/11 19:28:24 pah Exp $ -->
+<!-- $Id: project.xml,v 1.19 2004/06/28 15:23:38 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-common</id>
@@ -63,11 +63,17 @@
         </dependency>
         <!-- pico container -->
         <dependency>
-                <id>picocontainer</id>
-                <version>1.0-RC-1-SNAPSHOT</version>
-                <properties>
-                        <war.bundle>true</war.bundle>
-                </properties>
+			<groupId>picocontainer</groupId>
+			<artifactId>picocontainer</artifactId>
+            <version>1.0</version>
+        </dependency>
+		<!--temp-->
+		<dependency>
+                <artifactId>groboutils</artifactId>
+                <groupId>groboutils</groupId>
+                <version>4</version>
+                <jar>GroboUtils-4-core.jar</jar>
+                <url>http://prdownloads.sourceforge.net/groboutils/GroboUtils-4-core.jar</url>
         </dependency>
         
      </dependencies>

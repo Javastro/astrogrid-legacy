@@ -1,21 +1,33 @@
 <?xml version="1.0"?>
-<!-- $Id: project.xml,v 1.22 2004/06/25 17:40:33 jdt Exp $ -->
-<project>
+<!-- $Id: project.xml,v 1.23 2004/06/28 15:23:48 jdt Exp $ -->
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="xsd/maven-project.xsd">
     <pomVersion>3</pomVersion>
     <id>astrogrid-master</id>
-    <groupId>org.astrogrid</groupId>
     <name>Astrogrid Master Maven POM</name>
+    <groupId>org.astrogrid</groupId>
+	<!--Determines the dependency versions, and the version of the artifact produced.
+		DO NOT OVERRIDE -->
     <currentVersion>SNAPSHOT</currentVersion>
+	<!--Presentational Stuff-->
     <organization>
         <name>AstroGrid</name>
         <url>http://www.astrogrid.org</url>
         <logo>http://www.astrogrid.org/images/AGlogo</logo>
     </organization>
-    <inceptionYear>2002</inceptionYear>
+	<inceptionYear>2002</inceptionYear>
+	<package>org.astrogrid</package>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>  
+	<shortDescription>
+		This base project contains sensible settings for most components.
+		</shortDescription>
+	<url>http://www.astrogrid.org/maven/docs/${astrogrid.iteration}/${astrogrid.name}/index.html</url>
+		  
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
-    <package>org.astrogrid</package>
-    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}</siteDirectory>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+	
+	<!--Destination for site docs--> 
+    <siteDirectory>${maven.site.central.directory}/${pom.currentVersion}/${astrogrid.name}</siteDirectory>
+	<!--set the property astrogrid.name in your component's project.properties file
+		for the cvs repos data to be correct-->
     <repository>
         <connection> 
             scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name} 
@@ -26,25 +38,8 @@
         <url> http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/ 
             </url>
     </repository>
-    <build>
-        <sourceDirectory>src/java</sourceDirectory>
-        <resources>
-	        <resource>
-		        <directory>${basedir}/src/java</directory>
-	            <includes>
-	                <include>**/log4j.properties</include>
-	            </includes>
-	        </resource>
-	    </resources>
-        <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
-        <unitTest>
-            <includes>
-                <include>**/*Test.java</include>
-            </includes>
-        </unitTest>
-    </build>
-    <url>http://www.astrogrid.org/maven/docs/${astrogrid.iteration}/${astrogrid.name}/index.html</url>
-    <developers>
+	
+	<developers>
         <developer>
             <name> Brian McIlwrath </name>
             <id> bkm </id>
@@ -229,6 +224,26 @@
             </roles>
         </developer>
     </developers>
+	<!--Most projects will probably need to override this-->
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+		<unitTestSourceDirectory>test/java</unitTestSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        </unitTest>
+        <resources>
+	        <resource>
+		        <directory>${basedir}/src/java</directory>
+	            <includes>
+	                <include>**/log4j.properties</include>
+	            </includes>
+	        </resource>
+	    </resources>
+    </build>
+
+	<!--The standard set of reports to generate-->
     <reports>
         <report> maven-changelog-plugin </report>
         <report> maven-changes-plugin </report>
