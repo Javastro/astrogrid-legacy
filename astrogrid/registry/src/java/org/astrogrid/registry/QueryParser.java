@@ -4,7 +4,7 @@
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-package registry;
+package org.astrogrid.registry;
 
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
