@@ -136,8 +136,9 @@ public class JobImpl extends Job {
 					    this.community = account.substring( account.indexOf('@')+1 ) ;
                         logger.debug( "community: " + community ) ;
 				 	}
-                    else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {                        
-                        description = element.getFirstChild().getNodeValue().trim();
+                    else if (element.getTagName().equals( SubmissionRequestDD.DESCRIPTION_ELEMENT ) ) {
+                        //bug#106                        
+                        description =  XMLUtils.getChildCharacterData( element ) ;
                         logger.debug( "description: " + description ) ;
                     }
 					

@@ -83,12 +83,14 @@ public class Parameter {
             // then the location is set by the node value.
             if( this.isRemoteReference() ) {
                 trace( "parameter is remote reference") ;
-                this.location = element.getFirstChild().getNodeValue().trim() ;
+                //bug#106
+                this.location = XMLUtils.getChildCharacterData( element ) ;
                 this.contents = "" ;    
             }
             else {
                 trace( "parameter contents is instream") ;
-                this.contents = element.getFirstChild().getNodeValue().trim() ;
+                //bug#106
+                this.contents = XMLUtils.getChildCharacterData( element ) ;
                 this.location = "" ;
             }
                        
