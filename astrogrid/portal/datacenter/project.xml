@@ -15,19 +15,26 @@
       <version>${pom.currentVersion}</version>
     </dependency>
     
-        <!--+
-            | The Registry common components.
-            +-->
+ 
+
+      <!-- for VoSpaceResolver -->
         <dependency>
-            <groupId>org.astrogrid</groupId>
-            <artifactId>astrogrid-registry-common</artifactId>
+            <artifactId>astrogrid-registry-client-lite</artifactId>
+         <groupId>org.astrogrid</groupId>
             <version>${pom.currentVersion}</version>
-            <type>jar</type>
-            <url>http://www.astrogrid.org/</url>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
-        </dependency>    
+        </dependency>
+        <dependency>
+            <artifactId>astrogrid-registry-common</artifactId>
+         <groupId>org.astrogrid</groupId>
+            <version>${pom.currentVersion}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
     
 
     <!-- Portal Common  -->

@@ -26,7 +26,10 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.query.RegistryService;
 import org.astrogrid.registry.NoResourcesFoundException;
 import org.astrogrid.registry.RegistryException;
-import org.apache.axis.utils.XMLUtils;
+
+import org.astrogrid.portal.login.common.SessionKeys;
+import org.astrogrid.store.delegate.VoSpaceResolver;
+import org.astrogrid.store.Ivorn;
 
 /**
  * This class provides the DataCenter UI with the facility to
@@ -91,16 +94,21 @@ public class MySpaceLoadAction extends AbstractAction {
       
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);
-      
-      // Set MySpace end point.
-      String endPoint = utils.getAnyParameter( "myspace-end-point", params, request, session);
-      
-      // Set base AstroGrid storage location.
-      Agsl agsl = new Agsl(endPoint);
-      
-      // Get the storage client.
-      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
 
+//bug 609 - JBL      
+      // Set MySpace end point.
+//      String endPoint = utils.getAnyParameter( "myspace-end-point", params, request, session);
+//      
+//      // Set base AstroGrid storage location.
+//      Agsl agsl = new Agsl(endPoint);
+//      
+//      // Get the storage client.
+//      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
+      
+      // Get the store client from the VOSpaceResolver.
+      Ivorn ivorn = (Ivorn) utils.getAnyParameterObject( SessionKeys.IVORN,params, request, session );
+      StoreClient storeClient = VoSpaceResolver.resolveStore(user, ivorn);
+      
       String mySpaceName = utils.getAnyParameter("myspace-name", params, request, session);
 	  logger.debug("[act] mySpaceName: " + mySpaceName);
 
@@ -214,7 +222,6 @@ public class MySpaceLoadAction extends AbstractAction {
         logger.debug( "tableQuery = " + tableQuery);                              
         RegistryService rs = RegistryDelegateFactory.createQuery();
         Document doc = rs.submitQuery( tableQuery );       
-        logger.debug( "document: " + XMLUtils.DocumentToString( doc ) ) ;
              
 //        request.setAttribute("tableName", table);
 //        request.setAttribute("tableName", "testTable");

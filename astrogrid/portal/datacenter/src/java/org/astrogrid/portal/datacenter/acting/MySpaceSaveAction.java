@@ -14,9 +14,14 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.SourceResolver;
 import org.astrogrid.community.User;
 import org.astrogrid.portal.common.user.UserHelper;
+//bug 609 - JBL
+import org.astrogrid.portal.login.common.SessionKeys;
+import org.astrogrid.store.delegate.VoSpaceResolver;
+
 import org.astrogrid.portal.utils.acting.ActionUtils;
 import org.astrogrid.portal.utils.acting.ActionUtilsFactory;
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.delegate.StoreClient; 
 import org.astrogrid.store.delegate.StoreDelegateFactory; 
 //bug 566 --clq2
@@ -77,15 +82,20 @@ public class MySpaceSaveAction extends AbstractAction {
         
       // Set the current user.
       User user = UserHelper.getCurrentUser(params, request, session);
+
+// Bug 609 - JBL...    
+      // Get the store client from the VOSpaceResolver.
+      Ivorn ivorn = (Ivorn) utils.getAnyParameterObject( SessionKeys.IVORN,params, request, session );
+      StoreClient storeClient = VoSpaceResolver.resolveStore(user, ivorn);
       
-      // Set MySpace end point.
-      String endPoint = utils.getAnyParameter( "myspace-end-point", params, request, session );
-      
-      // Set base AstroGrid storage location.
-      Agsl agsl = new Agsl(endPoint);
-      
-      // Get the storage client.
-      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
+//      // Set MySpace end point.
+//      String endPoint = utils.getAnyParameter( "myspace-end-point", params, request, session );
+//      
+//      // Set base AstroGrid storage location.
+//      Agsl agsl = new Agsl(endPoint);
+//      
+//      // Get the storage client.
+//      StoreClient storeClient = StoreDelegateFactory.createDelegate(user, agsl);
       
       StringBuffer buffer = new StringBuffer( 512 ) ;
       String adqlAsXML ;
@@ -96,28 +106,6 @@ public class MySpaceSaveAction extends AbstractAction {
       logger.debug("[act] adqlAsString (s): " + adqlAsString);
       
       try {
-          
-          // First, attempt to filter out any error messages
-          // left over from a previous attempt ...
-//          int i = adqlAsString.indexOf( "Error returned: ") ;
-//          
-//          if( i > 0 ) {
-//              char c = adqlAsString.charAt(i--);         
-//              while( c == '\n' || c == '\t' || c == ' ') {
-//                  i--;
-//                  if(i<0) break;
-//                  c = adqlAsString.charAt(i) ;
-//              }             
-//          }
-//
-//          if( i > 0 ) {
-//              adqlAsString = adqlAsString.substring(0, i) ;
-//          }
-//          else if( i == 0 ) {
-//              adqlAsString = " " ;
-//          }
-          
-//          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlAsString ) ;
 
           //bug 566 -clq2
           //adqlAsXML = Sql2Adql074.translate( adqlAsString ) ;
@@ -165,16 +153,7 @@ public class MySpaceSaveAction extends AbstractAction {
             .append( "<?qb-registry-resources " )
             .append( resourceId != null ? (String)resourceId : "none" )
             .append( " ?>" ) ;
-            
-//          StringBuffer adqlBuffer = new StringBuffer( adqlAsString.length() + 64 ) ;
-//          
-//          adqlBuffer
-//            .append( adqlAsString )
-//            .append( "\n\n")
-//            .append( "Error returned: ")
-//            .append( ex.getLocalizedMessage() ) ;
-//            
-//          session.setAttribute( SESSIONKEY_ADQL_AS_STRING, adqlBuffer.toString() ) ;                     
+                           
           session.setAttribute( SESSIONKEY_ADQL_ERROR, ex.getLocalizedMessage() ) ;
           logger.debug("[act] adql error: " + ex.getLocalizedMessage() ) ;
                   
