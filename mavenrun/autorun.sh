@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: autorun.sh,v 1.9 2004/05/24 12:32:01 jdt Exp $ 
+# $Id: autorun.sh,v 1.10 2004/05/28 17:42:09 jdt Exp $ 
 OLDDIR=$PWD
 
 #setup paths etc
@@ -20,9 +20,11 @@ echo "Integration Test Log $DATE" >> $LOGFILE
 echo "=============================" >> $LOGFILE
 
 # Restart tomcat
+echo "Shutting down Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/shutdown.sh >> $LOGFILE 2>&1
 echo "Waiting for tomcat to shutdown...." >> $LOGFILE
 sleep 15
+echo "Starting Tomcat" >> $LOGFILE
 $CATALINA_HOME/bin/startup.sh >> $LOGFILE 2>&1
 
 #update from cvs 
@@ -35,23 +37,23 @@ echo $BUILDHOME >> $LOGFILE
 
 if maven undeploy-all >> $LOGFILE 2>&1
 then
-   echo "*** SUCCESS ***\n" >> $LOGFILE
+   echo "*** SUCCESS ***" >> $LOGFILE
 else
-   echo "*** FAILURE ***\n" >> $LOGFILE
+   echo "*** FAILURE ***" >> $LOGFILE
    cat $LOGFILE | mail -s "undeploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
 if maven  deploy-all >> $LOGFILE 2>&1
 then
-   echo "*** SUCCESS ***\n" >> $LOGFILE
+   echo "*** SUCCESS ***" >> $LOGFILE
 else
-   echo "*** FAILURE ***\n" >> $LOGFILE
+   echo "*** FAILURE ***" >> $LOGFILE
    cat $LOGFILE | mail -s "deploy-all Failure in integration tests" $ADMIN_EMAIL 
 fi
 if maven -Dorg.astrogrid.autobuild=true astrogrid-deploy-site >> $LOGFILE 2>&1
 then
-   echo "*** SUCCESS ***\n" >> $LOGFILE
+   echo "*** SUCCESS ***" >> $LOGFILE
 else
-   echo "*** FAILURE ***\n" >> $LOGFILE
+   echo "*** FAILURE ***" >> $LOGFILE
    cat $LOGFILE | mail -s "astrogrid-deploy-site Failure in integration tests" $ADMIN_EMAIL 
 fi
 
