@@ -77,8 +77,8 @@ public class ServerManager {
 
 /**
  * 
- * @param contentPath: path of the file need to get from
- * @param dataHolderPath: the file path ServerManager will save the file to.
+ * @param contentPath: full path or url of the file need to get from
+ * @param mySpaceFileName: only the file name without full path e.g. f35 where the file is saved to.
  * @return
  */
     public String saveDataHolder(String contentPath, String mySpaceFileName) {
@@ -87,10 +87,13 @@ public class ServerManager {
 			MSC.getInstance().checkPropertiesLoaded();
 			String path = MSC.getProperty(MSC.dataHolderFolder, MSC.CATLOG);
 			String dataHolderPath = path + mySpaceFileName;
-
-			if (DEBUG)  logger.debug("Inside ServerManager.saveDataHolder..."+dataHolderPath+"contentPath="+contentPath);
+           
 			long fileSize = (new File(contentPath)).length();
-			if (DEBUG)  logger.debug("saveDataHolder.saveDataHolder.fileSize: "+fileSize);
+			if (DEBUG)  {
+				logger.debug("Inside ServerManager.saveDataHolder..."+dataHolderPath+"contentPath="+contentPath); 
+			    logger.debug("saveDataHolder.saveDataHolder.fileSize: "+fileSize +"mySpaceFileName: "+mySpaceFileName);
+			    logger.debug("dataHolderPath= "+dataHolderPath);
+			}
 			
 			String command = MSC.getProperty(MSC.copyCommand, MSC.CATLOG);
 			long sizeLimit = Long.parseLong(MSC.getProperty(MSC.sizeLimit, MSC.CATLOG));
@@ -134,6 +137,23 @@ public class ServerManager {
 			}
 		}
     }
+    
+    
+	public String copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
+		try{
+
+			String copytoname = destinationDataHolderPath.substring(destinationDataHolderPath.lastIndexOf("/")+1,destinationDataHolderPath.length());
+			if ( DEBUG ) logger.debug("ServerManager filtering single file name copyto: "+copytoname +"dataholderpaht   = " +dataHolderPath);
+			response = MSC.SUCCESS +saveDataHolder(dataHolderPath, copytoname);
+			return response;
+		}catch(Exception e){
+			logger.error("FAULT ServerManagetr.COPYDataHolder!!! "+e.toString());
+			AstroGridMessage generalMessage = new AstroGridMessage( "AGMSCE01042", this.getComponentName()) ;
+			status.addCode(MySpaceStatusCode.AGMSCE01042,MySpaceStatusCode.ERROR,MySpaceStatusCode.NOLOG, this.getComponentName());
+			response = MSC.FAULT+MySpaceStatusCode.AGMSCE01042+"::"+generalMessage.toString();	
+			return response;
+		}
+	}    
 
     //need to be decided not implement in Iteration 2
     public String tidyMySpace() {
