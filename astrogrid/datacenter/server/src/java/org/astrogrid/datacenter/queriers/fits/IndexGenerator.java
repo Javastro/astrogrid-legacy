@@ -15,12 +15,12 @@ package org.astrogrid.datacenter.queriers.fits;
 
 import org.astrogrid.datacenter.fits.*;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-//import org.apache.commons.logging.*;
+import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.log.Log;
 
 public class IndexGenerator
@@ -39,7 +39,7 @@ public class IndexGenerator
          index.append(generateIndex(urls[i]));
       }
 
-      index.append("/<FitsDataCenterIndex>\n");
+      index.append("</FitsDataCenterIndex>\n");
       
       return index.toString();
       
@@ -140,7 +140,7 @@ public class IndexGenerator
       
       
       //assemble snippet
-      return "<FitsFile>\n"+
+      String snippet = "<FitsFile>\n"+
                "   <Filename>"+fileLocation+"</Filename>\n"+
                "   <Coverage shape='Polygon'>\n"+
                coverageSnippet.toString()+
@@ -149,6 +149,21 @@ public class IndexGenerator
                keywordSnippet.toString()+
                "   </Keywords>\n"+
                "</FitsFile>\n";
+      
+      validate(snippet); //debug - test snippet
+      
+      return snippet;
+   }
+
+   public static void validate(String snippet) throws IOException
+   {
+     try
+     {
+        XMLUtils.newDocument(new ByteArrayInputStream(snippet.getBytes()));
+     }
+     catch (org.xml.sax.SAXException e) { throw new IOException(e.toString()); }
+     catch (javax.xml.parsers.ParserConfigurationException e) { throw new IOException(e.toString()); }
+      
    }
 
    /**
@@ -177,6 +192,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.2  2003/11/28 19:57:15  mch
+Cone Search now works
+
 Revision 1.1  2003/11/28 18:22:18  mch
 IndexGenerator now working
 

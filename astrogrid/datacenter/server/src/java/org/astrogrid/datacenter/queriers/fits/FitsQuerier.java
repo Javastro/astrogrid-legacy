@@ -1,28 +1,28 @@
 /*
- * $Id: FitsQuerier.java,v 1.5 2003/11/28 19:16:53 mch Exp $
+ * $Id: FitsQuerier.java,v 1.6 2003/11/28 19:57:15 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.queriers.fits;
 
-import java.awt.Polygon;
-import java.awt.Shape;
+import java.io.*;
+
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
-import java.io.IOException;
+import java.awt.geom.GeneralPath;
 import java.net.URL;
 import java.util.Vector;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.datacenter.adql.generated.Circle;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
+import org.astrogrid.datacenter.snippet.DocHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import java.awt.geom.Area;
 
 /**
  *
@@ -32,23 +32,14 @@ import java.awt.geom.Area;
 
 public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
 {
-
+   Document index = null;
    
    /**
     * locates all the fits files in this dataset that overlap the given
     * circular region
     */
-   public URL[] findFitsInCone(double ra, double dec, double sr) throws IOException
+   public String[] coneSearch(double ra, double dec, double sr) throws IOException
    {
-      String rawIndex = IndexGenerator.generateIndex(
-         new URL[] {
-               new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
-               new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
-               new URL("http://www.roe.ac.uk/~mch/r169101.fit")
-         }
-      );
-      Document index = loadIndex(rawIndex);
-
       Ellipse2D cone = new Ellipse2D.Double(ra-sr, dec-sr, sr*2,sr*2);
       Area matchingArea = new Area(cone);
       
@@ -56,7 +47,7 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
       
       //first locate all the coverage nodes in the index
       NodeList coverages = index.getElementsByTagName("Coverage");
-
+      
       for (int i=0;i<coverages.getLength();i++)
       {
          //extract coverage region
@@ -67,29 +58,36 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
          {
             //find parent tag describing whole file
             Element parent = (Element) coverages.item(i).getParentNode();
-            Node fileNode = parent.getElementsByTagName("Filename").item(0);
             
-            intersectingFits.add(fileNode.getNodeValue());
+            intersectingFits.add(DocHelper.getTagValue(parent, "Filename"));
          }
-      
+         
       }
       
-      return null;
+      return (String[]) intersectingFits.toArray(new String[] {});
    }
-
-   public Polygon getCoverage(Element dom)
+   
+   /**
+    * Looks through the coverage in the index and returns a suitable 'shape' to
+    * represent that region.  At the moment it just returns a 'general path' with
+    * the given points in it
+    */
+   public GeneralPath getCoverage(Element dom)
    {
-      Polygon region = new Polygon();
-
+      GeneralPath region = new GeneralPath();
+      
       NodeList points = dom.getElementsByTagName("Point");
-         
+      
       for (int l=0;l<points.getLength();l++)
       {
-         Node raNode = ((Element) points.item(l)).getElementsByTagName("RA").item(0);
-         Node decNode = ((Element) points.item(l)).getElementsByTagName("Dec").item(0);
-         
-         region.addPoint(Integer.parseInt(raNode.getNodeValue()),
-                         Integer.parseInt(decNode.getNodeValue()));
+         float ra = Float.parseFloat(DocHelper.getTagValue((Element) points.item(l), "RA"));
+         float dec = Float.parseFloat(DocHelper.getTagValue((Element) points.item(l), "Dec"));
+
+         if (l==0) {
+            region.moveTo(ra, dec);
+         } else {
+            region.lineTo(ra, dec);
+         }
       }
       
       return region;
@@ -109,18 +107,33 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
    /**
     * Loads the index from the given string.  Useful for testing...
     */
-   public Document loadIndex(String indexXml) throws IOException
+   public void setIndex(String indexXml) throws IOException
+   {
+      setIndex(new ByteArrayInputStream(indexXml.getBytes()));
+   }
+
+   /**
+    * Loads the index from the given stream.
+    */
+   public void setIndex(InputStream indexStream) throws IOException
    {
       try
       {
-         return XMLUtils.newDocument(indexXml);
+         index = XMLUtils.newDocument(indexStream);
       }
-      catch (org.xml.sax.SAXException e) {}
-      catch (javax.xml.parsers.ParserConfigurationException e) {}
+      catch (org.xml.sax.SAXException e) {  throw new IOException(e.toString()); }
+      catch (javax.xml.parsers.ParserConfigurationException e) {  throw new IOException(e.toString()); }
       
-      return null;
    }
    
+   /**
+    * Set the index from the given string
+    */
+   public void setIndex(Document givenIndexDom)
+   {
+       index = givenIndexDom;
+     
+   }
    
    /** Querier implemenation - Updates the status and does the query (by calling the abstract
     * queryDatabase() overridden by subclasses) and returns the results.
@@ -130,35 +143,78 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
       // TODO
       return null;
    }
+   
+   /* (non-Javadoc)
+    * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#getPluginInfo()
+    */
+   public String getPluginInfo() {
+      return "FITS Querier";
+   }
+   
+   /**
+    * Test harness
+    */
+   public static void main(String args[]) throws IOException
+   {
+      org.astrogrid.log.Log.logToConsole();
+      
+      File indexFile = new File("fitsIndex.xml");
+      if (!indexFile.exists())
+      {
+         org.astrogrid.log.Log.trace("Generating index...");
+         //create index file
+         String rawIndex = IndexGenerator.generateIndex(
+            new URL[] {
+               new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
+                  new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
+                  new URL("http://www.roe.ac.uk/~mch/r169101.fit")
+            }
+         );
+         org.astrogrid.log.Log.trace(rawIndex);
+         FileOutputStream out = new FileOutputStream(indexFile);
+         out.write(rawIndex.getBytes());
+      }
+      
+      FitsQuerier querier = new FitsQuerier();
+      querier.setIndex(new FileInputStream(indexFile));
 
-/* (non-Javadoc)
- * @see org.astrogrid.datacenter.queriers.spi.QuerierSPI#getPluginInfo()
- */
-public String getPluginInfo() {
-    return "FITS Querier";
-}
+      org.astrogrid.log.Log.trace("Starting cone search...");
+      String[] foundUrls = querier.coneSearch(308,60,12);
+      
+      org.astrogrid.log.Log.trace("Found "+foundUrls.length+":");
+      
+      for (int i=0;i<foundUrls.length;i++)
+      {
+         org.astrogrid.log.Log.trace(foundUrls[i].toString());
+      }
+      
+   }
 
 }
 
 /*
-$Log: FitsQuerier.java,v $
-Revision 1.5  2003/11/28 19:16:53  mch
-Extended matching
+ $Log: FitsQuerier.java,v $
+ Revision 1.6  2003/11/28 19:57:15  mch
+ Cone Search now works
 
-Revision 1.4  2003/11/28 18:22:18  mch
-IndexGenerator now working
+ Revision 1.5  2003/11/28 19:16:53  mch
+ Extended matching
 
-Revision 1.3  2003/11/28 16:10:30  nw
-finished plugin-rewrite.
-added tests to cover plugin system.
-cleaned up querier & queriermanager. tested
+ Revision 1.4  2003/11/28 18:22:18  mch
+ IndexGenerator now working
 
-Revision 1.2  2003/11/27 00:52:58  nw
-refactored to introduce plugin-back end and translator maps.
-interfaces in place. still broken code in places.
+ Revision 1.3  2003/11/28 16:10:30  nw
+ finished plugin-rewrite.
+ added tests to cover plugin system.
+ cleaned up querier & queriermanager. tested
 
-Revision 1.1  2003/11/25 18:50:06  mch
-Abstracted Querier from DatabaseQuerier
+ Revision 1.2  2003/11/27 00:52:58  nw
+ refactored to introduce plugin-back end and translator maps.
+ interfaces in place. still broken code in places.
+
+ Revision 1.1  2003/11/25 18:50:06  mch
+ Abstracted Querier from DatabaseQuerier
 
  */
+
 

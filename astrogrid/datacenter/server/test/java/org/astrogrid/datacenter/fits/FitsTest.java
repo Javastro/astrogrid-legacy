@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.4 2003/11/28 18:22:53 mch Exp $
+/*$Id: FitsTest.java,v 1.5 2003/11/28 19:57:45 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -38,12 +38,14 @@ public class FitsTest extends TestCase
    {
       URL[] fits = new URL[] {
             new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
-            new URL("http://www.roe.ac.uk/~mch/r169097.fit")
-      };
+            new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
+            new URL("http://www.roe.ac.uk/~mch/r169101.fit")
+     };
       
       String index = IndexGenerator.generateIndex(fits);
       assertNotNull(index);
    }
+
    
    public static Test suite()
    {
@@ -65,6 +67,9 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.5  2003/11/28 19:57:45  mch
+ Cone Search now works
+
  Revision 1.4  2003/11/28 18:22:53  mch
  Added index generator tests
 
