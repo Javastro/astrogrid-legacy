@@ -196,14 +196,26 @@ public class Workflow extends Activity {
     private static final String
         MYSPACE_PROTOCOL = "myspace://" ;
         
-    
+    /**
+      * <p> 
+      * Static helper method for creating a bare workflow.
+      * <p>
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param name - name of the intended workflow. If the Workflow is finally saved,
+      * name will form the file name within MySpace, so the name should preferably be
+      * unique. However, the name can be set later.
+      * @param description - some meaningful description of the workflow. Description
+      * can be set later.
+      * @return A bare workflow.
+      * 
+      **/         
     public static Workflow createWorkflow(  String communitySnippet
                                           , String name
                                           , String description  ) {
-        if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() entry") ;   
+        if( TRACE_ENABLED ) trace( "entry: Workflow.createWorkflow()") ;   
            
-        Workflow
-            workflow ;
+        Workflow workflow = null;
           
         debug( "community: " + communitySnippet ) ;
         debug( "name: " + name ) ;
@@ -216,7 +228,7 @@ public class Workflow extends Activity {
             workflow.setDescription( description ) ; 
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.createWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.createWorkflow()") ; 
         }
  
         return workflow ;
@@ -224,17 +236,40 @@ public class Workflow extends Activity {
     } // end createWorkflow()
     
     
-    
+    /**
+      * <p> 
+      * Static helper method for creating a workflow containing a given structure
+      * of sequences, flows and steps.
+      * <p>
+      * The structure is given by passing a template name. There are a limited number
+      * of templates, with the corresponding names. 
+      * (1) OneStepJob, 
+      * (2) TwoParallelJobsteps, 
+      * (3) TwoSequentialJobsteps, 
+      * (4) TwoStepFlowAndMerge,
+      * (5) ComplexWorkflow
+      * 
+      * Templates are intended as a short-term measure whilst gui development is
+      * getting started.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param name - name of the intended workflow. If the Workflow is finally saved,
+      * name will form the file name within MySpace, so the name should preferably be
+      * unique. However, the name can be set later.
+      * @param description - some meaningful description of the workflow. Description
+      * can be set later.
+      * @param templateName - the name of the template.
+      * @return A workflow with the same structure as the template.
+      * 
+      **/        
     public static Workflow createWorkflowFromTemplate(  String communitySnippet
                                                       , String name
                                                       , String description
                                                       , String templateName  ) {
-         if( TRACE_ENABLED ) trace( "Workflow.createWorkflowFromTemplate() entry") ;   
+         if( TRACE_ENABLED ) trace( "entry: Workflow.createWorkflowFromTemplate()") ;   
            
-         Workflow
-             workflow = null ;
-         String
-            templateString = null ;
+         Workflow workflow = null ;
+         String templateString = null ;
           
          debug( "community: " + communitySnippet ) ;
          debug( "name: " + name ) ;
@@ -242,8 +277,7 @@ public class Workflow extends Activity {
             
          try {
                        
-             InputSource
-                source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
+             InputSource source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
              Document doc = XMLUtils.newDocument(source) ;
              workflow = new Workflow( communitySnippet, doc ) ;              
               
@@ -256,7 +290,7 @@ public class Workflow extends Activity {
              debug( "Exception: " + ex.getLocalizedMessage() );
          }
          finally {
-             if( TRACE_ENABLED ) trace( "Workflow.createWorkflowFromTemplate() exit") ; 
+             if( TRACE_ENABLED ) trace( "exit: Workflow.createWorkflowFromTemplate()") ; 
          }
  
          return workflow ;
@@ -266,19 +300,25 @@ public class Workflow extends Activity {
     
     
     
-    
+    /**
+      * <p> 
+      * Static helper method for reading a workflow from MySpace.
+      * <p>
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param name - name of the workflow. 
+      * @return A workflow reinstantiated from MySpace. If the requested workflow 
+      * is not found, will return null
+      * 
+      **/            
     public static Workflow readWorkflow( String communitySnippet
                                        , String name ) {
-        if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readWorkflow()") ; 
         
-        Workflow
-            workflow = null;
-        StringBuffer
-            pathBuffer = new StringBuffer( 64 ) ;
-        String
-            xmlString = null ;
-        String
-            mySpaceLocation = null ;
+        Workflow workflow = null;
+        StringBuffer pathBuffer = new StringBuffer( 64 ) ;
+        String xmlString = null ;
+        String mySpaceLocation = null ;
          
         try {
             
@@ -318,22 +358,30 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.readWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.readWorkflow()") ; 
         }
        
         return workflow ;
         
     } // end of readWorkflow() 
     
-    
+
+    /**
+      * <p> 
+      * Static helper method for deleting a workflow from MySpace.
+      * <p>
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param name - name of the workflow. 
+      * @return A boolean indicating success or failure.
+      * 
+      **/      
     public static boolean deleteWorkflow( String communitySnippet
                                         , String name  ) {
-        if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.deleteWorkflow()") ; 
         
-        boolean
-            retValue = true ; // Assumption is it works!
-        StringBuffer
-            pathBuffer = new StringBuffer( 64 );
+        boolean retValue = true ; // Assumption is it works!
+        StringBuffer pathBuffer = new StringBuffer( 64 );
         String
             mySpaceLocation = null,
             account = null ;       
@@ -375,20 +423,29 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.deleteWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.deleteWorkflow()") ; 
         }
         
         return retValue ;
         
     } // end of deleteWorkflow()
     
-    
+  
+    /**
+      * <p> 
+      * Static helper method for saving a workflow in MySpace.
+      * <p>
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param workflow to be saved. 
+      * @return A boolean indicating success or failure.
+      * 
+      **/       
     public static boolean saveWorkflow( String communitySnippet
                                       , Workflow workflow ) {
-        if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.saveWorkflow()") ; 
         
-     boolean
-         retValue = false ;
+     boolean retValue = false ;
      String
          xmlWorkflow = null,
          filePath = null,
@@ -398,11 +455,9 @@ public class Workflow extends Activity {
      try {
          
          account = CommunityMessage.getAccount( communitySnippet ) ;
-         xmlWorkflow = workflow.constructWorkflowXML( communitySnippet ) ;
-         
+         xmlWorkflow = workflow.constructWorkflowXML( communitySnippet ) ;       
          mySpaceLocation =  WKF.getProperty( WKF.MYSPACE_URL, WKF.MYSPACE_CATEGORY ) ;
            
-
          if( mySpaceLocation == null || mySpaceLocation.trim().equals("") ) {
              
              // This is here purely for test situations...
@@ -432,26 +487,34 @@ public class Workflow extends Activity {
          ex.printStackTrace() ;
      }
      finally {
-         if( TRACE_ENABLED ) trace( "Workflow.saveWorkflow() exit") ; 
+         if( TRACE_ENABLED ) trace( "exit: Workflow.saveWorkflow()") ; 
      }
         
      return retValue ;
 
     } // end of saveWorkflow()
     
-    
+ 
+    /**
+      * <p> 
+      * Static helper method for submitting a workflow to the Job Entry System.
+      * <p>
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param workflow to be submitted. 
+      * @return A boolean indicating success or failure.
+      * 
+      **/         
     public static boolean submitWorkflow( String communitySnippet
                                         , Workflow workflow ) {
-        if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.submitWorkflow()") ; 
 
-        boolean
-            retValue = false ;
+        boolean retValue = false ;
         String
             request = null,
             jesLocation = null,
             response = null ;
-        JobControllerDelegate
-            jobController = null ;
+        JobControllerDelegate jobController = null ;
                            
         try {
             jesLocation = WKF.getProperty( WKF.JES_URL, WKF.JES_CATEGORY ) ;
@@ -468,7 +531,7 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.submitWorkflow() exit") ; 
+            if( TRACE_ENABLED ) trace( "entry: Workflow.submitWorkflow()") ; 
         }
         
         return retValue ;
@@ -476,22 +539,27 @@ public class Workflow extends Activity {
     } // end of submitWorkflow()
     
     
-    /*
-     * At present this returns just an Iterator of string Objects representing the names
-     * of the files.
-     */
+    /**
+      * <p> 
+      * Static helper method that reads a list of workflows contained in MySpace.
+      * <p>
+      * At present this returns just an Iterator of string Objects representing the names
+      * of the workflow files held by the given user within MySpace.
+      * 
+      * @param communitySnippet - userid, community, group and security token details.
+      * @param filter - a filter argument against file name sumitted to MySpace. NB: this 
+      * is not currently used. 
+      * @return An iterator of file names. 
+      **/  
     public static Iterator readWorkflowList( String communitySnippet
                                            , String filter ) {
-        if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readWorkflowList()") ; 
         
         // JBL: For the moment we are ignoring filter.
         
-        StringBuffer
-            argumentBuffer = new StringBuffer( 64 ) ;
-        String
-            mySpaceLocation = null ;
-        Iterator
-            iterator = null ;
+        StringBuffer argumentBuffer = new StringBuffer( 64 ) ;
+        String mySpaceLocation = null ;
+        Iterator iterator = null ;
         
         try {
             
@@ -527,7 +595,7 @@ public class Workflow extends Activity {
             ex.printStackTrace() ;
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.readWorkflowList() exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.readWorkflowList()") ; 
         }
        
         return iterator ;
@@ -1489,6 +1557,11 @@ public class Workflow extends Activity {
       * the old value to null or the empty string.
       * 
       * This is by far the easiest way of setting parameter values!
+      * 
+      * Note. If the value to be inserted is a parameter with no upper cardinality  
+      * and it is not a replacement for an old value (ie: it is a new insert), then
+      * as a convenience to the gui, we examine how many empty ones are still
+      * left, and insert a new empty parameter if none are found.
       *  
       * @param tool - The tool to be executed
       * @param paramName - the name of the parameter
@@ -1508,11 +1581,14 @@ public class Workflow extends Activity {
                                               , String newValue
                                               , String direction ) {
     
-        if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction) entry") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)") ; 
         
             boolean retValue = false ;
             ListIterator iterator = null ;
-            Parameter p ;
+            Parameter 
+                p = null,
+                savedNewInsertTarget = null ;
+            int countOfEmptyParams = 0 ;
      
         try {
             
@@ -1523,39 +1599,67 @@ public class Workflow extends Activity {
                 iterator = tool.getOutputParameters() ;
             }
             else {
-                return retValue ;
+                return retValue ; // Return with error!
             }
             
             while( iterator.hasNext() ) {
                 p = (Parameter)iterator.next() ;
                 if( p.getName().equals( paramName ) ) {
+                    // OK, we've identified the parameter...
+                    
                     if( (oldValue == null || oldValue.equals("") )
                         &&
                         (p.getValue() == null || p.getValue().equals("") ) ) {
-                            
+                          
+                        // OK, we've identified that we need to insert
+                        // into an empty parameter...    
                         p.setValue( newValue ) ;
-                        if(p.getCardinality().getMaximum() <= -1) {
-                            tool.newInputParameter( "VOTfiles" ) ;
-                        }
+                        savedNewInsertTarget = p ;
                         retValue = true ;
                         break ;
                     }
                     else if( (oldValue != null)
                              &&
                              (oldValue.equals( p.getValue() )) ) {
-                                 
+                        
+                        // OK, we've identified that we wish to replace
+                        // an existing value with a new value...         
                         p.setValue( newValue ) ;
-						if(p.getCardinality().getMaximum() <= -1) {
-						    tool.newInputParameter( "VOTfiles" ) ;
-						}
                         retValue = true ;
                         break ;
                     }
                 } // end if
-            } // end while 
+            } // end while
+            
+            // If we have inserted a brand new value and the cardinality is unbounded
+            if( (savedNewInsertTarget != null) 
+                &&
+                (savedNewInsertTarget.getCardinality().getMaximum() <= -1) ) {
+                  
+                // First, count up the empty parameters of this type still left...
+                while( iterator.hasNext() ) {
+                    p = (Parameter)iterator.next() ;
+                    if( (p.getName().equals( paramName )) 
+                        &&
+                        (p.getValue() == null || p.getValue().equals("") ) ) {
+                            
+                        countOfEmptyParams++ ;
+                    }
+                    
+                } // endwhile
+                 
+                // If the count of empty parameters (of this type )is now zero
+                // then for the convenience of the gui we create a further empty 
+                // parameter... 
+                if( countOfEmptyParams == 0 ) { 
+                    tool.newInputParameter( paramName ) ;
+                }
+                                 
+            } // endif
+             
         }
         finally {
-            if( TRACE_ENABLED ) trace( "Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction) exit") ; 
+            if( TRACE_ENABLED ) trace( "exit: Workflow.insertParameterValue(tool,paramName,oldValue,newValue,direction)") ; 
         }
         
         return retValue ;
