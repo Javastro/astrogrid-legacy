@@ -7,6 +7,15 @@ import javax.xml.transform.stream.*;
 import org.w3c.dom.*;
 import java.io.*;
 
+/**
+ * ClassName: CreateRequest
+ * Purpose:  Might need to change the name to something else now.  The main purpose is to instantiate an XML document
+ * that conforms to the jobcontroller scheme.  It takes a QueryBuilder object and using the buildXML method creates a 
+ * Document object of the xml that conforms to the scheme.  Also can be used as a standalone class that I needed it for testing
+ * purposes.
+ * @author Kevin Benson
+ *
+ */
 public class CreateRequest {
 
 	private final String JOB_ELEMENT = "job";
@@ -35,7 +44,15 @@ public class CreateRequest {
 		buildXMLRequest(qb);
 	}
 
-
+	/**
+	 * BuildXMl request is the main method in this object.  It takes a QueryBuilder object that has all their DataSetInformation
+	 * objects and thier DataSetColumn and CriteriaInformation and form to the jobController schema.
+	 * Right now looks a little messy because it has all these different Element objects to it.  But that is about it nothing
+	 * exciting.  It does call doCriteria for doing the criteria Information by itself because it can be done recursively
+	 * and it is a little more complex.
+	 * @param qb
+	 * @return
+	 */
 	public Document buildXMLRequest(QueryBuilder qb) {
 		try {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -96,12 +113,23 @@ public class CreateRequest {
 		return null;
 	}
 
+	/**
+	 * Takes an xml document and prints it out on the System.out (the command line) for viewing.
+	 * @param doc
+	 * @throws Exception
+	 */
 	private void printDocument(Document doc) throws Exception {
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer output = tf.newTransformer();
 		output.transform(new DOMSource(doc), new StreamResult(System.out));
 	}
 
+	/**
+	 * Just takes an XML document and puts it into a nice readable string and returns it.
+	 * @param doc
+	 * @return
+	 * @throws Exception
+	 */
 	public String writeDocument(Document doc) throws Exception {
 		//StringWriter sw = new StringWriter();
 		ByteArrayOutputStream sw = new ByteArrayOutputStream();
@@ -111,6 +139,13 @@ public class CreateRequest {
 		return sw.toString();
 	}
 
+	/**
+	 * This method recursively calls itself doing the <operation> part of the schema.  Which is held in all the different
+	 * CriteriaInformation objects.
+	 * @param doc
+	 * @param operationElem
+	 * @param ci
+	 */
 	private void doCriteria(Document doc,Element operationElem,CriteriaInformation ci) {
 
 		Element opElement,fieldElem;

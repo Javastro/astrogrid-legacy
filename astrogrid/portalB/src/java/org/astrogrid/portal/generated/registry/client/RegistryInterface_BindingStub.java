@@ -75,9 +75,9 @@ public class RegistryInterface_BindingStub extends org.apache.axis.client.Stub i
         _call.addParameter(new javax.xml.namespace.QName("", "query"), new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class, javax.xml.rpc.ParameterMode.IN);
         _call.setReturnType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"), java.lang.String.class);
         _call.setUseSOAPAction(true);
-        _call.setSOAPActionURI("urn:org.astrogrid.registry.RegistryInterface");
+        _call.setSOAPActionURI("urn:org.astrogrid.registry.RegistryInterface3_0");
         _call.setOperationStyle("rpc");
-        _call.setOperationName(new javax.xml.namespace.QName("urn:org.astrogrid.registry.RegistryInterface", "submitQuery"));
+        _call.setOperationName(new javax.xml.namespace.QName("urn:org.astrogrid.registry.RegistryInterface3_0", "submitQuery"));
 
         java.lang.Object _resp = _call.invoke(new java.lang.Object[] {query});
 

@@ -1,7 +1,14 @@
 package org.astrogrid.portal.query;
-
 import java.util.ArrayList;
 
+/**
+ * Class Name: DataSetInformaiton
+ * Purpose: This is sort of the main part of building a query because it holds all the necessary information associated
+ * to a DataSet including Return Columns/UCDS which is stored in an ArrayList of DataSetColumn objects and also Criteria
+ * that deals with the "where" part of the query.  So it holds an ArrayList of CriteriaInformation objects.
+ * @author Kevin Benson
+ *
+ */
 public class DataSetInformation {
 
 	private String name = null;
@@ -50,10 +57,21 @@ public class DataSetInformation {
 		return this.dbName;
 	}
 
+	/**
+	 * add a new DataSetColumn with the Default type of Column.
+	 * @param columnName
+	 * @return
+	 */
 	public DataSetColumn addDataSetColumn(String columnName) {
-		return addDataSetColumn(columnName,"");
+		return addDataSetColumn(columnName,"COLUMN");
 	}
 
+	/**
+	 * add a DataSetColumn object
+	 * @param columnName
+	 * @param type
+	 * @return
+	 */
   	public DataSetColumn addDataSetColumn(String columnName,String type) {
   		return addDataSetColumn(new DataSetColumn(columnName,type));
   	}
@@ -105,6 +123,18 @@ public class DataSetInformation {
 		removeCriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
 	}
 
+	/**
+	 * This method is actually now the main method that is always used for removing.  This method will get the item in the ArrayList 
+	 * determined by the int variable link and then start comparing that CriteriaInformation and any of it's sub
+	 * CriteriaInformation objects to remove it.  Uses the findAndRemoveCriteria methos to do the real removing.  If
+	 * a CriteriaInformaiton object has sub-CriteriaInformation objects then appropriate removal and resetting of the
+	 * sub-CriteriaInformation will occur.
+	 * @param columnName
+	 * @param type
+	 * @param filterType
+	 * @param value
+	 * @param link
+	 */
 	public void removeCriteriaInformation(String columnName,String type,String filterType,String value,int link) {
 		CriteriaInformation ci = (CriteriaInformation)criteriaInfo.get(link);
 		CriteriaInformation rem = new CriteriaInformation(new DataSetColumn(columnName,type),filterType,value);
@@ -117,7 +147,14 @@ public class DataSetInformation {
 		}
 		findAndRemoveCriteria(ci,ci,rem);
 	}
-
+	
+	/**
+	 * This method will recursively call itself until it finds the target Criteria that equals the src Criteria.
+	 * A parent Criteria is also passed around so it can set any sub CriteriaInformaiton objects appropritate. 
+	 * @param parent
+	 * @param src
+	 * @param target
+	 */
 	private void findAndRemoveCriteria(CriteriaInformation parent,CriteriaInformation src,CriteriaInformation target) {
 		boolean found = false;
 		if(target.equals(src)) {

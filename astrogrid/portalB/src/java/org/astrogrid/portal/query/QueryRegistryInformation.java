@@ -21,6 +21,7 @@ public class QueryRegistryInformation {
 
 	public static String getAllDataSetInformationFromRegistry() {
 		//the thing about this string it is always going to be the same.
+		/*
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			//dbf.setValidating(true);
@@ -42,15 +43,18 @@ public class QueryRegistryInformation {
 			TransformerFactory tf = TransformerFactory.newInstance();
 			Transformer output = tf.newTransformer();
 			output.transform(new DOMSource(doc), new StreamResult(sw));
-			return "<query><selectionSequence><selection item='community' itemOp='EQ' value='MSSL'/><selectionOp op='AND'/><selectionSequence><selectionSequence><selection item='publisher' itemOp='NE' value='E. Auden'/> <selectionOp op='OR'/> <selection item='name' itemOp='EQ' value='Carl Foley'/></selectionSequence> </selectionSequence> <selectionOp op='OR'/> <selectionSequence> <selection item='id' itemOp='EQ' value='LEDAS'/></selectionSequence></selectionSequence></query>";
+			//return "<query><selectionSequence><selection item='community' itemOp='EQ' value='MSSL'/><selectionOp op='AND'/><selectionSequence><selectionSequence><selection item='publisher' itemOp='NE' value='E. Auden'/> <selectionOp op='OR'/> <selection item='name' itemOp='EQ' value='Carl Foley'/></selectionSequence> </selectionSequence> <selectionOp op='OR'/> <selectionSequence> <selection item='id' itemOp='EQ' value='LEDAS'/></selectionSequence></selectionSequence></query>";
 			//return sw.toString();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
+		*/
+		return "<query><selectionSequence><selection item='searchElements' itemOp='EQ' value='all'/><selectionOp op='$and$'/><selection item='ticker' itemOp='EQ' value='all'/></selectionSequence></query>";
 	}
 
 	public static String getAllContentInformationFromRegistryForDataSet(String dsName) {
+		/*
 		try {
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			//dbf.setValidating(true);
@@ -75,7 +79,8 @@ public class QueryRegistryInformation {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		*/
+		return "<query><selectionSequence><selection item='searchElements' itemOp='EQ' value='content'/><selectionOp op='$and$'/><selection item='ticker' itemOp='EQ' value='" + dsName + "'/></selectionSequence></query>"; 
 	}
 
 	public static Object[] getDataSetItemsFromRegistryResponse(String response) {
@@ -83,11 +88,11 @@ public class QueryRegistryInformation {
 		ArrayList items = new ArrayList();
 		int start = 0,end = 0;
 		String temp = "";
-		while( (end = response.indexOf("item='id'",end)) != -1) {
+		while( (end = response.indexOf("item='ticker'",end)) != -1) {
 //			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
 			start = response.indexOf("value=",end) + 7;
-			end = response.indexOf("\"",start+1);
-			if(end <= 0) { end = response.indexOf("'",start+1); }
+			end = response.indexOf("'",start+1);
+			if(end <= 0) { end = response.indexOf("\"",start+1); }
 			items.add( (temp = response.substring(start,end)));
 //			System.out.println("The substring added = " + temp);
 			end++;
@@ -101,13 +106,17 @@ public class QueryRegistryInformation {
 		ArrayList items = new ArrayList();
 		int start = 0,end = 0;
 		String temp = "";
+		temp = "<recordKeyPair item='metadataType' value='content'/>";
+		end = response.indexOf(temp) + temp.length(); 
 		while(response.indexOf("item=",end) != -1) {
 //			System.out.println("Current start index = " + start + " Current end index = " + end + " IndexOf item = " + response.indexOf("item=",end));
 			start = response.indexOf("item=",end) + 6;
 			end = response.indexOf("\"",start+1);
 			if(end <= 0) { end = response.indexOf("'",start+1); }
-			items.add( (temp = response.substring(start,end)));
-//			System.out.println("The substring added = " + temp);
+			temp = response.substring(start,end);
+			if(items.indexOf(temp) == -1) {
+				items.add(temp);
+			}			
 			end++;
 		}
 		return items.toArray();

@@ -80,7 +80,7 @@ public class RegistryInterfaceLocator extends org.apache.axis.client.Service imp
     }
 
     public javax.xml.namespace.QName getServiceName() {
-        return new javax.xml.namespace.QName("urn:org.astrogrid.registry", "RegistryInterface");
+        return new javax.xml.namespace.QName("urn:org.astrogrid.registry", "RegistryInterface3_0");
     }
 
     private java.util.HashSet ports = null;
