@@ -12,7 +12,7 @@ package org.astrogrid.datacenter.votable;
 
 import org.astrogrid.datacenter.DatacenterException;
 import org.astrogrid.i18n.AstroGridMessage;
-
+/** exception type for the VOTable component */ 
 public class VOTableException extends DatacenterException {
 	 
 
