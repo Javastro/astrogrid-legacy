@@ -1,4 +1,4 @@
-/*$Id: FairlyGroovyWorkflowTest.java,v 1.2 2004/08/12 14:46:11 nw Exp $
+/*$Id: FairlyGroovyWorkflowTest.java,v 1.3 2004/08/12 21:46:15 nw Exp $
  * Created on 04-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -104,35 +104,22 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
         
         super.checkExecutionResults(result); // checks workflow completed, at least.
         Step step = (Step)result.getSequence().getActivity(2);
-        Script sc = (Script)result.getSequence().getActivity(3);
         
         // have a look at the execution of the step.
-        assertEquals(1,step.getStepExecutionRecordCount());
-        StepExecutionRecord ser = step.getStepExecutionRecord(0);
-        assertNotNull(ser);
-        MessageType resultMessage = (MessageType)ser.findXPathValue("message[source='CEA']"); // crap way to find the results message, but wll do for now.
-        assertNotNull(resultMessage);
-        
-        ResultListType rList = ResultListType.unmarshalResultListType(new StringReader(resultMessage.getContent()));
-        assertNotNull(rList);
+        assertStepCompleted(step);
+
+        ResultListType rList = getResultOfStep(step); 
         assertEquals(1,rList.getResultCount());
         assertEquals("7",rList.getResult(0).getValue());  // ok, so cea returned the correct result - so variables are being passed in.
-        
-        assertEquals(1,sc.getStepExecutionRecordCount());
-        ser = sc.getStepExecutionRecord(0);
-        assertNotNull(ser);
-        resultMessage = (MessageType)ser.findXPathValue("message[source='stdout']");
-        assertNotNull(resultMessage);
-        assertEquals("true",resultMessage.getContent());
+
+
+        Script sc = (Script)result.getSequence().getActivity(3);
+        assertScriptCompletedWithMessage(sc,"true");
         
         step = (Step)result.getSequence().getActivity(4);
-        assertNotNull(step);
-        ser = step.getStepExecutionRecord(0);
-        assertNotNull(ser);
-        resultMessage = (MessageType)ser.findXPathValue("message[source='CEA']");
-        assertNotNull(resultMessage);
-        
-        rList = ResultListType.unmarshalResultListType(new StringReader(resultMessage.getContent()));
+        assertStepCompleted(step);
+
+        rList =getResultOfStep(step);
         assertNotNull(rList);
         assertEquals(1,rList.getResultCount());
         assertEquals("Hello 7", rList.getResult(0).getValue()); // proves that results of one cea application can be passed in as parameters to the next.
@@ -146,6 +133,9 @@ public class FairlyGroovyWorkflowTest extends AbstractTestForWorkflow{
 
 /* 
 $Log: FairlyGroovyWorkflowTest.java,v $
+Revision 1.3  2004/08/12 21:46:15  nw
+cleaned up assertions
+
 Revision 1.2  2004/08/12 14:46:11  nw
 fixed buglet
 
