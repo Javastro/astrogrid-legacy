@@ -14,9 +14,12 @@
         <action dev="jdt" type="fix" issue="909"> 
             All config properties are now set in web.xml.  Obsolete properties removed.
         </action>
+        <action dev="pah" type="fix" issue="540"> 
+            some very small config changes for the AVO demo
+        </action>          
         <action dev="jdt" type="fix" issue="902"> 
             An update to cea-http (ie SIAP applications), required following changes to the registry.
-        </action>          
+        </action>    
         <action dev="nww" type="add" issue="890"> 
             A fix to the myspace interface requested by the Aladin team.
              </action>    
