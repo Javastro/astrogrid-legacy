@@ -1,5 +1,5 @@
 /*
- * $Id: JNDIConfig.java,v 1.2 2003/12/09 23:01:15 pah Exp $
+ * $Id: JNDIConfig.java,v 1.3 2004/01/16 23:30:24 pah Exp $
  * 
  * Created on 15-Sep-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -36,6 +36,7 @@ import javax.sql.DataSource;
  */
 
 public class JNDIConfig implements Config {
+   private String jndiconfigkey;
    private boolean propertiesLoaded;
    /**
     * The property set
@@ -56,6 +57,7 @@ public class JNDIConfig implements Config {
     *
     */
 
+   private URL configURL = null;
    /* (non-Javadoc)
     * @see org.astrogrid.community.common.Config#getProperty(java.lang.String)
     */
@@ -64,12 +66,12 @@ public class JNDIConfig implements Config {
    }
 
    public JNDIConfig(String jndiName) {
+      jndiconfigkey=jndiName;
       props = new Properties();
       propertiesLoaded = loadProperties(jndiName);
    }
 
    private boolean loadProperties(String jndiName) {
-      URL configUrl = null;
       boolean retval = false;
       try {
          logger.info("looking for properties with JNDI name " + jndiName);
@@ -84,13 +86,13 @@ public class JNDIConfig implements Config {
          
 
          if (o instanceof URL) {
-            configUrl = (URL)o;
+            configURL = (URL)o;
             
          }
          else
             if (o instanceof String) {
                logger.info("got string "+ (String)o);
-               configUrl = new URL((String)o);
+               configURL = new URL((String)o);
             }
             else {
                logger.debug(
@@ -100,13 +102,13 @@ public class JNDIConfig implements Config {
             }
 
          //load the resources
-         if (configUrl != null) {
-            logger.info("found resource pointer at " + configUrl.toString());
-            InputStream str = configUrl.openStream();
+         if (configURL != null) {
+            logger.info("found resource pointer at " + configURL.toString());
+            InputStream str = configURL.openStream();
             logger.info(str.toString());
             if(str==null)
             {
-               logger.error("cannot open stream to "+ configUrl.toString());
+               logger.error("cannot open stream to "+ configURL.toString());
             }
             props.load(str);
             retval = true; // have been successfull
@@ -141,7 +143,7 @@ public class JNDIConfig implements Config {
    }
 
    private DataSource loadDataSource(String jndiName) {
-      DataSource configUrl = null;
+      DataSource dbconfigUrl = null;
       boolean retval = false;
       try {
          Object o = null;
@@ -153,8 +155,8 @@ public class JNDIConfig implements Config {
          }
 
          if (o instanceof DataSource) {
-            configUrl = (DataSource)o;
-            logger.info("created datasource "+ configUrl.toString());
+            dbconfigUrl = (DataSource)o;
+            logger.info("created datasource "+ dbconfigUrl.toString());
          }
          else {
             logger.debug(
@@ -168,7 +170,7 @@ public class JNDIConfig implements Config {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }
-      return configUrl;
+      return dbconfigUrl;
    }
 
    /**
@@ -180,6 +182,13 @@ public class JNDIConfig implements Config {
     */
    public DataSource getDataSource(String key) {
       return loadDataSource(key);
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   public String toString() {
+      return this.getClass().getName() +": jndi key="+ jndiconfigkey + " configURL="+configURL;
    }
 
 }
