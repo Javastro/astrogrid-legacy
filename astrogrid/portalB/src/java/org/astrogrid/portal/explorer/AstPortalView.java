@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 12:05:43 $</cvs:author>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.4  2003/06/18 12:05:43  dave
+ * Added debug and response status
+ *
  * Revision 1.3  2003/06/18 01:33:15  dave
  * Moved message parser into separate class and added service lookup to pages
  *
@@ -231,6 +234,14 @@ public class AstPortalView
 				"</query>" +
 			"</request>"
 			;
+
+		if (DEBUG_FLAG)
+			{
+			System.out.println("----") ;
+			System.out.println(request) ;
+			System.out.println("----") ;
+			}
+
 		//
 		// Call our MySpaceManager service.
 		String response = null ;

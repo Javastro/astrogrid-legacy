@@ -2,11 +2,14 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/services/myspace/client/Attic/LookupResponseParser.java,v $</cvs:source>
  * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/18 01:33:15 $</cvs:author>
- * <cvs:version>$Revision: 1.1 $</cvs:version>
+ * <cvs:author>$Date: 2003/06/18 12:05:43 $</cvs:author>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  *
  * <cvs:log>
  * $Log: LookupResponseParser.java,v $
+ * Revision 1.2  2003/06/18 12:05:43  dave
+ * Added debug and response status
+ *
  * Revision 1.1  2003/06/18 01:33:15  dave
  * Moved message parser into separate class and added service lookup to pages
  *
@@ -62,6 +65,14 @@ public class LookupResponseParser
 	public void parseResponse(String response)
 		throws IOException, SAXException
 		{
+		if (DEBUG_FLAG)
+			{
+			System.out.println("LookupResponseParser.parseResponse()") ;
+			System.out.println("----") ;
+			System.out.println(response) ;
+			System.out.println("----") ;
+			}
+
 		//
 		// Remove the bad header from the response.
 		String header = "<?xml version=1.0 encoding=UTF-8?>" ;
@@ -72,6 +83,21 @@ public class LookupResponseParser
 		//
 		// Parse the response.
 		this.parse(reader) ;
+		}
+
+	/**
+	 * The response status.
+	 *
+	 */
+	protected MySpaceResponseStatus status ;
+
+	/**
+	 * Access to the response status.
+	 *
+	 */
+	public MySpaceResponseStatus getStatus()
+		{
+		return this.status ;
 		}
 
 	/**
@@ -110,6 +136,7 @@ public class LookupResponseParser
 					//
 					// Initialise our results.
 					results = new Vector() ;
+					status  = new MySpaceResponseStatus() ;
 					}
 				//
 				// Close of results element.
@@ -148,6 +175,10 @@ public class LookupResponseParser
 														throws SAXException
 														{
 														if (DEBUG_FLAG) System.out.println("Status : " + text) ;
+														if (null != status)
+															{
+															status.setStatus(text) ;
+															}
 														}
 													}
 												);
@@ -167,7 +198,11 @@ public class LookupResponseParser
 													public void parseText(String text)
 														throws SAXException
 														{
-														if (DEBUG_FLAG) System.out.println("Details ....") ;
+														if (DEBUG_FLAG) System.out.println("Details : " + text) ;
+														if (null != status)
+															{
+															status.setDetails(text) ;
+															}
 														}
 													}
 												);
