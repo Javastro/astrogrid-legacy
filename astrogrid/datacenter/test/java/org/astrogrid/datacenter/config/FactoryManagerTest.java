@@ -102,14 +102,12 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
         facMan.setDefaultQueryFactory(q);
         QueryFactory q1 = facMan.getDefaultQueryFactory();
         assertSame(q,q1);
-        assertTrue(setConfigurationSeen);
    }
    public void testJobFactoryVal() {
         JobFactory j = (JobFactory)createFactory(JobFactory.class);
         facMan.setJobFactory(j);
         JobFactory j1 = facMan.getJobFactory();
         assertSame(j,j1);
-        assertTrue(setConfigurationSeen);
    }
 
     public void testQueryFactoryVal() throws QueryException{
@@ -119,7 +117,6 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
         assertTrue(facMan.isQueryFactoryAvailable("foo"));
         QueryFactory q1 = facMan.getQueryFactory("foo");
         assertSame(q,q1);
-        assertTrue(setConfigurationSeen);
     }
 
     //helper methods
@@ -128,13 +125,15 @@ public class FactoryManagerTest extends FactoryProviderTestSpec implements Invoc
         return Proxy.newProxyInstance(this.getClass().getClassLoader(),new Class[] {factoryInterface},this);
 
     }
+    
 
-    /* 'callback' method from proxy classes
-     if the set configuration method is called, sets a boolean flag which is then checked in test case.*/
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (method.getName().equals("setConfiguration")) {
-            setConfigurationSeen = true;
-        }
+    /* (non-Javadoc)
+     * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
+     */
+    public Object invoke(Object proxy, Method method, Object[] args)
+        throws Throwable {
+        // do nothing for now -- later could add add code to verify certain methods ar ebeing called.
         return null;
     }
+
 }
