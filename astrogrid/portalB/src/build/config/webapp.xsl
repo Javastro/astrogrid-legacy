@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
 	| <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/build/config/Attic/webapp.xsl,v $</cvs:source>
-	| <cvs:author>$Author: dave $</cvs:author>
-	| <cvs:date>$Date: 2003/09/18 09:09:11 $</cvs:date>
-	| <cvs:version>$Revision: 1.1 $</cvs:version>
+	| <cvs:author>$Author: bkm $</cvs:author>
+	| <cvs:date>$Date: 2003/12/15 16:25:58 $</cvs:date>
+	| <cvs:version>$Revision: 1.2 $</cvs:version>
 	| <cvs:log>
 	|   $Log: webapp.xsl,v $
+	|   Revision 1.2  2003/12/15 16:25:58  bkm
+	|   Comment out non-operational DTD reference (used to work!!!)
+	|
 	|   Revision 1.1  2003/09/18 09:09:11  dave
 	|   Added webapp xsl transform.
 	|
@@ -17,11 +20,11 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 	>
 	<!-- Set the output document type -->
-	<xsl:output
-		doctype-system="http://java.sun.com/j2ee/dtds/web-app_2.2.dtd"
-		doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
-		/>
-
+	<!--+ <xsl:output
+	    +	doctype-system="http://java.sun.com/j2ee/dtds/web-app_2.2.dtd"
+	    +	doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+	    +	/>
+            +-->
 	<!-- Config path from the Ant build -->
 	<xsl:param name="property.name">property name</xsl:param>
 	<xsl:param name="property.value">property.value</xsl:param>
