@@ -82,6 +82,8 @@ public class ClientCredentialHandler extends CredentialHandler {
         subject.getPrivateCredentials().remove(n);
 
         // Have the community that issued the token split it into two.
+        System.out.println("ClientCredentialHandler.getSubject(): "
+                         + "splitting a nonce token...");
         Ivorn account = new Ivorn(n.getAccount());
         SecurityServiceResolver ssr = new SecurityServiceResolver();
         SecurityServiceDelegate ssd = ssr.resolve(account);
@@ -89,6 +91,8 @@ public class ClientCredentialHandler extends CredentialHandler {
         assert(o.length == 2);
         NonceToken n1 = (NonceToken) o[0];
         NonceToken n2 = (NonceToken) o[1];
+        System.out.println("ClientCredentialHandler.getSubject(): "
+                         + "nonce token was split successfully.");
 
         // Add one part of the split token to each Subject.
         this.subject.getPrivateCredentials().add(n1);

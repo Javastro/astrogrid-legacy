@@ -98,8 +98,8 @@ public class ClientSecurityGuard extends SecurityGuard {
     String   u = this.getUsername();
     Password p = this.getPassword();
     System.out.println("ClientSecurityGuard.signOn(): signing on to the grid"
-                           + " with account name "
-                       + u);
+                     + " with account name "
+                     + u);
     try {
       Ivorn accountId = new Ivorn(this.getUsername());
       SecurityServiceResolver ssr = new SecurityServiceResolver();
@@ -110,7 +110,7 @@ public class ClientSecurityGuard extends SecurityGuard {
       this.setNonceToken(t);
     }
     catch (Exception e) {
-      throw new Exception("Failed to log on to the grid as " + u, e);
+      throw new Exception("Failed to sign on to the grid as " + u, e);
     }
   }
 
