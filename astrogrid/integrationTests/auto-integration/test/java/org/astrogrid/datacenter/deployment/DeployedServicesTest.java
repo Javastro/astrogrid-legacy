@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.1 2004/09/08 20:35:10 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.1 2004/09/09 11:18:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -74,6 +74,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.1  2004/09/09 11:18:45  mch
+Moved DeployedServicesTest to separate package
+
 Revision 1.1  2004/09/08 20:35:10  mch
 Added tests against deployed services
 

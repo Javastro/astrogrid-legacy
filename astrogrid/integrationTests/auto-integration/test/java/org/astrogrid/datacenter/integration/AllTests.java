@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.13 2004/09/08 20:35:10 mch Exp $
+/* $Id: AllTests.java,v 1.14 2004/09/09 11:18:45 mch Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -26,7 +26,6 @@ public class AllTests {
         suite.addTest(new TestSuite(SecTest.class));
         suite.addTest(new TestSuite(VizierTest.class));
         suite.addTest(new TestSuite(MetadataTest.class));
-        suite.addTest(new TestSuite(DeployedServicesTest.class));
         suite.addTest(new TestSuite(Query2MySpaceTest.class));
         //$JUnit-END$
         return suite;
@@ -34,6 +33,9 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.14  2004/09/09 11:18:45  mch
+ *  Moved DeployedServicesTest to separate package
+ *
  *  Revision 1.13  2004/09/08 20:35:10  mch
  *  Added tests against deployed services
  *

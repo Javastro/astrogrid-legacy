@@ -1,4 +1,4 @@
-/*$Id: DatacenterTestCase.java,v 1.1 2004/09/08 13:58:48 mch Exp $
+/*$Id: DatacenterTestCase.java,v 1.2 2004/09/09 11:18:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  * methods for helping test datacenters
  *
  */
-public class DatacenterTestCase extends TestCase implements StdKeys {
+public class DatacenterTestCase extends TestCase {
 
    /**
     * Checks the given inputstream is aVOTable, returning it as a DOM
@@ -69,6 +69,9 @@ public class DatacenterTestCase extends TestCase implements StdKeys {
 
 /*
 $Log: DatacenterTestCase.java,v $
+Revision 1.2  2004/09/09 11:18:45  mch
+Moved DeployedServicesTest to separate package
+
 Revision 1.1  2004/09/08 13:58:48  mch
 Separated out tests by datacenter and added some
 
