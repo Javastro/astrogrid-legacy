@@ -1,4 +1,4 @@
-<!-- $Id: sextractor.wsdl,v 1.2 2003/11/24 11:24:25 pah Exp $ -->
+<!-- $Id: sextractor.wsdl,v 1.3 2003/11/24 16:34:59 pah Exp $ -->
 <!-- Created by Paul Harrison 22-Nov-2003 -->
 <!-- This is an AstroGrid parameter specification file - based on WSDL for the SExtractor application. It has been annotated to explain some of the special features-->
 <wsdl:definitions xmlns:intf="urn:interface.sextractor.astrogrid.org" xmlns:sex="http://www.astrogrid.org/schema/applications/SExtractorV2.3" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:interface.sextractor.astrogrid.org">
