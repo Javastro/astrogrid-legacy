@@ -193,7 +193,7 @@
                      <td>
                      </td>
                      <td>                                           
-                       <input type="radio" name="selection" id="selection">
+                       <input type="radio" name="selektion">
                          <xsl:attribute name="value">
                          <xsl:value-of select="../@identifier"/>/<xsl:value-of
                                                                     select="."/>
@@ -239,7 +239,7 @@
               <br/>      
                 <xsl:for-each
                    select="//BrowserQuery/BrowserBody/ResultsList/result">
-                  <input type="radio" name="selection" id="selection">
+                  <input type="radio" name="selektion">
                     <xsl:attribute name="value">
                       <xsl:value-of select="@identifier"/>
                     </xsl:attribute>
