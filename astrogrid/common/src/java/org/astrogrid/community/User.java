@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.14 2004/05/11 08:15:53 pah Exp $
+ * $Id: User.java,v 1.15 2004/08/25 23:05:27 jdt Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -22,10 +22,10 @@ import org.astrogrid.community.common.util.CommunityMessage;
  *  group that the user wishes to use for its credentials, this may be a cross community group. 
  * 
  * note that this should really be merged with the @link org.astrogrid.community.common.util.CommunityMessage class, which effectively does xml deserializtion
+ * (should be deprecated From iteration 5 - use @link org.astrogrid.community.beans.v1.Credentials, but may still be needed)
  * @author Paul Harrison (pah@jb.man.ac.uk), mch
  * @version $Name:  $
  * @since iteration4
- * @deprecated From iteration 5 use @link org.astrogrid.community.beans.v1.Credentials
  */
 public class User {
 
@@ -188,9 +188,12 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.14  2004/05/11 08:15:53  pah
- * put in assertions to try to get correct form used
+ * Revision 1.15  2004/08/25 23:05:27  jdt
+ * removed deprecation warning....I'm such a rebel
  *
+/* Revision 1.14  2004/05/11 08:15:53  pah
+/* put in assertions to try to get correct form used
+/*
 /* Revision 1.13  2004/03/05 09:34:47  pah
 /* deprecated in favour of using the workflow objects generated bean...
 /*
