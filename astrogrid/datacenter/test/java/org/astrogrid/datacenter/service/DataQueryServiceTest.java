@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.4 2003/09/09 17:58:38 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.5 2003/09/10 10:02:17 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -53,10 +53,15 @@ public class DataQueryServiceTest extends HsqlTestCase {
         conn = ds.getConnection();
           String script = getResourceAsString("/org/astrogrid/datacenter/queriers/sql/create-test-db.sql");
         runSQLScript(script,conn);
+        //register HSQLDB driver with driver key in configration file
+        //put driver into config file
+        Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, "org.hsqldb.jdbcDriver"  );
+      
         Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY,"org.astrogrid.datacenter.queriers.hsql.HsqlQuerier");
         // woud be simplest to pass datasource via JNDI, but no guarantee jndi is available
         Configuration.setProperty(SqlQuerier.JDBC_URL_KEY,"jdbc:hsqldb:.");
         Configuration.setProperty(SqlQuerier.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
+        
     }
 
     protected Connection conn;
@@ -67,7 +72,7 @@ public class DataQueryServiceTest extends HsqlTestCase {
      */
     protected void tearDown() throws Exception {
         if (conn != null) {
-            conn.createStatement().execute("SHUTDOWN");
+            //conn.createStatement().execute("SHUTDOWN");
             conn.close();
         }
         //wsTest.tearDown(); //tears down workspace
@@ -146,6 +151,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.5  2003/09/10 10:02:17  nw
+added key for hsqldb driver
+
 Revision 1.4  2003/09/09 17:58:38  mch
 Moved ServiceStatus
 
