@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="workflow">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="userid"/>
+				<xsd:element ref="community"/>
+				<xsd:element ref="description"/>
+				<xsd:element ref="sequence"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="userid">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string"/>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="community">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string"/>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="description">
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string"/>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="sequence">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="activitySequence"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="flow">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="activitySequence"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="step">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:group ref="toolChoice"/>
+				<xsd:element ref="resources" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="joinCondition" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="true"/>
+						<xsd:enumeration value="false"/>
+						<xsd:enumeration value="any"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="stepNumber" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="sequenceNumber" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string"/>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:group name="toolChoice">
+		<xsd:choice>
+			<xsd:element ref="query" minOccurs="0"/>
+			<xsd:element ref="nulltool" minOccurs="0"/>
+		</xsd:choice>
+	</xsd:group>
+	<xsd:element name="query">
+		<xsd:complexType>
+			<xsd:sequence/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="nulltool">
+		<xsd:complexType>
+			<xsd:sequence/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="resources">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="resource" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="resource">
+		<xsd:complexType>
+			<xsd:sequence/>
+			<xsd:attribute name="type" use="optional">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="input"/>
+						<xsd:enumeration value="output"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:group name="activityChoice">
+		<xsd:choice>
+			<xsd:element ref="sequence" minOccurs="0"/>
+			<xsd:element ref="flow" minOccurs="0"/>
+			<xsd:element ref="step" minOccurs="0"/>
+		</xsd:choice>
+	</xsd:group>
+	<xsd:group name="activitySequence">
+		<xsd:sequence>
+			<xsd:group ref="activityChoice" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:group>
+</xsd:schema>
