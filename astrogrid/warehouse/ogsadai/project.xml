@@ -4,7 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>astrogrid-datawarehouse-ogsadai</id>
+  <id>astrogrid-ogsadai-app</id>
+  <groupId>astrogrid-ogsadai</groupId>
   <name>AstroGrid Data Warehouse OGSA-DAI connection</name>
 
   <currentVersion>HEAD</currentVersion>
