@@ -1,4 +1,4 @@
-/*$Id: DatacenterTestCase.java,v 1.2 2004/09/09 11:18:45 mch Exp $
+/*$Id: DatacenterTestCase.java,v 1.3 2004/10/06 22:03:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,15 +15,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import javax.xml.parsers.ParserConfigurationException;
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.io.Piper;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import org.astrogrid.datacenter.query.QueryException;
 
 /**
  * methods for helping test datacenters
@@ -44,13 +44,11 @@ public class DatacenterTestCase extends TestCase {
    /**
     * Run sample query on std PAL
     */
-   public AdqlQuery loadSampleQuery(Class testingClass, String filename) throws IOException  {
+   public Query loadSampleQuery(Class testingClass, String filename) throws IOException, SAXException, ParserConfigurationException, QueryException  {
       //load query
       InputStream is = testingClass.getResourceAsStream(filename);
       assertNotNull(is);
-      StringWriter out = new StringWriter();
-      Piper.pipe(new InputStreamReader(is),out);
-      AdqlQuery query = new AdqlQuery(out.toString());
+      Query query = AdqlQueryMaker.makeQuery(is);
       return query;
    }
 
@@ -69,6 +67,9 @@ public class DatacenterTestCase extends TestCase {
 
 /*
 $Log: DatacenterTestCase.java,v $
+Revision 1.3  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.2  2004/09/09 11:18:45  mch
 Moved DeployedServicesTest to separate package
 

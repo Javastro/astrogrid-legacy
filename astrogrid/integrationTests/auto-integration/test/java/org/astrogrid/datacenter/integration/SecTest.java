@@ -1,4 +1,4 @@
-/*$Id: SecTest.java,v 1.3 2004/09/10 10:28:57 mch Exp $
+/*$Id: SecTest.java,v 1.4 2004/10/06 22:03:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,27 +12,17 @@ package org.astrogrid.datacenter.integration;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
-import org.astrogrid.io.Piper;
-import org.astrogrid.test.AstrogridAssert;
-import org.astrogrid.util.DomHelper;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.transform.TransformerException;
+import junit.framework.TestSuite;
+import org.astrogrid.community.Account;
+import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
+import org.astrogrid.datacenter.delegate.QuerySearcher;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.util.DomHelper;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * Test the SEC proxy/installation
@@ -42,12 +32,13 @@ public class SecTest extends DatacenterTestCase implements StdKeys {
 
    public void testAdqlSearchForSEC() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       System.out.println("Start testAdqlSearchForSEC");
-      AdqlQuery query = loadSampleQuery(SecTest.class, "SimpleSECQuery-adql074.xml");
+      Query query = loadSampleQuery(SecTest.class, "SimpleSECQuery-adql074.xml");
+      query.getResultsDef().setFormat(QuerySearcher.VOTABLE);
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_SEC_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
-      InputStream results = delegate.askQuery(query, "VOTABLE");
+      InputStream results = delegate.askQuery(query);
       Document doc = assertVotable(results);
       DomHelper.DocumentToStream(doc,System.out);
       System.out.println("End testAdqlSearchForSEC");
@@ -64,6 +55,9 @@ public class SecTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: SecTest.java,v $
+Revision 1.4  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.3  2004/09/10 10:28:57  mch
 Fix to load .7.4 query
 

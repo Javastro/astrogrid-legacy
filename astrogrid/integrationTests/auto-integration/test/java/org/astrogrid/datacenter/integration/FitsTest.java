@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.1 2004/09/08 13:58:48 mch Exp $
+/*$Id: FitsTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -19,7 +19,7 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -33,12 +33,13 @@ public class FitsTest extends DatacenterTestCase implements StdKeys {
 
    public void testAdql() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
       System.out.println("Start testAdqlSearchForFITS");
-      AdqlQuery query = loadSampleQuery(FitsTest.class, "SimpleFITSQuery-adql073.xml");
+      Query query = loadSampleQuery(FitsTest.class, "SimpleFITSQuery-adql073.xml");
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_FITS_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
-      InputStream results = delegate.askQuery(query, "VOTABLE");
+      query.getResultsDef().setFormat("VOTABLE");
+      InputStream results = delegate.askQuery(query);
       Document doc = assertVotable(results);
       DomHelper.DocumentToStream(doc,System.out);
       System.out.println("End testAdqlSearchForFITS");
@@ -54,6 +55,9 @@ public class FitsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: FitsTest.java,v $
+Revision 1.2  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.1  2004/09/08 13:58:48  mch
 Separated out tests by datacenter and added some
 

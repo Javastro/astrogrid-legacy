@@ -1,4 +1,4 @@
-/*$Id: RdbmsTest.java,v 1.1 2004/09/08 13:58:48 mch Exp $
+/*$Id: RdbmsTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,13 +15,13 @@ import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.rpc.ServiceException;
 import javax.xml.transform.TransformerException;
-import junit.framework.Test;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.store.Agsl;
 import org.xml.sax.SAXException;
 
@@ -36,12 +36,13 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
     */
    public void testAdqlAsk() throws ServiceException, IOException, SAXException, ParserConfigurationException {
 
-      AdqlQuery query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
+      Query query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
+      query.getResultsDef().setFormat(QuerySearcher.VOTABLE);
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
-      InputStream results = delegate.askQuery(query, "VOTABLE");
+      InputStream results = delegate.askQuery(query);
 
       assertVotable(results);
    }
@@ -51,12 +52,14 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
     */
    public void testAdqlSubmit() throws ServiceException, SAXException, IOException, TransformerException, ParserConfigurationException {
 
-      AdqlQuery query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
+      Query query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
+      query.getResultsDef().setFormat(QuerySearcher.VOTABLE);
+      query.getResultsDef().setTarget(TargetIndicator.makeIndicator(new Agsl("astrogrid:store:file://results.vot")));
       
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
 
-      String queryId = delegate.submitQuery(query, new Agsl("astrogrid:store:file://results.vot"), "VOTABLE");
+      String queryId = delegate.submitQuery(query);
       assertNotNull(queryId);
    }
 
@@ -102,6 +105,9 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: RdbmsTest.java,v $
+Revision 1.2  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.1  2004/09/08 13:58:48  mch
 Separated out tests by datacenter and added some
 

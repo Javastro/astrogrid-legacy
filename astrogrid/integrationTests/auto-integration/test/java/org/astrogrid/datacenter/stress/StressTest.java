@@ -1,4 +1,4 @@
-/*$Id: StressTest.java,v 1.1 2004/09/09 12:23:10 mch Exp $
+/*$Id: StressTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,21 +11,22 @@
 package org.astrogrid.datacenter.stress;
 
 import java.io.IOException;
-import java.io.InputStream;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
+import javax.xml.rpc.ServiceException;
 import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
-import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
 import org.astrogrid.datacenter.integration.DatacenterTestCase;
 import org.astrogrid.datacenter.integration.RdbmsTest;
 import org.astrogrid.datacenter.integration.StdKeys;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.store.Agsl;
+import java.net.URISyntaxException;
+import java.net.MalformedURLException;
 import org.xml.sax.SAXException;
-import javax.xml.rpc.ServiceException;
+import javax.xml.parsers.ParserConfigurationException;
+import org.astrogrid.datacenter.query.QueryException;
 
 /**
  * Fires off a stupidly large number of queries to the local datacenter
@@ -37,9 +38,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
    /**
     * Submits (asynchronous) 100 sample query on std PAL
     */
-   public void testAdqlSubmit() throws IOException, ServiceException {
+   public void testAdqlSubmit() throws IOException, ServiceException, URISyntaxException, MalformedURLException, IOException, SAXException, ParserConfigurationException, QueryException {
 
-      AdqlQuery query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
+      Query query = loadSampleQuery(RdbmsTest.class, "SimpleStarQuery-adql074.xml");
 
       QuerySearcher delegate = DatacenterDelegateFactory.makeQuerySearcher(Account.ANONYMOUS,PAL_v05_ENDPOINT,DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       assertNotNull("delegate was null",delegate);
@@ -47,7 +48,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
       String[] queryIds = new String[100];
       for (int i = 0; i < 100; i++) {
    
-         queryIds[i] = delegate.submitQuery(query, new Agsl("astrogrid:store:file://results.vot"), "VOTABLE");
+         query.getResultsDef().setTarget(TargetIndicator.makeIndicator("astrogrid:store:file://results.vot"));
+         query.getResultsDef().setFormat("VOTABLE");
+         queryIds[i] = delegate.submitQuery(query);
          assertNotNull(queryIds[i]);
       }
 
@@ -67,6 +70,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: StressTest.java,v $
+Revision 1.2  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.1  2004/09/09 12:23:10  mch
 Added stress tests
 

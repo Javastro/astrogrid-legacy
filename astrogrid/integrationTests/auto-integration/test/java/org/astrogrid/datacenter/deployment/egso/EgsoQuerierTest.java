@@ -1,4 +1,4 @@
-/*$Id: EgsoQuerierTest.java,v 1.1 2004/10/05 16:45:28 mch Exp $
+/*$Id: EgsoQuerierTest.java,v 1.2 2004/10/06 22:03:45 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -18,9 +18,9 @@ import junit.framework.TestSuite;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.test.AstrogridAssert;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
@@ -68,7 +68,7 @@ public class EgsoQuerierTest extends TestCase {
       assertNotNull("Could not open query file :" + queryFile,is);
       
       StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new AdqlQuery(is), new TargetIndicator(sw), ReturnTable.VOTABLE);
+      Querier q = Querier.makeQuerier(Account.ANONYMOUS, AdqlQueryMaker.makeQuery(is), TargetIndicator.makeIndicator(sw), ReturnTable.VOTABLE);
       
       manager.askQuerier(q);
       
@@ -91,6 +91,9 @@ public class EgsoQuerierTest extends TestCase {
 
 /*
  $Log: EgsoQuerierTest.java,v $
+ Revision 1.2  2004/10/06 22:03:45  mch
+ Following Query model changes in PAL
+
  Revision 1.1  2004/10/05 16:45:28  mch
  Moved proxy tests to integration tests from unit tests
 

@@ -1,4 +1,4 @@
-/*$Id: Query2MySpaceTest.java,v 1.14 2004/09/09 11:35:37 mch Exp $
+/*$Id: Query2MySpaceTest.java,v 1.15 2004/10/06 22:03:45 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,8 +21,10 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.AdqlQueryMaker;
+import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryState;
+import org.astrogrid.slinger.TargetIndicator;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.Msrl;
@@ -105,12 +107,10 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
 
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql074.xml");
       assertNotNull("Could not find test query", in);
+
+      Query query = AdqlQueryMaker.makeQuery(in, TargetIndicator.makeIndicator(resultsTarget), QuerySearcher.VOTABLE);
       
-      String queryId = delegate.submitQuery(
-         new AdqlQuery(in),
-         resultsTarget,
-         QuerySearcher.VOTABLE
-      );
+      String queryId = delegate.submitQuery(query);
          
       String stat = delegate.getStatus(queryId);
       TimeStamp timeout = new TimeStamp();
@@ -144,11 +144,9 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
       InputStream in = this.getClass().getResourceAsStream("SimpleStarQuery-adql074.xml");
       assertNotNull("Could not find test query", in);
       
-      String queryId = delegate.submitQuery(
-         new AdqlQuery(in),
-         VoSpaceResolver.resolveAgsl(resultsTarget),
-         QuerySearcher.VOTABLE
-      );
+      Query query = AdqlQueryMaker.makeQuery(in, TargetIndicator.makeIndicator(VoSpaceResolver.resolveAgsl(resultsTarget)), QuerySearcher.VOTABLE);
+
+      String queryId = delegate.submitQuery(query);
          
       String stat = delegate.getStatus(queryId);
 
@@ -201,6 +199,9 @@ public class Query2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: Query2MySpaceTest.java,v $
+Revision 1.15  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.14  2004/09/09 11:35:37  mch
 Updated from ADQL 0.7.4
 

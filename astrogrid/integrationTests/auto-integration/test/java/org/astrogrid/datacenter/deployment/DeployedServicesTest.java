@@ -1,4 +1,4 @@
-/*$Id: DeployedServicesTest.java,v 1.4 2004/09/29 18:42:46 mch Exp $
+/*$Id: DeployedServicesTest.java,v 1.5 2004/10/06 22:03:45 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,9 +20,9 @@ import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.ConeSearcher;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.query.AdqlQuery;
+import org.astrogrid.datacenter.query.Query;
+import org.astrogrid.datacenter.query.SqlQueryMaker;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.sqlparser.Sql2Adql074;
 import org.astrogrid.util.DomHelper;
 import org.xml.sax.SAXException;
 
@@ -56,9 +56,11 @@ public class DeployedServicesTest extends TestCase {
          DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
 
       String adqls = "SELECT * FROM sgas_event WHERE nar>9500 AND nar<9600";
-      String adqlx = Sql2Adql074.translate(adqls);
       
-      InputStream is = delegate.askQuery(new AdqlQuery(adqlx), ReturnTable.VOTABLE);
+      Query query = SqlQueryMaker.makeQuery(adqls);
+      query.getResultsDef().setFormat(ReturnTable.VOTABLE);
+      
+      InputStream is = delegate.askQuery(query);
       assertNotNull(is);
       DomHelper.newDocument(is);
    }
@@ -107,6 +109,9 @@ public class DeployedServicesTest extends TestCase {
 
 /*
 $Log: DeployedServicesTest.java,v $
+Revision 1.5  2004/10/06 22:03:45  mch
+Following Query model changes in PAL
+
 Revision 1.4  2004/09/29 18:42:46  mch
 Changed SEC test
 
