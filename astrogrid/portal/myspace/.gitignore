@@ -6,3 +6,5 @@ mock
 velocity.log
 junit*.properties
 .clover
+.checkstyle
+.packaging

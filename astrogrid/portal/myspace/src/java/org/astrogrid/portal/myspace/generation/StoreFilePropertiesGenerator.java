@@ -87,7 +87,7 @@ public class StoreFilePropertiesGenerator extends AbstractGenerator {
       // TODO use java.text.DateFormat
       rootElement.setAttribute(
           StoreFilePropertiesGenerator.STORE_FILE_CREATED,
-          storeFile.getCreated().toLocaleString());
+          storeFile.getCreated().toString());
 
       rootElement.setAttribute(
           StoreFilePropertiesGenerator.STORE_FILE_MIME_TYPE,
