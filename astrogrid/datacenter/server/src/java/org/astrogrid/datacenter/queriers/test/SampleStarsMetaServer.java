@@ -1,5 +1,5 @@
 /*
- * $Id: SampleStarsMetaServer.java,v 1.2 2004/09/06 20:23:00 mch Exp $
+ * $Id: SampleStarsMetaServer.java,v 1.3 2004/09/08 16:28:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -32,7 +32,13 @@ public class SampleStarsMetaServer extends FileResourcePlugin
       if (!pluginClass.equals(SampleStarsPlugin.class.getName())) {
          throw new ConfigException("Server is configured to return sample stars metadata but the plugin is "+pluginClass);
       }
-      return Config.resolveFilename("samplestars.metadata.xml");
+      //this works OK for unit test, but not deployment...
+      URL url = SampleStarsMetaServer.class.getResource("samplestars.metadata.xml");
+      if (url == null) {
+         //this works OK for deployment, but not unit tests...
+         url = Config.resolveFilename("samplestars.metadata.xml");
+      }
+      return url;
    }
    
    
