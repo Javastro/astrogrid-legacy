@@ -29,8 +29,10 @@
         <section name = "Building the Portal">
             <subsection name="Prequisites">
                 <p>
+                    <ul>
                     <li>JDK1.4 or above</li>
                     <li><a href="http://maven.apache.org/">Maven</a></li>
+                    </ul>
                 </p>
             </subsection>
             <subsection name = "Building">
