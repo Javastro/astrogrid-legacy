@@ -88,16 +88,27 @@
     		Example Queries:
 		</p>
 	</section>
-  	<section name="More on eXist XMLDB">
+    	<section name="eXist">
          	<p>
-        		Registry uses an eXist xml database for storing and querying the resources. 
-        	    See the eXist section for astrogrid on more about eXist, this section 
-        	    lets you install the eXist database as a war file.  But for security purposes,
+        		Registry uses an eXist xml database for storing and querying the resources of the Registry. 
+        	    You can download eXist from <a href="http://exist.sourceforge.net">eXist website</a>. You can
+        	    also download it from <a href="http://www.astrogrid.org/maven/exist">eXist from Astrogrid</a>
+         	    For security purposes,
         	    it is better to install the eXist as a server installation on another port
-        	    that is not accessible to outise computers, but still accessible to 
-        	    the registry installation.
+        	    that is not accessible to outside computers, but still accessible to 
+        	    the registry installation.  This is completely optional though, and for ease of installation 
+        	    throughout astrogrid it is normally installed as a war file.<br />
+        	    Changes to be made once eXist is installed:<br />
+        	    See <a href="http://exist.sourceforge.net/configuration.html">Config for eXist</a>.  Change
+        	    the cacheSize to something bigger if this is going to be a full Registry. 
+        	    Finally set the match-tagging-elements and match-tagging-attributes to "no".  In Astrogrid
+        	    these changes are already in place, but change the cacheSize to something more appropriate.
         	</p>
-    </section>    	
+        	<p>
+        		It is recommended to have the exist location end in "exist" hence http://server.com/exist is the location.  This
+        	    is not required, but if you wish to view exist manually it can be easier.
+        	</p>
+        </section>
 	<section name="Builds">
 		<p>
 			The registry allows you to build at the top level or at it's sub-project level.  
@@ -128,6 +139,9 @@
 			  <li>exist.query.returncount - optional, the return count number (defaults to 25 if not given).</li>
     		  <li>oai.servlet.url - required, the url to the servlet for the OAI, OAICat type servlet.</li>
 		  	  <li>org.astrogrid.registry.harvest.daemon.interval-hours - required, See webapp section for more on this servlet.  For harvesting other registries, the time intervals for automatic harvests to be started.</li>
+	  	  	  <li>declare.namespace.0_9 - recommended, namespaces to be declared on the queries in xquery type form meaning seperated by ";"</li>
+		      <li>keyword.query.path.0_9 - required, the xpaths to elements to be used on the keyword search comma seperated.</li>
+	          <li>identifier.path.hasauthorityid.0_9 - required, is the key (identifier) split up, normally only 0_9 will be true
 			</ul>
     		Example of config properties:
     		<ul>
@@ -137,6 +151,9 @@
 			  <li>oai.servlet.url=http://localhost:8080/astrogrid-registry-snapshot/OAIHandler</li>
 		      <li>org.astrogrid.registry.version=0_9</li>
 		  	  <li>org.astrogrid.registry.harvest.daemon.interval-hours=1</li>
+	  	      <li>declare.namespace.0_9=declare namespace vr = "http://www.ivoa.net/xml/VOResource/v0.9"; declare namespace vc = "http://www.ivoa.net/xml/VOCommunity/v0.2"; declare namespace vg = "http://www.ivoa.net/xml/VORegistry/v0.2"; declare namespace vs = "http://www.ivoa.net/xml/VODataService/v0.4"; declare namespace vt = "http://www.ivoa.net/xml/VOTable/v0.1"; declare namespace cs = "http://www.ivoa.net/xml/ConeSearch/v0.2"; declare namespace sia = "http://www.ivoa.net/xml/SIA/v0.6"; declare namespace cea="http://www.ivoa.net/xml/CEAService/v0.1"; declare namespace ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1";</li>
+		      <li>keyword.query.path.0_9=vr:Summary/vr:Description, vr:Title, vr:Subject</li>
+	          <li>identifier.path.hasauthorityid.0_9=true</li>
     		</ul>
 		</p>
 	</section>	
