@@ -35,7 +35,10 @@ public class DatacenterResults
    {
       return votable != null;
    }
-   
+   /** @todo at moment this returns entire response document (containing the votable). maybe needs to be changed to extract VOTABLE from document?
+    * 
+    * @return
+    */
    public Element getVotable()
    {
       return votable;
@@ -64,6 +67,9 @@ public class DatacenterResults
 
 /*
 $Log: DatacenterResults.java,v $
+Revision 1.2  2004/01/16 13:25:32  nw
+flagged possible bug
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 
