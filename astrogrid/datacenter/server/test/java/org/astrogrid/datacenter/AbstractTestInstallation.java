@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.7 2004/01/13 00:33:14 nw Exp $
+/*$Id: AbstractTestInstallation.java,v 1.8 2004/01/15 16:35:24 nw Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -169,7 +169,8 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
         assertNotNull("Result of query was null",result);
        Element vo = result.getVotable();
        assertNotNull(vo);
-       assertIsVotable(vo); 
+       assertIsVotableResultsResponse(vo.getOwnerDocument());
+       //assertIsVotable(vo); 
     }
 
 
@@ -276,6 +277,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.8  2004/01/15 16:35:24  nw
+fixed failing test
+
 Revision 1.7  2004/01/13 00:33:14  nw
 Merged in branch providing
 * sql pass-through
