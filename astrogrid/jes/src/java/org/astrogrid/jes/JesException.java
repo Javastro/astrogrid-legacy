@@ -18,7 +18,7 @@ public class JesException extends Exception {
         super(s);
     }
     
-    public JesException(String s,Exception e) {
+    public JesException(String s,Throwable e) {
         super(s,e);
     }
     

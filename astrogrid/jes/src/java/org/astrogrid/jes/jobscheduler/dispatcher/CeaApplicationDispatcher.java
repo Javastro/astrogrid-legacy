@@ -1,4 +1,4 @@
-/*$Id: CeaApplicationDispatcher.java,v 1.2 2005/03/13 07:13:39 clq2 Exp $
+/*$Id: CeaApplicationDispatcher.java,v 1.3 2005/04/01 10:24:19 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -29,7 +29,9 @@ import org.apache.commons.logging.LogFactory;
 
 import java.net.URI;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -77,22 +79,35 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
       String[] toolLocations = locator.locateTool(tool);
       JobIdentifierType id = JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), stepId);
       boolean connected = false;
+      if (logger.isDebugEnabled()) {
+          logger.debug("Will attempt to connect to " + Arrays.asList(toolLocations));
+      }
+      List exceptions = new ArrayList();
       for (int i = 0; i < toolLocations.length && ! connected ; i++) { // try each one in the list, until something sticks.
-          CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocations[i]);
-          logger.debug(  "Calling application controller at " + toolLocations[i] + " for " + tool.getName() + ", "+ id.getValue());
           try {
+              logger.debug(  "Calling CEA server at " + toolLocations[i] + " for " + tool.getName() + ", "+ id.getValue());
+              CommonExecutionConnectorClient appController =    DelegateFactory.createDelegate(toolLocations[i]);
               String applicationId = appController.init(tool,id);
               appController.registerResultsListener(applicationId,resultListenerURI);         
               appController.registerProgressListener(applicationId,monitorURI);
               appController.execute(applicationId);
               connected = true; // signal that we've connected to a cea, so no need to keep looping.
           }
-          catch (CEADelegateException e) {
-              logger.warn("Failed to communicate with application controller",e);         
+          catch (Throwable e) {
+              logger.warn("Failed to communicate or initialize application with CEA Server",e);
+              exceptions.add(e); // only want to fail when we can't connect to any of them - but need to preserve the exceptions, for reporting in case all fail.
           }
       }
       if (! connected) {// exhausted all possibilities, so fail
-         throw new JesException("Failed to communicate with application controllers" + Arrays.asList(toolLocations));
+          String str = "Failed to communicate or initialize application with any CEA Server that provides this application:" + Arrays.asList(toolLocations);
+          Throwable cause = null;
+          if (exceptions.size() == 1) {
+              cause = (Throwable)exceptions.get(0);
+          } else if (exceptions.size() > 1) {
+              cause = new AggregateException((Throwable[])exceptions.toArray(new Throwable[]{}));
+          }
+          logger.warn(str,cause);
+         throw new JesException(str,cause);
       }
 
    }
@@ -147,6 +162,9 @@ public  class CeaApplicationDispatcher implements Dispatcher, ComponentDescripto
 
 /* 
 $Log: CeaApplicationDispatcher.java,v $
+Revision 1.3  2005/04/01 10:24:19  nw
+improved logging of cea connect failures
+
 Revision 1.2  2005/03/13 07:13:39  clq2
 merging jes-nww-686 common-nww-686 workflow-nww-996 scripting-nww-995 cea-nww-994
 
