@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
+<!--$Id: applicationDefinitions.xml,v 1.1 2003/12/03 10:31:48 pah Exp $-->
+<!--This is the configuration file for the Iteration4 application controller-->
+<ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
+\\pahlaptop\work\astrogrid\src\applications\schema\AGParameterDefinition.xsd">
+	<Application name="SExtractor" instanceClass="org.astrogrid.applications.commandline.SExtractor">
+		<!--This is the application to concentrate on for the end of this iteration-->
+		<ExecutionPath>/usr/local/bin/sex</ExecutionPath>
+		<Parameters>
+			<Parameter name="DetectionImage" type="agpd:MySpace_FileReference" commandPosition="1">
+				<UI_Name>Detection Image</UI_Name>
+				<UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</UI_Description>
+			</Parameter>
+			<Parameter name="PhotoImage" type="agpd:MySpace_FileReference" commandPosition="1">
+				<UI_Name>Measurement Image</UI_Name>
+				<UI_Description>The Image that is used to measure photometric parameters</UI_Description>
+			</Parameter>
+			<Parameter name="config_file" type="agpd:MySpace_FileReference" commandPosition="2" commandSwitch="-c">
+				<UI_Name>Configuration File</UI_Name>
+				<UI_Description>File containing the main configuration parameters for SExtractor</UI_Description>
+			</Parameter>
+			<Parameter name="PARAMETERS_NAME" type="agpd:MySpace_FileReference">
+				<UI_Name>Parameter File</UI_Name>
+				<UI_Description>A File containing the list of catalogue paramters that should be computed</UI_Description>
+			</Parameter>
+			<Parameter name="CATALOG_NAME" type="agpd:MySpace_FileReference">
+				<UI_Name>Derived output catalogue</UI_Name>
+				<UI_Description>The catalogue of images derived from the input images</UI_Description>
+			</Parameter>
+		</Parameters>
+		<Interfaces>
+			<Interface name="Simple">
+				<input>
+					<pref ref="DetectionImage"/>
+					<pref ref="PhotoImage"/>
+					<pref ref="config_file"/>
+					<pref ref="PARAMETERS_NAME"/>
+				</input>
+				<output>
+					<pref ref="CATALOG_NAME"/>
+				</output>
+			</Interface>
+		</Interfaces>
+	</Application>
+	<Application name="HyperZ" instanceClass="org.astrogrid.applications.commandline.HyperZ">
+		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
+		<ExecutionPath>/usr/local/bin/hyperz</ExecutionPath>
+		<Parameters>
+			<Parameter name="config_file" type="agpd:MySpace_FileReference">
+				<UI_Name>Configuration File</UI_Name>
+				<UI_Description>A HyperZ configuration file</UI_Description>
+			</Parameter>
+			<Parameter name="input_catalog" type="agpd:MySpace_FileReference">
+				<UI_Name>Magnitude Catalogue</UI_Name>
+				<UI_Description>The input catalogue of measured magnitude</UI_Description>
+			</Parameter>
+			<Parameter name="output_catalog" type="agpd:MySpace_FileReference">
+				<UCD/>
+				<UI_Name>Redshift Catalogue</UI_Name>
+				<UI_Description>The catalogue of estimated redshifts</UI_Description>
+			</Parameter>
+		</Parameters>
+		<Interfaces>
+			<Interface name="simple">
+				<input>
+					<pref ref="config_file"/>
+					<pref ref="input_catalog"/>
+				</input>
+				<output>
+					<pref ref="output_catalog"/>
+				</output>
+			</Interface>
+		</Interfaces>
+	</Application>
+	<Application name="DataFederation" instanceClass="org.astrogrid.applications.commandline.StdApplication">
+		<!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
+		<ExecutionPath>/usr/local/bin/tablemakerAG</ExecutionPath>
+		<Parameters>
+			<Parameter name="VOTfiles" type="agpd:MySpace_VOTableReference">
+				<UI_Name>Input VOTables</UI_Name>
+				<UI_Description>The input VOTable files</UI_Description>
+			</Parameter>
+			<Parameter name="mergeCols" type="xs:boolean">
+				<UI_Name>Merge Columns?</UI_Name>
+				<UI_Description>Whether to merge UCDs in one column when requested</UI_Description>
+			</Parameter>
+			<Parameter name="show" type="xs:string">
+				<UI_Name>show ucds</UI_Name>
+				<UI_Description>| delimited list of UCDs to display. The order is critical. Use of (or) denoted merging</UI_Description>
+			</Parameter>
+			<Parameter name="target" type="xs:string">
+				<UI_Name>positional target</UI_Name>
+				<UI_Description>target position/searchDiametet/Unit (split on / to obtain 3 components)</UI_Description>
+			</Parameter>
+			<Parameter name="" type="xs:integer" commandSwitch="String" commandPosition="0" stdio="1">
+				<UI_Name>String</UI_Name>
+				<UI_Description>Text</UI_Description>
+				<UCD>String</UCD>
+				<DefaultValue>Text</DefaultValue>
+				<Units>String</Units>
+			</Parameter>
+			<Parameter name="what2show" type="xs:string">
+				<UI_Name>columns to show</UI_Name>
+				<UI_Description>encoded string telling us which columns are to be shown UCD|colName|colUnits. show and what2show act together..</UI_Description>
+			</Parameter>
+			<Parameter name="require" type="agpd:MySpace_FileReference">
+				<UI_Name>cached information</UI_Name>
+				<UI_Description>a file containing pre-digested information about the VOTables. This is optional.</UI_Description>
+			</Parameter>
+			<Parameter name="showCat" type="xs:string" commandSwitch="String">
+				<UI_Name>show cataloge</UI_Name>
+				<UI_Description>a | elimited list of 0 or 1 to indicate whether to show the respective table from the VOTfiles specified</UI_Description>
+				<UCD>String</UCD>
+				<DefaultValue>Text</DefaultValue>
+				<Units>String</Units>
+			</Parameter>
+			<Parameter name="output" type="xs:string">
+				<UI_Name>output type</UI_Name>
+				<UI_Description>This can be one of HTML VOTable of Ascii, with the default being VOTable</UI_Description>
+				<DefaultValue>VOTable</DefaultValue>
+			</Parameter>
+			<Parameter name="maxent" type="xs:integer">
+				<UI_Name>maximum entries</UI_Name>
+				<UI_Description>maximum number of entries in VOTable</UI_Description>
+				<UCD>String</UCD>
+				<DefaultValue>Text</DefaultValue>
+				<Units>String</Units>
+			</Parameter>
+			<Parameter name="merged_output" type="agpd:MySpace_VOTableReference"/>
+		</Parameters>
+		<!--this would be nicer as a list type - need to implement that...-->
+		<Interfaces>
+			<Interface name="Smain">
+				<input>
+					<pref ref="VOTfiles" repeatable="true"/>
+					<pref ref="mergeCols"/>
+					<pref ref="target"/>
+					<pref ref="what2show"/>
+					<pref ref="require" optional="true"/>
+					<pref ref="showCat"/>
+					<pref ref="output"/>
+					<pref ref="maxent"/>
+				</input>
+				<output>
+					<pref ref="merged_output"/>
+				</output>
+			</Interface>
+		</Interfaces>
+	</Application>
+</ApplicationController>

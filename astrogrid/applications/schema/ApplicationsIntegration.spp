@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
 	<Folder FolderName="XML Files" ExtStr="xml;cml;math;mtx;rdf;smil;svg;wml">
+		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\config\applicationDefinitions.xml" HomeFolder="Yes"/>
 		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\test\java\org\astrogrid\applications\description\TestApplicationConfig.xml" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="XSL Files" ExtStr="xsl;xslt"/>
