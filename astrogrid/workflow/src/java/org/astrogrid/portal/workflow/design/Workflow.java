@@ -616,6 +616,37 @@ public class Workflow extends Activity {
     } // end of toXMLString()
 
 
+    public String toJESXMLString() {
+        if( TRACE_ENABLED ) trace( "Workflow.toJESXMLString() entry") ;  
+          
+        String 
+           xmlTemplate = WorkflowDD.JOB_TEMPLATE,
+           response = null ;
+                                     
+        try {
+            
+            Object []
+               inserts = new Object[5] ;
+            inserts[0] = this.name ;
+            inserts[1] = (this.templateName == null)  ?  "" :  ("templateName=\"" + this.templateName + "\"") ;
+            inserts[2] = this.userid ;
+            inserts[3] = this.community ;
+            inserts[4] = this.description ;
+
+            inserts[5] = getChild().toXMLString() ;
+            
+            response = MessageFormat.format( response, inserts ) ;
+
+        }
+        finally {
+            if( TRACE_ENABLED ) trace( "Workflow.toJESXMLString() exit") ;    
+        }       
+        
+        return response ;                              
+        
+    } // end of toJESXMLString()
+
+
 	public void setName(String name) {
 		this.name = name;
 	}

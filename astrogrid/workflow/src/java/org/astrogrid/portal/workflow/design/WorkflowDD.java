@@ -88,5 +88,15 @@ public class WorkflowDD {
         RESOURCE_TEMPLATE =
         "   <resource type=\"{0}\">" +
         "   </resource>" ;
+        
+    public static final String
+        JOB_TEMPLATE =
+        "<?xml version='1.0' encoding='UTF-8'?>" +
+        "<job name=\"{0}\" {1}>" +
+        "   <userid>{2}</userid>" +
+        "   <community>{3}</community>" +
+        "   <description>{4}</description>" +      
+        "       {5}" +                      
+        "</job>" ;        
 
 } // end of class WorkflowDD
