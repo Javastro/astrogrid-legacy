@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--Multiproject controlling POM-->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <pomVersion>3</pomVersion>
     <id>astrogrid-portal</id>
     <groupId>org.astrogrid</groupId>
-    <name>AstroGrid Portal Wrapper</name>
+    <name>AstroGrid Portal</name>
     <currentVersion>${astrogrid.iteration}</currentVersion>
     <organization>
         <name>AstroGrid</name>

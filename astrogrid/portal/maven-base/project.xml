@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--base POM for other portal poms to inherit from 
+	(include deps in the war) -->
+<project
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="maven-project.xsd">
+    <pomVersion>3</pomVersion>
+    <id>astrogrid-portal-maven-base</id>
+    <groupId>org.astrogrid</groupId>
+    <name>AstroGrid Portal Wrapper</name>
+    <currentVersion>${astrogrid.iteration}</currentVersion>
+    <organization>
+        <name>AstroGrid</name>
+        <url>http://www.astrogrid.org</url>
+        <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    </organization>
+    <inceptionYear>2002</inceptionYear>
+    <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
+    <package>org.astrogrid</package>
+    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/${astrogrid.name}</siteDirectory>
+    <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    <url>http://www.astrogrid.org</url>
+    <shortDescription>AstroGrid Web Portal Base POM</shortDescription>
+    <repository>
+        <connection> 
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name} 
+            </connection>
+        <developerConnection> 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name} 
+            </developerConnection>
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/${astrogrid.name}/ 
+            </url>
+    </repository>
+  
+    <developers>
+        <developer>
+            <name> Brian McIlwrath </name>
+            <id> bkm </id>
+            <email> bkm@star.rl.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Data Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Catherine Qin </name>
+            <id> clq2 </id>
+            <email> clq2@star.le.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Integration and Release WGL </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Clive Davenhall </name>
+            <id> acd </id>
+            <email> acd@roe.ac.uk </email>
+            <organization> ROE </organization>
+            <roles>
+                <role> Data Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Clive Page </name>
+            <id> cgp </id>
+            <email> cgp@star.le.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Grid Research Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Dave Morris </name>
+            <id> dave </id>
+            <email> maven-report@codon.demon.co.uk </email>
+            <organization> Cambridge </organization>
+            <roles>
+                <role> Data Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Elizabeth Auden </name>
+            <id> eca </id>
+            <email> eca@mssl.ucl.ac.uk </email>
+            <organization> MSSL </organization>
+            <roles>
+                <role> Grid Research Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Guy Rixon </name>
+            <id> gtr </id>
+            <email> gtr@ast.cam.ac.uk </email>
+            <organization> Cambridge </organization>
+            <roles>
+                <role> Data Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Jeff Lusted </name>
+            <id> jl99 </id>
+            <email> jl99@star.le.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Presentation WGL </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> John Taylor </name>
+            <id> jdt </id>
+            <email> jdt@roe.ac.uk </email>
+            <organization> ROE </organization>
+            <roles>
+                <role> Presentation Software Developer </role>
+                <role> Integration and Release </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Keith Noddle </name>
+            <id> ktn </id>
+            <email> ktn@star.le.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Technical Lead </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Kevin Benson </name>
+            <id> kmb </id>
+            <email> kmb@mssl.ucl.ac.uk </email>
+            <organization> MSSL </organization>
+            <roles>
+                <role> Data WGL </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Kona Andrews </name>
+            <id> kea </id>
+            <email> kea@ast.cam.ac.uk </email>
+            <organization> Cambridge </organization>
+            <roles>
+                <role> Grid Research WGL </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Martin Hill </name>
+            <id> mch </id>
+            <email> mch@roe.ac.uk </email>
+            <organization> ROE </organization>
+            <roles>
+                <role> Data Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Noel Winstanley </name>
+            <id> nw </id>
+            <email> nw@jb.man.ac.uk </email>
+            <organization> Jodrell </organization>
+            <roles>
+                <role> Presentation Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Paul Harrison </name>
+            <id> pah </id>
+            <email> pah@jb.man.ac.uk </email>
+            <organization> Jodrell </organization>
+            <roles>
+                <role> Data Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Pedro Contreras </name>
+            <id> pc </id>
+            <email> P.Contreras@qub.ac.uk </email>
+            <organization>
+            </organization>
+            <roles>
+                <role> Grid Research Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Peter Shillan </name>
+            <id> gps </id>
+            <email> gps@roe.ac.uk </email>
+            <organization> ROE </organization>
+            <roles>
+                <role> Presentation Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Phil Nicolson </name>
+            <id> pjn3 </id>
+            <email> pjn3@star.le.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Presentation Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Roy Platon </name>
+            <id> rtp </id>
+            <email> R.T.Platon@rl.ac.uk </email>
+            <organization>
+            </organization>
+            <roles>
+                <role> Presentation Software Developer </role>
+            </roles>
+        </developer>
+        <developer>
+            <name> Tony Linde </name>
+            <id>ael </id>
+            <email> ael@star.le.ac.uk </email>
+            <organization> Leicester </organization>
+            <roles>
+                <role> Project Manager </role>
+            </roles>
+        </developer>
+    </developers>
+  
+  <dependencies>
+    <!-- Common -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-common</artifactId>
+      <version>${pom.currentVersion}</version>
+    </dependency>
+	
+	<!--+
+		|  Cocoon Dependencies
+		|
+		+-->
+	
+		<dependency>
+		  <id>altrmi-common</id>
+		  <version>0.9.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>altrmi-registry</id>
+		  <version>0.9.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>altrmi-server-impl</id>
+		  <version>0.9.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>altrmi-server-interfaces</id>
+		  <version>0.9.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>avalon-framework</id>
+		  <version>4.1.4</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>axis</id>
+		  <version>1.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>batik-all</id>
+		  <version>1.5</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>bsf</id>
+		  <version>2.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>castor-0.9.5.1</id>
+		  <version>xml</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>chaperon</id>
+		  <version>2.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-2.1.2</id>
+		  <version>deprecated</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-authentication-fw-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-batik-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-bsf-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-chaperon-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-databases-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-fop-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-html-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-itext-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-jfor-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-jsp-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-jxforms-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-linkrewriter-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-lucene-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-naming-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-php-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-poi-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-portal-fw-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-precept-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-profiler-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-python-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-session-fw-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-slide-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-swf-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-velocity-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-web3-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>cocoon-xmldb-block</id>
+		  <version>2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-cli</id>
+		  <version>1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-collections</id>
+		  <version>2.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-httpclient-2.0</id>
+		  <version>rc1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-jexl-1.0-beta</id>
+		  <version>1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-jxpath</id>
+		  <version>20030909</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-lang</id>
+		  <version>2.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>commons-logging</id>
+		  <version>1.0.3</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-component</id>
+		  <version>1.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-datasource</id>
+		  <version>1.1.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-event</id>
+		  <version>20030904</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-i18n</id>
+		  <version>1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-instrument</id>
+		  <version>1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-instrument-manager</id>
+		  <version>1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-instrument-manager-interfaces</id>
+		  <version>1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-io</id>
+		  <version>1.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-logger</id>
+		  <version>1.0.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-monitor</id>
+		  <version>1.0.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-naming</id>
+		  <version>1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-pool</id>
+		  <version>1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-sourceresolve</id>
+		  <version>20030715</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-store</id>
+		  <version>20030825</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>excalibur-xmlutil</id>
+		  <version>20030520</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>fop</id>
+		  <version>0.20.5</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>itext</id>
+		  <version>1.00</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>itext-xml</id>
+		  <version>1.00</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jakarta-poi-1.10.0-dev</id>
+		  <version>20030222</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jakarta-regexp</id>
+		  <version>1.3</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jdom-dev</id>
+		  <version>20020131</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jdtcore</id>
+		  <version>2.1.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jfor</id>
+		  <version>0.7.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jisp</id>
+		  <version>2.5.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jstyle</id>
+		  <version>cocoon-2.1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>jtidy-04aug2000r7</id>
+		  <version>dev</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>logfactor5</id>
+		  <version>1.2.8</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>logkit</id>
+		  <version>1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>lucene</id>
+		  <version>1.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>pizza</id>
+		  <version>1.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>resolver</id>
+		  <version>20030708</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>rhino1.5r4-continuations</id>
+		  <version>20030906</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>slide-kernel</id>
+		  <version>20030322</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>slide-roles</id>
+		  <version>20030322</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>slide-stores</id>
+		  <version>20030322</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>slide-webdavservlet</id>
+		  <version>20030322</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>spark</id>
+		  <version>0.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>util.concurrent</id>
+		  <version>1.3.2</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>velocity-1.4-dev</id>
+		  <version>20030301</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>xalan</id>
+		  <version>2.5.1</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>xercesImpl</id>
+		  <version>2.5.0</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>xml</id>
+		  <version>apis</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+		<dependency>
+		  <id>xmldb-api</id>
+		  <version>20011111</version>
+		  <properties>
+			<war.bundle>true</war.bundle>
+		  </properties>
+		</dependency>
+	<!--  End Cocoon Dependencies -->
+
+    <!--
+      Testing Utilities.
+      -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.8</version>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <sourceDirectory/>
+    <unitTestSourceDirectory/>
+  </build>
+  
+  <reports>
+    <report> maven-changelog-plugin </report>
+    <report> maven-changes-plugin </report>
+    <report> maven-checkstyle-plugin </report>
+    <report> maven-clover-plugin </report>
+    <report> maven-developer-activity-plugin </report>
+    <report> maven-file-activity-plugin </report>
+    <report> maven-javadoc-plugin </report>
+    <report> maven-jdepend-plugin </report>
+    <report> maven-junit-report-plugin </report>
+    <report> maven-jxr-plugin </report>
+    <report> maven-license-plugin </report>
+    <!--report> maven-linkcheck-plugin </report-->
+    <report> maven-pmd-plugin </report>
+    <report> maven-tasklist-plugin </report>
+    <report> maven-simian-plugin </report>
+</reports>
+</project>

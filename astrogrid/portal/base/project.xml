@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- -->
-<!DOCTYPE project [
-  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies.xml">
-]>
-<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <extend>../project.xml</extend>
+  <extend>../maven-base/project.xml</extend>
   
   <id>astrogrid-portal-base</id>
   <name>AstroGrid Portal Base Project</name>
@@ -42,8 +37,6 @@
       </properties>
     </dependency>
     
-    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
-    &cocoon-deps;
   </dependencies>
   
   <build>

@@ -9,7 +9,7 @@
         <section name="Installing the Portal">
             <subsection name="A brief guide">
                 <p> This <a 
-                    href="http://www.astrogrid.org/maven/org.astrogrid/wars/">link</a> 
+                    href="http://www.astrogrid.org/maven/org.astrogrid/wars/?P=*portal*-SNAPSHOT*">link</a> 
                     gives access to the latest war files. <ul> <li>Deploy the 
                     astrogrid-portal-base.war to Tomcat in the usual way.</li> 
                     <li>Stop tomcat</li> <li>Then take each subcomponent 

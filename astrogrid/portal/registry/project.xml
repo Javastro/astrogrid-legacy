@@ -10,7 +10,7 @@
     <!--+
         | Extend the common project descriptor.
         +-->
-    <extend>../project.xml</extend>
+    <extend>../maven-base/project.xml</extend>
    
     <!--+
         | The current version of the Maven project descriptor.

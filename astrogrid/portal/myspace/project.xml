@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- -->
-<!DOCTYPE project [
-  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
-]>
-<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../maven-project.xsd">
-  <extend>../project.xml</extend>
+  <extend>../maven-base/project.xml</extend>
   
   <id>astrogrid-portal-myspace</id>
   <name>AstroGrid Portal MySpace Project</name>
@@ -196,10 +191,6 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-    <!-- MYSPACE -->
-
-    <!-- DO NOT INCLUDE PARENT DEPENDENCIES IN WAR -->
-    &cocoon-deps;
   </dependencies>
   
   <build>

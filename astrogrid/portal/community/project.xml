@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- -->
-<!DOCTYPE project [
-  <!ENTITY cocoon-deps SYSTEM "../cocoon-dependencies-nowar.xml">
-]>
-<!-- -->
 <project
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../maven-project.xsd">
-  <extend>../project.xml</extend>
+  <extend>../maven-base/project.xml</extend>
   
   <id>astrogrid-portal-community</id>
   <name>AstroGrid Portal Community</name>

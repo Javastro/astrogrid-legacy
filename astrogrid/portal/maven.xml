@@ -12,7 +12,7 @@
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        excludes="subproject-template/project.xml"
+        excludes="subproject-template/project.xml,maven-base/project.xml"
         goals="jar:deploy-snapshot,war:deploy-snapshot"
         banner="Deploy Portal Component JARs and WARs"
         ignoreFailures="true"/>
@@ -24,7 +24,7 @@
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        excludes="subproject-template/project.xml"
+        excludes="subproject-template/project.xml,maven-base/project.xml"
         goals="jar:deploy,war:deploy"
         banner="Deploy Portal Component JARs and WARs"
         ignoreFailures="true"/>
@@ -37,7 +37,7 @@
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        excludes="subproject-template/project.xml"
+        excludes="subproject-template/project.xml,maven-base/project.xml"
         goals="jar:install-snapshot,war:install-snapshot"
         banner="Install Portal Component JARs and WARs"
         ignoreFailures="true"/>
@@ -50,7 +50,7 @@
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        excludes="subproject-template/project.xml"
+        excludes="subproject-template/project.xml,maven-base/project.xml"
         goals="jar:install,war:install"
         banner="Install Portal Component JARs and WARs"
         ignoreFailures="false"/>
@@ -63,7 +63,7 @@
         basedir="${basedir}"
         postProcessing="false"
         includes="*/project.xml"
-        excludes="subproject-template/project.xml"
+        excludes="subproject-template/project.xml,maven-base/project.xml"
         goals="jar:jar,war:war"
         banner="Install Portal Component JARs and WARs"
         ignoreFailures="true"/>
