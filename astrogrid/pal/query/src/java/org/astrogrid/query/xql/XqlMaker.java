@@ -115,19 +115,22 @@ public class XqlMaker {
       Transformer transformer = null;
       try {
          //look for transformation sheet as resource of this class (for unit tests, etc)
-         InputStream xsltIn = new BufferedInputStream(XqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
+          InputStream xsltIn = null;
+         //InputStream xsltIn = new BufferedInputStream(XqlMaker.class.getResourceAsStream("./xslt/"+xsltDoc));
+          //InputStream xsltIn = new BufferedInputStream(XqlMaker.class.getResourceAsStream("xsl/"+xsltDoc));
          
-         if (xsltIn == null) {
+         //if (xsltIn == null) {
             //if it's in a JAR under tomcat the above won't find it - look for it on class path
            ClassLoader loader = this.getClass().getClassLoader();
-           xsltIn = loader.getResourceAsStream(xsltDoc);
-         }
+           xsltIn = loader.getResourceAsStream("xsl/" + xsltDoc);
+         //}
       
          if (xsltIn == null) {
             throw new QueryException("Could not find/create ADQL->XQL transformer doc "+xsltDoc);
          }
          
-         log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at './xslt/"+xsltDoc+"'");
+         //log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at './xslt/"+xsltDoc+"'");
+         log.debug("Transforming ADQL ["+namespaceURI+"] using Xsl doc at 'xsl/"+xsltDoc+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
          transformer = tFactory.newTransformer(new StreamSource(xsltIn));
          try {
@@ -172,8 +175,11 @@ public class XqlMaker {
 
 /*
 $Log$
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/10 13:57:32  KevinBenson
+added its ability to get the xsl stylesheet
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.2  2005/02/16 21:19:00  mch
 started incoporating into maven
