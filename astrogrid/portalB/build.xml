@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/09/10 02:34:05 $</cvs:author>
-    | <cvs:version>$Revision: 1.42 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/09/12 11:20:05 $</cvs:author>
+    | <cvs:version>$Revision: 1.43 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.43  2003/09/12 11:20:05  KevinBenson
+    | *** empty log message ***
+    |
     | Revision 1.42  2003/09/10 02:34:05  dave
     | Removed build directory files from cvs
     |
@@ -179,7 +182,11 @@
 	<!-- Community client jar -->
 	<property name="community.policy.client.jar" value="depends/community/policy-client-1.0.jar" />
 	<property name="community.home" value="depends/community/" />
-
+	
+	<!-- JConfig jar -->
+	<property name="jconfig.jar" value="depends/jconfig/jconfig.jar" />
+	<property name="jconfig.home" value="depends/jconfig/" />
+	
 	<!-- plugins location -->
 	<property name="plugin.topcat.jar" value="depends/plugins/topcat-astrogrid.jar" />
 	<property name="plugin.home" value="depends/plugins/" />
@@ -272,6 +279,11 @@
 	<path id="plugins.classpath">
 		<pathelement location="${plugin.topcat.jar}"/>
 	</path>
+	
+	<path id="jconfig.classpath">
+		<pathelement location="${jconfig.jar}"/>
+	</path>
+	
 	
 	<!-- The Plugin libraries -->
 	<path id="community.classpath">
@@ -1143,6 +1155,8 @@
 				<path refid="cocoon.classpath"/>
 				
 				<path refid="plugins.classpath"/>
+				
+				<path refid="jconfig.classpath"/>
 				
 				<path refid="community.classpath" />
 				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
@@ -2309,6 +2323,14 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
+		
+		<!-- Copy our jconfig jar -->
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${jconfig.home}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		
 		
 		<!-- Copy our Community jar -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
