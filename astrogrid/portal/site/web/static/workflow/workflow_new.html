@@ -93,7 +93,7 @@
           <tr class="main-content" valign="top">
             <td style="border-top-style: ridge; border-bottom-style: ridge;">
               <table cellpadding="0" cellspacing="0"
-                     style="background-color: LightGray;">
+                     style="background-color: LightGray;">                                
                 <tr>
                   <td colspan="5" style="border-top-style: solid; border-right-style: solid;" align="center">
                     Design Jobs
@@ -102,12 +102,11 @@
                     Spacing.
                     -->
                   <td style="border-right-style: none;" width="100%">&nbsp;</td>
-                  <td style="border-top-style: solid; border-right-style: solid;" nowrap>
+                  <td nowrap style="border-top-style: solid; border-right-style: solid;">
                     Monitor Jobs
                   </td>                  
                 </tr>
-                <p>
-                <tr>
+                <tr>                
                   <td style="border-right-style: double;" align="center">
                     <a href="workflow_new.html">&nbsp;New&nbsp;</a>
                   </td>
@@ -129,49 +128,47 @@
                   <td style="border-right-style: none;" width="100%">&nbsp;</td>
                   <td align="center">
                     <a href="workflow_monitor.html">&nbsp;Monitor&nbsp;</a>               
-                  </td>
+                  </td>                  
                 </tr>
-                </p>
               </table>
-              <table cellpadding="0" cellspacing="0">
-                <form name="new_form" action="workflow_new2.html">                       
-                <!--
-                  New
-                  -->
-                  <p/>                 
-                  <tr>
-                    <td>
-                      Job Name:          
-                    </td>
-                    <td>
-                      <input type="text" name="jobName">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Job Description:&nbsp;&nbsp;          
-                    </td>
-                    <td>
-                      <input type="text" name="jobDescription">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <ul>
-                        <li><input type="radio" name="template">one step sequence</li>
-                        <li><input type="radio" name="template">two step sequence</li>
-                        <li><input type="radio" name="template">two step flow</li>
-                        <li><input type="radio" name="template">sequence with two step flow</li>
-                      </ul>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>                      
-                      <input type="submit" value="Create">
-                    </td>
-                  </tr>
-                </form>                                                              
-              </table>                
+              <form name="new_form" action="workflow_new2.html">               
+                <table cellpadding="0" cellspacing="0">                      
+                  <!--
+                    New
+                    -->                 
+                    <tr>
+                      <td>
+                        Job Name:          
+                      </td>
+                      <td>
+                        <input type="text" name="jobName" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        Job Description:&nbsp;&nbsp;          
+                      </td>
+                      <td>
+                        <input type="text" name="jobDescription" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <ul>
+                          <li><input type="radio" name="template" />one step sequence</li>
+                          <li><input type="radio" name="template" />two step sequence</li>
+                          <li><input type="radio" name="template" />two step flow</li>
+                          <li><input type="radio" name="template" />sequence with two step flow</li>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>                      
+                        <input type="submit" value="Create" />
+                      </td>
+                    </tr>                                                              
+                </table> 
+              </form>                             
             </td>
           </tr>         
 <!-- Main display body end -->
