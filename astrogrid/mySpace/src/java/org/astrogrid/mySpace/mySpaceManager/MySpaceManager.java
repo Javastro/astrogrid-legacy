@@ -896,6 +896,10 @@ public String upLoad(String jobDetails){
 	public String changeOwner(String oldID, String newID){
 			return "Not Implemented";
 		}
+		
+	public String authorise(String userDetails){
+			return "Not Implemented";
+		}		
 	protected String getComponentName() { return Configurator.getClassName( MySpaceManager.class) ; }    
 
 }
