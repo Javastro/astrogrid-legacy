@@ -829,7 +829,7 @@ function defocusit(a){
 <tr>
 <td align="left">FROM:</td>
 <td align="left" colspan="2">
-<xsl:value-of select="vs:Name"/>
+<xsl:value-of select="//*/vr:Resource/vs:Table/vr:Name"/>
 <!--
 <input name="none" size="20">
 <xsl:attribute name="value">
@@ -867,7 +867,7 @@ Hi! Ho!<br />
 -->
 <br />
 <xsl:for-each select="//*/vr:Resource/vs:Table/vs:Column">
-<input class="AGwideButton" type="button" onClick="xTEK('{Name}\040')" value=" {Name} " onMouseOver="cabc(this, '{Name}', '{vs:UCD}', '{vs:Unit}', '{Description}')" onMouseOut="cvbc(this)"/>
+<input class="AGwideButton" type="button" onClick="xTEK('{vr:Name}\040')" value=" {vr:Name} " onMouseOver="cabc(this, '{vr:Name}', '{vs:UCD}', '{vs:Unit}', '{vr:Description}')" onMouseOut="cvbc(this)"/>
 </xsl:for-each>
 </form>
 </center>
