@@ -88,6 +88,7 @@
         <arg value="target/src/java"/>  
         <arg value="${wsdl.path}"/>
      </java>
+     <delete file="target/src/java/org/astrogrid/warehouse/service/WarehouseServiceIfc.java"/>
   </target>
 
    <!-- Deploy the webservice into tomcat. -->
