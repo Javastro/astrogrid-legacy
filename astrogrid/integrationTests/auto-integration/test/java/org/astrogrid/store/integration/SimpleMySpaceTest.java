@@ -11,6 +11,9 @@ import org.astrogrid.store.delegate.StoreFile;
 import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
 /**
  * Junit tests for a deployed MySpace Manager.
+ * @TODO this class gets under the hood of the VOSpace delegate,
+ * and uses deprecated classes such as User.  Find out whether this
+ * is very naughty.
  * 
  * @author jdt@roe.ac.uk
  * @since Iteration 5.
@@ -325,8 +328,8 @@ public final class SimpleMySpaceTest extends TestCase {
                 log.info("Found " + files.length + " files");
                 for (int i = 0; i < files.length; ++i) {
                     StoreFile file = files[i];
-                    log.info("found file " + files[i].getName());
-                    myspace.delete(file.getName());
+                    log.info("found file " + file.getPath());
+                    myspace.delete(file.getPath());
                 }
             }
             myspace.deleteUser(account);
