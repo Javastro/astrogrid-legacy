@@ -1,4 +1,4 @@
-/*$Id: AbstractTestForWorkflow.java,v 1.12 2004/08/19 23:31:54 nw Exp $
+/*$Id: AbstractTestForWorkflow.java,v 1.13 2004/08/22 01:31:15 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -67,7 +67,7 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
     
     protected abstract void buildWorkflow() throws  Exception;
 
-   public static final long WAIT_TIME = 240 * 1000;
+   public static final long WAIT_TIME = 10 * 60 * 1000; // timout is ten minutes for each test.
 /** override this to do fuller tests */
     public void checkExecutionResults(Workflow result) throws Exception{
         assertWorkflowCompleted(result);
@@ -251,6 +251,9 @@ public abstract class AbstractTestForWorkflow extends AbstractTestForIntegration
 
 /* 
 $Log: AbstractTestForWorkflow.java,v $
+Revision 1.13  2004/08/22 01:31:15  nw
+increased timeout for tests - give them more chance to finish
+
 Revision 1.12  2004/08/19 23:31:54  nw
 improved assertion messages
 
