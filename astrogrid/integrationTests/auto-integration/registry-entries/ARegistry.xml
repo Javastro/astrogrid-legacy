@@ -24,27 +24,27 @@
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
     </Identifier>
-    <Title>Astrogrid localhost test Registry</Title>
+    <Title>Astrogrid Full Registry</Title>
     <Summary>
       <Description>
-         This is the Astrogrid localhost test main registry currently holding datate for MSSL, Cambridge Community, and Edinburgh-ROE Myspace.
+         The main Astrogrid publishing registry
       </Description>
-      <ReferenceURL>http://localhost:8080/</ReferenceURL>
+      <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/registry/index.html</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
     <Curation>
       <Publisher>
-         <Title>MSSL Registry</Title>
+         <Title>Astrogrid</Title>
       </Publisher>
       <Contact>
-        <Name>Integration tests</Name>
-       <Email>int@localhost.com</Email>
+        <Name>Tony Linde</Name>
+       <Email>ael@star.le.ac.uk</Email>
       </Contact>
     </Curation>
     <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
     <Interface>
-      <Invocation>WebBrowser</Invocation>
-      <AccessURL use="full">@TOMCATROOT@/astrogrid-registry-SNAPSHOT/OAIHandlerv0_9</AccessURL>
+      <Invocation>WebService</Invocation>
+      <AccessURL use="full">@CENTRALREGISTRY@Query</AccessURL>
     </Interface>
   </vr:Resource>
   </VODescription>
