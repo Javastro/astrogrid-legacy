@@ -5,13 +5,15 @@
   xmlns:creds="http://www.astrogrid.org/schema/Credentials/v1"
   xmlns:pd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
   xmlns:cea="http://www.astrogrid.org/schema/CEATypes/v1"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ >
 
 <xsl:template match="/">
   <html>
    <head>
    <style type="text/css">
     div.header{
+        font-size:larger;
     }
     div.body{
             border-top-width:5px;
@@ -77,9 +79,8 @@
    <title><xsl:value-of select="wf:workflow/@name" /></title>
    </head>
    <body>
-   <div class="header" >
+   <h1>Workflow Transcript</h1>
    <xsl:apply-templates select="wf:workflow" />
-   </div>
    <div class="body">
    <xsl:apply-templates select="wf:workflow/wf:sequence" />
    </div>
@@ -90,9 +91,12 @@
 
 
 <xsl:template match="wf:workflow" >
+
+   <div class="header" >
  Name: <i><xsl:value-of select="@name" /></i><br />
  <xsl:apply-templates select="wf:Credentials" />
  <xsl:apply-templates select="wf:description" />
+ </div>
  <xsl:apply-templates select="er:job-execution-record" />
 </xsl:template>
 
@@ -126,57 +130,83 @@
 
 <xsl:template match="wf:step" name="step">
         <div class="step">
-        <b>Step: </b> <i><xsl:value-of select="@name"/></i>,
-        Join Condition: <i><xsl:value-of select="@joinCondition" /></i><br />
-        <xsl:apply-templates select="wf:description" />
-        <xsl:apply-templates select="wf:tool" />
-        <xsl:apply-templates select="er:step-execution-record" />
+        <b>Step: </b> Name <i><xsl:value-of select="@name"/></i>,
+                Result Var <i><xsl:value-of select="@result-var"/></i>
+        <br />
+                <xsl:apply-templates select="wf:description" />
+                <xsl:apply-templates select="wf:tool" />
+                <xsl:apply-templates select="er:step-execution-record"/>
         </div>
 </xsl:template>
 
 <xsl:template match="wf:script" name="script">
-	<div class="step">
-		<b>Script:</b><br/>
-		<xsl:value-of select="." />
-	</div>
+        <div class="step">
+                <b>Script:</b><br/>
+                <pre>
+                <xsl:value-of select="body" />
+                </pre><br />
+                <xsl:apply-templates select="wf:description" />
+                <xsl:apply-templates select="er:step-execution-record"/>
+        </div>
 </xsl:template>
 
 <xsl:template match="wf:if" name="if">
-	<div class="block"><b>If</b> <xsl:value-of select="@test" /><br />
-		<b>Then</b>
-		<div class="sequence-children">
-			<xsl:apply-templates select="./wf:then/*"/>
-		</div>
-		<b>Else</b>
-		<div class="sequence-children">
-			<xsl:apply-templates select="./wf:else/*"/>
-		</div>
-	</div>
+        <div class="block"><b>If</b> <xsl:value-of select="@test" /><br />
+                <b>Then</b>
+                <div class="sequence-children">
+                        <xsl:apply-templates select="./wf:then/*"/>
+                </div>
+                <b>Else</b>
+                <div class="sequence-children">
+                        <xsl:apply-templates select="./wf:else/*"/>
+                </div>
+        </div>
 </xsl:template>
 
 <xsl:template match="wf:for" name="for">
-	<div class="block"><b>For</b> <xsl:value-of select="@var" /> <i>in</i> <xsl:value-of select="@range" />
-		<div class="sequence-children">
-			<xsl:apply-templates />
-		</div>		
-	</div>
+        <div class="block"><b>For</b> <xsl:value-of select="@var" /> <i>in</i> <xsl:value-of select="@values" />
+                <div class="sequence-children">
+                        <xsl:apply-templates />
+                </div>
+        </div>
 </xsl:template>
 
 <xsl:template match="wf:while" name="while">
-	<div class="block"><b>While</b> <xsl:value-of select="@test" /> 
-		<div class="sequence-children">
-			<xsl:apply-templates />
-		</div>		
-	</div>	
+        <div class="block"><b>While</b> <xsl:value-of select="@test" />
+                <div class="sequence-children">
+                        <xsl:apply-templates />
+                </div>
+        </div>
 </xsl:template>
 
 <xsl:template match="wf:parfor" name="parfor">
-		<div class="block"><b>ParFor</b> <xsl:value-of select="@var" /> <i>in</i> <xsl:value-of select="@range" />
-		<div class="sequence-children">
-			<xsl:apply-templates />
-		</div>		
-	</div>
+                <div class="block"><b>ParFor</b> <xsl:value-of select="@var" /> <i>in</i> <xsl:value-of select="@values" />
+                <div class="sequence-children">
+                        <xsl:apply-templates />
+                </div>
+        </div>
 </xsl:template>
+
+<xsl:template match="wf:set" name="set">
+        <div class="step">
+                <b><xsl:value-of select="@var"/></b> := <i><xsl:value-of select="@value" /></i>
+        </div>
+</xsl:template>
+
+<xsl:template match="wf:unset" name="unset">
+        <div class="step">
+                <b>Unset <xsl:value-of select="@var" /></b>
+        </div>
+</xsl:template>
+
+<xsl:template match="wf:scope" name="scope">
+        <div class="block"><b>New Scope</b>
+                <div>
+                <xsl:apply-templates />
+                </div>
+        </div>
+</xsl:template>
+
 
 <xsl:template match="wf:description">
         <div class="description"><xsl:value-of select="."/></div>
@@ -189,7 +219,7 @@
                 <div class="params">
                 <i>Inputs</i><br />
                 <xsl:apply-templates select="wf:input/wf:parameter" />
-                <br /><i>Outputs</i><br />
+                <i>Outputs</i><br />
                 <xsl:apply-templates select="wf:output/wf:parameter" />
                 </div>
         </div>
@@ -197,7 +227,7 @@
 
 
 <xsl:template match="wf:parameter">
-        <b><xsl:value-of select="@name"/></b> : <xsl:value-of select="@type" /> := <i><xsl:value-of select="pd:value" /></i><br />
+        <b><xsl:value-of select="@name"/></b>  := <i><xsl:value-of select="pd:value" /></i><br />
 </xsl:template>
 
 
@@ -214,6 +244,7 @@
 <xsl:if test="not (@status = 'PENDING' or @status ='INITIALIZING' or @status = 'RUNNING')">
          Finish: <xsl:value-of select="@finishTime" />
  </xsl:if>
+ <!-- could tabulate these .. -->
  <xsl:apply-templates select="cea:message">
          <xsl:sort select="timestamp" />
  </xsl:apply-templates>
@@ -264,7 +295,16 @@
                 </xsl:when>
                 <xsl:when test="@xsi:type = 'script'">
                         <xsl:call-template name="script" />
-                </xsl:when>                                                                                
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'set'">
+                        <xsl:call-template name="set" />
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'unset'">
+                        <xsl:call-template name="unset" />
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'scope'">
+                        <xsl:call-template name="scope" />
+                </xsl:when>
         </xsl:choose>
 </xsl:template>
 
