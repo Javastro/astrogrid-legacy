@@ -16,6 +16,7 @@
 			<item name="Contacts" href="/team-list.html"/>
 			<item name="Reporting Bugs" href="/issue-tracking.html"/>
 			<item name="About this documentation" href="/about.html"/>
+			<item name="Broken Links" href="mailto:jdt@roe.ac.uk"/>            
 		</menu>
         <menu name="Download">
             <item name="Releases" href="/downloaddocs/releases.html" collapse="true"> 
