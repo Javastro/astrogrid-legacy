@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerRunningHyperZ.java,v 1.1 2004/01/16 22:18:58 pah Exp $
+ * $Id: TestApplicationControllerRunningHyperZ.java,v 1.2 2004/01/20 12:03:49 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -74,7 +74,20 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
    final public void testExecuteApplication() {
       initializeApplication();
       controller.executeApplication(executionId);
-      System.out.print("run app ok");
+      String runStatus = controller.queryApplicationExecutionStatus(executionId);
+      try {
+         while (!runStatus.equals(Status.COMPLETED.toString())) {
+           Thread.sleep(20000);
+           runStatus = controller.queryApplicationExecutionStatus(executionId);
+         
+         }
+         
+      }
+      catch (InterruptedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+           System.out.print("run app ok");
    }
 
    final public void testGetApplicationDescription() {
@@ -110,7 +123,8 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
    private String initApp() {
       String exid;
       parameters.setMethodName("simple");
-      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
+//      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
+    parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/join.xml</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
       exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
       CmdLineApplication app = controller.getRunningApplication(exid);
       assertNotNull("applicaton object not returned after initialization", app);

@@ -1,5 +1,5 @@
 /*
- * $Id: OutputParams.java,v 1.1 2004/01/18 12:28:00 pah Exp $
+ * $Id: OutputParams.java,v 1.2 2004/01/20 12:03:49 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -30,15 +30,17 @@ import voi.vowrite.VOTableField;
  */
 public class OutputParams {
 
-   List columnlist = new ArrayList();
+   private String band;
+   private List columnlist = new ArrayList();
    /**
     * 
     */
-   public OutputParams(File paramfile) throws IOException {
+   public OutputParams(File paramfile, String band) throws IOException {
 
       FileReader fr = new FileReader(paramfile);
       BufferedReader br = new BufferedReader(fr);
-
+      this.band = band;
+      
       String line;
 
       while ((line = br.readLine()) != null) {
@@ -63,6 +65,24 @@ public class OutputParams {
       retval.setName(fname);
       retval.setUcd(fname);
       retval.setDataType("float");
+      //TODO - UCD handling needs to be done properly this is a quick fix
+      if(fname.equals("X_WORLD"))
+      {
+         retval.setUcd("POS_EQ_RA_MAIN"); 
+         retval.setRef("cs1");
+         retval.setUnit("deg");
+      }
+      if(fname.equals("Y_WORLD"))
+      {
+         retval.setUcd("POS_EQ_DEC_MAIN"); 
+         retval.setRef("cs1");
+         retval.setUnit("deg");
+      }
+      if(fname.equals("MAG_AUTO") || fname.equals("MAGERR_AUTO"))
+      {
+         retval.setName(band+fname);
+         retval.setUcd(band+fname);
+      }
 
       return retval;
 

@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZ.java,v 1.2 2004/01/18 12:28:00 pah Exp $
+ * $Id: HyperZ.java,v 1.3 2004/01/20 12:03:49 pah Exp $
  * 
  * Created on 16-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,8 @@
  */ 
 
 package org.astrogrid.applications.commandline.hyperz;
+
+import java.io.File;
 
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.manager.AbstractApplicationController;
@@ -26,7 +28,7 @@ import org.astrogrid.community.User;
  */
 public class HyperZ extends CmdLineApplication {
    
-   
+   private File originalInput;
 
    /**
     * 
@@ -57,7 +59,6 @@ public class HyperZ extends CmdLineApplication {
       argvals.add("/home/applications/demo/hyperz/cdfs-bviz.param");
       argvals.add("-TEMPLATES_FILE");
       argvals.add("/home/applications/demo/hyperz/spectra.param");
-      args = (String[])argvals.toArray(new String[0]);
     
       
    }
@@ -74,7 +75,9 @@ public class HyperZ extends CmdLineApplication {
     * @see org.astrogrid.applications.commandline.CmdLineApplication#postParamSetupHook()
     */
    protected void postParamSetupHook() {
-      // TODO Auto-generated method stub
+      // TODO create read the input file from the VOTable
+      HyperZVOTableReader conv = new HyperZVOTableReader(findParameter("input_catalog"),applicationEnvironment);
+      conv.read();
    }
 
 }

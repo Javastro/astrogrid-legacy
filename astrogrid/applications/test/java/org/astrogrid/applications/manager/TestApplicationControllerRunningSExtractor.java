@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerRunningSExtractor.java,v 1.2 2004/01/18 12:28:00 pah Exp $
+ * $Id: TestApplicationControllerRunningSExtractor.java,v 1.3 2004/01/20 12:03:49 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -72,7 +72,7 @@ public class TestApplicationControllerRunningSExtractor extends BaseApplicationT
    }
 
    final public void testExecuteApplication() {
-      initializeApplication("b");
+      initializeApplication("z");
       controller.executeApplication(executionId);
       String runStatus = controller.queryApplicationExecutionStatus(executionId);
       try {
@@ -125,8 +125,8 @@ public class TestApplicationControllerRunningSExtractor extends BaseApplicationT
       parameters.setMethodName("Simple");
       
       String paramstr=
-      "<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_sz_sect23_v1.0_drz_img.fits</parameter>"
-      +"<parameter name='PhotoImage'>/home/applications/data/GOODS/h_s"+band+"_sect23_v1.0_drz_img.fits</parameter>"
+      "<tool><input><parameter name='DetectionImage'>/home/applications/data/GOODS/h_nz_sect23_v1.0_drz_img.fits</parameter>"
+      +"<parameter name='PhotoImage'>/home/applications/data/GOODS/h_n"+band+"_sect23_v1.0_drz_img.fits</parameter>"
       +"<parameter name='config_file'>/home/applications/demo/h_goods_n"+band+"_r1.0z_phot_sex.txt</parameter><parameter name='PARAMETERS_NAME'>/home/applications/test/std.param</parameter></input>"       +"<output><parameter name='CATALOG_NAME'>out1file_"+band+"</parameter></output></tool>";
       parameters.setParameterSpec(paramstr);
       exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);

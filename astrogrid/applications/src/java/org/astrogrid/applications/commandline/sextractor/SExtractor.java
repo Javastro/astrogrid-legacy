@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.2 2004/01/18 12:28:00 pah Exp $
+ * $Id: SExtractor.java,v 1.3 2004/01/20 12:03:49 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.IOException;
 
 import com.sun.corba.se.internal.corba.EncapsInputStream;
 
+import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
@@ -40,7 +41,11 @@ public class SExtractor extends CmdLineApplication {
       // need to convert the output to a VOTable
       
      try {
-      ASCII2VOTableConverter conv = new ASCII2VOTableConverter(findParameter("CATALOG_NAME"), findParameter("PARAMETERS_NAME"), applicationEnvironment);
+        //FIXME band is determined by the last character of the catalogue name file AVO Kludge
+        String band;
+        Parameter catname = findParameter("CATALOG_NAME");
+        band=catname.getRawValue().substring(catname.getRawValue().length()-1);
+       ASCII2VOTableConverter conv = new ASCII2VOTableConverter(catname, findParameter("PARAMETERS_NAME"), applicationEnvironment, band);
       conv.writeVOTable();
    }
    catch (IOException e) {
@@ -65,10 +70,11 @@ public class SExtractor extends CmdLineApplication {
       argvals.add("-CHECKIMAGE_TYPE");
       argvals.add("NONE");
       argvals.add("-WEIGHT_TYPE");
-      argvals.add("BACKGROUND");
+      argvals.add("NONE");
       argvals.add("-DETECT_THRESH");
       argvals.add("4.0");
-      args = (String[])argvals.toArray(new String[0]);
+      argvals.add("-ANALYSIS_THRESH");
+      argvals.add("4.0");
    }
 
 }

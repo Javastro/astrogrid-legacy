@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.11 2004/01/18 12:28:00 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.12 2004/01/20 12:03:49 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(CmdLineApplication.class);
 
-   protected String[] args = null;
+   private String[] args = null;
    protected List argvals = new ArrayList();
    protected String[] envp = null;
    protected Runtime runtime = Runtime.getRuntime();
@@ -109,13 +109,11 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          Parameter param = (Parameter)iter.next();
          argvals.addAll(param.getArgValue());
       }
-      args = (String[])argvals.toArray(new String[0]);
    }
    /**
     *stop reader and writer threads and free up some resources 
     */
    private final void endApplication() {
-      status = Status.COMPLETED;
       errPiper.terminate();
       outPiper.terminate();
       process = null;
@@ -131,6 +129,9 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          }
 
       }
+      
+      // The application has now finished - including any manipulations of results.
+      status = Status.COMPLETED;
 
       //inform the job monitor that we have finished - only if there is an endpoint specified...     
       if (jobMonitorURL != null && jobMonitorURL.length() > 0) {
@@ -149,6 +150,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
             e.printStackTrace();
          }
       }
+      //TODO should really log this information to the applicationController database.
 
    }
    
@@ -218,7 +220,8 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          throw new ApplicationExecutionException("Cannot open stdout or stderr files", e);
       }
       try {
-         
+         args = (String[])argvals.toArray(new String[0]);
+
          if (logger.isDebugEnabled())
             logger.debug(args);
          process =

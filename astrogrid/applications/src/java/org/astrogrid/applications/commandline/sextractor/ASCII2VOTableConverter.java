@@ -1,5 +1,5 @@
 /*
- * $Id: ASCII2VOTableConverter.java,v 1.1 2004/01/18 12:28:00 pah Exp $
+ * $Id: ASCII2VOTableConverter.java,v 1.2 2004/01/20 12:03:49 pah Exp $
  * 
  * Created on 17-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,13 +51,13 @@ public class ASCII2VOTableConverter {
    /**
     * 
     */
-   public ASCII2VOTableConverter(Parameter outFile, Parameter paramsFile, CmdLineApplicationEnvironment env) throws IOException {
+   public ASCII2VOTableConverter(Parameter outFile, Parameter paramsFile, CmdLineApplicationEnvironment env, String band) throws IOException {
       this.outFileparam = (FileReferenceParameter)outFile;
       this.paramsFileparam = (FileReferenceParameter)paramsFile;
       this.env = env;
       
       outfile = env.getTempFile();
-      outputParams = new OutputParams(paramsFileparam.getRealFile());
+      outputParams = new OutputParams(paramsFileparam.getRealFile(), band);
       
       
    }

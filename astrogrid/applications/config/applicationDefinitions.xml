@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.5 2004/01/16 22:18:58 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.6 2004/01/20 12:03:49 pah Exp $-->
 <!--This is the configuration file for the Iteration4 application controller-->
 <ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
 http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
@@ -95,7 +95,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 				<UI_Name>positional target</UI_Name>
 				<UI_Description>target position/searchDiametet/Unit (split on / to obtain 3 components)</UI_Description>
 			</Parameter>
-			<Parameter name="" type="xs:integer" commandSwitch="String" commandPosition="0" stdio="1">
+			<Parameter name="uhh?" type="xs:integer" commandSwitch="String" commandPosition="0" stdio="1">
 				<UI_Name>String</UI_Name>
 				<UI_Description>Text</UI_Description>
 				<UCD>String</UCD>
@@ -117,7 +117,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 				<DefaultValue>Text</DefaultValue>
 				<Units>String</Units>
 			</Parameter>
-			<Parameter name="output" type="xs:string">
+			<Parameter name="output" type="xs:string" commandswitch="String">
 				<UI_Name>output type</UI_Name>
 				<UI_Description>This can be one of HTML VOTable of Ascii, with the default being VOTable</UI_Description>
 				<DefaultValue>VOTable</DefaultValue>
