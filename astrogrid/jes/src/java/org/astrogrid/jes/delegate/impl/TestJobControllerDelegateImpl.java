@@ -1,9 +1,13 @@
 package org.astrogrid.jes.delegate.impl;
 
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.delegate.Delegate;
 import org.astrogrid.jes.delegate.JesDelegateException;
+import org.astrogrid.jes.delegate.JobInfo;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
+
+import java.rmi.RemoteException;
 
 /**
  * Test implementation of a job controller delegate - performs no communication, returns dummy data.
@@ -18,8 +22,14 @@ public class TestJobControllerDelegateImpl extends JobControllerDelegate {
         this.targetEndPoint = Delegate.TEST_URI;
     }
 
-    
-    public JobURN submitJob(Workflow j) throws JesDelegateException {
+
+
+
+
+    /**
+     * @see org.astrogrid.jes.delegate.JobController#submitWorkflow(java.lang.String)
+     */
+    public JobURN submitWorkflow(Workflow j) throws JesDelegateException {
         log.info("Test Job Controller: submitting " + j.toString());
         JobURN result = new JobURN();
         result.setContent("jes:job:dummy");
@@ -27,14 +37,53 @@ public class TestJobControllerDelegateImpl extends JobControllerDelegate {
     }
 
 
-    /** always returns a 0-length array.
-     * @see org.astrogrid.jes.delegate.JobController#listJobs(java.lang.String, java.lang.String)
+
+
+
+    /**
+     * @see org.astrogrid.jes.delegate.JobController#cancelJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
      */
-    public Workflow[] listJobs(String userId, String community) throws JesDelegateException {
-        log.info("Test Job Controller: listing jobs for " + userId + ", " + community);
-        return new Workflow[]{};
-    } // end of submitJob()
-    
+    public void cancelJob(JobURN urn) throws JesDelegateException {
+        log.info("Test Job Controller: cancelling " + urn.getContent());
+    }
+
+
+
+
+
+    /**
+     * @see org.astrogrid.jes.delegate.JobController#deleteJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
+     */
+    public void deleteJob(JobURN urn) throws JesDelegateException {
+        log.info("Test Job Controller: deleting " + urn.getContent());
+    }
+
+
+
+
+
+    /**
+     * @see org.astrogrid.jes.delegate.JobController#readJobList(org.astrogrid.community.beans.v1.Account)
+     */
+    public JobInfo[] readJobList(Account acc) throws JesDelegateException {
+        log.info("Test Job Controller: reading job list ");
+        return new JobInfo[]{};
+    }
+
+
+
+
+
+    /**
+     * @see org.astrogrid.jes.delegate.JobController#readJob(org.astrogrid.workflow.beans.v1.execution.JobURN)
+     */
+    public Workflow readJob(JobURN urn) throws JesDelegateException {
+        log.info("Test Job Controller: reading workflow for " + urn.getContent());
+        return new Workflow();
+    }
+
+
+
 
 
 

@@ -11,23 +11,32 @@
 package org.astrogrid.jes.jobcontroller;
 
 import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.comm.SchedulerNotifier;
 import org.astrogrid.jes.component.ComponentDescriptor;
+import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
 import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
 import org.astrogrid.jes.job.SubmitJobRequest;
-import org.astrogrid.jes.types.v1.ListCriteria;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
-import org.astrogrid.jes.types.v1.WorkflowList;
+import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.WorkflowString;
+import org.astrogrid.jes.types.v1.WorkflowSummary;
+import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
+import org.apache.axis.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import junit.framework.Test;
 
@@ -82,12 +91,12 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 		logger = LogFactory.getLog( JobController.class ) ;
     
     /** adapter, to enable this class to implement the generated JobController interface */
-    public SubmissionResponse submitJob(String workflowXML) throws RemoteException{
+    public JobURN submitWorkflow(WorkflowString workflowXML) throws JesFault{
         try {
-            SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML);
+            SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML.getValue());
             return this.submitJob(req);
         }  catch (JesException e) {
-            throw new RemoteException("Could not submit job",e);
+            throw createFault("Could not submit job",e);
         }
     }
 	
@@ -107,7 +116,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	  * 
 	  * Bug#12   Jeff Lusted - 30-June-2003
 	  **/     
-    public SubmissionResponse submitJob( SubmitJobRequest req ) {
+    public JobURN submitJob( SubmitJobRequest req ) throws JesFault {
 		JobFactory factory = null ;
         Workflow job= null;
 
@@ -119,7 +128,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
 	        job = factory.createJob( req) ;
             nudger.scheduleNewJob(job.getJobExecutionRecord().getJobId());                    		
 			factory.end ( true ) ;   // Commit and cleanup                    		
-            return facade.createSubmitJobSuccessResponse(job);
+            return new JobURN(job.getJobExecutionRecord().getJobId().getContent());
         }
         catch(Exception jex ) {
         	logger.error(jex);
@@ -130,48 +139,13 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
                     logger.warn("failed to delete corrupted job - " + job.getJobExecutionRecord().getJobId() );
                 }
             }
-            return facade.createSubmitJobErrorResponse( job, jex.getMessage() ) ;
+            throw createFault("Failed to submit job",jex);
         }
 
          	
     } // end of submitJob()
     
-    /**
-      * <p> 
-      * Represents a main service call against the JobController. 
-      * <p>
-      * 
-      * @param jobListXML - The service request XML received as a String.
-      * @return A String containing the list as a reponse document in XML.
-      * 
-      * @see ?Request.xsd in CVS
-      * @see ?Response.xsd in CVS
-      * 
-      **/     
-    public WorkflowList readJobList( ListCriteria req ) {
-        // temporary - will be passed into job controller soon..
-        Account acc = new Account();
-        acc.setName(req.getUserId());
-        acc.setCommunity(req.getCommunity());            
-        try { 
-            // If properties file is not loaded, we bail out...
-            // Each JES MUST be properly initialized! 
-           // JES.getInstance().checkPropertiesLoaded() ;   
-            
-            JobFactory factory = facade.getJobFactory() ;
 
-            
-            Iterator iterator = factory.findUserJobs( acc) ; 
-            return  facade.createListJobsSuccessResponse(acc, iterator ) ;
-        }
-        catch( Exception jex ) {
-            logger.error(jex);
-            return facade.createListJobsErrorResponse(acc, jex.getMessage()) ;
-                              
-        }        
-
-            
-    }
 
     /**
      * @see org.astrogrid.jes.component.ComponentDescriptor#getName()
@@ -192,6 +166,75 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
      */
     public Test getInstallationTest() {
         return null;
+    }
+
+
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#cancelJob(org.astrogrid.jes.types.v1.JobURN)
+     * @todo implement - pass on to jobmonitor
+     */
+    public void cancelJob(JobURN arg0)  {
+    }
+
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#deleteJob(org.astrogrid.jes.types.v1.JobURN)
+     * @todo implement - pass on to jobmonitor.
+     */
+    public void deleteJob(JobURN arg0){
+    }
+
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJobList(org.astrogrid.community.beans.v1.axis._Account)
+     */
+    public WorkflowSummary[] readJobList(_Account arg0) throws JesFault {
+        try {
+            logger.error("in read job list");
+        JobFactory fac = facade.getJobFactory();
+        Iterator i = fac.findUserJobs(JesUtil.axis2castor(arg0));
+        List itemList = new ArrayList();
+        while (i.hasNext()) {
+            Workflow w = (Workflow)i.next();
+            WorkflowSummary item = new WorkflowSummary();
+            item.setWorkflowName(w.getName());
+            item.setJobUrn(JesUtil.castor2axis(w.getJobExecutionRecord().getJobId()));
+            itemList.add(item);
+        }
+
+        return (WorkflowSummary[])itemList.toArray(new WorkflowSummary[]{});
+        } catch (JesException e) {
+            throw createFault("Failed to read workflow list",e);
+        }
+    }
+    
+    private JesFault createFault(String message,Exception e) {
+        logger.info("failed with exception",e);
+        JesFault jf = new JesFault(message);
+        jf.setStackTrace(e.getStackTrace());
+        jf.setFaultReason(e.getMessage());
+        jf.setFaultCodeAsString(e.getClass().getName());
+        return jf;
+    }
+
+    /**
+     * @see org.astrogrid.jes.delegate.v1.jobcontroller.JobController#readJob(org.astrogrid.jes.types.v1.JobURN)
+
+     */
+    public WorkflowString readJob(JobURN arg0) throws JesFault {
+        try {
+            logger.error("in readJob()");
+        JobFactory fac = facade.getJobFactory();
+        Workflow w = fac.findJob(JesUtil.axis2castor(arg0));
+        if ( w == null) {
+            throw new JesFault("factory returned null workflow");
+        }
+        StringWriter sw = new StringWriter();
+        w.marshal(sw); 
+        sw.close(); 
+        System.out.println(sw.toString());
+        return new WorkflowString(sw.toString());
+        } catch (Exception e) {
+            throw createFault("Failed to read job",e);
+        }        
     } // end of jobList()
        
 

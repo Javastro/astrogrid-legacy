@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.2 2004/03/05 16:16:23 nw Exp $
+/*$Id: JesUtil.java,v 1.3 2004/03/09 14:23:12 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,8 @@
 **/
 package org.astrogrid.jes.util;
 
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -133,36 +135,32 @@ public class JesUtil {
     /** at moment this is a replication of the current duff jes behaviour - all job steps are stripped out, no matter the inner structure of the document
      *recursion can be quite inefficient, but don't care as this is only temporary behaviour. 
      *@return a list of Step objects
-     *@todo replace with jxpath version.
      */
     
     public static Iterator getJobSteps(Workflow wf) {
         wf.addFunctions(JesFunctions.FUNCTIONS);
         return wf.findXPathIterator("//*[jes:isStep()]");
     }
-    /*
-    public static Iterator getJobSteps(Workflow wf) {
-        return listAllJobSteps(wf.getSequence().getActivity()).iterator();
-    }
-    public static  List listAllJobSteps(AbstractActivity[] seq) {        
-        List result = new ArrayList();
-        for (int i = 0; i < seq.length; i++) {
-            AbstractActivity ac = seq[i];
-            if (ac instanceof Step) {
-                result.add(ac);
-            } else if (ac instanceof ActivityContainer) {
-                List sublist = listAllJobSteps(((ActivityContainer)ac).getActivity());
-                result.addAll(sublist);
-            } 
-        }
+
+
+    /**
+     * @param arg0
+     * @return
+     */
+    public static Account axis2castor(_Account arg0) {
+        Account result = new Account();
+        result.setCommunity(arg0.getCommunity().getValue());
+        result.setName(arg0.getName().getValue());
         return result;
     }
-    */
 }
 
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.3  2004/03/09 14:23:12  nw
+integrated new JobController wsdl interface
+
 Revision 1.2  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy

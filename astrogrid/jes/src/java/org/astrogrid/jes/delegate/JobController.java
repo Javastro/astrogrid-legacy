@@ -1,4 +1,4 @@
-/*$Id: JobController.java,v 1.4 2004/03/05 16:16:23 nw Exp $
+/*$Id: JobController.java,v 1.5 2004/03/09 14:23:12 nw Exp $
  * Created on 06-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,28 @@
 **/
 package org.astrogrid.jes.delegate;
 
+import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 /** Interface to a job controller.
+ * <p />
+ * same as axis-generated service interface, but with castor types instead
  * @author Noel Winstanley nw@jb.man.ac.uk 06-Feb-2004
  *
  */
 public interface JobController extends Delegate { 
-    public abstract JobURN submitJob(Workflow wf) throws JesDelegateException;
-    public abstract Workflow[] listJobs(String userId,String community) throws JesDelegateException;
+    public JobURN submitWorkflow(Workflow wf) throws JesDelegateException;
+    public void cancelJob(JobURN urn) throws JesDelegateException;
+    public void deleteJob(JobURN urn) throws JesDelegateException;
+    public JobInfo[] readJobList(Account acc) throws JesDelegateException;
+    public Workflow readJob(JobURN urn) throws JesDelegateException;
 }
 /* 
 $Log: JobController.java,v $
+Revision 1.5  2004/03/09 14:23:12  nw
+integrated new JobController wsdl interface
+
 Revision 1.4  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy

@@ -1,4 +1,4 @@
-/*$Id: BeanFacade.java,v 1.5 2004/03/05 16:16:23 nw Exp $
+/*$Id: BeanFacade.java,v 1.6 2004/03/09 14:23:12 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,6 @@
 package org.astrogrid.jes.job;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
-import org.astrogrid.jes.types.v1.WorkflowList;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import java.util.Iterator;
@@ -26,15 +24,12 @@ public interface  BeanFacade {
     public abstract JobFactory getJobFactory() throws JesException;
     /** factory method to create a request object for the job controller */
     public abstract SubmitJobRequest createSubmitJobRequest(String xmlDoc) throws JesException;
-    /** facotry method to create a response object */
-    public abstract WorkflowList createListJobsErrorResponse(Account acc,       String message);
-    public abstract WorkflowList createListJobsSuccessResponse(Account acc, Iterator iterator);
-    public abstract SubmissionResponse createSubmitJobSuccessResponse(Workflow j);
-    public abstract SubmissionResponse createSubmitJobErrorResponse(Workflow j, String msg);
-
 }
 /* 
 $Log: BeanFacade.java,v $
+Revision 1.6  2004/03/09 14:23:12  nw
+integrated new JobController wsdl interface
+
 Revision 1.5  2004/03/05 16:16:23  nw
 worked now object model through jes.
 implemented basic scheduling policy
