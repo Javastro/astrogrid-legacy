@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--+
+    | Maven project description for the AstroGrid registry client components.
+    +-->
+<project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="maven-project.xsd">
+
+    <!--+
+        | Extend the top level project descriptor.
+        +-->
+    <extend>./maven/project.xml</extend>
+
+    <!--+
+        | The current version of the Maven project descriptor.
+        +-->
+    <pomVersion>3</pomVersion>
+
+    <!--+
+        | The short name of the project.
+        | This is used when naming jars and distribution files.
+        +-->
+    <id>astrogrid-exist-master</id>
+
+    <!--+
+        | The full name of the project.
+        | This is used when generating JavaDoc titles.
+        +-->
+    <name>AstroGrid EXist</name>
+
+    
+    <!--+
+        | The location of our deployed web site.
+        +-->
+    <siteDirectory>${maven.site.central.directory}/${astrogrid.iteration}/exist</siteDirectory>
+
+    <!--+
+        | Our cvs repository location.
+        +-->
+    <repository>
+        <connection>
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/exist
+        </connection>
+        <developerConnection>
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/exist
+        </developerConnection>
+                <url> http://www.astrogrid.org/viewcvs/astrogrid/exist/
+            </url>
+    </repository>
+
+    <!--+
+        | Various other stuff copied from the mySpace project.xml
+        | which neatens up the maven reports
+        +-->
+        <currentVersion>$Name:  $</currentVersion>
+	<organization>
+		<name>AstroGrid</name>
+		<url>http://www.astrogrid.org</url>
+		<logo>http://www.astrogrid.org/images/AGlogo</logo>
+	</organization>
+	<inceptionYear>2002</inceptionYear>
+        <description>
+        <![CDATA[
+	<p>
+	</p>
+	<p>
+	</p>
+	<section name="Builds">
+	
+	</section>
+		]]>        
+</description>
+        <shortDescription>Astrogrid eXist</shortDescription>
+        
+</project>

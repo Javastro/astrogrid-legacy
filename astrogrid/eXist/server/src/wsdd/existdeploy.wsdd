@@ -1,0 +1,28 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+  
+	<service name="ExistQuery" provider="java:MSG" style="message" use="literal">
+		<parameter name="allowedMethods" value="*"/>
+		<parameter name="wsdlPortType" value="QueryPortType"/>
+		<parameter name="className" value="org.astrogrid.xmldb.eXist.server.QueryDBService"/>
+		<parameter name="wsdlServicePort" value="QuerySOAPPort"/>
+		<parameter name="wsdlServiceElement" value="QueryService"/>  
+	</service>
+
+	<service name="ExistUpdate" provider="java:MSG" style="message" use="literal">
+		<parameter name="allowedMethods" value="*"/>
+		<parameter name="wsdlPortType" value="QueryPortType"/>
+		<parameter name="className" value="org.astrogrid.xmldb.eXist.server.UpdateDBService"/>
+		<parameter name="wsdlServicePort" value="QuerySOAPPort"/>
+		<parameter name="wsdlServiceElement" value="QueryService"/>  
+	</service>
+</deployment>
