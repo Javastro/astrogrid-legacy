@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
  */
 
 
-public class DatacenterException extends java.rmi.RemoteException
+public class DatacenterException extends RemoteException
 {
    public DatacenterException(String message)
    {
@@ -30,6 +30,9 @@ public class DatacenterException extends java.rmi.RemoteException
 
 /*
 $Log: DatacenterException.java,v $
+Revision 1.2  2003/11/13 16:11:32  mch
+minor import change testing CVS in Eclipse
+
 Revision 1.1  2003/10/06 18:55:21  mch
 Naughtily large set of changes converting to SOAPy bean/interface-based delegates
 
