@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.36 2004/09/07 00:54:20 mch Exp $
+ * $Id: SqlResults.java,v 1.37 2004/09/08 20:42:48 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -116,6 +116,7 @@ public class SqlResults extends QueryResults
                                 +"/>");
          }
 
+         printOut.flush(); //so something comes back to the browser quickly
          printOut.println("<DATA>");
          printOut.println("<TABLEDATA>");
 
@@ -310,6 +311,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.37  2004/09/08 20:42:48  mch
+ flush added
+
  Revision 1.36  2004/09/07 00:54:20  mch
  Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
