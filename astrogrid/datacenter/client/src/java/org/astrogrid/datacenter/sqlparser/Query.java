@@ -1,5 +1,5 @@
 /*
- * $Id: Query.java,v 1.1 2004/08/18 16:27:15 mch Exp $
+ * $Id: Query.java,v 1.2 2004/08/18 18:43:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -50,7 +50,16 @@ public class Query  {
     * For humans/debuggign
     */
    public String toString() {
-      return "{Query: In scope "+scope+" look for where "+criteria+" -> "+results+"}";
+      StringBuffer s = new StringBuffer("{Query: In scope ");
+      for (int i = 0; i < scope.length; i++) { s.append(scope[i]+","); }
+      if (criteria == null) {
+         s.append("find everything, ");
+      }
+      else {
+         s.append("look for where "+criteria+", ");
+      }
+      s.append(" returning "+results+"}");
+      return s.toString();
    }
    
    
@@ -59,9 +68,13 @@ public class Query  {
 
 /*
  $Log: Query.java,v $
+ Revision 1.2  2004/08/18 18:43:01  mch
+ Better toString for Query
+
  Revision 1.1  2004/08/18 16:27:15  mch
  Combining ADQL generators from SQL parser and query builder
 
  */
+
 
 
