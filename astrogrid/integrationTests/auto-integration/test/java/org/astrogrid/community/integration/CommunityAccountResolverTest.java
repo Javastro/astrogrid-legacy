@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/community/integration/CommunityAccountResolverTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/21 12:50:23 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/21 13:09:45 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityAccountResolverTest.java,v $
+ *   Revision 1.3  2004/04/21 13:09:45  dave
+ *   Added check for Account ident.
+ *
  *   Revision 1.2  2004/04/21 12:50:23  dave
  *   Added check for Account ident.
  *
@@ -123,7 +126,7 @@ public class CommunityAccountResolverTest
         assertEquals(
         	"Different identifiers",
         	found.getIdent(),
-			ivorn.toString()
+			CommunityAccountIvornFactory.createLocal("frog").toString()
         	) ;
 		//
 		// Print our the account details.
