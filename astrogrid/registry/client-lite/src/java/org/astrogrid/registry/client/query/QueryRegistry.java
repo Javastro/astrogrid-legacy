@@ -34,6 +34,7 @@ import java.net.MalformedURLException;
 import org.astrogrid.registry.RegistryException;
 import org.astrogrid.registry.common.XSLHelper;
 import org.astrogrid.registry.common.InterfaceType;
+import org.astrogrid.registry.common.RegistryServerHelper;
 
 import org.astrogrid.util.DomHelper;
 
@@ -253,12 +254,24 @@ public class QueryRegistry implements RegistryService {
               resultDoc = sbe.getAsDocument();
               logger.info("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
               System.out.println("THE RESULTDOC FROM SERVICE = " + DomHelper.DocumentToString(resultDoc));
-              if(!reg_default_version.replace('_','.').equals(reg_transform_version.replace('_','.'))) {
-                  System.out.println("performing tranformation = " + reg_transform_version + 
-                                     " default version = " + reg_default_version);
-                  XSLHelper xslHelper = new XSLHelper();
-                  return xslHelper.transformResourceToResource(resultDoc.getDocumentElement(),
-                              reg_default_version,reg_transform_version);
+              if(!reg_default_version.equals(reg_transform_version)) {
+                  //hmmm more of a hack for auto-integration than anything else.
+                  //lets grab the registry version from the result and only transform
+                  //if it is different from the reg_transform_version.
+                  String versionNumber = null;
+                  if(resultDoc.getDocumentElement().hasChildNodes())
+                      versionNumber = RegistryServerHelper.getRegistryVersionFromNode(resultDoc.getDocumentElement().getFirstChild());
+                  if(versionNumber == null) {
+                      System.out.println("Could not find vr namespace from return of a query; SHOULD NOT HAPPEN");
+                      versionNumber = reg_default_version;
+                  }
+                  if(!versionNumber.equals(reg_transform_version)) {
+                      System.out.println("performing tranformation = " + reg_transform_version + 
+                              " version from query = " + versionNumber);                      
+                      XSLHelper xslHelper = new XSLHelper();
+                      return xslHelper.transformResourceToResource(resultDoc.getDocumentElement(),
+                             versionNumber,reg_transform_version);
+                  }//if
               }//if
               return resultDoc;            
            }

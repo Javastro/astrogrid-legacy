@@ -1,4 +1,4 @@
-package org.astrogrid.registry.server;
+package org.astrogrid.registry.common;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -20,18 +20,6 @@ import org.xml.sax.SAXException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.astrogrid.registry.server.query.RegistryQueryService;
-
-import org.xmldb.api.base.Resource;
-import org.astrogrid.xmldb.client.QueryService;
-import org.xmldb.api.base.ResourceSet;
-import org.xmldb.api.modules.XMLResource;
-import org.xmldb.api.base.Resource;
-import org.xmldb.api.base.Collection;
-import org.xmldb.api.base.XMLDBException;
-import org.astrogrid.xmldb.client.XMLDBFactory;
-import org.astrogrid.registry.server.admin.AuthorityList;
-
 
 
 /**
@@ -43,8 +31,6 @@ import org.astrogrid.registry.server.admin.AuthorityList;
  * @author Kevin Benson
  */
 public class RegistryServerHelper {
-   
-   private static HashMap manageAuthorities = null;
       
    /**
     * conf - Config variable to access the configuration for the server normally
@@ -68,23 +54,17 @@ public class RegistryServerHelper {
    static {
       if(conf == null) {        
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         versionNumber = conf.getString("reg.amend.defaultversion");
-         defaultRoot = conf.getString("reg.custom.rootNode.default",null);
-      }      
+         versionNumber = conf.getString("reg.amend.defaultversion",null);
+         if(versionNumber == null) {
+             versionNumber = conf.getString("org.astrogrid.registry.version","0.10");
+         }//if
+      }//if
    }
    
    public static String getDefaultVersionNumber() {
        return versionNumber;
    }
    
-   public static String getRootNodeName(String versionNumber) {
-       return conf.getString("reg.custom.rootNode." + versionNumber,defaultRoot);
-   }
-   
-   public static String getRootNodeLocalName(String versionNumber) {
-       String val = getRootNodeName(versionNumber);
-       return val.substring((val.indexOf(":")+1));
-   }
    
    /**
     * Gets the text out of the First authority id element.
@@ -154,30 +134,7 @@ public class RegistryServerHelper {
       return "ivo://" + ident;
    }
    
-   /*
-   public static String getRegistryVersionFromNode(String xml) {
-       String vrNS = "http://www.ivoa.net/xml/VOResource/v";
-       int index = xml.indexOf(vrNS);
-       if(index != -1) {
-           return xml.substring((index+vrNS.length()),(xml.indexOf(" ",index) -1))
-       }
-       
-   }
-   */
-   
-   /**
-    * @param versionNumber
-    * @return
-    
-   public static String getXQLDeclarations(String versionNumber) {
-       //versionNumber = versionNumber.replace('.','_');
-       
-       String declarations = conf.getString("declare.namespace." + versionNumber,"");
-       log.info("get namespaces for versionNumber = " + versionNumber + " results = " + declarations);
-       return declarations;
-   }
-   */
-   
+      
    public static String getRegistryVersionFromNode(Node nd) {
        if(nd == null || Node.ELEMENT_NODE != nd.getNodeType()) {
            log.info("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
@@ -219,66 +176,5 @@ public class RegistryServerHelper {
        //          " defaulting to config.");
        return conf.getString("reg.amend.defaultversion",null);
    }
-               
-   public static HashMap getManagedAuthorities(String collectionName,String regVersion)  throws XMLDBException { //SAXException, MalformedURLException, ParserConfigurationException, IOException {
-       log.debug("start getManagedAuthorities");
-       //if(manageAuthorities == null || manageAuthorities.size() <= 0) {
-           processManagedAuthorities(collectionName, regVersion);   
-       //}
-       log.debug("end getManagedAuthorities");
-       return manageAuthorities;            
-    }
-   
-   public static void processManagedAuthorities(String collectionName,String regVersion) throws XMLDBException { //SAXException, MalformedURLException, ParserConfigurationException, IOException {
-
-       if(manageAuthorities == null)
-           manageAuthorities = new HashMap();
-       
-       manageAuthorities.clear();
-       
-       String xqlQuery = QueryHelper.getXQLDeclarations(regVersion) + QueryHelper.queryForRegistries(regVersion);
-       XMLDBFactory xdb = new XMLDBFactory();
-       Collection coll = null;
-       Document registries = null;
-       try {
-           coll = xdb.openCollection(collectionName);
-           QueryService xqs = xdb.getQueryService(coll);      
-           ResourceSet rs = xqs.query(xqlQuery);
-           if(rs.getSize() == 0) 
-               return;
-           Resource xmlr = rs.getMembersAsResource();
-           registries = DomHelper.newDocument(xmlr.getContent().toString());           
-       }catch(ParserConfigurationException pce) {
-         log.error(pce);
-       }catch(IOException ioe){
-         log.error(ioe);
-       }catch(SAXException sax) {
-         log.error(sax);
-       }finally {
-           try {
-               xdb.closeCollection(coll);
-           }catch(XMLDBException xmldb) {
-               log.error(xmldb);
-           }
-       }
-       //System.out.println("the result of processManaged registries = " + DomHelper.DocumentToString(registries));
-       NodeList resources = registries.getElementsByTagNameNS("*","Resource");
-       log.info("Number of Resources found loading up registries = " + resources.getLength());
-       boolean sameRegistry = false;
-       String regAuthID = conf.getString("reg.amend.authorityid");
-       String val = null;       
-       for(int j = 0;j < resources.getLength();j++) {
-           String mainOwner = getAuthorityID((Element)resources.item(j));
-           NodeList mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","ManagedAuthority");
-           if(mgList.getLength() == 0) {
-               mgList = ((Element)resources.item(j)).getElementsByTagNameNS("*","managedAuthority");
-           }
-           log.info("mglist size = " + mgList.getLength());
-           for(int i = 0;i < mgList.getLength();i++) {
-               val = mgList.item(i).getFirstChild().getNodeValue();
-               manageAuthorities.put(new AuthorityList(val,regVersion),new AuthorityList(val, regVersion, mainOwner));
-           }//for
-       }//for
-   }  
 
 }

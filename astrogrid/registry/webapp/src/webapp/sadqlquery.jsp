@@ -2,7 +2,7 @@
 				 org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
-                 org.astrogrid.query.sql.Sql2Adql;
+                 org.astrogrid.query.sql.Sql2Adql,
                  org.astrogrid.io.Piper,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
@@ -16,7 +16,7 @@
 
 <html>
 <head>
-<title>Edit Registry Entry</title>
+<title>Advanced Query of Registry</title>
 <style type="text/css" media="all">
           @import url("style/astrogrid.css");
 </style>
@@ -27,6 +27,16 @@
 <%@ include file="navigation.xml" %>
 
 <div id='bodyColumn'>
+
+<%
+   RegistryQueryService server = new RegistryQueryService();
+   ArrayList al = server.getAstrogridVersions();
+   String version = request.getParameter("version");
+   if(version == null || version.trim().length() <= 0) {
+   	version = RegistryServerHelper.getDefaultVersionNumber();
+   }
+
+%>
 
 <h1>Query Registry</h1>
 
@@ -55,8 +65,16 @@
 </form>
 
 
-<form action="adqlquery.jsp">
+<form action="sadqlquery.jsp">
 <p>
+Version: 
+<select name="version">
+   <% for(int k = (al.size()-1);k >= 0;k--) { %>
+      <option value="<%=al.get(k)%>"
+        <%if(version.equals(al.get(k))) {%> selected='selected' <%}%> 
+      ><%=al.get(k)%></option>  
+   <%}%>
+</select><br />
 <input type="hidden" name="performquery" value="true" />
 <textarea name="Resource" rows="30" cols="90"></textarea>
 </p>
@@ -66,7 +84,7 @@ Example SQL:<br />
 Select * from Registry where vr:title = 'Astrogrid' and vr:content/vr:description like '%scope%'
 </p>
 </form>
-See <a href="reg_xml_samples/queries">For example queries</a>
+
 <%
   if(request.getParameter("performquery") != null && request.getParameter("performquery").trim().equals("true")) {
   Document adql = null;
@@ -85,8 +103,13 @@ See <a href="reg_xml_samples/queries">For example queries</a>
      request.getParameter("addFromURL").trim().length() > 0) {
      adql = DomHelper.newDocument(new URL(request.getParameter("docurl")));
   }else if(request.getParameter("Resource").trim().length() > 0) {  
-  
-   String resource = Sql2Adql.translateToAdql074("Resource");
+  System.out.println("okay lets do the translation");
+   String resource = Sql2Adql.translateToAdql074(request.getParameter("Resource").trim());
+   System.out.println("okay about to do vrNS");
+   String vrNS = "xmlns:vr=\"http://www.ivoa.net/xml/VOResource/v" + version + "\"";
+   System.out.println("finished with vrns = " + vrNS);
+   resource = resource.replaceFirst("Select",("Select " + vrNS));   
+   System.out.println("finished with Select replace the xml = " + resource);
    adql = DomHelper.newDocument(resource);
   }//elseif
   String maxCount = SimpleConfig.getSingleton().getString("exist.query.returncount", "25");
@@ -96,13 +119,12 @@ See <a href="reg_xml_samples/queries">For example queries</a>
 
 <pre>
 <%
-      RegistryQueryService server = new RegistryQueryService();
+
       Document entry = server.Search(adql);
       if (entry == null) {
         out.write("<p>No entry returned</p>");
       }
       else {
-      String version = null;
       if(entry.getDocumentElement().hasChildNodes()) {
           version = RegistryServerHelper.getRegistryVersionFromNode(entry.getDocumentElement().getFirstChild());
       }else {

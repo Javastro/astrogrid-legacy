@@ -286,11 +286,38 @@
          </xsl:call-template>
        </vr:Resource>
    </xsl:template>
+
+   <xsl:template match="*[@xsi:type='cea:CeaHttpApplicationType' or
+                          @xsi:type='CeaHttpApplicationType']">
+      <xsl:call-template name="doindent">      
+         <xsl:with-param name="nlev" select="1"/>
+      </xsl:call-template>
+      <vr:Resource xsi:type="cea:CeaHttpApplicationType">
+         <xsl:call-template name="setResourceAttrs"/>
+
+         <xsl:value-of select="$cr"/>
+         <xsl:call-template name="convertResource"/>
+         <xsl:call-template name="doindent"/>
+         <xsl:apply-templates select="cea2:ApplicationDefinition"/>
+         <xsl:apply-templates select="cea2:CeaHttpAdapterSetup"/>
+         <xsl:value-of select="$cr"/>
+         <xsl:call-template name="doindent">
+            <xsl:with-param name="nlev" select="1"/>
+         </xsl:call-template>
+       </vr:Resource>
+   </xsl:template>
+
    
    <xsl:template match="cea2:ApplicationDefinition">
          <cea:ApplicationDefinition>
             <xsl:apply-templates select="@*|node()"/>
          </cea:ApplicationDefinition>
+   </xsl:template>
+
+   <xsl:template match="cea2:CeaHttpAdapterSetup">
+         <cea:CeaHttpAdapterSetup>
+            <xsl:apply-templates select="@*|node()"/>
+         </cea:CeaHttpAdapterSetup>
    </xsl:template>
 
    <xsl:template match="cea2:ApplicationKind">

@@ -284,7 +284,9 @@ public class RegistryQueryService {
           log.info(" the xqlExpression = " + xqlExpression);
           xqlExpression = xqlExpression.replaceAll("__returnCount__", returnCount);
           log.info("Now querying in colleciton = " + collectionName + " query = " + xqlExpression);
+          long beginQ = System.currentTimeMillis(); 
           ResourceSet rs = xqs.query(xqlExpression);
+          log.info("Total Query Time = " + (System.currentTimeMillis() - beginQ));
           log.info("Number of results found in query = " + rs.getSize());
           if(rs.getSize() == 0) {
               NoResourcesFoundException nrfe = new NoResourcesFoundException("Nothing found with query = " + xqlExpression + " for collection = " + collectionName);
