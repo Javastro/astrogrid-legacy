@@ -1,59 +1,30 @@
-/*
- * $Id: ServiceListener.java,v 1.2 2003/08/29 07:57:12 maven Exp $
+/*$Id: ServiceListener.java,v 1.3 2003/09/05 13:21:48 nw Exp $
+ * Created on 05-Sep-2003
  *
- * (C) Copyright AstroGrid...
- */
-
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
+**/
 package org.astrogrid.datacenter.service;
 
-import java.net.URL;
-
-
-/**
- * This is an implementation of a listener design, because any listeners will
- * be remote (ie made a listen/please notify request to the web service) and
- * so this must be capable of passing that information back to the remote
- * client.
- *
- * @todo this is just a placeholder at the moment, need to work out how
- * the notification thing will work, also non-blocking queries etc....
- *
- * @todo probably need a proper typesafe enumeration of the states.
- *
- * @author M Hill
+/** interface for something that want to listen to the querying process
+ * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
+ *@see ProxyServiceListener
  */
-
-public class ServiceListener
-{
-   private URL clientListener = null;
-
-   /**
-    * Create a listener which will send service updates to the given URL
-    *
-    * @todo design &amp; implement properly...
-    */
-   public ServiceListener(URL aClientListener)
-   {
-      this.clientListener = aClientListener;
-   }
-
-   /** Called by the service when it has a
+public interface ServiceListener {
+    /** Called by the service when it has a
     * status change
     */
-   public void serviceStatusChanged(String newStatus)
-   {
-   }
+    public abstract void serviceStatusChanged(String newStatus);
 }
 
-/*
+/* 
 $Log: ServiceListener.java,v $
-Revision 1.2  2003/08/29 07:57:12  maven
-- changed '&' to '&amp;'
-
-Revision 1.1  2003/08/28 13:07:41  mch
-Added service listener placeholders
-
-
-
+Revision 1.3  2003/09/05 13:21:48  nw
+changed from an implementation to an interface.
+previous implementation is in ProxyServiceListener.
+ 
 */
-
