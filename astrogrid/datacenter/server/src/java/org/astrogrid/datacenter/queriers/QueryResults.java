@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.2 2003/11/21 17:37:56 nw Exp $
+ * $Id: QueryResults.java,v 1.3 2004/01/14 17:47:36 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,12 +12,13 @@ import java.io.OutputStream;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-/**
- * Not sure whether this should be an interface or a class yet.  Basically we
+/** A container interface that holds the results of a query until needed.
+ * <p>
+ *   Basically we
  * don't know what format the raw results will be in (eg, they may be SqlResults for
- * an ODBC connection, but something else altogether for other catalogue formats)
+ * an JDBC connection, but something else altogether for other catalogue formats)
  * so this is a 'container' to hold those results until it needs to be
- * translated. It whould be fully
+ * translated. It would be fully
  * implemented by the same package that implements the DatabaseQuerier and
  * QueryTranslater.
  *
