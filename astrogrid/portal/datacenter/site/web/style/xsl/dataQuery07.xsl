@@ -387,7 +387,7 @@ Load from MySpace</span>
 onClick="popupBrowser('/astrogrid-portal/lean/mount/datacenter/catalogueBrowser.xml')" class="agActionButton" title="Click to select a table agaisnt which to launch a query">Zelect a Table</span>
 -->
 <span name="lost"
-onClick="popupBrowser('/astrogrid-portal/lean/mount/registry/registrybrowser.html?mainelement=Catalog&amp;authId=null&amp;resourceKey=null')" class="agActionButton">Select a Table</span>
+onClick="popupBrowser('/astrogrid-portal/lean/mount/resources/agresourcesMB.html?mainelement=Catalog')" class="agActionButton">Select a Table</span>
 </td>
 <td width="40">
 </td>
