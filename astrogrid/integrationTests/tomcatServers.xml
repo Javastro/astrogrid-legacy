@@ -6,7 +6,7 @@
       <a>
         <url>http://vm05.astrogrid.org:8080/manager/</url>
         <user>tomcat</user>
-        <password>gandalf</password>
+        <password></password>
       </a>
       <b>
         <url>vm06.astrogrid.org:8080/manager/</url>
