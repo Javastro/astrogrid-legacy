@@ -10,13 +10,6 @@
      </restriction>
     </complexContent>
    </complexType>
-   <complexType name="ArrayOf_tns1_Parameter">
-    <complexContent>
-     <restriction base="soapenc:Array">
-      <attribute ref="soapenc:arrayType" wsdl:arrayType="tns1:Parameter[]"/>
-     </restriction>
-    </complexContent>
-   </complexType>
   </schema>
   <schema targetNamespace="urn:beans.applications.astrogrid.org" xmlns="http://www.w3.org/2001/XMLSchema">
    <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
@@ -26,13 +19,22 @@
      <element name="parameter" nillable="true" type="xsd:string"/>
     </sequence>
    </complexType>
-   <complexType abstract="true" name="Parameter">
-    <sequence/>
+   <complexType name="ParameterValues">
+    <sequence>
+     <element name="methodName" nillable="true" type="xsd:string"/>
+     <element name="parameterSpec" nillable="true" type="xsd:string"/>
+    </sequence>
    </complexType>
   </schema>
  </wsdl:types>
 
    <wsdl:message name="executeApplicationResponse">
+
+   </wsdl:message>
+
+   <wsdl:message name="returnRegistryEntryResponse">
+
+      <wsdl:part name="returnRegistryEntryReturn" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -66,6 +68,12 @@
 
    <wsdl:message name="executeApplicationRequest">
 
+      <wsdl:part name="executionId" type="xsd:int"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="returnRegistryEntryRequest">
+
    </wsdl:message>
 
    <wsdl:message name="getApplicationDescriptionResponse">
@@ -84,9 +92,11 @@
 
       <wsdl:part name="applicationID" type="xsd:string"/>
 
-      <wsdl:part name="jobstepID" type="xsd:int"/>
+      <wsdl:part name="jobstepID" type="xsd:string"/>
 
-      <wsdl:part name="parameters" type="intf:ArrayOf_tns1_Parameter"/>
+      <wsdl:part name="jobMonitorURL" type="xsd:string"/>
+
+      <wsdl:part name="parameters" type="tns1:ParameterValues"/>
 
    </wsdl:message>
 
@@ -108,7 +118,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="initializeApplication" parameterOrder="applicationID jobstepID parameters">
+      <wsdl:operation name="initializeApplication" parameterOrder="applicationID jobstepID jobMonitorURL parameters">
 
          <wsdl:input message="intf:initializeApplicationRequest" name="initializeApplicationRequest"/>
 
@@ -116,7 +126,7 @@
 
       </wsdl:operation>
 
-      <wsdl:operation name="executeApplication">
+      <wsdl:operation name="executeApplication" parameterOrder="executionId">
 
          <wsdl:input message="intf:executeApplicationRequest" name="executeApplicationRequest"/>
 
@@ -129,6 +139,14 @@
          <wsdl:input message="intf:queryApplicationExecutionStatusRequest" name="queryApplicationExecutionStatusRequest"/>
 
          <wsdl:output message="intf:queryApplicationExecutionStatusResponse" name="queryApplicationExecutionStatusResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="returnRegistryEntry">
+
+         <wsdl:input message="intf:returnRegistryEntryRequest" name="returnRegistryEntryRequest"/>
+
+         <wsdl:output message="intf:returnRegistryEntryResponse" name="returnRegistryEntryResponse"/>
 
       </wsdl:operation>
 
@@ -221,6 +239,24 @@
          </wsdl:input>
 
          <wsdl:output name="queryApplicationExecutionStatusResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="returnRegistryEntry">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="returnRegistryEntryRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="returnRegistryEntryResponse">
 
             <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:manager.applications.astrogrid.org" use="encoded"/>
 

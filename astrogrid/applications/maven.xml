@@ -65,6 +65,7 @@
 			<include name="**/*.java" />
 			<include name="**/*.class" />
 			<include name="**/*.wsdd" />
+			<include name="**/*.wsdl" />
 		</fileset>
 	</delete>
   <mkdir dir="${generated.dir}/wsdl" />
@@ -101,7 +102,7 @@
             location="${axis.url}/services/${appint.service.name}"
             namespace="urn:manager.applications.astrogrid.org"
             namespaceimpl="urn:impl.manager.applications.astrogrid.org"
-            implclass="org.astrogrid.applications.manager.AbstractApplicationController"
+            implclass="org.astrogrid.applications.manager.CommandLineApplicationController"
             style="RPC"
             use="ENCODED"
    >
@@ -221,6 +222,14 @@
             />
     </goal>
 
+
+    <goal name="delegatejar" prereqs="java:compile">
+         <jar destfile="${maven.build.dir}/ApplicationControllerDelegate.jar">
+            <fileset dir="${maven.build.dest}">
+               <include name="**/delegate/**" />
+            </fileset>
+         </jar>
+    </goal>
 <!-- boilerplate below here -->
  <!-- <goal name="dataserver-deploy" description="fire wsdd at axis to deploy dataserver"
   	prereqs="axis-declare-tasks">

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.3 2003/11/18 17:58:49 pah Exp $
+ * $Id: ApplicationController.java,v 1.4 2003/11/25 12:25:26 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -36,12 +36,12 @@ public interface ApplicationController {
     * Initialize the application environment and set up the parameters.
     * @return The ID of the particular application execution instance 
     */
-   int initializeApplication(String applicationID, int jobstepID, org.astrogrid.applications.Parameter[] parameters);
+   int initializeApplication(String applicationID, String jobstepID, String jobMonitorURL, org.astrogrid.applications.ParameterValues parameters);
 
    /**
     * Executes a partiular application asynchronously 
     */
-   void executeApplication();
+   void executeApplication(int executionId);
 
    /**
     * Query the status of a particular application execution.
@@ -49,6 +49,8 @@ public interface ApplicationController {
     * @return
     */
    String queryApplicationExecutionStatus(int executionId);
+
+   String returnRegistryEntry();
 
    /**
     * @label Manages
@@ -58,4 +60,9 @@ public interface ApplicationController {
     * @directed 
     */
    /*# org.astrogrid.applications.Application lnkApplication; */
+
+   /** @link dependency 
+    * @clientRole informs
+    * @label Application Execution Completion*/
+   /*# org.astrogrid.jes.jobmonitor.JobMonitor lnkJobMonitor; */
 }

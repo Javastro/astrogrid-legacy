@@ -16,14 +16,18 @@ public class ApplicationControllerServiceSoapBindingImpl implements org.astrogri
         return null;
     }
 
-    public int initializeApplication(java.lang.String applicationID, int jobstepID, org.astrogrid.applications.delegate.beans.Parameter[] parameters) throws java.rmi.RemoteException {
+    public int initializeApplication(java.lang.String applicationID, java.lang.String jobstepID, java.lang.String jobMonitorURL, org.astrogrid.applications.delegate.beans.ParameterValues parameters) throws java.rmi.RemoteException {
         return -3;
     }
 
-    public void executeApplication() throws java.rmi.RemoteException {
+    public void executeApplication(int executionId) throws java.rmi.RemoteException {
     }
 
     public java.lang.String queryApplicationExecutionStatus(int executionId) throws java.rmi.RemoteException {
+        return null;
+    }
+
+    public java.lang.String returnRegistryEntry() throws java.rmi.RemoteException {
         return null;
     }
 

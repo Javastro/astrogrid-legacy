@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplicationController.java,v 1.3 2003/11/18 17:58:49 pah Exp $
+ * $Id: AbstractApplicationController.java,v 1.4 2003/11/25 12:25:26 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -14,49 +14,12 @@ package org.astrogrid.applications.manager;
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.ApplicationDescription;
 import org.astrogrid.applications.Parameter;
+import javax.sql.DataSource;
 
 abstract public class AbstractApplicationController implements ApplicationController {
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#executeApplication()
-    */
-   public void executeApplication() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplicationController.executeApplication() not implemented");
-   }
 
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#getApplicationDescription(java.lang.String)
+   /**
+    * The place where the application controller stores local execution status. 
     */
-   public ApplicationDescription getApplicationDescription(String applicationID) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplicationController.getApplicationDescription() not implemented");
-   }
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#initializeApplication(java.lang.String, int, org.astrogrid.applications.Parameter[])
-    */
-   public int initializeApplication(
-      String applicationID,
-      int jobstepID,
-      Parameter[] parameters) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplicationController.initializeApplication() not implemented");
-   }
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#listApplications()
-    */
-   public String[] listApplications() {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplicationController.listApplications() not implemented");
-   }
-
-   /* (non-Javadoc)
-    * @see org.astrogrid.applications.manager.ApplicationController#queryApplicationStatus()
-    */
-   public String queryApplicationExecutionStatus(int executionId) {
-      // TODO Auto-generated method stub
-      throw new UnsupportedOperationException("AbstractApplicationController.queryApplicationStatus() not implemented");
-   }
-
+   private DataSource db;
 }

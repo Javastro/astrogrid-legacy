@@ -73,7 +73,7 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
 
         // Test operation
         int value = -3;
-        value = binding.initializeApplication(new java.lang.String(), 0, new org.astrogrid.applications.delegate.beans.Parameter[0]);
+        value = binding.initializeApplication(new java.lang.String(), new java.lang.String(), new java.lang.String(), new org.astrogrid.applications.delegate.beans.ParameterValues());
         // TBD - validate results
     }
 
@@ -94,7 +94,7 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         binding.setTimeout(60000);
 
         // Test operation
-        binding.executeApplication();
+        binding.executeApplication(0);
         // TBD - validate results
     }
 
@@ -117,6 +117,28 @@ public class ApplicationControllerServiceTestCase extends junit.framework.TestCa
         // Test operation
         java.lang.String value = null;
         value = binding.queryApplicationExecutionStatus(0);
+        // TBD - validate results
+    }
+
+    public void test6ApplicationControllerServiceReturnRegistryEntry() throws Exception {
+        org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub binding;
+        try {
+            binding = (org.astrogrid.applications.delegate.ApplicationControllerServiceSoapBindingStub)
+                          new org.astrogrid.applications.delegate.ApplicationControllerServiceLocator().getApplicationControllerService();
+        }
+        catch (javax.xml.rpc.ServiceException jre) {
+            if(jre.getLinkedCause()!=null)
+                jre.getLinkedCause().printStackTrace();
+            throw new junit.framework.AssertionFailedError("JAX-RPC ServiceException caught: " + jre);
+        }
+        assertNotNull("binding is null", binding);
+
+        // Time out after a minute
+        binding.setTimeout(60000);
+
+        // Test operation
+        java.lang.String value = null;
+        value = binding.returnRegistryEntry();
         // TBD - validate results
     }
 
