@@ -134,7 +134,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,portal/project.xml"
+            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
             goals="clean"
             banner="Cleaning build targets : "
             ignoreFailures="false"
@@ -148,22 +148,12 @@
     <!--+
         | Build and install our component artifacts.
         +-->
-    <goal name="astrogrid-install-artifact">
+    <goal name="install-artifact">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,portal/project.xml"
+            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
             goals="install-artifact"
-            banner="Building component artifact : "
-            ignoreFailures="false"
-            />
-    </goal>
-    <goal name="astrogrid-deploy-artifact">
-        <maven:reactor
-            basedir="${basedir}"
-            postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,portal/project.xml"
-            goals="deploy-artifact"
             banner="Building component artifact : "
             ignoreFailures="false"
             />
@@ -172,11 +162,11 @@
     <!--+
         | Build and install our snapshot artifacts.
         +-->
-    <goal name="astrogrid-install-snapshot">
+    <goal name="install-snapshot">
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,portal/project.xml"
+            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
             goals="install-snapshot"
             banner="Building snapshot artifact : "
             ignoreFailures="false"
@@ -191,7 +181,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,portal/project.xml"
+            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml"
             goals="clover-report"
             banner="Building clover report : "
             ignoreFailures="false"
@@ -247,7 +237,7 @@
         <maven:reactor
             basedir="${basedir}"
             postProcessing="false"
-            includes="common/project.xml,client/project.xml,server/project.xml,webapp/project.xml,portal/project.xml"
+            includes="common/project.xml,client/project.xml,client-lite/project.xml,server/project.xml,webapp/project.xml"
             goals="deploy-snapshot"
             banner="Deploying snapshot artifact : "
             ignoreFailures="false"
