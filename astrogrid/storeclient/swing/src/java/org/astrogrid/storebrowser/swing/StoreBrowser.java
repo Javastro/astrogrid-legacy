@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.5 2005/03/29 20:13:51 mch Exp $
+ * $Id: StoreBrowser.java,v 1.6 2005/03/30 11:00:29 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -552,82 +552,4 @@ public class StoreBrowser extends JDialog
    }
 }
 
-/*
-$Log: StoreBrowser.java,v $
-Revision 1.5  2005/03/29 20:13:51  mch
-Got threading working safely at last
-
-Revision 1.4  2005/03/28 02:06:35  mch
-Major lump: split picker and browser and added threading to seperate UI interations from server interactions
-
-Revision 1.3  2005/03/26 13:09:57  mch
-Minor fixes for accessing FileManager
-
-Revision 1.2  2005/03/25 16:19:57  mch
-Added FIleManger suport
-
-Revision 1.1.1.1  2005/02/16 19:57:08  mch
-Initial checkin
-
-Revision 1.1.1.1  2005/02/16 15:02:46  mch
-Initial Checkin
-
-Revision 1.1.2.1  2005/01/26 14:48:04  mch
-Separating slinger and scapi
-
-Revision 1.1.2.6  2004/12/03 11:50:19  mch
-renamed Msrl etc to separate from storeclient ones.  Prepared for SRB
-
-Revision 1.1.2.5  2004/11/29 21:49:25  mch
-fixed some log.error() calls
-
-Revision 1.1.2.4  2004/11/29 19:30:13  mch
-Some fixes to myspace source resolving, and moved loginaccount to a new directory
-
-Revision 1.1.2.3  2004/11/25 01:28:59  mch
-Added mime type to outputchild
-
-Revision 1.1.2.2  2004/11/23 12:21:02  mch
-renamed to makeTarget
-
-Revision 1.1.2.1  2004/11/22 00:46:28  mch
-New Slinger Package
-
-Revision 1.3  2004/11/09 17:42:22  mch
-Fixes to tests after fixes for demos, incl adding closable to targetIndicators
-
-Revision 1.2  2004/11/08 23:15:38  mch
-Various fixes for SC demo, more store browser, more Vizier stuff
-
-Revision 1.1  2004/04/15 17:24:31  mch
-Moved myspace ui to store ui
-
-Revision 1.4  2004/03/09 11:00:39  mch
-Fixed for moved myspace delegates
-
-Revision 1.3  2004/03/06 19:34:21  mch
-Merged in mostly support code (eg web query form) changes
-
-Revision 1.1  2004/03/03 17:40:58  mch
-Moved ui package
-
-Revision 1.4  2004/03/02 01:33:24  mch
-Updates from chagnes to StoreClient and Agsls
-
-Revision 1.3  2004/02/24 16:04:02  mch
-Config refactoring and moved datacenter It04.1 VoSpaceStuff to myspace StoreStuff
-
-Revision 1.2  2004/02/24 11:30:41  mch
-Removed self import
-
-Revision 1.1  2004/02/17 16:04:06  mch
-New Desktop GUI
-
-Revision 1.2  2004/02/17 03:47:04  mch
-Naughtily large lump of various fixes for demo
-
-Revision 1.1  2004/02/15 23:25:30  mch
-Datacenter and MySpace desktop client GUIs
-
- */
 

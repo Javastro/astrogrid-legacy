@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.3 2005/03/29 20:13:51 mch Exp $
+ * $Id: StoreTreeView.java,v 1.4 2005/03/30 11:01:43 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -14,7 +14,6 @@ import java.security.Principal;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.storeclient.api.StoreFile;
@@ -79,6 +78,9 @@ public class StoreTreeView extends JTree {
 
 /*
  $Log: StoreTreeView.java,v $
+ Revision 1.4  2005/03/30 11:01:43  mch
+ Minor UI changes
+
  Revision 1.3  2005/03/29 20:13:51  mch
  Got threading working safely at last
 

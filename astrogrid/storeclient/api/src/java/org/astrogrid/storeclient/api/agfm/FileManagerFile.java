@@ -1,5 +1,5 @@
 /*
- * $Id: FileManagerFile.java,v 1.4 2005/03/29 20:13:51 mch Exp $
+ * $Id: FileManagerFile.java,v 1.5 2005/03/30 11:00:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,6 +14,7 @@ import java.security.Principal;
 import java.util.Date;
 import org.astrogrid.account.LoginAccount;
 import org.astrogrid.community.common.exception.CommunityException;
+import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.filemanager.client.FileManagerClient;
 import org.astrogrid.filemanager.client.FileManagerClientFactory;
 import org.astrogrid.filemanager.client.FileManagerNode;
@@ -23,6 +24,7 @@ import org.astrogrid.slinger.agfm.FMCompleterStream;
 import org.astrogrid.slinger.mime.MimeFileExts;
 import org.astrogrid.slinger.vospace.IVOSRN;
 import org.astrogrid.storeclient.api.StoreFile;
+import java.rmi.RemoteException;
 
 /**
  * Wrapper around the FileManagerNode that is used to access AstroGrid's FileManager
@@ -40,14 +42,14 @@ public class FileManagerFile implements StoreFile {
    
    IVOSRN id = null;
    
-   boolean exists = false;  //cached flag
+   int exists = -1;  //cached flag - -1 = 'don't know', 1 = exists
 
    public FileManagerFile(IVOSRN givenId, Principal aUser) throws IOException, URISyntaxException  {
       try {
          client = factory.login(/*aUser*/);
          node = client.node(givenId.toOldIvorn());
          this.id = givenId;
-         exists = (client.exists(givenId.toOldIvorn()) != null);
+//         exists = (client.exists(givenId.toOldIvorn()) != null);  does another fully resolving call - slow
       }
       catch (CommunityException e) {
          throw new StoreException(e+" getting FileManagerFile "+givenId+" for "+aUser,e);
@@ -67,17 +69,19 @@ public class FileManagerFile implements StoreFile {
       String s = node.getIvorn().toString();
       try {
          this.id = new IVOSRN(s);
-         exists = (client.exists(id.toOldIvorn()) != null);
+//         exists = (client.exists(givenId.toOldIvorn()) != null);  does another fully resolving call - slow
       }
       catch (URISyntaxException e) {
          throw new StoreException(e+" from "+s,e);
       }
+      /*
       catch (CommunityException e) {
          throw new StoreException(e+" getting FileManagerFile "+id,e);
       }
       catch (RegistryException e) {
          throw new StoreException(e+" getting FileManagerFile "+id,e);
       }
+       */
    }
    
    public String toString() { return id.toString(); }
@@ -125,8 +129,25 @@ public class FileManagerFile implements StoreFile {
    
    /** Returns true if it exists - eg it may be a reference to a file about to be
     * created.  In this case returns true as 'I don't know'... which probably is not good... */
-   public boolean exists()      {
-      return exists;
+   public boolean exists()     {
+      if (exists == -1) {
+         try {
+            if (client.exists(id.toOldIvorn()) == null) { exists = 0; } else { exists = 1; }
+         }
+         catch (URISyntaxException e) {
+            throw new RuntimeException(e+" getting FileManagerFile "+id,e);
+         }
+         catch (IOException e) {
+            throw new RuntimeException(e+" getting FileManagerFile "+id,e);
+         }
+         catch (CommunityException e) {
+            throw new RuntimeException(e+" getting FileManagerFile "+id,e);
+         }
+         catch (RegistryException e) {
+            throw new RuntimeException(e+" getting FileManagerFile "+id,e);
+         }
+      }
+      return (exists == 1);
    }
    
    /** Renames the file to the given filename. Affects only the name, not the
@@ -186,9 +207,10 @@ public class FileManagerFile implements StoreFile {
       if (!isFolder()) {
          return null;
       }
-      StoreFile[] sf = new StoreFile[node.getChildCount()];
+      FileManagerFile[] sf = new FileManagerFile[node.getChildCount()];
       for (int i = 0; i < sf.length; i++) {
          sf[i]= new FileManagerFile(client, (FileManagerNode) node.getChildAt(i));
+         sf[i].exists = 1; //must exist if it's a child of this one...
       }
       return sf;
    }
@@ -210,7 +232,19 @@ public class FileManagerFile implements StoreFile {
    }
    
    /** For testing */
-   public static void main(String[] args) throws IOException, IOException, URISyntaxException {
+   public static void main(String[] args) throws IOException, IOException, URISyntaxException, RemoteException, URISyntaxException, RegistryException, CommunityException {
+
+      SimpleConfig.getSingleton().setProperty("org.astrogrid.registry.query.endpoint", "http://hydra.star.le.ac.uk:8080/astrogrid-registry/services/RegistryQuery");
+
+      /*
+         FileManagerClientFactory factory = new FileManagerClientFactory();
+         FileManagerClient client = factory.login();
+         FileManagerNode node = client.node(new IVOSRN("ivo://uk.ac.le.star/DSATEST1").toOldIvorn());
+      for (int i = 0; i < node.getChildCount(); i++) {
+         node.getChildAt(i);
+      }
+       */
+
       FileManagerFile f = new FileManagerFile(new IVOSRN("ivo://uk.ac.le.star/DSATEST1"), LoginAccount.ANONYMOUS);
       f.listFiles(LoginAccount.ANONYMOUS);
    }
@@ -218,6 +252,9 @@ public class FileManagerFile implements StoreFile {
 
 /*
 $Log: FileManagerFile.java,v $
+Revision 1.5  2005/03/30 11:00:29  mch
+Minor UI changes
+
 Revision 1.4  2005/03/29 20:13:51  mch
 Got threading working safely at last
 
