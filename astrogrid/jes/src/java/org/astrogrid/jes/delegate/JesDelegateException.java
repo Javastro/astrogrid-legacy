@@ -1,5 +1,5 @@
 /*
- * @(#)JesException.java   1.0
+ * @(#)JesDelegateException.java   1.0
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -10,8 +10,16 @@
  */
 package org.astrogrid.jes.delegate ;
 
-public class JesDelegateException extends org.astrogrid.AstroGridException {
+public class JesDelegateException extends java.lang.Exception {
 	
+    public JesDelegateException( String message ) { 
+        super( message ) ;
+    }
+
+    public JesDelegateException( String message, Throwable exception ) {
+        super( message, exception ) ;
+    }
+    
 	public JesDelegateException( Throwable exception ) { 
 		super( exception ) ; 
 	}
