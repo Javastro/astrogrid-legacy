@@ -68,7 +68,9 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 /**
  * Constructor with no arguments.
- */
+    *
+    * shouldn't exist? MCH
+    *
 
    public MySpaceIt05Delegate() throws IOException
    {
@@ -78,15 +80,14 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
  * Constructor with specified User and endPoint.
  */
 
-   public MySpaceIt05Delegate(User operator, String endPoint)
-     throws IOException
+   public MySpaceIt05Delegate(User operator, String endPoint) throws IOException
    {
       this.operator = operator;
       this.endPoint = endPoint;
 //      System.out.println("entered MyspaceIt05Delegate: operator = "
 //        + operator.toString() + " endpoint = " + endPoint);
 
-      //managerMsrl = new Msrl(new URL(endPoint));
+      managerMsrl = new Msrl(endPoint);
 
       if (endPoint.startsWith(Msrl.SCHEME)) {
          endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
@@ -231,7 +232,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       return null;
    }
 
-
+   
 // ----------------------------------------------------------------------
 
    /**
@@ -244,14 +245,14 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       //remove trailing slash if any - this just tells us that it's a directory,
       //but not hainvg one doens't mean it isn't a directory, so ignore
       if (path.endsWith("/")) {
-         path = path.substring(0,path.length()-1);
+         path = path.substring(0,path.length());
       }
 
       if (path.lastIndexOf("/") == -1) {
          return path;
       }
       
-      return path.substring(0, path.lastIndexOf("/")-1);
+      return path.substring(path.lastIndexOf("/")+1);
    }
    
    /**
@@ -261,10 +262,15 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
    public StoreFile makeStoreFile(MySpaceFolder parent, EntryResults result) {
       StoreFile file;
       if (result.getType() == EntryCodes.CON) {
-         file = new MySpaceFolder(parent, getName(result));
+         if (parent == null) {
+            file = new MySpaceFolder(managerMsrl, getName(result));
+         }
+         else {
+            file = new MySpaceFolder(parent, getName(result));
+         }
       }
       else {
-         file = new MySpaceFile(parent, getName(result),
+            file = new MySpaceFile(parent, getName(result),
                                 result.getOwnerId(),
                                 new Date(result.getCreationDate()).toString(),
                                 new Date(result.getExpiryDate()).toString(),
@@ -291,14 +297,15 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
       }
       
       //turn list into a tree of StoreFiles
-      EntryResults[] fileList = (EntryResults[]) results.getEntries();
+      
+      Object[] fileList =  results.getEntries();
 
       MySpaceFolder root = new MySpaceFolder(new Msrl(Msrl.SCHEME+":"+getEndpoint()), "/");
       
       //represent entries
       for (int r=0;r<fileList.length;r++) {
          
-         EntryResults result = fileList[r];
+         EntryResults result = (EntryResults) fileList[r];
          
          //Work out parent. Assumes parent folders appear in list before the children do.
          MySpaceFolder parentFolder;
@@ -360,12 +367,12 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 //   converted to the corresponding EntryRecord.
 
       //copy list into a list of StoreFiles
-      EntryResults[] resultList = (EntryResults[]) results.getEntries();
+      Object[] resultList = results.getEntries();
       StoreFile[] fileList = new StoreFile[resultList.length];
       
       for(int loop=0; loop<resultList.length; loop++)
       {
-         fileList[loop] = makeStoreFile(null, resultList[loop]);
+         fileList[loop] = makeStoreFile(null, (EntryResults) resultList[loop]);
       }
 
       return fileList;
@@ -399,7 +406,8 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
          return null;
       }
       else  {
-         return makeStoreFile(null, (EntryResults) results.getEntries()[0]);
+         MySpaceFolder parent = new MySpaceFolder(managerMsrl, path);
+         return makeStoreFile(parent, (EntryResults) results.getEntries()[0]);
       }
    }
 
@@ -453,7 +461,7 @@ public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient {
 
 //
 //   Attempt to save the array of bytes as a file.
-//
+//m
 //   [TODO] The current StoreClient interface has no mechanism for
 //   passing the category of file (VOTable etc.), so here it is set
 //   to UNKNOWN.

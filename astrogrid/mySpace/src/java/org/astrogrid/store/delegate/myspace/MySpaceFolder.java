@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.2 2004/04/23 11:38:19 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.3 2004/04/26 16:40:54 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -41,7 +41,7 @@ public class MySpaceFolder implements StoreFile {
       name = givenName;
    }
  
-   /** Creates a folder that is a child of another one.  Parent cannot be null - use
+   /** Creates a folder that is a child of another one.  Use
     * the constructor that takes an Msrl to define the root folder*/
    public MySpaceFolder(MySpaceFolder parent, String childName) {
       
@@ -152,6 +152,9 @@ public class MySpaceFolder implements StoreFile {
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.3  2004/04/26 16:40:54  mch
+ More fixes to It05 delegate
+
  Revision 1.2  2004/04/23 11:38:19  mch
  Fixes to return correct AGSL plus change to File model for It05 delegate
 
