@@ -1,5 +1,5 @@
 /*
- * $Id: DatabaseQuerier.java,v 1.6 2003/09/04 09:23:16 nw Exp $
+ * $Id: DatabaseQuerier.java,v 1.7 2003/09/05 01:00:57 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,6 +33,7 @@ public abstract class DatabaseQuerier
     * Returns a Querier implementation based on the value given in the
     * configuration file
     * @todo use config file, at the moment just returns a MySQL querier
+    * @todo - fix this - there's no way to initialize the loaded class., while all classes take connection parameters in constructor
     */
    public static DatabaseQuerier createQuerier() throws DatabaseAccessException
    {
