@@ -1,10 +1,10 @@
 /*
- * $Id: QueryStatus.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: QueryStatus.java,v 1.1 2003/11/17 12:32:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
-package org.astrogrid.datacenter.common;
+package org.astrogrid.datacenter.query;
 
 import org.astrogrid.util.TypeSafeEnumerator;
 
@@ -68,6 +68,9 @@ public class QueryStatus extends TypeSafeEnumerator
 
 /*
 $Log: QueryStatus.java,v $
+Revision 1.1  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

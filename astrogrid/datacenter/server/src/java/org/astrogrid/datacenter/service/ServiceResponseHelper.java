@@ -1,11 +1,11 @@
-/*$Id: ServiceResponseHelper.java,v 1.1 2003/11/17 12:16:33 nw Exp $
+/*$Id: ServiceResponseHelper.java,v 1.2 2003/11/17 12:33:24 mch Exp $
  * Created on 14-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service;
@@ -14,7 +14,7 @@ import java.net.URL;
 
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.StatusHelper;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
@@ -145,8 +145,11 @@ public class ServiceResponseHelper extends ResponseHelper {
 }
 
 
-/* 
+/*
 $Log: ServiceResponseHelper.java,v $
+Revision 1.2  2003/11/17 12:33:24  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/17 12:16:33  nw
 first stab at mavenizing the subprojects.
  

@@ -23,9 +23,10 @@ public interface ConeSearcher
     * Simple cone-search call.
     * @param ra Right Ascension in decimal degrees, J2000
     * @param dec Decliniation in decimal degress, J2000
-    * @param sr search radius.
+    * @param sr search radius in ???.
     * @return VOTable
     * @todo return VOTable instance not Element
+    * @todo what are the sr units?
     */
    public Element coneSearch(double ra, double dec, double sr) throws DatacenterException;
 
@@ -33,6 +34,9 @@ public interface ConeSearcher
 
 /*
 $Log: ConeSearcher.java,v $
+Revision 1.2  2003/11/17 12:32:26  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

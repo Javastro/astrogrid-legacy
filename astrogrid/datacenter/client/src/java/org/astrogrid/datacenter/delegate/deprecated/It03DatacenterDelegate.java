@@ -1,5 +1,5 @@
 /*
- * $Id: It03DatacenterDelegate.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: It03DatacenterDelegate.java,v 1.2 2003/11/17 12:32:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,7 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.DocMessageHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
@@ -211,6 +211,9 @@ public class It03DatacenterDelegate
 
 /*
 $Log: It03DatacenterDelegate.java,v $
+Revision 1.2  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

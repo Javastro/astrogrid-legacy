@@ -1,5 +1,5 @@
 /*
- * $Id: DummyDelegate.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: DummyDelegate.java,v 1.2 2003/11/17 12:32:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -16,7 +16,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.common.DocHelper;
 import org.astrogrid.datacenter.common.QueryIdHelper;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -342,6 +342,9 @@ public class DummyDelegate implements AdqlQuerier, ConeSearcher
 
 /*
 $Log: DummyDelegate.java,v $
+Revision 1.2  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

@@ -1,10 +1,11 @@
 /*
- * $Id: ResponseHelper.java,v 1.2 2003/11/17 12:12:28 nw Exp $
+ * $Id: ResponseHelper.java,v 1.3 2003/11/17 12:32:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.common;
+import org.astrogrid.datacenter.query.*;
 
 import java.net.URL;
 import org.apache.axis.utils.XMLUtils;

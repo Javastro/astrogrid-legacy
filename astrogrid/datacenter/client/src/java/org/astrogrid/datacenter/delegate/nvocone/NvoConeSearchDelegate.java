@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: NvoConeSearchDelegate.java,v 1.2 2003/11/17 12:32:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -13,7 +13,7 @@ import java.net.URL;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.adql.QOM;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -93,6 +93,9 @@ public class NvoConeSearchDelegate implements ConeSearcher
 
 /*
 $Log: NvoConeSearchDelegate.java,v $
+Revision 1.2  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

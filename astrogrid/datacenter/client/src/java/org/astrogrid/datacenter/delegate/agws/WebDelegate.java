@@ -1,5 +1,5 @@
 /*
- * $Id: WebDelegate.java,v 1.2 2003/11/17 12:12:28 nw Exp $
+ * $Id: WebDelegate.java,v 1.3 2003/11/17 12:32:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -14,7 +14,7 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerServiceLocator;
 import org.astrogrid.datacenter.axisdataserver.AxisDataServerSoapBindingStub;
 import org.astrogrid.datacenter.query.QueryException;
@@ -253,6 +253,9 @@ public class WebDelegate implements AdqlQuerier
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.3  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.2  2003/11/17 12:12:28  nw
 first stab at mavenizing the subprojects.
 

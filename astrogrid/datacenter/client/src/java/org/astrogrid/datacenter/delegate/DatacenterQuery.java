@@ -7,7 +7,7 @@ package org.astrogrid.datacenter.delegate;
 
 import java.io.IOException;
 import java.net.URL;
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 
 /**
  * Handles the interface to the query at the server.  Implementations are tightly
@@ -82,6 +82,9 @@ public interface DatacenterQuery
 
 /*
 $Log: DatacenterQuery.java,v $
+Revision 1.2  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 

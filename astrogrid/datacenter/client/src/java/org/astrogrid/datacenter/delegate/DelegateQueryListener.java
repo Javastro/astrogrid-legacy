@@ -1,12 +1,12 @@
 /*
- * $Id: DelegateQueryListener.java,v 1.1 2003/11/14 00:36:40 mch Exp $
+ * $Id: DelegateQueryListener.java,v 1.2 2003/11/17 12:32:27 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
-import org.astrogrid.datacenter.common.QueryStatus;
+import org.astrogrid.datacenter.query.QueryStatus;
 
 /**
  * Defines what a class must implement in order to listen to changes on the
@@ -25,6 +25,9 @@ public interface DelegateQueryListener
 
 /*
 $Log: DelegateQueryListener.java,v $
+Revision 1.2  2003/11/17 12:32:27  mch
+Moved QueryStatus to query pacakge
+
 Revision 1.1  2003/11/14 00:36:40  mch
 Code restructure
 
