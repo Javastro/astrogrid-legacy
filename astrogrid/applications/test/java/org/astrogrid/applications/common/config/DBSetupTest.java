@@ -1,5 +1,5 @@
 /*
- * $Id: DBSetupTest.java,v 1.2 2003/12/05 22:52:16 pah Exp $
+ * $Id: DBSetupTest.java,v 1.3 2003/12/11 14:36:16 pah Exp $
  * 
  * Created on 02-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -43,10 +43,10 @@ public class DBSetupTest extends BaseDBTestCase {
       
       try {
          stmt=conn.createStatement();
-         if (stmt.execute("select * from execution where executionId=1")) {
+         if (stmt.execute("select * from exestat where program='testapp'")) {
             ResultSet rs = stmt.getResultSet();
             if(rs.next()){
-               assertEquals("executionId", 1, rs.getInt("executionId"));
+               assertEquals("executionId", 0, rs.getInt("executionId"));
                assertEquals("jobstepId", "jobstep1", rs.getString("jobstepId"));
                assertEquals("program", "testapp", rs.getString("program"));
                
