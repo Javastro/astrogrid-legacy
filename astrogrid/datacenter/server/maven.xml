@@ -5,7 +5,6 @@
          - builds a jar, and a dist zip too.
          - dist.zip used in the pal build
 -->
- <goal name="astrogrid-build-artifact" prereqs="jar" />
   <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
         <artifact:install
                 artifact="${maven.dist.dir}/${maven.final.name}.zip"
@@ -20,7 +19,6 @@
                 project="${pom}"
         />
   </goal>
-  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot" />
   <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-bin">
         <!-- can't use dist:deploy-bin-snapshot - puts it in different / wrong / inaccessible part of repository -->
         <artifact:deploy-snapshot
