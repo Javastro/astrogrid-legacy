@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.9 2004/07/06 18:48:34 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.10 2004/08/03 11:15:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,7 +16,6 @@ import org.astrogrid.datacenter.axisdataserver.types.Language;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.DatacenterException;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
-import org.astrogrid.datacenter.queriers.JobNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.TargetIndicator;
@@ -240,20 +239,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
     * @soap
     */
    public void registerJobMonitor(String queryId, URI uri) throws AxisFault  {
-      // check we can create an URL first..
-      log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
-      try  {
-         URL u = new URL(uri.toString());
-         Querier querier = (Querier) madeQueriers.get(queryId);
-         if (querier == null) {
-            throw new IllegalArgumentException("Unknown Query ID '" + queryId+"'");
-         }
-         
-         querier.addListener(new JobNotifyServiceListener(queryId, u));
-      }
-      catch (Exception e)  {
-         throw makeFault(SERVERFAULT, e+" registering job monitor "+uri+" for query ["+queryId+"]", e);
-      }
+      throw makeFault("Unsupported Operation (registerJobMonitor) use a later service");
    }
    
    /* (non-Javadoc)
@@ -273,6 +259,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.10  2004/08/03 11:15:03  mch
+Removed JobMonitorListener
+
 Revision 1.9  2004/07/06 18:48:34  mch
 Series of unit test fixes
 
