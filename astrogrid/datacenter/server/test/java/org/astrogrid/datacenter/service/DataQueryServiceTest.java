@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.3 2003/11/17 15:42:03 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.4 2003/11/18 14:36:59 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -32,7 +32,7 @@ import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
- *
+ *@todo reinstate dummy myspace, once we get a myspace delegate built.
  */
 public class DataQueryServiceTest extends TestCase {
 
@@ -154,6 +154,9 @@ public class DataQueryServiceTest extends TestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.4  2003/11/18 14:36:59  nw
+temporarily commented out references to MySpaceDummyDelegate, so that the sustem will build
+
 Revision 1.3  2003/11/17 15:42:03  mch
 Package movements
 

@@ -43,6 +43,7 @@ import org.xml.sax.SAXException;
  * @see spawnQuery
  * <p>
  * @author M Hill
+ * @todo reinstate reference to MyspaceDummyDelegate, once myspace delegate is built
  */
 
 public abstract class DatabaseQuerier implements Runnable
@@ -217,7 +218,7 @@ public abstract class DatabaseQuerier implements Runnable
          setErrorStatus(e);
       }
    }
-/** TEMPORARY CONSTANT, until myspace gets their act together.
+/** TEMPORARY CONSTANT, until myspace build a delegate.
  * then can replace with MySpaceDummyDelegate.DUMMY
  * @todo update this constant with correct reference.
  */
@@ -483,6 +484,9 @@ public abstract class DatabaseQuerier implements Runnable
 }
 /*
 $Log: DatabaseQuerier.java,v $
+Revision 1.5  2003/11/18 14:36:21  nw
+temporarily commented out references to MySpaceDummyDelegate, so that the sustem will build
+
 Revision 1.4  2003/11/18 11:10:16  mch
 Removed client dependencies on server
 
