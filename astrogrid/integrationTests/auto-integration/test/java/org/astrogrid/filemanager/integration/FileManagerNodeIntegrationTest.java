@@ -1,21 +1,21 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/filemanager/integration/Attic/FileManagerIntegrationTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/filemanager/integration/Attic/FileManagerNodeIntegrationTest.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
  * <cvs:date>$Date: 2004/12/17 16:31:52 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: FileManagerIntegrationTest.java,v $
- *   Revision 1.3  2004/12/17 16:31:52  jdt
+ *   $Log: FileManagerNodeIntegrationTest.java,v $
+ *   Revision 1.2  2004/12/17 16:31:52  jdt
  *   merge from dave-dev-200410061224-200412161312
  *
- *   Revision 1.1.2.3  2004/12/08 04:23:35  dave
- *   Updated FileManager test to include FileStore ivorns ...
+ *   Revision 1.1.2.3  2004/12/08 05:57:15  dave
+ *   Updated FileManagerNode test ...
  *
- *   Revision 1.1.2.2  2004/11/18 16:41:25  dave
- *   Added call to super.setUp()
+ *   Revision 1.1.2.2  2004/11/26 04:49:10  dave
+ *   Fixed typeo ..
  *
- *   Revision 1.1.2.1  2004/11/18 16:04:17  dave
- *   Added FileManager integration test ...
+ *   Revision 1.1.2.1  2004/11/26 04:40:19  dave
+ *   Added integration tests for FileManagerNode ...
  *
  * </cvs:log>
  *
@@ -27,8 +27,8 @@ import org.astrogrid.store.Ivorn ;
 import org.astrogrid.config.Config ;
 import org.astrogrid.config.SimpleConfig ;
 
+import org.astrogrid.filemanager.client.FileManagerNodeTest;
 import org.astrogrid.filemanager.client.FileManagerDelegate;
-import org.astrogrid.filemanager.client.FileManagerDelegateTest;
 import org.astrogrid.filemanager.client.FileManagerCoreDelegate;
 
 import org.astrogrid.filemanager.resolver.FileManagerDelegateResolver;
@@ -38,8 +38,8 @@ import org.astrogrid.filemanager.resolver.FileManagerDelegateResolverImpl;
  * A JUnit test case for the live FileManager service.
  *
  */
-public class FileManagerIntegrationTest
-	extends FileManagerDelegateTest
+public class FileManagerNodeIntegrationTest
+	extends FileManagerNodeTest
 	{
 
     /**
