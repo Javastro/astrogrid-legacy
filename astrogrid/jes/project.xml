@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.39 2004/02/02 17:36:32 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.40 2004/02/03 16:04:31 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -18,9 +18,6 @@
         track the progress of a job through its job steps, e.g. in order to 
         trigger subsequent steps.</description>
     <shortDescription>AstroGrid Job Management Components</shortDescription>
-    <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
-    <package>org.astrogrid</package>
-    <logo>http://www.astrogrid.org/images/AGlogo</logo>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -42,15 +39,6 @@
             </resources>
         </unitTest>
     </build>
-    <repository>
-        <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes 
-            </connection>
-        <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes 
-            </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/jes/ </url>
-    </repository>
     <dependencies>
         <dependency>
             <artifactId>axisfull</artifactId>

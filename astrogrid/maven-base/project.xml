@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <pomVersion>3</pomVersion>    
+    <pomVersion>3</pomVersion>
+    <id>astrogrid-master</id>
+    <groupId>org.astrogrid</groupId>
+    <name>Astrogrid Master Maven POM</name>
     <currentVersion>$Name:  $</currentVersion>
     <organization>
         <name>AstroGrid</name>
@@ -10,7 +13,18 @@
     <inceptionYear>2002</inceptionYear>
     <issueTrackingUrl>http://www.astrogrid.org/bugzilla/</issueTrackingUrl>
     <package>org.astrogrid</package>
+    <siteDirectory>/var/www/www/maven/build/${pom.artifactId}</siteDirectory>
     <logo>http://www.astrogrid.org/images/AGlogo</logo>
+    <repository>
+        <connection> 
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${pom.artifactId} 
+            </connection>
+        <developerConnection> 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${pom.artifactId} 
+            </developerConnection>
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/${pom.artifactId}/ 
+            </url>
+    </repository>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -20,6 +34,11 @@
             </includes>
         </unitTest>
     </build>
+    <url>http://www.astrogrid.org/maven/build/${pom.artifactId}/index.html</url>
+    <siteAddress>jakarta.apache.org</siteAddress>    <!-- not sure what this is for yet-->
+    <distributionDirectory>     <!-- not sure what this is for yet-->
+        /www/jakarta.apache.org/builds/jakarta-commons/${pom.artifactId}/ 
+    </distributionDirectory>
     <developers>
         <developer>
             <name> Brian McIlwrath </name>
@@ -197,8 +216,7 @@
         </developer>
         <developer>
             <name> Tony Linde </name>
-            <id>ael
-            </id>
+            <id>ael </id>
             <email> ael@star.le.ac.uk </email>
             <organization> Leicester </organization>
             <roles>
@@ -207,8 +225,7 @@
         </developer>
     </developers>
     <repository>
-        <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid 
+        <connection> scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid 
             </connection>
         <developerConnection> 
             scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid 
