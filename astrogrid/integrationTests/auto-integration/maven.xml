@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.62 2004/07/22 13:40:26 dave Exp $ -->
+<!-- $Id: maven.xml,v 1.63 2004/07/22 16:04:15 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -27,7 +27,7 @@
 
 <!-- temp dir - used for mangling files, etc -->
 <property name="temporary.dir" location="${basedir}/tmp" />
-<property name="config.webapp.name" value="astrogrid-configuration" />
+<property name="config.webapp.name" value="astrogrid-autoconfiguration" />
 
         <j:if test="${context.getVariable('registry.authorityid') == null}">
                 <j:set var="registry.authorityid" value="org.astrogrid.localhost"/>
@@ -664,7 +664,7 @@
 <goal name="configuration-undeploy" >
   <j:catch>
         <tomcat-remove url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-                path="/astrogrid-configuration" />
+                path="/astrogrid-autoconfiguration" />
   </j:catch>
 </goal>
 <goal name="myspace-store-undeploy" >
