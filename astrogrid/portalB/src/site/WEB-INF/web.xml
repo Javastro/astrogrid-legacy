@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/site/WEB-INF/Attic/web.xml,v $</cvs:source>
-    | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/12 18:19:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Author: KevinBenson $</cvs:date>
+    | <cvs:author>$Date: 2003/06/17 08:49:46 $</cvs:author>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     | $Log: web.xml,v $
+    | Revision 1.2  2003/06/17 08:49:46  KevinBenson
+    | new jsp page and web.xml for installing DataQuery
+    |
     | Revision 1.1  2003/06/12 18:19:38  dave
     | Initial import into cvs ...
     |
@@ -23,4 +26,17 @@
 	"http://java.sun.com/j2ee/dtds/web-app_2.2.dtd">
 
 <web-app>
+
+<servlet>
+	<servlet-name>DataQuery</servlet-name>
+	<servlet-class>
+		org.astrogrid.portal.query.DataQueryServlet
+	</servlet-class>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>DataQuery</servlet-name>
+	<url-pattern>/DataQuery</url-pattern>
+</servlet-mapping>
+
 </web-app>

@@ -1,6 +1,7 @@
 <%
 
 /*
+
 	java.util.ArrayList dataSets = request.getDataSetsInformation();
 	QueryBuilder qb = session.getValue("QueryBuilder");
 	
@@ -13,8 +14,16 @@
 <title>Data Query</title>
 <body>
 
+<%
+String errorMessage = (String)session.getAttribute("ErrorMessage");
+if (errorMessage != null) {
+%>
+  <font color="red"><%=errorMessage%></font>
+  <%
+}
+%>
 <h1>Query Chooser</h1>
-<Form action="QueryBuilder" method="post">
+<Form action="/DataQuery/DataQuery" method="post">
 <select name="DataSetName">
 	<option value="DS1">DataSet1</option>
 	<option value="DS2">DataSet2</option>
@@ -34,7 +43,7 @@
 <input type="submit" name="RemoveSelection" value="Remove Selection" />
 <HR />
 <h1>Query Filter</h1>
-<select name="DataSetName">
+<select name="DataSetNameCriteria">
 	<option value="DS1">DataSet1</option>
 	<option value="DS2">DataSet2</option>
 	<%
@@ -52,17 +61,29 @@
 	<option value="Equal">Equal</option>
 	<option value="Less Than">Less Than</option>
 </select>
-<input type="text" name="value" />
+<input type="text" name="Value" />
 <input type="submit" name="AddCriteria" value="Add Criteria" />
 <input type="submit" name="RemoveCriteria" value="Remove Criteria" />
 
 <HR>
 <h1>The Query</h1>
 
-<!--label of the query another words the session.getValue("QueryString");-->
-
+<%
+	String queryString = (String)session.getAttribute("QueryString");
+	if (queryString != null) {
+%>
+<%=queryString%>
+<% } %>
+<br />
 <input type="submit" name="ClearQuery" value="Clear Query" />
 <input type="submit" name="SubmitQuery" value="Send Query" />
+<br />
+<%
+	String sentQueryString = (String)session.getAttribute("QueryStringSent");
+	if(sentQueryString != null) {
+%>
+<%=sentQueryString%>
+<% } %>
 </Form>
 </body>
 
