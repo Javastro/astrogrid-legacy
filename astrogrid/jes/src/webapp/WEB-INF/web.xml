@@ -10,6 +10,11 @@
   <description>
     Astrogrid Job Execution Service
   </description>
+  
+  <listener>
+		<listener-class>org.astrogrid.jes.servlet.LifecycleListener</listener-class>
+	</listener>
+  
   <servlet>
     <servlet-name>AxisServlet</servlet-name>
     <display-name>Apache-Axis Servlet</display-name>
@@ -36,13 +41,7 @@
         <servlet-class>org.astrogrid.jes.servlet.BackdoorServlet</servlet-class>
   </servlet>
 
-  <servlet>
-          <servlet-name>init</servlet-name>
-        <description>configures and starts up the component manager.</description>
-        <servlet-class>org.astrogrid.jes.servlet.InitServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-  </servlet>
-  
+
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>
     <url-pattern>/TestServlet/*</url-pattern>
