@@ -1,4 +1,4 @@
-/*$Id: AxisDataServiceQueryTest.java,v 1.1 2004/03/12 04:54:07 mch Exp $
+/*$Id: AxisDataServiceQueryTest.java,v 1.2 2004/07/02 16:54:17 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.test.DummySqlPlugin;
 import org.astrogrid.datacenter.query.QueryState;
-import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
+//import org.astrogrid.mySpace.delegate.MySpaceDummyDelegate;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 
@@ -91,9 +91,10 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
         server.abortQuery(qid);
         // should have gone now.. i.e. we can't do this..
         try {
-        server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
-        fail("Expected to barf");
-        }catch (IllegalArgumentException e) {
+           server.setResultsDestination(qid,new URI("file://wibble.txt"));
+           fail("Expected to barf");
+        }
+        catch (IllegalArgumentException e) {
             //ignored it
         }
     }
@@ -102,7 +103,7 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
     public void testDoStagedQueryQuery() throws Exception    {
              String qid = server.makeQuery(query1);
              assertNotNull(qid);
-             server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
+              server.setResultsDestination(qid,new URI("file://wibble.txt"));
              assertEquals(QueryState.CONSTRUCTED.toString(),server.getStatus(qid));
 
             TestListener l = new TestListener();
@@ -165,6 +166,9 @@ public class AxisDataServiceQueryTest extends ServerTestCase {
 
 /*
 $Log: AxisDataServiceQueryTest.java,v $
+Revision 1.2  2004/07/02 16:54:17  mch
+Small fix
+
 Revision 1.1  2004/03/12 04:54:07  mch
 It05 MCH Refactor
 
