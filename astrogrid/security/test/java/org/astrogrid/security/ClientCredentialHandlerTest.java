@@ -92,7 +92,7 @@ public class ClientCredentialHandlerTest extends TestCase {
     xc.addXpathNamespace("soapenv",
                          "http://schemas.xmlsoap.org/soap/envelope/");
     xc.addXpathNamespace("wsse",
-                         "http://schemas.xmlsoap.org/ws/2002/04/secext");
+                         "http://schemas.xmlsoap.org/ws/2002/07/secext");
     assertTrue(0 < xc.countMatchingNodes("//soapenv:Header/wsse:Security"));
   }
 
