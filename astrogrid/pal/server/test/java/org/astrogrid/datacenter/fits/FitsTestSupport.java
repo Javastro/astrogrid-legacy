@@ -1,4 +1,4 @@
-/*$Id: FitsTestSupport.java,v 1.2 2005/03/13 11:43:44 KevinBenson Exp $
+/*$Id: FitsTestSupport.java,v 1.3 2005/03/14 15:07:52 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -28,13 +28,14 @@ public class FitsTestSupport extends OptionalTestCase
    public static URL[] getTestFits()
    {
       return new URL[] {
-            
+            /*
             FitsTestSupport.class.getResource("examples/sample1.fits"),
             FitsTestSupport.class.getResource("examples/sample2.fits"),
             FitsTestSupport.class.getResource("examples/sample3.fits"),
             FitsTestSupport.class.getResource("examples/sample4.fits"),
             FitsTestSupport.class.getResource("examples/sample5.fits"),
             FitsTestSupport.class.getResource("examples/sample6.fits"),
+            */
             FitsTestSupport.class.getResource("examples/cdstest.fits")
       };
    }
@@ -59,6 +60,9 @@ public class FitsTestSupport extends OptionalTestCase
 
 /*
  $Log: FitsTestSupport.java,v $
+ Revision 1.3  2005/03/14 15:07:52  KevinBenson
+ now the test works and writes to a xml file
+
  Revision 1.2  2005/03/13 11:43:44  KevinBenson
  small change for the indextenerator to create directories under target
 

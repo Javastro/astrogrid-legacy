@@ -30,6 +30,7 @@ import nom.tam.fits.Fits;
 import nom.tam.fits.FitsException;
 import nom.tam.fits.Header;
 import nom.tam.fits.HeaderCard;
+import nom.tam.fits.BasicHDU;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.config.SimpleConfig;
@@ -102,6 +103,7 @@ public class IndexGenerator
       StringBuffer snippet = new StringBuffer();
       System.out.println("entered makeIndexNippet(fitsreader,file)");
       System.out.println("Number of hdus = " + reader.getNumberOfHDUs());
+      System.out.println("Number of BAsicHDus again from read = " + reader.read().length);
       for (int i = 0; i < reader.getNumberOfHDUs(); i++)
       {
          log.trace(""); //seperate headers
@@ -121,7 +123,7 @@ public class IndexGenerator
     */
    public String makeIndexSnippet(Header header, String fileLocation) throws IOException, FitsException
    {
-      System.out.println("entered makeIndexNippet(header,filelocation)");
+      System.out.println("entered makeIndexSnippet(header,filelocation)");
       if(header == null) {
         return "";
       }
@@ -134,25 +136,26 @@ public class IndexGenerator
       for (int i = 0; i < header.getNumberOfCards(); i++)
       {
          String key = header.getKey(i).trim();
-         String value = header.getStringValue(key);
-         System.out.println("The key = " + key + " the value = " + value);
+         String value = header.getStringValue(key);         
          //if the key is 'comment' leave it at that, if the comment comes from and-of-line comment, include that too
          String eolComment = null;
+         String commentAtt = "";
+         /*
          if (!key.toUpperCase().equals("COMMENT")) {
             eolComment =header.findCard(key).getComment().trim();
             if (eolComment.length()==0) {
                eolComment = null;
             }
          }
-         String commentAtt = "";
+         
          if (eolComment != null) {
             commentAtt = " comment='"+eolComment+"'";
          }
+         */
          
-         
-         if (value == null) {
+         if (value == null || value.trim().length() <= 0) {
             //keywordSnippet.append("      <"+key+commentAtt+"/>\n");
-             keywordSnippet.append("      <"+key+"/>\n");
+             //keywordSnippet.append("      <"+key+"/>\n");
          } else {
             try {
                //if it's a date, we store two key entries, one with a unit attribute set to 's' and the time in ms since/before 1970
@@ -163,7 +166,8 @@ public class IndexGenerator
             } catch (ParseException e) {
                //ignore
             }
-            keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
+                System.out.println("The key = " + key + " the value = " + value);
+                keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
             //keywordSnippet.append("      <"+key+">"+value+"</"+key+">\n");
          }
       }
@@ -186,6 +190,7 @@ public class IndexGenerator
     * on the raAxis, decAxis settings */
    private String makeCoverageSnippet(Header header) {
       if ((header.getIntValue("NAXIS") >= 2) && (raAxis != -1) && (decAxis != -1)) {
+          System.out.println("the invalid for naxis = " + header.getIntValue("NAXIS") + " raaxis = " + raAxis + " decAxis = " + decAxis);
          //return "";
       
          //work out coverage.  This is not a straightforward rectangle, as the
@@ -291,8 +296,9 @@ public class IndexGenerator
        //long seqNum = System.currentTimeMillis();
        String xmlSnippet = null;
           try {
-             xmlSnippet = makeIndexSnippet(url);
+             xmlSnippet = "<FitsIndex>" + makeIndexSnippet(url) + "</FitsIndex>";
              String fileName = dirPath + "_" + String.valueOf((seqNum)) + ".xml";
+             System.out.println("tghe xmlsnippet = " + xmlSnippet);
              xmlFile = new File(fileIndexDir,fileName);
              fw = new FileWriter(xmlFile);
              pw = new PrintWriter(fw);
@@ -454,6 +460,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.5  2005/03/14 15:07:52  KevinBenson
+now the test works and writes to a xml file
+
 Revision 1.4  2005/03/13 11:43:44  KevinBenson
 small change for the indextenerator to create directories under target
 
