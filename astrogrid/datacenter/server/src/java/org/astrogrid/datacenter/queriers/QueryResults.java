@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.5 2004/03/09 22:58:39 mch Exp $
+ * $Id: QueryResults.java,v 1.6 2004/03/10 02:36:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -55,5 +55,8 @@ public interface QueryResults
 
    /** As above */
    public void toVotable(Writer out) throws IOException;
+   
+   /** Returns the number of results - or -1 if unknown */
+   public int getCount() throws IOException;
 }
 

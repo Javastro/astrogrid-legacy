@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierStatus.java,v 1.2 2004/03/08 00:31:28 mch Exp $
+ * $Id: QuerierStatus.java,v 1.3 2004/03/10 02:36:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,6 +33,9 @@ public class QuerierStatus
       this.id = forQuerier.getQueryId();
       this.state = forQuerier.getState();
       atTime = new Date();
+//    if (state.getOrder() > QueryState.QUERY_COMPLETE.getOrder()) {
+//       detail = "Found "+forQuerier.getResults().getCount()
+//    }
    }
 
    public String toString() {
@@ -47,11 +50,18 @@ public class QuerierStatus
       //if the querier has finished, we should know where to find the results
       return null;
    }
+
+   public String getDetail() {
+      return detail;
+   }
    
 }
 
 /*
 $Log: QuerierStatus.java,v $
+Revision 1.3  2004/03/10 02:36:25  mch
+Added getCount
+
 Revision 1.2  2004/03/08 00:31:28  mch
 Split out webservice implementations for versioning
 

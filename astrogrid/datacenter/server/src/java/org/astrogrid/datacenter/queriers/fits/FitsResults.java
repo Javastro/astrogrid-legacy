@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.4 2004/03/09 21:54:58 mch Exp $
+ * $Id: FitsResults.java,v 1.5 2004/03/10 02:36:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -34,6 +34,11 @@ public class FitsResults implements QueryResults {
       this.filenames = results;
    }
    
+   /** Returns number of found files */
+   public int getCount() throws IOException {
+      return filenames.length;
+   }
+
    /**
     * Converts the resultset to VOTable Document.
     */
@@ -112,6 +117,9 @@ public class FitsResults implements QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.5  2004/03/10 02:36:25  mch
+ Added getCount
+
  Revision 1.4  2004/03/09 21:54:58  mch
  Added Writer methods to toVotables for JSPs
 

@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.3 2004/03/09 21:54:58 mch Exp $
+ * $Id: WarehouseResults.java,v 1.4 2004/03/10 02:36:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -48,6 +48,11 @@ public class WarehouseResults implements QueryResults
       toVotable(new OutputStreamWriter(out));
    }
    
+   /** Count */
+   public int getCount() {
+      return -1;
+   }
+   
    
   /**
    * Return VOTable results to given outputstream.
@@ -68,6 +73,9 @@ public class WarehouseResults implements QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.4  2004/03/10 02:36:25  mch
+ Added getCount
+
  Revision 1.3  2004/03/09 21:54:58  mch
  Added Writer methods to toVotables for JSPs
 
