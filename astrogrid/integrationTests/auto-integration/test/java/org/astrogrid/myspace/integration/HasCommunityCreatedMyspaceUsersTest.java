@@ -1,5 +1,5 @@
 /*
- * $Id: HasCommunityCreatedMyspaceUsersTest.java,v 1.1 2004/09/10 19:40:24 pah Exp $
+ * $Id: HasCommunityCreatedMyspaceUsersTest.java,v 1.2 2005/03/11 13:36:22 clq2 Exp $
  * 
  * Created on 10-Sep-2004 by Paul Harrison (pah@jb.man.ac.uk)
  * Copyright 2004 AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import junit.framework.TestCase;
  * @author Paul Harrison (pah@jb.man.ac.uk) 10-Sep-2004
  * @version $Name:  $
  * @since iteration6
+ * @todo rewrite this to check same with filemanager.
  */
 public class HasCommunityCreatedMyspaceUsersTest extends AbstractTestForIntegration {
 

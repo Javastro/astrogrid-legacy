@@ -1,4 +1,4 @@
-/*$Id: IterationSixAladinAdapterTest.java,v 1.3 2004/11/17 16:22:34 clq2 Exp $
+/*$Id: IterationSixAladinAdapterTest.java,v 1.4 2005/03/11 13:36:22 clq2 Exp $
  * Created on 08-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 /** Integration test for a deprecated interface into myspace.
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Nov-2004 
  *
+ *@deprecated remove this package when we get shot of myspace
  */
 public class IterationSixAladinAdapterTest extends AladinAdapterTest {
     /**
@@ -48,6 +49,12 @@ public class IterationSixAladinAdapterTest extends AladinAdapterTest {
 
 /* 
 $Log: IterationSixAladinAdapterTest.java,v $
+Revision 1.4  2005/03/11 13:36:22  clq2
+with merges from filemanager
+
+Revision 1.3.40.1  2005/03/10 19:33:16  nw
+marked tests for removal once myspace is replaced by filemanager.
+
 Revision 1.3  2004/11/17 16:22:34  clq2
 nww-itn07-704a
 

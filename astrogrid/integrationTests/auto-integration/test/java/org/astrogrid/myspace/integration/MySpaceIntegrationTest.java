@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/integrationTests/auto-integration/test/java/org/astrogrid/myspace/integration/Attic/MySpaceIntegrationTest.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/09 01:19:50 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: clq2 $</cvs:author>
+ * <cvs:date>$Date: 2005/03/11 13:36:22 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  * <cvs:log>
  *   $Log: MySpaceIntegrationTest.java,v $
+ *   Revision 1.7  2005/03/11 13:36:22  clq2
+ *   with merges from filemanager
+ *
+ *   Revision 1.6.92.1  2005/03/10 19:33:16  nw
+ *   marked tests for removal once myspace is replaced by filemanager.
+ *
  *   Revision 1.6  2004/09/09 01:19:50  dave
  *   Updated MIME type handling in MySpace.
  *   Extended test coverage for MIME types in FileStore and MySpace.
@@ -100,7 +106,7 @@ import junit.framework.TestCase;
 
 /**
  * A JUnit test case for the myspace service.
- *
+ *@deprecated remove this package when we ditch myspace
  */
 public class MySpaceIntegrationTest
     extends TestCase

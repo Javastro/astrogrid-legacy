@@ -52,11 +52,11 @@
     <Curation>
       <Publisher>
          <Title>FileManager Service</Title>
-      </Publisher>   
+      </Publisher>
       <Contact>
         <Name>Dave Morris</Name>
         <Email>dave@ast.cam.ac.uk</Email>
-      </Contact> 
+      </Contact>
       <Creator>
         <Name>Kevin Benson</Name>
       </Creator>
@@ -65,15 +65,15 @@
       </Contributor>
       <Contributor>
         <Name>Martin Hill</Name>
-      </Contributor>     
+      </Contributor>
       <Contributor>
         <Name>Clive Davenhall</Name>
-      </Contributor>       
+      </Contributor>
     </Curation>
     <Subject>Users VOSpace</Subject>
     <Interface>
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-filemanager-one-@VERSION@/services/FileManager</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-filemanager-one-@VERSION@/services/FileManagerPort</AccessURL>
     </Interface>
   </vr:Resource>
 </VODescription>

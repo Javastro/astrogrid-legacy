@@ -1,4 +1,4 @@
-/*$Id: VoSpaceTest.java,v 1.9 2004/05/17 12:37:31 pah Exp $
+/*$Id: VoSpaceTest.java,v 1.10 2005/03/11 13:36:22 clq2 Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,6 +30,7 @@ import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /** Tests the vospace client, which needs to talk to registry etc
  *
+ *@deprecated remove this package when we get shot of myspace
  * @author mch
  */
 
@@ -272,6 +273,12 @@ public class VoSpaceTest extends AbstractTestForIntegration {
 
 /*
 $Log: VoSpaceTest.java,v $
+Revision 1.10  2005/03/11 13:36:22  clq2
+with merges from filemanager
+
+Revision 1.9.174.1  2005/03/10 19:33:16  nw
+marked tests for removal once myspace is replaced by filemanager.
+
 Revision 1.9  2004/05/17 12:37:31  pah
 Improve CEA tests that call application controller directly
 

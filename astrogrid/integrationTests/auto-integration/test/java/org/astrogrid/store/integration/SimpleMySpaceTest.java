@@ -1,4 +1,4 @@
-/*$Id: SimpleMySpaceTest.java,v 1.14 2004/11/23 15:46:06 jdt Exp $
+/*$Id: SimpleMySpaceTest.java,v 1.15 2005/03/11 13:36:22 clq2 Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -26,6 +26,7 @@ import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
  * and uses deprecated classes such as User.  Find out whether this
  * is very naughty.
  *
+ *@deprecated remove this package when we get shot of myspace
  * @author jdt@roe.ac.uk
  * @since Iteration 5.
  * @version Iteration 5.
@@ -339,6 +340,12 @@ public final class SimpleMySpaceTest extends TestCase {
 }
 /*
  $Log: SimpleMySpaceTest.java,v $
+ Revision 1.15  2005/03/11 13:36:22  clq2
+ with merges from filemanager
+
+ Revision 1.14.34.1  2005/03/10 19:33:16  nw
+ marked tests for removal once myspace is replaced by filemanager.
+
  Revision 1.14  2004/11/23 15:46:06  jdt
  Merge from INT_JDT_757 (putting external test file dependencies inside aginab)
 

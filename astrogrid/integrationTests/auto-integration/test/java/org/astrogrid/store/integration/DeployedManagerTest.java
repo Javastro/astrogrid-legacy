@@ -22,6 +22,7 @@ import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
 /**
  * Junit tests for a deployed MySpace Manager.
  *
+ *@deprecated remove this package when we get shot of myspace
  * @author A C Davenhall (Edinburgh)
  * @since Iteration 5.
  * @version Iteration 5.

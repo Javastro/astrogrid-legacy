@@ -1,4 +1,4 @@
-/* $Id: AllTests.java,v 1.9 2004/11/17 16:22:34 clq2 Exp $
+/* $Id: AllTests.java,v 1.10 2005/03/11 13:36:22 clq2 Exp $
  * Created on Apr 15, 2004 by jdt@roe.ac.uk
  * The auto-integration project
  * Copyright (c) Astrigrid 2004.  All rights reserved.
@@ -11,6 +11,7 @@ import junit.framework.TestSuite;
  * To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Generation - Code and Comments
  *
+ *@deprecated remove this package when we get shot of myspace
  * @author jdt
  */
 public class AllTests {
@@ -34,6 +35,12 @@ public class AllTests {
 }
 /*
  *  $Log: AllTests.java,v $
+ *  Revision 1.10  2005/03/11 13:36:22  clq2
+ *  with merges from filemanager
+ *
+ *  Revision 1.9.40.1  2005/03/10 19:33:16  nw
+ *  marked tests for removal once myspace is replaced by filemanager.
+ *
  *  Revision 1.9  2004/11/17 16:22:34  clq2
  *  nww-itn07-704a
  *
