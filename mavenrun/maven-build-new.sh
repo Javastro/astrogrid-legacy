@@ -14,12 +14,14 @@ SCRIPTHOME=/home/maven/mavenrun
 PROJECT_HOME=$BUILD_HOME/astrogrid/$PROJECT_NAME
 LOG_FILE=$BUILD_HOME/maven-build-$PROJECT_NAME.log
 
-echo "Build Log for $PROJECT_NAME on $DATE" >> $LOG_FILE 2>&1
-echo "====================================" >> $LOG_FILE 2>&1
 
-cd $BUILD_HOME
+
+cd $BUILD_HOME 
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
+
+echo "Build Log for $PROJECT_NAME on $DATE" >> $LOG_FILE 2>&1
+echo "====================================" >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] sourcing java"
 source $HOME/.bash-config/java >> $LOG_FILE 2>&1
