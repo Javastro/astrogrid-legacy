@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.10 2004/07/21 07:12:52 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.11 2004/11/11 15:05:18 pjn3 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -709,6 +709,24 @@
 
         <map:serialize type="xhtml"/>
       </map:match>
+      
+<!--
+	Introduced by PJN to handle cases where nothing is to be added
+	to the page, including menu, links etc which do occur in bare
+	-->
+      <map:match pattern="workflowBare/**">
+        <map:aggregate element="ag-page">
+          <map:part element="ag-body" src="cocoon:/{1}"/>
+        </map:aggregate>
+        <map:transform src="web/style/xsl/workflowBarePortal.xsl">
+        </map:transform>
+	    <map:transform src="web/style/xsl/extras.xsl">
+	      <map:parameter name="ag-css-url" value="/astrogrid-portal/extras.css"/>
+          <map:parameter name="ag-js-url" value="/astrogrid-portal/extras.js"/>
+          <map:parameter name="ag-title" value="Astrogrid Portal"/>
+        </map:transform>
+        <map:serialize type="xhtml"/>
+      </map:match>      
     
     <!--+
         | XML content.
