@@ -1,4 +1,4 @@
-/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.2 2004/09/08 14:13:56 nw Exp $
+/*$Id: SimpleMovieMakerWorkflowTest.java,v 1.3 2004/09/08 16:30:01 eca Exp $
  * Created on 17-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -46,11 +46,14 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
         target = createIVORN("/SimpleMovieMakerWorkflowTest.mpg");
         client = new VoSpaceClient(user);
         // remove output file if there already.
+/*
+// COMMENTED OUT ECA 11:28 08/09/04
         try {
             client.delete(target);
         } catch (Exception e) {
             // don't care. just make sure its gone.
         }            
+*/
     }
     protected VoSpaceClient client;
     protected Ivorn target;
@@ -64,40 +67,66 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
     protected void buildWorkflow() throws Exception {
         wf.setName(this.getClass().getName());
         ApplicationDescription desc = reg.getDescriptionFor(MPEG_APP);
+
+        System.out.println("SOLAR DESC: " + desc.getName());
+
+
         Tool movieTool = desc.createToolFromDefaultInterface();
 
+
+        System.out.println("SOLAR TOOL NAME: " + movieTool.getName());
+        System.out.println("SOLAR TOOL INTERFACE: " + movieTool.getInterface());
+
         // populate tool.
+
+        // ParameterValue movie = (ParameterValue)movieTool.findXPathValue("output/parameter[name='Movie']");
         ParameterValue movie = (ParameterValue)movieTool.findXPathValue("output/parameter[name='OutputFile']");
         assertNotNull(movie);
         movie.setIndirect(true); // sending movie to a location somewhere 
         movie.setValue(target.toString());
-        
+
+        // ParameterValue image= (ParameterValue)movieTool.findXPathValue("input/parameter[name='Image']");
         ParameterValue image= (ParameterValue)movieTool.findXPathValue("input/parameter[name='InputFiles']");
         assertNotNull(image);
         image.setIndirect(true);
         image.setValue(fits1);
-        
+
         ParameterValue image2 = copyParameter(image);
         image2.setValue(fits2);
         movieTool.getInput().addParameter(image2);
+
+
+        
+        
   
         
         // add to the workflow.
         Step s = new Step();
+        s.setName("movie-step"); //ADDED ECA 14:09 08/09/04
         s.setDescription("Movie tool");
-        s.setName("movie tool");
         s.setTool(movieTool);
+
+        System.out.println("About to call wf.getSequence().addActivity(s) ");
         wf.getSequence().addActivity(s);
+        System.out.println("Completed wf.getSequence().addActivity(s) ");
+        
+        assertTrue("SMMWT: workflow is not valid", wf.isValid());        
+        assertTrue("SMMWT: this is true", true);        
+        // assertTrue("SMMWT: this is false", false);        
     }
 
     public void checkExecutionResults(Workflow result) throws Exception {
         super.checkExecutionResults(result); // checks workflow completed.
         // check result file exists...
         try {            
+            System.out.println("SMMWT: In try loop");
             InputStream is = client.getStream(target);
+            System.out.println("SMMWT: Just before assertNoteNull(is)");
             assertNotNull(is);
+            System.out.println("SMMWT: Just after assertNoteNull(is)");
             //@todo add some more checking of data here.
         } catch (IOException e) {
+            System.out.println("SMMWT: Oops! Got to catch statement.");
             softFail("exception opening result stream" + e.getMessage());
         }
     }
@@ -106,8 +135,8 @@ public class SimpleMovieMakerWorkflowTest extends AbstractTestForWorkflow
 
 /* 
 $Log: SimpleMovieMakerWorkflowTest.java,v $
-Revision 1.2  2004/09/08 14:13:56  nw
-fixed invalid workflow problem
+Revision 1.3  2004/09/08 16:30:01  eca
+SimpleMovieMakerWorkflowTest with some new corrections.
 
 Revision 1.1  2004/08/17 15:38:23  nw
 set of integration tests that require external resources.
