@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  
 public class MySpaceManagerClient
 {
-	private static Logger logger = Logger.getLogger(MySpaceServerManagerClient.class);
+	private static Logger logger = Logger.getLogger(MySpaceManagerClient.class);
 	private static boolean DEBUG = true;
 	private static Call call = null;
 
