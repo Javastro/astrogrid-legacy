@@ -1,4 +1,4 @@
-<!-- $Id: build.xml,v 1.2 2003/12/08 11:06:29 jdt Exp $ -->
+<!-- $Id: build.xml,v 1.3 2003/12/10 16:35:13 jdt Exp $ -->
 <!--
 	Example Deploy Script for Astrogrid War files
 	This script uses the Tomcat Manager to deploy war files built nightly by Maven
@@ -17,6 +17,7 @@
 
   <property name="PALwarURL"     value="${mavenURL}/astrogrid-datacenter/wars/pal-SNAPSHOT.war"/>
   <property name="JESwarURL"     value="${mavenURL}/astrogrid-jes/wars/astrogrid-jes-SNAPSHOT.war"/>
+  <property name="MySpacewarURL"     value="${mavenURL}/astrogrid-myspace/wars/astrogrid-mySpace-SNAPSHOT.war"/>
 
   <!-- Configure properties to access the Manager applications -->
   
@@ -60,6 +61,24 @@
 	</target>
 	
     <target name="RedeployJES" depends="UndeployJES, DeployJES"/>
+
+<!--==================================================================================-->
+
+<!--==================================================================================-->
+  <!-- MySpace-->
+    <property name="MySpacePath"     value="/mySpace-SNAPSHOT"/>
+    <target name="DeployMySpace" description="Obtain the latest MySpace war and deploy it to tomcat">
+		<deploy url="${url1}" path="${MySpacePath}"
+		    war="${MySpacewarURL}"
+		    username="${username1}" password="${password1}" />
+    </target>
+    
+    <target name="UndeployMySpace">
+		<remove url="${url1}" path="${MySpacePath}"
+		    username="${username1}" password="${password1}" />
+	</target>
+	
+    <target name="RedeployMySpace" depends="UndeployMySpace, DeployMySpace"/>
 
 <!--==================================================================================-->
 
