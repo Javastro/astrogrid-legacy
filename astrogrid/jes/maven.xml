@@ -43,13 +43,7 @@
 	<copy todir="${maven.war.webapp.dir}/maven" overwrite="yes">
 		<fileset dir="${maven.docs.dest}"/> 
 	</copy>
-	<echo message="copying across a readme and install file"/>
-	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
-		<fileset dir="${basedir}">
-			<include name="README"/>
-			<include name="INSTALL"/>
-		</fileset> 
-	</copy>
+
 	<copy todir="${maven.war.webapp.dir}" overwrite="yes">
 		<fileset dir="${maven.conf.dir}"> 
 			<include name="ASTROGRID_jesconfig.xml"/>
