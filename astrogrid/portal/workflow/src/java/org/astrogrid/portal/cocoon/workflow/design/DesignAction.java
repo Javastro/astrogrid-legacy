@@ -1419,6 +1419,7 @@ this.readToolList(); // temp PJN
             
            ActivityContainer activityContainer = null;
            AbstractActivity activity = null;
+           String parentKey = null;
               
            try {
 
@@ -1432,8 +1433,9 @@ this.readToolList(); // temp PJN
                   ; // ignore the top sequence
               }
               else {
+                  parentKey = activityTargetKey.substring( 0, activityTargetKey.lastIndexOf('/'));
                   activity = (AbstractActivity)workflow.findXPathValue( activityTargetKey );
-                  activityContainer = locateActivityContainer( workflow, activityTargetKey + "/.." );
+                  activityContainer = locateActivityContainer( workflow, parentKey );
                   if( activityContainer != null ) {
                       activityContainer.removeActivity( activity ) ;
                   }
