@@ -5,5 +5,5 @@
 -->
 
 <undeployment xmlns="http://xml.apache.org/axis/wsdd/">
-  <service name="org.astrogrid.jes.jobscheduler.JobScheduler"/>
+  <service name="JobSchedulerService"/>
 </undeployment>
