@@ -17,6 +17,7 @@ import org.astrogrid.scripting.Toolbox
 import org.astrogrid.community.beans.v1.*
 import org.astrogrid.store.Ivorn
 import org.astrogrid.community.User
+import org.astrogrid.community.resolver.CommunityPasswordResolver
 
 import org.codehaus.groovy.runtime.InvokerHelper
 
@@ -47,21 +48,38 @@ class Console extends ConsoleSupport {
         console.run()
     }
 
-    void login() {
+    boolean login() {
         creds = new Credentials();
         acc = new Account()
         group = new Group()
         group.name = "shell-users"
-        acc.name = JOptionPane.showInputDialog("Usename:")
-        // password not used.
-        password = JOptionPane.showInputDialog("Password:")
-        acc.community = JOptionPane.showInputDialog("Community:","astrogrid.org")
+        while (acc.name == null || acc.name.size() == 0) {
+	        acc.name = JOptionPane.showInputDialog("Usename:")
+	        }
+        password = null;
+        while (password == null || password.size() ==0) {
+	        password = JOptionPane.showInputDialog("Password:")
+	     }
+	     while (acc.community == null || acc.community.size() ==0) {
+	        acc.community = JOptionPane.showInputDialog("Community:","astrogrid.org")
+	     }
         group.community = acc.community
 
         creds.account = acc
         creds.group = group
         creds.setSecurityToken("dummy")
+        // now attempt to login to community.
+        try {
+            security = new CommunityPasswordResolver();
+	        this.token = security.checkPassword("ivo://" + acc.community +"/" +  acc.name,password)
+	        } catch (Exception e) {
+		        e.printStackTrace();
+		        // display swing dialog.
+		        JOptionPane.showMessageDialog("Failed to login\n" + e.getMessage());
+		        return false;
+	        }	     
         createBasicScriptBinding(new Toolbox(),creds)
+        return true;
     }
 
     void createBasicScriptBinding(Toolbox toolbox2, Credentials credentials) {
@@ -112,7 +130,9 @@ class Console extends ConsoleSupport {
 
     void run() {
         this.determineCodeBase();
-        this.login()
+        while (!this.login()) {
+          // keep looping.
+        }
         scriptList = []
         // if menu modifier is two keys we are out of luck as the javadocs
         // incicates it returns "Control+Shift" instead of "Control Shift"
