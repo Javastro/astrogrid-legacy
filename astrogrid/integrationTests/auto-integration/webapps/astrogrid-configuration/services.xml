@@ -31,5 +31,10 @@
         <endpoint>@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/MySpaceManager</endpoint>
         <description>local myspace</description>
 </service>
+
+<service type="Registry">
+	<endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
+	<description>local registry query endpoint</description>
+</service>
 <!-- more to come here -->
 </services>
