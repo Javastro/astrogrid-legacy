@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
+/*$Id: AllTests.java,v 1.3 2004/09/14 16:35:15 jdt Exp $
  * Created on 29-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,7 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 29-Jun-2004
+ * @author jdt
  *
  */
 public class AllTests {
@@ -32,6 +32,9 @@ public class AllTests {
 
 /* 
  $Log: AllTests.java,v $
+ Revision 1.3  2004/09/14 16:35:15  jdt
+ Added tests for an http-post service.
+
  Revision 1.2  2004/09/02 11:18:09  jdt
  Merges from case 3 branch for SIAP.
 

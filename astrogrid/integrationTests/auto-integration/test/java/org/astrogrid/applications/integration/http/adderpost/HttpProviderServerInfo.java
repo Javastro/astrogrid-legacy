@@ -1,4 +1,4 @@
-/*$Id: HttpProviderServerInfo.java,v 1.3 2004/09/14 16:35:15 jdt Exp $
+/*$Id: HttpProviderServerInfo.java,v 1.1 2004/09/14 16:35:15 jdt Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.applications.integration.http.adder;
+package org.astrogrid.applications.integration.http.adderpost;
 
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.ServerInfo;
@@ -25,7 +25,7 @@ public class HttpProviderServerInfo implements ServerInfo {
      * @see org.astrogrid.applications.integration.ServerInfo#getApplicationName()
      */
     public String getApplicationName() {
-        return AbstractTestForIntegration.HTTP_ADDER_GET;
+        return AbstractTestForIntegration.HTTP_ADDER_POST;
     }
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#getServerSearchString()
@@ -38,21 +38,21 @@ public class HttpProviderServerInfo implements ServerInfo {
      */
     public String[] getApplicationNames() {
     	assert false : "I don't expect to be called";
-        return new String[]{AbstractTestForIntegration.HTTP_HELLO_WORLD, AbstractTestForIntegration.HTTP_ADDER_GET};
+        return new String[]{};
     }
   
 
-    public static final String TEST_CONTENTS = "9112001";
+    public static final String TEST_CONTENTS = "123";
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#populateDirectTool(org.astrogrid.workflow.beans.v1.Tool)
      */
     public void populateDirectTool(Tool tool) {
     	ParameterValue pval_x = (ParameterValue)tool.findXPathValue("input/parameter[name='x']");
-        pval_x.setValue("9110000");
+        pval_x.setValue("100");
         pval_x.setIndirect(false);
         
         ParameterValue pval_y = (ParameterValue)tool.findXPathValue("input/parameter[name='y']");
-        pval_y.setValue("2001");
+        pval_y.setValue("23");
         pval_y.setIndirect(false);
     }
     /**
@@ -64,7 +64,7 @@ public class HttpProviderServerInfo implements ServerInfo {
         pval_x.setIndirect(true);
         
         ParameterValue pval_y = (ParameterValue)tool.findXPathValue("input/parameter[name='y']");
-        pval_y.setValue("1");
+        pval_y.setValue("118");
         pval_y.setIndirect(false);
     	
     	ParameterValue pval = (ParameterValue)tool.findXPathValue("output/parameter[name='sum']");
@@ -76,16 +76,10 @@ public class HttpProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: HttpProviderServerInfo.java,v $
-Revision 1.3  2004/09/14 16:35:15  jdt
+Revision 1.1  2004/09/14 16:35:15  jdt
 Added tests for an http-post service.
 
-Revision 1.2  2004/09/02 11:18:09  jdt
-Merges from case 3 branch for SIAP.
 
-Revision 1.1.2.1  2004/08/20 00:42:56  jdt
-added another test app
-
-Revision 1.1.2.1  2004/08/18 11:34:32  jdt
 
  
 */

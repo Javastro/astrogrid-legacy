@@ -1,5 +1,5 @@
 /*
- * $Id: HttpDirectExecutionTest.java,v 1.3 2004/09/14 16:35:15 jdt Exp $
+ * $Id: HttpDirectExecutionTest.java,v 1.1 2004/09/14 16:35:15 jdt Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,7 +11,7 @@
  *
  */ 
 
-package org.astrogrid.applications.integration.http.adder;
+package org.astrogrid.applications.integration.http.adderpost;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

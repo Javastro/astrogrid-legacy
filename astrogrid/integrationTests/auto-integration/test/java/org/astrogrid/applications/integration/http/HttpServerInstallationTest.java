@@ -1,4 +1,4 @@
-/*$Id: HttpServerInstallationTest.java,v 1.2 2004/09/02 11:18:09 jdt Exp $
+/*$Id: HttpServerInstallationTest.java,v 1.3 2004/09/14 16:35:15 jdt Exp $
  * Created on 29-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,7 @@ package org.astrogrid.applications.integration.http;
 import org.astrogrid.applications.integration.ServerInstallationTest;
 
 /** installation test for commandline cea server.
- * @author Noel Winstanley nw@jb.man.ac.uk 29-Jun-2004
+ * @author jdt
  *
  */
 public class HttpServerInstallationTest extends ServerInstallationTest {
@@ -31,6 +31,9 @@ public class HttpServerInstallationTest extends ServerInstallationTest {
 
 /* 
 $Log: HttpServerInstallationTest.java,v $
+Revision 1.3  2004/09/14 16:35:15  jdt
+Added tests for an http-post service.
+
 Revision 1.2  2004/09/02 11:18:09  jdt
 Merges from case 3 branch for SIAP.
 

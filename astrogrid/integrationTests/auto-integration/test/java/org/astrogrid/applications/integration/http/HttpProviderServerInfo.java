@@ -1,4 +1,4 @@
-/*$Id: HttpProviderServerInfo.java,v 1.3 2004/09/13 18:14:53 jdt Exp $
+/*$Id: HttpProviderServerInfo.java,v 1.4 2004/09/14 16:35:15 jdt Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.integration.AbstractTestForIntegration;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /**
- * @author Noel Winstanley nw@jb.man.ac.uk 30-Jun-2004
+ * @author jdt
  *
  */
 public class HttpProviderServerInfo implements ServerInfo {
@@ -26,7 +26,7 @@ public class HttpProviderServerInfo implements ServerInfo {
      */
     public String getApplicationName() {
     	assert false : "I shouldn't be called";
-    	return AbstractTestForIntegration.HTTP_ADDER;
+    	return AbstractTestForIntegration.HTTP_ADDER_GET;
     }
     /**
      * @see org.astrogrid.applications.integration.ServerInfo#getServerSearchString()
@@ -38,7 +38,7 @@ public class HttpProviderServerInfo implements ServerInfo {
      * @see org.astrogrid.applications.integration.ServerInfo#getApplicationNames()
      */
     public String[] getApplicationNames() {
-        return new String[]{AbstractTestForIntegration.HTTP_HELLO_WORLD, AbstractTestForIntegration.HTTP_ADDER, AbstractTestForIntegration.HTTP_HELLO_YOU};
+        return new String[]{AbstractTestForIntegration.HTTP_HELLO_WORLD, AbstractTestForIntegration.HTTP_ADDER_GET, AbstractTestForIntegration.HTTP_ADDER_POST, AbstractTestForIntegration.HTTP_HELLO_YOU};
     }
   
 
@@ -59,6 +59,9 @@ public class HttpProviderServerInfo implements ServerInfo {
 
 /* 
 $Log: HttpProviderServerInfo.java,v $
+Revision 1.4  2004/09/14 16:35:15  jdt
+Added tests for an http-post service.
+
 Revision 1.3  2004/09/13 18:14:53  jdt
 Added a new cea-http integration test to see if saving xml to
 mySpace is causing any problems.
