@@ -80,7 +80,6 @@
 		        	
 		    try {
                  <xsp:element name="sequence">
-                    <xsp:attribute name="key"><xsp:expr>getXPathKey( aSequence )</xsp:expr></xsp:attribute>
                     <xsp:logic>activityContainer( aSequence ) ;</xsp:logic>
                  </xsp:element>
 		    }
@@ -101,7 +100,6 @@
         	
         	try {
                  <xsp:element name="flow">
-                    <xsp:attribute name="key"><xsp:expr>getXPathKey( flow )</xsp:expr></xsp:attribute>
                     <xsp:logic>activityContainer( flow ) ;</xsp:logic>
                  </xsp:element>
         	}
@@ -121,15 +119,28 @@
             AttributesImpl xspAttr = new AttributesImpl();        	
         	
             try {    
-               
-                  <xsp:element name="step">
-                     <xsp:attribute name="key"><xsp:expr>getXPathKey( step )</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-status"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStatus()</xsp:expr></xsp:attribute>
-                     <xsp:attribute name="step-start-time"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStartTime()</xsp:expr></xsp:attribute>                                                             
-                  </xsp:element>                        
- 
+                if (step.getStepExecutionRecord().length >= 1 )
+                { 
+                if( TRACE_ENABLED ) trace( "*********** stepExRec != null *********") ;              
+                    <xsp:element name="step">
+                        <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-join-condition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-status"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStatus()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-start-time"><xsp:expr>step.getStepExecutionRecord(step.getStepExecutionRecordCount() -1).getStartTime()</xsp:expr></xsp:attribute>                                                             
+                    </xsp:element>                        
+                }
+                else
+                {
+                if( TRACE_ENABLED ) trace( "*********** stepExRec = null *********") ;                           
+                    <xsp:element name="step">
+                        <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-description"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-status"><xsp:expr>new String("Not submitted")</xsp:expr></xsp:attribute>
+                        <xsp:attribute name="step-start-time"><xsp:expr>new String("-")</xsp:expr></xsp:attribute>                                                                                     
+                    </xsp:element>             
+                }
             }
             catch(Exception e) {
                e.printStackTrace() ;
@@ -162,31 +173,6 @@
                 if( TRACE_ENABLED ) trace( "workflow-main-xsp.activityContainer() exit") ;
             }	
         } // end of activityContainer()
-        
-        
-        //====================================================================
-        private String getXPathKey( AbstractActivity activity ) {    
-            if( TRACE_ENABLED ) trace( "workflow-main-xsp.getXPathKey() entry") ;  
-            
-            String xpath = "";
-            
-            try {
-               if( workflow != null ) {
-                  trace( "about to enter workflow.getXPathFor( activity )" ) ;
-                  xpath = workflow.getXPathFor( activity );
-               }   
-               trace( "xpath: " + xpath ) ;
-            }
-            catch( Exception ex ) {
-               ex.printStackTrace();
-            }
-            finally {
-                if( TRACE_ENABLED ) trace( "workflow-main-xsp.getXPathKey() exit") ;  
-            }
-            
-            return xpath;
-      
-        }
         
         
       //==========================================================
