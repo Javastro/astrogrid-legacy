@@ -247,7 +247,7 @@ public class JobScheduler {
                 // This needs to be followed up in the JobMonitor delegate at some point, with
                 // rationalization of the xml flowing to the JobMonitor, which is now dealing with a lot
                 // of redundant information.
-                applicationID = applicationController.initializeApplication( toolInterface 
+                applicationID = applicationController.initializeApplication( step.getTool().getName() 
                                                                            , step.getParent().getId() + ":" + step.getStepNumber().toString()
                                                                            , jobMonitorURL
                                                                            , user
