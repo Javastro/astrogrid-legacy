@@ -1,4 +1,4 @@
-/*$Id: CommandLineApplicationTest.java,v 1.4 2004/08/28 07:17:34 pah Exp $
+/*$Id: CommandLineApplicationTest.java,v 1.5 2004/09/10 12:13:09 pah Exp $
  * Created on 27-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -149,6 +149,11 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         p4.setValue(PAR4_DATA);
         p4.setIndirect(false);
 
+        ParameterValue inFile1 = new ParameterValue();
+        inFile1.setName("P9");
+        inFile1.setValue("any file contents"); // we expect the first p9 to be ignored by the testapp
+        inFile1.setIndirect(false);
+        
         ParameterValue inFile = new ParameterValue();
         inFile.setName("P9");
         inFile.setValue(TEST_DATA);
@@ -162,6 +167,7 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         echo.setName("P2");
         echo.setIndirect(false);
 
+        t.getInput().addParameter(inFile1);
         t.getInput().addParameter(inFile);
         t.getInput().addParameter(p4);
         t.getOutput().addParameter(out);
@@ -190,6 +196,8 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
     public void testCreateApplicationIndirect() throws Exception {
         Tool t = buildTool();
 
+        File inputFile1 = File.createTempFile(
+                "CommandLineApplicationTest-Input-ignored", null);
         File inputFile = File.createTempFile(
                 "CommandLineApplicationTest-Input", null);
         File outputFile = File.createTempFile(
@@ -203,10 +211,18 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         pw.println(TEST_DATA);
         pw.close();
 
+        pw = new PrintWriter(new FileWriter(inputFile1));
+        pw.println("any file contents"); // will be ignored
+        pw.close();
+
         ParameterValue inFile = new ParameterValue();
         inFile.setName("P9");
         inFile.setValue(inputFile.toURI().toString());
         inFile.setIndirect(true);
+        ParameterValue inFile1 = new ParameterValue();
+        inFile1.setName("P9");
+        inFile1.setValue(inputFile1.toURI().toString());
+        inFile1.setIndirect(true);
 
         ParameterValue out = new ParameterValue();
         out.setName("P3");
@@ -226,6 +242,7 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
         p4.setIndirect(true);
         p4.setValue(par4file.toURI().toString());
 
+        t.getInput().addParameter(inFile1);
         t.getInput().addParameter(inFile);
         t.getOutput().addParameter(out);
         t.getInput().addParameter(p4);
@@ -349,6 +366,9 @@ public class CommandLineApplicationTest extends DescriptionBaseTestCase {
 
 /*
  * $Log: CommandLineApplicationTest.java,v $
+ * Revision 1.5  2004/09/10 12:13:09  pah
+ * allow for p9 to be repeatable
+ *
  * Revision 1.4  2004/08/28 07:17:34  pah
  * commandline parameter passing - unit tests ok
  * Revision 1.3 2004/07/26 12:03:33 nw

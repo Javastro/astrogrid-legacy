@@ -244,7 +244,7 @@
 		</Interfaces>
 		<ExecutionPath>/home/applications/tools/bpz/bpz.py</ExecutionPath>
 	</Application>
-	<Application name="REGAUTORITY.swarp">
+	<Application name="REGAUTHORITY.swarp">
 		<!--can resample images - only define the very simplest interface at the moment - using a parameter files-->
 		<Parameters>
 			<CmdLineParameterDefn name="Image" type="FITS" commandPosition="1">
