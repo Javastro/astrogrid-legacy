@@ -124,7 +124,7 @@ public class QueryTestSuite extends TestCase {
 		try{
 			query = new Query( queryElement, factory ) ;
 			resultString = query.toSQLString() ;
-			logger.info( "testQueryToString_CONE: " + resultString ) ;
+//			logger.info( "testQueryToString_CONE: " + resultString ) ;
 			assertTrue( resultString.equals( sqlString ) ) ;	
 		}
 		catch( Exception ex ) {
@@ -189,7 +189,7 @@ public class QueryTestSuite extends TestCase {
 		try{
 			query = new Query( queryElement, factory ) ;
 			resultString = query.toSQLString() ;
-			logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
+//			logger.info( "testQueryToString_CONE_with_AND: " + resultString ) ;
 			assertTrue( resultString.equals( sqlString ) ) ;	
 		}
 		catch( Exception ex ) {
@@ -222,7 +222,7 @@ public class QueryTestSuite extends TestCase {
 		try{
 			query = new Query( queryElement, factory ) ;
 			resultString = query.toSQLString() ;
-			logger.info( "testQueryToString_BETWEEN_BETWEEN_GT: " + resultString ) ;
+//			logger.info( "testQueryToString_BETWEEN_BETWEEN_GT: " + resultString ) ;
 			assertTrue( resultString.equals( sqlString ) ) ;	
 		}
 		catch( Exception ex ) {
@@ -299,6 +299,258 @@ public class QueryTestSuite extends TestCase {
         
 	} // end of testQueryToString_AND_GT_NOT_NULL()
 
+
+	public void testQueryToString_AND_LTE_GT_LT_NE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_AND_LTE_GT_LT_NE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  " +
+			            "WHERE ( ( COLUMN_6 >= 60 ) AND ( COLUMN_7 <= 70 ) AND " +
+			            "( COLUMN_8 > 80 ) AND ( COLUMN_9 < 90 ) AND ( COLUMN_10 <> 100 ) )" ,
+			fileName = "query_AND_LTE_GT_LT_NE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+//			logger.info( "testQueryToString_AND_LTE_GT_LT_NE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_AND_LTE_GT_LT_NE()" );	
+		}
+        
+	} // end of testQueryToString_AND_LTE_GT_LT_NE()
+
+
+	public void testQueryToString_AND_OR_GT_LTE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_AND_OR_GT_LTE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +				        "( ( ( COLUMN_SIX > 16.09 ) OR ( COLUMN_SEVEN <= 11.5 ) ) AND " +
+				        "( NOT ( ( COLUMN_8 > 16.09 ) OR ( COLUMN_9 <= 11.5 ) ) ) )" ,
+			fileName = "query_AND_OR_GT_LTE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString() ;
+//			logger.info( "testQueryToString_AND_OR_GT_LTE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_AND_OR_GT_LTE()" );	
+		}
+        
+	} // end of testQueryToString_AND_OR_GT_LTE()
+
+
+	public void testQueryToString_COUNT_with_no_criteria() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_COUNT_with_no_criteria()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COUNT(*) FROM USNOB..USNOB" ,
+			fileName = "query_COUNT_with_no_criteria.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+//			logger.info( "testQueryToString_COUNT_with_no_criteria: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_COUNT_with_no_criteria()" );	
+		}
+        
+	} // end of testQueryToString_COUNT_with_no_criteria()
+
+
+	public void testQueryToString_IN_with_list() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_IN_with_list()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_1, COLUMN_2 FROM USNOB..USNOB  WHERE " +				        "( COLUMN_3 IN ( COLUMN_4, COLUMN_5, COLUMN_6, COLUMN_7, " +				        "COLUMN_8, COLUMN_9, COLUMN_10, COLUMN_11, COLUMN_12, COLUMN_13 ) )" ,
+			fileName = "query_IN_with_list.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+//			logger.info( "testQueryToString_IN_with_list: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_IN_with_list()" );	
+		}
+        
+	} // end of testQueryToString_IN_with_list()
+
+
+
+	public void testQueryToString_MIN_MAX_with_no_criteria() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_MIN_MAX_with_no_criteria()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  MIN(URA), MAX(URA), MIN(UDEC), MAX(UDEC) FROM USNOB..USNOB" ,
+			fileName = "query_MIN_MAX_with_no_criteria.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+//			logger.info( "testQueryToString_MIN_MAX_with_no_criteria: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_MIN_MAX_with_no_criteria()" );	
+		}
+        
+	} // end of testQueryToString_MIN_MAX_with_no_criteria()
+
+
+	public void testQueryToString_NOT_AND_GT_LTE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_NOT_AND_GT_LTE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +				        "( NOT ( ( COLUMN_SIX > 16.09 ) AND ( COLUMN_SEVEN <= 11.5 ) ) )" ,
+			fileName = "query_NOT_AND_GT_LTE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+//			logger.info( "testQueryToString_NOT_AND_GT_LTE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_NOT_AND_GT_LTE()" );	
+		}
+        
+	} // end of testQueryToString_NOT_AND_GT_LTE()
+
+
+	public void testQueryToString_OR_GTE_LTE_GT_LT() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_OR_GTE_LTE_GT_LT()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO FROM USNOB..USNOB  WHERE " +				        "( ( COLUMN_6 >= 60 ) OR ( COLUMN_7 <= 70 ) OR ( COLUMN_8 > 80 ) OR ( COLUMN_9 < 90 ) )" ,
+			fileName = "query_OR_GTE_LTE_GT_LT.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+//			logger.info( "testQueryToString_OR_GTE_LTE_GT_LT: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_OR_GTE_LTE_GT_LT()" );	
+		}
+        
+	} // end of testQueryToString_OR_GTE_LTE_GT_LT()
+	
+	
+	public void testQueryToString_OR_GT_AND_GT_LTE() {
+		logger.info( "enter: QueryTestSuite.testQueryToString_OR_GT_AND_GT_LTE()" );	
+		
+		// This is the pseudo-SQL... 
+		// ""
+		final String
+			sqlString = "SELECT  COLUMN_ONE, COLUMN_TWO, COLUMN_THREE FROM USNOB..USNOB  WHERE " +				        "( ( COLUMN_FOUR > 16 ) OR ( ( COLUMN_SIX > 16.09 ) AND ( COLUMN_SEVEN <= 11.5 ) ) )" ,
+			fileName = "query_OR_GT_AND_GT_LTE.xml" ;
+		Element
+			queryElement = this.setUpQueryElement( path + System.getProperty( "file.separator" ) + fileName ) ;
+		Query
+			query = null ;
+		String
+			resultString = null ;
+			
+		try{
+			query = new Query( queryElement, factory ) ;
+			resultString = query.toSQLString().trim() ;
+//			logger.info( "testQueryToString_OR_GT_AND_GT_LTE: " + resultString ) ;
+			assertTrue( resultString.equals( sqlString ) ) ;	
+		}
+		catch( Exception ex ) {
+			assertTrue( false ) ;
+		}
+		finally {
+			logger.info( "exit: QueryTestSuite.testQueryToString_OR_GT_AND_GT_LTE()" );	
+		}
+        
+	} // end of testQueryToString_OR_GTE_LTE_GT_LT()
+	
 
 
 	/**
