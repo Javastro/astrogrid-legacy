@@ -10,7 +10,7 @@
                 <vr:ShortName>TemplateEntry</vr:ShortName>
                 <vr:Summary>
                         <vr:Description>This is part of the astrogrid CEA.</vr:Description>
-                        <vr:ReferenceURL>http://www.astrogrid.org/maven/build/applications/</vr:ReferenceURL>
+                        <vr:ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</vr:ReferenceURL>
                 </vr:Summary>
                 <vr:Type>Other</vr:Type>
                 <vr:Curation>

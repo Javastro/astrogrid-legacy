@@ -9,7 +9,7 @@
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -144,7 +144,7 @@
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -279,7 +279,7 @@
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -340,7 +340,7 @@
         <ShortName>TemplateEntry</ShortName>
         <Summary>
             <Description>This is part of the astrogrid CEA.</Description>
-            <ReferenceURL>http://www.astrogrid.org/maven/build/applications/</ReferenceURL>
+            <ReferenceURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</ReferenceURL>
         </Summary>
         <Type>Other</Type>
         <Curation>
@@ -362,7 +362,7 @@
         </Curation>
         <Subject>???</Subject>
         <Capability>
-            <StandardURL>http://www.astrogrid.org/maven/build/applications/</StandardURL>
+            <StandardURL>http://www.astrogrid.org/maven/docs/snapshot/applications/</StandardURL>
             <StandardID>
                 <AuthorityID>astrogrid.og</AuthorityID>
                 <ResourceKey>CommonExecutionArchitucture</ResourceKey>
