@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: bounce-tomcat.sh,v 1.7 2004/12/21 12:10:58 jdt Exp $ 
+# $Id: bounce-tomcat.sh,v 1.8 2004/12/21 12:14:14 jdt Exp $ 
 ######################################################
 # Script to do a hard bounce of tomcat
 # Sometimes all processes fail to shutdown properly
@@ -10,7 +10,10 @@ echo Tomcat is installed at ${CATALINA_HOME?"Value of CATALINA_HOME must be set"
 
 echo Trying to shutdown Exist:
 # Will need to customise this for different servers
-java -jar $CATALINA_HOME/webapps/exist/start.jar shutdown --url=xmldb:exist://127.0.0.1:8888/exist/xmlrpc/db
+BACK=$PWD
+cd $CATALINA_HOME/webapps/exist/
+java -jar start.jar shutdown --url=xmldb:exist://127.0.0.1:8888/exist/xmlrpc/db
+cd $BACK
 
 echo Shutting down tomcat
 $CATALINA_HOME/bin/shutdown.sh
@@ -22,7 +25,8 @@ ps -elf | grep $CATALINA_HOME
 TOMCATPID=`ps -elf | grep $CATALINA_HOME | grep java | awk {'print $4'}`
 #echo "Killing process $TOMCATPID"
 #kill -9 $TOMCATPID
-if [ $TOMCATPID ] then
+if [ $TOMCATPID ] 
+then
 	echo "******THERE WERE HANGING PROCESSES!*********"
 fi
 
