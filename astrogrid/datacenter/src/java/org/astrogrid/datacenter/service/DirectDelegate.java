@@ -1,5 +1,5 @@
 /*
- * $Id: DirectDelegate.java,v 1.6 2003/09/18 13:13:24 nw Exp $
+ * $Id: DirectDelegate.java,v 1.7 2003/09/19 08:51:28 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -108,10 +108,29 @@ public class DirectDelegate extends DatacenterDelegate
       throw new UnsupportedOperationException("Not implemented yet");
    }
 
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#abortQuery(java.lang.String)
+ */
+public void abortQuery(String queryId) throws IOException {
+    throw new UnsupportedOperationException("Not implemented yet");
+    
+}
+
+/* (non-Javadoc)
+ * @see org.astrogrid.datacenter.delegate.DatacenterDelegate#getMetadata()
+ */
+public Element getMetadata() throws IOException {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Not implemented yet");
+}
+
 }
 
 /*
 $Log: DirectDelegate.java,v $
+Revision 1.7  2003/09/19 08:51:28  nw
+rats - forgot this one
+
 Revision 1.6  2003/09/18 13:13:24  nw
 renamed delegate methods to match those in web service
 
