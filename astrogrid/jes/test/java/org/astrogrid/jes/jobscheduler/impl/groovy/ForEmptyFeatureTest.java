@@ -1,4 +1,4 @@
-/*$Id: ForEmptyFeatureTest.java,v 1.2 2004/08/13 09:10:05 nw Exp $
+/*$Id: ForEmptyFeatureTest.java,v 1.3 2004/11/29 20:00:24 clq2 Exp $
  * Created on 05-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -49,7 +49,7 @@ public class ForEmptyFeatureTest extends AbstractTestForFeature {
         wf.getSequence().addActivity(f);
         
         Script end = new Script();
-        end.setBody("print (acc == 0 && i == null)"); 
+        end.setBody("try {i == 1} catch (MissingPropertyException e) {print(acc == 0)}"); 
         wf.getSequence().addActivity(end);
         
         return wf;
@@ -72,6 +72,13 @@ public class ForEmptyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ForEmptyFeatureTest.java,v $
+Revision 1.3  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.2.68.1  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
 Revision 1.2  2004/08/13 09:10:05  nw
 tidied imports
 

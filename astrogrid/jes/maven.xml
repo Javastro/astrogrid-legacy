@@ -13,12 +13,14 @@
 
 <goal name="astrogrid-build-site">
         <!-- would be nice to add info on delegate project.xml to this site too -->
+        <attainGoal name="faq"/>
+        <attainGoal name="pdf"/>
         <attainGoal name="site" />
 </goal>
 
 <goal name="astrogrid-build-artifact">
 
-		<attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar" />
         <attainGoal name="jar" />
         <attainGoal name="war" />
@@ -26,7 +28,7 @@
 
 <goal name="astrogrid-build-snapshot">
 
-		<attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:snapshot" />
         <attainGoal name="jar:snapshot" />
         <!-- no goal to build a snapshot in target directory - gah -->
@@ -36,7 +38,7 @@
 <goal name="astrogrid-install-site" prereqs="astrogrid-build-site" />
 
 <goal name="astrogrid-install-artifact">
-		<attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install" />
         <attainGoal name="jar:install" />
         <attainGoal name="war:install" />
@@ -44,7 +46,7 @@
 
 <goal name="astrogrid-install-snapshot">
 
-		<attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
         <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:install-snapshot" />
         <attainGoal name="jar:install-snapshot" />
         <attainGoal name="war:install-snapshot" />
@@ -56,7 +58,7 @@
 
 <goal name="astrogrid-deploy-snapshot">
 
-		<attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
                 <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy-snapshot" />
         <attainGoal name="jar:deploy-snapshot" />
         <attainGoal name="war:deploy-snapshot" />
@@ -65,8 +67,8 @@
 
 <goal name="astrogrid-deploy-artifact">
 
-		<attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
-		<maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
+                <attainGoal name="clean" /> <!-- necessary - otherwise delegate will contain all classes-->
+                <maven:maven descriptor="${basedir}/delegate-project.xml" goals="jar:deploy" />
         <attainGoal name="jar:deploy" />
         <attainGoal name="war:deploy" />
 </goal>

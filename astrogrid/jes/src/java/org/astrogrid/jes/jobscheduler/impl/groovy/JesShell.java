@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.15 2004/11/05 16:52:42 jdt Exp $
+/*$Id: JesShell.java,v 1.16 2004/11/29 20:00:24 clq2 Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,10 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
 import org.astrogrid.scripting.Astrogrid;
+import org.astrogrid.scripting.Toolbox;
+import org.astrogrid.store.Ivorn;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.If;
 import org.astrogrid.workflow.beans.v1.Input;
@@ -25,18 +28,34 @@ import org.astrogrid.workflow.beans.v1.While;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.codehaus.groovy.GroovyException;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.messages.WarningMessage;
+
+import EDU.oswego.cs.dl.util.concurrent.Callable;
+import EDU.oswego.cs.dl.util.concurrent.TimedCallable;
 
 import groovy.lang.Binding;
+import groovy.lang.GroovyCodeSource;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.ref.SoftReference;
+import java.net.URISyntaxException;
 import java.util.Map;
 
+import javax.imageio.IIOException;
+
 /** class that encapuslates the execution and evaluation of grouvy code.
+ * <p>
+ * Uses a <a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/TimedCallable.html">Timed Callable</a>
+ * to abort execution after a certain time.
+ * <p>
+ * Added in codebases - to differentiate between user and system script.
+ * @todo find out how to add in security managers to this too.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
  *
  */
@@ -53,6 +72,9 @@ public class JesShell {
     public JesShell() {
         super();
     }
+    
+    private static final long EVAL_LIMIT = 60 * 1000; // 1 minute
+    private static final long EXEC_LIMIT = 10 * 60 * 1000; // 10 minutes
 
     /** for efficiencies sake, only ever create a single, static interpreter.
      * this will be ok - as we parse-run all code we pass through it.
@@ -64,17 +86,34 @@ public class JesShell {
     private static SoftReference shell = new SoftReference(new GroovyShell());
     private static int useCount = 0;
     private static final int USE_LIMIT = 500; // as shell gets accessed a lot.
+    private static final CompilerConfiguration config = new CompilerConfiguration();
+    static {
+        config.setVerbose(true);
+        config.setWarningLevel(WarningMessage.PARANOIA);
+    }
     protected static GroovyShell getGroovyShell() {
         // logic a little tricky here.
         GroovyShell s = (GroovyShell)shell.get();
         if (useCount++ > USE_LIMIT || s == null) {
             logger.info("Recreating groovy shell");
             useCount = 0;
-            shell.clear();
-            s = new GroovyShell();
+            shell.clear();            
+            s = new GroovyShell(config);           
             shell = new SoftReference(s);
         }
         return s;
+    }
+    
+    //same pattern for the scripting toolbox - as don't know yet how expensive it is to create.
+    private static SoftReference toolbox = new SoftReference(new Toolbox());
+    protected static Toolbox getToolbox() {
+        Toolbox t = (Toolbox)toolbox.get();
+        if (t == null) {
+            logger.info("Recreating toolbox");
+            t = new Toolbox();
+            toolbox = new SoftReference(t);
+        }
+        return t;
     }
     
     protected JesInterface jes;
@@ -86,39 +125,74 @@ public class JesShell {
         indexScript.setBinding(triggerBinding);
         return (String)indexScript.run();
     }
-    
-    public Script compile (String script) throws CompilationFailedException, IOException {
+    /** 
+     * compile a rule script into the rule codebase.
+     * @modified - specifies a code source while compiling.
+     * 
+     * commented out for now - needs further tuning and investigation
+     * */
+    public Script compileRuleScript (String script) throws CompilationFailedException, IOException {
+       /*
+        GroovyCodeSource cs = new GroovyCodeSource( script,"RuleScript","/jes/rule");
+        return getGroovyShell().parse(cs);
+        */
         return getGroovyShell().parse(script);
     }
+    
+    /**compile a user script into the user codebase. 
+     * @modified - specifies a code source while compiling.
+     * commented out for now - needs further tuning and investigation
+     * */
+    public Script compileUserScript (String script) throws CompilationFailedException, IOException {
+        /*
+        GroovyCodeSource cs = new GroovyCodeSource( script,"UserScript","/jes/user");
+        return getGroovyShell().parse(cs);
+        */
+        return getGroovyShell().parse(script);
+    }
+    
+    /*
+     * for this to be effective, it seems like I need to instal my own policy- which means
+     * Policy.getPolicy(), wrapping it in a custom subclass, and then Policy.setPolicy()
+     * 
+     * 'course, this relies on the tomcat security policy allowing me to change the policy. gahh.
+     * of course, where the policy is finely configured already, just let the admin edit the policy to give the 
+     * jes script the correct permissions. Need to have this policy-zapper as a separate component, which is allowed to 
+     * fail as needed.
+     */
     
     /** execute the body (concequence) of a rule */
     public void executeBody(Rule r,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
         logger.info("firing " + r.getName());
         Binding bodyBinding = createBodyBinding(statusStore,rules);
         logger.debug(r);    
-        Script sc = r.getCompiledBody();
+        Script sc = r.getCompiledBody();        
         if (sc == null) { // not there, compile it up..
-            sc = getGroovyShell().parse(r.getBody());
+            sc = compileRuleScript( r.getBody());
             r.setCompiledBody(sc);
         }
         sc.setBinding(bodyBinding);
         sc.run();
     }
-    /** execute a script activity */
-    public void executeScript(String script,String id, ActivityStatusStore statusStore,Map rules, PrintStream errStream, PrintStream outStream) throws CompilationFailedException, IOException {
+    /** execute a script activity 
+     * @throws InterruptedException
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws GroovyException*/
+    public void executeScript(String script,String id, ActivityStatusStore statusStore,Map rules, PrintStream errStream, PrintStream outStream) throws GroovyException, IOException, InterruptedException {
         logger.info("Running script for id " + id);
         logger.debug(script);
         Binding scriptBinding = createScriptBinding(statusStore,rules);
         Vars vars= statusStore.getEnv(id);
         vars.addToBinding(scriptBinding);
-        Script sc = getGroovyShell().parse(script);
+        Script sc = compileUserScript(script);
         sc.setBinding(scriptBinding);
         PrintStream originalErr = System.err;
         PrintStream originalOut = System.out;
         try {
             System.setErr(errStream);
             System.setOut(outStream);
-            sc.run();
+            runWithTimeLimit(sc,EXEC_LIMIT);
         } finally {
             System.setErr(originalErr);
             System.setOut(originalOut);
@@ -128,9 +202,15 @@ public class JesShell {
     }
     
     /** used to evaluate user-supplied expressions - if tests, etc 
+     * @param expr
+     * @param id
+     * @param statusStore
+     * @param rules
+     * @return
      * @throws IOException
-     * @throws CompilationFailedException*/
-public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
+     * @throws InterruptedException
+     * @throws GroovyException*/
+public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusStore, Map rules) throws GroovyException, IOException, InterruptedException {
     logger.debug("exaluating " + expr);
     Binding scriptBinding = createScriptBinding(statusStore,rules);
     Vars vars = statusStore.getEnv(id);
@@ -143,17 +223,53 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusS
             .append("\nGSTRING\n ")
             .append("(x instanceof GString && x.getValueCount() == 1 && x.getStrings().find{it.size() > 0} == null) ? x.getValue(0) : x"); 
    
-    Script sc = getGroovyShell().parse(gExpr.toString());
-    sc.setBinding(scriptBinding);
-     Object result = sc.run();
+    Script sc = compileUserScript(gExpr.toString());
+    sc.setBinding(scriptBinding);    
+    Object result =runWithTimeLimit(sc,EVAL_LIMIT);
+
      if (logger.isDebugEnabled()) {
          logger.debug("result: '" + result + "' type: " + result.getClass().getName());
      }
      return result;
     
 }
-    /** executes a 'set' activity */
-    public void executeSet(Set set,String state,ActivityStatusStore statusStore, Map rules) throws CompilationFailedException, IOException {
+/** wrap a script in a timed callable - will throws an interrupted if script overruns the time 
+ * 
+ * @param sc script to execute
+ * @param timeLimit limit in milliseconds to execute the script for,
+ * @return the result
+ * @throws GroovyException if therer's a problem compiling or executing the script
+ * @throws IOException
+ * @throws InterruptedException if the script execution times out.
+ */
+protected Object runWithTimeLimit(final Script sc,long timeLimit) throws GroovyException, IOException, InterruptedException {
+    Callable c = new Callable() {
+
+        public Object call() throws Exception {
+            return sc.run();
+        }
+    };
+    TimedCallable tc = new TimedCallable(c,timeLimit);
+    try {
+        return tc.call();
+    } catch (InterruptedException e) {// propagate upwards
+        throw e;
+    } catch (GroovyException e) {// propagate
+        throw e;
+    } catch (IIOException e) { // propoagate
+        throw e;
+    } catch (Exception e) {// doubt this will occur, but need to handle anyhow.
+        GroovyException x =new GroovyException(e.getMessage());
+        x.initCause(e);
+        throw x;
+    }
+}
+
+    /** executes a 'set' activity 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws GroovyException*/
+    public void executeSet(Set set,String state,ActivityStatusStore statusStore, Map rules) throws GroovyException, IOException, InterruptedException {
         Vars vars = statusStore.getEnv(state);
         if (set.getValue() != null) {
             Object result = evaluateUserExpr(set.getValue(),state,statusStore,rules);
@@ -166,22 +282,34 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusS
     
     // necessary to have these, rather than pass the string directly into evaluateUserExpr - 
    // otherwise the gstirng gets substituted into before it reaches us.
-    /** evaluates the test of  an 'if' activity */
-    public Object evaluateIfCondition(If ifObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+    /** evaluates the test of  an 'if' activity 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws GroovyException*/
+    public Object evaluateIfCondition(If ifObj,ActivityStatusStore statusStore,Map rules) throws GroovyException, IOException, InterruptedException {
         return evaluateUserExpr(ifObj.getTest(),ifObj.getId(),statusStore,rules);
         
     }
-    /** evaluates the test of a while activity */
-    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+    /** evaluates the test of a while activity 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws GroovyException*/
+    public Object evaluateWhileCondition(While whileObj,ActivityStatusStore statusStore,Map rules) throws GroovyException, IOException, InterruptedException {
         return evaluateUserExpr(whileObj.getTest(), whileObj.getId(),statusStore,rules);
     }
-    /** evaluates the items of a for activity */
-    public Object evaluateForItems(For forObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+    /** evaluates the items of a for activity 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws GroovyException*/
+    public Object evaluateForItems(For forObj,ActivityStatusStore statusStore,Map rules) throws GroovyException, IOException, InterruptedException {
         return  evaluateUserExpr(forObj.getItems(),forObj.getId(),statusStore,rules);
    
     }
-    /** evaluate the items of a parfor activity */
-    public Object evaluateParforItems(Parfor forObj,ActivityStatusStore statusStore,Map rules) throws CompilationFailedException, IOException {
+    /** evaluate the items of a parfor activity 
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws GroovyException*/
+    public Object evaluateParforItems(Parfor forObj,ActivityStatusStore statusStore,Map rules) throws GroovyException, IOException, InterruptedException {
         return  evaluateUserExpr(forObj.getItems(),forObj.getId(),statusStore,rules);
    
     }    
@@ -232,7 +360,7 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusS
         copyP.setEncoding(originalP.getEncoding());
         // evaluate value.. -- always to string.
         StringBuffer expr = (new StringBuffer("<<<GSTRING\n")).append(originalP.getValue()).append("\nGSTRING\n");
-        Script sc = getGroovyShell().parse(expr.toString());
+        Script sc = compileUserScript(expr.toString());
         sc.setBinding(scriptBinding);
         Object result = sc.run();
         copyP.setValue( result.toString());
@@ -262,19 +390,26 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusS
      * @param state
      * @param statusStore
      * @return
-     * @todo we're using the static singleton provided by astrogrid object here. may be issues with scripts interfering with each other - i.e. corrupting service list, etc.
-     * however, don't want to rebuild astrogird object each time. future solution - remove setters, etc - make immutable.
      */
     private Binding createScriptBinding(ActivityStatusStore statusStore, Map rules) {
         Binding b = new Binding();
         b.setVariable("jes",jes);
-        Astrogrid ag = Astrogrid.getInstance();
-        b.setVariable("astrogrid",ag);        
+        b.setVariable("astrogrid",getToolbox());
 
         Credentials creds = jes.getWorkflow().getCredentials();        
-        b.setVariable("currentAccount",creds.getAccount());
-        User u = new User(creds.getAccount().getName(),creds.getAccount().getCommunity(),creds.getGroup().getName(),creds.getSecurityToken());
-        b.setVariable("currentUser",u);
+        b.setVariable("account",creds.getAccount());
+        String name = creds.getAccount().getName();
+        String community = creds.getAccount().getCommunity();
+        User u = new User(name,community,creds.getGroup().getName(),creds.getSecurityToken());
+        b.setVariable("user",u);        
+
+        try {
+            b.setVariable("userIvorn",new Ivorn("ivo://" + community + "/" +  name));
+        } catch (URISyntaxException e) {
+            logger.error("URISyntaxException when creating userIvorn.",e);
+        }
+        b.setVariable("homeIvorn",new Ivorn(community,name,name + "/"));
+        
         for (int i = 0;  i < Status.allStatus.size() ; i++ ) {
             Status stat = (Status)Status.allStatus.get(i);
             b.setVariable(stat.getName(),stat);
@@ -303,6 +438,27 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore statusS
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.16  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.15.12.5  2004/11/26 13:13:28  nw
+fix
+
+Revision 1.15.12.4  2004/11/26 12:51:30  nw
+added more useful info into script namespace.
+
+Revision 1.15.12.3  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
+Revision 1.15.12.2  2004/11/24 18:49:02  nw
+sandboxing of script execution - first by a timeout,
+later by java permissions system.
+
+Revision 1.15.12.1  2004/11/24 00:23:20  nw
+get script running in a separate thread, with a timeout (bz#665)
+worked new scripting objects into environment (bz#715)
+
 Revision 1.15  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

@@ -1,4 +1,4 @@
-/*$Id: ScopeFeatureTest.java,v 1.1 2004/08/03 14:27:38 nw Exp $
+/*$Id: ScopeFeatureTest.java,v 1.2 2004/11/29 20:00:24 clq2 Exp $
  * Created on 03-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -64,7 +64,7 @@ public class ScopeFeatureTest extends AbstractTestForFeature {
 //      check that x has been updated in nested scope,
 //        y has been removed after scope finished
 //      and uni should contain value set in nested scope.
-        finalScript.setBody("print (x == 46 && y == null && uni == 44)");        
+        finalScript.setBody("try { y == 1 } catch (MissingPropertyException e) {print (x == 46 && uni == 44)}");        
         wf.getSequence().addActivity(x);
         wf.getSequence().addActivity(uni);
         wf.getSequence().addActivity(scope);
@@ -90,6 +90,13 @@ public class ScopeFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ScopeFeatureTest.java,v $
+Revision 1.2  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.1.72.1  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
 Revision 1.1  2004/08/03 14:27:38  nw
 added set/unset/scope features.
  

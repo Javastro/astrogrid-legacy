@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.12 2004/11/05 16:52:42 jdt Exp $
+/*$Id: JesInterface.java,v 1.13 2004/11/29 20:00:24 clq2 Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -119,12 +119,9 @@ public class  JesInterface extends WorkflowLogger {
                er.setStatus(ExecutionPhase.RUNNING);
                return true;
            } catch (Throwable t) { // absolutely anything
-               error("Step execution failed:",t);                               
-                MessageType message = buildMessage("Failed to dispatch step",t);
-                message.setLevel(LogLevel.ERROR);
-                er.addMessage(message);                
-                er.setStatus(ExecutionPhase.ERROR);
-                er.setFinishTime(new Date());
+               error("Failed to dispatch step",t,er);
+               er.setStatus(ExecutionPhase.ERROR);                      
+               debug("Failed to dispatch step",t,er);                 
                 return false;
            }                             
     }
@@ -176,11 +173,9 @@ public class  JesInterface extends WorkflowLogger {
             er.setStatus(ExecutionPhase.COMPLETED);
             return true;
         } catch (Throwable t) {
-            error("Script execution failed:",t);                 
-            MessageType message = buildMessage("Failed to execute script",t);
-            message.setLevel(LogLevel.ERROR);
-            er.addMessage(message);
-            er.setStatus(ExecutionPhase.ERROR);       
+            error("Failed to execute script",t,er);
+            er.setStatus(ExecutionPhase.ERROR);                   
+            debug("Failed to executte script",t,er);
             return false;
         } finally { // want to record results, no matter what happened.
             errStream.close();
@@ -218,6 +213,12 @@ public class  JesInterface extends WorkflowLogger {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.13  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.12.12.1  2004/11/25 23:34:34  nw
+improved error messages reported from jes
+
 Revision 1.12  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

@@ -1,4 +1,4 @@
-/*$Id: ParforEmptyFeatureTest.java,v 1.3 2004/11/05 16:52:42 jdt Exp $
+/*$Id: ParforEmptyFeatureTest.java,v 1.4 2004/11/29 20:00:24 clq2 Exp $
  * Created on 09-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -54,7 +54,7 @@ public class ParforEmptyFeatureTest extends AbstractTestForFeature {
         wf.getSequence().addActivity(f);
         
         Script end = new Script();
-        end.setBody("print (acc == 0 && i == null)"); 
+        end.setBody("try {i == 1} catch (MissingPropertyException e) {print (acc == 0 )}"); 
         wf.getSequence().addActivity(end);
         
         return wf;
@@ -78,6 +78,13 @@ public class ParforEmptyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ParforEmptyFeatureTest.java,v $
+Revision 1.4  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.3.12.1  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
 Revision 1.3  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

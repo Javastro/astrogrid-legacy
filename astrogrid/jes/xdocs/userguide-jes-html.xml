@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+	<properties>
+	<title>JES HTML Interface</title>
+	<author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
+	</properties>
+<body>
+<section name="Introduction">
+Installed JES Servers also provide their own simple interface via HTML.
+<p>
+</p>
+</section>
+</body>
+</document>

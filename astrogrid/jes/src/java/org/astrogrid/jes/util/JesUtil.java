@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.7 2004/07/09 09:30:28 nw Exp $
+/*$Id: JesUtil.java,v 1.8 2004/11/29 20:00:24 clq2 Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -96,7 +96,27 @@ public class JesUtil {
             return null;
         }
         return new JobURN(jobURN.getContent());
-    }  
+    }
+
+/** extract mesasges from a chain of exceptions 
+ * */
+public static String getMessageChain(Throwable  e) {
+    StringBuffer buff = new StringBuffer();
+    Throwable next = e;
+    boolean first = true;
+    while (next != null) {
+        if (!first) {
+            buff.append("\n caused by \n");
+        }
+        first = false;
+        
+        buff.append(next.getClass().getName());
+        buff.append(" ");
+        buff.append(next.getMessage());
+        next = next.getCause();
+    }
+    return buff.toString();        
+}  
    
 
 }
@@ -104,6 +124,18 @@ public class JesUtil {
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.8  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.7.100.3  2004/11/25 23:48:13  nw
+formatting
+
+Revision 1.7.100.2  2004/11/25 23:43:07  nw
+bugfix
+
+Revision 1.7.100.1  2004/11/25 23:34:34  nw
+improved error messages reported from jes
+
 Revision 1.7  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions

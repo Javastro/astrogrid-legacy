@@ -10,6 +10,10 @@
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-jes-SNAPSHOT.war"/>
        <item name="Sample Config" href="astrogrid.properties" />
     </menu>
+    <menu name="Documentation">
+        <item name="Workflow Userguide (html)" href="userguide.html" />
+        <item name="Workflow Userguide (pdf)" href="astrogrid-workflow-userguide.pdf" />
+    </menu>
     <links>
        <item name="AstroGrid"       href="http://www.astrogrid.org"/>
        <item name="Projects"        href="../index.html"/>

@@ -1,4 +1,4 @@
-/*$Id: WorkflowLogger.java,v 1.1 2004/08/18 21:50:15 nw Exp $
+/*$Id: WorkflowLogger.java,v 1.2 2004/11/29 20:00:24 clq2 Exp $
  * Created on 18-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,10 @@ package org.astrogrid.jes.jobscheduler.impl.groovy;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
+import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
+import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +27,7 @@ import java.util.Date;
 
 /** Implememtation of standard log interface, but logs messages to workflow document.
  * @author Noel Winstanley nw@jb.man.ac.uk 18-Aug-2004
+ * @modified attempted to separate stack-treaces from user-readable messages
  *
  */
 public class WorkflowLogger  {
@@ -40,87 +44,174 @@ public class WorkflowLogger  {
     }
 
 
-    protected void addMessage(MessageType m) {
+    private void addMessage(MessageType m) {
         wf.getJobExecutionRecord().addMessage(m);
     }
 
-    public void debug(Object arg0) {        
+    /** log a debug message to both the main record and a step record.*/
+    public void debug(Object arg0,StepExecutionRecord record) {
         this.logger.debug(arg0);
         MessageType m = buildMessage(arg0);
-        m.setLevel(LogLevel.INFO);
         addMessage(m);
+        if (record != null) {
+            record.addMessage(m);
+        }
     }
-    public void debug(Object arg0, Throwable arg1) {
+    
+    public void debug(Object arg0) {        
+        debug(arg0,(StepExecutionRecord)null);
+
+    }
+    public void debug(Object arg0, Throwable arg1, StepExecutionRecord record) {
         this.logger.debug(arg0, arg1);
-        MessageType m = buildMessage(arg0,arg1);
-        m.setLevel(LogLevel.INFO);
+        MessageType m = buildDebugMessage(arg0,arg1);
         addMessage(m);        
+        if (record != null) {
+            record.addMessage(m);
+        }
     }
+    
+
+    public void debug(Object arg0, Throwable arg1) {
+        debug(arg0,arg1,(StepExecutionRecord)null);
+    }
+    //error
     public void error(Object arg0) {
+        error(arg0,(StepExecutionRecord)null);
+    }
+    public void error(Object arg0,StepExecutionRecord record) {
         this.logger.error(arg0);
         MessageType m = buildMessage(arg0);
         m.setLevel(LogLevel.ERROR);
         addMessage(m);        
+        if (record != null) {
+            record.addMessage(m);
+        }
     }
     public void error(Object arg0, Throwable arg1) {
+        error(arg0,arg1,(StepExecutionRecord)null);
+    }
+    public void error(Object arg0, Throwable arg1,StepExecutionRecord record) {
         this.logger.error(arg0, arg1);
         MessageType m = buildMessage(arg0,arg1);
         m.setLevel(LogLevel.ERROR);
         addMessage(m);           
+        if (record != null) {
+            record.addMessage(m);
+        }
     }
-    public void fatal(Object arg0) {
-        this.logger.fatal(arg0);
-        MessageType m = buildMessage(arg0);
-        m.setLevel(LogLevel.ERROR);
-        addMessage(m);           
-    }
-    public void fatal(Object arg0, Throwable arg1) {
-        this.logger.fatal(arg0, arg1);
-        MessageType m = buildMessage(arg0,arg1);
-        m.setLevel(LogLevel.ERROR);
-        addMessage(m);                 
-    }
-    public void info(Object arg0) {
-        this.logger.info(arg0);
-        MessageType m = buildMessage(arg0);
-        m.setLevel(LogLevel.INFO);
-        addMessage(m);        
-    }
-    public void info(Object arg0, Throwable arg1) {
-        this.logger.info(arg0, arg1);
-        MessageType m = buildMessage(arg0,arg1);
-        m.setLevel(LogLevel.INFO);
-        addMessage(m);        
-    }
-
-    public void warn(Object arg0) {
-        this.logger.warn(arg0);
-        MessageType m = buildMessage(arg0);
-        m.setLevel(LogLevel.WARN);
-        addMessage(m);        
-    }
-    public void warn(Object arg0, Throwable arg1) {
-        this.logger.warn(arg0, arg1);
-        MessageType m = buildMessage(arg0,arg1);
-        m.setLevel(LogLevel.WARN);
-        addMessage(m);        
-    }
-    
-    
+        //fatal
+        public void fatal(Object arg0) {
+            fatal(arg0,(StepExecutionRecord)null);
+        }
+        public void fatal(Object arg0,StepExecutionRecord record) {
+            this.logger.fatal(arg0);
+            MessageType m = buildMessage(arg0);
+            m.setLevel(LogLevel.ERROR);
+            addMessage(m);        
+            if (record != null) {
+                record.addMessage(m);
+            }
+        }
+        public void fatal(Object arg0, Throwable arg1) {
+            fatal(arg0,arg1,(StepExecutionRecord)null);
+        }
+        public void fatal(Object arg0, Throwable arg1,StepExecutionRecord record) {
+            this.logger.fatal(arg0, arg1);
+            MessageType m = buildMessage(arg0,arg1);
+            m.setLevel(LogLevel.ERROR);
+            addMessage(m);           
+            if (record != null) {
+                record.addMessage(m);
+            }
+        }
+            //error
+            public void warn(Object arg0) {
+                warn(arg0,(StepExecutionRecord)null);
+            }
+            public void warn(Object arg0,StepExecutionRecord record) {
+                this.logger.warn(arg0);
+                MessageType m = buildMessage(arg0);
+                m.setLevel(LogLevel.WARN);
+                addMessage(m);        
+                if (record != null) {
+                    record.addMessage(m);
+                }
+            }
+            public void warn(Object arg0, Throwable arg1) {
+                warn(arg0,arg1,(StepExecutionRecord)null);
+            }
+            public void warn(Object arg0, Throwable arg1,StepExecutionRecord record) {
+                this.logger.warn(arg0, arg1);
+                MessageType m = buildMessage(arg0,arg1);
+                m.setLevel(LogLevel.WARN);
+                addMessage(m);           
+                if (record != null) {
+                    record.addMessage(m);
+                }
+            }
+                //error
+                public void info(Object arg0) {
+                    info(arg0,(StepExecutionRecord)null);
+                }
+                public void info(Object arg0,StepExecutionRecord record) {
+                    this.logger.info(arg0);
+                    MessageType m = buildMessage(arg0);
+                    m.setLevel(LogLevel.INFO);
+                    addMessage(m);        
+                    if (record != null) {
+                        record.addMessage(m);
+                    }
+                }
+                public void info(Object arg0, Throwable arg1) {
+                    info(arg0,arg1,(StepExecutionRecord)null);
+                }
+                public void info(Object arg0, Throwable arg1,StepExecutionRecord record) {
+                    this.logger.info(arg0, arg1);
+                    MessageType m = buildMessage(arg0,arg1);
+                    m.setLevel(LogLevel.INFO);
+                    addMessage(m);           
+                    if (record != null) {
+                        record.addMessage(m);
+                    }
+                }
+        // message builders
     protected MessageType buildMessage(Object content) {
         MessageType  message = new MessageType();
         message.setContent(content.toString());
         message.setSource("JES");
         message.setPhase(ExecutionPhase.RUNNING);
-        message.setTimestamp(new Date());
+        message.setTimestamp(new Date())   ; 
         return message;
     }
     
-    /**
+    private MessageType buildDebugMessage(Object content) {
+        MessageType  message = new MessageType();
+        message.setContent(content.toString());
+        message.setSource("JES");
+        message.setPhase(ExecutionPhase.RUNNING);
+        message.setTimestamp(new Date());
+        message.setLevel(LogLevel.INFO);// would like debug here really.        
+        return message;
+    }    
+    
+    /** build a user-level message, containinig a summary of the exception
      * @param t
      * @return
      */
-    protected MessageType buildMessage(Object msg,Throwable t) {
+    private MessageType buildMessage(Object msg,Throwable t) {
+        StringBuffer buff = new StringBuffer();
+        
+            buff
+           .append(msg)
+           .append("\n")
+           .append(JesUtil.getMessageChain(t));
+        return buildMessage(buff.toString());
+
+    }
+    
+    /** build a debug level message, containing a full stack trace */
+    private MessageType buildDebugMessage(Object msg,Throwable t) {
         StringBuffer buff = new StringBuffer();
         
             buff
@@ -134,15 +225,20 @@ public class WorkflowLogger  {
         StringWriter writer = new StringWriter();                            
            t.printStackTrace(new PrintWriter(writer));
          buff.append(writer.toString());
-        return buildMessage(buff);  
+        return buildDebugMessage(buff);  
 
     }
-
 }
 
 
 /* 
 $Log: WorkflowLogger.java,v $
+Revision 1.2  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.1.58.1  2004/11/25 23:34:34  nw
+improved error messages reported from jes
+
 Revision 1.1  2004/08/18 21:50:15  nw
 improved error propagation and reporting.
 messages are now logged to workflow document

@@ -1,4 +1,4 @@
-/*$Id: RuleStore.java,v 1.4 2004/11/05 16:52:42 jdt Exp $
+/*$Id: RuleStore.java,v 1.5 2004/11/29 20:00:24 clq2 Exp $
  * Created on 05-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -113,7 +113,7 @@ public class RuleStore extends HashMap {
         if (s == null) { // no cached script, either because it's been GC'd, or because a rule has been added, invalidating the last one.
             logger.info("compiling up index");
             try {
-                s = shell.compile(this.indexScript);
+                s = shell.compileRuleScript(this.indexScript);
             } catch (CompilationFailedException e) {
                 logger.error("failed to compile index",e);
                 throw new ScriptEngineException("failed to compile index",e);
@@ -158,6 +158,13 @@ public class RuleStore extends HashMap {
 
 /* 
 $Log: RuleStore.java,v $
+Revision 1.5  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.4.12.1  2004/11/24 18:49:02  nw
+sandboxing of script execution - first by a timeout,
+later by java permissions system.
+
 Revision 1.4  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

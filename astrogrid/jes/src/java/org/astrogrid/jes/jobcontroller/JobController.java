@@ -170,6 +170,10 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
         while (i.hasNext()) {
             try {
                 Workflow w = (Workflow)i.next();
+                if (w == null) { // received a duff. We'll carry on as best we can.
+                    logger.warn("Found a null workflow");
+                    continue;
+                }
                 WorkflowSummary item = new WorkflowSummary();
                 item.setWorkflowName(w.getName());
                 item.setJobUrn(JesUtil.castor2axis(w.getJobExecutionRecord().getJobId()));

@@ -29,7 +29,7 @@
         font-style:italic;
         padding:5px;
     }
-
+	
     div.block, div.step{
             margin-top:5px;
         padding-left:5px;
@@ -291,8 +291,11 @@
         <span class='KEY'>Source</span> <span class='VALUE'><xsl:value-of select="normalize-space(cea:source)" /></span>
         </span>
         </nobr>
-                <div class="description">
+                <div class="message-content">
+					<pre>
                         <xsl:value-of select="cea:content" />
+					</pre>
+					<br />
                 </div>
         </div>
 </xsl:template>

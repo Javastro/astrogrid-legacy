@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.10 2004/09/16 21:42:27 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.11 2004/11/29 20:00:24 clq2 Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,6 +9,9 @@
  *
 **/
 package org.astrogrid.jes.impl.workflow;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
@@ -40,11 +43,19 @@ import junit.framework.TestSuite;
  *
  */
 public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements ComponentDescriptor{
+    /**
+     * Commons Logger for this class
+     */
+    private static final Log logger = LogFactory
+            .getLog(FileJobFactoryImpl.class);
+
     /** Configuration component for FileJobFactory Impl
      * @author Noel Winstanley nw@jb.man.ac.uk 07-Mar-2004
      *
      */
     public static  interface BaseDirectory {
+
+
         File getDir();
     }
     private static final String WORKFLOW_SUFFIX = "-workflow.xml";
@@ -155,16 +166,26 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
             public boolean hasNext() {
                 return i.hasNext();
             }
-
+            /** need to make this more resiliant to changes on disk - it's possible that queued changes will be processed, and so the files
+             * won't be there when they're come to being read. If this happens now, it skips onto the next item.
+             * 'Course this means that we need to handle a null at the end of the list. which is a pity.
+             * @see java.util.Iterator#next()
+             */
             public Object next() {
+                if (!i.hasNext()) { // we've reached the end - maybe can't be helped, if we've had to skip something.
+                    logger.warn("Reached unexpected end of iterator");
+                    return null;
+                }
                 File f = (File)i.next();
                 try {
                 if (! f.exists()) {
-                    return null;
+                    logger.info("Skipping non-existent file " + f);
+                    return this.next(); // recursive call, in case of non-existent file.
                 }
                 return Workflow.unmarshalWorkflow(new FileReader(f));
                 } catch (Exception e) {
-                    throw new RuntimeException("Problem with store",e);
+                    logger.warn("Failed to unmarshal this file " + f + " skipping");
+                    return this.next();
                 }
             }
         };
@@ -235,6 +256,8 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 
     protected class InstallationTest extends TestCase {
+
+
         public InstallationTest(String s) {
             super(s);
         }
@@ -264,6 +287,13 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.11  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.10.30.1  2004/11/24 00:19:38  nw
+fixed to make reading list of workflows more robust
+ - bz#673
+
 Revision 1.10  2004/09/16 21:42:27  nw
 made sure all streams are closed
 

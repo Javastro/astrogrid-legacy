@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+  <properties>
+    <title>Workflow Activities</title>
+
+    <author email="Noel.Winstanley@manchester.ac.uk">Noel
+    Winstanley</author>
+  </properties>
+
+  <body>
+    <section name="Introduction">
+      <p>
+      </p>
+    </section>
+
+    <section name="Looping and Conditionals">
+      <p>Implemented &#39;if&#39; statement - executes either a
+      &#39;then&#39; branch, or optional &#39;else&#39; branch,
+      based on truth value of &#39;test&#39; attribute - which can
+      be a groovy expression.</p>
+
+      <p>Implemented &#39;while&#39; loop - executes body based on
+      truth value of &#39;test&#39; attribute.</p>
+
+      <p>Impleented &#39;for&#39; loop - executes body for each
+      item in a list - so like python &amp; jelly for - sometimes
+      called forEach.</p>
+    </section>
+
+    <section name="Parallel Loop">
+      <p>Implemented and unit tested parallel-for-loop. This is
+      similar to the for-loop (executes loop body for each item in
+      a list), but in this case the loop bodies are executed
+      potentially in parallel. That is, any calls to CEA
+      applications will be fired off concurrently - other workflow
+      activites are processed sequentially by the jes server.</p>
+
+      <p>A bit of a tricky one to implement - especially the
+      treatment of variables and scopes - as there&#39;s many
+      different values for the loop variable, all valid at the same
+      time. Implememtation works by evaluating the list, and then
+      uses the set of rules for the loop body as a template, from
+      which new rules are generated for each loop branch. These
+      rules are added to the rulestore, and then executed.</p>
+    </section>
+  </body>
+</document>
+

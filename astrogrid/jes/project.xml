@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- $Id: project.xml,v 1.74 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.75 2004/11/29 20:00:24 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
   <artifactId>astrogrid-jes</artifactId>
   <currentVersion>${astrogrid.jes.version}</currentVersion>
   <name>AstroGrid Job Management</name>
-  <description>This work package provides AstroGrid with the facility to submit jobs. Jobs will initially consist of a query to be run asynchronously against one or more catalogues held at a particular data centre. Hence the package is closely associated with the AgCd08DataCentre package. The facility covers job submission, job scheduling and job monitoring. A job consists of one or more job steps, run in parallel or - where there is a dependency - in sequence, or some mixture of the two. Although a job may be submitted, it may not be until the job is scheduled that the location where an actual job step runs is identified. Job monitoring is important in simple terms to track the progress of a job through its job steps, e.g. in order to trigger subsequent steps.</description>
-  <shortDescription>AstroGrid Job Management Components</shortDescription>
+ <description>Astrogrid Workflow Execuction Engine</description>
+  <shortDescription>Astrogrid Job Exection Server</shortDescription>
   <repository>
     <connection>scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</connection>
     <developerConnection>scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/${astrogrid.name}</developerConnection>
@@ -117,14 +117,14 @@
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-	<dependency>
-		<groupId>org.astrogrid</groupId>
-		<artifactId>astrogrid-cea-server</artifactId>
-		<version>${astrogrid.applications.version}</version>
+        <dependency>
+                <groupId>org.astrogrid</groupId>
+                <artifactId>astrogrid-cea-server</artifactId>
+                <version>${astrogrid.applications.version}</version>
       <properties>
         <war.bundle>true</war.bundle>
-      </properties>			
-	</dependency>	    
+      </properties>
+        </dependency>
     <!-- ag scripting component, and the other delegates it requires -->
     <dependency>
       <artifactId>astrogrid-scripting</artifactId>
@@ -139,11 +139,11 @@
          <artifactId>stil</artifactId>
          <version>2.0-1</version>
          <url>http://www.star.bristol.ac.uk/~mbt/stil/</url>
-     	 <properties>
-        	<war.bundle>true</war.bundle>
-      	</properties>                
+         <properties>
+                <war.bundle>true</war.bundle>
+        </properties>
     </dependency>
-    
+
     <dependency>
         <artifactId>astrogrid-workflow</artifactId>
         <groupId>org.astrogrid</groupId>
@@ -237,7 +237,7 @@
     <dependency>
       <groupId>groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>1.0-beta-6</version>
+      <version>1.0-beta-7</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>

@@ -1,4 +1,4 @@
-/*$Id: ScriptFeatureTest.java,v 1.4 2004/08/18 21:50:59 nw Exp $
+/*$Id: ScriptFeatureTest.java,v 1.5 2004/11/29 20:00:24 clq2 Exp $
  * Created on 09-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class ScriptFeatureTest extends AbstractTestForFeature {
         wf.getSequence().addActivity(script);
         
         script = new Script();// in this script, test that various environmental variables are there.
-        script.setBody("print( jes != null && astrogrid != null && astrogrid.getAllServices().size() == 0 && currentUser != null && currentAccount != null);");
+        script.setBody("print( jes != null && astrogrid != null && user != null && account != null);");
         
         wf.getSequence().addActivity(script);
         return wf;
@@ -56,6 +56,15 @@ public class ScriptFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ScriptFeatureTest.java,v $
+Revision 1.5  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.4.58.2  2004/11/26 13:22:11  nw
+updated to fit with new script bindings.
+
+Revision 1.4.58.1  2004/11/24 00:24:16  nw
+updated to test new scripting objects.
+
 Revision 1.4  2004/08/18 21:50:59  nw
 worked on tests
 

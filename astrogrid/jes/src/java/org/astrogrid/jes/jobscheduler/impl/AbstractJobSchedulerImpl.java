@@ -1,4 +1,4 @@
-/*$Id: AbstractJobSchedulerImpl.java,v 1.6 2004/08/13 09:07:58 nw Exp $
+/*$Id: AbstractJobSchedulerImpl.java,v 1.7 2004/11/29 20:00:24 clq2 Exp $
  * Created on 10-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -150,22 +150,32 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
      * and set status of entrire workflow to error
      * @param job
      * @param e
+     * @todo want to able to send a debuf-level message here too
      */
     protected void recordFatalError(Workflow job, JesException e) {
-        MessageType mt = new MessageType();
-        mt.setPhase(ExecutionPhase.ERROR);
-        mt.setLevel(LogLevel.ERROR);
-        mt.setSource("Jes System");
-        mt.setTimestamp(new Date());     
+        MessageType errorMessage = new MessageType();
+        errorMessage.setPhase(ExecutionPhase.ERROR);
+        errorMessage.setLevel(LogLevel.ERROR);
+        errorMessage.setSource("Jes System");
+        errorMessage.setTimestamp(new Date());
+        errorMessage.setContent(JesUtil.getMessageChain(e));
+        
+        MessageType debugMessage = new MessageType();
+        debugMessage.setPhase(errorMessage.getPhase());
+        debugMessage.setLevel(LogLevel.INFO);
+        debugMessage.setSource(errorMessage.getSource());
+        debugMessage.setTimestamp(errorMessage.getTimestamp());
         StringWriter content = new StringWriter();
         PrintWriter pw = new PrintWriter(content);
         pw.println("System Error " + e.getClass().getName());
         e.printStackTrace(pw);
-        mt.setContent(content.toString());
-        job.getJobExecutionRecord().addMessage(mt);
+        debugMessage.setContent(content.toString());
+        
+        job.getJobExecutionRecord().addMessage(errorMessage);
+        job.getJobExecutionRecord().addMessage(debugMessage);        
         job.getJobExecutionRecord().setStatus(ExecutionPhase.ERROR);
     }
-
+    
     /** @see #resumeJob(JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType) */
     protected void updateStepStatus(Workflow wf,Step step, ExecutionPhase status) {
            // only update status if executioin record hasn't already passed this status.        
@@ -339,6 +349,15 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
 
 /* 
 $Log: AbstractJobSchedulerImpl.java,v $
+Revision 1.7  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.6.68.2  2004/11/25 23:34:34  nw
+improved error messages reported from jes
+
+Revision 1.6.68.1  2004/11/24 18:48:29  nw
+attempt to get nicer error messages
+
 Revision 1.6  2004/08/13 09:07:58  nw
 tidied imports
 

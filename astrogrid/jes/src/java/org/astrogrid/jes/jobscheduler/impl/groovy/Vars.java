@@ -1,4 +1,4 @@
-/*$Id: Vars.java,v 1.5 2004/11/05 16:52:42 jdt Exp $
+/*$Id: Vars.java,v 1.6 2004/11/29 20:00:24 clq2 Exp $
  * Created on 28-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import groovy.lang.Binding;
+import groovy.lang.MissingPropertyException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,6 +116,22 @@ public void removeScope()     {
      *any new variables defined in the script must have been done directly - through accessing this object already. so just need to look for the values of existing vars.
      * @param bodyBinding
      */
+    
+    public void readFromBinding(Binding bodyBinding) {
+        for (int j = 0; j < l.size(); j++){
+            Map e = (Map)l.get(j);           
+            for (Iterator i = e.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry var = (Map.Entry)i.next();
+                try {
+                    Object newValue = bodyBinding.getVariable(var.getKey().toString());
+                    var.setValue(newValue);
+                } catch (MissingPropertyException missing) { // ok, must have been added into 'var' object in script.
+                    // skip it.
+                }
+            }
+    }
+    
+    /* beta-6 need a different impleemntation for beta-7 - as empty vars throws expcetions
     public void readFromBinding(Binding bodyBinding) {
         for (int j = 0; j < l.size(); j++){
             Map e = (Map)l.get(j);           
@@ -129,7 +146,7 @@ public void removeScope()     {
                     var.setValue(newValue);
                 }
             }
-        }
+        }*/
     }
     
 
@@ -175,6 +192,13 @@ public void removeScope()     {
 
 /* 
 $Log: Vars.java,v $
+Revision 1.6  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.5.12.1  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
 Revision 1.5  2004/11/05 16:52:42  jdt
 Merges from branch nww-itn07-scratchspace
 

@@ -1,4 +1,4 @@
-/*$Id: IfThenFalseFeatureTest.java,v 1.1 2004/08/05 09:59:46 nw Exp $
+/*$Id: IfThenFalseFeatureTest.java,v 1.2 2004/11/29 20:00:24 clq2 Exp $
  * Created on 05-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -47,7 +47,7 @@ public class IfThenFalseFeatureTest extends AbstractTestForFeature {
         then.setActivity(sc);
         
         Script endScript = new Script();
-        endScript.setBody("print (!x && y ==  null)"); // check we can see variables defined within if block.
+        endScript.setBody("try {y == 1 } catch (MissingPropertyException e) {print (!x)}"); // check we can see variables defined within if block.
         
         wf.getSequence().addActivity(x);
         wf.getSequence().addActivity(i);
@@ -68,6 +68,13 @@ public class IfThenFalseFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: IfThenFalseFeatureTest.java,v $
+Revision 1.2  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.1.72.1  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
 Revision 1.1  2004/08/05 09:59:46  nw
 tests for if construct
  

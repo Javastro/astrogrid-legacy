@@ -1,4 +1,4 @@
-/*$Id: GroovyAssumptionsTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovyAssumptionsTest.java,v 1.3 2004/11/29 20:00:24 clq2 Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,12 +11,16 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.messages.WarningMessage;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import groovy.lang.MissingPropertyException;
 import groovy.lang.Script;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -81,15 +85,23 @@ public class GroovyAssumptionsTest extends TestCase {
         assertTrue(result instanceof Integer);
         assertEquals(new Integer(26),result);
     }
-    
+    /** @modified beta-7 - previouly returned null. now throws exception */
     public void testShellReferenceUnknownBinding() throws Exception {
-        assertNull(shell.evaluate("unknownVariable"));
+        try {
+        shell.evaluate("unknownVariable");
+        fail("expected to barf");
+        } catch (MissingPropertyException e) {
+            //expected
+        }
     }
-    
+    /** @modified beta-7 previously returned null, now throws an exception */
     public void testShellReferenceUnknownBindingInExpression() throws Exception {
+        try {
         Object result = shell.evaluate("1 + unknownVariable");
-        assertTrue(result instanceof String);
-        assertEquals("1null",result);
+        fail("expected to chuck");
+        } catch (MissingPropertyException e) {
+            //ecpected
+        }
     }
     
     // ok that's the shell itself done. But I think that jes is going to be compiling fragments up into scriptlets, and then executing these scriptlets later against
@@ -144,13 +156,19 @@ public class GroovyAssumptionsTest extends TestCase {
         assertEquals(new Integer(66),result);        
     }
     
-    /** test behaviour when another binding set is provided, but var is not available there */
+    /** test behaviour when another binding set is provided, but var is not available there 
+     * @modified - in beta-7, unbound properties throw an exception.*/
     public void testShellReferenceOverriddenUnknownBinding() throws Exception {
         Script sc = shell.parse("x");
-        assertNotNull(sc);
+        assertNotNull(sc);        
         Map m1 = new HashMap();
         sc.setBinding(new Binding(m1));
-        assertNull(sc.run());     
+        try {
+            assertNull(sc.run());
+            fail("expected to barf");
+        } catch (MissingPropertyException e) {
+            // ok.
+        }
     }
     
     // finally test statements that update the environment
@@ -166,13 +184,19 @@ public class GroovyAssumptionsTest extends TestCase {
         assertEquals(new Integer(42),m1.get("x"));
     }
     
-  
-    
+
 }
 
 
 /* 
 $Log: GroovyAssumptionsTest.java,v $
+Revision 1.3  2004/11/29 20:00:24  clq2
+jes-nww-714
+
+Revision 1.2.76.1  2004/11/26 01:31:18  nw
+updated dependency on groovy to 1.0-beta7.
+updated code and tests to fit.
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

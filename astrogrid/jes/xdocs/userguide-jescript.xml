@@ -1,0 +1,61 @@
+<?xml version="1.0" ?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+  <properties>
+    <title>Workflow Scripting Language</title>
+
+    <author email="Noel.Winstanley@manchester.ac.uk">Noel
+    Winstanley</author>
+  </properties>
+
+  <body>
+    <section name="Result Var">
+      <p>added an attributed &#39;result-var&#39; to the 
+      <code>&lt;step&gt;</code>
+
+      element - when set, it names a scripting variable in which to
+      store a map of the results of the cea call. so now possible
+      to set up workflow variables, manipulate via script elements,
+      pass in as parameter to cea calls, define new variables from
+      results of cea calls.</p>
+    </section>
+
+    <section name="System Objects">
+      <p>a binding to an instance of the Astrogrid class into the
+      JEScript environment. This means that methods on the
+      Astrogrid scripting object can be called from 
+      <code>&lt;script&gt;</code>
+
+      steps in workflows.</p>
+
+      <p>Whats the point? Now its possible to write workflow
+      documents that contain script steps that do useful things
+      like 
+      <ul>
+        <li>copy / move / delete files in vospace.</li>
+
+        <li>read contents of a vospace file into a workflow
+        scripting variable</li>
+
+        <li>write contents of a vospace file</li>
+
+        <li>query registry</li>
+      </ul>
+
+      and mindboggling / daft things like 
+      <ul>
+        <li>create and submit child-workflow documents</li>
+
+        <li>cancel or delete their own workflow.</li>
+      </ul>
+      </p>
+
+      <subsection name="Astrogrid">
+      </subsection>
+
+      <subsection name="jes">
+      </subsection>
+    </section>
+  </body>
+</document>
+

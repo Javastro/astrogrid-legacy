@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: delegate-project.xml,v 1.6 2004/11/23 18:40:50 jdt Exp $ -->
+<!-- $Id: delegate-project.xml,v 1.7 2004/11/29 20:00:24 clq2 Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-jes-delegate</id>

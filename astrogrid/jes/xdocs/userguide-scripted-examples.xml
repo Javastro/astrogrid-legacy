@@ -1,0 +1,41 @@
+<?xml version="1.0" ?>
+<!DOCTYPE document SYSTEM "xdoc.dtd" >
+<document>
+        <properties>
+        <title>Workflow JEScript Examples</title>
+        <author email="Noel.Winstanley@manchester.ac.uk">Noel Winstanley</author>
+        </properties>
+<body>
+<section name="Introduction">
+<p>
+</p>
+</section>
+
+<section name="Self-Modifiying Workflows">
+	<p> Added some methods to allow scripts to easily modify workflow documents 
+		(well, add parameters to existing tool steps). Wrote example workflow 
+		integration test - ExampleVOTableParsingWorkflowTest.java interesting 
+		part of this workflow is the script step which parses a votable, 
+		extracts urls, and adds each url as a new parameter to the next cea 
+		tool step. in 8 lines of code -- </p>
+	<source><![CDATA[
+// access result of previous step
+  votable = source.result;
+//create new parser
+  parser = new XmlParser();
+//parse votable into node tree
+  nodes = parser.parseText(votable);
+// filter node tree on 'TD', extract value attribute
+  urls = nodes.depthFirst().findAll{it.name() == 'TD'}.collect{it.value()}.flatten();
+// show what we've found
+  print(urls);
+// find next step in workflow
+ sinkStep = jes.getSteps().find {it.getName() == 'sink-step'};
+// get to set of input parameters
+  inputs = sinkStep.getTool().getInput();
+// for each url, create new parameter, populate, add to inputs.
+  urls.each { p = jes.newParameter(); p.setName('url'); p.setValue(it); inputs.addParameter(p);}
+]]></source>
+</section>
+</body>
+</document>
