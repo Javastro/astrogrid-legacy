@@ -4,10 +4,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/03/08 13:42:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.7 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/09 17:18:47 $</cvs:date>
+    | <cvs:version>$Revision: 1.8 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.8  2004/03/09 17:18:47  dave
+    |   Fixed the Maven deploy goals
+    |
+    |   Revision 1.7.8.2  2004/03/09 17:13:23  dave
+    |   Bug fix
+    |
+    |   Revision 1.7.8.1  2004/03/09 16:47:07  dave
+    |   Fixed site deployment goal
+    |
     |   Revision 1.7  2004/03/08 13:42:33  dave
     |   Updated Maven goals.
     |   Replaced tabs with Spaces.
@@ -349,8 +358,15 @@
         <!--+
             | Set the target name and directory.
             +-->
+        <ant:echo message="  Default location : ${maven.repo.central.directory}"/>
+        <ant:echo message="  Custom location  : ${astrogrid.community.deploy.path}"/>
+        <core:set var="targetBase" value="${maven.repo.central.directory}"/>
+        <core:set var="customBase" value="${astrogrid.community.deploy.path}"/>
+        <core:if test="${customBase.length() > 0}">
+	        <core:set var="targetBase" value="${customBase}"/>
+		</core:if>
         <core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
-        <core:set var="targetPath" value="${maven.repo.central.directory}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
+        <core:set var="targetPath" value="${targetBase}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
         <ant:echo message="  File : ${targetFile}"/>
         <ant:echo message="  Dest : ${targetPath}"/>
         <!--+
@@ -369,7 +385,7 @@
     </goal>
 
     <!--+
-        | Install a SNAPSHOT artifact to our local repository.
+        | Deploy a SNAPSHOT to our repository.
         +-->
     <goal name="deploy-local-snapshot">
         <ant:echo message=""/>
@@ -379,8 +395,15 @@
         <!--+
             | Set the target name and directory.
             +-->
+        <ant:echo message="  Default location : ${maven.repo.central.directory}"/>
+        <ant:echo message="  Custom location  : ${astrogrid.community.deploy.path}"/>
+        <core:set var="targetBase" value="${maven.repo.central.directory}"/>
+        <core:set var="customBase" value="${astrogrid.community.deploy.path}"/>
+        <core:if test="${customBase.length() > 0}">
+	        <core:set var="targetBase" value="${customBase}"/>
+		</core:if>
         <core:set var="targetFile" value="${maven.build.dir}/${maven.final.name}.${astrogrid.artifact.type}"/>
-        <core:set var="targetPath" value="${maven.repo.central.directory}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
+        <core:set var="targetPath" value="${targetBase}/${pom.artifactDirectory}/${astrogrid.artifact.type}s"/>
         <ant:echo message="  File : ${targetFile}"/>
         <ant:echo message="  Dest : ${targetPath}"/>
         <!--+
@@ -405,6 +428,33 @@
             tofile="${targetPath}/${pom.artifactId}-SNAPSHOT.${astrogrid.artifact.type}"
             overwrite="true"
             />
+    </goal>
+
+    <!--+
+        | Deploy our site.
+        +-->
+    <goal name="deploy-local-site">
+        <ant:echo message=""/>
+        <ant:echo message="Deploying project site."/>
+        <!--+
+            | Set the target name and directory.
+            +-->
+        <ant:echo message="  Source location  : ${maven.docs.dest}"/>
+        <ant:echo message="  Default location : ${maven.repo.central.directory}"/>
+        <ant:echo message="  Custom location  : ${astrogrid.community.deploy.site}"/>
+        <core:set var="targetPath" value="${maven.site.central.directory}"/>
+        <core:set var="customPath" value="${astrogrid.community.deploy.site}"/>
+        <core:if test="${customPath.length() > 0}">
+	        <core:set var="targetPath" value="${customPath}"/>
+		</core:if>
+		<!--+
+			| Copy our files across.
+			+-->
+		<ant:copy overwrite="true" todir="${targetPath}">
+			<fileset dir="${maven.docs.dest}">
+				<include name="**"/>
+			</fileset>
+		</ant:copy>
     </goal>
 
     <!-- ================ Custom tag library ================ -->
