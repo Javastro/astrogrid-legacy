@@ -1,5 +1,5 @@
 /*
- * $Id: WebNotifyServiceListener.java,v 1.4 2003/09/10 17:57:31 mch Exp $
+ * $Id: WebNotifyServiceListener.java,v 1.5 2003/09/15 11:17:14 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -54,7 +54,7 @@ public class WebNotifyServiceListener implements ServiceListener
       Log.trace("WebNotifyServiceListener.serviceStatusChanged("+querier.getStatus()+")") ;
 
       try {
-         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus().getText()));
+         Document statusDoc = DocHelper.wrap(StatusHelper.makeStatusTag(querier.getHandle(), querier.getStatus()));
 
          Object[] parms = new Object[]
          {
@@ -88,6 +88,9 @@ public class WebNotifyServiceListener implements ServiceListener
 
 /*
 $Log: WebNotifyServiceListener.java,v $
+Revision 1.5  2003/09/15 11:17:14  mch
+StatusHelper.makeStatusTag now takes typesafe status
+
 Revision 1.4  2003/09/10 17:57:31  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 
