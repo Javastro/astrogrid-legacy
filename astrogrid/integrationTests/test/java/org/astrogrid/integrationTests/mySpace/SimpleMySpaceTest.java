@@ -1,4 +1,4 @@
-/* $Id: SimpleMySpaceTest.java,v 1.2 2004/01/15 14:46:11 jdt Exp $
+/* $Id: SimpleMySpaceTest.java,v 1.3 2004/01/19 15:02:49 jdt Exp $
  * Created on 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -43,7 +43,7 @@ public class SimpleMySpaceTest extends TestCase {
     /**
      * Name of properties file
      */
-    public final String WEBSERVICES_PROPS = "webservices.properties";
+    public final String WEBSERVICES_PROPS = "/webservices.properties";
     /**
      * Name of key in property file for endpoint
      * 
