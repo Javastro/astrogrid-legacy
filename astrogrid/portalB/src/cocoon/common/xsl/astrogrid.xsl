@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/common/xsl/Attic/astrogrid.xsl,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/07/25 08:13:56 $</cvs:author>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Date: 2003/08/26 10:43:18 $</cvs:author>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     | $Log: astrogrid.xsl,v $
+    | Revision 1.5  2003/08/26 10:43:18  KevinBenson
+    | small things to have the community prototype going
+    |
     | Revision 1.4  2003/07/25 08:13:56  KevinBenson
     | Okay DataQuery is now under cocoon.  Yeah.
     |
@@ -118,7 +121,7 @@
 							</font> 
 							<br/>
 							<font size="+3" face="arial, helvetica, sans-serif">
-								<xsl:if test="$current-page = 'agdataquery.html'" >
+								<xsl:if test="$current-page != 'agdataquery.html'" >
 									Data Query
 								</xsl:if>
 								<xsl:if test="$current-page = 'agmyspace.html'" >

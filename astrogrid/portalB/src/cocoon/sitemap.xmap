@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/Attic/sitemap.xmap,v $</cvs:source>
     | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/08/25 06:36:41 $</cvs:author>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:author>$Date: 2003/08/26 10:43:18 $</cvs:author>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     | $Log: sitemap.xmap,v $
+    | Revision 1.11  2003/08/26 10:43:18  KevinBenson
+    | small things to have the community prototype going
+    |
     | Revision 1.10  2003/08/25 06:36:41  KevinBenson
     | added the entry for the prototype of the gui for administration.
     |
@@ -169,7 +172,7 @@
             <map:serialize type="html"/>
          </map:match>
          
-         <!-- DataQuery page -->
+         <!-- Administratin page -->
          <map:match pattern="agadministration.html">
             <!-- Call our query action -->
             <map:act type="astrogrid-admin">
@@ -186,7 +189,7 @@
             <!-- Wrap the page in our HTML template -->
             <map:transform src="common/xsl/astrogrid.xsl" label="003">
                <!-- Add the rest of the page names -->
-               <map:parameter name="current-page"  value="agdataquery.html"/>
+               <map:parameter name="current-page"  value="agadministration.html"/>
                <map:parameter name="query-page"    value="agdataquery.html"/>
                <map:parameter name="myspace-page"  value="agmyspace.html"/>
                <map:parameter name="home-page"     value="agindex.html"/>
