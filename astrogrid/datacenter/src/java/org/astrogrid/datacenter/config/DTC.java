@@ -27,7 +27,7 @@ import org.astrogrid.Configurator;
  * @see
  * @since   AstroGrid 1.2
  */
-class DTC// extends org.astrogrid.Configurator
+public class DTC// extends org.astrogrid.Configurator
 {
 
     private static DTC
