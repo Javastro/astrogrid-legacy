@@ -1,4 +1,4 @@
-/*$Id: ProductionComponentManager.java,v 1.2 2004/03/07 21:04:38 nw Exp $
+/*$Id: ProductionComponentManager.java,v 1.3 2004/03/08 00:36:34 nw Exp $
  * Created on 07-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -31,6 +31,7 @@ import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ApplicationControllerDispatcher;
+import org.astrogrid.jes.jobscheduler.locator.RegistryToolLocator;
 import org.astrogrid.jes.jobscheduler.locator.XMLFileLocator;
 import org.astrogrid.jes.jobscheduler.policy.LinearPolicy;
 
@@ -130,14 +131,14 @@ public final class ProductionComponentManager extends EmptyComponentManager {
         "'registry' - for locator that queries the registry\n" +        "'xml' - for locator that is backed by xml config file\n" +        "or name of java class to instantiate"
         );
     /**
-     * 
+     * @todo registry should be the default.
      */
     private final  void registerLocator() {
         pico.registerComponentInstance("locator-meta",LOCATOR_META);
         String locator = conf.getString(LOCATOR_KEY,"xml").trim();
         if ("registry".equalsIgnoreCase(locator)) {
-            log.error("registry - not implemnented yet, falling back to xml");
-            registerFallbackLocator();
+            pico.registerComponentImplementation(Locator.class,RegistryToolLocator.class);
+            pico.registerComponentImplementation(RegistryToolLocator.RegistryEndpoint.class,RegistryEndpointFromConfig.class);
         } else if ("xml".equalsIgnoreCase(locator)) {
             registerFallbackLocator();
         } else {
@@ -171,6 +172,9 @@ public final class ProductionComponentManager extends EmptyComponentManager {
 
 /* 
 $Log: ProductionComponentManager.java,v $
+Revision 1.3  2004/03/08 00:36:34  nw
+added configuration of registry tool locator to production components
+
 Revision 1.2  2004/03/07 21:04:38  nw
 merged in nww-itn05-pico - adds picocontainer
 
