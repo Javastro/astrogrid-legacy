@@ -13,9 +13,9 @@
   <!-- Services from AuthorizationService WSDL service -->
 
   <service name="Authorization" provider="java:RPC" style="rpc" use="encoded">
-      <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.community.service"/>
+      <parameter name="wsdlTargetNamespace" value="urn:org.astrogrid.community.service.authorization"/>
       <parameter name="className" value="org.astrogrid.community.service.authorization.AuthorizationService"/>
-      <operation name="checkPermission" qname="operNS:checkPermission" xmlns:operNS="urn:org.astrogrid.community.service" returnQName="checkPermissionReturn" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
+      <operation name="checkPermission" qname="operNS:checkPermission" xmlns:operNS="urn:org.astrogrid.community.service.authorization" returnQName="checkPermissionReturn" returnType="rtns:boolean" xmlns:rtns="http://www.w3.org/2001/XMLSchema" >
         <parameter name="user" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter name="community" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
         <parameter name="credentials" type="tns:string" xmlns:tns="http://www.w3.org/2001/XMLSchema"/>
