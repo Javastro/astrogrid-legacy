@@ -1,5 +1,5 @@
 /*
- * $Id: ExistPlugin.java,v 1.5 2004/11/12 13:49:12 mch Exp $
+ * $Id: ExistPlugin.java,v 1.6 2004/11/17 13:06:43 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -114,19 +114,14 @@ public class ExistPlugin extends DefaultPlugin {
 
    
  
-   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
-   public String[] getFormats() {
-      return XmlResults.getFormats();
-   }
-   
    
  
 }
 
 /*
  $Log: ExistPlugin.java,v $
- Revision 1.5  2004/11/12 13:49:12  mch
- Fix where keyword maker might not have had keywords made
+ Revision 1.6  2004/11/17 13:06:43  jdt
+ Rolled back to 20041115ish, see bugzilla 705
 
  Revision 1.4  2004/11/11 23:23:29  mch
  Prepared framework for SSAP and SIAP

@@ -1,5 +1,5 @@
 /*
- * $Id: PrecannedPlugin.java,v 1.8 2004/11/12 13:49:12 mch Exp $
+ * $Id: PrecannedPlugin.java,v 1.9 2004/11/17 13:06:43 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,7 +10,6 @@ import java.util.Date;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.DefaultPlugin;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.status.QuerierQuerying;
 import org.astrogrid.datacenter.query.Query;
 
@@ -38,12 +37,6 @@ public class PrecannedPlugin extends DefaultPlugin
    public long getCount(Account user, Query query, Querier querier) throws IOException {
       return 15;
    }
-
-   /** Returns the formats that this plugin can provide.  Asks the results class; override in subclasse if nec */
-   public String[] getFormats() {
-      return QueryResults.getFormats();
-   }
-   
 
 }
 

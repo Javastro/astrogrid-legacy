@@ -1,4 +1,4 @@
-/*$Id: KeywordMaker.java,v 1.5 2004/11/12 13:49:12 mch Exp $
+/*$Id: KeywordMaker.java,v 1.6 2004/11/17 13:06:43 jdt Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -42,10 +42,11 @@ public class KeywordMaker  {
    
    /**
     * Sets the keywords from the given query.  Also returns the hashtable  */
-   public KeywordMaker(Query query) throws QueryException {
+   public Hashtable makeKeywords(Query query) throws QueryException {
       Condition c = query.getCriteria();
       keywords = new Hashtable();
       addKeywordPair(c);
+      return keywords;
    }
 
    /** case insensitive lookup */
@@ -126,8 +127,8 @@ public class KeywordMaker  {
 
 /*
 $Log: KeywordMaker.java,v $
-Revision 1.5  2004/11/12 13:49:12  mch
-Fix where keyword maker might not have had keywords made
+Revision 1.6  2004/11/17 13:06:43  jdt
+Rolled back to 20041115ish, see bugzilla 705
 
 Revision 1.4  2004/11/11 20:42:50  mch
 Fixes to Vizier plugin, introduced SkyNode, started SssImagePlugin
@@ -176,5 +177,4 @@ It05 MCH Refactor
 
  
 */
-
 

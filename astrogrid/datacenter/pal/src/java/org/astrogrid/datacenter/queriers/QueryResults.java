@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.9 2004/11/12 13:49:12 mch Exp $
+ * $Id: QueryResults.java,v 1.10 2004/11/17 13:06:43 jdt Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,11 +44,11 @@ import org.astrogrid.slinger.targets.IvornTarget;
 
 public abstract class QueryResults
 {
-   
+
    Log log = LogFactory.getLog(QueryResults.class);
    
    protected Querier querier = null;
-
+   
    /** Construct with a link to the Querier that spawned these results, so we
     * can include info from it if need be */
    public QueryResults(Querier parentQuerier) {
@@ -74,11 +74,6 @@ public abstract class QueryResults
     */
    public abstract void writeRaw(Writer out, QuerierProcessingResults statusToUpdate) throws IOException;
 
-   /** returns the formats that this result implementation can produce (ie VOTABLE, HTML, CSV, etc) */
-   public static String[] getFormats() {
-      return new String[] { ReturnTable.VOTABLE, ReturnTable.CSV, ReturnTable.HTML, ReturnTable.RAW };
-   }
-   
   
    /** Returns the number of results - or -1 if unknown */
    public abstract int getCount() throws IOException;
