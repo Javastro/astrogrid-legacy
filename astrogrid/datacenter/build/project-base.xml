@@ -170,7 +170,7 @@
 
     <unitTest>
       <includes>
-        <include>**/*TestFoo.java</include>
+        <include>**/*Test.java</include>
       </includes>
 
       <resources>
