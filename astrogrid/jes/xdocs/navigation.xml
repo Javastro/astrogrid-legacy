@@ -5,8 +5,8 @@
 
   <body>
      <menu name="Install">
-       <item name="Install" href="INSTALL.xml"/>
-       <item name="Read me" href="README.xml"/>
+       <item name="Install" href="INSTALL.html"/>
+       <item name="Read me" href="README.html"/>
        <item name="Download" href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-jes-SNAPSHOT.war"/>
        <item name="Sample Config" href="astrogrid.properties" />
     </menu>
