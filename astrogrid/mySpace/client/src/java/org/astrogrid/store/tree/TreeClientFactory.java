@@ -1,4 +1,4 @@
-/*$Id: AladinAdapterFactory.java,v 1.3 2004/11/17 16:22:53 clq2 Exp $
+/*$Id: TreeClientFactory.java,v 1.2 2004/11/17 16:22:53 clq2 Exp $
  * Created on 05-Nov-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,34 +8,36 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.store.adapter.aladin;
-
+package org.astrogrid.store.tree;
 
 /** Factory class, to isolate aladin code from the details of which implementation is being used for the Aladin Adapter.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Nov-2004
- * * @deprecated use {@link org.astrogrid.store.tree} instead
+ *
  */
-public class AladinAdapterFactory {
+public class TreeClientFactory {
 
+    /** Construct a new AladinAdapterFactory
+     * 
+     */
+    public TreeClientFactory() {
+        super();
+    }
     
     /** create a new instance of an aladin adapter 
      * @todo add seleciton of implementaiton based on config key*/
-    public AladinAdapter createAdapter() {
-        return new IterationSixAladinAdapter();
+    public TreeClient createClient() {
+        return new IterationSixTreeClient();
     }
 
 }
 
 
 /* 
-$Log: AladinAdapterFactory.java,v $
-Revision 1.3  2004/11/17 16:22:53  clq2
+$Log: TreeClientFactory.java,v $
+Revision 1.2  2004/11/17 16:22:53  clq2
 nww-itn07-704
 
-Revision 1.2.2.2  2004/11/16 17:27:59  nw
-tidied imports
-
-Revision 1.2.2.1  2004/11/16 16:47:28  nw
+Revision 1.1.2.1  2004/11/16 16:47:28  nw
 copied aladinAdapter interfaces into a neutrally-named package.
 deprecated original interfaces.
 javadoc

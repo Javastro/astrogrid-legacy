@@ -1,10 +1,16 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/test/java/org/astrogrid/store/adapter/aladin/Attic/AladinAdapterMockTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/test/java/org/astrogrid/store/tree/TreeClientMockTest.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2004/11/11 17:50:42 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapterMockTest.java,v $
+ *   $Log: TreeClientMockTest.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
+ *   nww-itn07-704
+ *
+ *   Revision 1.1.2.1  2004/11/16 17:29:16  nw
+ *   added tests for new treeclient interface to myspace.
+ *
  *   Revision 1.4  2004/11/11 17:50:42  clq2
  *   Noel's aladin stuff
  *
@@ -43,19 +49,17 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
-import org.astrogrid.store.Ivorn ;
-import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory ;
-
-import org.astrogrid.community.common.security.service.SecurityServiceMock ;
+import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+import org.astrogrid.store.Ivorn;
 
 /**
  * A JUnit test for the Aladin adapter.
  *
  */
-public class AladinAdapterMockTest
-	extends AladinAdapterTest
+public class TreeClientMockTest
+	extends TreeClientTest
 	{
 
 	/**
@@ -70,7 +74,7 @@ public class AladinAdapterMockTest
 		super.setUp() ;
 		//
 		// Create our target adapter.
-		AladinAdapterMock mock = new AladinAdapterMock() ;
+		TreeClientMock mock = new TreeClientMock() ;
 		//
 		// Set our target adapter.
 		this.setTestAdapter(mock) ;

@@ -1,15 +1,20 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterTest.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/tree/TreeClientTest.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapterTest.java,v $
- *   Revision 1.4  2004/11/17 16:22:53  clq2
+ *   $Log: TreeClientTest.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
- *   Revision 1.3.2.1  2004/11/16 17:27:59  nw
+ *   Revision 1.1.2.2  2004/11/16 17:27:58  nw
  *   tidied imports
+ *
+ *   Revision 1.1.2.1  2004/11/16 16:47:28  nw
+ *   copied aladinAdapter interfaces into a neutrally-named package.
+ *   deprecated original interfaces.
+ *   javadoc
  *
  *   Revision 1.3  2004/11/11 17:50:42  clq2
  *   Noel's aladin stuff
@@ -60,7 +65,7 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
 import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.util.MimeTypeUtil;
@@ -75,7 +80,7 @@ import junit.framework.TestCase;
  * A JUnit test for the Aladin adapter.
  *
  */
-public class AladinAdapterTest
+public class TreeClientTest
 	extends TestCase
 	{
 
@@ -121,13 +126,13 @@ public class AladinAdapterTest
 	 * Our target adapter.
 	 *
 	 */
-	protected AladinAdapter adapter ;
+	protected TreeClient adapter ;
 
 	/**
 	 * Setup our test adapter.
 	 *
 	 */
-	protected void setTestAdapter(AladinAdapter adapter)
+	protected void setTestAdapter(TreeClient adapter)
 		{
 		this.adapter = adapter ;
 		}
@@ -266,7 +271,7 @@ public class AladinAdapterTest
 				(password + "WRONG")
 				) ;
 			}
-		catch (AladinAdapterLoginException ouch)
+		catch (TreeClientLoginException ouch)
 			{
 			return ;
 			}
@@ -308,7 +313,7 @@ public class AladinAdapterTest
 		try {
 			adapter.getRoot() ;
 			}
-		catch (AladinAdapterSecurityException ouch)
+		catch (TreeClientSecurityException ouch)
 			{
 			return ;
 			}
@@ -330,7 +335,7 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Check we have a root node.
-		AladinAdapterContainer root = adapter.getRoot();
+		Container root = adapter.getRoot();
         assertNotNull(
 			root
 			) ;
@@ -352,13 +357,13 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root container.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Check the child nodes for the expected defaults.
 		Iterator iter = root.getChildNodes().iterator() ; 
 		while (iter.hasNext())
 			{
-			AladinAdapterNode next = (AladinAdapterNode) iter.next() ;
+			Node next = (Node) iter.next() ;
 			//
 			// Check for a 'workflow' node.
 			if ("workflow".equals(next.getName()))
@@ -384,7 +389,7 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
 		assertNotNull(
@@ -409,7 +414,7 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
 		root.addContainer(
@@ -417,11 +422,11 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get an iterator for the child nodes.
-		AladinAdapterNode found = null ;
+		Node found = null ;
 		Iterator iter = root.getChildNodes().iterator() ; 
 		while (iter.hasNext())
 			{
-			AladinAdapterNode next = (AladinAdapterNode) iter.next() ;
+			Node next = (Node) iter.next() ;
 			//
 			// Check for a matching node.
 			if (this.getContainerName().equals(next.getName()))
@@ -447,7 +452,7 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
 		root.addContainer(
@@ -460,7 +465,7 @@ public class AladinAdapterTest
 				this.getContainerName()
 				) ;
 			}
-		catch (AladinAdapterDuplicateException ouch)
+		catch (TreeClientDuplicateException ouch)
 			{
 			return ;
 			}
@@ -482,10 +487,10 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
@@ -512,10 +517,10 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
@@ -530,7 +535,7 @@ public class AladinAdapterTest
 				"results.txt"
 				) ;
 			}
-		catch (AladinAdapterDuplicateException ouch)
+		catch (TreeClientDuplicateException ouch)
 			{
 			return ;
 			}
@@ -552,10 +557,10 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
@@ -565,11 +570,11 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get an iterator for the child nodes.
-		AladinAdapterNode found = null ;
+		Node found = null ;
 		Iterator iter = node.getChildNodes().iterator() ; 
 		while (iter.hasNext())
 			{
-			AladinAdapterNode next = (AladinAdapterNode) iter.next() ;
+			Node next = (Node) iter.next() ;
 			//
 			// Check for a matching node.
 			if ("results.txt".equals(next.getName()))
@@ -595,15 +600,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.txt"
 			) ;
 		//
@@ -628,15 +633,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.txt"
 			) ;
 		//
@@ -667,15 +672,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.txt"
 			) ;
 		//
@@ -700,15 +705,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.txt"
 			) ;
 		//
@@ -755,15 +760,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.unknown"
 			) ;
 		//
@@ -788,15 +793,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.xml"
 			) ;
 		//
@@ -822,15 +827,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.vot"
 			) ;
 		//
@@ -856,15 +861,15 @@ public class AladinAdapterTest
 			) ;
 		//
 		// Get the root node.
-		AladinAdapterContainer root = adapter.getRoot() ;
+		Container root = adapter.getRoot() ;
 		//
 		// Create our new container.
-		AladinAdapterContainer node = root.addContainer(
+		Container node = root.addContainer(
 			this.getContainerName()
 			) ;
 		//
 		// Create our new file.
-		AladinAdapterFile file = node.addFile(
+		File file = node.addFile(
 			"results.votable"
 			) ;
 		//
@@ -887,7 +892,7 @@ public class AladinAdapterTest
 		try {
 			adapter.getRoot() ;
 			}
-		catch (AladinAdapterSecurityException ouch)
+		catch (TreeClientSecurityException ouch)
 			{
 			return ;
 			}
@@ -911,7 +916,7 @@ public class AladinAdapterTest
 		try {
 			adapter.getRoot() ;
 			}
-		catch (AladinAdapterSecurityException ouch)
+		catch (TreeClientSecurityException ouch)
 			{
 			return ;
 			}

@@ -1,14 +1,14 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterDuplicateException.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/tree/TreeClientDuplicateException.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapterDuplicateException.java,v $
- *   Revision 1.3  2004/11/17 16:22:53  clq2
+ *   $Log: TreeClientDuplicateException.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
- *   Revision 1.2.20.1  2004/11/16 16:47:28  nw
+ *   Revision 1.1.2.1  2004/11/16 16:47:28  nw
  *   copied aladinAdapter interfaces into a neutrally-named package.
  *   deprecated original interfaces.
  *   javadoc
@@ -27,14 +27,14 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
 /**
  * An exception thrown if attempting to create a duplicate entry.
- * * @deprecated use {@link org.astrogrid.store.tree} instead
+ *
  */
-public class AladinAdapterDuplicateException
-	extends AladinAdapterException
+public class TreeClientDuplicateException
+	extends TreeClientException
 	{
 	/**
 	 * The default Exception message.
@@ -46,7 +46,7 @@ public class AladinAdapterDuplicateException
 	 * Public constructor, with default message.
 	 *
 	 */
-	public AladinAdapterDuplicateException()
+	public TreeClientDuplicateException()
 		{
 		this(
 			DEFAULT_MESSAGE
@@ -58,7 +58,7 @@ public class AladinAdapterDuplicateException
 	 * @param message The Exception message.
 	 *
 	 */
-	public AladinAdapterDuplicateException(String message)
+	public TreeClientDuplicateException(String message)
 		{
 		super(
 			message

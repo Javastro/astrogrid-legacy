@@ -1,17 +1,17 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterFile.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/tree/File.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapterFile.java,v $
- *   Revision 1.4  2004/11/17 16:22:53  clq2
+ *   $Log: File.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
- *   Revision 1.3.16.2  2004/11/16 17:27:59  nw
+ *   Revision 1.1.2.2  2004/11/16 17:27:58  nw
  *   tidied imports
  *
- *   Revision 1.3.16.1  2004/11/16 16:47:28  nw
+ *   Revision 1.1.2.1  2004/11/16 16:47:28  nw
  *   copied aladinAdapter interfaces into a neutrally-named package.
  *   deprecated original interfaces.
  *   javadoc
@@ -45,23 +45,23 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * A wrapper for the AstroGrid StoreFile to make it easier to integrate into Aladin.
- * * @deprecated use {@link org.astrogrid.store.tree} instead
+ * Representation of a File in an Astrogrid Store
+ *
  */
-public interface AladinAdapterFile
-	extends AladinAdapterNode
+public interface File
+	extends Node
 	{
 
 		/**
 		 * Get the mime type for the file.
 		 * @return The mime type for the file contents, or null if is not set..
-	     * @throws AladinAdapterServiceException If the service is unable to handle the request.
+	     * @throws TreeClientServiceException If the service is unable to handle the request.
 		 *
 		 */
 		public String getMimeType() ;
@@ -70,18 +70,18 @@ public interface AladinAdapterFile
 	 * Get an OutputStream to send data to the file.
 	 * Openning a new stream to an existing file will over-write the file contents.
 	 * The client MUST close the output stream to force the transfer to complete.
-     * @throws AladinAdapterServiceException If the service is unable to handle the request.
+     * @throws TreeClientServiceException If the service is unable to handle the request.
 	 *
 	 */
 	public OutputStream getOutputStream()
-		throws AladinAdapterServiceException ;
+		throws TreeClientServiceException ;
 
 	/**
 	 * Get an InputStream to read data from the file.
-     * @throws AladinAdapterServiceException If the service is unable to handle the request.
+     * @throws TreeClientServiceException If the service is unable to handle the request.
 	 *
 	 */
 	public InputStream getInputStream()
-		throws AladinAdapterServiceException ;
+		throws TreeClientServiceException ;
 
 	}

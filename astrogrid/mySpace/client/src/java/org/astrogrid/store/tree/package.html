@@ -1,0 +1,20 @@
+<html>
+<body>
+<h1>Tree-interface to myspace store</h1>
+
+<h2>Example of Use</h2>
+
+<pre>
+	import org.astrogrid.store.tree.*;
+	import org.astrogrid.community.common.ivorn.CommunityAccountIvornFactory;
+	import org.astrogrid.store.Ivorn;	
+	...
+	Ivorn ivorn = CommunityAccountIvornFactory.createLocal("username");   
+	TreeClientFactory fac = new TreeClientFactory();
+	TreeClient tc = fac.createClient();
+	tc.login(ivorn,"secret password");
+	Container root = tc.getRoot();
+	System.out.println(root);
+	...
+</body>
+</html>

@@ -1,17 +1,17 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapter.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/tree/TreeClient.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapter.java,v $
- *   Revision 1.4  2004/11/17 16:22:53  clq2
+ *   $Log: TreeClient.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
- *   Revision 1.3.16.2  2004/11/16 17:27:59  nw
+ *   Revision 1.1.2.2  2004/11/16 17:27:58  nw
  *   tidied imports
  *
- *   Revision 1.3.16.1  2004/11/16 16:47:28  nw
+ *   Revision 1.1.2.1  2004/11/16 16:47:28  nw
  *   copied aladinAdapter interfaces into a neutrally-named package.
  *   deprecated original interfaces.
  *   javadoc
@@ -49,36 +49,36 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
 import org.astrogrid.community.common.security.data.SecurityToken;
 import org.astrogrid.store.Ivorn;
 
 /**
  * An adapter to enable Aladin to access files in AstroGrid MySpace.
- *@deprecated use {@link org.astrogrid.store.tree.TreeClient}
+ *
  */
-public interface AladinAdapter
+public interface TreeClient
 	{
 
 	/**
 	 * Login to the AstroGrid community.
 	 * @param ivorn    The 'ivo://...' identifier for the AstroGrid account.
 	 * @param password The account password.
-     * @throws AladinAdapterLoginException   If the login fails.
-     * @throws AladinAdapterServiceException If unable to handle the request.
+     * @throws TreeClientLoginException   If the login fails.
+     * @throws TreeClientServiceException If unable to handle the request.
 	 *
 	 */
 	public void login(Ivorn ivorn, String password)
-		throws AladinAdapterLoginException, AladinAdapterServiceException ;
+		throws TreeClientLoginException, TreeClientServiceException ;
 
 	/**
 	 * Logout from the AstroGrid community.
-     * @throws AladinAdapterServiceException If unable to handle the request.
+     * @throws TreeClientServiceException If unable to handle the request.
 	 *
 	 */
 	public void logout()
-		throws AladinAdapterServiceException ;
+		throws TreeClientServiceException ;
 
 	/**
 	 * Access to the current security token.
@@ -90,11 +90,11 @@ public interface AladinAdapter
 	/**
 	 * Get the root node of the account home space.
 	 * @return An AladinAdapterContainer representing the root of the account myspace.
-     * @throws AladinAdapterSecurityException If the adapter is not logged in.
-     * @throws AladinAdapterServiceException  If unable to handle the request.
+     * @throws TreeClientSecurityException If the adapter is not logged in.
+     * @throws TreeClientServiceException  If unable to handle the request.
 	 *
 	 */
-	public AladinAdapterContainer getRoot()
-		throws AladinAdapterSecurityException, AladinAdapterServiceException ;
+	public Container getRoot()
+		throws TreeClientSecurityException, TreeClientServiceException ;
 
 	}

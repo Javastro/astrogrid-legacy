@@ -1,14 +1,14 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterException.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/tree/TreeClientException.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapterException.java,v $
- *   Revision 1.3  2004/11/17 16:22:53  clq2
+ *   $Log: TreeClientException.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
- *   Revision 1.2.20.1  2004/11/16 16:47:28  nw
+ *   Revision 1.1.2.1  2004/11/16 16:47:28  nw
  *   copied aladinAdapter interfaces into a neutrally-named package.
  *   deprecated original interfaces.
  *   javadoc
@@ -27,14 +27,14 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
 /**
  * A base class for all our exceptions.
  * This allows the client to catch all our exceptions using one catch statement.
- * * @deprecated use {@link org.astrogrid.store.tree} instead
+ *
  */
-public class AladinAdapterException
+public class TreeClientException
 	extends Exception
 	{
 	/**
@@ -42,7 +42,7 @@ public class AladinAdapterException
 	 * @param message The Exception message.
 	 *
 	 */
-	public AladinAdapterException(String message)
+	public TreeClientException(String message)
 		{
 		super(message) ;
 		}
@@ -53,7 +53,7 @@ public class AladinAdapterException
 	 * @param cause   The Exception cause.
 	 *
 	 */
-	public AladinAdapterException(String message, Throwable cause)
+	public TreeClientException(String message, Throwable cause)
 		{
 		super(message, cause) ;
 		}

@@ -1,15 +1,20 @@
 /*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/adapter/aladin/AladinAdapterMock.java,v $</cvs:source>
+ * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/mySpace/client/src/java/org/astrogrid/store/tree/TreeClientMock.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
  * <cvs:date>$Date: 2004/11/17 16:22:53 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:version>$Revision: 1.2 $</cvs:version>
  * <cvs:log>
- *   $Log: AladinAdapterMock.java,v $
- *   Revision 1.4  2004/11/17 16:22:53  clq2
+ *   $Log: TreeClientMock.java,v $
+ *   Revision 1.2  2004/11/17 16:22:53  clq2
  *   nww-itn07-704
  *
- *   Revision 1.3.16.2  2004/11/16 20:22:06  nw
- *   put this back in, even though it isn't really needed, incase any existing code imports it.
+ *   Revision 1.1.2.2  2004/11/16 17:27:58  nw
+ *   tidied imports
+ *
+ *   Revision 1.1.2.1  2004/11/16 16:47:28  nw
+ *   copied aladinAdapter interfaces into a neutrally-named package.
+ *   deprecated original interfaces.
+ *   javadoc
  *
  *   Revision 1.3  2004/10/05 15:39:29  dave
  *   Merged changes to AladinAdapter ...
@@ -54,38 +59,31 @@
  * </cvs:log>
  *
  */
-package org.astrogrid.store.adapter.aladin ;
+package org.astrogrid.store.tree;
 
-import java.util.Map ;
-import java.util.HashMap ;
-import java.util.Collection ;
+import org.astrogrid.community.common.exception.CommunitySecurityException;
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+import org.astrogrid.community.common.security.data.SecurityToken;
+import org.astrogrid.community.common.security.service.SecurityServiceMock;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.util.MimeTypeUtil;
 
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.io.ByteArrayInputStream ;
+import org.apache.commons.collections.collection.UnmodifiableCollection;
 
-import org.apache.commons.collections.collection.UnmodifiableCollection ;
-
-import org.astrogrid.store.Ivorn ;
-
-import org.astrogrid.community.common.security.data.SecurityToken ;
-import org.astrogrid.community.common.security.service.SecurityServiceMock ;
-
-import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
-
-import org.astrogrid.community.common.exception.CommunityServiceException  ;
-import org.astrogrid.community.common.exception.CommunitySecurityException ;
-import org.astrogrid.community.common.exception.CommunityIdentifierException  ;
-
-import org.astrogrid.store.util.MimeTypeUtil ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A mock implementation of the AladinAdapter interface.
  *
  */
-public class AladinAdapterMock
-	implements AladinAdapter
+public class TreeClientMock
+	implements TreeClient
 	{
 
 	/**
@@ -125,7 +123,7 @@ public class AladinAdapterMock
 	 * Public constructor.
 	 *
 	 */
-	public AladinAdapterMock()
+	public TreeClientMock()
 		{
 		}
 
@@ -139,12 +137,12 @@ public class AladinAdapterMock
 	 * Login to the AstroGrid community.
 	 * @param ivorn    The 'ivo://...' identifier for the AstroGrid account.
 	 * @param password The account password.
-     * @throws AladinAdapterLoginException   If the login fails.
-     * @throws AladinAdapterServiceException If unable to handle the request.
+     * @throws TreeClientLoginException   If the login fails.
+     * @throws TreeClientServiceException If unable to handle the request.
 	 *
 	 */
 	public void login(Ivorn ivorn, String password)
-		throws AladinAdapterLoginException, AladinAdapterServiceException
+		throws TreeClientLoginException, TreeClientServiceException
 		{
 		if (null == ivorn)
 			{
@@ -174,14 +172,14 @@ public class AladinAdapterMock
 			}
 		catch (CommunitySecurityException ouch)
 			{
-			throw new AladinAdapterLoginException(
+			throw new TreeClientLoginException(
 				"Login failed",
 				ouch
 				) ;
 			}
 		catch (Throwable ouch)
 			{
-			throw new AladinAdapterServiceException(
+			throw new TreeClientServiceException(
 				"Failed to perform request",
 				ouch
 				) ;
@@ -216,25 +214,25 @@ public class AladinAdapterMock
 	/**
 	 * Get the root node of the account home space.
 	 * @return An AladinAdapterContainer representing the root of the account myspace.
-     * @throws AladinAdapterSecurityException If the adapter is not logged in.
-     * @throws AladinAdapterServiceException  If unable to handle the request.
+     * @throws TreeClientSecurityException If the adapter is not logged in.
+     * @throws TreeClientServiceException  If unable to handle the request.
 	 *
 	 */
-	public AladinAdapterContainer getRoot()
-		throws AladinAdapterSecurityException, AladinAdapterServiceException
+	public Container getRoot()
+		throws TreeClientSecurityException, TreeClientServiceException
 		{
 		//
 		// Check we are logged in.
 		if (null == this.token)
 			{
-			throw new AladinAdapterSecurityException(
+			throw new TreeClientSecurityException(
 				"Not logged in"
 				) ;
 			}
 		//
 		// If we are logged in.
 		else {
-			return (AladinAdapterContainer) myspace.get(
+			return (Container) myspace.get(
 				this.token.getAccount()
 				) ;
 			}
@@ -245,7 +243,7 @@ public class AladinAdapterMock
 	 *
 	 */
 	private void init()
-		throws AladinAdapterServiceException
+		throws TreeClientServiceException
 		{
 		//
 		// If we have a valid token.
@@ -280,7 +278,7 @@ public class AladinAdapterMock
 					}
 				catch (Exception ouch)
 					{
-					throw new AladinAdapterServiceException(
+					throw new TreeClientServiceException(
 						"Failed to initialise account space",
 						ouch
 						) ;
@@ -294,7 +292,7 @@ public class AladinAdapterMock
 	 *
 	 */
 	public class MockContainer
-		implements AladinAdapterContainer
+		implements Container
 		{
 		/**
 		 * Public constructor.
@@ -369,19 +367,19 @@ public class AladinAdapterMock
 		/**
 		 * Add a child container.
 		 * @param name The container name.
-	     * @throws AladinAdapterDuplicateException If the container already exists.
-		 * @throws AladinAdapterServiceException   If the service is unable to handle the request.
+	     * @throws TreeClientDuplicateException If the container already exists.
+		 * @throws TreeClientServiceException   If the service is unable to handle the request.
 		 *
 		 */
-		public AladinAdapterContainer addContainer(String name)
-			throws AladinAdapterDuplicateException
+		public Container addContainer(String name)
+			throws TreeClientDuplicateException
 			{
 			if (nodes.containsKey(name))
 				{
-				throw new AladinAdapterDuplicateException() ;
+				throw new TreeClientDuplicateException() ;
 				}
 			else {
-				AladinAdapterContainer node = new MockContainer(
+				Container node = new MockContainer(
 					name
 					) ;
 				nodes.put(
@@ -395,19 +393,19 @@ public class AladinAdapterMock
 		/**
 		 * Add a file to this container.
 		 * @param name The container name.
-	     * @throws AladinAdapterDuplicateException If the container already exists.
-		 * @throws AladinAdapterServiceException   If the service is unable to handle the request.
+	     * @throws TreeClientDuplicateException If the container already exists.
+		 * @throws TreeClientServiceException   If the service is unable to handle the request.
 		 *
 		 */
-		public AladinAdapterFile addFile(String name)
-			throws AladinAdapterDuplicateException
+		public File addFile(String name)
+			throws TreeClientDuplicateException
 			{
 			if (nodes.containsKey(name))
 				{
-				throw new AladinAdapterDuplicateException() ;
+				throw new TreeClientDuplicateException() ;
 				}
 			else {
-				AladinAdapterFile node = new MockFile(
+				File node = new MockFile(
 					name
 					) ;
 				nodes.put(
@@ -424,7 +422,7 @@ public class AladinAdapterMock
 	 *
 	 */
 	public class MockFile
-		implements AladinAdapterFile
+		implements File
 		{
 		/**
 		 * Public constructor.
@@ -499,7 +497,7 @@ public class AladinAdapterMock
 		 * Get an OutputStream to send data to the file.
 		 * Openning a new stream to an existing file will over-write the file contents.
 		 * The client MUST close the output stream to force the transfer to complete.
-	     * @throws AladinAdapterServiceException If the service is unable to handle the request.
+	     * @throws TreeClientServiceException If the service is unable to handle the request.
 		 *
 		 */
 		public OutputStream getOutputStream()
@@ -515,7 +513,7 @@ public class AladinAdapterMock
 
 		/**
 		 * Get an InputStream to read data from the file.
-	     * @throws AladinAdapterServiceException If the service is unable to handle the request.
+	     * @throws TreeClientServiceException If the service is unable to handle the request.
 		 *
 		 */
 		public InputStream getInputStream()
