@@ -73,10 +73,11 @@
                                                     ' &lt;br/&gt; &lt;b&gt;Subtype:&lt;/b&gt; <xsl:value-of select="@param-subtype"/> ' +
                                                     ' &lt;br/&gt; &lt;b&gt;Units:&lt;/b&gt; <xsl:value-of select="@param-units"/> ' +
                                                     ' &lt;br/&gt; &lt;b&gt;UCD:&lt;/b&gt; <xsl:value-of select="@param-ucd"/> ' +
-                                                    ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ' +
-                                                    ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> ' +
-                                                    ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> ' +
-                                                    ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> ');
+                                                    ' &lt;br/&gt; &lt;b&gt;Default:&lt;/b&gt; <xsl:value-of select="@param-defaultValue"/> ');
+<!--                                                    ' &lt;br/&gt; &lt;b&gt;Indirect?:&lt;/b&gt; <xsl:value-of select="@param-indirect"/> 
+                                                    ' &lt;br/&gt; Cardinality max: <xsl:value-of select="@param-cardinality-max"/> 
+                                                    ' &lt;br/&gt; Cardinality min: <xsl:value-of select="@param-cardinality-min"/> 
+-->
                                 </xsl:attribute>
                             </xsl:element>
                             <small><b>(more)</b></small>
