@@ -1,4 +1,4 @@
-package org.astrogrid.store.delegate.myspaceItn05;
+package org.astrogrid.store.integration;
 
 import junit.framework.*;
 import java.io.*;
@@ -10,6 +10,9 @@ import java.lang.reflect.Array;
 import org.astrogrid.community.User;
 
 import org.astrogrid.store.Agsl;
+import org.astrogrid.store.delegate.myspaceItn05.MySpaceIt05Delegate;
+import org.astrogrid.store.delegate.myspaceItn05.StatusCodes;
+import org.astrogrid.store.delegate.myspaceItn05.StatusMessage;
 
 /**
  * Junit tests for a deployed MySpace Manager.
