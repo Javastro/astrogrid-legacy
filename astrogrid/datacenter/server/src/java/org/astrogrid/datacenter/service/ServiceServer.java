@@ -1,10 +1,11 @@
 /*
- * $Id: ServiceServer.java,v 1.3 2003/11/17 15:41:48 mch Exp $
+ * $Id: ServiceServer.java,v 1.4 2003/11/17 18:55:16 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.service;
+import org.astrogrid.datacenter.snippet.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
