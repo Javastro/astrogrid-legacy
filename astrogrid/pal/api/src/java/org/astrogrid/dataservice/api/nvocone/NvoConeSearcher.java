@@ -1,5 +1,5 @@
 /*
- * $Id: NvoConeSearchDelegate.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: NvoConeSearcher.java,v 1.1 2005/02/18 18:14:26 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -24,13 +24,13 @@ import org.astrogrid.query.QueryState;
  * @author M Hill
  */
 
-public class NvoConeSearchDelegate
+public class NvoConeSearcher
 {
    protected String serverUrl = null;
 
    private int timeout = 0;
    
-   public NvoConeSearchDelegate(String baseUrl)
+   public NvoConeSearcher(String baseUrl)
    {
       this.serverUrl = baseUrl;
    }
@@ -91,9 +91,12 @@ public class NvoConeSearchDelegate
 }
 
 /*
-$Log: NvoConeSearchDelegate.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+$Log: NvoConeSearcher.java,v $
+Revision 1.1  2005/02/18 18:14:26  mch
+Renamed
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:23  mch
 Initial checkin
