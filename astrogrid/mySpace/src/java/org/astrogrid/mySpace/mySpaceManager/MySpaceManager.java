@@ -747,7 +747,7 @@ public class MySpaceManager {
 			}	
 		} else{
 			status.addCode(MySpaceStatusCode.AGMMCE00202,MySpaceStatusCode.ERROR, MySpaceStatusCode.NOLOG, this.getComponentName());
-			MySpaceMessage message =  new MySpaceMessage("AGMMCE00202");
+			logger.appendMessage("AGMMCE00202");
 			if (errCode=="")
 			  response = util.buildMySpaceManagerResponse(null,MMC.FAULT,"AGMMCE00202","");
 			else
@@ -788,8 +788,8 @@ public class MySpaceManager {
 			call = (Call)service.createCall();
 			call.setTargetEndpointAddress( new java.net.URL(endpoint) );
 		}catch(Exception e){
-			MySpaceMessage message = new MySpaceMessage("ERROR_CALL_SERVER_MANAGER");
-			message.getMessage(e.toString());
+			logger.appendMessage("ERROR_CALL_SERVER_MANAGER");
+			logger.appendMessage(e.toString());
 		}	
 		return call;
 	}
