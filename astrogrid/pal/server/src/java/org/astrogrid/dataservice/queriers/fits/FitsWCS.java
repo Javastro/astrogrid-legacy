@@ -1,9 +1,9 @@
-/* @(#)FitsWCS.java     $Revision: 1.1 $    $Date: 2005/02/17 18:37:34 $
+/* @(#)FitsWCS.java     $Revision: 1.1 $    $Date: 2005/03/01 15:58:34 $
  *
  * Copyright (C) 2003 European Southern Observatory
  * License:  GNU General Public License version 2 or later
  */
-package org.astrogrid.fits;
+package org.astrogrid.dataservice.queriers.fits;
 
 
 /** Calculates World COordinates from the given FITS header.
@@ -11,9 +11,11 @@ package org.astrogrid.fits;
  * NB THIS IS BLATENTLY STOLEN FROM Pierre Grosbol TO TEST WITH, THIS NEEDS
  * TO BE SORTED BEFORE RELEASE!
  *
- *  @version $Revision: 1.1 $ $Date: 2005/02/17 18:37:34 $
+ *  @version $Revision: 1.1 $ $Date: 2005/03/01 15:58:34 $
  *  @author  P.Grosbol, DMD/ESO, <pgrosbol@eso.org>
  */
+import nom.tam.fits.Header;
+
 public class FitsWCS {
    
    public final static int LIN = 0;
@@ -48,7 +50,7 @@ public class FitsWCS {
     *
     *  @param header  FitsHeader object with the image header
     */
-   public FitsWCS(FitsHeader header) {
+   public FitsWCS(Header header) {
       this(header, ' ');
    }
    
@@ -58,7 +60,7 @@ public class FitsWCS {
     *  @param header  FitsHeader object with the image header
     *  @param ver     version of WCS i.e. ' ' or 'A'..'Z'
     */
-   public FitsWCS(FitsHeader header, char ver) {
+   public FitsWCS(Header header, char ver) {
       setHeader(header, ver);
    }
    
@@ -68,26 +70,23 @@ public class FitsWCS {
     *  @param header  FitsHeader object with the image header
     *  @param ver     version of WCS i.e. ' ' or 'A'..'Z'
     */
-   private void setHeader(FitsHeader header, char ver) {
+   private void setHeader(Header header, char ver) {
       
-      FitsKeyword kw = header.get("NAXIS");
-      nax = (kw == null) ? 0 : kw.toInt();
+      nax = header.getIntValue("NAXIS");
       init(nax);
       
       String sver = String.valueOf(ver).toUpperCase().trim();
       for (int j=1; j<=nax; j++) {
-         kw = header.get("CRPIX"+j+sver);
-         crpix[j-1] = (kw == null) ? 0.0 : kw.toReal();
+         crpix[j-1] = header.getDoubleValue("CRPIX"+j+sver);
          
-         kw = header.get("CRVAL"+j+sver);
-         crval[j-1] = (kw == null) ? 0.0 : kw.toReal();
+         crval[j-1] = header.getDoubleValue("CRVAL"+j+sver);
          
-         kw = header.get("CDELT"+j+sver);
-         cdelt[j-1] = (kw == null) ? 1.0 : kw.toReal();
+         cdelt[j-1] = header.getDoubleValue("CDELT"+j+sver);
          cdMatrix[j-1][j-1] = cdelt[j-1];
          
-         kw = header.get("CTYPE"+j+sver);
-         ctype[j-1] = (kw == null) ? "        " : kw.getValue();
+         String ct = header.getStringValue("CTYPE"+j+sver);
+         ctype[j-1] = (ct == null) ? "        " : ct;
+
          if (7<ctype[j-1].length()) {
             String wctype = ctype[j-1].substring(5, 7);
             if (wctype.equals("TAN")) {
@@ -102,27 +101,25 @@ public class FitsWCS {
          }
          
          for (int i=1; i<=nax; i++) {
-            kw = header.get("CD"+j+"_"+j+sver);
+            String kw = header.getStringValue("CD"+j+"_"+j+sver);
             if (kw != null) {
-               cdMatrix[j-1][i-1] = kw.toReal();
+               cdMatrix[j-1][i-1] = Double.parseDouble(kw);
                hasCdMatrix = true;
             }
          }
          
          for (int i=1; i<=nax; i++) {
-            kw = header.get("PC"+j+"_"+i+sver);
+            String kw = header.getStringValue("PC"+j+"_"+i+sver);
             if (kw != null) {
-               pcMatrix[j-1][i-1] = kw.toReal();
+               pcMatrix[j-1][i-1] = Double.parseDouble(kw);
                hasPcMatrix = true;
             }
          }
       }
       
       for (int j=1; j<MPS; j++) {
-         kw = header.get("AMDX"+j);
-         amdx[j-1] = (kw == null) ? 0.0 : kw.toReal();
-         kw = header.get("AMDY"+j);
-         amdy[j-1] = (kw == null) ? 0.0 : kw.toReal();
+         amdx[j-1] = header.getDoubleValue("ANDX"+j);
+         amdy[j-1] = header.getDoubleValue("ANDY"+j);
       }
    }
    

@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+/*$Id: Initialise.java,v 1.2 2005/03/01 15:58:33 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.dataservice.impl.trace.initialiser;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import nom.tam.fits.FitsException;
 import org.astrogrid.dataservice.queriers.fits.IndexGenerator;
 
 
@@ -25,7 +26,7 @@ public class Initialise {
    /**
     *
     */
-   public static void main(String[] args) throws IOException {
+   public static void main(String[] args) throws IOException, FitsException {
       IndexGenerator generator = new IndexGenerator();
       generator.checkForExtensions = false;
       generator.fitsDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
@@ -36,8 +37,11 @@ public class Initialise {
 
 /*
 $Log: Initialise.java,v $
-Revision 1.1  2005/02/17 18:37:34  mch
-*** empty log message ***
+Revision 1.2  2005/03/01 15:58:33  mch
+Changed to use starlinks tamfits library
+
+Revision 1.1.1.1  2005/02/17 18:37:34  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin

@@ -1,5 +1,5 @@
 /*
- * $Id: VoTableWriter.java,v 1.1 2005/02/17 18:37:34 mch Exp $
+ * $Id: VoTableWriter.java,v 1.2 2005/03/01 15:58:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -17,7 +17,8 @@ import org.astrogrid.slinger.mime.MimeTypes;
 /**
  * For writing out tables in votable.  As far as I'm aware dates are not handled
  * by VOTables (by Jan 2005).  Since I'm stroppely ignoring VOTable development as
- * irrelevent, dates here are written as the 'C standard' number of seconds since
+ * irrelevent (ie I'm not going to try and push for standard date support, they can
+ * get around to it whenever), dates here are written as the 'C standard' number of seconds since
  * 1970 (negative numbers before 1970), with type 'float' so we can provide milliseconds
  * etc. NB we need to handle dates from several thousand BC.
  *
@@ -215,8 +216,11 @@ public class VoTableWriter implements TableWriter {
 
 /*
  $Log: VoTableWriter.java,v $
- Revision 1.1  2005/02/17 18:37:34  mch
- *** empty log message ***
+ Revision 1.2  2005/03/01 15:58:33  mch
+ Changed to use starlinks tamfits library
+
+ Revision 1.1.1.1  2005/02/17 18:37:34  mch
+ Initial checkin
 
  Revision 1.1.1.1  2005/02/16 17:11:24  mch
  Initial checkin

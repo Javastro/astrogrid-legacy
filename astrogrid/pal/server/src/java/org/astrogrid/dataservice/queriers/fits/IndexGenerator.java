@@ -14,7 +14,6 @@ package org.astrogrid.dataservice.queriers.fits;
  */
 
 import java.io.*;
-import org.astrogrid.fits.*;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -23,9 +22,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
+import nom.tam.fits.Fits;
+import nom.tam.fits.FitsException;
+import nom.tam.fits.Header;
+import nom.tam.fits.HeaderCard;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.dataservice.queriers.QuerierPluginException;
@@ -67,12 +69,12 @@ public class IndexGenerator
     * Generates a single index FitsFile 'snippet' for the FITS file at the
     * given url
     */
-   public String makeIndexSnippet(URL fitsUrl) throws IOException
+   public String makeIndexSnippet(URL fitsUrl) throws IOException, FitsException
    {
       assert fitsUrl != null;
       
       log.info("Examining file "+fitsUrl+"...");
-      return makeIndexSnippet(new FitsStreamReader(fitsUrl), fitsUrl.toString());
+      return makeIndexSnippet(new Fits(fitsUrl), fitsUrl.toString());
    }
    
    /**
@@ -81,51 +83,28 @@ public class IndexGenerator
     * @todo tidy up so that, for example, multiline comments become one tag
     * @TODO max pixels are WRONG
     */
-   public String makeIndexSnippet(FitsReader reader, String filename) throws IOException
+   public String makeIndexSnippet(Fits reader, String filename) throws IOException, FitsException
    {
       StringBuffer snippet = new StringBuffer();
       
-      FitsHeader header = new FitsHeader();
-      reader.readHeaderKeywords(header, null);
-
-      snippet.append(makeIndexSnippet(header, filename));
-
-      FitsHdu primaryHdu = new FitsHdu(header);
-
-      //now look for extensions
-      if ((checkForExtensions) && primaryHdu.getHeader().getValue("EXTEND").equals("T"))
+      for (int i = 0; i < reader.getNumberOfHDUs(); i++)
       {
-         //read data into HDU
-         reader.readData(primaryHdu);
-
-         try {
-            //*might* be extensions...
-            for (int i=0;i<4;i++)
-            {
-               log.trace(""); //seperate headers
-               log.trace(""); //seperate header-reading trace code
-            
-               header = new FitsHeader();
-               reader.readHeaderKeywords(header, null);
-         
-               snippet.append(makeIndexSnippet(header, filename));
-         
-               FitsHdu extHdu = new FitsHdu(header);
-         
-               reader.readData(extHdu);
-            }
-         }
-         catch (FitsFormatException ffe) {
-            log.warn("Fits format exception: "+ffe+" assuming no extension headers");
-         }
+         log.trace(""); //seperate headers
+         log.trace(""); //seperate header-reading trace code
+         Header header = reader.getHDU(i).getHeader();
+   
+         snippet.append(makeIndexSnippet(header, filename));
       }
+
       return snippet.toString();
    }
    
    /**
-    * Generates an index snippet for the given header
+    * Generates an index snippet for the given header.
+    * Could probably do with tidying this up a bit, for example so that multiline comments become one tag
+    * End of line comments are included as 'Comment' attributes within the keyword tag, so that they are searchable
     */
-   public String makeIndexSnippet(FitsHeader header, String fileLocation) throws IOException
+   public String makeIndexSnippet(Header header, String fileLocation) throws IOException, FitsException
    {
       if(header == null) {
         return "";
@@ -133,27 +112,39 @@ public class IndexGenerator
                                 
       //run trhough all keywords adding them
       StringBuffer keywordSnippet = new StringBuffer();
-      String key = null;
-      String val = null;
       
-      Enumeration enum = header.getKeywords();
-      while (enum.hasMoreElements())
+//proper way, but the object returned by header.iterator().next() is not documented      Iterator keys = header.iterator();
+      for (int i = 0; i < header.getNumberOfCards(); i++)
       {
-         FitsKeyword keyword = (FitsKeyword) enum.nextElement();
-         val = keyword.getValue();
+         String key = header.getKey(i).trim();
+         String value = header.getStringValue(key);
+
+         //if the key is 'comment' leave it at that, if the comment comes from and-of-line comment, include that too
+         String eolComment = null;
+         if (!key.toUpperCase().equals("COMMENT")) {
+            eolComment =header.findCard(key).getComment().trim();
+            if (eolComment.length()==0) {
+               eolComment = null;
+            }
+         }
+         String commentAtt = "";
+         if (eolComment != null) {
+            commentAtt = " comment='"+eolComment+"'";
+         }
          
-         //could probably do with tidying this up a bit, for example so that multiline comments become one tag
-         if (val == null) {
-            keywordSnippet.append("      <"+keyword.getKey()+"/>\n");
+         
+         if (value == null) {
+            keywordSnippet.append("      <"+key+commentAtt+"/>\n");
          } else {
             try {
-               Date dateVal = fitsDateFormat.parse(val);
-               keywordSnippet.append("      <"+keyword.getKey()+" units='s'>"+dateVal.getTime()+"</"+keyword.getKey()+">\n");
-               val = indexDateFormat.format(dateVal);
+               //if it's a date, we store two key entries, one with a unit attribute set to 's' and the time in ms since/before 1970
+               Date dateVal = fitsDateFormat.parse(value);
+               keywordSnippet.append("      <"+key+" unit='s'"+commentAtt+">"+dateVal.getTime()+"</"+key+">\n");
+               value = indexDateFormat.format(dateVal);
             } catch (ParseException e) {
                //ignore
             }
-            keywordSnippet.append("      <"+keyword.getKey()+">"+val+"</"+keyword.getKey()+">\n");
+            keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
          }
       }
       
@@ -162,9 +153,7 @@ public class IndexGenerator
       String snippet = "<FitsFile>\n"+
                "   <Filename>"+fileLocation+"</Filename>\n"+
                makeCoverageSnippet(header)+
-               "   <Keywords>\n"+
                keywordSnippet.toString()+
-               "   </Keywords>\n"+
                "</FitsFile>\n";
       
       validate(snippet); //debug - test snippet
@@ -175,16 +164,16 @@ public class IndexGenerator
    /**
     * Makes a Coverage snippet from the keywords in the given header, depending
     * on the raAxis, decAxis settings */
-   private String makeCoverageSnippet(FitsHeader header) {
-      if ((header.getNumAxis() >= 2) && (raAxis != -1) && (decAxis != -1)) {
+   private String makeCoverageSnippet(Header header) {
+      if ((header.getIntValue("NAXIS") >= 2) && (raAxis != -1) && (decAxis != -1)) {
          //return "";
       
          //work out coverage.  This is not a straightforward rectangle, as the
          //image may be rotated and possibly even skewed.  So just give it as a
          //polygon with 4 points.
          FitsWCS wcsCalculator = new FitsWCS(header);
-         double maxPixelRA  = header.get("NAXIS"+raAxis).toInt();
-         double maxPixelDec = header.get("NAXIS"+decAxis).toInt();
+         double maxPixelRA  = header.getDoubleValue("NAXIS"+raAxis);
+         double maxPixelDec = header.getDoubleValue("NAXIS"+decAxis);
    
          double[] point1 = wcsCalculator.toWCS( new double[] {0,0});
          double[] point2 = wcsCalculator.toWCS( new double[] {0,maxPixelDec});
@@ -202,6 +191,7 @@ public class IndexGenerator
       }
       return "";
    }
+   
    /** Checks that the given snippet is valid XML */
    public static void validate(String snippet) throws IOException
    {
@@ -217,7 +207,7 @@ public class IndexGenerator
    /**
     * Generates an index XML file for the FITS files at the given urls
     */
-   public String generateIndex(Object[] urls) throws IOException
+   public String generateIndex(Object[] urls) throws IOException, FitsException
    {
       StringBuffer index = new StringBuffer(ROOT_START+"\n");
       
@@ -237,7 +227,7 @@ public class IndexGenerator
     * Generates an index XML file for the FITS files at the URLs listed in the
     * given file, writing them out to the target stream
     */
-   public void generateIndex(InputStream urlsIn, Writer out) throws IOException
+   public void generateIndex(InputStream urlsIn, Writer out) throws IOException, FitsException
    {
       PrintWriter dout = new PrintWriter(new BufferedWriter(out));
       dout.println(ROOT_START);
@@ -262,7 +252,7 @@ public class IndexGenerator
    /**
     * Generates an index XML file for the FITS files at the given URLs, writing it out to the target stream
     */
-   public void generateIndex(URL[] urls, Writer out) throws IOException
+   public void generateIndex(URL[] urls, Writer out) throws IOException, FitsException
    {
       PrintWriter dout = new PrintWriter(new BufferedWriter(out));
       dout.println(ROOT_START);
@@ -280,7 +270,7 @@ public class IndexGenerator
    /**
      * Test harness
      */
-    public static void main(String args[]) throws IOException, MalformedURLException
+    public static void main(String args[]) throws IOException, MalformedURLException, FitsException
     {
 //      System.out.print(generateIndex(new URL[] {
 //                                new URL("file://fannich/mch/fits/ngc6946/r169093.fit")
@@ -402,8 +392,11 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
-Revision 1.1  2005/02/17 18:37:35  mch
-*** empty log message ***
+Revision 1.2  2005/03/01 15:58:34  mch
+Changed to use starlinks tamfits library
+
+Revision 1.1.1.1  2005/02/17 18:37:35  mch
+Initial checkin
 
 Revision 1.1.1.1  2005/02/16 17:11:24  mch
 Initial checkin
