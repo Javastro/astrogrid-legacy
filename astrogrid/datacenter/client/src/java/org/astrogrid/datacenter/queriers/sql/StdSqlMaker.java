@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.5 2004/10/12 22:45:45 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.6 2004/10/13 01:30:58 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -220,6 +220,17 @@ public class StdSqlMaker  extends SqlMaker {
       sql = replaceRegion(sql);
       return sql;
    }
+   
+   /**
+    * Constructs an ADQL/SQL statement for the given ADQL document (basically leaves
+    * the CIRCLE etc functions inline)
+    */
+   public String getAdqlSql(Element adql) throws QueryException {
+      String sql = useXslt(adql);
+      
+      return sql;
+   }
+   
    /**
     * Constructs an SQL statement for the given Query.  Uses the ADQL generator
     * and XSLT style sheets - there may be a better way of doing this!
@@ -421,6 +432,9 @@ public class StdSqlMaker  extends SqlMaker {
 
 /*
  $Log: StdSqlMaker.java,v $
+ Revision 1.6  2004/10/13 01:30:58  mch
+ Added adqlsql (keeps CIRCLE)
+
  Revision 1.5  2004/10/12 22:45:45  mch
  Added spaces around operators so SqlParser can work with it
 
