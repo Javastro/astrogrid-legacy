@@ -358,11 +358,14 @@ public class MySpaceActions
    {  DataItemRecord newDataHolder = new DataItemRecord();
       newDataHolder = null;
 
+      MySpaceStatus status = new MySpaceStatus();
+
+      try
+      {
 //
 //   Attempt to open the registry and proceed if ok.
 
       RegistryManager reg = new RegistryManager(registryName);
-      MySpaceStatus status = new MySpaceStatus();
       if (status.getSuccessStatus())
       {
 
@@ -421,6 +424,12 @@ public class MySpaceActions
 //   Re-write the registry file.
 
       reg.rewriteRegistryFile();
+
+      }
+      catch (Exception e)
+      {  status.addCode(MySpaceStatusCode.MS_E_UPLOAD,
+           MySpaceStatusCode.ERROR);
+      }
 
       return newDataHolder;
    }
