@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterCreationFactory.java,v 1.3 2003/12/08 23:03:11 pah Exp $
+ * $Id: ParameterCreationFactory.java,v 1.4 2004/01/16 22:18:58 pah Exp $
  * 
  * Created on 28-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -56,11 +56,16 @@ class ParameterCreationFactory extends AbstractObjectCreationFactory {
             if (type.equals("xs:string")) {
                return new StringParameterDescription();
             }
-            else
-               if (type.equals("agpd:MySpace_FileReference")) {
-                  return new FileReferenceParameterDescription();
+         else
+            if (type.equals("agpd:MySpace_FileReference")) {
+               return new MySpaceReferenceParameterDescription();
 
-               }
+            }
+         else
+            if (type.equals("agpd:FileReference")) {
+               return new FileReferenceParameterDescription();
+
+            }
          else
             if (type.equals("agpd:MySpace_VOTableReference")) {
                return new VOTableReferenceParameterDescription();

@@ -1,5 +1,5 @@
 /*
- * $Id: SExtractor.java,v 1.2 2003/12/31 00:56:17 pah Exp $
+ * $Id: SExtractor.java,v 1.1 2004/01/16 22:18:58 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -9,8 +9,9 @@
  * with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.applications.commandline;
+package org.astrogrid.applications.commandline.sextractor;
 
+import org.astrogrid.applications.commandline.CmdLineApplication;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
 
@@ -24,5 +25,8 @@ public class SExtractor extends CmdLineApplication {
       super(controller, user);
       // TODO Auto-generated constructor stub
    }
-
+   public SExtractor()
+   {
+   }
+ 
 }

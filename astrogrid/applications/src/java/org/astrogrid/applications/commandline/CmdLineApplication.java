@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.9 2004/01/13 00:12:43 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.10 2004/01/16 22:18:58 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +57,13 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    protected int exitStatus;
 
    /**
+    * This constructor is only here to allow a public constructor for derived classes, so that they can use Class.newInstance()
+    */
+   protected CmdLineApplication() {
+      super();
+   }
+
+   /**
     * @param controller
     * @param user
     */
@@ -67,6 +75,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    public boolean execute() throws ApplicationExecutionException {
 
       setupParameters();
+      preRunHook();
       startApplication();
       waitForApplication();
       status = Status.RUNNING;
@@ -92,7 +101,8 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          }
 
       }
-
+      // allow last minute manipulation of parameters before the application runs
+     postParamSetupHook();
       // TODO check for position parameters - really need to sort the parameter list based on the parameter position information.
       // for now just go through the arguments and add
       for (Iterator iter = parameters.iterator(); iter.hasNext();) {
@@ -101,16 +111,16 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       }
       args = (String[])argvals.toArray(new String[0]);
    }
-
    /**
     *stop reader and writer threads and free up some resources 
     */
-   protected void endApplication() {
+   private final void endApplication() {
       status = Status.COMPLETED;
       errPiper.terminate();
       outPiper.terminate();
       process = null;
-
+      // call the hook to allow manipulation by subclasses
+      preWritebackHook();
       // copy back any output parameters
       for (Iterator iter = parameters.iterator(); iter.hasNext();) {
          Parameter outparam = (Parameter)iter.next();
@@ -141,18 +151,43 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       }
 
    }
+   
+   /**
+     * Hook to allow for manipulation of the environment before the application gets run. Occurs when the command line has been built for the application. This does nothing in the default implementation.
+     *
+     */
+    protected void preRunHook() {
+       // do nothing special by default
+    }
+
+
+   /**
+    *  Hook to allow special parameter processing. This occurs after the parameters have had their default treatment. This does nothing in the default implementation.
+    */
+   protected void postParamSetupHook() {
+      // do nothing
+   }
+
+
+
+   /**
+    * Hook to allow the manipulation of results before they are written back to the caller. This does nothing in the default implementation.
+    */
+   protected void preWritebackHook() {
+      // default is to do nothing special
+   }
 
    /**
     * creates a new thread to wait for the application to finish....
     */
-   protected void waitForApplication() {
+   private void waitForApplication() {
       appWaitThread = new Thread(this);
       appWaitThread.start();
 
    }
 
    /**
-    * 
+    * Actual implementation of the application wait
     */
    private void waitForApplicationImp() {
       logger.info("waiting for " + applicationDescription.getName() + " to finish....");
@@ -172,7 +207,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
    /**
     * 
     */
-   protected void startApplication() throws ApplicationExecutionException {
+   private void startApplication() throws ApplicationExecutionException {
       FileOutputStream stdout, stderr;
 
       try {
@@ -183,6 +218,9 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          throw new ApplicationExecutionException("Cannot open stdout or stderr files", e);
       }
       try {
+         
+         if (logger.isDebugEnabled())
+            logger.debug(args);
          process =
             runtime.exec(args, envp, applicationEnvironment.getExecutionDirectory());
       }
@@ -192,7 +230,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
             e1);
 
       }
-
+      
       errPiper = new StreamPiper("err", process.getErrorStream(), stderr);
 
       //this call to process.getInputStream has to be a bug in the JDK 0

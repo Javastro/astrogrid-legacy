@@ -32,6 +32,8 @@
 			<Parameter name="P9" type="agpd:MySpace_FileReference"><UI_Name></UI_Name><UI_Description>The contents of this file will be copied to the output</UI_Description></Parameter>
 			<Parameter name="P10" type="xs:boolean"/>
 			<Parameter name="P11" type="xs:anyURI"/>
+			<Parameter name="P12" type="agpd:FileReference" switchType="normal"><UI_Name></UI_Name><UI_Description></UI_Description></Parameter>
+			
 		</Parameters>
 		<Interfaces>
 			<Interface name="I1">

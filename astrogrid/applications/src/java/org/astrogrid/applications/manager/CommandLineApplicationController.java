@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationController.java,v 1.15 2004/01/04 14:51:22 pah Exp $
+ * $Id: CommandLineApplicationController.java,v 1.16 2004/01/16 22:18:58 pah Exp $
  *
  * Created on 13 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -16,11 +16,11 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.astrogrid.applications.ApplicationFactory;
+import org.astrogrid.applications.CmdLineApplicationCreator;
 import org.astrogrid.applications.ParameterValues;
 import org.astrogrid.applications.Status;
 import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
 import org.astrogrid.applications.commandline.CmdLineApplication;
-import org.astrogrid.applications.commandline.CmdLineApplicationCreator;
 import org.astrogrid.applications.commandline.exceptions.ApplicationExecutionException;
 import org.astrogrid.applications.commandline.exceptions.CannotCreateWorkingDirectoryException;
 import org.astrogrid.applications.description.ParameterLoader;
@@ -61,7 +61,6 @@ public class CommandLineApplicationController extends AbstractApplicationControl
                e.printStackTrace();
             }
       }
-      
       
       return success;
       

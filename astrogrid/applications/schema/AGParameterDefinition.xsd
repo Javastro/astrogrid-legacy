@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.9 2003/12/11 13:23:02 pah Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.10 2004/01/16 22:18:58 pah Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
@@ -81,6 +81,7 @@
 			<xs:enumeration value="xs:integer"/>
 			<xs:enumeration value="xs:real"/>
 			<xs:enumeration value="agpd:MySpace_FileReference"/>
+			<xs:enumeration value="agpd:FileReference"/>
 			<xs:enumeration value="agpd:MySpace_VOTableReference"/>
 			<xs:enumeration value="xs:double"/>
 			<xs:enumeration value="xs:string"/>

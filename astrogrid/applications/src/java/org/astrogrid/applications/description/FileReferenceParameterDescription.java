@@ -1,5 +1,5 @@
 /*
- * $Id: FileReferenceParameterDescription.java,v 1.1 2003/11/29 00:50:14 pah Exp $
+ * $Id: FileReferenceParameterDescription.java,v 1.2 2004/01/16 22:18:58 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,5 +11,11 @@
 
 package org.astrogrid.applications.description;
 
-public class FileReferenceParameterDescription extends MySpaceReferenceParameterDescription {
+/**
+ * This represents a true local file reference - can be used directly....
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4.1
+ */
+public class FileReferenceParameterDescription extends ParameterDescription {
 }

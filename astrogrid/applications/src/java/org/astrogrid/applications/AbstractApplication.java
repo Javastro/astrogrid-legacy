@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractApplication.java,v 1.9 2004/01/13 00:12:43 pah Exp $
+ * $Id: AbstractApplication.java,v 1.10 2004/01/16 22:18:58 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,6 +21,11 @@ import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.manager.AbstractApplicationController;
 import org.astrogrid.community.User;
 
+/**
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration4.1
+ */
 public abstract class AbstractApplication implements Application {
    /**
     *@link aggregation
@@ -54,9 +59,18 @@ public abstract class AbstractApplication implements Application {
    
    public AbstractApplication(AbstractApplicationController controller, User user)
    {
+      this();
       this.controller = controller;
       this.user = user;
+   }
+   /**
+    * This constructor is only here to allow a public constructor for derived classes, so that they can use Class.newInstance()
+    *
+    */
+   protected AbstractApplication()
+   {
       parameters = new ArrayList();
+      
    }
    
    /* (non-Javadoc)

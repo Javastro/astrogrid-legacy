@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<!--$Id: applicationDefinitions.xml,v 1.4 2004/01/14 10:33:20 pah Exp $-->
+<!--$Id: applicationDefinitions.xml,v 1.5 2004/01/16 22:18:58 pah Exp $-->
 <!--This is the configuration file for the Iteration4 application controller-->
 <ApplicationController xmlns="http://www.astrogrid.org/schema/AGParameterDefinition/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/AGParameterDefinition
 http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd">
-	<Application name="SExtractor" instanceClass="org.astrogrid.applications.commandline.SExtractor">
+	<Application name="SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
-		<ExecutionPath>/home/applications/tools/sex</ExecutionPath>
+		<ExecutionPath>/home/applications/tools/sextractor-2.3/sex</ExecutionPath>
 		<Parameters>
-			<Parameter name="DetectionImage" type="agpd:MySpace_FileReference" commandPosition="1">
+		<!-- temporarily turn the images into direct file references - for performance during the AVO demo -->
+			<Parameter name="DetectionImage" type="agpd:FileReference" commandPosition="1">
 				<UI_Name>Detection Image</UI_Name>
 				<UI_Description>The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</UI_Description>
 			</Parameter>
-			<Parameter name="PhotoImage" type="agpd:MySpace_FileReference" commandPosition="1">
+			<Parameter name="PhotoImage" type="agpd:FileReference" commandPosition="2">
 				<UI_Name>Measurement Image</UI_Name>
 				<UI_Description>The Image that is used to measure photometric parameters</UI_Description>
 			</Parameter>
-			<Parameter name="config_file" type="agpd:MySpace_FileReference" commandPosition="2" commandSwitch="-c">
+			<Parameter name="config_file" type="agpd:FileReference"  commandSwitch="c">
 				<UI_Name>Configuration File</UI_Name>
 				<UI_Description>File containing the main configuration parameters for SExtractor</UI_Description>
 			</Parameter>
-			<Parameter name="PARAMETERS_NAME" type="agpd:MySpace_FileReference">
+			<Parameter name="PARAMETERS_NAME" type="agpd:FileReference">
 				<UI_Name>Parameter File</UI_Name>
 				<UI_Description>A File containing the list of catalogue paramters that should be computed</UI_Description>
 			</Parameter>
-			<Parameter name="CATALOG_NAME" type="agpd:MySpace_FileReference">
+			<Parameter name="CATALOG_NAME" type="agpd:FileReference">
 				<UI_Name>Derived output catalogue</UI_Name>
 				<UI_Description>The catalogue of images derived from the input images</UI_Description>
 			</Parameter>
@@ -43,19 +44,19 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 			</Interface>
 		</Interfaces>
 	</Application>
-	<Application name="HyperZ" instanceClass="org.astrogrid.applications.commandline.HyperZ">
+	<Application name="HyperZ" instanceClass="org.astrogrid.applications.commandline.hyperz.HyperZ">
 		<!--HyperZ is another tool that will be driven by config files - however this might not be the full set necessary to run this tool.-->
-		<ExecutionPath>/home/applications/tools/hyperz</ExecutionPath>
+		<ExecutionPath>/home/applications/tools/ZPHOT/hyperzwrapper.sh</ExecutionPath>
 		<Parameters>
-			<Parameter name="config_file" type="agpd:MySpace_FileReference">
+			<Parameter name="config_file" type="agpd:FileReference"  commandPosition="1" >
 				<UI_Name>Configuration File</UI_Name>
 				<UI_Description>A HyperZ configuration file</UI_Description>
 			</Parameter>
-			<Parameter name="input_catalog" type="agpd:MySpace_FileReference">
+			<Parameter name="input_catalog" type="agpd:FileReference" commandSwitch="CATALOG_FILE">
 				<UI_Name>Magnitude Catalogue</UI_Name>
 				<UI_Description>The input catalogue of measured magnitude</UI_Description>
 			</Parameter>
-			<Parameter name="output_catalog" type="agpd:MySpace_FileReference">
+			<Parameter name="output_catalog" type="agpd:FileReference" commandSwitch="OUTPUT_CATALOG">
 				<UCD/>
 				<UI_Name>Redshift Catalogue</UI_Name>
 				<UI_Description>The catalogue of estimated redshifts</UI_Description>
@@ -73,7 +74,7 @@ http://www.astrogrid.org/schema/AGParameterDefinition/AGParameterDefinition.xsd"
 			</Interface>
 		</Interfaces>
 	</Application>
-	<Application name="DataFederation" instanceClass="org.astrogrid.applications.commandline.StdApplication">
+	<Application name="DataFederation">
 		<!--This is Patricio's data federation tool that will be needed for the january demo I believe - It is more complicated than those above in that it has more different types of parameter. Additionally I think that it would be good for the UI to be able to look into the VOTables to give the user a list of columns to chose from - otherwise this would be a very painful process for the user.-->
 		<ExecutionPath>/home/applications/tools/dft/bin/</ExecutionPath>
 		<!-- these parameters are incorrect in the latest verison of the tool -->

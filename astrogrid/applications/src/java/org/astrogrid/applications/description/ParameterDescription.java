@@ -1,5 +1,5 @@
 /*
- * $Id: ParameterDescription.java,v 1.5 2003/12/31 00:56:17 pah Exp $
+ * $Id: ParameterDescription.java,v 1.6 2004/01/16 22:18:58 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -103,7 +103,7 @@ public abstract class ParameterDescription {
          }
          else {
             cmdarg.add(sw+"="+val);
-
+   
          }
        
       }
