@@ -2,8 +2,8 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/site/sitemap.xmap,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/03/19 12:40:09 $</cvs:date>
-    | <cvs:version>$Revision: 1.9 $</cvs:version>
+    | <cvs:date>$Date: 2004/03/19 13:02:25 $</cvs:date>
+    | <cvs:version>$Revision: 1.10 $</cvs:version>
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 <!-- ======================== Components ================================ -->
@@ -188,32 +188,15 @@
 <!--+
     | <cvs:log>
     |   $Log: sitemap.xmap,v $
+    |   Revision 1.10  2004/03/19 13:02:25  jdt
+    |   Pruned the log messages - they cause conflicts on merge, 
+    |   best just to reduce them to the merge message.
+    |
     |   Revision 1.9  2004/03/19 12:40:09  jdt
     |   Merge from PLGN_JDT_bz199b.
     |   Refactored log in pages to use xsp and xsl style sheets.  
     |   Added pages for requesting a login, and requesting
     |   a password reminder.
-    |
-    |   Revision 1.8.14.3  2004/03/19 02:46:45  jdt
-    |   Added registration and reminder pages.  Add pattern validation to email addresses.
-    |
-    |   Revision 1.8.14.1  2004/03/19 00:08:16  jdt
-    |   added a temporary logon-jdt pattern to the pipeline
-    |
-    |   Revision 1.8  2004/01/09 11:17:50  dave
-    |   Tidying up ... converted tabs to spaces
-    |
-    |   Revision 1.7  2004/01/09 10:07:39  dave
-    |   Fixed reference to login-pass XSP page
-    |
-    |   Revision 1.6  2004/01/09 07:37:34  dave
-    |   Replaced static XML with XSP pages
-    |
-    |   Revision 1.5  2004/01/09 07:28:23  dave
-    |   Fixed duplicate generator error
-    |
-    |   Revision 1.4  2004/01/09 07:25:42  dave
-    |   Changed redirect to welcome page
     |
     | </cvs:log>
     |

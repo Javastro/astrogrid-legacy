@@ -1,9 +1,9 @@
 /**
- * <cvs:id>$Id: LoginAction.java,v 1.18 2004/03/19 12:40:09 jdt Exp $</cvs:id>
+ * <cvs:id>$Id: LoginAction.java,v 1.19 2004/03/19 13:02:25 jdt Exp $</cvs:id>
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portal/login/src/java/org/astrogrid/portal/cocoon/common/LoginAction.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2004/03/19 12:40:09 $</cvs:date>
- * <cvs:version>$Revision: 1.18 $</cvs:version>
+ * <cvs:date>$Date: 2004/03/19 13:02:25 $</cvs:date>
+ * <cvs:version>$Revision: 1.19 $</cvs:version>
  */
 package org.astrogrid.portal.cocoon.common;
 import org.apache.avalon.framework.parameters.Parameters;
@@ -278,45 +278,15 @@ public class LoginAction extends AbstractAction {
 /**
  * <cvs:log>
  * $Log: LoginAction.java,v $
+ * Revision 1.19  2004/03/19 13:02:25  jdt
+ * Pruned the log messages - they cause conflicts on merge, 
+ * best just to reduce them to the merge message.
+ *
  * Revision 1.18  2004/03/19 12:40:09  jdt
  * Merge from PLGN_JDT_bz199b.
  * Refactored log in pages to use xsp and xsl style sheets.  
  * Added pages for requesting a login, and requesting
  * a password reminder.
- *
- * Revision 1.17.14.3  2004/03/15 17:16:04  jdt
- * removed frog() method - fairly sure it's not used, and can 
- * reinstate it later if wrong.
- *
- * Revision 1.17.14.2  2004/03/15 16:24:32  jdt *** empty log message ***
- * 
- * Revision 1.17.14.1  2004/03/15 16:22:09  jdt
- * Moved log entries to EOF and applied Eclipse formatter 
- * (best done now before any real changes)
- * 
- * Revision 1.17 2004/01/16 12:14:20 dave
- * Tidied up LoginAction code (removed tabs)
- * 
- * Revision 1.16 2004/01/12 21:01:45 dave Added community_name session
- * attribute and menu file
- * 
- * Revision 1.15 2004/01/09 11:17:50 dave Tidying up ... converted tabs to
- * spaces
- * 
- * Revision 1.14 2004/01/09 11:12:16 dave Changes flag to healthy not pass -
- * already used that.
- * 
- * Revision 1.13 2004/01/09 11:07:32 dave Added an early fail test to the login
- * action
- * 
- * Revision 1.12 2004/01/09 10:17:54 dave Fixed account param in LoginAction
- * 
- * Revision 1.11 2004/01/09 10:13:42 dave Added message to login page
- * 
- * Revision 1.10 2004/01/09 10:07:39 dave Fixed reference to login-pass XSP
- * page
- * 
- * Revision 1.9 2004/01/09 07:54:33 dave Added cvs logs
  * 
  * </cvs:log>
  */

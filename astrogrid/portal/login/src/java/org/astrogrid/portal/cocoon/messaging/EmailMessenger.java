@@ -1,4 +1,4 @@
-/* $Id: EmailMessenger.java,v 1.2 2004/03/19 12:40:09 jdt Exp $
+/* $Id: EmailMessenger.java,v 1.3 2004/03/19 13:02:25 jdt Exp $
  * Created on Mar 14, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -69,14 +69,15 @@ public final class EmailMessenger implements Messenger {
 
 /*
  *  $Log: EmailMessenger.java,v $
+ *  Revision 1.3  2004/03/19 13:02:25  jdt
+ *  Pruned the log messages - they cause conflicts on merge, 
+ *  best just to reduce them to the merge message.
+ *
  *  Revision 1.2  2004/03/19 12:40:09  jdt
  *  Merge from PLGN_JDT_bz199b.
  *  Refactored log in pages to use xsp and xsl style sheets.  
  *  Added pages for requesting a login, and requesting
  *  a password reminder.
- *
- *  Revision 1.1.2.1  2004/03/16 10:50:33  jdt
- *  Added email messenging classes
  *
  *
  */
