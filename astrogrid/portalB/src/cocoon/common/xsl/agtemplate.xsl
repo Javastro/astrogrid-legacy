@@ -68,7 +68,7 @@
                   <font color="#3333FF" face="arial, helvetica, sans-serif"><b>Browse MySpace</b></font></a>
                   <br/><br/>
                   <a href="agjobmonitor.html">
-                  <font color="#3333FF" face="arial, helvetica, sans-serif"><b>Job Monitor</b></font></a>
+                  <font color="#3333FF" face="arial, helvetica, sans-serif"><b>Job Manager</b></font></a>
                   <br/><br/>
                   <a href="agtools.html">
                   <font color="#3333FF" face="arial, helvetica, sans-serif"><b>Tools</b></font></a>
