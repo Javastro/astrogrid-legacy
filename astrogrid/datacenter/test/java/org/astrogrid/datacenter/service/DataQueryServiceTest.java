@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.6 2003/09/10 12:16:44 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.7 2003/09/10 14:48:35 nw Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -73,7 +73,11 @@ public class DataQueryServiceTest extends HsqlTestCase {
     protected void tearDown() throws Exception {
         if (conn != null) {
             //conn.createStatement().execute("SHUTDOWN");
-            conn.close();
+            try {
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         //wsTest.tearDown(); //tears down workspace
     }
@@ -109,16 +113,16 @@ public class DataQueryServiceTest extends HsqlTestCase {
         querier.doQuery();
         Document votable = querier.getResults().toVotable();
         assertNotNull(votable);
-        assertEquals("VOTABLE",votable.getLocalName());
-        assertEquals(querier.getStatus(),ServiceStatus.FINISHED);
+        
+        assertEquals("VOTABLE",votable.getDocumentElement().getLocalName());
+        assertEquals(ServiceStatus.QUERY_COMPLETE,querier.getStatus());
 
        // check what the listener recorded.
 //not always        assertEquals(4,l.statusList.size());
 //        String[] expected = new String[]{ServiceStatus.STARTING,ServiceStatus.RUNNING_QUERY,ServiceStatus.RUNNING_RESULTS,ServiceStatus.FINISHED};
-        assertTrue(l.getLast() == ServiceStatus.FINISHED);
-
+        assertEquals(ServiceStatus.QUERY_COMPLETE,l.getLast());
     }
-
+    
     public void testHandleUniqueness() throws IOException {
         DatabaseQuerier s1 = new DummyQuerier();
         assertNotNull(s1);
@@ -153,6 +157,9 @@ public class DataQueryServiceTest extends HsqlTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.7  2003/09/10 14:48:35  nw
+fixed breaking tests
+
 Revision 1.6  2003/09/10 12:16:44  mch
 Changes to make web interface more consistent
 

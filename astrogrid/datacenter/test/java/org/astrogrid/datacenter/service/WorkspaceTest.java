@@ -165,7 +165,7 @@ public class WorkspaceTest extends TestCase
 
       //check directory exists where we expect it to (otherwise test below is meaningless)
       File wsf = new File(tmpDir+File.separator+"TestOpenClose");
-      assertTrue(f.exists());
+      assertTrue(wsf.exists());
       
       ws.close();
       // should also prevent us from creating new files, in one way or another
@@ -210,6 +210,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.8  2003/09/10 14:48:35  nw
+fixed breaking tests
+
 Revision 1.7  2003/09/08 19:39:55  mch
 More bugfixes and temporary file locations
 

@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.5 2003/09/10 10:01:38 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.6 2003/09/10 14:48:35 nw Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -115,7 +115,7 @@ public class SqlQuerierTest extends TestCase {
 
 //        Element voElement = resultDoc.getDocumentElement();
         assertNotNull(voElement);
-        assertEquals("VOTABLE",voElement.getLocalName());
+        assertEquals("VOTABLE",voElement.getDocumentElement().getLocalName());
         // could add extra checking to compare with expected results here..
     }
 
@@ -124,6 +124,9 @@ public class SqlQuerierTest extends TestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.6  2003/09/10 14:48:35  nw
+fixed breaking tests
+
 Revision 1.5  2003/09/10 10:01:38  nw
 fixed setup.
 
