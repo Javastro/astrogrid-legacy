@@ -1,4 +1,4 @@
-/*$Id: RdbmsTest.java,v 1.3 2004/11/03 00:31:03 mch Exp $
+/*$Id: RdbmsTest.java,v 1.4 2004/11/11 22:54:13 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -25,8 +25,8 @@ import org.astrogrid.datacenter.integration.DatacenterTestCase;
 import org.astrogrid.datacenter.integration.StdKeys;
 import org.astrogrid.datacenter.queriers.test.SampleStarsPlugin;
 import org.astrogrid.datacenter.query.Query;
-import org.astrogrid.slinger.NullTarget;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.NullTarget;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.xml.sax.SAXException;
 
 /**
@@ -114,6 +114,9 @@ public class RdbmsTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: RdbmsTest.java,v $
+Revision 1.4  2004/11/11 22:54:13  mch
+Moved targets
+
 Revision 1.3  2004/11/03 00:31:03  mch
 PAL_MCH Candidate 2 merge
 

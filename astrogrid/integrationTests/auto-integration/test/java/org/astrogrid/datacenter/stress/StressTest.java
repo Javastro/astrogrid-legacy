@@ -1,4 +1,4 @@
-/*$Id: StressTest.java,v 1.5 2004/11/03 00:31:03 mch Exp $
+/*$Id: StressTest.java,v 1.6 2004/11/11 22:54:13 mch Exp $
  * Created on 23-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,8 +24,8 @@ import org.astrogrid.datacenter.integration.StdKeys;
 import org.astrogrid.datacenter.integration.clientside.RdbmsTest;
 import org.astrogrid.datacenter.query.Query;
 import org.astrogrid.datacenter.query.QueryException;
-import org.astrogrid.slinger.NullTarget;
-import org.astrogrid.slinger.TargetMaker;
+import org.astrogrid.slinger.targets.NullTarget;
+import org.astrogrid.slinger.targets.TargetMaker;
 import org.xml.sax.SAXException;
 
 /**
@@ -70,6 +70,9 @@ public class StressTest extends DatacenterTestCase implements StdKeys {
 
 /*
 $Log: StressTest.java,v $
+Revision 1.6  2004/11/11 22:54:13  mch
+Moved targets
+
 Revision 1.5  2004/11/03 00:31:03  mch
 PAL_MCH Candidate 2 merge
 
