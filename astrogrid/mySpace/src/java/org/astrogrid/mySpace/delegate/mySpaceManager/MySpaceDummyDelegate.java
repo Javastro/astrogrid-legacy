@@ -140,7 +140,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
     */
    private String getPath(String userid, String communityid)
    {
-      return ""; //dir.getPath()+File.separator;
+      return dir.getPath()+File.separator;
    }
 
    /**
