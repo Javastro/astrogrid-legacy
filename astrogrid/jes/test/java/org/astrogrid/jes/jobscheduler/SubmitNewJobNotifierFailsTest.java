@@ -1,4 +1,4 @@
-/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
+/*$Id: SubmitNewJobNotifierFailsTest.java,v 1.6 2004/03/09 14:24:09 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,12 +12,11 @@ package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.util.JesFunctions;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
 import java.util.Iterator;
 
@@ -36,20 +35,18 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTestForJobController#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
-    protected void performTest(SubmissionResponse result) throws Exception {
-        // check all is ok.
-        assertNotNull(result);
-        JobURN urn = result.getJobURN();
+    protected void performTest(JobURN urn) throws Exception {
+
         assertNotNull(urn);
         // could take copy of job here from store (need to clone, as using in-memory store). then compare it to result after scheduling.
-        js.scheduleNewJob(urn);
+        js.scheduleNewJob(JesUtil.castor2axis(urn));
         //now check behaviour is as expected.
         // should have dispatched something - should be all steps.
         assertTrue(((MockDispatcher)dispatcher).getCallCount() > 0);
         // don't know what happens when first error is encountered.
         
         //
-        Workflow job = fac.findJob(JesUtil.axis2castor(urn));
+        Workflow job = fac.findJob(urn);
         assertNotNull(job);
         // all steps should be in an error state.
         job.addFunctions(JesFunctions.FUNCTIONS);
@@ -72,6 +69,9 @@ public class SubmitNewJobNotifierFailsTest extends AbstractTestForJobScheduler{
 
 /* 
 $Log: SubmitNewJobNotifierFailsTest.java,v $
+Revision 1.6  2004/03/09 14:24:09  nw
+upgraded to new job controller wsdl
+
 Revision 1.5  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy

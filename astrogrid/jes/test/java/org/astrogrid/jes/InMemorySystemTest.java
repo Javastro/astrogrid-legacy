@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.7 2004/03/08 00:37:23 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.8 2004/03/09 14:24:16 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,8 @@ import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Policy;
 import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
+import org.astrogrid.jes.types.v1.JobURN;
+import org.astrogrid.jes.types.v1.WorkflowString;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
@@ -107,14 +108,13 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
         // parse the document, feed it into the system.
         String docString = FileResourceLoader.streamToString(is);
         assertNotNull(docString);
-        SubmissionResponse resp = getController().submitJob(docString);
-        assertNotNull(resp);
-        assertTrue(resp.isSubmissionSuccessful());
+        JobURN urn = getController().submitWorkflow(new WorkflowString(docString));
+        assertNotNull(urn);
         // now wait for notification that the system has finished processing.
         barrier.attemptBarrier(Sync.ONE_SECOND * WAIT_SECONDS);
         assertFalse("timed out waiting for the scheduler to complete",barrier.broken()); // if this is false, meanst that we timed out - need to increase the duration?
  
-        Workflow job =  ComponentManagerFactory.getInstance().getFacade().getJobFactory().findJob(JesUtil.axis2castor(resp.getJobURN()));
+        Workflow job =  ComponentManagerFactory.getInstance().getFacade().getJobFactory().findJob(JesUtil.axis2castor(urn));
         assertNotNull(job);
         
         Document doc = XMLUtils.newDocument();
@@ -167,6 +167,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.8  2004/03/09 14:24:16  nw
+upgraded to new job controller wsdl
+
 Revision 1.7  2004/03/08 00:37:23  nw
 tidied up
 

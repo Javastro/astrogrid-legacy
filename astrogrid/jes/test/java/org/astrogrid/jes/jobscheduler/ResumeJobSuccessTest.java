@@ -1,4 +1,4 @@
-/*$Id: ResumeJobSuccessTest.java,v 1.5 2004/03/05 16:16:55 nw Exp $
+/*$Id: ResumeJobSuccessTest.java,v 1.6 2004/03/09 14:24:09 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,19 +11,18 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.jes.types.v1.JobURN;
-import org.astrogrid.jes.types.v1.SubmissionResponse;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.MessageType;
 import org.astrogrid.jes.util.JesUtil;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Workflow;
+import org.astrogrid.workflow.beans.v1.execution.JobURN;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /** test behaviour of 'resumeTest' method.
  * @author Noel Winstanley nw@jb.man.ac.uk 19-Feb-2004
  *
- */
+ */ 
 public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
     /** Construct a new ResumeJobSuccessTest
      * @param arg0
@@ -34,13 +33,10 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
     /**
      * @see org.astrogrid.jes.jobcontroller.AbstractTestForJobController#performTest(org.astrogrid.jes.types.v1.SubmissionResponse)
      */
-    protected void performTest(SubmissionResponse result) throws Exception {
-        // check all is ok.
-        assertNotNull(result);
-        JobURN urn = result.getJobURN();
+    protected void performTest(JobURN urn) throws Exception {  
         assertNotNull(urn);
         // find job, get first jobstep out of it.
-        Workflow j = fac.findJob(JesUtil.axis2castor(urn));
+        Workflow j = fac.findJob(urn);
         assertNotNull(j);
         Step step = (Step)JesUtil.getJobSteps(j).next(); // got to have at least one job step
         // shouldn't have been executed yet.
@@ -51,7 +47,7 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
         String xpath = j.getXPathFor(step);
         assertNotNull(xpath);
         assertEquals(step,j.findXPathValue(xpath));
-        JobIdentifierType id = JesUtil.createJobId(JesUtil.axis2castor(urn),xpath);       
+        JobIdentifierType id = JesUtil.createJobId(urn,xpath);       
         info.setContent("TEST COMMENT");
         info.setPhase(org.astrogrid.jes.types.v1.cea.axis.ExecutionPhase.COMPLETED);
         
@@ -75,6 +71,9 @@ public class ResumeJobSuccessTest extends AbstractTestForJobScheduler {
 
 /* 
 $Log: ResumeJobSuccessTest.java,v $
+Revision 1.6  2004/03/09 14:24:09  nw
+upgraded to new job controller wsdl
+
 Revision 1.5  2004/03/05 16:16:55  nw
 worked now object model through jes.
 implemented basic scheduling policy
