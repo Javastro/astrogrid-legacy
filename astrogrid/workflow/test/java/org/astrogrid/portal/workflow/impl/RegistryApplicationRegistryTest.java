@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistryTest.java,v 1.3 2004/04/05 15:15:18 nw Exp $
+/*$Id: RegistryApplicationRegistryTest.java,v 1.4 2004/04/14 15:31:56 nw Exp $
  * Created on 10-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 /** hard to test this in a unit-test way.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-Mar-2004
- *
+ * @todo this is an integration test- move to integration testing.
  */
 public class RegistryApplicationRegistryTest extends TestCase {
     /**
@@ -41,7 +41,7 @@ public class RegistryApplicationRegistryTest extends TestCase {
     public final static String ENDPOINT = "http://msslxy.mssl.ucl.ac.uk:8080/astrogrid-registry-webapp/services/Registry";
     protected ApplicationRegistry reg;
     
-    public void testListApplications() throws Exception {
+    public void dontTestListApplications() throws Exception {
         String[] apps = reg.listApplications();
         assertNotNull(apps);
         assertTrue(apps.length > 0);
@@ -49,7 +49,7 @@ public class RegistryApplicationRegistryTest extends TestCase {
         
     }
     
-    public void testGetDescriptionFor() throws Exception {
+    public void dontTestGetDescriptionFor() throws Exception {
         String[] apps = reg.listApplications();
        for (int i = 0; i < apps.length; i++) {
             ApplicationDescription descr = reg.getDescriptionFor(apps[i]);
@@ -61,6 +61,9 @@ public class RegistryApplicationRegistryTest extends TestCase {
 
 /* 
 $Log: RegistryApplicationRegistryTest.java,v $
+Revision 1.4  2004/04/14 15:31:56  nw
+disabled test - its an integration test really anyhow.
+
 Revision 1.3  2004/04/05 15:15:18  nw
 tests for the fresh implementation
 
