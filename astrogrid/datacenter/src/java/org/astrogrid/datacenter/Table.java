@@ -12,7 +12,7 @@ import org.astrogrid.datacenter.i18n.*;
 import org.w3c.dom.* ;
 
 /**
- * The <code>Criteria</code> class represents ...
+ * The <code>Table</code> class represents ...
  * <p>
  * Introductory text.... For example:
  * <p><blockquote><pre>

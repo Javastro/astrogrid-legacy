@@ -1,8 +1,12 @@
 /*
  * @(#)DatasetAgent.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.datacenter;
 
@@ -49,18 +53,19 @@ import org.xml.sax.InputSource ;
  * 1. The datacenter is driven by a properties file, held at class level.
  * 2. AstroGrid messages are held in a manner amenable to internationalization.
  * These are also loaded from a properties file, held at class level.
- * 3. Finally, and importantly, the DatasetAgent utilizes an entity which does
- * contain state - the Job entity, which currently represents one table held in any suitable
- * JDBC compliant database. However, again this is not an absolute restriction.
+ * 3. Finally, and importantly, the DatasetAgent utilizes (but does not hold it
+ * as an instance variable) an entity which does contain state - the Job entity, 
+ * which currently represents one table held in any suitable JDBC compliant database. 
+ * However, and again, this is not an absolute restriction.
  *
  * @author  Jeff Lusted
  * @version 1.0 28-May-2003
  * @since   AstroGrid 1.2
  */
 public class DatasetAgent {
-	 
-	// Compile-time switch. Set this to false to eliminate all trace statements
-	// within the byte code.
+
+	/** Compile-time switch used to turn tracing on/off. 
+	  * Set this to false to eliminate all trace statements within the byte code.*/	 
 	private static final boolean 
 		TRACE_ENABLED = true ;
 			
@@ -89,6 +94,24 @@ public class DatasetAgent {
 		doConfigure();
 	}
 	
+	
+	/**
+	  *  
+	  * Static initialization routine called during class loading.
+	  * <p>
+	  * Attempts to load the component's configuration properties
+	  * from a properties file. If it fails, a log message is
+	  * produced. If it succeeds, attempts to configure the
+	  * component's default language basis for messages.
+	  * <p>
+	  * @see configureMessages()
+	  * <p>
+	  * A candidate for refactoring...
+	  * @see org.astrogrid.jes.JobController
+	  * @see org.astrogrid.jes.JobScheduler
+	  * @see org.astrogrid.jes.JobMonitor
+	  * 
+	  **/             
 	private static void doConfigure() {
 		if( TRACE_ENABLED ) logger.debug( "doConfigure(): entry") ;
 				
@@ -104,7 +127,6 @@ public class DatasetAgent {
 			configureMessages() ;
 		}
 		catch ( IOException ex ) {
-			System.out.println( "Could not read configuration file" ) ;
 			Message
 				message = new Message( ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE, CONFIG_FILENAME ) ;
 			logger.error( message.toString(), ex ) ;
@@ -119,6 +141,19 @@ public class DatasetAgent {
 	} // end of doConfigure()
 	  
 	  
+	/**
+	  *  
+	  * Configures the component's language basis for messages.
+	  * This is the installation's default language.
+	  * <p>
+	  * @see org.astrogrid.datacenter.i18n.Message
+	  * <p>
+	  * A candidate for refactoring...
+	  * @see org.astrogrid.jes.JobController
+	  * @see org.astrogrid.jes.JobScheduler
+	  * @see org.astrogrid.jes.JobMonitor
+	  * 
+	  **/               
     private static void configureMessages() {
 		if( TRACE_ENABLED ) logger.debug( "configureMessages(): entry") ;
 			
@@ -133,6 +168,9 @@ public class DatasetAgent {
 						  "language[" + language + "]\t" +
 						  "country[" + country + "]" ) ;		
 			
+			// JBL Note: various things are done here to make failure
+			// relative and more tasteful. Whether these are worthwhile
+			// remains to be seen.
 			if( messageBundleBaseName != null ) {
 				     
 			    if( (language != null) && (!language.equals("")) )  {
@@ -156,32 +194,55 @@ public class DatasetAgent {
 	} // end of configureMessages()
 	  
 	
+	/**
+	  *  
+	  * Static getter for properties from the component's properties' file.
+	  * <p>
+	  * 
+	  * A candidate for refactoring...
+	  * @see org.astrogrid.jes.JobController
+	  * @see org.astrogrid.jes.JobScheduler
+	  * @see org.astrogrid.jes.JobMonitor
+	  * 
+	  * @param key - the property key
+	  * @return the String value of the property, or the empty string if null
+	  * 
+	  **/       
 	public static String getProperty( String key ) {
 		if( TRACE_ENABLED ) logger.debug( "getProperty(): entry") ;
 		
 		String
-			retValue ;
-		try {	
-		    // Does this really need to be synchronized?
-		    synchronized( configurationProperties ) {
-			    retValue = configurationProperties.getProperty( key ) ;
-		    }
-		}
-		finally {
-			if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
-		}
-		
+			retValue = configurationProperties.getProperty( key ) ;
+
+		if( TRACE_ENABLED ) logger.debug( "getProperty(): exit") ;			
 		return ( retValue == null ? "" : retValue.trim() ) ;
 		
 	} // end of getProperty()
 	
-	
+
+	/**
+	  *  
+	  * Default constructor.
+	  * <p>
+	  * Debug purposes - here for the trace statements.
+	  * 
+	  **/       	
 	public DatasetAgent() {
 		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): entry") ;
 		if( TRACE_ENABLED ) logger.debug( "DatasetAgent(): exit") ;	
 	}
 	
 	
+	/**
+	  * <p> 
+	  * Represents the mainline workflow argument for the DatasetAgent. 
+	  * <p>
+	  * Shows the DatasetAgent to be a pristine component with no state.
+	  * It neither uses nor creates instance variables, and therefore in
+	  * the EJB model would be considered a stateless session bean.
+	  * 
+	  * 
+	  **/     
     public String runQuery( String jobXML ) { 	
     	if( TRACE_ENABLED ) logger.debug( "runQuery() entry") ;
     	
