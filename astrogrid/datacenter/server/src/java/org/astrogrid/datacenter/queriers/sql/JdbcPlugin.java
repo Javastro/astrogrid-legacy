@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.22 2004/08/27 17:47:19 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.23 2004/09/01 11:19:23 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -213,7 +213,7 @@ public class JdbcPlugin extends QuerierPlugin  {
          
          /** Alternative XmlWriter form */
          StringWriter sw = new StringWriter();
-         XmlPrinter xw = new XmlPrinter(sw);
+         XmlPrinter xw = new XmlPrinter(sw, true);
 
          XmlTagPrinter metaTag = xw.newTag("RdbmsMetadata");
 

@@ -1,5 +1,5 @@
 /*
- * $Id: Query2Adql05.java,v 1.2 2004/08/25 23:38:33 mch Exp $
+ * $Id: Query2Adql05.java,v 1.3 2004/09/01 11:21:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -25,7 +25,7 @@ public class Query2Adql05  {
    public static String makeAdql(Query query, String comment) throws IOException {
 
       StringWriter sw = new StringWriter();
-      XmlPrinter xw = new XmlPrinter(sw);
+      XmlPrinter xw = new XmlPrinter(sw, false);
       xw.writeComment("ADQL generated from "+query);
       xw.writeComment(comment);
 
@@ -225,6 +225,9 @@ public class Query2Adql05  {
 
 /*
  $Log: Query2Adql05.java,v $
+ Revision 1.3  2004/09/01 11:21:12  mch
+ Make initial processing instruction for XmlPrinter optional
+
  Revision 1.2  2004/08/25 23:38:33  mch
  (Days changes) moved many query- and results- related classes, renamed packages, added tests, added CIRCLE to sql/adql parsers
 
