@@ -4,7 +4,19 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
-   <release version="TBA" >
+  <release version="HEAD">
+        <action dev="kmb" type="add" issue="605">
+            registry entries should be validated by a schema
+        </action>
+        <action dev="kmb" type="add" issue="613">
+            Need to add eXist permissiong with username and passwords more restrictive on 
+the updates.
+        </action>        
+        <action dev="kmb" type="add" issue="728">
+            Misc updates to community and registry.
+        </action>   
+    </release> 
+   <release version="0.7.0" date="20/12/04">
         <action dev="kea" type="fix" issue="862">
             Cosmetic tweak to portal
         </action>
