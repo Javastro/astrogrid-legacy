@@ -11,7 +11,7 @@
       <p /> 
       <div style="visibility: hidden" id="script_details">
         <form name="script_form" id="script_form">
-          <table width="95%"  border="2" cellspacing="0" cellpadding="0">
+          <table width="10%"  border="2" cellspacing="0" cellpadding="0">
             <tr>
               <td>
                 <div style="color: blue; background-color: lightblue; text-align: center;">Script:</div>
@@ -25,7 +25,7 @@
             </tr>
             <tr>
               <td>
-                <textarea name="script_body" cols="45" rows="4">...</textarea>
+                <textarea name="script_body" cols="115" rows="4">...</textarea>
                 <input type="submit" name="action" value="insert-script-body" />
               </td>
             </tr>
