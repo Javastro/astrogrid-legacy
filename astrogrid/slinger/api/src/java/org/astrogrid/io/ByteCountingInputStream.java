@@ -1,5 +1,5 @@
 /*
- * $Id: ByteCountingInputStream.java,v 1.1 2005/02/14 20:47:38 mch Exp $
+ * $Id: ByteCountingInputStream.java,v 1.2 2005/02/14 21:04:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,15 +11,20 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Counts the number of bytes being read
+ * Counts the number of bytes being read.  Implements InputStream rather than
+ * FilterInputStream as its simpler... FilterInputStream does not route all
+ * reads through the read() method.
  */
 
-public class ByteCountingInputStream extends FilterInputStream {
+public class ByteCountingInputStream extends InputStream {
 
    protected long bytesRead = 0;
+
+   InputStream wrappedIn = null;
    
    public ByteCountingInputStream(InputStream in) {
-      super(in);
+      super();
+      wrappedIn= in;
    }
    
    /**
@@ -27,7 +32,7 @@ public class ByteCountingInputStream extends FilterInputStream {
     */
    public int read() throws IOException {
       bytesRead++;
-      return in.read();
+      return wrappedIn.read();
    }
 
    /** Get the number of bytes read so far */
