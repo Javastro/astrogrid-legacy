@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/policy/data/Attic/PolicyPermission.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/11 03:15:06 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/24 15:47:38 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyPermission.java,v $
+ *   Revision 1.5  2003/09/24 15:47:38  dave
+ *   Added policy database loader tools.
+ *
  *   Revision 1.4  2003/09/11 03:15:06  dave
  *   1) Implemented PolicyService internals - no tests yet.
  *   2) Added getLocalAccountGroups and getRemoteAccountGroups to PolicyManager.
@@ -52,19 +55,43 @@ public class PolicyPermission
 	public static final int STATUS_CREDENTIALS_INVALID = 0x02 ;
 
 	/**
-	 * Permission unknown.
+	 * The XML status code for permission granted.
+	 *
+	 */
+	public static final String XML_PERMISSION_GRANTED = "GRANT" ;
+
+	/**
+	 * The XML status code no permission.
+	 *
+	 */
+	public static final String XML_PERMISSION_UNKNOWN = "UNKNOWN" ;
+
+	/**
+	 * The XML status code for permission revoked.
+	 *
+	 */
+	public static final String XML_PERMISSION_REVOKED = "REVOKED" ;
+
+	/**
+	 * The XML status code for credentials invalid.
+	 *
+	 */
+	public static final String XML_CREDENTIALS_INVALID = "INVALID" ;
+
+	/**
+	 * The reason text for permission unknown.
 	 *
 	 */
 	public static final String REASON_PERMISSION_UNKNOWN = "Permissions unknown" ;
 
 	/**
-	 * No permission set.
+	 * The reason text for no permission set.
 	 *
 	 */
 	public static final String REASON_NO_PERMISSION = "No permissions set" ;
 
 	/**
-	 * Invalid credentials.
+	 * The reason text for invalid credentials.
 	 *
 	 */
 	public static final String REASON_CREDENTIALS_INVALID = "Credentials invalid" ;
@@ -170,7 +197,7 @@ public class PolicyPermission
 	private int status ;
 
 	/**
-	 * Access to the status.
+	 * Access to the status code.
 	 *
 	 */
 	public int getStatus()
@@ -179,7 +206,7 @@ public class PolicyPermission
 		}
 
 	/**
-	 * Access to the status.
+	 * Set the status code to a specific value.
 	 *
 	 */
 	public void setStatus(int value)
@@ -188,7 +215,36 @@ public class PolicyPermission
 		}
 
 	/**
-	 * Easy check if the status is granteed.
+	 * Set the status using a String from an XML attribute.
+	 *
+	 */
+	public void setStatus(String value)
+		{
+		//
+		// Default to unknown.
+		setStatus(STATUS_PERMISSION_UNKNOWN) ;
+		//
+		// Decode the status string.
+		if (XML_PERMISSION_GRANTED.equals(value))
+			{
+			setStatus(STATUS_PERMISSION_GRANTED) ;
+			}
+		if (XML_PERMISSION_UNKNOWN.equals(value))
+			{
+			setStatus(STATUS_PERMISSION_UNKNOWN) ;
+			}
+		if (XML_PERMISSION_REVOKED.equals(value))
+			{
+			setStatus(STATUS_PERMISSION_REVOKED) ;
+			}
+		if (XML_CREDENTIALS_INVALID.equals(value))
+			{
+			setStatus(STATUS_CREDENTIALS_INVALID) ;
+			}
+		}
+
+	/**
+	 * Check if the status is granteed.
 	 *
 	 */
 	public boolean isValid()

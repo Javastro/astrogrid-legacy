@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--+
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/xml/policy/test/Attic/groups.xml,v $</cvs:source>
+    | <cvs:author>$Author: dave $</cvs:author>
+    | <cvs:date>$Date: 2003/09/24 15:47:38 $</cvs:date>
+    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:log>
+    |   $Log: groups.xml,v $
+    |   Revision 1.1  2003/09/24 15:47:38  dave
+    |   Added policy database loader tools.
+    |
+    | </cvs:log>
+    |
+    +-->
+<community version="1.0">
+
+	<groups>
+		<group ident="amphibians">
+			<description>Amphibians in pond</description>
+		</group>
+		<group ident="reptiles">
+			<description>Reptiles on rocks</description>
+		</group>
+	</groups>
+
+</community>

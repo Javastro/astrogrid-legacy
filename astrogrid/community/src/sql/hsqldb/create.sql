@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/sql/hsqldb/Attic/create.sql,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2003/09/22 13:48:38 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2003/09/24 15:47:38 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: create.sql,v $
+ *   Revision 1.11  2003/09/24 15:47:38  dave
+ *   Added policy database loader tools.
+ *
  *   Revision 1.10  2003/09/22 13:48:38  dave
  *   Updates to the community/portal build
  *
@@ -82,7 +85,8 @@ DROP TABLE members IF EXISTS ;
 CREATE TABLE members
     (
     groupident   VARCHAR NOT NULL,
-    accountident VARCHAR NOT NULL
+    accountident VARCHAR NOT NULL,
+    PRIMARY KEY (accountident, groupident)
     ) ;
 
 --
