@@ -397,11 +397,12 @@ public class JobScheduler {
 			call.setOperationName( "runQuery" ) ;  // Set method to invoke		
 			call.addParameter("jobXML", XMLType.XSD_STRING,ParameterMode.IN);
 			call.setReturnType(XMLType.XSD_STRING);   // JBL Note: Is this OK?
-			
-			call.invokeOneWay( parms ) ;
+			call.invokeOneWay( parms ) ;			
+			job.setStatus( Job.STATUS_RUNNING ) ;
 
 		}
 		catch ( Exception ex ) {
+			// job.setStatus( Job.STATUS_INITIALIZED ) ;
 			Message
 				message = new Message( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER ) ; 
 			logger.error( message.toString(), ex ) ;
