@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: XhtmlDocumentation.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: XhtmlDocumentation.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
  * should really reference the XHTML shema, but just did this for
  * convienience
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class XhtmlDocumentation extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -102,6 +102,41 @@ implements java.io.Serializable
     {
         return new org.exolab.castor.util.IteratorEnumeration(_anyObject.iterator());
     } //-- java.util.Enumeration enumerateAnyObject() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof XhtmlDocumentation) {
+        
+            XhtmlDocumentation temp = (XhtmlDocumentation)obj;
+            if (this._content != null) {
+                if (temp._content == null) return false;
+                else if (!(this._content.equals(temp._content))) 
+                    return false;
+            }
+            else if (temp._content != null)
+                return false;
+            if (this._anyObject != null) {
+                if (temp._anyObject == null) return false;
+                else if (!(this._anyObject.equals(temp._anyObject))) 
+                    return false;
+            }
+            else if (temp._anyObject != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Method getAnyObject

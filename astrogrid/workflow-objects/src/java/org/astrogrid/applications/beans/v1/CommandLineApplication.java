@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineApplication.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: CommandLineApplication.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class CommandLineApplication.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class CommandLineApplication extends org.astrogrid.applications.beans.v1.Application 
 implements java.io.Serializable
@@ -53,6 +53,34 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof CommandLineApplication) {
+        
+            CommandLineApplication temp = (CommandLineApplication)obj;
+            if (this._executionPath != null) {
+                if (temp._executionPath == null) return false;
+                else if (!(this._executionPath.equals(temp._executionPath))) 
+                    return false;
+            }
+            else if (temp._executionPath != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'executionPath'.

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Application.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: Application.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Base Application definition
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class Application extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -68,6 +68,55 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Application) {
+        
+            Application temp = (Application)obj;
+            if (this._name != null) {
+                if (temp._name == null) return false;
+                else if (!(this._name.equals(temp._name))) 
+                    return false;
+            }
+            else if (temp._name != null)
+                return false;
+            if (this._instanceClass != null) {
+                if (temp._instanceClass == null) return false;
+                else if (!(this._instanceClass.equals(temp._instanceClass))) 
+                    return false;
+            }
+            else if (temp._instanceClass != null)
+                return false;
+            if (this._parameters != null) {
+                if (temp._parameters == null) return false;
+                else if (!(this._parameters.equals(temp._parameters))) 
+                    return false;
+            }
+            else if (temp._parameters != null)
+                return false;
+            if (this._interfaces != null) {
+                if (temp._interfaces == null) return false;
+                else if (!(this._interfaces.equals(temp._interfaces))) 
+                    return false;
+            }
+            else if (temp._interfaces != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'instanceClass'.

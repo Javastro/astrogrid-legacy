@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: StepExecutionRecord.java,v 1.6 2004/03/03 21:48:00 nw Exp $
+ * $Id: StepExecutionRecord.java,v 1.7 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A record of a single execution of a job step
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/04 02:11:54 $
  */
 public class StepExecutionRecord extends org.astrogrid.workflow.beans.v1.execution.ExecutionRecordType 
 implements java.io.Serializable
@@ -43,6 +43,27 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof StepExecutionRecord) {
+        
+            StepExecutionRecord temp = (StepExecutionRecord)obj;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Method isValid

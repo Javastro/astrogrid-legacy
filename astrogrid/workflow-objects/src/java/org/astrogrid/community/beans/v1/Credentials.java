@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Credentials.java,v 1.9 2004/03/03 21:48:00 nw Exp $
+ * $Id: Credentials.java,v 1.10 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The full authorization and authentication credentials.
  * 
- * @version $Revision: 1.9 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.10 $ $Date: 2004/03/04 02:11:54 $
  */
 public class Credentials extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -63,6 +63,48 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Credentials) {
+        
+            Credentials temp = (Credentials)obj;
+            if (this._account != null) {
+                if (temp._account == null) return false;
+                else if (!(this._account.equals(temp._account))) 
+                    return false;
+            }
+            else if (temp._account != null)
+                return false;
+            if (this._group != null) {
+                if (temp._group == null) return false;
+                else if (!(this._group.equals(temp._group))) 
+                    return false;
+            }
+            else if (temp._group != null)
+                return false;
+            if (this._securityToken != null) {
+                if (temp._securityToken == null) return false;
+                else if (!(this._securityToken.equals(temp._securityToken))) 
+                    return false;
+            }
+            else if (temp._securityToken != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'account'. The field 'account'

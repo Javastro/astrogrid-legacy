@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Sequence.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: Sequence.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * a collection of activities to be performed sequentially
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class Sequence extends org.astrogrid.workflow.beans.v1.ActivityContainer 
 implements java.io.Serializable
@@ -43,6 +43,27 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Sequence) {
+        
+            Sequence temp = (Sequence)obj;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Method isValid

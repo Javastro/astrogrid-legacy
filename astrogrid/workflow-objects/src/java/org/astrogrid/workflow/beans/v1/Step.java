@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Step.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: Step.java,v 1.9 2004/03/04 02:11:55 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -28,7 +28,7 @@ import org.xml.sax.ContentHandler;
 /**
  * an activity to be performed
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:55 $
  */
 public class Step extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -154,6 +154,70 @@ implements java.io.Serializable
     {
         return new org.exolab.castor.util.IteratorEnumeration(_stepExecutionRecordList.iterator());
     } //-- java.util.Enumeration enumerateStepExecutionRecord() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Step) {
+        
+            Step temp = (Step)obj;
+            if (this._name != null) {
+                if (temp._name == null) return false;
+                else if (!(this._name.equals(temp._name))) 
+                    return false;
+            }
+            else if (temp._name != null)
+                return false;
+            if (this._joinCondition != null) {
+                if (temp._joinCondition == null) return false;
+                else if (!(this._joinCondition.equals(temp._joinCondition))) 
+                    return false;
+            }
+            else if (temp._joinCondition != null)
+                return false;
+            if (this._stepNumber != temp._stepNumber)
+                return false;
+            if (this._has_stepNumber != temp._has_stepNumber)
+                return false;
+            if (this._sequenceNumber != temp._sequenceNumber)
+                return false;
+            if (this._has_sequenceNumber != temp._has_sequenceNumber)
+                return false;
+            if (this._description != null) {
+                if (temp._description == null) return false;
+                else if (!(this._description.equals(temp._description))) 
+                    return false;
+            }
+            else if (temp._description != null)
+                return false;
+            if (this._tool != null) {
+                if (temp._tool == null) return false;
+                else if (!(this._tool.equals(temp._tool))) 
+                    return false;
+            }
+            else if (temp._tool != null)
+                return false;
+            if (this._stepExecutionRecordList != null) {
+                if (temp._stepExecutionRecordList == null) return false;
+                else if (!(this._stepExecutionRecordList.equals(temp._stepExecutionRecordList))) 
+                    return false;
+            }
+            else if (temp._stepExecutionRecordList != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'description'.

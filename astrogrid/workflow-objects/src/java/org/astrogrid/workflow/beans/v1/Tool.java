@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Tool.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: Tool.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * the CEA definition of the tool to be run 
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class Tool extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -68,6 +68,55 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Tool) {
+        
+            Tool temp = (Tool)obj;
+            if (this._name != null) {
+                if (temp._name == null) return false;
+                else if (!(this._name.equals(temp._name))) 
+                    return false;
+            }
+            else if (temp._name != null)
+                return false;
+            if (this._interface != null) {
+                if (temp._interface == null) return false;
+                else if (!(this._interface.equals(temp._interface))) 
+                    return false;
+            }
+            else if (temp._interface != null)
+                return false;
+            if (this._input != null) {
+                if (temp._input == null) return false;
+                else if (!(this._input.equals(temp._input))) 
+                    return false;
+            }
+            else if (temp._input != null)
+                return false;
+            if (this._output != null) {
+                if (temp._output == null) return false;
+                else if (!(this._output.equals(temp._output))) 
+                    return false;
+            }
+            else if (temp._output != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'input'. The field 'input' has

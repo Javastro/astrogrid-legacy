@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ActivityContainer.java,v 1.1 2004/03/03 21:48:00 nw Exp $
+ * $Id: ActivityContainer.java,v 1.2 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Abstract base class of activities that contain other activities
  * 
- * @version $Revision: 1.1 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.2 $ $Date: 2004/03/04 02:11:54 $
  */
 public class ActivityContainer extends org.astrogrid.workflow.beans.v1.AbstractActivity 
 implements java.io.Serializable
@@ -95,6 +95,34 @@ implements java.io.Serializable
     {
         return new org.exolab.castor.util.IteratorEnumeration(_activityList.iterator());
     } //-- java.util.Enumeration enumerateActivity() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof ActivityContainer) {
+        
+            ActivityContainer temp = (ActivityContainer)obj;
+            if (this._activityList != null) {
+                if (temp._activityList == null) return false;
+                else if (!(this._activityList.equals(temp._activityList))) 
+                    return false;
+            }
+            else if (temp._activityList != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Method getActivity

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: InterfacesType.java,v 1.8 2004/03/03 21:47:59 nw Exp $
+ * $Id: InterfacesType.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class InterfacesType.
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:47:59 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class InterfacesType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -95,6 +95,34 @@ implements java.io.Serializable
     {
         return new org.exolab.castor.util.IteratorEnumeration(_interfaceList.iterator());
     } //-- java.util.Enumeration enumerate_interface() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof InterfacesType) {
+        
+            InterfacesType temp = (InterfacesType)obj;
+            if (this._interfaceList != null) {
+                if (temp._interfaceList == null) return false;
+                else if (!(this._interfaceList.equals(temp._interfaceList))) 
+                    return false;
+            }
+            else if (temp._interfaceList != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Method get_interface

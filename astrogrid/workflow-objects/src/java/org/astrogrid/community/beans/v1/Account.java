@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Account.java,v 1.5 2004/03/03 21:48:00 nw Exp $
+ * $Id: Account.java,v 1.6 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The user account.
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/04 02:11:54 $
  */
 public class Account extends org.astrogrid.community.beans.v1.BaseIdentifier 
 implements java.io.Serializable
@@ -43,6 +43,27 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Account) {
+        
+            Account temp = (Account)obj;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Method isValid

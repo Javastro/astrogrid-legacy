@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Workflow.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: Workflow.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1;
@@ -29,7 +29,7 @@ import org.xml.sax.ContentHandler;
  * http://www.astrogrid.org/schema/AGWorkflow/v1
  *  
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class Workflow extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -78,6 +78,62 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof Workflow) {
+        
+            Workflow temp = (Workflow)obj;
+            if (this._name != null) {
+                if (temp._name == null) return false;
+                else if (!(this._name.equals(temp._name))) 
+                    return false;
+            }
+            else if (temp._name != null)
+                return false;
+            if (this._sequence != null) {
+                if (temp._sequence == null) return false;
+                else if (!(this._sequence.equals(temp._sequence))) 
+                    return false;
+            }
+            else if (temp._sequence != null)
+                return false;
+            if (this._description != null) {
+                if (temp._description == null) return false;
+                else if (!(this._description.equals(temp._description))) 
+                    return false;
+            }
+            else if (temp._description != null)
+                return false;
+            if (this._credentials != null) {
+                if (temp._credentials == null) return false;
+                else if (!(this._credentials.equals(temp._credentials))) 
+                    return false;
+            }
+            else if (temp._credentials != null)
+                return false;
+            if (this._jobExecutionRecord != null) {
+                if (temp._jobExecutionRecord == null) return false;
+                else if (!(this._jobExecutionRecord.equals(temp._jobExecutionRecord))) 
+                    return false;
+            }
+            else if (temp._jobExecutionRecord != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'credentials'.

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterRef.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: ParameterRef.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * reference to an existing parameter
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class ParameterRef extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -89,6 +89,42 @@ implements java.io.Serializable
     {
         this._has_repeatable= false;
     } //-- void deleteRepeatable() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof ParameterRef) {
+        
+            ParameterRef temp = (ParameterRef)obj;
+            if (this._ref != null) {
+                if (temp._ref == null) return false;
+                else if (!(this._ref.equals(temp._ref))) 
+                    return false;
+            }
+            else if (temp._ref != null)
+                return false;
+            if (this._repeatable != temp._repeatable)
+                return false;
+            if (this._has_repeatable != temp._has_repeatable)
+                return false;
+            if (this._optional != temp._optional)
+                return false;
+            if (this._has_optional != temp._has_optional)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'optional'.

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: MessageType.java,v 1.6 2004/03/03 21:48:00 nw Exp $
+ * $Id: MessageType.java,v 1.7 2004/03/04 02:11:55 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.cea.castor;
@@ -27,7 +27,7 @@ import org.xml.sax.ContentHandler;
 /**
  * A log entry recorded during execution
  * 
- * @version $Revision: 1.6 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.7 $ $Date: 2004/03/04 02:11:55 $
  */
 public class MessageType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -77,6 +77,62 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof MessageType) {
+        
+            MessageType temp = (MessageType)obj;
+            if (this._content != null) {
+                if (temp._content == null) return false;
+                else if (!(this._content.equals(temp._content))) 
+                    return false;
+            }
+            else if (temp._content != null)
+                return false;
+            if (this._source != null) {
+                if (temp._source == null) return false;
+                else if (!(this._source.equals(temp._source))) 
+                    return false;
+            }
+            else if (temp._source != null)
+                return false;
+            if (this._timestamp != null) {
+                if (temp._timestamp == null) return false;
+                else if (!(this._timestamp.equals(temp._timestamp))) 
+                    return false;
+            }
+            else if (temp._timestamp != null)
+                return false;
+            if (this._level != null) {
+                if (temp._level == null) return false;
+                else if (!(this._level.equals(temp._level))) 
+                    return false;
+            }
+            else if (temp._level != null)
+                return false;
+            if (this._phase != null) {
+                if (temp._phase == null) return false;
+                else if (!(this._phase.equals(temp._phase))) 
+                    return false;
+            }
+            else if (temp._phase != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'content'. The field 'content'

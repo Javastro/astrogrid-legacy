@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CommandLineParameterDefinition.java,v 1.8 2004/03/03 21:47:59 nw Exp $
+ * $Id: CommandLineParameterDefinition.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what it is to be a command line parameter - needs more
  * thought with experience
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:47:59 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class CommandLineParameterDefinition extends org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition 
 implements java.io.Serializable
@@ -97,6 +97,49 @@ implements java.io.Serializable
     {
         this._has_stdio= false;
     } //-- void deleteStdio() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof CommandLineParameterDefinition) {
+        
+            CommandLineParameterDefinition temp = (CommandLineParameterDefinition)obj;
+            if (this._commandSwitch != null) {
+                if (temp._commandSwitch == null) return false;
+                else if (!(this._commandSwitch.equals(temp._commandSwitch))) 
+                    return false;
+            }
+            else if (temp._commandSwitch != null)
+                return false;
+            if (this._commandPosition != temp._commandPosition)
+                return false;
+            if (this._has_commandPosition != temp._has_commandPosition)
+                return false;
+            if (this._stdio != temp._stdio)
+                return false;
+            if (this._has_stdio != temp._has_stdio)
+                return false;
+            if (this._switchType != null) {
+                if (temp._switchType == null) return false;
+                else if (!(this._switchType.equals(temp._switchType))) 
+                    return false;
+            }
+            else if (temp._switchType != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'commandPosition'.

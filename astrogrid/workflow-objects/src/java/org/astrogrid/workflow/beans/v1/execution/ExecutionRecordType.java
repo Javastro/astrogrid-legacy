@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ExecutionRecordType.java,v 1.2 2004/03/03 21:48:00 nw Exp $
+ * $Id: ExecutionRecordType.java,v 1.3 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -29,7 +29,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class ExecutionRecordType.
  * 
- * @version $Revision: 1.2 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.3 $ $Date: 2004/03/04 02:11:54 $
  */
 public class ExecutionRecordType extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -114,6 +114,55 @@ implements java.io.Serializable
     {
         return new org.exolab.castor.util.IteratorEnumeration(_messageList.iterator());
     } //-- java.util.Enumeration enumerateMessage() 
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof ExecutionRecordType) {
+        
+            ExecutionRecordType temp = (ExecutionRecordType)obj;
+            if (this._startTime != null) {
+                if (temp._startTime == null) return false;
+                else if (!(this._startTime.equals(temp._startTime))) 
+                    return false;
+            }
+            else if (temp._startTime != null)
+                return false;
+            if (this._finishTime != null) {
+                if (temp._finishTime == null) return false;
+                else if (!(this._finishTime.equals(temp._finishTime))) 
+                    return false;
+            }
+            else if (temp._finishTime != null)
+                return false;
+            if (this._status != null) {
+                if (temp._status == null) return false;
+                else if (!(this._status.equals(temp._status))) 
+                    return false;
+            }
+            else if (temp._status != null)
+                return false;
+            if (this._messageList != null) {
+                if (temp._messageList == null) return false;
+                else if (!(this._messageList.equals(temp._messageList))) 
+                    return false;
+            }
+            else if (temp._messageList != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'finishTime'.

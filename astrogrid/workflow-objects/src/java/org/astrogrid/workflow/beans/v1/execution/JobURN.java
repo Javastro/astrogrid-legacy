@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: JobURN.java,v 1.4 2004/03/03 21:48:00 nw Exp $
+ * $Id: JobURN.java,v 1.5 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.workflow.beans.v1.execution;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * Class JobURN.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/04 02:11:54 $
  */
 public class JobURN extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -53,6 +53,34 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof JobURN) {
+        
+            JobURN temp = (JobURN)obj;
+            if (this._content != null) {
+                if (temp._content == null) return false;
+                else if (!(this._content.equals(temp._content))) 
+                    return false;
+            }
+            else if (temp._content != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'content'. The field 'content'

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: ParameterValue.java,v 1.8 2004/03/03 21:48:00 nw Exp $
+ * $Id: ParameterValue.java,v 1.9 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.applications.beans.v1.parameters;
@@ -26,7 +26,7 @@ import org.xml.sax.ContentHandler;
  * Defines what a parameterValue can contain - for the instance
  * document
  * 
- * @version $Revision: 1.8 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/04 02:11:54 $
  */
 public class ParameterValue extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -66,6 +66,48 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof ParameterValue) {
+        
+            ParameterValue temp = (ParameterValue)obj;
+            if (this._name != null) {
+                if (temp._name == null) return false;
+                else if (!(this._name.equals(temp._name))) 
+                    return false;
+            }
+            else if (temp._name != null)
+                return false;
+            if (this._type != null) {
+                if (temp._type == null) return false;
+                else if (!(this._type.equals(temp._type))) 
+                    return false;
+            }
+            else if (temp._type != null)
+                return false;
+            if (this._content != null) {
+                if (temp._content == null) return false;
+                else if (!(this._content.equals(temp._content))) 
+                    return false;
+            }
+            else if (temp._content != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'content'. The field 'content'

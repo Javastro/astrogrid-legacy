@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: BaseIdentifier.java,v 1.5 2004/03/03 21:48:00 nw Exp $
+ * $Id: BaseIdentifier.java,v 1.6 2004/03/04 02:11:54 nw Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -24,7 +24,7 @@ import org.xml.sax.ContentHandler;
 /**
  * The identifier base class. Contains the name and the community
  * 
- * @version $Revision: 1.5 $ $Date: 2004/03/03 21:48:00 $
+ * @version $Revision: 1.6 $ $Date: 2004/03/04 02:11:54 $
  */
 public class BaseIdentifier extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -58,6 +58,41 @@ implements java.io.Serializable
       //-----------/
      //- Methods -/
     //-----------/
+
+    /**
+     * Note: hashCode() has not been overriden
+     * 
+     * @param obj
+     */
+    public boolean equals(java.lang.Object obj)
+    {
+        if ( this == obj )
+            return true;
+        
+        if (super.equals(obj)==false)
+            return false;
+        
+        if (obj instanceof BaseIdentifier) {
+        
+            BaseIdentifier temp = (BaseIdentifier)obj;
+            if (this._name != null) {
+                if (temp._name == null) return false;
+                else if (!(this._name.equals(temp._name))) 
+                    return false;
+            }
+            else if (temp._name != null)
+                return false;
+            if (this._community != null) {
+                if (temp._community == null) return false;
+                else if (!(this._community.equals(temp._community))) 
+                    return false;
+            }
+            else if (temp._community != null)
+                return false;
+            return true;
+        }
+        return false;
+    } //-- boolean equals(java.lang.Object) 
 
     /**
      * Returns the value of field 'community'.
