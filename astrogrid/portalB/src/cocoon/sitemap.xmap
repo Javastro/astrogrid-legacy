@@ -36,6 +36,16 @@
 	    <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>
 	    <map:action name="astrogrid-login" src="org.astrogrid.portal.cocoon.common.LoginAction"/>
 	    <map:action name="astrogrid-workflow" src="org.astrogrid.portal.cocoon.workflow.design.DesignAction"/>
+
+         <!-- AstroGrid QB actions. -->
+         <map:action name="xml-validator" logger="sitemap.action.xml-validator" src="org.astrogrid.datacenter.cocoon.acting.XMLValidatorAction"/>
+
+         <map:action name="save-adql" logger="sitemap.action.save-adql" src="org.astrogrid.datacenter.cocoon.acting.SaveAction"/>
+
+         <map:action name="load-adql" logger="sitemap.action.load-adql" src="org.astrogrid.datacenter.cocoon.acting.LoadAction"/>
+
+         <map:action name="test-adql" logger="sitemap.action.test-adql" src="org.astrogrid.datacenter.cocoon.acting.TestAction"/>
+ 
       </map:actions>
    </map:components>
 
@@ -67,9 +77,65 @@
       </map:view>
    </map:views>
 
+<!-- ========================== Action sets ================================ -->
+<!-- QB -->
+  <map:action-sets>
+    <map:action-set name="adql_form_xml">
+      <map:act type="form-validator">
+        <map:parameter
+            name="descriptor"
+            value="qb/content/defs/adql-def.xml"/>
+
+        <!-- Validate ADQL query -->
+        <map:act type="xml-validator">
+        </map:act>
+      </map:act>
+
+      <!-- Validate ADQL query -->
+      <map:act type="xml-validator">
+        <map:act type="form-validator">
+          <map:parameter
+              name="descriptor"
+              value="qb/content/defs/adql-def.xml"/>
+        </map:act>
+      </map:act>
+    </map:action-set>
+  </map:action-sets>
+
+<!-- ========================== Action sets ================================ -->
+
 <!-- ========================== Resources ================================= -->
 
    <map:resources>
+    <!-- QB -->
+    <map:resource name="adql-form">
+      <!-- Generate the ADQL form -->
+      <map:generate type="serverpages" src="qb/content/dynamic/adql-form.xsp" label="000, 001"/>
+      <map:transform type="xslt" src="qb/style/adql.xsl" label="002"/>
+
+      <!-- Wrap the page in the Portal template -->
+      <map:act type="astrogrid">
+         <map:transform src="common/xsl/astrogrid.xsl" label="003">
+            <!-- Add the rest of the page names -->
+            <map:parameter name="credential" value="{credential}" />
+            <map:parameter name="current-page"  value="agdataquery.html"/>
+            <map:parameter name="query-page"    value="agdataquery.html"/>
+            <map:parameter name="myspace-page"  value="agmyspace.html"/>
+            <map:parameter name="title-name"  value="Data Query"/>
+            <map:parameter name="home-page"     value="agindex.html"/>
+            <map:parameter name="admin-page"    value="agadministration.html"/>
+            <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+            <map:parameter name="registry-page" value="agregistry.html"/>
+            <map:parameter name="regadmin-page" value="agregadmin.html"/>
+            <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+            <map:parameter name="tools-page"    value="agtools.html"/>
+            <map:parameter name="logout-page"   value="aglogout.html"/>
+         </map:transform>
+       </map:act>
+
+       <!-- Serialize as HTML -->
+       <map:serialize type="html"/> 
+    </map:resource>
    </map:resources>
 
 <!-- ========================== Pipelines ================================= -->
@@ -235,7 +301,162 @@
             </map:match>
 
             <!-- DataQuery page -->
+            <!-- QB -->
             <map:match pattern="agdataquery.html">
+        		<!-- Test ADQL action -->
+		       <map:select type="request-parameter">
+		          <map:parameter
+		              name="parameter-name"
+		              value="action"/>
+		
+		          <!-- ADQL action: TEST -->
+		          <map:when test="Test">
+		            <!-- Validate ADQL form. -->
+		            <map:act set="adql_form_xml">
+		              <map:parameter
+		                  name="validate-set"
+		                  value="test"/>
+		
+		              <map:parameter
+		                  name="xml-param"
+		                  value="query"/>
+		
+		              <!-- Validate ADQL form: success. -->
+		              <map:act type="test-adql">
+		<!--
+		                <map:parameter
+		                    name="datacenter-delegate-class"
+		                    value="dummy.astrogrid.datacenter.delegate.DummyDelegate"/>
+		OR/
+		                <map:parameter
+		                    name="datacenter-end-point"
+		                    value="uri-param"/>
+		-->
+		
+		                <map:parameter
+		                    name="adql-query"
+		                    value="query"/>
+		
+		                <map:parameter
+		                    name="datacenter-end-point"
+		                    value="URI"/>
+		
+		                <map:call resource="adql-results"/>
+		              </map:act>
+		            </map:act>
+		
+		            <!-- Validate ADQL form: errors. -->
+		            <map:call resource="adql-form"/>
+		          </map:when>
+		          <!-- ADQL action: TEST -->
+		
+		          <!-- ADQL action: LOAD -->
+		          <map:when test="Load">
+		            <!-- Validate ADQL form. -->
+		            <map:act type="form-validator">
+		              <map:parameter
+		                  name="descriptor"
+		                  value="qb/content/defs/adql-def.xml"/>
+		
+		              <map:parameter
+		                  name="validate-set"
+		                  value="load"/>
+		
+		              <map:act type="load-adql">
+		                <map:parameter
+		                    name="myspace-end-point"
+		                    value="http://143.210.36.173:8080/axis/services/MySpaceManager"/>
+		
+		                <map:parameter
+		                    name="myspace-delegate-class"
+		                    value="org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate"/>
+		
+		                <map:parameter
+		                    name="username"
+		                    value="username"/>
+		
+		                <map:parameter
+		                    name="community-id"
+		                    value="community"/>
+		
+		                <map:parameter
+		                    name="credential"
+		                    value="credential"/>
+		
+		                <map:parameter
+		                    name="myspace-name"
+		                    value="name"/>
+		
+		                <!-- Validate ADQL form: success. -->
+		                <map:call resource="adql-form"/>
+		              </map:act>
+		            </map:act>
+		
+		            <!-- Validate ADQL form: errors. -->
+		            <map:call resource="adql-form"/>
+		          </map:when>
+		          <!-- ADQL action: LOAD -->
+		
+		          <!-- ADQL action: SAVE -->
+		          <map:when test="Save">
+		            <!-- Validate ADQL form. -->
+		            <map:act set="adql_form_xml">
+		              <map:parameter
+		                  name="validate-set"
+		                  value="save"/>
+		
+		              <map:parameter
+		                  name="xml-param"
+		                  value="query"/>
+		
+		              <!-- SUCCESS: save ADQL. -->
+		              <map:act type="save-adql">
+		                <map:parameter
+		                    name="myspace-end-point"
+		                    value="http://143.210.36.173:8080/axis/services/MySpaceManager"/>
+		
+		                <map:parameter
+		                    name="myspace-delegate-class"
+		                    value="org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceManagerDelegate"/>
+		
+		                <map:parameter
+		                    name="username"
+		                    value="username"/>
+		
+		                <map:parameter
+		                    name="community-id"
+		                    value="community"/>
+		
+		                <map:parameter
+		                    name="credential"
+		                    value="credential"/>
+		
+		                <map:parameter
+		                    name="myspace-name"
+		                    value="name"/>
+		
+		                <map:parameter
+		                    name="adql-query"
+		                    value="query"/>
+		              </map:act>
+		            </map:act>
+		
+		            <!-- Validate ADQL form: errors. -->
+		            <map:call resource="adql-form"/>
+		          </map:when>
+		          <!-- ADQL action: SAVE -->
+		
+		          <!-- ADQL action: *invalid* -->
+		          <map:otherwise>
+		            <map:call resource="adql-form"/>
+		          </map:otherwise>
+		          <!-- ADQL action: *invalid* -->
+		
+		          <map:call resource="adql-form"/>
+		        </map:select>
+            </map:match>  
+
+            <map:match pattern="old-agdataquery.html">
                <!-- Call our query action -->
                <map:act type="astrogrid-query">
                   <!-- Set the session attribute to check for the user name -->
