@@ -1,4 +1,4 @@
-/*$Id: InstallationSelfCheck.java,v 1.4 2004/10/05 18:24:19 mch Exp $
+/*$Id: InstallationSelfCheck.java,v 1.5 2004/10/05 18:30:13 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,6 +24,7 @@ import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.datacenter.query.ConeQuery;
+import org.astrogrid.datacenter.returns.NullWriter;
 import org.astrogrid.datacenter.returns.ReturnTable;
 import org.astrogrid.datacenter.returns.TargetIndicator;
 import org.astrogrid.datacenter.service.DataServer;
@@ -99,7 +100,7 @@ public class InstallationSelfCheck extends TestCase {
 
       for (int i=0;i<100;i++) {
          server.submitQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6+i),
-                            new ReturnTable(new TargetIndicator(new StringWriter()), ReturnTable.CSV));
+                            new ReturnTable(TargetIndicator.makeIndicator(new NullWriter()), ReturnTable.CSV));
       }
    }
 
@@ -139,6 +140,9 @@ public class InstallationSelfCheck extends TestCase {
 
 /*
  $Log: InstallationSelfCheck.java,v $
+ Revision 1.5  2004/10/05 18:30:13  mch
+ Used NullWriter to throw away results rather than StringWriter which will hold them in memory
+
  Revision 1.4  2004/10/05 18:24:19  mch
  Added SOAP test
 
@@ -246,3 +250,4 @@ public class InstallationSelfCheck extends TestCase {
  cleaned up querier & queriermanager. tested
  
  */
+
