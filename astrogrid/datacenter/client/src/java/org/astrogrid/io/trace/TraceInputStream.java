@@ -1,8 +1,9 @@
 /*
- * $Id: TraceInputStream.java,v 1.1 2004/03/03 10:08:01 mch Exp $
+ * $Id: TraceInputStream.java,v 1.1 2004/07/01 23:03:36 mch Exp $
  */
 
-package org.astrogrid.io;
+package org.astrogrid.io.trace;
+
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -123,6 +124,9 @@ public class TraceInputStream extends java.io.FilterInputStream
 
 /*
 $Log: TraceInputStream.java,v $
+Revision 1.1  2004/07/01 23:03:36  mch
+Moved trace classes to trace package
+
 Revision 1.1  2004/03/03 10:08:01  mch
 Moved UI and some IO stuff into client
 

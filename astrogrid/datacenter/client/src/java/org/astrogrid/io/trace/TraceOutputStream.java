@@ -1,4 +1,4 @@
-package org.astrogrid.io;
+package org.astrogrid.io.trace;
 
 /**
  * Insert the type's description here.
