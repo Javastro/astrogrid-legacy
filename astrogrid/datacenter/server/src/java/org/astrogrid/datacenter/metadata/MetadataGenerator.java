@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataGenerator.java,v 1.1 2004/08/18 18:44:12 mch Exp $
+ * $Id: MetadataGenerator.java,v 1.2 2004/08/19 22:04:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,8 +7,7 @@
 package org.astrogrid.datacenter.metadata;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.QuerierPlugin;
@@ -16,6 +15,8 @@ import org.astrogrid.datacenter.queriers.QuerierPluginException;
 import org.astrogrid.datacenter.queriers.QuerierPluginFactory;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 /**
  * Used to generate the service's metadata from the plugin.
@@ -33,17 +34,34 @@ public class MetadataGenerator
    public MetadataGenerator() {
    }
    
-   public static void writeMetadata(Writer writer) throws IOException {
+   public static Document generateMetadata() throws IOException {
+      
       try {
+         //Generate VODescription
+         Document voDescription = DomHelper.newDocument("<VODescription/>");//there must be a better way of doing this
+         Element voResource = voDescription.createElement("Resource");
+         voDescription.appendChild(voResource);
+         voResource.appendChild(voDescription.createElement("Identifier"));
+         voResource.appendChild(voDescription.createElement("Title"));
+         voResource.appendChild(voDescription.createElement("ShortName"));
+         voResource.appendChild(voDescription.createElement("Summary"));
+         
          QuerierPlugin plugin = QuerierPluginFactory.createPlugin(null);
          
-         Document metadata = plugin.getMetadata();
-         
-         DomHelper.DocumentToWriter(metadata, writer);
+         //this will give us metadata about the data itself, but not of the service
+         voResource.appendChild(plugin.getMetadata().getDocumentElement());
+
+         return voDescription;
          
       }
       catch (QuerierPluginException qpe) {
          throw new RuntimeException("Server Querier plugin mechanism not configured properly: "+qpe, qpe);
+      }
+      catch (SAXException e) {
+         throw new RuntimeException("Bad hardcoded XML: "+e, e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new RuntimeException("Server not set up properly: "+e, e);
       }
    }
    
@@ -51,7 +69,7 @@ public class MetadataGenerator
     * This can be run from the command line to generate the initial file
     */
    public static void main(String[] args) throws IOException {
-      MetadataGenerator.writeMetadata(new OutputStreamWriter(System.out));
+      DomHelper.DocumentToStream(MetadataGenerator.generateMetadata(), System.out);
       
    }
    

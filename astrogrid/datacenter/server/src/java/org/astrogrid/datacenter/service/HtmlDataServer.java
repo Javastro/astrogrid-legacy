@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.17 2004/08/18 18:44:12 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.18 2004/08/19 22:04:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -188,13 +188,6 @@ public class HtmlDataServer
                 "<META HTTP-EQUIV='Refresh' CONTENT='"+secs+";URL="+url+"'>");
    }
 
-   /** Returns the name of this datacenter if it is configured, and 'AstroGrid
-    * Datacenter Installation' by default.
-    */
-   public static String getDatacenterName() {
-      return SimpleConfig.getProperty("datacenter.name","Unnamed AstroGrid Datacenter");
-   }
-
    /** Returns the stylesheet to be used for the center's html pages in the form
     * of a 'link' element.  Returns an empty string if none configured */
    public static String getCssLink() {
@@ -211,7 +204,7 @@ public class HtmlDataServer
     * standard datacenter page */
    public static String getHeadElement(String title) {
       return "<HEAD>\n"+
-             "  <TITLE>"+title+" ("+getDatacenterName()+")</TITLE>\n"+
+             "  <TITLE>"+title+" ("+DataServer.getDatacenterName()+")</TITLE>\n"+
              "  "+getCssLink()+"\n"+
              "</HEAD>\n";
    }
@@ -240,7 +233,7 @@ public class HtmlDataServer
                   "  <div align='left'>Publisher's AstroGrid Library (PAL)</div>\n"+
                   "  <div align='right'>"+
                   "    <a href='http://www.astrogrid.org'>AstroGrid</a>"+
-                  "    | <a href='index.html'>"+getDatacenterName()+"</a>"+
+                  "    | <a href='index.html'>"+DataServer.getDatacenterName()+"</a>"+
                   "    | <a href='http://www.astrogrid.org/maven/docs/SNAPSHOT/datacenter/index.html'>Latest PAL</a>"+
                   "  </div>\n"+
 //                  "  <div class='clear'><hr></hr></div>\n"+

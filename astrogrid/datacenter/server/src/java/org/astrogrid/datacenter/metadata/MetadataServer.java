@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.10 2004/08/19 19:48:43 mch Exp $
+ * $Id: MetadataServer.java,v 1.11 2004/08/19 22:04:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -115,11 +115,67 @@ public class MetadataServer
       }
       return cache;
    }
+
+   /** Returns the element representing the given table name in the served
+    * metadata */
+   public static Element getTableElement(String tableName) throws IOException {
+      return getTableElement(tableName, getMetadata().getDocumentElement());
+   }
    
-   
-   /** Returns the element for the given table/column */
+   /** Returns the element for the given table/column in the served metadata */
    public static Element getColumnElement(String tableName, String columnName) throws IOException {
-      NodeList tables = getMetadata().getElementsByTagName("Table");
+      return getColumnElement(tableName, columnName, getMetadata().getDocumentElement());
+   }
+
+   /** Returns a list of the tables of the served metadata */
+   public static String[] getTables() throws IOException {
+      return getTables(getMetadata().getDocumentElement());
+   }
+   
+   /** Returns a list of the columns for the given table of the served metadata */
+   public static String[] getColumns(String tableName) throws IOException {
+      return getColumns(tableName, getMetadata().getDocumentElement());
+   }
+
+   /** Returns a list of the tables of the served metadata */
+   public static String[] getTables(Element metatables) throws IOException {
+      NodeList tableNodes = metatables.getElementsByTagName("Table");
+      String[] tables = new String[tableNodes.getLength()];
+      for (int t=0;t<tableNodes.getLength();t++) {
+         tables[t] = ((Element) tableNodes.item(t)).getAttribute("name");
+      }
+      return tables;
+   }
+   
+   /** Returns a list of the columns for the given table of the served metadata */
+   public static String[] getColumns(String tableName, Element metatables) throws IOException {
+
+      NodeList colNodes = getTableElement(tableName, metatables).getElementsByTagName("Column");
+      
+      String[] columns = new String[colNodes.getLength()];
+      for (int t=0;t<columns.length;t++) {
+         columns[t] = ((Element) colNodes.item(t)).getAttribute("name");
+      }
+      return columns;
+   }
+
+   /** Returns the element representing the given table name in the given
+    * metadata */
+   public static Element getTableElement(String tableName, Element metatables) throws IOException {
+      NodeList tables = metatables.getElementsByTagName("Table");
+
+      for (int t=0;t<tables.getLength();t++) {
+         if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
+            return (Element) tables.item(t);
+         }
+      }
+      
+      throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
+   }
+   
+   /** Returns the element for the given table/column in the served metadata */
+   public static Element getColumnElement(String tableName, String columnName, Element metatables) throws IOException {
+      NodeList tables = metatables.getElementsByTagName("Table");
 
       Element tableElement = null;
       for (int t=0;t<tables.getLength();t++) {
@@ -148,56 +204,6 @@ public class MetadataServer
       return colElement;
    }
 
-   /** Returns a list of the tables */
-   public static String[] getTables() throws IOException {
-      NodeList tableNodes = getMetadata().getElementsByTagName("Table");
-      String[] tables = new String[tableNodes.getLength()];
-      for (int t=0;t<tableNodes.getLength();t++) {
-         tables[t] = ((Element) tableNodes.item(t)).getAttribute("name");
-      }
-      return tables;
-   }
-   
-   public static Element getTableElement(String tableName) throws IOException {
-      NodeList tables = getMetadata().getElementsByTagName("Table");
-
-      for (int t=0;t<tables.getLength();t++) {
-         if (((Element) tables.item(t)).getAttribute("name").equals(tableName)) {
-            return (Element) tables.item(t);
-         }
-      }
-      
-      throw new IllegalArgumentException("No such table '"+tableName+"' in metadata");
-   }
-   
-   public static String getTableDescription(String tableName) throws IOException {
-
-      NodeList descs = getTableElement(tableName).getElementsByTagName("Description");
-   
-      if (descs.getLength()==0) {
-         return "";
-      }
-         
-      return DomHelper.getValue((Element) descs.item(0));
-   }
-   
-   /** Returns a list of the columns for the given table */
-   public static String[] getColumns(String tableName) throws IOException {
-
-      NodeList colNodes = getTableElement(tableName).getElementsByTagName("Column");
-      
-      String[] columns = new String[colNodes.getLength()];
-      for (int t=0;t<columns.length;t++) {
-         columns[t] = ((Element) colNodes.item(t)).getAttribute("name");
-      }
-      return columns;
-      
-   }
-   
-   /** Returns the units of the given table/column */
-   public static String getUnits(String tableName, String columnName) throws IOException {
-      return DomHelper.getValue(getColumnElement(tableName, columnName), "Units");
-   }
    
 }
 

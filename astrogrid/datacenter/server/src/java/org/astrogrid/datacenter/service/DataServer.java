@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.24 2004/08/17 20:19:36 mch Exp $
+ * $Id: DataServer.java,v 1.25 2004/08/19 22:04:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -56,6 +56,13 @@ public class DataServer
    /** Configuration setting used to mark whether raw sql is allowed */
    public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
    
+   /** Returns the name of this datacenter if it is configured, and 'AstroGrid
+    * Datacenter Installation' by default.
+    */
+   public static String getDatacenterName() {
+      return SimpleConfig.getProperty("datacenter.name","Unnamed AstroGrid Datacenter");
+   }
+
    /**
     * Runs a (blocking) ADQL/XML/OM query, outputting the results as votable to the given stream
     */

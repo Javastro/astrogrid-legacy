@@ -63,9 +63,7 @@ empty you will receive all the columns in your results.
       metadata = MetadataServer.getMetadata();
    }
    catch (FileNotFoundException fnfe) {
-      StringWriter sw = new StringWriter();
-      MetadataGenerator.writeMetadata(sw);
-      metadata = DomHelper.newDocument(sw.toString());
+      metadata =MetadataGenerator.generateMetadata();
       %>
       <p>Note that a configured metadata file could not be found (<%= fnfe %>)
       so this is based on the plugin's automatically generated metadata.
