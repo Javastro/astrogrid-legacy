@@ -16,7 +16,7 @@ echo >> $BUILD_DIR/$LOG_FILE 2>&1
 #Check out the maven project first, since this may act as a base
 #from which other projects may inherit
 #[may need to give this its own buildscript if maven-build.sh isn't appropriate]
-$SCRIPTHOME/cvs-checkout.sh maven >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/cvs-checkout.sh maven-base >> $BUILD_DIR/$LOG_FILE 2>&1
 #Now the "real" projects.
 $SCRIPTHOME/maven-build.sh applications >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build.sh common >> $BUILD_DIR/$LOG_FILE 2>&1
