@@ -1,10 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: clq2 $</cvs:author>
- * <cvs:date>$Date: 2005/01/28 10:43:58 $</cvs:date>
- * <cvs:version>$Revision: 1.12 $</cvs:version>
+ * <cvs:date>$Date: 2005/03/11 08:20:56 $</cvs:date>
+ * <cvs:version>$Revision: 1.13 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.13  2005/03/11 08:20:56  clq2
+ *   filestore-nww-965
+ *
+ *   Revision 1.12.8.1  2005/03/01 10:58:31  nw
+ *   changed prefix from 'mock://' to 'mock:'
+ *   the original prefix wouldn't go through the filemanager tests
+ *   (as the URI class complains that the key isn't a valid hostname).
+ *   removing the // means its just a URI, rather than a standard-form URI,
+ *   which is implied to be locatable.
+ *
  *   Revision 1.12  2005/01/28 10:43:58  clq2
  *   dave_dev_200501141257 (filemanager)
  *
@@ -570,7 +580,7 @@ public class FileStoreMock
 				//
 				// Create a new mock URL for this container.
 				url = new URL(
-					"mock://" + this.ident()
+					"mock:" + this.ident()
 					) ;
 				log.debug("  URL   : " + url.toString()) ;
 				}
