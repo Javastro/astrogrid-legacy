@@ -11,13 +11,13 @@
     <agp:item
         contents="Open"
         contents-hover="Open"
-        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=open-workflow-ivorn&amp;agsl=open-workflow-agsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
+        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=open-workflow-ivorn&amp;agsl=open-workflow-agsl&amp;form_name=workflow_form&amp;field_name=workflow_action&amp;field_value=read-workflow", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
         target="_self"
         status-text="Open a workflow"/>
     <agp:item
         contents="Save"
         contents-hover="Save"
-        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=save-workflow-ivorn&amp;agsl=save-workflow-agsl", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
+        uri='javascript:void(window.open("/astrogrid-portal/mount/myspace/myspace-micro?ivorn=save-workflow-ivorn&amp;agsl=save-workflow-agsl&amp;form_name=workflow_form&amp;field_name=workflow_action&amp;field_value=save-workflow", "mySpaceMicro", "toolbar=no, directories=no, location=no, status=no, menubar=no, resizable=no, scrollbars=yes, width=300, height=200"));'
         target="_self"
         status-text="Save a workflow"/>
     <agp:item
@@ -33,24 +33,66 @@
       uri=""
       target="_self"
       status-text="Edit workflow...">
-    <agp:item
-        contents="Insert step"
-        contents-hover="Insert step"
-        uri="javascript:document.insert_step_form.submit();"
-        target="_self"
-        status-text="Insert step into workflow...."/>
-    <agp:item
-        contents="Insert flow"
-        contents-hover="Insert flow"
-        uri="javascript:document.insert_flow_form.submit();"
-        target="_self"
-        status-text="Insert flow into workflow...."/>
-    <agp:item
-        contents="Insert sequence"
-        contents-hover="Insert sequence"
-        uri="javascript:document.insert_sequence_form.submit();"
-        target="_self"
-        status-text="Insert sequence into workflow...."/>
+        <agp:menu
+            contents="Insert step"
+            contents-hover="Insert step"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:document.insert_step_form.submit();'
+                target="_self"
+                status-text="Insert step into workflow...."/>
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:document.getElementById("activity_index_order_step").value = "AFTER"; document.insert_step_form.submit();'
+                target="_self"
+                status-text="Insert step into workflow...."/>
+
+        </agp:menu>
+        <agp:menu
+            contents="Insert flow"
+            contents-hover="Insert flow"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:document.insert_flow_form.submit();'
+                target="_self"
+                status-text="Insert flow into workflow...."/>
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:document.getElementById("activity_index_order_flow").value = "AFTER"; document.insert_flow_form.submit();'
+                target="_self"
+                status-text="Insert flow into workflow...."/>
+
+        </agp:menu>
+        <agp:menu
+            contents="Insert sequence"
+            contents-hover="Insert sequence"
+            uri=""
+            target="_self"
+            status-text="Insert...">
+            <agp:item
+                contents="before"
+                contents-hover="before"
+                uri='javascript:document.insert_sequence_form.submit();'
+                target="_self"
+                status-text="Insert step into workflow...."/>
+            <agp:item
+                contents="after"
+                contents-hover="after"
+                uri='javascript:document.getElementById("activity_index_order_sequence").value = "AFTER"; document.insert_sequence_form.submit();'
+                target="_self"
+                status-text="Insert sequence into workflow...."/>
+
+        </agp:menu>
     <agp:item
         contents="Remove"
         contents-hover="Remove"
