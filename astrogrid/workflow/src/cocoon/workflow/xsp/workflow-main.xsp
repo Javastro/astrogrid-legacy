@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0"?
 
    <xsp:page language="java"
              create-session="true"
@@ -31,17 +31,36 @@
          xspAttrOutput = null;
 
       //=========================================================================================
-      public void inputParamsList ( Iterator iterator, String key ) throws SAXException {
+      private void outputTool( Tool tool, AttributesImpl xspAttr )
+                               throws SAXException {
+         if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputTool() entry");
+
+         try {
+               <xsp:element name="tool">
+                  <xsp:attribute name="tool-name"><xsp:expr>tool.getName()</xsp:expr></xsp:attribute>
+                  <xsp:attribute name="tool-documentation"><xsp:expr>tool.getDocumentation()</xsp:expr></xsp:attribute>                                    
+                  <xsp:logic>inputParamsList( tool.getInputParameters() ) ;</xsp:logic>
+                  <xsp:logic>outputParamsList( tool.getOutputParameters() ) ;</xsp:logic>                                                                        
+               </xsp:element>
+         }
+         finally {
+            if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputTool() exit");
+         }
+      } // end of outputTool()
+
+      //=========================================================================================
+      public void inputParamsList ( Iterator iterator ) throws SAXException {
          if( TRACE_ENABLED ) trace("workflow-main-xsp.inputParamsList() entry");
 
          xspAttrInput = new AttributesImpl();
 
          try {
-            Parameter param;
+            Parameter 
+               param = null;
 
             while( iterator.hasNext() ) {
                param = (Parameter)iterator.next();
-               outputParameters( param, key, xspAttrInput );			
+               outputParameters( param, xspAttrInput );			
             }
          }
          finally {
@@ -49,23 +68,18 @@
          }
       } // end of inputParamsList() 
 
-      private void outputParameters( Parameter params, String key, AttributesImpl xspAttr )
+      private void outputParameters( Parameter params, AttributesImpl xspAttr )
                                                     throws SAXException {
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputParameters() entry");
 
          try {
-         
-            <content>
                <xsp:element name="inputParam">
-                  <xsp:attribute name="key"><xsp:expr>key</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-name"><xsp:expr>params.getName()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-type"><xsp:expr>params.getType()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-location"><xsp:expr>params.getLocation()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-cardinality-max"><xsp:expr>params.getCardinality().getMaximum()</xsp:expr></xsp:attribute>                                                      
                   <xsp:attribute name="param-cardinality-min"><xsp:expr>params.getCardinality().getMinimum()</xsp:expr></xsp:attribute>                                                                        
                </xsp:element>
-			</content>
-			
          }
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputParameters() exit");
@@ -73,17 +87,18 @@
       } // end of outputInputParameters()
 
       //=========================================================================================
-      public void outputParamsList ( Iterator iterator, String key ) throws SAXException {
+      public void outputParamsList ( Iterator iterator ) throws SAXException {
          if( TRACE_ENABLED ) trace("workflow-main-xsp.outputParamsList() entry");
 
          xspAttrOutput = new AttributesImpl();
 
          try {
-            Parameter param;
+            Parameter 
+               param = null;
 
             while( iterator.hasNext() ) {
                param = (Parameter)iterator.next();
-               outputOutputParameters( param, key, xspAttrInput );			
+               outputOutputParameters( param, xspAttrInput );			
             }
          }
          finally {
@@ -91,23 +106,18 @@
          }
       } // end of outputParamsList() 
 
-      private void outputOutputParameters( Parameter params, String key, AttributesImpl xspAttr )
+      private void outputOutputParameters( Parameter params, AttributesImpl xspAttr )
                                                     throws SAXException {
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputOutputParameters() entry");
 
          try {
-         
-            <content>
                <xsp:element name="outputParam">
-                  <xsp:attribute name="key"><xsp:expr>key</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-name"><xsp:expr>params.getName()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-type"><xsp:expr>params.getType()</xsp:expr></xsp:attribute>
                   <xsp:attribute name="param-location"><xsp:expr>params.getLocation()</xsp:expr></xsp:attribute>                                    
                   <xsp:attribute name="param-cardinality-max"><xsp:expr>params.getCardinality().getMaximum()</xsp:expr></xsp:attribute>                                                      
                   <xsp:attribute name="param-cardinality-min"><xsp:expr>params.getCardinality().getMinimum()</xsp:expr></xsp:attribute>                                                                        
                </xsp:element>
-			</content>
-			
          }
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputOutputParameters() exit");
@@ -138,13 +148,9 @@
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputWorkflow() entry");
 
          try {
-         
-            <content>
                <xsp:element name="workflow">
                   <xsp:attribute name="workflow-name"><xsp:expr>workflow</xsp:expr></xsp:attribute>
                </xsp:element>
-			</content>
-			
          }
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputWorkflow() exit");
@@ -175,13 +181,9 @@
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputQuery() entry");
 
 		 try {
-
-            <content>
                <xsp:element name="query">
                   <xsp:attribute name="query-name"><xsp:expr>query</xsp:expr></xsp:attribute>													
                </xsp:element>
-			</content>
-
          }
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputQuery() exit");
@@ -212,13 +214,9 @@
          if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputTool() entry");
 
 		 try {
-
-            <content>
-               <xsp:element name="tool">
+               <xsp:element name="toolsAvailable">
                   <xsp:attribute name="tool-name"><xsp:expr>tool</xsp:expr></xsp:attribute>													
                </xsp:element>
-			</content>
-
          }
          finally {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.outputTool() exit");
@@ -257,15 +255,11 @@
          private void sequence( Sequence aSequence, AttributesImpl xspAttr ) throws SAXException {  	
 	        if( TRACE_ENABLED ) trace( "workflow-main-xsp.sequence() entry") ;
 		        	
-		    try { 
-		     	
-			   <content>	
+		    try {
                   <xsp:element name="sequence">
                      <xsp:attribute name="key"><xsp:expr>aSequence.getKey()</xsp:expr></xsp:attribute>
                      <xsp:logic>activityContainer( aSequence, xspAttr ) ;</xsp:logic>
                   </xsp:element>
-               </content>
-		
 		    }
             catch(Exception e) {
                e.printStackTrace() ;
@@ -280,14 +274,10 @@
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.flow() entry") ; 
         	
         	try {
-	
-               <content>
                   <xsp:element name="flow">
                      <xsp:attribute name="key"><xsp:expr>flow.getKey()</xsp:expr></xsp:attribute>
                      <xsp:logic>activityContainer( flow, xspAttr ) ;</xsp:logic>
                   </xsp:element>
-               </content>
-			
         	}
             catch(Exception e) {
                e.printStackTrace() ;
@@ -300,45 +290,37 @@
          private void step( Step step, AttributesImpl xspAttr ) throws SAXException {
             if( TRACE_ENABLED ) trace( "workflow-main-xsp.step() entry") ; 
         	
-        	   ListIterator 
-        	      listIt = null;
-               try {
-                  if(step.getTool() == null){
-                     <content>
-                        <xsp:element name="step">
-                                         <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="tool-name">null</xsp:attribute>
-                                         <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
-                        </xsp:element>
-                     </content>
+            try {    
+               xspAttr = new AttributesImpl();
+               
+               if (step.getTool() != null) {
+                  <xsp:element name="step">
+                     <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                     <xsp:logic>outputTool( step.getTool(), xspAttr ) ;</xsp:logic>                                         
+                  </xsp:element>                        
                }
-               else {
-                  <content>
-                     <xsp:element name="step">
-                                         <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="tool-name"><xsp:expr>step.getTool().getName()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="tool-documentation"><xsp:expr>step.getTool().getDocumentation()</xsp:expr></xsp:attribute>
-                                         <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>                                         
-                      </xsp:element>
-                   </content>
-
-                   listIt = step.getTool().getInputParameters() ;
-                   inputParamsList(listIt, step.getKey().toString()) ;
-                   
-                   listIt = step.getTool().getOutputParameters() ;
-                   outputParamsList(listIt, step.getKey().toString()) ;                   
-                }
+               else
+               {               
+                  <xsp:element name="step">
+                     <xsp:attribute name="key"><xsp:expr>step.getKey()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="step-name"><xsp:expr>step.getName()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="step-description"><xsp:expr>step.getDescription()</xsp:expr></xsp:attribute>
+                     <xsp:attribute name="joinCondition"><xsp:expr>step.getJoinCondition()</xsp:expr></xsp:attribute>
+                     <xsp:element name="tool">
+                        <xsp:attribute name="tool-name">null</xsp:attribute>
+                     </xsp:element>                                         
+                  </xsp:element>               
+               } 
             }
             catch(Exception e) {
                e.printStackTrace() ;
             }
             finally {
                if( TRACE_ENABLED ) trace( "workflow-main-xsp.step() exit") ;
-        	}		
+      	    }		
          } // end of step()
 				
          private void activityContainer( ActivityContainer activityContainer, AttributesImpl xspAttr ) 
