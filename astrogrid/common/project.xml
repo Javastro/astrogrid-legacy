@@ -1,25 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.12 2004/02/18 21:45:23 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.13 2004/02/19 01:00:28 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
     <id>astrogrid-common</id>
-    <name>AstroGrid Common</name>
+    <name>common</name>
     <description>Classes used across the components.</description>
     <shortDescription>AstroGrid Common Components</shortDescription>
-    <!-- Temporary Overrides till we get consistent artifactIds-->
-    <groupId>astrogrid-common</groupId>
-    <siteDirectory>/var/www/www/maven/build/common</siteDirectory>
-    <repository>
-        <connection> 
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/common 
-            </connection>
-        <developerConnection> 
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/common 
-            </developerConnection>
-        <url> http://www.astrogrid.org/viewcvs/astrogrid/common/ </url>
-    </repository>
-    <!-- end of overrides -->
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
