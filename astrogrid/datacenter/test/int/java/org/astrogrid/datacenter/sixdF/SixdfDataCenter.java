@@ -17,6 +17,7 @@ import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.query.QueryException;
@@ -42,7 +43,7 @@ public class SixdfDataCenter extends SocketServer
       //start logging
       Log.logToConsole();
       Log.logToFile("error.log");
-      Log.starting(" $Id: SixdfDataCenter.java,v 1.5 2003/09/24 19:11:18 mch Exp $ ");
+      Log.starting(" $Id: SixdfDataCenter.java,v 1.6 2003/09/24 21:05:06 nw Exp $ ");
       
       //tell it the metadata file can be found here where the class is
       Log.logInfo("Initialising...");
@@ -61,9 +62,9 @@ public class SixdfDataCenter extends SocketServer
       Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:microsoft:sqlserver://sql6df.roe.ac.uk:1433;Database=sixdf");
       Configuration.setProperty(SqlQuerier.USER_KEY, "dbreader");
       Configuration.setProperty(SqlQuerier.PASSWORD_KEY, "328purpleant");
-      Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.sql.SqlQuerier");
+      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.sql.SqlQuerier");
       
-      
+
       Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, com.microsoft.jdbc.sqlserver.SQLServerDriver.class.getName());
       
    }
@@ -85,7 +86,7 @@ public class SixdfDataCenter extends SocketServer
       InputStream is = SixdfDataCenter.class.getResourceAsStream("query.xml");
       Document doc = XMLUtils.newDocument(is);
       
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier(doc.getDocumentElement());
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(doc.getDocumentElement());
       QueryResults results = querier.doQuery();
       XMLUtils.DocumentToStream(results.toVotable(), new FileOutputStream("testResults.vot"));
       Log.logInfo("...test Query complete");
@@ -148,6 +149,9 @@ public class SixdfDataCenter extends SocketServer
 
 /*
  $Log: SixdfDataCenter.java,v $
+ Revision 1.6  2003/09/24 21:05:06  nw
+ altered to use DatabaseQuerierManager
+
  Revision 1.5  2003/09/24 19:11:18  mch
  Various fixes for running at ROE, better error checking & reporting
 

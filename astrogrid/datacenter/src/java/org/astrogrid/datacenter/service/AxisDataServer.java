@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.21 2003/09/22 16:51:24 mch Exp $
+ * $Id: AxisDataServer.java,v 1.22 2003/09/24 21:03:46 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,6 +13,7 @@ import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.delegate.WebNotifyServiceListener;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryStatusForwarder;
 import org.astrogrid.datacenter.query.QueryException;
@@ -84,7 +85,7 @@ public class AxisDataServer extends ServiceServer
     */
    public Element doQuery(Element soapBody) throws IOException, DatabaseAccessException, QueryException, Throwable
    {
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier(soapBody);
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(soapBody);
 
       QueryResults results = querier.doQuery();
 
@@ -108,7 +109,7 @@ public class AxisDataServer extends ServiceServer
     */
    public Element makeQuery(Element soapBody) throws QueryException, DatabaseAccessException, IOException, SAXException, Throwable
    {
-      DatabaseQuerier querier = DatabaseQuerier.createQuerier(soapBody);
+      DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(soapBody);
 
       //construct reply with id in it...
       return ResponseHelper.makeQueryCreatedResponse(querier).getDocumentElement();
@@ -124,7 +125,7 @@ public class AxisDataServer extends ServiceServer
    {
       //get id from soap body
       String queryId = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
       Thread queryThread = new Thread(querier);
       queryThread.start();
@@ -146,7 +147,7 @@ public class AxisDataServer extends ServiceServer
    public Element getResultsAndClose(Element soapBody) throws IOException, SAXException, Throwable
    {
       String queryID = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryID);
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryID);
 
       //has querier finished?
       if (querier.getStatus().isBefore(QueryStatus.FINISHED))
@@ -176,7 +177,7 @@ public class AxisDataServer extends ServiceServer
    public void abortQuery(Element soapBody)
    {
       String queryId = QueryIdHelper.getQueryId(soapBody);
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
 
       querier.abort();
    }
@@ -189,7 +190,7 @@ public class AxisDataServer extends ServiceServer
    public String getStatus(Element soapBody)
    {
        String queryId = QueryIdHelper.getQueryId(soapBody);
-      return DatabaseQuerier.getQuerier(queryId).getStatus().toString();
+      return DatabaseQuerierManager.getQuerier(queryId).getStatus().toString();
    }
 
    /**
@@ -199,7 +200,7 @@ public class AxisDataServer extends ServiceServer
     */
    public void registerWebListener(Element soapBody, WebNotifyServiceListener listener)
    {
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(QueryIdHelper.getQueryId(soapBody));
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(QueryIdHelper.getQueryId(soapBody));
 
       querier.registerListener(new QueryStatusForwarder(listener));
    }

@@ -1,5 +1,5 @@
 /*
- * $Id: HomeQuerierTester.java,v 1.2 2003/09/17 14:53:02 nw Exp $
+ * $Id: HomeQuerierTester.java,v 1.3 2003/09/24 21:04:52 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -19,6 +19,7 @@ import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.service.AxisDataServer;
 import org.w3c.dom.Document;
@@ -46,7 +47,7 @@ public class HomeQuerierTester extends TestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY, org.astrogrid.datacenter.queriers.mysql.MySqlQuerier.class.getName());
+      Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, org.astrogrid.datacenter.queriers.mysql.MySqlQuerier.class.getName());
 
       //create the server
       AxisDataServer server = new AxisDataServer();

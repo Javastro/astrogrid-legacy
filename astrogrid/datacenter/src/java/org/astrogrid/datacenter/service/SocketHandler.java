@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.15 2003/09/22 16:51:24 mch Exp $
+ * $Id: SocketHandler.java,v 1.16 2003/09/24 21:03:46 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -20,6 +20,7 @@ import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
 import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.QueryListener;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
@@ -119,7 +120,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler: Creating a query");
-               DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
+               DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(docRequest.getDocumentElement());
                out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
@@ -160,7 +161,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
             else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
             {
                //a blocking/synchronous query
-               DatabaseQuerier querier = DatabaseQuerier.createQuerier(docRequest.getDocumentElement());
+               DatabaseQuerier querier = DatabaseQuerierManager.createQuerier(docRequest.getDocumentElement());
                querier.registerListener(this);
                QueryResults results = querier.doQuery();
 
@@ -215,7 +216,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
    private DatabaseQuerier getQuerierFromDoc(Document doc)
    {
       String queryId = QueryIdHelper.getQueryId(doc.getDocumentElement());
-      DatabaseQuerier querier = DatabaseQuerier.getQuerier(queryId);
+      DatabaseQuerier querier = DatabaseQuerierManager.getQuerier(queryId);
       if (querier == null)
       {
          throw new IllegalArgumentException("No querier found for id='"+queryId+"'"
@@ -241,6 +242,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QueryListe
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.16  2003/09/24 21:03:46  nw
+altered to use DatabaseQuerierManager
+
 Revision 1.15  2003/09/22 16:51:24  mch
 Now posts results to dummy myspace
 

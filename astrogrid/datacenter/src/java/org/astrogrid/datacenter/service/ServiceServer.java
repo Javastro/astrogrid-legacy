@@ -1,5 +1,5 @@
 /*
- * $Id: ServiceServer.java,v 1.13 2003/09/23 18:09:09 mch Exp $
+ * $Id: ServiceServer.java,v 1.14 2003/09/24 21:03:46 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -16,6 +16,7 @@ import org.apache.xpath.XPathAPI;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -75,12 +76,16 @@ public abstract class ServiceServer
               trying = this.getClass().getResource(location).toString();
               is = url.openStream();
            }
-           if (is == null) { // try making the resource absolute.
+           if (is == null && ! location.startsWith("/")) { // try making the resource absolute.
 //this will throw errors if the property is already absolute
-//trying = this.getClass().getResource("/"+location).toString();
-//              is = this.getClass().getResourceAsStream("/" + location);
-              throw new IOException("metadata file '"+location+"' or '"+trying+" not found");
-           }
+// NWW - well we can check for this. commenting this out breaks datacenters running in an app server.
+// and don't want to change the default location for this, in case it breaks socket-server based datacenters. 
+                trying = this.getClass().getResource("/"+location).toString();
+                is = this.getClass().getResourceAsStream("/" + location);
+           }           
+        }
+        if (is == null) {
+            throw new IOException("metadata file '"+location+"' or '"+trying+" not found");
         }
 
          return XMLUtils.newDocument(is).getDocumentElement();
@@ -141,7 +146,7 @@ public abstract class ServiceServer
     */
    public DatabaseQuerier getQuerier(String queryId)
    {
-      return DatabaseQuerier.getQuerier(queryId);
+      return DatabaseQuerierManager.getQuerier(queryId);
    }
 
 

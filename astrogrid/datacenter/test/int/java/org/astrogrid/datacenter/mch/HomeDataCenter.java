@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import org.astrogrid.datacenter.config.Configuration;
 import org.astrogrid.datacenter.queriers.DatabaseQuerier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerierManager;
 import org.astrogrid.datacenter.queriers.sql.SqlQuerier;
 import org.astrogrid.datacenter.service.ServiceServer;
 import org.astrogrid.datacenter.service.SocketServer;
@@ -51,7 +52,7 @@ public class HomeDataCenter extends SocketServer
          Configuration.setProperty(SqlQuerier.JDBC_URL_KEY, "jdbc:mysql://localhost:3306/Catalogue");
          //Configuration.setProperty(SqlQuerier.USER_KEY, "dbreader");
          //Configuration.setProperty(SqlQuerier.PASSWORD_KEY, "328purpleant");
-         Configuration.setProperty(DatabaseQuerier.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.sql.SqlQuerier");
+         Configuration.setProperty(DatabaseQuerierManager.DATABASE_QUERIER_KEY, "org.astrogrid.datacenter.queriers.sql.SqlQuerier");
 
          Configuration.setProperty(SqlQuerier.JDBC_DRIVERS_KEY, org.gjt.mm.mysql.Driver.class.getName());
 
@@ -80,6 +81,9 @@ public class HomeDataCenter extends SocketServer
 
 /*
  $Log: HomeDataCenter.java,v $
+ Revision 1.4  2003/09/24 21:04:52  nw
+ altered to use DatabaseQuerierManager
+
  Revision 1.3  2003/09/17 14:53:02  nw
  tidied imports
 
