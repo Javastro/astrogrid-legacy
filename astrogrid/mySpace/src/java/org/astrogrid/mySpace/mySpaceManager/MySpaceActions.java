@@ -1076,11 +1076,11 @@ public class MySpaceActions
               newDataItemName.substring(containSepPos2+1, containSepPos3);
 
 //            System.out.println("serverName: " + serverName);
-
+			if ( DEBUG )  logger.debug("MYSPACEACTIONS SERVERNAME: "+serverName);	
             RegistryManager reg = new RegistryManager(registryName);
+			if ( DEBUG )  logger.debug("MYSPACEACTIONS REG: "+reg.isServerName(serverName));
             if(reg.isServerName(serverName))
             {
-
 //
 //            Check that the user is permitted to create the output
 //            DataHolder:

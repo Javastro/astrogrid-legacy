@@ -127,7 +127,7 @@ public class MySpaceUtils {
 			istream.close();
 			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse: " +conProperties.toString() ) ;
 			String template = conProperties.getProperty( RESPONSE );
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+response);
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+template);
 			
 			Object [] inserts = new Object[12] ;
 			inserts[0] = status;
@@ -141,10 +141,11 @@ public class MySpaceUtils {
 				inserts[7] = record.getExpiryDate();
 				inserts[8] = new Integer(record.getSize()).toString();
 				inserts[9] = new Integer(record.getType()).toString();
-				inserts[10] = record.getPermissionsMask();
-				inserts[11] = dataHolderURI;
+				inserts[10] = record.getPermissionsMask();				
 			}
-					
+			if (!dataHolderURI.equals(null))  inserts[11] = dataHolderURI;
+			if( DEBUG ) logger.debug("UTIL: DATAHOLDERURI ="+dataHolderURI);		
+		 
 			response = MessageFormat.format( template, inserts ) ;
 			return response;
 		}
