@@ -59,18 +59,18 @@
                 <exclude name="*ogsadai*" />
         </fileset>
    </path>
-Â  Â  Â <java classname="org.apache.axis.utils.Admin" dir="${maven.war.webapp.dir}/WEB-INF"
+   <java classname="org.apache.axis.utils.Admin" dir="${maven.war.webapp.dir}/WEB-INF"
         classpathref="axis.classpath" fork="yes" failonerror="true">
-Â  Â  Â  Â  <arg value="server"/>
-Â  Â  Â  Â  <arg value="${basedir}/src/webapp/deploy.wsdd"/>
-Â  Â  </java>
-    <echo>Configuring the cea web interface</echo>
+        <arg value="server"/>
+        <arg value="${basedir}/src/webapp/deploy.wsdd"/>
+   </java>
+   <echo>Configuring the cea web interface</echo>
    <!-- now run admin client over the processed wsdd file -->
-Â  Â <java classname="org.apache.axis.utils.Admin" dir="${maven.war.webapp.dir}/WEB-INF"
+   <java classname="org.apache.axis.utils.Admin" dir="${maven.war.webapp.dir}/WEB-INF"
         classpathref="axis.classpath" fork="yes" failonerror="true">
-Â  Â  Â  Â  <arg value="server"/>
-Â  Â  Â  Â  <arg value="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd" />
-Â  Â  </java>
+        <arg value="server"/>
+        <arg value="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd" />
+    </java>
    <!-- finally, clean up -->
    <delete>
       <fileset dir="${working.dir}">
@@ -80,36 +80,6 @@
    </delete>
 
 </goal>
-
-<goal name="webapp-site" prereqs="grab-resources" description="generate webapp docs">
-   <echo>pal: generating webapp site into ${maven.war.webapp.dir}" </echo>
-   <!-- first merge two doc sets - site xdocs take precendence  -->
-   <property name="tmp.docs" location="${basedir}/target/webapp-docs-src" />
-   <mkdir dir="${tmp.docs}" />
-   <copy todir="${tmp.docs}">
-      <fileset dir="${basedir}/site-xdocs" />
-   </copy>
-   <copy overwrite="false" todir="${tmp.docs}">
-      <fileset dir="${basedir}/xdocs" />
-   </copy>
-   <!-- now copy in schema n stuff -->
-   <copy overwrite="false" todir="${tmp.docs}">
-      <fileset dir="${working.dir}">
-         <include name="wsdl/**" />
-         <include name="xsd/**" />
-      </fileset>
-   </copy>
-   <j:set var="maven.docs.dest" value="${maven.war.webapp.dir}" />
-   <j:set var="maven.docs.src" value="${tmp.docs}" />
-   <j:set var="maven.xdoc.poweredby.title" value="Provided by Astrogrid" />
-   <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
-   <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
-   <attainGoal name="xdoc:generate-from-pom" />
-   <attainGoal name="xdoc" />
-</goal>
-
-
-
 
 
 <!--
