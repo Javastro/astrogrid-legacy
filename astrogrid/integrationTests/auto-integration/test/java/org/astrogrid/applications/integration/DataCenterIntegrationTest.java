@@ -1,4 +1,4 @@
-/*$Id: DataCenterIntegrationTest.java,v 1.1 2004/04/21 13:41:34 nw Exp $
+/*$Id: DataCenterIntegrationTest.java,v 1.2 2004/04/26 12:16:07 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,12 +75,15 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
             StringWriter out = new StringWriter();
             Piper.pipe(new InputStreamReader(is),out); 
             query.setValue(out.toString());       
-            
+        ParameterValue format= (ParameterValue)tool.findXPathValue("input/parameter[name='Format']");
+          assertNotNull(format);
+           assertEquals("format should be preset","VOTABLE", format.getValue());            
             ParameterValue target = (ParameterValue)tool.findXPathValue("output/parameter[name='Target']");
             assertNotNull(target);
            Ivorn targetIvorn = new Ivorn(MYSPACE,user.getUserId() + "/DatacenterIntegrationTest-votable.xml");
           // Agsl targetAgsl = new Agsl("myspace:http://localhost:8080/astrogrid-mySpace-SNAPSHOT/services/Manager","frog/DatacenterIntegrationTest.votable");
             target.setValue(targetIvorn.toString());
+            System.out.println(targetIvorn.toString());
     }    
 
 
@@ -90,6 +93,10 @@ public class DataCenterIntegrationTest extends ApplicationsInstallationTest {
 
 /* 
 $Log: DataCenterIntegrationTest.java,v $
+Revision 1.2  2004/04/26 12:16:07  nw
+got applications int test working.
+dsa works, but suspect its failing under the hood.
+
 Revision 1.1  2004/04/21 13:41:34  nw
 set up applications integration tests
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationsInstallationTest.java,v 1.1 2004/04/21 13:41:34 nw Exp $
+/*$Id: ApplicationsInstallationTest.java,v 1.2 2004/04/26 12:16:07 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,6 +11,7 @@
 package org.astrogrid.applications.integration;
 
 import org.astrogrid.applications.beans.v1.ApplicationList;
+import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.delegate.CommonExecutionConnectorClient;
 import org.astrogrid.integration.*;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
@@ -20,8 +21,11 @@ import org.astrogrid.scripting.Service;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +54,7 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
     } 
     
     protected String applicationName() {
-        return TESTAPP;
+        return TESTAPP2;
     }
     
     protected Service findRequiredService(Iterator apps) {
@@ -129,13 +133,33 @@ public class ApplicationsInstallationTest extends AbstractTestForIntegration {
      * @param tool
      */
     protected void populateTool(Tool tool) throws Exception{
-        // shouold be ready to go, with no further config.
+          File tmpInFile = File.createTempFile("ApplictionsInstallationTest-input","txt");
+          File tmpOutFile = File.createTempFile("ApplicationsInstallationTest-output","txt");
+
+        PrintWriter pw = new PrintWriter(new FileOutputStream(tmpInFile));
+        assertNotNull(pw);
+        pw.println("test contents");
+        pw.close();          
+          ParameterValue pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P1']");
+          pval.setValue("1"); // wait one second...
+          pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P2']");
+          pval.setValue("30.5");
+          pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P4']");
+          pval.setValue("test string");
+          pval = (ParameterValue)tool.findXPathValue("input/parameter[name='P9']");
+          pval.setValue(tmpInFile.getAbsolutePath());
+          pval = (ParameterValue)tool.findXPathValue("output/parameter[name='P3']");
+          pval.setValue(tmpOutFile.getAbsolutePath());
+       }                                   
     }
-}
 
 
 /* 
 $Log: ApplicationsInstallationTest.java,v $
+Revision 1.2  2004/04/26 12:16:07  nw
+got applications int test working.
+dsa works, but suspect its failing under the hood.
+
 Revision 1.1  2004/04/21 13:41:34  nw
 set up applications integration tests
 
