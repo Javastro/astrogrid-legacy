@@ -12,6 +12,20 @@ import org.astrogrid.security.Password;
  * JUnit tests for the integration of the security facade
  * (org.astrogrid.security) with the Community services.
  *
+ * These tests need the configuration file
+ * config/security.properties in the directory where the
+ * test are run.  The file must set the following properties.
+ *
+ * org.astrogrid.security.sso.username: the account name used to
+ * sign on to the grid.
+ *
+ * org.astrogrid.security.sso.password: the password used to
+ * sign on to the grid.
+ *
+ * org.astrogrid.registry.query.endpoint: the URL for the
+ * registry service (used by the community resolver which is
+ * called during this test).
+ *
  * @author Guy Rixon
  */
 public class SingleSignOnTest extends TestCase {
