@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.53 2004/03/08 00:36:08 nw Exp $ -->
+<!-- $Id: project.xml,v 1.54 2004/03/09 14:22:35 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -189,7 +189,7 @@
         <!-- pico container -->
         <dependency>
         	<id>picocontainer</id>
-        	<version>1.0-beta-5-SNAPSHOT</version>
+        	<version>1.0-RC-1-SNAPSHOT</version>
         	<properties>
         		<war.bundle>true</war.bundle>
         	</properties>
