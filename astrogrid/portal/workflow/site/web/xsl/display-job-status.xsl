@@ -78,7 +78,12 @@
             <xsl:call-template name="format-cells">
                 <xsl:with-param name="count" select="count(ancestor::*)"/>
             </xsl:call-template>                    
-          </xsl:if>            
+          </xsl:if>
+          <xsl:if test="name() = 'script'">
+            <xsl:call-template name="format-cells">
+                <xsl:with-param name="count" select="count(ancestor::*)"/>
+            </xsl:call-template>                    
+          </xsl:if>                      
             <td valign="top" align="left">
                 <xsl:choose>                                      
                     <xsl:when test="name() = 'sequence'">  <!--  SEQUENCE -->                             
@@ -130,7 +135,17 @@
                                 </font>
                             <xsl:element name="/a"></xsl:element>                                                       
                         </td>
-                    </xsl:when>                                                                            
+                    </xsl:when>
+                    
+                    <xsl:when test="name() = 'script'">  <!--  SCRIPT -->                            
+                        <xsl:element name="img">
+                            <xsl:attribute name="src"><xsl:value-of select="$image_path"/>script.gif</xsl:attribute>
+                            <xsl:attribute name="index"><xsl:value-of select="count(preceding-sibling::*)"/></xsl:attribute>
+                            <xsl:attribute name="width">70</xsl:attribute>
+                            <xsl:attribute name="height">25</xsl:attribute>
+                            <xsl:attribute name="alt">script</xsl:attribute>
+                        </xsl:element>                                                                                        
+                    </xsl:when>                                                                                                
                 </xsl:choose>
             </td>
         </tr>
