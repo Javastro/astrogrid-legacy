@@ -1,4 +1,4 @@
-/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.4 2004/08/04 16:49:32 nw Exp $
+/*$Id: SimpleJavaWorkflowEndToEndTest.java,v 1.5 2004/08/17 15:11:50 nw Exp $
  * Created on 23-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,6 +10,7 @@
 **/
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.integration.JavaProviderServerInfo;
 import org.astrogrid.applications.integration.ServerInfo;
 import org.astrogrid.portal.workflow.intf.ApplicationDescription;
@@ -41,8 +42,12 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
 
     public void checkExecutionResults(Workflow wf) throws Exception {
     super.checkExecutionResults(wf);
+    Step s = (Step)wf.getSequence().getActivity(0);
+    assertStepCompleted(s);
+    ResultListType res = getResultOfStep(s);
+    softAssertEquals("expected 1 result",1,res.getResultCount());
     // get the result, check its what we expect.
-    String value = (String)wf.findXPathValue("sequence/activity/tool/output/parameter/value");
+    String value = res.getResult(0).getValue();
     softAssertNotNull("result is null",value);
     softAssertTrue("result is empty",value.trim().length() > 0);
     try {
@@ -56,6 +61,9 @@ public class SimpleJavaWorkflowEndToEndTest extends AbstractTestForSimpleWorkflo
 
 /* 
 $Log: SimpleJavaWorkflowEndToEndTest.java,v $
+Revision 1.5  2004/08/17 15:11:50  nw
+updated some tests
+
 Revision 1.4  2004/08/04 16:49:32  nw
 added test for scripting extensions to workflow
 

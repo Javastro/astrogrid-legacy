@@ -1,4 +1,4 @@
-/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.12 2004/08/04 16:49:32 nw Exp $
+/*$Id: SimpleCommandlineWorkflowEndToEndTest.java,v 1.13 2004/08/17 15:11:50 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
@@ -61,12 +62,18 @@ public class SimpleCommandlineWorkflowEndToEndTest extends AbstractTestForSimple
         super.checkExecutionResults(wf);
         // get the result, check its what we expect.
         Step s = (Step)wf.getSequence().getActivity(0);
-        String value = s.getTool().getOutput().getParameter(0).getValue();
+        assertStepCompleted(s);
+        ResultListType res = getResultOfStep(s);
+        softAssertEquals("only expected a single result",1,res.getResultCount());
+        String value =res.getResult(0).getValue();
         softAssertTrue("result doesn't contain expected value",value.indexOf(CommandLineProviderServerInfo.TEST_CONTENTS) != -1);
     }
 }
 /* 
 $Log: SimpleCommandlineWorkflowEndToEndTest.java,v $
+Revision 1.13  2004/08/17 15:11:50  nw
+updated some tests
+
 Revision 1.12  2004/08/04 16:49:32  nw
 added test for scripting extensions to workflow
 

@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.10 2004/07/05 18:32:34 nw Exp $
+ * $Id: MySpaceCommandlineWorkflowEndToEndTest.java,v 1.11 2004/08/17 15:11:50 nw Exp $
  * 
  * Created on 23-Apr-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,7 @@
 
 package org.astrogrid.workflow.integration;
 
+import org.astrogrid.applications.beans.v1.cea.castor.ResultListType;
 import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.integration.commandline.CommandLineProviderServerInfo;
 import org.astrogrid.io.Piper;
@@ -87,9 +88,11 @@ public class MySpaceCommandlineWorkflowEndToEndTest
        info.populateIndirectTool(tool,inputIvorn.toString(),targetIvorn.toString());
    }
    
-   public void checkExecutionResults(Workflow wf)  {
+   public void checkExecutionResults(Workflow wf) throws Exception{
        // get the result, check its what we expect.
        Step s = (Step)wf.getSequence().getActivity(0);
+       assertStepCompleted(s);
+       ResultListType res = getResultOfStep(s);
        String value = s.getTool().getOutput().getParameter(0).getValue();
        softAssertEquals("results not at expected location",targetIvorn.toString(),value);  
         try {       

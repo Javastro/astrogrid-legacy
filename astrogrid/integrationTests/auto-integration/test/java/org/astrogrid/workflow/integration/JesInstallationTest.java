@@ -1,4 +1,4 @@
-/*$Id: JesInstallationTest.java,v 1.5 2004/07/01 11:47:39 nw Exp $
+/*$Id: JesInstallationTest.java,v 1.6 2004/08/17 15:11:50 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -57,6 +57,7 @@ public class JesInstallationTest extends AbstractTestForIntegration {
         softAssertTrue("newly submitted job not in list",found);
         
         //read
+        Thread.sleep(2000); // give it time to process the job.
         Workflow wf1 = delegate.readJob(urn);
         assertNotNull("read workflow is null",wf1);
         softAssertNotNull("read workfow was not executed",wf1.getJobExecutionRecord());
@@ -80,6 +81,9 @@ public class JesInstallationTest extends AbstractTestForIntegration {
 
 /* 
 $Log: JesInstallationTest.java,v $
+Revision 1.6  2004/08/17 15:11:50  nw
+updated some tests
+
 Revision 1.5  2004/07/01 11:47:39  nw
 cea refactor
 
