@@ -1,5 +1,5 @@
 /*
- * $Id: DocHelper.java,v 1.1 2003/11/17 12:53:07 mch Exp $
+ * $Id: DocHelper.java,v 1.2 2003/11/18 11:02:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -75,7 +74,7 @@ public class DocHelper
          return null;
       }
 
-      Log.affirm(nodes.getLength() == 1, "Too many '"+tagName+"' tags in doc");
+      assert nodes.getLength() == 1 : "Too many '"+tagName+"' tags in doc";
 
       if (nodes.item(0).getFirstChild() != null)
       {

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketDelegate.java,v 1.3 2003/11/17 12:46:15 mch Exp $
+ * $Id: SocketDelegate.java,v 1.4 2003/11/18 11:02:46 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -167,7 +167,7 @@ public class SocketDelegate implements AdqlQuerier
 
          Element response = atomicSendReceive(reqTag);
          
-         NodeList urls = response.getElementsByTagName(ResponseHelper.RESULTS_TAG);
+         NodeList urls = response.getElementsByTagName(DocMessageHelper.RESULTS_TAG);
          
          return new DatacenterResults(new String[] { urls.item(0).getNodeValue() });
       }
@@ -404,11 +404,11 @@ public class SocketDelegate implements AdqlQuerier
          }
 
          //check for error
-         if (response.getElementsByTagName(ResponseHelper.ERROR_TAG).getLength() >0)
+         if (response.getElementsByTagName(DocMessageHelper.ERROR_TAG).getLength() >0)
          {
             //response was an error - not sure what to do with this - log it and return it for now
             Log.logError("Server error: "+
-                        response.getElementsByTagName(ResponseHelper.ERROR_TAG).item(0).getNodeValue()
+                        response.getElementsByTagName(DocMessageHelper.ERROR_TAG).item(0).getNodeValue()
                         );
          }
 
@@ -425,6 +425,9 @@ public class SocketDelegate implements AdqlQuerier
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.4  2003/11/18 11:02:46  mch
+Removing client dependencies on server
+
 Revision 1.3  2003/11/17 12:46:15  mch
 Moving common to snippet
 

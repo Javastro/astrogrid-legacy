@@ -1,5 +1,5 @@
 /*
- * $Id: DocMessageHelper.java,v 1.1 2003/11/17 12:53:07 mch Exp $
+ * $Id: DocMessageHelper.java,v 1.2 2003/11/18 11:02:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -27,5 +27,12 @@ public class DocMessageHelper
    public static final String ASSIGN_QUERY_ID_TAG = "AssignID";
    /** Key specifying results target - prob myspace server */
    public static final String RESULTS_TARGET_TAG = "ResultsTarget";
+   
+   /** Tag used to describe an error */
+   public static final String ERROR_TAG = "Error";
+
+   /** Tag used to describe results */
+   public static final String RESULTS_TAG = "Results";
+   
 }
 
