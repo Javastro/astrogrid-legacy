@@ -192,7 +192,7 @@ public class EntryRecord implements StoreFile
  * Return the path to this file on the MySpace Service.
  */
    public String getPath()
-   {  return entryName;
+   {  return entryName.substring(1);
    }
    
 /**
@@ -222,7 +222,6 @@ public class EntryRecord implements StoreFile
 
 // ----------------------------------------------------------------------
 
-//
 // Additional get methods.
 //
 // The EntryRecord class has a get method for every member variable.
