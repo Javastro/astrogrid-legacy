@@ -27,7 +27,7 @@ public class CommandLineMarshall {
    }
    
   public static void main(String[] args) {
-	new commandLineMarshall("/astrogrid/astrogrid/registry/experiment/castor/script/runAllScript.bat");
+	new CommandLineMarshall("/astrogrid/astrogrid/registry/experiment/castor/script/runAllScript.bat");
   }
 
 }
