@@ -105,11 +105,11 @@
     <!-- TOOLS CATEGORY =============================================================== -->    
   <category name="TOOLS">
     <!-- Location of various tools -->
-    <property name="LOCATION.testapp" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
-    <property name="LOCATION.QueryTool" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
-    <property name="LOCATION.DataFederation" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
-    <property name="LOCATION.SExtractor" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
-    <property name="LOCATION.HyperZ" value="localhost:8080/astrogrid-applications/services/ApplicationController" />
+    <property name="LOCATION.testapp" value="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" />
+    <property name="LOCATION.QueryTool" value="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" />
+    <property name="LOCATION.DataFederation" value="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" />
+    <property name="LOCATION.SExtractor" value="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" />
+    <property name="LOCATION.HyperZ" value="http://localhost:8080/astrogrid-applications/services/ApplicationControllerService" />
 
     
     <!-- Tool interfaces -->
