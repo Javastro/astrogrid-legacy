@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 14:51:38 $</cvs:author>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/26 15:26:29 $</cvs:author>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.17  2003/06/26 15:26:29  dave
+    | Added a local copy of the Cocoon blocks.properties
+    |
     | Revision 1.16  2003/06/26 14:51:38  dave
     | Enabled cocoon.REBUILD
     |
@@ -470,6 +473,7 @@
 		<copy verbose="true" overwrite="true" toDir="${cocoon.build}">
 			<fileset dir="src/cocoon">
 				<include name="build.properties"/>
+				<include name="blocks.properties"/>
 			</fileset>
 		</copy>
 	</target>
@@ -600,6 +604,7 @@
 			<fileset dir="src/cocoon">
 				<exclude name="**/CVS/**"/>
 				<exclude name="build.properties"/>
+				<exclude name="blocks.properties"/>
 				<exclude name="sitemap.xslt"/>
 			</fileset>
 		</copy>
