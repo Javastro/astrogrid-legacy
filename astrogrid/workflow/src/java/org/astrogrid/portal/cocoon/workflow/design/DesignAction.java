@@ -87,7 +87,9 @@ public class DesignAction extends AbstractAction {
 	 * Http request param for the action.
 	 *
 	 */
-	public static final String TEMPLATE_PARAM_TAG = "template" ;	
+	public static final String 
+	    TEMPLATE_PARAM_TAG = "template", 
+	    EMPTY_TEMPLATE = "none_selected" ;	
     
     public static final String
         HTTP_WORKFLOW_TAG = "workflow-tag" ;
@@ -213,7 +215,7 @@ public class DesignAction extends AbstractAction {
                 }      
                 if( action.equals( ACTION_CREATE_WORKFLOW ) ) {
 					template = request.getParameter( TEMPLATE_PARAM_TAG ) ; 
-					if ( template == null ) {
+					if ( template.equals( EMPTY_TEMPLATE ) ) {
 						this.createWorkflow() ;
 					}
                     else {

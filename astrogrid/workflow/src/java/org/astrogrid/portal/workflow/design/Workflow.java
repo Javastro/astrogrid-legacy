@@ -79,6 +79,60 @@ import org.w3c.dom.Document ;
  * @since   AstroGrid 1.3
  */
 public class Workflow extends Activity {
+	
+	private static String oneStepSequenceTemplate = 		"<?xml version='1.0' encoding='UTF8'?>" +
+		"<!-- | Workflow Template contains a sequence of one step =================================================== -->" +
+        "<workflow name = 'OneStepJob' templateName='oneStepJob'>" +
+        "<userid>userid</userid>" +
+        "<community>community</community>" +
+        "<description>This is a one step job</description>" +
+        "<!-- | The top level structure within a workflow is | always a sequence... =============================================== -->" +
+        "<sequence>" +
+        " <step name='StepOne' stepNumber='1' sequenceNumber='1'>" +
+        "<nulltool/>" +
+        "</step>" +
+        "</sequence>" +
+        "</workflow>" ;
+        
+	private static String twoStepSequenceTemplate =
+		"<?xml version='1.0' encoding='UTF8'?>" +
+        "<!-- | Workflow Template contains a sequence of two steps ==================================================== -->" +
+        "<workflow name = 'TwoSequentialJobsteps' templateName='twoStepSequence'>" +
+        "<userid>userid</userid>" +
+        "<community>community</community>" +
+        "<description>This is a two step job executed in sequence</description>" +
+        "<!-- | These two steps are run in sequence because they are | enclosed within a sequence block =================================================== -->" +
+        "<sequence>" +
+        " <step name='StepOne' joinCondition='true' stepNumber='1' sequenceNumber='1'>" +
+        "  <nulltool/>" +
+        " </step>" +
+        " <!-- | This step will only execute if the previous step | executed with a return code of true =============================================== -->" +
+        " <step name='StepTwo' joinCondition='true' stepNumber='2' sequenceNumber='2'>" +
+        "  <nulltool/>" +
+        " </step>" +
+        "</sequence>" +
+        "</workflow>" ; 
+        
+    private static String twoStepFlowTemplate = 
+        "<?xml version='1.0' encoding='UTF8'?>" +
+        "<!-- | Workflow Template contains a flow of two steps ================================================ -->" +
+        "<workflow name = 'TwoParallelJobsteps' templateName='twoStepFlow'>" +
+        "<userid>userid</userid>" +
+        "<community>community</community>" +
+        "<description>This is a two step job executed in parallel</description>" +
+        "<!-- | Every workflow begins with a top level sequence ================================================= -->" +
+        "<sequence>" +
+        " <flow>" +
+        "  <!-- | These two steps will be dispatched in this order | but they will execute in parallel =============================================== -->" +
+        "  <step name='StepOne' stepNumber='1' sequenceNumber='1'>" +
+        "   <nulltool/>" +
+        "  </step>" +
+        "  <step name='StepTwo' stepNumber='2' sequenceNumber='1'>" +
+        "   <nulltool/>" +
+        "  </step>" +
+        " </flow>" +
+        "</sequence>" +
+        "</workflow>" ;           
     
     /** Compile-time switch used to turn tracing on/off. 
       * Set this to false to eliminate all trace statements within the byte code.*/         
@@ -156,11 +210,16 @@ public class Workflow extends Activity {
          debug( "name: " + name ) ;          
             
          try {
-                        
+
+			 debug("About to create input source") ;                        
              InputSource
                 source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
-                
-             workflow = new Workflow( XMLUtils.newDocument(source) ) ;  
+             debug( "Created successfully" ) ;
+             Document doc = XMLUtils.newDocument(source) ;
+             debug(" doc created!" ) ;
+             workflow = new Workflow( doc ) ;
+//			 workflow = new Workflow( XMLUtils.newDocument(source) ) ;             
+             debug("success") ;  
               
  //JBL?            workflow = new Workflow( XMLUtils.newDocument( retrieveTemplate(templateName) ) ) ;
              workflow.setUserid( userid) ;
@@ -328,18 +387,19 @@ public class Workflow extends Activity {
         if( TRACE_ENABLED ) trace( "Workflow(String) entry") ;
         
         try{
+		        	
             this.activities = Collections.synchronizedMap( new HashMap() ) ;
-            this.activities.put( this.getKey(), this ) ;
+            this.activities.put( this.getKey(), this ) ;  
             
             Element
-               element = document.getDocumentElement() ;   
-               
-            name = element.getAttribute( WorkflowDD.WORKFLOW_NAME_ATTR ) ;
-            templateName = element.getAttribute( WorkflowDD.WORKFLOW_TEMPLATENAME_ATTR ) ;
-                       
+               element = document.getDocumentElement() ;         
+            
+            name = element.getAttribute( WorkflowDD.WORKFLOW_NAME_ATTR ) ;           
+            
+            templateName = element.getAttribute( WorkflowDD.WORKFLOW_TEMPLATENAME_ATTR ) ;                       
+            
             NodeList
-               nodeList = element.getChildNodes() ; 
-                           
+               nodeList = element.getChildNodes() ;                           
             for( int i=0 ; i < nodeList.getLength() ; i++ ) {           
                 if( nodeList.item(i).getNodeType() == Node.ELEMENT_NODE ) {
                     
@@ -499,16 +559,22 @@ public class Workflow extends Activity {
         try {
             
             if( templateName.equals( "OneStepJob" )  ) {
-                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_SINGLESTEP, WKF.WORKFLOW_CATEGORY ) ;
+//                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_SINGLESTEP, WKF.WORKFLOW_CATEGORY ) ;
+				  retValue = oneStepSequenceTemplate ;
             }
             else if( templateName.equals( "TwoParallelJobsteps" )  ) {
-                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPFLOW, WKF.WORKFLOW_CATEGORY ) ;
+//                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPFLOW, WKF.WORKFLOW_CATEGORY ) ;
+				  retValue = twoStepFlowTemplate ;
             }
             else if( templateName.equals( "TwoSequentialJobsteps" )  ) {
-                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE, WKF.WORKFLOW_CATEGORY ) ;
+//                retValue = WKF.getProperty( WKF.WORKFLOW_TEMPLATE_TWOSTEPSEQUENCE, WKF.WORKFLOW_CATEGORY ) ;
+				  retValue = twoStepSequenceTemplate ;
             }
-
         }
+        catch(Exception ex){
+        	ex.printStackTrace() ;
+        }
+
         finally {
             if( TRACE_ENABLED ) trace( "Workflow.retrieveTemplate() exit") ;
         }
