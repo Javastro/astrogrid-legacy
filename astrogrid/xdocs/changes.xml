@@ -4,6 +4,15 @@
     <author email="jdt@roe.ac.uk">John Taylor</author>
   </properties>
   <body>
+    <release  version="0.7-b001g,0.7-b001h,0.7-b000r" date="25/11/04" description="FileManager Project Integrated">
+      <action dev="dave" type="add"  >
+        FileManager project integrated into AGINAB
+      </action>
+      <action dev="jdt" type="remove"  issue="781">
+        Second community.  Deploying the second community was causing setup problems.  Some tests associated
+        with the second community have obviously regressed.
+      </action>
+    </release>     
     <release  date="23/11/04" description="New projects">
       <action dev="nw" type="add"  >
         New Aggregate project.
