@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerDelegate.java,v 1.5 2004/03/23 12:51:26 pah Exp $
+ * $Id: TestApplicationControllerDelegate.java,v 1.6 2004/03/25 11:28:28 pah Exp $
  * 
  * Created on 08-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -20,7 +20,7 @@ package org.astrogrid.applications.delegate;
  * @version $Name:  $
  * @since iteration4
  */
-public class TestApplicationControllerDelegate extends AbstractDelegateTest {
+public class TestApplicationControllerDelegate extends AbstractDelegateTestCase {
 
    /**
     * Constructor for ApplicationControllerDelegateTest.

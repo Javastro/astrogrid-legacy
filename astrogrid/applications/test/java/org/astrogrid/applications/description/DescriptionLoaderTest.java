@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.11 2004/03/23 12:51:25 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.12 2004/03/25 11:28:28 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -86,7 +86,7 @@ public class DescriptionLoaderTest extends DescriptionBaseTestCase {
             assertTrue("execution path", ad.getExecutionPath().endsWith( "testapp.sh")); //this is dependent on the actual location
          ParameterDescription[] params = ad.getParameters();
          assertNotNull("no parameters returned", params);
-         assertEquals("there should be 12 parameters ", 12,params.length);
+         assertEquals("there should be 14 parameters ", 14,params.length);
          //now look at the parameters in detail
          ParameterDescription p1 = params[0];
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AbstractDelegateTest.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: AbstractDelegateTestCase.java,v 1.1 2004/03/25 11:28:28 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -24,12 +24,12 @@ import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
  * @version $Name:  $
  * @since iteration5
  */
-public abstract class AbstractDelegateTest extends WorkFlowUsingTestCase {
+public abstract class AbstractDelegateTestCase extends WorkFlowUsingTestCase {
 
    /**
     * 
     */
-   public AbstractDelegateTest() {
+   public AbstractDelegateTestCase() {
       super();
       // TODO Auto-generated constructor stub
    }
@@ -37,7 +37,7 @@ public abstract class AbstractDelegateTest extends WorkFlowUsingTestCase {
    /**
     * @param arg0
     */
-   public AbstractDelegateTest(String arg0) {
+   public AbstractDelegateTestCase(String arg0) {
       super(arg0);
       // TODO Auto-generated constructor stub
    }
