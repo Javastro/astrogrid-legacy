@@ -1,13 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/security/service/Attic/SecurityServiceImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/17 16:01:10 $</cvs:date>
- * <cvs:version>$Revision: 1.14 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/18 17:14:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.15 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: SecurityServiceImpl.java,v $
- *   Revision 1.14  2005/02/17 16:01:10  jdt
- *   Rolled back to 15 Feb 00:00, before community_pah_910, mySpace_pah_910 and Reg_KMB_913
+ *   Revision 1.15  2005/02/18 17:14:55  jdt
+ *   merge with community_pah_910
+ *
+ *   Revision 1.12.44.1  2005/02/07 16:03:37  pah
+ *   updated log messages to make it explicit in the logs when login-logout occurs.
  *
  *   Revision 1.12  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
@@ -107,10 +110,7 @@ public class SecurityServiceImpl
     protected SecurityToken createToken(CommunityIvornParser account)
         throws CommunityServiceException, CommunityIdentifierException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("SecurityServiceImpl.createToken()") ;
-        //
+       //
         // Create a new UID.
         UID uid = new UID() ;
         //
@@ -129,7 +129,7 @@ public class SecurityServiceImpl
         token.setStatus(SecurityToken.VALID_TOKEN) ;
         //
         // Return the new token.
-        log.debug("  Token : " + token) ;
+        log.debug(" SecurityServiceImpl.createToken() Token : " + token) ;
         return token ;
         }
 
@@ -147,11 +147,7 @@ public class SecurityServiceImpl
     public SecurityToken checkPassword(String account, String password)
         throws CommunityServiceException, CommunitySecurityException, CommunityIdentifierException
         {
-        log.debug("") ;
-        log.debug("----\"----") ;
-        log.debug("SecurityServiceImpl.checkPassword()") ;
-        log.debug("  Ident : " + account) ;
-        log.debug("  Pass  : " + password) ;
+        log.debug("SecurityServiceImpl.checkPassword() Ident=" + account+" Pass=" + password) ;
         //
         // Check for null account.
         if (null == account)
@@ -195,7 +191,7 @@ public class SecurityServiceImpl
             if (password.equals(match.getPassword()))
                 {
                 log.debug("  PASS : Password matches") ;
-                //
+               //
                 // Create our new SecurityToken.
                 token = this.createToken(ident) ;
                 database.create(token);
@@ -203,12 +199,14 @@ public class SecurityServiceImpl
                 //
                 // Commit the database transaction.
                 database.commit() ;
+                log.info("successful login for "+match.getAccount());
                 }
             //
             // If the password don't match.
             else {
                 //
                 // Throw a new Exception.
+                log.warn("failed login for " + match.getAccount());
                 throw new CommunitySecurityException(
                     "Password invalid",
                     ident.getAccountIdent()

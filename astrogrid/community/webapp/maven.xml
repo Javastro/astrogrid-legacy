@@ -3,15 +3,15 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2005/02/08 16:04:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.22 $</cvs:version>
+    | <cvs:date>$Date: 2005/02/18 17:14:55 $</cvs:date>
+    | <cvs:version>$Revision: 1.23 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
-    |   Revision 1.22  2005/02/08 16:04:45  jdt
-    |   merge from COMM_JDT_936
+    |   Revision 1.23  2005/02/18 17:14:55  jdt
+    |   merge with community_pah_910
     |
-    |   Revision 1.21.28.1  2005/02/08 14:50:31  jdt
-    |   Custom webapp code doesn't work under Maven 1.0.2.
+    |   Revision 1.21.22.1  2005/02/08 15:52:57  pah
+    |   fix to get the correct war contents
     |
     |   Revision 1.21  2004/11/04 18:00:02  jdt
     |   Restored following fixes to auto-integration

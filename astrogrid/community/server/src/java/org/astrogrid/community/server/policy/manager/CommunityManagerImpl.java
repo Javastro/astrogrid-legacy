@@ -1,13 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/CommunityManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: jdt $</cvs:author>
- * <cvs:date>$Date: 2005/02/17 16:01:10 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Date: 2005/02/18 17:14:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: CommunityManagerImpl.java,v $
- *   Revision 1.10  2005/02/17 16:01:10  jdt
- *   Rolled back to 15 Feb 00:00, before community_pah_910, mySpace_pah_910 and Reg_KMB_913
+ *   Revision 1.11  2005/02/18 17:14:55  jdt
+ *   merge with community_pah_910
+ *
+ *   Revision 1.8.44.1  2005/02/07 16:03:37  pah
+ *   updated log messages to make it explicit in the logs when login-logout occurs.
  *
  *   Revision 1.8  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
@@ -140,6 +143,7 @@ public class CommunityManagerImpl
                 // Commit the transaction.
                 database.commit() ;
                 }
+            log.info("created community ="+community);
             }
         //
         // If we already have an object with that ident.
