@@ -1,0 +1,83 @@
+<?xml version="1.0" ?>
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>data</Name>
+					<AliasName>dat</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>
+				<WhereClause>
+<IntersectionSearch>
+	<FirstCondition xsi:type="PredicateSearch">
+		        <ComparisonPred>
+          <FirstExpr xsi:type="ColumnExpr">
+                <SingleColumnReference>
+                  <TableName>dat</TableName>
+                  <Name>Target</Name>
+                </SingleColumnReference>
+          </FirstExpr>
+          <Compare>=</Compare>
+          <SecondExpr xsi:type="AtomExpr">
+            <Value>
+            	<StringLiteral>
+            		<Value>
+            			<string>SN 1987A</string>
+            			</Value>
+            	</StringLiteral>
+            </Value>
+          </SecondExpr>
+        </ComparisonPred>
+	</FirstCondition>
+	<SecondCondition xsi:type="IntersectionSearch">
+		<FirstCondition xsi:type="PredicateSearch">
+
+		        <ComparisonPred>
+          <FirstExpr xsi:type="ColumnExpr">
+                <SingleColumnReference>
+                  <TableName>dat</TableName>
+                  <Name>units</Name>
+                </SingleColumnReference>
+          </FirstExpr>
+          <Compare>=</Compare>
+          <SecondExpr xsi:type="AtomExpr">
+            <Value>
+            	<StringLiteral>
+            		<Value>
+            			<string>arcsec</string>
+            			</Value>
+            	</StringLiteral>
+            </Value>
+          </SecondExpr>
+        </ComparisonPred>			
+		</FirstCondition>
+		<SecondCondition xsi:type="PredicateSearch">
+
+		        <ComparisonPred>
+          <FirstExpr xsi:type="ColumnExpr">
+                <SingleColumnReference>
+                  <TableName>dat</TableName>
+                  <Name>radius</Name>
+                </SingleColumnReference>
+          </FirstExpr>
+          <Compare>=</Compare>
+          <SecondExpr xsi:type="AtomExpr">
+            <Value>
+            	<StringLiteral>
+            		<Value>
+            			<string>1.5</string>
+            			</Value>
+            	</StringLiteral>
+            </Value>
+          </SecondExpr>
+        </ComparisonPred>			
+		</SecondCondition>
+	</SecondCondition>	
+</IntersectionSearch>					
+
+		</WhereClause>
+	</TableClause>
+</Select>

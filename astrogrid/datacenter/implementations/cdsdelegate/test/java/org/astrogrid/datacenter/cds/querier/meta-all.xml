@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
+	<SelectionAll />
+	<TableClause>
+		<FromClause>
+			<TableReference>
+				<Table>
+					<Name>metadata</Name>
+					<AliasName>cm</AliasName>
+				</Table>
+			</TableReference>
+		</FromClause>	
+	</TableClause>
+</Select>

@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2003/11/20 15:47:18 nw Exp $
+/*$Id: AllTests.java,v 1.3 2003/12/01 16:51:04 nw Exp $
  * Created on 16-Oct-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -40,6 +40,7 @@ public class AllTests {
         suite.addTestSuite(UCDListTest.class);
         suite.addTestSuite(UCDResolverTest.class);
         suite.addTestSuite(VizierDelegateTest.class);
+        suite.addTest(org.astrogrid.datacenter.cds.querier.AllTests.suite());
         //$JUnit-END$
         return suite;
     }
@@ -48,6 +49,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.3  2003/12/01 16:51:04  nw
+added tests for cds spi
+
 Revision 1.2  2003/11/20 15:47:18  nw
 improved testing
 
