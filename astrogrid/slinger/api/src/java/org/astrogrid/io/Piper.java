@@ -1,5 +1,5 @@
 /*
- * $Id: Piper.java,v 1.1 2005/02/15 18:33:20 mch Exp $
+ * $Id: Piper.java,v 1.2 2005/03/22 16:17:33 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -10,10 +10,10 @@
 
 package org.astrogrid.io;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.*;
+
+import org.astrogrid.io.piper.SizeWarningListener;
+import org.astrogrid.io.piper.StreamPiper;
 
 /**
  * Helper class for connecting streams
@@ -23,14 +23,6 @@ import java.io.*;
 
 public class Piper
 {
-    /**
-     * Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(Piper.class);
-
-   private static final int BLOCK_SIZE = 2048;
-   /** level above which warnings will be issued about transfer sizes*/
-   private static final int EXCESSIVE_SIZE_WARNING_LEVEL=1024*1024*30;
    
    /** Utility class - should not be instantiated */
    private Piper() {}
@@ -42,22 +34,8 @@ public class Piper
     */
    public static void pipe(InputStream in, OutputStream out) throws IOException
    {
-      byte[] block = new byte[BLOCK_SIZE];
-      int ibytes = 0;
-      int imult = 1;
-      int read = in.read(block);
-      ibytes += read;
-      while (read > -1)
-      {
-         out.write(block,0, read);
-         read = in.read(block);
-         ibytes += read;
-         if(ibytes > imult *  EXCESSIVE_SIZE_WARNING_LEVEL)
-         {
-             logger.warn("pipe has read "+ibytes);
-             imult++;
-         }
-      }
+      StreamPiper piper = new StreamPiper();
+      piper.pipe(in, out, new SizeWarningListener());
    }
    
    /** Convenience routine to wrap given streams in Buffered*putStreams and
@@ -78,21 +56,18 @@ public class Piper
     */
    public static void pipe(Reader in, Writer out) throws IOException
    {
-      char[] block = new char[BLOCK_SIZE];
-      int ichar = 0;
-      int imult = 1;
+      char[] block = new char[StreamPiper.DEFAULT_BLOCK_SIZE];
+      int total = 0;
       int read = in.read(block);
-      ichar += read;
+      total += read;
+      SizeWarningListener listener = new SizeWarningListener();
+      
       while (read > -1)
       {
          out.write(block,0, read);
          read = in.read(block);
-         ichar += read;
-         if(ichar > imult * EXCESSIVE_SIZE_WARNING_LEVEL)
-         {
-             logger.warn("piper has read "+ ichar);
-             imult++;
-         }
+         total += read;
+         listener.blockPiped(total);
       }
    }
 
@@ -109,9 +84,12 @@ public class Piper
 }
 
 /* $Log: Piper.java,v $
- * Revision 1.1  2005/02/15 18:33:20  mch
- * multiproject-ed
+ * Revision 1.2  2005/03/22 16:17:33  mch
+ * Extended Piper to a package that has listening, thread spawning, etc
  *
+/* Revision 1.1  2005/02/15 18:33:20  mch
+/* multiproject-ed
+/*
 /* Revision 1.5  2004/09/24 14:17:40  pah
 /* added excessive transfer size warning at 30M
 /*
