@@ -9,11 +9,17 @@
 <section name="CEA Implementation in Astrogrid">
        <p>The <a href="http://www.astrogrid.org">Astrogrid</a> projects that implement parts of this architecture are</p>
         <ul>
-            <li><a href="http://www.astrogrid.org/maven/docs/snapshot/applications/">Applications Integration</a> This implements the core CEA functionality</li>
-            <li><a href="http://www.astrogrid.org/maven/docs/snapshot/astrogrid-workflow-objects/">Workflow objects</a> which contains the schema and wsdl definitions</li>
-            <li><a href="http://www.astrogrid.org/maven/docs/snapshot/jes/">Job Management System</a> This does not strictly implement part of the CEA, but does act as the component that invokes the CEA within AstroGrid</li>
+            <li><a href="../multiproject/astrogrid-cea-server/">CEA FrameWork</a> This implements the core CEA functionality. There is an <a href="../multiproject/astrogrid-cea-server/apidocs/overview-summary.html#overview_description">overview diagram</a> of the implementation architecture.</li>
+            <li><a href="../../astrogrid-workflow-objects/">Workflow objects</a> which contains the schema and wsdl definitions</li>
+            <li><a href="../../jes">Job Management System</a> This does not strictly implement part of the CEA, but does act as the component that invokes the CEA within AstroGrid</li>
         </ul>
-        <p>Currently there is implemented a specialization of the CommonExectutionController for unix command line applications that is called the CommandLineApplicationController. </p>
+		<p>An instance of a server that implements the main CEA interface <a href="../../astrogrid-workflow-objects/apidocs/org/astrogrid/applications/service/v1/cea/CommonExecutionConnector.html">CommonExecutionConnector</a> of is know as an <a href="../multiproject/astrogrid-cea-server/apidocs/org/astrogrid/applications/manager/ExecutionController.html">Execution Controller</a></p>
+		<ul>
+			<li><a href="../multiproject/astrogrid-cea-commandline/apidocs/org/astrogrid/applications/commandline/CommandLineCEAComponentManager.html">The Command Line Execution Controller</a>. This is a controller that can act as an adapter to run legacy command-line applications.</li>
+			<li><a>The HTTP GET/POST Execution Controller</a> This is a controller that can act as an adapter to run legacy HTTP GET/POST style applications.</li>
+			<li><a>The Java Class Execution Controller</a> This controller is built into the main CEA Framework, and allows a java class to be presented as an application.</li>
+		</ul>
+        
         <p>The <a href="">javadoc</a></p>
         <p>How to <a href="../Configuration.html">configure a CommandLineApplicationcontroller</a></p>
         <p>How to <a href="../ApplicationConfiguration.html">configure an Application</a></p>
