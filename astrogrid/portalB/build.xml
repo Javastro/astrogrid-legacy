@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/06/26 14:48:19 $</cvs:author>
-    | <cvs:version>$Revision: 1.15 $</cvs:version>
+    | <cvs:author>$Date: 2003/06/26 14:51:38 $</cvs:author>
+    | <cvs:version>$Revision: 1.16 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.16  2003/06/26 14:51:38  dave
+    | Enabled cocoon.REBUILD
+    |
     | Revision 1.15  2003/06/26 14:48:19  dave
     | Added explorer pages and actions to Cocoon
     |
@@ -580,10 +583,6 @@
 
 	<!-- Re-build our Cocoon webapp from clean -->
 	<target name="cocoon.REBUILD" depends="init">
-		<!-- Remove the Cocoon webapp -->
-		<antcall target="cocoon.webapp.remove"/>
-		<!-- Delete the Cocoon webapp -->
-		<antcall target="cocoon.webapp.delete"/>
 		<!-- Delete the Cocoon build -->
 		<antcall target="cocoon.build.delete"/>
 		<!-- Delete the Cocoon source -->
@@ -1860,13 +1859,13 @@
 	    +-->
 	<target name="project.REBUILD" depends="init">
 		<!-- Delete everything -->
-<!-- FIXME (Cocoon build takes tooo long)
 		<delete dir="build" failonerror="false"/>
--->
 		<!-- Unpack the Axis binary -->
 		<antcall target="axis.REBUILD"/>
 		<!-- Unpack the JUnit binary -->
 		<antcall target="junit.REBUILD"/>
+		<!-- Rebuild the Cocoon installation-->
+		<antcall target="cocoon.REBUILD"/>
 		<!-- Start Tomcat and re-build everything -->
 		<antcall target="project.RUN"/>
 	</target>
