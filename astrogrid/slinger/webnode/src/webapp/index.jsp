@@ -59,7 +59,7 @@
          </table>
        </p>
         <p>
-          <input type="submit" name='Submit' value="Get"  />
+          <input type="submit" name='Submit' value="Send"  />
         </p>
    </form>
 
@@ -76,7 +76,7 @@
          </table>
        </p>
         <p>
-          <input type="submit" name='Submit' value="Get"  />
+          <input type="submit" name='Submit' value="Copy"  />
         </p>
    </form>
 
