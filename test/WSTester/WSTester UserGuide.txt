@@ -1,0 +1,71 @@
+WSTester UserGuide:
+
+This is just a rough outline on how to use the WSTester.
+WSTester is a small application that can Test/BenchMark/Stress Test any junit 
+classes.  Because of that I should really change the name of this application, 
+but my primary goal was testing Web Services.  Currently today I could not find
+really any decent tools (also free) that benchmarked webservices with the 
+exception of one tool called TestMaker (previously known as Load), but I 
+could never get it to work like I wanted and required a lot of effort and 
+eventually I just gave up.
+
+WSTester works by reading in a XML file that points to your Junit class along
+with various Thread numbers and loops.  WSTester is quite flexible and allows
+you to run Threads and/or TestCases sequentially or synchronous.  You can have
+an xml file test 1 junit class (webservice) or many junit classes and do them 1
+at a time (sequentially) or part of them at the same time or all of them at the
+same time. Just follow the xml examples on setting it up to process your junit
+class.  It does assume everything is in your classpath.  Currently my examples 
+are working with these calculate webservices, I will try to get one that will 
+work with the Registry soon if I got time, but I am thinking somebody else might
+want to do that.
+
+When you run WSTester it will create a txt file called WSTest-<timestamp>.txt 
+which will hold all the various tests it did along with their time in millis.
+This is very close to how long it took to call your webservice, but have your
+junit class show you the times if you want the true time it took to call your
+webservice.  This text file can easily be imported in to a spreadsheet and 
+make graphs.
+
+"threadStyle" attribute is maybe the only thing that needs a little explaining
+about the xml document.  It has only 2 possibilities "sequential" and synchronous"
+If a "sequential" is ever found it will process that element/task and wait until 
+it is completed before going to the next task.
+If a "synchronous" is found it puts this taks in an array and goes to the next
+task/element until a sequential is reached or end of xml document. In which
+case it then submits everything it has at one time.  This attribute can be 
+placed on the Thread element, TestCase element or WebService element.
+
+You can find WSTester under CVS if you want to build it it is under the test
+directory at the top level of CVS.
+
+To run WSTester
+(might need to set your classpath correctly to the directory above where 
+the org/tools/wstool directory is)
+
+If everything is in your classpath (everything meaning your junit class and all the needed jar's the junit class uses.):
+java WSTester Example.xml
+
+If it is not in your classpath do
+java -classpath <directory to classes>:$CLASSPATH Example.xml
+
+
+Potential Enhancements:
+Okay because of things coming up in Iteration 3 I do not foresee making these
+enhancements, but if you want to give it a go then please do.
+1.)  Okay their is no Commenting
+2.)  I originally wrote this very quickly so definetly a few bad coding 
+areas are in their.
+3.)  I was currently looking into having the "name" attribute in the 
+TestCase element be a method name if you wanted to test individual methods
+in your junit class.  
+4.)  Finally when I keep looking at the main WSTester class I can't help, but
+think their might be a way to make this application a Junit class itself sort
+of a Junit TestCase that tests other Junit tests.  If that is possible and all
+the code was nice and neat heck why not submit this to Junit themselves.
+
+Known Bugs:
+1.) Even though the method writing out to the text file is synchronized it still on occasions when their is high thread counts that it may write a line concatenated with another line.
+
+Potential Bug:
+1.) Hmmm this seems to be okay, but you will notice in the code when you are running tests in "sequential" mode that it sleeps until all the threads are done with the exception of your own main thread.  It seems your own main thread is always 2 for me (Meaning when you run an Application the ThreadCount is 2).  Which I guess is because of the JVM and then the main application.  But if for some reason it is ever 3 then you will have an infinity loop.  Anybody want to explain this one to me.
