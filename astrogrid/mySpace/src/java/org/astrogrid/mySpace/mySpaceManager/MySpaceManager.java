@@ -201,8 +201,6 @@ public String upLoad(String jobDetails){
    public String lookupDataHolderDetails(String jobDetails){
 	if ( DEBUG )  logger.debug("MySpaceManager.moveDataHolder");
 	DataItemRecord dataitem = null;
-	Call call = null;
-	String path="/tmp/test"; //hard coded for now should be discussed
 		try{
 			request = util.getRequestAttributes(jobDetails);
 			try{
@@ -314,8 +312,10 @@ public String upLoad(String jobDetails){
 			Date currentMySpaceDate = new Date();
 	
 		//   Format and return the results as XML.
+		    String header = util.buildMySpaceManagerResponseHeader( SUCCESS, "");
+		    String footer = util.buildMySpaceManagerResponseFooter();
 		    for(int i =0; i<=itemRecVector.size();i++){
-		    	response = response+util.buildMySpaceManagerResponse(dataitem, SUCCESS, "","");
+		    	response = response+util.buildMySpaceManagerResponseElement(dataitem, SUCCESS, "");
 		    } 
 			if( DEBUG ) logger.debug("RESPONSE: "+response); 
 			return response;
