@@ -19,15 +19,13 @@ import org.xml.sax.InputSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.ParseException;
-import org.astrogrid.registry.common.versionNS.IRegistryInfo;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
 import org.astrogrid.registry.client.admin.RegistryAdminService;
 import org.astrogrid.registry.client.harvest.RegistryHarvestService;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
-import org.apache.axis.utils.XMLUtils;
-import org.apache.cocoon.components.request.multipart.FilePart;
-import org.apache.cocoon.components.request.multipart.FilePartFile;
+//import org.apache.cocoon.components.request.multipart.FilePart;
+//import org.apache.cocoon.components.request.multipart.FilePartFile;
 import java.io.File;
 
 
@@ -91,6 +89,7 @@ public class RegistryHarvestAction extends AbstractAction
       String harvestResult = "";
       Document resultDoc = null;
       RegistryAdminService ras = null;
+      System.out.println("inside action of harvest");
       try {
          //get where you putting the harvest results to.
             
@@ -113,17 +112,19 @@ public class RegistryHarvestAction extends AbstractAction
                      
                      //ras.harvestFromUrl(accessURL);
                      resultDoc = ras.update(harvestDoc);
+                     ras.validateDocument(harvestDoc);
                      //Now see if their is a error element in the resultDoc
                      //ras.addRegistryEntries(harvestDoc);
                      //message = "A harvest has begun for url = " + accessURL;
                      //results.put("addregistry","true");
                   }//if                  
                } else if(request.getParameter("addmetadatafromfile") != null) {
-                  FilePart filePart = (FilePart) request.get("metadata_file");
-                  File file = ((FilePartFile)filePart).getFile();
-                  ras = RegistryDelegateFactory.createAdmin();
-                  harvestDoc = registryBuilder.parse(file);
-                  resultDoc = ras.update(harvestDoc);
+                  //request.ge
+  //                FilePart filePart = (FilePart) request.get("metadata_file");
+  //                File file = ((FilePartFile)filePart).getFile();
+  //                ras = RegistryDelegateFactory.createAdmin();
+  //                harvestDoc = registryBuilder.parse(file);
+  //                resultDoc = ras.update(harvestDoc);
                } else if(request.getParameter("registryXML") != null) {
                   String registryXML = request.getParameter("registryXML");
                   String dateSince = request.getParameter("dateFrom");
@@ -166,6 +167,8 @@ public class RegistryHarvestAction extends AbstractAction
          e.printStackTrace();
          errorMessage = e.toString();         
       }
+      
+      System.out.println("leaving harvest action");
       //
       //Create a new HashMap for our results.  Will be used to
       //pass to the transformer (xsl page)
