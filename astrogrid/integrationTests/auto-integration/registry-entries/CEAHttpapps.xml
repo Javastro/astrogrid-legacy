@@ -383,6 +383,10 @@
                 <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
                 <vr:ResourceKey>AdderHttpApp</vr:ResourceKey>
             </cea:ApplicationReference>			
+            <cea:ApplicationReference>
+                <vr:AuthorityID>@REGAUTHORITY@</vr:AuthorityID>
+                <vr:ResourceKey>INTWideFieldSurveySIAP</vr:ResourceKey>
+            </cea:ApplicationReference>	            
          </cea:ManagedApplications>
     </vr:Resource>
 </vr:VODescription>
