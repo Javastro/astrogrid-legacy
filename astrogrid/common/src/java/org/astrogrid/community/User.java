@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.8 2004/01/09 00:25:54 pah Exp $
+ * $Id: User.java,v 1.9 2004/01/09 21:38:13 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -52,6 +52,19 @@ public class User {
        this.account = givenAccount;
        this.group = givenGroup;
        this.token = givenToken;
+    }
+    
+    /**
+    * @param userId the user part of the account
+    * @param community the community part of the account
+    * @param group the group
+    * @param token the security token
+    */
+   public User(String userId, String community, String group, String token)
+    {
+       this.account = userId+"@"+community;
+       this.group = group;
+       this.token = token;
     }
     
     /**
@@ -171,9 +184,12 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.8  2004/01/09 00:25:54  pah
- * added get userid
+ * Revision 1.9  2004/01/09 21:38:13  pah
+ * added new constructor
  *
+/* Revision 1.8  2004/01/09 00:25:54  pah
+/* added get userid
+/*
 /* Revision 1.7  2004/01/08 22:14:32  pah
 /* add a method to return the community part of the user account
 /*
