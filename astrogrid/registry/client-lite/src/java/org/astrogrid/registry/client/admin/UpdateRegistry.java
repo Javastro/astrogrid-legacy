@@ -43,6 +43,7 @@ import org.astrogrid.registry.common.XSLHelper;
  * 
  * @see org.astrogrid.registry.common.RegistryAdminInterface
  * @author Kevin Benson
+ * @todo document the method bodies
  *
  * 
  */
@@ -55,7 +56,7 @@ public class UpdateRegistry implements RegistryAdminService {
 
    private static final String NAMESPACE_URI =  "http://www.ivoa.net/schemas/services/UpdateRegistry/wsdl";
    
-   private static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";   
+   public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";   
    
    private boolean validated = false;   
 
@@ -67,8 +68,7 @@ public class UpdateRegistry implements RegistryAdminService {
    public static Config conf = null;    
 
    
-//   public static Config conf = null;
-   
+   /** @todo shouldn't be necessary to take a local reference to this static - call simple config.getSingleton each time instead */
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -86,6 +86,7 @@ public class UpdateRegistry implements RegistryAdminService {
    
    /**
     * Main constructor to allocate the endPoint variable.
+    * @todo what happens with nulls?
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */ 
@@ -113,6 +114,7 @@ public class UpdateRegistry implements RegistryAdminService {
         logger.error("getCall()", se);
          _call = null;            
       }finally {
+          //@todo never return null on error. throw the exception instead
          return _call;   
       }       
     }
@@ -170,7 +172,7 @@ public class UpdateRegistry implements RegistryAdminService {
       //Go ahead and reset a name and namespace to this as well.
     logger
             .info("update(Document) - the endpoint = "
-                    + this.endPoint.toString());
+                    + this.endPoint);
     logger.info("update(Document) - okay calling update service with doc = "
             + DomHelper.DocumentToString(update));
       //SOAPBodyElement sbeRequest = new SOAPBodyElement(doc.getDocumentElement());      
@@ -187,6 +189,7 @@ public class UpdateRegistry implements RegistryAdminService {
          }
       }catch(RemoteException re) {
          resultDoc = null;
+         //@todo shouldn't catch this one - let it through.
          throw new RegistryException(re);
       }catch (Exception e) {
          resultDoc = null;
@@ -243,7 +246,8 @@ public class UpdateRegistry implements RegistryAdminService {
             }   
          }//for
       }catch(Exception e) {
-        logger.error("getCurrentStatus()", e);   
+        logger.error("getCurrentStatus()", e);
+        //@todo should this throw again now? status can't be meaningful to return, can it.
       }   
       return status;
    }
@@ -261,9 +265,11 @@ public class UpdateRegistry implements RegistryAdminService {
       }catch(ParserConfigurationException pce){
          doc = null;
         logger.error("getStatus()", pce);
+        //@todo not much point continuing is there?
       }
       
       if(doc == null) {
+          //@todo don't return null - throw a sensible exception instead.
          return null;   
       }
 
@@ -286,6 +292,7 @@ public class UpdateRegistry implements RegistryAdminService {
          resultDoc = null;
         logger.error("getStatus()", e);
       }finally {
+          //@todo why return a null -just allow the previously caught exception to propagate upwards instead.
          return resultDoc;
       }
    }

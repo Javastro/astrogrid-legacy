@@ -83,7 +83,7 @@ public class QueryRegistry implements RegistryService {
 
    public static Config conf = null;
 
-
+   //@todo don't think it's necessary to hang onto this object
    static {
       if (conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -91,6 +91,7 @@ public class QueryRegistry implements RegistryService {
    }
 
    /**
+    * @todo - I think this is almost cyclic. 
     * Empty constructor that defaults the end point to local host.
     * @author Kevin Benson
     */
@@ -110,6 +111,7 @@ public class QueryRegistry implements RegistryService {
                 .info("QueryRegistry(URL) - entered const(url) of RegistryService");
       this.endPoint = endPoint;
       if (this.endPoint == null) {
+          logger.warn("endpoint is null, using cache");
          useCache = true;
       }
        
@@ -121,6 +123,7 @@ public class QueryRegistry implements RegistryService {
     * Method to establish a Service and a Call to the server side web service.
     * @return Call object which has the necessary properties set for an Axis message style.
     * @throws Exception
+    * @todo there's code similar to this in eac of the delegate classes. could it be moved into a common baseclass / helper class.
     * @author Kevin Benson
     */
    private Call getCall() throws ServiceException {
@@ -141,6 +144,7 @@ public class QueryRegistry implements RegistryService {
     * To perform a query with ADQL, using adqls.
     * @param adql string form of adqls
     * @return XML DOM of Resources queried from the registry.
+    * @todo throw registry exception until this method is implemented.
     * @throws RegistryException problem during the query servor or client side.
     */
    public Document searchFromSADQL(String adql) throws RegistryException {
@@ -164,9 +168,7 @@ public class QueryRegistry implements RegistryService {
          throw new RegistryException(ioe);
       } catch (SAXException sax) {
          throw new RegistryException(sax);
-      } finally {
-
-      }
+      } 
    }
 
    /**
@@ -215,6 +217,7 @@ public class QueryRegistry implements RegistryService {
            
             logger.info("getRegistries() - creating full soap element.");
           doc = DomHelper.newDocument();
+          //@todo GetRegistries should be a constant.
           Element root = doc.createElementNS(NAMESPACE_URI, "GetRegistries");
           doc.appendChild(root);
        } catch (ParserConfigurationException pce) {

@@ -1,5 +1,5 @@
 /*
- * $Id: RegistryDelegateFactory.java,v 1.9 2004/09/08 13:23:11 nw Exp $
+ * $Id: RegistryDelegateFactory.java,v 1.10 2004/09/14 00:52:21 nw Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -39,7 +39,9 @@ public class RegistryDelegateFactory {
    public static final String QUERY_URL_PROPERTY = "org.astrogrid.registry.query.endpoint";
    public static final String ADMIN_URL_PROPERTY = "org.astrogrid.registry.admin.endpoint";
    public static final String HARVEST_URL_PROPERTY = "org.astrogrid.registry.harvest.endpoint";   
-   
+   /**
+    * @todo - why is a static reference to the config necessary? wouldn't it be simpler to call config directly each timie
+    */
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
@@ -56,13 +58,13 @@ public class RegistryDelegateFactory {
 
    /**
     * 
+    * @todo check for null endpoint and return illegal argument exception?
     * @param endPoint
     * @return
     */
    public static synchronized RegistryService createQuery(URL endPoint) {
-      if(endPoint != null)
         logger.info("createQuery(URL) - the ENDPOINT AT DELEGATE = "
-                + endPoint.toString());
+                + "'" + endPoint + "'");
       return new org.astrogrid.registry.client.query.QueryRegistry(endPoint);
    }
    
@@ -76,6 +78,7 @@ public class RegistryDelegateFactory {
 
    /**
     * 
+    * @todo check for null endpoint and return illegal argument exception?
     * @param endPoint
     * @return
     */
@@ -92,7 +95,7 @@ public class RegistryDelegateFactory {
    }
 
    /**
-    * 
+    * @todo check for null endpoint and return illegal argument exception?
     * @param endPoint
     * @return
     */

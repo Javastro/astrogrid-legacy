@@ -30,7 +30,7 @@ import org.astrogrid.registry.common.RegistryHelper;
  * and vice-versa going from a Document Object back to unique strings in a TreeMap.  The primary use for this is on the
  * cocoon portal side.  Cocoon can now take a Document object that it will receive from a server and throw it to this
  * class for autogenerating a TreeMap object which it can then use to generate Form Input variables.
- * 
+ * @todo - there's a lot in this class. need to check it is being used in portal / elsewhere - if so spend some time polishing up a bit, otherwise remove it.
  * @author Kevin Benson
  * 
  */
@@ -75,7 +75,7 @@ public class RegistryAdminDocumentHelper {
     * Recursive method to create the mapping.  Mainly done by iterating through the NodeList and check if it
     * an Attribute or a Text Node.  If it is one of those then get all the Parent Node names for generating a unique
     * string and get the value then input the unique string and value into a treemap.
-    * 
+    *@todo well documented, but too complex - decompose into smaller methods 
     * @param nl A Nodelist of all the child nodes.
     * @param tm A Treemap Object th contains the mapping of all the unique strings with their values.
     */

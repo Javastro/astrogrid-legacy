@@ -32,7 +32,7 @@ import java.util.Iterator;
  * This delegate helps the user browse the registry.  Queries should be formatted according to
  * the schema at IVOA schema version 0.9.  This class also uses the common RegistryInterface for
  * knowing the web service methods to call on the server side.
- * 
+ * @todo replace null-returns with thrown exceptions, declared in interface.
  * @see org.astrogrid.registry.common.RegistryInterface
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
@@ -63,6 +63,7 @@ public class RegistryHarvestService {
     
    /**
     * Main constructor to allocate the endPoint variable.
+    * @todo fail on null being passed in - throw an illegalArgumentException.
     * @param endPoint location to the web service.
     * @author Kevin Benson
     */     
@@ -91,6 +92,7 @@ public class RegistryHarvestService {
         logger.error("getCall()", se);
          _call = null;            
       }finally {
+          //@todo don't return a null on error - throw the exception instead.
          return _call;   
       }       
    }
@@ -118,6 +120,7 @@ public class RegistryHarvestService {
       }catch(Exception e) {
         logger.error("harvest(Document)", e);            
       }
+      //@todo same here - this idiom is wrong.
       return null;
    }
    

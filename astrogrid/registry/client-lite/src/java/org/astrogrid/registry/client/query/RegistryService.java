@@ -60,6 +60,7 @@ import org.astrogrid.util.DomHelper;
  * knowing the web service methods to call on the server side.
  * 
  * @see org.astrogrid.registry.common.RegistryInterface
+ * 
  * @link http://www.ivoa.net/twiki/bin/view/IVOA/IVOARegWp03
  * @author Kevin Benson
  */
