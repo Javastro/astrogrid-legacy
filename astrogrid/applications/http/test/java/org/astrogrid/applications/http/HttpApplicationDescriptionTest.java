@@ -8,7 +8,9 @@ package org.astrogrid.applications.http;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestCase;
 
@@ -40,10 +42,6 @@ public class HttpApplicationDescriptionTest extends TestCase {
 
     /**
      * Check that an application's metadata is correct
-     * @TODO WARNING - the tests in the method rely on the parameters being in a particular
-     * order....this is not guaranteed so the method ought to be rewritten to take this into
-     * account.
-     * @TODO indeed - this now fails....
      */
     public final void testCreateMetadata() {
         String name = adderApplicationDescription.getName();
@@ -57,8 +55,13 @@ public class HttpApplicationDescriptionTest extends TestCase {
         assertSame(if1.getApplicationDescription(), adderApplicationDescription);
         String[] inputNames = if1.getArrayofInputs();
         assertEquals(2,inputNames.length);
-        assertEquals("x",inputNames[0]);
-        assertEquals("y",inputNames[1]);
+        
+        Set setOfInputs = new HashSet();
+        setOfInputs.add(inputNames[0]);
+        setOfInputs.add(inputNames[1]);
+        
+        assertTrue(setOfInputs.contains("x"));
+        assertTrue(setOfInputs.contains("y"));
         String[] outputNames = if1.getArrayofOutputs();
         assertEquals(outputNames.length,1);
         assertEquals("sum",outputNames[0]);
@@ -68,9 +71,14 @@ public class HttpApplicationDescriptionTest extends TestCase {
         assertSame(if2.getApplicationDescription(), adderApplicationDescription);
         String[] inputNames2 = if2.getArrayofInputs();
         assertEquals(3,inputNames2.length);
-        assertEquals("x",inputNames2[0]);
-        assertEquals("y",inputNames2[1]);
-        assertEquals("z",inputNames2[2]);
+        setOfInputs.clear();
+        setOfInputs.add(inputNames2[0]);
+        setOfInputs.add(inputNames2[1]);
+        setOfInputs.add(inputNames2[2]);
+        assertTrue(setOfInputs.contains("x"));
+        assertTrue(setOfInputs.contains("y"));
+        assertTrue(setOfInputs.contains("z"));
+        
         String[] outputNames2 = if2.getArrayofOutputs();
         assertEquals(outputNames2.length,1);
         assertEquals("sum",outputNames2[0]);       
