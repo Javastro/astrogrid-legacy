@@ -31,6 +31,14 @@
 			<CmdLineParameterDefn name="P4" type="text" commandSwitch="Parameter4" switchType="keyword" fileRef="false">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
+				<agpd:OptionList>
+					<agpd:OptionVal>HTML
+					</agpd:OptionVal>
+					<agpd:OptionVal>VOTable</agpd:OptionVal>
+					<agpd:OptionVal>ASCII</agpd:OptionVal>
+					
+				</agpd:OptionList>
+				
 			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="P5" type="VOTable">
 				<agpd:UI_Name/>
