@@ -160,7 +160,7 @@ public class AdministrationAction extends AbstractAction
       String community_name = null;//CommunityConfig.getCommunityName();
       //System.out.println(community_name);
       
-      
+      checkLogger();
 		//
 		// Get our current request and session.
 		Request request = ObjectModelHelper.getRequest(objectModel);
