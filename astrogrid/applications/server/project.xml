@@ -251,6 +251,9 @@
       <groupId>sun</groupId>
       <artifactId>mail</artifactId>
       <version>1.3.1</version>
+	  <properties>
+		<war.bundle>true</war.bundle>
+		</properties>
     </dependency>
     <!-- used to provide in-war unit testing only -->
     <dependency>
