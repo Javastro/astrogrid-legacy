@@ -1,4 +1,4 @@
-<Context path="/astrogrid-community">
+<Context path="/astrogrid-community-SNAPSHOT">
     <Environment
         name="org.astrogrid.config.url"
         override="false" type="java.lang.String"
