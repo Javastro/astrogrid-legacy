@@ -937,9 +937,9 @@ public class DesignAction extends AbstractAction {
 				
          workflow.insertParameterValue(tool,
                                         parameterName,
+                                        null,
                                         parameterValue,
-                                        "input",
-                                        0) ;
+                                        "input") ;
 				
 			}
 			finally {
@@ -993,9 +993,9 @@ public class DesignAction extends AbstractAction {
 				
 			 workflow.insertParameterValue( tool,
 			                                 parameterName,
+			                                 null,
 			                                 parameterValue,
-			                                 "output",
-			                                 0) ;
+			                                 "output") ;
 				
 		}
 		finally {
