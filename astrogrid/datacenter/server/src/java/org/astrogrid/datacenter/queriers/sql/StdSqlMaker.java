@@ -1,4 +1,4 @@
-/*$Id: StdSqlMaker.java,v 1.6 2004/03/17 21:03:20 mch Exp $
+/*$Id: StdSqlMaker.java,v 1.7 2004/07/01 23:07:14 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,6 +13,7 @@ package org.astrogrid.datacenter.queriers.sql;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.StringTokenizer;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -110,9 +111,15 @@ public class StdSqlMaker  extends SqlMaker {
            return sql;
         }
         
-        return useXslt(queryBody, namespaceURI);
+        String sql = useXslt(queryBody, namespaceURI);
+        
+        sql = replaceRegion(sql);
+        
+        
+        return sql;
 
      }
+     
      
      /** Uses the SPI plugin to do the translations */
      public String useSpi(Element queryBody, Translator trans) throws QueryException {
@@ -139,6 +146,9 @@ public class StdSqlMaker  extends SqlMaker {
 
       String xsltDoc = null;
       //work out which translator sheet to use - default
+      if (namespaceURI.equals("http://tempuri.org/adql")) { //assume v0.5
+         xsltDoc = "adql05-2-sql.xsl";
+      }
       if (namespaceURI.equals("http://adql.ivoa.net/v0.73")) {
          xsltDoc = "adql073-2-sql.xsl";
       }
@@ -166,6 +176,7 @@ public class StdSqlMaker  extends SqlMaker {
          log.debug("Transforming ADQL ["+namespaceURI+"] using Xslt doc at '"+xsltUrl+"'");
          TransformerFactory tFactory = TransformerFactory.newInstance();
          transformer = tFactory.newTransformer(new StreamSource(xsltUrl.openStream()));
+         tFactory.setAttribute("UseNamespaces", Boolean.FALSE);
          
          StringWriter sw = new StringWriter();
          transformer.transform(new DOMSource(queryBody), new StreamResult(sw));
@@ -198,11 +209,63 @@ public class StdSqlMaker  extends SqlMaker {
       }
 
    }
+   
+   /**
+    * Replaces the REGION() function with the cone search SQL.
+    * This is a bit messy as we're reparsing the SQL to replace the function
+    * but we need access to the configuration for this...
+    */
+   public String replaceRegion(String sql) {
+      
+      int start = sql.toLowerCase().indexOf("region");
+      
+      if (start==-1) {
+         return sql;
+      }
+
+      int end = sql.indexOf(")", start);
+
+      int argStart=sql.indexOf("'", start);
+      int argEnd=sql.indexOf("'", argStart+1);
+      
+      String regionArg = sql.substring(argStart+1, end-1).trim().toLowerCase();
+
+      StringTokenizer s = new StringTokenizer(regionArg, " ");
+      String shape = s.nextToken();
+      
+      if (shape.equals("circle")) {
+         //parse out arguments
+         String type = s.nextToken();
+         if (type.equals("j2000")) {
+            double ra = Double.parseDouble(s.nextToken());
+            double dec = Double.parseDouble(s.nextToken());
+            double radius = Double.parseDouble(s.nextToken());
+            
+            return sql.substring(0,start-1)+
+                     fromCone(new ConeQuery(ra, dec, radius))+
+                     sql.substring(end);
+            
+         }
+         else if (type.equals("cartesian")) {
+            throw new UnsupportedOperationException("Can't yet do cartesian circles");
+         }
+         else {
+            throw new QueryException("Unknown circle type: "+type);
+         }
+            
+      }
+      else {
+         throw new QueryException("Unknown region shape: "+regionArg);
+      }
+   }
 }
 
 
 /*
 $Log: StdSqlMaker.java,v $
+Revision 1.7  2004/07/01 23:07:14  mch
+Introduced metadata generator
+
 Revision 1.6  2004/03/17 21:03:20  mch
 Added SQL transformation tests
 

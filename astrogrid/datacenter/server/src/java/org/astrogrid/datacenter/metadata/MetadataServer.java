@@ -1,5 +1,5 @@
 /*
- * $Id: MetadataServer.java,v 1.5 2004/03/14 00:47:57 mch Exp $
+ * $Id: MetadataServer.java,v 1.6 2004/07/01 23:07:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -98,6 +98,7 @@ public class MetadataServer
    public static Document getMetadata() throws IOException
    {
       InputStream is = getMetadataUrl().openStream();
+      
       try
       {
          return DomHelper.newDocument(is);

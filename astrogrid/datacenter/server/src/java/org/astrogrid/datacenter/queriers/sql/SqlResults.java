@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.27 2004/03/18 00:31:33 mch Exp $
+ * $Id: SqlResults.java,v 1.28 2004/07/01 23:07:14 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -103,9 +103,11 @@ public class SqlResults extends QueryResults
          for (int i=1;i<=cols;i++)
          {
             String tablename = "";
-            if (metadata.getTableName(i).length() >0) {
-               tablename = metadata.getTableName(i)+".";
-            }
+            
+            //nb some drivers do not provide this function, and it is often poorly implemented
+//             if (metadata.getTableName(i).length() >0) {
+//                tablename = metadata.getTableName(i)+".";
+//             }
             printOut.println("<FIELD ID='"+tablename+metadata.getColumnName(i)+"' "
                                 +" name='"+metadata.getColumnLabel(i)+"' "
                                 + getVotableType(i)
@@ -259,6 +261,9 @@ public class SqlResults extends QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.28  2004/07/01 23:07:14  mch
+ Introduced metadata generator
+
  Revision 1.27  2004/03/18 00:31:33  mch
  Added adql 7.3.1 tests and max row information to status
 
