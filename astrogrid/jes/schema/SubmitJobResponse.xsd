@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+    <xsd:element name="job">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="userid"/>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="community"/>
+                <xsd:element maxOccurs="1" minOccurs="1" ref="time"/>
+                <xsd:element maxOccurs="1" minOccurs="0" ref="jobid"/>
+            </xsd:sequence>
+            <xsd:attribute name="name" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string"/>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="userid">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:element name="community">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:element name="jobid">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:element name="time">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:dateTime"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:element name="response">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:group maxOccurs="1" minOccurs="1" ref="responseChoice"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    
+    <xsd:element name="message">
+        <xsd:simpleType>
+            <xsd:restriction base="xsd:string"/>
+        </xsd:simpleType>
+    </xsd:element>
+    
+    <xsd:group name="responseChoice">
+        <xsd:choice>
+            <xsd:element maxOccurs="1" minOccurs="0" ref="message"/>
+            <xsd:element maxOccurs="1" minOccurs="1" ref="job"/>
+        </xsd:choice>
+    </xsd:group>
+    
+</xsd:schema>
