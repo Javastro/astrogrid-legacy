@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.32 2004/03/08 00:39:02 mch Exp $
+ * $Id: AxisDataServer.java,v 1.33 2004/03/08 15:57:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -112,7 +112,7 @@ public abstract class AxisDataServer  {
     * results as a VOTable string.  Note that queries
     * that take a long time might therefore cause a timeout at the client as
     * it waits for its response.
-    */
+    *
    public String askQuery(Account user, String q)  throws AxisFault {
       
       Querier querier = null;
@@ -183,6 +183,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.33  2004/03/08 15:57:42  mch
+Fixes to ensure old ADQL interface works alongside new one and with old plugins
+
 Revision 1.32  2004/03/08 00:39:02  mch
 Minor error message change
 

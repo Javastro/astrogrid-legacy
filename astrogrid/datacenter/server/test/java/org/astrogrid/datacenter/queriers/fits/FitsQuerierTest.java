@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.9 2004/03/08 00:31:28 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.10 2004/03/08 15:58:26 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -84,7 +84,7 @@ public class FitsQuerierTest extends OptionalTestCase
    {
       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, FitsQuerier.class.getName());
       
-      Querier querier = QuerierManager.createQuerier((String) null);
+      Querier querier = QuerierManager.createQuerier(null);
       
       assertTrue(querier instanceof FitsQuerier);
    }
@@ -110,6 +110,9 @@ public class FitsQuerierTest extends OptionalTestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.10  2004/03/08 15:58:26  mch
+ Fixes to ensure old ADQL interface works alongside new one and with old plugins
+
  Revision 1.9  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 

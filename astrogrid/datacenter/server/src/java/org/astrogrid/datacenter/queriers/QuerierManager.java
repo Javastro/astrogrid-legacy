@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.18 2004/03/08 00:31:28 mch Exp $
+/*$Id: QuerierManager.java,v 1.19 2004/03/08 15:57:42 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -130,11 +130,11 @@ public class QuerierManager {
    
     /**
     * Creates a querier from an AGSL
-    */
+    *
    public static Querier createQuerier(String internalQuery) throws DatabaseAccessException {
       throw new UnsupportedOperationException();
    }
-   
+    */
    
    /**
     * A factory method that Returns a Querier implementation based on the
@@ -282,6 +282,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.19  2004/03/08 15:57:42  mch
+ Fixes to ensure old ADQL interface works alongside new one and with old plugins
+
  Revision 1.18  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 

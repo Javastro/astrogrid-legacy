@@ -1,4 +1,4 @@
-/*$Id: SiteTestWebService.java,v 1.2 2004/02/16 23:07:05 mch Exp $
+/*$Id: SiteTestWebService.java,v 1.3 2004/03/08 15:58:26 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,21 +13,16 @@ package org.astrogrid.datacenter.site;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import javax.xml.rpc.ServiceException;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.adql.ADQLUtils;
 import org.astrogrid.datacenter.adql.generated.Select;
-import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.delegate.Metadata;
 
 /**
  * For testing astrogrid datacenter web services and their delegates
@@ -52,9 +47,8 @@ public class SiteTestWebService extends TestCase {
    {
       FullSearcher querier = DatacenterDelegateFactory.makeFullSearcher(Account.ANONYMOUS, endPoint, DatacenterDelegateFactory.ASTROGRID_WEB_SERVICE);
       
-      Metadata metadata = querier.getMetadata();
+      assertNotNull(querier.getMetadata());
       
-      assertNotNull(metadata);
    }
    
    public void testBlockingQuery() throws Exception
@@ -95,6 +89,9 @@ public class SiteTestWebService extends TestCase {
 
 /*
 $Log: SiteTestWebService.java,v $
+Revision 1.3  2004/03/08 15:58:26  mch
+Fixes to ensure old ADQL interface works alongside new one and with old plugins
+
 Revision 1.2  2004/02/16 23:07:05  mch
 Moved DummyQueriers to std server and switched to AttomConfig
 

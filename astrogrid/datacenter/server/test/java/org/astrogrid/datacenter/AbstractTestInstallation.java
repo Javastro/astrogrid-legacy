@@ -1,4 +1,4 @@
-/*$Id: AbstractTestInstallation.java,v 1.12 2004/03/07 00:33:50 mch Exp $
+/*$Id: AbstractTestInstallation.java,v 1.13 2004/03/08 15:58:26 mch Exp $
  * Created on 19-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -23,7 +23,6 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.DatacenterQuery;
 import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
-import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -94,11 +93,10 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
     
     public void testGetMetatdata() throws Throwable{
         try {
-        FullSearcher del = createDelegate();
-            Metadata result = del.getMetadata();
-            assertNotNull(result);
-            Document d = result.getDocument();
-             assertIsMetadata(d);
+           FullSearcher del = createDelegate();
+           Document metadata = del.getMetadata();
+           assertNotNull(metadata);
+           assertIsMetadata(metadata);
         } catch (Throwable t) {
             t.printStackTrace();
             throw t;
@@ -287,6 +285,9 @@ public abstract class AbstractTestInstallation extends ServerTestCase {
 
 /*
 $Log: AbstractTestInstallation.java,v $
+Revision 1.13  2004/03/08 15:58:26  mch
+Fixes to ensure old ADQL interface works alongside new one and with old plugins
+
 Revision 1.12  2004/03/07 00:33:50  mch
 Started to separate It4.1 interface from general server services
 
