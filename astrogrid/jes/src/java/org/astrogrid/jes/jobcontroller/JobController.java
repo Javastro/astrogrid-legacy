@@ -83,9 +83,16 @@ public class JobController {
 		TRACE_ENABLED = true ;
 			
 	private static final String 
+	/** Properties' file for this component. */  
 		CONFIG_FILENAME              = "ASTROGRID_jesconfig.properties",
+	/** Key within the component's Properties' file which helps identify the appropriate
+	 *  language ResourceBundle. */  
 		CONFIG_MESSAGES_BASENAME     = "MESSAGES.INSTALLATION.BASENAME" ,
+	/** Key within the component's Properties' file which helps identify the appropriate
+	 *  language ResourceBundle. */  
 		CONFIG_MESSAGES_LANGUAGECODE = "MESSAGES.INSTALLATION.LANGUAGECODE" ,
+	/** Key within the component's Properties' file which helps identify the appropriate
+	 *  language ResourceBundle. */  
 		CONFIG_MESSAGES_COUNTRYCODE  = "MESSAGES.INSTALLATION.COUNTRYCODE" ;
 	    
 	private static final String
@@ -100,22 +107,38 @@ public class JobController {
         ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00060",
         ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00070" ;
 	        			
+	/** Key within the component's Properties' file signifying whether the web service request
+	 *  document is to be parsed with validation turned on or off*/  
 	private static final String
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
 	    
 	private static final String 
+	/** Key within the component's Properties' file identifying the template
+	 *  used for the submit job response */  
 		SUBMIT_JOB_RESPONSE_TEMPLATE = "SUBMIT_JOB_RESPONSE.TEMPLATE",
+	/** Key within the component's Properties' file identifying the template
+	 *  used for the schedule job request */  
 	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE",
+	/** Key within the component's Properties' file identifying the template
+	 *  used in formatting a message document for the AstroGrid message log */  
         MESSAGE_LOG_REQUEST_TEMPLATE  = "ASTROGRID_MESSAGE_LOG_REQUEST.TEMPLATE" ;
 		
     private static final String 
+	/** Key within the component's Properties' file identifying the url
+	 * to be used for JobScheduler requests */  
 	    SCHEDULER_URL = "SCHEDULER.URL" ,
+	/** Key within the component's Properties' file identifying the url
+	 * to be used for AstroGrid message log requests */  
         MESSAGE_LOG_URL = "ASTROGRID_MESSAGE_LOG.URL" ,
+	/** Key within the component's Properties' file identifying the url
+	 * to the current JobController */  
         CONTROLLER_URL = "CONTROLLER.URL" ;
-	    			
+
+	/** Log4J logger for this class. */    			    			
 	private static Logger 
 		logger = Logger.getLogger( JobController.class ) ;
 		
+	/** The JobController's properties' file. */  
 	private static Properties
 		configurationProperties = null ;
 	
@@ -293,11 +316,15 @@ public class JobController {
 	  * <p> 
 	  * Represents the mainline workflow argument for the JobController. 
 	  * <p>
-	  * Shows the JobController to be a "pristine" component with no state.
+	  * Shows the JobController to be a component with no state.
 	  * It neither uses nor creates instance variables. In the EJB model 
 	  * it would be considered a stateless session bean.
 	  * 
+	  * @param jobXML - The service request XML received as a String.
+	  * @return A String containing the reponse document in XML.
 	  * 
+	  * @see SubmitJobRequest.xsd in CVS
+	  * @see SubmitJobResponse.xsd in CVS
 	  **/     
     public String submitJob( String jobXML ) {
 		if( TRACE_ENABLED ) logger.debug( "submitJob() entry") ;
@@ -360,18 +387,57 @@ public class JobController {
     } // end of submitJob()
     
     
+	/**
+	  * <p> 
+	  * Formats the "good" response to the web service - Job successfully submitted. 
+	  * <p>
+	  * 
+	  * @param job - The job entity
+	  * @return A String containing the message.
+	  * 
+	  * @see <code>String formatResponse( Job job, String aMessage )</code>
+	  **/      
     private String formatGoodResponse( Job job ) {
 		Message
 			message = new Message( ASTROGRIDINFO_JOB_SUCCESSFULLY_SUBMITTED ) ; 
         return formatResponse( job, message.toString() ) ;
     }
   
-    
+  
+	/**
+	  * <p> 
+	  * Formats a "bad" response to the web service. 
+	  * <p>
+	  * 
+	  * @param job - The job entity
+	  * @param errorMessage - appropriate error message
+	  * @return A String containing the formatted message.
+	  * 
+	  * @see org.astrogrid.jes.i18n.Message
+	  * @see <code>String formatResponse( Job job, String aMessage )</code>
+	  **/         
 	private String formatBadResponse( Job job, Message errorMessage ) {
 		return formatResponse( job, errorMessage.toString() ) ;
 	}   
 
-	
+
+	/**
+	  * <p> 
+	  * Worker routine for formatting the web service response document.
+	  * <p>
+	  * The response document is a simple XML document and this 
+	  * routine uses an appropriately simple technique for 
+	  * producing it, requiring a template loaded from a properties'
+	  * file, together with the use of class <code>MessageFormat</code>.
+	  * 
+	  * @param job - The job entity
+	  * @param aMessage - an appropriate message as a String
+	  * @return A String containing the formatted document.
+	  * 
+	  * @see SubmitJobResponse.xsd in CVS
+	  * @see java.text.MessageFormat
+	  * @see the appropriate properties' file.
+	  **/         
 	private String formatResponse( Job job, String aMessage ) {
 		if( TRACE_ENABLED ) logger.debug( "formatResponse() exit") ;
 		
@@ -404,7 +470,33 @@ public class JobController {
 		
 	} // end of formatResponse()
 	
-	  	
+	
+	/**
+	  * <p> 
+	  * Invokes the web service for job scheduling.
+	  * <p>
+	  * JobController, JobScheduler and JobMonitor are fairly
+	  * loosely coupled components linked together by their
+	  * shared use of the Job database. Here the JobController
+	  * is touching the Scheduler with a oneway call to see
+	  * whether the given Job (passed with this call) can be 
+	  * appropriately scheduled to run somewhere.
+	  * 
+	  * The call itself is timely rather than system significant.
+	  * It informs the scheduler that something is ready <code>now</code>.
+	  * The system will eventually schedule the Job even if the
+	  * call fails.
+	  * 
+	  * JBL Note: A candidate for refactoring.
+	  * 
+	  * @param job - The job entity
+	  * @return void
+	  * 
+	  * @see ScheduleJobRequest.xsd in CVS
+	  * @see java.text.MessageFormat
+	  * @see the appropriate properties' file.
+	  * @see formatScheduleRequest( job )
+	  **/           	
 	private void informJobScheduler( Job job ) { 
 		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;
 
@@ -421,6 +513,8 @@ public class JobController {
 			call.addParameter("scheduleJobXML", XMLType.XSD_STRING,ParameterMode.IN);
 			call.setReturnType(XMLType.XSD_STRING);
 			
+			// JBL Note: Axis documentation states the immediate return aspect is
+			// not yet implemented, so we may need a fudge here.
 			call.invokeOneWay( parms ) ;
 
 		}
@@ -436,6 +530,23 @@ public class JobController {
 	} // end informJobScheduler()
 	
 	
+	/**
+	  * <p> 
+	  * Worker routine for formatting the job scheduling web service 
+	  * response document.
+	  * <p>
+	  * The scheduling request document is a simple XML document 
+	  * and this routine uses an appropriately simple technique for 
+	  * producing it, requiring a template loaded from a properties'
+	  * file, together with the use of class <code>MessageFormat</code>.
+	  * 
+	  * @param job - The job entity
+	  * @return A String containing the formatted request document.
+	  * 
+	  * @see SubmitJobResponse.xsd in CVS
+	  * @see java.text.MessageFormat
+	  * @see the appropriate properties' file.
+	  **/         
 	private String formatScheduleRequest( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "formatScheduleRequest() exit") ;
 		
@@ -469,6 +580,24 @@ public class JobController {
 	} // end of formatScheduleRequest()
 	
 	
+	/**
+	  * <p> 
+	  * Invokes the web service for using the AstroGrid message log.
+	  * <p>
+	  * The message log is the AstroGrid way of informing users 
+	  * of significant events, e.g. in this case the submission 
+	  * details of a job (successful or otherwise). 
+	  * This is an AstroGrid service over and above the normal 
+	  * component contract, which for JobController is discharged 
+	  * by the reponse document to the JobController submission web service.
+	  * 
+	  * JBL Note: A candidate for refactoring.
+	  * 
+	  * @param job - The job entity
+	  * @return void
+	  * 
+	  * @see formatStatusMessage( Job job )
+	  **/           	
 	private void informAstroGridMessageLog( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "informAstroGridMessageLog(): entry") ;
 		
@@ -477,11 +606,15 @@ public class JobController {
 			Call 
 			   call = (Call) new Service().createCall() ;
 			   
+			// We keep the appropriate end-point in a properties' file.
+			// JBL note: Is this sufficient?
 			call.setTargetEndpointAddress( new URL( JobController.getProperty( MESSAGE_LOG_URL ) ) ) ;
       
 			SOAPBodyElement[] 
 			   bodyElement = new SOAPBodyElement[1];
 			   
+			// The request document is simple enough to keep a template of it in 
+			// a properties' file and use the MessageFormat class to complete it...
 			String
 				requestString = JobController.getProperty( MESSAGE_LOG_REQUEST_TEMPLATE ) ;
 			Object []
@@ -491,7 +624,8 @@ public class JobController {
 			inserts[2] = new Timestamp( new Date().getTime() ).toString() ;       // timestamp - is this OK?
 			inserts[3] = "Job submitted" ;                                        // subject
 			
-			//JBL Note: this requires elucidation...
+			// We use a worker routine to format the actual message log message...
+			// JBL Note: this requires elucidation...
 			inserts[4] = formatStatusMessage( job ) ;
 			 
 			InputSource
@@ -519,6 +653,18 @@ public class JobController {
 	} // end of informAstroGridMessageLog()
 	
 	
+	/**
+	  * <p> 
+	  * Worker routine for formatting the job status message passed 
+	  * within the AstroGrid message log request document.
+	  * <p>
+	  * 
+	  * @param job - The job entity
+	  * @return A String containing the formatted job status message.
+	  * 
+	  * @see java.text.MessageFormat
+	  * @see the appropriate messages' properties' file.
+	  **/         
 	private String formatStatusMessage ( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "formatStatusMessage(): entry") ;	
 		
