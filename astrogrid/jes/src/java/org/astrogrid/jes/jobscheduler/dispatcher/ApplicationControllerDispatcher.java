@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.10 2004/04/08 14:43:26 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.11 2004/05/27 09:49:42 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -91,9 +91,11 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
       }
       catch (CEADelegateException e) {
+          /* don't want to log error here - propagate upwards instead
          logger.error(
             id.getValue() + " : Failed to communitcate with application controller",
             e);
+            */
          throw new JesException("Failed to communicate with application controller", e);
       }
 
@@ -147,6 +149,9 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.11  2004/05/27 09:49:42  nw
+improved exception reporting 'when applications go bad'
+
 Revision 1.10  2004/04/08 14:43:26  nw
 added delete and abort job functionality
 

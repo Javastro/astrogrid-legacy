@@ -243,13 +243,15 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
                         dispatcher.dispatchStep( job, step ) ;
                         er.setStatus(ExecutionPhase.RUNNING);
                     } catch (Throwable t) { // absolutely anything
-                        logger.info("Step execution failed:",t);                 
+                        Throwable root = findRootCause(t);
+                        logger.info("Step: '" + step.getName() + "' (Tool: '" + step.getTool().getName() + "'): execution failed. Root Cause:",root);
+                        logger.debug("Full stacktrace of failure",t);              
                          MessageType message = new MessageType();
                          StringBuffer buff = new StringBuffer();
                         buff.append("Failed: ")
-                            .append( t.getClass().getName())
+                            .append( root.getClass().getName())
                             .append('\n')
-                            .append( t.getMessage())
+                            .append( root.getMessage())
                             .append('\n');
                          StringWriter writer = new StringWriter();                            
                             t.printStackTrace(new PrintWriter(writer));
@@ -268,6 +270,15 @@ public class SchedulerImpl implements org.astrogrid.jes.jobscheduler.JobSchedule
                 } // end while
                 // no more runnable jobs at the moment.
     } // end of scheduleSteps()
+    
+    private Throwable findRootCause(final Throwable t) {
+        Throwable result = t;
+        while (result.getCause() != null) {
+            result = result.getCause();
+        }
+        return result;
+
+    }
 
     /** use policy to calculate status of job. if policy decides job is finished, record finish date, notify that job is finished. */
     protected void updateJobStatus(Workflow job) {
