@@ -1,4 +1,4 @@
-/*$Id: CompositeWorkflowEndToEndTest.java,v 1.5 2004/07/23 08:08:44 nw Exp $
+/*$Id: CompositeWorkflowEndToEndTest.java,v 1.6 2004/08/19 23:48:06 nw Exp $
  * Created on 12-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -39,13 +39,13 @@ import java.util.Date;
  * @author Noel Winstanley nw@jb.man.ac.uk 12-Mar-2004
  *
  */
-public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
+public class CompositeWorkflowEndToEndTest extends AbstractTestForWorkflow {
     /**
      * Constructor for WorkflowManagerIntegrationTest.
      * @param arg0
      */
     public CompositeWorkflowEndToEndTest(String arg0) {
-        super(arg0);
+        super(new String[]{TESTDSA,TESTAPP}, arg0);
     }
     /*
      * @see AbstractTestForIntegration#setUp()
@@ -63,39 +63,21 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
     protected WorkflowStore store;
 
 
-    /** use case of a complex workflow containing more than one step 
-     * @todo add more checking of the final document here.*/
-    public void testCompositeWorkflow() throws Exception {
-        buildComplexWorkflowDocument();
-        JobURN urn = jes.submitWorkflow(wf);
-           assertNotNull("submitted workflow produced null urn",urn);
-           //check its in the list.
-           JobSummary summaries[] = jes.readJobList(acc);
-           softAssertNotNull("null job list returned",summaries);
-           softAssertTrue("empty job list returned",summaries.length > 0);
-           boolean found = false;
-           for (int i = 0; i < summaries.length; i++) {
-               if (summaries[i].getJobURN().getContent().equals(urn.getContent())) {
-                   found=true;
-               }
-           }
-           softAssertTrue("job not found in list",found);
-        Thread.sleep(60 * 1000); // wait a minute
-        Workflow w1 = jes.readJob(urn);
-               assertNotNull("null workflow returned",w1);
-                assertEquals("workflow does not have expected name",w1.getName(),wf.getName());
-            // dump it to myspace store - then we can look at it later.
-           w1.setName("CompositeWorkflowEndToEndTest" + "-" + System.currentTimeMillis());
-           Ivorn ivorn = new Ivorn(MYSPACE,user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
-           store.saveWorkflow(user,ivorn,w1);
-        assertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus());
-    }        
     
-//-------------------------------------------------------------------------------
-
+    public void checkExecutionResults(Workflow w1) throws Exception {
+        super.checkExecutionResults(w1);
+        softAssertEquals("workflow does not have expected name",w1.getName(),wf.getName());
+        // dump it to myspace store - then we can look at it later.
+       w1.setName("CompositeWorkflowEndToEndTest" + "-" + System.currentTimeMillis());
+       Ivorn ivorn = new Ivorn(MYSPACE,user.getUserId() +"/" + w1.getName() + ".saved-workflow.xml"); 
+       store.saveWorkflow(user,ivorn,w1);
+    softAssertEquals("Workflow not completed",ExecutionPhase.COMPLETED,w1.getJobExecutionRecord().getStatus());        
+    }
+    
+   
 
     /** build a multi-step workflow r*/
-    private void buildComplexWorkflowDocument() throws Exception {
+    protected void buildWorkflow() throws Exception {
         wf.setName("Complex Workflow");
         // build step that queries datacenter
         ApplicationDescription datacenterDescription = reg.getDescriptionFor(TESTDSA);
@@ -145,12 +127,15 @@ public class CompositeWorkflowEndToEndTest extends AbstractTestForIntegration {
         
     }    
 
-    
+
 }
 
 
 /* 
 $Log: CompositeWorkflowEndToEndTest.java,v $
+Revision 1.6  2004/08/19 23:48:06  nw
+made a child of standard baseclass
+
 Revision 1.5  2004/07/23 08:08:44  nw
 upped the timeout value.
 
