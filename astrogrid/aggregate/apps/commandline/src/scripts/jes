@@ -7,13 +7,12 @@ import org.astrogrid.workflow.beans.v1.execution.JobURN
 import org.astrogrid.workflow.beans.v1.Workflow
 import org.apache.axis.utils.XMLUtils
 import org.exolab.castor.xml.Marshaller
-import org.apache.commons.cli.*
 
-import org.astrogrid.ui.script.*;
-
+import org.apache.commons.cli.HelpFormatter;
 
 
-class Jes {
+
+class Jes extends org.astrogrid.ui.script.commandline.CommandlineApplication {
 
 JobURN mkJobURN(string) {
   urn = new JobURN()
@@ -23,8 +22,6 @@ JobURN mkJobURN(string) {
 
 // setup commandline options
 
-Options o = (new Options())
-OptionGroup og = new OptionGroup()
 Jes() {
  o.addOption("l","list",false,"List jobs (default)")
  .addOption("L","fullList",false,"List full details of jobs")
@@ -33,34 +30,17 @@ Jes() {
  .addOption("C","cancel",true,"Cancel specified job")
  .addOption("d","delete",true,"Delete specified job")
  .addOption("s","submit",true,"Submit a job")
- .addOption("h","help",false,"Display this help")
-
- .addOption("u","user",true,"username (optional)")
- .addOption("p","password",true,"password (optional)")
- .addOption("c","community",true,"community (optional)")
 
 ['l','L','j','J','C','d','s','h'].each{og.addOption(o.getOption(it))}
 o.addOptionGroup(og)
 }
-
-astrogrid;
-user;
-account;
-homeIvorn;
-userIvorn;
-
 
 
 static void main(String[] args) {
     (new Jes()).run(args)
 }
 
-void run(args){
-try {// catch all exceptio handler.
-
-parser = new PosixParser()
-line = parser.parse(o,args)
-login line
+void doIt(){
 jm = astrogrid.workflowManager.jobExecutionService
 
 if (line.hasOption("l") || og.selected == null) {
@@ -111,12 +91,6 @@ else {
         displayHelp()
 }
 
-} catch (Throwable e) { // catch all, for better reporting.
-        println("An Error occurred :" + e.class.name)
-        println e.message
-        displayHelp()
-        System.exit(-1)
-}
 }
 
 void displayHelp() {
@@ -128,27 +102,4 @@ DOC
 ,o)
 }
 
-
-void login(line) {
-u=null
-if (line.hasOption "u") {
-        u = line.getOptionValue "user"
-}
-
-p=null
-if (line.hasOption "p") {
-        p = line.getOptionValue "password"
-}
-comm=null
-if (line.hasOption "c") {
-        comm = line.getOptionValue "community"
-}
-  env = LoginFactory.login(u,comm,p);
-  astrogrid = env.astrogrid;
-  user = env.user
-  account = env.account
-  homeIvorn = env.homeIvorn
-  userIvorn = env.userIvorn
-
-}
 }

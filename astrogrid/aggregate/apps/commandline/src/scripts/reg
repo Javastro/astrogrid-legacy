@@ -3,13 +3,11 @@
 
 */
 import org.apache.axis.utils.XMLUtils
-import org.apache.commons.cli.*
-import org.astrogrid.ui.script.*;
 
-class Reg {
+import org.apache.commons.cli.HelpFormatter;
+
+class Reg extends org.astrogrid.ui.script.commandline.CommandlineApplication {
 // setup commandline options
-Options o = new Options()
-OptionGroup og = new OptionGroup()
 Reg() {
 o.addOption("r","resolve",true,"Resolve identifier to endpoint")
 o.addOption("l","list",false,"List identifiers of records in registry (default)")
@@ -18,31 +16,16 @@ o.addOption("x","registry",false,"Ask about the registry itself")
 o.addOption("q","query",true,"Run a quey against the registry (specify file, or - for stdin)")
 
 
-  .addOption("u","user",true,"username (optional)")
- .addOption("p","password",true,"password (optional)")
- .addOption("c","community",true,"community (optional)")
-
 // lots more that could be added here, but dunno what it all means really.
 
 ['r','l','i','x',"q"].each{og.addOption(o.getOption it)}
 o.addOptionGroup og
 }
 
-astrogrid;
-user;
-account;
-homeIvorn;
-userIvorn;
-
-
 static void main(String[] args) {
         (new Reg()).run(args);
 }
-void run(args) {
-try {
-parser = new PosixParser()
-line = parser.parse(o,args)
-login line
+void doIt() {
 r = astrogrid.createRegistryClient()
 
 
@@ -76,12 +59,7 @@ else if (line.hasOption "q") {
 else {
         displayHelp()
 }
-} catch (Exception e) {
-        println("An Error occurred :" + e.class.name)
-        println e.message
-        displayHelp()
-        System.exit(-1)
-}
+
 }
 void displayHelp() {
         (new HelpFormatter()).printHelp(
@@ -90,29 +68,6 @@ reg <options>
 query the registry
 DOC,
 o)
-}
-
-void login(line) {
-u=null
-if (line.hasOption "u") {
-        u = line.getOptionValue "user"
-}
-
-p=null
-if (line.hasOption "p") {
-        p = line.getOptionValue "password"
-}
-comm=null
-if (line.hasOption "c") {
-        comm = line.getOptionValue "community"
-}
-  env = LoginFactory.login(u,comm,p);
-  astrogrid = env.astrogrid;
-  user = env.user
-  account = env.account
-  homeIvorn = env.homeIvorn
-  userIvorn = env.userIvorn
-
 }
 
 

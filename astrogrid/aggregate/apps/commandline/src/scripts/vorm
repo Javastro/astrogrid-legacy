@@ -3,45 +3,23 @@
 /** remove a resource in myspace
 
 */
-import org.apache.axis.utils.XMLUtils
-import org.apache.commons.cli.*
 
-import org.astrogrid.ui.script.*;
-class Vorm {
-// setup commandline options
-Options o = new Options()
-Vorm() {
-o.addOption("u","user",true,"username (optional)")
- .addOption("p","password",true,"password (optional)")
- .addOption("c","community",true,"community (optional)")
-}
+import org.apache.commons.cli.HelpFormatter;
+class Vorm extends org.astrogrid.ui.script.commandline.CommandlineApplication {
 
-astrogrid;
-user;
-account;
-homeIvorn;
-userIvorn;
 static void main(String[] args) {
         new Vorm().run(args)
 }
-void run(args) {
-parser = new PosixParser()
-try {// catch all exceptio handler.
-
-line = parser.parse(o,args)
-login(line)
-
+void doIt() {
+if (line.hasOption "h") {
+  displayHelp()
+  System.exit(0)
+}
 client = astrogrid.createVoSpaceClient(user)
 ivo =  mkFull(line.getArgs()[0])
 client.delete(ivo)
 
 
-} catch (Exception e) { // catch all, for better reporting.
-        println("An Error occurred :" + e.class.name)
-        println(e.message)
-        displayHelp()
-        System.exit(-1)
-}
 
 }
 void displayHelp() {
@@ -50,49 +28,11 @@ void displayHelp() {
 vorm [options] <resource>
   remove a myspace resource
   if the resource is a directory, it must be empty.
- <resource> may either be specified in full ivo://..  or abridged #... forms.  
+ <resource> may either be specified in full ivo://..  or abridged #... forms.
 
 DOC
 ,o)
 }
-Object mkFull(s) { // make this the full form of myspace reference.
-   u = null;
-   if (s.startsWith "ivo://") {
-        return astrogrid.objectBuilder.newIvorn(s)
-   }
-   tok = s.tokenize("/").reverse();
-   if (s.startsWith "#/") {
-       tok.pop()// skip junk
-        u = tok.pop()
-        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring 1)
-   } else  if (s.startsWith "#") { // error tolerant, of not qute correct syntax
-        u = tok.pop().substring 1        
-        return astrogrid.objectBuilder.newIvorn(account.community,u,"/" + s.substring(1))
-   } else { // assume to be something else, and pass thru
-     return s
-   }
-}
-void login(line) {
-u=null
-if (line.hasOption "u") {
-        u = line.getOptionValue "user"
-}
 
-p=null
-if (line.hasOption "p") {
-        p = line.getOptionValue "password"
-}
-comm=null
-if (line.hasOption "c") {
-        comm = line.getOptionValue "community"
-}
-  env = LoginFactory.login(u,comm,p);
-  astrogrid = env.astrogrid;
-  user = env.user
-  account = env.account
-  homeIvorn = env.homeIvorn
-  userIvorn = env.userIvorn
-
-}
 
 }

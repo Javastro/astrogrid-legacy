@@ -1,14 +1,13 @@
 #!/usr/bin/env groovy
-import org.apache.axis.utils.XMLUtils
-import org.apache.commons.cli.*
-import org.astrogrid.ui.script.*;
-
+/**
+list a directory / file in myspace
+*/
+import org.apache.commons.cli.HelpFormatter;
 
 /**inefficient implementation at the moment - hamstrung by current myspace implementation
  */
 // setup commandline options
-class Vols {
-Options o = new Options()
+class Vols extends org.astrogrid.ui.script.commandline.CommandlineApplication{
 
 Vols() {
 o.addOption("l","long",false,"long format")
@@ -18,42 +17,24 @@ o.addOption("F","classify",false,"append indicator to entries")
 o.addOption("Q","quote-name",false,"enclose entry names in double quotes")
 o.addOption("R","recursive",false,"list subdirectories recursively")
 
- .addOption("u","user",true,"username (optional)")
- .addOption("p","password",true,"password (optional)")
- .addOption("c","community",true,"community (optional)")
 
-og = new OptionGroup()
 ['F','Q'].each{og.addOption(o.getOption(it))}
 o.addOptionGroup(og)
 }
 
-astrogrid;
-user;
-account;
-homeIvorn;
-userIvorn;
-password;
-line;
+
 static void main(String[] args) {
         new Vols().run(args)
 }
-void run(args) {
-parser = new PosixParser()
-try {// catch all exceptio handler.
-
-line = parser.parse(o,args)
-login(line)
+void doIt() {
 location = astrogrid.createTreeClient(userIvorn,password).root
 //now need to iterate down fragments of the ivorn..
 ivorn =  mkFull(line.args.length > 0 ? line.args[0] : homeIvorn.toString())
-if (ivorn.path != homeIvorn.path) {
-        throw new IllegalArgumentException("Cannot view another user's directory")
-}
 
 path = ivorn.fragment.tokenize("/").reverse()
 path.pop() // gets rid of the root.
 path.reverse().each {name |
-	   location = location.childNodes.find{it.name == name}
+           location = location.childNodes.find{it.name == name}
 }
 
 
@@ -65,12 +46,6 @@ if (line.hasOption("R") && location.isContainer()) {
         display(location,formatter)
 }
 
-} catch (Exception e) { // catch all, for better reporting.
-        println("An Error occurred :" + e.class.name)
-        println(e.message)        
-        displayHelp()
-        System.exit(-1)
-}
 }
 void displayHelp() {
         (new HelpFormatter()).printHelp(
@@ -83,48 +58,6 @@ vols [options] <resource>
 DOC
 ,o)
 }
-
-Object mkFull(s) { // make this the full form of myspace reference.
-   u = null;
-   if (s.startsWith "ivo://") {
-        return astrogrid.objectBuilder.newIvorn(s)
-   }
-   tok = s.tokenize("/").reverse();
-   if (s.startsWith "#/") {
-       tok.pop()// skip junk
-        u = tok.pop()
-        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring 1)
-   } else  if (s.startsWith "#") { // error tolerant, of not qute correct syntax
-        u = tok.pop().substring 1        
-        return astrogrid.objectBuilder.newIvorn(account.community,u,"/" + s.substring(1))
-   } else { // assume to be something else, and pass thru
-     return s
-   }
-}
-
-void login(line) {
-u=null
-if (line.hasOption "u") {
-        u = line.getOptionValue "user"
-}
-
-p=null
-if (line.hasOption "p") {
-        p = line.getOptionValue "password"
-}
-comm=null
-if (line.hasOption "c") {
-        comm = line.getOptionValue "community"
-}
-  env = LoginFactory.login(u,comm,p);
-  astrogrid = env.astrogrid;
-  user = env.user
-  account = env.account
-  homeIvorn = env.homeIvorn
-  userIvorn = env.userIvorn
-  password = env.password
-}
-
 
 
 Object mkFormatter() {
@@ -152,12 +85,12 @@ void display(location,formatter) {
                                 if (++count % 3 == 0) {
                                         println(formatter(it))
                                 } else {
-                                        print(formatter(it).padRight(20) + " ")                                        
+                                        print(formatter(it).padRight(20) + " ")
                                 }
                         }
                         if (count %3 != 0) {
-	                        println("")
-	                    }
+                                println("")
+                            }
                 } else {
                         location.childNodes.each {println(formatter(it))}
                 }

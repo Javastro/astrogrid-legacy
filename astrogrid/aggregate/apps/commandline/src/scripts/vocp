@@ -1,35 +1,24 @@
 #!/usr/bin/env groovy
-import org.apache.commons.cli.*
-import org.astrogrid.ui.script.*;
+/**
+  copy files between local file system, myspace, stdin, stdout, and remote URLs
+*/
 
-class Vocp {
-// setup commandline options
+import org.apache.commons.cli.HelpFormatter;
 
-Options o = new Options()
-Vocp() {
-o.addOption("u","user",true,"username (optional)")
- .addOption("p","password",true,"password (optional)")
- .addOption("c","community",true,"community (optional)")
-}
-
-
-astrogrid;
-user;
-account;
-homeIvorn;
-userIvorn;
+class Vocp extends org.astrogrid.ui.script.commandline.CommandlineApplication {
 
 static void main(String[] args) {
         (new Vocp()).run(args)
 }
-void run(args) {
-parser = new PosixParser()
-try {// catch all exceptio handler.
 
-line = parser.parse(o,args)
-login(line)
-src = mkFull(line.getArgs()[0])
-dest = mkFull(line.getArgs()[1])
+void doIt() {
+if (line.hasOption "h") {
+  displayHelp()
+  System.exit(0)
+}
+
+src = expandReference(line.getArgs()[0])
+dest = expandReference(line.getArgs()[1])
 
 if (dest.startsWith("ivo://") && src.startsWith("ivo://")) { // its a remotve move..
    client = astrogrid.createVoSpaceClient user
@@ -61,15 +50,9 @@ else { // have to pipe it ourselves.
         }
 }
 
-} catch (Exception e) { // catch all, for better reporting.
-        println("An Error occurred :" + e.class.name)
-        println(e.message)
-        printHelp()
-        System.exit(-1)
-}
 }
 
-void printHelp() {
+void displayHelp() {
         (new HelpFormatter()).printHelp(
 <<<DOC
 vocp [options] <src-file> <dest-file>
@@ -91,53 +74,20 @@ NB: writing to http:// and ftp:// urls is likely to fail.
 DOC
 ,o)
 }
-
-String mkFull(s) { // make this the full form of whatever it is.
-   u = null;
+String expandReference(s) { // make this the full form of whatever it is.
    if (["ivo://","http://","file:/","ftp://","-"].any{s.startsWith(it)}) {
         return s;
    }
-    tok = s.tokenize("/").reverse();
-   if (s.startsWith "#/") {
-       tok.pop()// skip junk
-        u = tok.pop()
-        return astrogrid.objectBuilder.newIvorn(account.community,u,s.substring 1).toString()
-   } else  if (s.startsWith "#") { // error tolerant, of not qute correct syntax
-        u = tok.pop().substring 1        
-        return astrogrid.objectBuilder.newIvorn(account.community,u,"/" + s.substring(1)).toString()
-   } else { // assume to be file.
-    return (new java.io.File(s)).toURL().toString()
+   if (s.startsWith "#") {
+        return mkFull(s).toString()
    }
+   // assume to be file.
+   return (new java.io.File(s)).toURL().toString()
 }
-
-
-
 
 boolean isRemoteURL(src) {
   return ["http://","ftp://"].any{src.startsWith(it)}
 }
 
-void login(line) {
-u=null
-if (line.hasOption "u") {
-        u = line.getOptionValue "user"
-}
-
-p=null
-if (line.hasOption "p") {
-        p = line.getOptionValue "password"
-}
-comm=null
-if (line.hasOption "c") {
-        comm = line.getOptionValue "community"
-}
-  env = LoginFactory.login(u,comm,p);
-  astrogrid = env.astrogrid;
-  user = env.user
-  account = env.account
-  homeIvorn = env.homeIvorn
-  userIvorn = env.userIvorn
-
-}
 
 }
