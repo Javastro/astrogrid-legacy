@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.4  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.3.2.2  2004/07/21 16:28:16  dave
+ *   Added content properties and tests
+ *
+ *   Revision 1.3.2.1  2004/07/20 19:10:40  dave
+ *   Refactored to implement URL import
+ *
  *   Revision 1.3  2004/07/19 23:42:07  dave
  *   Merged development branch, dave-dev-200407151443, into HEAD
  *
@@ -40,19 +49,28 @@
  */
 package org.astrogrid.filestore.common ;
 
+import java.io.IOException  ;
+import java.io.InputStream  ;
+import java.io.OutputStream ;
+import java.io.ByteArrayOutputStream ;
+
+import java.net.URL ;
+import java.net.URLConnection ;
+import java.net.MalformedURLException ;
+
 import java.util.Map ;
 import java.util.HashMap ;
-
-//import java.rmi.RemoteException  ;
-//import org.apache.axis.AxisFault ;
 
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.file.FileIdentifier ;
-import org.astrogrid.filestore.common.transfer.TransferInfo ;
+
+import org.astrogrid.filestore.common.transfer.TransferUtil ;
+import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileIdentifierException ;
+import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 /**
  * A mock implementation of the store service.
@@ -227,6 +245,56 @@ public class FileStoreMock
 				{
 				this.data[i] = extra[j] ;
 				}
+			}
+
+		/**
+		 * Import our data from a URL.
+		 *
+		 */
+		public void importData(URL url)
+			throws IOException
+			{
+			//
+			// Open a connection to the URL.
+			URLConnection connection = url.openConnection() ;
+			//
+			// Set our propeties from the URL headers.
+			this.properties.setProperty(
+				FileProperties.TRANSFER_SOURCE_PROPERTY,
+				url.toString()
+				) ;
+			this.properties.setProperty(
+				FileProperties.MIME_TYPE_PROPERTY,
+				connection.getContentType()
+				) ;
+			this.properties.setProperty(
+				FileProperties.MIME_ENCODING_PROPERTY,
+				connection.getContentEncoding()
+				) ;
+			//
+			// Transfer the data from the URL.
+			this.importData(
+				connection.getInputStream()
+				) ;
+			}
+
+		/**
+		 * Import our data from am InputStream.
+		 *
+		 */
+		public void importData(InputStream in)
+			throws IOException
+			{
+			//
+			// Create an output stream to transfer the data to.
+			ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+			//
+			// Transfer the data.
+			TransferUtil trans = new TransferUtil(in, out) ;
+			trans.transfer() ;
+			//
+			// Convert into a byte array.
+			this.data = out.toByteArray() ;
 			}
 		}
 
@@ -581,46 +649,100 @@ public class FileStoreMock
 
 	/**
 	 * Prepare to receive a data object from a remote source.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 *
 	 */
-	public TransferInfo importInit(TransferInfo info)
+	public TransferProperties importInit(TransferProperties transfer)
 		{
-		return info ;
+		return transfer ;
 		}
 
 	/**
 	 * Import a data object from a remote source.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
+	 * @throws FileStoreTransferException if the transfer properties are null.
 	 *
 	 */
-	public TransferInfo importData(TransferInfo info)
+	public TransferProperties importData(TransferProperties transfer)
+		throws FileStoreTransferException
 		{
-		return info ;
+		if (DEBUG_FLAG) System.out.println("") ;
+		if (DEBUG_FLAG) System.out.println("----\"----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreMock.importData()") ;
+		//
+		// Check for null transfer properties.
+		if (null == transfer)
+			{
+			throw new FileStoreTransferException(
+				"Null transfer properties"
+				) ;
+			}
+		//
+		// Check for null URL.
+		if (null == transfer.getSource())
+			{
+			throw new FileStoreTransferException(
+				"Null transfer source"
+				) ;
+			}
+		//
+		// Create a new container.
+		ContainerMock container = new ContainerMock(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Transfer the data.
+		try {
+			container.importData(
+				new URL(
+					transfer.getSource()
+					)
+				) ;
+			}
+		catch (MalformedURLException ouch)
+			{
+			throw new FileStoreTransferException(
+				ouch
+				) ;
+			}
+		catch (IOException ouch)
+			{
+			throw new FileStoreTransferException(
+				ouch
+				) ;
+			}
+		//
+		// Add the updated file properties.
+		transfer.setFileProperties(
+			container.properties().toArray()
+			) ;
+		//
+		// Return the transfer properties.
+		return transfer ;
 		}
 
 	/**
 	 * Prepare to send a data object to a remote destination.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 *
 	 */
-	public TransferInfo exportInit(TransferInfo info)
+	public TransferProperties exportInit(TransferProperties transfer)
 		{
-		return info ;
+		return transfer ;
 		}
 
 	/**
 	 * Export a data object to a remote destination.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 *
 	 */
-	public TransferInfo exportData(TransferInfo info)
+	public TransferProperties exportData(TransferProperties transfer)
 		{
-		return info ;
+		return transfer ;
 		}
 
 	/**

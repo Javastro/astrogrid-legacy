@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreTest.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreTest.java,v $
+ *   Revision 1.4  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.3.2.2  2004/07/21 16:28:16  dave
+ *   Added content properties and tests
+ *
+ *   Revision 1.3.2.1  2004/07/20 19:10:40  dave
+ *   Refactored to implement URL import
+ *
  *   Revision 1.3  2004/07/19 23:42:07  dave
  *   Merged development branch, dave-dev-200407151443, into HEAD
  *
@@ -34,14 +43,19 @@
  */
 package org.astrogrid.filestore.common ;
 
+import java.net.URL ;
+
 import junit.framework.TestCase ;
 
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
-import org.astrogrid.filestore.common.transfer.TransferInfo ;
+import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileIdentifierException ;
+import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
+
+import org.astrogrid.filestore.common.transfer.UrlGetTransfer ;
 
 /**
  * A JUnit test case for the store service.
@@ -218,6 +232,21 @@ public class FileStoreTest
 //
 // Property tests.
 //
+
+	/**
+	 * Check the identifier properties.
+	 *
+	 */
+	protected void checkIdentProperties(FileProperty[] properties)
+		throws Exception
+		{
+		checkIdentProperties(
+			new FileProperties(
+				properties
+				)
+			) ;
+		}
+
 	/**
 	 * Check the identifier properties.
 	 *
@@ -1456,6 +1485,338 @@ public class FileStoreTest
 				modified.getProperty(
 					FileProperties.STORE_INTERNAL_IDENTIFIER
 					)
+				)
+			) ;
+		}
+
+	/**
+	 * Test properties prefix.
+	 *
+	 */
+	public static final String TEST_PROPERTY_PREFIX = "org.astrogrid.filestore.test" ;
+
+	/**
+	 * Helper method to get a local property.
+	 *
+	 */
+	public String getTestProperty(String name)
+		{
+		return System.getProperty(TEST_PROPERTY_PREFIX + "." + name) ;
+		}
+
+	/**
+	 * Check we get the right Exception for a null url.
+	 *
+	 */
+	public void testCreateNullUrlGetTransfer()
+		throws Exception
+		{
+		try {
+			new UrlGetTransfer(
+				null
+				) ;
+			}
+		catch (IllegalArgumentException ouch)
+			{
+			return ;
+			}
+		fail("Expected IllegalArgumentException") ;
+		}
+
+	/**
+	 * Check we can create a transfer info.
+	 *
+	 */
+	public void testCreateUrlGetTransfer()
+		throws Exception
+		{
+		System.out.println("--------") ;
+		System.out.println(
+			getTestProperty(
+				"data.file.text"
+				)
+			) ;
+		System.out.println("--------") ;
+		assertNotNull(
+			"Null transfer info",
+			new UrlGetTransfer(
+				new URL(
+					getTestProperty(
+						"data.file.text"
+						)
+					)
+				)
+			) ;
+		}
+
+	/**
+	 * Check we get the right Exception for a null transfer properties.
+	 *
+	 */
+	public void testImportNullTransfer()
+		throws Exception
+		{
+		try {
+			target.importData(
+				null
+				) ;
+			}
+		catch (FileStoreTransferException ouch)
+			{
+			return ;
+			}
+		fail("Expected FileStoreTransferException") ;
+		}
+
+	/**
+	 * Check that we get the right exception from a failed import.
+	 *
+	 */
+	public void testImportMissing()
+		throws Exception
+		{
+		try {
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.file.miss"
+							)
+						)
+					)
+				) ;
+			}
+		catch (FileStoreTransferException ouch)
+			{
+			return ;
+			}
+		fail("Expected FileStoreTransferException") ;
+		}
+
+	/**
+	 * Check that we can import a local file.
+	 *
+	 */
+	public void testImportFile()
+		throws Exception
+		{
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.file.text"
+							)
+						)
+					)
+				) ;
+		assertNotNull(
+			"Null transfer properties",
+			transfer
+			) ;
+		}
+
+	/**
+	 * Check that we can import from a http server.
+	 *
+	 */
+	public void testImportHttp()
+		throws Exception
+		{
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.http.html"
+							)
+						)
+					)
+				) ;
+		assertNotNull(
+			"Null transfer properties",
+			transfer
+			) ;
+		}
+
+	/**
+	 * Check that we get valid file properties from an import.
+	 *
+	 */
+	public void testImportProperties()
+		throws Exception
+		{
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.file.text"
+							)
+						)
+					)
+				) ;
+		assertNotNull(
+			"Null transfer properties",
+			transfer
+			) ;
+		checkIdentProperties(
+			transfer.getFileProperties()
+			) ;
+		}
+
+//
+// Check test properties after an import.
+//
+
+//
+// Check the source URL after an import.
+//
+
+//
+// Check the file size after an import.
+//
+
+//
+// Check the MD5 after an import.
+//
+
+	/**
+	 * Check that an imported file contains the right data.
+	 *
+	 */
+	public void testImportContent()
+		throws Exception
+		{
+		//
+		// Import a text file.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.file.text"
+							)
+						)
+					)
+				) ;
+		//
+		// Get the imported data properties.
+		FileProperties imported = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the imported content.
+		assertEquals(
+			"Wrong content from URL import",
+			TEST_STRING,
+			target.exportString(
+				imported.getProperty(
+					FileProperties.STORE_INTERNAL_IDENTIFIER
+					)
+				)
+			) ;
+		}
+
+	/**
+	 * Check that an imported properties has the right type.
+	 *
+	 */
+	public void testImportTypeHtml()
+		throws Exception
+		{
+		//
+		// Import a text file.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.http.html"
+							)
+						)
+					)
+				) ;
+		//
+		// Get the imported data properties.
+		FileProperties imported = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the imported data has the right type.
+		checkTypeProperties(
+			imported,
+			"text/html; charset=UTF-8",
+			null
+			) ;
+		}
+
+	/**
+	 * Check that an imported properties has the right type.
+	 *
+	 */
+	public void testImportTypeJar()
+		throws Exception
+		{
+		//
+		// Import a text file.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.http.jar"
+							)
+						)
+					)
+				) ;
+		//
+		// Get the imported data properties.
+		FileProperties imported = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the imported data has the right type.
+		checkTypeProperties(
+			imported,
+			"text/plain; charset=ISO-8859-1",
+			null
+			) ;
+		}
+
+	/**
+	 * Check that an imported properties has the right source.
+	 *
+	 */
+	public void testImportSource()
+		throws Exception
+		{
+		//
+		// Import a text file.
+		TransferProperties transfer = 
+			target.importData(
+				new UrlGetTransfer(
+					new URL(
+						getTestProperty(
+							"data.http.html"
+							)
+						)
+					)
+				) ;
+		//
+		// Get the imported data properties.
+		FileProperties imported = new FileProperties(
+			transfer.getFileProperties()
+			) ;
+		//
+		// Check the imported data has the right source.
+		assertEquals(
+			"Wrong string returned",
+			getTestProperty(
+				"data.http.html"
+				),
+			imported.getProperty(
+				FileProperties.TRANSFER_SOURCE_PROPERTY
 				)
 			) ;
 		}

@@ -3,10 +3,16 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/maven/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.3  2004/07/21 18:11:55  dave
+    |   Merged development branch, dave-dev-200407201059, into HEAD
+    |
+    |   Revision 1.2.6.1  2004/07/21 16:28:16  dave
+    |   Added content properties and tests
+    |
     |   Revision 1.2  2004/07/14 13:50:29  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -214,7 +220,7 @@
     <!--+
         | Install an artifact to our local repository.
         +-->
-    <goal name="install-local">
+    <goal name="UNUSED-install-local">
         <ant:echo message=""/>
         <ant:echo message="Installing artifact to local repository."/>
         <ant:echo message="  Type : ${astrogrid.artifact.type}"/>
@@ -244,7 +250,7 @@
     <!--+
         | Install a SNAPSHOT artifact to our local repository.
         +-->
-    <goal name="install-local-snapshot">
+    <goal name="UNUSED-install-local-snapshot">
         <ant:echo message=""/>
         <ant:echo message="Installing SNAPSHOT artifact to local repository."/>
         <ant:echo message="  Type : ${astrogrid.artifact.type}"/>
@@ -285,7 +291,7 @@
     <!--+
         | Deploy an artifact to our repository.
         +-->
-    <goal name="deploy-local">
+    <goal name="UNUSED-deploy-local">
         <ant:echo message=""/>
         <ant:echo message="Deploying artifact to local repository."/>
         <ant:echo message="  Type : ${astrogrid.artifact.type}"/>
@@ -322,7 +328,7 @@
     <!--+
         | Deploy a SNAPSHOT to our repository.
         +-->
-    <goal name="deploy-local-snapshot">
+    <goal name="UNUSED-deploy-local-snapshot">
         <ant:echo message=""/>
         <ant:echo message="Deploying SNAPSHOT artifact to local repository."/>
         <ant:echo message="  Type : ${astrogrid.artifact.type}"/>

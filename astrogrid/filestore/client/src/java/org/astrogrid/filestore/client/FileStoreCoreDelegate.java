@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreCoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreCoreDelegate.java,v $
+ *   Revision 1.4  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/07/21 12:25:59  dave
+ *   Updated client to inport from URL
+ *
  *   Revision 1.3  2004/07/19 23:42:07  dave
  *   Merged development branch, dave-dev-200407151443, into HEAD
  *
@@ -59,11 +65,12 @@ import java.rmi.RemoteException ;
 
 import org.astrogrid.filestore.common.FileStore ;
 import org.astrogrid.filestore.common.file.FileProperty ;
-import org.astrogrid.filestore.common.transfer.TransferInfo ;
+import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
+import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 /**
  * Core implementation of the delegate interface.
@@ -505,18 +512,18 @@ public class FileStoreCoreDelegate
 
 	/**
 	 * Prepare to receive a file from a remote source.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
-	public TransferInfo importInit(TransferInfo info)
+	public TransferProperties importInit(TransferProperties transfer)
 		throws FileStoreServiceException
 		{
 		if (null != service)
 			{
 			try {
-				return service.importInit(info) ;
+				return service.importInit(transfer) ;
 				}
 			catch (RemoteException ouch)
 				{
@@ -540,24 +547,26 @@ public class FileStoreCoreDelegate
 
 	/**
 	 * Import a file from a remote source.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
+	 * @throws FileStoreTransferException if the transfer properties are null.
 	 *
 	 */
-	public TransferInfo importData(TransferInfo info)
-		throws FileStoreServiceException
+	public TransferProperties importData(TransferProperties transfer)
+		throws FileStoreTransferException, FileStoreServiceException
 		{
 		if (null != service)
 			{
 			try {
-				return service.importData(info) ;
+				return service.importData(transfer) ;
 				}
 			catch (RemoteException ouch)
 				{
 				//
 				// Unpack the expected Exception(s).
 				serviceException(ouch) ;
+				transferException(ouch) ;
 				//
 				// If we get this far, then we don't know what it is.
 				throw new FileStoreServiceException(
@@ -575,18 +584,18 @@ public class FileStoreCoreDelegate
 
 	/**
 	 * Prepare to send a file to a remote destination.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
-	public TransferInfo exportInit(TransferInfo info)
+	public TransferProperties exportInit(TransferProperties transfer)
 		throws FileStoreServiceException
 		{
 		if (null != service)
 			{
 			try {
-				return service.exportInit(info) ;
+				return service.exportInit(transfer) ;
 				}
 			catch (RemoteException ouch)
 				{
@@ -610,18 +619,18 @@ public class FileStoreCoreDelegate
 
 	/**
 	 * Export a file to a remote destination.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
-	public TransferInfo exportData(TransferInfo info)
+	public TransferProperties exportData(TransferProperties transfer)
 		throws FileStoreServiceException
 		{
 		if (null != service)
 			{
 			try {
-				return service.exportData(info) ;
+				return service.exportData(transfer) ;
 				}
 			catch (RemoteException ouch)
 				{
@@ -872,5 +881,55 @@ public class FileStoreCoreDelegate
 				) ;
 			}
 		}
+
+	/**
+	 * A converter utility to unpack a FileStoreTransferException from a RemoteException.
+	 * @throws FileStoreTransferException If the RemoteException cause was a FileStoreTransferException.
+	 *
+	 */
+	public void transferException(RemoteException ouch)
+		throws FileStoreTransferException
+		{
+		if (DEBUG_FLAG) System.out.println("----") ;
+		if (DEBUG_FLAG) System.out.println("FileStoreCoreDelegate.transferException") ;
+		if (DEBUG_FLAG) System.out.println("  Exception : " + ouch) ;
+		if (DEBUG_FLAG) System.out.println("  Type      : " + ouch.getClass()) ;
+		if (DEBUG_FLAG) System.out.println("  Cause     : " + ouch.getCause()) ;
+		//
+		// If we have the original Exception.
+		if (ouch.getCause() != null)
+			{
+			if (DEBUG_FLAG) System.out.println("  Got cause") ;
+			if (ouch.getCause() instanceof FileStoreTransferException)
+				{
+				throw (FileStoreTransferException) ouch.getCause() ;
+				}
+			}
+		//
+		// If we don't have the original Exception.
+		else {
+			if (DEBUG_FLAG) System.out.println("  Null cause") ;
+			//
+			// If the message starts with our class name.
+			String message  = ouch.getMessage() ;
+			String template = FileStoreTransferException.class.getName() + ": " ;
+			if (DEBUG_FLAG) System.out.println("  Message  : '" + message  + "'") ;
+			if (DEBUG_FLAG) System.out.println("  Template : '" + template + "'") ;
+			if (null != message)
+				{
+				if (message.startsWith(template))
+					{
+					if (DEBUG_FLAG) System.out.println("  Matches template") ;
+					throw new FileStoreTransferException(
+						message.substring(
+							template.length()
+							)
+						) ;
+					}
+				}
+			}
+		if (DEBUG_FLAG) System.out.println("  Not handled") ;
+		}
+
 	}
 

@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.4  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/07/21 16:28:16  dave
+ *   Added content properties and tests
+ *
  *   Revision 1.3  2004/07/19 23:42:07  dave
  *   Merged development branch, dave-dev-200407151443, into HEAD
  *
@@ -29,6 +35,9 @@
  */
 package org.astrogrid.filestore.server.repository ;
 
+import java.net.URL ;
+import java.net.URLConnection ;
+
 import java.io.File ;
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -40,10 +49,12 @@ import java.io.FileNotFoundException ;
 import org.astrogrid.filestore.common.file.FileProperty ;
 import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.file.FileIdentifier ;
+import org.astrogrid.filestore.common.transfer.TransferUtil ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
+import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 /**
  * A factory class for creating and storing file containers.
@@ -87,7 +98,24 @@ public class RepositoryImpl
 
 	/**
 	 * Factory method to create a new container.
-	 * @param info An optional info block describing the file contents.
+	 * @param properties An optional array of FileProperty(ies) describing the file contents.
+	 * @return A new file container.
+	 * @throws FileStoreServiceException if unable handle the request.
+	 *
+	 */
+	public RepositoryContainer create(FileProperty[] properties)
+		throws FileStoreServiceException
+		{
+		return create(
+			new FileProperties(
+				properties
+				)
+			) ;
+		}
+
+	/**
+	 * Factory method to create a new container.
+	 * @param properties An optional FileProperties describing the file contents.
 	 * @return A new file container.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
@@ -152,30 +180,13 @@ public class RepositoryImpl
 			original.properties()
 			) ;
 		//
-		// Copy the data from the original.
-		// (code copied from the Apache Ant tools).
+		// Transfer the data.
 		try {
-			InputStream  in  = original.getDataInputStream() ;
-			OutputStream out = duplicate.getDataOutputStream() ;
-			try {
-				byte[] buffer = new byte[COPY_BUFFER_SIZE];
-				int count = 0;
-				do {
-					out.write(buffer, 0, count);
-					count = in.read(buffer, 0, buffer.length);
-					}
-				while (count != -1);
-				}
-			finally {
-				if (null != out)
-					{
-					out.close() ;
-					}
-				if (null != in)
-					{
-					in.close() ;
-					}
-				}
+			TransferUtil trans = new TransferUtil(
+				original.getDataInputStream(),
+				duplicate.getDataOutputStream()
+				) ;
+			trans.transfer() ;
 			}
 		catch (IOException ouch)
 			{
@@ -184,6 +195,9 @@ public class RepositoryImpl
 				ouch
 				) ;
 			}
+		//
+		// Save our properties.
+
 		//
 		// Return the new container.
 		return duplicate ;
@@ -237,7 +251,7 @@ public class RepositoryImpl
 			throws FileStoreServiceException
 			{
 			//
-			// Create a our properties.
+			// Create a copy of the properties.
 			this.properties = new FileProperties(
 				properties
 				) ;
@@ -447,7 +461,7 @@ public class RepositoryImpl
 		/**
 		 * Get an input stream to the container contents.
 		 * @throws FileStoreNotFoundException If unable to locate the file.
-		 * @throws FileStoreServiceException If unable to complete the action.
+		 * @throws FileStoreServiceException If unable to open the file.
 		 *
 		 */
 		public InputStream getDataInputStream()
@@ -475,7 +489,7 @@ public class RepositoryImpl
 
 		/**
 		 * Get an output stream to the container contents.
-		 * @throws FileStoreServiceException If unable to complete the action.
+		 * @throws FileStoreServiceException If unable to open the file.
 		 *
 		 */
 		public OutputStream getDataOutputStream()
@@ -487,7 +501,7 @@ public class RepositoryImpl
 		/**
 		 * Get an output stream to the container contents.
 		 * @param append True if the output stream should append to the end of the file.
-		 * @throws FileStoreServiceException If unable to complete the action.
+		 * @throws FileStoreServiceException If unable to open the file.
 		 *
 		 */
 		public OutputStream getDataOutputStream(boolean append)
@@ -502,7 +516,79 @@ public class RepositoryImpl
 			catch (IOException ouch)
 				{
 				throw new FileStoreServiceException(
-					"Unable to open data file",
+					"Unable to open local data file",
+					ouch
+					) ;
+				}
+			}
+
+		/**
+		 * Import our data from a URL.
+		 * @param url The URL to import the data from.
+		 * @throws FileStoreTransferException If unable to complete the action.
+		 * @throws FileStoreServiceException If unable to open the local file.
+		 *
+		 */
+		public void importData(URL url)
+			throws FileStoreServiceException, FileStoreTransferException
+			{
+			try {
+				//
+				// Open a connection to the URL.
+				URLConnection connection = url.openConnection() ;
+				//
+				// Set our propeties from the URL headers.
+				this.properties.setProperty(
+					FileProperties.TRANSFER_SOURCE_PROPERTY,
+					url.toString()
+					) ;
+				this.properties.setProperty(
+					FileProperties.MIME_TYPE_PROPERTY,
+					connection.getContentType()
+					) ;
+				this.properties.setProperty(
+					FileProperties.MIME_ENCODING_PROPERTY,
+					connection.getContentEncoding()
+					) ;
+				//
+				// Transfer the data from the URL.
+				this.importData(
+					connection.getInputStream()
+					) ;
+				//
+				// Save our container info.
+				this.save() ;
+				}
+			catch (IOException ouch)
+				{
+				throw new FileStoreTransferException(
+					"Unable to open URL source",
+					ouch
+					) ;
+				}
+			}
+
+		/**
+		 * Import our data from am InputStream.
+		 * @param stream The input stream to import the data from.
+		 * @throws FileStoreTransferException If unable to complete the action.
+		 * @throws FileStoreServiceException If unable to open the local file.
+		 *
+		 */
+		public void importData(InputStream stream)
+			throws FileStoreServiceException, FileStoreTransferException
+			{
+			try {
+				TransferUtil trans = new TransferUtil(
+					stream,
+					this.getDataOutputStream()
+					) ;
+				trans.transfer() ;
+				}
+			catch (IOException ouch)
+				{
+				throw new FileStoreTransferException(
+					"Encountered error while transferring data",
 					ouch
 					) ;
 				}

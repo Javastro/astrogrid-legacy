@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/file/FileProperties.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: FileProperties.java,v $
+ *   Revision 1.3  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.2.6.1  2004/07/21 16:28:16  dave
+ *   Added content properties and tests
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -48,10 +54,22 @@ public class FileProperties
 	public static final String STORE_INTERNAL_IDENTIFIER  = "org.astrogrid.filestore.internal" ;
 
 	/**
-	 * The property key for MIME type .
+	 * The property key for the transfer source URL.
 	 *
 	 */
-	public static final String MIME_TYPE_PROPERTY  = "mime.type" ;
+	public static final String TRANSFER_SOURCE_PROPERTY  = "org.astrogrid.filestore.transfer.source" ;
+
+	/**
+	 * The property key for content type .
+	 *
+	 */
+	public static final String MIME_TYPE_PROPERTY  = "org.astrogrid.filestore.content.type" ;
+
+	/**
+	 * The property key for content encoding.
+	 *
+	 */
+	public static final String MIME_ENCODING_PROPERTY  = "org.astrogrid.filestore.content.encoding" ;
 
 	/**
 	 * Known MIME type values.
@@ -136,12 +154,20 @@ public class FileProperties
 		}
 
 	/**
-	 * Set a property.
+	 * Set a named property.
+	 * @param key The property key (name).
+	 * @param value The property value.
 	 *
 	 */
 	public void setProperty(String key, String value)
 		{
-		properties.setProperty(key, value) ;
+		if (null != key)
+			{
+			if (null != value)
+				{
+				properties.setProperty(key, value) ;
+				}
+			}
 		}
 
 	/**

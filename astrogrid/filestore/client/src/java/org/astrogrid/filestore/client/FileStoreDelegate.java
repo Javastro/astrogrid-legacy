@@ -1,10 +1,16 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/19 23:42:07 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreDelegate.java,v $
+ *   Revision 1.4  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.3.2.1  2004/07/21 12:25:59  dave
+ *   Updated client to inport from URL
+ *
  *   Revision 1.3  2004/07/19 23:42:07  dave
  *   Merged development branch, dave-dev-200407151443, into HEAD
  *
@@ -39,11 +45,12 @@ import java.rmi.RemoteException ;
 
 import org.astrogrid.filestore.common.FileStore ;
 import org.astrogrid.filestore.common.file.FileProperty ;
-import org.astrogrid.filestore.common.transfer.TransferInfo ;
+import org.astrogrid.filestore.common.transfer.TransferProperties ;
 import org.astrogrid.filestore.common.exception.FileStoreException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
 import org.astrogrid.filestore.common.exception.FileIdentifierException ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
+import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 /**
  * Public interface for the file store delegate.
@@ -176,42 +183,43 @@ public interface FileStoreDelegate
 
 	/**
 	 * Prepare to receive a file from a remote source.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
-	public TransferInfo importInit(TransferInfo info)
+	public TransferProperties importInit(TransferProperties transfer)
 		throws FileStoreServiceException ;
 
 	/**
 	 * Import a file from a remote source.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
+	 * @throws FileStoreTransferException if the transfer properties are null.
 	 *
 	 */
-	public TransferInfo importData(TransferInfo info)
-		throws FileStoreServiceException ;
+	public TransferProperties importData(TransferProperties transfer)
+		throws FileStoreTransferException, FileStoreServiceException ;
 
 	/**
 	 * Prepare to send a file to a remote destination.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
-	public TransferInfo exportInit(TransferInfo info)
+	public TransferProperties exportInit(TransferProperties transfer)
 		throws FileStoreServiceException ;
 
 	/**
 	 * Export a file to a remote destination.
-	 * @param info A TransferInfo object describing the transfer.
-	 * @return A new TransferInfo describing the transfer.
+	 * @param transfer A TransferProperties object describing the transfer.
+	 * @return A new TransferProperties describing the transfer.
 	 * @throws FileStoreServiceException if unable handle the request.
 	 *
 	 */
-	public TransferInfo exportData(TransferInfo info)
+	public TransferProperties exportData(TransferProperties transfer)
 		throws FileStoreServiceException ;
 
 	/**

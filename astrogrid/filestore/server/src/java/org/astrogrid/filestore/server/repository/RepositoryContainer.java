@@ -2,10 +2,16 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryContainer.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:29 $</cvs:date>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Date: 2004/07/21 18:11:55 $</cvs:date>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryContainer.java,v $
+ *   Revision 1.3  2004/07/21 18:11:55  dave
+ *   Merged development branch, dave-dev-200407201059, into HEAD
+ *
+ *   Revision 1.2.6.1  2004/07/21 16:28:16  dave
+ *   Added content properties and tests
+ *
  *   Revision 1.2  2004/07/14 13:50:29  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -23,7 +29,9 @@
  */
 package org.astrogrid.filestore.server.repository ;
 
-import java.io.InputStream ;
+import java.net.URL ;
+import java.io.IOException  ;
+import java.io.InputStream  ;
 import java.io.OutputStream ;
 
 import org.astrogrid.filestore.common.file.FileProperty ;
@@ -31,6 +39,7 @@ import org.astrogrid.filestore.common.file.FileProperties ;
 import org.astrogrid.filestore.common.file.FileIdentifier ;
 import org.astrogrid.filestore.common.exception.FileStoreServiceException ;
 import org.astrogrid.filestore.common.exception.FileStoreNotFoundException ;
+import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 
 /**
  * Public interface for a file container.
@@ -94,7 +103,7 @@ public interface RepositoryContainer
 	/**
 	 * Get an input stream to the container contents.
 	 * @throws FileStoreNotFoundException If unable to locate the file.
-	 * @throws FileStoreServiceException If unable to complete the action.
+	 * @throws FileStoreServiceException If unable to open the file.
 	 *
 	 */
 	public InputStream getDataInputStream()
@@ -102,11 +111,31 @@ public interface RepositoryContainer
 
 	/**
 	 * Get an output stream to the container contents.
-	 * @throws FileStoreServiceException If unable to complete the action.
+	 * @throws FileStoreServiceException If unable to open the local file.
 	 *
 	 */
 	public OutputStream getDataOutputStream()
 		throws FileStoreServiceException ;
+
+	/**
+	 * Import our data from a URL.
+	 * @param url The URL to import the data from.
+	 * @throws FileStoreTransferException If unable to complete the action.
+	 * @throws FileStoreServiceException If unable to open the local file.
+	 *
+	 */
+	public void importData(URL url)
+		throws FileStoreTransferException, FileStoreServiceException ;
+
+	/**
+	 * Import our data from am InputStream.
+	 * @param stream The input stream to import the data from.
+	 * @throws FileStoreTransferException If unable to complete the action.
+	 * @throws FileStoreServiceException If unable to open the local file.
+	 *
+	 */
+	public void importData(InputStream stream)
+		throws FileStoreTransferException, FileStoreServiceException ;
 
 	}
 
