@@ -170,7 +170,7 @@ The procedure to create a new MySpace registry is as follows.
 
    for example, with the example files:
 
-     java org/astrogrid/mySpace/CreateMySpaceRegistry example
+     java org/astrogrid/mySpace/mySpaceDemo/CreateMySpaceRegistry example
 
    Note that the CreateRegistry utility requires the name of the
    registry, not the name of the input file.
