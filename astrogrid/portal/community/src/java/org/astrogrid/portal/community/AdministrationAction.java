@@ -239,6 +239,10 @@ public class AdministrationAction extends AbstractAction
       if(community == null || community.length() <= 0) {
          community = (String)session.getAttribute("community_name");
       }
+      if(community == null || community.length() <= 0) {
+         community = CommunityConfig.getCommunityName();
+      }
+      
       
       if(ACTION_INSERT_PERMISSION.equals(action)) {
          try {
