@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions
+    targetNamespace="http://www.astrogrid.org/datacenter/It05/dataserver/v1"
+    xmlns="http://www.astrogrid.org/datacenter/It05/dataserver/v1"
+    xmlns:ag="http://astrogrid.org"
+    xmlns:agq="http://query.datacenter.astrogrid.org"
+    xmlns:io="http://io.java"
+    xmlns:net="http://net.java"
+    xmlns:types="http://www.astrogrid.org/datacenter/It05/dataserver/v1/types"
+
+    xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:sax="http://sax.xml.org"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.xmlsoap.org/wsdl/ http://schemas.xmlsoap.org/wsdl/          http://schemas.xmlsoap.org/soap/encoding/ http://schemas.xmlsoap.org/soap/encoding/         http://schemas.xmlsoap.org/wsdl/soap/ http://schemas.xmlsoap.org/wsdl/soap/         http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
+    
+    <!-- wsdl:import location="../xsd/AxisDataServer.xsd" namespace="http://www.astrogrid.org/datacenter/It05/dataserver/v1/types"/ -->
+
+    <wsdl:types>
+            <xsd:element name="getMetadata">
+                <!-- need to find way of expressing a null service -->
+            </xsd:element>
+
+            <xsd:element name="getMetadataResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                     <xsd:element name="getMetadataReturn" type="xsd:string" />
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            
+    </wsdl:types>
+
+    <!-- messages -->
+    <wsdl:message name="getMetadata">
+       <wsdl:part element="types:getMetadata" name="parameters" />
+    </wsdl:message>
+    <wsdl:message name="getMetadataResponse">
+          <wsdl:part element="types:getMetadataResponse" name="parameters" />
+    </wsdl:message>
+    
+
+    <!-- the port type -->
+    <wsdl:portType name="AstroGridDataServerItn05">
+
+        <wsdl:operation name="getMetadata">
+            <wsdl:input message="getMetadata" name="getMetadata" />
+            <wsdl:output message="getMetadataResponse" name="getMetadataResponse" />
+        </wsdl:operation>
+
+    </wsdl:portType>
+
+    <!-- the binding -->
+    <wsdl:binding name="AstroGridDataServerItn05SoapBinding" type="AxisDataServer">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+        <wsdl:operation name="getMetadata">
+            <wsdl:input name="getMetadata">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getMetadataResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+
+    </wsdl:binding>
+    <!-- the service -->
+    <wsdl:service name="AstroGridDataServerV0_05">
+        <wsdl:port binding="AstroGridDataServerItn05SoapBinding" name="AxisDataServer">
+            <wsdlsoap:address location="http://localhost:8080/axis/services/AstroGridDataServerItn05"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

@@ -8,9 +8,9 @@
 
 <!-- hook to add in generated sources -->
 <preGoal name="java:compile">
-	<mkdir dir="${generated.src}" />
-	<path id="generated.src.path" location="${generated.src}" />
-	<maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
+   <mkdir dir="${generated.src}" />
+   <path id="generated.src.path" location="${generated.src}" />
+   <maven:addPath id="maven.compile.src.set" refid="generated.src.path" />
 </preGoal>
 
 <!--
@@ -18,7 +18,7 @@ new goals
 -->
 
   <goal name="generate-delegate" description="generate classes from wsdl" prereqs="axis-declare-tasks">
-  	<description><![CDATA[
+   <description><![CDATA[
 generate java classes for delegate and server from a hand-written wsdl file.
 Outline:
 * remove all sources in the generated/java src hierarchy
@@ -34,156 +34,189 @@ Requires:
 * build/xslt/generate-wsdd.xsl - transformation for wsdd.
 * build/patch/* - patches to apply
 * build/castor-binding.xml - configuration for castor tasks
-	]]></description>
-	<!-- ensure the directories exist, remove previously generated products -->
-	<attainGoal name="clean-out" />
-	<!-- generate java sources from wsdl -->
-	<attainGoal name="wsdl2java" />
-	<!-- delete the ones we don't want -->
-	<attainGoal name="delete-surplus" />
-	<!-- now call castor to generate ADQL object model -->
-	<attainGoal name="generate-adql" />
-	<!-- mangle the sources -->
-	<attainGoal name="munge-files" />
+   ]]></description>
+   <!-- ensure the directories exist, remove previously generated products -->
+   <attainGoal name="clean-out" />
+   <!-- generate java sources from wsdl -->
+   <attainGoal name="wsdl2java" />
+   <!-- generate other java sources from wsdl -->
+   <attainGoal name="mchwsdl2java" />
+   <!-- delete the ones we don't want -->
+   <attainGoal name="delete-surplus" />
+   <!-- now call castor to generate ADQL object model -->
+   <attainGoal name="generate-adql" />
+   <!-- mangle the sources -->
+   <attainGoal name="munge-files" />
    </goal>
 
    <goal name="clean-out">
-   	<mkdir dir="${generated.src}" />
-	<mkdir dir="${generate.wsdd}" />
-  	<delete><!-- clean out all generated products-->
-		<fileset dir="${generated.src}" >
-			<include name="**/*.java" />
-			<include name="**/*.class" />
-			<include name="**/*.wsdd" />
-		</fileset>
-		<fileset dir="${generated.wsdd}">
-			<include name="*.wsdd" />
-		</fileset>
-	</delete>
+      <mkdir dir="${generated.src}" />
+   <mkdir dir="${generate.wsdd}" />
+   <delete><!-- clean out all generated products-->
+      <fileset dir="${generated.src}" >
+         <include name="**/*.java" />
+         <include name="**/*.class" />
+         <include name="**/*.wsdd" />
+      </fileset>
+      <fileset dir="${generated.wsdd}">
+         <include name="*.wsdd" />
+      </fileset>
+   </delete>
    </goal>
 
    <goal name="wsdl2java" prereqs="axis-declare-tasks">
-  	<axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
-		url="${basedir}/src/wsdl/AxisDataServer.wsdl"
-		deployscope="Application" serverside="true" skeletondeploy="true">
-		<mapping
-			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
-			package="org.astrogrid.datacenter.axisdataserver" />
-		<mapping
-			namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-			package="org.astrogrid.datacenter.axisdataserver.types" />
-		<mapping
-	       		namespace="http://tempuri.org/adql"
-	       		package="org.astrogrid.datacenter.adql.generated" />
-	</axis-wsdl2java>
+      <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
+         url="${basedir}/src/wsdl/AxisDataServer.wsdl"
+         deployscope="Application" serverside="true" skeletondeploy="true">
+         <mapping
+            namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1"
+            package="org.astrogrid.datacenter.axisdataserver" />
+         <mapping
+            namespace="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+            package="org.astrogrid.datacenter.axisdataserver.types" />
+         <mapping
+            namespace="http://tempuri.org/adql"
+            package="org.astrogrid.datacenter.adql.generated" />
+      </axis-wsdl2java>
+      
+   </goal>
 
-  </goal>
+   <!--- mch: added this to do other generations.  Don't know if it will break or whether it needs seperate goals... -->
+   <goal name="mchwsdl2java" prereqs="axis-declare-tasks">
 
- <!-- wsdl2java generates too much - now have overlapping classes. delete the offenders -->
- <goal name="delete-surplus">
-	<delete>
-		<fileset dir="${generated.src}">
-			<include name="**/*.java" />
-			<exclude name="org/astrogrid/datacenter/axisdataserver/**/*.java" />
-		</fileset>
-	</delete>
+      <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
+         url="${basedir}/src/wsdl/SkyNode0.7.wsdl"
+         deployscope="Application" serverside="true" skeletondeploy="true">
+      </axis-wsdl2java>
+      
+      <axis-wsdl2java output="${generated.src}" verbose="true" testcase="true"
+         url="${basedir}/src/wsdl/AstroGridDataServer0.5.wsdl"
+         deployscope="Application" serverside="true" skeletondeploy="true">
+         <mapping
+            namespace="http://www.astrogrid.org/datacenter/It05/dataserver/v1"
+            package="org.astrogrid.datacenter.axisdataserver0_5" />
+         <mapping
+            namespace="http://www.astrogrid.org/datacenter/It05/dataserver/v1/types"
+            package="org.astrogrid.datacenter.axisdataserver0_5.types" />
+         <mapping
+            namespace="http://tempuri.org/adql"
+            package="org.astrogrid.datacenter.adql.generated0_5" />
+      </axis-wsdl2java>
+
+   </goal>
+
+
+   <!-- wsdl2java generates too much - now have overlapping classes. delete the offenders -->
+   <goal name="delete-surplus">
+      <delete>
+         <fileset dir="${generated.src}">
+            <include name="**/*.java" />
+            <exclude name="org/astrogrid/datacenter/axisdataserver/**/*.java" />
+         </fileset>
+      </delete>
+      <delete>
+         <fileset dir="${generated.src}">
+            <include name="**/*.java" />
+            <exclude name="org/astrogrid/datacenter/axisdataserver0_5/**/*.java" />
+         </fileset>
+      </delete>
    </goal>
 
   <goal name="generate-adql"  description="regenerate the ADQL object model">
 
     <delete quiet="true">
-   		<fileset dir="${basedir}/generated/java/org/astrogrid/datacenter">
-  	 		<include name="adql/generated/**/*.java" />
-   		</fileset>
-   	</delete>
-	<!-- generate adql object model -->
-  	<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
-  	  	<arg value="-i"/>
-  	  	<arg file="${basedir}/src/xsd/ADQLschema.xsd" />
-		<arg value="-binding-file" />
-		<arg file="${basedir}/build/castor-binding.xml" />
-  	  	<arg value="-dest" />
-  	  	<arg file="${generated.src}" />
-		<arg arg="-verbose" />
-	</java>
- 	  <!-- now do some patching of the output - hope to do away with this in time. -->
- 	  <patch patchfile="${basedir}/build/patch/groupByChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
- 	  <patch patchfile="${basedir}/build/patch/selectionListChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
-	  <!-- now add 'extends AbstractQOM' to the generated classes  - only to those classes that don't already extend something else-->
-	  <replaceregexp 	flags="s"
-	  	match="(public class [^ ]+) (implements java.io.Serializable)"
-		replace="\1 extends org.astrogrid.datacenter.adql.AbstractQOM \2">
-		<fileset dir="${generated.src}/org/astrogrid/datacenter/adql/generated">
-			<include name="*.java" />
-		</fileset>
-	  </replaceregexp>
+         <fileset dir="${basedir}/generated/java/org/astrogrid/datacenter">
+         <include name="adql/generated/**/*.java" />
+         </fileset>
+      </delete>
+   <!-- generate adql object model -->
+   <java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" classpathref="maven.dependency.classpath">
+      <arg value="-i"/>
+      <arg file="${basedir}/src/xsd/ADQLschema.xsd" />
+      <arg value="-binding-file" />
+      <arg file="${basedir}/build/castor-binding.xml" />
+      <arg value="-dest" />
+      <arg file="${generated.src}" />
+      <arg arg="-verbose" />
+   </java>
+     <!-- now do some patching of the output - hope to do away with this in time. -->
+     <patch patchfile="${basedir}/build/patch/groupByChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/GroupByChoiceItem.java"/>
+     <patch patchfile="${basedir}/build/patch/selectionListChoiceItem.patch" originalfile="${generated.src}/org/astrogrid/datacenter/adql/generated/SelectionListChoiceItem.java"/>
+     <!-- now add 'extends AbstractQOM' to the generated classes  - only to those classes that don't already extend something else-->
+     <replaceregexp  flags="s"
+      match="(public class [^ ]+) (implements java.io.Serializable)"
+      replace="\1 extends org.astrogrid.datacenter.adql.AbstractQOM \2">
+      <fileset dir="${generated.src}/org/astrogrid/datacenter/adql/generated">
+         <include name="*.java" />
+      </fileset>
+     </replaceregexp>
   </goal>
 
  <goal name="munge-files" description="do all the search and replace work">
 
-		<!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
-	<replaceregexp flags="sg" match='"&gt;([^"]+)"'	replace='"\1"' >
-		  <fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
-		  		<include name="*.java" />
-		  	</fileset>
-		</replaceregexp>
-	<attainGoal name="transform-wsdd" />
-	<attainGoal name="munge-test" />
+      <!-- fix axis-wsdl bug - sometimes introduces spurious &gt; at start of strings -->
+   <replaceregexp flags="sg" match='"&gt;([^"]+)"' replace='"\1"' >
+        <fileset dir="${generated.src}/org/astrogrid/datacenter/axisdataserver/">
+            <include name="*.java" />
+         </fileset>
+      </replaceregexp>
+   <attainGoal name="transform-wsdd" />
+   <attainGoal name="munge-test" />
   </goal>
 
    <goal name="transform-wsdd">
-   	<!-- hack from mailing list to fix Maven XLST bug -->
-	${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
+      <!-- hack from mailing list to fix Maven XLST bug -->
+   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
 
-	<xslt basedir="${generated.src}/org/astrogrid/datacenter/axisdataserver"
-	      includes="*.wsdd" style="${basedir}/build/xslt/generate-wsdd.xsl"
-	      destdir="${generated.wsdd}" extension=".wsdd" />
-	<!-- transform once more to create test version here.. -->
-	<xslt style="${basedir}/build/xslt/generate-test-wsdd.xsl" in="${generated.wsdd}/deploy.wsdd" out="${generated.wsdd}/test-deploy.wsdd" />
+   <xslt basedir="${generated.src}/org/astrogrid/datacenter/axisdataserver"
+         includes="*.wsdd" style="${basedir}/build/xslt/generate-wsdd.xsl"
+         destdir="${generated.wsdd}" extension=".wsdd" />
+   <!-- transform once more to create test version here.. -->
+   <xslt style="${basedir}/build/xslt/generate-test-wsdd.xsl" in="${generated.wsdd}/deploy.wsdd" out="${generated.wsdd}/test-deploy.wsdd" />
    </goal>
 
-	<goal name="munge-test">
-		<property name="test.file"
-			location="${generated.src}/org/astrogrid/datacenter/axisdataserver/AxisDataServerServiceTestCase.java" />
-		<replace summary="true" file="${test.file}">
-				<!-- alter where the test class looks for a running server -->
-			<replacefilter
-				token="getAxisDataServer()"
-				value='getAxisDataServer(serviceURL)' />
-				<!-- now need to insert 'serviceURL' as a member field -->
-			<replacefilter
-				token="extends junit.framework.TestCase {"
-				value="extends junit.framework.TestCase {
-				    protected java.net.URL serviceURL;" />
-		    <!-- alter how Select objects are created -->
-		    <replacefilter
-		    	token="new org.astrogrid.datacenter.adql.generated.Select()"
-		    	value="org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery()" />
-			<!-- do same for query object -->
-		    <replacefilter
-		    	token="new org.astrogrid.datacenter.axisdataserver.types._query()"
-			value="org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery()" />
-		</replace>
-	</goal>
+   <goal name="munge-test">
+      <property name="test.file"
+         location="${generated.src}/org/astrogrid/datacenter/axisdataserver/AxisDataServerServiceTestCase.java" />
+      <replace summary="true" file="${test.file}">
+            <!-- alter where the test class looks for a running server -->
+         <replacefilter
+            token="getAxisDataServer()"
+            value='getAxisDataServer(serviceURL)' />
+            <!-- now need to insert 'serviceURL' as a member field -->
+         <replacefilter
+            token="extends junit.framework.TestCase {"
+            value="extends junit.framework.TestCase {
+                protected java.net.URL serviceURL;" />
+          <!-- alter how Select objects are created -->
+          <replacefilter
+            token="new org.astrogrid.datacenter.adql.generated.Select()"
+            value="org.astrogrid.datacenter.adql.ADQLUtils.buildMinimalQuery()" />
+         <!-- do same for query object -->
+          <replacefilter
+            token="new org.astrogrid.datacenter.axisdataserver.types._query()"
+         value="org.astrogrid.datacenter.axisdataserver.types.QueryHelper.buildMinimalQuery()" />
+      </replace>
+   </goal>
 
 <!-- documentation related tasks -->
 
 <!-- copy schemas into site documentation directory -->
 <postGoal name="xdoc:copy-resources">
-	<echo>Copying Schemas into documentation set</echo>
-	<copy todir="${maven.docs.dest}" flatten="true">
-		<fileset dir="${basedir}/src">
-			<include name="**/*.xsd" />
-			<incude name="**/*.wsdl" />
-		</fileset>
-	</copy>
+   <echo>Copying Schemas into documentation set</echo>
+   <copy todir="${maven.docs.dest}" flatten="true">
+      <fileset dir="${basedir}/src">
+         <include name="**/*.xsd" />
+         <incude name="**/*.wsdl" />
+      </fileset>
+   </copy>
 </postGoal>
 
 <!-- run javadoc over both source trees -->
 
 <!-- removes previously generated javadocs, and does javadoc again including generated sources too -->
 <postGoal name="maven-javadoc-plugin:report">
-	<attainGoal name="xdoc:init" />
+   <attainGoal name="xdoc:init" />
 <!-- lifted from the javadoc plugin code -->
       <!-- Get the year to display in the Javadocs -->
       <ant:tstamp>
@@ -240,13 +273,13 @@ Requires:
         use="${maven.javadoc.use}"
         windowtitle="${pom.name} ${pom.currentVersion} API"
         doctitle="${pom.name} ${pom.currentVersion} API"
-		sourcepath="${basedir}/src/java:${generated.src}"
+      sourcepath="${basedir}/src/java:${generated.src}"
         bottom="${copyright}">
-		<!--
+      <!--
         stylesheetfile="${maven.javadoc.stylesheet}"
         additionalparam="${maven.javadoc.additionalparam}"
         useexternalfile="${maven.javadoc.useexternalfile}"
-		-->
+      -->
         <j:if test="${context.getVariable('maven.javadoc.source') != null}">
           <ant:setProperty name="source" value="${maven.javadoc.source}" />
         </j:if>
