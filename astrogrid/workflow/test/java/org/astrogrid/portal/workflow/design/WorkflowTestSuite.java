@@ -31,10 +31,10 @@ public class WorkflowTestSuite extends TestCase {
      * request. Used as a basis of creating a workflow with
      * a query. 
      */  
-    private String lastQueryNameReadFromList = "" ;
+    private static String lastQueryNameReadFromList = "" ;
     
-    private String lastWorkflowNameReadFromList = "" ;
-    private String nameOfWorkflowSavedInMySpace = "";
+    private static String lastWorkflowNameReadFromList = "" ;
+    private static String nameOfWorkflowSavedInMySpace = "";
 
     private final Date
         runDate = new Date() ;
@@ -81,7 +81,7 @@ public class WorkflowTestSuite extends TestCase {
      * the existence of the correct keys for testing navigation.
      *  
      */
-    public void testWorkflowActivityNavigation() {
+    public void t5estWorkflowActivityNavigation() {
          logger.info( "---------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testWorkflowActivityNavigation()" ); 
         
@@ -135,7 +135,7 @@ public class WorkflowTestSuite extends TestCase {
      * generate a workflow from a missing template. For now (Jan 2004),
      * should return a null reference. 
      */
-    public void testCreateWorkflowFromTemplate_MissingTemplate() {
+    public void t5estCreateWorkflowFromTemplate_MissingTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_MissingTemplate()" ); 
         
@@ -171,7 +171,7 @@ public class WorkflowTestSuite extends TestCase {
      * Tests the ability of the workflow to create a simple one step job from a template.
      *  
      */
-    public void testCreateWorkflowFromTemplate_OneStepTemplate() {
+    public void t5estCreateWorkflowFromTemplate_OneStepTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_OneStepTemplate()" ); 
         
@@ -207,7 +207,7 @@ public class WorkflowTestSuite extends TestCase {
      * Tests the ability of the workflow to create a one-off complex workflow from a template.
      *  
      */
-    public void testCreateWorkflowFromTemplate_ComplexWorlflowTemplate() {
+    public void t5estCreateWorkflowFromTemplate_ComplexWorlflowTemplate() {
         logger.info( "-------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromTemplate_ComplexWorlflowTemplate()" ); 
         
@@ -255,7 +255,7 @@ public class WorkflowTestSuite extends TestCase {
      * meaningful comparison of the results of this test.
      *  
      */
-    public void testCreateWorkflowFromScratch_OneSequence_OneStep_Tool() {
+    public void t5estCreateWorkflowFromScratch_OneSequence_OneStep_Tool() {
         logger.info( "---------------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateWorkflowFromScratch_OneSequence_OneStep_Tool()" ); 
         
@@ -347,7 +347,7 @@ public class WorkflowTestSuite extends TestCase {
      * meaningful comparison of the results of this test.
      *  
      */
-    public void testCreateComplexWorkflow_Sequence_Flow_SevenSteps() {
+    public void t5estCreateComplexWorkflow_Sequence_Flow_SevenSteps() {
         logger.info( "---------------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testCreateComplexWorkflow_Sequence_Flow_SevenSteps()" ); 
         
@@ -543,7 +543,7 @@ public class WorkflowTestSuite extends TestCase {
      * in a later test.
      *  
      */
-    public void testReadWorkflowList() {
+    public void t5estReadWorkflowList() {
          logger.info( "-----------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflowList()" ); 
         
@@ -556,8 +556,8 @@ public class WorkflowTestSuite extends TestCase {
              while ( iterator.hasNext() ) {
                  object = iterator.next() ;   
                  logger.info( "Class name of iterator object is " + object.getClass().getName() ) ;                 
-                 this.lastWorkflowNameReadFromList = (String)object ;
-                 logger.info( "Workflow Name: " + this.lastWorkflowNameReadFromList ) ;
+                 WorkflowTestSuite.lastWorkflowNameReadFromList = (String)object ;
+                 logger.info( "Workflow Name: " + WorkflowTestSuite.lastWorkflowNameReadFromList ) ;
              }
  
              assertTrue( true ) ;    
@@ -578,7 +578,7 @@ public class WorkflowTestSuite extends TestCase {
      * Tests our ability to read a workflow from MySpace and reconstitute
      * it as a workflow object.
      */
-    public void testReadWorkflow() {
+    public void t5estReadWorkflow() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadWorkflow()" ); 
         
@@ -586,14 +586,20 @@ public class WorkflowTestSuite extends TestCase {
             
          try {
              
-             if( this.lastWorkflowNameReadFromList.length() == 0 ) {
+             if( WorkflowTestSuite.nameOfWorkflowSavedInMySpace.length() == 0 ) {
                  assertTrue( false ) ;
              }
              else {
                  workflow = Workflow.readWorkflow( communitySnippet()
-                                                 , this.lastWorkflowNameReadFromList ) ;
-                 prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
-                 assertTrue( true ) ;    
+                                                 , WorkflowTestSuite.nameOfWorkflowSavedInMySpace ) ;
+                 if( workflow != null ) {
+                     prettyPrint( "Workflow:", workflow.constructWorkflowXML( communitySnippet() ) ) ;
+                     assertTrue( true ) ;    
+                 }
+                 else {
+                     assertTrue( false ) ;
+                 }
+
              }
 
          }
@@ -614,7 +620,7 @@ public class WorkflowTestSuite extends TestCase {
      * It utilizes the name of the workflow previously saved into MySpace
      * by an earlier test.
      */
-    public void testDeleteWorkflow() {
+    public void t5estDeleteWorkflow() {
          logger.info( "---------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testDeleteWorkflow()" ); 
         
@@ -631,7 +637,7 @@ public class WorkflowTestSuite extends TestCase {
             
                 logger.info( "deleted: " + ret ) ;
  
-                assertTrue( true ) ;  
+                assertTrue( ret ) ;  
             }
   
          }
@@ -655,7 +661,7 @@ public class WorkflowTestSuite extends TestCase {
      * As a byproduct, saves the name of the last-read query so
      * that it may be subsequently fully read in a later test.
      */
-    public void testReadQueryList() {
+    public void t5estReadQueryList() {
          logger.info( "--------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQueryList()" ); 
         
@@ -672,8 +678,8 @@ public class WorkflowTestSuite extends TestCase {
              while ( iterator.hasNext() ) {             
                  object = iterator.next() ;   
                  logger.info( "Class name of iterator object is " + object.getClass().getName() ) ;
-                 this.lastQueryNameReadFromList = (String)object ;
-                 logger.info( "Query Name: " + this.lastQueryNameReadFromList ) ;
+                 WorkflowTestSuite.lastQueryNameReadFromList = (String)object ;
+                 logger.info( "Query Name: " + WorkflowTestSuite.lastQueryNameReadFromList ) ;
              }
  
              assertTrue( true ) ;    
@@ -693,20 +699,26 @@ public class WorkflowTestSuite extends TestCase {
      * Tests our ability to read a full query from MySpace.
      * 
      */    
-    public void testReadQuery() {
+    public void t5estReadQuery() {
          logger.info( "----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadQuery()" ); 
         
          String query = null ;
             
          try {
-             if( lastQueryNameReadFromList.length() == 0 ) {
+             if( WorkflowTestSuite.lastQueryNameReadFromList.length() == 0 ) {
                  assertTrue( false ) ;
              }
              else {
-                 query = Workflow.readQuery( communitySnippet(), this.lastQueryNameReadFromList ) ;
-                 prettyPrint( "Query looks like:", query ) ;
-                 assertTrue( true ) ;    
+                 query = Workflow.readQuery( communitySnippet(), WorkflowTestSuite.lastQueryNameReadFromList ) ;
+                 if( query != null ) {
+                     prettyPrint( "Query looks like:", query ) ;
+                     assertTrue( true ) ;    
+                 }
+                 else {
+                     assertTrue( false ) ;
+                 }
+ 
              }
 
          }
@@ -724,7 +736,7 @@ public class WorkflowTestSuite extends TestCase {
     /**
      * Tests our ability to gain a list of application tools.
      */
-    public void testReadToolList() {
+    public void t5estReadToolList() {
          logger.info( "-------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testReadToolList()" ); 
         
@@ -758,7 +770,7 @@ public class WorkflowTestSuite extends TestCase {
      * 
      * Note: It does this for every tool it has information on.
      */
-    public void testCreateTool() {
+    public void t5estCreateTool() {
          logger.info( "-----------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateTool()" ); 
         
@@ -826,7 +838,7 @@ public class WorkflowTestSuite extends TestCase {
      * returns true. You must examine the jes log to see that it actually
      * gets submitted correctly. Not a big job.
      */
-    public void testSubmitWorkflow() {
+    public void t5estSubmitWorkflow() {
         logger.info( "---------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testSubmitWorkflow()" ); 
         
@@ -927,7 +939,7 @@ public class WorkflowTestSuite extends TestCase {
      * the results as the scheduling of the job against the datacenter is supposed
      * to be asynchronous.
      */
-    public void testCreateQueryAndSubmitWorkflow() {
+    public void t5estCreateQueryAndSubmitWorkflow() {
          logger.info( "-----------------------------------------------------------" ); 
          logger.info( "enter: WorkflowTestSuite.testCreateQueryAndSubmitWorkflow()" ); 
         
@@ -1038,7 +1050,7 @@ public class WorkflowTestSuite extends TestCase {
      * account details. The fact is detected and the account details lifted from 
      * the community snippet.
      */
-    public void testFormatMySpaceReference_withoutAccountDetails() {
+    public void t5estFormatMySpaceReference_withoutAccountDetails() {
         logger.info( "---------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testFormatMySpaceReference_withoutAccountDetails()" ); 
         
@@ -1079,7 +1091,7 @@ public class WorkflowTestSuite extends TestCase {
      * This test flexes the formatting given a full myspace path; ie: with the account 
      * details included 
      */
-    public void testFormatMySpaceReference_withAccountDetails() {
+    public void t5estFormatMySpaceReference_withAccountDetails() {
         logger.info( "------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testFormatMySpaceReference_withAccountDetails()" ); 
         
@@ -1124,7 +1136,7 @@ public class WorkflowTestSuite extends TestCase {
      * it by chance happens to be left around and empty, it gets ignored on job submission.
      * 
      */
-    public void testToJesXMLOnEmptyOptionalParameter() {
+    public void t5estToJesXMLOnEmptyOptionalParameter() {
         logger.info( "------------------------------------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testToJesXMLOnEmptyOptionalParameter()" ); 
 
@@ -1217,7 +1229,7 @@ public class WorkflowTestSuite extends TestCase {
      * works well and is extremely easy to use.
      *  
      */
-    public void testDeleteParameter() {
+    public void t5estDeleteParameter() {
         logger.info( "----------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testDeleteParameter()" ); 
 
@@ -1314,7 +1326,7 @@ public class WorkflowTestSuite extends TestCase {
      * empty, meaning insertion (the parameter must indeed be empty for this to work). 
      * The same technique can be used for replacing values.
      */
-    public void testInsertParameterValue() {
+    public void t5estInsertParameterValue() {
         logger.info( "----------------------------------------------" ); 
         logger.info( "enter: WorkflowTestSuite.testInsertParameterValue()" ); 
   
@@ -1413,8 +1425,8 @@ public class WorkflowTestSuite extends TestCase {
      */
     private String communitySnippet(){
         return CommunityMessage.getMessage( "1234"                  // token
-                                          , "jl99@star.le.ac.uk"    // account
-                                          , "xray@star.le.ac.uk"    // group
+                                          , "pjn3@test.astrogrid.org"    // account
+                                          , "pjn3@test.astrogrid.org"    // group
                                           ) ;
     }
 

@@ -347,11 +347,16 @@ public class Workflow extends Activity {
                                                     , mySpaceLocation
                                                     , pathBuffer.toString() ) ;                     
 
-                InputSource
-                   source = new InputSource( new StringReader( xmlString ) );
+                if( xmlString != null ) {
+                    InputSource
+                       source = new InputSource( new StringReader( xmlString ) );
                          
-                workflow = new Workflow( communitySnippet, XMLUtils.newDocument(source) ) ;
-                                       
+                    workflow = new Workflow( communitySnippet, XMLUtils.newDocument(source) ) ;
+                }
+                else {
+                    debug( "File not found" ) ;
+                }
+                                      
             }
 
         }
@@ -451,9 +456,10 @@ public class Workflow extends Activity {
          xmlWorkflow = null,
          filePath = null,
          mySpaceLocation = null,
-         account = null ;         
+         account = null ;
+     StringBuffer pathBuffer = new StringBuffer( 64 ) ;        
          
-     try {
+     try {;
          
          account = CommunityMessage.getAccount( communitySnippet ) ;
          xmlWorkflow = workflow.constructWorkflowXML( communitySnippet ) ;       
@@ -467,6 +473,22 @@ public class Workflow extends Activity {
          }
          else {
              
+             pathBuffer
+                 .append( "/")
+                 .append( CommunityMessage.getAccount( communitySnippet ) )
+                 .append( "/")
+                 .append( "serv1")
+                 .append( "/")
+                 .append( "workflow")
+                 .append( "/")
+                 .append( workflow.getName() ) ;
+ 
+             debug( "mySpaceLocation: " + mySpaceLocation ) ;
+             debug( "path set to: " + pathBuffer.toString() ) ;
+             debug( "account: " + account ) ;
+             debug( "Workflow.extractUserid( account ) returns: " + Workflow.extractUserid( account ) ) ;
+             debug( "Workflow.extractCommunity( account ) returns: " + Workflow.extractCommunity( account ) ) ;
+         
              MySpaceClient
                  mySpace =  MySpaceDelegateFactory.createDelegate( mySpaceLocation ) ; 
                               
@@ -475,7 +497,7 @@ public class Workflow extends Activity {
              retValue = mySpace.saveDataHolding( Workflow.extractUserid( account ) 
                                                , Workflow.extractCommunity( account ) 
                                                , CommunityMessage.getGroup( communitySnippet)
-                                               , workflow.getName()        // file name
+                                               , pathBuffer.toString()     // path
                                                , xmlWorkflow               // file contents
                                                , "workflow"                // it's a workflow
                                                , "Overwrite" ) ;           // overwrite it if it already exists
@@ -1413,9 +1435,12 @@ public class Workflow extends Activity {
         try {
             
             debug( "myspaceLocation: " + myspaceLocation ) ;
-            
+            debug( "path set to: " + arguments ) ;
             account = CommunityMessage.getAccount( communitySnippet ) ;
-            
+            debug( "account: " + account ) ;
+            debug( "Workflow.extractUserid( account ) returns: " + Workflow.extractUserid( account ) ) ;
+            debug( "Workflow.extractCommunity( account ) returns: " + Workflow.extractCommunity( account ) ) ;
+           
             MySpaceClient
                 mySpace =  MySpaceDelegateFactory.createDelegate( myspaceLocation ) ; 
             
