@@ -58,10 +58,6 @@
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>
 
-  <taglib>
-    <taglib-uri>http://jakarta.apache.org/taglibs/input-1.0</taglib-uri>
-    <taglib-location>/WEB-INF/tld/taglibs-input-tld-20040115.tld</taglib-location>
-  </taglib>
   
   <resource-ref>
     <description>Datasource to use to access the database</description>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow name="token authentication" xmlns="http://www.astrogrid.org/schema/AGWorkflow/v1">
+ <sequence>
+  <Activity joinCondition="any" name="first step" sequenceNumber="1" stepNumber="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="step">
+   <tool interface="com.foo.bar.wibble" name="another tool"/>
+   <ns1:step-execution-record finishTime="2004-03-11T19:37:34.494Z" startTime="2004-03-11T19:37:33.874Z" status="COMPLETED" xmlns:ns1="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+    <ns2:message xmlns:ns2="http://www.astrogrid.org/schema/CEATypes/v1">
+     <ns2:content>
+OK     </ns2:content>
+     <ns2:source>
+application     </ns2:source>
+     <ns2:timestamp>
+2004-03-11T19:37:33.896Z     </ns2:timestamp>
+     <ns2:level>
+info     </ns2:level>
+     <ns2:phase>
+COMPLETED     </ns2:phase>
+    </ns2:message>
+   </ns1:step-execution-record>
+  </Activity>
+  <Activity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="sequence">
+   <Activity joinCondition="any" name="nested step one" sequenceNumber="1" stepNumber="2" xsi:type="step">
+    <tool interface="dunno what's required here" name="a tool"/>
+    <ns3:step-execution-record finishTime="2004-03-11T19:37:34.670Z" startTime="2004-03-11T19:37:34.047Z" status="COMPLETED" xmlns:ns3="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+     <ns4:message xmlns:ns4="http://www.astrogrid.org/schema/CEATypes/v1">
+      <ns4:content>
+OK      </ns4:content>
+      <ns4:source>
+application      </ns4:source>
+      <ns4:timestamp>
+2004-03-11T19:37:34.079Z      </ns4:timestamp>
+      <ns4:level>
+info      </ns4:level>
+      <ns4:phase>
+COMPLETED      </ns4:phase>
+     </ns4:message>
+    </ns3:step-execution-record>
+   </Activity>
+   <Activity joinCondition="any" name="nested step two" sequenceNumber="2" stepNumber="3" xsi:type="step">
+    <tool interface="something" name="something"/>
+    <ns5:step-execution-record finishTime="2004-03-11T19:37:34.844Z" startTime="2004-03-11T19:37:34.139Z" status="COMPLETED" xmlns:ns5="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+     <ns6:message xmlns:ns6="http://www.astrogrid.org/schema/CEATypes/v1">
+      <ns6:content>
+OK      </ns6:content>
+      <ns6:source>
+application      </ns6:source>
+      <ns6:timestamp>
+2004-03-11T19:37:34.172Z      </ns6:timestamp>
+      <ns6:level>
+info      </ns6:level>
+      <ns6:phase>
+COMPLETED      </ns6:phase>
+     </ns6:message>
+    </ns5:step-execution-record>
+   </Activity>
+  </Activity>
+  <Activity joinCondition="any" name="final step" sequenceNumber="2" stepNumber="4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="step">
+   <tool interface="blah" name="foo"/>
+   <ns7:step-execution-record finishTime="2004-03-11T19:37:34.343Z" startTime="2004-03-11T19:37:33.920Z" status="COMPLETED" xmlns:ns7="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+    <ns8:message xmlns:ns8="http://www.astrogrid.org/schema/CEATypes/v1">
+     <ns8:content>
+OK     </ns8:content>
+     <ns8:source>
+application     </ns8:source>
+     <ns8:timestamp>
+2004-03-11T19:37:33.942Z     </ns8:timestamp>
+     <ns8:level>
+info     </ns8:level>
+     <ns8:phase>
+COMPLETED     </ns8:phase>
+    </ns8:message>
+   </ns7:step-execution-record>
+  </Activity>
+ </sequence>
+ <description>
+document with (pointlessly) nested sequences, and token authentication. </description>
+ <Credentials>
+  <ns9:Account xmlns:ns9="http://www.astrogrid.org/schema/Credentials/v1">
+   <ns9:Name>
+nww74   </ns9:Name>
+   <ns9:Community>
+jodrell   </ns9:Community>
+  </ns9:Account>
+  <ns10:Group xmlns:ns10="http://www.astrogrid.org/schema/Credentials/v1">
+   <ns10:Name>
+developers   </ns10:Name>
+   <ns10:Community>
+jodrell   </ns10:Community>
+  </ns10:Group>
+  <ns11:SecurityToken xmlns:ns11="http://www.astrogrid.org/schema/Credentials/v1"/>
+ </Credentials>
+ <ns12:job-execution-record finishTime="2004-03-11T19:37:35.049Z" startTime="2004-03-11T19:37:33.853Z" status="COMPLETED" xmlns:ns12="http://www.astrogrid.org/schema/ExecutionRecord/v1">
+  <ns12:jobId>
+jes:nwLaptop/127.0.0.1/nww74@jodrell/1079033853849:1282545079  </ns12:jobId>
+ </ns12:job-execution-record>
+</workflow>

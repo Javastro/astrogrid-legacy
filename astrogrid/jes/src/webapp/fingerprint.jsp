@@ -183,8 +183,10 @@
 
 <h2>Jes Configuration</h2>
 
-Jes configuration loaded from:
-   <%= SimpleConfig.loadedFrom() %>
+Jes configuration loader details:
+<pre>
+   <% SimpleConfig.getSingleton().dumpConfig(out); %>
+ </pre>
 <p />
 
 <hr />
