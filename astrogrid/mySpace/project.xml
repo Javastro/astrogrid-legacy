@@ -105,7 +105,7 @@
   </build>
   
   <reports>
-    <report>
+   <report>
       maven-changelog-plugin
     </report>
     <report>
@@ -113,6 +113,9 @@
     </report>
     <report>
       maven-checkstyle-plugin
+    </report>
+    <report>
+      maven-clover-plugin
     </report>
     <report>
       maven-developer-activity-plugin
@@ -143,6 +146,9 @@
     </report>
     <report>
       maven-tasklist-plugin
+    </report>
+    <report>
+      maven-simian-plugin
     </report>
   </reports>
 </project>
