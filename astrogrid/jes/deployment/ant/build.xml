@@ -23,16 +23,6 @@
     	<property file="${input.loadProperties.file}"/>
     </target>
 
-	<target name="setup-working" description="Initialise the JES working directory" depends="get-working-dir">
-		<input addproperty="input.eraseworking" validargs="Do it,Abort">This will erase the contents of ${input.jes.working.dir}.  Are you sure?</input>
-		<condition property="setup-repository.donterase" value="true">
-        	<equals arg1="${input.eraseworking}" arg2="Abort"/>
-		</condition>
-		<fail if="setup-repository.donterase">Please restart and don't select 'Initialise the JES working directory'</fail>
-		<delete dir="${input.jes.working.dir}"/>
-		<mkdir dir="${input.jes.working.dir}"/>		
-	</target>
-
 	<target name="install-jes" description="Install JES" depends="checkTomcat, download, deploy">
 	        <echo>***The Job Entry System has been successfully installed***</echo>
 	    	<property name="jes.installed" value="true"/>
@@ -66,6 +56,7 @@
 	
 	<target name="get-working-dir">
 		<input addproperty="input.jes.working.dir" defaultvalue="${antigen.home}/jes">Please enter the location of the JES working directory</input>
+		<mkdir dir="${input.jes.working.dir}"/>
 	</target>
 		
     <target name="checkTomcat" depends="fail-if-no-tomcat,get-tomcat-url">
