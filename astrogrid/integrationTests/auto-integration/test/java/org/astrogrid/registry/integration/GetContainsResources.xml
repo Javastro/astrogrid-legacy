@@ -2,6 +2,6 @@
 	<selectionSequence>
 		<selection item="searchElements" itemOp="EQ" value="Resource"/>
 		<selectionOp op="$and$"/>
-		<selection item="ResourceKey" itemOp="CONTAINS" value="testap2"/>
+		<selection item="vr:Identifier/vr:ResourceKey" itemOp="CONTAINS" value="testap2"/>
 	</selectionSequence>
 </query>
