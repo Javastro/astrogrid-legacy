@@ -65,6 +65,21 @@
       Web services implementations use ServiceSecurityGuard to test the
       results of authentication and to determine the caller's identity.
       </p>
+      <p>
+      The facade classes distinguish "single-sign-on" credentials from
+      "grid" credentials. The SSO credentials are used to sign on to the
+      entire system (viewed as a grid of services) and thereby to obtain
+      grid credentials.  The grid credentials are used to authenticate
+      messages to services. The facade keeps the two sets of credentials
+      separately.
+      </p>
+      In time, the facade may hide multiple, cooperating implementations;
+      currently there is only one implementation of each part.  Multiple
+      implementations would be supported by subclassing ClientSecurityGuard
+      and ServiceSecurityGuard.  To support this evolution with minimal 
+      disruption, applications obtain security-guard objects using
+      abstract-factory methods that can emit different subclasses according
+      to the system configuration.
     </section>
     
     <section name="Message protocol and codecs">
