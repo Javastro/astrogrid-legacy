@@ -16,37 +16,35 @@
 
     <!-- Workflow -->
     <dependency>
-      <groupId>astrogrid-workflow</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-workflow</artifactId>
       <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>
     </dependency>
-
-    <!-- MySpace -->
+    
+    <!-- jes -->
     <dependency>
-      <groupId>astrogrid-mySpace</groupId>
-      <artifactId>astrogrid-mySpace</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-jes-delegate</artifactId>
       <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
-      </properties>
+      </properties>     
     </dependency>
-
-    <!-- Jes -->
     <dependency>
-      <groupId>astrogrid-jes</groupId>
-      <artifactId>astrogrid-jes</artifactId>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-workflow-objects</artifactId>
       <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
-      </properties>
-    </dependency>
+      </properties>           
+    </dependency>    
 
     <!-- Common -->
     <dependency>
-      <groupId>astrogrid-common</groupId>
+      <groupId>org.astrogrid</groupId>
       <artifactId>astrogrid-common</artifactId>
       <version>SNAPSHOT</version>
       <properties>
@@ -56,9 +54,25 @@
 
     <!-- Community -->
     <dependency>
-      <groupId>astrogrid-community</groupId>
-      <artifactId>authentication-client</artifactId>
-      <version>1.0</version>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-client</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>      
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-common</artifactId>
+      <version>SNAPSHOT</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>      
+    </dependency>
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-community-resolver</artifactId>
+      <version>SNAPSHOT</version>
       <properties>
         <war.bundle>true</war.bundle>
       </properties>      

@@ -12,24 +12,20 @@ package org.astrogrid.portal.cocoon.workflow.jes;
 
 import org.apache.log4j.Logger;
 
-//import org.astrogrid.i18n.*;
-
-// import org.astrogrid.workflow.*;
-// import org.astrogrid.workflow.design.activity.*;
-
-import org.astrogrid.AstroGridException;
-
 import org.astrogrid.portal.workflow.*;
-import org.astrogrid.portal.workflow.jes.*;
+import org.astrogrid.portal.workflow.intf.*;
+import org.astrogrid.community.beans.v1.Credentials;
+import org.astrogrid.community.beans.v1.Account;
+import org.astrogrid.community.beans.v1.Group;
+import org.astrogrid.jes.delegate.JobSummary;
+import org.astrogrid.workflow.beans.v1.Workflow;
 
 //import org.astrogrid.community.delegate.policy.PolicyServiceDelegate;
 //import org.astrogrid.community.policy.data.PolicyPermission;
 //import org.astrogrid.community.service.authentication.data.SecurityToken;
-import org.astrogrid.community.common.util.CommunityMessage;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.apache.avalon.framework.parameters.Parameters;
 import org.apache.cocoon.acting.AbstractAction;
@@ -120,8 +116,8 @@ public class JesAction extends AbstractAction {
         try { 
             debug( "About to check properties loaded");
             // Load the workflow config file and messages...
-            WKF.getInstance().checkPropertiesLoaded();
-            debug( "Properties loaded OK");
+//            WKF.getInstance().checkPropertiesLoaded();
+//            debug( "Properties loaded OK");
             
             myAction = new JesActionImpl( redirector,
                                           resolver,
@@ -132,9 +128,9 @@ public class JesAction extends AbstractAction {
             retMap = myAction.act();    
                                           
         }
-        catch ( AstroGridException agex ) {
-            debug( agex.toString() );
-        }
+//        catch ( AstroGridException agex ) {
+//            debug( agex.toString() );
+//        }
         finally {
             if( TRACE_ENABLED ) trace( "JesAction.act() exit" );  
         }
@@ -154,13 +150,15 @@ public class JesAction extends AbstractAction {
         private Parameters params;
         private Request request;
         private Session session;
+        private WorkflowManager workflowManager;
         private String userid,
                        community,
                        group,
                        token;
         private String action;
         private boolean bConfirm;
-		private String template;            
+		private String template;  
+        private Credentials credentials;            
         
         public JesActionImpl( Redirector redirector,
                               SourceResolver resolver,
@@ -182,6 +180,9 @@ public class JesAction extends AbstractAction {
                 // Get current request and session.
                 this.request = ObjectModelHelper.getRequest( objectModel );
                 this.session = request.getSession();
+                
+                WorkflowManagerFactory wmFactory = new WorkflowManagerFactory();
+                this.workflowManager = wmFactory.getManager() ;
             
                 // Get user and community 
                 this.retrieveUserDetails();
@@ -190,6 +191,9 @@ public class JesAction extends AbstractAction {
                 this.bConfirm = new Boolean (
                    request.getParameter(CONFIRM_PARAM_TAG) ).booleanValue();
                           
+            }
+            catch( WorkflowInterfaceException wix ) {
+                wix.printStackTrace();
             }
             finally {
                 if( TRACE_ENABLED ) trace( "JesActionImpl() exit" ); 
@@ -244,54 +248,35 @@ public class JesAction extends AbstractAction {
         private void retrieveUserDetails() {
             if( TRACE_ENABLED )
                trace( "JesActionImpl.retrieveUserDetails() entry" );   
-                     
-            String tag  = null ,
-                   useridCommunity = null;
-            int ampersandIndex;
 
             try {
-                
-/*                // JL Note: Iteration 3 way of doing things...
-                useridCommunity =
-                   (String)session.getAttribute( COMMUNITY_ACCOUNT_TAG );
-                ampersandIndex =
-                   useridCommunity.indexOf( USERID_COMMUNITY_SEPARATOR );
-                this.userid = useridCommunity.substring(  0, ampersandIndex );
-                this.community =
-                   useridCommunity.substring( ampersandIndex + 1 );   
- */       
-                // JL Note: Iteration 3 way of doing things...
+                     
                 // PJN note: alterred slightly,
                 // also not sure if LoginAction intends to put security token
                 // into session?
-
-                                
-                this.userid =
-                   (String)session.getAttribute( USER_TAG );
-			debug( "userid: " + this.userid );
-                this.community =
-                   (String)session.getAttribute( COMMUNITY_NAME_TAG );
-			debug( "community: " + this.community );
-                this.group =
-                   (String)session.getAttribute( CREDENTIAL_TAG );
-			debug( "group: " + this.group ); 
+                             
+                this.userid = (String)session.getAttribute( USER_TAG );
+			    debug( "userid: " + this.userid );
+                this.community = (String)session.getAttribute( COMMUNITY_NAME_TAG );
+			    debug( "community: " + this.community );
+                this.group = (String)session.getAttribute( CREDENTIAL_TAG );
+			    debug( "group: " + this.group ); 
 //                SecurityToken secToken =
 //                   (SecurityToken)session.getAttribute( COMMUNITY_TOKEN_TAG );
 //                this.token = secToken.getToken();
-			debug( "token: " + this.token ); 
-  
-/*               
-                JL Note: This is PortalB Iteration 2 way of doing things,...
+			    debug( "token: " + this.token ); 
                 
-                tag = params.getParameter( USER_PARAM_NAME );
-                this.userid = (String) session.getAttribute( tag );
-				tag = params.getParameter( COMMUNITY_PARAM_TAG );
-				this.community = (String) session.getAttribute( tag );
+                Account account = new Account();
+                account.setName( userid );
+                account.setCommunity( community );
+                Group group = new Group();
+                group.setCommunity( community );
+                        
+                this.credentials = new Credentials();
+                credentials.setAccount( account );
+                credentials.setGroup( group );
+                credentials.setSecurityToken( "1234" );
 
-            }
-            catch( ParameterException pex ) {
-               ; // some logging here
-*/
             }
             finally {
                 if( TRACE_ENABLED )
@@ -333,13 +318,19 @@ public class JesAction extends AbstractAction {
                 this.checkPermissions( AUTHORIZATION_RESOURCE_JOB
                                      , AUTHORIZATION_ACTION_EDIT );
                 
-                //NB: The filter argument is ignored at present (Sept 2003).
-                Iterator
-                    iterator =  Job.readJobList( userid,
-                                                 community,
-                                                 communitySnippet(),
-                                                 "*" );
-                this.request.setAttribute( HTTP_JOBLIST_TAG, iterator );
+                JobExecutionService jes = workflowManager.getJobExecutionService();
+                JobSummary[] jobSummaries = jes.readJobList( credentials.getAccount() ) ;
+                Workflow[] workflows = new Workflow[ jobSummaries.length ]; 
+                WorkflowStore wfStore = this.workflowManager.getWorkflowStore();
+                
+                for( int i=0; i<workflows.length; i++ ) {
+                     workflows[i] = wfStore.readWorkflow( credentials.getAccount(), jobSummaries[i].getName() ) ;
+                }
+    
+                this.request.setAttribute( HTTP_JOBLIST_TAG, workflows );
+            }
+            catch( WorkflowInterfaceException wix ) {
+                 this.request.setAttribute( ERROR_MESSAGE_PARAMETER, wix.toString() ) ;
             }
             catch( WorkflowException wfex ) {
                 
@@ -420,20 +411,6 @@ public class JesAction extends AbstractAction {
 */           
         } // end of checkPermission() 
         
-        
-    private String communitySnippet() {
-        	
-		// PJN3 Note: temporary fix - changes to community due in It05 should improve this a lot
-		String message = CommunityMessage.getMessage(
-		    (String)session.getAttribute( CREDENTIAL_TAG ),
-			userid + "@" + (String)session.getAttribute( COMMUNITY_NAME_TAG ),
-			(String)session.getAttribute( COMMUNITY_NAME_TAG ) );
-            
-		if (TRACE_ENABLED ) trace("communitySnippet: " + message );
-                                
-		return message ;
-    }
-   
    
     } // end of inner class JesActionImpl
         
