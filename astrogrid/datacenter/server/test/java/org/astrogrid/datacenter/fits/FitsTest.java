@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.7 2004/01/13 00:33:14 nw Exp $
+/*$Id: FitsTest.java,v 1.8 2004/01/14 00:53:44 nw Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -41,12 +41,16 @@ public class FitsTest extends TestCase
     * the full keyword/etc parsing */
    public void testIndexGenerator() throws IOException
    {
+      if ("true".equals(System.getProperty("skip.long.tests"))) {
+         System.out.println("Skipping long test");
+         return;
+      }
       URL[] fits = new URL[] {
             new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
             new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
             new URL("http://www.roe.ac.uk/~mch/r169101.fit")
      };
-      fail("takes too long for a unit test");
+
       String index = IndexGenerator.generateIndex(fits);
       assertNotNull(index);
    }
@@ -72,6 +76,10 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.8  2004/01/14 00:53:44  nw
+ added switch to test - now able to skip long tests by setting
+ a system property
+
  Revision 1.7  2004/01/13 00:33:14  nw
  Merged in branch providing
  * sql pass-through
