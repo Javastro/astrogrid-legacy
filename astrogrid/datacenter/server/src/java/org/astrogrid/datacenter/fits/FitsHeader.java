@@ -1,5 +1,5 @@
 /*
- * $Id: FitsHeader.java,v 1.3 2003/11/28 18:20:32 mch Exp $
+ * $Id: FitsHeader.java,v 1.4 2004/07/12 23:23:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -12,17 +12,24 @@ import java.util.Vector;
 
 /**
  * A Fits header is the ascii 80-bytes keyword/value pair lines of the primary hdu (header/data unit)
- * or extension unit.  This class represents those values.  Position is useful
- * (esp after use of the 'continue' keyword and multiline comments) but also
- * is quick access given a particular key, so this has both Vector and Hashtable
- *
+ * or extension unit.  This class represents those values.
+ * <p>
+ * The position of a keyword is useful
+ * (esp after use of the 'continue' keyword and multiline comments) so you can
+ * get all the keywords in order (getList()), but for normal reference use get(key)
+ * which will return the (first?) match for that key
+ *<p>
+ * Also provides some common useful interpretations - such as getDataSize()
  * @author M Hill
  */
 
 
 public class FitsHeader
 {
+   /** Indexed keywords for quick access */
    Hashtable indexed = new Hashtable();
+   
+   /** originally ordered list of keywords for when order is important */
    Vector list = new Vector();
 
    public FitsHeader()
@@ -118,6 +125,9 @@ public class FitsHeader
 
 /*
 $Log: FitsHeader.java,v $
+Revision 1.4  2004/07/12 23:23:55  mch
+Added comments
+
 Revision 1.3  2003/11/28 18:20:32  mch
 Debugged fits readers
 
