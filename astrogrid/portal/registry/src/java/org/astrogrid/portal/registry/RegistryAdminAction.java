@@ -35,6 +35,10 @@ import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 import org.astrogrid.config.Config;
 
+import org.astrogrid.util.DomHelper;
+import java.io.InputStream;
+
+
 
 
 /**
@@ -73,7 +77,17 @@ public class RegistryAdminAction extends AbstractAction
    
    private static final String CREATE_COPY_PARAM = "createcopy";   
    
-   private static final String UPDATE_XML_PARAM = "updatexml";   
+   private static final String UPDATE_XML_PARAM = "updatexml";
+         
+   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY = "OrganisationTemplate.xml";
+   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "ResourceTemplate.xml";
+   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY = "ServiceTemplate.xml";
+   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY = "AuthorityTemplate.xml";
+   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY = "RegistryTemplate.xml";
+   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "SkyServiceTemplate.xml";
+   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "TabularSkyServiceTemplate.xml";
+   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY = "DataCollectionTemplate.xml";   
+      
    
 
    public static Config conf = null;
@@ -162,7 +176,7 @@ public class RegistryAdminAction extends AbstractAction
               dbf = DocumentBuilderFactory.newInstance();
               dbf.setNamespaceAware(true);
               regBuilder = dbf.newDocumentBuilder();
-              registryDocument = regBuilder.parse(RegistryOptionAction.getTemplate(request));
+              registryDocument = getDocumentTemplate(request);
               nl = registryDocument.getElementsByTagName("AuthorityID");
               if(nl.getLength() > 0) {
                  nl.item(0).getFirstChild().setNodeValue("enter authority id");
@@ -174,10 +188,6 @@ public class RegistryAdminAction extends AbstractAction
               
             } catch (ParserConfigurationException e) {
               e.printStackTrace();
-            } catch (IOException ioe) {
-               ioe.printStackTrace();
-            } catch (SAXException sax) {
-               sax.printStackTrace();
             }         
          }
          //Create the map from the DOM tree.
@@ -338,6 +348,40 @@ public class RegistryAdminAction extends AbstractAction
       }
       return message;  
    }
+   
+   public Document getDocumentTemplate(Request request) {
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
+      
+      if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(ORGANISATION_XML_URL_TEMPLATE_PROPERTY);
+      }else if(RegistryOptionAction.RESOURCE_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(RESOURCE_XML_URL_TEMPLATE_PROPERTY);
+      } else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(AUTHORITY_XML_URL_TEMPLATE_PROPERTY);
+      }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(REGISTRY_XML_URL_TEMPLATE_PROPERTY);
+      }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(SKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
+      }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
+      }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY);         
+      }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
+         is = loader.getResourceAsStream(SERVICE_XML_URL_TEMPLATE_PROPERTY);
+      }
+      if(is != null) {
+         try {
+            Document doc = DomHelper.newDocument(is);
+            return doc;
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+      }
+      return null;
+   }
+   
    
    
 }

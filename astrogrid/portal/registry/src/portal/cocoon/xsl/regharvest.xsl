@@ -65,8 +65,7 @@
 		Click below to see an automatic query of all our Registries to perform a harvest.
 		<br />
 		<form method="post" action="registryquery.html" name="RegistryQuery">
-			<input type="hidden" name="action" value="selectquery" />		
-			<input type="text" name="registry_identifier" />
+			<input type="hidden" name="action" value="selectquery" />
 			<input type="text" name="selectitem0" value="@xsi:type" />
 			<input type="text" name="selectitemop0" value="EQ"/>
 			<input type="text" name="selectitemvalue0" value="RegistryType"/>

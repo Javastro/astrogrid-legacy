@@ -34,6 +34,10 @@ import org.astrogrid.registry.RegistryException;
 
 import org.astrogrid.config.Config;
 
+import org.astrogrid.util.DomHelper;
+import java.io.InputStream;
+
+
 
 /**
  *
@@ -70,6 +74,8 @@ public class RegistryQueryAction extends AbstractAction
    private static final String ERROR_MESSAGE = "errormessage";
    
    public static Config conf = null;   
+   
+   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "QueryResourceTemplate.xml";   
   
    static {
       if(conf == null) {
@@ -110,22 +116,15 @@ public class RegistryQueryAction extends AbstractAction
          System.out.println("the mainElem = " + mainElem);
       }            
 
-      
-      //Load the template.
-
          //Create the Document object and throw it to createMap
          try {
            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
            dbf.setNamespaceAware(true);
            DocumentBuilder regBuilder = dbf.newDocumentBuilder();
-           registryDocument = regBuilder.parse(RegistryOptionAction.getTemplate(request));
-          // System.out.println("the big xml registry = " + XMLUtils.DocumentToString(registryDocument));
+           registryDocument = getDocumentTemplate();
+           System.out.println("the xml from getDocumentTemplate = " + XMLUtils.DocumentToString(registryDocument));
          } catch (ParserConfigurationException e) {
            e.printStackTrace();
-         } catch (IOException ioe) {
-            ioe.printStackTrace();
-         } catch (SAXException sax) {
-            sax.printStackTrace();
          }
          //now get the unique last text nodes of the map.
          //should be able to do an indexOf and see if their is an "attr" which you put in "@" in front of the string.      
@@ -324,4 +323,24 @@ public class RegistryQueryAction extends AbstractAction
       }//if
       return message;  
    }
+   
+   public Document getDocumentTemplate() {
+      ClassLoader loader = this.getClass().getClassLoader();
+      InputStream is = null;
+      
+      is = loader.getResourceAsStream(RESOURCE_XML_URL_TEMPLATE_PROPERTY);
+      
+      if(is != null) {
+         try {
+            Document doc = DomHelper.newDocument(is);
+            return doc;            
+         }catch(Exception e) {
+            e.printStackTrace();
+         }
+      }//if
+      return null;
+   }
+   
+   
+   
 }

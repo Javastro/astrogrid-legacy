@@ -167,6 +167,16 @@
         <ant:echo message="Generating clover report ...."/>
         <attainGoal name="maven-clover-plugin:report"/>
     </goal>
+    
+	<preGoal name="java:compile">
+
+        <mkdir dir="${basedir}/target/classes" />  
+        <ant:copy verbose="false" todir="${maven.build.dest}">
+            <ant:fileset dir="src/xml">
+            </ant:fileset>
+        </ant:copy>    
+	</preGoal>    
+    
 
     <!--+
         | Project goals.

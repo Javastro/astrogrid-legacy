@@ -16,7 +16,6 @@ import java.io.File;
 import org.astrogrid.config.Config;
 
 
-
 /**
  * Main Options component to let the user determine the next course of action which are Query, Add, or Harvest new
  * registry entry.
@@ -66,14 +65,14 @@ public class RegistryOptionAction extends AbstractAction
    public static final String TABULARSKYSERVICE_OPTION = "TabularSkyService";
    public static final String DATACOLLECTION_OPTION = "DataCollection";
    
-   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.organisation.template.url";
-   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.resource.template.url";
-   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.service.template.url";
-   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.authority.template.url";
-   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.registry.template.url";
-   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.skyservice.template.url";
-   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.tabularskyservice.template.url";
-   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY = "org.astrogrid.registry.datacollection.template.url";   
+   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY = "OrganisationTemplate.xml";
+   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "ResourceTemplate.xml";
+   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY = "ServiceTemplate.xml";
+   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY = "AuthorityTemplate.xml";
+   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY = "RegistryTemplate.xml";
+   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "SkyServiceTemplate.xml";
+   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "TabularSkyServiceTemplate.xml";
+   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY = "DataCollectionTemplate.xml";   
    
    static {
       if(conf == null) {
@@ -111,6 +110,12 @@ public class RegistryOptionAction extends AbstractAction
       mainQueryPieces.add(DATACOLLECTION_OPTION);
       request.setAttribute("MainQueryPieces",mainQueryPieces);
       
+      if("true".equals(request.getParameter("setconfig"))) {
+         String configKey = request.getParameter("configkey");
+         String configVal = request.getParameter("configvalue");
+         System.out.println("changing configKey = " + configKey + " and configVal = " + configVal);
+         conf.setProperty(configKey,configVal);
+      }//if
       
       //
       //Create a new HashMap for our results.  Will be used to
@@ -123,6 +128,7 @@ public class RegistryOptionAction extends AbstractAction
     * Method used by Query and Admin components to get a paricular template bassed off of a
     * reequest object.
     * @param request
+    * @deprecated Not to use anymore getting this information from the resources (jar file now) not the config.
     * @return
     */
    public static String getTemplate(Request request) {
@@ -148,6 +154,5 @@ public class RegistryOptionAction extends AbstractAction
          templateURL = conf.getString(SERVICE_XML_URL_TEMPLATE_PROPERTY);         
       }
       return templateURL;
-   }
-     
+   }     
 }
