@@ -21,7 +21,7 @@
 			<xsl:apply-templates/>
 		</xsl:copy>
 	</xsl:template>
-	->
+	-->
 	
 	<!--get rid of these if they are empty-->
 	<xsl:template match="@accept-encodings[string-length(.)=0]"/>
