@@ -17,6 +17,8 @@
       <xsp:include>org.astrogrid.portal.cocoon.workflow.WorkflowHelper</xsp:include>
       <xsp:include>org.astrogrid.applications.beans.v1.parameters.ParameterValue</xsp:include>
       <xsp:include>org.astrogrid.applications.beans.v1.ParameterRef</xsp:include>
+      <xsp:include>org.astrogrid.applications.beans.v1.parameters.BaseParameterDefinition</xsp:include>
+      <xsp:include>org.astrogrid.applications.beans.v1.Interface</xsp:include>      
       <xsp:include>org.astrogrid.workflow.beans.v1.AbstractActivity</xsp:include>
       <xsp:include>org.astrogrid.workflow.beans.v1.ActivityContainer</xsp:include>
       <xsp:include>org.astrogrid.workflow.beans.v1.Workflow</xsp:include>
@@ -31,6 +33,39 @@
       private static final boolean TRACE_ENABLED = true;
          
       private Workflow workflow = null;
+      
+      //=========================================================================================
+      
+      public static String getMessageString(String strValue) {
+          if( TRACE_ENABLED ) trace( "workflow-main-xsp.getMessageString() entry");
+    
+          if(strValue == null)    
+          {
+              return "--";
+          }
+          
+          StringBuffer objStringBuffer = new StringBuffer();
+          int index = 0;
+          int lineIndex = 0;
+          for(int i = 0; i &lt; strValue.length(); i ++) 
+          {
+              index = strValue.indexOf('\n', i);
+              if(index != -1) 
+              {
+                  objStringBuffer.append(strValue.substring(i,index));
+                  objStringBuffer.append("&lt;BR&gt;");
+                  i = index;
+              }
+              else 
+              {
+                  objStringBuffer.append(strValue.substring(i, strValue.length()));
+                  break;
+              }
+            }
+
+        return objStringBuffer.toString();
+        
+        }      
          
       //=========================================================================================
       private void displayTool( Tool tool ) throws SAXException {
@@ -58,25 +93,32 @@
          Enumeration enumerator = null;
 	     ParameterValue pv = null;
          ParameterRef pRef = null;
+         BaseParameterDefinition pDef = null;
          AttributesImpl xspAttr = new AttributesImpl();         
 	
 	     try {
 	        WorkflowManagerFactory wmFactory = new WorkflowManagerFactory();
 	        WorkflowManager workflowManager = wmFactory.getManager() ;
 	        ApplicationRegistry applRegistry = workflowManager.getToolRegistry();
-	        ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
-	        
+	        ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );	        
             enumerator = tool.getInput().enumerateParameter() ;
 	        while( enumerator.hasMoreElements() ) {
 	            pv = (ParameterValue)enumerator.nextElement();
-                pRef = WorkflowHelper.getParameterRef(applDescription,tool,pv);
-
+                pRef = WorkflowHelper.getParameterRef(applDescription, tool, pv);
+                pDef = WorkflowHelper.getParameterDef(applDescription, tool, pv );                
                 <xsp:element name="inputParam">
                    <xsp:attribute name="param-name"><xsp:expr>pv.getName()</xsp:expr></xsp:attribute>
-                   <xsp:attribute name="param-indirect"><xsp:expr>pv.getIndirect()</xsp:expr></xsp:attribute>
-                   <xsp:attribute name="param-value"><xsp:expr>pv.getValue()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-UI-name"><xsp:expr>getMessageString(pDef.getUI_Name())</xsp:expr></xsp:attribute>                   
+                   <xsp:attribute name="param-UI-description"><xsp:expr>getMessageString(pDef.getUI_Description().getContent())</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-type"><xsp:expr>pDef.getType()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-subtype"><xsp:expr>pDef.getSubType()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-units"><xsp:expr>pDef.getUnits()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-ucd"><xsp:expr>pDef.getUCD()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-defaultValue"><xsp:expr>pDef.getDefaultValue()</xsp:expr></xsp:attribute>
                    <xsp:attribute name="param-cardinality-max"><xsp:expr>pRef.getMaxoccurs()</xsp:expr></xsp:attribute>                                                      
-                   <xsp:attribute name="param-cardinality-min"><xsp:expr>pRef.getMinoccurs()</xsp:expr></xsp:attribute>                                                                        
+                   <xsp:attribute name="param-cardinality-min"><xsp:expr>pRef.getMinoccurs()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-value"><xsp:expr>pv.getValue()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-indirect"><xsp:expr>pv.getIndirect()</xsp:expr></xsp:attribute>
                 </xsp:element>
 
 	        } // end while
@@ -85,13 +127,21 @@
             while( enumerator.hasMoreElements() ) {
                 pv = (ParameterValue)enumerator.nextElement();
                 pRef = WorkflowHelper.getParameterRef(applDescription,tool,pv);
+                pDef = WorkflowHelper.getParameterDef(applDescription, tool, pv );
                  
                 <xsp:element name="outputParam">
-                    <xsp:attribute name="param-name"><xsp:expr>pv.getName()</xsp:expr></xsp:attribute>
-                    <xsp:attribute name="param-indirect"><xsp:expr>pv.getIndirect()</xsp:expr></xsp:attribute>
-                    <xsp:attribute name="param-value"><xsp:expr>pv.getValue()</xsp:expr></xsp:attribute>
-                    <xsp:attribute name="param-cardinality-max"><xsp:expr>pRef.getMaxoccurs()</xsp:expr></xsp:attribute>                                                      
-                    <xsp:attribute name="param-cardinality-min"><xsp:expr>pRef.getMinoccurs()</xsp:expr></xsp:attribute>                                                                        
+                   <xsp:attribute name="param-name"><xsp:expr>pv.getName()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-UI-name"><xsp:expr>getMessageString(pDef.getUI_Name())</xsp:expr></xsp:attribute>                   
+                   <xsp:attribute name="param-UI-description"><xsp:expr>getMessageString(pDef.getUI_Description().getContent())</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-type"><xsp:expr>pDef.getType()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-subtype"><xsp:expr>pDef.getSubType()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-units"><xsp:expr>pDef.getUnits()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-ucd"><xsp:expr>pDef.getUCD()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-defaultValue"><xsp:expr>pDef.getDefaultValue()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-cardinality-max"><xsp:expr>pRef.getMaxoccurs()</xsp:expr></xsp:attribute>                                                      
+                   <xsp:attribute name="param-cardinality-min"><xsp:expr>pRef.getMinoccurs()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-value"><xsp:expr>pv.getValue()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-indirect"><xsp:expr>pv.getIndirect()</xsp:expr></xsp:attribute>
                  </xsp:element> 
                
             } // end while

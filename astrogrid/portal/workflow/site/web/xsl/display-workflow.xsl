@@ -79,6 +79,7 @@
         </table>
     <xsl:call-template name="tool-details"/>
     </ag-div>
+    <script type="text/javascript" src="/astrogrid-portal/mount/workflow/wz_tooltip.js"/>
     </xsl:template>
 
     <xsl:template match="*"> 
@@ -138,7 +139,7 @@
                             <xsl:attribute name="height">25</xsl:attribute>
                             <xsl:attribute name="alt">step</xsl:attribute>
                             <xsl:attribute name="onMouseOver">change_image('<xsl:value-of select="@key"/>','<xsl:value-of select="name()"/>'); populate_tool_details('<xsl:value-of select="@step-name"/>','<xsl:value-of select="@joinCondition"/>','<xsl:value-of select="@step-description"/>','<xsl:value-of select="@key"/>', '<xsl:value-of select="./tool/@tool-name"/>','<xsl:value-of select="./tool/@tool-documentation"/>'); show_select('step_tool_details');populate_activity_container_insert_form('<xsl:value-of select="@key"/>','<xsl:value-of select="../@key"/>','<xsl:value-of select="count(preceding-sibling::*)"/>','<xsl:value-of select="name()"/>')</xsl:attribute>             
-                            <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');footer();</xsl:attribute>
+                            <xsl:attribute name="onClick">toggle('parameters:<xsl:value-of select="@key"/>');</xsl:attribute>
                         </xsl:element>
                         <xsl:if test="@key = $activity_key">
                             <ag-onload>
