@@ -1,50 +1,68 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-    <HEAD>
-        <TITLE>Building AstroGrid with Maven</TITLE>
-    </HEAD>
-    <BODY LANG="en-GB" DIR="LTR">
-<H1>Building AstroGrid with Maven</H1>
-<p> From Itn05 onwards AstroGrid components are to be built using 
-				Maven via a number of custom goals. These may be executed from 
-				the command line by typing <BR/> maven {goal} <BR/> while in 
-				the project's root directory. </a>
-</P>
-
-		<P> All AstroGrid components should implement the following goals. A 
-			simple example of how to do this may be found <a 
-			href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/maven.xml">here.</a> 
-			</P>
-		<h1>AstroGrid Custom Goals</h1>
-			<h2>Cleanup</h2>
-				<P> astrogrid-clean === delete all local build products </P>
-			<h2>Documentation</h2>
-				<P> astrogrid-build-site === generate this documentation<BR/> 
-					astrogrid-deploy-site === generate this documentation and 
-					copy it across to our webserver<BR/> </P>
-			<h2>Build artifacts</h2>
-				<P> astrogrid-build-artifact === build all jars and wars 
-					locally <BR/> astrogrid-install-artifact === as above but 
-					install the artifacts in your local repository (useful if 
-					you're working offline using Maven's -o switch) <BR/> 
-					astrogrid-deploy-artifact === as above but install the 
-					artifacts in the astrogrid repository on Uluru for other 
-					components to use </P>
-				<P> astrogrid-build-snapshot ===] <BR/> 
-					astrogrid-install-snapshot ===]== as above but create 
-					snapshots <BR/> 
-					astrogrid-deploy-snapshot ===] </P>
-			<h1>Snapshot builds - what is the difference?</h1>
-			<P> An ordinary build produces artifacts of the form {artifact 
-				Id}-{current Version}.jar, e.g. astrogrid-jes-Itn04_1.jar, that 
-				is intended for release. A snapshot build on the other hand 
-				produces timestamped artifacts of the form {artifact 
-				Id}-{yyyymmdd.hhmmss}.jar, e.g. 
-				astrogrid-jes-20040227.001934.jar and (usually) creates a 
-				symbolic link {artifact Id}-SNAPSHOT.jar to it. </P>
-			<P> If you include dependencies on SNAPSHOT jars on your POM, then 
-				they are downloaded from the remote repository to your local 
-				repository each time Maven is run, to ensure you get the latest 
-				version. </P>
-</BODY>
-</HTML>
+<html>
+<head>
+  <title>Building AstroGrid with
+Maven</title>
+</head>
+<body style="direction: ltr;" lang="en-GB">
+<h1>Building AstroGrid with Maven</h1>
+<p> From Itn05 onwards AstroGrid
+components are to be built using Maven via a number of custom goals.
+These may be executed from the command line by typing <br>
+<span style="font-family: monospace;">
+maven {goal} </span><br>
+while in the project's root directory.</p>
+<p>For example, to build the
+"common" library,</p>
+<ol>
+  <li>checkout astrogrid/common
+into (for example) working/common</li>
+  <li>checkout
+astrogrid/maven-base into working/maven-base</li>
+  <li><span style="font-family: monospace;">cd</span>
+to working/common</li>
+  <li>execute <span style="font-family: monospace;">maven
+astrogrid-install-snapshot</span></li>
+</ol>
+<p>Maven will build the
+appropriate jars and wars and place them in your local repository
+(typically under ~user/.maven/repository).</p>
+<h1>The AstroGrid Custom Goals</h1>
+<br>
+All AstroGrid components should implement the following goals. A simple
+example of how to do this may be found <a
+ href="http://www.astrogrid.org/viewcvs/mavenTemplates/SimpleMavenProject/maven.xml?rev=1.2&amp;content-type=text/vnd.viewcvs-markup">here.</a><br>
+<h2>Cleanup</h2>
+<p> astrogrid-clean === delete all
+local build products </p>
+<h2>Documentation</h2>
+<p> astrogrid-build-site ===
+generate this documentation<br>
+astrogrid-deploy-site === generate this documentation and copy it
+across to our webserver<br>
+</p>
+<h2>Build artifacts</h2>
+<p>astrogrid-install-artifact&nbsp;&nbsp; === as above but install the
+artifacts in
+your local repository (useful if you're working offline using Maven's
+-o switch) <br>
+astrogrid-deploy-artifact === as above but install the artifacts in the
+astrogrid repository on Uluru for other components to use </p>
+<p>astrogrid-install-snapshot&nbsp;&nbsp; ===] == as above but create
+snapshots <br>
+astrogrid-deploy-snapshot ===] </p>
+<h1>Snapshot builds - what is the
+difference?</h1>
+<p> An ordinary build produces
+artifacts of the form {artifact Id}-{current Version}.jar, e.g.
+astrogrid-jes-Itn04_1.jar, that is intended for release. A snapshot
+build on the other hand produces timestamped artifacts of the form
+{artifact Id}-{yyyymmdd.hhmmss}.jar, e.g.
+astrogrid-jes-20040227.001934.jar and (usually) creates a symbolic link
+{artifact Id}-SNAPSHOT.jar to it. </p>
+<p> If you include dependencies on
+SNAPSHOT jars on your POM, then they are downloaded from the remote
+repository to your local repository each time Maven is run, to ensure
+you get the latest version. </p>
+</body>
+</html>

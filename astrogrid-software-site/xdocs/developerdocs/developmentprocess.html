@@ -1,15 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
 <html>
 <head>
-  <title>AstroGrid Development
-Process</title>
+  <title>AstroGrid Development Process</title>
 </head>
 <body>
 <h1>Development and Integration
 Procedure</h1>
 <h2>Introduction</h2>
 This document describes the new development process that will be
-followed from iteration 7. It addresses the difficulties
+followed from Iteration 7. It addresses the difficulties
 experienced in previous iterations with obtaining a stable
 codebase while retaining the advantages of continuous
 integration.
@@ -24,11 +23,10 @@ versions - components will be
 developed against defined dependencies, rather than the latest
 snapshot of the code. This prevents work on one component
 adversely affecting another,</li>
-  <li>nursery build - there <span style="font-style: italic;">will</span>
-be automatic builds of the
-branched code, in order to catch problems earlier.&nbsp; These
-builds
-will produce SNAPSHOT jars, much as we do now.&nbsp; However, the
+  <li>nursery build - there will still be automatic builds of the
+development code, in order to catch problems earlier.&nbsp; These
+builds will produce SNAPSHOT jars, much as we do now, but from the
+branched code.&nbsp; However, the
 nursery build is purely for information and early warning of
 inconsistencies between components.</li>
 </ul>
@@ -95,7 +93,7 @@ dependencies shown</td>
 + WGL</td>
     </tr>
     <tr>
-      <td>New branch taken (agreed
+      <td>New branch taken (using agreed
 naming convention <a href="#1">[1]</a>)
 for assigned Work Unit, status on ImplCases Wiki
 changed to "Started" and BugZilla ticket updated <a href="#2">[2]</a></td>
@@ -110,32 +108,26 @@ branch in the nursery build<br>
       </td>
     </tr>
     <tr>
-      <td>Latest version of
-maven-base project checked out from cvs and
-installed in parallel to your project.<br>
-This contains a project.properties file defining the latest
-published AstroGrid binaries.</td>
+      <td>Latest Accepted AstroGrid binaries downloaded and installed. <a
+ href="#3">[3]</a></td>
       <td style="width: 150px;">Dev</td>
     </tr>
     <tr>
-      <td>Run maven on your
-project to download the correct dependency
-binaries <a href="#3">[3]</a></td>
+      <td><span style="text-decoration: underline;"></span><a href="#3"></a>Modify
+component as appropriate, building against Accepted AstroGrid
+dependencies.<br>
+      </td>
       <td style="width: 150px;">Dev</td>
     </tr>
     <tr>
       <td>When the Work Unit is
 implemented and local integration tests
-pass, update maven-base from cvs&nbsp; and use Maven to download
-the latest
+pass, update to
+the latest Accepted AstroGrid
 binaries (if changed) and test again until no problems found (may
 require several downloads if bug fixing takes a long time). <a
  href="#4">[4]</a><br>
-See the <a
- href="http://www.astrogrid.org/maven/docs/SNAPSHOT/integrationTests/index.html">Integration
-Test</a> pages for
-information on how to locally integration test a
-component.<br>
+      <br>
       <br>
       <div align="center">THERE
 IS NO EXCUSE FOR THIS NOT TAKING
@@ -164,9 +156,11 @@ into Head</h2>
       </td>
     </tr>
     <tr>
-      <td>Branch is merged into
+      <td><a
+ href="http://wiki.astrogrid.org/bin/view/Astrogrid/HowToFollowTheIteration7ProcessUsingMavenAndEclipseTesters">Branch
+is merged into
 HEAD, built
-and tested (acceptance is based on passing the original
+and tested</a> (acceptance is based on passing the original
 acceptance test)</td>
       <td style="width: 150px;">I&amp;R</td>
     </tr>
@@ -177,8 +171,8 @@ accepted:
         <li>Merged code is checked
 into head and tagged <a href="#5">[5]</a></li>
         <li>Project dependencies
-are updated in maven-base (all
-components)</li>
+are updated in maven-base<br>
+        </li>
         <li>New binaries are built
 and published ready for download <a href="#6">[6]</a></li>
         <li>Developers are
@@ -224,11 +218,12 @@ by keeping such builds in the nursery, HEAD is kept clear for
 acceptance testing only. Automated builds against HEAD will stop;
 HEAD will be built on demand by the I&amp;R team as new branches
 are accepted and new binaries published.
-<BR></BR>
+<br>
+<br>
 Notes:
 <ol>
-  <li><a name="1"></a> <a
- href="http://wiki.astrogrid.org/bin/view/Support/UsingCVS">http://wiki.astrogrid.org/bin/view/Support/UsingCVS</a></li>
+  <li><a name="1"></a><a href="componentabbreviations.html">{$COMPONENT}</a>_{$USER}_{$BUGZILLA-ID}
+See <a href="http://wiki.astrogrid.org/bin/view/Support/UsingCVS">http://wiki.astrogrid.org/bin/view/Support/UsingCVS</a></li>
   <li><a name="2"></a>When
 you branch, ensure that you add a
 version tag to the point in head at which you branched, otherwise
@@ -238,15 +233,10 @@ automatically when it creates a branch - if you use CVS from the
 commandline it might not.&nbsp; You will probably need to branch
 both
 your component and auto-integration.</li>
-  <li><a name="3"></a>Eclipse
-users should run "maven eclipse" to
-update the dependencies in their IDE.&nbsp; If you wish, you may
-instead work against the nursery builds - I&amp;R can supply you
-with a build.properties file to override the settings in
-maven-base.
-However, you must still do your final, pre-merge
-testing against the latest <span style="font-style: italic;">accepted</span>
-builds.</li>
+  <li><a name="3"></a> A step-by-step guide showing how to do this
+using <a
+ href="http://wiki.astrogrid.org/bin/view/Astrogrid/HowToFollowTheIteration7ProcessUsingMavenAndEclipse">Maven
+and Eclipse</a> is available.</li>
   <li><a name="4"></a>There
 is therefore an incentive to get your
 changes sent to I&amp;R for merging first!</li>

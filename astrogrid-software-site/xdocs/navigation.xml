@@ -53,7 +53,7 @@
 				<item name="Community - complete me" href=""/>
 			</item--><!--leave me for now--> 
 		</menu>
-		<menu name="Information for Users">
+		<menu name="Users and Installers">
 			<item name="Installing AstroGrid software" href="/userdocs/index.html" collapse="true">
 				<item name="Download" href="/userdocs/download.html"/>
 				<item name="Installation" href="/userdocs/install.html"/>
@@ -64,19 +64,21 @@
 				<item name="Science Cases" href="http://wiki.astrogrid.org/bin/view/Astrogrid/ScienceProblems"/>	
 			</item>
 		</menu>
-		<menu name="Information for Developers">
+		<menu name="Developers">
 			<item name="Information for Developers" href="/developerdocs/index.html" collapse="true">
-				<item name="Obtaining AstroGrid source code" href="/cvs-usage.html"/>
-                <item name="Process" href="/developerdocs/developmentprocess.html"/>
+				<item name="Obtaining source code" href="/cvs-usage.html"/>
+      			<item name="Build AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
+                <item name="Development Process" href="/developerdocs/developmentprocess.html" collapse="true">
 				<item name="Coding Standards" href="/developerdocs/standards.html"/>
+                </item>
                 <!--item name="AstroGrid architecture" href="fillmein"/-->
-				<item name="Building AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
-				<!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
+					<!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
 				<item name="How to change these docs" href="/about.html"/>
 			</item>
 			<item name="AstroGrid Maven Documentation" href="/developerdocs/maven.html" collapse="true">
 				<item name="SNAPSHOT" href="http://www.astrogrid.org/maven/docs/SNAPSHOT"/>
-				<item name="All releases and installations" href="http://www.astrogrid.org/maven/build"/>
+				<item name="HEAD" href="http://www.astrogrid.org/maven/docs/HEAD"/>                
+				<item name="All releases" href="http://www.astrogrid.org/maven/build"/>
 			</item>
 		</menu>
 		<menu name="Further Information">
