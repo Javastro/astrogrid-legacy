@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+    <classpathentry kind="src" path="src/java"/>
+    <classpathentry kind="src" output="target/test-classes" path="test/java"/>
+    <classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.jar"/>
+    <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+    <classpathentry kind="var" path="MAVEN_REPO/axis/zips/axisfull-1.1.zip"/>
+    <classpathentry kind="var" path="MAVEN_REPO/astrogrid-common/jars/astrogrid-common-SNAPSHOT.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/astrogrid-applications/jars/ApplicationControllerDelegate-SNAPSHOT.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/astrogrid-datacenter/jars/astrogrid-datacenter-client-SNAPSHOT.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/astrogrid-community/jars/authentication-client-1.0.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/astrogrid-community/jars/policy-client-1.0.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/castor/jars/castor-0.9.5.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/xml-apis/jars/xml-apis-1.0.b2.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/axis/jars/axis-1.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.2.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-20030211.213356.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/jconfig/jars/jconfig-2.1.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/jaxrpc-api/jars/jaxrpc-api-1.0.3.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/saaj/jars/saaj.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/wsdl4j/jars/wsdl4j-1.0.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/catalina-ant/jars/catalina-ant-4.1.24.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/mysql/jars/mysql-connector-java-3.0.8-stable-bin.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/junitee/jars/junitee-1.8.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/jakarta-taglibs/jars/taglibs-input-20040115.jar"/>
+    <classpathentry kind="var" path="MAVEN_REPO/hsqldb/jars/hsqldb-1.7.1.jar"/>
+    <classpathentry kind="src" path="generated/java"/>
+    <classpathentry kind="output" path="target/classes"/>
+</classpath>
