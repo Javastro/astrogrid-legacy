@@ -1662,7 +1662,7 @@ public class MySpaceActions
 //               Lookup all the entries for the user in the registry and
 //               proceed if some entries were found.
 
-                  String query = "/" + userID + "*";
+                  String query = userAcc.getBaseContainer() + "*";
 
                   Vector entries = reg.lookupDataItemRecords(query);
                   if (entries.size() > 0)

@@ -116,7 +116,7 @@ public class UserAccount
  */
 
    public String getBaseContainer()
-   {  return "/" +  userID + communityID;
+   {  return "/" +  userID + "@" + communityID;
    }
 
 //
