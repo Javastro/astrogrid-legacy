@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/07/01 09:18:27 $</cvs:author>
-    | <cvs:version>$Revision: 1.35 $</cvs:version>
+    | <cvs:author>$Date: 2003/07/03 10:44:43 $</cvs:author>
+    | <cvs:version>$Revision: 1.36 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.36  2003/07/03 10:44:43  dave
+    | Fixed obscure comment in portal.javac
+    |
     | Revision 1.35  2003/07/01 09:18:27  dave
     | Changed back to MySpace data.005
     |
@@ -1065,10 +1068,12 @@
 				<exclude name="**/services/**"/>
 				<!-- Exclude any mock service classes -->
 				<exclude name="**/mock/**"/>
-				<!-- Exclude the generated classes -->
-				<!-- DEPRECATED, causes conflicts depending on the Axis version used to generate the stubs
-				<exclude name="**/generated/**"/>
-				-->
+				<!--+
+				    | Exclude the generated classes. 
+                        | Using the generated stubd can cause conflicts depending on the Axis version used to generate them.
+                        | Now standardised on Axis 1.0, so no need to exclude them.
+				    | <exclude name="**/generated/**"/>
+				    +-->
 			</fileset>
 		</copy>
 		<!-- Create our java classes directory -->
@@ -2062,7 +2067,9 @@
 		<antcall target="cocoon.wait"/>
 		    +-->
 
-		<!-- Build our release WebApps -->
+		<!-- Build our release WebApps
+		   | This now includes the tasks to install the release versions of our war files.
+		   +-->
 		<antcall target="project.RELEASE"/>
 
 
