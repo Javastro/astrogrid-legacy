@@ -35,6 +35,13 @@
         <description>HTML interface to the jes system</description>
         <servlet-class>org.astrogrid.jes.servlet.BackdoorServlet</servlet-class>
   </servlet>
+
+  <servlet>
+          <servlet-name>init</servlet-name>
+        <description>configures and starts up the component manager.</description>
+        <servlet-class>org.astrogrid.jes.servlet.InitServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+  </servlet>
   
  <servlet-mapping>
     <servlet-name>JUnitEETestServlet</servlet-name>

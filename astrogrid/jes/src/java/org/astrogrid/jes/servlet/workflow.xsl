@@ -134,6 +134,50 @@
         </div>
 </xsl:template>
 
+<xsl:template match="wf:script" name="script">
+	<div class="step">
+		<b>Script:</b><br/>
+		<xsl:value-of select="." />
+	</div>
+</xsl:template>
+
+<xsl:template match="wf:if" name="if">
+	<div class="block"><b>If</b> <xsl:value-of select="@test" /><br />
+		<b>Then</b>
+		<div class="sequence-children">
+			<xsl:apply-templates select="./wf:then/*"/>
+		</div>
+		<b>Else</b>
+		<div class="sequence-children">
+			<xsl:apply-templates select="./wf:else/*"/>
+		</div>
+	</div>
+</xsl:template>
+
+<xsl:template match="wf:for" name="for">
+	<div class="block"><b>For</b> <xsl:value-of select="@var" /> <i>in</i> <xsl:value-of select="@range" />
+		<div class="sequence-children">
+			<xsl:apply-templates />
+		</div>		
+	</div>
+</xsl:template>
+
+<xsl:template match="wf:while" name="while">
+	<div class="block"><b>While</b> <xsl:value-of select="@test" /> 
+		<div class="sequence-children">
+			<xsl:apply-templates />
+		</div>		
+	</div>	
+</xsl:template>
+
+<xsl:template match="wf:parfor" name="parfor">
+		<div class="block"><b>ParFor</b> <xsl:value-of select="@var" /> <i>in</i> <xsl:value-of select="@range" />
+		<div class="sequence-children">
+			<xsl:apply-templates />
+		</div>		
+	</div>
+</xsl:template>
+
 <xsl:template match="wf:description">
         <div class="description"><xsl:value-of select="."/></div>
 </xsl:template>
@@ -206,6 +250,21 @@
                 <xsl:when test="@xsi:type = 'sequence'">
                         <xsl:call-template name="sequence" />
                 </xsl:when>
+                <xsl:when test="@xsi:type = 'for'">
+                        <xsl:call-template name="for" />
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'parfor'">
+                        <xsl:call-template name="parfor" />
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'while'">
+                        <xsl:call-template name="while" />
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'if'">
+                        <xsl:call-template name="if" />
+                </xsl:when>
+                <xsl:when test="@xsi:type = 'script'">
+                        <xsl:call-template name="script" />
+                </xsl:when>                                                                                
         </xsl:choose>
 </xsl:template>
 

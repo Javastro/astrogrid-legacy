@@ -1,4 +1,4 @@
-/*$Id: AbstractJobFactoryImpl.java,v 1.5 2004/07/01 11:19:05 nw Exp $
+/*$Id: AbstractJobFactoryImpl.java,v 1.6 2004/07/09 09:30:28 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.jes.impl.workflow;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
-import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
@@ -51,8 +50,7 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
     /**
      * Build a new initialized job object.
      */
-    protected Workflow buildJob(SubmitJobRequest req) throws JobException {
-        Workflow job = ((SubmitJobRequestImpl)req).getWorkflow();
+    protected Workflow buildJob(Workflow job) throws JobException {
         JobURN jobURN = generateUniqueJobURN(job);
         JobExecutionRecord exec = new JobExecutionRecord();
         exec.setJobId(jobURN);
@@ -113,6 +111,10 @@ public abstract class AbstractJobFactoryImpl implements JobFactory {
 
 /* 
 $Log: AbstractJobFactoryImpl.java,v $
+Revision 1.6  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.5  2004/07/01 11:19:05  nw
 updated interface with cea - part of cea componentization
 

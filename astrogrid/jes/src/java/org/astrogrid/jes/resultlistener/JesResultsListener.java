@@ -1,4 +1,4 @@
-/*$Id: JesResultsListener.java,v 1.2 2004/07/02 09:08:52 nw Exp $
+/*$Id: JesResultsListener.java,v 1.3 2004/07/09 09:30:28 nw Exp $
  * Created on 01-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,14 @@
 **/
 package org.astrogrid.jes.resultlistener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.component.descriptor.ComponentDescriptor;
-
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
 
@@ -93,6 +92,10 @@ public class JesResultsListener implements ResultsListener, ComponentDescriptor 
 
 /* 
 $Log: JesResultsListener.java,v $
+Revision 1.3  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/07/02 09:08:52  nw
 improved logging
 

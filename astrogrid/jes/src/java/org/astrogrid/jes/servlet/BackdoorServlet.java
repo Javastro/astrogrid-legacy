@@ -1,4 +1,4 @@
-/*$Id: BackdoorServlet.java,v 1.1 2004/04/21 10:06:21 nw Exp $
+/*$Id: BackdoorServlet.java,v 1.2 2004/07/09 09:30:28 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,8 @@
 package org.astrogrid.jes.servlet;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.component.ComponentManager;
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.JesComponentManager;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -43,7 +43,7 @@ public class BackdoorServlet extends HttpServlet {
         String action = request.getParameter("action");
         if (action.equalsIgnoreCase("locate")) {
             String toolName = request.getParameter("name");
-            ComponentManager manager = ComponentManagerFactory.getInstance();
+            JesComponentManager manager = JesComponentManagerFactory.getInstance();
             Locator locator = (Locator)manager.getContainer().getComponentInstance(Locator.class);
             if (locator == null) {
                 throw new ServletException("locator object was null");
@@ -67,6 +67,10 @@ public class BackdoorServlet extends HttpServlet {
 
 /* 
 $Log: BackdoorServlet.java,v $
+Revision 1.2  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.1  2004/04/21 10:06:21  nw
 added backdoor servlet
  

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.14 2004/07/02 09:07:58 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.15 2004/07/09 09:30:28 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -69,6 +69,13 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
    protected final URI monitorURI;
    /** endpoint of local result listener servuce - again, used as a callback */
    protected final URI resultListenerURI;
+   
+   protected JobIdentifierType createToken(Workflow job, Step js) {
+
+       String xpath = job.getXPathFor(js);
+       return        JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), xpath);
+   }
+      
    /**
     * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
     */
@@ -79,9 +86,7 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
       CommonExecutionConnectorClient appController =
          DelegateFactory.createDelegate(toolLocation);
 
-      String xpath = job.getXPathFor(js);
-      JobIdentifierType id =
-         JesUtil.createJobId(job.getJobExecutionRecord().getJobId(), xpath);
+      JobIdentifierType id = createToken(job,js);
       logger.debug(
          "Calling application controller at "
             + toolLocation
@@ -158,6 +163,10 @@ public class ApplicationControllerDispatcher implements Dispatcher, ComponentDes
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.15  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.14  2004/07/02 09:07:58  nw
 added in results listener
 

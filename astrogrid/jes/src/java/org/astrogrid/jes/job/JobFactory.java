@@ -1,4 +1,4 @@
-/*$Id: JobFactory.java,v 1.11 2004/03/15 01:31:12 nw Exp $
+/*$Id: JobFactory.java,v 1.12 2004/07/09 09:30:28 nw Exp $
  * Created on 09-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,13 +34,13 @@ public interface JobFactory {
      * @deprecated - not needed. poorly supported. don't rely on rollback functionality being there.
      */
     boolean end(boolean bCommit) throws JobException;
-    /** create a new workflow from a submission request
-     * @todo refactor away - doesn't serve any purpose any more.
-     * @param req abstract request type
-     * @return concrete workflow object
+    /** initialize a newly-received workflow document
+     *  - registers with store, assigns unique id, etc.
+     * @param req origiinal document
+     * @return initialized document (may be same objeect as req, may be copy)
      * @throws JobException
      */
-    Workflow createJob(SubmitJobRequest req) throws JobException;
+    Workflow initializeJob(Workflow req) throws JobException;
     /** retreive a job by unque id
      * 
      * @param urn unique identifier for the job
@@ -73,6 +73,10 @@ public interface JobFactory {
 }
 /* 
 $Log: JobFactory.java,v $
+Revision 1.12  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.11  2004/03/15 01:31:12  nw
 jazzed up javadoc
 

@@ -10,14 +10,14 @@
 
 package org.astrogrid.jes.delegate.v1.jobcontroller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import org.astrogrid.community.beans.v1.axis._Account;
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.WorkflowString;
 import org.astrogrid.jes.types.v1.WorkflowSummary;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
 
@@ -30,7 +30,7 @@ public class JobControllerServiceSoapBindingImpl implements org.astrogrid.jes.de
     public JobControllerServiceSoapBindingImpl() {
         JobController tmpJc = null;
         try {
-            tmpJc = ComponentManagerFactory.getInstance().getController();
+            tmpJc = JesComponentManagerFactory.getInstance().getController();
         } catch (Throwable t) {
             logger.fatal("Could not acquire job controller",t);
         }

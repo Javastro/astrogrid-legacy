@@ -1,4 +1,4 @@
-/*$Id: ResultsListenerSoapBindingImpl.java,v 1.2 2004/07/02 09:08:52 nw Exp $
+/*$Id: ResultsListenerSoapBindingImpl.java,v 1.3 2004/07/09 09:30:28 nw Exp $
  * Created on 01-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,13 +10,13 @@
 **/
 package org.astrogrid.jes.resultlistener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.astrogrid.jes.component.ComponentManagerFactory;
+import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.service.v1.cearesults.ResultsListener;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.types.v1.cea.axis.ResultListType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.rmi.RemoteException;
 
@@ -36,7 +36,7 @@ public class ResultsListenerSoapBindingImpl implements ResultsListener {
     public ResultsListenerSoapBindingImpl() {
         ResultsListener tmpListener = null;
         try {
-            tmpListener = ComponentManagerFactory.getInstance().getResultsListener();
+            tmpListener = JesComponentManagerFactory.getInstance().getResultsListener();
         } catch (Throwable t) {
             logger.fatal("Could not acquire results listener",t);
         }
@@ -54,6 +54,10 @@ public class ResultsListenerSoapBindingImpl implements ResultsListener {
 
 /* 
 $Log: ResultsListenerSoapBindingImpl.java,v $
+Revision 1.3  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.2  2004/07/02 09:08:52  nw
 improved logging
 

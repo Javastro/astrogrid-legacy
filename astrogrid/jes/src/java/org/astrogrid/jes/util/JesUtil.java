@@ -1,4 +1,4 @@
-/*$Id: JesUtil.java,v 1.6 2004/07/01 21:15:00 nw Exp $
+/*$Id: JesUtil.java,v 1.7 2004/07/09 09:30:28 nw Exp $
  * Created on 03-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -61,6 +61,7 @@ public class JesUtil {
      * @see #createJobId(org.astrogrid.workflow.beans.v1.execution.JobURN, String)
      * @param id job identifier 
      * @return xpath portion of the identifier
+     * @todo maybe rename, if scripting extension takes off - as its not an xpath any more.
      */
      public static String extractXPath(JobIdentifierType id) {
          if (id == null) {
@@ -103,6 +104,10 @@ public class JesUtil {
 
 /* 
 $Log: JesUtil.java,v $
+Revision 1.7  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.6  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 

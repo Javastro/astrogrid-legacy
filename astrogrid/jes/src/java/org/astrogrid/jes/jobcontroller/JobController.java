@@ -15,10 +15,8 @@ import org.astrogrid.community.beans.v1.axis._Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.delegate.v1.jobcontroller.JesFault;
-import org.astrogrid.jes.job.BeanFacade;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.JobFactory;
-import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.jes.jobscheduler.JobScheduler;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.WorkflowString;
@@ -28,7 +26,9 @@ import org.astrogrid.workflow.beans.v1.Workflow;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.xml.CastorException;
 
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,13 +53,13 @@ import junit.framework.Test;
  */
 public class JobController implements org.astrogrid.jes.delegate.v1.jobcontroller.JobController, ComponentDescriptor{
     
-    public JobController(BeanFacade facade,JobScheduler nudger) {
-        assert facade != null;
+    public JobController(JobFactory factory,JobScheduler nudger) {
+        assert factory != null;
         assert nudger != null;
-        this.facade = facade;
+        this.factory = factory;
         this.nudger = nudger;
     }
-    protected final BeanFacade facade;
+    protected final JobFactory factory;
     protected final JobScheduler nudger;
 
 	private static final Log
@@ -72,31 +72,25 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
     public JobURN submitWorkflow(WorkflowString workflowXML) throws JesFault{
         logger.debug("in submit workflow");
         try {
-            SubmitJobRequest req = facade.createSubmitJobRequest(workflowXML.getValue());
+            Workflow req = Workflow.unmarshalWorkflow(new StringReader(workflowXML.getValue()));
             return this.submitJob(req);
-        }  catch (JesException e) {
+        }  catch (CastorException e) {
             throw createFault("Could not submit job",e);
         }
     }
 	
 /** 
  * Submit a job to the execution service
- * @todo remove this extra method - merge with submitWorkflow(String); 
  * @param req abstract request object
  * @return unique identifier for the new job.
  * @throws JesFault
  */    
-    public JobURN submitJob( SubmitJobRequest req ) throws JesFault {
+    public JobURN submitJob( Workflow req ) throws JesFault {
         logger.debug("Submit Job");
-		JobFactory factory = null ;
-        Workflow job= null;
-			
+        Workflow job= null;	
         try { 
-	        factory = facade.getJobFactory() ;
-	        factory.begin() ;
-	        job = factory.createJob( req) ;
-            nudger.scheduleNewJob(JesUtil.castor2axis(job.getJobExecutionRecord().getJobId()));                    		
-			factory.end ( true ) ;   // Commit and cleanup                    		
+	        job = factory.initializeJob( req) ;
+            nudger.scheduleNewJob(JesUtil.castor2axis(job.getJobExecutionRecord().getJobId()));   
             JobURN result = new JobURN(job.getJobExecutionRecord().getJobId().getContent());
             logger.debug("Submit Job: new URN = " + result.toString());
             return result;
@@ -169,8 +163,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
     public WorkflowSummary[] readJobList(_Account arg0) throws JesFault {
         try {
         logger.debug("in read job list");
-        JobFactory fac = facade.getJobFactory();
-        Iterator i = fac.findUserJobs(Axis2Castor.convert(arg0));
+        Iterator i = factory.findUserJobs(Axis2Castor.convert(arg0));
         List itemList = new ArrayList();
         while (i.hasNext()) {
             Workflow w = (Workflow)i.next();
@@ -202,7 +195,7 @@ public class JobController implements org.astrogrid.jes.delegate.v1.jobcontrolle
     public WorkflowString readJob(JobURN arg0) throws JesFault {
         try {
             logger.debug("in readJob()");
-        JobFactory fac = facade.getJobFactory();
+        JobFactory fac = factory;
         Workflow w = fac.findJob(Axis2Castor.convert(arg0));
         if ( w == null) {
             logger.error("Factory  returned null workflow");

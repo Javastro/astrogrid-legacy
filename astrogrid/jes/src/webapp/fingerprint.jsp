@@ -2,7 +2,7 @@
 				 java.net.*,
                  java.util.*,
 				 org.astrogrid.config.*,
-				 org.astrogrid.jes.component.ComponentManagerFactory"
+				 org.astrogrid.jes.component.JesComponentManagerFactory"
     session="false" %>
 <html>
 <head>
@@ -179,7 +179,7 @@
 
 <h2>Jes Components</h2>
 
-<%= ComponentManagerFactory.getInstance().informationHTML() %>
+<%= JesComponentManagerFactory.getInstance().informationHTML() %>
 
 <h2>Jes Configuration</h2>
 

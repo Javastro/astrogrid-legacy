@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.8 2004/07/01 21:15:00 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.9 2004/07/09 09:30:28 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.job.JobException;
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.jes.job.SubmitJobRequest;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.execution.JobURN;
 
@@ -88,7 +87,7 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
     /**
      * @see org.astrogrid.jes.job.JobFactory#createJob(org.astrogrid.jes.job.SubmitJobRequest)
      */
-    public Workflow createJob(SubmitJobRequest req) throws JobException {
+    public Workflow initializeJob(Workflow req) throws JobException {
             Workflow j = buildJob(req);
             try {
                 File outFile = mkOutputFile(j);
@@ -240,6 +239,10 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.9  2004/07/09 09:30:28  nw
+merged in scripting workflow interpreter from branch
+nww-x-workflow-extensions
+
 Revision 1.8  2004/07/01 21:15:00  nw
 added results-listener interface to jes
 
