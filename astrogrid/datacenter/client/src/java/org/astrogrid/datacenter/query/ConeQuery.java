@@ -1,5 +1,5 @@
 /*
- * $Id: ConeQuery.java,v 1.1 2004/03/12 20:00:11 mch Exp $
+ * $Id: ConeQuery.java,v 1.2 2004/03/12 23:58:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,14 +13,12 @@ package org.astrogrid.datacenter.query;
  * @author M Hill
  */
 
-public class ConeQuery implements RegionQuery {
+public class ConeQuery implements Query {
    
    private double ra;
    private double dec;
    private double radius;
 
-   private QuadQuery quadQuery = null;
-   
    /** Constructs query from given values in decimal degrees.
     */
    public ConeQuery(double givenRa, double givenDec, double givenRadius) {
@@ -29,17 +27,6 @@ public class ConeQuery implements RegionQuery {
       this.radius = givenRadius;
    }
 
-   /** a special case - 'rectangular' queries are likely to be much
-    * faster than cones, polys etc, so first passes might extract a
-    * quad query first.
-    */
-   public QuadQuery toQuadRegionQuery() {
-      if (quadQuery == null) {
-         quadQuery = new QuadQuery(ra-radius, dec-radius, ra+radius, dec+radius);
-      }
-      return quadQuery;
-   }
-   
    public double getRa()     { return ra; }
    public double getDec()    { return dec; }
    public double getRadius() { return radius; }
@@ -59,6 +46,9 @@ public class ConeQuery implements RegionQuery {
 }
 /*
  $Log: ConeQuery.java,v $
+ Revision 1.2  2004/03/12 23:58:03  mch
+ It05 Refactor (Client)
+
  Revision 1.1  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 

@@ -1,11 +1,10 @@
 /*
- * $Id: AdqlQuery.java,v 1.1 2004/03/12 20:00:11 mch Exp $
+ * $Id: AdqlQuery.java,v 1.2 2004/03/12 23:58:03 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.datacenter.query;
-import org.astrogrid.datacenter.queriers.query.*;
 
 
 /**
@@ -79,6 +78,9 @@ public class AdqlQuery implements Query {
 }
 /*
  $Log: AdqlQuery.java,v $
+ Revision 1.2  2004/03/12 23:58:03  mch
+ It05 Refactor (Client)
+
  Revision 1.1  2004/03/12 20:00:11  mch
  It05 Refactor (Client)
 
