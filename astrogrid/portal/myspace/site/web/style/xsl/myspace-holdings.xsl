@@ -34,6 +34,8 @@
           <input id="myspace-clipboard" name="myspace-clipboard" type="hidden"/>
           <input id="myspace-clipboard-url" name="myspace-clipboard-url" type="hidden"/>
           <input id="myspace-clipboard-copy" name="myspace-clipboard-copy" type="hidden"/>
+          <input name="myspace-src" id="myspace-src" type="hidden"/>
+          <input name="myspace-dest" id="myspace-dest" type="hidden"/>
 <!--
           <div id="myspace-tools">
             <div id="myspace-tools-header">
@@ -56,9 +58,10 @@
               <tr>
                 <td colspan="3"><hr class="agbar"/></td>
               </tr>
+<!--
               <tr>
                 <td>Source:</td>
-                <td style="width:100%"><input name="myspace-src" id="myspace-src" type="text" readonly="true" style="width:100%;border-style:none;"/></td>
+                <td style="width:100%"></td>
                 <td>&#160;</td>
               </tr>
               <tr>
@@ -66,6 +69,7 @@
                 <td style="width:100%"><input name="myspace-dest" id="myspace-dest" type="text" style="width:100%"/></td>
                 <td>&#160;</td>
               </tr>
+-->
               <tr>
                 <td>Upload File:</td>
                 <td style="width:100%"><input name="myspace-file" id="myspace-file" type="file" style="width:100%"/></td>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <body>
+    <div class="ag-error-messages">
+      Errors:
+      
+      <div class="ag-error-message">
+      Error:<br/><br/>
+      field: field01
+      anchor: anc01
+      message: A horse is a horse, Of course, of course, And nobody talks to a horse, Of course...</div>
+      <div class="ag-error-message">
+      Error:<br/><br/>
+      field: field02
+      anchor: 
+      message: A horse is a horse, Of course, of course, And nobody talks to a horse, Of course...</div>
+      <div class="ag-error-message">
+      Error:<br/><br/>
+      field: 
+      anchor: 
+      message: A horse is a horse, Of course, of course, And nobody talks to a horse, Of course...</div>
+    </div>
+  </body>
+</html>

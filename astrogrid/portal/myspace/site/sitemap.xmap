@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.13 2004/06/30 14:31:48 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.14 2004/08/20 15:03:11 gps Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -434,7 +434,15 @@
         </map:act>
       </map:match>
 -->
-      
+
+<!--
+      <map:match pattern="error.xml">
+        <map:generate type="file" src="web/static/error.xml"/>
+        <map:transform src="cocoon:/error.xsl"/>
+        <map:serialize type="xml"/>
+      </map:match>
+-->
+
       <map:match pattern="*.xml">
         <map:generate type="file" src="web/static/{1}.xml"/>
         <map:transform src="cocoon://xml2html.xsl"/>

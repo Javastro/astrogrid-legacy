@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <link href="error.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+    <ag-errors>
+      <ag-error field="field01" anchor="anc01">
+        <ag-message>
+          <![CDATA[
+            A horse is a horse,
+            Of course, of course,
+            And nobody talks to a horse,
+            Of course...
+          ]]>
+        </ag-message>
+      </ag-error>
+      <ag-error field="field02">
+        <ag-message>
+          <![CDATA[
+            A horse is a horse,
+            Of course, of course,
+            And nobody talks to a horse,
+            Of course...
+          ]]>
+        </ag-message>
+      </ag-error>
+      <ag-error>
+        <ag-message>
+          <![CDATA[
+            A horse is a horse,
+            Of course, of course,
+            And nobody talks to a horse,
+            Of course...
+          ]]>
+        </ag-message>
+      </ag-error>
+    </ag-errors>
+    
+    <p>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+      Some bumph to fill space<br/>
+    </p>
+    
+    <p>
+      <a name="anc01"><input name="field01" type="text" value="01"/><br/></a>
+      <a name="anc02"><input name="field03" type="text" value="02"/><br/></a>
+      <a name="anc03"><input name="field03" type="text" value="03"/><br/></a>
+    </p>
+  </body>
+</html>

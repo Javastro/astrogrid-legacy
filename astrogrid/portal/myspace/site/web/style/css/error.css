@@ -1,0 +1,30 @@
+.-error
+{
+  background-color:  yellow;
+  color:  red;
+}
+
+div.ag-errors
+{
+  background-color:  lightblue;
+  margin-left:  10px;
+  margin-bottom:  20px;
+}
+
+div.ag-error
+{
+  margin-left:  20px;
+  margin-bottom:  10px;
+}
+
+span.ag-errors-heading
+{
+  background-color:  yellow;
+  color:  red;
+}
+
+span.ag-error-heading
+{
+  background-color:  red;
+  color:  yellow;
+}
