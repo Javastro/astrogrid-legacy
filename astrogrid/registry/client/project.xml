@@ -199,6 +199,13 @@
         </dependency>
         
         <dependency>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+        </dependency>
+        
+        
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
             <version>SNAPSHOT</version>

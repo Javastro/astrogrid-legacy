@@ -94,6 +94,16 @@
         </dependency>
         
         <dependency>
+            <artifactId>astrogrid-workflow-objects</artifactId>
+            <groupId>org.astrogrid</groupId>
+            <version>SNAPSHOT</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        
+        <dependency>
             <groupId>org.astrogrid</groupId>
             <artifactId>astrogrid-common</artifactId>
             <version>SNAPSHOT</version>
