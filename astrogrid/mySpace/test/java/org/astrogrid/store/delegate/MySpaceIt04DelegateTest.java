@@ -1,4 +1,4 @@
-/*$Id: MySpaceIt04DelegateTest.java,v 1.1 2004/03/16 00:01:53 mch Exp $
+/*$Id: MySpaceIt04DelegateTest.java,v 1.2 2004/03/22 19:34:57 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,7 +90,7 @@ public class MySpaceIt04DelegateTest extends StoreClientTestHelper {
       }
       catch (StoreException se) {} //ignore if can't delete
       
-      OutputStream out = client.putStream(path+STREAMFILE);
+      OutputStream out = client.putStream(path+STREAMFILE, false);
       for (int i=0;i<900;i++) {
          out.write( new String("This is an automatic streaming test "+i+"\n").getBytes());
       }
@@ -134,6 +134,9 @@ public class MySpaceIt04DelegateTest extends StoreClientTestHelper {
 
 /*
 $Log: MySpaceIt04DelegateTest.java,v $
+Revision 1.2  2004/03/22 19:34:57  mch
+added append flag to putstream (again!)
+
 Revision 1.1  2004/03/16 00:01:53  mch
 Streaming is now a series of PutStrings
 
