@@ -112,6 +112,6 @@ public class DatabaseConfigurationBeanTest extends TestCase {
 		db.setHost("http://localhost:8080");
 		db.setFolderName("mySpaceConfig");
 		db.setTomcatRoot("/home/tomcat");
-		assertEquals("/home/tomcat/webapps/mySpaceConfig/", db.getDirectory());
+		assertEquals("/home/tomcat/webapps/ROOT/mySpaceConfig/", db.getDirectory());
 	}
 }
