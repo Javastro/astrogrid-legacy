@@ -81,6 +81,45 @@ public class RegistryServerHelper {
       }
       return ident;
    }
+   
+   public static String getXQLDeclarations(String versionNumber) {
+       versionNumber = versionNumber.replace('.','_');
+       String declarations = conf.getString("declare.namespace." + versionNumber,"");
+       System.out.println("the getXQLDeclarations = " + declarations);
+       return declarations;
+   }
+   
+   public static String getRegistryVersionFromNode(Node nd) {
+       if(Node.ELEMENT_NODE != nd.getNodeType()) {
+           log.info("not a ELEMENT NODE TIME TO JUST DEFAULT IT");
+           return conf.getString("org.astrogrid.registry.version",null);
+       }
+       
+       String version = nd.getNamespaceURI();       
+       if(version != null && version.trim().length() > 0 &&
+          version.startsWith("http://www.ivoa.net/xml/VOResource")) {
+           return version.substring(version.lastIndexOf("v")+1);
+       }
+       //darn did not find a namespace uri that was VOResource.
+       version = DomHelper.getNodeAttrValue((Element)nd,"vr","xmlns");
+       if(version != null && version.trim().length() > 0) {
+           return version.substring(version.lastIndexOf("v")+1);
+       }
+       //darn no vr namespace defined either.
+       version = DomHelper.getNodeAttrValue((Element)nd,"xmlns");
+       if(version != null && version.trim().length() > 0 &&
+          version.startsWith("http://www.ivoa.net/xml/VOResource")) {
+           return version.substring(version.lastIndexOf("v")+1);
+       }
+       //darn no default namespace either, okay it must be on the parent one
+       Node parentNode = nd.getParentNode();
+       if(parentNode != null) {
+           return getRegistryVersionFromNode(parentNode);
+       }
+       //log.error("Could not find a Registry version number on the nodes BAD MEANS NO NAMESPACE DEFINED," +
+       //          " defaulting to config.");
+       return conf.getString("org.astrogrid.registry.version",null);
+   }
          
    /**
     * 
@@ -100,7 +139,8 @@ public class RegistryServerHelper {
          regEntry = null;   
       }
       if(regEntry != null) {         
-         NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
+         //NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
+          NodeList nl = regEntry.getElementsByTagNameNS("*","ManagedAuthority");
 
          if(nl.getLength() > 0) {
             statusMessage += "Authorities owned by this Registry: |";
@@ -166,12 +206,13 @@ public class RegistryServerHelper {
       QueryDBService qdb = new QueryDBService();
       String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
       String collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
-      String xqlQuery = "for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID != '" +
+      String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + " for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID != '" +
                          regAuthID +"' return $x";
       regEntry = qdb.runQuery(collectionName,xqlQuery);
       
       if(regEntry != null) {
-         NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
+         //NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
+          NodeList nl = regEntry.getElementsByTagNameNS("*","ManagedAuthority");
 
          //log.info("the nodelist size for getting manageauthority2 = " + 
          //         nl2.getLength());
@@ -211,7 +252,7 @@ public class RegistryServerHelper {
       String regAuthID = conf.getString("org.astrogrid.registry.authorityid");
       String collectionName = "astrogridv" + conf.getString("org.astrogrid.registry.version");
       
-      String xqlQuery = "for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID = '" +
+      String xqlQuery = RegistryServerHelper.getXQLDeclarations(versionNumber) + " for $x in //vr:Resource where @xsi:type='RegistryType' and vr:Identifier/vr:AuthorityID = '" +
                          regAuthID +"' return $x";
       regEntry = qdb.runQuery(collectionName,xqlQuery);
 
@@ -222,7 +263,8 @@ public class RegistryServerHelper {
          // anyways with the new db.
          //NodeList nl =  regEntry.getElementsByTagNameNS("*",
          //                                               "ManagedAuthority" );
-         NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");         
+         //NodeList nl = DomHelper.getNodeListTags(regEntry,"ManagedAuthority","vg");
+         NodeList nl = regEntry.getElementsByTagNameNS("*","ManagedAuthority");         
 
          //log.info("the nodelist size for getting manageauthority2 = " + 
          //         nl2.getLength());
