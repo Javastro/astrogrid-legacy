@@ -3,10 +3,14 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/project.xml,v $</cvs:source>
     | <cvs:author>$Author: jdt $</cvs:author>
-    | <cvs:date>$Date: 2004/11/04 18:00:02 $</cvs:date>
-    | <cvs:version>$Revision: 1.13 $</cvs:version>
+    | <cvs:date>$Date: 2004/11/05 18:19:37 $</cvs:date>
+    | <cvs:version>$Revision: 1.14 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.14  2004/11/05 18:19:37  jdt
+    |   Restored the <report> tags - these are needed to override those in maven-base, and prevent the root project
+    |   trying to generate reports for checkstyle etc, which are inappropriate.
+    |
     |   Revision 1.13  2004/11/04 18:00:02  jdt
     |   Restored following fixes to auto-integration
     |   Merged in Reg_KMB_546 and Reg_KMB_603 and Comm_KMB_583
@@ -72,13 +76,11 @@
         </developerConnection>
     </repository>
     
-	<!--
     <reports>
         <report> maven-changelog-plugin </report>
         <report> maven-developer-activity-plugin </report>
         <report> maven-file-activity-plugin </report>
         <report> maven-linkcheck-plugin </report>
     </reports>
-    -->
 
 </project>
