@@ -40,7 +40,7 @@
             <tr>
                <td style="color: blue; background-color: lightblue; text-align: center;">Name</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Description</td>
-               <td style="color: blue; background-color: lightblue; text-align: center;">Time</td>
+               <td style="color: blue; background-color: lightblue; text-align: center;">Time submitted</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Status</td>
                <td style="color: blue; background-color: lightblue; text-align: center;">Job ID</td> 
             </tr>
@@ -50,7 +50,14 @@
                   <td><xsl:value-of select="@description"/></td>
                   <td><xsl:value-of select="@time"/></td>
                   <td><xsl:value-of select="@status"/></td>
-                  <td><xsl:value-of select="@jobid"/></td>               
+                  <td>
+                     <xsl:element name="a">
+                        <xsl:attribute name="href">/astrogrid-portal/main/mount/workflow/agjobmanager-job-status.html?action=read-job&amp;jobURN=<xsl:value-of select="@jobid"/></xsl:attribute>
+                     </xsl:element>
+                     <xsl:value-of select="@jobid"/>
+                     <xsl:element name="/a">
+                     </xsl:element>                                                                 
+                  </td>                  
                </tr>
             </xsl:for-each>
          </table>                                                                                                                
