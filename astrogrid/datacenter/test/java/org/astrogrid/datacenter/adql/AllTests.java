@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.3 2003/09/02 14:41:15 nw Exp $
+/*$Id: AllTests.java,v 1.4 2003/09/03 14:45:59 nw Exp $
  * Created on 28-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,7 +30,7 @@ public class AllTests {
         suite.addTest(new TestSuite(MarshallingTest.class));
         suite.addTest(new TestSuite(ExamplesTest.class));
         suite.addTest(new TestSuite(VisitorTest.class));
-        suite.addTest(new TestSuite(MySQLQueryTranslatorTest.class));
+        suite.addTest(new TestSuite(SqlQueryTranslatorTest.class));
         //$JUnit-END$
         return suite;
     }
@@ -39,6 +39,9 @@ public class AllTests {
 
 /* 
 $Log: AllTests.java,v $
+Revision 1.4  2003/09/03 14:45:59  nw
+renamed test to match renamed class
+
 Revision 1.3  2003/09/02 14:41:15  nw
 added tests for ADQL parser
 

@@ -1,4 +1,4 @@
-/*$Id: MySQLQueryTranslatorTest.java,v 1.1 2003/09/02 14:41:15 nw Exp $
+/*$Id: SqlQueryTranslatorTest.java,v 1.1 2003/09/03 14:45:59 nw Exp $
  * Created on 29-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,26 +11,26 @@
 package org.astrogrid.datacenter.adql;
 import java.io.*;
 
-import org.apache.commons.lang.StringUtils;
 import org.astrogrid.datacenter.adql.generated.*;
-import org.astrogrid.datacenter.queriers.mysql.MySqlQueryTranslator;
+import org.astrogrid.datacenter.queriers.QueryTranslator;
+import org.astrogrid.datacenter.queriers.sql.SqlQueryTranslator;
 import java.util.Properties;
 /** test the query translator - maybe n the wrong package, but convenient to have it here for now.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Aug-2003
  * * @todo add wider range of tests.
  */
-public class MySQLQueryTranslatorTest extends ExamplesTest {
+public class SqlQueryTranslatorTest extends ExamplesTest {
 
     /**
      * Constructor for MySQLVisitorTest.
      * @param arg0
      */
-    public MySQLQueryTranslatorTest(String arg0) {
+    public SqlQueryTranslatorTest(String arg0) {
         super(arg0);
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(MySQLQueryTranslatorTest.class);
+        junit.textui.TestRunner.run(SqlQueryTranslatorTest.class);
     }
 
     protected void processFile(String path) throws Exception {
@@ -46,7 +46,7 @@ public class MySQLQueryTranslatorTest extends ExamplesTest {
           results.load(propsStream);
           assertFalse(results.isEmpty());
             try {
-            MySqlQueryTranslator visitor = new MySqlQueryTranslator();
+            QueryTranslator visitor = new SqlQueryTranslator();
             String sql = visitor.translate(query);
             assertNotNull(sql);
              System.out.println(sql);
@@ -66,7 +66,10 @@ public class MySQLQueryTranslatorTest extends ExamplesTest {
 
 
 /* 
-$Log: MySQLQueryTranslatorTest.java,v $
+$Log: SqlQueryTranslatorTest.java,v $
+Revision 1.1  2003/09/03 14:45:59  nw
+renamed test to match renamed class
+
 Revision 1.1  2003/09/02 14:41:15  nw
 added tests for ADQL parser
  
