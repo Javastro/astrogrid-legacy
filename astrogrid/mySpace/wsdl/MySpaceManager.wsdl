@@ -1,57 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions targetNamespace="mySpace:MySpaceManager" xmlns:impl="mySpace:MySpaceManager" xmlns:intf="mySpace:MySpaceManager" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions targetNamespace="http://mySpaceManager.mySpace.astrogrid.org" xmlns:impl="http://mySpaceManager.mySpace.astrogrid.org" xmlns:intf="http://mySpaceManager.mySpace.astrogrid.org" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/">
 
-   <wsdl:message name="upLoadResponse">
+   <wsdl:message name="changeOwnerRequest">
 
-      <wsdl:part name="upLoadReturn" type="xsd:string"/>
+      <wsdl:part name="oldID" type="xsd:string"/>
 
-   </wsdl:message>
-
-   <wsdl:message name="lookupDataHoldersDetailsResponse">
-
-      <wsdl:part name="lookupDataHoldersDetailsReturn" type="xsd:string"/>
+      <wsdl:part name="newID" type="xsd:string"/>
 
    </wsdl:message>
 
-   <wsdl:message name="deleteDataHolderRequest">
+   <wsdl:message name="importDataHolderResponse">
 
-      <wsdl:part name="jobDetails" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="copyDataHolderResponse">
-
-      <wsdl:part name="copyDataHolderReturn" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="deleteDataHolderResponse">
-
-      <wsdl:part name="deleteDataHolderReturn" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="createContainerResponse">
-
-      <wsdl:part name="createContainerReturn" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="exportDataHolderRequest">
-
-      <wsdl:part name="jobDetails" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="exportDataHolderResponse">
-
-      <wsdl:part name="exportDataHolderReturn" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="lookupDataHolderDetailsRequest">
-
-      <wsdl:part name="jobDetails" type="xsd:string"/>
+      <wsdl:part name="importDataHolderReturn" type="xsd:string"/>
 
    </wsdl:message>
 
@@ -61,13 +21,7 @@
 
    </wsdl:message>
 
-   <wsdl:message name="moveDataHolderResponse">
-
-      <wsdl:part name="moveDataHolderReturn" type="xsd:string"/>
-
-   </wsdl:message>
-
-   <wsdl:message name="moveDataHolderRequest">
+   <wsdl:message name="exportDataHolderRequest">
 
       <wsdl:part name="jobDetails" type="xsd:string"/>
 
@@ -79,13 +33,133 @@
 
    </wsdl:message>
 
+   <wsdl:message name="importDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishResponse">
+
+      <wsdl:part name="publishReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="structureMySpaceResponse">
+
+      <wsdl:part name="structureMySpaceReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDataHolderRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="publishRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserResponse">
+
+      <wsdl:part name="deleteUserReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="createUserResponse">
+
+      <wsdl:part name="createUserReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="exportDataHolderResponse">
+
+      <wsdl:part name="exportDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="extendLeaseRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="lookupDataHolderDetailsRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="moveDataHolderResponse">
+
+      <wsdl:part name="moveDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteDataHolderResponse">
+
+      <wsdl:part name="deleteDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="lookupDataHoldersDetailsResponse">
+
+      <wsdl:part name="lookupDataHoldersDetailsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="upLoadRequest">
 
       <wsdl:part name="jobDetails" type="xsd:string"/>
 
    </wsdl:message>
 
+   <wsdl:message name="createUserRequest">
+
+      <wsdl:part name="userID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="upLoadResponse">
+
+      <wsdl:part name="upLoadReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:message name="createContainerRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="copyDataHolderResponse">
+
+      <wsdl:part name="copyDataHolderReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="extendLeaseResponse">
+
+      <wsdl:part name="extendLeaseReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="structureMySpaceRequest">
+
+      <wsdl:part name="jobDetails" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteUserRequest">
+
+      <wsdl:part name="userID" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="moveDataHolderRequest">
 
       <wsdl:part name="jobDetails" type="xsd:string"/>
 
@@ -97,13 +171,41 @@
 
    </wsdl:message>
 
+   <wsdl:message name="createContainerResponse">
+
+      <wsdl:part name="createContainerReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="changeOwnerResponse">
+
+      <wsdl:part name="changeOwnerReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
    <wsdl:portType name="MySpaceManager">
+
+      <wsdl:operation name="publish" parameterOrder="jobDetails">
+
+         <wsdl:input name="publishRequest" message="impl:publishRequest"/>
+
+         <wsdl:output name="publishResponse" message="impl:publishResponse"/>
+
+      </wsdl:operation>
 
       <wsdl:operation name="upLoad" parameterOrder="jobDetails">
 
          <wsdl:input name="upLoadRequest" message="impl:upLoadRequest"/>
 
          <wsdl:output name="upLoadResponse" message="impl:upLoadResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="importDataHolder" parameterOrder="jobDetails">
+
+         <wsdl:input name="importDataHolderRequest" message="impl:importDataHolderRequest"/>
+
+         <wsdl:output name="importDataHolderResponse" message="impl:importDataHolderResponse"/>
 
       </wsdl:operation>
 
@@ -163,11 +265,69 @@
 
       </wsdl:operation>
 
+      <wsdl:operation name="structureMySpace" parameterOrder="jobDetails">
+
+         <wsdl:input name="structureMySpaceRequest" message="impl:structureMySpaceRequest"/>
+
+         <wsdl:output name="structureMySpaceResponse" message="impl:structureMySpaceResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="extendLease" parameterOrder="jobDetails">
+
+         <wsdl:input name="extendLeaseRequest" message="impl:extendLeaseRequest"/>
+
+         <wsdl:output name="extendLeaseResponse" message="impl:extendLeaseResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser" parameterOrder="userID">
+
+         <wsdl:input name="createUserRequest" message="impl:createUserRequest"/>
+
+         <wsdl:output name="createUserResponse" message="impl:createUserResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUser" parameterOrder="userID">
+
+         <wsdl:input name="deleteUserRequest" message="impl:deleteUserRequest"/>
+
+         <wsdl:output name="deleteUserResponse" message="impl:deleteUserResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="changeOwner" parameterOrder="oldID newID">
+
+         <wsdl:input name="changeOwnerRequest" message="impl:changeOwnerRequest"/>
+
+         <wsdl:output name="changeOwnerResponse" message="impl:changeOwnerResponse"/>
+
+      </wsdl:operation>
+
    </wsdl:portType>
 
    <wsdl:binding name="MySpaceManagerSoapBinding" type="impl:MySpaceManager">
 
       <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="publish">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="publishRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="publishResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
 
       <wsdl:operation name="upLoad">
 
@@ -175,13 +335,31 @@
 
          <wsdl:input name="upLoadRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="upLoadResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="importDataHolder">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="importDataHolderRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="importDataHolderResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -193,13 +371,13 @@
 
          <wsdl:input name="lookupDataHolderDetailsRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="lookupDataHolderDetailsResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -211,13 +389,13 @@
 
          <wsdl:input name="lookupDataHoldersDetailsRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="lookupDataHoldersDetailsResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -229,13 +407,13 @@
 
          <wsdl:input name="copyDataHolderRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="copyDataHolderResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -247,13 +425,13 @@
 
          <wsdl:input name="moveDataHolderRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="moveDataHolderResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -265,13 +443,13 @@
 
          <wsdl:input name="exportDataHolderRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="exportDataHolderResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -283,13 +461,13 @@
 
          <wsdl:input name="createContainerRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="createContainerResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -301,13 +479,103 @@
 
          <wsdl:input name="deleteDataHolderRequest">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:input>
 
          <wsdl:output name="deleteDataHolderResponse">
 
-            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="mySpace:MySpaceManager"/>
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="structureMySpace">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="structureMySpaceRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="structureMySpaceResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="extendLease">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="extendLeaseRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="extendLeaseResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="createUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="createUserRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="createUserResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteUser">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteUserRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteUserResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="changeOwner">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="changeOwnerRequest">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="changeOwnerResponse">
+
+            <wsdlsoap:body use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://mySpaceManager.mySpace.astrogrid.org"/>
 
          </wsdl:output>
 
@@ -319,7 +587,7 @@
 
       <wsdl:port name="MySpaceManager" binding="impl:MySpaceManagerSoapBinding">
 
-         <wsdlsoap:address location="http://143.210.36.131:8080/axis/services/MySpaceManager"/>
+         <wsdlsoap:address location="http://localhost:8080/axis/MySpaceManager"/>
 
       </wsdl:port>
 
