@@ -5,46 +5,49 @@
 	xmlns:ceat="http://www.astrogrid.org/schema/CEATypes/v1"
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xsd:import namespace="http://www.astrogrid.org/schema/CEATypes/v1" schemaLocation="CEATypes.xsd"/>
+	
 		<xsd:element name="job-execution-record">
 			<xsd:annotation>
 				<xsd:documentation>A record of a single execution of a job</xsd:documentation>
 			</xsd:annotation>
 			<xsd:complexType>
-				<xsd:sequence>
-					<xsd:element name="jobId" type="er:jobURN" minOccurs="1" maxOccurs="1"/>
-					<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded" />
-				</xsd:sequence>				
-				<xsd:attributeGroup ref="er:record-attr"/>
+				<xsd:complexContent>
+					<xsd:extension base="er:execution-record-type">
+						<xsd:sequence>
+								<xsd:element name="jobId" type="er:jobURN" minOccurs="1" maxOccurs="1"/>
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
 			</xsd:complexType>
 		</xsd:element>
+  			
+		<xsd:element name="step-execution-record">
+				<xsd:annotation>
+					<xsd:documentation>A record of a single execution of a job step</xsd:documentation>
+				</xsd:annotation>
+				<xsd:complexType>
+					<xsd:complexContent>
+						<xsd:extension base="er:execution-record-type" />
+					</xsd:complexContent>
+				</xsd:complexType>
+		</xsd:element>
+		
+
+		<xsd:complexType  name="execution-record-type">
+			<xsd:sequence>
+				<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="startTime" type="xsd:dateTime" use="optional"/>
+			<xsd:attribute name="finishTime" type="xsd:dateTime" use="optional"/>
+			<xsd:attribute name="status" type="ceat:execution-phase" use="optional" default="UNKNOWN"/>	
+		</xsd:complexType>		
 
 	<!-- defined as a complex type to get castor to produce a new bean for us. -->
 	<xsd:complexType name="jobURN">
 		<xsd:simpleContent>
 			<xsd:extension base="xsd:anyURI" />
 		</xsd:simpleContent>
-	</xsd:complexType>     
-			
-		<xsd:element name="step-execution-record">
-				<xsd:annotation>
-					<xsd:documentation>A record of a single execution of a job step</xsd:documentation>
-				</xsd:annotation>
-				<xsd:complexType>
-					<xsd:sequence>
-						<xsd:element ref="ceat:message" minOccurs="0" maxOccurs="unbounded"/>
-					</xsd:sequence>
-					<xsd:attributeGroup ref="er:record-attr" />
-			</xsd:complexType>
-		</xsd:element>
-		
-
-
-<!-- types and groups -->
-		<xsd:attributeGroup name="record-attr">
-			<xsd:attribute name="startTime" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="finishTime" type="xsd:dateTime" use="optional"/>
-			<xsd:attribute name="status" type="ceat:execution-phase" use="optional" default="UNKNOWN"/>				
-		</xsd:attributeGroup>
+	</xsd:complexType>
 		
 
 </xsd:schema>
