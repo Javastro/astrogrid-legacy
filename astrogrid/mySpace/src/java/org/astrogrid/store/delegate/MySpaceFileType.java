@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFileType.java,v 1.1 2004/02/24 15:59:56 mch Exp $
+ * $Id: MySpaceFileType.java,v 1.2 2004/03/01 22:50:08 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,8 +24,8 @@ public class MySpaceFileType extends TypeSafeEnumerator
 {
    private static Hashtable holdingIdx = new Hashtable();
    
-   public static MySpaceFileType FOLDER = new MySpaceFileType("1", "Folder");
-   public static MySpaceFileType WORKFLOW = new MySpaceFileType("0", "Workflow");
+   public static final MySpaceFileType FOLDER = new MySpaceFileType("1", "Folder");
+   public static final MySpaceFileType WORKFLOW = new MySpaceFileType("0", "Workflow");
 // public static MySpaceFileType QUERY = new MySpaceFileType("1", "Query");
 // public static MySpaceFileType VOTABLE = new MySpaceFileType("2", "Votable");
    
@@ -44,6 +44,9 @@ public class MySpaceFileType extends TypeSafeEnumerator
 
 /*
 $Log: MySpaceFileType.java,v $
+Revision 1.2  2004/03/01 22:50:08  mch
+added finals, oops
+
 Revision 1.1  2004/02/24 15:59:56  mch
 Moved It04.1 Datacenter VoSpaceClient stuff to myspace as StoreClient stuff
 
