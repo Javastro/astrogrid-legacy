@@ -1,11 +1,14 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/AccountManagerImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/04/15 02:33:49 $</cvs:date>
- * <cvs:version>$Revision: 1.13 $</cvs:version>
+ * <cvs:date>$Date: 2004/04/15 15:04:29 $</cvs:date>
+ * <cvs:version>$Revision: 1.14 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: AccountManagerImpl.java,v $
+ *   Revision 1.14  2004/04/15 15:04:29  dave
+ *   Added exception logging
+ *
  *   Revision 1.13  2004/04/15 02:33:49  dave
  *   Changed tabs to spaces
  *
@@ -908,6 +911,11 @@ String string = ident.getAccountIdent() ;
                     }
                 catch (Throwable ouch)
                     {
+                    //
+                    // Log the exception.
+                    logException(ouch, "AccountManagerImpl.allocateSpace()") ;
+                    //
+                    // Throw a new Exception.
                     throw new CommunityServiceException(
                         "Unable to create VoSpace",
                         ouch
@@ -947,6 +955,7 @@ String string = ident.getAccountIdent() ;
                 "Default VoSpace not configured"
                 ) ;
             }
+        if (DEBUG_FLAG) System.out.println("    Default VoSpace : " + string) ;
         //
         // If we found the default identifier.
         if (null != string)
