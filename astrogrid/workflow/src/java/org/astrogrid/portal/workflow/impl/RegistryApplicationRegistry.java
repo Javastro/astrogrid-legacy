@@ -1,4 +1,4 @@
-/*$Id: RegistryApplicationRegistry.java,v 1.10 2004/11/12 18:14:43 clq2 Exp $
+/*$Id: RegistryApplicationRegistry.java,v 1.11 2004/12/13 13:55:05 pjn3 Exp $
  * Created on 09-Mar-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,11 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
     "<selectionOp op='$and$'/>" +
     "<selection item='@xsi:type' itemOp='EQ' value='CeaApplicationType'/>"  +
     "<selectionOp op='OR'/>" +
+    "<selection item='@xsi:type' itemOp='EQ' value='cea:CeaApplicationType'/>"  +
+    "<selectionOp op='OR'/>" +
     "<selection item='@xsi:type' itemOp='EQ' value='CeaHttpApplicationType'/>"  +
+    "<selectionOp op='OR'/>" +
+    "<selection item='@xsi:type' itemOp='EQ' value='cea:CeaHttpApplicationType'/>"  +
     "</selectionSequence></query>";
 
     
@@ -191,6 +195,9 @@ public class RegistryApplicationRegistry implements ApplicationRegistry {
 
 /* 
 $Log: RegistryApplicationRegistry.java,v $
+Revision 1.11  2004/12/13 13:55:05  pjn3
+Bug #827 - change by RTP to query string to include cea namespace
+
 Revision 1.10  2004/11/12 18:14:43  clq2
 nww-itn07-590b again.
 
