@@ -13,4 +13,6 @@ public interface QueryFactory {
     
     public void end() ;
     
+    public Object getImplementation() ;
+    
 } // end of interface QueryFactory

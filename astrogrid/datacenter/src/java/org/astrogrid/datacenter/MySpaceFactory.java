@@ -3,5 +3,10 @@
 package org.astrogrid.datacenter;
 
 public interface MySpaceFactory {
-    Allocation allocateCacheSpace(String jobURN, int size) throws AllocationException ;
+	
+    public Allocation allocateCacheSpace(String jobURN, int size) throws AllocationException ;
+    
+    public void close( Allocation allocation ) throws AllocationException ;
+    
+    
 }

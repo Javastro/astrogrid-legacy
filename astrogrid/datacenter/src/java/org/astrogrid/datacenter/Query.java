@@ -31,6 +31,11 @@ public class Query {
     }
 
 
+    public QueryFactory getFactory() {
+    	return factory ;
+    }
+
+
     public static QueryFactory getFactory( String catalogName ) throws QueryException { 
 		if( TRACE_ENABLED ) logger.debug( "getFactory(): entry") ;   	
     	
@@ -69,14 +74,22 @@ public class Query {
 		if( TRACE_ENABLED ) logger.debug( "execute(): exit") ;   	
     }
     
-    public VOTable toVOTable() {
-    	return new VOTable() ;
-    }
+    
+    public VOTable toVOTable( Allocation allocation ) throws VOTableException {  
+    	
+    	VOTable
+    	   votable = VOTable.getFactory().createVOTable( this ) ; 
+    	   
+    	votable.stream( allocation ) ;
+    		
+    	return votable ;
+    	
+    } // end of toVOTable()
+    
     
     public void close() {
     	factory.end() ;
     }
-
-    private VOTableFactory lnkVOTableFactory;
+    
     
 } // end of class Query

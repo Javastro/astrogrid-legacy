@@ -23,11 +23,14 @@ public class DatasetAgent {
 	private static final String 
 		CONFIG_FILENAME = "ASTROGRID_datasetconfig.properties" ;
 		
+		
+		
 	private static final String
-	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST = "Failed to parse job request",
-	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE = "Could not read configuration file",
-	    ASTROGRIDERROR_TERMINAL_FAILURE = "Query ultimately failed",
-	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "DatasetAgent not initialized" ;
+	    ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGDTCE0001",
+	    ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED = "AGDTCE0002",
+	    ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGDTCE0003",
+	    ASTROGRIDERROR_TERMINAL_FAILURE             = "AGDTCE0004";
+	    
 			
 	private static Logger 
 		logger = Logger.getLogger( DatasetAgent.class ) ;
@@ -96,40 +99,34 @@ public class DatasetAgent {
 			response = null ;
 		Query
 			query = null ;
+		Allocation
+		    allocation = null ;
 			
 		try {  
-			 	
-    	    if( configurationProperties == null ) {
-			    Message
-	                message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
-                logger.error( message.toString() ) ;
-                response = message.toString() ;
-    	    }
-    		else {    
+	        checkPropertiesLoaded() ;
     		
-         	   Document
-    		      queryDoc = parseRequest( jobXML ) ;
-               //
-               // Note - nothing on Jobs so far...
-               //   	
-    		   QueryFactory
-    		      queryFactory = Query.getFactory( "USNOB" ) ;
-    		   query = queryFactory.createQuery( queryDoc ) ;
-			   query.execute() ;
-			   VOTable
-			      votable = query.toVOTable() ;
-/*			   
+         	Document
+    		   queryDoc = parseRequest( jobXML ) ;
+            //
+            // Note - nothing on Jobs so far...
+            //   	
+    		QueryFactory
+    		   queryFactory = Query.getFactory( "USNOB" ) ;
+    		query = queryFactory.createQuery( queryDoc ) ;
+			query.execute() ;
+			   			   
 			MySpaceFactory
 			   mySpaceFactory = Allocation.getFactory() ;
-			Allocation
-			   allocation = mySpaceFactory.allocateCacheSpace( "Job/Jobstep unique id", 256 ) ;   
-			votable.stream( allocation ) ;
-*/			
-               response = votable.toString() ;			
-			   // Now touch the job monitor if you can....
+			allocation = mySpaceFactory.allocateCacheSpace( "Job/JobstepId", 256 ) ;
+			   
+			VOTable
+			   votable = query.toVOTable( allocation ) ;
 			
-    		} // end else		
-    			
+			// temporary, for testing
+            response = votable.toString() ;
+            			
+			// Now touch the job monitor if you can....
+				
     	}
     	catch( Exception ex ) {
     		// If we were responding, we would format our error response here...
@@ -142,7 +139,7 @@ public class DatasetAgent {
 			}
     	}
     	finally {
-    		resourceCleanup( query ) ;
+    		resourceCleanup( query, allocation ) ;
 			if( TRACE_ENABLED ) logger.debug( "runQuery() exit") ;
     	}
     	
@@ -150,6 +147,15 @@ public class DatasetAgent {
     	 	
     } // end runQuery()
 
+
+    private void checkPropertiesLoaded() throws DatasetAgentException {
+		if( configurationProperties == null ) {
+			Message
+				message = new Message( ASTROGRIDERROR_DATASETAGENT_NOT_INITIALIZED ) ;
+			logger.error( message.toString() ) ;
+		}
+    } // end checkPropertiesLoaded()
+    
 
     private Document parseRequest( String jobXML ) throws DatasetAgentException {  	
 		if( TRACE_ENABLED ) logger.debug( "parseRequest() entry") ;
@@ -183,10 +189,12 @@ public class DatasetAgent {
     } // end parseRequest()
     
 
-    private void resourceCleanup( Query query ) {   	
+    private void resourceCleanup( Query query, Allocation allocation ) {   	
 		if( TRACE_ENABLED ) logger.debug( "resourceCleanup() entry") ;
 		if( query != null )
 		    query.close() ;
+		if( allocation != null )
+		    allocation.close() ;
 		if( TRACE_ENABLED ) logger.debug( "resourceCleanup() exit") ;  		 	
     }
 

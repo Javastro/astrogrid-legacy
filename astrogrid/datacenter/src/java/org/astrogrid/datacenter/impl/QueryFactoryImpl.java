@@ -40,10 +40,11 @@ public class QueryFactoryImpl implements QueryFactory {
 	    
 	private static final String
 	    ASTROGRIDERROR_COULD_NOT_CREATE_DATASOURCE = "Could not create datasource",
-	    ASTROGRIDERROR_COULD_NOT_CREATE_CONNECTION = "Could not create connection" ;
+	    ASTROGRIDERROR_COULD_NOT_CREATE_CONNECTION = "Could not create connection",
+	    ASTROGRIDERROR_QUERY_EXECUTION_FAILED      = "Query execution failed" ;
 	    	    
 	private Connection
-	    connection ;
+	    connection = null ;
 	private Statement 
 	    statement = null ;  
 	private ResultSet 
@@ -93,7 +94,7 @@ public class QueryFactoryImpl implements QueryFactory {
 		}
 		catch( SQLException e) {
 			Message
-				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_DATASOURCE, JNDI_DATASOURCE_LOCATION ) ;
+				message = new Message( ASTROGRIDERROR_COULD_NOT_CREATE_CONNECTION ) ;
 			logger.error( message.toString(), e ) ;
 			throw new QueryException( message.toString(),e );
 		}
@@ -119,7 +120,10 @@ public class QueryFactoryImpl implements QueryFactory {
 		    statement = getConnection().createStatement() ;
 		    resultSet = statement.executeQuery( selectString );
 		} catch (SQLException e) {
-		    ;
+			Message
+				message = new Message( ASTROGRIDERROR_QUERY_EXECUTION_FAILED ) ;
+			logger.error( message.toString(), e ) ;
+			throw new QueryException( message.toString(),e );
 		} finally {
 		    if( TRACE_ENABLED ) logger.debug( "execute(): exit") ; 				  
 		}
@@ -147,6 +151,16 @@ public class QueryFactoryImpl implements QueryFactory {
     } // end of end() !
     
     
+	public Object getImplementation() {
+		return this ;
+	}
+    
+    
+    public ResultSet getResultSet() {
+    	return resultSet ;
+    }
+  
+  
     private String formatQueryString( Query query ) {
     	// This  is where the magic happens
     	return new String() ;
