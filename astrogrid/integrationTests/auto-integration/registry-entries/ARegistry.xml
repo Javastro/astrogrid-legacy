@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource xsi:type="RegistryType">
+ <vr:Resource xsi:type="RegistryType" updated="2005-11-04T15:34:22+0000" status="active" >
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>org.astrogrid.registry.RegistryService</ResourceKey>
@@ -27,9 +27,9 @@
     <Title>Astrogrid localhost test Registry</Title>
     <Summary>
       <Description>
-      	This is the Astrogrid localhost test main registry currently holding datate for MSSL, Cambridge Community, and Edinburgh-ROE Myspace.
+         This is the Astrogrid localhost test main registry currently holding datate for MSSL, Cambridge Community, and Edinburgh-ROE Myspace.
       </Description>
-      <ReferenceURL>http://localhost:@TOMCATPORT@/</ReferenceURL>
+      <ReferenceURL>http://localhost:8080/</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
     <Curation>
@@ -38,13 +38,13 @@
       </Publisher>
       <Contact>
         <Name>Integration tests</Name>
-	    <Email>int@localhost.com</Email>
+       <Email>int@localhost.com</Email>
       </Contact>
     </Curation>
     <vg:ManagedAuthority>@REGAUTHORITY@</vg:ManagedAuthority>
     <Interface>
-      <Invocation>WebService</Invocation>
-      <AccessURL use="full">@TOMCATROOT@/astrogrid-registry-webapp/services/RegistryHarvest?wsdl</AccessURL>
+      <Invocation>WebBrowser</Invocation>
+      <AccessURL use="full">@TOMCATROOT@/astrogrid-registry-SNAPSHOT/OAIHandlerv0_9</AccessURL>
     </Interface>
   </vr:Resource>
   </VODescription>
