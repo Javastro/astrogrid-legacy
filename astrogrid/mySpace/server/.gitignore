@@ -2,3 +2,5 @@ junit*.properties
 target
 transfer-tests-result.dat
 testfile*
+.project
+.classpath
