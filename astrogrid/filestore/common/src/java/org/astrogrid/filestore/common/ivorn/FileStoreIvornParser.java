@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/ivorn/FileStoreIvornParser.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.3 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.4 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileStoreIvornParser.java,v $
+ *   Revision 1.4  2004/09/17 06:57:10  dave
+ *   Added commons logging to FileStore.
+ *   Updated logging properties in Community.
+ *   Fixed bug in AGINAB deployment.
+ *   Removed MySpace tests with hard coded grendel address.
+ *
+ *   Revision 1.3.32.1  2004/09/17 01:08:36  dave
+ *   Updated debug to use commons logging API ....
+ *
  *   Revision 1.3  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -36,6 +45,9 @@
  */
 package org.astrogrid.filestore.common.ivorn ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.net.URI ;
 import java.net.URISyntaxException ;
 
@@ -58,10 +70,10 @@ import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 public class FileStoreIvornParser
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(FileStoreIvornParser.class);
 
 	/**
 	 * The mock service identifier.
@@ -171,10 +183,10 @@ public class FileStoreIvornParser
     protected void setIvorn(Ivorn ivorn)
         throws FileStoreIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FilestoreIvornParser.setIvorn()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FilestoreIvornParser.setIvorn()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Check for null param.
         if (null == ivorn)
@@ -220,16 +232,16 @@ public class FileStoreIvornParser
     protected void parseServiceIdent()
 		throws FileStoreIdentifierException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FilestoreIvornParser.parseServiceIdent()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FilestoreIvornParser.parseServiceIdent()") ;
+        log.debug("  Ivorn    : " + ivorn) ;
         if (null != uri)
             {
 			String auth = uri.getAuthority() ;
 			String path = uri.getPath() ;
-			if (DEBUG_FLAG) System.out.println("  Auth     : " + auth) ;
-			if (DEBUG_FLAG) System.out.println("  Path     : " + path) ;
+			log.debug("  Auth     : " + auth) ;
+			log.debug("  Path     : " + path) ;
 			//
 			// If the URI has an authority ident.
 			if (null != auth)
@@ -274,7 +286,7 @@ public class FileStoreIvornParser
 					) ;
 				}
 			}
-		if (DEBUG_FLAG) System.out.println("  Service  : " + this.service) ;
+		log.debug("  Service  : " + this.service) ;
 		}
 
     /**
@@ -283,15 +295,15 @@ public class FileStoreIvornParser
      */
     protected void parseResourceIdent()
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FilestoreIvornParser.parseResourceIdent()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn    : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FilestoreIvornParser.parseResourceIdent()") ;
+        log.debug("  Ivorn    : " + ivorn) ;
         if (null != uri)
             {
             this.resource = uri.getFragment() ;
             }
-        if (DEBUG_FLAG) System.out.println("  Resource : " + this.resource) ;
+        log.debug("  Resource : " + this.resource) ;
         }
 
     /**

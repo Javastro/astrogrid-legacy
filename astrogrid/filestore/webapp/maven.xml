@@ -3,10 +3,22 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.5  2004/09/17 06:57:10  dave
+    |   Added commons logging to FileStore.
+    |   Updated logging properties in Community.
+    |   Fixed bug in AGINAB deployment.
+    |   Removed MySpace tests with hard coded grendel address.
+    |
+    |   Revision 1.4.32.2  2004/09/17 02:52:31  dave
+    |   Added DTD and validation to web.xml and servlet.xsl ....
+    |
+    |   Revision 1.4.32.1  2004/09/17 01:08:36  dave
+    |   Updated debug to use commons logging API ....
+    |
     |   Revision 1.4  2004/08/18 19:00:01  dave
     |   Myspace manager modified to use remote filestore.
     |   Tested before checkin - integration tests at 91%.
@@ -258,9 +270,16 @@
         <filestore:service.deploy service.name="FileStore"/>
         <!--+
             | Deploy our servlet.
-            +-->
         <attainGoal name="servlet-deploy"/>
-
+            +-->
+        <!--+
+            | Copy our log4j configuration file into WEB-INF/classes.
+            +-->
+        <ant:copy verbose="true" todir="${axisDir}/WEB-INF/classes">
+            <ant:fileset dir="src/config">
+                <include name="log4j.properties"/>
+            </ant:fileset>
+        </ant:copy>
     </postGoal>
 
     <!--+
@@ -299,6 +318,10 @@
             value="web-app_2_2.dtd"
             file="${axisDir}/WEB-INF/web.xml"/>
         <!--+
+            | Validate the existing web.xml
+            +-->
+		<ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
+        <!--+
             | Update the webapp web.xml
             +-->
         <ant:xslt style="${basedir}/src/xsl/servlet.xsl"
@@ -312,6 +335,10 @@
             <param name="servlet.name"  expression="FileStoreServlet"/>
             <param name="servlet.url"   expression="/filestore/*"/>
         </ant:xslt>
+        <!--+
+            | Validate the modified web.xml
+            +-->
+		<ant:xmlvalidate file="${axisDir}/WEB-INF/mod.xml"/>
         <!--+
             | Move the new web.xml over the old one.
             +-->

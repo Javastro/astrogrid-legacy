@@ -2,10 +2,19 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/FileStoreImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/27 22:43:15 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreImpl.java,v $
+ *   Revision 1.9  2004/09/17 06:57:10  dave
+ *   Added commons logging to FileStore.
+ *   Updated logging properties in Community.
+ *   Fixed bug in AGINAB deployment.
+ *   Removed MySpace tests with hard coded grendel address.
+ *
+ *   Revision 1.8.20.1  2004/09/17 01:08:36  dave
+ *   Updated debug to use commons logging API ....
+ *
  *   Revision 1.8  2004/08/27 22:43:15  dave
  *   Updated filestore and myspace to report file size correctly.
  *
@@ -60,6 +69,9 @@
  */
 package org.astrogrid.filestore.server ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.net.URL ;
 import java.net.MalformedURLException ;
 
@@ -99,10 +111,10 @@ public class FileStoreImpl
     implements FileStore
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    protected static final boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(FileStoreImpl.class);
 
     /**
      * Public constructor.
@@ -178,9 +190,9 @@ public class FileStoreImpl
     public FileProperty[] importString(FileProperty[] properties, String data)
         throws FileStoreServiceException, FileStoreException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.importString()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.importString()") ;
         //
         // Check for null data.
         if (null == data)
@@ -209,9 +221,9 @@ public class FileStoreImpl
     public FileProperty[] importBytes(FileProperty[] properties, byte[] data)
         throws FileStoreServiceException, FileStoreException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.importBytes()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.importBytes()") ;
         //
         // Check for null data.
         if (null == data)
@@ -251,9 +263,9 @@ public class FileStoreImpl
     public FileProperty[] appendString(String ident, String data)
         throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.appendString()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.appendString()") ;
         //
         // Check for null ident.
         if (null == ident)
@@ -292,9 +304,9 @@ public class FileStoreImpl
     public FileProperty[] appendBytes(String ident, byte[] data)
         throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.appendBytes()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.appendBytes()") ;
         //
         // Check for null ident.
         if (null == ident)
@@ -336,9 +348,9 @@ public class FileStoreImpl
     public String exportString(String ident)
         throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportString()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.exportString()") ;
         return new String(
             this.exportBytes(
                 ident
@@ -358,9 +370,9 @@ public class FileStoreImpl
     public byte[] exportBytes(String ident)
         throws FileStoreServiceException, FileStoreIdentifierException, FileStoreNotFoundException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.exportBytes()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.exportBytes()") ;
         //
         // Check for null ident.
         if (null == ident)
@@ -460,9 +472,9 @@ public class FileStoreImpl
     public TransferProperties importData(TransferProperties transfer)
         throws FileStoreServiceException, FileStoreTransferException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreImpl.importData()") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreImpl.importData()") ;
         //
         // Check for null transfer properties.
         if (null == transfer)

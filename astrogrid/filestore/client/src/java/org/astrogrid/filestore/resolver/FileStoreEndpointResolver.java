@@ -1,11 +1,20 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/resolver/FileStoreEndpointResolver.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: FileStoreEndpointResolver.java,v $
+ *   Revision 1.5  2004/09/17 06:57:10  dave
+ *   Added commons logging to FileStore.
+ *   Updated logging properties in Community.
+ *   Fixed bug in AGINAB deployment.
+ *   Removed MySpace tests with hard coded grendel address.
+ *
+ *   Revision 1.4.32.1  2004/09/17 01:08:36  dave
+ *   Updated debug to use commons logging API ....
+ *
  *   Revision 1.4  2004/08/18 19:00:01  dave
  *   Myspace manager modified to use remote filestore.
  *   Tested before checkin - integration tests at 91%.
@@ -42,6 +51,9 @@
  */
 package org.astrogrid.filestore.resolver ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.net.URL ;
 import java.net.MalformedURLException ;
 
@@ -63,10 +75,10 @@ import org.astrogrid.filestore.common.exception.FileStoreIdentifierException ;
 public class FileStoreEndpointResolver
     {
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(FileStoreEndpointResolver.class);
 
     /**
      * Public constructor, using the default Registry service.
@@ -100,10 +112,10 @@ public class FileStoreEndpointResolver
      */
     public FileStoreEndpointResolver(URL registry, RegistryDelegateFactory factory)
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreEndpointResolver()") ;
-        if (DEBUG_FLAG) System.out.println("  Registry : " + registry) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreEndpointResolver()") ;
+        log.debug("  Registry : " + registry) ;
 		if (null == factory)
 			{
 			throw new IllegalArgumentException(
@@ -152,10 +164,10 @@ public class FileStoreEndpointResolver
     public URL resolve(Ivorn ivorn)
         throws FileStoreIdentifierException, FileStoreResolverException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreEndpointResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ivorn) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreEndpointResolver.resolve()") ;
+        log.debug("  Ivorn : " + ivorn) ;
         //
         // Check for null ivorn.
         if (null == ivorn)
@@ -182,10 +194,10 @@ public class FileStoreEndpointResolver
     public URL resolve(FileStoreIvornParser parser)
         throws FileStoreIdentifierException, FileStoreResolverException
         {
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreEndpointResolver.resolve()") ;
-        if (DEBUG_FLAG) System.out.println("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreEndpointResolver.resolve()") ;
+        log.debug("  Ivorn : " + ((null != parser) ? parser.getIvorn() : null)) ;
         //
         // Check for null parser.
         if (null == parser)
@@ -215,8 +227,8 @@ public class FileStoreEndpointResolver
             }
         catch (Throwable ouch)
             {
-            if (DEBUG_FLAG) System.out.println("FAIL : Registry lookup failed")  ;
-            if (DEBUG_FLAG) System.out.println("  Exception : " + ouch)  ;
+            log.debug("FAIL : Registry lookup failed")  ;
+            log.debug("  Exception : " + ouch)  ;
             throw new FileStoreResolverException(
                 "Registry lookup failed",
                 ouch
@@ -226,8 +238,8 @@ public class FileStoreEndpointResolver
         // If we found an entry in the Registry.
         if (null != endpoint)
             {
-            if (DEBUG_FLAG) System.out.println("PASS : Got service endpoint")  ;
-            if (DEBUG_FLAG) System.out.println("  Endpoint : " + endpoint)  ;
+            log.debug("PASS : Got service endpoint")  ;
+            log.debug("  Endpoint : " + endpoint)  ;
             //
             // Convert it into an endpoint URL.
             try {

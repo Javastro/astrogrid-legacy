@@ -2,10 +2,19 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/client/src/java/org/astrogrid/filestore/client/FileStoreSoapDelegate.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/23 15:17:30 $</cvs:date>
- * <cvs:version>$Revision: 1.4 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.5 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreSoapDelegate.java,v $
+ *   Revision 1.5  2004/09/17 06:57:10  dave
+ *   Added commons logging to FileStore.
+ *   Updated logging properties in Community.
+ *   Fixed bug in AGINAB deployment.
+ *   Removed MySpace tests with hard coded grendel address.
+ *
+ *   Revision 1.4.56.1  2004/09/17 01:08:36  dave
+ *   Updated debug to use commons logging API ....
+ *
  *   Revision 1.4  2004/07/23 15:17:30  dave
  *   Merged development branch, dave-dev-200407231013, into HEAD
  *
@@ -31,6 +40,9 @@
  */
 package org.astrogrid.filestore.client ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.net.URL ;
 import java.net.MalformedURLException ;
 
@@ -47,10 +59,10 @@ public class FileStoreSoapDelegate
 	extends FileStoreCoreDelegate
 	{
     /**
-     * Switch for our debug statements.
+     * Our debug logger.
      *
      */
-    private static boolean DEBUG_FLAG = true ;
+    private static Log log = LogFactory.getLog(FileStoreSoapDelegate.class);
 
     /**
      * Our FileStore service locator.
@@ -96,10 +108,10 @@ public class FileStoreSoapDelegate
     public FileStoreSoapDelegate(URL endpoint)
         {
         super() ;
-        if (DEBUG_FLAG) System.out.println("") ;
-        if (DEBUG_FLAG) System.out.println("----\"----") ;
-        if (DEBUG_FLAG) System.out.println("FileStoreSoapDelegate()") ;
-        if (DEBUG_FLAG) System.out.println("  URL : '" + endpoint + "'") ;
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("FileStoreSoapDelegate()") ;
+        log.debug("  URL : '" + endpoint + "'") ;
         //
         // Check for null param.
         if (null == endpoint)

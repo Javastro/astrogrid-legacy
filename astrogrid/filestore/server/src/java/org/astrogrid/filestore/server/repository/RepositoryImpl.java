@@ -2,10 +2,19 @@
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/server/src/java/org/astrogrid/filestore/server/repository/RepositoryImpl.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  * <cvs:log>
  *   $Log: RepositoryImpl.java,v $
+ *   Revision 1.10  2004/09/17 06:57:10  dave
+ *   Added commons logging to FileStore.
+ *   Updated logging properties in Community.
+ *   Fixed bug in AGINAB deployment.
+ *   Removed MySpace tests with hard coded grendel address.
+ *
+ *   Revision 1.9.2.1  2004/09/17 01:08:36  dave
+ *   Updated debug to use commons logging API ....
+ *
  *   Revision 1.9  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -83,6 +92,9 @@
  */
 package org.astrogrid.filestore.server.repository ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.net.URL ;
 import java.net.URLConnection ;
 import java.net.MalformedURLException ;
@@ -115,11 +127,11 @@ import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 public class RepositoryImpl
 	implements Repository
 	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	protected static final boolean DEBUG_FLAG = true ;
+    /**
+     * Our debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(RepositoryImpl.class);
 
 	/**
 	 * The size of our copy buffer (8k bytes).
@@ -467,8 +479,10 @@ public class RepositoryImpl
 						}
 					catch (IOException ouch)
 						{
-						if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.load") ;
-						if (DEBUG_FLAG) System.out.println("ERROR : Failed to close input stream") ;
+						log.warn("----") ;
+						log.warn("RepositoryContainerImpl.load") ;
+						log.warn("Failed to close input stream") ;
+						log.warn("----") ;
 						}
 					}
 				}
@@ -507,8 +521,10 @@ public class RepositoryImpl
 						}
 					catch (IOException ouch)
 						{
-						if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.save") ;
-						if (DEBUG_FLAG) System.out.println("ERROR : Failed to close output stream") ;
+						log.warn("----") ;
+						log.warn("RepositoryContainerImpl.save") ;
+						log.warn("Failed to close output stream") ;
+						log.warn("----") ;
 						}
 					}
 				}
@@ -565,8 +581,10 @@ public class RepositoryImpl
 					}
 				catch (IOException ouch)
 					{
-					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.importBytes") ;
-					if (DEBUG_FLAG) System.out.println("ERROR : failed to close output stream") ;
+					log.warn("----") ;
+					log.warn("RepositoryContainerImpl.importBytes") ;
+					log.warn("Failed to close output stream") ;
+					log.warn("----") ;
 					}
 				}
 			}
@@ -606,8 +624,10 @@ public class RepositoryImpl
 					}
 				catch (IOException ouch)
 					{
-					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.exportBytes") ;
-					if (DEBUG_FLAG) System.out.println("ERROR : failed to close input stream") ;
+					log.warn("----") ;
+					log.warn("RepositoryContainerImpl.exportBytes") ;
+					log.warn("Failed to close input stream") ;
+					log.warn("----") ;
 					}
 				}
 			return buffer ;
@@ -653,8 +673,10 @@ public class RepositoryImpl
 					}
 				catch (IOException ouch)
 					{
-					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.appendBytes") ;
-					if (DEBUG_FLAG) System.out.println("ERROR : failed to close output stream") ;
+					log.warn("----") ;
+					log.warn("RepositoryContainerImpl.appendBytes") ;
+					log.warn("Failed to close output stream") ;
+					log.warn("----") ;
 					}
 				}
 			}
@@ -786,8 +808,10 @@ public class RepositoryImpl
 						}
 					catch (IOException ouch)
 						{
-						if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.importData") ;
-						if (DEBUG_FLAG) System.out.println("ERROR : failed to close input stream") ;
+						log.warn("----") ;
+						log.warn("RepositoryContainerImpl.importData") ;
+						log.warn("Failed to close input stream") ;
+						log.warn("----") ;
 						}
 					}
 				}
@@ -840,8 +864,10 @@ public class RepositoryImpl
 					}
 				catch (IOException ouch)
 					{
-					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.importData") ;
-					if (DEBUG_FLAG) System.out.println("ERROR : failed to close output stream") ;
+					log.warn("----") ;
+					log.warn("RepositoryContainerImpl.importData") ;
+					log.warn("Failed to close output stream") ;
+					log.warn("----") ;
 					}
 				//
 				// Update our properties.
@@ -887,8 +913,10 @@ public class RepositoryImpl
 					}
 				catch (IOException ouch)
 					{
-					if (DEBUG_FLAG) System.out.println("ERROR : RepositoryContainerImpl.exportData") ;
-					if (DEBUG_FLAG) System.out.println("ERROR : failed to close input stream") ;
+					log.warn("----") ;
+					log.warn("RepositoryContainerImpl.exportData") ;
+					log.warn("Failed to close input stream") ;
+					log.warn("----") ;
 					}
 				}
 			}

@@ -2,10 +2,19 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/webapp/src/xsl/servlet.xsl,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/08/18 19:00:01 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+    | <cvs:version>$Revision: 1.3 $</cvs:version>
     | <cvs:log>
     |   $Log: servlet.xsl,v $
+    |   Revision 1.3  2004/09/17 06:57:10  dave
+    |   Added commons logging to FileStore.
+    |   Updated logging properties in Community.
+    |   Fixed bug in AGINAB deployment.
+    |   Removed MySpace tests with hard coded grendel address.
+    |
+    |   Revision 1.2.34.1  2004/09/17 02:52:31  dave
+    |   Added DTD and validation to web.xml and servlet.xsl ....
+    |
     |   Revision 1.2  2004/08/18 19:00:01  dave
     |   Myspace manager modified to use remote filestore.
     |   Tested before checkin - integration tests at 91%.
@@ -23,6 +32,11 @@
     version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     >
+	<xsl:output
+		doctype-public="-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+		doctype-system="http://java.sun.com/j2ee/dtds/web-app_2_2.dtd"
+		/>
+
     <!--+
         | Params from the Ant build.
         +-->
@@ -52,14 +66,14 @@
         +-->
     <xsl:template name="servlet" match="servlet[servlet-class/text() = $servlet.class]">
         <xsl:element name="servlet">
-            <xsl:element name="description">
-                <xsl:value-of select="$servlet.desc"/>
+            <xsl:element name="servlet-name">
+                <xsl:value-of select="$servlet.name"/>
             </xsl:element>
             <xsl:element name="display-name">
                 <xsl:value-of select="$servlet.name"/>
             </xsl:element>
-            <xsl:element name="servlet-name">
-                <xsl:value-of select="$servlet.name"/>
+            <xsl:element name="description">
+                <xsl:value-of select="$servlet.desc"/>
             </xsl:element>
             <xsl:element name="servlet-class">
                 <xsl:value-of select="$servlet.class"/>

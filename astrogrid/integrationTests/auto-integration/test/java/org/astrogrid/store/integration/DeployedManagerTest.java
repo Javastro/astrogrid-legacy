@@ -155,8 +155,7 @@ System.out.println(someAgsl);
 //      Import and export the file as an array of bytes using the
 //      streaming methods.
 
-         OutputStream outStream = middle.putStream("/testxyz/file5",
-           true);
+         OutputStream outStream = middle.putStream("/testxyz/file5", false);
          outStream.write(byteContents);
          outStream.close();
          System.out.println("File imported as bytes using streaming...");

@@ -3,10 +3,19 @@
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
-    | <cvs:version>$Revision: 1.16 $</cvs:version>
+    | <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+    | <cvs:version>$Revision: 1.17 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.17  2004/09/17 06:57:10  dave
+    |   Added commons logging to FileStore.
+    |   Updated logging properties in Community.
+    |   Fixed bug in AGINAB deployment.
+    |   Removed MySpace tests with hard coded grendel address.
+    |
+    |   Revision 1.16.2.1  2004/09/17 02:53:08  dave
+    |   Added DTD fix and validation to webapp web.xml ....
+    |
     |   Revision 1.16  2004/09/16 23:18:08  dave
     |   Replaced debug logging in Community.
     |   Added stream close() to FileStore.
@@ -289,6 +298,17 @@
                 <include name="log4j.properties"/>
             </ant:fileset>
         </ant:copy>
+        <!--+
+            | Patch the web.xml to fix the DTD
+            +-->
+        <ant:replace
+            token="web-app_2.2.dtd"
+            value="web-app_2_2.dtd"
+            file="${axisDir}/WEB-INF/web.xml"/>
+        <!--+
+            | Validate our existing web.xml
+            +-->
+		<ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
     </postGoal>
 
     <!--+

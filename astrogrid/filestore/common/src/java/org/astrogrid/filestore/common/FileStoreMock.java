@@ -1,10 +1,19 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/filestore/common/src/java/org/astrogrid/filestore/common/FileStoreMock.java,v $</cvs:source>
  * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/02 10:25:41 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  * <cvs:log>
  *   $Log: FileStoreMock.java,v $
+ *   Revision 1.9  2004/09/17 06:57:10  dave
+ *   Added commons logging to FileStore.
+ *   Updated logging properties in Community.
+ *   Fixed bug in AGINAB deployment.
+ *   Removed MySpace tests with hard coded grendel address.
+ *
+ *   Revision 1.8.16.1  2004/09/17 01:08:36  dave
+ *   Updated debug to use commons logging API ....
+ *
  *   Revision 1.8  2004/09/02 10:25:41  dave
  *   Updated FileStore and MySpace to handle mime type and file size.
  *   Updated Community deployment script.
@@ -84,6 +93,9 @@
  */
 package org.astrogrid.filestore.common ;
 
+import org.apache.commons.logging.Log ;
+import org.apache.commons.logging.LogFactory ;
+
 import java.io.IOException  ;
 import java.io.InputStream  ;
 import java.io.OutputStream ;
@@ -117,11 +129,11 @@ import org.astrogrid.filestore.common.exception.FileStoreTransferException ;
 public class FileStoreMock
 	implements FileStore
 	{
-	/**
-	 * Switch for our debug statements.
-	 *
-	 */
-	protected static final boolean DEBUG_FLAG = true ;
+    /**
+     * Our debug logger.
+     *
+     */
+    private static Log log = LogFactory.getLog(FileStoreMock.class);
 
 	/**
 	 * Ivorn for the mock service.
@@ -174,13 +186,13 @@ public class FileStoreMock
 		 */
 		private ContainerMock(FileProperties props)
 			{
-			if (DEBUG_FLAG) System.out.println("") ;
-			if (DEBUG_FLAG) System.out.println("----\"----") ;
-			if (DEBUG_FLAG) System.out.println("ContainerMock()") ;
+			log.debug("") ;
+			log.debug("----\"----") ;
+			log.debug("ContainerMock()") ;
 			//
 			// Assign a new identifier.
 			this.ident = new FileIdentifier() ;
-			if (DEBUG_FLAG) System.out.println("  Ident : '" + ident + "'") ;
+			log.debug("  Ident : '" + ident + "'") ;
 			//
 			// Register this container.
 			map.put(
@@ -471,9 +483,9 @@ public class FileStoreMock
 	public FileProperty[] importString(FileProperty[] properties, String data)
 		throws FileStoreException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreMock.importString()") ;
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.importString()") ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -501,9 +513,9 @@ public class FileStoreMock
 	public FileProperty[] importBytes(FileProperty[] properties, byte[] data)
 		throws FileStoreException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreMock.importBytes()") ;
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.importBytes()") ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -540,9 +552,9 @@ public class FileStoreMock
 	public FileProperty[] appendString(String ident, String data)
 		throws FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreMock.appendString()") ;
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.appendString()") ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -572,9 +584,9 @@ public class FileStoreMock
 	public FileProperty[] appendBytes(String ident, byte[] data)
 		throws FileStoreIdentifierException, FileStoreNotFoundException, FileStoreException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreMock.appendString()") ;
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.appendString()") ;
 		//
 		// Check for null data.
 		if (null == data)
@@ -819,9 +831,9 @@ public class FileStoreMock
 	public TransferProperties importData(TransferProperties transfer)
 		throws FileStoreTransferException
 		{
-		if (DEBUG_FLAG) System.out.println("") ;
-		if (DEBUG_FLAG) System.out.println("----\"----") ;
-		if (DEBUG_FLAG) System.out.println("FileStoreMock.importData()") ;
+		log.debug("") ;
+		log.debug("----\"----") ;
+		log.debug("FileStoreMock.importData()") ;
 		//
 		// Check for null transfer properties.
 		if (null == transfer)
