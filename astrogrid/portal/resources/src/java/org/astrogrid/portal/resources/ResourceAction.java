@@ -36,7 +36,7 @@ import org.astrogrid.store.Ivorn;
 
 /**
  * @author Phil Nicolson (pjn3@star.le.ac.uk) Jan 05
- * @version $Name:  $Revision: 1.2 $Date:
+ * @version $Name:  $Revision: 1.3 $Date:
  */
 public class ResourceAction extends AbstractAction {
 
@@ -79,7 +79,11 @@ public class ResourceAction extends AbstractAction {
       
   // Task
       PARAM_AUTHORITY_FIELD = "taskNameField",
-      PARAM_TASK_JOIN = "TaskAndOr";  
+      PARAM_TASK_JOIN = "TaskAndOr", 
+      
+  // Microbrowser
+	  PARAM_MAIN_ELEMENT = "mainelement",
+	  PARAM_PARENT_AUTHORITY_ID = "parent_authId";
 
   public static Config conf = null;   
      
@@ -198,7 +202,7 @@ public class ResourceAction extends AbstractAction {
           throw new UnsupportedOperationException(
                  action + " no longer supported" );
         }
-            }
+      }
       catch( ConsistencyException cex ) {
         results = null;
         debug( "ConsistencyException occurred");
@@ -218,7 +222,19 @@ public class ResourceAction extends AbstractAction {
       finally {
         if( TRACE_ENABLED ) trace( "ResourceActionImpl.act() exit" );  
       }
+
+	  // Added for mb 
+	  String parent_authid = request.getParameter(PARAM_PARENT_AUTHORITY_ID);
+	  if ( parent_authid != null && ( parent_authid.length() == 0 || parent_authid.equals("null") ) ) 
+	    parent_authid = null;
+	  request.setAttribute( PARAM_PARENT_AUTHORITY_ID, parent_authid );
+	  String mainelement = request.getParameter(PARAM_MAIN_ELEMENT);
+	  if ( mainelement != null && ( mainelement.length() == 0 || mainelement.equals("null") ) ) 
+		mainelement = null;
+	  request.setAttribute( PARAM_MAIN_ELEMENT, mainelement );	  
+	  
     
+      
       return results;
             
     } // end of ResourceActionImpl.act()
