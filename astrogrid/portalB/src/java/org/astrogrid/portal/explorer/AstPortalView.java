@@ -1,12 +1,15 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/explorer/Attic/AstPortalView.java,v $</cvs:source>
- * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/24 15:36:41 $</cvs:author>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:date>$Author: KevinBenson $</cvs:date>
+ * <cvs:author>$Date: 2003/07/10 14:22:38 $</cvs:author>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  * $Log: AstPortalView.java,v $
+ * Revision 1.11  2003/07/10 14:22:38  KevinBenson
+ * I might have to get rid of these WS_FTP.log files not sure how they got their.  Anyays just fixing some compiling mistakes.
+ *
  * Revision 1.10  2003/06/24 15:36:41  dave
  * Adding initial XSP pages
  *
@@ -94,9 +97,13 @@ import org.astrogrid.portal.services.myspace.client.status.StatusNode ;
 
 //
 // Import the WSDL generated client stubs.
-import org.astrogrid.portal.services.myspace.client.MySpaceManager ;
-import org.astrogrid.portal.services.myspace.client.MySpaceManagerService ;
-import org.astrogrid.portal.services.myspace.client.MySpaceManagerServiceLocator ;
+//import org.astrogrid.portal.services.myspace.client.MySpaceManager ;
+//import org.astrogrid.portal.services.myspace.client.MySpaceManagerService ;
+//import org.astrogrid.portal.services.myspace.client.MySpaceManagerServiceLocator ;
+
+import org.astrogrid.portal.generated.myspace.client.MySpaceManager ;
+import org.astrogrid.portal.generated.myspace.client.MySpaceManagerService ;
+import org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator ;
 
 /**
  * A class to encapsulate an explorer view in the protal.

@@ -25,7 +25,12 @@ public class RegistryInterfaceTestCase extends junit.framework.TestCase {
 
         try {
             java.lang.String value = null;
-            value = binding.submitQuery(new java.lang.String());
+            value = binding.submitQuery(new java.lang.String("<query><selectionSequence>" +
+			"<selection item='searchElements' itemOp='EQ' value='all'/>" +
+			"<selectionOp op='$and$'/>" +
+			"<selection item='ticker' itemOp='EQ' value='all'/>" +
+			"</selectionSequence></query>"));
+			System.out.println("The value of the submitQuery = " + value);
         }
         catch (java.rmi.RemoteException re) {
             throw new junit.framework.AssertionFailedError("Remote Exception caught: " + re);

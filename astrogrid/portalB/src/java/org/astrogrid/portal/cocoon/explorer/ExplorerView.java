@@ -1,12 +1,15 @@
 /*
  *
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/java/org/astrogrid/portal/cocoon/explorer/Attic/ExplorerView.java,v $</cvs:source>
- * <cvs:date>$Author: dave $</cvs:date>
- * <cvs:author>$Date: 2003/06/29 02:45:22 $</cvs:author>
- * <cvs:version>$Revision: 1.2 $</cvs:version>
+ * <cvs:date>$Author: KevinBenson $</cvs:date>
+ * <cvs:author>$Date: 2003/07/10 14:22:38 $</cvs:author>
+ * <cvs:version>$Revision: 1.3 $</cvs:version>
  *
  * <cvs:log>
  * $Log: ExplorerView.java,v $
+ * Revision 1.3  2003/07/10 14:22:38  KevinBenson
+ * I might have to get rid of these WS_FTP.log files not sure how they got their.  Anyays just fixing some compiling mistakes.
+ *
  * Revision 1.2  2003/06/29 02:45:22  dave
  * Fixed display styles in explorer and add VOTable transform
  *
@@ -74,9 +77,15 @@ import org.astrogrid.portal.services.myspace.client.status.StatusNode ;
 
 //
 // Import the WSDL generated client stubs.
-import org.astrogrid.portal.services.myspace.client.MySpaceManager ;
-import org.astrogrid.portal.services.myspace.client.MySpaceManagerService ;
-import org.astrogrid.portal.services.myspace.client.MySpaceManagerServiceLocator ;
+//import org.astrogrid.portal.services.myspace.client.MySpaceManager ;
+//import org.astrogrid.portal.services.myspace.client.MySpaceManagerService ;
+//import org.astrogrid.portal.services.myspace.client.MySpaceManagerServiceLocator ;
+
+import org.astrogrid.portal.generated.myspace.client.MySpaceManager ;
+import org.astrogrid.portal.generated.myspace.client.MySpaceManagerService ;
+import org.astrogrid.portal.generated.myspace.client.MySpaceManagerServiceLocator ;
+
+
 
 /**
  * A class to encapsulate an explorer view in the Cocoon protal.
