@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AstroGrid">
+
+  <title>AstroGrid Aggregation Project</title>
+
+  <body>
+    <menu name="Packages">
+        <item name="package list" href="projects-overview.html" />
+    </menu>
+    <links>
+       <item name="AstroGrid"       href="http://www.astrogrid.org"/>
+    </links>
+  </body>
+</project>
