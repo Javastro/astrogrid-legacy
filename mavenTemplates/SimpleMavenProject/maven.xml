@@ -13,10 +13,9 @@
 	<goal name="astrogrid-build-artifact" prereqs="jar:jar,war:war"/>
 	<goal name="astrogrid-install-artifact" prereqs="jar:install,war:install"/>
 	
-	
-	<preGoal name="java:compile">
+	<!-- JDepend fails if this dir is not present.  This is a hack to fix it. -->
+    <preGoal name="java:compile">
 		<mkdir dir="${basedir}/target/classes"/>
-		<!-- JDepend fails if this dir is not present.  This is a hack to fix it. -->
 	</preGoal>
 
 	<!-- If you wish to add any other things to the webapp before it is jared up, such
