@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.1 2004/10/12 22:46:42 mch Exp $
+ * $Id: SqlParser.java,v 1.2 2004/11/03 03:49:41 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -266,7 +266,7 @@ public class SqlParser  {
                return parseFunction(broken.left);
             }
             
-            return parseColumnRef(broken.left);
+            return parseFieldRef(broken.left);
          }
       }
       else {
@@ -277,6 +277,19 @@ public class SqlParser  {
          );
       }
    }
+   
+   /** Parses a reference to a search field - eg a column reference.  At the moment
+    * it makes a guess from if it has a full stop in it - but this should really
+    * come from info about the queryy defibnition... */
+   private SearchFieldReference parseFieldRef(String ref) {
+      if (ref.indexOf(".")>-1) {
+         return parseColumnRef(ref);
+      }
+      else {
+         return new RawSearchField(ref);
+      }
+   }
+   
    
    /** Parses a column reference, eg <alias>.<column> or <tablename>.<columnname>
     */
@@ -352,7 +365,7 @@ public class SqlParser  {
          return new LiteralString(trimmed);
       }
       else {
-         return parseColumnRef(expression);
+         return parseFieldRef(expression);
       }
    }
    
@@ -579,43 +592,44 @@ public class SqlParser  {
          throw new IllegalArgumentException("SQL doesn't start with SELECT - Can't cope");
       }
       
-      int limitIdx = sql.toUpperCase().indexOf("LIMIT");
-      int fromIdx = sql.toUpperCase().indexOf("FROM");
-      int whereIdx = sql.toUpperCase().indexOf("WHERE");
-      int orderByIdx = sql.toUpperCase().indexOf("ORDER BY");
+      //includes space search, so bear in mind idx is off by minus 1 from actual word
+      int limitIdx = sql.toUpperCase().indexOf(" LIMIT ");
+      int fromIdx = sql.toUpperCase().indexOf(" FROM ");
+      int whereIdx = sql.toUpperCase().indexOf(" WHERE ");
+      int orderByIdx = sql.toUpperCase().indexOf(" ORDER BY ");
 
       //start with FROM so we get the scope and aliases
       if (fromIdx == -1) {
          throw new IllegalArgumentException("No FROM in SQL statement");
       }
       else {
-         int end = whereIdx;
-         if (end == -1) end = orderByIdx;
+         int end = whereIdx+1;
+         if (end == -1) end = orderByIdx+1;
          if (end == -1) {
-            parseFrom(sql.substring(fromIdx+4));
+            parseFrom(sql.substring(fromIdx+5));
          }
          else {
-            parseFrom(sql.substring(fromIdx+4, end-1));
+            parseFrom(sql.substring(fromIdx+5, end-1));
          }
       }
       
       
       if (orderByIdx > -1) {
-         parseOrderBy(sql.substring(orderByIdx+8));
-         sql = sql.substring(0, orderByIdx-1);
+         parseOrderBy(sql.substring(orderByIdx+9));
+         sql = sql.substring(0, orderByIdx);
       }
 
       if (whereIdx > -1) {
-         parseWhere(sql.substring(whereIdx+5));
-         sql = sql.substring(0, whereIdx-1);
+         parseWhere(sql.substring(whereIdx+6));
+         sql = sql.substring(0, whereIdx);
       }
 
       //remove from
-      sql = sql.substring(0, fromIdx-1);
+      sql = sql.substring(0, fromIdx);
       
       if (limitIdx > -1) {
-         parseLimit(sql.substring(limitIdx+5));
-         sql = sql.substring(0, limitIdx-1);
+         parseLimit(sql.substring(limitIdx+6));
+         sql = sql.substring(0, limitIdx);
       }
       
       parseSelect(sql.substring(6));//remove 'SELECT'
@@ -707,6 +721,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.2  2004/11/03 03:49:41  mch
+ Added raw search field parsing
+
  Revision 1.1  2004/10/12 22:46:42  mch
  Introduced typed function arguments
 
