@@ -1,0 +1,81 @@
+<html>
+<body>
+	<h1>CDS Vizier Astrogrid Datacenter</h1>
+	
+	This project implements an astrogrid datacenter backend-plugin that performs queries against the Vizier meta-catalogue provided by CDS.
+	
+	
+	<h2>Overview</h2>
+	CDS have published a basic web service interface to Vizier, and some of their other resources - Aladin, UCD catalogue, etc.
+
+	<h2>CDS Delegates</h2>
+	The {@link org.astrogrid.datacenter.cdsdelegate} package hierarchy contains the axis stub classes generated from the WSDL for
+	each of the CDS web services. The WSDL provided isn't as strongly-typed or descriptive as it could be - hence these packages also provide
+	delegate clients to access the CDS web services through. These wrap the generated stubs, and lift the level of abstraction - returning 
+	enumerated types rather than strings, for example.
+	<p />
+	These delegates are independent of the astrogrid datacenter code, and could be used in isolation to access the CDS services. UCD resolution
+	seems seems a good candidate.
+	
+	<h2>CDS Querier</h2>
+	The {@link org.astrogrid.datacenter.cds.querier} package contains a datacenter backend plugin that performs queries against the Vizier 
+	catalogue server. This integrates astrogrid and vizier - vizier will appear within astrogrid as another datacenter.
+	
+	<h2>Input Query Format</h2>
+	Presently, the plugin expects queries in ADQL. However, as the vizier datacenter isn't backed by a relational database, the adql document is
+	interpreted differently. The querier looks for certain column and table names to query against - any other functions, ordering, group-by or other 
+	processing instructions are ignored.
+	
+	<p />
+	<i>I'm going to present examples in the sql-equiuvalent for adql - otherwise they become too verbose.</i>
+	<h3>Search Type</h3>
+	  If the list of tables specified by the query contains a table called 'metadata' then a meta-catalogue search will be performed. Otherwise
+	  a catalogue search will be performed.
+	  <pre>
+	  	select * from metadata
+	  </pre>
+	perform a meta-catalogue search.
+	<pre>
+		select * from atable
+	</pre>
+	perform a catalogue search.
+	
+	<h3>Criteria</h3>
+	The vizier service can be searched on a number of criteria - these are expressed in ADQL as a where clause on a particular column. Only equality
+	conditions are supported.
+	<h4>Target (required)</h4>
+	Targets may either be given by name, or position.
+	<h5>By Name</h5>
+	The <tt>target</tt> and <tt>radius</tt>  columns must be specified
+	<pre>
+		select * from atable where target='alpha centuri' and radius=1.0 ' ...
+	</pre>
+
+	<h5>By Position</h5>
+	or by position, using the circle ADQL expression - this gives Ra, Dec and Radius
+	<pre>
+		select * from atable where Circle(ra=3.45,dec=4.65,radius=1.0) ...
+	</pre>
+	
+	<h4>Unit (required)</h4>
+	The units that the <tt>radius</tt> column is measured in. May be one of <tt>deg</tt>, <tt>argmin</tt>, <tt>arcsec</tt>
+<pre>
+	select * from atable where ... and unit='deg'
+</pre>	
+	<h4>Wavelength (optional)</h4>
+A	wavelength to restrict the search to. May be one of <i>fill in</i>
+<pre>
+	select * from atable where ... and wavelength='IR'
+</pre>
+
+<h4>Additional Strings (optional)</h4>
+Additional search terms may also be provided. <i>document more</i>
+	
+	
+	
+	<h2>Future Work</h2>
+	<ul>
+		<li>Add property to select CDS web service endpoint.</li>
+	</ul>
+</body>	
+</html>
