@@ -42,7 +42,6 @@ echo "[ag-build-$PROJECT_NAME] project home: $PROJECT_HOME"
 cd $PROJECT_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] generate and deploy site; deploy SNAPSHOT"
-maven astrogrid-clean >> $LOG_FILE 2>&1 
 maven astrogrid-deploy-site >> $LOG_FILE 2>&1 
 maven astrogrid-deploy-snapshot >> $LOG_FILE 2>&1
 echo "[ag-build-$PROJECT_NAME] deploy build log"
