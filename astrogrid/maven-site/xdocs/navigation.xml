@@ -39,7 +39,7 @@
       </item>
     </menu>
         <menu name="Releases">
-    	<item name="Itn05 Snapshots> href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05Snapshots"/>
+    	<item name="Itn05 Snapshots" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn05Snapshots"/>
     </menu>
   </body>
 </project>
