@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.10 2004/03/04 20:25:02 mch Exp $
+ * $Id: FailbackConfig.java,v 1.11 2004/03/05 00:33:02 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -215,7 +215,7 @@ public class FailbackConfig extends Config {
                throw new ConfigException("Using key '"+jndiUrlKey+"' or '"+jndiFileKey+"' in JNDI gave: ", ne);
             }
             catch (IOException ioe) {
-               throw new ConfigException("Exception loading property file at '"+fileUrl+
+               throw new ConfigException(ioe+" loading property file at '"+fileUrl+
                                             "' (returned by JNDI key "+keyUsed+")", ioe);
             }
          }
@@ -239,7 +239,7 @@ public class FailbackConfig extends Config {
                                             sysEnvKey+"' is malformed",mue);
             }
             catch (IOException ioe) {
-               throw new ConfigException("Exception loading property file at '"+fileUrl+
+               throw new ConfigException(ioe+" loading property file at '"+fileUrl+
                                             "' (returned by system environment variable '"+sysEnvKey+"')", ioe);
             }
          }
@@ -257,7 +257,7 @@ public class FailbackConfig extends Config {
                return;
                
             } catch (IOException ioe) {
-               throw new ConfigException("Exception loading property file at '"+configUrl+"' (from classpath)", ioe);
+               throw new ConfigException(ioe+" loading property file at '"+configUrl+"' (from classpath)", ioe);
             }
          }
          
@@ -272,7 +272,7 @@ public class FailbackConfig extends Config {
                return;
             }
             catch (IOException ioe) {
-               throw new ConfigException("Exception loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
+               throw new ConfigException(ioe+" loading property file at '"+f.getAbsolutePath()+"' (ie in working directory)", ioe);
             }
          }
          
@@ -340,7 +340,7 @@ public class FailbackConfig extends Config {
       }
       catch (NameNotFoundException nnfe) { } //ignore, we'll look somewhere else
       catch (NamingException ne) {
-         throw new ConfigException("Exception locating key="+key+" in JNDI", ne);
+         throw new ConfigException(ne+" locating key="+key+" in JNDI", ne);
       }
 
       //try the properties file
@@ -476,6 +476,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.11  2004/03/05 00:33:02  mch
+Added exception name to errors
+
 Revision 1.10  2004/03/04 20:25:02  mch
 Added dumpConfig to Config, and changed argument to general Writer
 
