@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.2 2004/02/26 17:31:30 mch Exp $
+ * $Id: FailbackConfig.java,v 1.3 2004/02/27 14:23:12 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -161,7 +161,7 @@ public class FailbackConfig extends Config {
             try {
                fileUrl = new URL(jndiContext.lookup(jndiKey).toString());
 
-               loadUrl(fileUrl);
+               loadFromUrl(fileUrl);
 
                log.info("Configuration file loaded from '"+fileUrl.toString()+"' (from JNDI Key="+jndiKey+")");
                
@@ -187,7 +187,7 @@ public class FailbackConfig extends Config {
             try {
                fileUrl = new URL(sysEnvUrl);
 
-               loadUrl(fileUrl);
+               loadFromUrl(fileUrl);
                
                log.debug("Configuration file loaded from '"+fileUrl.toString()+"' (from SYS ENV="+sysEnvKey+")");
                
@@ -209,7 +209,7 @@ public class FailbackConfig extends Config {
          URL configUrl = ClassLoader.getSystemResource(configFilename);
          if (configUrl != null) {
             try {
-               loadUrl(configUrl);
+               loadFromUrl(configUrl);
                
                log.info("Configuration file loaded from '"+configUrl+"' (from classpath)");
                
@@ -225,7 +225,7 @@ public class FailbackConfig extends Config {
          File f = new File(configFilename);
          if (f.exists()) {
             try {
-               loadUrl(f.toURL());
+               loadFromUrl(f.toURL());
                log.info("Configuration file loaded from working directory '"+f.getAbsolutePath()+"'");
                return;
             }
@@ -244,7 +244,7 @@ public class FailbackConfig extends Config {
     * allow public access so that test harnesses etc can load their own
     * properties differently.
     */
-   public synchronized void loadUrl(URL url) throws IOException   {
+   public synchronized void loadFromUrl(URL url) throws IOException   {
       if (properties == null) {
          properties = new Properties();
       }
@@ -335,6 +335,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.3  2004/02/27 14:23:12  mch
+Changed loadUrl to loadFromUrl
+
 Revision 1.2  2004/02/26 17:31:30  mch
 Fixed org.astrogrid.config.url from org.astrogrid.properties.url
 

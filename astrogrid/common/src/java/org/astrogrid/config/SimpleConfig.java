@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleConfig.java,v 1.7 2004/02/24 15:29:14 mch Exp $
+ * $Id: SimpleConfig.java,v 1.8 2004/02/27 14:23:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -64,7 +64,7 @@ public abstract class SimpleConfig
     */
    public static void load(URL url) throws IOException
    {
-      instance.loadUrl(url);
+      instance.loadFromUrl(url);
    }
    
    /**

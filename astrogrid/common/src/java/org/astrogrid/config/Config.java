@@ -1,5 +1,5 @@
 /*
- * $Id: Config.java,v 1.10 2004/02/24 15:29:14 mch Exp $
+ * $Id: Config.java,v 1.11 2004/02/27 14:23:12 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,7 +51,7 @@ public abstract class Config {
    public abstract void setProperty(String key, Object value);
    
    /** Loads the properties from the file at the given URL  */
-   public abstract void loadUrl(URL url) throws IOException;
+   public abstract void loadFromUrl(URL url) throws IOException;
 
    
    /**
