@@ -185,6 +185,9 @@ public class Workflow extends Activity {
     private static Logger 
         logger = Logger.getLogger( Workflow.class ) ; 
         
+    /** An experiment in code alignment */
+    private static final double cvsVersion = 1.67;
+        
     private static final String
         ASTROGRIDERROR_SOMEMESSAGE = "AGWKFE00050" ; // none so far 
         
@@ -921,7 +924,7 @@ public class Workflow extends Activity {
       **/           
     protected Workflow() {
         super(null) ; // null because no parent 
-        if( TRACE_ENABLED ) trace( " entry/exit: Workflow()") ;
+        if( TRACE_ENABLED ) trace( " entry/exit: Workflow(): cvsVersion " + cvsVersion ) ;
         this.setDirty( true ) ;
     }
     
@@ -942,7 +945,7 @@ public class Workflow extends Activity {
       **/        
     public Workflow( String communitySnippet, Document document ) {
         super(null) ;   // null because no parent 
-        if( TRACE_ENABLED ) trace( "entry: Workflow(communitySnippet,document)") ;
+        if( TRACE_ENABLED ) trace( "entry: Workflow(communitySnippet,document): cvsVersion " + cvsVersion) ;
         
         try{
 		    this.setDirty( true ) ;
@@ -1340,7 +1343,7 @@ public class Workflow extends Activity {
                                              , String myspaceLocation 
                                              , String myspaceArguments ) {
                                                  
-        if( TRACE_ENABLED ) trace( "entry: Workflow.readMySpaceList()") ; 
+        if( TRACE_ENABLED ) trace( "entry: Workflow.readMySpaceList(): cvsVersion " + cvsVersion ) ; 
         
         Iterator iterator = null ;
         java.util.Vector vector = null ;
