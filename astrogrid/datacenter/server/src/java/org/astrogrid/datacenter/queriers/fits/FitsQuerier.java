@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerier.java,v 1.6 2003/11/28 19:57:15 mch Exp $
+ * $Id: FitsQuerier.java,v 1.7 2003/12/01 20:57:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,14 +14,17 @@ import java.awt.geom.GeneralPath;
 import java.net.URL;
 import java.util.Vector;
 import org.apache.axis.utils.XMLUtils;
+import org.astrogrid.datacenter.adql.ADQLException;
+import org.astrogrid.datacenter.adql.ADQLUtils;
+import org.astrogrid.datacenter.adql.generated.Circle;
+import org.astrogrid.datacenter.adql.generated.Select;
+import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
+import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
-import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 import org.astrogrid.datacenter.snippet.DocHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -30,9 +33,40 @@ import org.w3c.dom.NodeList;
  * @author M Hill
  */
 
-public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
+public class FitsQuerier extends Querier
 {
    Document index = null;
+
+   public FitsQuerier(String id, _query query) throws IOException
+   {
+      super(id, query);
+   }
+
+   public QueryResults doQuery() throws DatabaseAccessException
+   {
+      try
+      {
+         Select adql = ADQLUtils.unmarshalSelect(getQueryingElement());
+         
+         Circle adqlRegion = adql.getTableClause().getWhereClause().getCircle();
+         
+         String[] filenames = coneSearch(adqlRegion.getRa().getValue(),
+                                         adqlRegion.getDec().getValue(),
+                                         adqlRegion.getRadius().getValue());
+
+         //@todo now what?
+         return null;
+      }
+      catch (ADQLException e)
+      {
+         throw new DatabaseAccessException(e, "Error parsing adql");
+      }
+      catch (IOException e)
+      {
+         throw new DatabaseAccessException(e, "Error doing search");
+      }
+      
+   }
    
    /**
     * locates all the fits files in this dataset that overlap the given
@@ -51,7 +85,7 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
       for (int i=0;i<coverages.getLength();i++)
       {
          //extract coverage region
-         Area coverage = new Area(getCoverage( (Element) coverages.item(i)));
+         Area coverage = new Area(getCoverageFromIndex( (Element) coverages.item(i)));
          
          //does it intersect with circle?
          if (intersects(matchingArea, coverage))
@@ -72,7 +106,7 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
     * represent that region.  At the moment it just returns a 'general path' with
     * the given points in it
     */
-   public GeneralPath getCoverage(Element dom)
+   public GeneralPath getCoverageFromIndex(Element dom)
    {
       GeneralPath region = new GeneralPath();
       
@@ -175,7 +209,7 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
          out.write(rawIndex.getBytes());
       }
       
-      FitsQuerier querier = new FitsQuerier();
+      FitsQuerier querier = new FitsQuerier("test",null);
       querier.setIndex(new FileInputStream(indexFile));
 
       org.astrogrid.log.Log.trace("Starting cone search...");
@@ -194,6 +228,9 @@ public class FitsQuerier extends BaseQuerierSPI implements QuerierSPI
 
 /*
  $Log: FitsQuerier.java,v $
+ Revision 1.7  2003/12/01 20:57:39  mch
+ Abstracting coarse-grained plugin
+
  Revision 1.6  2003/11/28 19:57:15  mch
  Cone Search now works
 

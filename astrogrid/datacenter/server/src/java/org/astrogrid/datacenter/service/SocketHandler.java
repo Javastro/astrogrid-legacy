@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.12 2003/12/01 16:43:52 nw Exp $
+ * $Id: SocketHandler.java,v 1.13 2003/12/01 20:57:39 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -128,8 +128,8 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             else if (docRequest.getElementsByTagName(SocketDelegate.CREATE_QUERY_TAG).getLength() > 0)
             {
                Log.trace("SocketHandler["+socket.getPort()+"]: Creating a query");
-               Querier querier = QuerierManager.createQuerier(docRequest.getDocumentElement());
-               out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
+//               Querier querier = QuerierManager.createQuerier(docRequest.getDocumentElement());
+//               out.writeDoc(ResponseHelper.makeQueryCreatedResponse(querier));
             }
             else if (docRequest.getElementsByTagName(SocketDelegate.START_QUERY_TAG).getLength() > 0)
             {
@@ -252,6 +252,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.13  2003/12/01 20:57:39  mch
+Abstracting coarse-grained plugin
+
 Revision 1.12  2003/12/01 16:43:52  nw
 dropped _QueryId, back to string
 

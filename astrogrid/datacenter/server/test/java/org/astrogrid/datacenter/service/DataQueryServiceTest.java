@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.10 2003/12/01 16:44:11 nw Exp $
+/*$Id: DataQueryServiceTest.java,v 1.11 2003/12/01 20:58:42 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,12 +15,9 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
@@ -34,6 +31,7 @@ import org.astrogrid.datacenter.queriers.QuerierListener;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.astrogrid.datacenter.query.QueryStatus;
+import org.astrogrid.mySpace.delegate.mySpaceManager.MySpaceDummyDelegate;
 import org.w3c.dom.Document;
 
 /** Test the entire DataQueryService, end-to-end, over a Hsql database
@@ -59,7 +57,7 @@ public class DataQueryServiceTest extends ServerTestCase {
         super.setUp();
         //wsTest.setUp(); //sets up workspace
         HsqlTestCase.initializeConfiguration();
-        SimpleConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,Querier.TEMPORARY_DUMMY);
+        SimpleConfig.setProperty(QuerierManager.RESULTS_TARGET_KEY,MySpaceDummyDelegate.DUMMY);
         SimpleConfig.setProperty(ServiceServer.METADATA_FILE_LOC_KEY,"/org/astrogrid/datacenter/test-metadata.xml");
         DataSource ds = new HsqlTestCase.HsqlDataSource();
         //File tmpDir = WorkspaceTest.setUpWorkspace(); // dunno if we need to hang onto this for any reason..
@@ -114,16 +112,16 @@ public class DataQueryServiceTest extends ServerTestCase {
     
     public void testMakeQueryWithId() throws Exception {
         String qid = server.makeQueryWithId(query,"foo");
-        assertEquals("foo",qid);        
+        assertEquals("foo",qid);
     }
     
     public void testAbort() throws Exception {
         String qid = server.makeQuery(query);
         assertNotNull(qid);
         server.abortQuery(qid);
-        // should have gone now.. i.e. we can't do this..    
-        try {    
-        server.setResultsDestination(qid,new URI(Querier.TEMPORARY_DUMMY));
+        // should have gone now.. i.e. we can't do this..
+        try {
+        server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
         fail("Expected to barf");
         }catch (IllegalArgumentException e) {
             //ignored it
@@ -134,11 +132,11 @@ public class DataQueryServiceTest extends ServerTestCase {
     public void testDoStagedQueryQuery() throws Exception    {
              String qid = server.makeQuery(query);
              assertNotNull(qid);
-             server.setResultsDestination(qid,new URI(Querier.TEMPORARY_DUMMY));
+             server.setResultsDestination(qid,new URI(MySpaceDummyDelegate.DUMMY));
              assertEquals(QueryStatus.UNKNOWN.toString(),server.getStatus(qid));
 
             TestListener l = new TestListener();
-            //server.registerWebListener()       
+            //server.registerWebListener()
             server.startQuery(qid);
             String results = null;
             while (results == null) {
@@ -150,7 +148,7 @@ public class DataQueryServiceTest extends ServerTestCase {
        
 
         /*
-       // check what the listener recorded. - should always be the same pattern for this query.       
+       // check what the listener recorded. - should always be the same pattern for this query.
         assertEquals(4,l.statusList.size());
         QueryStatus[] expected = new QueryStatus[]{QueryStatus.RUNNING_QUERY,QueryStatus.QUERY_COMPLETE,QueryStatus.RUNNING_RESULTS,QueryStatus.FINISHED};
         for (int i = 0; i < l.statusList.size(); i++) {
@@ -192,6 +190,9 @@ public class DataQueryServiceTest extends ServerTestCase {
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.11  2003/12/01 20:58:42  mch
+Abstracting coarse-grained plugin
+
 Revision 1.10  2003/12/01 16:44:11  nw
 dropped _QueryId, back to string
 

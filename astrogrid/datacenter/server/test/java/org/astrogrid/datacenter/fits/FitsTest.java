@@ -1,4 +1,4 @@
-/*$Id: FitsTest.java,v 1.5 2003/11/28 19:57:45 mch Exp $
+/*$Id: FitsTest.java,v 1.6 2003/12/01 20:58:42 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -20,7 +20,8 @@ import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
  */
 public class FitsTest extends TestCase
 {
-   
+
+   /** Tests reading the header = ie loading and parsing keywords, etc */
    public void testHeader() throws IOException
    {
       URL fits1 = getClass().getResource("iautestfits/tst0001.fits");
@@ -33,7 +34,9 @@ public class FitsTest extends TestCase
       reader.readHeaderKeywords(header, null);
       assertNotNull(header.get("END"));
    }
-   
+
+   /** Tests generating indexes from three fits files.  This will test also
+    * the full keyword/etc parsing */
    public void testIndexGenerator() throws IOException
    {
       URL[] fits = new URL[] {
@@ -67,6 +70,9 @@ public class FitsTest extends TestCase
 
 /*
  $Log: FitsTest.java,v $
+ Revision 1.6  2003/12/01 20:58:42  mch
+ Abstracting coarse-grained plugin
+
  Revision 1.5  2003/11/28 19:57:45  mch
  Cone Search now works
 

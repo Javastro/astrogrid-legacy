@@ -1,4 +1,4 @@
-/*$Id: HsqlTestCase.java,v 1.5 2003/11/27 00:52:58 nw Exp $
+/*$Id: HsqlTestCase.java,v 1.6 2003/12/01 20:58:42 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,15 +16,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.StringTokenizer;
-
 import javax.sql.DataSource;
-
 import junit.framework.TestCase;
-
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.hsql.HsqlQuerier;
+import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 
 /** abstract test case for testing against an in-memory Hsql database.
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Sep-2003
@@ -66,8 +64,9 @@ public abstract class HsqlTestCase extends TestCase {
        //register HSQLDB driver with driver key in configration file
        //put driver into config file
        SimpleConfig.setProperty(SqlQuerierSPI.JDBC_DRIVERS_KEY, JDBC_DRIVER );
-       SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY,HsqlQuerier.class.getName());
-        
+       SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY,HsqlQuerier.class.getName());
+       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
+
        //register where to find database
        SimpleConfig.setProperty(SqlQuerierSPI.JDBC_URL_KEY, JDBC_URL );
        SimpleConfig.setProperty(SqlQuerierSPI.JDBC_CONNECTION_PROPERTIES_KEY,"user=sa");
@@ -133,13 +132,16 @@ public abstract class HsqlTestCase extends TestCase {
             // Auto-generated method stub
             return DriverManager.getConnection (JDBC_URL, username,password);
         }
-    }    
+    }
 
 }
 
 
 /*
 $Log: HsqlTestCase.java,v $
+Revision 1.6  2003/12/01 20:58:42  mch
+Abstracting coarse-grained plugin
+
 Revision 1.5  2003/11/27 00:52:58  nw
 refactored to introduce plugin-back end and translator maps.
 interfaces in place. still broken code in places.

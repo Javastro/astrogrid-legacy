@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.6 2003/12/01 16:43:52 nw Exp $
+/*$Id: QuerierManager.java,v 1.7 2003/12/01 20:57:39 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -35,15 +35,15 @@ import org.w3c.dom.Element;
 public class QuerierManager {
    
    private static final Log log = LogFactory.getLog(QuerierManager.class);
-   /** Key to configuration files' entry that tells us what database querier
-    * to use with this service   */
-   public static final String QUERIER_SPI_KEY = "QuerierSPI";
    
    /** lookup table of all the current queriers indexed by their handle*/
    protected static Hashtable queriers = new Hashtable();
    
    /** temporary used for generating unique handles - see generateHandle() */
    static java.util.Random random = new java.util.Random();
+
+   /** Key to which plugin (which sublcass of Querier) to use */
+   public static final String DATABASE_QUERIER_KEY = "DatabaseQuerierClass";
    
    /** Key to configuration entry for the default target myspace for this server */
    public static final String RESULTS_TARGET_KEY = "DefaultMySpace";
@@ -67,7 +67,7 @@ public class QuerierManager {
     * @deprecated Use createQuerier(Query);
     * @todo - move the extra bits in this method into the OO-version
     * @todo - temporarily commented out.
-    */
+    *
    public static Querier createQuerier(Element rootElement)
       throws DatabaseAccessException {
       /*
@@ -117,11 +117,11 @@ public class QuerierManager {
       }
       catch (ValidationException e) {
          reportException(e);
-      }*/
+      }
       
-      return null; // unreachable;
    }
-   
+    /**/
+    
    /**
     * Creates an adql querier with a generated (unique-to-this-service) handle
     */
@@ -139,15 +139,13 @@ public class QuerierManager {
     */
    public static Querier createQuerier(_query query, String qid) throws DatabaseAccessException {
       
-      QuerierSPI spi = instantiateQuerierSPI();
       //assigns handle
       try {
          if (queriers.get(qid) != null) {
             log.error( "Handle '" + qid + "' already in use");
             throw new IllegalArgumentException("Handle " + qid + "already in use");
          }
-         Workspace workspace = new Workspace(qid);
-         Querier querier = new Querier(spi,query,workspace,qid);
+         Querier querier = instantiateQuerier(query, qid);
          queriers.put(qid, querier);
 
          return querier;
@@ -157,20 +155,41 @@ public class QuerierManager {
       }
    }
    
-   
-   /** method that handles the business of instantiating the querier object */
-   public static QuerierSPI instantiateQuerierSPI()
-      throws DatabaseAccessException {
-      String querierSpiClass = SimpleConfig.getProperty(QUERIER_SPI_KEY);
-      
-      if (querierSpiClass == null) {
-         throw new DatabaseAccessException(" Querier key [" + QUERIER_SPI_KEY + "] "
-                                              + "cannot be found in the configuration file(s) '"  + SimpleConfig.getLocations() + "'");
+   /**
+    * Convenience method for nicely closing a querier.  Does not complain if
+    * reference is null or querier is not in list */
+   public static void closeQuerier(Querier querier) throws IOException
+   {
+      if (querier != null)
+      {
+         querier.close();
+         queriers.remove(querier);
       }
+   }
+   
+   /**
+    * Convenience method for nicely closing a querier.  Does not complain if
+    * reference is null or querier is not in list */
+   public static void closeQuerier(String queryId) throws IOException
+   {
+      if (queryId != null)
+      {
+         closeQuerier((Querier) queriers.get(queryId));
+      }
+   }
+   
+   
+   /** Instantiates the class with the given name.  This is useful for things
+    * such as 'plugins', where a class name might be given in a configuration file.
+    * Rather messily throws Throwable because anything might have
+    * gone wrong in the constructor.
+    * @todo 'factor out' to a utility class?
+    */
+   public static Object instantiate(String classname) throws Throwable {
       
-      //create querier implementation
       try {
-         Class qClass = Class.forName(querierSpiClass);
+         Class qClass = Class.forName(classname);
+
          /* NWW - interesting bug here.
           original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
           however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
@@ -178,47 +197,63 @@ public class QuerierManager {
           invocationTargetExcetpion - as it thinks it cannot be thrown.
           this means the exception boils out of the code, and is unstoppable - dodgy
           work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
-         // Original Code
-         //DatabaseQuerier querier = (DatabaseQuerier)qClass.newInstance();
-         // safe equivalent
+
          Constructor constr = qClass.getConstructor(new Class[] { });
-         Object unknown = constr.newInstance(new Object[] {});
-         if (! (unknown instanceof QuerierSPI)) {
-             log.error("Could not load Querier : incorrect class" + unknown.getClass().getName());
-             throw new DatabaseAccessException("Could not load Querier: incorrect class" + unknown.getClass().getName());
-         } 
-         QuerierSPI spi = (QuerierSPI) unknown;
-         log.info(spi.getPluginInfo());
-         return spi;
+         return constr.newInstance(new Object[] { } );
          
       } catch (InvocationTargetException e) {
          // interested in the root cause here - invocation target is just a wrapper, and not meaningful in itself.
-         reportException(e.getCause());
-      } catch (ClassNotFoundException e) {
-         reportException(e);
-      } catch (IllegalAccessException e) {
-         reportException(e);
-      } catch (NoSuchMethodException e) {
-         reportException(e);
-      } catch (InstantiationException e) {
-         reportException(e);
+         throw e.getCause();
       }
-      return null;
    }
    
-   private static void reportException(Throwable t) throws DatabaseAccessException {
-      log.error("Could not load Database Querier: " + t.getMessage(),t);
-      throw new DatabaseAccessException(t,"Could not load Database Querier: " + t.getMessage());
-   }
+   /** Instantiates the querier given in the configuration file
+    */
+   public static Querier instantiateQuerier(_query query, String id) throws DatabaseAccessException {
       
+      String querierClass = SimpleConfig.getProperty(DATABASE_QUERIER_KEY);
+      
+      if (querierClass == null) {
+         throw new DatabaseAccessException(" Server not configured properly: Querier key [" + DATABASE_QUERIER_KEY + "] "
+                                              + "cannot be found in the configuration file(s) '"  + SimpleConfig.getLocations() + "'");
+      }
+
+      try {
+         Class qClass = Class.forName(querierClass);
+
+         /* NWW - interesting bug here.
+          original code used class.newInstance(); this method doesn't declare it throws InvocationTargetException,
+          however, this exception _is_ thrown if an exception is thrown by the constructor (as is often the case at the moment)
+          worse, as InvocatioinTargetException is a checked exception, the compiler rejects code with a catch clause for
+          invocationTargetExcetpion - as it thinks it cannot be thrown.
+          this means the exception boils out of the code, and is unstoppable - dodgy
+          work-around - use the equivalent methods on java.lang.reflect.Constructor - which do throw the correct exceptions */
+
+         Constructor constr = qClass.getConstructor(new Class[] {String.class, _query.class });
+         return (Querier) constr.newInstance(new Object[] {id, query});
+      }
+      catch (ClassNotFoundException cnfe) {
+         throw new DatabaseAccessException(cnfe, "Server not configured properly: plugin '"+querierClass+"' not found");
+      }
+      catch (ClassCastException cce) {
+         throw new DatabaseAccessException(cce, "Server not configured properly: plugin '"+querierClass+"' is not a Querier subclass");
+      }
+      catch (InvocationTargetException e) {
+         throw new DatabaseAccessException(e.getCause(), "Could not load Querier '"+querierClass+"'");
+      }
+      catch (Exception e) {
+         throw new DatabaseAccessException(e, "Could not load Querier '"+querierClass+"'");
+      }
+   }
    
    /**
     * Generates a handle for use by a particular instance; uses the current
     * time to help us debug (ie we can look at the temporary directories and
     * see which was the last run). Later we could add service/user information
     * if available
+    * @todo not really unique...
     */
-   static String generateQueryId() {
+   public static String generateQueryId() {
       Date todayNow = new Date();
        return
          todayNow.getYear()
@@ -233,16 +268,21 @@ public class QuerierManager {
          + "."
          + todayNow.getSeconds()
          + "_"
+         //plus botched bit... not really unique
          + (random.nextInt(8999999) + 1000000);
-
-      //plus botched bit... not really unique
       
    }
+
+   
+   
    
 }
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.7  2003/12/01 20:57:39  mch
+ Abstracting coarse-grained plugin
+
  Revision 1.6  2003/12/01 16:43:52  nw
  dropped _QueryId, back to string
 

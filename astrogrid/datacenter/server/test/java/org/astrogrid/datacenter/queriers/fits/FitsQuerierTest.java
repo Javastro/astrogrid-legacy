@@ -1,4 +1,4 @@
-/*$Id: FitsQuerierTest.java,v 1.1 2003/11/28 20:00:24 mch Exp $
+/*$Id: FitsQuerierTest.java,v 1.2 2003/12/01 20:58:42 mch Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -9,6 +9,9 @@
  **/
 package org.astrogrid.datacenter.queriers.fits;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import junit.framework.Test;
@@ -24,11 +27,54 @@ public class FitsQuerierTest extends TestCase
 
    public void testCone() throws IOException
    {
-      FitsQuerier querier = new FitsQuerier();
+      FitsQuerier querier = new FitsQuerier("DummyId", null);
+
+      setIndex(querier);
       
       querier.coneSearch(300,60,12);
 
    }
+
+   public void testLots() throws IOException
+   {
+      org.astrogrid.log.Log.logToConsole();
+
+      FitsQuerier querier = new FitsQuerier("test",null);
+      setIndex(querier);
+
+      org.astrogrid.log.Log.trace("Starting cone search...");
+      String[] foundUrls = querier.coneSearch(308,60,12);
+      
+      org.astrogrid.log.Log.trace("Found "+foundUrls.length+":");
+      
+      for (int i=0;i<foundUrls.length;i++)
+      {
+         org.astrogrid.log.Log.trace(foundUrls[i].toString());
+      }
+   }
+
+   public void setIndex(FitsQuerier querier) throws IOException
+   {
+      File indexFile = new File("fitsIndex.xml");
+      if (!indexFile.exists())
+      {
+         org.astrogrid.log.Log.trace("Generating index...");
+         //create index file
+         String rawIndex = IndexGenerator.generateIndex(
+            new URL[] {
+               new URL("http://www.roe.ac.uk/~mch/r169411.fit"),
+                  new URL("http://www.roe.ac.uk/~mch/r169097.fit"),
+                  new URL("http://www.roe.ac.uk/~mch/r169101.fit")
+            }
+         );
+         org.astrogrid.log.Log.trace(rawIndex);
+         FileOutputStream out = new FileOutputStream(indexFile);
+         out.write(rawIndex.getBytes());
+      }
+      
+      querier.setIndex(new FileInputStream(indexFile));
+   }
+   
    
    public static Test suite()
    {
@@ -50,6 +96,9 @@ public class FitsQuerierTest extends TestCase
 
 /*
  $Log: FitsQuerierTest.java,v $
+ Revision 1.2  2003/12/01 20:58:42  mch
+ Abstracting coarse-grained plugin
+
  Revision 1.1  2003/11/28 20:00:24  mch
  Added cone search test
 

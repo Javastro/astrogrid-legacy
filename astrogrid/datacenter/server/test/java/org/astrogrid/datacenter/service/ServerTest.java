@@ -14,12 +14,9 @@ package org.astrogrid.datacenter.service;
 
 import java.io.IOException;
 import java.net.URL;
-
 import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
@@ -30,6 +27,7 @@ import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.DummyQuerierSPI;
 import org.astrogrid.datacenter.queriers.QuerierManager;
+import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -50,7 +48,8 @@ public class ServerTest extends ServerTestCase
    {
       //make sure database querier to be used is the dummy one - only available
       //in the test suite
-      SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY, DummyQuerierSPI.class.getName());
+      SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY, DummyQuerierSPI.class.getName());
+       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
 
       //create the server
       AxisDataServer server = new AxisDataServer();
@@ -67,7 +66,7 @@ public class ServerTest extends ServerTestCase
       
       //submit query
       String result = server.doQuery(AdqlQuerier.VOTABLE,q);
-      assertNotNull(result);  
+      assertNotNull(result);
       assertIsVotableResultsResponse(result);
       
       
@@ -104,6 +103,9 @@ public class ServerTest extends ServerTestCase
 
 /*
 $Log: ServerTest.java,v $
+Revision 1.6  2003/12/01 20:58:42  mch
+Abstracting coarse-grained plugin
+
 Revision 1.5  2003/11/28 16:10:30  nw
 finished plugin-rewrite.
 added tests to cover plugin system.

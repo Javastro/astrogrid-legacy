@@ -1,5 +1,5 @@
 /*
- * $Id: DummyQuerierSPI.java,v 1.4 2003/12/01 16:44:11 nw Exp $
+ * $Id: DummyQuerierSPI.java,v 1.5 2003/12/01 20:58:42 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -7,10 +7,10 @@
 package org.astrogrid.datacenter.queriers;
 
 import java.util.Date;
-
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.queriers.spi.BaseQuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.IdTranslator;
+import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.queriers.spi.QuerierSPI;
 import org.astrogrid.datacenter.queriers.spi.TranslatorMap;
 
@@ -40,7 +40,7 @@ public String getPluginInfo() {
 
 public static Querier createDummyQuerier() throws Exception {
 
-    return new Querier(new DummyQuerierSPI(),QueryHelper.buildMinimalQuery(),null,"Handle");
+    return new PluginQuerier(new DummyQuerierSPI(),"Handle", QueryHelper.buildMinimalQuery());
 }
 
 

@@ -1,11 +1,11 @@
-/*$Id: QuerierManagerTest.java,v 1.2 2003/12/01 16:44:11 nw Exp $
+/*$Id: QuerierManagerTest.java,v 1.3 2003/12/01 20:58:42 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers;
@@ -13,6 +13,7 @@ package org.astrogrid.datacenter.queriers;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
+import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 
 /**
  * test behaviours the querier manager.
@@ -35,7 +36,8 @@ public class QuerierManagerTest extends ServerTestCase {
     
     protected void setUp() throws Exception {
         super.setUp();
-        SimpleConfig.setProperty(QuerierManager.QUERIER_SPI_KEY,DummyQuerierSPI.class.getName());        
+        SimpleConfig.setProperty(PluginQuerier.QUERIER_SPI_KEY,DummyQuerierSPI.class.getName());
+       SimpleConfig.setProperty(QuerierManager.DATABASE_QUERIER_KEY, PluginQuerier.class.getName());
     }
     
     protected void tearDown() throws Exception {
@@ -69,7 +71,7 @@ public class QuerierManagerTest extends ServerTestCase {
          assertEquals(qid,s2.getQueryId());
          
          // check it gets removed from store on close - otherwise we'll get an ever-growing heap of old queriers.
-         s1.close();         
+         s1.close();
          assertEquals(startingSize,QuerierManager.getQueriers().size());
          assertNull(QuerierManager.getQuerier(qid));
                   
@@ -79,8 +81,11 @@ public class QuerierManagerTest extends ServerTestCase {
 }
 
 
-/* 
+/*
 $Log: QuerierManagerTest.java,v $
+Revision 1.3  2003/12/01 20:58:42  mch
+Abstracting coarse-grained plugin
+
 Revision 1.2  2003/12/01 16:44:11  nw
 dropped _QueryId, back to string
 

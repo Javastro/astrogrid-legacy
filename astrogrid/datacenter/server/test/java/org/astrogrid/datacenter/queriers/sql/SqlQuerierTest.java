@@ -1,4 +1,4 @@
-/*$Id: SqlQuerierTest.java,v 1.7 2003/12/01 16:44:11 nw Exp $
+/*$Id: SqlQuerierTest.java,v 1.8 2003/12/01 20:58:42 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,10 +13,8 @@ package org.astrogrid.datacenter.queriers.sql;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-
 import junit.framework.Test;
 import junit.framework.TestSuite;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.ServerTestCase;
 import org.astrogrid.datacenter.adql.ADQLUtils;
@@ -24,7 +22,7 @@ import org.astrogrid.datacenter.adql.generated.Select;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QueryResults;
-import org.astrogrid.util.Workspace;
+import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.w3c.dom.Document;
 
 /** test out the vanilla sql querier over an in-memory hsqldb database
@@ -99,15 +97,15 @@ public class SqlQuerierTest extends ServerTestCase {
      * @throws Exception
      */
     protected void performQuery(String queryFile) throws Exception {
-        assertNotNull(queryFile);        
+        assertNotNull(queryFile);
         InputStream is = this.getClass().getResourceAsStream(queryFile);
         assertNotNull("Could not open query file :" + queryFile,is);
-        Select select = Select.unmarshalSelect(new InputStreamReader(is));     
-        assertNotNull(select);          
+        Select select = Select.unmarshalSelect(new InputStreamReader(is));
+        assertNotNull(select);
         _query q = new _query();
         q.setQueryBody(ADQLUtils.marshallSelect(select).getDocumentElement());
 
-        Querier querier = new Querier(new SqlQuerierSPI(),q,new Workspace("handle"),"handle");
+        Querier querier = new PluginQuerier(new SqlQuerierSPI(),"handle", q);
         assertNotNull(querier);
         QueryResults results = querier.doQuery();
         assertNotNull(results);
@@ -124,6 +122,9 @@ public class SqlQuerierTest extends ServerTestCase {
 
 /*
 $Log: SqlQuerierTest.java,v $
+Revision 1.8  2003/12/01 20:58:42  mch
+Abstracting coarse-grained plugin
+
 Revision 1.7  2003/12/01 16:44:11  nw
 dropped _QueryId, back to string
 

@@ -1,20 +1,20 @@
-/*$Id: QuerierSpiContractTest.java,v 1.4 2003/12/01 16:44:11 nw Exp $
+/*$Id: QuerierSpiContractTest.java,v 1.5 2003/12/01 20:58:42 mch Exp $
  * Created on 27-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.queriers.spi;
 
 import junit.framework.TestCase;
-
 import org.astrogrid.datacenter.axisdataserver.types.QueryHelper;
 import org.astrogrid.datacenter.axisdataserver.types._query;
 import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.util.Workspace;
 import org.w3c.dom.Element;
@@ -38,21 +38,21 @@ public class QuerierSpiContractTest extends TestCase {
     }
     
     protected void setUp() throws Exception {
-        workspace = new Workspace(QID);
+//        workspace = new Workspace(QID);
         query = QueryHelper.buildMinimalQuery();
     }
     
     public void testContract() throws Exception {
         // create a mock SPI, pass to querier, check querier initializes it correctly.
         MockQuerierSPI spi = new MockQuerierSPI();
-        Querier querier = new Querier(spi,query,workspace,QID);
+        Querier querier = new PluginQuerier(spi,QuerierManager.generateQueryId(),query);
         querier.doQuery();
         querier.close();
         // now check mock was initialized correctly
         spi.selfCheck();
     }
     
-    public static final String QID = "handle";
+//    public static final String QID = "handle";
  
     protected _query query;
     protected Workspace workspace;
@@ -67,11 +67,11 @@ public class QuerierSpiContractTest extends TestCase {
             assertEquals(1,seenClose);
         }
         protected SimpleTranslatorMap trans = new SimpleTranslatorMap();
-        { 
+        {
             trans.add("http://tempuri.org/adql",new IdTranslator());
         }
         public TranslatorMap getTranslatorMap() {
-          return trans;  
+          return trans;
         }
 
         public String getPluginInfo() {
@@ -110,8 +110,11 @@ public class QuerierSpiContractTest extends TestCase {
 }
 
 
-/* 
+/*
 $Log: QuerierSpiContractTest.java,v $
+Revision 1.5  2003/12/01 20:58:42  mch
+Abstracting coarse-grained plugin
+
 Revision 1.4  2003/12/01 16:44:11  nw
 dropped _QueryId, back to string
 

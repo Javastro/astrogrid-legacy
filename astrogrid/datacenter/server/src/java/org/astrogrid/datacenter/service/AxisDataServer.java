@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.16 2003/12/01 16:43:52 nw Exp $
+ * $Id: AxisDataServer.java,v 1.17 2003/12/01 20:57:39 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,10 +14,8 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.apache.axis.types.URI;
 import org.apache.axis.utils.XMLUtils;
 import org.apache.commons.logging.Log;
@@ -31,6 +29,7 @@ import org.astrogrid.datacenter.queriers.DatabaseAccessException;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
+import org.astrogrid.datacenter.queriers.spi.PluginQuerier;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.snippet.ResponseHelper;
@@ -151,9 +150,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new DatacenterException("Failed to convert results to VOTable", e);
       }
       finally  {
-         if (querier != null)  {
-            querier.close();
-         }
+         QuerierManager.closeQuerier(querier);
       }
    }
    
@@ -185,7 +182,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new IllegalArgumentException("Empty assigned id");
       }
 
-      Querier querier = QuerierManager.createQuerier(q, assignedId);      
+      Querier querier = QuerierManager.createQuerier(q, assignedId);
       return querier.getQueryId();
    }
    
@@ -230,10 +227,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
           throw new IllegalArgumentException("Unknown qid:" + queryId);
       }
       //has querier finished?
-      if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {         
+      if (!querier.getStatus().isBefore(QueryStatus.FINISHED)) {
          String results = querier.getResultsLoc();
          try {
-            querier.close();
+            QuerierManager.closeQuerier(querier);
          } catch (IOException e){
              log.warn("Exception closing querier");
          }
@@ -280,7 +277,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
       
       try  {
          URL u = new URL(uri.toString());
-         Querier querier = getQuerier(queryId);         
+         Querier querier = getQuerier(queryId);
          if (querier == null) {
              throw new IllegalArgumentException("Unknown qid" + queryId);
          }
@@ -304,7 +301,7 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          URL u = new URL(uri.toString());
          Querier querier = getQuerier(queryId);
          if (querier == null) {
-             throw new IllegalArgumentException("Unknown qid" + queryId);             
+             throw new IllegalArgumentException("Unknown qid" + queryId);
          }
          
          querier.registerListener(new WebNotifyServiceListener(u));
@@ -320,10 +317,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
 public _language[] getLanguageInfo(Object arg0) throws RemoteException {
     
         try {
-            return QuerierManager.instantiateQuerierSPI().getTranslatorMap().list();
+            return PluginQuerier.instantiateQuerierSPI().getTranslatorMap().list();
         } catch (DatabaseAccessException e) {
             throw new RemoteException("Could not instantiate querier SPI",e);
-        }   
+        }
 }
    
 }
