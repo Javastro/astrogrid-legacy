@@ -1,4 +1,4 @@
-/*$Id: DatacenterCEAComponentManager.java,v 1.2 2004/11/04 15:04:29 mch Exp $
+/*$Id: DatacenterCEAComponentManager.java,v 1.3 2004/11/08 02:58:44 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,16 +10,18 @@
 **/
 package org.astrogrid.datacenter.service.v06;
 
+import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.component.EmptyCEAComponentManager;
+import org.astrogrid.applications.manager.idgen.GloballyUniqueIdGen;
+import org.astrogrid.applications.manager.idgen.IdGen;
+import org.astrogrid.applications.manager.persist.ExecutionHistory;
+import org.astrogrid.applications.manager.persist.InMemoryExecutionHistory;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.service.DataServer;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.picocontainer.MutablePicoContainer;
-
-import EDU.oswego.cs.dl.util.concurrent.QueuedExecutor;
 
 /** Component manager implementation that assembles a CEA server which provides a single {@link DatacetnerApplicationDescription} for the
  * datacenter application
@@ -40,8 +42,10 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
         final Config config = SimpleConfig.getSingleton();
         // controller & queriers
         EmptyCEAComponentManager.registerDefaultServices(pico);
-        // store
-        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
+        // store - force in-memory
+        pico.registerComponentImplementation(ExecutionHistory.class,InMemoryExecutionHistory.class);
+        pico.registerComponentImplementation(IdGen.class,GloballyUniqueIdGen.class);
+//        EmptyCEAComponentManager.registerDefaultPersistence(pico,config);
         // metadata
         EmptyCEAComponentManager.registerDefaultVOProvider(pico,config);
         // the protocol lib
@@ -78,6 +82,9 @@ public class DatacenterCEAComponentManager extends EmptyCEAComponentManager {
 
 /*
 $Log: DatacenterCEAComponentManager.java,v $
+Revision 1.3  2004/11/08 02:58:44  mch
+Various fixes and better error messages
+
 Revision 1.2  2004/11/04 15:04:29  mch
 Removed default cea name so we know we need to set it
 

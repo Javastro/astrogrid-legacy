@@ -1,11 +1,11 @@
-/*$Id: DatacenterApplicationDescription.java,v 1.1 2004/09/28 15:02:13 mch Exp $
+/*$Id: DatacenterApplicationDescription.java,v 1.2 2004/11/08 02:58:44 mch Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid 
- * Software License version 1.2, a copy of which has been included 
- * with this distribution in the LICENSE.txt file.  
+ * This software is published under the terms of the AstroGrid
+ * Software License version 1.2, a copy of which has been included
+ * with this distribution in the LICENSE.txt file.
  *
 **/
 package org.astrogrid.datacenter.service.v06;
@@ -60,7 +60,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
      */
     public DatacenterApplicationDescription(String name,DataServer ds,ApplicationDescriptionEnvironment arg0, Executor exec) {
         super(arg0);
-        this.ds = ds;        
+        this.ds = ds;
         this.exec = exec;
             try {
                 this.createMetadata(name);
@@ -101,7 +101,8 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
        this.addParameterDescription(dec);
        
        BaseParameterDescription radius = new BaseParameterDescription();
-       radius.setDisplayDescription("Radius of cone");       radius.setDisplayName(RADIUS);
+       radius.setDisplayDescription("Radius of cone");
+       radius.setDisplayName(RADIUS);
        radius.setName(RADIUS);
        radius.setType(ParameterTypes.DOUBLE); // assume this is correct.
        this.addParameterDescription(radius);
@@ -111,7 +112,7 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         format.setDisplayName(FORMAT);
         format.setName(FORMAT);
         format.setDefaultValue("VOTABLE");
-        format.setType(ParameterTypes.TEXT);        
+        format.setType(ParameterTypes.TEXT);
         this.addParameterDescription(format);
         
         BaseParameterDescription result = new BaseParameterDescription();
@@ -121,19 +122,21 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
         result.setType(ParameterTypes.TEXT); // probably votable.
         this.addParameterDescription(result);
         
-        BaseApplicationInterface adql = new BaseApplicationInterface(ADQL_IFACE,this);        
+        BaseApplicationInterface adql = new BaseApplicationInterface(ADQL_IFACE,this);
         this.addInterface(adql);
         adql.addInputParameter(FORMAT);
         adql.addInputParameter(QUERY);
         adql.addOutputParameter(RESULT);
-        
-        BaseApplicationInterface cone = new BaseApplicationInterface(CONE_IFACE,this);
-        this.addInterface(cone);
-        cone.addInputParameter(FORMAT);
-        cone.addInputParameter(RA);
-        cone.addInputParameter(DEC);
-        cone.addInputParameter(RADIUS);
-        cone.addOutputParameter(RESULT);
+   
+       //removed cone altogether for the moment, otherwise it turns up before the adql i/f on the portal
+       //UI, which at the omment can only handle one i/f
+//        BaseApplicationInterface cone = new BaseApplicationInterface(CONE_IFACE,this);
+//        this.addInterface(cone);
+//        cone.addInputParameter(FORMAT);
+//        cone.addInputParameter(RA);
+//        cone.addInputParameter(DEC);
+//        cone.addInputParameter(RADIUS);
+//        cone.addOutputParameter(RESULT);
        
     }
     
@@ -144,17 +147,20 @@ public class DatacenterApplicationDescription extends AbstractApplicationDescrip
      */
     public Application initializeApplication(String id, User user, Tool tool) throws Exception {
         String newID = env.getIdGen().getNewID();
-        logger.debug("Initializing new datacenter application " + newID + " " + id);        
+        logger.debug("Initializing new datacenter application " + newID + " " + id);
         final DefaultIDs ids = new DefaultIDs(id,newID,user);
-        ApplicationInterface interf = this.getInterface(tool.getInterface());    
+        ApplicationInterface interf = this.getInterface(tool.getInterface());
         return new DatacenterApplication(ids,tool,interf,env.getProtocolLib(),ds,exec);
     }
     
 }
 
 
-/* 
+/*
 $Log: DatacenterApplicationDescription.java,v $
+Revision 1.2  2004/11/08 02:58:44  mch
+Various fixes and better error messages
+
 Revision 1.1  2004/09/28 15:02:13  mch
 Merged PAL and server packages
 
