@@ -1,4 +1,4 @@
-// package org.astrogrid.mySpace.mySpaceDemo;
+package org.astrogrid.mySpace.mySpaceDemo;
 
 import java.io.*;
 import java.util.*;
