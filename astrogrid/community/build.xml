@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/03 15:23:33 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/03 15:43:49 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.5  2003/09/03 15:43:49  dave
+    |   Added extra wait to Axis reload
+    |
     |   Revision 1.4  2003/09/03 15:23:33  dave
     |   Split API into two services, PolicyService and PolicyManager
     |
@@ -945,6 +948,8 @@
 		| Reload our Axis webapp.
 		+-->
 	<target name="axis.webapp.reload" depends="tomcat.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis"/>
 		<!-- Wait for the Tomcat manager -->
 		<antcall target="tomcat.manager.wait"/>
 		<!-- Reload our webapp -->
