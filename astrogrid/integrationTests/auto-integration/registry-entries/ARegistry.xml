@@ -29,7 +29,7 @@
       <Description>
       	This is the Astrogrid localhost test main registry currently holding datate for MSSL, Cambridge Community, and Edinburgh-ROE Myspace.
       </Description>
-      <ReferenceURL>http://localhost:8080/</ReferenceURL>
+      <ReferenceURL>http://localhost:@TOMCATPORT@/</ReferenceURL>
     </Summary>
     <Type>Archive</Type>
     <Curation>

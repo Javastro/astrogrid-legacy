@@ -2,40 +2,40 @@
 <services>
 <!-- configuration file for scripting - lists all known services. -->
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-cea-commandline-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea command-line provider</description>
 </service>
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-cea-server-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-cea-server-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea java provider</description>
 </service>
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-cea-http-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-cea-http-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea http provider</description>
 </service>
 <service type="Application">
-        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/CommonExecutionConnectorService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-pal-@VERSION@/services/CommonExecutionConnectorService</endpoint>
         <description>cea datacenter provider</description>
 </service>
 <service type="jobcontrol">
-        <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobControllerService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-jes-@VERSION@/services/JobControllerService</endpoint>
         <description>a job controller</description>
 </service>
 <service type="jobmonitor">
-        <endpoint>@TOMCATROOT@/astrogrid-jes-SNAPSHOT/services/JobMonitorService</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-jes-@VERSION@/services/JobMonitorService</endpoint>
         <description>a job monitor</description>
 </service>
 <service type="Datacenter">
-        <endpoint>@TOMCATROOT@/astrogrid-pal-SNAPSHOT/services/AxisDataServer</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-pal-@VERSION@/services/AxisDataServer</endpoint>
         <description>local datacenter</description>
 </service>
 
 <service type="Registry">
-        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/Registry</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-registry-@VERSION@/services/Registry</endpoint>
         <description>local registry query endpoint</description>
 </service>
 <service type="RegistryAdmin">
-        <endpoint>@TOMCATROOT@/astrogrid-registry-SNAPSHOT/services/RegistryAdmin</endpoint>
+        <endpoint>@TOMCATROOT@/astrogrid-registry-@VERSION@/services/RegistryAdmin</endpoint>
         <description>local registry query endpoint</description>
 </service>
         <!-- more to come here -->

@@ -55,7 +55,7 @@
         information.  -->
 
         <property name="REGISTRYCONF"
-           value="@WORKDIR@/myspace/astrogrid-mySpace-SNAPSHOT" />
+           value="@WORKDIR@/myspace/astrogrid-mySpace-@VERSION@" />
 
 
       <!-- MYSPACEMANAGERURL
@@ -64,7 +64,7 @@
         Manager.  -->
 
         <property name="MYSPACEMANAGERURL"
-          value="@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/Manager" />
+          value="@TOMCATROOT@/astrogrid-mySpace-@VERSION@/services/Manager" />
 
 
       <!-- MYSPACEMANAGERURLs
@@ -75,7 +75,7 @@
         Note that in Itn. 4 this list should end in a comm (`,').  -->
 
         <property name="MYSPACEMANAGERURLs"
-          value="@TOMCATROOT@/astrogrid-mySpace-SNAPSHOT/services/Manager," />
+          value="@TOMCATROOT@/astrogrid-mySpace-@VERSION@/services/Manager," />
 
 
       <!-- MYSPACESERVERURL
