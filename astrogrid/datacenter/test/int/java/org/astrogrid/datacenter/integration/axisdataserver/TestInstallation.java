@@ -1,11 +1,11 @@
-/*$Id: TestInstallation.java,v 1.4 2003/09/15 22:59:42 mch Exp $
+/*$Id: TestInstallation.java,v 1.5 2003/09/16 12:49:51 nw Exp $
  * Created on 08-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
- * This software is published under the terms of the AstroGrid
- * Software License version 1.2, a copy of which has been included
- * with this distribution in the LICENSE.txt file.
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
  *
 **/
 package org.astrogrid.datacenter.integration.axisdataserver;
@@ -15,25 +15,28 @@ import org.astrogrid.datacenter.delegate.DatacenterDelegate;
 import org.astrogrid.datacenter.queriers.sql.HsqlTestCase;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import java.io.*;
-import java.util.*;
+import java.io.*; 
 import java.net.*;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.rpc.ServiceException;
 /** integration test for validating an installation
  * <p>
  * First checks that axis is running, then that the datacenter web application is present and installed.
  * Then will run predefined queries through the datacenter.
  * <p>
  * - deliberately not called *Test - as we dont want it automatically run via maven
- *  - just that junit is a nice way to present these installation tests
+ *  - just that junit is a nice way to present these installation tests 
  * @author Noel Winstanley nw@jb.man.ac.uk 08-Sep-2003
 
  */
-public class TestInstallation extends TestCase {
+public class TestInstallation extends TestCase { 
 
     /**
      * Constructor for TestInstallation.
@@ -48,7 +51,11 @@ public class TestInstallation extends TestCase {
         return new TestSuite(TestInstallation.class);
     }
     public static void main(String[] args) {
-        junit.textui.TestRunner.run(TestInstallation.class);
+       //junit.swingui.TestRunner.run(TestInstallation.class);
+       // necessary to do as below, to disable dynamic classloading (which causes xml classes to not be found)
+       junit.swingui.TestRunner runner = new junit.swingui.TestRunner();
+       runner.setLoading(false);
+       runner.start(new String[]{TestInstallation.class.getName()});       
     }
     /*
      * @see TestCase#setUp()
@@ -56,8 +63,13 @@ public class TestInstallation extends TestCase {
      /** set up connection properties. will use defaults defined as constants in this class,
       * unless system properties are defined (under the corresponding keys).
       */
-    protected void setUp() throws Exception {
+    protected void setUp()  {
+        try {
        baseURL = new URL (System.getProperty(BASE_URL_KEY,BASE_URL_DEFAULT)); // trailing / is important here.
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            fail(BASE_URL_KEY + " is not a correctly formatted URL: " + e.getMessage());
+        }
        serviceName = System.getProperty(SERVICE_NAME_KEY,SERVICE_NAME_DEFAULT);
        queryFile = new File(System.getProperty(QUERY_FILE_KEY,QUERY_FILE_DEFAULT));
     }
@@ -70,29 +82,81 @@ public class TestInstallation extends TestCase {
     public final String SERVICE_NAME_DEFAULT="AxisDataServer";
     public final String QUERY_FILE_KEY = "datacenter.test.installation.query.file";
     public final String QUERY_FILE_DEFAULT = "query.xml";
-
-
+    
+    
+    public void testDisplaySettings() {
+        System.out.println("Running with these settings: (adjust by runnng with -Dkey=value");
+        System.out.println(BASE_URL_KEY + "=" + baseURL.toString());
+        System.out.println(SERVICE_NAME_KEY + "=" + serviceName);
+        System.out.println(QUERY_FILE_KEY + "=" + queryFile.getPath());
+    }
+    
+    public void testTomcatInstallation() {
+        try {
+            URL tomcatURL = new URL(baseURL.getProtocol(),baseURL.getHost(),baseURL.getPort(),"/");
+            System.out.println("Connecting to " + tomcatURL.toString());
+            String frontPage = HsqlTestCase.streamToString(tomcatURL.openConnection().getInputStream());
+            assertNotNull("Tomcat front page is null",frontPage);
+            assertTrue("Tomcat front page is empty",frontPage.trim().length() > 0);
+            assertEquals("Tomcat front page contains string 'error'",-1,frontPage.toLowerCase().indexOf("error"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Could not retrieve tomcat front page " + e.getMessage());
+        }
+        
+    }    
 
     /** check that tomcat is running and the axis server is running */
-    public void testAxisInstallation() throws Exception {
+    public void testAxisInstallation() {
+        try {
+        System.out.println("Connecting to " + baseURL.toString());
         String frontPage = HsqlTestCase.streamToString( baseURL.openConnection().getInputStream() );
-        assertTrue(frontPage.trim().length() > 0);
-        assertNotNull(frontPage);
-        assertEquals(-1,frontPage.toLowerCase().indexOf("error"));
-        String checkPage = HsqlTestCase.streamToString( (new URL(baseURL,"happyaxis.jsp")).openConnection().getInputStream() );
-        assertNotNull(checkPage);
-        assertTrue(checkPage.trim().length() > 0);
-        assertEquals(-1,checkPage.toLowerCase().indexOf("error"));
+        assertNotNull("Axis front page is null",frontPage);
+        assertTrue("Axis front page is empty",frontPage.trim().length() > 0);
+        assertEquals("Axis front page contains string 'error'",-1,frontPage.toLowerCase().indexOf("error"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Could not retrieve axis front page " + e.getMessage());
+        }
     }
-
+    public void testHappyAxis() {
+        try {
+        URL checkURL =  new URL(baseURL,"happyaxis.jsp");
+        System.out.println("Connecting to " + checkURL.toString());
+        String checkPage = HsqlTestCase.streamToString(checkURL.openConnection().getInputStream() );
+        assertNotNull("Axis configuration checking page is null",checkPage);
+        assertTrue("Axis configuration checking page is empty",checkPage.trim().length() > 0);
+        assertEquals("Axis configuration checking page contains string 'error'",-1,checkPage.toLowerCase().indexOf("error"));
+    } catch (IOException e) {
+        e.printStackTrace();
+        fail("Could not retrieve axis configuration checking page : " + e.getMessage());        
+    }
+    }
+    
     /** check the datacenter web service is installed, by attempting to get the wsdl for it. */
-    public void testDatacenterInstallation() throws Exception {
-        InputStream wsdlStream =  (new URL(baseURL,"services/" + serviceName + "?wsdl")).openConnection().getInputStream();
-        assertNotNull(wsdlStream);
+    public void testDatacenterWSDL()  {
+        try {
+         URL wsdlURL = new URL(baseURL,"services/" + serviceName + "?wsdl");
+         System.out.println("Connecting to " + wsdlURL.toString());
+        InputStream wsdlStream =  wsdlURL.openConnection().getInputStream();
+        assertNotNull("WSDL for dataservice is null",wsdlStream);
         Document wsdlDoc = XMLUtils.newDocument(wsdlStream);
-        assertNotNull(wsdlDoc);
-        assertEquals("definitions",wsdlDoc.getDocumentElement().getLocalName());
-
+        assertNotNull("Could not parse WSDL into document",wsdlDoc);
+        assertEquals("WSDL not in expected schema","definitions",wsdlDoc.getDocumentElement().getLocalName());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            fail("URL for web service is invalid: " + e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Could not read WSDL: " + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            fail("Could not configure XML parser: " + e.getMessage());
+        } catch (SAXException e) {
+            e.printStackTrace();
+            fail("Could not parse WSDL document: " + e.getMessage());
+        }
+        
     }
     /** run a series of sample queries through the service
      *  <p>
@@ -103,55 +167,99 @@ public class TestInstallation extends TestCase {
      * <li>a resource on classpath named ${QUERY_FILE_KEY} - uses this as the single input.
      * @throws Exception
      */
-    public void testDoQuery() throws Exception {
-        String serviceEndpoint = (new URL(baseURL,"services/" + serviceName)).toString();
-        System.out.println("Accessing service at " + serviceEndpoint);
-        DatacenterDelegate del = DatacenterDelegate.makeDelegate( serviceEndpoint) ;// pity it can't take a URL
-        assertNotNull(del);
+    public void testDoQuery()  {
+        URL serviceURL = null;
+        try {
+            serviceURL = new URL(baseURL,"services/" + serviceName);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            fail("Service endpoint URL malformed: " + e.getMessage());
+        }
+        System.out.println("Connecting to datacenter service at " + serviceURL.toString());
+        DatacenterDelegate del = null;
+        try {
+            del = DatacenterDelegate.makeDelegate( serviceURL.toString()) ;// pity it can't take a URL
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Exception while creating delegate: " + e.getMessage());
+        } catch (ServiceException e) {
+            e.printStackTrace();
+            fail("Could not access service: " + e.getMessage());
+        }
+        assertNotNull("Could not create delegate",del);
         if (queryFile.exists()) { // on local file system.
             if (queryFile.isFile()) {
-                System.out.println ("Local file");
-                doQuery(del,new FileInputStream(queryFile));
+                System.out.println ("Taking VOQL query from local file: " + queryFile.getPath());
+                try {
+                    doQuery(del,new FileInputStream(queryFile));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    fail("Could not find file: " + e.getMessage());
+                }
             } else if (queryFile.isDirectory()) {
-                System.out.println("Local directory");
+                System.out.println("Taking VOQL queries from files in local directory: " + queryFile.getPath());
                 File[] inputs = queryFile.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {
+                    public boolean accept(File pathname) {                        
                         return pathname.getName().toLowerCase().endsWith(".xml");
                     }
                 });
                 for (int i  = 0; i < inputs.length; i++) {
-                    doQuery(del,new FileInputStream(inputs[i]));
+                    System.out.println("Processing file: " + inputs[i].getName());
+                    try {
+                        doQuery(del,new FileInputStream(inputs[i]));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        fail("Could not find file: " + e.getMessage());
+                    }
                 }
             }
         } else { // try loading from classpath.
-            System.out.println("Loading Resource");
-            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath());
-            assertNotNull("input file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
+            System.out.println("Taking VOQL query from classpath resource" + queryFile.getPath());
+            InputStream is = this.getClass().getResourceAsStream(queryFile.getPath()); 
+            assertNotNull("VOQL query file :" + queryFile.getPath() + " not found on filesystem, or as resource",is);
             doQuery(del,is);
         }
     }
-
-    protected void doQuery(DatacenterDelegate del,InputStream is) throws Exception {
-        Document doc = XMLUtils.newDocument(is);
-        assertNotNull(doc);
+    
+    protected void doQuery(DatacenterDelegate del,InputStream is)  {
+        Document doc = null;
+        try {
+            doc = XMLUtils.newDocument(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail("Error reading query document: " + e.getMessage());
+        } catch (SAXException e) {
+            e.printStackTrace();
+            fail("Could not parse query document: " + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+            fail("Problem initializing XML parser: " + e.getMessage());
+        }
+        assertNotNull("VOQL document is null",doc);
         Element input = doc.getDocumentElement();
-        assertNotNull(input);
-        Element result =  del.query(input);
-        assertNotNull(result);
-        assertEquals("DatacenterResults",result.getLocalName());
-        assertEquals(1,result.getElementsByTagName("TR").getLength()); // should return a single row.
+        assertNotNull("VOQL document has no root element",input);
+        Element result =null;
+        try {
+            result = del.adqlQuery(input);
+        } catch (IOException e1) {           
+            e1.printStackTrace();
+            fail("Call to web service failed with exception: " + e1.getMessage());
+        }
+        assertNotNull("Result of query was null",result); 
+        assertEquals("Result of query not in expected format","DatacenterResults",result.getLocalName());
+        System.out.println("Results for query");
         System.out.println(XMLUtils.ElementToString(result));
 
     }
-
+    
 
 }
 
 
-/*
+/* 
 $Log: TestInstallation.java,v $
-Revision 1.4  2003/09/15 22:59:42  mch
-rename for delegate changes
+Revision 1.5  2003/09/16 12:49:51  nw
+integration / installation testing
 
 Revision 1.3  2003/09/11 11:39:25  nw
 fixed integration test to expect new input formats
@@ -161,5 +269,5 @@ fixed to work with changes to query input format
 
 Revision 1.1  2003/09/10 13:05:05  nw
 added integration -testing hierarchy
-
+ 
 */
