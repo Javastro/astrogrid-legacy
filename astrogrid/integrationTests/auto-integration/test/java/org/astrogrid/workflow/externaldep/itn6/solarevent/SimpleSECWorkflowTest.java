@@ -1,4 +1,4 @@
-/*$Id: SimpleSECWorkflowTest.java,v 1.3 2004/08/27 13:16:52 nw Exp $
+/*$Id: SimpleSECWorkflowTest.java,v 1.4 2004/09/23 10:09:27 nw Exp $
  * Created on 12-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -59,8 +59,8 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
         
         ParameterValue query= (ParameterValue)secTool.findXPathValue("input/parameter[name='Query']");
         assertNotNull(query);
-        InputStream is = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/integration/SimpleSECQuery-adql05.xml");
-        assertNotNull(is);
+        InputStream is = this.getClass().getResourceAsStream("/org/astrogrid/datacenter/integration/SimpleSECQuery-adql074.xml");
+        assertNotNull("query document not found",is);
         StringWriter out = new StringWriter();
         Piper.pipe(new InputStreamReader(is),out);
         query.setIndirect(false); 
@@ -96,6 +96,9 @@ public class SimpleSECWorkflowTest  extends AbstractTestForWorkflow implements S
 
 /* 
 $Log: SimpleSECWorkflowTest.java,v $
+Revision 1.4  2004/09/23 10:09:27  nw
+updated to latest adql query document
+
 Revision 1.3  2004/08/27 13:16:52  nw
 used AstrogridAssert to check results more thoroughly.
 
