@@ -103,8 +103,18 @@ function setParentIVORNAgsl(parent_ivorn, parent_agsl){
 
   if(parent_agsl) {
     myspace_agsl = document.getElementById('myspace-agsl');
-    parent_agsl.value = myspace_agsl.value;
+    myspace_item = document.getElementById('myspace-item');
+    parent_agsl.value =
+        newAgsl(
+                myspace_agsl.value,
+                myspace_item.value);
   }
+  
+//  alert('parent ivorn: ' + myspace_ivorn.value);
+//  alert('parent agsl:  ' +
+//        newAgsl(
+//                myspace_agsl.value,
+//                myspace_item.value));
 }
 
 function submitParentForm(form_name, action) {
@@ -174,7 +184,7 @@ function newIvorn(baseIvorn, path, file) {
     result = result + file;
   }
   
-  alert('new IVORN: ' + result);
+//  alert('new IVORN: ' + result);
 
   return result;
 }
@@ -203,7 +213,7 @@ function newAgsl(path, file) {
     result = result + file;
   }
   
-  alert('new agsl: ' + result);
+//  alert('new agsl: ' + result);
   
   myspace_agsl = document.getElementById('myspace-agsl');
   myspace_agsl.value = path;
