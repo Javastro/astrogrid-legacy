@@ -12,9 +12,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
-
 import org.apache.commons.logging.Log;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
+import org.astrogrid.datacenter.delegate.Certification;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
 import org.astrogrid.datacenter.service.JobNotifyServiceListener;
@@ -28,10 +28,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * The Querier classes handle a single, individual query to an individual
- * database.  If two queries will be made on a database, two Querier instances
- * will be required.  A 'database' here is a database management system; eg
- * MySQL, Microsoft's SQL server, etc.
+ * The Querier classes represent single individual queries.   If two queries
+ * will be made on a database, two Querier instances
+ * will be required.  it is a very abstract class meant to help administer
+ * the queries - see DatabaseQuerierA 'database' here is a database management system; eg
+ * MySQL, Microsoft's SQL server, etc.  Such
  * <p>
  * @see package documentation
  * <p>
@@ -66,13 +67,10 @@ public abstract class Querier implements Runnable {
     * basis for any temporary storage. */
    private String handle = null;
    
-   /** The query object model */
-   private Query query = null;
-   
    /**
     * userid and communityid for using myspace
     */
-   private String userid, communityid, credentials = null;
+   private Certification user = null;
    
    /**
     * Where the result should be sent on completion.  Probably a myspace
@@ -106,22 +104,11 @@ public abstract class Querier implements Runnable {
    public  void setWorkspace(Workspace workspace) {
       this.workspace = workspace;
    }
+
    /** set the userid for this querier */
-   public void setCommunityId(String communityid) {
-      this.communityid = communityid;
+   public void setCertification(Certification givenUser) {
+      this.user = givenUser;
    }
-   
-   /** set the userid for this querier */
-   public  void setUserId(String userid) {
-      this.userid = userid;
-   }
-   
-   /** sets the query model */
-   public void setQuery(Query q) {
-      this.query =q;
-      this.setStatus(QueryStatus.CONSTRUCTED);
-   }
-   
    
    /**
     * Sets up the target of where the results will be sent to
@@ -197,11 +184,13 @@ public abstract class Querier implements Runnable {
          setErrorStatus(e);
       }
    }
+
    /** TEMPORARY CONSTANT, until myspace build a delegate.
     * then can replace with MySpaceDummyDelegate.DUMMY
     * @todo update this constant with correct reference.
     */
    public static final String TEMPORARY_DUMMY = "DUMMY";
+
    /**
     * Tests the destination exists and a file can be created on it.  This ensures
     * not just that MySpace works but rather that the particular myspace url given
@@ -227,9 +216,10 @@ public abstract class Querier implements Runnable {
          myspace = new MySpaceManagerDelegate(resultsDestination);
       }
       
-      myspace.saveDataHolding(userid, communityid, credentials, "testFile",
+      myspace.saveDataHolding(user.getUserId(), user.getCommunityId(), user.getCredentials(),
+                              "testFile",
                               "This is a test file to make sure we can create a file in myspace, so our query results are not lost",
-                              "test",
+                              "",
                               "Overwrite"); // this interface needs refactoring. constants would be a start.
    }
    
@@ -263,12 +253,13 @@ public abstract class Querier implements Runnable {
          results.toVotable(ba);
          ba.close();
          
-         myspace.saveDataHolding(userid, communityid, credentials, myspaceFilename,
+         myspace.saveDataHolding(user.getUserId(), user.getCommunityId(), user.getCredentials(),
+                                 myspaceFilename,
                                  ba.toString(),
                                  "VOTable",
                                  "Overwrite");
          
-         resultsLoc = myspace.getDataHolding(userid, communityid, credentials, myspaceFilename);
+         resultsLoc = myspace.getDataHolding(user.getUserId(), user.getCommunityId(), user.getCredentials(),  myspaceFilename);
       }
       catch (SAXException se) {
          log.error("Could not create VOTable",se);
@@ -294,33 +285,17 @@ public abstract class Querier implements Runnable {
     * queryDatabase() overridden by subclasses) and returns the results.
     * Use by both synchronous (blocking) and asynchronous (threaded) querying
     */
-   public QueryResults doQuery() throws DatabaseAccessException {
-      setStatus(QueryStatus.RUNNING_QUERY);
-      this.timeQueryStarted = new Date();
-      QueryResults results = queryDatabase(query);
-      this.timeQueryCompleted = new Date();
-      setStatus(QueryStatus.QUERY_COMPLETE);
-      
-      return results;
-   }
+   public abstract QueryResults doQuery() throws DatabaseAccessException;
    
-   /** Returns the results - returns null if the results have not yet
-    * been returned
+   /** Returns the location of the results (probably a url) - returns null if
+    * the results have not yet been returned from the data source
     */
-   public String getResultsLoc() {
-      return resultsLoc;
-   }
+   public String getResultsLoc() {     return resultsLoc;  }
    
+   protected void setStartTime(Date startTime)  { this.timeQueryStarted = startTime;  }
    
-   protected void setStartTime(Date startTime)
-   {
-      this.timeQueryStarted = startTime;
-   }
-   
-   protected void setCompletedTime(Date finishTime)
-   {
-      this.timeQueryCompleted = finishTime;
-   }
+   protected void setCompletedTime(Date finishTime)  { this.timeQueryCompleted = finishTime; }
+
    /**
     * Returns the time it took to complete the query in milliseconds, or the
     * time since it started (if it's still running).  -1 if the query has not
@@ -345,7 +320,7 @@ public abstract class Querier implements Runnable {
    /**
     * Applies the given query, to the database,
     * returning the results wrapped in QueryResults.
-    */
+    *
    public abstract QueryResults queryDatabase(Query aQuery) throws DatabaseAccessException;
    
    
@@ -466,6 +441,9 @@ public abstract class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.2  2003/11/25 18:50:06  mch
+ Abstracted Querier from DatabaseQuerier
+
  Revision 1.1  2003/11/25 14:17:24  mch
  Extracting Querier from DatabaseQuerier to handle non-database backends
 
@@ -499,4 +477,5 @@ public abstract class Querier implements Runnable {
  Introducing SOAPy Beans
 
  */
+
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.11 2003/11/25 15:27:27 nw Exp $
+ * $Id: AxisDataServer.java,v 1.12 2003/11/25 18:50:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -14,7 +14,6 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.axis.types.URI;
@@ -26,6 +25,7 @@ import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.axisdataserver.types.QueryId;
 import org.astrogrid.datacenter.delegate.AdqlQuerier;
 import org.astrogrid.datacenter.delegate.DatacenterException;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
@@ -133,9 +133,9 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
          throw new IllegalArgumentException("Can only produce votable results");
       }
       
-      Querier querier = null;
+      DatabaseQuerier querier = null;
       try {
-         querier = QuerierManager.createQuerier(q);
+         querier = (DatabaseQuerier) QuerierManager.createQuerier(q);
          QueryResults results = querier.doQuery();
          querier.setStatus(QueryStatus.RUNNING_RESULTS);
          Element result = ResponseHelper.makeResultsResponse(
@@ -143,6 +143,10 @@ public class AxisDataServer extends ServiceServer implements org.astrogrid.datac
             results.toVotable().getDocumentElement()
          ).getDocumentElement();
          return XMLUtils.ElementToString(result);
+      }
+      catch (ClassCastException cce) {
+         //query manager doesn't return a database querier
+         throw new DatacenterException("Cannot do database queries on this service");
       }
       catch (SAXException e) {
          throw new DatacenterException("Failed to convert results to VOTable", e);

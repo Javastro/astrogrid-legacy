@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.5 2003/11/25 14:17:24 mch Exp $
+ * $Id: SqlQuerier.java,v 1.6 2003/11/25 18:50:06 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -26,7 +26,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.adql.ADQLException;
 import org.astrogrid.datacenter.axisdataserver.types.Query;
 import org.astrogrid.datacenter.queriers.DatabaseAccessException;
-import org.astrogrid.datacenter.queriers.Querier;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.queriers.QueryTranslator;
 import org.xml.sax.SAXException;
@@ -43,7 +43,7 @@ import org.xml.sax.SAXException;
  * @author M Hill
  */
 
-public class SqlQuerier extends Querier
+public class SqlQuerier extends DatabaseQuerier
 {
     protected static final Log log = LogFactory.getLog(SqlQuerier.class);
    /** connection to the database */
@@ -97,21 +97,21 @@ protected Connection createConnection() throws DatabaseAccessException {
     conn = createConnectionFromJNDI(userId,password);
     if (conn == null) {
         conn = createConnectionFromProperties(userId,password);
-    } 
+    }
     if (conn == null) {
            throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE+"' defined in JNDI or '"+JDBC_URL_KEY+"' key in configuration file");
     }
     return conn;
 }
   
-    protected Connection createConnectionFromJNDI(String userId,String password) throws DatabaseAccessException  {  
+    protected Connection createConnectionFromJNDI(String userId,String password) throws DatabaseAccessException  {
             log.debug("Looking for datasource in JNDI");
-            try {            
+            try {
             Object o = new InitialContext().lookup(JNDI_DATASOURCE);
             if (o == null || ! (o instanceof DataSource)) {
                 return null;
             }
-            DataSource ds = (DataSource)o;   
+            DataSource ds = (DataSource)o;
             //connect (using user/password if given)
             if (userId != null) {
                return ds.getConnection(userId, password);
@@ -161,7 +161,7 @@ protected Connection createConnection() throws DatabaseAccessException {
                }  catch (SQLException se)   {
                   throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
                }
-            }        
+            }
 }
 
    /**

@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.7 2003/11/25 14:17:24 mch Exp $
+ * $Id: SocketHandler.java,v 1.8 2003/11/25 18:50:06 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -9,14 +9,14 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.URL;
-
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.delegate.agss.SocketDelegate;
 import org.astrogrid.datacenter.io.SocketXmlInputStream;
 import org.astrogrid.datacenter.io.SocketXmlOutputStream;
+import org.astrogrid.datacenter.queriers.DatabaseQuerier;
 import org.astrogrid.datacenter.queriers.Querier;
-import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QuerierListener;
+import org.astrogrid.datacenter.queriers.QuerierManager;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.astrogrid.datacenter.query.QueryException;
 import org.astrogrid.datacenter.query.QueryStatus;
@@ -169,7 +169,7 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
             else if (docRequest.getElementsByTagName(SocketDelegate.DO_QUERY_TAG).getLength() > 0)
             {
                //a blocking/synchronous query
-               Querier querier = QuerierManager.createQuerier(docRequest.getDocumentElement());
+               DatabaseQuerier querier = (DatabaseQuerier) QuerierManager.createQuerier(docRequest.getDocumentElement());
                querier.registerListener(this);
                QueryResults results = querier.doQuery();
 
@@ -250,6 +250,9 @@ public class SocketHandler extends ServiceServer implements Runnable, QuerierLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.8  2003/11/25 18:50:06  mch
+Abstracted Querier from DatabaseQuerier
+
 Revision 1.7  2003/11/25 14:17:24  mch
 Extracting Querier from DatabaseQuerier to handle non-database backends
 

@@ -1,4 +1,4 @@
-/*$Id: QuerierManager.java,v 1.1 2003/11/25 14:17:24 mch Exp $
+/*$Id: QuerierManager.java,v 1.2 2003/11/25 18:50:06 mch Exp $
  * Created on 24-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -79,12 +79,10 @@ public class QuerierManager {
     * @deprecated Use createQuerier(Query);
     * @todo - move the extra bits in this method into the OO-version
     */
-   
-   
    public static Querier createQuerier(Element rootElement)
       throws DatabaseAccessException {
       
-      Querier querier = instantiateQuerier();
+      DatabaseQuerier querier = (DatabaseQuerier) instantiateQuerier();
       //assigns handle
       try {
          String handle = generateHandle();
@@ -112,8 +110,7 @@ public class QuerierManager {
          
          // finally
          if (rootElement != null) {
-            querier.setUserId(CommunityHelper.getUserId(rootElement));
-            querier.setCommunityId(CommunityHelper.getCommunityId(rootElement));
+            querier.setCertification(CommunityHelper.getCertification(rootElement));
             Query q = (Query)Unmarshaller.unmarshal(Query.class,rootElement);
             querier.setQuery(q);
             querier.registerWebListeners(rootElement);  //looks through dom for web listeners
@@ -182,7 +179,7 @@ public class QuerierManager {
     */
    public static Querier createQuerier(Query query, String handle) throws DatabaseAccessException {
       
-      Querier querier = instantiateQuerier();
+      DatabaseQuerier querier = (DatabaseQuerier) instantiateQuerier();
       //assigns handle
       try {
          if (queriers.get(handle) != null) {
@@ -279,6 +276,9 @@ public class QuerierManager {
 
 /*
  $Log: QuerierManager.java,v $
+ Revision 1.2  2003/11/25 18:50:06  mch
+ Abstracted Querier from DatabaseQuerier
+
  Revision 1.1  2003/11/25 14:17:24  mch
  Extracting Querier from DatabaseQuerier to handle non-database backends
 
