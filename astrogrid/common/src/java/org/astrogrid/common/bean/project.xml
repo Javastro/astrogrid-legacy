@@ -1,0 +1,7 @@
+<html>
+	<body>
+		<h1>Base Classes and Helpers for generated object models.</h1>
+		Set castor (or whatever else) to generate classes that all extend from {@link org.astrogrid.common.bean.BaseBean}
+		to provide xpath searching.
+	</body>
+</html>
