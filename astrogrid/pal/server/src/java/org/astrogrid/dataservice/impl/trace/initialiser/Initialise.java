@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.2 2005/03/01 15:58:33 mch Exp $
+/*$Id: Initialise.java,v 1.3 2005/03/10 13:59:00 KevinBenson Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,13 +30,16 @@ public class Initialise {
       IndexGenerator generator = new IndexGenerator();
       generator.checkForExtensions = false;
       generator.fitsDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
-      generator.generateIndex(Initialise.class.getResourceAsStream("traceUrls.txt"), new OutputStreamWriter(System.out));
+      generator.generateIndex(Initialise.class.getResourceAsStream("traceUrls.txt"));
    }
 }
 
 
 /*
 $Log: Initialise.java,v $
+Revision 1.3  2005/03/10 13:59:00  KevinBenson
+corrections to fits and testing to fits
+
 Revision 1.2  2005/03/01 15:58:33  mch
 Changed to use starlinks tamfits library
 

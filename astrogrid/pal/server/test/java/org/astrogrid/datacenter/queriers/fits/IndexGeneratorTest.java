@@ -1,4 +1,4 @@
-/*$Id: IndexGeneratorTest.java,v 1.3 2005/02/28 19:36:39 mch Exp $
+/*$Id: IndexGeneratorTest.java,v 1.4 2005/03/10 13:59:00 KevinBenson Exp $
  *
  * Copyright (C) AstroGrid. All rights reserved.
  *
@@ -56,7 +56,7 @@ public class IndexGeneratorTest extends TestCase
       generator.raAxis = 1;
       generator.decAxis = 2;
       FileWriter indexOut = new FileWriter("IndexGeneratorTestIndex.xml");
-      generator.generateIndex(new FileInputStream("IndexGeneratorTestList.urls"), indexOut);
+      generator.generateIndex(new FileInputStream("IndexGeneratorTestList.urls"));
       indexOut.close();
       try {
          DomHelper.newDocument(new FileInputStream("IndexGeneratorTestIndex.xml"));
@@ -89,6 +89,9 @@ public class IndexGeneratorTest extends TestCase
 
 /*
  $Log: IndexGeneratorTest.java,v $
+ Revision 1.4  2005/03/10 13:59:00  KevinBenson
+ corrections to fits and testing to fits
+
  Revision 1.3  2005/02/28 19:36:39  mch
  Fixes to tests
 

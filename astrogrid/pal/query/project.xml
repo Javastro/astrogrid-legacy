@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- $Id: project.xml,v 1.2 2005/02/25 15:40:03 mch Exp $ -->
+<!-- $Id: project.xml,v 1.3 2005/03/10 13:59:00 KevinBenson Exp $ -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
@@ -61,6 +61,54 @@
       </dependency>
 
     </dependencies>
+	
+    <build>
+        <!--+
+            | The location of our Java source code.
+            +-->
+        <sourceDirectory>src/java</sourceDirectory>
+        <!--+
+            | The location of our JUnit source code.
+
+        <unitTestSourceDirectory>src/junit</unitTestSourceDirectory>
+            +-->
+
+        <resources>
+            <resource>
+           	   <directory>${basedir}/src</directory>
+		        <includes>
+		           	<include>xsl/*.xsl</include>
+		        	<!--
+		           	<include>schema/*.xsd</include>
+	            	<include>schema/**/*.xsd</include>
+	            	-->
+		        </includes>            	
+            </resource>
+        </resources>
+
+        <!--+
+            | Our JUnit test classes.
+            +-->
+        <unitTest>
+            <!--+
+                | Which tests to include.
+                +-->
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            
+            <resources>
+                <resource>
+               	   <directory>${basedir}/src/junit</directory>
+    		        <includes>
+    		           	<include>**/*.xml</include>
+    		        </includes>            	
+                </resource>
+            </resources>
+        	
+        </unitTest>
+    </build>
+
 
 </project>
 

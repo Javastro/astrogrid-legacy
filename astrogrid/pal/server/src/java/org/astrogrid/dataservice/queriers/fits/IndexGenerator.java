@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Calendar;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import nom.tam.fits.Fits;
@@ -34,6 +35,17 @@ import org.astrogrid.dataservice.queriers.QuerierPluginException;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+
+import org.astrogrid.xmldb.client.QueryService;
+import org.astrogrid.xmldb.client.XMLDBFactory;
+
+import org.xmldb.api.base.ResourceSet;
+import org.xmldb.api.modules.XMLResource;
+import org.xmldb.api.base.Resource;
+import org.xmldb.api.base.Collection;
+import org.xmldb.api.base.XMLDBException;
+
 
 
 public class IndexGenerator
@@ -134,17 +146,20 @@ public class IndexGenerator
          
          
          if (value == null) {
-            keywordSnippet.append("      <"+key+commentAtt+"/>\n");
+            //keywordSnippet.append("      <"+key+commentAtt+"/>\n");
+             keywordSnippet.append("      <"+key+"/>\n");
          } else {
             try {
                //if it's a date, we store two key entries, one with a unit attribute set to 's' and the time in ms since/before 1970
                Date dateVal = fitsDateFormat.parse(value);
-               keywordSnippet.append("      <"+key+" unit='s'"+commentAtt+">"+dateVal.getTime()+"</"+key+">\n");
+               //keywordSnippet.append("      <"+key+" unit='s'"+commentAtt+">"+dateVal.getTime()+"</"+key+">\n");
+               keywordSnippet.append("      <"+key+ " unit='s'>"+dateVal.getTime()+"</"+key+">\n");
                value = indexDateFormat.format(dateVal);
             } catch (ParseException e) {
                //ignore
             }
-            keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
+            //keywordSnippet.append("      <"+key+commentAtt+">"+value+"</"+key+">\n");
+            keywordSnippet.append("      <"+key+">"+value+"</"+key+">\n");
          }
       }
       
@@ -227,54 +242,164 @@ public class IndexGenerator
     * Generates an index XML file for the FITS files at the URLs listed in the
     * given file, writing them out to the target stream
     */
-   public void generateIndex(InputStream urlsIn, Writer out) throws IOException, FitsException
+   public void generateIndex(InputStream urlsIn) throws IOException, FitsException
    {
-      PrintWriter dout = new PrintWriter(new BufferedWriter(out));
-      dout.println(ROOT_START);
-      
       BufferedReader in = new BufferedReader(new InputStreamReader(urlsIn));
-
       String line = null;
       while( (line = in.readLine()) != null) {
-         try {
-            dout.println(makeIndexSnippet(new URL(line)).getBytes());
-            dout.flush(); //so that if we crash we can see where we got to
-         } catch (IOException ioe) {
-            //log as an error but try next URL
-            log.error(ioe+", processing URL "+line, ioe);
-         }
+            generateIndex(new URL(line));
       }
-      in.close();
-      dout.println(ROOT_END);
-      dout.flush();
    }
 
    /**
     * Generates an index XML file for the FITS files at the given URLs, writing it out to the target stream
     */
-   public void generateIndex(URL[] urls, Writer out) throws IOException, FitsException
+   public void generateIndex(URL url) throws IOException, FitsException
    {
-      PrintWriter dout = new PrintWriter(new BufferedWriter(out));
-      dout.println(ROOT_START);
-      
-      for (int i=0;i<urls.length;i++)
-      {
-         assert urls[i] != null : "No URLs Given";  //or could report it and continue?
-         dout.println(makeIndexSnippet(urls[i]));
-         dout.flush();
-      }
-      dout.println(ROOT_END);
-      dout.flush();
+       Calendar rightNow = Calendar.getInstance();
+       int year = rightNow.get(Calendar.YEAR);
+       int month = rightNow.get(Calendar.MONTH);
+       int day = rightNow.get(Calendar.DATE);
+       String dirPath = String.valueOf(year) + "_" + String.valueOf(month) + "_" + String.valueOf(day);
+       File fileDir = new File(dirPath);
+       if(!fileDir.exists())
+           fileDir.mkdir();
+       
+       File xmlFile = null;
+       FileWriter fw = null;
+       PrintWriter pw = null;       
+       long seqNum = System.currentTimeMillis();
+       int counter = 0;
+       String xmlSnippet = null;
+          try {
+             xmlSnippet = makeIndexSnippet(url);
+             String fileName = dirPath + String.valueOf((seqNum + counter)) + ".xml";
+             xmlFile = new File(fileDir,fileName);            
+             fw = new FileWriter(xmlFile);
+             pw = new PrintWriter(fw);
+             try {
+                 DomHelper.DocumentToWriter(DomHelper.newDocument(xmlSnippet),pw);
+             }catch(Exception e) {
+                 e.printStackTrace();
+                 
+             }
+             pw.flush();
+             fw.close();
+             pw.close();            
+          } catch (IOException ioe) {
+             //log as an error but try next URL
+             log.error(ioe+", processing URL "+url.toString(), ioe);
+          }
+   }   
+   
+   private static void updateXMLDB(String directoryName) throws Exception {
+       
+       File fi = new File(directoryName);
+       if(!fi.exists()) {
+           System.out.println("The directory or path does not seem to exist: directory=" + directoryName);
+           System.exit(1);
+       }
+       if(!fi.isDirectory()) {
+           System.out.println("There is a file that exists here, but is reported to not be a directory.  Now exiting");
+           System.exit(1);
+       }
+       String line = null;
+       InputStreamReader consoleReader = new InputStreamReader(System.in);
+       BufferedReader consoleInput = new BufferedReader(consoleReader);
+       System.out.println("What is the Table Name (Collection Name) you wish to put in the xml files into. Example: TraceData, EITData");
+       System.out.println("You may also do sub-tables (sub-collections) with a '/' such as: Soho/CDSData, MSSL/Soho/CDSData, RAL/Soho/Tape/CDSData");
+       String correct = "N";
+       String uploadCollection = null;
+       while(!correct.equals("Y")) {
+           while( (line = consoleInput.readLine()) != null) ;
+           line = line.replaceAll("[^\\w*]","_");
+           uploadCollection = line;
+           System.out.println("The full location of placing xml files will be: (You cannot get rid of /db/dcfitsfiles");
+           System.out.println("/db/dcfitsfiles/" + uploadCollection);
+           System.out.println("Is this all correct Y|N");
+           while( (correct = consoleInput.readLine()) != null) ;
+           correct = correct.toUpperCase();
+       }
+       
+       correct = "N";
+       String adminUser = "admin";
+       String adminPass = "";
+       String xmldbURI = "xmldb:exist://";
+       String xmldbConfig = "../exist.xml";
+       String xmldbDriver = "org.exist.xmldb.DatabaseImpl";
+       int changeNum = -1;
+       while(!correct.equals("Y")) {
+           System.out.println("Do you need to correct|change any of the below settings, Normally No if running pal with internal eXist db. [Y|N]");
+           System.out.println("Commonly number 1 may be changed, and at times 4");
+           System.out.println("1.) xmldb.uri = URI to the database. Default: " + xmldbURI + " (external example: xmldb:exist://localhost:9080/exist/xmlrpc)");
+           System.out.println("2.) xmldb.admin.user = Administration user for adding xml files. Default: " + adminUser);
+           System.out.println("3.) xmldb.admin.password = Administration password for adding xml files. Default: " + adminPass);
+           System.out.println("4.) xmldb.configuration = Location of the xml db configuration file; If your running eXist internally advise to change read pal configuration page. Default: " + xmldbConfig);
+           System.out.println("5.) xmldb.driver = The XML database driver. Default: " + xmldbDriver);
+           while( (line = consoleInput.readLine()) != null) ;
+           correct = correct.toUpperCase();
+           if(correct.equals("N")) {
+               System.out.println("Which number would you like to change [1-5], or 0 to exit changing");
+               while(changeNum < 0) {
+                   while( (line = consoleInput.readLine()) != null) ;
+                   changeNum = Integer.parseInt(line);
+                   if(changeNum > 5 || changeNum < 0) {
+                       System.out.println("Invalid Number");
+                       changeNum = -1;
+                   }
+                   if(changeNum == 1)
+                       xmldbURI = askQuestion("What xmldb.uri do you wish to use?");
+                   else if(changeNum == 2)
+                       adminUser = askQuestion("What is the admin user?");
+                   else if(changeNum == 3)
+                       adminPass = askQuestion("What is the admin password?");
+                   else if(changeNum == 4)
+                       xmldbConfig = askQuestion("What is the location of the xmldb configuration file 'exist.xml'?");
+                   else if(changeNum == 5)
+                       xmldbDriver = askQuestion("What is the XMLDB driver?");                   
+               }//while               
+           }//if
+       }//while
+       
+       XMLDBFactory xdb = new XMLDBFactory();
+       xdb.setXMLDBDriver(xmldbDriver);
+       xdb.setAdminUser(adminUser);
+       xdb.setAdminPassword(adminPass);
+       xdb.setXMLDBURI(xmldbURI);
+       System.out.println("Now Registering the database");
+       xdb.registerDB(xmldbConfig);
+       File []xmlFiles = fi.listFiles();
+       Document xmlDoc = null;
+       Collection coll = null;
+       try {
+           coll = xdb.openAdminCollection(("dcfitsfiles/" + uploadCollection));
+           for(int i = 0;i < xmlFiles.length;i++) {
+               xmlDoc = DomHelper.newDocument(xmlFiles[i]);
+               xdb.storeXMLResource(coll,xmlFiles[i].getName(),xmlDoc);           
+           }//for
+       }finally {
+           if(coll != null) {
+               xdb.closeCollection(coll);
+           }//if
+       }
+       
+       
    }
+   
+   private static String askQuestion(String question) throws Exception {
+       InputStreamReader consoleReader = new InputStreamReader(System.in);
+       BufferedReader consoleInput = new BufferedReader(consoleReader);
+       String line = null;
+       while( (line = consoleInput.readLine()) != null) ;
+       return line;
+   }
+   
    
    /**
      * Test harness
      */
-    public static void main(String args[]) throws IOException, MalformedURLException, FitsException
+    public static void main(String args[]) throws IOException, MalformedURLException, FitsException, Exception
     {
-//      System.out.print(generateIndex(new URL[] {
-//                                new URL("file://fannich/mch/fits/ngc6946/r169093.fit")
-//                             }));
       //this is a bit of a botch so that if there's no log4j.properties around, it
       //makes one
       IndexGenerator generator = new IndexGenerator();
@@ -282,116 +407,29 @@ public class IndexGenerator
       Locale.setDefault(Locale.UK);
       Document indexDoc = null;
       if(args == null || args.length < 2) {
-         System.out.println("java IndexGenerator -f <filename of urls (one url per line)> or");
-         System.out.println("java IndexGenerator -u <URLs seperated by spaces>");
+         System.out.println("java IndexGenerator -file <filename of urls (one url per line)> or");
+         System.out.println("java IndexGenerator -url <single url>");
+         System.out.println("java IndexGenerator -update <directory of xml files>");
          return;
       }
-      String indexFile = null;
-      if("-f".equals(args[0])) {
-         StringWriter out = new StringWriter();
-         generator.generateIndex(new FileInputStream(args[1]), out);
-         indexFile = out.toString();
-      } else if("-u".equals(args[0])) {
-         Object []fitsURLS = new Object[(args.length-1)];
-         for(int i = 1;i < args.length;i++) {
-            fitsURLS[(i-1)] = new URL(args[i]);
-         }
-         indexFile = generator.generateIndex(fitsURLS);
-         log.trace(indexFile);
-      }
-      
-      if(indexFile != null) {
-         try {
-            indexDoc = DomHelper.newDocument(indexFile);
-         }catch(ParserConfigurationException pce) {
-            throw new RuntimeException("Server configuration error",pce);
-         }catch(SAXException se) {
-            throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",se);
-         }
-      }
-      
-      long fileTime = System.currentTimeMillis();
-      if(indexDoc != null) {
-         
-         FileWriter fw = new FileWriter(String.valueOf(fileTime) + ".xml");
-         PrintWriter pw = new PrintWriter(fw);
-         DomHelper.DocumentToWriter(indexDoc,pw);
-         pw.flush();
-         fw.close();
-         pw.close();
-         System.out.println("Successfull creation of fits file index, it was created as = " + String.valueOf(fileTime) + ".xml");
-         System.out.println("Now the file must be uploaded to the eXist xml database to be used for querying the file");
-         System.out.println("You may do this manually or this program can do it automatically by calling \"java -s IndexGenerator <filename>\" by using the file name just created");
-         
-      }
 
-      if("-s".equals(args[0])) {
-         try {
-            indexDoc = DomHelper.newDocument(new File(args[1]));
-         }catch(ParserConfigurationException pce) {
-            throw new RuntimeException("Server configuration error",pce);
-         }catch(SAXException se) {
-            throw new QuerierPluginException("FitsQuerierPlugin index not valid xml",se);
-         }
-         if(indexDoc != null) {
-   
-            InputStreamReader consoleReader = new InputStreamReader(System.in);
-            BufferedReader consoleInput = new BufferedReader(consoleReader);
-   
-            
-            
-            System.out.println("This program will now ask three questions to do this automatically and it will update or insert the new xml file for queyring");
-            System.out.println("What is the name of the file you wish for it to live in the db?");
-            System.out.println("Please keep it unique, but remember it so you can update it later.  Now the Name?");
-            String line = null;
-            String fileName = null;
-            URL eXistLocation = null;
-            while( (line = consoleInput.readLine()) != null) ;
-            line = line.replaceAll("[^\\w*]","_");
-            if(!line.endsWith(".xml")) line += ".xml";
-            fileName = line;
-            System.out.println("What is the url to the exist database? ex: http://localhost:8080/exist  is a typical url");
-            System.out.println("We only need it up to the \"exist\" part");
-            while( (line = consoleInput.readLine()) != null) ;
-            
-            if(!line.endsWith("/")) {
-               line += "servlet/db/dcfitsfiles/" + fileName;
-            }
-            else {
-               line += "/servlet/db/dcfitsfiles/" + fileName;
-            }
-            eXistLocation = new URL(line);
-            System.out.println("The Full URL to Exist is\n: " + line + "\n");
-            System.out.println("Remember this url you may need it on the final configuration of your datacenter");
-            updateFile(eXistLocation,indexFile);
-         }
-      }
+          if("-file".equals(args[0])) {
+             generator.generateIndex(new FileInputStream(args[1]));
+          }else if("-url".equals(args[0])) {
+             String urlString = args[1];
+             generator.generateIndex(new URL(urlString));
+          }else if("-update".equals(args[0])) {
+              updateXMLDB(args[1]);
+          }
     }
-    
-    private static void updateFile(URL urlLocation, String contents) throws IOException {
-       HttpURLConnection huc = (HttpURLConnection)
-                                urlLocation.openConnection();
-       huc.setRequestProperty("Content-Type", "text/xml");
-       huc.setDoOutput(true);
-       huc.setRequestMethod("PUT");
-       huc.connect();
-       try {
-          DataOutputStream dos = new DataOutputStream(huc.getOutputStream());
-          DomHelper.DocumentToStream(DomHelper.newDocument(contents),dos);
-          dos.flush();
-          dos.close();
-          huc.disconnect();
-       } catch (javax.xml.parsers.ParserConfigurationException e) {
-          throw new IOException(e.toString());
-       } catch (org.xml.sax.SAXException e) {
-          throw new IOException(e.toString());
-       }
-    }
-    
+
 }
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.3  2005/03/10 13:59:00  KevinBenson
+corrections to fits and testing to fits
+
 Revision 1.2  2005/03/01 15:58:34  mch
 Changed to use starlinks tamfits library
 
@@ -493,5 +531,6 @@ Revision 1.1  2003/11/28 18:22:18  mch
 IndexGenerator now working
 
 */
+
 
 

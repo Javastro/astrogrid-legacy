@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.2 2005/02/28 18:47:05 mch Exp $
+/*$Id: AllTests.java,v 1.3 2005/03/10 13:59:00 KevinBenson Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -34,7 +34,7 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.queriers.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.service.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.queriers.sql.AllTests.suite());
-         suite.addTest(org.astrogrid.datacenter.queriers.fits.FitsQuerierTest.suite());
+     //    suite.addTest(org.astrogrid.datacenter.queriers.fits.FitsQuerierTest.suite());
         return suite;
     }
 }
@@ -42,6 +42,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.3  2005/03/10 13:59:00  KevinBenson
+corrections to fits and testing to fits
+
 Revision 1.2  2005/02/28 18:47:05  mch
 More compile fixes
 

@@ -1,5 +1,5 @@
 /*
- * $Id: FitsQuerierPlugin.java,v 1.2 2005/03/08 15:03:24 KevinBenson Exp $
+ * $Id: FitsQuerierPlugin.java,v 1.3 2005/03/10 13:59:00 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -134,6 +134,23 @@ public class FitsQuerierPlugin extends DefaultPlugin
       }//if
       return files;
    }
+   
+   public static void upload(String collName, org.w3c.dom.Node doc) {
+       XMLDBFactory xdb2 = new XMLDBFactory();
+       Collection coll = null;       
+       try {
+           coll = xdb2.openAdminCollection(FITS_DEFAULT_COLLECTION + "/" + collName);
+           xdb2.storeXMLResource(coll,doc);
+       }catch(Exception e) {
+           e.printStackTrace();
+       }finally {
+           try {
+               xdb2.closeCollection(coll);
+           }catch(Exception e1) {
+               e1.printStackTrace();
+           }
+       }
+   }
 
    
    /**
@@ -235,6 +252,9 @@ public class FitsQuerierPlugin extends DefaultPlugin
 
 /*
  $Log: FitsQuerierPlugin.java,v $
+ Revision 1.3  2005/03/10 13:59:00  KevinBenson
+ corrections to fits and testing to fits
+
  Revision 1.2  2005/03/08 15:03:24  KevinBenson
  new stuff for Fits querier to work with an internal xml database
 
