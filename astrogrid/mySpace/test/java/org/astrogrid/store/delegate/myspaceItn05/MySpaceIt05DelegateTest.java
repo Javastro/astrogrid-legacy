@@ -23,7 +23,7 @@ import org.astrogrid.store.delegate.StoreClient;
 
 public class MySpaceIt05DelegateTest extends TestCase
 {  private String mssUrl =
-     "http://grendel12.roe.ac.uk:8080/astrogrid-myspace/services/Manager";
+     "http://grendel12.roe.ac.uk:8080/astrogrid-mySpace/services/Manager";
 
 //
 //Create a specified User.
@@ -52,8 +52,7 @@ public class MySpaceIt05DelegateTest extends TestCase
       {  MySpaceIt05Delegate middle = new MySpaceIt05Delegate(
            operator, mssUrl);
 
-         String result = middle.heartBeat();
-         Assert.assertEquals(result, "Adsum.");
+         Assert.assertTrue(middle.heartBeat() );
       }
       catch(Exception e)
       {  System.out.println("Exception thrown in testHeartBeat.");
