@@ -10,7 +10,7 @@
     <ag-div>        
        <agComponentTitle>Workflow</agComponentTitle>        
         <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
-        <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>               
+<!--        <ag-link rel="stylesheet" type="text/css" href="/astrogrid-portal/mount/workflow/workflow.css"/>   -->
         <xsl:if test="$activity_key != ''">
           <xsl:if test="$display_parameter_values = 'true'">
             <ag-onload>
