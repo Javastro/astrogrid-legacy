@@ -21,7 +21,7 @@ cd $BUILD_HOME
 echo "[ag-build-$PROJECT_NAME] remove old log"
 rm $LOG_FILE
 
-echo "Build Log for $PROJECT_NAME on $DATE" >> $LOG_FILE 2>&1
+echo "Build Log for $PROJECT_NAME SNAPSHOT on $DATE" >> $LOG_FILE 2>&1
 echo "====================================" >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] sourcing java"
@@ -38,6 +38,11 @@ cd $BUILD_HOME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] remove old SNAPSHOTS"
 sh $SCRIPTHOME/maven-remove-jars.sh $PROJECT_NAME >> $LOG_FILE 2>&1
+
+#both snapshot and branch deploy to same area, so safer to
+#delete first in case there's a build problem
+echo "[ag-build-$PROJECT_NAME] remove old site"
+sh $SCRIPTHOME/clean-site.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 
 echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $BUILD_HOME/astrogrid/maven-base >> $LOG_FILE 2>&1

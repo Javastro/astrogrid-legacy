@@ -38,6 +38,10 @@ echo "[ag-build-$PROJECT_NAME] removing $PROJECT_HOME"
 rm -fr $PROJECT_HOME >> $LOG_FILE 2>&1
 rm -fr $BUILD_HOME/astrogrid/maven-base >> $LOG_FILE 2>&1
 
+#both snapshot and branch deploy to same area, so safer to
+#delete first in case there's a build problem
+echo "[ag-build-$PROJECT_NAME] remove old site"
+sh $SCRIPTHOME/clean-site.sh $PROJECT_NAME >> $LOG_FILE 2>&1
 
 
 echo "[ag-build-$PROJECT_NAME] removing astrogrid files from local maven repository"
