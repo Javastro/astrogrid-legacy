@@ -18,6 +18,7 @@
 			<li><a href="../multiproject/astrogrid-cea-commandline/apidocs/org/astrogrid/applications/commandline/CommandLineCEAComponentManager.html">The Command Line Component manager</a>. This is configures a controller that can act as an adapter to run legacy command-line applications. Using the <a href="../multiproject/astrogrid-cea-commandline/apidocs/org/astrogrid/applications/commandline/CommandLineApplication.html">CommandLineApplication</a> model of an application</li>
 			<li><a href="../multiproject/astrogrid-cea-http/apidocs/org/astrogrid/applications/http/HttpApplicationCEAComponentManager.html">The HTTP GET/POST Component Manager</a> This configures a controller that can act as an adapter to run legacy HTTP GET/POST style applications, using the <a href="../multiproject/astrogrid-cea-http/apidocs/org/astrogrid/applications/http/HttpApplication.html">HttpApplication</a> model</li>
 			<li><a href="">The Java Class Component manager</a> This controller is built into the main CEA Framework, and allows a java class to be presented as an application.</li>
+			<li><a href="../../datacenter/multiproject/pal/apidocs/org/astrogrid/datacenter/service/v06/package-summary.html">Datacenter CEC</a> This controller is outside this project, but uses the core server components.</li>
 		</ul>
         
         <p>The <a href="../multiproject/astrogrid-cea-server/apidocs/overview-summary.html#overview_description">javadoc</a></p>

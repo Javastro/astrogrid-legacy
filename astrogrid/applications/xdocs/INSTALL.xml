@@ -21,7 +21,6 @@
 		<a href="http://www.astrogrid.org/maven/org.astrogrid/wars/astrogrid-cea-server-SNAPSHOT.war">Bare server</a>
 	</li>
 </ul>
-<a href="http://cvs.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war">http://cvs.astrogrid.org/maven/org.astrogrid/wars/astrogrid-applications-SNAPSHOT.war</a>
 
 <p>The war requires Tomcat 5 or higher running under JVM 1.4 or higher</p>
 

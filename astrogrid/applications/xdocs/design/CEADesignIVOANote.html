@@ -218,17 +218,7 @@ uniform manner</li>
   <li>Monitoring Service - This is a service that the Common Execution
 Controller can report status to - it can of course be </li>
   <li>Storage Service - this is the mechanism by which the application
-can return its results in the indirect parameter mode (see <a href="#indirectparameter">indirect parameters</a>). It can encompass a wide variety of mechanisms
-e.g.
-    <ul>
-      <li>SOAP messages</li>
-      <li>http get/put</li>
-      <li>SOAP attachments</li>
-      <li>ftp/gridftp</li>
-      <li>MySpace</li>
-      <li>local filestore</li>
-      <li>etc.</li>
-    </ul>
+can return its results in the indirect parameter mode (see <a href="#indirectparameter">indirect parameters</a>). 
   </li>
   <li>Results Service</li>
 </ul>
@@ -239,6 +229,7 @@ e.g.
  style="border: 0px solid ; height: 720px; width: 900px;"
  alt="CEA UML Sequence Diagram"
  src="http://www.astrogrid.org/viewcvs/*checkout*/astrogrid/applications/design/CEACallSequence.gif?rev=HEAD&amp;content-type=image/gif" /></a>
+ <p>click on diagram to enlarge</p>
 <p>The above sequence diagram illustrates how the various components of
 the CEA system interact when an application is executed.&nbsp; The
 steps are</p>
@@ -259,7 +250,6 @@ steps are</p>
       <li>A Tool object - This is described in more <a href="#Tool">detail below</a>.</li>
       <li>JobIdentifier - this is the identifier by which the <em>invoking process
         uses to keep track </em>of this particular execution instance.</li>
-      <li>Monitor endpoint URL -</li>
     </ul>
   </li>
   <li>the invoking process then has the opportunity to register two classes of listener 
@@ -270,27 +260,27 @@ steps are</p>
 		<li>Results Listener - this is the endpoint of a service that implements the ResultsListener port so that the ExecutionController can report the results of the application execution once they are ready</li>
 	</ol>
 	</li>
-  <li>The CommonExecutionController will then start the application.</li>
+  <li>Then the execute operation should be invoked and the  CommonExecutionController will then start the application.</li>
   <li>The application can then optionally return status information to the CommonExecutionController
     which will then pass this on to the Monitor Service.</li>
   <li>When the application completes it will inform the CommonExecutionController
-    which will then pass the results on to the storage service and inform the
+    which will then pass the indirect results on to the storage service, the direct results back to any results listeners and inform the
     monitor service that the application has finished.</li>
 </ol>
 <p>Some point of note;</p>
 <ul>
   <li>The monitoring/resultListening services could equally be the same as the invoking
 service - they are shown as conceptually separate, as the endpoint of
-this service is passed in as an argument to the call. Indeed if required there could be many status and results listeners for a single application execution.</li>
+this service is passed in as an argument to the registering call. Indeed if required there could be many status and results listeners for a single application execution.</li>
   <li>The only guaranteed status message that the monitoring service
 will receive is the one informing it that the application has finished
 (or failed). The application might be capable of sending intermediate
 messages whilst it is sill executing, but this is not required. </li>
-  <li>The results of the application running are not returned directly
-to the invoking process. The final destination for the results is
+  <li>The results of the application are not necessarily returned directly
+to the invoking process. For "indirect" output paramters, the final destination for the result data is
 implicit in the specification of the output parameters, and it is the
 responsibility of the ExecutionController to ensure that they get
-to the desired storage service if the output parameter is defined as indirect.</li>
+to the desired storage service.</li>
 <li>The results will also always be passed to the resultsListener if registered. In the case of an indirect parameter, then only the URI that specifies the location will returned, otherwise the full value will be returned. </li>
 </ul>
 
