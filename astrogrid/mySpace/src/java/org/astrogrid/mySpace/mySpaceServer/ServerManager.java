@@ -46,15 +46,17 @@ public class ServerManager
   *
   * @param contents The string containing the contents to be written
   *  to the new file.
-  *
   * @param newDataHolderFileName  The name of the file on the server
   *  corresponding to the DataHolder to be copied to (ie. the
   *  output file).  The file name should include the full directory
   *  specification, as known to the server operating system.
-  */
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
+ */
 
    public String upLoadString(String contents,
-     String newDataHolderFileName)
+     String newDataHolderFileName, boolean appendFlag)
    {  if (DEBUG)
       {  logger.debug("ServerManager.upLoadString:-");
          logger.debug("  contents: " + contents);
@@ -67,7 +69,7 @@ public class ServerManager
       try
       {  File newDataHolderFile  = new File(newDataHolderFileName);
          boolean isOk = MySpaceUtils.writeToFile(newDataHolderFile,
-           contents);
+           contents, appendFlag);
 
          System.out.println("  isOk: " + isOk);
 
@@ -96,21 +98,24 @@ public class ServerManager
 // -----------------------------------------------------------------
 
 /**
-  * Import a new dataHolder into a MySpace server.  A remote file is
-  * imported into the MySpace server.  This remote file is identified by
-  * a URI, which is passed as one of the input arguments.  In Iteration
-  * 3 this URI must be a URL.
-  *
-  * @param importURI The URI of the remote file to be imported.
-  *
-  * @param newDataHolderFileName  The name of the file on the server
-  *  corresponding to the DataHolder to be copied to (ie. the
-  *  output file).  The file name should include the full directory
-  *  specification, as known to the server operating system.
-  */
+ * Import a new dataHolder into a MySpace server.  A remote file is
+ * imported into the MySpace server.  This remote file is identified by
+ * a URI, which is passed as one of the input arguments.  In Iteration
+ * 3 this URI must be a URL.
+ *
+ * @param importURI The URI of the remote file to be imported.
+ *
+ * @param newDataHolderFileName  The name of the file on the server
+ *  corresponding to the DataHolder to be copied to (ie. the
+ *  output file).  The file name should include the full directory
+ *  specification, as known to the server operating system.
+ * @param appendFlag If true the contents will be appended to the end
+ *   of an existing file; otherwise any existing file will be
+ *   overwritten.
+ */
 
    public String importDataHolder(String importURI, 
-     String newDataHolderFileName)
+     String newDataHolderFileName, boolean appendFlag)
    {  if (DEBUG)
       {  logger.debug("ServerManager.importDataHolder:-");
          logger.debug("  importURI: " + importURI);
@@ -122,7 +127,7 @@ public class ServerManager
 
       try
       {  FileTransferFake fetch = new FileTransferFake(importURI,
-           newDataHolderFileName);
+           newDataHolderFileName, appendFlag);
          fetch.transfer();
          if (fetch.getChosenUrl() != null)
          {  response = MSC.SUCCESS + " File imported.";
@@ -247,7 +252,7 @@ public class ServerManager
          {  String contents = MySpaceUtils.readFromFile(oldDataHolderFile);
 
             boolean isOk = MySpaceUtils.writeToFile(newDataHolderFile,
-              contents);
+              contents, false);
             if (isOk)
             {  response = MSC.SUCCESS + " File copied.";
             }
