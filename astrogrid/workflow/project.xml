@@ -180,6 +180,11 @@
                               <id>xml-apis</id>
                               <version>1.0.b2</version>
                     </dependency>
-        </dependencies>
 
+		        <dependency>
+                <artifactId>commons-collections</artifactId>
+                <groupId>commons-collections</groupId>
+                <version>3.1</version>
+        </dependency>
+        </dependencies>
 </project>
