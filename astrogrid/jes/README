@@ -9,9 +9,9 @@ JES - Job Entry System
 1.1 The JES Configuration File and associated files
 -------------------------------------------------------
 The JES configuration file is named ASTROGRID_jesconfig.xml.
-There are some files associated with it, one containing application
+There are some other files associated with it, one containing application
 messages, and others used as templates for xml by the JES system.
-All apart from the configuration file are automatically copied to 
+All, apart from the configuration file, are automatically copied to 
 a suitable classpath location. The configuration file requires
 editing, and possibly merging with a previous config file if this is
 not a first install.
@@ -71,7 +71,8 @@ the DATASOURCE and TABLENAME parameters are the only candidates for change.
 This category is a short-term measure only. It is required to alter this only to 
 locate a tool endpoint until we are mature enough to dynamically locate these.
 For example...
-LOCATION.QueryTool" value="http://$TOOL_HOST_DNS_NAME:8080/$TOOL/services/$SERVICE_NAME" />
+LOCATION.QueryTool value="http://$TOOL_HOST_DNS_NAME:8080/$TOOL/services/$SERVICE_NAME" />
+where 
 $TOOL_HOST_DNS_NAME reflects the host where the tool is deployed
 $TOOL completes the service path
 $SERVICE_NAME name under which the ApplicationController for this service is deployed.
