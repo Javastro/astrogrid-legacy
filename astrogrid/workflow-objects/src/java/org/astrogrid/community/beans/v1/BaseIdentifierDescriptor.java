@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GroupTypeDescriptor.java,v 1.4 2004/03/02 16:57:19 nw Exp $
+ * $Id: BaseIdentifierDescriptor.java,v 1.1 2004/03/02 18:09:42 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -17,11 +17,11 @@ import org.exolab.castor.xml.XMLFieldDescriptor;
 import org.exolab.castor.xml.validators.*;
 
 /**
- * Class GroupTypeDescriptor.
+ * Class BaseIdentifierDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/02 18:09:42 $
  */
-public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
+public class BaseIdentifierDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
 
       //--------------------------/
@@ -53,10 +53,10 @@ public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDesc
      //- Constructors -/
     //----------------/
 
-    public GroupTypeDescriptor() {
+    public BaseIdentifierDescriptor() {
         super();
         nsURI = "http://www.astrogrid.org/schema/Credentials/v1";
-        xmlName = "GroupType";
+        xmlName = "BaseIdentifier";
         
         //-- set grouping compositor
         setCompositorAsSequence();
@@ -67,22 +67,22 @@ public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDesc
         
         //-- initialize element descriptors
         
-        //-- _groupId
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_groupId", "GroupId", org.exolab.castor.xml.NodeType.Element);
+        //-- _name
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_name", "Name", org.exolab.castor.xml.NodeType.Element);
         desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                GroupType target = (GroupType) object;
-                return target.getGroupId();
+                BaseIdentifier target = (BaseIdentifier) object;
+                return target.getName();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    GroupType target = (GroupType) object;
-                    target.setGroupId( (java.lang.String) value);
+                    BaseIdentifier target = (BaseIdentifier) object;
+                    target.setName( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
@@ -98,7 +98,7 @@ public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDesc
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
         
-        //-- validation code for: _groupId
+        //-- validation code for: _name
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
@@ -108,32 +108,32 @@ public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDesc
         }
         desc.setValidator(fieldValidator);
         //-- _community
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.community.beans.v1.Community.class, "_community", "-error-if-this-is-used-", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(java.lang.String.class, "_community", "Community", org.exolab.castor.xml.NodeType.Element);
+        desc.setImmutable(true);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
             {
-                GroupType target = (GroupType) object;
+                BaseIdentifier target = (BaseIdentifier) object;
                 return target.getCommunity();
             }
             public void setValue( java.lang.Object object, java.lang.Object value) 
                 throws IllegalStateException, IllegalArgumentException
             {
                 try {
-                    GroupType target = (GroupType) object;
-                    target.setCommunity( (org.astrogrid.community.beans.v1.Community) value);
+                    BaseIdentifier target = (BaseIdentifier) object;
+                    target.setCommunity( (java.lang.String) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.community.beans.v1.Community();
+                return null;
             }
         } );
         desc.setHandler(handler);
-        desc.setContainer(true);
-        desc.setClassDescriptor(new org.astrogrid.community.beans.v1.CommunityDescriptor());
+        desc.setNameSpaceURI("http://www.astrogrid.org/schema/Credentials/v1");
         desc.setRequired(true);
         desc.setMultivalued(false);
         addFieldDescriptor(desc);
@@ -142,9 +142,12 @@ public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDesc
         fieldValidator = new org.exolab.castor.xml.FieldValidator();
         fieldValidator.setMinOccurs(1);
         { //-- local scope
+            StringValidator typeValidator = new StringValidator();
+            typeValidator.setWhiteSpace("preserve");
+            fieldValidator.setValidator(typeValidator);
         }
         desc.setValidator(fieldValidator);
-    } //-- org.astrogrid.community.beans.v1.GroupTypeDescriptor()
+    } //-- org.astrogrid.community.beans.v1.BaseIdentifierDescriptor()
 
 
       //-----------/
@@ -180,7 +183,7 @@ public class GroupTypeDescriptor extends org.exolab.castor.xml.util.XMLClassDesc
      */
     public java.lang.Class getJavaClass()
     {
-        return org.astrogrid.community.beans.v1.GroupType.class;
+        return org.astrogrid.community.beans.v1.BaseIdentifier.class;
     } //-- java.lang.Class getJavaClass() 
 
     /**

@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Credentials.java,v 1.4 2004/03/02 16:57:19 nw Exp $
+ * $Id: Credentials.java,v 1.5 2004/03/02 18:09:42 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -22,9 +22,9 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * The full authorization and authentication credentials
+ * The full authorization and authentication credentials.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/02 18:09:42 $
  */
 public class Credentials extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
@@ -36,17 +36,17 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _account
+     * The user account.
      */
-    private org.astrogrid.community.beans.v1.AccountType _account;
+    private org.astrogrid.community.beans.v1.Account _account;
 
     /**
-     * Field _group
+     * A security group used in authorization.
      */
-    private org.astrogrid.community.beans.v1.GroupType _group;
+    private org.astrogrid.community.beans.v1.Group _group;
 
     /**
-     * Field _securityToken
+     * The security token used in authentication.
      */
     private java.lang.String _securityToken;
 
@@ -65,27 +65,32 @@ implements java.io.Serializable
     //-----------/
 
     /**
-     * Returns the value of field 'account'.
+     * Returns the value of field 'account'. The field 'account'
+     * has the following description: The user account.
      * 
      * @return the value of field 'account'.
      */
-    public org.astrogrid.community.beans.v1.AccountType getAccount()
+    public org.astrogrid.community.beans.v1.Account getAccount()
     {
         return this._account;
-    } //-- org.astrogrid.community.beans.v1.AccountType getAccount() 
+    } //-- org.astrogrid.community.beans.v1.Account getAccount() 
 
     /**
-     * Returns the value of field 'group'.
+     * Returns the value of field 'group'. The field 'group' has
+     * the following description: A security group used in
+     * authorization.
      * 
      * @return the value of field 'group'.
      */
-    public org.astrogrid.community.beans.v1.GroupType getGroup()
+    public org.astrogrid.community.beans.v1.Group getGroup()
     {
         return this._group;
-    } //-- org.astrogrid.community.beans.v1.GroupType getGroup() 
+    } //-- org.astrogrid.community.beans.v1.Group getGroup() 
 
     /**
-     * Returns the value of field 'securityToken'.
+     * Returns the value of field 'securityToken'. The field
+     * 'securityToken' has the following description: The security
+     * token used in authentication.
      * 
      * @return the value of field 'securityToken'.
      */
@@ -133,27 +138,32 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'account'.
+     * Sets the value of field 'account'. The field 'account' has
+     * the following description: The user account.
      * 
      * @param account the value of field 'account'.
      */
-    public void setAccount(org.astrogrid.community.beans.v1.AccountType account)
+    public void setAccount(org.astrogrid.community.beans.v1.Account account)
     {
         this._account = account;
-    } //-- void setAccount(org.astrogrid.community.beans.v1.AccountType) 
+    } //-- void setAccount(org.astrogrid.community.beans.v1.Account) 
 
     /**
-     * Sets the value of field 'group'.
+     * Sets the value of field 'group'. The field 'group' has the
+     * following description: A security group used in
+     * authorization.
      * 
      * @param group the value of field 'group'.
      */
-    public void setGroup(org.astrogrid.community.beans.v1.GroupType group)
+    public void setGroup(org.astrogrid.community.beans.v1.Group group)
     {
         this._group = group;
-    } //-- void setGroup(org.astrogrid.community.beans.v1.GroupType) 
+    } //-- void setGroup(org.astrogrid.community.beans.v1.Group) 
 
     /**
-     * Sets the value of field 'securityToken'.
+     * Sets the value of field 'securityToken'. The field
+     * 'securityToken' has the following description: The security
+     * token used in authentication.
      * 
      * @param securityToken the value of field 'securityToken'.
      */

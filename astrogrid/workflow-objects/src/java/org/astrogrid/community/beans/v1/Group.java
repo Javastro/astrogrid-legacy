@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AccountType.java,v 1.4 2004/03/02 16:57:19 nw Exp $
+ * $Id: Group.java,v 1.1 2004/03/02 18:09:42 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -22,62 +22,27 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * An account that can log into the system
+ * A security group used in authorization.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/02 18:09:42 $
  */
-public class AccountType extends org.astrogrid.common.bean.BaseBean 
+public class Group extends org.astrogrid.community.beans.v1.BaseIdentifier 
 implements java.io.Serializable
 {
-
-
-      //--------------------------/
-     //- Class/Member Variables -/
-    //--------------------------/
-
-    /**
-     * Field _accountID
-     */
-    private java.lang.String _accountID;
-
-    /**
-     * Field _community
-     */
-    private org.astrogrid.community.beans.v1.Community _community;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public AccountType() {
+    public Group() {
         super();
-    } //-- org.astrogrid.community.beans.v1.AccountType()
+    } //-- org.astrogrid.community.beans.v1.Group()
 
 
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Returns the value of field 'accountID'.
-     * 
-     * @return the value of field 'accountID'.
-     */
-    public java.lang.String getAccountID()
-    {
-        return this._accountID;
-    } //-- java.lang.String getAccountID() 
-
-    /**
-     * Returns the value of field 'community'.
-     * 
-     * @return the value of field 'community'.
-     */
-    public org.astrogrid.community.beans.v1.Community getCommunity()
-    {
-        return this._community;
-    } //-- org.astrogrid.community.beans.v1.Community getCommunity() 
 
     /**
      * Method isValid
@@ -118,35 +83,15 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'accountID'.
-     * 
-     * @param accountID the value of field 'accountID'.
-     */
-    public void setAccountID(java.lang.String accountID)
-    {
-        this._accountID = accountID;
-    } //-- void setAccountID(java.lang.String) 
-
-    /**
-     * Sets the value of field 'community'.
-     * 
-     * @param community the value of field 'community'.
-     */
-    public void setCommunity(org.astrogrid.community.beans.v1.Community community)
-    {
-        this._community = community;
-    } //-- void setCommunity(org.astrogrid.community.beans.v1.Community) 
-
-    /**
-     * Method unmarshalAccountType
+     * Method unmarshalGroup
      * 
      * @param reader
      */
-    public static org.astrogrid.community.beans.v1.AccountType unmarshalAccountType(java.io.Reader reader)
+    public static org.astrogrid.community.beans.v1.Group unmarshalGroup(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.community.beans.v1.AccountType) Unmarshaller.unmarshal(org.astrogrid.community.beans.v1.AccountType.class, reader);
-    } //-- org.astrogrid.community.beans.v1.AccountType unmarshalAccountType(java.io.Reader) 
+        return (org.astrogrid.community.beans.v1.Group) Unmarshaller.unmarshal(org.astrogrid.community.beans.v1.Group.class, reader);
+    } //-- org.astrogrid.community.beans.v1.Group unmarshalGroup(java.io.Reader) 
 
     /**
      * Method validate

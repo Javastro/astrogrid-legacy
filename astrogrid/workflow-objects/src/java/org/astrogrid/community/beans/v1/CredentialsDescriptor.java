@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: CredentialsDescriptor.java,v 1.4 2004/03/02 16:57:19 nw Exp $
+ * $Id: CredentialsDescriptor.java,v 1.5 2004/03/02 18:09:42 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class CredentialsDescriptor.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.5 $ $Date: 2004/03/02 18:09:42 $
  */
 public class CredentialsDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 
@@ -68,7 +68,7 @@ public class CredentialsDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         //-- initialize element descriptors
         
         //-- _account
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.community.beans.v1.AccountType.class, "_account", "Account", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.community.beans.v1.Account.class, "_account", "Account", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -81,14 +81,14 @@ public class CredentialsDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             {
                 try {
                     Credentials target = (Credentials) object;
-                    target.setAccount( (org.astrogrid.community.beans.v1.AccountType) value);
+                    target.setAccount( (org.astrogrid.community.beans.v1.Account) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.community.beans.v1.AccountType();
+                return new org.astrogrid.community.beans.v1.Account();
             }
         } );
         desc.setHandler(handler);
@@ -104,7 +104,7 @@ public class CredentialsDescriptor extends org.exolab.castor.xml.util.XMLClassDe
         }
         desc.setValidator(fieldValidator);
         //-- _group
-        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.community.beans.v1.GroupType.class, "_group", "Group", org.exolab.castor.xml.NodeType.Element);
+        desc = new org.exolab.castor.xml.util.XMLFieldDescriptorImpl(org.astrogrid.community.beans.v1.Group.class, "_group", "Group", org.exolab.castor.xml.NodeType.Element);
         handler = (new org.exolab.castor.xml.XMLFieldHandler() {
             public java.lang.Object getValue( java.lang.Object object ) 
                 throws IllegalStateException
@@ -117,14 +117,14 @@ public class CredentialsDescriptor extends org.exolab.castor.xml.util.XMLClassDe
             {
                 try {
                     Credentials target = (Credentials) object;
-                    target.setGroup( (org.astrogrid.community.beans.v1.GroupType) value);
+                    target.setGroup( (org.astrogrid.community.beans.v1.Group) value);
                 }
                 catch (java.lang.Exception ex) {
                     throw new IllegalStateException(ex.toString());
                 }
             }
             public java.lang.Object newInstance( java.lang.Object parent ) {
-                return new org.astrogrid.community.beans.v1.GroupType();
+                return new org.astrogrid.community.beans.v1.Group();
             }
         } );
         desc.setHandler(handler);

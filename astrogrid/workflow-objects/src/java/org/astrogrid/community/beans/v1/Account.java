@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: Community.java,v 1.4 2004/03/02 16:57:19 nw Exp $
+ * $Id: Account.java,v 1.1 2004/03/02 18:09:42 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -22,47 +22,27 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * A representation of what a community is...
+ * The user account.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/02 18:09:42 $
  */
-public class Community extends org.astrogrid.common.bean.BaseBean 
+public class Account extends org.astrogrid.community.beans.v1.BaseIdentifier 
 implements java.io.Serializable
 {
-
-
-      //--------------------------/
-     //- Class/Member Variables -/
-    //--------------------------/
-
-    /**
-     * Field _community
-     */
-    private java.lang.String _community;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public Community() {
+    public Account() {
         super();
-    } //-- org.astrogrid.community.beans.v1.Community()
+    } //-- org.astrogrid.community.beans.v1.Account()
 
 
       //-----------/
      //- Methods -/
     //-----------/
-
-    /**
-     * Returns the value of field 'community'.
-     * 
-     * @return the value of field 'community'.
-     */
-    public java.lang.String getCommunity()
-    {
-        return this._community;
-    } //-- java.lang.String getCommunity() 
 
     /**
      * Method isValid
@@ -103,25 +83,15 @@ implements java.io.Serializable
     } //-- void marshal(org.xml.sax.ContentHandler) 
 
     /**
-     * Sets the value of field 'community'.
-     * 
-     * @param community the value of field 'community'.
-     */
-    public void setCommunity(java.lang.String community)
-    {
-        this._community = community;
-    } //-- void setCommunity(java.lang.String) 
-
-    /**
-     * Method unmarshalCommunity
+     * Method unmarshalAccount
      * 
      * @param reader
      */
-    public static org.astrogrid.community.beans.v1.Community unmarshalCommunity(java.io.Reader reader)
+    public static org.astrogrid.community.beans.v1.Account unmarshalAccount(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.community.beans.v1.Community) Unmarshaller.unmarshal(org.astrogrid.community.beans.v1.Community.class, reader);
-    } //-- org.astrogrid.community.beans.v1.Community unmarshalCommunity(java.io.Reader) 
+        return (org.astrogrid.community.beans.v1.Account) Unmarshaller.unmarshal(org.astrogrid.community.beans.v1.Account.class, reader);
+    } //-- org.astrogrid.community.beans.v1.Account unmarshalAccount(java.io.Reader) 
 
     /**
      * Method validate

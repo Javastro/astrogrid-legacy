@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: GroupType.java,v 1.4 2004/03/02 16:57:19 nw Exp $
+ * $Id: BaseIdentifier.java,v 1.1 2004/03/02 18:09:42 pah Exp $
  */
 
 package org.astrogrid.community.beans.v1;
@@ -22,11 +22,11 @@ import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.ContentHandler;
 
 /**
- * The security group
+ * The identifier base class. Contains the name and the community
  * 
- * @version $Revision: 1.4 $ $Date: 2004/03/02 16:57:19 $
+ * @version $Revision: 1.1 $ $Date: 2004/03/02 18:09:42 $
  */
-public class GroupType extends org.astrogrid.common.bean.BaseBean 
+public class BaseIdentifier extends org.astrogrid.common.bean.BaseBean 
 implements java.io.Serializable
 {
 
@@ -36,23 +36,23 @@ implements java.io.Serializable
     //--------------------------/
 
     /**
-     * Field _groupId
+     * Field _name
      */
-    private java.lang.String _groupId;
+    private java.lang.String _name;
 
     /**
      * Field _community
      */
-    private org.astrogrid.community.beans.v1.Community _community;
+    private java.lang.String _community;
 
 
       //----------------/
      //- Constructors -/
     //----------------/
 
-    public GroupType() {
+    public BaseIdentifier() {
         super();
-    } //-- org.astrogrid.community.beans.v1.GroupType()
+    } //-- org.astrogrid.community.beans.v1.BaseIdentifier()
 
 
       //-----------/
@@ -64,20 +64,20 @@ implements java.io.Serializable
      * 
      * @return the value of field 'community'.
      */
-    public org.astrogrid.community.beans.v1.Community getCommunity()
+    public java.lang.String getCommunity()
     {
         return this._community;
-    } //-- org.astrogrid.community.beans.v1.Community getCommunity() 
+    } //-- java.lang.String getCommunity() 
 
     /**
-     * Returns the value of field 'groupId'.
+     * Returns the value of field 'name'.
      * 
-     * @return the value of field 'groupId'.
+     * @return the value of field 'name'.
      */
-    public java.lang.String getGroupId()
+    public java.lang.String getName()
     {
-        return this._groupId;
-    } //-- java.lang.String getGroupId() 
+        return this._name;
+    } //-- java.lang.String getName() 
 
     /**
      * Method isValid
@@ -122,31 +122,31 @@ implements java.io.Serializable
      * 
      * @param community the value of field 'community'.
      */
-    public void setCommunity(org.astrogrid.community.beans.v1.Community community)
+    public void setCommunity(java.lang.String community)
     {
         this._community = community;
-    } //-- void setCommunity(org.astrogrid.community.beans.v1.Community) 
+    } //-- void setCommunity(java.lang.String) 
 
     /**
-     * Sets the value of field 'groupId'.
+     * Sets the value of field 'name'.
      * 
-     * @param groupId the value of field 'groupId'.
+     * @param name the value of field 'name'.
      */
-    public void setGroupId(java.lang.String groupId)
+    public void setName(java.lang.String name)
     {
-        this._groupId = groupId;
-    } //-- void setGroupId(java.lang.String) 
+        this._name = name;
+    } //-- void setName(java.lang.String) 
 
     /**
-     * Method unmarshalGroupType
+     * Method unmarshalBaseIdentifier
      * 
      * @param reader
      */
-    public static org.astrogrid.community.beans.v1.GroupType unmarshalGroupType(java.io.Reader reader)
+    public static org.astrogrid.community.beans.v1.BaseIdentifier unmarshalBaseIdentifier(java.io.Reader reader)
         throws org.exolab.castor.xml.MarshalException, org.exolab.castor.xml.ValidationException
     {
-        return (org.astrogrid.community.beans.v1.GroupType) Unmarshaller.unmarshal(org.astrogrid.community.beans.v1.GroupType.class, reader);
-    } //-- org.astrogrid.community.beans.v1.GroupType unmarshalGroupType(java.io.Reader) 
+        return (org.astrogrid.community.beans.v1.BaseIdentifier) Unmarshaller.unmarshal(org.astrogrid.community.beans.v1.BaseIdentifier.class, reader);
+    } //-- org.astrogrid.community.beans.v1.BaseIdentifier unmarshalBaseIdentifier(java.io.Reader) 
 
     /**
      * Method validate
