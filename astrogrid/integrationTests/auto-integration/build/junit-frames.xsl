@@ -300,7 +300,7 @@ h6 {
         <xsl:variable name="htmlFile" select="concat($class.name,'-workflow.html')" />
            <redirect:write file="{$output.dir}/{$xmlFile}">
                 <xsl:value-of disable-output-escaping="yes"
-                select="substring-before(substring-after(system-err,'***WORKFLOW***'),'***END-WORKFLOW***')" />
+                select="substring-before(substring-after(system-err,'***WORKFLOW***'),'***WORKFLOW-END***')" />
             </redirect:write>
 
            Resulting Workflow Document <a href="{$output.dir}/{$htmlFile}" frame='_blank'>html</a>, <a href="{$output.dir}/{$xmlFile}" frame='_blank'>xml</a>
