@@ -1,5 +1,5 @@
 /*
- * $Id: LoginActionTest.java,v 1.5 2004/04/02 11:53:16 jdt Exp $ 
+ * $Id: LoginActionTest.java,v 1.6 2004/04/05 16:39:52 jdt Exp $ 
  * Created on Mar 23, 2004 by jdt 
  * Copyright (C) AstroGrid. All rights reserved. 
  * It's my birthday! 
@@ -11,11 +11,13 @@
 package org.astrogrid.portal.cocoon.common;
 import java.util.HashMap;
 import java.util.Map;
+
 import junit.framework.TestCase;
+
 import org.apache.cocoon.environment.ObjectModelHelper;
+import org.astrogrid.community.common.exception.CommunityIdentifierException;
 import org.astrogrid.community.common.security.service.SecurityServiceMock;
-import org.astrogrid.config.Config;
-import org.astrogrid.config.SimpleConfig;
+import org.astrogrid.community.resolver.exception.CommunityResolverException;
 /**
  * JUnit test
  * 
@@ -179,31 +181,60 @@ public final class LoginActionTest extends TestCase {
             return; //expected
         }
     }
+
+    
     /**
-     * Try bad config
+     * ...Suppose someone enters
+     * a user name and community which cannot
+     * be resolved into an IVORN
+     * It's a real struggle to come up with a string
+     * which can't be a uri!
      */
-    public void testBadlyConfigured() {
-        final Config config = SimpleConfig.getSingleton();
-        config.setProperty(
-            LoginAction.ORG_ASTROGRID_PORTAL_REGISTRY_URL,
-            "bad address");
+    public void testBadIVORN() {
         final LoginAction action = new LoginAction();
         final Map objectModel = new HashMap();
         final DummyRequest request = new DummyRequest();
         request.addParameter(LoginAction.USER_PARAM, "John");
-        request.addParameter(LoginAction.COMMUNITY_PARAM, "roe");
+        request.addParameter(LoginAction.COMMUNITY_PARAM, ": :");
         request.addParameter(LoginAction.PASS_PARAM, "pass");
         objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
         try {
             action.act(null, null, objectModel, null, null);
             fail("Expected a LoginException");
         } catch (LoginException le) {
+            assertTrue(le.getCause() instanceof CommunityIdentifierException);
+            return; //expected
+        }
+    }
+    
+    /**
+     * ...Suppose someone enters
+     * a community which does not exist in the registry
+     */
+    public void testUnknownCommunity() {
+        final LoginAction action = new LoginAction();
+        final Map objectModel = new HashMap();
+        final DummyRequest request = new DummyRequest();
+        request.addParameter(LoginAction.USER_PARAM, "John");
+        request.addParameter(LoginAction.COMMUNITY_PARAM, "org.i.made.this.up");
+        request.addParameter(LoginAction.PASS_PARAM, "pass");
+        objectModel.put(ObjectModelHelper.REQUEST_OBJECT, request);
+        try {
+            action.act(null, null, objectModel, null, null);
+            fail("Expected a LoginException");
+        } catch (LoginException le) {
+            assertTrue(le.getCause() instanceof CommunityResolverException);
             return; //expected
         }
     }
 }
 /*
  * $Log: LoginActionTest.java,v $
+ * Revision 1.6  2004/04/05 16:39:52  jdt
+ * Moved tests that use configuration to a separate class, 
+ * otherwise they interfere with the unconfigured tests.  Added 
+ * news tests to exercise the CommunityPasswordResolver
+ *
  * Revision 1.5  2004/04/02 11:53:16  jdt
  * Merge from PLGN_JDT_bz#281a
  *
