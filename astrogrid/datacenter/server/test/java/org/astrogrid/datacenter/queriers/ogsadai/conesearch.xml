@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- SQL equivalent: CONE SEARCH
-SELECT first.* FROM first WHERE first.errbox && xmm1.errbox AND DEGREES(2 * ASIN( SQRT(POW(SIN(RADIANS((12.34-first.decl)/2)), 2) + COS(RADIANS(12.34)) * COS(RADIANS(first.decl)) * POW(SIN(RADIANS((123.45-first.ra)/2),2)))) <5.0 
+SELECT first.* FROM first WHERE first.errbox && xmm1.errbox AND DEGREES(2 * ASIN( SQRT(POW(SIN(RADIANS((12.34-first.decl)/2)), 2) + COS(RADIANS(12.34)) * COS(RADIANS(first.decl)) * POW(SIN(RADIANS((123.45-first.ra)/2),2)))) <15.0 
 
 -->
 <Select xmlns="http://tempuri.org/adql" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://tempuri.org/adql ADQLSchemav06.xsd">
@@ -52,7 +52,7 @@ SELECT first.* FROM first WHERE first.errbox && xmm1.errbox AND DEGREES(2 * ASIN
                                 </CoordValue>
                             </Pos3Vector>
                         </q1:Center>
-                        <q1:Radius>5</q1:Radius>
+                        <q1:Radius>15.0</q1:Radius>
                     </Circle>
                 </SecondCondition>
             </IntersectionSearch>
