@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+
+<xsp:page language="java"
+ xmlns:xsp="http://apache.org/xsp">
+
+<xsp:comment>
+
+   Development project to interface Cocoon to the RPC style
+   Web-services in use by Astrogrid.
+
+   Author: Brian McIlwrath, Astrogrid, RAL.
+
+ NB. Issues!
+   1) Need the Axis client libraries
+   2) How to parse the returned SAX events derived from Cocoon source!
+</xsp:comment>
+
+<xsp:structure>
+
+<xsp:comment>Axis SOAP stuff</xsp:comment>
+   <xsp:include>org.apache.axis.client.Call</xsp:include>
+   <xsp:include>org.apache.axis.client.Service</xsp:include>
+   <xsp:include>org.apache.axis.encoding.XMLType</xsp:include>
+   <xsp:include>javax.xml.rpc.ParameterMode</xsp:include>
+   <xsp:include>org.apache.cocoon.components.language.markup.xsp.XSPUtil</xsp:include>
+
+</xsp:structure>
+
+<xsp:logic>
+// Make these constants inherit from Ccooon sitemap (trivial!)
+   private static final String SERVICE = "AstrogridRegistryService";       
+
+// Web service stuff
+   private static String SERVER = "stargrid1.bnsc.rl.ac.uk";
+   private static String PORT = "8080";
+</xsp:logic>
+
+<page1>
+<xsp:logic>
+   String results = null;
+   try {
+      Service service = new Service();
+      Call call = (Call) service.createCall();
+      call.setTargetEndpointAddress("http://" + SERVER + ":" + PORT +
+         "/axis/services/" + SERVICE);
+      call.setOperationName("listRegistryMetadata");
+      call.addParameter( "queryElement", XMLType.XSD_STRING, ParameterMode.IN );
+      call.addParameter( "queryElementValue", XMLType.XSD_STRING,
+                         ParameterMode.IN );
+      call.setReturnType( XMLType.XSD_STRING );
+      results = (String) call.invoke(new Object[] {"id","all"});
+      getLogger().debug("Webservice returns:" + results);
+   }
+   catch(Exception e)
+   {
+         e.printStackTrace();
+   }
+
+// This bit of magic from trawl through Coccon sources!
+
+   XSPUtil util = new XSPUtil();
+<![CDATA[   util.includeString("<page2>"+results+"</page2>",manager,contentHandler);
+]]>
+</xsp:logic>
+</page1>
+
+</xsp:page>

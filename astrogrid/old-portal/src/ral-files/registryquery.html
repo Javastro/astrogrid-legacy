@@ -1,0 +1,98 @@
+<html>
+ <head>
+  <title>Cocoon registry service</title>
+ </head>
+ <body>
+  <table cellspacing="0" border="0" width="100%">
+   <tr>
+    <td align="left" width="30%">
+      <img alt="Home" src="AGlogo.gif">
+    </td>
+    <td align="left">
+     <h1>Registry Query Service demo from Cocoon</h1>
+    </td>
+   </tr>
+  </table>
+ <form action="registry.xsp" method="post">
+ <p>
+ Check a Registry Query Type and enter any parameters below. <br>
+ <input type="radio" name="QueryType", value="queryServices">
+    Query Services
+ <br/>
+ <input type="radio" name="QueryType" value="listAllServices" checked>
+    List All Services
+ <br/>
+ <input type="radio" NAME="QueryType" value="listServiceMetadata">
+    List Service Metadata
+ <br/>
+   <input type="radio" NAME="QueryType" value="listRegistryMetadata">
+    List Registry Metadata
+   <br/>
+   <input type="radio" NAME="QueryType" value="listServiceMetadataFormat">
+    List Services Metadata Format
+   <P>
+   Element: <input name="Element" type="TEXT" value="id">
+   Element Value: <input name="Value" type="TEXT" value="all">
+   <input type="SUBMIT" value="Submit"> 
+   </P>
+  </form>
+
+  <hr/>
+
+  <form method="post" action="registryquery.xsp">
+    Enter Web Server:
+    <select name="WebServer" value="Testing">
+        <optgroup label="Web Servers">
+	         <option> Testing </option>
+	         <option> MSSL </option>
+	         <option> Rutherford </option>
+        </optgroup>
+    </select>
+
+    <p> Type a Registry Query in the boxes below (one or two conditions):
+    </p>
+    <p> 
+    <input name="Element1" type="TEXT" value="id"/> 
+    <select name="Operator1" value="EQ">
+       <optgroup>
+          <option>EQ</option>
+          <option>NE</option>
+          <option>GT</option>
+          <option>GE</option>
+          <option>LT</option>
+          <option>LE</option>
+          <option>STARTS WITH</option>
+          <option>CONTAINS</option>
+       </optgroup>
+    </select>
+    <input name="Value1" type="TEXT" value=""/>
+    <br/>
+    <select name="Seperator1" value="">
+       <optgroup>
+          <option></option>
+          <option>AND</option>
+          <option>OR</option>
+          <option>NOT</option>
+       </optgroup>
+    </select>
+    <br/> 
+    <input name="Element2" type="TEXT" value=""/> 
+    <select name="Operator2" value="">
+       <optgroup>
+          <option></option>
+          <option>EQ</option>
+          <option>NE</option>
+          <option>GT</option>
+          <option>GE</option>
+          <option>LT</option>
+          <option>LE</option>
+          <option>STARTS WITH</option>
+          <option>CONTAINS</option>
+       </optgroup>
+    </select>
+    <input name="Value2" type="TEXT" value=""/>
+    </p>
+    <p> <input type="SUBMIT" name="submitquery" value="Submit"/> </p>
+  </form> 
+ </body>
+</html>

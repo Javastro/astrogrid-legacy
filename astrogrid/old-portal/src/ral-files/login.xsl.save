@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+   <xsl:template match="/">
+      <html>
+         <title><xsl:value-of select="page/page-title"/></title>
+      <body>
+
+      <xsl:if test="contains(page/content/valid,'true')">
+        <h1>Login successful!</h1>
+        <h3>
+        <p>Select <a href="registry.html">here for registry query</a></p>
+        <p>Select <a href="workflow.html"> here for workflow</a></p>
+        <p>Select <a href="msexplorer.html">here for MySpace Explorer</a></p>
+        </h3>
+        </body>
+        </html>
+      </xsl:if>
+      
+   </xsl:template>
+</xsl:stylesheet>

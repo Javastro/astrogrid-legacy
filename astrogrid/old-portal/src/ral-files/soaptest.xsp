@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<xsp:page language="java"
+ xmlns:xsp="http://apache.org/xsp"
+ xmlns:soap="http://apache.org/xsp/soap/3.0">
+
+   <results>
+      <soap:call
+         url="http://stargrid1.bnsc.rl.ac.uk:1234/axis/services/AstrogridRegistryService"
+         xmlns:xsi="http://www.w3,org/1999/XMLSchema-instance"
+         xmlns:xsd="http://www.w3.org/1999/XMLSchema">
+         <soap:enc/>
+         <reg:listRegistryMetadata
+            xmlns:reg="http://www.astrogrid.org/registry">
+            <in0 xsi:type="xsd:string">id</in0>
+            <in1 xsi:type="xsd:string">all</in1>
+         </reg:listRegistryMetadata>
+      </soap:call>
+   </results>
+</xsp:page>
