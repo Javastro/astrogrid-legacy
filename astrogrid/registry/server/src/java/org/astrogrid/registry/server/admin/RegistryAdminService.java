@@ -58,14 +58,11 @@ public class RegistryAdminService {
    
    private static final String AUTHORITYID_PROPERTY = 
                                "org.astrogrid.registry.authorityid";
-   private static String versionNumber = null;
-   
    private static HashMap manageAuths, otherAuths;
 
    static {
       if(conf == null) {
          conf = org.astrogrid.config.SimpleConfig.getSingleton();
-         versionNumber = conf.getString("org.astrogrid.registry.version");
          manageAuths = new HashMap();
          otherAuths = new HashMap();
       }      
@@ -121,11 +118,46 @@ public class RegistryAdminService {
       // xml can come in a few various forms.  This xsl will make it
       // consistent in the db and throughout this registry.
       XSLHelper xs = new XSLHelper();      
-      Document xsDoc = xs.transformDatabaseProcess((Node)update.
-                                                         getDocumentElement());
-                     
+      Document xsDoc = null;
+      
+      //Okay we need to get the vr attribute namespace.
+      //The confusing part is since we are using message style there is a chance it 
+      //could be in the root element (which might be the web service operation name)
+      //hence we need to look at the root element, its fist child, and lastly
+      //the child of that node
+      //ex of possible message style input: 
+      //<update><VoResource xmlns:vr=... ><Resource xmlns:vr=...>
+      //the vr attribute can live at either or both of those elments and we just need to get the first one.
+      //It is possible the <update> element will not be there hence we need to look at the root element
+      String attrVersion = null;
+          attrVersion = DomHelper.getNodeAttrValue((Element)update.getDocumentElement(),"vr","xmlns");
+          if(attrVersion == null || attrVersion.trim().length() == 0) {
+              attrVersion = DomHelper.getNodeAttrValue(
+                      (Element)update.getDocumentElement().getFirstChild(),"vr","xmlns");
+              if(attrVersion == null || attrVersion.trim().length() == 0) {
+                  attrVersion = DomHelper.getNodeAttrValue(
+                          (Element)update.getDocumentElement().getFirstChild().getFirstChild(),"vr","xmlns");
+              }
+          }
+      if(attrVersion == null || attrVersion.trim().length() == 0) {
+          throw new AxisFault("Could not find version");
+      }
+      attrVersion = attrVersion.substring((attrVersion.lastIndexOf("v")+1));
+      String versionNumber = attrVersion.replace('.','_');
+      log.info("grabbed this version number off the xml" + versionNumber);      
+      boolean hasStyleSheet = false;
+      
+      hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
+      
+      if(hasStyleSheet) {
+          System.out.println("lets call transform update");
+          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
+      } else {
+         xsDoc = update;
+      }
+
       UpdateDBService udbService = new UpdateDBService();
-      String collectionName = "astrogridv" + versionNumber;                                                         
+      String collectionName = "astrogridv" + versionNumber;
       log.info("server side update the xsDoc = " + 
                DomHelper.DocumentToString(xsDoc));
       NodeList nl = null;
@@ -134,7 +166,6 @@ public class RegistryAdminService {
       } catch(IOException ioe) {
          throw new AxisFault("No Resources to update");
       }
-      
       
       try {
          manageAuths = RegistryServerHelper.getManagedAuthorities();
@@ -168,7 +199,7 @@ public class RegistryAdminService {
       String resKey = null;
       String tempIdent = null;
       boolean addManageError = false;
-      String versionNumber = conf.getString("org.astrogrid.registry.version");
+      
       log.info("here is the nl length = " + nl.getLength() + 
                " and manauths size = " + manageAuths.size() + 
                " and otherAuths size = " + otherAuths.size());
@@ -485,14 +516,12 @@ public class RegistryAdminService {
     * 
     * @param xsDoc A DOM of XML of  one or more Resources.
     */
-   public void updateNoCheck(Document xsDoc) throws MalformedURLException, IOException {
+   public void updateNoCheck(Document update) throws MalformedURLException, IOException {
       log.debug("start updateNoCheck");
 
       //log.info("This is xsDoc = " + XMLUtils.DocumentToString(xsDoc));
       //NodeList nl = xsDoc.getElementsByTagNameNS("vr","Resource" );
-      NodeList nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");
 
-      String versionNumber = conf.getString("org.astrogrid.registry.version");
       ArrayList al = new ArrayList();
       String xql = null;
       DocumentFragment df = null;
@@ -502,7 +531,49 @@ public class RegistryAdminService {
       String resKey = null;
       boolean addManageError = false;
       String tempIdent = null;
+      Document xsDoc = null;
+
+      XSLHelper xs = new XSLHelper();      
+      
+      
+      //Okay we need to get the vr attribute namespace.
+      //The confusing part is since we are using message style there is a chance it 
+      //could be in the root element (which might be the web service operation name)
+      //hence we need to look at the root element, its fist child, and lastly
+      //the child of that node
+      //ex of possible message style input: 
+      //<update><VoResource xmlns:vr=... ><Resource xmlns:vr=...>
+      //the vr attribute can live at either or both of those elments and we just need to get the first one.
+      //It is possible the <update> element will not be there hence we need to look at the root element
+      String attrVersion = DomHelper.getNodeAttrValue((Element)update.getDocumentElement(),"vr","xmlns");
+      if(attrVersion == null || attrVersion.trim().length() == 0) {
+          attrVersion = DomHelper.getNodeAttrValue(
+                  (Element)update.getDocumentElement().getFirstChild(),"vr","xmlns");
+          if(attrVersion == null || attrVersion.trim().length() == 0) {
+              attrVersion = DomHelper.getNodeAttrValue(
+                      (Element)update.getDocumentElement().getFirstChild().getFirstChild(),"vr","xmlns");
+          }
+      }
+      if(attrVersion == null || attrVersion.trim().length() == 0) {
+          throw new IOException("Could not find version");
+      }
+      attrVersion = attrVersion.substring((attrVersion.lastIndexOf("v")+1));
+      String versionNumber = attrVersion.replace('.','_');
+      System.out.println("the version number found = " + versionNumber);
+      
+      NodeList nl = DomHelper.getNodeListTags(xsDoc,"Resource","vr");      
       String collectionName = "astrogridv" + versionNumber;
+
+      boolean hasStyleSheet = false;
+      
+      hasStyleSheet = conf.getBoolean("org.astrogrid.registry.updatestylesheet." + versionNumber,false);
+      
+      if(hasStyleSheet) {
+          xsDoc = xs.transformUpdate((Node)update.getDocumentElement(),versionNumber);
+      } else {
+         xsDoc = update;
+      }
+      
       
       UpdateDBService udbService = new UpdateDBService();
 

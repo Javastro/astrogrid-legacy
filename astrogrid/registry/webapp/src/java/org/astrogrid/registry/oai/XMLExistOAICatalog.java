@@ -178,11 +178,7 @@ public class XMLExistOAICatalog extends AbstractCatalog {
          Document resultDoc = null;
          System.out.println("the verisonNumber = " + versionNumber + " the return version number = " + returnVersionNumber);
          XSLHelper xsh = new XSLHelper();
-         if(!versionNumber.equals(returnVersionNumber)) {
-            resultDoc = xsh.transformResultVersions(sourceFile,versionNumber,returnVersionNumber);
-         }else {
-            resultDoc = sourceFile;
-         }
+         resultDoc = sourceFile;
          Document oaiDoc = xsh.transformToOAI(resultDoc,returnVersionNumber);
 
          //System.out.println("the oai version = " + DomHelper.DocumentToString(oaiDoc));
