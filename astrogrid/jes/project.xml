@@ -7,7 +7,7 @@
   <id>astrogrid-jes</id>
   <name>AstroGrid Job Management</name>
 
-  <currentVersion>HEAD</currentVersion>
+  <currentVersion>Itn03_end</currentVersion>
   
   <organization>
     <name>AstroGrid</name>
@@ -46,7 +46,17 @@
       <roles>
 	      <role>Unit Tester</role>
 	  </roles>
-    </developer>    
+    </developer> 
+    <developer>
+    <name>Phil Nicholson</name>
+    <id>pjn3</id>
+    <email>pjn3@star.le.ac.uk</email>
+    </developer> 
+    <developer>
+    <name>Paul Harrison</name>
+    <id>pah</id>
+    <email>pah@jb.man.ac.uk</email>
+    </developer>  
   </developers>
   
   <dependencies>
