@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.13 2004/01/08 20:00:42 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.14 2004/01/08 21:41:34 kea Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -147,8 +147,8 @@ public class WarehouseQuerier extends Querier
     String sql;
     AdqlQueryTranslator translator = new AdqlQueryTranslator();
     try {
-      sql = escapeXmlSpecialChars(
-              (String) translator.translate(getQueryingElement()));
+      sql = convertDecToDecl(escapeXmlSpecialChars(
+              (String) translator.translate(getQueryingElement())));
       log.info("SQL query is " + sql);
     }
     catch (Exception e) {
@@ -453,7 +453,36 @@ public class WarehouseQuerier extends Querier
     return jarPath + jarName;
   }
 
-  //A minimal set 
+  //Kludge to get around datacenter hardwiring of DEC (we need DECL)
+  protected String convertDecToDecl(String inString) {
+    String sqlString = inString;
+    while (true) {
+      String newString;
+      int index = sqlString.indexOf("t.DEC");
+      int index2 = sqlString.indexOf("t.DECL");
+      if (index != -1) {
+        if (index != index2) {  //DEC - change to decl
+          newString = 
+             sqlString.substring(0,index) +
+             "t.decl" + 
+             sqlString.substring(index+5);
+        }
+        else {  //DECL - change to decl
+          newString = 
+             sqlString.substring(0,index) +
+             "t.decl" + 
+             sqlString.substring(index+6);
+        }
+      } 
+      else {
+        break;  //No more occurrences of t.DEC
+      }
+      sqlString = newString;
+    }
+    return sqlString;
+  }
+
+  //A minimal set of special chars to be escaped
   protected String escapeXmlSpecialChars(String inString) {        
     String outString = "";
     for (int i = 0; i < inString.length(); i++) {
@@ -491,6 +520,9 @@ public class WarehouseQuerier extends Querier
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.14  2004/01/08 21:41:34  kea
+Horrid kludge to convert datacenter "t.DEC" to "t.decl" for warehouse tables.
+
 Revision 1.13  2004/01/08 20:00:42  kea
 Added XML special char escaping to sql strings returned by datacenter
 ADQL->SQL conversion (otherwise OGSA-DAI perform docs get broken).
