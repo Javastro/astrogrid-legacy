@@ -6,9 +6,24 @@
 	Iterator info;
 	//java.util.ArrayList dataSets = (ArrayList)session.getAttribute("DataSetArrayList");
 	java.util.ArrayList dataSets = (ArrayList)application.getAttribute("DataSetArrayList");
+	String userName = "";
+	String community = "";
+	if(request.getParameter("username") != null) {
+		userName = request.getParameter("username");		
+		}else if((String)session.getAttribute("username") != null) {
+			userName = (String)session.getAttribute("username");
+		}
+		if(request.getParameter("community") != null) {
+			community = request.getParameter("community");
+		}else if((String)session.getAttribute("community") != null) {
+			community = (String)session.getAttribute("community");
+		}	
 	if(dataSets == null || dataSets.size() <= 0 ) {
 %>
-	<jsp:forward page="/DataQuery" />
+	<jsp:forward page="/DataQuery">
+		<jsp:param name="username"  value = "<%=userName%>" />
+		<jsp:param name="community" value = "<%=community %>" />
+	</jsp:forward>
 <%}%>
 
 
@@ -98,6 +113,8 @@ for(var i = 0;i < dsColArray[sIndex].length;i++) {
 							<%}%>
 							<h1>Query Chooser</h1>
 							<Form action="/DataQuery/DataQuery" name="DataQueryForm" method="post">
+								<input type="hidden" name="username" value="<%=userName %>" />
+								<input type="hidden" name="community" value="<%=community %>" />
 								<b>Information you want returned:</b>
 								<select name="DataSetName" <%if(dataSets != null && dataSets.size() > 0) {%>onChange="updateCols(document.DataQueryForm.DataSetName.selectedIndex,document.DataQueryForm.ReturnColumn)"<%}%>>
 								<%
