@@ -24,6 +24,7 @@ $SCRIPTHOME/maven-build-new.sh mySpace >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh portal >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh registry >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh scripting >> $BUILD_DIR/$LOG_FILE 2>&1
+$SCRIPTHOME/maven-build-new.sh security >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh warehouse >> $BUILD_DIR/$LOG_FILE 2>&1
 $SCRIPTHOME/maven-build-new.sh workflow >> $BUILD_DIR/$LOG_FILE 2>&1
 
