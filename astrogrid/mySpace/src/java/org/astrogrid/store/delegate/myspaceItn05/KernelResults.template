@@ -1,0 +1,169 @@
+package org.astrogrid.myspace.delegate;
+
+import java.io.Serializable;
+import java.util.*;
+
+/**
+ * <p>
+ * The <code>KernelResults</code> class respresents the results which
+ * can be returned by the various methods of the Kernel delegate.
+ * </p>
+ *
+ * <p>
+ * The template merely contains the member variables for the class.
+ * The Axis utilities will construct a bean with get and set methods
+ * for these member variables as well as methods to serialise the class
+ * as SOAP objects.  It is futile including any bespoke methods in the
+ * template as the Axis utilities will no propagate them into the final
+ * Java class.
+ * </p>
+ * 
+ * @author A C Davenhall (Edinburgh)
+ * @since Iteration 5.
+ * @version Iteration 5.
+ */
+
+public class KernelResults implements Serializable
+{
+   private Object[] statusList;
+   private Object[] entries;
+   private String contentsString = "";
+   private byte[] contentsBytes;
+
+//
+// Dummy variables for the dummy methods.
+
+    private EntryResults   dummyEntryResults;
+    private StatusResults  dummyStatusResults;
+
+
+//
+// Constructor.
+
+/**
+ * Create a <code>KernelResults</code> object.
+ */
+
+   public KernelResults()
+   {
+   }
+
+
+// ----------------------------------------------------------------------
+
+//
+// Get and Set methods.
+//
+// The <code>KernelResults</code> class has set and get methods for
+// every member variable.
+
+/**
+ * Set the list of status objects.
+ *
+ * @param statusList The list of status objects.
+ */
+
+   public void setStatusList(Object[] statusList)
+   {  this.statusList = statusList;
+   }
+
+
+/**
+ * Return the list of status objects.
+ *
+ * @return The list of status objects.
+ */
+
+   public Object[] getStatusList()
+   {  return statusList;
+   }
+
+
+/**
+ * Set the list of entries.
+ *
+ * @param entries The list of entries.
+ */
+
+   public void setEntries(Object[] entries)
+   {  this.entries = entries;
+   }
+
+
+/**
+ * Return the list of entries.
+ *
+ * @return The list of entries.
+ */
+
+   public Object[] getEntries()
+   {  return entries;
+   }
+
+
+/**
+ * Set the contents String.
+ *
+ * @param contentsString The contents String.
+ */
+
+   public void setContentsString(String contentsString)
+   {  this.contentsString = contentsString;
+   }
+
+
+/**
+ * Return the contents String.
+ *
+ * @return The contents String.
+ */
+
+   public String getContentsString()
+   {  return contentsString;
+   }
+
+
+/**
+ * Set the contents byte array.
+ *
+ * @param contentsBytes The contents byte array.
+ */
+
+   public void setContentsBytes(byte[] contentsBytes)
+   {  this.contentsBytes = contentsBytes;
+   }
+
+
+/**
+ * Return the contents byte array.
+ *
+ * @return The contents byte array.
+ */
+
+   public byte[] getContentsBytes()
+   {  return contentsBytes;
+   }
+
+// ----------------------------------------------------------------------
+
+//
+// Dummy get and set methods for an EntryRecord and a StatusMessage to
+// force Axis to recognise (and serialise) these classes.
+
+    public void setEntryResults(EntryResults dummyEntryResults)
+    {  this.dummyEntryResults = dummyEntryResults;
+    }
+
+    public EntryResults getEntryResults()
+    {  return dummyEntryResults;
+    }
+
+
+    public void setStatusResults(StatusResults dummyStatusResults)
+    {  this.dummyStatusResults = dummyStatusResults;
+    }
+
+    public StatusResults getStatusResults()
+    {  return dummyStatusResults;
+    }
+}

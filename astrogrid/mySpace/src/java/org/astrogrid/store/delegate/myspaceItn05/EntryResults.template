@@ -1,0 +1,139 @@
+package org.astrogrid.myspace.delegate;
+
+import java.io.*;
+
+/**
+ * EntryResults.template; the EntryResults template.
+ *
+ * <p>
+ * A <code>EntryResults</code> object stores the details held in a
+ * MySpace registry for a single entry in a MySpace Service (that is, a
+ * file, perhaps typically a VOTable).  The details held are things
+ * like: the MySpace name of the entry, the identifier of the user who
+ * owns it, its creation date etc.
+ * </p>
+ *
+ * <p>
+ * <code>EntryResults</code> objects are returned by various methods of
+ * the  MySpace delegate.  These objects are the mechanism by which the
+ * inner delegate delivers information about the entries in a MySpace 
+ * Service.
+ * </p>
+ *
+ * <p>
+ * The template contains the member variables for the class and get and
+ * set methods for every member variable.  No other methods should be
+ * included as these will be removed by the Axis utilities which
+ * construct the final Java class from the template.  These utilities
+ * will also add methods to serialise the class as a SOAP object.
+ * </p>
+ *
+ * @author A C Davenhall (Edinburgh)
+ * @since Iteration 5.
+ * @version Iteration 5.
+ */
+
+public class EntryResults implements Serializable
+{  
+//
+//Member variables defining the entry results.
+
+   private String entryName;        // Full MySpace entry name.
+   private int    entryId;          // Internal MySpace identifier.
+   private String entryUri;         // URI for the entry.
+   private String ownerId;          // Owner's identifier.
+   private long   creationDate;     // Creation date.
+   private long   expiryDate;       // Expiry date.
+   private int    size;             // Size (in bytes).
+   private int    type;             // Type code (VOTable etc).
+   private String permissionsMask;  // Access permissions mask.
+
+
+// ----------------------------------------------------------------------
+
+//
+// Get and set methods.
+//
+// The EntryResults class is a bean with get and set methods for every
+//  member variable.
+
+   public long getCreationDate() 
+   {  return creationDate;
+   }
+
+   public void setCreationDate(long creationDate)
+   {  this.creationDate = creationDate;
+   }
+
+
+   public int getEntryId() 
+   {  return entryId;
+   }
+
+   public void setEntryId(int entryId)
+   {  this.entryId = entryId;
+   }
+
+
+   public java.lang.String getEntryName() 
+   {  return entryName;
+   }
+
+   public void setEntryName(java.lang.String entryName) 
+   {  this.entryName = entryName;
+   }
+
+
+   public java.lang.String getEntryUri()
+   {  return entryUri;
+   }
+
+   public void setEntryUri(java.lang.String entryUri)
+   {  this.entryUri = entryUri;
+   }
+
+
+   public long getExpiryDate()
+   {  return expiryDate;
+   }
+
+   public void setExpiryDate(long expiryDate)
+   {  this.expiryDate = expiryDate;
+   }
+
+
+   public java.lang.String getOwnerId()
+   {  return ownerId;
+   }
+
+   public void setOwnerId(java.lang.String ownerId)
+   {  this.ownerId = ownerId;
+   }
+
+
+   public java.lang.String getPermissionsMask()
+   {  return permissionsMask;
+   }
+
+   public void setPermissionsMask(java.lang.String permissionsMask)
+   {  this.permissionsMask = permissionsMask;
+   }
+
+
+   public int getSize()
+   {  return size;
+   }
+
+   public void setSize(int size)
+   {  this.size = size;
+   }
+
+
+   public int getType()
+   {  return type;
+   }
+
+   public void setType(int type)
+   {  this.type = type;
+   }
+}

@@ -1,0 +1,300 @@
+package org.astrogrid.myspace.delegate;
+
+/**
+ * Manager.java
+ *
+ * <p>
+ * Interface for the Manager Kernel delegate.  Note that all the methods
+ * return a <code>KernelResults</code> object, apart from
+ * <code>heartBeat</code> which returns a String.
+ * </p>
+ */
+
+import java.util.Date;
+
+public interface Manager extends java.rmi.Remote
+{
+
+/**
+ * `Heart-beat' method to check whether the Manager is up and running.
+ *
+ * @return The standard string `Adsum.' (Latin for `I am here',
+ *    apparently) is always returned.
+ */
+
+   public String heartBeat() throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Search the MySpace Manager and return a list of all the files
+ * which match the query.
+ *
+ * @param query Query which the entry must match.  Queries take the form
+ *   of entry names which may optionally include a wild-card character.
+ *   This wild-card character is an asterisk and it must occur at the
+ *   end of the name.
+ * @param test Flag indicating whether a real or standard test Manager
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager, including a list of
+ *   any <code>EntryRecord</code>s which satisfy the query.
+ */
+
+   public KernelResults getEntriesList(String query, boolean test)
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Save the contents of a local String as a new file in the Service.
+ *
+ * @param newFile Name of the new file.
+ * @param contents Contents of the new file.
+ * @param category Category code for the file.  One of
+ *   <code>EntryCodes.UNKNOWN</code>, <code>EntryCodes.CON</code>,
+ *   <code>EntryCodes.VOT</code>,  <code>EntryCodes.QUERY</code>,
+ *   <code>EntryCodes.WORKFLOW</code> or <code>EntryCodes.XML</code>.
+ * @param dispatchExisting If the target MSS already contains a file
+ *   called <code>entryName</code> then this flag specifies how this
+ *   existing file is to be dispatched.  The permitted values are:
+ *   <code>ManagerCodes.LEAVE</code>, 
+ *   <code>ManagerCodes.OVERWRITE</code> and
+ *   <code>ManagerCodes.APPEND</code>.
+ * @param test Flag indicating whether a real or standard test Manager
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults putString(String newFile, String contents, 
+     int category, int dispatchExisting, boolean test) 
+     throws java.rmi.RemoteException;
+
+/**
+ * Save the contents of an array of bytes as a new file in the Service.
+ *
+ * @param newFile Name of the new file.
+ * @param contents Contents of the new file.
+ * @param category Category code for the file.  One of
+ *   <code>EntryCodes.UNKNOWN</code>, <code>EntryCodes.CON</code>,
+ *   <code>EntryCodes.VOT</code>,  <code>EntryCodes.QUERY</code>,
+ *   <code>EntryCodes.WORKFLOW</code> or <code>EntryCodes.XML</code>.
+ * @param dispatchExisting If the target MSS already contains a file
+ *   called <code>entryName</code> then this flag specifies how this
+ *   existing file is to be dispatched.  The permitted values are:
+ *   <code>ManagerCodes.LEAVE</code>, 
+ *   <code>ManagerCodes.OVERWRITE</code> and
+ *   <code>ManagerCodes.APPEND</code>.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults putBytes(String newFile, byte[] contents, 
+     int category, int dispatchExisting, boolean test) 
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Save the contents of a URI as a new entry in the Service.
+ *
+ * @param newFile Name of the new file.
+ * @param uri URI whose contents are to saved.
+ * @param category Category code for the file.  One of
+ *   <code>EntryCodes.UNKNOWN</code>, <code>EntryCodes.CON</code>,
+ *   <code>EntryCodes.VOT</code>,  <code>EntryCodes.QUERY</code>,
+ *   <code>EntryCodes.WORKFLOW</code> or <code>EntryCodes.XML</code>.
+ * @param dispatchExisting If the target MSS already contains a file
+ *   called <code>entryName</code> then this flag specifies how this
+ *   existing file is to be dispatched.  The permitted values are:
+ *   <code>ManagerCodes.LEAVE</code>, 
+ *   <code>ManagerCodes.OVERWRITE</code> and
+ *   <code>ManagerCodes.APPEND</code>.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults putUri(String newFile, String uri, int category, 
+     int dispatchExisting, boolean test) 
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Retrieve the contents of a specified file in the Service as a String.
+ *
+ * @param fileName Name of the required file.
+ * @param test Flag indicating whether a real or standard test Manager is to
+ *   be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults getString (String fileName, boolean test) 
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Retrieve the contents of a specified file in the Service as an array of
+ * bytes.
+ *
+ * @param fileName AGSL of the required file.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults getBytes (String fileName, boolean test) 
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Create a new container in the Service.
+ *
+ * @param newContainerName Name of the new container.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults createContainer(String newContainerName, 
+     boolean test) throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Create a copy of a file within the same Service.  The existing file
+ * is unaltered.
+ *
+ * @param oldFileName Name of the existing file.
+ * @param newFileName Nameof the new file.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults copyFile(String oldFileName, String newFileName,
+     boolean test) throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Move a file to a new location within the same Service.  The existing
+ * entry will no longer exist.
+ *
+ * @param oldFileName Name of the existing file.
+ * @param newFileName Name of the new file.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults moveFile(String oldFileName, String newFileName,
+     boolean test) throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Delete a file from an MSS.
+ *
+ * @param fileName Name of the file to be deleted.
+ */
+
+   public KernelResults deleteFile(String fileName, boolean test) 
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Extend the lifetime of a file in an MSS.
+ *
+ * @param fileName Name of the entry to be modified.
+ * @param newExpiryDate New expiry date for the file.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults extendLifetime(String fileName, long newExpiryDate,
+     boolean test) throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Change the owner of a MySpace file.
+
+ *
+ * @param fileName Name of the file to be modified.
+ * @param newOwner Account of the new owner.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults changeOwner(String fileName, String newOwner, 
+     boolean test) throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+// The following methods provide System Administration functions.
+
+/**
+ * Create a new account on a Service.
+ *
+ * <p>
+ * `Create a new account' is something of a misnomer.  This method is
+ * really just creating the base set of containers which every account
+ * needs.
+ * </p>
+ *
+ * @param newAccount Account of the user to be created.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults createAccount(String newAccount, boolean test)
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Delete an account from an MSS.
+ *
+ * <p>
+ * `Delete an account' is something of a misnomer.  The method merely
+ * removes all extant containers belonging to an account.  Any files
+ * belonging to the account must have been removed previously.  However,
+ * the method will remove any remaining arbitrarily complex tree of
+ * containers.  If any files are found the account will be left 
+ * untouched.
+ * </p>
+ *
+ * @param deadAccount Details of the account to be deleted.
+ * @param test Flag indicating whether a real or standard test Manager 
+ *   is to be run.  A value of `true' will run a test Manager.
+ * @return Standard return object from the Manager.
+ */
+
+   public KernelResults deleteAccount(String deadUser, boolean test) 
+     throws java.rmi.RemoteException;
+
+
+// ----------------------------------------------------------------------
+
+}

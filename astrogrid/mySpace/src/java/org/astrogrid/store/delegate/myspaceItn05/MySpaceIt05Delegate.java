@@ -1,0 +1,1244 @@
+package org.astrogrid.myspace.delegate;
+
+import java.io.IOException;
+
+import java.io.*;
+import java.net.*;
+
+import java.util.Date;
+import java.util.ArrayList;
+import java.lang.reflect.Array;
+
+
+import org.astrogrid.community.User;
+
+import org.astrogrid.store.Agsl;
+import org.astrogrid.store.Msrl;
+
+import org.astrogrid.store.delegate.StoreAdminClient;
+import org.astrogrid.store.delegate.StoreClient;
+import org.astrogrid.store.delegate.StoreException;
+import org.astrogrid.store.delegate.StoreFile;
+
+
+/**
+ * <code>MySpaceIt05Delegate</code> is the delegate class which 
+ * applications invoke in order to access a MySpace service.
+ *
+ * @author A C Davenhall (Edinburgh)
+ * @author C L Qin (Leicester)
+ * @since Iteration 5.  There has been a MySpace delegate since
+ *   Iteration 3.  The present delegate dates from Iteration 5.
+ * @version Iteration 5.
+ */
+
+//
+// Note: Throughout this class the acronym `MSS' denotes a MySpace
+// Service and AGSL denotes an AstroGrid Store-point Locator.
+
+public class MySpaceIt05Delegate implements StoreClient, StoreAdminClient
+{
+//   private StoreClient itn05Delegate = null; // Itn. 05 delegate.
+   private Manager     innerDelegate = null; // Inner delegate.
+   private Msrl managerMsrl = null; // Location of the Manager.
+   private String endPoint;         // End point of the Manager.
+   private User operator = null;    // User of the delegate [TODO] Account?.
+
+   private boolean isTest = false;
+   private boolean throwExceptions = false;
+   private boolean allowOverWrite = true;
+
+   private ArrayList statusList = new ArrayList(); // List of Status messages.
+
+   private String messageFromManager = "";
+
+//
+// ======================================================================
+
+//
+// Constructors.
+
+/**
+ * Constructor with no arguments.
+ */
+
+   public MySpaceIt05Delegate() throws IOException
+   {
+   }
+
+/**
+ * Constructor with specified User and endPoint.
+ */
+
+   public MySpaceIt05Delegate(User operator, String endPoint) 
+     throws IOException
+   {
+      this.operator = operator;
+      this.endPoint = endPoint;
+
+      managerMsrl = new Msrl(new URL(endPoint));
+
+//      if (endPoint.startsWith(Msrl.SCHEME)) {
+//         endPoint = endPoint.substring(Msrl.SCHEME.length()+1);
+//      }
+
+//      //@todo this is a Bad Assumption, remove during it06 - mch.
+//      if (endPoint.startsWith("http") && 
+//          (endPoint.indexOf("/services/MySpaceManager") == -1))
+//      {
+//         endPoint = endPoint + "/services/MySpaceManager";
+//      }
+//      depIt04Delegate = MySpaceDelegateFactory.createDelegate(endPoint);
+
+//   [TODO] probably need to reinstate some varient of the above and
+//     perhaps replace the following couple of lines.
+
+      try
+      {  ManagerService service = new ManagerServiceLocator();
+         innerDelegate = service.getAstrogridMyspace(
+            new java.net.URL(endPoint) );
+      }
+      catch (Exception e)
+      {  throw new IOException 
+           ("Failed to create delegate for service: " + endPoint );
+      }
+   }
+   
+
+//
+// ======================================================================
+//
+// Get, set and related methods.
+//
+// These methods are mostly concerned with configuring the internal
+// state of the delegate and with retrieving information from it.
+
+
+/**
+ * Specify whether the Manager is being used in test or genuine mode.
+ *
+ * In test mode the Manager will return standard responses, irrespective
+ * of whether it contains any entries.  In genuine mode the Manager
+ * genuinely attempts to manipulate its data holdings.
+ *
+ * @param isTest Flag indicating whether in test or genuine mode: true for
+ *    test mode and false otherwise.
+ */
+
+   public void setTest(boolean isTest)
+   {  this.isTest = isTest;
+   }
+
+
+/**
+ * Specify whether a bad status being returned by the Manager will
+ * cause the delegate to throw an exception.
+ *
+ * @param thowExceptions Flag indicating whether or not bad status
+ *    returns cause an exception to be throw: true to throw exceptions
+ *    and false otherwise.
+ */
+
+   public void setThrow(boolean throwExceptions)
+   {  this.throwExceptions = throwExceptions;
+   }
+
+
+/**
+ * Specify whether the Manager is allowed to overwrite an existing
+ * file when importing a new one.
+ *
+ * param allowOverWrite Flag indicating whether or not overwriting is
+ *   allowed.  True indicates that it is.
+ */
+
+   public void setOverWrite(boolean allowOverWrite)
+   {  this.allowOverWrite = allowOverWrite;
+   }
+
+
+/**
+ * Return a list of error codes accummulated by successive
+ * invocations of action methods.
+ *
+ * @return List of error codes, each of type <code>StatusMessage</code>.
+ */
+
+   public ArrayList getStatusList()
+   {  return statusList;
+   }
+
+
+/**
+ * Reset the list of error codes to contain zero entries.
+ */
+
+   public void resetStatusList()
+   {  statusList.clear(); 
+   }
+
+
+//
+// ======================================================================
+//
+// StoreClient methods.
+//
+// The following Action methods implement the StoreClient interface.
+
+/**
+ * Return the User of this delegate - ie the account it is being used by
+ *
+ * @return The User of this delegate.
+ */
+   public User getOperator()
+   {  return operator;
+   }
+   
+// ----------------------------------------------------------------------
+
+/**
+ * Return the Agsl of the service to which this client is connected.
+ *
+ * @return The Agsl of the service to which this client is connected.
+ */
+   public Agsl getEndpoint()
+   {  Agsl agsl = new Agsl( managerMsrl.getDelegateEndpoint() );
+      return agsl;
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Return a tree representation of the files that match the expression
+ */
+
+   public StoreFile getFiles(String filter) throws IOException
+   {  return null;
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Return a list of all the files that match the expression
+ *
+ * @param filter Filter (or query) which the files must match.  Queries 
+ *   take the form of entry names which may optionally include a 
+ *   wild-card character.  This wild-card character is an asterisk and
+ *   it must occur at the end of the name.
+ * @return Array of <code>EntryRecord</code>s which satisfy the query.
+ *   If no entries satisfy the query a null value is returned.
+ */
+
+   public StoreFile[] listFiles(String filter) throws IOException
+   {  StoreFile[] files = new StoreFile[1];
+      boolean errorRaised = false;
+
+      try
+      {  KernelResults results = innerDelegate.getEntriesList(filter,
+           isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      Assemble an array of any files which matched the query.
+//      Each file is returned as an EntryResults object, which is
+//      converted to the corresponding EntryRecord.
+
+         Object[] fileResults = results.getEntries();
+         int numFiles = Array.getLength(fileResults);
+
+         if (numFiles > 0)
+         {  files = new StoreFile[numFiles];
+
+            for(int loop=0; loop<numFiles; loop++)
+            {  EntryRecord file = new EntryRecord(
+                (EntryResults)fileResults[loop] );
+               files[loop] = file;
+            }
+         }
+         else
+         {  files = null;
+         }
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException ("Failed to list Files on service: " + 
+              this.endPoint);
+         }
+      }
+
+      return files;
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Returns the StoreFile representation of the file at the given AGSL
+ */
+
+   public StoreFile getFile(String path) throws IOException
+   {  EntryRecord requestedFile = new EntryRecord();
+      boolean errorRaised = false;
+
+      try
+      {  KernelResults results = innerDelegate.getEntriesList(path,
+           isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      Obtain the file which matched the query.  This file is taken
+//      to be the first entry in the return array.
+
+         Object[] fileResults = results.getEntries();
+         int numFiles = Array.getLength(fileResults);
+
+         if (numFiles > 0)
+         {  requestedFile = new EntryRecord(
+              (EntryResults)fileResults[0] );
+         }
+         else
+         { requestedFile  = null;
+         }
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException ("Failed to find File on service: " + 
+              this.endPoint);
+         }
+      }
+
+      return requestedFile;
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Put the given byte buffer from offset of length bytes, to the given target
+ */
+   public void putBytes(byte[] bytes, int offset, int length, 
+     String targetPath, boolean append) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  
+//
+//      Determine how a pre-existing file with the specified name is
+//      to be dispatched.
+
+         int dispatchExisting = ManagerCodes.LEAVE;
+         if (append)
+         {  dispatchExisting = ManagerCodes.APPEND;
+         }
+         else
+         {  if (this.allowOverWrite)
+            {  dispatchExisting = ManagerCodes.OVERWRITE;
+            }
+            else
+            {  dispatchExisting = ManagerCodes.LEAVE;
+            }
+         }
+
+//
+//      Extract the subset of the array which is to be sent.
+
+         int numBytes = length - offset;
+         byte[] subsetToSend = new byte[length]; 
+
+         for (int loop=0; loop<numBytes; loop++)
+         {  subsetToSend[loop] = bytes[loop + offset];
+         }
+
+//
+//      Attempt to save the array of bytes as a file.
+//
+//      [TODO] The current StoreClient interface has no mechanism for
+//      passing the category of file (VOTable etc.), so here it is set
+//      to UNKNOWN.
+
+         KernelResults results = innerDelegate.putBytes(targetPath,
+           subsetToSend, EntryCodes.UNKNOWN, dispatchExisting, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to write array of bytes on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Put the given string into the given location
+ */
+   public void putString(String contents, String targetPath,
+     boolean append) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  
+//
+//      Determine how a pre-existing file with the specified name is
+//      to be dispatched.
+
+         int dispatchExisting = ManagerCodes.LEAVE;
+         if (append)
+         {  dispatchExisting = ManagerCodes.APPEND;
+         }
+         else
+         {  if (this.allowOverWrite)
+            {  dispatchExisting = ManagerCodes.OVERWRITE;
+            }
+            else
+            {  dispatchExisting = ManagerCodes.LEAVE;
+            }
+         }
+
+//
+//      Attempt to save the String as a file.
+//
+//      [TODO] The current StoreClient interface has no mechanism for
+//      passing the category of file (VOTable etc.), so here it is set
+//      to UNKNOWN.
+
+         KernelResults results = innerDelegate.putString(targetPath,
+           contents, EntryCodes.UNKNOWN, dispatchExisting, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to save String on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Copy the contents of the file at the given source url to the given
+ * location. 
+ */
+   public void putUrl(URL source, String targetPath, boolean append) 
+     throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  
+//
+//      Determine how a pre-existing file with the specified name is
+//      to be dispatched.
+
+         int dispatchExisting = ManagerCodes.LEAVE;
+         if (append)
+         {  dispatchExisting = ManagerCodes.APPEND;
+         }
+         else
+         {  if (this.allowOverWrite)
+            {  dispatchExisting = ManagerCodes.OVERWRITE;
+            }
+            else
+            {  dispatchExisting = ManagerCodes.LEAVE;
+            }
+         }
+
+//
+//      Attempt to save the URL as a file.
+//
+//      [TODO] The current StoreClient interface has no mechanism for
+//      passing the category of file (VOTable etc.), so here it is set
+//      to UNKNOWN.
+
+         String uri = source.toString();
+         KernelResults results = innerDelegate.putUri(targetPath,
+           uri, EntryCodes.UNKNOWN, dispatchExisting, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to save URL as a file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Streaming output - returns a stream that can be used to output to the
+ * given location.
+ */
+
+   public OutputStream putStream(String targetPath, boolean append) 
+     throws IOException
+   {  return new MySpaceOutputStream(targetPath, append);
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Get a file's contents as a stream
+ */
+   public InputStream getStream(String sourcePath) throws IOException
+   {  URL url = getUrl(sourcePath);
+      
+      if (url == null)
+      {  throw new FileNotFoundException(
+           "Failed to find URL for path: " + sourcePath);
+      }
+      
+      return url.openStream();
+   }
+
+
+// ----------------------------------------------------------------------
+   
+/**
+ * Get the url to stream.
+ */
+
+   public URL getUrl(String sourcePath) throws IOException
+   {  URL url = null;
+      boolean conformingUrl = true;
+      String uri = "";
+
+      try
+      {  EntryRecord file = (EntryRecord)this.getFile(sourcePath);
+         uri = file.getEntryUri();
+
+         try
+         {  url = new URL(uri);
+         }
+         catch (Exception e)
+         {  conformingUrl = false;
+            throw new IOException ();
+         }
+      }
+      catch (Exception e)
+      {  url = null;
+
+         if (!conformingUrl)
+         {  throw new IOException ("File has invalid URL: " + uri);
+         }
+         else
+         {  throw new IOException (
+              "Failed to obtain URL for file on service: " + 
+              this.endPoint);
+         }
+      }
+
+      return url;
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Delete a file.
+ */
+
+   public void delete(String deletePath) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  KernelResults results = innerDelegate.deleteFile(deletePath,
+           isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to delete file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Copy a file to a target Agsl.
+ */
+
+   public void copy(String sourcePath, Agsl targetPath) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String targetFile = targetPath.getPath();
+         KernelResults results = innerDelegate.copyFile(sourcePath,
+           targetFile, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to copy file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Copy a file from a source Agsl.
+ */
+
+   public void copy(Agsl source, String targetPath) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String sourcePath = source.getPath();
+         KernelResults results = innerDelegate.copyFile(sourcePath,
+           targetPath, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to copy file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+// ----------------------------------------------------------------------
+   
+/**
+ * Move (or rename) a file to a target Agsl.
+ */
+
+   public void move(String sourcePath, Agsl targetPath) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String targetFile = targetPath.getPath();
+         KernelResults results = innerDelegate.moveFile(sourcePath,
+           targetFile, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to copy file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Moves (or rename) a file from a source Agsl.
+ */
+
+   public void move(Agsl source, String targetPath) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String sourcePath = source.getPath();
+         KernelResults results = innerDelegate.moveFile(sourcePath,
+           targetPath, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to copy file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+   
+/**
+ * Create a container.
+ */
+
+   public void newFolder(String targetPath) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  KernelResults results = innerDelegate.createContainer(
+           targetPath, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to create container on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+//
+// ======================================================================
+//
+// StoreAdminClient methods.
+//
+// The following Action methods implement the StoreAdminClient interface.
+
+/**
+ * Create a new account on an MSS.
+ *
+ * <p>
+ * `Create a new account' is something of a misnomer.  This method is
+ * really just creating the base set of containers which every account
+ * needs.
+ * </p>
+ *
+ * @param newAccount Account of the user to be created.
+ */
+
+   public void createUser(User newAccount) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String account = newAccount.getAccount();
+         KernelResults results = innerDelegate.createAccount(
+           account, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to create account on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Delete an account from an MSS.
+ *
+ * <p>
+ * `Delete an account' is something of a misnomer.  The method merely
+ * removes all extant containers belonging to an account.  Any files
+ * belonging to the account must have been removed previously.  However,
+ * the method will remove any remaining arbitrarily complex tree of
+ * containers.  If any files are found the account will be left 
+ * untouched.
+ * </p>
+ *
+ * @param deadAccount Details of the account to be deleted.
+ */
+
+   public void deleteUser(User deadAccount) throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String account = deadAccount.getAccount();
+         KernelResults results = innerDelegate.deleteAccount(
+           account, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to delete account on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ======================================================================
+
+//
+// Additional Action methods not in the StoreClient or StoreAdminClient
+// interfaces.
+
+/**
+ * `Heart-beat' method to check whether the Manager is up and running.
+ *
+ * @return The standard string `Adsum.' (Latin for `I am here',
+ *    apparently) is always returned.
+ */
+
+   public String heartBeat() throws IOException
+   {  String result = "no response.";
+
+      try
+      {  result = innerDelegate.heartBeat();
+      }
+      catch (Exception all)
+      {  throw new IOException 
+           ("No reply from Manager service: " + endPoint );
+      }
+
+      return result;
+   }
+
+// ----------------------------------------------------------------------
+
+/**
+ * Extend the lifetime of a file in an MSS.
+ *
+ * <p>
+ * This method operates on multiple AGSLs by permitting wild-cards in
+ * the AGSL path.
+ * </p>
+ *
+ * @param fileName File name of the entry to be modified.
+ * @param newExpiryDate New expiry date for the file.
+ */
+
+   public void extendLifetime(String fileName, Date newExpiryDate) 
+     throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  long expiry = newExpiryDate.getTime();
+         KernelResults results = innerDelegate.extendLifetime(
+           fileName, expiry, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to extend the lifetime of file on service: " + 
+              this.endPoint);
+         }
+      }
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Change the owner of a MySpace file.
+ *
+ * <p>
+ * This method operates on multiple AGSLs by permitting wild-cards in
+ * the AGSL path.
+ * </p>
+ *
+ * @param fileName Name of the file to be modified.
+ * @param newOwner Account of the new owner.
+ */
+
+   public void changeOwner(String fileName, User newOwner) 
+     throws IOException
+   {  boolean errorRaised = false;
+
+      try
+      {  String owner = newOwner.getAccount();
+         KernelResults results = innerDelegate.changeOwner(
+           fileName, owner, isTest);
+
+//
+//      Append and check any status messages.
+
+         Object[] statusResults = results.getStatusList();
+         errorRaised = this.appendAndCheckStatusMessages(
+           statusResults);
+
+//
+//      If an error was raised in the Manager and the delegate is
+//      configured to throw an exception in this case then do so.
+
+         if (errorRaised && this.throwExceptions)
+         {  throw new IOException();
+         }
+
+      }
+      catch (Exception e)
+      {  if (errorRaised && this.throwExceptions)
+         {  throw new IOException (this.messageFromManager);
+         }
+         else
+         {  throw new IOException (
+              "Failed to extend the change the owner of file on service: " 
+              + this.endPoint);
+         }
+      }
+   }
+
+
+// ======================================================================
+
+//
+// Additional internal methods.
+
+/**
+ * Given the returned status messages, append them to the delegate's
+ * internal list and check whether any of the messages correspond to
+ * an error.  Note that in the case where an error was found, its text
+ * is placed in the (global) member variable
+ * <code>.messageFromManager</code>.
+ *
+ * @param statusResults Array of status messages, of type 
+ *   <code>StatusResults</code>.
+ * @return A flag indicating whether any of the given messages
+ *   corresponds to an error.  A value of true is returned if an error
+ *   was found; otherwise false.
+ */
+
+
+   private boolean appendAndCheckStatusMessages(Object[] statusResults)
+   {  boolean errorRaised = false;
+
+      int numStatus = Array.getLength(statusResults);
+
+      if (numStatus > 0)
+      {  StatusMessage status = new StatusMessage();
+
+         for(int loop=0; loop<numStatus; loop++)
+         {  
+//
+//         Convert each statusResults object to a StatusMessage.
+
+            status = new StatusMessage( (StatusResults)statusResults[loop] );
+
+//
+//         Add the StatusMessage to the accummulating list.
+
+            this.statusList.add(status);
+
+//
+//         Check whether any errors have been raised, and if so preserve
+//         the text associated with the first.  (Note that throwMessage
+//         is a member variable).
+
+            if (status.getSeverity() == StatusCodes.ERROR)
+            {  if (errorRaised = false)
+               {  this.messageFromManager = status.getMessage();
+               }
+               errorRaised = true;
+            }
+         }
+      }
+
+      return errorRaised;
+   }
+
+
+// ----------------------------------------------------------------------
+
+/**
+ * Special OutputStream which writes to a String, then sends it when the 
+ * stream is closed.
+ */
+
+   private class MySpaceOutputStream extends OutputStream
+   {  private String targetPath = null;
+
+      private byte[] buffer = new byte[32000];
+      private int cursor = 0;  //insert point
+
+
+      public MySpaceOutputStream(String aTargetPath, boolean append) 
+        throws IOException
+      {  this.targetPath = aTargetPath;
+
+//
+//      If the new stream is not being appended to an existing file
+//      then attempt to overwrite any existing file.
+
+         if (!append)
+         {  putString("", targetPath, false);
+         }
+      }
+
+
+      public void write(int i) throws IOException
+      {
+//
+//      Get low byte - streams do not do words.
+
+         buffer[cursor] = (byte) (i & 0xFF);
+         
+         cursor++;
+         if (cursor >= buffer.length)
+         {  flush();
+         }
+      }
+
+
+      public void flush() throws IOException
+      {
+//
+//      Append string to file - cursor = length
+
+         putBytes(buffer, 0, cursor, targetPath, true);
+         cursor=0;
+      }
+
+
+      public void close() throws IOException
+      {  flush();
+         super.close();
+      }
+   }
+}

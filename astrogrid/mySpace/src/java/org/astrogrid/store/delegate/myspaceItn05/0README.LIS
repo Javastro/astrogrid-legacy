@@ -1,0 +1,180 @@
+           Generating the MySpace Manager Web Service Classes
+           ==================================================
+
+
+Some of the Web Service classes in the MySpace delegate and Manager, and
+the corresponding WSDL and WSDD files, are generated semi-automatically.
+This note describes the procedure to create these files.  These classes
+allow the delegate and Manager to communicate via Web Services.
+
+I wrote the note as an aide-memoire for myself, but I hope that it will
+be useful to anyone else who needs to maintain or develop this
+software.  I assume that you are familiar with AstroGrid practices and
+procedures.  AstroGrid builds Web Services using Axis from the Apache
+Software Foundation.  Further information can be found in the Axis user
+and reference guides:
+
+  http://ws.apache.org/axis/java/user-guide.html
+  http://ws.apache.org/axis/java/reference.html
+
+In the following procedure files are generated in the client part of the
+MySpace directory tree.  Some of these files will need to be copied to
+the manager tree, but this step is covered at the appropriate place in
+the discussion [TODO].
+
+I assume that you are set-up for developing MySpace, and have, for
+example, the MySpace source tree and the Axis libraries on your CLASSPATH.
+
+The starting point is a series of template Java classes, which have
+file-type `.template'.  The individual template files are briefly
+described in a subsequent section.  One of these templates
+(Manager.template) defines the interface implemented by both the
+`bottom level' of the delegate and the `top level' of the Manager.
+Presumably this interface has changed (a method has been in added or
+removed, or the arguments of one of the methods has changed), otherwise
+you would not be reading this note in order to find out how to
+re-generate the classes.
+
+Most of the other templates correspond to Java beans, with only get and
+set methods.  It is futile to add extra methods or constructors to these
+templates.  When the Axis utilities generate the corresponding Java
+classes from the templates they will not include any additional methods.
+
+
+Procedure
+---------
+
+Proceed as follows.
+
+
+1.  Set your current directory to:
+
+       .../myspace/src/java/org/astrogrid/myspace/delegate
+
+    (but since you are reading this note you have probably already done
+    this).
+
+2.  Type:
+
+      source generate.csh
+
+    generate.csh is a tc-shell script.  You can read it (and the scripts
+    that it calls) to see the procedure that is actually being followed.
+    A number of Java classes and WSDD and WSDL files will be created.
+
+3.  A final, manual step is to edit file:
+
+      .../myspace/src/webapp/WEB-INF/server-config.wsdd
+
+    The procedure required seems to be (and I've found this by a process
+    of trial and error, so take this with a pinch of salt):
+
+  (a) Extract the complete <service> element with:
+
+        name="astrogrid-myspace"
+
+      from file deploy.wsdd created in the delegate directory.  Save
+      this element as a temporary file.  Include all the child elements 
+      (parameter, typeMapping).
+
+  (b) Globally change `astrogrid-myspace' to `Manager' in the temporary
+      copy.
+
+  (c) Remove the existing <service> element with:
+
+        name="Manager"
+
+      from file:
+
+        .../myspace/src/webapp/WEB-INF/server-config.wsdd
+
+  (d) Insert the new replacement <service> element created in step (b).
+
+4.  In the future is may be necessary to copy some of the Manager
+    classes to a different directory.  [TODO]
+
+5.  That's it.  Now build the MySpace client and Manager war files using
+    maven and deploy them in the usual fashion.
+
+
+Template files
+--------------
+
+The Web Service classes are created from the following template files.
+
+- AstrogridMyspaceSoapBindingImpl.template
+    Top level class for the Manager.
+
+- EntryResults.template 
+    Subsidiary class of returned results.
+
+- KernelResults.template
+    Top-level class of returned results.
+
+- Manager.template
+    Interface implemented by the top level Manager class and the bottom
+    level class of the delegate.
+
+- StatusResults.template
+    Subsidiary class of returned results.
+
+
+The following classes and templates implement Manager.template:
+
+  AstrogridMyspaceSoapBindingImpl.template (and corresponding .java *)
+  AstrogridMyspaceSoapBindingSkeleton      *
+  AstrogridMyspaceSoapBindingStub.java     *
+  ManagerFake.java
+
+* - automatically generated, see below.
+
+
+Generated Java Classes and WSDD files
+-------------------------------------
+
+The following Java classes should have been created:
+
+  AstrogridMyspaceSoapBindingImpl.java        server
+  AstrogridMyspaceSoapBindingSkeleton.java    server
+  AstrogridMyspaceSoapBindingStub.java        client
+  ManagerService.java                         client
+  ManagerServiceLocator.java                  client
+
+and the following two WSDD files:
+
+  deploy.wsdd
+  undeploy.wsdd
+
+
+Classes Returned by the Delegate
+--------------------------------
+
+For simplicity, all the delegate methods (apart from heartBeat, which
+returns a String) return a KernelResults object.  KernelResults is
+a complex object including both arrays of status messages and results.
+There are subsidiary classes for these internal items.
+
+Both KernelResults and the subsidiary classes are generated from
+templates.
+
+SAY A BIT MORE ABOUT THIS?  [TODO]
+
+
+
+Clive Davenhall,
+18/3/04.
+
+
+-----------------------------------------------------------------------------
+
+Revision History
+----------------
+
+4/3/04:  Original version (ACD).
+18/3/04: First stable version (ACD).
+
+-----------------------------------------------------------------------------
+Clive Davenhall                                      Institute for Astronomy,
+e-mail (internet, JANET): acd @ roe.ac.uk        Royal Observatory Edinburgh,
+fax from within the UK:   0131-668-8416            Blackford Hill, Edinburgh,
+fax from overseas:     +44-131-668-8416                    EH9 3HJ, Scotland.
