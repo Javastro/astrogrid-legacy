@@ -51,6 +51,8 @@ import org.astrogrid.community.common.exception.CommunityPolicyException;
 import org.astrogrid.community.User;
 import org.astrogrid.store.Ivorn;
 
+import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Enumeration;
@@ -139,6 +141,7 @@ public class DesignAction extends AbstractAction {
         WORKFLOW_LIST_PARAMETER = "workflow-list",
         QUERY_LIST_PARAMETER = "query-list",
 	    TOOL_LIST_PARAMETER = "tool-list",
+	    USER_TOOL_LIST_PARAMETER = "user-tool-list",
 	    TOOL_NAME_PARAMETER = "tool_name",
 		STEP_KEY_PARAMETER = "step-key",
         ERROR_MESSAGE_PARAMETER = "ErrorMessage",
@@ -849,7 +852,47 @@ public class DesignAction extends AbstractAction {
               if( TRACE_ENABLED ) trace( "DesignActionImpl.readToolList() exit" ) ;
            }
            
-        } // end of readQueryList()           
+        } // end of readQueryList()  
+  
+        
+		private void updateUserToolList(String toolName) {
+			if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() entry" ) ;
+           
+            LinkedList tools = new LinkedList();
+            boolean toolPresent = false;
+
+			if (session.getAttribute(USER_TOOL_LIST_PARAMETER) != null) {
+				tools = (LinkedList) session.getAttribute(USER_TOOL_LIST_PARAMETER) ;
+			}
+                          
+			try {
+				for (int i=0; i < tools.size(); i++){
+					if (tools.get(i).toString().equalsIgnoreCase(toolName)){
+						toolPresent = true;
+						tools.remove(i);
+						tools.addFirst(toolName);
+						break;      
+					}
+				}
+				if (!toolPresent){
+					tools.addFirst(toolName) ;
+					if (tools.size() > 10)
+					    tools.removeLast() ;
+				}			    					
+
+				this.session.setAttribute( USER_TOOL_LIST_PARAMETER, tools ) ;   												        			
+			
+				debug("USER_TOOL_LIST:");
+				for (int i=0; i < tools.size(); i++){
+					debug( tools.get(i).toString() );
+				}			
+			}
+          
+			finally {
+				if( TRACE_ENABLED ) trace( "DesignActionImpl.updateUserToolList() exit" ) ;
+			}
+           
+		} // end of updateUserToolList()                  
 
 
 		private void readLists() {
@@ -880,7 +923,10 @@ public class DesignAction extends AbstractAction {
 			if( TRACE_ENABLED ) trace( "DesignActionImpl.insertToolIntoStep() entry" ) ;
 			
             Tool tool = null;
+			LinkedList tools = null;
             Step step = null;
+            boolean exists = false;
+            String temp = null;
               
 			try {
 				
@@ -900,7 +946,9 @@ public class DesignAction extends AbstractAction {
                 }
                 else {                	
 				    step.setTool( tool );
-                }   
+				    updateUserToolList( toolname );				    
+                }
+              
 						
 			}
 			finally {
