@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.17 2004/12/03 14:47:41 jdt Exp $
+/*$Id: JesShell.java,v 1.18 2005/03/15 16:18:19 clq2 Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -81,7 +81,7 @@ public class JesShell {
      */
     private static SoftReference shell = new SoftReference(new GroovyShell());
     private static int useCount = 0;
-    private static final int USE_LIMIT = 500; // as shell gets accessed a lot.
+    private static final int USE_LIMIT = 5000; // as shell gets accessed a lot.
     private static final CompilerConfiguration config = new CompilerConfiguration();
     static {
         config.setVerbose(true);
@@ -442,6 +442,12 @@ protected Object runWithTimeLimit(final Script sc,long timeLimit) throws GroovyE
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.18  2005/03/15 16:18:19  clq2
+nww986
+
+Revision 1.17.26.1  2005/03/14 18:44:55  nw
+upped the amount of time a shell stays around.
+
 Revision 1.17  2004/12/03 14:47:41  jdt
 Merges from workflow-nww-776
 
