@@ -9,34 +9,34 @@
 <section name="Configuring your Datacenter">
 
 <p>Datacenters are configured using the same system as most other Astrogrid
-components.
+components.</p>
 <p>When initially installed, a datacenter reads its configurations from the
 'default.properties' file in its context's WEB-INF/classes directory.  This file
 is overwritten whenever you upgrade PAL, so it is useful as a template but we
-do not recommend you edit it directly.
+do not recommend you edit it directly.</p>
 <p>Instead, you can create a new file (or edit the existing one) 'astrogrid.properties'
 and make sure this is in your classpath; a suitable place on Tomcat might be
-the common/classes directory so it is not overwritten on updates.
+the common/classes directory so it is not overwritten on updates.</p>
 <p>If you want to place your configuration file somewhere specific, do so and
 then set the environment variable 'astrogrid.config.filename' to the appropriate path and
 filename.  You can use environment variables in this variable, eg ${catalina.home}/conf/datacenter.properties
-will cause the datacenter to look in tomcat's configuration directory if you are running tomcat.
+will cause the datacenter to look in tomcat's configuration directory if you are running tomcat.</p>
 <p>If you have several datacenters it will be necessary to do this, and set the
-environment variable under each context to a different properties file.
+environment variable under each context to a different properties file.</p>
 <p>If you are using Tomcat, you can change environment variables by editing the 'Environment Entries'
-as a Tomcat Administrator.
-<p>You will need to restart the application after any change to a configuration file.
+as a Tomcat Administrator.</p>
+<p>You will need to restart the application after any change to a configuration file.</p>
 
 </section>
 
 <section name="The Configuration File">
 
-This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt>
-are comments and are ignored by the application.
+<p>This file consists of <i>key</i>=<i>value</i> lines. Any line starting with <tt>#</tt>
+are comments and are ignored by the application.</p>
 
-The default file is <a href="WEB-INF/classes/default.properties">here</a>.  This
+<p>The default file is <a href="WEB-INF/classes/default.properties">here</a>.  This
 configures the datacenter to use a 'test' or 'dummy' dataset, so you can run
-test queries on it before connecting up to a real dataset.
+test queries on it before connecting up to a real dataset.</p>
 
 </section>
 
@@ -46,38 +46,38 @@ test queries on it before connecting up to a real dataset.
 <p>Your database must have an ODBC-compatible connection; this will allow PAL to connect
 to it using a special URL and probably a user id and password.  You will need to
 set up the user id and password on the database ODBC connection so that PAL can
-connect to it using the same ones each time.
+connect to it using the same ones each time.</p>
 <p>The connection between the datacenter server and database can either be specified as a direct connection (simpler)
-or as a server connection (more efficient and robust). We recommend the second method where possible.
+or as a server connection (more efficient and robust). We recommend the second method where possible.</p>
 
-<p><b>Direct Connection</b>
+<p><b>Direct Connection</b></p>
 <p>In this configuration the datacenter manages its own connections to the database.
 You add the above url and user and password values to the configuration
 file (see the <a href="WEB-INF/classes/default.properties">example default</a> for
-which keys to use).
+which keys to use).</p>
 <p>You will also need some JDBC java drivers for the database; these are provided
 by the database vendors as 'jar' files, and will need to be included in the classpath
 (for example, in the common/lib directory of tomcat). You need to add these to the
-configuration file (again, see the example default).
+configuration file (again, see the example default).</p>
 
-<p><b>Server Connection</b>
+<p><b>Server Connection</b></p>
 
 <p>Alternatively, you can set up a JNDI datasource using your web service, such
-as the Administrator Tool if you are using Tomcat.
+as the Administrator Tool if you are using Tomcat.</p>
 
 </subsection>
 
 <subsection name="Jdbc Plugins">
 
 <p>You now need to configure PAL to use the JDBC connection above, and to handle
-the right 'flavour' of SQL.
+the right 'flavour' of SQL.</p>
 <p>The 'standard' SQL plugin is JdbcPlugin, and using this will work with most
 ODBC compatible databases. Some however take a particular flavour of SQL, and so
 you may want to use a different translator.  Again, see the example default file
-for the keys to set for this.
+for the keys to set for this.</p>
 <p>If none of these pre-defined translators are suitable, it is possible to write a new translator and plug it in.
-However, this is beyond the scope of this document.
-</p>
+However, this is beyond the scope of this document.</p>
+
 </subsection>
 
 </section>
@@ -93,29 +93,30 @@ However, this is beyond the scope of this document.
 <section name="Other plugins">
 <p>You can use other plugins by setting the plugin key in the configuration file to
 the class that implements the plugin mechanism, and including that plugin library
-in the classpath.
-<p>Details should be provided with the plugin
+in the classpath.</p>
+<p>Details should be provided with the plugin.</p>
 
 </section>
 
 <section name="Writing your own plugins">
 <p>You can <a href="other-back-end.html">write your own</a> plugins for
 specialised datasets, or ones where you want to offer customised access beyond the
-ability of PAL.
+ability of PAL.</p>
 
 </section>
 
 <section name="Metadata - describing your data">
 <p>For your data to be published to the VO, it must be capable of presenting an
 XML document that describes that data.  This allows the VO's automatic tools
-to analyse what is available.
+to analyse what is available.</p>
 <p>See <a href='still.waiting.for.IVOA'>here</a> for information on how to write a VODescription
-metadata document.
+metadata document.</p>
 <p>Either call this document 'datacenter.metadata.xml' and put it
-on the classpath somewhere, or set an environment variable to its location.
-</section>
+on the classpath somewhere, or set an environment variable to its location.</p>
 
+</section>
 
 
 </body>
 </document>
+
