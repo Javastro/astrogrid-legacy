@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: pah $</cvs:author>
-    | <cvs:date>$Date: 2003/09/15 21:51:45 $</cvs:date>
-    | <cvs:version>$Revision: 1.31 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/16 11:07:51 $</cvs:date>
+    | <cvs:version>$Revision: 1.32 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.32  2003/09/16 11:07:51  pah
+    |   authentication service build nearly working
+    |
     |   Revision 1.31  2003/09/15 21:51:45  pah
     |   authentication database backend tested
     |
@@ -2691,10 +2694,10 @@ Start of Authentication "auth" tasks
 		<echo message=""/>
 		<echo message="Modifying Axis web.xml ...."/>
 		<!-- Move the existing web.xml to a backup file -->
-		<move file="${axis.webapp}/WEB-INF/web.xml" tofile="${axis.webapp}/WEB-INF/web.tmp" overwrite="true" failonerror="false"/>
+		<move file="${axis.webapp}/WEB-INF/web.xml" tofile="${axis.webapp}/WEB-INF/web.xml.backup" overwrite="true" failonerror="false"/>
 		<!-- Transform the Axis web.xml, adding our JNDI property -->
 		<xslt style="src/xsl/build/config/webapp.xsl"
-		      in="${axis.webapp}/WEB-INF/web.tmp"
+		      in="${axis.webapp}/WEB-INF/web.xml.backup"
 		      out="${axis.webapp}/WEB-INF/web.xml">
 			<outputproperty name="method" value="xml"/>
 			<outputproperty name="indent" value="yes"/>
@@ -2703,7 +2706,7 @@ Start of Authentication "auth" tasks
 			<param name="property.value" expression="${config.file}"/>
 		</xslt>
 		<!-- Remove the temp file -->
-		<delete file="${axis.webapp}/WEB-INF/web.tmp"/>
+<!-- lets leave it for safety!		<delete file="${axis.webapp}/WEB-INF/web.tmp"/> -->
 	</target>
 
 	<!--+
@@ -3039,7 +3042,8 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 		       verbose="off"
 		       >
 		     <include name="org/astrogrid/community/**"/>
-		       <exclude name="org/astrogrid/community/policy/**"/>
+		       <exclude name="org/astrogrid/community/policy/client/**"/>
+		       <exclude name="org/astrogrid/community/policy/server/**"/>
 		       <exclude name="org/astrogrid/community/auth/**"/>
 		       <exclude name="org/astrogrid/community/delegate/policy/**"/> 
 
@@ -3092,6 +3096,7 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			<fileset dir="${authentication.classes}">
 				<include name="org/astrogrid/community/authentication/**"/>
 				<include name="org/astrogrid/community/service/authentication/**"/>
+				<include name="org/astrogrid/community/policy/data/**"/>
 			</fileset>
 		</jar>
 	</target>
@@ -3171,6 +3176,10 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			<fileset dir="${hsqldb.home}/lib">
 				<include name="hsqldb.jar"/>
 			</fileset>
+			<fileset dir="${jconfig.home}/dist">
+				<include name="jconfig.jar"/>
+			</fileset>
+			
 		</copy>
 		<!-- Copy our jar into the Axis WEB-INF/lib directory -->
 		<copy verbose="true" todir="${axis.webapp}/WEB-INF/lib">
@@ -3205,6 +3214,18 @@ org.astrogrid.policy.server.database.url=jdbc:hsqldb:hsql:${hsqldb.data}
 			servletpath="/${axis.servlet}/services/AdminService"
 			debug="true"
 			xmlfile="${basedir}/wsdd/AuthenticationService/deploy.wsdd"
+			/>
+	</target>
+	<target name="authentication.service.undeploy" depends="axis.tasks">
+		<!-- Wait for the Axis service -->
+		<antcall target="axis.wait"/>
+		<!-- Deploy our authenticationService service -->
+		<axis.admin
+			port="${axis.port}"
+			hostname="${axis.host}"
+			servletpath="/${axis.servlet}/services/AdminService"
+			debug="true"
+			xmlfile="${basedir}/wsdd/AuthenticationService/undeploy.wsdd"
 			/>
 	</target>
 	

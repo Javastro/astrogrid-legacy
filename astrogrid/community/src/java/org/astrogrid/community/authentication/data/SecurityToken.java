@@ -2,46 +2,18 @@ package org.astrogrid.community.authentication.data;
 
 import java.util.Date;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.sql.Timestamp;
 
 import org.astrogrid.community.policy.data.AccountData;
 
-/*
- * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/src/java/org/astrogrid/community/authentication/data/Attic/SecurityToken.java,v $</cvs:source>
- * <cvs:author>$Author: pah $</cvs:author>
- * <cvs:date>$Date: 2003/09/15 21:51:45 $</cvs:date>
- * <cvs:version>$Revision: 1.5 $</cvs:version>
- *
- * <cvs:log>
- *   $Log: SecurityToken.java,v $
- *   Revision 1.5  2003/09/15 21:51:45  pah
- *   authentication database backend tested
- *
- *   Revision 1.4  2003/09/10 20:48:17  pah
- *   Authentication Service without database backend
- *
- *   Revision 1.3  2003/09/08 11:01:35  KevinBenson
- *   A check in of the Authentication authenticateToken roughdraft and some changes to the groudata and community data
- *   along with an AdministrationDelegate
- *
- *   Revision 1.2  2003/09/05 09:13:35  KevinBenson
- *   Just changed the boolean to the object Boolean
- *
- *   Revision 1.1  2003/09/05 09:00:45  KevinBenson
- *   Got rid of a package that made things look a little confusing.
- *   Added a quick dataobject called SecurityToken under authentication that will be usedf for castor.
- *   And added a small CommunityMessage object that will create a small message for sending to other systems
- *
- *   Revision 1.2  2003/09/04 23:58:10  dave
- *   Experimenting with using our own DataObjects rather than the Axis generated ones ... seems to work so far
- *
- *   Revision 1.1  2003/09/03 06:39:13  dave
- *   Rationalised things into one set of SOAP stubs and one set of data objects for both client and server.
- *
- * </cvs:log>
- *
- */
 
+/**
+ * 
+ * @author Paul Harrison (pah@jb.man.ac.uk)
+ * @version $Name:  $
+ * @since iteration3
+ */
 public class SecurityToken {
 
    private static SecurityToken invalidToken = new SecurityToken();
@@ -257,4 +229,44 @@ public class SecurityToken {
       return _equals;
    }
 
+   /**
+    * Creates a new security token from the security token soap bean. This is slightly inconvenient and perhaps it might be better to use the soap generated object in all cases.
+    * This has not been done in this interation however because
+    * 1. not sure what the implications of the axis generation process changing
+    * 2. there are issues with date conversions
+    * 3. it might be a good idea to have separate objects anyway for security purposes - this (server side) object could potentially had access to secret information that the client side object does not.
+    * @param soapToken
+    * @return
+    */
+   public static SecurityToken createFromSoapToken(org.astrogrid.community.service.authentication.data.SecurityToken soapToken){
+      
+      SecurityToken newtoken = new SecurityToken();
+      
+      newtoken.account = soapToken.getAccount();
+      newtoken.expirationDate = soapToken.getExpirationDate().getTime();
+      newtoken.startDate = soapToken.getStartDate().getTime();
+      newtoken.target = soapToken.getTarget();
+      newtoken.token = soapToken.getToken();
+      newtoken.used = soapToken.getUsed();
+      
+      
+      return newtoken;
+      
+   }
+   /**
+    * Creates a new security token soap bean from this class.
+    * @return
+    */
+   public org.astrogrid.community.service.authentication.data.SecurityToken createSoapToken(){
+      org.astrogrid.community.service.authentication.data.SecurityToken soaptoken = new org.astrogrid.community.service.authentication.data.SecurityToken();
+      Calendar cal = Calendar.getInstance();
+      soaptoken.setAccount(account);
+      cal.setTime(expirationDate);
+      soaptoken.setExpirationDate(cal);
+      cal.setTime(startDate);
+      soaptoken.setStartDate(cal);
+      soaptoken.setTarget(target);
+      soaptoken.setToken(token);
+      return soaptoken;
+   }
 }
