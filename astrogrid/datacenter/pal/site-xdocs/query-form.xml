@@ -11,9 +11,9 @@
     <p>
       <form action="askAdqlSql.jsp" method="POST">
        <p>
-         ADQL/sql <input type="text" name="AdqlSql"/><br />
+         ADQL/sql <textarea name="AdqlSql" rows='1' cols='100%'/><br />
        </p>
-       <input type="submit" value="Run ADQL" />
+       <input type="submit" value="Submit ADQL" />
       </form>
     </p>
   </section>
@@ -27,7 +27,7 @@
       <form action="askAdqlXml.jsp" method="POST">
         <textarea name="AdqlXml" rows="20" cols="100%"></textarea>
         <p/>
-        <input type="submit" value="Run ADQL" />
+        <input type="submit" value="Submit ADQL" />
       </form>
     </p>
   </section>
@@ -40,10 +40,22 @@
          Decliniation in decimal degress, J2000 <input type="text" name="DEC" /><br />
          Search radius in decimal degrees <input type="text" name="SR" /><br />
        </p>
-       <input type="submit" value="Run Cone" />
+       <input type="submit" value="Search Cone" />
      </form>
    </p>
   </section>
 
+<!--
+  <section name="Submit SQL">
+    <p>
+      <form action="askRawSql.jsp" method="POST">
+       <p>
+         SQL <textarea name="RawSql" rows='1' cols='100%'/><br />
+       </p>
+       <input type="submit" value="Submit SQL" />
+      </form>
+    </p>
+  </section>
+-->
 </body>
 </document>
