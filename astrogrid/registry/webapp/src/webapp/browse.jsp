@@ -29,6 +29,8 @@
    if (off != null) {
        offset = Long.parseLong(off);
    }
+   String ivornpart = request.getParameter("IvornPart");
+   if (ivornpart == null) { ivornpart = ""; }
 %>
 
 <h1>Registry Browser</h1>
@@ -52,7 +54,7 @@
 
 <form action='browse.jsp' method='get'>
 <p>
-Find IVORNs including <input name="IvornPart" type="text" />
+Find IVORNs including <input name="IvornPart" type="text" value='<%= ivornpart %>'/>
 <input type="submit" name="button" value='List'/>
 </form>
 </p>
@@ -67,13 +69,12 @@ Find IVORNs including <input name="IvornPart" type="text" />
 -->
 <%
    RegistryQueryService server = new RegistryQueryService();
-   String ivornpart = request.getParameter("IvornPart");
 
-   out.write("*"+ivornpart+"*:<br/");
+   //out.write("*"+ivornpart+"*:<br/");
    
    Document entries = null;
    
-   if (ivornpart != null) {
+   if ( (ivornpart != null) && (ivornpart.length()>0) ) {
          String selectQuery = "<query><selectionSequence>" +
              "<selection item='searchElements' itemOp='EQ' value='all'/>" +
              "<selectionOp op='$and$'/>" +
@@ -164,10 +165,10 @@ Find IVORNs including <input name="IvornPart" type="text" />
    
             out.write("<a href=viewEntryXml.jsp?IVORN="+ivoStr+">XML</a>,  ");
 
-            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>, ");
+            out.write("<a href=admin/editEntry.jsp?IVORN="+ivoStr+">Edit</a>");
 
             if (!deleted) {
-               out.write("<a href=admin/deleteResource.jsp?IVORN="+ivoStr+">Delete</a>,  ");
+               out.write(", <a href=admin/deleteResource.jsp?IVORN="+ivoStr+">Delete</a>");
             }
             
             out.write("</td>");
