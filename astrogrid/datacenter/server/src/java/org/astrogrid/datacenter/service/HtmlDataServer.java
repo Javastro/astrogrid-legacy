@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.5 2004/03/15 11:25:35 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.6 2004/03/15 17:12:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,6 +10,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.util.Date;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
@@ -60,14 +61,6 @@ public class HtmlDataServer
       }
    }
 
-   /**
-    * Returns the status of the server
-    */
-   public String getServerStatus() {
-      DataServer.ServiceStatus status = server.getServerStatus();
-      
-      return serverStatusAsHtml(status);
-   }
 
    public QuerierStatus getQuerierStatus(Account user, String queryId) {
       try {
@@ -164,16 +157,22 @@ public class HtmlDataServer
    /**
     * Returns a ServerStatus in html form.
     */
-   public static String serverStatusAsHtml(DataServer.ServiceStatus status) {
+   public String serverStatusAsHtml() {
 
       StringBuffer html = new StringBuffer(
          "<html>\n"+
-         "<head><title>Service Status </title></head>\n"+
+         "<head><title>Datacenter Service Status </title></head>\n"+
          "<body>\n"+
-         "<h1>Service Status</h1>\n"+
-         "<pre>"+status.toString()+"</pre>"+
+         "<h1>Datacenter Service Status at "+new Date()+"</h1>\n"+
+         "<p>Started: "+server.startTime+"</p>"+
+         "<p>Num Queries: "+server.getNumQueries()+"</p>"+
+         "<p>Free memory:"+Runtime.getRuntime().freeMemory()+"</p>"+
+         "<p>Max memory:"+Runtime.getRuntime().maxMemory()+"</p>"+
+         "<p>Total memory:"+Runtime.getRuntime().totalMemory()+"</p>"+
          "</body>\n"+
          "</html>\n");
+      
+      server.querierManager.getQueriers().size();
       
       return html.toString();
    }

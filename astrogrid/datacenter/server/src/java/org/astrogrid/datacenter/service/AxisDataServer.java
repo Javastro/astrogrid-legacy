@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.38 2004/03/14 04:13:04 mch Exp $
+ * $Id: AxisDataServer.java,v 1.39 2004/03/15 17:12:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -148,7 +148,7 @@ public abstract class AxisDataServer  {
    
    /**
     * Returns the state of the server
-    */
+    *
    public DataServer.ServiceStatus getServerStatus(String queryId) throws AxisFault {
       try {
          return server.getServerStatus();
@@ -157,13 +157,16 @@ public abstract class AxisDataServer  {
          throw makeFault(SERVERFAULT, "Error aborting Query", e);
       }
    }
-   
+    /**/
    
    
 }
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.39  2004/03/15 17:12:28  mch
+Added memory to status info
+
 Revision 1.38  2004/03/14 04:13:04  mch
 Wrapped output target in TargetIndicator
 

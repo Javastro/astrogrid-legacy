@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.19 2004/03/14 04:13:04 mch Exp $
+ * $Id: DataServer.java,v 1.20 2004/03/15 17:12:28 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,10 +51,7 @@ public class DataServer
    protected final static QuerierManager querierManager = new QuerierManager("DataServer");
 
    /** Start Time for status info */
-   private final Date startTime = new Date();
-
-   /** Number of queries asked/submitted for status info */
-   private long numQueries = 0;
+   public final Date startTime = new Date();
 
    /** Configuration setting used to mark whether raw sql is allowed */
    public final static String SQL_PASSTHROUGH_ENABLED = "datacenter.sql.passthrough.enabled";
@@ -175,34 +172,11 @@ public class DataServer
    }
    
    /**
-    * Returns the status of the service.
-    */
-   public ServiceStatus getServerStatus() {
-      return new ServiceStatus(this);
+    * Returns number of queries tracked */
+   public long getNumQueries() {
+      return querierManager.getQueriers().size();
    }
    
-   /** Defines the service status */
-   public class ServiceStatus {
-      private Date timestamp = new Date(); //time of this status
-      
-      private Date serverStarted;
-      private long numQueriesRun;
-      private long numQueriesRunning;
-      
-      public ServiceStatus(DataServer server) {
-         this.serverStarted = startTime;
-         this.numQueriesRun = numQueries;
-         this.numQueriesRunning = querierManager.getQueriers().size();
-      }
-      
-      public String toString() {
-         return "DataServer Status at "+timestamp+": \n"+
-            "        Started:"+serverStarted+"\n"+
-            "    Queries Run:"+numQueriesRun+"\n"+
-            "Queries Running:"+numQueriesRunning;
-      }
-      
-   }
    
    
    
