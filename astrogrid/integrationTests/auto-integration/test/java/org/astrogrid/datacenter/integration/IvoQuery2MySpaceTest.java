@@ -1,4 +1,4 @@
-/*$Id: IvoQuery2MySpaceTest.java,v 1.8 2004/09/02 01:33:48 nw Exp $
+/*$Id: IvoQuery2MySpaceTest.java,v 1.9 2004/09/02 12:04:02 mch Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
       do {
          stat = delegate.getStatus(queryId);
       }
-      while ((!stat.equals(QueryState.FINISHED) && (!stat.equals(QueryState.ERROR))) // need some extra timout here too
+      while ((!stat.equals(QueryState.FINISHED.toString()) && (!stat.equals(QueryState.ERROR.toString()))) // need some extra timout here too
             && (timeout.getSecsSince()<60) ); // ..or timesout
 
       if (timeout.getSecsSince()>=60) {
@@ -114,6 +114,9 @@ public class IvoQuery2MySpaceTest extends TestCase implements StdKeys {
 
 /*
 $Log: IvoQuery2MySpaceTest.java,v $
+Revision 1.9  2004/09/02 12:04:02  mch
+Fix to timeout report
+
 Revision 1.8  2004/09/02 01:33:48  nw
 added asssertions that valid VOTables are returned.
 
