@@ -282,11 +282,14 @@ public class RegistryHarvestService {
          //remember to look at the date
          Element childElem = null;
          Element root = null;
-
+         
+         /*
          if("?wsdl".indexOf(accessURL) == -1) {
             accessURL += "?wsdl";
          }
+         */
          //Read in the wsdl for the endpoint and namespace
+         /*
          WSDLBasicInformation wsdlBasic = null;
          try {
             wsdlBasic = WSDLInformation.getBasicInformationFromURL(accessURL);
@@ -294,46 +297,51 @@ public class RegistryHarvestService {
             re.printStackTrace();
             log.error(re);
          }
-         if(wsdlBasic != null) {
-            log.info("calling call obj with endpoint = " +
-                     (String)wsdlBasic.getEndPoint().values().iterator().next());
+         */
+//         if(wsdlBasic != null) {
             //create a call object
-            Call callObj = getCall((String)wsdlBasic.getEndPoint().
-                           values().iterator().next());
+            Call callObj = getCall(accessURL);
 
             try {
                doc = DomHelper.newDocument();
                //set the operation name/interface method to ListResources
-               String interfaceMethod = "getMetaData";
-               if(isRegistryType) interfaceMethod = "ListRecords";
+               String interfaceMethod = "ListRecords";
+               //if(isRegistryType) interfaceMethod = "ListRecords";
+               /*
                String nameSpaceURI = WSDLInformation.
                                      getNameSpaceFromBinding(
 								        accessURL,interfaceMethod);
+               */
+               String nameSpaceURI = "http://www.ivoa.net/wsdl/RegistryHarvest/v0.1";
+               soapActionURI = "http://www.ivoa.net/wsdl/reginterface.wsdl#" + interfaceMethod;
+               /*
                if(wsdlBasic.getEndPoint().keys().hasMoreElements()) {
                    soapActionURI = wsdlBasic.getSoapActionURI(
                      (String)wsdlBasic.getEndPoint().keys().nextElement() + 
                      "_" + interfaceMethod);
                }
+               */
                if(soapActionURI != null) {
                    callObj.setSOAPActionURI(soapActionURI);
                }//if
-               log.info("SoapActionURI = " + soapActionURI);
+               log.info("Calling harvest service for url = " + accessURL + 
+                        " interface Method = " + interfaceMethod + 
+                        " with soapactionuri = " + soapActionURI);
                root = doc.createElementNS(nameSpaceURI,interfaceMethod);
+               String value = "http://www.ivoa.net/xml/VOResource/v" + version;
+               root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
                if(dt != null) {
                   childElem = doc.createElement("from");
                   childElem.appendChild(doc.createTextNode(sdf.format(dt)));
                   root.appendChild(childElem);
-               }//if
+               }//if               
                doc.appendChild(root);
-               log.info("Creating soap request for operation name = " +
-                         interfaceMethod + " with namespaceuri = " +
-                         nameSpaceURI);
-
+               log.info("FULL SOAP REQUEST FOR HARVEST = " + DomHelper.DocumentToString(doc));
                SOAPBodyElement sbeRequest = new SOAPBodyElement(
                                                 doc.getDocumentElement());
                //sbeRequest.setName("harvestAll");
                sbeRequest.setName(interfaceMethod);
-               sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+               sbeRequest.setNamespaceURI(nameSpaceURI);
                //invoke the web service call
                log.info("Calling invoke on service");
                Vector result = (Vector) callObj.invoke
@@ -348,13 +356,17 @@ public class RegistryHarvestService {
                    if(isRegistryType) {
                       nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
                       while(nl.getLength() > 0) {
-                         Document resumeDoc = DomHelper.newDocument();
-                         root = doc.createElementNS(nameSpaceURI,"ListRecords");
-                          childElem = doc.createElement("resumptionToken");
-                          childElem.appendChild(doc.createTextNode(nl.item(0).getFirstChild().getNodeValue()));
+                          Document resumeDoc = DomHelper.newDocument();
+                          root = resumeDoc.createElementNS(nameSpaceURI,"ListRecords");
+                          root.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:vr",value);
+                          childElem = resumeDoc.createElement("resumptionToken");
+                          childElem.appendChild(resumeDoc.createTextNode(nl.item(0).getFirstChild().getNodeValue()));
+                          root.appendChild(childElem);
+                          resumeDoc.appendChild(root);
                           sbeRequest = new SOAPBodyElement(resumeDoc.getDocumentElement());
                           sbeRequest.setName("ListRecords");
-                          sbeRequest.setNamespaceURI(wsdlBasic.getTargetNameSpace());
+                          sbeRequest.setNamespaceURI(nameSpaceURI);
+                          
                           //invoke the web service call
                           result = (Vector) callObj.invoke
     									    (new Object[] {sbeRequest});
@@ -362,6 +374,7 @@ public class RegistryHarvestService {
                           //(new HarvestThread(ras,soapDoc.getDocumentElement().cloneNode(true))).start();
                           ras.updateNoCheck(soapDoc,version);
                            nl = DomHelper.getNodeListTags(soapDoc,"resumptionToken");
+                           /*
                            threadCount++;                           
                            if(threadCount > 19) {
                                log.info("20 harvest threads have started recently, sleeping for 5 seconds. ");
@@ -373,6 +386,7 @@ public class RegistryHarvestService {
                                }
                                threadCount = 0;
                            }//if
+                           */
                       }//while
                    }//if
                }//if
@@ -389,7 +403,7 @@ public class RegistryHarvestService {
                 e.printStackTrace();
                 log.error(e);
             }
-         }
+  //       }
       }else if("WebBrowser".endsWith(invocationType) || "Extended".endsWith(invocationType)) {
          //its a web browser so assume for oai.
          try {

@@ -61,11 +61,6 @@ Look for another version
    //out.write("*"+ivornpart+"*:<br/");
    
    Document entries = null;
-   String version = request.getParameter("version");
-   if(version == null || version.trim().length() <= 0) {
-   	version = RegistryServerHelper.getDefaultVersionNumber();
-   }
-
 	entries = server.getRegistriesQuery(version);
 	
 	String doHarvest = request.getParameter("doharvest");

@@ -1,6 +1,7 @@
 <%@ page import="org.astrogrid.config.SimpleConfig,
                  org.astrogrid.registry.server.admin.*,
                  org.astrogrid.registry.server.query.*,
+                 org.astrogrid.registry.server.*,
                  java.util.ArrayList"
    isThreadSafe="false"
    session="false"
@@ -56,7 +57,6 @@ Clear Managed Authroities for Version:
 <%
 String clearCache = null;
 clearCache = request.getParameter("clear_cache");
-String version = request.getParameter("version");
 if(clearCache != null && clearCache.equals("true")) {
   if(version == null || version.trim().length() == 0) {
     out.print("<font color='red'>Tried to clear a cache with no version specified.</font>");

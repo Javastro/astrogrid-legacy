@@ -183,7 +183,7 @@
 	<env-entry>
 		<description>Does this registry need to do harvesting.</description>
 		<env-entry-name>reg.amend.harvest</env-entry-name>
-		<env-entry-value>true</env-entry-value>
+		<env-entry-value>false</env-entry-value>
 		<env-entry-type>java.lang.String</env-entry-type>
 	</env-entry>
 

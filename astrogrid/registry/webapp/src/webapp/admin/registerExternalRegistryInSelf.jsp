@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
-				 org.astrogrid.registry.server.query.*,
+ 				     org.astrogrid.registry.server.query.*,
+ 				     org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -74,7 +75,7 @@ A default registry in AstroGrid is pre-set.
 <pre>
 <%
 RegistryAdminService serverAdmin = new RegistryAdminService();
-String domurl = getregs + "/getRegistriesXML.jsp";
+String domurl = getregs + "/getRegistriesXML.jsp?version=" + version;
 URL urlDom = new URL(domurl);
 System.out.println("the domurl = " + domurl);
 out.write("<p>getregs: " + getregs + "</p><br />");

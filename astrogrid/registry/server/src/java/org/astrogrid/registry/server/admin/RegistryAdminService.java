@@ -353,9 +353,9 @@ public class RegistryAdminService {
             //RegistryServerHelper.addStatusMessage("Entering new entry: " +  tempIdent);
             try {
                coll = xdb.openAdminCollection(collectionName);
-               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),root);               
+               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);               
                collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
-               xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_"),createStats(tempIdent));
+               xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent));
             } catch(XMLDBException xdbe) {
                log.error(xdbe);
                throw AxisFault.makeFault(xdbe);
@@ -419,13 +419,11 @@ public class RegistryAdminService {
                      //update this registry resource into our registry.
                      try {
                         coll = xdb.openAdminCollection(collectionName);
-                        xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),root);
-                        
+                        xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);                        
                         collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
-                        if(xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_")) == null) {
-                            xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),createStats(tempIdent,false));
+                        if(xdb.getResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml") == null) {
+                            xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent,false));
                         }
-                                                
                      } catch(XMLDBException xdbe) {
                         log.error(xdbe);
                         throw AxisFault.makeFault(xdbe);
@@ -435,7 +433,7 @@ public class RegistryAdminService {
                              xdb.closeCollection(collStat);
                          }catch(XMLDBException xmldb) {
                              log.error(xmldb);
-                         }                
+                         }
                      }                     
                   }else if(nodeVal != null && 
                            nodeVal.indexOf("Authority") != -1)
@@ -486,10 +484,10 @@ public class RegistryAdminService {
                            root.appendChild(currentResource);
                            try {
                                collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
-                               xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_"),createStats(tempIdent));                        
+                               xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent));                        
                                
                                coll = xdb.openAdminCollection(collectionName);
-                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),root);                               
+                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);                               
                             } catch(XMLDBException xdbe) {
                                log.error(xdbe);
                                throw AxisFault.makeFault(xdbe);
@@ -520,7 +518,7 @@ public class RegistryAdminService {
                            elem.appendChild(resListForAuth.item(0));                           
                            try {
                                log.info("updating the new registy");
-                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),elem);                                            
+                               xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",elem);                                            
                            } catch(XMLDBException xdbe) {
                                log.error(xdbe);
                                throw AxisFault.makeFault(xdbe);
@@ -719,7 +717,7 @@ public class RegistryAdminService {
              //RegistryServerHelper.addStatusMessage("Entering new entry: " + tempIdent);
              try {
                  coll = xdb.openAdminCollection(collectionName);
-                 xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),root);
+                 xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_") + ".xml",root);
               } finally {
                   try {
                       xdb.closeCollection(coll);
@@ -743,10 +741,10 @@ public class RegistryAdminService {
                         //update this registry resource into our registry.
                         try {                        
                             collStat = xdb.openAdminCollection("statv" + versionNumber.replace('.','_'));
-                            if(xdb.getResource(coll,tempIdent.replaceAll("[^\\w*]","_")) == null) {
-                                xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),createStats(tempIdent,false));
+                            if(xdb.getResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml") == null) {
+                                xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent,false));
                             }else {
-                                xdb.storeXMLResource(coll,tempIdent.replaceAll("[^\\w*]","_"),createStats(tempIdent));
+                                xdb.storeXMLResource(collStat,tempIdent.replaceAll("[^\\w*]","_") + ".xml",createStats(tempIdent));
                             }                                                
                          } finally {
                              try {

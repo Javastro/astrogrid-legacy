@@ -513,7 +513,7 @@ public class RegistryQueryService {
        Collection coll = null;
        try {
            coll = xdb.openCollection(collectionName);
-           XMLResource xmr = (XMLResource)xdb.getResource(coll,id);           
+           XMLResource xmr = (XMLResource)xdb.getResource(coll,id + ".xml");           
            return xslHelper.transformExistResult(xmr.getContentAsDOM(),
                        versionNumber,"GetResourceByIdentifier");
        }catch(XMLDBException xdbe) {

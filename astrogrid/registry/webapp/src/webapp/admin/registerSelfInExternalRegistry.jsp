@@ -1,5 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.admin.*,
-				 org.astrogrid.registry.server.query.*,
+				     org.astrogrid.registry.server.query.*,
+				     org.astrogrid.registry.server.*,
                  org.astrogrid.store.Ivorn,
                  org.w3c.dom.Document,
                  org.astrogrid.io.Piper,
@@ -58,7 +59,6 @@ machine <span style="font-style: italic;">hydra</span>.<br>
 	  String postregsubmit = request.getParameter("postregsubmit");
 	  String getregsubmit= request.getParameter("getregsubmit");
 	  String getregs = request.getParameter("getregs");
-	  String version = request.getParameter("version");
 	  String fullRegistryAddURL = "http://hydra.star.le.ac.uk:8080/astrogrid-registry/addResourceEntry.jsp";
 	  String regBas = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
 	  regBas += "getRegistriesXML.jsp?version=" + version ;

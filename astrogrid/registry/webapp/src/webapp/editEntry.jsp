@@ -1,6 +1,6 @@
 <%@ page import="org.astrogrid.registry.server.JspHelper,
 				 org.astrogrid.registry.server.query.*,
-                 org.w3c.dom.Document,
+                 org.w3c.dom.*,
                  org.astrogrid.util.DomHelper,
                  org.astrogrid.config.SimpleConfig,
                  java.net.*,
