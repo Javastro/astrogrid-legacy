@@ -7,42 +7,37 @@ import org.apache.cocoon.environment.Session;
 import org.apache.cocoon.environment.Redirector;
 import org.apache.cocoon.environment.SourceResolver;
 import org.apache.cocoon.environment.ObjectModelHelper;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Iterator;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import org.xml.sax.SAXException;
+import org.w3c.dom.NamedNodeMap;
+import java.util.Map;
+import java.util.HashMap;
 import java.io.Reader;
 import java.io.StringReader;
 import org.xml.sax.InputSource;
-import java.util.Enumeration;
-import org.apache.axis.utils.XMLUtils;
-import org.astrogrid.registry.client.admin.RegistryAdminDocumentHelper;
-import org.astrogrid.registry.client.admin.RegistryAdminService;
-import org.astrogrid.registry.client.query.RegistryService;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.text.ParseException;
 import org.astrogrid.registry.client.RegistryDelegateFactory;
-
-
-import org.astrogrid.config.Config;
-
+import org.astrogrid.registry.client.admin.RegistryAdminService;
+import org.astrogrid.registry.client.harvest.RegistryHarvestService;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
 import org.astrogrid.util.DomHelper;
-import java.io.InputStream;
+//import org.apache.cocoon.components.request.multipart.FilePart;
+//import org.apache.cocoon.components.request.multipart.FilePartFile;
+import org.apache.cocoon.servlet.multipart.*;
+import java.io.File;
+//import org.apache.cocoon.servlet.multipart.Part;
+
 
 
 
 
 /**
- * Handles the updating and adding of registry Data into the registry.
+ * Used for harvesting Metadata from another registry.  Depending on the request may harvest all metadata or
+ * harvest a paricular registry data.
  *
  */
 public class RegistryAdminAction extends AbstractAction
@@ -61,44 +56,16 @@ public class RegistryAdminAction extends AbstractAction
    
    private static final String PARAM_CRITERIA_NUMBER = "criteria_number";   
 
-   private static final String PARAM_MAIN_ELEMENT = "mainelement";   
+   private static final String PARAM_MAIN_SEARCH_ELEMENT = "searchelement";   
    
    private static final Integer DEFAULT_CRITERIA_NUMBER = new Integer(1);
    
-   private static final String ADD_ACTION = "add";
+   private static final String HARVEST_THIS_REGISTRY_ACTION = "harvestthis";
    
-   private static final String UPDATE_ACTION = "update";   
+   private static final String HARVEST_OTHER_REGISTRY_ACTION = "harvestother";   
    
-   private static final String REMOVE_ACTION = "remove";   
-
-   private static final String ADD_CRITERIA_ACTION = "addcriteria";
-   
-   private static final String REGISTRY_ITEMS_PARAM = "regitems";   
-   
-   private static final String CREATE_COPY_PARAM = "createcopy";   
-   
-   private static final String UPDATE_XML_PARAM = "updatexml";
-         
-   private static final String ORGANISATION_XML_URL_TEMPLATE_PROPERTY = "OrganisationTemplate.xml";
-   private static final String RESOURCE_XML_URL_TEMPLATE_PROPERTY = "ResourceTemplate.xml";
-   private static final String SERVICE_XML_URL_TEMPLATE_PROPERTY = "ServiceTemplate.xml";
-   private static final String AUTHORITY_XML_URL_TEMPLATE_PROPERTY = "AuthorityTemplate.xml";
-   private static final String REGISTRY_XML_URL_TEMPLATE_PROPERTY = "RegistryTemplate.xml";
-   private static final String SKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "SkyServiceTemplate.xml";
-   private static final String TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY = "TabularSkyServiceTemplate.xml";
-   private static final String DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY = "DataCollectionTemplate.xml";   
+   private static final String ERROR_MESSAGE = "errormessage";   
       
-   
-
-   public static Config conf = null;
-   
-   static {
-      if(conf == null) {
-         conf = org.astrogrid.config.SimpleConfig.getSingleton();
-      }      
-   }
-
-
    /**
     * Our action method.
     *
@@ -111,277 +78,82 @@ public class RegistryAdminAction extends AbstractAction
       Parameters params)
       {
       
-      
       //
       // Get our current request and session.
       Request request = ObjectModelHelper.getRequest(objectModel);
       Session session = request.getSession();
+      Map results = new HashMap() ;
+
+      String errorMessage = null;
       String message = null;
-      Map mp = null;
-      
-      //Get the action if any.
-      String action = (String)request.getParameter(PARAM_ACTION);
-      if(DEBUG_FLAG) {
-         System.out.println("the action is = " + action);      
-      }      
-      
-      //Load Templates.
-      //Do the createMap.
-      //pass the map to the xsp page for generating the list.
-      String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
-      
-      Document returnDocument = null;
-      
-      Document registryDocument = null;
-      DocumentBuilderFactory dbf = null;
-      DocumentBuilder regBuilder = null;
-      //See if a client passed in the IVOA xml to be updated.
-      String updateXML = request.getParameter(UPDATE_XML_PARAM);
-      boolean createCopy = false;
-      //Are we doing an update or just grabbing the data for template purposes on an add.
-      if(request.getParameter(CREATE_COPY_PARAM) != null) {
-         createCopy = true;
-      }
-      String authID = "Identifier AuthorityID";
-      String resKey = "Identifier ResourceKey";
-      NodeList nl = null;
-      if(action == null) {
-         //Okay updateXML was used.
-         if(updateXML != null && updateXML.length() > 0) {
-            try {
-            //turnt he xml into a DOM tree.
-            Reader reader2 = new StringReader(updateXML);
-            InputSource inputSource = new InputSource(reader2);
-            regBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            registryDocument = regBuilder.parse(inputSource);
-            }catch(Exception e) {
-               e.printStackTrace();
-            }
-
-            //We want to blank out the authorityid and resource key for 
-            //creating a copy area.
-            if(createCopy) {
-               nl = registryDocument.getElementsByTagName("AuthorityID");
-               if(nl.getLength() > 0) {
-                  nl.item(0).getFirstChild().setNodeValue("enter authority id");
-               }
-               nl = registryDocument.getElementsByTagName("ResourceKey");
-               if(nl.getLength() > 0) {
-                  nl.item(0).getFirstChild().setNodeValue("enter new resource key");
-               }
-            }
-         
-         }else {
-            try {
-              dbf = DocumentBuilderFactory.newInstance();
-              dbf.setNamespaceAware(true);
-              regBuilder = dbf.newDocumentBuilder();
-              registryDocument = getDocumentTemplate(request);
-              nl = registryDocument.getElementsByTagName("AuthorityID");
-              if(nl.getLength() > 0) {
-                 nl.item(0).getFirstChild().setNodeValue("enter authority id");
-              }
-              nl = registryDocument.getElementsByTagName("ResourceKey");
-              if(nl.getLength() > 0) {
-                 nl.item(0).getFirstChild().setNodeValue("enter new resource key");
-              }
-              
-            } catch (ParserConfigurationException e) {
-              e.printStackTrace();
-            }         
-         }
-         //Create the map from the DOM tree.
-         mp = RegistryAdminDocumentHelper.createMap(registryDocument);
-        // printMap(mp);         
-      }
-
-      //Go ahead and load the ManagedAuthorities (Authorities this registry owns and is
-      //allowed to update and add)
-      HashMap hm = (HashMap)session.getAttribute("ManageAuthorities");
-      RegistryService rs = null;
-      if(hm == null || hm.size() <= 0) {
-         rs = RegistryDelegateFactory.createQuery();
-         try {
-            hm = rs.managedAuthorities();
-         }catch(Exception e) {
-            e.printStackTrace();
-            hm = null;
-            message = "Could not load the Managed Authority ID's for this registry which is required to validate the update.";
-         }
-         if(hm != null)
-            session.setAttribute("ManageAuthorities",hm);
-      }               
-
-      //Okay it is an update or add action.      
-      if(ADD_ACTION.equals(action) || UPDATE_ACTION.equals(action)) {
-         Enumeration enum = request.getParameterNames();
-         //LinkedHashMap lhm = new LinkedHashMap();
-         boolean validAuthority = true;
-         if(hm == null) {
-            validAuthority = false;
-         }
-         mp = (Map)session.getAttribute(REGISTRY_ITEMS_PARAM);
-         //put the request results in a LinkedHashMap
-         while(enum.hasMoreElements()) {
-            String param = (String)enum.nextElement();
+      //Was this coming from the query page with a huge xml string
+      //containing how to call the registry.
+      Document harvestDoc = null;
+      String harvestResult = "";
+      Document resultDoc = null;
+      RegistryAdminService ras = null;
+      System.out.println("inside action of harvest");
+      try {
+         //get where you putting the harvest results to.
             
-            if(param.indexOf("/") != -1) {
-               String val = request.getParameter(param);
-               //System.out.println("the param was = " + param + " and val = " + val);
-               //if(val != null && val.trim().length() > 0) {
-                  if(mp.containsKey(param)) {
-                     mp.put(param,val);
+               DocumentBuilder registryBuilder = null;
+               DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+               registryBuilder = dbf.newDocumentBuilder();
+               
+               //Now check are calling updateDocument or addRegistryEntries.
+               //TODO do this portal thing.
+               if(request.getParameter("addmetadatafromurl") != null) {
+                  String accessURL = request.getParameter("metadata_url");
+                  if(accessURL == null || accessURL.trim().length() <= 0) {
+                     errorMessage = "A URL was not given for harvesting.";
                   }
-                  //NOT NEEDED lhm.put(param,val);
-               //}
-               //make sure you have authority to make an add or update.
-               if(param.indexOf("vg:") == -1 && param.indexOf("AuthorityID") != -1 && param.indexOf("Identifier") != -1) {
-                  if(hm != null && !hm.containsKey(val.trim())) {
-                     validAuthority = false;
-                  }//if
-               }//if
-            }//if
-         }//while
-         //Debug lets print out the map.
-//         printMap(mp);
-         //make sure it is a valid authority.
-         if(validAuthority) {         
-         
-         //Create the DOM tree from the map.
-         Document finalDoc = RegistryAdminDocumentHelper.createDocument(mp);
-         System.out.println("the finalDoc to be sending = " + XMLUtils.DocumentToString(finalDoc));
-            if(validateUpdateDocument(finalDoc)) {
-               
-               //Now lets create a Mapping.
-               //TODO this is not right need to create a mapping from the update service call below.
-               
-                  try {
-                     //System.out.println("okay the url = " + url);
-                     RegistryAdminService ras = RegistryDelegateFactory.createAdmin();
+                  if(errorMessage == null) {
+                     //instantiate the delegate.
+                     ras = RegistryDelegateFactory.createAdmin();
                      
-                     if("add".equals(action)) {
-                        returnDocument = ras.update(finalDoc);
-                        if(finalDoc.getElementsByTagNameNS("http://www.ivoa.net/xml/VORegistry/v0.2","Authority").getLength() > 0) {
-                           RegistryService rs2 = RegistryDelegateFactory.createQuery();
-                           hm = rs2.managedAuthorities();
-                           session.setAttribute("ManageAuthorities",hm);
-                        }
-                     }else {
-                        returnDocument = ras.update(finalDoc);
+                     harvestDoc = registryBuilder.parse(accessURL);
+                     
+                     //ras.harvestFromUrl(accessURL);
+                     resultDoc = ras.update(harvestDoc);
+                     //ras.validateDocument(harvestDoc);
+                     //Now see if their is a error element in the resultDoc
+                     //ras.addRegistryEntries(harvestDoc);
+                     //message = "A harvest has begun for url = " + accessURL;
+                     //results.put("addregistry","true");
+                  }//if                  
+               } else if(request.getParameter("addmetadatafromfile") != null) {
+                  //request.ge
+  //                FilePart filePart = (FilePart) request.get("metadata_file");
+                     Part part = (Part) request.get("metadata_file");
+                     if (part != null) {
+                        ras = RegistryDelegateFactory.createAdmin();
+                        harvestDoc = registryBuilder.parse(part.getInputStream());
+                        //System.out.println("the filename = " + part.getFileName() + " the size = " + part.getSize() + " and harvestDoc = " + DomHelper.DocumentToString(harvestDoc));
+                        resultDoc = ras.update(harvestDoc);
+                        //ras.validateDocument(harvestDoc);
+                        // do something with it
+                     } else {
+                        // parameter not found
                      }
-                     
-                     message = getResultMessage(returnDocument);            
-                  }catch(Exception e) {
-                     e.printStackTrace();
-                  }
-            }else {
-               message = "All the required parameters are not filled in. Authority ID, Title, Subject and Description are required.";   
-            }
-         }else {
-            //errorMessage happened not a valid authorityid.
-            message = "This does not seem to be a AuthorityID managed by this Registry.  Please add an Authority or change your AuthorityID";
-         }
-       //call the client service update method  
+  
+  //                File file = ((FilePartFile)filePart).getFile();
+  //                ras = RegistryDelegateFactory.createAdmin();
+  //                harvestDoc = registryBuilder.parse(file);
+  //                resultDoc = ras.update(harvestDoc);
+               }
+      }catch(Exception e) {
+         e.printStackTrace();
+         errorMessage = e.toString();         
       }
       
-      if(mp != null && mp.size() > 0) {
-         session.setAttribute(REGISTRY_ITEMS_PARAM,mp);
-      }//if
-      
-      //set the action for the portal.
-      if(mainElem != null && mainElem.length() > 0 ) {
-         action = "add";
-      }else {
-         action = "update";
-      }
-      System.out.println("setting the action = " + action);
-      request.setAttribute("action",action);
+      System.out.println("leaving admin action");
       //
       //Create a new HashMap for our results.  Will be used to
       //pass to the transformer (xsl page)
-      Map results = new HashMap() ;
-      results.put(PARAM_ACTION,action);
       results.put("message",message);
-      results.put("authID",authID);
-      results.put("resKey",resKey);
+      results.put("errorMessage",errorMessage);
+
       return results;
    }
-   
-   private void printMap(Map tm) {
-      Set keySet = tm.keySet();
-      Iterator iter = keySet.iterator();
-      String key = null;
-      while(iter.hasNext()) {
-         key = (String)iter.next();
-         System.out.println(" The key = " + key + " The value = " + (String)tm.get(key));
-      }//while      
-   }  
-   
-   private boolean validateUpdateDocument(Document doc) {
-      boolean val = true;
-      NodeList nl = null;
-      nl = doc.getElementsByTagName("AuthorityID");
-      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes())
-         val = false;
-      nl = doc.getElementsByTagName("Description");
-      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes())
-         val = false;
-      nl = doc.getElementsByTagName("Title");
-      System.out.println("the title nl = " + nl.getLength() + "look at childnodes = " +  nl.item(0).hasChildNodes() + " and nodevalud = " + nl.item(0).getFirstChild().getNodeValue() + " and length2 = " + nl.item(0).getFirstChild().getNodeValue().trim().length());
-      System.out.println("nodename = " + nl.item(0).getFirstChild().getNodeName() + " and number of children = " + nl.item(0).getChildNodes().getLength());
-      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes() || nl.item(0).getFirstChild().getNodeValue() == null || nl.item(0).getFirstChild().getNodeValue().trim().length() <= 0) 
-         val = false;
-      nl = doc.getElementsByTagName("Subject");
-      if(nl.getLength() <= 0 || !nl.item(0).hasChildNodes())
-         val = false;
-      System.out.println("okay in validateUpdatedocument and return = " + val);
-      return val;
-   }//validateUpdateDocument 
-   
-   private String getResultMessage(Document doc) {
-      String message = "The Registry has been updated";
-      if(doc != null) {
-         NodeList nl = doc.getElementsByTagName("error");
-         if(nl.getLength() > 0) {
-            message = nl.item(0).getFirstChild().getNodeValue();
-         }//if
-      }
-      return message;  
-   }
-   
-   public Document getDocumentTemplate(Request request) {
-      ClassLoader loader = this.getClass().getClassLoader();
-      InputStream is = null;
-      String mainElem = request.getParameter(PARAM_MAIN_ELEMENT);
-      
-      if(RegistryOptionAction.ORGANISATION_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(ORGANISATION_XML_URL_TEMPLATE_PROPERTY);
-      }else if(RegistryOptionAction.RESOURCE_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(RESOURCE_XML_URL_TEMPLATE_PROPERTY);
-      } else if(RegistryOptionAction.AUTHORITY_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(AUTHORITY_XML_URL_TEMPLATE_PROPERTY);
-      }else if(RegistryOptionAction.REGISTRY_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(REGISTRY_XML_URL_TEMPLATE_PROPERTY);
-      }else if(RegistryOptionAction.SKYSERVICE_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(SKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
-      }else if(RegistryOptionAction.TABULARSKYSERVICE_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(TABULARSKYSERVICE_XML_URL_TEMPLATE_PROPERTY);
-      }else if(RegistryOptionAction.DATACOLLECTION_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(DATACOLLECTION_XML_URL_TEMPLATE_PROPERTY);         
-      }else if(RegistryOptionAction.SERVICE_OPTION.equals(mainElem)) {
-         is = loader.getResourceAsStream(SERVICE_XML_URL_TEMPLATE_PROPERTY);
-      }
-      if(is != null) {
-         try {
-            Document doc = DomHelper.newDocument(is);
-            return doc;
-         }catch(Exception e) {
-            e.printStackTrace();
-         }
-      }
-      return null;
-   }
-   
-   
-   
+        
 }

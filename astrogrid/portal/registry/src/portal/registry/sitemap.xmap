@@ -39,9 +39,7 @@
          <map:action name="astrogrid-registry-browser"
             src="org.astrogrid.portal.registry.RegistryBrowserAction"/>
          <map:action name="astrogrid-registry-options"
-            src="org.astrogrid.portal.registry.RegistryOptionAction"/>     
-         <map:action name="astrogrid-registry-harvest"
-            src="org.astrogrid.portal.registry.RegistryHarvestAction"/>
+            src="org.astrogrid.portal.registry.RegistryOptionAction"/>
          <map:action name="astrogrid-registry-status"
             src="org.astrogrid.portal.registry.RegistryStatusAction"/>
       </map:actions>
@@ -160,7 +158,7 @@
             <map:serialize type="html" label="FINAL"/>
          </map:match>
                   
-         <map:match pattern="registryupdate.html">
+         <map:match pattern="registryadmin.html">
             <map:act type="astrogrid-registry-admin">
                <map:generate src="web/style/xsp/regadmin.xsp"
                              type="serverpages" label="XML, HTML"/>
@@ -171,22 +169,6 @@
                   <map:parameter name="resKey" value="{resourceKey}" />
                   <map:parameter name="action" value="{action}" />
                   <map:parameter name="message" value="{message}" />
-               </map:transform>
-            </map:act>
-            <map:serialize type="html" label="FINAL"/>
-         </map:match>
-
-         <map:match pattern="registryharvest.html">
-            <map:act type="astrogrid-registry-harvest">
-               <map:generate src="web/style/xsp/regharvest.xsp"
-                             type="serverpages" label="XML, HTML"/>          
-               <map:transform src="web/style/xsl/regharvest.xsl" label="PAGE">
-                  <map:parameter name="errorMessage" value="{errorMessage}"/>
-                  <map:parameter name="harvestResult" value="{harvestResult}"/>                        
-                  <map:parameter name="registryXML" value="{registryXML}"/>
-                  <map:parameter name="action" value="{action}" />
-                  <map:parameter name="message" value="{message}" />
-                  <map:parameter name="addregistry" value="{addregistry}" />
                </map:transform>
             </map:act>
             <map:serialize type="html" label="FINAL"/>

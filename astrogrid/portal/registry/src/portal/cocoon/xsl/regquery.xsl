@@ -123,7 +123,7 @@
 		<xsl:if test="//registryquery/xmlresults/xmlresult">
 			<table border="1" cellspacing="0" cellpadding="0">
 				<tr>
-					<td>Actions</td>
+					<td>View Full</td>
 					<td>Identifier</td>
 					<td>Title</td>
 					<td>Description</td>
@@ -131,27 +131,9 @@
 		<xsl:for-each select="//registryquery/xmlresults/xmlresult">
 			<tr>
 				<td>
-			<xsl:if test="$mainelement != 'Registry'" >
-					<form method="post" action="registryupdate.html">
-						<input type="hidden" name="updatexml">
-							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
-						</input>
-						<input type="submit" name="update" value="Update" />
-					</form>
-			</xsl:if>
-			<xsl:if test="$mainelement = 'Registry'" >
-				<form method="post" action="registryharvest.html">
-					<input type="hidden" name="action" value="harvestother" />
-					<input type="hidden" name="registryxml">
-						<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
-					</input>
-					Havest From Date:<input type="text" name="dateFrom" value="2001-04-02" />
-					<input type="submit" name="harvest" value="Harvest" />
-				</form>
-			</xsl:if>
 	         <form method="post" action="/astrogrid-portal/mount/registry/viewregistrydata.xml">
-				<input type="hidden" name="registryXMLDoc">
-					<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
+				<input type="hidden" name="identifier">
+					<xsl:attribute name="value"><xsl:value-of select="@ident"/></xsl:attribute>
 				</input>
 				<input type="submit" name="update" value="See Full XML" />
 	 		 </form>	

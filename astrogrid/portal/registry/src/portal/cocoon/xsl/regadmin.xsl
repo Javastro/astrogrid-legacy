@@ -6,9 +6,10 @@
 
 	<xsl:param name="action" />	
 	<xsl:param name="message" />
-	<xsl:param name="authID" />
-	<xsl:param name="resKey" />	
-	<xsl:param name="ErrorMessage" />
+	<xsl:param name="registryXML" />
+	<xsl:param name="harvestResult" />		
+	<xsl:param name="addregistry" />
+	<xsl:param name="errorMessage" />
 
 	<!--+
 	    | Match the root element.
@@ -20,7 +21,7 @@
 	<!--+
 	    | Match the admin element.
 		+-->
-	<xsl:template match="registryquery">
+	<xsl:template match="harvest">
 		<page>
 			<!-- Add our page content -->
 			<content>
@@ -33,46 +34,37 @@
 	    | Generate the query form.
 	    +-->
 	<xsl:template name="regadmin_form">
-<agComponentTitle>Update the Registry</agComponentTitle>
+		<agComponentTitle>Registry Administration</agComponentTitle>
+		<b>Administration/Updates for Registry:</b><br />
 		<xsl:if test="$message != ''" >
 			<font color="blue"><xsl:value-of select="$message" /></font>
-		</xsl:if>	
-		<br />
-		<i>Updated and Created attributes will automatically be set when submitted.</i>
-		<form method="post" action="registryupdate.html" name="RegistryUpdate">
-			<xsl:if test="$action = 'add'" >
-				<input type="hidden" name="action" value="add" />
-			</xsl:if>
-			<xsl:if test="$action = 'update'" >
-				<input type="hidden" name="action" value="update" />
-			</xsl:if>
-			<table border="0" cellspacing="0" cellpadding="0">
-			<xsl:for-each select="//registryquery/regitems/regitem">
-				<tr>
-					<td>
-						<xsl:value-of select="@label"/>
-					</td>
-					<td>
-						<input>
-							<xsl:attribute name="name"><xsl:value-of select="@name"/></xsl:attribute>
-							<xsl:attribute name="value"><xsl:value-of select="@val"/></xsl:attribute>
-							<xsl:attribute name="type">text</xsl:attribute>
-							<xsl:if test="$action = 'update'" >
-								<xsl:if test="$authID = @name" >
-									<xsl:attribute name="type">hidden</xsl:attribute>
-								</xsl:if>
-								<xsl:if test="$resKey = @name" >
-									<xsl:attribute name="type">hidden</xsl:attribute>
-								</xsl:if>							
-							</xsl:if>
-						</input>
-					</td>
-				</tr>
-			</xsl:for-each>
-			</table>
 			<br />
-			<input type="submit" name="queryupdate" value="Update Registry" />
-		</form>		
+		</xsl:if>	
+		<xsl:if test="$errorMessage != ''" >
+			<font color="red"><xsl:value-of select="$errorMessage" /></font>
+			<br />
+		</xsl:if>		
+		<br />
+		<form method="post" action="registryadmin.html" name="UploadMetaData">
+			<input type="hidden" name="addmetadatafromurl" />
+			Update/Harvest from a URL:
+			<input type="text" name="metadata_url" />
+			<br />
+			<input type="submit" name="Update" value="Update" />			
+		</form>
+		<br />
+		<form method="post" action="registryadmin.html" name="UploadMetaData" enctype="multipart/form-data">
+			<input type="hidden" name="addmetadatafromfile" />
+			Update/Harvest from a local file:
+			<input type="file" name="metadata_file" />
+			<br />
+			<input type="submit" name="Update" value="Update" />
+			<br />
+			<i>The above approach is limited possible errors because of time situations.</i>
+		</form>
+		<br />
+		<br /><br />		
+		<a href="registrystatus.html">Link to Registry Status</a>
 	</xsl:template>
 
 	<!--+

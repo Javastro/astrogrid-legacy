@@ -20,7 +20,8 @@
 		<xsp:include>java.util.Set</xsp:include>
 		<xsp:include>org.apache.axis.utils.XMLUtils</xsp:include>
 		<xsp:include>org.w3c.dom.Node</xsp:include>
-		<xsp:include>org.w3c.dom.Element</xsp:include>		
+		<xsp:include>org.w3c.dom.Element</xsp:include>
+		<xsp:include>org.astrogrid.util.DomHelper</xsp:include>
 	</xsp:structure>	    
 	
 	<registryquery>
@@ -126,44 +127,29 @@
          <xsp:logic>
          <![CDATA[
             ArrayList xmlresult = (ArrayList)request.getAttribute("resultxml");
-            String xml = null;
-            if(xmlresult != null && xmlresult.size() > 0 ) {
-            iter = xmlresult.iterator();           
-            boolean update = false;
-            String description = null;
-            String title = null;
-            String identifier = null;
-            int authTemp = 0;
-            int authTemp2 = 0;
-            int resTemp = 0;
-            int resTemp2 = 0;
-            while (iter.hasNext()) {
-               xml = (String)iter.next();
-               authTemp = xml.indexOf("<AuthorityID");
-               authTemp2 = xml.indexOf("</AuthorityID>");
-               resTemp = xml.indexOf("<ResourceKey");
-               identifier = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,authTemp2);
-               authTemp2 = xml.indexOf("</Identifier>");               
-               if(xml.indexOf("</ResourceKey>") != -1 && resTemp < authTemp2 ) {
-                  identifier += "/" + xml.substring(resTemp+(xml.indexOf(">",resTemp+1)-resTemp)+1,xml.indexOf("</ResourceKey>"));
-               }
-               authTemp = xml.indexOf("<Title");
-               title = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Title>"));
-               authTemp = xml.indexOf("<Description");
-               description = "";
-               if(xml.indexOf("</Description>") != -1) {
-                 description = xml.substring(authTemp+(xml.indexOf(">",authTemp+1)-authTemp)+1,xml.indexOf("</Description>"));
-               }
+			ArrayList xmlresultNodes = (ArrayList)request.getAttribute("resultNodes");
+			if(xmlresultNodes != null && xmlresultNodes.size() > 0 ) {
+				iter = xmlresultNodes.iterator();	
+				System.out.println("the size of xmlresultnodes = " + xmlresultNodes.size());
+				Node nd = null;
+				while (iter.hasNext()) {
+					nd = (Node)iter.next();
+					String authID = DomHelper.getNodeTextValue((Element)nd,"AuthorityID","vr");
+					String resKey = DomHelper.getNodeTextValue((Element)nd,"ResourceKey","vr");
+					String identifier = authID;
+					if(resKey != null && resKey.trim().length() > 0) {
+						identifier += "/" + resKey;
+					}
+					String title = DomHelper.getNodeTextValue((Element)nd,"Title","vr");
+					String description = DomHelper.getNodeTextValue((Element)nd,"Description","vr");
          ]]>
                <xsp:element name="xmlresult">
+               	  <!--
                   <xsp:attribute name="val"><xsp:expr>xml</xsp:expr></xsp:attribute>
-                  <xsp:attribute name="update"><xsp:expr>update</xsp:expr></xsp:attribute>
+                  -->
                   <xsp:attribute name="title"><xsp:expr>title</xsp:expr></xsp:attribute>
                   <xsp:attribute name="desc"><xsp:expr>description</xsp:expr></xsp:attribute>
                   <xsp:attribute name="ident"><xsp:expr>identifier</xsp:expr></xsp:attribute>                  
-               </xsp:element>
-               <xsp:element name="testtry">
-                  <xsp:expr>xml</xsp:expr>
                </xsp:element>
          <![CDATA[
             }
@@ -171,29 +157,6 @@
          ]]>
          </xsp:logic>
       </xmlresults>
-		
-		<xmlresultnodes>
-			<xsp:logic>
-			<![CDATA[
-				ArrayList xmlresultNodes = (ArrayList)request.getAttribute("resultNodes");
-				if(xmlresultNodes != null && xmlresultNodes.size() > 0 ) {
-					iter = xmlresultNodes.iterator();	
-					System.out.println("the size of xmlresultnodes = " + xmlresultNodes.size());			
-					Node nd = null;
-					while (iter.hasNext()) {
-						nd = (Node)iter.next();
-						System.out.println("in the xsp page = " + XMLUtils.ElementToString((Element)nd));
-				]]>
-						<element><xsp:expr>nd</xsp:expr></element>
-				<![CDATA[
-					}
-				}
-			]]>
-			</xsp:logic>
-		</xmlresultnodes>
-		
-		
-		
 	</registryquery>
 	
 </xsp:page>

@@ -250,16 +250,14 @@ public class RegistryQueryAction extends AbstractAction
                   //create the results and put it in the request.
                   resultXML = createFormResults(doc,mainElem);
                   request.setAttribute("resultxml",resultXML);
-                  
-                  NodeList nl = doc.getDocumentElement().getChildNodes();
                   if (DEBUG_FLAG)
                      printDebug(method, "the Elementtostring in queryaction = " +
                            XMLUtils.ElementToString(doc.getDocumentElement()) );
                   ArrayList resultNodes = new ArrayList();
-                  resultNodes.add(doc.getDocumentElement());
-                  /*for(int i = 0;i < nl.getLength();i++) {
-                     resultNodes.add(nl.item(i)); 
-                  }*/
+                  NodeList nl = doc.getElementsByTagNameNS("*","Resource");
+                  for(int i = 0;i < nl.getLength();i++) {
+                      resultNodes.add(nl.item(i));
+                  }
                   request.setAttribute("resultNodes",resultNodes);      
                   
                   //Here are the managed authorities.

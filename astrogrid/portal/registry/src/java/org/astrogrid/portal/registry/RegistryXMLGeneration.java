@@ -25,6 +25,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.astrogrid.util.DomHelper;
 import org.astrogrid.registry.client.query.RegistryService;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
 
 public class RegistryXMLGeneration extends AbstractGenerator {
 
@@ -53,43 +54,15 @@ public class RegistryXMLGeneration extends AbstractGenerator {
     //logger.debug("[setup] endPoint: " + endPoint);
 
     try {
-      registryDocument = (Document)request.getAttribute("registryXMLDoc");
-      if(registryDocument == null) {
-         String regXML = request.getParameter("registryXMLDoc");
-         if(regXML != null) {
-            registryDocument = DomHelper.newDocument(regXML);     
-         }//if           
-      }
-      Boolean oaiAttr = (Boolean)request.getAttribute("oaiview");
-      if(oaiAttr == null) {
-         String oaiTest = request.getParameter("oaiview");
-         if(oaiTest != null && "true".equals(oaiTest)) {
-            oaiView = Boolean.valueOf(oaiTest).booleanValue();   
-         }
-      }else {
-         oaiView = oaiAttr.booleanValue();
-      }
-      if(oaiView) {
-         reqMap = (Map)request.getAttribute("oaiParams");
-         if(reqMap == null) {
-            String tok = request.getParameter("oaiParams");
-            if(tok != null) {
-               reqMap = new HashMap();
-               StringTokenizer st = new StringTokenizer(tok,",");
-               String val = null;
-               while (st.hasMoreTokens()) {
-                  val = st.nextToken();
-                  if(val != null && val.indexOf("=") != -1) {
-                     String []spl = val.split("=");
-                     reqMap.put(spl[0],spl[1]);                     
-                  }//if                  
-               }//while
-            }//if   
-         }//if
+      RegistryService rs = RegistryDelegateFactory.createQuery();
+      String ident = request.getParameter("identifier");
+      if(ident != null) {
+          registryDocument = rs.getResourceByIdentifier(ident);
       }//if
     }
     catch(Exception e) {
       registryDocument = null;
+      e.printStackTrace();
     }
   }
 
