@@ -9,8 +9,8 @@
         Browsing for Tools picks up Extraneous Material
       </action>              
     </release>
-    <release version="0.6.0" date="14/11/04">
-      <action dev="jdt" type="update" description="Iteration 6 Release">
+    <release version="0.6.0" date="14/11/04" description="Iteration 6 Release">
+      <action dev="jdt" type="update" >
         What's new in Iteration 6? - To be completed.
       </action>                   
     </release>
