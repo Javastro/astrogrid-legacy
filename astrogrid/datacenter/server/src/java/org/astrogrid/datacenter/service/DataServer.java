@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.11 2004/03/10 02:38:11 mch Exp $
+ * $Id: DataServer.java,v 1.12 2004/03/10 02:38:33 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -103,7 +103,7 @@ public class DataServer
       }
       catch (Throwable th) {
          log.error(th);
-         return exceptionAsHtml("searchCone", e);
+         return exceptionAsHtml("searchCone", th);
       }
    }
    
@@ -247,6 +247,7 @@ public class DataServer
       return exceptionAsHtml(title, th, "");
    }
 }
+
 
 
 
