@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.3 2004/01/26 17:45:50 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.4 2004/01/27 15:33:29 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -28,6 +28,7 @@ import cds.savot.model.SavotTable;
 import cds.savot.model.SavotVOTable;
 import cds.savot.model.TDSet;
 import cds.savot.model.TRSet;
+import cds.savot.model.TableSet;
 import cds.savot.samples.WriteDocument;
 
 import org.astrogrid.applications.FileReferenceParameter;
@@ -35,7 +36,7 @@ import org.astrogrid.applications.Parameter;
 import org.astrogrid.applications.commandline.CmdLineApplicationEnvironment;
 
 /**
- * Writes out a votable, by appending the results to the end of each row of the input VOTable.
+ * Writes out a votable by appending the results to the end of each row of the input VOTable.
  * @author Paul Harrison (pah@jb.man.ac.uk)
  * @version $Name:  $
  * @since iteration4.1
@@ -87,8 +88,15 @@ public class HyperZVOTableWriter {
     */
    private void internalAddToVOTable(File tmpfile) {
       SavotResource resource = (SavotResource)voTable.getResources().getItemAt(0);
+      //set some names and descriptions
       resource.setDescription("This is the ouput of running the hyperz from within the ASTROGRID job system as part of the AVO Demo Jan 2004 - Paul Harrison (pah@jb.man.ac.uk)");
+      TableSet tableSet = resource.getTables();
+      SavotTable savotTable = (SavotTable)tableSet.getItemAt(0);
+      savotTable.setName(outCat.getRawValue());
+      
       TRSet tr = resource.getTRSet(0);
+      
+      //add the new fields
       FieldSet fieldSet = resource.getFieldSet(0);
       SavotField field = new SavotField();
       field.setDescription("photometric redshift primary solution estimated by hyperz");
@@ -104,7 +112,7 @@ public class HyperZVOTableWriter {
       fieldSet.addItem(field);
       
       field = new SavotField();
-      field.setDescription("p(chi**2)");
+      field.setDescription("p(chi**2)"); 
       field.setName("pchi2");
       field.setDataType("float");
       field.setUcd("STAT_PROBABILITY");
@@ -137,7 +145,7 @@ public class HyperZVOTableWriter {
       fieldSet.addItem(field);
       
       field = new SavotField();
-      field.setDescription("the normalization factor b of equation 1 needed to minimise chi**");
+      field.setDescription("the normalization factor b of equation 1 needed to minimise chi**2");
       field.setName("normb");
       field.setDataType("float");
       fieldSet.addItem(field);
@@ -148,6 +156,12 @@ public class HyperZVOTableWriter {
        field.setDataType("float");
        fieldSet.addItem(field);
 
+      field = new SavotField();
+       field.setDescription("probability associated with the weighted mean redshift zwm");
+       field.setName("zwm_prob");
+       field.setDataType("float");
+       fieldSet.addItem(field);
+       
       field = new SavotField();
        field.setDescription("absolute magnitude");
        field.setName("mag_abs");
@@ -183,13 +197,14 @@ public class HyperZVOTableWriter {
                String[] vals = line.trim().split(" +");
                int j = Integer.parseInt(vals[0]);
                TDSet theTDs = tr.getTDSet(j-1);
-               SavotTD td = new SavotTD();
                for (int i = 1; i < 9; i++) {
+                  SavotTD td = new SavotTD();
                   td.setContent(vals[i]);
                   theTDs.addItem(td);
                   
                }
                for (int i = 15; i < 20; i++) {
+                  SavotTD td = new SavotTD();
                   td.setContent(vals[i]);
                   theTDs.addItem(td);
                   

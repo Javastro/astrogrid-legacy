@@ -67,6 +67,13 @@
 </td></tr>
 </table>
 </form>
+<h3>CDF-S Section Layout</h3>    
+<img src="ftp://archive.stsci.edu/pub/hlsp/goods/v1/h_cdfs_v1.0sects_plt.jpg" alt="CDF-S Section Layout"/>
+
+
+<h3>HDF-N Section Layout</h3>    
+<img src="ftp://archive.stsci.edu/pub/hlsp/goods/v1/h_hdfn_v1.0sects_plt.jpg" alt="HDF-N Section Layout"/>
+
 
 </body>
 </html>

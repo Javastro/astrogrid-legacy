@@ -1,5 +1,5 @@
 /*
- * $Id: DataCentreApplication.java,v 1.2 2003/12/31 00:56:18 pah Exp $
+ * $Id: DataCentreApplication.java,v 1.3 2004/01/27 15:33:29 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -29,7 +29,8 @@ public class DataCentreApplication extends AbstractApplication {
    }
 
    public boolean execute(){
-      return false;
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("DataCentreApplication.completionStatus() not implemented");
    }
    
    /* (non-Javadoc)

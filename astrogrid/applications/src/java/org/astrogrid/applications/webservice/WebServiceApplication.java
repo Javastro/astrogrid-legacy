@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplication.java,v 1.3 2003/12/31 00:56:18 pah Exp $
+ * $Id: WebServiceApplication.java,v 1.4 2004/01/27 15:33:29 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -21,6 +21,8 @@ import org.astrogrid.community.User;
 public class WebServiceApplication extends AbstractApplication {
 
 
+   
+
    /**
     * @param controller
     * @param user
@@ -31,7 +33,8 @@ public class WebServiceApplication extends AbstractApplication {
    }
 
    public boolean execute(){
-      return false;
+      // TODO Auto-generated method stub
+      throw new UnsupportedOperationException("WebServiceApplication.completionStatus() not implemented");
    }
 
    private URL url;
