@@ -607,7 +607,6 @@ public class JobFactoryImpl implements JobFactory {
 			   inserts = new Object[2] ;
 			inserts[0] = JobController.getProperty( JOBSTEP_TABLENAME ) ;
 			inserts[1] = job.getId() ;
-
 			String
 			   selectString = MessageFormat.format( JOBSTEP_SELECT_TEMPLATE, inserts ) ; 	
 			logger.debug( "Find jobsteps: " + selectString ) ;		
@@ -626,9 +625,9 @@ public class JobFactoryImpl implements JobFactory {
 					
 					jobStep = new JobStep( job ) ; 
 					
-					jobStep.setStepNumber( new Integer( rs.getString( COL_JOBSTEP_STEPNUMBER ) ) ) ;
-					jobStep.setName( rs.getString( COL_JOBSTEP_STEPNAME ) ) ;
-					jobStep.setStatus( rs.getString( COL_JOBSTEP_STATUS ) ) ;
+					jobStep.setStepNumber( new Integer( rs.getString( COL_JOBSTEP_STEPNUMBER ).trim() ) ) ;
+					jobStep.setName( rs.getString( COL_JOBSTEP_STEPNAME ).trim() ) ;
+					jobStep.setStatus( rs.getString( COL_JOBSTEP_STATUS ).trim() ) ;
 					jobStep.setComment( rs.getString( COL_JOBSTEP_COMMENT ) ) ;
 					
 					findQuery( jobStep ) ;
@@ -766,7 +765,7 @@ public class JobFactoryImpl implements JobFactory {
 		try {
 
 			Object []
-			   inserts = new Object[2] ;
+			   inserts = new Object[3] ;
 			inserts[0] = JobController.getProperty( QUERY_TABLENAME ) ;
 			inserts[1] = jobStep.getParent().getId() ;
 			inserts[2] = jobStep.getStepNumber() ;
