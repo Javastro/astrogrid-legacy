@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2003/09/03 15:43:49 $</cvs:date>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:date>$Date: 2003/09/03 16:06:01 $</cvs:date>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.6  2003/09/03 16:06:01  dave
+    |   Fixed axis wait in build.xml
+    |
     |   Revision 1.5  2003/09/03 15:43:49  dave
     |   Added extra wait to Axis reload
     |
@@ -949,7 +952,7 @@
 		+-->
 	<target name="axis.webapp.reload" depends="tomcat.tasks">
 		<!-- Wait for the Axis service -->
-		<antcall target="axis"/>
+		<antcall target="axis.wait"/>
 		<!-- Wait for the Tomcat manager -->
 		<antcall target="tomcat.manager.wait"/>
 		<!-- Reload our webapp -->
