@@ -1,4 +1,4 @@
-package org.astrogrid.registry.xquery;
+package org.astrogrid.registry.xquery
 
 import java.io.*;
 

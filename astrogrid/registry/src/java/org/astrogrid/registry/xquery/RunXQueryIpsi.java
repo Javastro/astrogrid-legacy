@@ -4,6 +4,8 @@ package org.astrogrid.registry.xquery;
 import de.gmd.ipsi.xql.*;
 import de.gmd.ipsi.domutil.*;
 import org.w3c.dom.*;
+
+
 import java.io.*;
 
 public class RunXQueryIpsi {
