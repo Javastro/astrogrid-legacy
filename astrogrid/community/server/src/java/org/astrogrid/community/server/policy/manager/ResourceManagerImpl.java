@@ -1,11 +1,18 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/ResourceManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.8 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.9 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: ResourceManagerImpl.java,v $
+ *   Revision 1.9  2004/10/29 15:50:05  jdt
+ *   merges from Community_AdminInterface (bug 579)
+ *
+ *   Revision 1.8.18.1  2004/10/15 10:13:51  KevinBenson
+ *   adding the admin interface into a jsp fashion.  Correcting a few mistakes on the other
+ *   java files.
+ *
  *   Revision 1.8  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -30,6 +37,11 @@ package org.astrogrid.community.server.policy.manager ;
 import org.apache.commons.logging.Log ;
 import org.apache.commons.logging.LogFactory ;
 
+import java.util.Vector;
+import java.util.Collection ;
+
+import org.exolab.castor.jdo.QueryResults;
+import org.exolab.castor.jdo.OQLQuery;
 import org.exolab.castor.jdo.Database;
 import org.exolab.castor.jdo.ObjectNotFoundException ;
 
@@ -324,6 +336,80 @@ public class ResourceManagerImpl
             }
         return resource ;
         }
+    
+    /**
+     * Request a list of Resources.
+     * @return An array of ResourceData objects.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Return empty array rather than null.
+     *
+     */
+    public Object[] getResources()
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("ResourceManagerImpl.getResources()") ;
+        //
+        // Try to query the database.
+        Object[] array    = null ;
+        Database database = null ;
+        try {
+            //
+            // Open our database connection.
+            database = this.getDatabase() ;
+            //
+            // Begin a new database transaction.
+            database.begin();
+            //
+            // Create our OQL query.
+            OQLQuery query = database.getOQLQuery(
+                "SELECT resources FROM org.astrogrid.community.common.policy.data.ResourceData resources"
+                );
+            //
+            // Execute our query.
+            QueryResults results = query.execute();
+            //
+            // Transfer our results to a vector.
+            Collection collection = new Vector() ;
+            while (results.hasMore())
+                {
+                collection.add(
+                    (ResourceData)results.next()
+                    ) ;
+                }
+            //
+            // Convert it into an array.
+            array = collection.toArray() ;
+            //
+            // Commit the transaction.
+            database.commit() ;
+            }
+        //
+        // If anything went bang.
+        catch (Exception ouch)
+            {
+            //
+            // Log the exception.
+            logException(ouch, "ResourceManagerImpl.getResources()") ;
+            //
+            // Set the response to null.
+            array = null ;
+            //
+            // Cancel the database transaction.
+            rollbackTransaction(database) ;
+            }
+        //
+        // Close our database connection.
+        finally
+            {
+            closeConnection(database) ;
+            }
+        //
+        // Return the array.
+        return array ;
+        }
+   
+    
 
     /**
      * Delete a Resource object.

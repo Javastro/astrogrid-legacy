@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/webapp/maven.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/09/17 06:57:10 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     | <cvs:log>
     |   $Log: maven.xml,v $
+    |   Revision 1.18  2004/10/29 15:50:05  jdt
+    |   merges from Community_AdminInterface (bug 579)
+    |
+    |   Revision 1.17.16.1  2004/10/15 10:13:51  KevinBenson
+    |   adding the admin interface into a jsp fashion.  Correcting a few mistakes on the other
+    |   java files.
+    |
     |   Revision 1.17  2004/09/17 06:57:10  dave
     |   Added commons logging to FileStore.
     |   Updated logging properties in Community.
@@ -300,15 +307,17 @@
         </ant:copy>
         <!--+
             | Patch the web.xml to fix the DTD
-            +-->
+			Now gets replaced anyways
         <ant:replace
             token="web-app_2.2.dtd"
             value="web-app_2_2.dtd"
             file="${axisDir}/WEB-INF/web.xml"/>
+            +-->            
         <!--+
             | Validate our existing web.xml
-            +-->
+           
 		<ant:xmlvalidate file="${axisDir}/WEB-INF/web.xml"/>
+		 +-->
     </postGoal>
 
     <!--+

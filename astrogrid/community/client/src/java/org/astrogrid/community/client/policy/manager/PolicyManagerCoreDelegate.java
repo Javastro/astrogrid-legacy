@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/client/src/java/org/astrogrid/community/client/policy/manager/PolicyManagerCoreDelegate.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.9 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.10 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: PolicyManagerCoreDelegate.java,v $
+ *   Revision 1.10  2004/10/29 15:50:05  jdt
+ *   merges from Community_AdminInterface (bug 579)
+ *
+ *   Revision 1.9.18.1  2004/10/18 22:10:28  KevinBenson
+ *   some bug fixes to the PermissionManager.  Also made it throw some exceptions.
+ *   Made  it and GroupManagerImnpl use the Resolver objects to actually get a group(PermissionManageriMnpl)
+ *   or account (GroupMember) from the other community.  Changed also for it to grab a ResourceData from the
+ *   database to verifity it is in our database.  Add a few of these resolver dependencies as well.
+ *   And last but not least fixed the GroupMemberData object to get rid of a few set methods so Castor
+ *   will now work correctly in Windows
+ *
  *   Revision 1.9  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -884,6 +895,7 @@ public class PolicyManagerCoreDelegate
      *
      */
     public PolicyPermission addPermission(String resource, String group, String action)
+        throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         PolicyPermission result = null ;
         //
@@ -971,6 +983,7 @@ public class PolicyManagerCoreDelegate
      *
      */
     public boolean delPermission(String resource, String group, String action)
+       throws CommunityServiceException, CommunityIdentifierException, CommunityPolicyException
         {
         boolean result = false ;
         //

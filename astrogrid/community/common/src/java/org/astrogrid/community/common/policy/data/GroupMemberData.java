@@ -1,11 +1,22 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/common/src/java/org/astrogrid/community/common/policy/data/GroupMemberData.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
- * <cvs:version>$Revision: 1.6 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.7 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupMemberData.java,v $
+ *   Revision 1.7  2004/10/29 15:50:05  jdt
+ *   merges from Community_AdminInterface (bug 579)
+ *
+ *   Revision 1.6.88.1  2004/10/18 22:10:28  KevinBenson
+ *   some bug fixes to the PermissionManager.  Also made it throw some exceptions.
+ *   Made  it and GroupManagerImnpl use the Resolver objects to actually get a group(PermissionManageriMnpl)
+ *   or account (GroupMember) from the other community.  Changed also for it to grab a ResourceData from the
+ *   database to verifity it is in our database.  Add a few of these resolver dependencies as well.
+ *   And last but not least fixed the GroupMemberData object to get rid of a few set methods so Castor
+ *   will now work correctly in Windows
+ *
  *   Revision 1.6  2004/07/14 13:50:07  dave
  *   Merged development branch, dave-dev-200406301228, into HEAD
  *
@@ -78,12 +89,12 @@ public class GroupMemberData
     /**
      * Access to our Account ident.
      *
-     */
+  
     public void setAccount(CommunityIdent value)
         {
         this.account = (null != value) ? value.toString() : null ;
         }
-
+   */
     /**
      * Our Group ident.
      *
@@ -111,10 +122,11 @@ public class GroupMemberData
     /**
      * Access to our Group ident.
      *
-     */
+     
     public void setGroup(CommunityIdent value)
         {
         this.group = (null != value) ? value.toString() : null ;
         }
+        */        
 
     }

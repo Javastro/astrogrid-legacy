@@ -2,11 +2,18 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/config/database/astrogrid-community-database.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/14 13:50:07 $</cvs:date>
-    | <cvs:version>$Revision: 1.4 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.5 $</cvs:version>
     | <cvs:log>
     |   $Log: astrogrid-community-database.xml,v $
+    |   Revision 1.5  2004/10/29 15:50:05  jdt
+    |   merges from Community_AdminInterface (bug 579)
+    |
+    |   Revision 1.4.88.1  2004/10/15 10:13:51  KevinBenson
+    |   adding the admin interface into a jsp fashion.  Correcting a few mistakes on the other
+    |   java files.
+    |
     |   Revision 1.4  2004/07/14 13:50:07  dave
     |   Merged development branch, dave-dev-200406301228, into HEAD
     |
@@ -21,10 +28,11 @@
     |
     | </cvs:log>
     |
-    +-->
+    
 <!DOCTYPE databases PUBLIC
     "-//EXOLAB/Castor JDO Configuration DTD Version 1.0//EN"
     "http://castor.exolab.org/jdo-conf.dtd">
+    +-->
 <!--+
     | Template for our local database configuration(s).
     | For the WebApp, this should be replaced by a JNDI property.

@@ -1,11 +1,26 @@
 /*
  * <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/src/java/org/astrogrid/community/server/policy/manager/Attic/GroupManagerImpl.java,v $</cvs:source>
- * <cvs:author>$Author: dave $</cvs:author>
- * <cvs:date>$Date: 2004/09/16 23:18:08 $</cvs:date>
- * <cvs:version>$Revision: 1.10 $</cvs:version>
+ * <cvs:author>$Author: jdt $</cvs:author>
+ * <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+ * <cvs:version>$Revision: 1.11 $</cvs:version>
  *
  * <cvs:log>
  *   $Log: GroupManagerImpl.java,v $
+ *   Revision 1.11  2004/10/29 15:50:05  jdt
+ *   merges from Community_AdminInterface (bug 579)
+ *
+ *   Revision 1.10.18.2  2004/10/18 22:10:28  KevinBenson
+ *   some bug fixes to the PermissionManager.  Also made it throw some exceptions.
+ *   Made  it and GroupManagerImnpl use the Resolver objects to actually get a group(PermissionManageriMnpl)
+ *   or account (GroupMember) from the other community.  Changed also for it to grab a ResourceData from the
+ *   database to verifity it is in our database.  Add a few of these resolver dependencies as well.
+ *   And last but not least fixed the GroupMemberData object to get rid of a few set methods so Castor
+ *   will now work correctly in Windows
+ *
+ *   Revision 1.10.18.1  2004/10/15 10:13:51  KevinBenson
+ *   adding the admin interface into a jsp fashion.  Correcting a few mistakes on the other
+ *   java files.
+ *
  *   Revision 1.10  2004/09/16 23:18:08  dave
  *   Replaced debug logging in Community.
  *   Added stream close() to FileStore.
@@ -42,18 +57,22 @@ import org.exolab.castor.jdo.DuplicateIdentityException ;
 import org.exolab.castor.persist.spi.Complex ;
 
 import org.astrogrid.community.common.policy.data.GroupData ;
+import org.astrogrid.community.common.policy.data.AccountData ;
 import org.astrogrid.community.common.policy.data.GroupMemberData ;
 
 import org.astrogrid.community.common.ivorn.CommunityIvornParser ;
 
 import org.astrogrid.community.common.policy.manager.GroupManager ;
-
+import org.astrogrid.community.resolver.CommunityAccountResolver;
 import org.astrogrid.community.server.service.CommunityServiceImpl ;
 import org.astrogrid.community.server.database.configuration.DatabaseConfiguration ;
 
 import org.astrogrid.community.common.exception.CommunityPolicyException     ;
 import org.astrogrid.community.common.exception.CommunityServiceException    ;
 import org.astrogrid.community.common.exception.CommunityIdentifierException ;
+import org.astrogrid.community.resolver.exception.CommunityResolverException ;
+
+import org.astrogrid.registry.RegistryException;
 
 /**
  * Server side implementation of the GroupManager service.
@@ -641,7 +660,7 @@ public class GroupManagerImpl
             //
             // Create our OQL query.
             OQLQuery query = database.getOQLQuery(
-                "SELECT groups FROM org.astrogrid.community.policy.data.GroupData groups"
+                "SELECT groups FROM org.astrogrid.community.common.policy.data.GroupData groups"
                 );
 //
 // TODO
@@ -655,7 +674,7 @@ public class GroupManagerImpl
             Collection collection = new Vector() ;
             while (results.hasMore())
                 {
-                collection.add(results.next()) ;
+                collection.add((GroupData)results.next()) ;
                 }
             //
             // Convert it into an array.
@@ -756,6 +775,25 @@ public class GroupManagerImpl
                 "Null group"
                 ) ;
             }
+        
+        //Checking if this account actually exists
+        CommunityAccountResolver car = new CommunityAccountResolver();
+        AccountData ad = null;
+        
+        try {
+            ad = car.resolve(account);
+        }catch(CommunityResolverException cre) {
+            throw new CommunityServiceException(
+                    "Could not resolve account = " + account,
+                    cre
+                    ) ;
+        }catch(RegistryException re) {
+            throw new CommunityServiceException(
+                    "Could not resolve account = " + account,
+                    re
+                    ) ;            
+        }
+        
 //
 // Check the group isn't an account group.
 //
@@ -767,8 +805,8 @@ public class GroupManagerImpl
             // Create our new GroupMemberData.
             GroupMemberData member = new GroupMemberData() ;
             member.setAccount(
-                account.getAccountIdent()
-                ) ;
+                ad.getIdent()
+                ) ;                //account.getAccountIdent()
             member.setGroup(
                 group.getAccountIdent()
                 ) ;
@@ -1192,8 +1230,9 @@ public class GroupManagerImpl
                 database.begin();
                 //
                 // Create our OQL query.
+                 
                 OQLQuery query = database.getOQLQuery(
-                    "SELECT members FROM org.astrogrid.community.policy.data.GroupMemberData members WHERE members.group = $1"
+                    "SELECT members FROM org.astrogrid.community.common.policy.data.GroupMemberData members WHERE members.group = $1"
                     );
                 //
                 // Bind the query param.
@@ -1206,7 +1245,7 @@ public class GroupManagerImpl
                 Collection collection = new Vector() ;
                 while (results.hasMore())
                     {
-                    collection.add(results.next()) ;
+                    collection.add((GroupMemberData)results.next()) ;
                     }
                 // 
                 // Convert it into an array.
@@ -1252,6 +1291,90 @@ public class GroupManagerImpl
             }
         return array;
         }
+    
+    /**
+     * Request a list of Group Members.
+     * @param group The Group identifier.
+     * @return An array of GroupMemberData objects.
+     * @throws CommunityIdentifierException If one of the identifiers is not valid.
+     * @throws CommunityPolicyException If the group is not local.
+     * @throws CommunityServiceException If there is an internal error in the service.
+     * @todo Return empty array rather than null.
+     *
+     */
+    public Object[] getGroupMembers()
+        throws CommunityServiceException, CommunityPolicyException, CommunityIdentifierException
+        {
+        log.debug("") ;
+        log.debug("----\"----") ;
+        log.debug("GroupManagerImpl.getGroupMembers()") ;
+        //log.debug("  group    : " + group) ;
+        //
+        // Check for null group.
+        Object[] array    = null ;
+        Database database = null ;
+        try {
+                //
+                // Open our database connection.
+                database = this.getDatabase() ;
+                //
+                // Begin a new database transaction.
+                database.begin();
+                //
+                // Create our OQL query.
+                OQLQuery query = database.getOQLQuery(
+                    "SELECT members FROM org.astrogrid.community.common.policy.data.GroupMemberData members"
+                    );
+                //
+                // Bind the query param.
+                //query.bind(group.getAccountIdent()) ;
+                //
+                // Execute our query.
+                QueryResults results = query.execute();
+                //
+                // Transfer our results to a vector.
+                Collection collection = new Vector() ;
+                while (results.hasMore())
+                    {
+                    collection.add((GroupMemberData)results.next()) ;
+                    }
+                // 
+                // Convert it into an array.
+                array = collection.toArray() ;
+                //
+                // Commit the transaction.
+                database.commit() ;
+                }
+            //
+            // If anything went bang.
+            catch (Exception ouch)
+                {
+                //
+                // Log the exception.
+                logException(
+                    ouch,
+                    "GroupManagerImpl.getGroupMembers()"
+                    ) ;
+                //
+                // Cancel the database transaction.
+                rollbackTransaction(database) ;
+                //
+                // Throw a new Exception.
+                throw new CommunityServiceException(
+                    "Database transaction failed",
+                    ouch
+                    ) ;
+                }
+            //
+            // Close our database connection.
+            finally
+                {
+                closeConnection(database) ;
+                }
+        return array;
+    }
+    
+    
 
     /**
      * Request a list of Groups that an Account belongs to.

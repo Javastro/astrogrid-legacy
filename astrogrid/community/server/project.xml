@@ -2,11 +2,22 @@
 <!--+
     |
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/community/server/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: dave $</cvs:author>
-    | <cvs:date>$Date: 2004/07/27 13:41:17 $</cvs:date>
-    | <cvs:version>$Revision: 1.17 $</cvs:version>
+    | <cvs:author>$Author: jdt $</cvs:author>
+    | <cvs:date>$Date: 2004/10/29 15:50:05 $</cvs:date>
+    | <cvs:version>$Revision: 1.18 $</cvs:version>
     | <cvs:log>
     |   $Log: project.xml,v $
+    |   Revision 1.18  2004/10/29 15:50:05  jdt
+    |   merges from Community_AdminInterface (bug 579)
+    |
+    |   Revision 1.17.66.1  2004/10/18 22:10:28  KevinBenson
+    |   some bug fixes to the PermissionManager.  Also made it throw some exceptions.
+    |   Made  it and GroupManagerImnpl use the Resolver objects to actually get a group(PermissionManageriMnpl)
+    |   or account (GroupMember) from the other community.  Changed also for it to grab a ResourceData from the
+    |   database to verifity it is in our database.  Add a few of these resolver dependencies as well.
+    |   And last but not least fixed the GroupMemberData object to get rid of a few set methods so Castor
+    |   will now work correctly in Windows
+    |
     |   Revision 1.17  2004/07/27 13:41:17  dave
     |   Merged development branch, dave-dev-200407261230, into HEAD
     |
@@ -170,6 +181,44 @@
             <type>jar</type>
             <url>http://www.hsqldb.org/</url>
         </dependency>
+    	
+        <!--+
+            | The Registry common classes.
+            +-->
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-registry-common</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>    	
+    	
+        <!--+
+            | The Community resolver components.
+            +-->
+        <dependency>
+            <groupId>org.astrogrid</groupId>
+            <artifactId>astrogrid-community-resolver</artifactId>
+	        <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+        </dependency>
+    	
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>astrogrid-community-client</artifactId>
+            <version>${pom.currentVersion}</version>
+            <type>jar</type>
+            <url>http://www.astrogrid.org/</url>
+            <properties>
+                <jar.fileset>true</jar.fileset>
+            </properties>
+        </dependency>    	
+        	
+    	
         <!--+
             | The JConfig jars.
         <dependency>
