@@ -57,6 +57,21 @@ The end point for this service is: <%=serviceURL%>
 Return to the <a href="functions.html">MySpace Service Test</a> page.
 </p>
 
+<hr>
+
+<h2>Notes</h2>
+
+<p>
+This function will fail if a user with the specified user and community
+identifiers already exists.  If you get an unexpected failure use the
+full-form query function to check whether a user with the specified
+identifiers already exists.
+</p>
+
+<p>
+Return to the <a href="functions.html">MySpace Service Test</a> page.
+</p>
+
 </body>
 </html>
 
