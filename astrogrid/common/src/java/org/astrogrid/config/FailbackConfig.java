@@ -1,5 +1,5 @@
 /*
- * $Id: FailbackConfig.java,v 1.6 2004/03/03 16:51:10 mch Exp $
+ * $Id: FailbackConfig.java,v 1.7 2004/03/03 16:56:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -258,11 +258,11 @@ public class FailbackConfig extends Config {
             }
          }
          
-         //well we haven't found one anywhere...
-         //well we haven't found one anywhere...
+         //well we haven't found one anywhere - this may not be an error (as none may be desired) but
+         //it should be reported...
          log.warn("No configuration file found; make sure "+configFilename+" is in your classpath, "+
-                     "or use the JNDI key "+propertyUrlKey+" to specify it's location as a URL, "+
-                     "or use the JNDI key "+propertyKey+" to specify it's file location");
+                     "or set the JNDI key "+propertyUrlKey+" to it's URL, "+
+                     "or set the JNDI key "+propertyKey+" to it's file location");
       }
    }
    
@@ -437,6 +437,9 @@ public class FailbackConfig extends Config {
 }
 /*
 $Log: FailbackConfig.java,v $
+Revision 1.7  2004/03/03 16:56:46  mch
+minor comment change
+
 Revision 1.6  2004/03/03 16:51:10  mch
 Added dumpConfig
 
@@ -468,6 +471,7 @@ Revision 1.2  2004/02/17 03:54:35  mch
 Nughtily large number of fixes for demo
 
  */
+
 
 
 
