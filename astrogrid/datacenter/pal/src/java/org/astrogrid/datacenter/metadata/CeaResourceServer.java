@@ -1,5 +1,5 @@
 /*
- * $Id: CeaResourceServer.java,v 1.4 2004/10/25 13:14:19 jdt Exp $
+ * $Id: CeaResourceServer.java,v 1.5 2004/10/29 18:30:26 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -140,7 +140,7 @@ public class CeaResourceServer implements VoResourcePlugin {
       XmlTagPrinter manappTag = servType.newTag("cea:ManagedApplications");
       XmlTagPrinter appRefTag = manappTag.newTag("cea:ApplicationReference");
       appRefTag.writeTag("AuthorityID", SimpleConfig.getSingleton().getString("datacenter.authorityId"));
-      appRefTag.writeTag("ResourceKey", SimpleConfig.getSingleton().getString("datacenter.resourceKey"));
+      appRefTag.writeTag("ResourceKey", SimpleConfig.getSingleton().getString("datacenter.resourceKey")+"/ceaApplication");
 
       /*
       <vr:Capability>
