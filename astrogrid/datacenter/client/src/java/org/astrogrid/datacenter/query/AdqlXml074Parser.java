@@ -1,5 +1,5 @@
 /*
- * $Id: AdqlXml074Parser.java,v 1.6 2004/11/03 00:17:56 mch Exp $
+ * $Id: AdqlXml074Parser.java,v 1.7 2004/11/08 13:03:18 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -322,7 +322,7 @@ public class AdqlXml074Parser  {
       NodeList pointElements = centerElement.getElementsByTagName("double");
       assert pointElements.getLength() == 2 : "Should be two <double> elements specifying the center in the Region";
       double ra  = Double.parseDouble(DomHelper.getValue( (Element) pointElements.item(0) ));
-      double dec = Double.parseDouble(DomHelper.getValue( (Element) pointElements.item(0) ));
+      double dec = Double.parseDouble(DomHelper.getValue( (Element) pointElements.item(1) ));
       
       Element radiusElement = DsaDomHelper.getSingleChildByTagName(region, "Radius");
       double radius = Double.parseDouble(DomHelper.getValue(radiusElement));
@@ -333,6 +333,9 @@ public class AdqlXml074Parser  {
 }
 /*
  $Log: AdqlXml074Parser.java,v $
+ Revision 1.7  2004/11/08 13:03:18  mch
+ Fix to pick up right DEC from region arg
+
  Revision 1.6  2004/11/03 00:17:56  mch
  PAL_MCH Candidate 2 merge
 
