@@ -3,7 +3,7 @@
    <head>
       <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
       <title>
-         AstroGrid Portal  - Registry Browser Help
+         AstroGrid Portal  - Registry Admin
       </title>
    </head>
    <body>
@@ -23,7 +23,7 @@
                      </font> 
                   <br>
                      <font size="+3" face="arial, helvetica, sans-serif">
-                     	Registry Browser Help
+                     	Registry Admin
                      </font>
                   <br>
                </td>
@@ -48,7 +48,9 @@
                <td style="background-color: rgb(204,204,204); width: 140px;">
                   <a href="index.html"><br> <b>Home</b></a>
                   <br><br>
-                  <i><b>Browse Registry</b></i>
+                  <i><b>Registry Admin</b></i>
+                  <br><br>
+                  <a href="agregistry.html"><b>Browse Registry</b></a>
                   <br><br>
                   <a href="agregadmin.html"><b>Registry Admin</b></a>
                   <br><br>
@@ -72,20 +74,84 @@
                            <td width="0" height="0" colspan="0" rowspan="0" 
                            	 style="color: white; font-family: arial, helvetica, sans-serif; 
                            	 font-weight: bold; height: 30px; width: 200px; ">
-                                 <a href="agregistry.html" style="color: #FFFFFF; ">Browse Registry</a>
+                                 Registry Admin
                            </td>
                            <td width="0" height="0" colspan="0" rowspan="0" 
                            	 style="color: white; font-family: arial, helvetica, sans-serif; 
                            	 font-weight: bold; height: 30px; width: 200px; ">
-                                 Help
+                                 <a href="agregistryhelp.html" style="color: #FFFFFF; ">Help</a>
                            </td>
                            <td>
                            </td>
                         </tr>
                         <tr align="left" valign="top">
                            <td style="rowspan="1" colspan="3">
-                              Real  pages go here 
-                           </td>
+                             <!-- Real  pages go here --> 
+
+ <hr/>
+
+ <form method="POST" action="registry/update">
+  <h1>Registry Administration</h1>
+   <table>
+     <tr><td>User Name: </td>
+         <td><input name="User" type="TEXT"/></td></tr>
+              <tr><td>Certificate: </td>
+         <td><input name="Certificate" type="TEXT"/></td></tr>
+   </table>
+   <input type="SUBMIT" name="Add" value="Add"/>
+   <input type="SUBMIT" name="Edit" value="Edit"/>
+   <input type="SUBMIT" name="Delete" value="Delete"/>
+   <input type="RESET"/>
+   <hr/>
+   <input type="hidden" name="QueryType" value="all"/>
+   <p>
+   <input name="Element1" type="TEXT" value="shortName"/> 
+   <select name="Operator1" value="EQ">
+     <optgroup>
+       <option>EQ</option>
+       <option>NE</option>
+       <option>GT</option>
+       <option>GE</option>
+       <option>LT</option>
+       <option>LE</option>
+     </optgroup>
+   </select>
+   <input name="Value1" type="TEXT" value=""/>
+   <br/>
+   <select name="Seperator1" value="">
+     <optgroup>
+       <option></option>
+       <option>AND</option>
+       <option>OR</option>
+       <option>NOT</option>
+     </optgroup>
+   </select>
+   <br/> 
+   <input name="Element2" type="TEXT" value=""/> 
+   <select name="Operator2" value="">
+     <optgroup>
+       <option></option>
+       <option>EQ</option>
+       <option>NE</option>
+       <option>GT</option>
+       <option>GE</option>
+       <option>LT</option>
+       <option>LE</option>
+     </optgroup>
+   </select>
+   <input name="Value2" type="TEXT" value=""/>
+   <p> 
+   Enter Web Server:
+   <select name="WebServer" value="Rutherford">
+       <optgroup label="Web Servers">
+	        <option value="axis://143.210.36.175:8080"> Leicester </option>
+	        <option value="axis://msslxy.mssl.ucl.ac.uk:8080"> MSSL </option>
+       </optgroup>
+   </select>
+   </p>
+  </form> 
+                             <!-- End of - Real  pages go here --> 
+                              </td>
                         </tr>
                      </tbody>
                   </table>

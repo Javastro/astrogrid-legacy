@@ -2,7 +2,6 @@
 <html>
    <head>
       <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-      <meta http-equiv="pragma" content="no-cache">
       <title>
          AstroGrid Portal  - Registry Browser
       </title>
@@ -13,7 +12,7 @@
          <tbody>
             <tr align="center" valign="middle">
                <td style="height: 100px; width: 140px;">
-                  <a href="http://www.astrogrid.org">
+                  <a href="www.astrogrid.org">
                   	<img src="aglogo.png" title="AstroGrid Home" alt="" 
                   		  style="border: 0px solid ; width: 140px; height: 100px;"> 
                   </a>
@@ -51,11 +50,11 @@
                   <br><br>
                   <i><b>Browse Registry</b></i>
                   <br><br>
+                  <a href="agregadmin.html"><b>Registry Admin</b></a>
+                  <br><br>
                   <a href="agdataquery.html"><b>Data Query</b></a>
                   <br><br>
                   <a href="agmyspace.html"><b>Browse MySpace</b></a>
-                  <br><br>
-                  <a href="agadministration.html"><b>Admin</b></a>
                   <br><br>
                   <a href="agjobmonitor.html"><b>Job Monitor</b></a>
                   <br><br>
@@ -72,42 +71,54 @@
                         <tr align="center" valign="middle" bgcolor="#000000">
                            <td width="0" height="0" colspan="0" rowspan="0" 
                            	 style="color: white; font-family: arial, helvetica, sans-serif; 
-                           	 font-size-adjust: +2; font-weight: bold; height: 30px; width: 200px; ">
+                           	 font-weight: bold; height: 30px; width: 200px; ">
                                  Browse Registry
                            </td>
                            <td width="0" height="0" colspan="0" rowspan="0" 
                            	 style="color: white; font-family: arial, helvetica, sans-serif; 
-                           	 font-size-adjust: +2; font-weight: bold; height: 30px; width: 200px; ">
+                           	 font-weight: bold; height: 30px; width: 200px; ">
                                  <a href="agregistryhelp.html" style="color: #FFFFFF; ">Help</a>
                            </td>
                            <td>
                            </td>
                         </tr>
                         <tr align="left" valign="top">
-                           <td rowspan="1" colspan="3">
+                           <td style="rowspan="1" colspan="3">
                              <!-- Real  pages go here --> 
- <form method="POST" action="agregistry.xsp">
+   <form method="POST" action="registry/action">
+   
+   <h1>Simple Registry Query</h1>
    <p>
-   Check a Registry Query Type:
+   Check a Registry Query Type and enter any parameters below:
    </p>
-   <input type="RADIO" name="QueryType", value="all">
-      List All Metadata
+   <input type="RADIO" name="QueryType", value="queryServices">
+      Query Services
    <br/>
-   <input type="RADIO" name="QueryType" value="identity" checked>
-      List Identity Metadata
+   <input type="RADIO" name="QueryType" value="listAllServices" checked>
+      List All Services
    <br/>
-   <input type="RADIO" NAME="QueryType" value="curation">
-      List Identity and Curation Metadata
+   <input type="RADIO" NAME="QueryType" value="listServiceMetadata">
+      List Service Metadata
    <br/>
-   <input type="RADIO" NAME="QueryType" value="content">
-      List Identity and Contents Metadata
+   <input type="RADIO" NAME="QueryType" value="listRegistryMetadata">
+      List Registry Metadata
    <br/>
-   <input type="RADIO" NAME="QueryType" value="serviceMetadataConcepts">
-      List Identity and Service Metadata Concepts Metadata
+   <input type="RADIO" NAME="QueryType" value="listServiceMetadataFormat">
+      List Services Metadata Format
    <p>
-   And enter other query details below:
-   <br/>
-   <input name="Element1" type="TEXT" value="ticker"/> 
+     Element: <input name="Element" type="TEXT" value="shortName">
+     Element Value: <input name="Value" type="TEXT" value="all">
+     <input type="SUBMIT" value="Submit"> 
+   </p>
+ </form>
+
+ <hr/>
+
+ <form method="POST" action="action.xsp">
+  <h1>More advanced Registry Query with conditions</h1>
+  <p>Type a Registry Query in the boxes below (one or two conditions):
+   </p>
+   <input name="Element1" type="TEXT" value="shortName"/> 
    <select name="Operator1" value="EQ">
      <optgroup>
        <option>EQ</option>
@@ -142,15 +153,16 @@
      </optgroup>
    </select>
    <input name="Value2" type="TEXT" value=""/>
-   </p><p> 
+   <p> 
    Enter Web Server:
    <select name="WebServer" value="Rutherford">
        <optgroup label="Web Servers">
-	        <option> MSSL </option>
-	        <option> Rutherford </option>
+	        <option value="axis://143.210.36.175:8080"> Leicester </option>
+	        <option value="axis://msslxy.mssl.ucl.ac.uk:8080"> MSSL </option>
+	        <option value="axis://stargrid1.bnsc.rl.ac.uk:8080"> Rutherford </option>
        </optgroup>
    </select>
-   <input type="SUBMIT" name="submitquery" value="Submit"/>
+   <input type="SUBMIT" name="submitupdate" value="Submit"/>
    </p>
   </form> 
                              <!-- End of - Real  pages go here --> 
@@ -166,7 +178,7 @@
                <td align="center" style="color: #FF9900; font-size-adjust: -2; width: 140px;">
                   	Member of the
                   <br>
-                  <a href="http://www.ivoa.net">
+                  <a href="www.ivoa.net">
                   	<img src="ivoalogo.png" title="IVOA Alliance" alt="IVOA Alliance" 
                   		  style="border: 0px solid ; width: 140px; height: 77px;"> 
                   </a>

@@ -80,6 +80,40 @@
             <map:redirect-to uri="aglogin.html"/>
          </map:match>
 
+         <!-- Registry browser and admin pages -->
+         <map:match pattern="registry/**">
+            <map:mount uri-prefix="registry" src="registry/sitemap.xmap"  check-reload="yes" reload-method="synchron"/>
+         </map:match>
+
+         <map:match pattern="agregistry.html">
+              <map:generate src="registry/xsp/browse.xsp" type="serverpages"/>
+              <map:transform src="registry/xsl/browse.xsl"/>
+ 
+            <map:transform src="common/xsl/astrogrid.xsl" label="003">
+               <!-- Add the rest of the page names -->
+               <map:parameter name="current-page"  value="agcredentials.html"/>
+               <map:parameter name="query-page"    value="agdataquery.html"/>
+               <map:parameter name="myspace-page"  value="agmyspace.html"/>
+               <map:parameter name="home-page"     value="agindex.html"/>
+               <map:parameter name="help-page"     value="agdataqueryhelp.html"/>
+               <map:parameter name="title-name"    value="Credentials"/>               
+               <map:parameter name="registry-page" value="agregistry.html"/>
+               <map:parameter name="regadmin-page" value="agregadmin.html"/>
+               <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+               <map:parameter name="tools-page"    value="agtools.html"/>
+               <map:parameter name="admin-page"    value="agadministration.html"/>
+               <map:parameter name="logout-page"   value="aglogout.html"/>
+            </map:transform>
+              <map:serialize type="html"/>
+         </map:match>
+
+         <map:match pattern="agregadmin.html">
+              <map:generate src="registry/xsp/admin.xsp" type="serverpages"/>
+              <map:transform src="registry/xsl/admin.xsl"/>
+              <map:serialize type="html"/>
+         </map:match>
+
+
          <map:match pattern="aglogin.html">
          	<map:act type="astrogrid-login">
                <map:generate src="common/xsp/login.xsp" type="serverpages" label="000, 001"/>         	
@@ -194,19 +228,6 @@
 
             <map:match pattern="agtemplate.xsl">
                <map:redirect-to uri="xsl/agtemplate.xsl"/>
-            </map:match>
-
-            <map:match pattern="action">
-               <map:generate type="serverpages" src="registry/xsp/action.xsp"/>
-               <map:serialize type="xml"/>
-            </map:match>
-            <map:match pattern="adminaction">
-               <map:generate type="serverpages" src="registry/xsp/adminaction.xsp"/>
-               <map:serialize type="xml"/>
-            </map:match>
-            <map:match pattern="update">
-               <map:generate type="serverpages" src="registry/xsp/update.xsp"/>
-               <map:serialize type="xml"/>
             </map:match>
                         
 
