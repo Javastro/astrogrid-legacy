@@ -1,5 +1,5 @@
 /*
- * $Id: VoSpaceResolver.java,v 1.8 2004/03/25 13:13:43 KevinBenson Exp $
+ * $Id: VoSpaceResolver.java,v 1.9 2004/03/31 16:43:04 KevinBenson Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -10,16 +10,22 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.User;
 import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.Msrl;
 import org.astrogrid.store.delegate.StoreDelegateFactory;
 
+
 import org.astrogrid.registry.client.query.RegistryService;
-//import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.registry.client.RegistryDelegateFactory;
+import org.astrogrid.community.resolver.CommunityAccountSpaceResolver;
+import org.astrogrid.community.common.ivorn.CommunityIvornParser;
+
 /**
  * A VoSpaceResolver is used to resolve actual locations from IVORNs to any
  * storepoints anywhere on the Virtual Observatory.
@@ -38,9 +44,11 @@ import org.astrogrid.registry.client.query.RegistryService;
 public class VoSpaceResolver {
    
    private static RegistryService registry = null;
-//   private static CommunityAccountSpaceResolver community = null;
+   private static CommunityAccountSpaceResolver community = null;
 
    private static Log log = LogFactory.getLog(VoSpaceResolver.class);
+   
+   private static final String VOSPACE_CLASS_RESOURCE_KEY_LOOKUP = "org.astrogrid.store.myspace.MyspaceMgr";   
    
    /**
     * Given an IVO Resource Name, resolves the AGSL
@@ -55,13 +63,19 @@ public class VoSpaceResolver {
       Agsl agsl = null;
       
       //look up in config first
-      String s = SimpleConfig.getSingleton().getString(ivorn.toRegistryString(), null);
+      String s = SimpleConfig.getSingleton().getString(ivorn.getPath(), null);
       if (s != null) {
          agsl = new Agsl(s);
       }
 
       if (agsl == null) {
-         agsl = registryResolve(ivorn);
+         try {
+            agsl = registryResolve(ivorn);
+         }catch(ResolverException re) {
+            re.printStackTrace();
+            agsl = null;
+         }
+         
       }
       
       if (agsl == null) {
@@ -108,6 +122,7 @@ public class VoSpaceResolver {
        * real registry resolving *
        */
       //lazy load registry delegate - also more robust in case it doesn't instantiate
+      System.out.println("entered registry resolve");
       if (registry == null) {
          try {
             makeRegistryDelegate();
@@ -120,7 +135,29 @@ public class VoSpaceResolver {
       if (registry != null) {
          try {
             //look in registry
-            return new Agsl(registry.getEndPointByIdentifier(ivorn.toRegistryString()));
+            CommunityIvornParser ci = new CommunityIvornParser(ivorn);
+            System.out.println("the commname = " + ci.getCommunityName());
+            System.out.println("the account name = " + ci.getAccountName());
+            System.out.println("the remainder = " + ci.getRemainder());
+            String remainder = "";
+            if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
+               remainder = ci.getRemainder();
+               if(remainder.startsWith("#")) {
+                  //cut off the first character the agsl will put it back in later.
+                  remainder = remainder.substring(1);
+               }
+            }
+            String vospaceEndPoint = registry.getEndPointByIdentifier(ci.getCommunityName()+"/"+ci.getAccountName());
+            if(vospaceEndPoint == null) {
+               //Okay got a vospaceendpoint back lets check if their was no resource key if so then
+               //lets try calling the registry through our known resource key which is the myspace class.
+               vospaceEndPoint = registry.getEndPointByIdentifier(ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP);
+               if(vospaceEndPoint == null) {
+                  throw new ResolverException("Registry failed resolving "+ivorn);
+               }
+            }
+            System.out.println("Quick debug: Registry found = " + vospaceEndPoint);
+            return new Agsl(Msrl.SCHEME + ":" + vospaceEndPoint,remainder);
          }
          catch (Exception e) {
             throw new ResolverException("Registry failed resolving "+ivorn,e);
@@ -136,7 +173,7 @@ public class VoSpaceResolver {
     */
    public static synchronized void makeRegistryDelegate() throws IOException {
       if (registry == null) {
-         registry = new RegistryService();
+         registry = RegistryDelegateFactory.createQuery();
       }
    }
 
@@ -145,8 +182,8 @@ public class VoSpaceResolver {
    public static Agsl communityResolve(Ivorn ivorn) throws IOException {
       /**
        //lazy load delegate - also more robust in case it doesn't instantiate
-        * 
-  
+        */ 
+      System.out.println("entered communityResolvoe");
       if (community == null) {
          try {
             makeCommunityDelegate();
@@ -160,15 +197,25 @@ public class VoSpaceResolver {
       if (community != null) {
          try {
             commIvo = community.resolve(ivorn);
-            return registryResolve(commIvo);
+            CommunityIvornParser ci = new CommunityIvornParser(commIvo);
+            System.out.println("Community resolved = " + commIvo.toString());
+            System.out.println("the commname = " + ci.getCommunityName());
+            System.out.println("the account name = " + ci.getAccountName());
+            System.out.println("the remainder = " + ci.getRemainder());
+            String remainder = "";
+            if(ci.getRemainder() != null && ci.getRemainder().trim().length() > 0) {
+               remainder = ci.getRemainder();
+            }                        
+            Ivorn regIvo = new Ivorn(ci.getCommunityName() + "/" + VOSPACE_CLASS_RESOURCE_KEY_LOOKUP + remainder);                        
+            return registryResolve(regIvo);
          }catch(ResolverException re) {
             //okay the community found an ivo, but it was not in the registry
             throw new ResolverException("Community seems to resolve, but not registry " + ivorn + " commIvo = " + commIvo,re);
          } catch(Exception e) {
-            throw new ResolverException("Registry failed resolving "+ivorn,e);
+            throw new ResolverException("Community & Registry failed resolving "+ivorn,e);
          }
       }
-            */
+            
       return null;
    }
    
@@ -177,16 +224,19 @@ public class VoSpaceResolver {
     *
     */
    public static synchronized void makeCommunityDelegate() throws IOException {
-      /*
+      
       if (community == null) {
          community = new CommunityAccountSpaceResolver();
       }
-      */
+      
    }
 }
 
 /*
 $Log: VoSpaceResolver.java,v $
+Revision 1.9  2004/03/31 16:43:04  KevinBenson
+Okay still needs some testing, but checking in for now.  almost ready.
+
 Revision 1.8  2004/03/25 13:13:43  KevinBenson
 new vospaceresolver
 
