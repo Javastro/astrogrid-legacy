@@ -149,7 +149,8 @@ public class DesignAction extends AbstractAction {
         IVORN_VALUE_PARAMETER = "ivorn-value",        
         DIRECTION_PARAMETER = "direction",
 	    STEP_NAME_PARAMETER = "step_name",
-	    STEP_DESCRIPTION_PARAMETER = "step_description";
+	    STEP_DESCRIPTION_PARAMETER = "step_description",
+	    PARAM_INDIRECT = "param_indirect";
         
     public static final String
         TOOLS_CACHE = "tools-cache-";
@@ -964,11 +965,13 @@ public class DesignAction extends AbstractAction {
 			String parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 			String activityKey = request.getParameter( ACTIVITY_KEY_PARAMETER ) ;
 			String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
+			boolean parameterIndirect = new Boolean(request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;
 			debug( "ivornValue: " + ivornValue );
 			debug( "parameterName:" + parameterName ) ;
 			debug( "parameterValue: " + parameterValue ) ;
 			debug( "oldParameterValue: " + oldParameterValue ) ;
-			debug( "activityKey: " + activityKey ) ;    
+			debug( "activityKey: " + activityKey ) ;
+			debug( "parameterIndirect: " + parameterIndirect  ) ;    
                             
 			if ( parameterName == null) {
 				debug( "parameterName is null" ) ;
@@ -994,7 +997,8 @@ public class DesignAction extends AbstractAction {
                                                     , tool
                                                     , parameterName
                                                     , oldParameterValue
-                                                    , parameterValue ) ;
+                                                    , parameterValue
+                                                    , parameterIndirect ) ;
 				
 		  }
             catch( WorkflowInterfaceException wix ) {
@@ -1022,6 +1026,7 @@ public class DesignAction extends AbstractAction {
 					parameterName = request.getParameter( PARAM_NAME_PARAMETER ),			  
 					parameterValue = request.getParameter( PARAM_VALUE_PARAMETER ) ;
 					String ivornValue = request.getParameter( IVORN_VALUE_PARAMETER ) ;
+					boolean parameterIndirect = new Boolean( request.getParameter( PARAM_INDIRECT ) ).booleanValue() ;
 					debug( "ivornValue: " + ivornValue );					
                             
 			     if ( parameterName == null) {
@@ -1049,7 +1054,8 @@ public class DesignAction extends AbstractAction {
                                                         , tool
                                                         , parameterName
                                                         , oldParameterValue
-                                                        , parameterValue ) ;
+                                                        , parameterValue
+					                                    , parameterIndirect ) ;
 				
 		   }
            catch( WorkflowInterfaceException wix ) {
@@ -1094,9 +1100,9 @@ public class DesignAction extends AbstractAction {
           ApplicationDescription applDescription = applRegistry.getDescriptionFor( tool.getName() );
     
           if( bInput ) {                           
-              WorkflowHelper.insertInputParameterValue( applDescription, tool, parameterName, parameterValue, "" ) ;   
+              WorkflowHelper.insertInputParameterValue( applDescription, tool, parameterName, parameterValue, "", false ) ;   
           } else {
-              WorkflowHelper.insertInputParameterValue( applDescription, tool, parameterName, parameterValue, "" ) ;   
+              WorkflowHelper.insertOutputParameterValue( applDescription, tool, parameterName, parameterValue, "", false ) ;   
           }
                                            
 				

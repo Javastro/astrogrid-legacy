@@ -73,7 +73,7 @@
 
                 <xsp:element name="inputParam">
                    <xsp:attribute name="param-name"><xsp:expr>pv.getName()</xsp:expr></xsp:attribute>
-                   <xsp:attribute name="param-type"><xsp:expr>pv.getType()</xsp:expr></xsp:attribute>
+                   <xsp:attribute name="param-indirect"><xsp:expr>pv.getIndirect()</xsp:expr></xsp:attribute>
                    <xsp:attribute name="param-value"><xsp:expr>pv.getValue()</xsp:expr></xsp:attribute>
                    <xsp:attribute name="param-cardinality-max"><xsp:expr>pRef.getMaxoccurs()</xsp:expr></xsp:attribute>                                                      
                    <xsp:attribute name="param-cardinality-min"><xsp:expr>pRef.getMinoccurs()</xsp:expr></xsp:attribute>                                                                        
@@ -88,7 +88,7 @@
                  
                 <xsp:element name="outputParam">
                     <xsp:attribute name="param-name"><xsp:expr>pv.getName()</xsp:expr></xsp:attribute>
-                    <xsp:attribute name="param-type"><xsp:expr>pv.getType()</xsp:expr></xsp:attribute>
+                    <xsp:attribute name="param-indirect"><xsp:expr>pv.getIndirect()</xsp:expr></xsp:attribute>
                     <xsp:attribute name="param-value"><xsp:expr>pv.getValue()</xsp:expr></xsp:attribute>
                     <xsp:attribute name="param-cardinality-max"><xsp:expr>pRef.getMaxoccurs()</xsp:expr></xsp:attribute>                                                      
                     <xsp:attribute name="param-cardinality-min"><xsp:expr>pRef.getMinoccurs()</xsp:expr></xsp:attribute>                                                                        

@@ -68,6 +68,7 @@ public class WorkflowHelper {
       *                   Can be null or the empty string, in which case the first empty 
       *                   candidate will be used.
       * @param newContents  the contents to be inserted. 
+      * @param paramIndirect true for URN/IVORN/AGSL reference to value, false for actual value 
       * @param bInParam  true for input, false for output.
       * @return  boolean indicating success or failure.
       * 
@@ -78,9 +79,10 @@ public class WorkflowHelper {
                                                , String paramName
                                                , String oldContents
                                                , String newContents
+                                               , boolean paramIndirect
                                                , boolean bInParam ) {
     
-        if( TRACE_ENABLED ) trace( "entry: WorkflowHelper.insertParameterValue(applDescription,tool,paramName,oldValue,newValue,direction)") ; 
+        if( TRACE_ENABLED ) trace( "entry: WorkflowHelper.insertParameterValue(applDescription,tool,paramName,oldValue,newValue,indirect,direction)") ; 
         
             boolean retValue = false ;
             Enumeration iterator = null ;
@@ -110,6 +112,7 @@ public class WorkflowHelper {
                         // OK, we've identified that we need to insert
                         // into an empty parameter...    
                         p.setValue( newContents ) ;
+                        p.setIndirect( paramIndirect );
                         savedNewInsertTarget = p ;
                         retValue = true ;
                         break ;
@@ -121,6 +124,7 @@ public class WorkflowHelper {
                         // OK, we've identified that we wish to replace
                         // existing contents with new contents...         
                         p.setValue( newContents ) ;
+						p.setIndirect( paramIndirect );
                         retValue = true ;
                         break ;
                     }
@@ -130,6 +134,7 @@ public class WorkflowHelper {
             if( retValue == false ) {
                 ParameterValue pValue = new ParameterValue(); 
                 pValue.setName( paramName ) ;
+                pValue.setIndirect( paramIndirect ) ;
                 ParameterRef pRef = WorkflowHelper.getParameterRef(applDescription,tool,pValue);                 
                 BaseParameterDefinition paramDef = applDescription.getDefinitionForReference(pRef);
                 ParameterValue paramVal = applDescription.createValueFromDefinition(paramDef);
@@ -211,6 +216,12 @@ public class WorkflowHelper {
 	  *                   Can be null or the empty string, in which case the first empty 
 	  *                   candidate will be used.
 	  * @param newContents  the contents to be inserted. 
+	  * @param paramIndirect whether parameter is a reference or an actual value.
+	  *                      If 'true' then the value of the ParameterValue is expected to be a 
+      *                      URN/AGSL/IVORN that gives a reference to the actual value for this 
+      *                      parameter (hence, its an 'indirect' value). 
+      *                      If 'false' then the value of the ParameterValue is expected to be the 
+      *                      actual value for this parameter.	                        
 	  * @return  boolean indicating success or failure.
 	  * 
 	  * 
@@ -219,9 +230,10 @@ public class WorkflowHelper {
 	                                               , Tool tool
 	                                               , String paramName
 	                                               , String oldContents
-	                                               , String newContents ) {
+	                                               , String newContents
+	                                               , boolean paramIndirect ) {
 	    
-	    return insertParameterValue(applDescription,tool,paramName,oldContents,newContents,true) ;
+	    return insertParameterValue(applDescription,tool,paramName,oldContents,newContents,paramIndirect,true) ;
 	                                                      
 	}
 
@@ -243,6 +255,12 @@ public class WorkflowHelper {
 	  * @param oldContents   the contents used to identify the target parameter.
 	  *                   Can be null or the empty string, in which case the first empty 
 	  *                   candidate will be used.
+	  * @param paramIndirect whether parameter is a reference or an actual value.
+	  *                      If 'true' then the value of the ParameterValue is expected to be a 
+      *                      URN/AGSL/IVORN that gives a reference to the actual value for this 
+      *                      parameter (hence, its an 'indirect' value). 
+      *                      If 'false' then the value of the ParameterValue is expected to be the 
+      *                      actual value for this parameter.	  
 	  * @param newContents  the contents to be inserted. 
 	  * @return  boolean indicating success or failure.
 	  * 
@@ -252,9 +270,10 @@ public class WorkflowHelper {
 	                                                , Tool tool
 	                                                , String paramName
 	                                                , String oldContents
-	                                                , String newContents ) {
+	                                                , String newContents 
+	                                                , boolean paramIndirect) {
 	    
-	    return insertParameterValue(applDescription,tool,paramName,oldContents,newContents,false) ;
+	    return insertParameterValue(applDescription,tool,paramName,oldContents,newContents,paramIndirect,false) ;
 	                                                      
 	}  
     
