@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/Attic/build.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/10/28 10:11:52 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/28 12:02:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: build.xml,v $
+    |   Revision 1.2  2003/10/28 12:02:09  KevinBenson
+    |   Straiten up the build.xml where it will compile and started on a MockDelegate
+    |
     |   Revision 1.1  2003/10/28 10:11:52  KevinBenson
     |   New Registry structure started with RegistryB so we can sort of leave the other one alone for now.
     |
@@ -18,8 +21,11 @@
     <property name="project.home"     value="${basedir}"/>
     <property name="project.base"     value="${basedir}"/>
     <property name="project.name"     value="registry"/>
-    <property name="project.version"  value="2.0"/>
+    <property name="project.version"  value="4.0"/>
     <property name="project.build"    value="${project.home}/build/project"/>
+    <property name="registry.java"    value="${project.home}/src/java"/>
+    <property name="registry.classes"    value="${project.build}/registry/classes"/>
+    
 
     <!--+
         | User preferences.
@@ -64,9 +70,9 @@
         <echo message=""/>
 
         <!-- Initialise our components -->
-        <ant dir="src/ant" target="init" antfile="ant.xml"/>
-        <ant dir="src/ant" target="init" antfile="tomcat.xml"/>
-        <ant dir="src/ant" target="init" antfile="axis.xml"/>
+        <ant dir="src/xml/ant" target="init" antfile="ant.xml"/>
+        <ant dir="src/xml/ant" target="init" antfile="tomcat.xml"/>
+        <ant dir="src/xml/ant" target="init" antfile="axis.xml"/>
 
     </target>
 
@@ -76,10 +82,10 @@
         | Generate our JavaBeans.
         +-->
     <target name="xsl.beans" depends="">
-        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.delete"/>
-        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.ant"/>
-        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.xsl"/>
-        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="beans.javac"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.delete"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.ant"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.xsl"/>
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="beans.javac"/>
     </target>
 
     <!--+
@@ -87,7 +93,7 @@
         +-->
     <target name="xsl.tables" depends="">
         <!-- Generate the table definitions -->
-        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="tables.sql">
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="tables.sql">
             <property name="file.name" value="${project.build}/database/tables.sql"/>
         </ant>
         <!--+
@@ -104,9 +110,31 @@
         +-->
     <target name="xsl.mapping" depends="">
         <!-- Generate our Castor database mapping -->
-        <ant dir="${project.home}/src/ant" antfile="beans.xml" target="mapping.xml">
+        <ant dir="${project.home}/src/xml/ant" antfile="beans.xml" target="mapping.xml">
             <property name="file.name" value="${project.build}/database/mapping.xml"/>
         </ant>
     </target>
+    
+    <!--+
+        | Compile our delegate and client interface
+        +-->
+    <target name="registry.javac" depends="">
+		<!-- Create our build directory -->
+        <mkdir dir="${registry.classes}"/>
+        <echo message=""/>
+        <echo message="Compiling JavaBeans"/>
+        <!-- Compile the classes -->
+        <javac srcdir="${registry.java}"
+               destdir="${registry.classes}"
+               debug="on"
+               deprecation="on"
+               optimize="on"
+               >
+            <classpath>
+                <!-- No extra libraries required -->
+            </classpath>
+        </javac>
+    </target>
+    
 
 </project>

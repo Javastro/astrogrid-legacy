@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xsl/v0.9/Attic/tables.xsl,v $</cvs:source>
+    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xsl/v0_9/Attic/tables.xsl,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/10/28 10:11:52 $</cvs:date>
+    | <cvs:date>$Date: 2003/10/28 12:02:09 $</cvs:date>
     | <cvs:version>$Revision: 1.1 $</cvs:version>
     | <cvs:log>
     |   $Log: tables.xsl,v $
+    |   Revision 1.1  2003/10/28 12:02:09  KevinBenson
+    |   Straiten up the build.xml where it will compile and started on a MockDelegate
+    |
     |   Revision 1.1  2003/10/28 10:11:52  KevinBenson
     |   New Registry structure started with RegistryB so we can sort of leave the other one alone for now.
     |

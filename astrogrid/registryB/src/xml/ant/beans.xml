@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/registryB/src/xml/ant/Attic/beans.xml,v $</cvs:source>
     | <cvs:author>$Author: KevinBenson $</cvs:author>
-    | <cvs:date>$Date: 2003/10/28 10:23:58 $</cvs:date>
-    | <cvs:version>$Revision: 1.1 $</cvs:version>
+    | <cvs:date>$Date: 2003/10/28 12:02:09 $</cvs:date>
+    | <cvs:version>$Revision: 1.2 $</cvs:version>
     | <cvs:log>
     |   $Log: beans.xml,v $
+    |   Revision 1.2  2003/10/28 12:02:09  KevinBenson
+    |   Straiten up the build.xml where it will compile and started on a MockDelegate
+    |
     |   Revision 1.1  2003/10/28 10:23:58  KevinBenson
     |   *** empty log message ***
     |
@@ -19,8 +22,8 @@
     <!--+
         | Schema properties.
         +-->
-    <property name="schema.version" value="schema-2.0"/>
-    <property name="schema.base"    value="${project.base}/src/schema"/>
+    <property name="schema.version" value="v0_9"/>
+    <property name="schema.base"    value="${project.base}/src/xml"/>
     <property name="schema.src"     value="${schema.base}/${schema.version}"/>
 
     <!--+
@@ -29,7 +32,7 @@
     <property name="bean.base"    value="${project.build}/beans"/>
     <property name="bean.java"    value="${bean.base}/java"/>
     <property name="bean.classes" value="${bean.base}/classes"/>
-    <property name="bean.package" value="org.astrogrid.registry.beans"/>
+    <property name="bean.package" value="org.astrogrid.registry.beans.v0_9"/>
 
     <!--+
         | Delete all the generated beans code.
@@ -45,14 +48,14 @@
         <mkdir dir="${bean.base}"/>
         <echo message=""/>
         <echo message="Creating Ant script from service schema"/>
-        <xslt style="${project.home}/src/xsl/beans/beans.xsl"
-              in="${schema.src}/service.xml"
+        <xslt style="${project.home}/src/xsl/v0_9/beans.xsl"
+              in="${schema.src}/resource.xml"
               out="${bean.base}/build.xml"
               force="true">
             <outputproperty name="method" value="xml"/>
             <outputproperty name="indent" value="yes"/>
-            <param name="bean.xslt"    expression="${project.home}/src/xsl/beans/bean.xsl"/>
-            <param name="bean.schema"  expression="${schema.src}/service.xml"/>
+            <param name="bean.xslt"    expression="${project.home}/src/xsl/v0_9/bean.xsl"/>
+            <param name="bean.schema"  expression="${schema.src}/resource.xml"/>
             <param name="bean.path"    expression="${bean.java}"/>
             <param name="bean.package" expression="${bean.package}"/>
         </xslt>
@@ -95,8 +98,8 @@
     <target name="tables.sql" depends="">
         <echo message=""/>
         <echo message="Creating SQL tables from service schema"/>
-        <xslt style="${project.home}/src/xsl/beans/tables.xsl"
-              in="${schema.src}/service.xml"
+        <xslt style="${project.home}/src/xsl/v0_9/tables.xsl"
+              in="${schema.src}/resource.xml"
               out="${file.name}"
               force="true">
             <outputproperty name="method" value="text"/>
@@ -110,8 +113,8 @@
     <target name="mapping.xml" depends="">
         <echo message=""/>
         <echo message="Creating Castor database mapping from service schema"/>
-        <xslt style="${project.home}/src/xsl/beans/mapping.xsl"
-              in="${schema.src}/service.xml"
+        <xslt style="${project.home}/src/xsl/v0_9/mapping.xsl"
+              in="${schema.src}/resource.xml"
               out="${file.name}"
               force="true">
             <outputproperty name="method" value="xml"/>
