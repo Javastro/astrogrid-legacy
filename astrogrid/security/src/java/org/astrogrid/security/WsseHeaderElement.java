@@ -69,8 +69,6 @@ public class WsseHeaderElement {
 
   /**
    * Adds a WSSE header to the SOAP message.
-   * This method does only the AstroGrid security token and
-   * the JAAS principals.
    */
   public static void write (Subject subject,
                             SOAPMessage sm) throws SOAPException {
@@ -168,9 +166,15 @@ public class WsseHeaderElement {
 
   /**
    * Parses credentials from the SOAP message.
+   *
+   * @param sm the SOAP message with the credentials in the header
+   * @subject the JAAS Subject to which the credentials are added
+   * @throws NoCredentialsException if no credential header is present
+   * @throws SOAPException if the header is present but unparseable
    */
   public static void parse (SOAPMessage sm,
-                            Subject     subject) throws SOAPException {
+                            Subject     subject) throws SOAPException,
+                                                        NoCredentialsException {
 
     // Find the header unit.
     SOAPPart sp = sm.getSOAPPart();
@@ -180,7 +184,7 @@ public class WsseHeaderElement {
     SOAPHeader sh = se.getHeader();
     assert(sh != null);
 
-    // @TODO: Find the header elements at the first level of the header.
+    // Find the header elements at the first level of the header.
     Iterator i
         = sh.examineHeaderElements(WsseHeaderElement.authenticatingActor);
     SOAPHeaderElement he = null;
@@ -193,7 +197,11 @@ public class WsseHeaderElement {
       if (!WsseHeaderElement.getName().equals(q)) {
         he = null;
       }
-      assert(he != null);
+    }
+    if (he == null) {
+      throw new NoCredentialsException(
+          "No WSSE Security element was found in the SOAP header."
+      );
     }
 
 
