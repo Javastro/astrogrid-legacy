@@ -3,8 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../maven-project.xsd">
   <extend>../maven-base/project.xml</extend>
-  
-  <id>astrogrid-portal-scenarios</id>
+  <artifactId>astrogrid-portal-scenarios</artifactId>
   <name>AstroGrid Portal Scenario</name>
 
   <dependencies>
