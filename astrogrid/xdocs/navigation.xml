@@ -6,7 +6,7 @@
             <item name="AstroGrid" href="http://www.astrogrid.org"/>
             <item name="Projects" href="index.html"/>
         </links>
-        <menu name="Projects">
+        <menu name="Astrogrid Components">
             <item name="Applications Integration" 
                 href="applications/index.html"/>
             <item name="Common" href="common/index.html"/>
@@ -27,6 +27,8 @@
         <menu name="Integration">
             <item name="Integration Testing" 
                 href="integrationTests/index.html"/>
+            <item name="Integration Test Results" 
+                href="integrationTests/junit-report.html"/>    
         </menu>
         <menu name="Logs">
             <item name="Maven Build Logs" href="/logs.html" collapse="true">
@@ -54,5 +56,7 @@
             <item name="Astrogrid Maven Repository" 
                 href="http://www.astrogrid.org/maven/org.astrogrid"/>
         </menu>
+        <menu name="Overall"/>
+        <!--overall project docs will be substituted here-->
     </body>
 </project>
