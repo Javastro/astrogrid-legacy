@@ -1,4 +1,4 @@
-/*$Id: DataCenterDirectExecutionTest.java,v 1.1 2004/07/01 11:43:33 nw Exp $
+/*$Id: DataCenterDirectExecutionTest.java,v 1.2 2004/08/13 14:04:46 nw Exp $
  * Created on 30-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,7 +38,7 @@ public class DataCenterDirectExecutionTest extends AbstractRunTestForCEA {
         softAssertEquals("more than one result returned",1,results.getResultCount());
         ParameterValue result = results.getResult(0);
         assertNotNull(result);
-        // result will be a votable. need to parse / verify this.
+        // @todo result will be a votable. need to parse / verify this.
     }
 
     /**
@@ -53,6 +53,9 @@ public class DataCenterDirectExecutionTest extends AbstractRunTestForCEA {
 
 /* 
 $Log: DataCenterDirectExecutionTest.java,v $
+Revision 1.2  2004/08/13 14:04:46  nw
+documentation change only
+
 Revision 1.1  2004/07/01 11:43:33  nw
 cea refactor
  
