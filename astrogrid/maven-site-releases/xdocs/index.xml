@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<!-- $Id: index.xml,v 1.13 2004/09/15 17:59:28 jdt Exp $ -->
+<!-- $Id: index.xml,v 1.14 2004/11/16 17:25:28 jdt Exp $ -->
 <document>
 	<properties>
-		<title>Astrogrid Releases</title>
+		<title>Astrogrid Releases and Test Installations</title>
 		<author email="jdt@roe.ac.uk">John Taylor</author>
 	</properties>
 	<body>
@@ -10,34 +10,45 @@
 			<P> Follow the links to the left for the documentation for the 
 				current releases. This documentation in turn has links to the 
 				binaries, source code and installation information. </P>
-			<subsection name="Itn06 Snapshot">
-				<P> The latest build is Itn06 Snapshot. This code is undergoing 
-					development and is built several times daily.  The latest Itn06 build is deployed
-					at least once a day to this portal on <a href="http://twmbarlwm.star.le.ac.uk:8888/astrogrid-portal">Twmbarlwm</a>.</P>
+			<!--<subsection name="Itn07 Snapshot">
+				<P> The latest build is Itn07 Snapshot.</P>
+                <P>
+                    This code is the "bleeding-edge" code that is rebuilt several times daily and deployed to a 
+                    "nursery" test area.  It comes with no guarantees that it will function correctly, or even compile.
+                </P>
+                <P>
+                    The Snapshot code is installed on <a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal">Cadairidris:8080</a>.
+                </P>
+			</subsection>-->
+			<subsection name="Itn07 Head">
+                <P> Head code has been tested and accepted by the integration team.  
+                    It is guaranteed to build, and in
+                    general its integration test pass rate will increase monotonically with time.</P>
+                    <P>Accepted code is deployed as needed to <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">twmbarlwm:8080</a>, but be aware 
+                        that this machine can be withdrawn for use by the integration team without notice.</P>
+                   <P> For a summary of the latest features and fixes see the <a 
+                    href="http://www.astrogrid.org/maven/docs/SNAPSHOT/changes-report.html">changes</a> 
+                    report.</P>    
+			</subsection>            
+			<subsection name="Itn07 TechPreview">
+                <P> From time to time Itn07 Head code will be deployed for beta testers on our <a 
+                    href="http://www.astrogrid.org/TechPreview">/TechPreview</a> machine.</P>
 			</subsection>
-			<subsection name="Itn06 TechPreview">
-				<P> A partial version of case 3 has been published to Beta Testers. Milestones within Itn06 and should be built at the end of each cases after tested stable.
-					 <a href="http://twmbarlwm.star.le.ac.uk:8080/astrogrid-portal">TechPreview</a>.</P>
-			</subsection>
-			<subsection name="Itn05 Release">
-				<P> The latest stable release is Itn05. </P>
-				<P> An installation of this release is on <a href="http://cadairidris.star.le.ac.uk:8080/astrogrid-portal/">Cadairidris</a>.</P>
-			</subsection>
+			<subsection name="Itn06 Release">
+				<P> The latest stable release is Iteration 06 (0.6.0). </P>
+				<P> An installation of this release is on <a href="http://www.astrogrid.org/TechPreview">/Release</a>.</P>
+			</subsection>            
 		</section>
 		<section name="Previous Astrogrid Releases">
-			<subsection name="Itn04_1 Release">
-				<P> A demonstration of this 
-					release may be found <a 
-					href="http://vm06.astrogrid.org:8080/astrogrid-portal/main/test.xml">here</a>. 
-					</P>
-			</subsection>
-			<subsection name="Itn04 and previous">
-				<P>Information on previous iterations can be found from the Itn04
-					link on the left. A demonstration of release Itn03 may be 
-					found <a 
-					href="http://uml02.astrogrid.org:8080/cocoon/astrogrid/aglogin.html">here</a>. 
-					</P>
-			</subsection>
+            <P>Binaries and source code are still available for releases:
+                <ul>
+                    <li>Itn05 Release</li>
+                    <li>Itn04_1 Release</li>
+                    <li>Itn05 Release</li>
+                    <li>Itn05 Release</li>
+                </ul>
+                but test deployments are no longer available.  Further information on these releases may be found by following
+                the links on the left.</P>
 		</section>
 	</body>
 </document>
