@@ -138,10 +138,11 @@ public class GdsDelegate extends GridServiceDelegate {
       result = ((GDSPortType) this.applicationPort).perform(document);
     }
     catch (Exception e) {
-      logger.error("The Grid Data Service failed to "
-	  + "execute the query.", e);
-      throw new Exception ("The Grid Data Service failed to "
-                           + "execute the query.", e);
+      String errorMessage =
+           "The Grid Data Service failed to execute the query: " +
+           "OGSA-DAI error is '" + e.getMessage() + "'";
+       logger.error(errorMessage);
+       throw new Exception(errorMessage,e);
     }
     return result;
   }
