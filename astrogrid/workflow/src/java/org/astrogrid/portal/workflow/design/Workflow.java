@@ -97,11 +97,17 @@ public class Workflow extends Activity {
     static {
         
         try { 
+            debug( "Workflow static initializer: entry") ;
             // Loads the workflow config file and messages...
             WKF.getInstance().checkPropertiesLoaded() ;
+            debug( "Workflow static initializer: loading of properties suceeded") ;
         }
         catch ( AstroGridException agex ) {
-            ; // Message would have already been logged ;
+            debug( "Workflow static initializer: loading of properties failed...") ;
+            debug( agex.toString() ) ;
+        }
+        finally {
+            debug( "Workflow static initializer: exit") ;
         }
         
     }
@@ -153,16 +159,17 @@ public class Workflow extends Activity {
                         
              InputSource
                 source = new InputSource( new StringReader( retrieveTemplate(templateName) ) );
-                         
-             workflow = new Workflow( XMLUtils.newDocument(source) ) ;
+             workflow = new Workflow( XMLUtils.newDocument(source) ) ;  
+              
+ //JBL?            workflow = new Workflow( XMLUtils.newDocument( retrieveTemplate(templateName) ) ) ;
              workflow.setUserid( userid) ;
              workflow.setCommunity( community ) ;
              workflow.setName( name ) ;
              workflow.setDescription( description ) ; 
              workflow.setTemplateName( templateName ) ;
          }
-         catch( Exception ex) {
-             ;
+         catch( Exception ex ) {
+             debug( "Exception: " + ex.getLocalizedMessage() );
          }
          finally {
              if( TRACE_ENABLED ) trace( "Workflow.createWorkflowFromTemplate() exit") ; 
@@ -387,12 +394,7 @@ public class Workflow extends Activity {
         }
     }
     
-    
-    
-    
-    
-    
-    
+     
     public boolean putActivity( Activity activity ) {
         if( TRACE_ENABLED ) trace( "Workflow.putActivity() entry") ;  
                
@@ -530,16 +532,7 @@ public class Workflow extends Activity {
         return description;
     } 
      
-    private static void trace( String traceString ) {
-        System.out.println( traceString ) ;
-        // logger.debug( traceString ) ;
-    }
-    
-    private static void debug( String logString ){
-        System.out.println( logString ) ;
-        // logger.debug( logString ) ;
-    }
-
+     
 	public void setChild( Activity child ) {
 		this.child = (ActivityContainer)child;
 	}
@@ -554,42 +547,16 @@ public class Workflow extends Activity {
 
 	public String getTemplateName() {
 		return templateName;
-	}  
-/*     
-    private Document parseRequest( String jobXML ) throws DatasetAgentException {   
-        if( TRACE_ENABLED ) trace( "parseRequest() entry") ;
-        
-        Document 
-           queryDoc = null;
-        DocumentBuilderFactory 
-           factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder 
-           builder = null;
-           
-        try {
-                    
-           factory.setValidating( Boolean.getBoolean( DTC.getProperty( DTC.DATASETAGENT_PARSER_VALIDATION
-                                                                     , DTC.DATASETAGENT_CATEGORY )  )  ) ;      
-           builder = factory.newDocumentBuilder();
-           trace( jobXML ) ;
-           InputSource
-              jobSource = new InputSource( new StringReader( jobXML ) );
-           queryDoc = builder.parse( jobSource );
-        }
-        catch ( Exception ex ) {
-            AstroGridMessage
-                message = new AstroGridMessage( ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST
-                                              , this.getComponentName() ) ; 
-            logger.error( message.toString(), ex ) ;
-            throw new DatasetAgentException( message, ex );
-        } 
-        finally {
-            if( TRACE_ENABLED ) trace( "parseRequest() exit") ;  
-        }
-        
-        return queryDoc ;
-
-    } // end parseRequest()
-*/
- 
+	}
+    
+      
+    private static void trace( String traceString ) {
+        System.out.println( traceString ) ;
+        // logger.debug( traceString ) ;
+    }
+    
+    private static void debug( String logString ){
+        System.out.println( logString ) ;
+        // logger.debug( logString ) ;
+    }
 } // end of class Workflow
