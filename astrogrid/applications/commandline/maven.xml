@@ -1,23 +1,7 @@
 <?xml version="1.0"?>
 <!-- extension maven script -->
 <project xmlns:j="jelly:core" xmlns:maven="jelly:maven" xmlns:deploy="deploy" default="jar:jar">
-  <!-- standard goals -->
-  <goal name="astrogrid-build-site" prereqs="site" />
-  <goal name="astrogrid-build-artifact" prereqs="jar, war" />
-  <goal name="astrogrid-build-snapshot" prereqs="jar:snapshot,war" />
-
-  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,war:install-snapshot" />
-  <goal name="astrogrid-install-artifact" prereqs="jar:install,war:install" />
-
-  <goal name="astrogrid-deploy-site">
-    <mkdir dir="${maven.build.dest}" />
-    <attainGoal name="site" />
-    <attainGoal name="site:fsdeploy" />
-  </goal>
-  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
-  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy.war:deploy" />
-
-
+<!-- standard astrogrid goals - defined in server project -->
   <!-- war packaging -->
   <!-- this is the name of the goal that does the packaging in the parent project.
   it's hooked into the war build as a pregoal to war:war
@@ -91,33 +75,16 @@
 
 <!--hook into testing - need to make application executable before unit tests are run -->
   <postGoal name="test:test-resources">
-    <chmod perm="+x" file="${basedir}/target/test-classes/app/testapp.sh" />
+    <j:choose><!--only do this when we're not skipping tests - hard to express 'not -->
+        <j:when test="${maven.test.skip}" />
+        <j:otherwise>
+                <chmod perm="+x" file="${basedir}/target/test-classes/app/testapp.sh" />
+        </j:otherwise>
+    </j:choose>
   </postGoal>
 
+  <!-- redefine goal 'force.compile.tests' - as we don't want it to happen in this project -->
+  <goal name="force.compile.tests" />
 
-  <!-- think this is probably very broken now -->
-  <goal name="webapp.install" prereqs="tomcat-declare-tasks">
-    <echo message="installing applications integration webapp (with axis)" />
-    <tomcat-install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/${appint.webapp.name}" war="file://${maven.build.dir}/${appint.webapp.name}" />
-  </goal>
-  <goal name="service-deploy" prereqs="axis-declare-tasks">
-    <axis-admin port="${tomcat.port}" hostname="${tomcat.host}" servletpath="/${appint.webapp.name}/services/AdminService" debug="true" xmlfile="${working.dir}/wsdd/CommonExecutionConnector-deploy.wsdd" />
-  </goal>
-  <!-- boilerplate below here -->
-  <goal name="axis-declare-tasks">
-    <taskdef resource="axis-tasks.properties" classpathref="maven.dependency.classpath" />
-  </goal>
-  <goal name="tomcat-declare-tasks">
-    <!-- Configure the custom Ant tasks for the Manager application -->
-    <taskdef name="tomcat-deploy" classname="org.apache.catalina.ant.DeployTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-install" classname="org.apache.catalina.ant.InstallTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-list" classname="org.apache.catalina.ant.ListTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-reload" classname="org.apache.catalina.ant.ReloadTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-remove" classname="org.apache.catalina.ant.RemoveTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-resources" classname="org.apache.catalina.ant.ResourcesTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-roles" classname="org.apache.catalina.ant.RolesTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-start" classname="org.apache.catalina.ant.StartTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-stop" classname="org.apache.catalina.ant.StopTask" classpathref="maven.dependency.classpath" />
-    <taskdef name="tomcat-undeploy" classname="org.apache.catalina.ant.UndeployTask" classpathref="maven.dependency.classpath" />
-  </goal>
+
 </project>

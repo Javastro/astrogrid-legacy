@@ -18,8 +18,12 @@
   <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,war:deploy-snapshot" />
   <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,war:deploy" />
   <!-- hooks into existing goals -->
+
 <!--we want to package tests up along with classes in the jar -->
 <preGoal name="jar:jar">
+        <attainGoal name="force.compile.tests" />
+</preGoal>
+<goal name="force.compile.tests">
         <j:if test="${maven.test.skip}">
                 <echo>Building test classes, although we're skipping the tests</echo>
                 <j:set var="maven.test.skip" value="false" />
@@ -32,12 +36,12 @@
                         <exclude name="log4j.properties" /> <!-- as webapp provides its own -->
                 </fileset>
         </copy>
-</preGoal>
+</goal>
 <!-- full junit report -->
   <postGoal name="maven-junit-report-plugin:report">
     <attainGoal name="full-junit-report" />
   </postGoal>
-  <goal name="full-junit-report">
+<goal name="full-junit-report">
   <mkdir dir="${basedir}/target/docs/junit-full" />
   ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.xalan.processor.TransformerFactoryImpl')}
   <junitreport todir="${basedir}/target">
@@ -48,6 +52,7 @@
   </junitreport>
   </goal>
   <!-- packaging of the war file
+
   need to
    * grab resources from dependent jars (e.g. schema, wsdd, wsdl, etc)
    * configure axis service - i.e. create server-config.wsdd
@@ -124,11 +129,6 @@
         <j:set var="maven.xdoc.poweredby.url" value="http://www.astrogrid.org" />
         <j:set var="maven.xdoc.poweredby.image" value="http://www.astrogrid.org/images/AGlogo" />
         <j:set var="maven.xdoc.includeProjectDocumentation" value="no" />
-        <!-- adjust to the astrogrid colours
-                <j:set var="maven.ui.banner.background" value="#FF0000" />
-                <j:set var="maven.ui.banner.foreground" value="#000000" />
-        -->
-        <!-- <attainGoal name="site:generate" />  -->
         <attainGoal name="xdoc:generate-from-pom" />
         <attainGoal name="javadoc:generate" />
         <attainGoal name="maven-jxr-plugin:report" />
