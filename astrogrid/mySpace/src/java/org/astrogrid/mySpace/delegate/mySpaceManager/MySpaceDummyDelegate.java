@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Vector;
-import org.astrogrid.log.Log;
+//import org.astrogrid.log.Log;
 
 /**
  * This is a dummy myspace delegate that can be used to test applications
@@ -82,8 +82,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
          dir.mkdir();
       }
     */
-      Log.affirm(dir.exists(), "Failed to make dir "+dirName);
-      Log.affirm(dir.isDirectory(), "Dir "+dirName+" is not a directory");
+      //Log.affirm(dir.exists(), "Failed to make dir "+dirName);
+      //Log.affirm(dir.isDirectory(), "Dir "+dirName+" is not a directory");
       } catch (IOException e) {
           throw new RuntimeException("Couldn't create dummy myspace ",e);
       }
@@ -154,7 +154,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
       File file = new File(getPath(userid, communityid)+serverFileName);
 
-      Log.affirm(file.exists(), "File "+serverFileName+" not found");
+      //Log.affirm(file.exists(), "File "+serverFileName+" not found");
 
       return getXmlSnippet(file);
    }
@@ -174,7 +174,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
       File source = new File(getPath(userid, communityid)+sourceFileName);
       File dest = new File(getPath(userid, communityid)+destFileName);
 
-      Log.affirm(source.exists(), "File "+sourceFileName+" not found");
+      //Log.affirm(source.exists(), "File "+sourceFileName+" not found");
 
       InputStream in = new BufferedInputStream(new FileInputStream(source));
       OutputStream out = new BufferedOutputStream(new FileOutputStream(dest));
@@ -212,8 +212,8 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
       File file = new File(getPath(userid, communityid)+oldFileName);
       File dest = new File(getPath(userid, communityid)+newFileName);
 
-      Log.affirm(file.exists(), "File "+oldFileName+" not found");
-      Log.affirm(!dest.exists(), "File "+newFileName+" exists! Cannot rename "+oldFileName);
+     // Log.affirm(file.exists(), "File "+oldFileName+" not found");
+     // Log.affirm(!dest.exists(), "File "+newFileName+" exists! Cannot rename "+oldFileName);
 
       boolean success = file.renameTo(dest);
 
@@ -238,7 +238,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
       File file = new File(getPath(userid, communityid)+serverFileName);
 
-      Log.affirm(file.exists(), "File "+serverFileName+" not found");
+   //   Log.affirm(file.exists(), "File "+serverFileName+" not found");
 
       boolean success = file.delete();
 
@@ -346,7 +346,7 @@ public class MySpaceDummyDelegate extends MySpaceManagerDelegate
 
       File file = new File(getPath(userid, communityid)+fullFileName);
 
-      Log.affirm(file.exists(), "File '"+fullFileName+"' not found");
+  //    Log.affirm(file.exists(), "File '"+fullFileName+"' not found");
 
       String fullpath = file.getCanonicalPath();
 
