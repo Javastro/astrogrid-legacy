@@ -133,10 +133,12 @@ public class RegistryAdminAction extends AbstractAction
             }catch(Exception e) {
                e.printStackTrace();
             }
+            request.setAttribute("keepvals","true");
 
             //We want to blank out the authorityid and resource key for 
             //creating a copy area.
             if(createCopy) {
+               
                nl = registryDocument.getElementsByTagName("AuthorityID");
                if(nl.getLength() > 0) {
                   nl.item(0).getFirstChild().setNodeValue("enter authority id");
@@ -229,8 +231,9 @@ public class RegistryAdminAction extends AbstractAction
                      message = getResultMessage(returnDocument);
                      if(message == null) {
                         message = "The Registry has been updated";
-                        action = "update";            
+                        action = "update";
                      }
+                     request.setAttribute("keepvals","true");
                   }catch(Exception e) {
                      e.printStackTrace();
                   }

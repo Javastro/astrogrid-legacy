@@ -26,6 +26,7 @@
 				Set st = regList.keySet();
 				Iterator iter = null;
 				String actionType = (String)request.getAttribute("action");
+				String keepVals = (String)request.getAttribute("keepvals");
 				String regKey = null;
 				String regVal = null;
 				String regLabel = "";
@@ -37,7 +38,7 @@
 					regVal = (String)regList.get(regKey);
 					regLabel = "";
 					tempSplit = null;
-					if(!"update".equals(actionType)) {
+					if(!"true".equals(keepVals)) {
 						regVal = "";
 					}
 					String []split = regKey.split("\\/");
