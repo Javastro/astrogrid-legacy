@@ -2,7 +2,7 @@
  * This class was automatically generated with 
  * <a href="http://www.castor.org">Castor 0.9.4.3</a>, using an XML
  * Schema.
- * $Id: AllOrDistinctDescriptor.java,v 1.10 2003/11/27 17:27:15 nw Exp $
+ * $Id: AllOrDistinctDescriptor.java,v 1.11 2003/12/01 16:30:01 nw Exp $
  */
 
 package org.astrogrid.datacenter.adql.generated.types;
@@ -19,7 +19,7 @@ import org.exolab.castor.xml.validators.*;
 /**
  * Class AllOrDistinctDescriptor.
  * 
- * @version $Revision: 1.10 $ $Date: 2003/11/27 17:27:15 $
+ * @version $Revision: 1.11 $ $Date: 2003/12/01 16:30:01 $
  */
 public class AllOrDistinctDescriptor extends org.exolab.castor.xml.util.XMLClassDescriptorImpl {
 

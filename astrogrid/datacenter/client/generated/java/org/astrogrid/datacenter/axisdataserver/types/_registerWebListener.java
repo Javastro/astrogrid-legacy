@@ -8,17 +8,17 @@
 package org.astrogrid.datacenter.axisdataserver.types;
 
 public class _registerWebListener  implements java.io.Serializable {
-    private org.astrogrid.datacenter.axisdataserver.types._QueryId queryId;
+    private java.lang.String queryId;
     private org.apache.axis.types.URI url;
 
     public _registerWebListener() {
     }
 
-    public org.astrogrid.datacenter.axisdataserver.types._QueryId getQueryId() {
+    public java.lang.String getQueryId() {
         return queryId;
     }
 
-    public void setQueryId(org.astrogrid.datacenter.axisdataserver.types._QueryId queryId) {
+    public void setQueryId(java.lang.String queryId) {
         this.queryId = queryId;
     }
 
@@ -78,7 +78,7 @@ public class _registerWebListener  implements java.io.Serializable {
         org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("queryId");
         elemField.setXmlName(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", "QueryId"));
-        elemField.setXmlType(new javax.xml.namespace.QName("http://www.astrogrid.org/datacenter/It04/dataserver/v1/types", ">QueryId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
         typeDesc.addFieldDesc(elemField);
         elemField = new org.apache.axis.description.ElementDesc();
         elemField.setFieldName("url");

@@ -79,14 +79,6 @@
       />
       <typeMapping
         xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>QueryId"
-        type="java:org.astrogrid.datacenter.axisdataserver.types._QueryId"
-        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
-        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
-        encodingStyle=""
-      />
-      <typeMapping
-        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
         qname="ns:>getResultsAndClose"
         type="java:org.astrogrid.datacenter.axisdataserver.types._getResultsAndClose"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
@@ -198,17 +190,17 @@
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
-        qname="ns:>getStatus"
-        type="java:org.astrogrid.datacenter.axisdataserver.types._getStatus"
+        xmlns:ns="http://astrogrid.org"
+        qname="ns:AstroGridException"
+        type="java:org.astrogrid.AstroGridException"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
       />
       <typeMapping
-        xmlns:ns="http://astrogrid.org"
-        qname="ns:AstroGridException"
-        type="java:org.astrogrid.AstroGridException"
+        xmlns:ns="http://www.astrogrid.org/datacenter/It04/dataserver/v1/types"
+        qname="ns:>getStatus"
+        type="java:org.astrogrid.datacenter.axisdataserver.types._getStatus"
         serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
         deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
         encodingStyle=""
