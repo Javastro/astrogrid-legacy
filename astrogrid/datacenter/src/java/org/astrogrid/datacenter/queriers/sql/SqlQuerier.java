@@ -1,5 +1,5 @@
 /*
- * $Id: SqlQuerier.java,v 1.12 2003/09/11 09:28:20 mch Exp $
+ * $Id: SqlQuerier.java,v 1.13 2003/09/11 17:40:54 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -44,6 +44,10 @@ public class SqlQuerier extends DatabaseQuerier
    public static final String JNDI_DATASOURCE_KEY = "DatabaseQuerier.JndiDatasource";
    /** configuration file key, stores a JDBC connection URL for tis database querier */
    public static final String JDBC_URL_KEY = "DatabaseQuerier.JdbcUrl";
+   /** configuration file key, stores the user id for the JDBC connection URL for this database querier */
+   public static final String USER_KEY = "DatabaseQuerier.User";
+   /** configuration file key, stores the password for the JDBC connection URL for this database querier */
+   public static final String PASSWORD_KEY = "DatabaseQuerier.Password";
    /** configuration file key, stores a set of properties for the connection */
    public static final String JDBC_CONNECTION_PROPERTIES_KEY = "DatabaseQuerier.ConnectionProperties";
    /** JDBC Driver(s) - list each one on a separate line */
@@ -64,6 +68,11 @@ public class SqlQuerier extends DatabaseQuerier
     */
    public SqlQuerier() throws DatabaseAccessException, IOException
    {
+      startDrivers();
+      
+      String userId = Configuration.getProperty(USER_KEY);
+      String password = Configuration.getProperty(PASSWORD_KEY);
+
       // look for jndi link to datasource,
       String jndiDataSourceName = Configuration.getProperty(JNDI_DATASOURCE_KEY);
       if ( jndiDataSourceName != null)
@@ -72,12 +81,24 @@ public class SqlQuerier extends DatabaseQuerier
          {
             // look up data source,
             DataSource ds = (DataSource)new InitialContext().lookup(jndiDataSourceName);
-            //connect
-            connectTo(ds);
+
+            //connect (using user/password if given)
+            if (userId != null)
+            {
+               jdbcConnection = ds.getConnection(userId, password);
+            }
+            else
+            {
+               jdbcConnection = ds.getConnection();
+            }
          }
          catch (NamingException ne)
          {
             throw new DatabaseAccessException(ne,"Failed to lookup datasource for '"+jndiDataSourceName+"'");
+         }
+         catch (SQLException ne)
+         {
+            throw new DatabaseAccessException(ne,"Failed to connect to datasource '"+jndiDataSourceName+"'");
          }
       }
       else
@@ -88,26 +109,52 @@ public class SqlQuerier extends DatabaseQuerier
          {
             //get connection properties, which needs to be provided as a Properties class, from the
             //configuration file.  These will be stored as a set of keys within another key...
-            Properties connectionProperties = new Properties();
             String connectionPropertyValue = Configuration.getProperty(JDBC_CONNECTION_PROPERTIES_KEY, null);
             if (connectionPropertyValue != null)
             {
                try
                {
+                  Properties connectionProperties = new Properties();
                   connectionProperties.load(new ByteArrayInputStream(connectionPropertyValue.getBytes()));
+                  jdbcConnection = DriverManager.getConnection(jdbcURL,connectionProperties);
                }
                catch (IOException ioe)
                {
                   throw new DatabaseAccessException(ioe,"Failed to load connection properties from key '"+JDBC_CONNECTION_PROPERTIES_KEY+"'");
                }
+               catch (SQLException se)
+               {
+                  throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
+               }
             }
-            connectTo(jdbcURL,connectionProperties);
+            else
+            {
+               try
+               {
+                  //if a user/password are set, use that
+                  if (userId != null)
+                  {
+                     jdbcConnection = DriverManager.getConnection(jdbcURL,userId, password);
+                  }
+                  else
+                  {
+                     jdbcConnection = DriverManager.getConnection(jdbcURL);
+                  }
+               }
+               catch (SQLException se)
+               {
+                  throw new DatabaseAccessException(se,"Failed to connect to '"+jdbcURL+"'");
+               }
+            }
+            
          }
          else
          {
             throw new DatabaseAccessException("No information on how to connect to JDBC - no '"+JNDI_DATASOURCE_KEY+"' or '"+JDBC_URL_KEY+"' keys in configuration file");
          }
       }
+      
+      Log.affirm(jdbcConnection != null, "jcbdConnection not set during construction");
    }
 
    /**
@@ -165,7 +212,7 @@ public class SqlQuerier extends DatabaseQuerier
     * @param driver classname of database driver to use
     * @param props map of connection keys (username,password)
     * @throws DatabaseAccessException
-    */
+    *
    private void connectTo(String url, Properties connectionProperties) throws DatabaseAccessException
    {
       try
@@ -184,7 +231,7 @@ public class SqlQuerier extends DatabaseQuerier
     *
     * @param ds datasource to take connection from - encapsulates db driver, url, parameters. and may provide caching
     * @throws DatabaseAccessException
-    */
+    *
    private void connectTo(DataSource ds) throws DatabaseAccessException {
       try {
          jdbcConnection = ds.getConnection();
@@ -193,6 +240,8 @@ public class SqlQuerier extends DatabaseQuerier
       }
 
    }
+    /**/
+   
    /** factory method to create query translator
     *  - overridable by extending classes
     * @return query translator appropriate for this daabase flavour
