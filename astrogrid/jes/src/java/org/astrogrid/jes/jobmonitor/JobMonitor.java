@@ -67,8 +67,8 @@ public class JobMonitor {
 	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00440",
 	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00430",
 	    ASTROGRIDERROR_FAILED_TO_CONTACT_MESSAGELOG = "AGJESE00550",
-        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00560" ;       			
-	    			
+        ASTROGRIDINFO_JOB_STATUS_MESSAGE            = "AGJESI00560" ; 
+        
 	private static Logger 
 		logger = Logger.getLogger( JobMonitor.class ) ;
         
@@ -147,16 +147,19 @@ public class JobMonitor {
 	        factory.begin() ;
 	        job = factory.findJob( this.extractJobURN( monitorJobDocument ) ) ;
 	        jobStep = updateJobStepStatus( job, monitorJobDocument ) ;
-	        
-			// If not all job steps are finished, prod the scheduler into life...
-			// (This is where the job itself can be marked as finished)
-			if( interrogateAndSetJobFinished( job ) == false ) {
-				scheduleJob( job ) ;
-			}
+	       
+            boolean
+                bJobFinished = interrogateAndSetJobFinished( job ) ;
 			
-			factory.updateJob( job ) ;             // Update any changed details to the database        		
+			factory.updateJob( job ) ;             // Update any changed details to the database       		
 			bCleanCommit = factory.end( true ) ;   // Commit and cleanup
-
+            
+            // If not all job steps are finished, prod the scheduler into life...
+            // (This is where the job itself can be marked as finished)
+            if( bJobFinished == false ) {
+                scheduleJob( job );
+            }
+            
         }
         catch( AstroGridException jex ) {
         	
@@ -173,7 +176,7 @@ public class JobMonitor {
 				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
         	}
         	// And finally, inform the message log of the MySpace details concerning this JobStep...
-        	informAstroGridMessageLog( jobStep ) ;
+ //       	informAstroGridMessageLog( jobStep ) ;
 	        logger.debug( (response == null) ? " " : response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "monitorJob() exit") ;
         } 
@@ -186,8 +189,10 @@ public class JobMonitor {
 		
 		// JBL Note: Does a JobStep in error mean a Job is in error?
 		// i.e. Does a JobStep in error mean a Job has stopped (finished)?
-		boolean
-		   bJobFinished = true ; // assume job finished or in error
+        boolean
+           bJobFinished = true ;
+        boolean
+           bStepStatus = true ;
 		Iterator
 		   iterator = job.getJobSteps() ;
 		JobStep
@@ -206,22 +211,29 @@ public class JobMonitor {
                 guardSteps.put( jobStep.getSequenceNumber(), jobStep ) ;
 			    	
                 // If anything is running, then job is obviously not finished...
-                if( jobStep.getStatus().equals( JobStep.STATUS_RUNNING ) ) {                  
-                    bJobFinished = false ;
-                    break ;                   
+                if( jobStep.getStatus().equals( JobStep.STATUS_RUNNING ) ) { 
+                    bJobFinished = false ;                
+                    break ;              
                 }
-                  
+                else if( jobStep.getStatus().equals( JobStep.STATUS_COMPLETED ) ) {
+                    continue ;
+                }
+                else if( jobStep.getStatus().equals( JobStep.STATUS_IN_ERROR ) ) {
+                    bStepStatus = false ;
+                    continue ;
+                }                 
                 // If step status is initialized, the guardstep must be checked
                 // for its status against the join condition for this step...
-                if( jobStep.getStatus().equals( JobStep.STATUS_INITIALIZED ) ) {
+                else if( jobStep.getStatus().equals( JobStep.STATUS_INITIALIZED ) ) {
                     
+
                     joinCondition = jobStep.getJoinCondition() ;
                     guardStep = (JobStep)guardSteps.get( new Integer( jobStep.getSequenceNumber().intValue() - 1 ) ) ;
                     
                     // If there is no guard step, assume this step should execute...
                     if( guardStep == null )  {
                         bJobFinished = false ;
-                        break ;   
+                        break ;   //JL questionable
                     }
                         
                     // Eliminate those that should execute in any case... 
@@ -257,9 +269,16 @@ public class JobMonitor {
 				
 			} // end while 
 			
-			if( bJobFinished == true )
-			   job.setStatus( Job.STATUS_COMPLETED ) ;
-			
+			if( bJobFinished == true && bStepStatus == true ){
+                job.setStatus( Job.STATUS_COMPLETED ) ;
+			}
+            else if( bJobFinished == true && bStepStatus == false ){
+                job.setStatus( Job.STATUS_IN_ERROR ) ;
+            }
+            else {
+                job.setStatus( Job.STATUS_RUNNING ) ;
+            }
+			  		
 		}
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "interrogateAndSetJobFinished(): exit") ;		

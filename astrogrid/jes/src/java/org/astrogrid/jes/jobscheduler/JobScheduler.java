@@ -185,6 +185,7 @@ public class JobScheduler {
                 doc = XMLUtils.newDocument( jobSource ) ;
                 this.dispatchOneStep( step, doc ) ;
                 step.getParent().setStatus( Job.STATUS_RUNNING ) ;
+                job.setStatus( Job.STATUS_RUNNING ) ;
             }
                   
         }
