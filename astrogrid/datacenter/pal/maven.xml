@@ -29,6 +29,7 @@
 
 <goal name="grab-resources">
    <!-- extract various resources we need  -->
+   <!-- see configure-webapp - looks like this is needed on classpath to run Axis Admin tool? jdt/mch -->
    <mkdir dir="${working.dir}" />
    <deploy:copy-deps todir="${working.dir}" />
    <unjar dest="${working.dir}" overwrite="true">
@@ -42,28 +43,6 @@
          <include name="wsdl/**" />
       </patternset>
    </unjar>
-   <!-- while we're at it, the server-bin dist needs unpacking -->
-   <unzip dest="${maven.war.webapp.dir}">
-        <fileset dir="${maven.war.webapp.dir}">
-                <include name="astrogrid-datacenter-server-*.zip" />
-        </fileset>
-        <patternset>
-                <include name="**/docs/**" />
-        </patternset>
-   </unzip>
-   <move todir="${maven.war.webapp.dir}/server">
-        <fileset dir="${maven.war.webapp.dir}">
-                <include name="astrogrid-datacenter-server-*/docs/**" />
-        </fileset>
-        <mapper type="regexp" from="^([^/]*)/docs/(.*)$$" to="\2" />
-   </move>
-   <!-- clean all up -->
-   <delete>
-        <fileset dir="${maven.war.webapp.dir}">
-                <include name="astrogrid-datacenter-server-*.zip" />
-                <include name="astrogrid-datacenter-server-*" />
-        </fileset>
-   </delete>
 </goal>
 
 <!-- Create server-config.wsdd in WEB-INF directory that defines how Axis interprets each service

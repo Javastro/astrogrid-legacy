@@ -25,15 +25,6 @@
     </dependency>
     <dependency>
         <groupId>org.astrogrid</groupId>
-        <artifactId>astrogrid-datacenter-server</artifactId>
-        <version>${pom.currentVersion}</version>
-        <type>zip</type>
-        <properties>
-                <war.target.path>.</war.target.path>
-        </properties>
-    </dependency>
-    <dependency>
-        <groupId>org.astrogrid</groupId>
         <artifactId>cdsdelegate</artifactId>
         <version>${pom.currentVersion}</version>
         <type>zip</type>

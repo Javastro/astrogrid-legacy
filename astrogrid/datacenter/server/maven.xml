@@ -2,38 +2,12 @@
 <!-- extension maven script -->
 <project xmlns:j="jelly:core"  xmlns:maven="jelly:maven" xmlns:deploy="deploy" xmlns:artifact="artifact" default="jar:jar">
  <!-- override the default astrogrid goals with our own
-         - builds a jar, and a dist zip too.
-         - dist.zip used in the pal build
+         - builds a jar
 -->
-  <goal name="astrogrid-install-artifact" prereqs="jar:install,dist:build-bin">
-        <artifact:install
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
-  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot,dist:build-bin">
-        <artifact:install-snapshot
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
-  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot,dist:build-bin">
-        <!-- can't use dist:deploy-bin-snapshot - puts it in different / wrong / inaccessible part of repository -->
-        <artifact:deploy-snapshot
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
-  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy,dist:build-bin" >
-        <artifact:deploy
-                artifact="${maven.dist.dir}/${maven.final.name}.zip"
-                type="zip"
-                project="${pom}"
-        />
-  </goal>
+  <goal name="astrogrid-install-artifact" prereqs="jar:install"/>
+  <goal name="astrogrid-install-snapshot" prereqs="jar:install-snapshot"/>
+  <goal name="astrogrid-deploy-snapshot" prereqs="jar:deploy-snapshot"/>
+  <goal name="astrogrid-deploy-artifact" prereqs="jar:deploy"/>
 
 <!--we want to package tests up along with classes in the jar
 
