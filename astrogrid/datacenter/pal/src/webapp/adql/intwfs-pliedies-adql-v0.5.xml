@@ -1,6 +1,3 @@
-<!--  SQL equivalent
-SELECT t.*, b.* FROM Tab t, Bob b WHERE t.g <> b.g AND CIRCLE(12.5, 23, 5) ORDER BY t.g - b.g, b.h
--->
 <Select xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns="http://tempuri.org/adql">
 
   <SelectionAll/>
