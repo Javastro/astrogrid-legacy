@@ -108,7 +108,7 @@
 </goal>
 
 <goal name="astrogrid-build-site" description="Build the site docs for the test project">
-        <maven:maven descriptor="${basedir}/tests-project.xml" goals="site" />
+        <maven:maven descriptor="${basedir}/tests-project.xml" goals="clean,site" />
 </goal>
 
 <goal name="astrogrid-deploy-site" description="Deploy the site docs for the test project" >
