@@ -1,5 +1,5 @@
 /*
- * $Id: WebServiceApplication.java,v 1.1 2003/10/30 14:12:25 pah Exp $
+ * $Id: WebServiceApplication.java,v 1.2 2003/11/13 22:44:14 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,6 +11,8 @@
 
 package org.astrogrid.applications;
 
+import java.net.URL;
+
 public class WebServiceApplication extends AbstractApplication {
 public WebServiceApplication(){}
 
@@ -18,5 +20,5 @@ public WebServiceApplication(){}
       // Write your code here
    }
 
-   private Url url;
+   private URL url;
 }
