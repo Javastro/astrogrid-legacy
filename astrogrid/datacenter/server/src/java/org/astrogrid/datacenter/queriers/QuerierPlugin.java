@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierPlugin.java,v 1.11 2004/03/22 12:31:10 mch Exp $
+ * $Id: QuerierPlugin.java,v 1.12 2004/04/01 17:15:21 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
 
 public abstract class QuerierPlugin  {
 
-   protected final Querier querier;
+   protected Querier querier;
 
    /** Marker used to indicate an abort has been requested */
    protected boolean aborted = false;
@@ -163,9 +163,21 @@ public abstract class QuerierPlugin  {
    public Document getMetadata() throws IOException {
       return null;
    }
+   
+   /**
+    * While the 'askQuery' should do all tidying up required, this method
+    * exists just to separate the plugin from the Querier when the querier
+    * closes, ready for garbage collection
+    */
+   public void close() {
+      querier = null;
+   }
 }
 /*
  $Log: QuerierPlugin.java,v $
+ Revision 1.12  2004/04/01 17:15:21  mch
+ Attempt to remove plugin on close
+
  Revision 1.11  2004/03/22 12:31:10  mch
  Removed datacenter prefix from emailing keys
 

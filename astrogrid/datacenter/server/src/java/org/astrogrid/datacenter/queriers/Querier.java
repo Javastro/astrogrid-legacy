@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.50 2004/03/29 16:58:15 mch Exp $
+ * $Id: Querier.java,v 1.51 2004/04/01 17:14:59 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -253,8 +253,13 @@ public class Querier implements Runnable {
     */
    public String getRequestedFormat()           {  return requestedFormat; }
    
+   /**
+    * Closes & tidies up
+    */
    public void close() {
       setStatus(new QuerierComplete(this));
+      plugin.close();
+      plugin = null;
    }
    
    /**
@@ -403,6 +408,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.51  2004/04/01 17:14:59  mch
+ Attempt to remove plugin on close
+
  Revision 1.50  2004/03/29 16:58:15  mch
  Fix for plugin instance variable not being set
 
