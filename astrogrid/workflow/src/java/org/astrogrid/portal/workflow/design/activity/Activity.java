@@ -105,6 +105,9 @@ public abstract class Activity {
     public Workflow getWorkflow() {
         if( TRACE_ENABLED ) trace( "Activity.getWorkflow() entry") ;       
               
+        Workflow
+            workflow = null ;
+              
         try {
             
             Activity
@@ -116,11 +119,16 @@ public abstract class Activity {
                  parent = this.getParent() ;
              }
              
-             return (Workflow)workflowCandidate ;
+             workflow = (Workflow)workflowCandidate ;
+        }
+        catch( Exception ex ) {
+            debug( "Exception: " + ex.getLocalizedMessage() ) ;
         }
         finally {
             if( TRACE_ENABLED ) trace( "Activity.getWorkflow() exit") ;       
         }
+        
+        return workflow ;
             
     } // end of getWorkflow()
     
