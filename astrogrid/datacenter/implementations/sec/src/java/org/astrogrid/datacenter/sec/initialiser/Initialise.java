@@ -1,4 +1,4 @@
-/*$Id: Initialise.java,v 1.2 2004/09/07 00:54:20 mch Exp $
+/*$Id: Initialise.java,v 1.3 2004/09/07 01:39:27 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,7 +12,6 @@ package org.astrogrid.datacenter.sec.initialiser;
 
 import java.io.IOException;
 import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
-import org.astrogrid.log.Log;
 
 
 /** Quickfire class that runs the IndexGenerator on the urls in the pakcage
@@ -25,8 +24,6 @@ public class Initialise {
     *
     */
    public static void main(String[] args) throws IOException {
-       Log.traceOn();
-      Log.logToConsole();
       IndexGenerator generator = new IndexGenerator();
       generator.generateIndex(Initialise.class.getResourceAsStream("secUrls.txt"), System.out);
    }
@@ -35,6 +32,9 @@ public class Initialise {
 
 /*
 $Log: Initialise.java,v $
+Revision 1.3  2004/09/07 01:39:27  mch
+Moved email keys from TargetIndicator to Slinger
+
 Revision 1.2  2004/09/07 00:54:20  mch
 Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 

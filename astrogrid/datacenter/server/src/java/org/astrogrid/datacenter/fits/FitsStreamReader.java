@@ -1,5 +1,5 @@
 /*
- $Id: FitsStreamReader.java,v 1.4 2004/07/12 23:25:58 mch Exp $
+ $Id: FitsStreamReader.java,v 1.5 2004/09/07 01:39:27 mch Exp $
 
  Copyright (c) etc
  */
@@ -12,8 +12,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.astrogrid.log.Log;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.astrogrid.datacenter.fits.FitsReader;
 
 /**
  * A set of routines for reading a fits image
@@ -38,7 +39,7 @@ public class FitsStreamReader implements FitsReader
    InputStream in = null;
    //int dataOffset = -1; //how big is the header. -1 = not loaded yet.
    //   Hashtable header = null; //header key/value pairs. null = not loaded yet
-//   Log log = LogFactory.getLog(FitsReader.class); because it's a pain to configure
+   Log log = LogFactory.getLog(FitsReader.class);
    
    /* total number of bytes read */
    long totBytesRead = 0;
@@ -80,7 +81,7 @@ public class FitsStreamReader implements FitsReader
     */
    public void readHeaderKeywords(FitsHeader header, String endWord) throws IOException
    {
-      Log.trace("Loading image header...");
+      log.trace("Loading image header...");
 
       //read a line (80 bytes) at a time until we reach END
       byte[] block = new byte[80];
@@ -140,7 +141,7 @@ public class FitsStreamReader implements FitsReader
          if ( (keyword.getKey() != null) && (keyword.getKey().length() >0))
          {
             header.add(keyword);
-            Log.trace("Line="+new String(block)+", Key="+keyword.getKey()+", Value='"+keyword.getValue()+"'");
+            log.trace("Line="+new String(block)+", Key="+keyword.getKey()+", Value='"+keyword.getValue()+"'");
          }
          
       } while ((keyword.getKey() == null) || !(keyword.getKey().toUpperCase().startsWith("END") || ((endWord != null) && (keyword.getKey().toUpperCase().startsWith(endWord.toUpperCase())))));
@@ -148,13 +149,13 @@ public class FitsStreamReader implements FitsReader
 
    
    /**
-    * Read data block
+    * Read data block (actually just skips it for the moment)
     * @todo there's a bug about - I've added a bit to skip an extra 28 cards
     * because that's what seems to need to be done, but I have no idea why.
     */
    public void readData(FitsHdu hdu) throws IOException
    {
-      Log.trace("Skipping data (pos="+totBytesRead+")...");
+      log.trace("Skipping data (pos="+totBytesRead+")...");
       //first make sure we have read up to the header END keyword
       if (hdu.getHeader().get("END") == null) {
          
@@ -167,7 +168,7 @@ public class FitsStreamReader implements FitsReader
       
       //now read data
       long size = hdu.getHeader().getDataSize();
-      Log.trace("data size="+size);
+      log.trace("data size="+size);
       
 //    hdu.setData(new FitsData());
       //skip data block.  NB sometimes one single 'skip' read is not sufficient
@@ -179,7 +180,7 @@ public class FitsStreamReader implements FitsReader
 
       if (size >0) skipTo(totBytesRead + 2880);
       
-      Log.trace("read to pos "+totBytesRead);
+      log.trace("read to pos "+totBytesRead);
       
       
    }
@@ -206,6 +207,9 @@ public class FitsStreamReader implements FitsReader
 
 /*
  $Log: FitsStreamReader.java,v $
+ Revision 1.5  2004/09/07 01:39:27  mch
+ Moved email keys from TargetIndicator to Slinger
+
  Revision 1.4  2004/07/12 23:25:58  mch
  Better error reporting
 

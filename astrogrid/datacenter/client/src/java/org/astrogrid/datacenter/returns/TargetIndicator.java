@@ -1,5 +1,5 @@
 /*
- * $Id: TargetIndicator.java,v 1.3 2004/09/07 01:01:29 mch Exp $
+ * $Id: TargetIndicator.java,v 1.4 2004/09/07 01:39:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -11,19 +11,9 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.Properties;
-import javax.mail.MessagingException;
-import javax.mail.Provider;
-import javax.mail.Session;
-import javax.mail.Transport;
-import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.store.Agsl;
 import org.astrogrid.store.Ivorn;
-import org.astrogrid.store.delegate.StoreClient;
-import org.astrogrid.store.delegate.StoreDelegateFactory;
-import org.astrogrid.store.delegate.StoreException;
 import org.astrogrid.store.delegate.VoSpaceResolver;
 
 /**
@@ -38,12 +28,6 @@ public class TargetIndicator  {
    protected Agsl agsl = null;
    protected Ivorn ivorn = null;
    protected Writer out = null;
-   
-   public final static String EMAIL_SERVER = "emailserver.address";
-   public final static String EMAIL_USER   = "emailserver.user";
-   public final static String EMAIL_PWD    = "emailserver.password";
-   public final static String EMAIL_FROM   = "emailserver.from";
-   
    
    
    /** Email constructor - see also makeIndicator */
@@ -147,6 +131,9 @@ public class TargetIndicator  {
 }
 /*
  $Log: TargetIndicator.java,v $
+ Revision 1.4  2004/09/07 01:39:27  mch
+ Moved email keys from TargetIndicator to Slinger
+
  Revision 1.3  2004/09/07 01:01:29  mch
  Moved testConnection to server slinger
 

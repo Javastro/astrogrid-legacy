@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.11 2004/09/07 00:54:20 mch Exp $
+ * $Id: QueryResults.java,v 1.12 2004/09/07 01:39:27 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -24,7 +24,7 @@ import org.astrogrid.config.SimpleConfig;
 import org.astrogrid.datacenter.queriers.status.QuerierProcessingResults;
 import org.astrogrid.datacenter.returns.ReturnSpec;
 import org.astrogrid.datacenter.returns.ReturnTable;
-import org.astrogrid.datacenter.returns.TargetIndicator;
+import org.astrogrid.datacenter.slinger.Slinger;
 
 /** A container interface that holds the results of a query until needed.
  * <p>
@@ -145,10 +145,10 @@ public abstract class QueryResults
       String targetAddress = returns.getTarget().getEmail();
       
       // Get email server from configuration file
-      String emailServer = SimpleConfig.getSingleton().getString(TargetIndicator.EMAIL_SERVER);
-      String emailUser = SimpleConfig.getSingleton().getString(TargetIndicator.EMAIL_USER, null);
-      String emailPassword = SimpleConfig.getSingleton().getString(TargetIndicator.EMAIL_PWD, null);
-      String emailFrom = SimpleConfig.getSingleton().getString(TargetIndicator.EMAIL_FROM);
+      String emailServer = SimpleConfig.getSingleton().getString(Slinger.EMAIL_SERVER);
+      String emailUser = SimpleConfig.getSingleton().getString(Slinger.EMAIL_USER, null);
+      String emailPassword = SimpleConfig.getSingleton().getString(Slinger.EMAIL_PWD, null);
+      String emailFrom = SimpleConfig.getSingleton().getString(Slinger.EMAIL_FROM);
          
       try {
          // create properties required by Session constructor, and get the default Session

@@ -23,8 +23,10 @@ import java.text.ParseException;
 import java.util.Enumeration;
 import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.astrogrid.datacenter.queriers.QuerierPluginException;
-import org.astrogrid.log.Log;
+import org.astrogrid.datacenter.queriers.fits.IndexGenerator;
 import org.astrogrid.util.DomHelper;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -32,7 +34,10 @@ import org.xml.sax.SAXException;
 
 public class IndexGenerator
 {
-//   private static Log log = LogFactory.getLog(IndexGenerator.class); //because it's a pain to configure for quick runtime classes like this
+   /** this is meant to run as a command-line program, so output should go to the
+    * console, but it uses routines that use commons-logging anyway...
+    */
+   private static Log log = LogFactory.getLog(IndexGenerator.class);
    
    /**
     * Generates a single index FitsFile 'snippet' for the FITS file at the
@@ -42,7 +47,7 @@ public class IndexGenerator
    {
       assert fitsUrl != null;
       
-      Log.trace("Examining file "+fitsUrl+"...");
+      log.debug("Examining file "+fitsUrl+"...");
       return makeIndexSnippet(new FitsStreamReader(fitsUrl), fitsUrl.toString());
    }
    
@@ -73,8 +78,8 @@ public class IndexGenerator
             //*might* be extensions...
             for (int i=0;i<4;i++)
             {
-               Log.trace(""); //seperate headers
-               Log.trace(""); //seperate header-reading trace code
+               log.trace(""); //seperate headers
+               log.trace(""); //seperate header-reading trace code
             
                header = new FitsHeader();
                reader.readHeaderKeywords(header, null);
@@ -87,7 +92,7 @@ public class IndexGenerator
             }
          }
          catch (FitsFormatException ffe) {
-            Log.logWarning("Fits format exception: "+ffe+" assuming no extension headers");
+            log.warn("Fits format exception: "+ffe+" assuming no extension headers");
          }
       }
       return snippet.toString();
@@ -204,7 +209,7 @@ public class IndexGenerator
             = new BufferedReader(new InputStreamReader(urlsIn));
          String line = null;
          while( (line = in.readLine()) != null) {
-            System.out.println("Processing " + line);
+            log.debug("Processing " + line);
             out.write(makeIndexSnippet(new URL(line)).getBytes());
          }
          in.close();
@@ -219,8 +224,21 @@ public class IndexGenerator
 //      System.out.print(generateIndex(new URL[] {
 //                                new URL("file://fannich/mch/fits/ngc6946/r169093.fit")
 //                             }));
-       Log.traceOn();
-      Log.logToConsole();
+      //this is a bit of a botch so that if there's no log4j.properties around, it
+      //makes one
+      File log4jproperties = new File("log4j.properties");
+      if (!log4jproperties.exists()) {
+         FileOutputStream out = new FileOutputStream(log4jproperties);
+         String contents =
+            "log4j.rootCategory=DEBUG, CONSOLE\n"+
+            "log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender\n"+
+            "log4j.appender.CONSOLE.Threshold=DEBUG\n"+
+            "log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout\n"+
+            "log4j.appender.CONSOLE.layout.ConversionPattern=%d{dd-MM-yy HH:mm:ss} PAL: %p %m%n\n";
+         out.write(contents.getBytes());
+         out.close();
+      }
+      
       Locale.setDefault(Locale.UK);
       Document indexDoc = null;
       if(args == null || args.length < 2) {
@@ -239,7 +257,7 @@ public class IndexGenerator
             fitsURLS[(i-1)] = new URL(args[i]);
          }
          indexFile = generateIndex(fitsURLS);
-         Log.trace(indexFile);
+         log.trace(indexFile);
       }
       
       if(indexFile != null) {
@@ -334,6 +352,9 @@ public class IndexGenerator
 
 /*
 $Log: IndexGenerator.java,v $
+Revision 1.17  2004/09/07 01:39:27  mch
+Moved email keys from TargetIndicator to Slinger
+
 Revision 1.16  2004/09/07 00:54:20  mch
 Tidied up Querier/Plugin/Results, and removed deprecated SPI-visitor-SQL-translator
 
