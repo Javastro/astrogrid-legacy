@@ -1,5 +1,5 @@
 /*
- * $Id: Sql2Adql05.java,v 1.1 2004/08/13 08:52:23 mch Exp $
+ * $Id: Sql2Adql05.java,v 1.2 2004/08/13 09:47:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -64,8 +64,10 @@ public class Sql2Adql05  {
       }
 
       //-- WHERE --
-      XmlTagPrinter whereClauseTag = tableClauseTag.newTag("WhereClause");
+      if (whereClause != null) {
+         XmlTagPrinter whereClauseTag = tableClauseTag.newTag("WhereClause");
       
+      }
       
       //-- tidy up --
       selectTag.close();
@@ -79,25 +81,38 @@ public class Sql2Adql05  {
     */
    public static void main(String[] args) throws IOException {
       
-      //-- proper SQL --
-      String s = "SELECT * FROM CHARLIE";
-      
-      String adql = Sql2Adql05.translate(s);
-  
-      System.out.println(adql);
-      
-      //-- proper SQL --
-      s = "SELECT S.RA    T.WIBBLE UNDIE.PANTS, ETC.ETC FROM A, B  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
-      
-      adql = Sql2Adql05.translate(s);
-  
-      System.out.println(adql);
+      if ((args != null) && (args.length>0) && (args[0] != null) ) {
+         
+         System.out.println(Sql2Adql05.translate(args[0]));
+         
+      }
+      else {
+         System.out.println("Usage: "+Sql2Adql05.class+" <sql> ");
+         System.out.println("");
+         System.out.println("eg: ");
+         
+         //-- proper SQL --
+         String s = "SELECT * FROM CHARLIE";
+         
+         String adql = Sql2Adql05.translate(s);
+     
+         System.out.println(adql);
+         
+         //-- proper SQL --
+         s = "SELECT S.RA    T.WIBBLE UNDIE.PANTS, ETC.ETC FROM A, B  CHARLIE AS C WHERE C.X > 3 AND C.Y < 4 OR A.RA > B.RA";
+         
+         adql = Sql2Adql05.translate(s);
+     
+         System.out.println(adql);
+      }
    }
-   
 }
 
 /*
  $Log: Sql2Adql05.java,v $
+ Revision 1.2  2004/08/13 09:47:57  mch
+ Extended parser/builder to handle more WHERE conditins
+
  Revision 1.1  2004/08/13 08:52:23  mch
  Added SQL Parser and suitable JSP pages
 

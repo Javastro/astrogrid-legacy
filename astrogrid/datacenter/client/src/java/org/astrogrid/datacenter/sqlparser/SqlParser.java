@@ -1,5 +1,5 @@
 /*
- * $Id: SqlParser.java,v 1.1 2004/08/13 08:52:24 mch Exp $
+ * $Id: SqlParser.java,v 1.2 2004/08/13 09:47:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -170,12 +170,19 @@ public class SqlParser  {
     */
    private void parseFrom(String from) {
       //trim and remove commas
-      from = from.trim().toUpperCase().replace(',', ' ')+" "; //make sure there's a final space
+      from = from.toUpperCase().replace(',', ' ').trim();
 
       while (from.trim().length() >0) {
          //chop out first word
-         String tableName = from.substring(0,from.indexOf(' ')).trim();
-         from = from.substring(tableName.length()).trim();
+         String tableName = "";
+         if (from.indexOf(' ') == -1) {
+            tableName = from;
+            from = "";
+         }
+         else {
+            tableName = from.substring(0,from.indexOf(' ')).trim();
+            from = from.substring(tableName.length()).trim();
+         }
    
          scope.add(tableName);
    
@@ -282,6 +289,9 @@ public class SqlParser  {
 
 /*
  $Log: SqlParser.java,v $
+ Revision 1.2  2004/08/13 09:47:57  mch
+ Extended parser/builder to handle more WHERE conditins
+
  Revision 1.1  2004/08/13 08:52:24  mch
  Added SQL Parser and suitable JSP pages
 

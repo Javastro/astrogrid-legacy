@@ -1,5 +1,5 @@
 /*
- * $Id: ComparisonExpression.java,v 1.1 2004/08/13 08:52:23 mch Exp $
+ * $Id: ComparisonExpression.java,v 1.2 2004/08/13 09:47:57 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -30,10 +30,17 @@ public class ComparisonExpression extends BooleanExpression  {
       return "("+lhs+") "+operator+" ("+rhs+")";
    }
 
+   public String getOperator() { return operator; }
+   public NumericExpression getLHS() { return lhs; }
+   public NumericExpression getRHS() { return rhs; }
+   
 }
 
 /*
 $Log: ComparisonExpression.java,v $
+Revision 1.2  2004/08/13 09:47:57  mch
+Extended parser/builder to handle more WHERE conditins
+
 Revision 1.1  2004/08/13 08:52:23  mch
 Added SQL Parser and suitable JSP pages
 
