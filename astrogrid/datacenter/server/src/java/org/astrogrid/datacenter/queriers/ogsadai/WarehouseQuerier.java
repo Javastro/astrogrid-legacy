@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseQuerier.java,v 1.6 2004/03/17 12:20:54 kea Exp $
+ * $Id: WarehouseQuerier.java,v 1.7 2004/03/17 13:53:29 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -90,7 +90,7 @@ public class WarehouseQuerier extends QuerierPlugin {
     log.info("SQL query is " + sql);
     log.debug("Successfully created SQL query from input ADQL");
 
-    // Get temp file to pass to Query delegate 
+    // Get temp file to pass to Query delegate
      try {
        workspace = new Workspace("Warehouse_"+querier.getId());
      }
@@ -187,6 +187,8 @@ public class WarehouseQuerier extends QuerierPlugin {
     }
     // Finished external call successfully
     log.info("Shelled-out query succeeded");
+    
+    return null; //mch botch
   }
 
   /**
@@ -355,6 +357,9 @@ public class WarehouseQuerier extends QuerierPlugin {
 }
 /*
 $Log: WarehouseQuerier.java,v $
+Revision 1.7  2004/03/17 13:53:29  mch
+MCH botch to compile
+
 Revision 1.6  2004/03/17 12:20:54  kea
 Removing XSLT rowset->VOTable conversions, now done in OGSA-DAI.
 Interim checkin, end-to-end not working yet.
