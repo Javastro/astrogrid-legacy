@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="serviceLocation.xsd"/>
+    <xs:element name="wavelengthshort" type="xs:decimal"/>
+    <xs:element name="wavelengthlong" type="xs:decimal"/>
+    <xs:element name="ramin" type="xs:decimal"/>
+    <xs:element name="ramax" type="xs:decimal"/>
+    <xs:element name="decmin" type="xs:decimal"/>
+    <xs:element name="decmax" type="xs:decimal"/>
+    <xs:element name="sensitvity" type="xs:decimal"/>
+    <xs:element name="temporal" type="xs:string"/>
+    <xs:element name="facility" type="xs:string"/>
+    <xs:element name="instrument" type="xs:string"/>
+    <xs:element name="format" type="xs:string"/>
+    <xs:element name="spatialresolution" type="xs:decimal"/>
+    <xs:element name="briefsummary" type="xs:string"/>
+    <xs:element name="type">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="archive"/>
+                <xs:enumeration value="survey"/>
+                <xs:enumeration value="catalogue"/>
+                <xs:enumeration value="bibliography"/>
+                <xs:enumeration value="journal"/>
+                <xs:enumeration value="library"/>
+                <xs:enumeration value="outreach"/>
+                <xs:enumeration value="education"/>
+                <xs:enumeration value="eporesource"/>
+                <xs:enumeration value="integrated"/>
+                <xs:enumeration value="nameresolver"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="wavelengthrange">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="gammaray"/>
+                <xs:enumeration value="xray"/>
+                <xs:enumeration value="hardxray"/>
+                <xs:enumeration value="softxray"/>
+                <xs:enumeration value="xuv"/>
+                <xs:enumeration value="uv"/>
+                <xs:enumeration value="optical"/>
+                <xs:enumeration value="ir"/>
+                <xs:enumeration value="submmwave"/>
+                <xs:enumeration value="mmwave"/>
+                <xs:enumeration value="radio"/>
+                <xs:enumeration value="cmwave"/>
+                <xs:enumeration value="mwave"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="coordinates">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="icrs"/>
+                <xs:enumeration value="fk5"/>
+                <xs:enumeration value="fk4"/>
+                <xs:enumeration value="ecl"/>
+                <xs:enumeration value="gal"/>
+                <xs:enumeration value="sgal"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="region">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+                <xs:enumeration value="box"/>
+                <xs:enumeration value="circle"/>
+                <xs:enumeration value="polygon"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:group name="spatial">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="1" ref="region"/>
+            <xs:element maxOccurs="1" minOccurs="1" ref="coordinates"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:element name="coverage">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:group maxOccurs="1" minOccurs="1" ref="spatial"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="wavelengthrange"/>
+                <xs:element maxOccurs="unbounded" minOccurs="1" ref="temporal"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="wavelengthshort"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="wavelengthlong"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="ramin"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="ramax"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="decmin"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="decmax"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="sensitvity"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="dataSvc">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="1" minOccurs="1" ref="type"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="format"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="coverage"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="spatialresolution"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="facility"/>
+                <xs:element maxOccurs="1" minOccurs="0" ref="instrument"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="location"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="community"/>
+                <xs:element maxOccurs="1" minOccurs="1" ref="briefsummary"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <meta>
+        <lastOpenedFiles/>
+    </meta>
+    <projectTree name="registryMetadata.xpr">
+        <file name="dataService.xsd"/>
+        <file name="processingService.xsd"/>
+        <file name="registry.xsd"/>
+        <file name="registryService.xsd"/>
+        <file name="service.xsd"/>
+        <file name="serviceLocation.xsd"/>
+        <file name="workspaceService.xsd"/>
+    </projectTree>
+</project>
