@@ -333,8 +333,8 @@ public class Criteria {
 				    .append(catalog.getName())
 				    .append(".")
 				    .append(UCD);
-				logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString());
-				columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;					
+				logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
+				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;					
 			} // end of if
 			for (int i=0 ; i < tables.length ; i++) { 
 				buffer
@@ -343,8 +343,8 @@ public class Criteria {
 				    .append(tables[i].getName().toUpperCase())
 				    .append(".")
 				    .append(UCD);					
-				logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString());
-				columnHeading = DatasetAgent.getProperty( buffer.toString() ) ;				
+				logger.debug("Criteria: getColumnHeading(): key: "+buffer.toString().toUpperCase() );
+				columnHeading = DatasetAgent.getProperty( buffer.toString().toUpperCase() ) ;				
 				if (columnHeading.length() > 0) // break as soon as column heading found
 				    break; 
 				buffer.delete(0,buffer.length());
