@@ -1,4 +1,4 @@
-/*$Id: BaseBeanTest.java,v 1.1 2004/02/10 17:30:57 nw Exp $
+/*$Id: BaseBeanTest.java,v 1.2 2004/03/01 01:26:33 nw Exp $
  * Created on 10-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,11 @@
 **/
 package org.astrogrid.common.bean;
 
+import org.apache.commons.jxpath.IdentityManager;
+import org.apache.commons.jxpath.JXPathContext;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,7 +42,7 @@ public class BaseBeanTest extends TestCase {
             d.setBackDoor(i > 1);
             d.setChildLock(i > 1);
             car.getDoors().add(d);
-        }
+        } 
         Engine e = new Engine();
         car.setEngine(e);
         e.setCapacity(1.2f);
@@ -100,8 +104,53 @@ public class BaseBeanTest extends TestCase {
         }
         assertEquals(2,count);
     }
+    
+    /** check current impleentation of jxpath doesn't provide an identity manager */
+    public void testIdentity() {
+        JXPathContext cxt = car.accessJXPathContext();
+        IdentityManager im = cxt.getIdentityManager();
+        assertNull(im);        
+    }
+        
+    public void testDescendent() {
+        Iterator i = car.findXPathIterator("//firingOrder[. > 2]");
+        assertNotNull(i);
+        while(i.hasNext()) {
+            Object o = i.next();
+            System.out.println(o);
+        }
+    }
 
     
+    public void testAreEquals() {
+        Object target = car.getEngine().getCylinders()[1]; //arrays have origin of 0
+        assertNotNull(target);
+        Object target1 = car.findXPathValue("/engine/cylinders[2]"); // xpath has origin of 1        
+        assertNotNull(target1);
+        assertEquals(target,target1);
+    }
+    
+    /** tests the technique used to implement getXPathFor() */
+    public void testFindXPathValue() {
+        Object target = car.getEngine().getCylinders()[1];
+        assertNotNull(target);       
+        String path = car.getXPathFor(target);
+        assertNotNull(path);
+        System.out.println(path);
+        Object found = car.findXPathValue(path);
+        assertNotNull(found);
+        assertEquals(target,found);
+        
+    }
+    
+    /** tests what happens when object isn't present in tree */
+    public void testWontFindXPathValue() {
+        Date d = new Date();
+        String path = car.getXPathFor(d);
+        assertNull(path);
+    }
+    
+
     
     
     /** little micky-mouse object model */
@@ -264,6 +313,9 @@ public class BaseBeanTest extends TestCase {
 
 /* 
 $Log: BaseBeanTest.java,v $
+Revision 1.2  2004/03/01 01:26:33  nw
+test of activity key method
+
 Revision 1.1  2004/02/10 17:30:57  nw
 added base class for castor-generated object models that provides xpath querying
  
