@@ -10,7 +10,7 @@
     </links>
     <menu name="Testing">
       <item name="Results"     href="junit-report.html"/>
-      <item name="I&R Wiki Page" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IntegrationRelease"/>
+      <item name="I and R Wiki Page" href="http://wiki.astrogrid.org/bin/view/Astrogrid/Itn04IntegrationRelease"/>
     </menu>
  </body>
 </project>
