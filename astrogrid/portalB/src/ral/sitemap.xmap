@@ -35,6 +35,7 @@
          	src="org.astrogrid.portal.cocoon.community.AdministrationAction"/>            
 	    <map:action name="astrogrid-credentials" src="org.astrogrid.portal.cocoon.community.CredentialAction"/>
 	    <map:action name="astrogrid-login" src="org.astrogrid.portal.cocoon.common.LoginAction"/>
+	    <map:action name="astrogrid-workflow" src="org.astrogrid.portal.cocoon.workflow.design.DesignAction"/>
       </map:actions>
    </map:components>
 
@@ -372,6 +373,67 @@
                   <map:serialize type="html"/>
                </map:act>
             </map:match>
+
+<!-- PJN -->
+      		<!-- Workflow: Administer workflows page --> 
+      		<!-- display without calling action -->
+      		<map:match pattern="agjobmonitor.html" >
+   	    	<map:generate src="workflow/xsp/workflow-administer.xsp" type="serverpages" />  
+   			<map:transform src="workflow/xsl/workflow-administer.xsl" > 
+   			  <map:parameter name="use-request-parameters" value="true"/>
+          	  <!-- Add the action params -->
+          	  <map:parameter name="action" value="{action}"/>
+   		 	</map:transform>
+        	<!-- Wrap the page in our HTML template -->
+              <map:transform src="common/xsl/astrogrid.xsl" label="003">
+		        <map:parameter name="credential" value="{credential}" />
+		        <map:parameter name="current-page"  value="agdataquery.html"/>
+                  
+                  <!-- Add the explorer page names -->
+                   <map:parameter name="current-page"  value="agmyspace.html"/>
+                   <map:parameter name="explorer-page" value="agmyspace.html"/>
+                   <map:parameter name="votable-page"  value="agvotable.html"/>
+                   <!-- Add the rest of the page names -->
+                   <map:parameter name="home-page"     value="agindex.html"/>
+                   <map:parameter name="help-page"     value="agjobmonitorhelp.html"/>
+                   <map:parameter name="registry-page" value="agregistry.html"/>
+                   <map:parameter name="query-page"    value="agdataquery.html"/>
+                   <map:parameter name="title-name"    value="Job Monitor"/>                   
+                   <map:parameter name="monitor-page"  value="agjobmonitor.html"/>
+                   <map:parameter name="tools-page"    value="agtools.html"/>
+                   <map:parameter name="logout-page"   value="aglogout.html"/>
+    	           <map:parameter name="admin-page"    value="agadministration.html"/>
+                   <map:parameter name="current-page"  value="agjobmonitor.html"/>                   
+                  </map:transform>
+       		<!-- Serialize as HTML -->   		
+   			<map:serialize type="html" /> 
+      		</map:match>
+
+		     <!-- Workflow: Administer workflows page -->           
+    		  <!-- display and call action -->
+		   	  <map:match pattern="agworkflow-administer.html" >
+   	  	<map:act type="astrogrid-workflow">
+   	    <map:parameter name="user-param" value="user" />
+   	    <map:parameter name="community" value="community" />
+   		<map:generate src="workflow/xsp/workflow-detail.xsp" type="serverpages" />  
+   		<map:transform src="workflow/xsl/workflow-detail.xsl" >   		
+   		    <map:parameter name="action" value="{action}" />
+   		    <map:parameter name="ErrorMessage" value="{ErrorMessage}"/>
+   		 </map:transform>
+        <!-- Wrap the page in our HTML template -->
+        <map:transform src="common/xsl/astrogrid.xsl" >       
+        </map:transform>
+       <!-- Serialize as HTML -->   		
+   		<map:serialize type="html" />
+   	   </map:act>
+       </map:match>
+
+<!-- PJN -->
+
+
+
+
+
 
             <!-- Explorer images -->
             <map:match pattern="explorer/images/*.gif">

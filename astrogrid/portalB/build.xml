@@ -1,11 +1,14 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: pah $</cvs:date>
-    | <cvs:author>$Date: 2003/10/01 12:58:04 $</cvs:author>
-    | <cvs:version>$Revision: 1.50 $</cvs:version>
+    | <cvs:date>$Author: pjn3 $</cvs:date>
+    | <cvs:author>$Date: 2003/10/02 14:48:27 $</cvs:author>
+    | <cvs:version>$Revision: 1.51 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.51  2003/10/02 14:48:27  pjn3
+    | *** empty log message ***
+    |
     | Revision 1.50  2003/10/01 12:58:04  pah
     | pick up ant.properties from user $HOME - consistent with community WG
     |
@@ -207,6 +210,11 @@
 	<!-- JConfig jar -->
 	<property name="jconfig.jar" value="depends/jconfig/jconfig.jar" />
 	<property name="jconfig.home" value="depends/jconfig/" />
+
+<!-- servlet.jar PJN -->
+	<property name="servlet.jar" value="lib/servlet.jar" />
+	<property name="workflow.home" value="depends/workflow" />
+<!-- /PJN -->	
 	
 	<!-- plugins location -->
 	<property name="plugin.topcat.jar" value="depends/plugins/topcat-astrogrid.jar" />
@@ -305,6 +313,18 @@
 		<pathelement location="${jconfig.jar}"/>
 	</path>
 	
+<!-- PJN -->
+	<path id="servlet.classpath">
+		<pathelement location="${servlet.jar}"/>
+	</path>		
+
+	<!-- The workflow libraries -->
+	<path id="workflow.classpath">
+		<fileset dir="${workflow.home}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
+<!-- /PJN -->	
 	
 	<!-- The Plugin libraries -->
 	<path id="community.classpath">
@@ -1180,6 +1200,11 @@
 				
 				<path refid="jconfig.classpath"/>
 				
+<!-- PJN -->				
+				<path refid="servlet.classpath"/>
+				<path refid="workflow.classpath"/>
+<!-- /PJN -->
+					
 				<path refid="community.classpath" />
 				<!-- Tomcat servlet libraries (required for Axis 1.0) -->
 				<path refid="tomcat.servlet.classpath"/>
@@ -2362,7 +2387,15 @@
 			<fileset dir="${axis.webapp}/WEB-INF/lib">
 				<include name="**/*.jar"/>
 			</fileset>
+		</copy>		
+<!-- PJN -->
+		<!-- Copy our workflow jars -->
+		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
+			<fileset dir="${workflow.home}">
+				<include name="**/*.jar"/>
+			</fileset>
 		</copy>
+<!-- /PJN -->		
 		<!-- Copy the RAL files across (including the astrogrid sitemap) -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/astrogrid">
 			<fileset dir="src/ral">
