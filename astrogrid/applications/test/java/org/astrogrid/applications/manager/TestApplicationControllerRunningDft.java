@@ -1,5 +1,5 @@
 /*
- * $Id: TestApplicationControllerRunningHyperZ.java,v 1.4 2004/01/25 12:26:52 pah Exp $
+ * $Id: TestApplicationControllerRunningDft.java,v 1.1 2004/01/25 12:26:52 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,16 +33,16 @@ import junit.framework.TestCase;
  * @version $Name:  $
  * @since iteration4
  */
-public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestCase {
+public class TestApplicationControllerRunningDft extends BaseApplicationTestCase {
 
    private CommandLineApplicationController controller;
-   private final String myspaceBaseRef="/"+AVODemoConstants.ACCOUNT+"/serv1/";
 
    private String jobstepid = null;
 
    private String monitorURL = null;
 
    private String applicationid = null;
+   private final String myspaceBaseRef="/"+AVODemoConstants.ACCOUNT+"/serv1/";
 
 
    private ParameterValues parameters = null;
@@ -53,12 +53,12 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
     * Constructor for CommandLineApplicationControllerTest.
     * @param arg0
     */
-   public TestApplicationControllerRunningHyperZ(String arg0) {
+   public TestApplicationControllerRunningDft(String arg0) {
       super(arg0);
    }
 
    public static void main(String[] args) {
-      junit.textui.TestRunner.run(TestApplicationControllerRunningHyperZ.class);
+      junit.textui.TestRunner.run(TestApplicationControllerRunningDft.class);
    }
 
    /*
@@ -69,7 +69,7 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
       controller = new CommandLineApplicationController();
       //completely bogus community snippet....
       monitorURL=null; //application controller will not attempt to call if it is null
-      applicationid = "HyperZ";
+      applicationid = "CrossMatcher";
       parameters = new ParameterValues();
    }
 
@@ -126,10 +126,12 @@ public class TestApplicationControllerRunningHyperZ extends BaseApplicationTestC
       String exid;
       parameters.setMethodName("simple");
 //      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
-//    parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/join.xml</parameter></input><output><parameter name='output_catalog'>hyperzout</parameter></output></tool>");
       parameters.setParameterSpec(
-         "<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>"+myspaceBaseRef+"merged</parameter></input><output><parameter name='output_catalog'>"+myspaceBaseRef+"hyperzout</parameter></output></tool>");
-
+         "<tool><input><parameter name='targets'>"+myspaceBaseRef+"sexout_z</parameter>"+
+      "<parameter name='matches'>"+myspaceBaseRef+"sexout_b</parameter>" +
+      "<parameter name='matches'>"+myspaceBaseRef+"sexout_v</parameter>" +
+      "<parameter name='matches'>"+myspaceBaseRef+"sexout_i</parameter>" +
+                 "</input><output><parameter name='merged_output'>"+myspaceBaseRef+"merged</parameter></output></tool>");
       exid = controller.initializeApplication(applicationid, jobstepid, monitorURL, user, parameters);
       CmdLineApplication app = controller.getRunningApplication(exid);
       assertNotNull("applicaton object not returned after initialization", app);

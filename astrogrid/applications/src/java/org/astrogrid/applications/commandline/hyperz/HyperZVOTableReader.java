@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableReader.java,v 1.3 2004/01/23 19:20:22 pah Exp $
+ * $Id: HyperZVOTableReader.java,v 1.4 2004/01/25 12:26:52 pah Exp $
  * 
  * Created on 18-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -107,7 +107,7 @@ public class HyperZVOTableReader {
             SavotField field = (SavotField)fieldSet.getItemAt(i);
             String ucd = field.getUcd();
             if (ucd.startsWith("PHOT_MAG_")) {
-               char band = ucd.charAt(9);
+               char band = ucd.toUpperCase().charAt(9);
                switch (band) {
                   case 'B' :
                      {
@@ -200,7 +200,7 @@ public class HyperZVOTableReader {
          logger.error(e);
       }
       catch (Exception e) {
-        logger.error(target);
+        logger.error(target, e);
       };
       return sv;
    }

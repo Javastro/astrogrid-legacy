@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceReferenceParameter.java,v 1.2 2004/01/18 12:28:00 pah Exp $
+ * $Id: MySpaceReferenceParameter.java,v 1.3 2004/01/25 12:26:52 pah Exp $
  *
  * Created on 08 December 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -23,6 +23,7 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 public class MySpaceReferenceParameter extends FileReferenceParameter {
    /**
     * @param parameterDescription
+    * @TODO REFACTORME - need to look at this hierarchy - also a general file referrence could also be a url - it makes sense...
     */
    public MySpaceReferenceParameter(AbstractApplication application, ParameterDescription parameterDescription) {
       super(application, parameterDescription);

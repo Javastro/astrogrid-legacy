@@ -1,5 +1,5 @@
 /*
- * $Id: BaseApplicationTestCase.java,v 1.1 2003/12/31 00:56:17 pah Exp $
+ * $Id: BaseApplicationTestCase.java,v 1.2 2004/01/25 12:26:52 pah Exp $
  * 
  * Created on 30-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -48,7 +48,8 @@ public class BaseApplicationTestCase extends BaseDBTestCase {
     * @see junit.framework.TestCase#setUp()
     */
    protected void setUp() throws Exception {
-      Vector servers = null;
+      Vector servers = new Vector();
+      servers.add("serv1");
       super.setUp();
       mySpaceManager = ApplicationControllerConfig.getInstance().getMySpaceManager();
       user = new User();

@@ -1,5 +1,5 @@
 /*
- * $Id: Parameter.java,v 1.6 2004/01/13 00:12:43 pah Exp $
+ * $Id: Parameter.java,v 1.7 2004/01/25 12:26:52 pah Exp $
  *
  * Created on 13 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -75,7 +75,7 @@ abstract public class Parameter {
     * @see java.lang.Object#toString()
     */
    public String toString() {
-      return parameterDescription.getName() +" rawval="+ rawValue;
+      return parameterDescription.getName() +" rawval="+ rawValue + " argvals="+argValue;
    }
 
 
@@ -126,6 +126,15 @@ abstract public class Parameter {
     */
    public AbstractApplication getApplication() {
       return application;
+   }
+
+   /**
+    * REFACTORME - this should not really be necessary - should be internally generated...
+    * @param list
+    * @deprecated
+    */
+   public void setArgValue(List list) {
+      argValue = list;
    }
 
 }

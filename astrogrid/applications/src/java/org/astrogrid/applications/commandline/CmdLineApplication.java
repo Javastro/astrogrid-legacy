@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplication.java,v 1.13 2004/01/23 19:20:22 pah Exp $
+ * $Id: CmdLineApplication.java,v 1.14 2004/01/25 12:26:52 pah Exp $
  *
  * Created on 14 October 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -78,7 +78,6 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       preRunHook();
       startApplication();
       waitForApplication();
-      status = Status.RUNNING;
       return true;
       //TODO set this to something sensible whether the application fails or not.
    }
@@ -104,6 +103,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
       // allow last minute manipulation of parameters before the application runs
      postParamSetupHook();
       // TODO check for position parameters - really need to sort the parameter list based on the parameter position information.
+      // TODO need to get good way to process repeated parameters also
       // for now just go through the arguments and add
       for (Iterator iter = parameters.iterator(); iter.hasNext();) {
          Parameter param = (Parameter)iter.next();
@@ -124,7 +124,7 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
          Parameter outparam = (Parameter)iter.next();
          if (applicationInterface.parameterType(outparam.getName())
             == ApplicationInterface.ParameterDirection.OUTPUT) {
-
+               
             outparam.writeBack();
          }
 
@@ -224,14 +224,18 @@ public class CmdLineApplication extends AbstractApplication implements Runnable 
 
          if (logger.isDebugEnabled())
             logger.debug(args);
+         status = Status.RUNNING;
+
          process =
             runtime.exec(args, envp, applicationEnvironment.getExecutionDirectory());
       }
       catch (IOException e1) {
+         status =Status.ERROR;
+
          throw new ApplicationExecutionException(
             "Cannot create the application process",
             e1);
-
+ 
       }
       
       errPiper = new StreamPiper("err", process.getErrorStream(), stderr);

@@ -1,5 +1,5 @@
 /*
- * $Id: AVODemoRunner.java,v 1.1 2004/01/23 19:20:22 pah Exp $
+ * $Id: AVODemoRunner.java,v 1.2 2004/01/25 12:26:52 pah Exp $
  * 
  * Created on 23-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -55,14 +55,19 @@ public class AVODemoRunner {
    public void runit()
    {
       String exid;
-      exid = runSExtractor("b");
+//      exid = runSExtractor("b");
+//      waitForCompletion(exid);
+//      exid = runSExtractor("v");
+//      waitForCompletion(exid);
+//      exid = runSExtractor("i");
+//      waitForCompletion(exid);
+//      exid = runSExtractor("z");
+//      waitForCompletion(exid);
+//      exid = runDft();
+//      waitForCompletion(exid);
+      exid = runHyperZ();
       waitForCompletion(exid);
-      exid = runSExtractor("v");
-      waitForCompletion(exid);
-      exid = runSExtractor("i");
-      waitForCompletion(exid);
-      exid = runSExtractor("z");
-      waitForCompletion(exid);
+
      
    }
 
@@ -75,7 +80,37 @@ public class AVODemoRunner {
       parameters.setMethodName("simple");
       //      parameters.setParameterSpec("<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/bviz-mag-sample.cat</parameter></input><output><parameter name='output_catalog'>out1file</parameter></output></tool>");
       parameters.setParameterSpec(
-         "<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>/home/applications/demo/hyperz/join.xml</parameter></input><output><parameter name='output_catalog'>hyperzout</parameter></output></tool>");
+         "<tool><input><parameter name='config_file'>/home/applications/demo/hyperz/zphot.param</parameter><parameter name='input_catalog'>"+myspaceBaseRef+"merged</parameter></input><output><parameter name='output_catalog'>"+myspaceBaseRef+"hyperzout</parameter></output></tool>");
+      try {
+         exid =
+            controller.initializeApplication(
+               applicationid,
+               jobstepid,
+               monitorURL,
+               user,
+               parameters);
+         controller.executeApplication(exid);
+      }
+      catch (RemoteException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return exid;
+   }
+
+   private String runDft() {
+      ParameterValues parameters = null;
+      String monitorURL = null;
+      String applicationid = "CrossMatcher";
+      parameters = new ParameterValues();
+      String exid = null;
+      parameters.setMethodName("simple");
+      parameters.setParameterSpec(
+         "<tool><input><parameter name='targets'>"+myspaceBaseRef+"sexout_z</parameter>"+
+      "<parameter name='matches'>"+myspaceBaseRef+"sexout_b</parameter>" +
+      "<parameter name='matches'>"+myspaceBaseRef+"sexout_v</parameter>" +
+      "<parameter name='matches'>"+myspaceBaseRef+"sexout_i</parameter>" +
+                 "</input><output><parameter name='merged_output'>"+myspaceBaseRef+"merged</parameter></output></tool>");
       try {
          exid =
             controller.initializeApplication(

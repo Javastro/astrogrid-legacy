@@ -1,5 +1,5 @@
 /*
- * $Id: HyperZVOTableWriter.java,v 1.1 2004/01/22 12:41:36 pah Exp $
+ * $Id: HyperZVOTableWriter.java,v 1.2 2004/01/25 12:26:52 pah Exp $
  * 
  * Created on 20-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -66,12 +66,12 @@ public class HyperZVOTableWriter {
    public void write() {
       
       //FIXME the file name will be wrong when copying into myspace
-      File outputfil = new File(env.getExecutionDirectory(), outCat.getRealFile().getPath()+".z_phot");
+      File outputfil = new File(outCat.getRealFile().getPath()+".z_phot");
       tmpfile.delete();
       boolean renamesuccess = outputfil.renameTo(tmpfile);
       
       internalAddToVOTable(tmpfile);
-      internalWriteVOTable(outputfil);
+      internalWriteVOTable(outCat.getRealFile());
       
    }
 
@@ -87,12 +87,14 @@ public class HyperZVOTableWriter {
     */
    private void internalAddToVOTable(File tmpfile) {
       SavotResource resource = (SavotResource)voTable.getResources().getItemAt(0);
+      resource.setDescription("This is the ouput of running the hyperz from within the ASTROGRID job system as part of the AVO Demo Jan 2004 - Paul Harrison (pah@jb.man.ac.uk)");
       TRSet tr = resource.getTRSet(0);
       FieldSet fieldSet = resource.getFieldSet(0);
       SavotField photzfield = new SavotField();
       photzfield.setDescription("photometric redshift estimated by hyperz");
       photzfield.setName("photoz");
       photzfield.setUcd("REDSHIFT_PHOT");
+      photzfield.setDataType("float");
       fieldSet.addItem(photzfield);
       
       try {
