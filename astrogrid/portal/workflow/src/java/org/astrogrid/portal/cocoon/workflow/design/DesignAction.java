@@ -1161,7 +1161,10 @@ this.readToolList(); // temp PJN
            if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStep() entry" ) ;
               
            try {
-              this.insertActivity( new Step() ) ;
+			  String name = "no name set";
+           	  Step step = new Step() ;
+           	  step.setName( name ) ;
+              this.insertActivity( step ) ;
             }
             finally {
                   if( TRACE_ENABLED ) trace( "DesignActionImpl.insertStep() exit" ) ;
