@@ -1,5 +1,5 @@
 /*
- * $Id: TestConfig.java,v 1.4 2004/03/23 12:51:25 pah Exp $
+ * $Id: TestConfig.java,v 1.5 2004/03/23 19:46:04 pah Exp $
  *
  * Created on 13 September 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -20,7 +20,8 @@ public class TestConfig implements RawPropertyConfig {
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(TestConfig.class);
    private TestConfig() {
-    bundle = ResourceBundle.getBundle(this.getClass().getPackage().getName()+".Test");
+//      bundle = ResourceBundle.getBundle(this.getClass().getPackage().getName()+".Test");
+      bundle = ResourceBundle.getBundle("Test");
     
    }
    private static TestConfig instance;

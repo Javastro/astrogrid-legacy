@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationEnvironmentTest.java,v 1.1 2003/12/11 14:36:16 pah Exp $
+ * $Id: ApplicationEnvironmentTest.java,v 1.2 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 11-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -13,6 +13,8 @@
 
 package org.astrogrid.applications.commandline;
 
+import java.io.File;
+
 import org.astrogrid.applications.common.config.BaseDBTestCase;
 
 import junit.framework.TestCase;
@@ -23,6 +25,8 @@ import junit.framework.TestCase;
  * @since iteration4
  */
 public class ApplicationEnvironmentTest extends BaseDBTestCase {
+
+   private CmdLineApplicationEnvironment env;
 
    /**
     * Constructor for ApplicationEnvironmentTest.
@@ -41,25 +45,33 @@ public class ApplicationEnvironmentTest extends BaseDBTestCase {
     */
    protected void setUp() throws Exception {
       super.setUp();
+      env = new CmdLineApplicationEnvironment(config);
+      assertNotNull(env);
+      
       
    }
 
    final public void testGetErrorLog() {
-      //TODO Implement getErrorLog().
-      fail("no test yet");
+     File f = env.getErrorLog();
+     assertNotNull(f);
       
    }
 
    final public void testGetExecutionDirectory() {
-      //TODO Implement getExecutionDirectory().
+     File f = env.getExecutionDirectory();
+     assertNotNull(f);
    }
 
    final public void testGetExecutionId() {
-      //TODO Implement getExecutionId().
+     int id = env.getExecutionId();
+     int id2 = env.getExecutionId();
+     
+     assertTrue("a particular environment should always return the same executionid", id == id2);
    }
 
    final public void testGetOutputLog() {
-      //TODO Implement getOutputLog().
+      File f = env.getOutputLog();
+      assertNotNull(f);
    }
 
 }

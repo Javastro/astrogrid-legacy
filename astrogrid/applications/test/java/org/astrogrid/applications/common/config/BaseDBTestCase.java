@@ -1,5 +1,5 @@
 /*
- * $Id: BaseDBTestCase.java,v 1.3 2004/03/23 12:51:25 pah Exp $
+ * $Id: BaseDBTestCase.java,v 1.4 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -88,8 +88,8 @@ public class BaseDBTestCase extends BaseTestCase {
          runSQLScript(script, conn);
          UnitTestData.load(conn);
          
-         // FIXME create a new rawconfig using the newly created datasource.
-         new CeaControllerConfig(ds);
+         // set the datasource using the newly created datasource.
+         config.setDataSource(ds);
 
       }
       catch (SQLException sqle) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by Paul Harrison (Jodrell Bank Observatory) -->
+<!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
 <CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd">
 	<Application name="testapp">
@@ -27,6 +27,10 @@
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
 			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P3d" type="FileReference" switchType="normal" commandSwitch="P3">
+				<agpd:UI_Name/>
+				<agpd:UI_Description/>
+			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="P4" type="string" commandSwitch="Parameter4" switchType="keyword">
 				<agpd:UI_Name/>
 				<agpd:UI_Description/>
@@ -51,6 +55,10 @@
 				<agpd:UI_Name/>
 				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
 			</CmdLineParameterDefn>
+			<CmdLineParameterDefn name="P9d" type="FileReference" commandSwitch="P9">
+				<agpd:UI_Name/>
+				<agpd:UI_Description>The contents of this file will be copied to the output</agpd:UI_Description>
+			</CmdLineParameterDefn>
 			<CmdLineParameterDefn name="P10" type="boolean"/>
 			<CmdLineParameterDefn name="P11" type="anyURI"/>
 			<CmdLineParameterDefn name="P12" type="FileReference" switchType="normal">
@@ -68,6 +76,17 @@
 				</input>
 				<output>
 					<pref ref="P3"/>
+				</output>
+			</Interface>
+			<Interface name="Ilocal">
+				<input>
+					<pref ref="P1"/>
+					<pref ref="P2"/>
+					<pref ref="P4"/>
+					<pref ref="P9d"/>
+				</input>
+				<output>
+					<pref ref="P3d"/>
 				</output>
 			</Interface>
 			<Interface name="I2">

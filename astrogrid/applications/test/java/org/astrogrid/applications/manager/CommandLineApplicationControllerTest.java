@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineApplicationControllerTest.java,v 1.15 2004/03/23 12:51:25 pah Exp $
+ * $Id: CommandLineApplicationControllerTest.java,v 1.16 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 01-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -82,6 +82,7 @@ public class CommandLineApplicationControllerTest extends BaseApplicationTestCas
    final public void testMultiRun() throws CeaException
    {
       String ex1, ex2;
+      setupTool();
       ex1 = runApplication();
       
       //run te applications

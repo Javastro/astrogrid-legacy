@@ -1,5 +1,5 @@
 /*
- * $Id: CeaControllerConfigTest.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+ * $Id: CeaControllerConfigTest.java,v 1.3 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 22-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -12,6 +12,13 @@
  */ 
 
 package org.astrogrid.applications.common.config;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.mail.Session;
+import javax.sql.DataSource;
 
 import junit.framework.TestCase;
 
@@ -53,5 +60,46 @@ public class CeaControllerConfigTest extends TestCase {
       System.out.println(config.toHTMLReport());
    }
 
+   final public void testGetApplicationConfigFile() throws MalformedURLException {
+       URL url = config.getApplicationConfigFile();
+       assertNotNull(url);
+    }
+
+    final public void testGetRegistryTemplateURL() throws MalformedURLException {
+       URL url = config.getRegistryTemplateURL();
+       assertNotNull(url);
+       
+    }
+
+    final public void testGetWorkingDirectory() {
+       File d = config.getWorkingDirectory();
+       assertNotNull(d);
+    }
+
+
+    final public void testGetDataSource() {
+       DataSource ds = config.getDataSource();
+       assertNotNull(ds);
+    }
+
+    final public void testGetMySpaceManagerEndpoint() {
+       String url = config.getMySpaceManagerEndpoint();
+       assertNotNull(url);
+    }
+
+    final public void testMailSessionInstance() {
+       Session ms = config.mailSessionInstance();
+       assertNotNull(ms);
+    }
+
+    final public void testGetRegistryEndpoint() {
+       String re = config.getRegistryEndpoint();
+       assertNotNull(re);
+    }
+
+    final public void testGetRawPropertyConfig() {
+       RawPropertyConfig rp = config.getRawPropertyConfig();
+       assertNotNull(rp);
+    }
 
 }

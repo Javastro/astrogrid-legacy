@@ -4,23 +4,23 @@
 \\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" name="">
 	<sequence>
 		<step name="test step">
-			<tool name="testapp" interface="simple">
+			<tool name="testapp" interface="I1">
 				<input>
-					<parameter name="P1">
+					<parameter name="P1" type="integer">
 						<agpd:value>30</agpd:value>
 					</parameter>
-					<parameter name="P2">
+					<parameter name="P2" type="double">
 						<agpd:value>2.5</agpd:value>
 					</parameter>
-					<parameter name="P4">
+					<parameter name="P4" type="string">
 						<agpd:value>any rubbish</agpd:value>
 					</parameter>
-					<parameter name="P9">
+					<parameter name="P9" type="MySpace_FileReference">
 						<agpd:value>testInFile</agpd:value>
 					</parameter>
 				</input>
 				<output>
-					<parameter name="P3">
+					<parameter name="P3" type="MySpace_FileReference">
 						<agpd:value>outputfile</agpd:value>
 					</parameter>
 				</output>

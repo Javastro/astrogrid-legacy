@@ -1,5 +1,5 @@
 /*
- * $Id: CeaControllerConfig.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+ * $Id: CeaControllerConfig.java,v 1.3 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -55,17 +55,6 @@ public class CeaControllerConfig {
    }
 
    /**
-    * constructor to allow unit testing. Note that this is package private
-   * @param ds
-   */
-   CeaControllerConfig(DataSource ds) {
-      rawPropertyConfig = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
-
-      instance = this;
-      dataSource = ds;
-   }
-
-   /**
     * Get an instance. This has been made protected to stop "accidental" use outside the inversion of control pattern.
     * @return
     */
@@ -86,7 +75,6 @@ public class CeaControllerConfig {
    /**
     * Find the config file that defines which applications we can run...
     * @return The location of the config file
-    * @TODO - make this use url instead...
     *
     */
    public URL getApplicationConfigFile() throws MalformedURLException {
@@ -94,8 +82,18 @@ public class CeaControllerConfig {
       URL file =
          new URL(
             rawPropertyConfig.getProperty(ApplicationsConstants.ApplicationConfigKey));
-      //TODO should test for the existance of the file here.
       return file;
+   }
+   
+   /**
+    * Get the URL to the file that is used as the template for registry entries.
+    * @return
+    * @throws MalformedURLException
+    */
+   public URL getRegistryTemplateURL() throws MalformedURLException
+   {
+      URL url = new URL(rawPropertyConfig.getProperty(ApplicationsConstants.RegistryTemplateKey));
+      return url;
    }
 
    public File getWorkingDirectory() {
@@ -182,6 +180,11 @@ public class CeaControllerConfig {
       rep.append("</li>");
 
       rep.append("<li>");
+      rep.append("Registry Template file: ");
+      rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.RegistryTemplateKey));
+      rep.append("</li>");
+
+      rep.append("<li>");
       rep.append("registry endpoint: ");
       rep.append(rawPropertyConfig.getProperty(ApplicationsConstants.RegistryEndpointKey));
       rep.append("</li>");
@@ -207,6 +210,14 @@ public class CeaControllerConfig {
     */
    public RawPropertyConfig getRawPropertyConfig() {
       return rawPropertyConfig;
+   }
+
+   /**
+    * Sets the datasource. This is only used in testing where the datasource is not available from jndi
+    * @param source
+    */
+    void setDataSource(javax.sql.DataSource source) {
+      dataSource = source;
    }
 
 }

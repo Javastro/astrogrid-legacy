@@ -1,5 +1,5 @@
 /*
- * $Id: CmdLineApplicationEnvironment.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: CmdLineApplicationEnvironment.java,v 1.3 2004/03/23 19:46:04 pah Exp $
  *
  * Created on 24 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -63,8 +63,12 @@ public class CmdLineApplicationEnvironment {
       // set up the working directory
       this.config = config;
  
+      
+      DatabasePersistenceEngine persistance = DatabasePersistenceEngine.getInstance(config);
 
-      executionId = DatabasePersistenceEngine.getInstance(config).getNewID();
+      assert persistance != null : "the persistence engine must exist";
+      
+      executionId = persistance.getNewID();
       logger.info("new execution id="+executionId);
       executionDirectory =
          new File(

@@ -1,5 +1,5 @@
 /*
- * $Id: DatabasePersistenceEngine.java,v 1.2 2004/03/23 12:51:26 pah Exp $
+ * $Id: DatabasePersistenceEngine.java,v 1.3 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 05-Dec-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -40,15 +40,17 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
    private CeaControllerConfig config;
    private DatabasePersistenceEngine(CeaControllerConfig conf) {
 
+      assert conf != null : this;
       config = conf ;
       ds = config.getDataSource();
+      assert ds != null : "datasource must be set for Database persistence engine to work";
 
    }
    public static DatabasePersistenceEngine getInstance(CeaControllerConfig conf) {
       if (instance == null) {
          synchronized (DatabasePersistenceEngine.class) {
             if (instance == null) {
-               instance = new DatabasePersistenceEngine( conf);
+               instance = new DatabasePersistenceEngine(conf);
             }
          }
 
@@ -62,7 +64,8 @@ public class DatabasePersistenceEngine implements PersistenceEngine {
     */
    public synchronized int getNewID() {
 
-      logger.info("getting a new execution id form datasource=" + ds.toString());
+      
+      logger.info("getting a new execution id from datasource=" + ds.toString());
 
       Connection conn = null;
       ResultSet rs;

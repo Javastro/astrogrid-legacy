@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.8 2004/03/23 12:51:25 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.9 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -50,7 +50,7 @@ public final class ApplicationsConstants {
     */
    public final static String WorkingDirectory = "WorkingDirectory";
 
-   //FIXME - The myspacemanager reference should be got from the registry....
+   //TODO - The myspacemanager reference should be got from the registry....
    public final static String MySpaceManagerKey = "MySpaceManager";
    
    /**
@@ -58,5 +58,12 @@ public final class ApplicationsConstants {
     */
    public final static String SMTPServerKey = "mail/AGMailSession";
    
+   /**
+    * Points to the registryEndpoint
+    */
    public final static String RegistryEndpointKey = "RegistryEndpoint";
+   /**
+    * Points to the URL entry that points to the file used as
+    */
+   public final static String RegistryTemplateKey = "RegistryTemplate";
 }

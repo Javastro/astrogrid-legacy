@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowUsingTestCase.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+ * $Id: WorkFlowUsingTestCase.java,v 1.3 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 18-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -51,16 +51,18 @@ public class WorkFlowUsingTestCase extends BaseDBTestCase {
    public WorkFlowUsingTestCase(String arg0) {
       super(arg0);
       
-      InputStream is = this.getClass().getResourceAsStream("testworkflow.xml");
+      InputStream is = this.getClass().getResourceAsStream("/testworkflow.xml");
       InputSource source = new InputSource(is);
       try {
          workflow = (Workflow)Unmarshaller.unmarshal(Workflow.class, source);
          assertNotNull(workflow);
+         workflow.validate();
          tool = (Tool)workflow.findXPathValue("//tool"); // there should only be one!
          assertNotNull(tool);
         
       }
       catch (MarshalException e) {
+         logger.error("cannot unmarshall the testworkflow", e);
          fail("cannot unmarshall the testworkflow" + e);
       }
       catch (ValidationException e) {

@@ -1,5 +1,5 @@
 /*
- * $Id: AllTests.java,v 1.2 2004/03/23 12:51:25 pah Exp $
+ * $Id: AllTests.java,v 1.3 2004/03/23 19:46:04 pah Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,7 +33,7 @@ public class AllTests {
       TestSuite suite =
          new TestSuite("Test for org.astrogrid.applications.common.config");
       //$JUnit-BEGIN$
-      suite.addTest(new TestSuite(ApplicationControllerConfigTest.class));
+      suite.addTest(new TestSuite(CeaControllerConfigTest.class));
       suite.addTest(new TestSuite(ConfigTest.class));
       suite.addTest(new TestSuite(DBSetupTest.class));
       //$JUnit-END$
