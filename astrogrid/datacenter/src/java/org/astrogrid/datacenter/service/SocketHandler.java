@@ -1,5 +1,5 @@
 /*
- * $Id: SocketHandler.java,v 1.4 2003/09/10 17:57:31 mch Exp $
+ * $Id: SocketHandler.java,v 1.5 2003/09/11 09:57:15 nw Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -90,11 +90,6 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
             {
                e.printStackTrace(System.out);
             }
-            catch (Throwable e)
-            {
-               out.writeChars("Oh no it's all gone horribly wrong "+e);
-               e.printStackTrace(System.out);
-            }
             catch (SAXException e)
             {
                //need to tell user
@@ -104,6 +99,11 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
             catch (QueryException e)
             {
                //need to tell user
+               out.writeChars("Oh no it's all gone horribly wrong "+e);
+               e.printStackTrace(System.out);
+            }
+            catch (Throwable e)
+            {
                out.writeChars("Oh no it's all gone horribly wrong "+e);
                e.printStackTrace(System.out);
             }
@@ -120,6 +120,10 @@ public class SocketHandler extends ServiceServer implements Runnable, ServiceLis
 
 /*
 $Log: SocketHandler.java,v $
+Revision 1.5  2003/09/11 09:57:15  nw
+reordered catch statements - my compiler was complaining that
+two were unreachable (as Throwable beats all)
+
 Revision 1.4  2003/09/10 17:57:31  mch
 Tidied xml doc helpers and fixed (?) job/web listeners
 
