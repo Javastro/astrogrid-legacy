@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.7 2004/03/09 18:50:06 mch Exp $
+ * $Id: SqlResults.java,v 1.8 2004/03/09 21:54:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -78,17 +78,22 @@ public class SqlResults implements QueryResults
          throw ioe;
       }
    }
+
+   /** Stream version of the writer */
+   public void toVotable(OutputStream out) throws IOException {
+      toVotable(new OutputStreamWriter(out));
+   }
    
    /**
     * Converts results to VOTable to given outputstream.  I (MCH) don't think this
     * is very pleasant, and will break when the votable format changes, but
     * is easy to fix...
     */
-   public void toVotable(OutputStream out) throws IOException
+   public void toVotable(Writer out) throws IOException
    {
       try
       {
-         PrintStream printOut = new PrintStream(new BufferedOutputStream(out));
+         PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
          
          printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
          printOut.println("<VOTABLE version='1.0'>");
@@ -191,6 +196,9 @@ public class SqlResults implements QueryResults
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.8  2004/03/09 21:54:58  mch
+ Added Writer methods to toVotables for JSPs
+
  Revision 1.7  2004/03/09 18:50:06  mch
  Fixed workspace used when closed
 

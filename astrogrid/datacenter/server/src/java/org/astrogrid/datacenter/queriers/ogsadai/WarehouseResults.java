@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseResults.java,v 1.2 2004/01/24 20:44:25 gtr Exp $
+ * $Id: WarehouseResults.java,v 1.3 2004/03/09 21:54:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,13 +8,14 @@ package org.astrogrid.datacenter.queriers.ogsadai;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import org.astrogrid.datacenter.queriers.QueryResults;
 import org.w3c.dom.Document;
 
 /**
  * A simple wrapper to hold a VOTable results Document produced by
- * a {@link WarehouseQuerier}. 
+ * a {@link WarehouseQuerier}.
  *
  * @TOFIX This may need extending with more functionality to do with
  * examining metadata, etc.
@@ -41,18 +42,24 @@ public class WarehouseResults implements QueryResults
   public Document toVotable() {
     return this.results;
   }
+
+  /** Stream version of the writer */
+   public void toVotable(OutputStream out) throws IOException {
+      toVotable(new OutputStreamWriter(out));
+   }
+   
    
   /**
-   * Return VOTable results to given outputstream.  
+   * Return VOTable results to given outputstream.
    */
-  public void toVotable(OutputStream out) throws IOException
+  public void toVotable(Writer out) throws IOException
   {
     throw new IOException("Not implemented yet");
     /*
     try
     {
        PrintStream printOut = new PrintStream(new BufferedOutputStream(out));
-      //DO SOMETHING        
+      //DO SOMETHING
        printOut.flush();
     }
     */
@@ -61,6 +68,9 @@ public class WarehouseResults implements QueryResults
 
 /*
  $Log: WarehouseResults.java,v $
+ Revision 1.3  2004/03/09 21:54:58  mch
+ Added Writer methods to toVotables for JSPs
+
  Revision 1.2  2004/01/24 20:44:25  gtr
  Merged from GDW-integration branch.
 

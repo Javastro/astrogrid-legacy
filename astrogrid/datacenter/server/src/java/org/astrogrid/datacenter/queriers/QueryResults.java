@@ -1,5 +1,5 @@
 /*
- * $Id: QueryResults.java,v 1.3 2004/01/14 17:47:36 nw Exp $
+ * $Id: QueryResults.java,v 1.4 2004/03/09 21:54:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -8,7 +8,7 @@ package org.astrogrid.datacenter.queriers;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
+import java.io.Writer;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -52,5 +52,8 @@ public interface QueryResults
     * formed from the results.
     */
    public void toVotable(OutputStream out) throws IOException, SAXException;
+
+   /** As above */
+   public void toVotable(Writer out) throws IOException, SAXException;
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: FitsResults.java,v 1.3 2004/03/08 00:31:28 mch Exp $
+ * $Id: FitsResults.java,v 1.4 2004/03/09 21:54:58 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -51,13 +51,20 @@ public class FitsResults implements QueryResults {
       }
    }
    
-   /**
+   /** Stream version of the writer */
+   public void toVotable(OutputStream out) throws IOException {
+      toVotable(new OutputStreamWriter(out));
+   }
+   
+
+  /**
     * Converts results to VOTable to given outputstream.  I (MCH) don't think this
     * is very pleasant, and will break when the votable format changes, but
     * is easy to fix...
     */
-   public void toVotable(OutputStream out) throws IOException {
-      PrintStream printOut = new PrintStream(new BufferedOutputStream(out));
+   public void toVotable(Writer out) throws IOException {
+
+      PrintWriter printOut = new PrintWriter(new BufferedWriter(out));
       
       printOut.println("<!DOCTYPE VOTABLE SYSTEM 'http://us-vo.org/xml/VOTable.dtd'>");
       printOut.println("<VOTABLE version='1.0'>");
@@ -105,6 +112,9 @@ public class FitsResults implements QueryResults {
 
 /*
  $Log: FitsResults.java,v $
+ Revision 1.4  2004/03/09 21:54:58  mch
+ Added Writer methods to toVotables for JSPs
+
  Revision 1.3  2004/03/08 00:31:28  mch
  Split out webservice implementations for versioning
 
