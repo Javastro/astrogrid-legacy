@@ -308,7 +308,7 @@
   </j:catch>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/exist" war="file:///${temporary.dir}/exist-inttest.war"/>
+          path="/exist" war="file:///${temporary.dir}/exist-SNAPSHOT.war"/>
   </j:catch>
 </goal>
 
