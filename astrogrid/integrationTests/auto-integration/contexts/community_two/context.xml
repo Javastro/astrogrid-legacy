@@ -18,6 +18,12 @@
 		type="java.lang.String" 
 		value="@CENTRALREGISTRY@Query"  />
 
+    <Environment
+        description="Publishing Metadata to Registry endpoint"
+        name="org.astrogrid.registry.admin.endpoint"
+        override="false" type="java.lang.String"
+        value="@CENTRALREGISTRY@Update"/>
+
     <Resource
         name="jdbc/org.astrogrid.community.database"
         type="javax.sql.DataSource"

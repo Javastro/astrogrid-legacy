@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
- <vr:Resource xsi:type="ServiceType">
+ <vr:Resource xsi:type="vr:ServiceType">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>astrogrid_filestore-one</ResourceKey>
@@ -35,7 +35,11 @@
     <Curation>
       <Publisher>
          <Title>Filestore Service</Title>
-      </Publisher>    
+      </Publisher> 
+      <Contact>
+        <Name>Dave Morris</Name>
+        <Email>dave@ast.cam.ac.uk</Email>
+      </Contact>   
       <Creator>
         <Name>Kevin Benson</Name>
       </Creator>
@@ -52,7 +56,7 @@
     <Subject>Users VOSpace</Subject>
     <Interface xsi:type="AstrogridInterface">
       <Invocation>WebService</Invocation>
-      <AccessURL use="base">@TOMCATROOT@/astrogrid-filestore-one-@VERSION@/services/FileStore?wsdl</AccessURL>
+      <AccessURL use="base">@TOMCATROOT@/astrogrid-filestore-one-@VERSION@/services/FileStore</AccessURL>
 	  <ag:InterfaceType xmlns:ag="http://www.astrogrid.org/schema/AstrogridDataService/v0.1">FileStore</ag:InterfaceType>
     </Interface>
   </vr:Resource>

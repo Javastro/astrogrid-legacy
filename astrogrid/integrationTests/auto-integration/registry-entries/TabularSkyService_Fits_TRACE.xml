@@ -19,7 +19,7 @@
                       http://www.ivoa.net/xml/ConeSearch/ConeSearch-v0.2.xsd
                       http://www.ivoa.net/xml/SIA/v0.6
                       http://www.ivoa.net/xml/SIA/SIA-v0.6.xsd">
-  <vr:Resource updated="2004-11-20T15:34:22Z" status="active" xsi:type="TabularSkyService">
+  <vr:Resource updated="2004-11-20T15:34:22Z" status="active" xsi:type="vs:TabularSkyService">
     <Identifier>
       <AuthorityID>@REGAUTHORITY@</AuthorityID>
       <ResourceKey>fits_trace</ResourceKey>

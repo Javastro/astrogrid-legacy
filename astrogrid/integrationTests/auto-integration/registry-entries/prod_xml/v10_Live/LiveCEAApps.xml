@@ -1,0 +1,892 @@
+<vor:VOResources
+   xmlns:vor="http://www.ivoa.net/xml/RegistryInterface/v0.1"
+   xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2"
+   xmlns="http://www.ivoa.net/xml/VOResource/v0.10"
+   xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"
+   xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1"
+   xmlns:vm="http://www.ivoa.net/xml/VOMetadata/v0.1"
+   xmlns:vt="http://www.ivoa.net/xml/VOTable/v0.1"
+   xmlns:vg="http://www.ivoa.net/xml/VORegistry/v0.3" 
+   xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+   xmlns:vr="http://www.ivoa.net/xml/VOResource/v0.10" 
+   xmlns:vs="http://www.ivoa.net/xml/VODataService/v0.5" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="vg:Authority">
+    	<title>Astrogrid Standard Authority</title>
+        <shortName>AG-NA-ST</shortName>
+	   	<identifier>ivo://org.astrogrid</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Tony Linde</name>
+   <email>ael@star.le.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>The standard astrogrid naming authority</subject>
+  <description>This authority ID will be used to identify generic resources 
+   related to the Astrogrid consortium</description>
+  <referenceURL>http://www.astrogrid.org/</referenceURL>
+  <type>Archive</type>
+ </content>
+</vor:Resource>
+    <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
+    	<title>Galexev</title>
+        <shortName>Galexev</shortName>
+	   	<identifier>ivo://org.astrogrid/Galaxev</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>Galexev</subject>
+  <description>GALAXEV is a library of evolutionary stellar population synthesis models computed using the new isochrone synthesis code of Bruzual  and Charlot (2003). This code allows one to computes the spectral evolution of stellar populations in wide ranges of ages and metallicities at a resolution of 3 � across the whole wavelength range from 3200 � to 9500 �, and at lower resolution outside this range.</description>
+  <referenceURL>http://www.cida.ve/~bruzual/bc2003</referenceURL>
+  <type>Other</type>
+ </content>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition  name="SPECTRA" sub-type="" type="text">
+                    <ceapd:UI_Name>Spectra at Ages</ceapd:UI_Name>
+                    <ceapd:UI_Description>Spectra (lambda&amp; fluxes at chosen ages).</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue/>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="OTHERMAGS" type="text">
+                    <ceapd:UI_Name>Other Magnitudes</ceapd:UI_Name>
+                    <ceapd:UI_Description>mags and colours with more filter sets</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue/>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="CONFIGFILE" sub-type="" type="text">
+                    <ceapd:UI_Name>Config File</ceapd:UI_Name>
+                    <ceapd:UI_Description>Padovani style config file</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue/>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="MAGZF1" sub-type="" type="text">
+                    <ceapd:UI_Name>Magnitudes Filter 1</ceapd:UI_Name>
+                    <ceapd:UI_Description>Magnitude
+redshift evolution in FILTER1</ceapd:UI_Description>
+                    <ceapd:UCD/>
+                    <ceapd:DefaultValue/>
+                    <ceapd:Units/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="ABMAG" sub-type="" type="text">
+                    <ceapd:UI_Name >AB Magnitudes</ceapd:UI_Name>
+                    <ceapd:UI_Description >AB magnitudes in
+SDSS filters as function of galaxy Age</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="VEGAMAGS" sub-type="" type="text">
+                    <ceapd:UI_Name >Vega Colours</ceapd:UI_Name>
+                    <ceapd:UI_Description >mags and colors
+(Vega) as function of galaxy Age in standard filters</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="simple">
+                    <ceab:input>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="CONFIGFILE"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SPECTRA"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="OTHERMAGS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="MAGZF1"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="ABMAG"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="VEGAMAGS"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </vor:Resource>
+    <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
+    	<title>Pegase</title>
+        <shortName>Pegase</shortName>
+	   	<identifier>ivo://org.astrogrid/Pegase</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>Pegase</subject>
+  <description>PEGASE is a code which computes the spectral evolution of galaxies. The evolution of the stars, gas and metals is computed according to user selected star formation laws and initial stellar mass function.  The stellar evolutionary tracks extend from the main sequence to the white dwarf stage. The emission of the gas in HII regions is also taken into account. The effect of extinction by dust is also modelled using a radiative transfer code.</description>
+  <referenceURL>http://www2.iap.fr/users/fioc/PEGASE.html</referenceURL>
+  <type>Other</type>
+ </content>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition  name="LMASS" sub-type="" type="double">
+                    <ceapd:UI_Name >Lower mass</ceapd:UI_Name>
+                    <ceapd:UI_Description >Lower mass</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.1</ceapd:DefaultValue>
+                    <ceapd:Units >Solar Masses</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="WINDS" sub-type="" type="boolean">
+                    <ceapd:UI_Name >Stellar Winds</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >Y</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="COLOURS" sub-type="" type="binary">
+                    <ceapd:UI_Name >Synthesized colours</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="GLOBALEXTINCTION" sub-type="" type="integer">
+                    <ceapd:UI_Name >Global Extinction?</ceapd:UI_Name>
+                    <ceapd:UI_Description >0: No extinction
+ 1: Extinction for a spheroidal geometry
+ 2: Extinction for a disk geometry: inclination-averaged
+ 3: Extinction for a disk geometry: specific inclination</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="GALWIND" sub-type="" type="boolean">
+                    <ceapd:UI_Name >Galactic winds</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >n</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="SNMODEL" sub-type="" type="text">
+                    <ceapd:UI_Name >SN Model (A/B/C)</ceapd:UI_Name>
+                    <ceapd:UI_Description >model A, B or C of Woosley &amp; Weaver</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >B</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="FRACSUB" sub-type="" type="double">
+                    <ceapd:UI_Name >SubStellar fraction</ceapd:UI_Name>
+                    <ceapd:UI_Description >Mass fraction of substellar objects formed (real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="BINFRAC" sub-type="" type="double">
+                    <ceapd:UI_Name >binary fraction</ceapd:UI_Name>
+                    <ceapd:UI_Description >Fraction of close binary systems</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.05</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="CONEVOL" sub-type="" type="boolean">
+                    <ceapd:UI_Name >Consistent Evolution</ceapd:UI_Name>
+                    <ceapd:UI_Description >Consistent evolution of the stellar metallicity (y/n)?</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >y</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="INFALLMETAL" sub-type="" type="double">
+                    <ceapd:UI_Name >Infall Metalicity</ceapd:UI_Name>
+                    <ceapd:UI_Description >Metallicity of the infalling gas (mass fraction, real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="NEBEMISS" sub-type="" type="boolean">
+                    <ceapd:UI_Name >Nebular Emission</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >n</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="INFALLTIME" sub-type="" type="double">
+                    <ceapd:UI_Name >Infall Timescale</ceapd:UI_Name>
+                    <ceapd:UI_Description >Infall timescale (Myr, real)</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.10000E+04</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="SPECTRA" sub-type="" type="binary">
+                    <ceapd:UI_Name >Synthesized spectra</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="IMF" sub-type="" type="integer">
+                    <ceapd:UI_Name >Initial Mass Function</ceapd:UI_Name>
+                    <ceapd:UI_Description >1: IMF_Kennicutt.dat                                                       
+   2: IMF_Kroupa.dat                                                          
+   3: IMF_MillerScalo.dat                                                     
+   4: IMF_Salpeter.dat                                                        
+   5: IMF_Scalo86.dat                                                         
+   6: IMF_Scalo98.dat                                                         
+   7: lognormal IMF
+   8: Rana &amp; Basu (1992)
+   9: Ferrini (1991)</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >4</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="METALICITY" sub-type="" type="double">
+                    <ceapd:UI_Name >Metalicity</ceapd:UI_Name>
+                    <ceapd:UI_Description >Metallicity (mass fraction) of the ISM at t=0 (real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="GALWINDAGE" sub-type="" type="double">
+                    <ceapd:UI_Name >Galactic wind age</ceapd:UI_Name>
+                    <ceapd:UI_Description >Age of the galactic winds (Myr, real)</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.20001E+05</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="SFSCENARIO" sub-type="" type="integer">
+                    <ceapd:UI_Name >Star formation scenario</ceapd:UI_Name>
+                    <ceapd:UI_Description >Type of star formation scenario?
+ -2: file giving the SFR and the metallicity
+ -1: file giving the SFR
+  0: instantaneous burst
+  1: SFR=p1 from t=0 to p2
+  2: SFR=p2*exp(-t/p1)/p1
+  3: SFR=(Mgas^p1)/p2
+ 10 or more: code of the SFR law you have implemented in &quot;spectra.f&quot;</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="UMASS" sub-type="" type="double">
+                    <ceapd:UI_Name >Upper mass</ceapd:UI_Name>
+                    <ceapd:UI_Description >Upper mass</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >120.0</ceapd:DefaultValue>
+                    <ceapd:Units >Solar Masses</ceapd:Units>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="INFALL" sub-type="" type="boolean">
+                    <ceapd:UI_Name >Infall</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >y</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SMETAL" sub-type="" type="double">
+                    <ceapd:UI_Name >Stellar metallicity</ceapd:UI_Name>
+                    <ceapd:UI_Description >(real in [0.,1.])</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.02</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="simple" >
+                    <ceab:input>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="LMASS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="WINDS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="GLOBALEXTINCTION"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="GALWIND"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SNMODEL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="FRACSUB"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="BINFRAC"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="CONEVOL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="INFALLMETAL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="NEBEMISS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="INFALLTIME"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="IMF"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="METALICITY"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="GALWINDAGE"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SFSCENARIO"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="UMASS"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="INFALL"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="SMETAL"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="SPECTRA"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="COLOURS"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </vor:Resource>
+<vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
+    	<title>SExtractor</title>
+        <shortName>SExtractor</shortName>
+	   	<identifier>ivo://org.astrogrid/SExtractor</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>SExtractor</subject>
+  <description>SExtractor is a program that builds a catalogue of objects from an astronomical image. Although it is particularly oriented towards reduction of large scale galaxy-survey data, it performs rather well on moderately crowded star fields.</description>
+  <referenceURL>http://terapix.iap.fr/cplt/oldSite/soft/sextractor/</referenceURL>
+  <type>Other</type>
+ </content>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition  name="CATALOG_NAME" sub-type="" type="VOTable">
+                    <ceapd:UI_Name >Derived output catalogue</ceapd:UI_Name>
+                    <ceapd:UI_Description >The catalogue of images derived from the input images</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="GAIN" sub-type="" type="double">
+                    <ceapd:UI_Name >Gain</ceapd:UI_Name>
+                    <ceapd:UI_Description >detector gain in e-/ADU</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="MASK_TYPE" sub-type="" type="text">
+                    <ceapd:UI_Name >Mask type</ceapd:UI_Name>
+                    <ceapd:UI_Description >type of detection MASKing: can be one of                                &quot;NONE&quot;, &quot;BLANK&quot; or &quot;CORRECT&quot;</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >CORRECT</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="CLEAN" sub-type="" type="boolean">
+                    <ceapd:UI_Name >Clean?</ceapd:UI_Name>
+                    <ceapd:UI_Description >Clean spurious detections? (Y or N)?</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >Y</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="FILTER" sub-type="" type="boolean">
+                    <ceapd:UI_Name >use filter</ceapd:UI_Name>
+                    <ceapd:UI_Description >apply filter for detection</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="FILTER_NAME" sub-type="" type="text">
+                    <ceapd:UI_Name >detection filter</ceapd:UI_Name>
+                    <ceapd:UI_Description >the convolution filter</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="MAG_ZEROPOINT" sub-type="" type="double">
+                    <ceapd:UI_Name >magnitude zero-point</ceapd:UI_Name>
+                    <ceapd:UI_Description >magnitude zero-point</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="BACKPHOTO_TYPE" sub-type="" type="text">
+                    <ceapd:UI_Name />
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="MAG_GAMMA" sub-type="" type="double">
+                    <ceapd:UI_Name >MAG_GAMMA</ceapd:UI_Name>
+                    <ceapd:UI_Description >gamma of emulsion (for photographic scans)</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >4.0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="CHECKIMAGE_NAME" sub-type="" type="FITS">
+                    <ceapd:UI_Name >Checkimage name</ceapd:UI_Name>
+                    <ceapd:UI_Description >file containing the checkimage</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="PIXEL_SCALE" sub-type="" type="double">
+                    <ceapd:UI_Name >Pixel scale</ceapd:UI_Name>
+                    <ceapd:UI_Description >size of pixel in arcsec (0=use FITS WCS info)</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="FLAG_IMAGE" sub-type="" type="FITS">
+                    <ceapd:UI_Name >flag image</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="BACK_SIZE" sub-type="" type="text">
+                    <ceapd:UI_Name >backgroud mesh size</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="IMAGE_BAND" sub-type="" type="text">
+                    <ceapd:UI_Name >Input image band</ceapd:UI_Name>
+                    <ceapd:UI_Description >The input image measuerment band. This is used to form  the column name in the output VOTable for the measured photometry.</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="BACK_FILTERSIZE " sub-type="" type="text">
+                    <ceapd:UI_Name >background filter size</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="PHOT_AUTOPARAMS" sub-type="" type="text">
+                    <ceapd:UI_Name >Photometry params</ceapd:UI_Name>
+                    <ceapd:UI_Description >MAG_AUTO parameters: &lt;Kron_fact&gt;,&gt;min_radius&gt;</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DETECT_TYPE" sub-type="" type="text">
+                    <ceapd:UI_Name >detection type</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >CCD</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="PARAMETERS_NAME" sub-type="" type="binary">
+                    <ceapd:UI_Name >Parameter File</ceapd:UI_Name>
+                    <ceapd:UI_Description >A File containing the list of catalogue paramters that should be computed</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="config_file" sub-type="" type="binary">
+                    <ceapd:UI_Name >Configuration File</ceapd:UI_Name>
+                    <ceapd:UI_Description >File containing the main configuration parameters for SExtractor</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SEEING_FWHM" sub-type="" type="double">
+                    <ceapd:UI_Name >Seeing</ceapd:UI_Name>
+                    <ceapd:UI_Description >stellar FWHM in arcsec</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >1.2</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DETECT_THRESH" sub-type="" type="double">
+                    <ceapd:UI_Name >Detection Threshold</ceapd:UI_Name>
+                    <ceapd:UI_Description >sigmas or threshold,ZP in mag.arcsec-2</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >1.5</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DETECT_MINAREA" sub-type="" type="integer">
+                    <ceapd:UI_Name >minimum detection area</ceapd:UI_Name>
+                    <ceapd:UI_Description >minimum number of pixels above threshold</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >5</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DEBLEND_NTHRESH " sub-type="" type="integer">
+                    <ceapd:UI_Name >Deblend thresholds</ceapd:UI_Name>
+                    <ceapd:UI_Description >Number of deblending sub-thresholds</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >32</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="CLEAN_PARAM" sub-type="" type="double">
+                    <ceapd:UI_Name >Cleaning efficiency</ceapd:UI_Name>
+                    <ceapd:UI_Description >Cleaning Efficiency</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >1.0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="STARNNW_NAME" sub-type="" type="binary">
+                    <ceapd:UI_Name >neural net file</ceapd:UI_Name>
+                    <ceapd:UI_Description >Neural-Network_Weight table filename</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DetectionImage" sub-type="" type="binary">
+                    <ceapd:UI_Name >Detection Image</ceapd:UI_Name>
+                    <ceapd:UI_Description >The image that is used to detect sources. Basic position, shape and size informtaion is derived from this image</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DEBLEND_MINCONT" sub-type="" type="double">
+                    <ceapd:UI_Name >de-blend contrast</ceapd:UI_Name>
+                    <ceapd:UI_Description >Minimum contrast parameter for deblending</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.005</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="PhotoImage" sub-type="" type="binary">
+                    <ceapd:UI_Name >Measurement Image</ceapd:UI_Name>
+                    <ceapd:UI_Description >The Image that is used to measure photometric parameters</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="CHECKIMAGE_TYPE" sub-type="" type="text">
+                    <ceapd:UI_Name >Check image</ceapd:UI_Name>
+                    <ceapd:UI_Description />
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="ANALYSIS_THRESH" sub-type="" type="double">
+                    <ceapd:UI_Name >Analysis Threshold</ceapd:UI_Name>
+                    <ceapd:UI_Description >sigmas or threshold,ZP in mag.arcsec-2</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >1.5</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="PHOT_APERTURES" sub-type="" type="integer">
+                    <ceapd:UI_Name >Photometry apertures</ceapd:UI_Name>
+                    <ceapd:UI_Description >MAG_APER aperture diameter(s) in pixels</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >5</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="simple" >
+                    <ceab:input>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="PARAMETERS_NAME"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="config_file"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="DetectionImage"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="FILTER_NAME"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="PhotoImage"/>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="ANALYSIS_THRESH"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="CATALOG_NAME"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </vor:Resource>
+    <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaApplicationType">
+    	<title>BPZ</title>
+        <shortName>BPZ</shortName>
+	   	<identifier>ivo://org.astrogrid/BPZ</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>BPZ</subject>
+  <description>The software below implements the Bayesian photometric redshift method described in Benitez 2000 .</description>
+  <referenceURL>http://acs.pha.jhu.edu/~txitxo/bayesian.html</referenceURL>
+  <type>Other</type>
+ </content>
+        <cea:ApplicationDefinition>
+            <cea:Parameters>
+                <cea:ParameterDefinition  name="PROBS_LITE" sub-type="" type="boolean">
+                    <ceapd:UI_Name >PROBS_LITE</ceapd:UI_Name>
+                    <ceapd:UI_Description >Save only the final probability distribution</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >no</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="ZMIN" sub-type="" type="double">
+                    <ceapd:UI_Name >ZMIN</ceapd:UI_Name>
+                    <ceapd:UI_Description >minimum redshift</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.01</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="MADAU" sub-type="" type="boolean">
+                    <ceapd:UI_Name >MADAU</ceapd:UI_Name>
+                    <ceapd:UI_Description >Apply Madau correction to spectra</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >yes</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="GET_Z" sub-type="" type="boolean">
+                    <ceapd:UI_Name >GET_Z</ceapd:UI_Name>
+                    <ceapd:UI_Description >Actually obtain photo-z</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >yes</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="DZ" sub-type="" type="double">
+                    <ceapd:UI_Name >DZ</ceapd:UI_Name>
+                    <ceapd:UI_Description >redshift resolution</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.01</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition  name="PROBS" sub-type="" type="boolean">
+                    <ceapd:UI_Name >PROBS</ceapd:UI_Name>
+                    <ceapd:UI_Description >Save all the galaxy probability distributions (very large file created)</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue />
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="MAG" sub-type="" type="boolean">
+                    <ceapd:UI_Name >MAG</ceapd:UI_Name>
+                    <ceapd:UI_Description >Data in magnitudes?</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >yes</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="EXCLUDE" sub-type="" type="text">
+                    <ceapd:UI_Name >EXCLUDE</ceapd:UI_Name>
+                    <ceapd:UI_Description >Filters to be excluded from the estimation</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >none</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="Z_THR" sub-type="" type="double">
+                    <ceapd:UI_Name >Z_THR</ceapd:UI_Name>
+                    <ceapd:UI_Description >Integrate likelihood for z&gt;z_thr</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="ZMAX" sub-type="" type="double">
+                    <ceapd:UI_Name >ZMAX</ceapd:UI_Name>
+                    <ceapd:UI_Description >maximum redshift</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >6.5</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="PRIOR" sub-type="" type="text">
+                    <ceapd:UI_Name >PRIOR</ceapd:UI_Name>
+                    <ceapd:UI_Description >prior name</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >hdfn</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="CHECK" sub-type="" type="boolean">
+                    <ceapd:UI_Name >CHECK</ceapd:UI_Name>
+                    <ceapd:UI_Description >Perform some checks, compare observed colors with templates, etc.</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >no</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="COLOR" sub-type="" type="boolean">
+                    <ceapd:UI_Name >COLOR</ceapd:UI_Name>
+                    <ceapd:UI_Description >Use colors instead of fluxes</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >no</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="ONLY_TYPE" sub-type="" type="boolean">
+                    <ceapd:UI_Name >ONLY_TYPE</ceapd:UI_Name>
+                    <ceapd:UI_Description >Use spectroscopic redshifts instead of photo-z</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >no</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="SPECTRA" sub-type="" type="text">
+                    <ceapd:UI_Name >Spectra</ceapd:UI_Name>
+                    <ceapd:UI_Description >template list</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >CWWSB.list</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="NEW_AB" sub-type="" type="boolean">
+                    <ceapd:UI_Name >NEW_AB</ceapd:UI_Name>
+                    <ceapd:UI_Description >If yes, generate new AB files even if they already exist</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >no</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="ODDS" sub-type="" type="double">
+                    <ceapd:UI_Name >ODDS</ceapd:UI_Name>
+                    <ceapd:UI_Description >Odds threshold: affects confidence limits definition</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0.95</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="VERBOSE" sub-type="" type="boolean">
+                    <ceapd:UI_Name >VERBOSE</ceapd:UI_Name>
+                    <ceapd:UI_Description >Print estimated redshifts to the standard output</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >yes</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="INTERP" sub-type="" type="integer">
+                    <ceapd:UI_Name >INTERP</ceapd:UI_Name>
+                    <ceapd:UI_Description >Number of interpolated templates between each of the original ones</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >0</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="PLOTS" sub-type="" type="boolean">
+                    <ceapd:UI_Name >PLOTS</ceapd:UI_Name>
+                    <ceapd:UI_Description >produce plots</ceapd:UI_Description>
+                    <ceapd:UCD />
+                    <ceapd:DefaultValue >no</ceapd:DefaultValue>
+                    <ceapd:Units />
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="primary" >
+                    <ceab:input>
+                        <ceab:pref maxoccurs="1" minoccurs="0" ref="DZ"/>
+                    </ceab:input>
+                    <ceab:output/>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </vor:Resource>
+    <vor:Resource status="active" updated="2004-11-20T15:34:22Z" xsi:type="cea:CeaServiceType">
+    	<title>JBO CEA Commandline Execution Controller</title>
+        <shortName>JBO Applications</shortName>
+	   	<identifier>ivo://org.astrogrid/JBORealCEC</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>JBORealCEC</subject>
+  <description>A Commandline Execution Controller that will run most of the applications that Astrogrid has configured/wrapped so far.</description>
+  <referenceURL>http://www.astrogrid.org/maven/build/snapshot/applications/</referenceURL>
+  <type>Other</type>
+ </content>
+    <interface xsi:type="vs:WebService">
+		<accessURL use="full">http://astrogrid.jb.man.ac.uk:8080/astrogrid-cea-commandline-SNAPSHOT/services/CommonExecutionConnectorService</accessURL>
+    </interface> 
+        <cea:ManagedApplications>
+            <cea:ApplicationReference>
+				ivo://org.astrogrid/Galaxev
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+				ivo://org.astrogrid/Pegase
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                ivo://org.astrogrid/SExtractor
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+				ivo://org.astrogrid/BPZ
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                ivo://org.astrogrid/annz
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                ivo://org.astrogrid/HyperZ
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                ivo://org.astrogrid/CrossMatcher
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                ivo://org.astrogrid/swarp
+            </cea:ApplicationReference>
+            <cea:ApplicationReference>
+                ivo://org.astrogrid/Starburst99
+            </cea:ApplicationReference>
+        </cea:ManagedApplications>
+    </vor:Resource>
+    <vor:Resource status="active" updated="2004-11-25T15:40:34Z" xsi:type="cea:CeaApplicationType">
+    	<title>FIRST object-catalogue</title>
+        <shortName>FIRST</shortName>
+	   	<identifier>ivo://org.astrogrid/IoA/FIRST/object-catalogue/ceaApplication</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>FIRST</subject>
+  <description>First</description>
+  <referenceURL>http://cass123.ast.cam.ac.uk:8080/FIRST-object-catalogue</referenceURL>
+  <type>Other</type>
+ </content>
+        <cea:ApplicationDefinition xmlns:cea="http://www.ivoa.net/xml/CEAService/v0.2">
+            <cea:Parameters>
+                <cea:ParameterDefinition name="Query" type="ADQL">
+                    <ceapd:UI_Name xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Query</ceapd:UI_Name>
+                    <ceapd:UI_Description xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Astronomy Data Query Language that defines the search criteria</ceapd:UI_Description>
+                    <ceapd:UCD xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:DefaultValue xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:Units xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="Result" type="text">
+                    <ceapd:UI_Name xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Result</ceapd:UI_Name>
+                    <ceapd:UI_Description xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Query results</ceapd:UI_Description>
+                    <ceapd:UCD xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:DefaultValue xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:Units xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="DEC" type="Dec">
+                    <ceapd:UI_Name xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">DEC</ceapd:UI_Name>
+                    <ceapd:UI_Description xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Declination of cone</ceapd:UI_Description>
+                    <ceapd:UCD xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:DefaultValue xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:Units xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="Format" type="text">
+                    <ceapd:UI_Name xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Format</ceapd:UI_Name>
+                    <ceapd:UI_Description xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">How the results are to be returned.  VOTABLE or CSV for now</ceapd:UI_Description>
+                    <ceapd:UCD xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:DefaultValue xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">VOTABLE</ceapd:DefaultValue>
+                    <ceapd:Units xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="RA" type="RA">
+                    <ceapd:UI_Name xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">RA</ceapd:UI_Name>
+                    <ceapd:UI_Description xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Right-Ascension of cone</ceapd:UI_Description>
+                    <ceapd:UCD xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:DefaultValue xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:Units xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                </cea:ParameterDefinition>
+                <cea:ParameterDefinition name="Radius" type="double">
+                    <ceapd:UI_Name xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Radius</ceapd:UI_Name>
+                    <ceapd:UI_Description xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1">Radius of cone</ceapd:UI_Description>
+                    <ceapd:UCD xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:DefaultValue xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                    <ceapd:Units xmlns:ceapd="http://www.astrogrid.org/schema/AGParameterDefinition/v1"/>
+                </cea:ParameterDefinition>
+            </cea:Parameters>
+            <cea:Interfaces>
+                <ceab:Interface name="adql" xmlns:ceab="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1">
+                    <ceab:input>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="Query"/>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="Format"/>
+                    </ceab:input>
+                    <ceab:output>
+                        <ceab:pref maxoccurs="1" minoccurs="1" ref="Result"/>
+                    </ceab:output>
+                </ceab:Interface>
+            </cea:Interfaces>
+        </cea:ApplicationDefinition>
+    </vor:Resource>
+    <vor:Resource xsi:type="vr:Service" status="active" updated="2004-11-20T15:34:22Z">
+    	<title>FIRST object-catalogue</title>
+        <shortName>FIRST</shortName>
+	   	<identifier>ivo://org.astrogrid/IoA/FIRST/object-catalogue/skynode</identifier>
+ <curation>
+  <publisher>Main Astrogrid Full Registry</publisher>
+  <contact>
+   <name>Paul Harrison</name>
+   <email>pah@jb.man.ac.uk</email>
+  </contact>
+ </curation>
+ <content>
+  <subject>FIRST</subject>
+  <description>First</description>
+  <referenceURL>http://cass123.ast.cam.ac.uk:8080/FIRST-object-catalogue</referenceURL>
+  <type>Other</type>
+ </content>
+    <interface xsi:type="WebBrowser">
+		<accessURL use="full">http://cass123.ast.cam.ac.uk:8080/FIRST-object-catalogue/services/SkyNode074</accessURL>
+    </interface> 
+    </vor:Resource>
+</vor:VOResources>
