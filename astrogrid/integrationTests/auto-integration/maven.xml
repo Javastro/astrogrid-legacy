@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- $Id: maven.xml,v 1.53 2004/06/21 08:42:30 KevinBenson Exp $ -->
+<!-- $Id: maven.xml,v 1.54 2004/06/22 18:07:30 clq2 Exp $ -->
 <!-- to use:
   check that tomcat is 'clean' and running - ie has no astrogrid components
   installed that will interfere with the deployment (use maven undeploy-all then
@@ -478,12 +478,12 @@
         <copy todir="${temporary.dir}/registry" filtering="true">
                 <fileset dir="contexts/registry" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-registry-webapp-SNAPSHOT.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-registry-SNAPSHOT.war">
                 <metainf dir="${temporary.dir}/registry"/>
         </war>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-registry-webapp-SNAPSHOT.war"/>
+          path="/astrogrid-registry-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
   </j:catch>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"

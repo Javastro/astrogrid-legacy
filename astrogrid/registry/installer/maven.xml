@@ -299,12 +299,12 @@
         <copy todir="${temporary.dir}/registry" filtering="true">
                 <fileset dir="contexts/registry" />
         </copy>
-        <war update="true" destfile="${temporary.dir}/astrogrid-registry-webapp-SNAPSHOT.war">
+        <war update="true" destfile="${temporary.dir}/astrogrid-registry-SNAPSHOT.war">
                 <metainf dir="${temporary.dir}/registry"/>
         </war>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
-          path="/astrogrid-registry-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-registry-webapp-SNAPSHOT.war"/>
+          path="/astrogrid-registry-SNAPSHOT" war="file:///${temporary.dir}/astrogrid-registry-SNAPSHOT.war"/>
   </j:catch>
   <j:catch>
           <tomcat-deploy url="${tomcat.manager.url}" username="${tomcat.manager.username}" password="${tomcat.manager.password}"
