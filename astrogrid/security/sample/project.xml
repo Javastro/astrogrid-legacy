@@ -1,33 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--+
-    | Maven project description for the AstroGrid community server.
-    |
-    | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/security/sample/Attic/project.xml,v $</cvs:source>
-    | <cvs:author>$Author: gtr $</cvs:author>
-    | <cvs:date>$Date: 2004/03/29 11:27:29 $</cvs:date>
-    | <cvs:version>$Revision: 1.2 $</cvs:version>
-    | <cvs:log>
-    |   $Log: project.xml,v $
-    |   Revision 1.2  2004/03/29 11:27:29  gtr
-    |   New dependencies: things needd by Axis.
-    |
-    |   Revision 1.1  2004/03/26 17:54:20  gtr
-    |   New files for subproject: sample service and client to exercise the
-    |   security library.
-    |
-    |   Revision 1.9  2004/03/19 14:43:15  dave
-    |   Merged development branch, dave-dev-200403151155, into HEAD
-    |
-    |   Revision 1.8.2.1  2004/03/18 13:40:16  dave
-    |   Added astrogrid-common
-    |
-    | </cvs:log>
-    +-->
+
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
     <id>astrogrid-security-sample-service</id>
+    <groupId>org.astrogrid</groupId>
 
     <name>AstroGrid security sample service</name>
 
