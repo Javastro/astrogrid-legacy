@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.4 2004/03/22 20:02:18 mch Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.1 2004/04/19 11:43:50 pah Exp $
  *
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,7 +11,7 @@
  *
  */
 
-package org.astrogrid.integrationtest.applications;
+package org.astrogrid.applications.integration;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +35,6 @@ import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;
@@ -43,6 +42,8 @@ import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 import org.astrogrid.mySpace.delegate.helper.MySpaceHelper;
 import org.astrogrid.portal.workflow.WKF;
+import org.astrogrid.store.Ivorn;
+import org.astrogrid.store.VoSpaceClient;
 //import org.astrogrid.registry.beans.resource.VODescription;
 import org.astrogrid.workflow.beans.v1.Input;
 import org.astrogrid.workflow.beans.v1.Output;
@@ -51,6 +52,7 @@ import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 import org.astrogrid.workflow.beans.v1.types.JoinType;
+import org.astrogrid.workflow.integration.AbstractTestForIntegration;
 
 
 
@@ -60,7 +62,8 @@ import org.astrogrid.workflow.beans.v1.types.JoinType;
  * @version $Name:  $
  * @since iteration4
  */
-public class WorkFlowToApplicationTest extends TestCase {
+public class WorkFlowToApplicationTest extends AbstractTestForIntegration {
+   private Ivorn targetIvorn;
    private static final String TESTCONTAINER = "testdata";
    private boolean rc;
 
@@ -68,9 +71,6 @@ public class WorkFlowToApplicationTest extends TestCase {
 
    private String infileName;
 
-   private User user= new User();
-
-   private MySpaceClient mySpaceManager;
 
    static private org.apache.commons.logging.Log logger =
       org.apache.commons.logging.LogFactory.getLog(WorkFlowToApplicationTest.class);
@@ -105,31 +105,13 @@ public class WorkFlowToApplicationTest extends TestCase {
 
       try {
          //load properties
-         mySpaceManager = MySpaceDelegateFactory.createDelegate(ConfManager.getInstance().getMySpaceEndPoint());
-         user = new User();
-         String userId = user.getUserId();
-         String communityId = user.getCommunity();
-         String credential = user.getToken();
-         mySpaceManager.createUser(userId, communityId, credential, servers);
-         String containerref = MySpaceHelper.formatMyspaceContainerReference(user, "serv1", TESTCONTAINER);
-         mySpaceManager.createContainer(userId, communityId, credential, containerref);
-         infileName =
-            MySpaceHelper.formatMyspaceReference(user, "serv1",  TESTCONTAINER, "testInfile");
-         outFilename =
-         MySpaceHelper.formatMyspaceReference(user, "serv1",  TESTCONTAINER, "testOutfile");
-         mySpaceManager.saveDataHolding(
-            userId,
-            communityId,
-            credential,
-            infileName,
-            "This is some test contents for myspace",
-            TESTCONTAINER, // this should not be the container, but a "type" referece
-            MySpaceClient.OVERWRITE);
-            mySpaceManager.deleteDataHolding(userId, communityId, credential, outFilename);
-      }
-      catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         VoSpaceClient voSpaceClient = new VoSpaceClient(user); //note that we are assuming that the user is looking at their own files...
+         String message = "testdata for integration test file contents";
+         byte[] bytes = message.getBytes();
+         targetIvorn = createIVORN("testfile.dat");
+         voSpaceClient.putBytes(bytes, 0, bytes.length, targetIvorn, false);
+         
+      
       }
       catch (Exception e) {
          // TODO Auto-generated catch block
@@ -238,18 +220,12 @@ public class WorkFlowToApplicationTest extends TestCase {
       
       //submit the job....
          
-      JobController jobcon = JesDelegateFactory.createJobController(ConfManager.getInstance().getJobControllerEndPoint());
+      JobController jobcon = JesDelegateFactory.createJobController("http://localhost:8080/astrogrid-jes-SNAPSHOT/services/JobControllerService");
       
       jobcon.submitWorkflow(workflow);
  
    }
 
-   /**
-    * @return
-    */
-   private String communitySnippet() {
-      return user.toSnippet();
-   }
-
+ 
 }
 
