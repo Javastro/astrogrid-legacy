@@ -1,4 +1,4 @@
-/*$Id: PostgresQueryTranslatorTest.java,v 1.1 2004/04/01 17:19:46 mch Exp $
+/*$Id: PostgresQueryTranslatorTest.java,v 1.2 2004/08/05 10:56:35 mch Exp $
  * Created on 28-Nov-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,13 +56,13 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
     /** ADQLn - run as separate tests so all get checked even if one fails */
     public void test1Adql05() throws Exception { doFromFile("adql0.5", 1); }
-    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
+//    public void test1Adql073() throws Exception { doFromFile("adql0.7.3", 1); }
     //not used public void test1Adql08() throws Exception { doFromFile("adql0.8", 1); }
     //not ready  public void test1Sadql11() throws Exception { doFromFile("sadql1.1", 1); }
     
     /** ADQLn - run as separate tests so all get checked even if one fails */
     public void test2Adql05() throws Exception { doFromFile("adql0.5", 2); }
-    public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
+ //   public void test2Adql073() throws Exception { doFromFile("adql0.7.3", 2); }
     //not used public void test2Adql08() throws Exception { doFromFile("adql0.8", 2); }
     //not ready public void test2Sadql11() throws Exception { doFromFile("sadql1.1", 2); }
     
@@ -99,6 +99,9 @@ public class PostgresQueryTranslatorTest extends ServerTestCase {
 
 /*
 $Log: PostgresQueryTranslatorTest.java,v $
+Revision 1.2  2004/08/05 10:56:35  mch
+Removed ADQL 073 tests (no longer used)
+
 Revision 1.1  2004/04/01 17:19:46  mch
 Added postgres-specific SQL translator
 

@@ -1,4 +1,4 @@
-/*$Id: SqlPluginTest.java,v 1.8 2004/07/12 23:26:51 mch Exp $
+/*$Id: SqlPluginTest.java,v 1.9 2004/08/05 10:56:35 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,8 +56,28 @@ public class SqlPluginTest extends ServerTestCase {
       DummySqlPlugin.initConfig(); //this is set up in the default config for normal runtime
     
    }
+
+   public void testCone1() throws Exception {      askCone(30,30,6);  }
    
-   public void testCone() throws Exception {
+   //negative dec
+   public void testCone2() throws Exception {      askCone(30,-30,6);  }
+   
+   //across zero ra
+   public void testCone3() throws Exception {      askCone(1,-30,6);  }
+
+   //around pole, across ra
+   public void testCone4() throws Exception {      askCone(1,-87,6);  }
+
+   /** Tests that we get back a known set of results from a search on the 'pleidies' dummies
+      These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
+    */
+   public void testPleidiesCone() throws Exception {
+
+      Document results = askCone(56.75, 23.867, 0.3);
+      DomHelper.DocumentToStream(results, System.out);
+   }
+   
+   public Document askCone(double ra, double dec, double r) throws Exception {
 
       //make sure the configuration is correct for the plugin
       //DummySqlPlugin.initConfig();
@@ -67,24 +87,10 @@ public class SqlPluginTest extends ServerTestCase {
       manager.askQuerier(q);
       Document results = DomHelper.newDocument(sw.toString());
       assertIsVotable(results);
+      return results;
    }
 
-   /** Tests that we get back a known set of results from a search on the 'pleidies' dummies
-      These are stars grouped < 0.3 degree across on ra=56.75, dec=23.867
-    */
-   public void testPleidiesCone() throws Exception {
 
-      //make sure the configuration is correct for the plugin
-      //DummySqlPlugin.initConfig();
-      
-      StringWriter sw = new StringWriter();
-      Querier q = Querier.makeQuerier(Account.ANONYMOUS, new ConeQuery(56.75, 23.867, 0.3), new TargetIndicator(sw), QueryResults.FORMAT_VOTABLE);
-      manager.askQuerier(q);
-      Document results = DomHelper.newDocument(sw.toString());
-      assertIsVotable(results);
-      DomHelper.DocumentToStream(results, System.out);
-   }
-   
    public void testAdql1() throws Exception {
       
       DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
@@ -104,7 +110,7 @@ public class SqlPluginTest extends ServerTestCase {
 
    public void testAdql4() throws Exception {
       DummySqlPlugin.initConfig(); //make sure the configuration is correct for the plugin
-      askAdqlFromFile("dummy-pleidies-adql-v0.7.3.xml");
+      askAdqlFromFile("dummy-pleidies-adql.xml");
    }
    
    /** Read ADQL input document, run query on dummy SQL plugin, and return VOTable document
@@ -189,6 +195,9 @@ public class SqlPluginTest extends ServerTestCase {
 
 /*
  $Log: SqlPluginTest.java,v $
+ Revision 1.9  2004/08/05 10:56:35  mch
+ Removed ADQL 073 tests (no longer used)
+
  Revision 1.8  2004/07/12 23:26:51  mch
  Fixed (somewhat) SQL for cone searches, added tests to Dummy DB
 
