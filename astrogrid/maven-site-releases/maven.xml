@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<!-- $Id: maven.xml,v 1.1 2004/03/04 02:26:21 jdt Exp $ -->
+<!-- $Id: maven.xml,v 1.2 2004/07/19 11:38:21 jdt Exp $ -->
 <!-- extension maven script -->
 <project>
 	<!-- astrogrid goals for nightly build -->
 	<goal name="astrogrid-clean" prereqs="clean"/>
 	<goal name="astrogrid-deploy-site" prereqs="astrogrid-build-site">
-		<attainGoal name="site:fsdeploy"/>
+		<attainGoal name="site:sshdeploy"/>
 	</goal>
 	<goal name="astrogrid-build-site">
 		<attainGoal name="site"/>
