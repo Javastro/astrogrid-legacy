@@ -1,4 +1,4 @@
-/*$Id: FileJobFactoryImpl.java,v 1.9 2004/07/09 09:30:28 nw Exp $
+/*$Id: FileJobFactoryImpl.java,v 1.10 2004/09/16 21:42:27 nw Exp $
  * Created on 11-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -89,14 +89,22 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
      */
     public Workflow initializeJob(Workflow req) throws JobException {
             Workflow j = buildJob(req);
+            FileWriter fw = null;
             try {
                 File outFile = mkOutputFile(j);
-                FileWriter fw = new FileWriter(outFile);
+                fw = new FileWriter(outFile);
                 j.marshal(fw);
-                fw.close();
             } catch (Exception e) {
                 throw new JobException("Problem with store",e);
-            }            
+            } finally {
+                if (fw != null) {
+                    try {
+                        fw.close();
+                    } catch (IOException ioe) {
+                        log.error("failed to close filestore");
+                    }
+                }
+            }
         return j;     
     }
     
@@ -104,18 +112,27 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
      * @see org.astrogrid.jes.job.JobFactory#findJob(java.lang.String)
      */
     public Workflow  findJob(JobURN jobURN) throws JobException {
+        FileReader fr = null;
         try {
         File f = mkOutputFile(jobURN);
         if (! f.exists()) {
             throw new NotFoundException("Couldn't find job " + jobURN);
         }
-        return Workflow.unmarshalWorkflow(new FileReader(f));
+        fr = new FileReader(f);
+        return Workflow.unmarshalWorkflow(fr);
         } catch (CastorException e) {
             throw new JobException("Problem with creating object model",e);
         } catch (IOException e) {
             throw new JobException("Problem with reading xml from store",e);
+        } finally {
+            if (fr != null) {
+                try { 
+                    fr.close();
+                } catch (IOException ioe) {
+                    log.error("failed to close file");
+                }
+            }
         }
-        
     }
     /**
      * @see org.astrogrid.jes.job.JobFactory#findUserJobs(java.lang.String, java.lang.String, java.lang.String)
@@ -168,16 +185,24 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
      * @see org.astrogrid.jes.job.JobFactory#updateJob(org.astrogrid.jes.job.Job)
      */
     public void updateJob(Workflow j) throws JobException {
+        FileWriter fw = null;
         try {
         File outFile = mkOutputFile(j);
         if (! outFile.exists()) {
             throw new NotFoundException("Job URN " + id(j) + " not found");
         }
-        FileWriter fw = new FileWriter(outFile);
+        fw = new FileWriter(outFile);
         j.marshal(fw);
-        fw.close();
         } catch (Exception e) {
             throw new JobException("Problem with store",e);
+        } finally {
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    log.error("Could not close file writer");
+                }
+            }
         }
     }
 
@@ -239,6 +264,9 @@ public class FileJobFactoryImpl extends AbstractJobFactoryImpl implements Compon
 
 /* 
 $Log: FileJobFactoryImpl.java,v $
+Revision 1.10  2004/09/16 21:42:27  nw
+made sure all streams are closed
+
 Revision 1.9  2004/07/09 09:30:28  nw
 merged in scripting workflow interpreter from branch
 nww-x-workflow-extensions
