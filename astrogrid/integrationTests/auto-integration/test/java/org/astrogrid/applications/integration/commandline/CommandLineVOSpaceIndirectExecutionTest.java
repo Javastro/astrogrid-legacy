@@ -1,5 +1,5 @@
 /*
- * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.3 2004/09/09 20:55:13 pah Exp $
+ * $Id: CommandLineVOSpaceIndirectExecutionTest.java,v 1.4 2004/09/10 18:39:50 pah Exp $
  * 
  * Created on 11-May-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,11 +21,13 @@ import org.astrogrid.store.Ivorn;
 import org.astrogrid.store.VoSpaceClient;
 import org.astrogrid.workflow.beans.v1.Tool;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 
 /**
  * @author Paul Harrison (pah@jb.man.ac.uk) 11-May-2004
@@ -37,6 +39,7 @@ public class CommandLineVOSpaceIndirectExecutionTest extends AbstractRunTestForC
    private Ivorn inputIvorn;
    private Ivorn targetIvorn;
    private VoSpaceClient client;
+private Ivorn inputIvorn1;
    /**
     * Constructor for ApplicationRunTest.
     * @param arg0
@@ -48,6 +51,12 @@ public class CommandLineVOSpaceIndirectExecutionTest extends AbstractRunTestForC
 
    protected void populateTool(Tool tool) throws Exception {
        serverInfo.populateIndirectTool(tool,inputIvorn.toString(),targetIvorn.toString());
+       //add the extra parameter value that should be ignored because the testapp will pick the one that comes last.
+       ParameterValue pv = new ParameterValue();
+       pv.setName("P9");
+       pv.setIndirect(true);
+       pv.setValue(inputIvorn1.toString());
+       tool.getInput().addParameter(0, pv);
    }
 
    /* (non-Javadoc)
@@ -57,12 +66,24 @@ public class CommandLineVOSpaceIndirectExecutionTest extends AbstractRunTestForC
       super.setUp();
       targetIvorn = createIVORN("/ApplicationRunWithVOSpaceTest-output");
       inputIvorn = createIVORN("/ApplicationRunWithVOSpaceTest-input");
+      inputIvorn1 = createIVORN("/ApplicationRunWithVOSpaceTest-input-ignored");
 
       // write to myspace...
       client = new VoSpaceClient(user);
       assertNotNull(client);
+     try {
+        //TODO this should not really be here/needed - the user should have been set up properly, but sometimes it is not.....
+          client.createUser(mySpaceIvorn, userIvorn);
+    }
+    catch (Exception e) {
+        // ignore
+    }
+    
       PrintWriter pw = new PrintWriter(new OutputStreamWriter(client.putStream(inputIvorn)));
       pw.println(CommandLineProviderServerInfo.TEST_CONTENTS);
+      pw.close();
+      pw = new PrintWriter(new OutputStreamWriter(client.putStream(inputIvorn1)));
+      pw.println("ignored contents");
       pw.close();
    }
 

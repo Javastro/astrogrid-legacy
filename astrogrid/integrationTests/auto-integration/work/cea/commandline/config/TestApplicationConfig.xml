@@ -66,9 +66,9 @@
 				<input>
 					<pref ref="P1"/>
 					<pref ref="P4"/>
-					<pref ref="P9"/>
+					<pref ref="P9" maxOccurs="0"/> <!-- the testapp will only pick up the last -->
 					<!-- put this in to test that the interface does not check about it missing from the parameter list - not passed in any of the standard tests -->
-					<pref ref="P6" minoccurs="0"/>
+					<pref ref="P6" minOccurs="0"/>
 				</input>
 				<output>
 					<pref ref="P3"/>
