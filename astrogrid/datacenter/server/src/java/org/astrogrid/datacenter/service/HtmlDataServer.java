@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlDataServer.java,v 1.11 2004/03/17 00:08:27 mch Exp $
+ * $Id: HtmlDataServer.java,v 1.12 2004/07/06 16:00:01 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -191,8 +191,20 @@ public class HtmlDataServer
    }
    
    /**
-    * Returns an error in html form.
+    * Returns an error as string suitable for display in a browser as an html
+    * page
     */
+   public static String exceptionAsHtmlPage(String title, Throwable th, String details) {
+      return
+         "<html>\n"+
+         "<head><title>ERROR: "+title+"</title></head>\n"+
+         "<body>\n"+
+         exceptionAsHtml(title, th, details)+
+         "</body>\n"+
+         "</html>\n";
+   }
+
+   /** Returns exception suitable for a paragraph in an hmtl page */
    public static String exceptionAsHtml(String title, Throwable th, String details) {
 
       StringWriter sw = new StringWriter();
@@ -200,20 +212,15 @@ public class HtmlDataServer
       String stack = sw.toString();
 
       return
-         "<html>\n"+
-         "<head><title>ERROR: "+title+"</title></head>\n"+
-         "<body>\n"+
          "<h1>ERROR REPORT</h1>\n"+
-         "<b>"+title+"</b>\n"+
+         "<h2>"+title+"</h2>\n"+
          "<p><b>"+makeSafeForHtml(th.toString())+"</b></p>\n"+
          "<p>\n"+
          "<pre>"+makeSafeForHtml(stack)+"</pre>\n"+
          "</p>\n"+
          "<p>\n"+
          "<pre>"+makeSafeForHtml(details)+"</pre>\n"+
-         "</p>\n"+
-         "</body>\n"+
-         "</html>\n";
+         "</p>\n";
    }
 
    /**
@@ -224,8 +231,8 @@ public class HtmlDataServer
    }
    
    /** Convenience routine for exceptionAsHtml(String, Exception, String)   */
-   public static String exceptionAsHtml(String title, Throwable th) {
-      return exceptionAsHtml(title, th, "");
+   public static String exceptionAsHtmlPage(String title, Throwable th) {
+      return exceptionAsHtmlPage(title, th, "");
    }
 }
 
