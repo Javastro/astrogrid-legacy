@@ -1,5 +1,5 @@
 /*
- * $Id: QuerierError.java,v 1.1 2004/03/12 04:45:26 mch Exp $
+ * $Id: QuerierError.java,v 1.2 2004/03/14 00:39:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -13,7 +13,7 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
    Throwable cause;
    String message;
    
-   public QuerierError(Throwable causeOfError, String givenMessage) {
+   public QuerierError(String givenMessage, Throwable causeOfError) {
       this.cause = causeOfError;
       this.message = givenMessage;
    }
@@ -36,6 +36,9 @@ public class QuerierError extends QuerierStatus implements QuerierClosed
 
 /*
 $Log: QuerierError.java,v $
+Revision 1.2  2004/03/14 00:39:55  mch
+Added error trapping to DataServer and setting Querier error status
+
 Revision 1.1  2004/03/12 04:45:26  mch
 It05 MCH Refactor
 

@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer_v0_4_1.java,v 1.3 2004/03/13 23:38:46 mch Exp $
+ * $Id: AxisDataServer_v0_4_1.java,v 1.4 2004/03/14 00:39:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -71,18 +71,14 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
       
          //ask as an adql select
          StringWriter sw = new StringWriter();
-         Querier querier = Querier.makeQuerier(Account.ANONYMOUS,
-                                               new AdqlQuery(axisQ.getQueryBody()),
-                                               sw,
-                                               QueryResults.FORMAT_VOTABLE);
-         server.querierManager.askQuerier(querier);
+         server.askQuery(Account.ANONYMOUS,
+                          new AdqlQuery(axisQ.getQueryBody()),
+                          sw,
+                          QueryResults.FORMAT_VOTABLE);
          return sw.toString();
          
       }
-      catch (QueryException e) {
-         throw makeFault(CLIENTFAULT, "Query Error", e);
-      }
-      catch (Exception e) {
+      catch (Throwable e) {
          throw makeFault(SERVERFAULT, "Datacenter error", e);
       }
    }
@@ -193,10 +189,10 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
     */
    public void startQuery(String id) throws AxisFault {
       try {
-         Querier querier = server.querierManager.getQuerier(id);
-         server.querierManager.submitQuerier(querier);
+         Querier querier = server.getQuerier(id);
+         server.submitQuerier(querier);
       }
-      catch (Exception e) {
+      catch (Throwable e) {
          throw makeFault(SERVERFAULT, e+" starting Query ["+id+"]", e);
       }
    }
@@ -230,7 +226,7 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
       log.debug("Querier ["+queryId+"] registering JobMonitor at "+uri);
       try  {
          URL u = new URL(uri.toString());
-         Querier querier = server.querierManager.getQuerier(queryId);
+         Querier querier = server.getQuerier(queryId);
          if (querier == null) {
             throw new IllegalArgumentException("Unknown qid" + queryId);
          }
@@ -259,6 +255,9 @@ public class AxisDataServer_v0_4_1 extends AxisDataServer implements org.astrogr
 
 /*
 $Log: AxisDataServer_v0_4_1.java,v $
+Revision 1.4  2004/03/14 00:39:55  mch
+Added error trapping to DataServer and setting Querier error status
+
 Revision 1.3  2004/03/13 23:38:46  mch
 Test fixes and better front-end JSP access
 

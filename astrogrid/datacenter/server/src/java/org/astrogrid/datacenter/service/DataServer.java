@@ -1,5 +1,5 @@
 /*
- * $Id: DataServer.java,v 1.17 2004/03/14 00:02:02 mch Exp $
+ * $Id: DataServer.java,v 1.18 2004/03/14 00:39:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -49,7 +49,7 @@ public class DataServer
     * we can access the same queriers through different interfaces; eg start a querier
     * using the AxisDataServer, but then watch its progress using a browser
     */
-   public final static QuerierManager querierManager = new QuerierManager("DataServer");
+   protected final static QuerierManager querierManager = new QuerierManager("DataServer");
 
    /** Start Time for status info */
    private final Date startTime = new Date();
@@ -77,10 +77,11 @@ public class DataServer
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         log.error("askQuery("+user+", "+query+", "+out+", "+requestedFormat+")", th);
+         String msg = "askQuery("+user+", "+query+", "+out+", "+requestedFormat+")";
+         log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError("",th));
+               querier.setStatus(new QuerierError(msg,th));
             }
          }
          throw th;
@@ -95,27 +96,59 @@ public class DataServer
 
       Querier querier = null;
       try {
-         if ( (query instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
+         querier = Querier.makeQuerier(user, query, out, requestedFormat);
+      }
+      catch (Throwable th) {
+         //if there's an error, log it, make sure the querier state is correct, and rethrow to
+         //be dealt with correctly up the tree
+         String msg = "submitQuery("+user+", "+query+", "+out+", "+requestedFormat+")";
+         log.error(msg, th);
+         if (querier != null) {
+            if (!(querier.getStatus() instanceof QuerierError)) {
+               querier.setStatus(new QuerierError(msg,th));
+            }
+         }
+         throw th;
+      }
+      
+      return submitQuerier(querier);
+   }
+
+   /**
+    * Submits a (non-blocking) ADQL/XML/OM query, returning the query's external
+    * reference id.  Results will be output to given Agsl
+    */
+   public String submitQuerier(Querier querier) throws Throwable {
+
+      try {
+         if ( (querier.getQuery() instanceof RawSqlQuery) && !SimpleConfig.getSingleton().getBoolean(SQL_PASSTHROUGH_ENABLED)) {
             throw new UnsupportedOperationException("This service does not allow SQL to be directly submitted");
          }
    
-         querier = Querier.makeQuerier(user, query, out, requestedFormat);
          querierManager.submitQuerier(querier);
          return querier.getId();
       }
       catch (Throwable th) {
          //if there's an error, log it, make sure the querier state is correct, and rethrow to
          //be dealt with correctly up the tree
-         log.error("submitQuery("+user+", "+query+", "+out+", "+requestedFormat+")", th);
+         String msg = "submitQuery("+querier+")";
+         log.error(msg, th);
          if (querier != null) {
             if (!(querier.getStatus() instanceof QuerierError)) {
-               querier.setStatus(new QuerierError("",th));
+               querier.setStatus(new QuerierError(msg,th));
             }
          }
          throw th;
       }
    }
-
+   
+   /**
+    * Returns the querier corresponding to the given id
+    */
+   public Querier getQuerier(String queryId) {
+      return querierManager.getQuerier(queryId);
+   }
+   
    /**
     * Returns status of a query. NB the id given is the *datacenter's* id
     */
@@ -171,6 +204,8 @@ public class DataServer
       }
       
    }
+   
+   
    
 }
 

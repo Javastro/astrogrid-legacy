@@ -1,4 +1,4 @@
-/*$Id: DataServiceTest.java,v 1.3 2004/03/13 23:38:56 mch Exp $
+/*$Id: DataServiceTest.java,v 1.4 2004/03/14 00:39:30 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -78,7 +78,7 @@ public class DataServiceTest extends ServerTestCase {
          assertNotNull(MetadataServer.getMetadataUrl().openStream());
      }
 
-    public void testConeSearch() throws Exception {
+    public void testConeSearch() throws Throwable {
        
       StringWriter sw = new StringWriter();
        server.askQuery(Account.ANONYMOUS, new ConeQuery(30, 30, 6), sw, "VOTABLE");
@@ -91,7 +91,7 @@ public class DataServiceTest extends ServerTestCase {
    /**
     * Tests the query service by itself
     */
-   public void testQueryService() throws Exception
+   public void testQueryService() throws Throwable
    {
       //submit query
       StringWriter sw = new StringWriter();
@@ -147,6 +147,9 @@ public class DataServiceTest extends ServerTestCase {
 
 /*
 $Log: DataServiceTest.java,v $
+Revision 1.4  2004/03/14 00:39:30  mch
+Added error trapping to DataServer and setting Querier error status
+
 Revision 1.3  2004/03/13 23:38:56  mch
 Test fixes and better front-end JSP access
 

@@ -1,5 +1,5 @@
 /*
- * $Id: JdbcPlugin.java,v 1.1 2004/03/12 14:59:43 mch Exp $
+ * $Id: JdbcPlugin.java,v 1.2 2004/03/14 00:39:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -104,7 +104,7 @@ public class JdbcPlugin extends QuerierPlugin  {
     * Makes the right SqlQueryMaker for this database
     */
    public SqlMaker makeSqlMaker() throws QuerierPluginException {
-      String makerClass = SimpleConfig.getSingleton().getString(SQL_TRANSLATOR, "org.astrogrid.datacenter.queriers.sql.StdSqlQueryMaker");
+      String makerClass = SimpleConfig.getSingleton().getString(SQL_TRANSLATOR, "org.astrogrid.datacenter.queriers.sql.StdSqlMaker");
       
       try {
          Object o = QuerierPluginFactory.instantiate(makerClass);

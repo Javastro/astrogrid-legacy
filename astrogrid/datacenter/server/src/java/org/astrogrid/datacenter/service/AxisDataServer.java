@@ -1,5 +1,5 @@
 /*
- * $Id: AxisDataServer.java,v 1.36 2004/03/13 23:38:46 mch Exp $
+ * $Id: AxisDataServer.java,v 1.37 2004/03/14 00:39:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -128,7 +128,7 @@ public abstract class AxisDataServer  {
       try {
          server.abortQuery(user, queryId);
       }
-      catch (Exception e) {
+      catch (Throwable e) {
          throw makeFault(SERVERFAULT, "Error aborting Query", e);
       }
    }
@@ -140,7 +140,7 @@ public abstract class AxisDataServer  {
       try {
          return server.getQueryStatus(user, queryId);
       }
-      catch (Exception e) {
+      catch (Throwable e) {
          throw makeFault(SERVERFAULT, "Error aborting Query", e);
       }
    }
@@ -152,7 +152,7 @@ public abstract class AxisDataServer  {
       try {
          return server.getServerStatus();
       }
-      catch (Exception e) {
+      catch (Throwable e) {
          throw makeFault(SERVERFAULT, "Error aborting Query", e);
       }
    }
@@ -163,6 +163,9 @@ public abstract class AxisDataServer  {
 
 /*
 $Log: AxisDataServer.java,v $
+Revision 1.37  2004/03/14 00:39:55  mch
+Added error trapping to DataServer and setting Querier error status
+
 Revision 1.36  2004/03/13 23:38:46  mch
 Test fixes and better front-end JSP access
 

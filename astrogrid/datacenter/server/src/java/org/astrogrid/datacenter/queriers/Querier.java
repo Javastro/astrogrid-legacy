@@ -1,5 +1,5 @@
 /*
- * $Id: Querier.java,v 1.38 2004/03/13 23:38:46 mch Exp $
+ * $Id: Querier.java,v 1.39 2004/03/14 00:39:55 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -159,7 +159,7 @@ public class Querier implements Runnable {
       }
       catch (Throwable th) {
          log.error("Exception",th);
-         setStatus(new QuerierError(th, ""));
+         setStatus(new QuerierError("", th));
       }
       log.info("...Ending asynchronous Query ["+id+"]");
       
@@ -374,6 +374,9 @@ public class Querier implements Runnable {
 }
 /*
  $Log: Querier.java,v $
+ Revision 1.39  2004/03/14 00:39:55  mch
+ Added error trapping to DataServer and setting Querier error status
+
  Revision 1.38  2004/03/13 23:38:46  mch
  Test fixes and better front-end JSP access
 
