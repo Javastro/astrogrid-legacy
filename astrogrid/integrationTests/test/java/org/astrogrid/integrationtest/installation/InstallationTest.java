@@ -1,4 +1,4 @@
-/* $Id: InstallationTest.java,v 1.4 2004/03/30 16:52:23 jdt Exp $
+/* $Id: InstallationTest.java,v 1.5 2004/03/31 01:11:56 jdt Exp $
  * Created on Mar 29, 2004 by jdt
  * Copyright (C) AstroGrid. All rights reserved.
  * This software is published under the terms of the AstroGrid
@@ -16,7 +16,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.astrogrid.config.Config;
 import org.astrogrid.integrationtest.common.ConfManager;
@@ -26,7 +28,7 @@ import org.astrogrid.integrationtest.common.ConfManager;
  * 
  * @author jdt
  */
-public final class InstallationTest extends TestCase {
+public final class InstallationTest  {
     /**
      * Commons logger
      */
@@ -35,22 +37,22 @@ public final class InstallationTest extends TestCase {
     /**
      * Configuration holding endpoints of tests
      */
-    private Config conf;
+    private static Config conf=ConfManager.getConfig();
+    /**
+     * Hide
+     * Constructor
+     *
+     */
+    private InstallationTest() {}
+
     /** 
      * Fire up the text ui
      * @param args ignored
      */
     public static void main(final String[] args) {
-        junit.textui.TestRunner.run(InstallationTest.class);
+        junit.textui.TestRunner.run(suite());
     }
-    /**
-     * Test setup
-     * @see junit.framework.TestCase#setUp()
-     *
-     */
-    public void setUp() {
-        conf = ConfManager.getConfig();
-    }
+
     
     /**
      * Return only keys in the config which are URLs
@@ -60,14 +62,20 @@ public final class InstallationTest extends TestCase {
      * 
      * @return a collection of keys which might be urls
      */
-    private Collection getURLKeys() {
+    private static Collection getURLKeys() {
         final Collection keys = new ArrayList();
         keys.add("registry.registry.endpoint");
         keys.add("registry.admin.endpoint");
         keys.add("registry.harvest.endpoint");
                   
         keys.add("appController.endPoint");
-        keys.add("community.endPoint");
+        keys.add("community.securityservice.endPoint");
+        keys.add("community.securitymanager.endPoint");
+        keys.add("community.policyservice.endPoint");
+        keys.add("community.policymanager.endPoint");
+        keys.add("community.databasemanager.endPoint");
+        
+     
         keys.add("mySpaceEndPoint");
         keys.add("portalWebSite");
         keys.add("jobControlerEndPoint");
@@ -78,49 +86,76 @@ public final class InstallationTest extends TestCase {
     /**
      * Goes through properties which are URLs and checks
      * they do indeed point to something, and don't return 404s
-     * @throws IOException if the URL is malformed, or the website down
-     *
+     * @return a sutie containing a test for each URL
      */
-    public void testURLsAreLive() throws IOException {
+    public static Test  suite() {
         final Collection keys = getURLKeys();
         final Iterator it = keys.iterator();
+        final TestSuite suite =
+            new TestSuite("Test for live urls");
         while (it.hasNext()) {
             final String key = (String) it.next();
             final String url = conf.getString(key);
             log.debug("Checking "+key+"="+url);
-            checkURL(url);
+            suite.addTest(new URLTest(key,url));
         }
-        
+        return suite;
     }
     
-    
-    
+
+
     /**
-     * Does this URL exist?
-     * @param urlString the url to check in string form
-     * @throws IOException if unable to open a connection or URL is malformed.
+     *  The following class takes care of testing if a URL is live
      */
-    private void checkURL(final String urlString) throws IOException {
-        final URL url = new URL(urlString);
-        final URLConnection conn = url.openConnection();
-        conn.connect();
-        final Map fields = conn.getHeaderFields();
-        final Set keys = fields.keySet();
-        final Iterator it =keys.iterator();
-        while (it.hasNext()) {
-            final String headerKey = (String) it.next();
-            log.debug(headerKey+": "+conn.getHeaderField(headerKey));
+    private static class URLTest extends TestCase {
+        /** the url under test */
+        private String testurl;
+        /**
+         * Constructor
+         * @param key used to name the test
+         * @param url the url under test
+         */
+        public URLTest(final String key, final String url) {
+            super(key);
+            this.testurl = url;
         }
-        final String response = conn.getHeaderField(null);
-        assertEquals("Checking "+urlString,"HTTP/1.1 200 OK", response);
-       
-    }
-    
+        /**
+         * executed by the test runner
+         * @see junit.framework.TestCase#runTest()
+         * @throws IOException if unable to open a connection or URL is malformed.
+         */
+        public final void runTest() throws IOException {
+            checkURL(testurl);
+        }
+        /**
+         * Does this URL exist?
+         * @param urlString the url to check in string form
+         * @throws IOException if unable to open a connection or URL is malformed.
+         */
+        private void checkURL(final String urlString) throws IOException {
+            final URL url = new URL(urlString);
+            final URLConnection conn = url.openConnection();
+            conn.connect();
+            final Map fields = conn.getHeaderFields();
+            final Set keys = fields.keySet();
+            final Iterator it =keys.iterator();
+            while (it.hasNext()) {
+                final String headerKey = (String) it.next();
+                log.debug(headerKey+": "+conn.getHeaderField(headerKey));
+            }
+            final String response = conn.getHeaderField(null);
+            assertEquals("Checking "+urlString,"HTTP/1.1 200 OK", response);
+        
+        }
+    } //end class
 }
 
 
 /*
  *  $Log: InstallationTest.java,v $
+ *  Revision 1.5  2004/03/31 01:11:56  jdt
+ *  now adds test dynamically, one for each url
+ *
  *  Revision 1.4  2004/03/30 16:52:23  jdt
  *  added registry endpoints
  *
