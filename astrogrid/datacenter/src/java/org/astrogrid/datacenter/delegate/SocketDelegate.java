@@ -1,13 +1,12 @@
 /*
- * $Id: SocketDelegate.java,v 1.4 2003/09/14 22:07:55 mch Exp $
+ * $Id: SocketDelegate.java,v 1.5 2003/09/14 22:47:25 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
 
 package org.astrogrid.datacenter.delegate;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -16,6 +15,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.axis.utils.XMLUtils;
 import org.astrogrid.datacenter.common.ResponseHelper;
 import org.astrogrid.datacenter.common.ServiceStatus;
+import org.astrogrid.datacenter.io.SocketXmlInputStream;
+import org.astrogrid.datacenter.io.SocketXmlOutputStream;
+import org.astrogrid.datacenter.io.TraceInputStream;
 import org.astrogrid.log.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -41,10 +43,10 @@ public class SocketDelegate extends DatacenterDelegate
    private Socket socket = null;
 
    /** Output stream to the socket connection */
-   private DataOutputStream out = null;
+   private SocketXmlOutputStream out = null;
 
    /** Input stream from the socket connection */
-   private DataInputStream in = null;
+   private SocketXmlInputStream in = null;
 
    /** String used to request registry metadata */
    public final static String REQ_REG_METADATA_TAG = "RequestRegistryMetata";
@@ -83,8 +85,12 @@ public class SocketDelegate extends DatacenterDelegate
       Log.trace("Connecting to "+aSocket);
 
       socket = aSocket;
-      in = new DataInputStream(aSocket.getInputStream());
-      out = new DataOutputStream(aSocket.getOutputStream());
+      out = new SocketXmlOutputStream(socket.getOutputStream());
+
+      TraceInputStream tin = new TraceInputStream(socket.getInputStream());
+//      tin.setState(true);
+      tin.copy2File(new File("incomingMsgs.log"));
+      in = new SocketXmlInputStream(tin);
    }
 
    /**
@@ -113,13 +119,15 @@ public class SocketDelegate extends DatacenterDelegate
     */
    public synchronized Element adqlQuery(Element adql) throws IOException
    {
+      Log.trace("SocketDelegate: Writing Query");
       //send query document
-      socket.getOutputStream().write(adql.toString().getBytes());
+      out.writeAsDoc(adql);
 
       try
       {
          //blocking read for response
-         return XMLUtils.newDocument(socket.getInputStream()).getDocumentElement();
+         Log.trace("SocketDelegate: Waiting for query response...");
+         return in.readDoc().getDocumentElement();
       }
       catch (org.xml.sax.SAXException e)
       {
@@ -163,12 +171,13 @@ public class SocketDelegate extends DatacenterDelegate
    {
       Log.trace("SocketDelegate: Writing Request Metadata tag");
 
-      writeDoc("<"+REQ_REG_METADATA_TAG+"/>\n");
+      out.writeAsDoc("<"+REQ_REG_METADATA_TAG+"/>\n");
 
       try
       {
          Log.trace("SocketDelegate: Waiting for metadata...");
-         Document response =  XMLUtils.newDocument(in);
+         Document response = in.readDoc();
+         Log.trace("Response="+response.getDocumentElement().getNodeName());
 
          if (response.getElementsByTagName(ResponseHelper.ERROR_TAG).getLength() >0)
          {
@@ -179,7 +188,6 @@ public class SocketDelegate extends DatacenterDelegate
             return null;
          }
 
-         Log.trace("Received metadata "+response.getDocumentElement().getNodeName());
          return response.getDocumentElement();
       }
       catch (ParserConfigurationException e)
@@ -200,18 +208,6 @@ public class SocketDelegate extends DatacenterDelegate
       return ServiceStatus.UNKNOWN;
    }
 
-   /**
-    * writes given string as a full document to the output stream, ie
-    * appends an EOF marker, and writes as a bytestream (not chars)
-    */
-   private void writeDoc(String doc) throws IOException
-   {
-      doc = "<?xml version='1.0' encoding='UTF-8'?>\n"+
-            doc +
-            "\u001b";
-
-      out.write(doc.getBytes());
-   }
 
    /**
     * Register web listener
@@ -227,6 +223,9 @@ public class SocketDelegate extends DatacenterDelegate
 
 /*
 $Log: SocketDelegate.java,v $
+Revision 1.5  2003/09/14 22:47:25  mch
+Various fixes :-)
+
 Revision 1.4  2003/09/14 22:07:55  mch
 Added Socket stream
 
@@ -262,5 +261,6 @@ initial checkin
 
 
 */
+
 
 
