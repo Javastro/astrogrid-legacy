@@ -4,8 +4,8 @@
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
   <pomVersion>3</pomVersion>
-  <id>ApplicationControllerDelegate</id>
-  <name>AstroGrid Applications Integration</name>
+  <id>applications-client</id>
+  <name>AstroGrid Commone Execution Architecture client</name>
 
   <currentVersion>$Name:  $</currentVersion>
   
@@ -19,7 +19,7 @@
   <package>org.astrogrid</package>
   <logo>http://www.astrogrid.org/images/AGlogo</logo>
   <description><![CDATA[
- The delegate for the applicationController ]]>
+ The client side code for the Common Execution Architecture]]>
   </description>
 
   <shortDescription>AstroGrid Applications Integration Components</shortDescription>

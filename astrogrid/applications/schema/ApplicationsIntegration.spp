@@ -2,18 +2,18 @@
 <Project>
 	<Folder FolderName="XML Files" ExtStr="xml;cml;math;mtx;rdf;smil;svg;wml">
 		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\config\applicationDefinitions.xml" HomeFolder="Yes"/>
-		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\test\java\org\astrogrid\applications\description\TestApplicationConfig.xml" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\applications\test\config\TestApplicationConfig.xml" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="XSL Files" ExtStr="xsl;xslt"/>
 	<Folder FolderName="HTML Files" ExtStr="html;htm;xhtml;asp"/>
 	<Folder FolderName="DTD/Schemas" ExtStr="dtd;dcd;xdr;biz;xsd">
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGApplicationBase.xsd" HomeFolder="Yes"/>
 		<File FilePath=".\AGApplicationResource.xsd" HomeFolder="Yes"/>
 		<File FilePath=".\AGApplicationService.xsd" HomeFolder="Yes"/>
-		<File FilePath=".\AGParameterDefinition.xsd" HomeFolder="Yes"/>
-		<File FilePath=".\sextractor.wsdl" HomeFolder="Yes"/>
-		<File FilePath=".\SExtractorParameters-complex.xsd" HomeFolder="Yes"/>
-		<File FilePath=".\SExtractorParameters-simple.xsd" HomeFolder="Yes"/>
-		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow\schema\Workflow.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\AGParameterDefinition.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\Credentials.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\JesTypes.xsd" HomeFolder="Yes"/>
+		<File FilePath="\\pahlaptop\work\astrogrid\src\workflow-objects\schema\Workflow.xsd" HomeFolder="Yes"/>
 	</Folder>
 	<Folder FolderName="Entities" ExtStr="ent"/>
 </Project>

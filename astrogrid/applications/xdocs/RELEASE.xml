@@ -7,8 +7,14 @@
 
 <body>
 <section name="Release $Name:  $">
+
 <p>
+	Introduced the Common Execution Architecture
 </p>
+<ul>
+	<li>Delegate now known as applications-client</li>
+	<li></li>
+</ul>
 </section>
 <section name="Previous releases">
 	<subsection name="AVODemoJan2004">
