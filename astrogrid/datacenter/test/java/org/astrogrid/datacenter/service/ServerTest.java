@@ -27,7 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public class TestServer extends TestCase
+public class ServerTest extends TestCase
 {
 
    /**
@@ -66,7 +66,7 @@ public class TestServer extends TestCase
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(TestServer.class);
+        return new TestSuite(ServerTest.class);
     }
 
     /**
@@ -81,7 +81,10 @@ public class TestServer extends TestCase
 }
 
 /*
-$Log: TestServer.java,v $
+$Log: ServerTest.java,v $
+Revision 1.1  2003/08/29 15:27:20  mch
+Renamed TestXxxx to XxxxxTest so Maven runs them
+
 Revision 1.2  2003/08/28 17:29:25  mch
 Added test based on dummyQuerier
 

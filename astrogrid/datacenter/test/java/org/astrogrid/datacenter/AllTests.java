@@ -1,4 +1,4 @@
-/*$Id: AllTests.java,v 1.6 2003/08/28 15:26:44 nw Exp $
+/*$Id: AllTests.java,v 1.7 2003/08/29 15:26:55 mch Exp $
  * Created on 21-Aug-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -38,10 +38,10 @@ public class AllTests {
         suite.addTest(org.astrogrid.datacenter.datasetagent.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.impl.abstr.AllTests.suite());
         suite.addTest(org.astrogrid.datacenter.query.QueryParsingTest.suite());
-        suite.addTest(org.astrogrid.datacenter.queriers.TestDummies.suite());
-        suite.addTest(org.astrogrid.datacenter.service.TestWorkspace.suite());
-        suite.addTest(org.astrogrid.datacenter.service.TestServer.suite());
-        suite.addTest(org.astrogrid.datacenter.delegate.TestDelegate.suite());
+        suite.addTest(org.astrogrid.datacenter.queriers.QuerierTest.suite());
+        suite.addTest(org.astrogrid.datacenter.service.WorkspaceTest.suite());
+        suite.addTest(org.astrogrid.datacenter.service.ServerTest.suite());
+        suite.addTest(org.astrogrid.datacenter.delegate.DelegateTest.suite());
         suite.addTest(org.astrogrid.datacenter.adql.AllTests.suite());
         return suite;
     }
@@ -50,6 +50,9 @@ public class AllTests {
 
 /*
 $Log: AllTests.java,v $
+Revision 1.7  2003/08/29 15:26:55  mch
+Renamed TestXxxx to XxxxxTest so Maven runs them
+
 Revision 1.6  2003/08/28 15:26:44  nw
 unit tests for adql
 

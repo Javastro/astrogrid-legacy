@@ -18,7 +18,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class TestWorkspace extends TestCase
+public class WorkspaceTest extends TestCase
 {
    
    /**
@@ -68,7 +68,7 @@ public class TestWorkspace extends TestCase
      */
     public static Test suite() {
         // Reflection is used here to add all the testXXX() methods to the suite.
-        return new TestSuite(TestWorkspace.class);
+        return new TestSuite(WorkspaceTest.class);
     }
 
     /**
@@ -83,7 +83,10 @@ public class TestWorkspace extends TestCase
 }
 
 /*
-$Log: TestWorkspace.java,v $
+$Log: WorkspaceTest.java,v $
+Revision 1.1  2003/08/29 15:27:20  mch
+Renamed TestXxxx to XxxxxTest so Maven runs them
+
 Revision 1.1  2003/08/27 18:12:35  mch
 Workspace tester
 
