@@ -90,6 +90,7 @@
     <xsl:element name="script">
       <xsl:attribute name="type"><xsl:value-of select="@type"/></xsl:attribute>
       <xsl:attribute name="src"><xsl:value-of select="@src"/></xsl:attribute>
+      <xsl:apply-templates/>
       null;
     </xsl:element>
   </xsl:template>
