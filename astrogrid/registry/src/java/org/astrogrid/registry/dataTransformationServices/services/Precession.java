@@ -1,4 +1,4 @@
-package org.astrogrid.dataTransformationServices.services;
+package org.astrogrid.registry.dataTransformationServices.services
 
 public class Precession {
   public Precession() {
