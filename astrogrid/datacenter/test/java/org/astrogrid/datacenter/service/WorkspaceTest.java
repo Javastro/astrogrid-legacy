@@ -30,32 +30,43 @@ public class WorkspaceTest extends TestCase
     * do this in setUp(), but that applies to each test, whereas Workspaces
     * should be running in a simple single 'working' directory.
     * It appears a new instance is run for every test...
+    *  NWW: moved to setUp - same behaviour, but better handling if exception is thrown.
+    *  - to setUp a test fixture once, for a whole batch of tests, need to wrap the testSuite in a testDecorator.
+    * -- there's examples in the JUnit docs, but its a bit of a faff - if possible don't do it.
     */
-   public WorkspaceTest(String s) throws IOException
+   public WorkspaceTest(String s) 
    {
         super(s);
 
+   }
+
+public static File setUpWorkspace() throws IOException {
         Workspace.PERSIST = false; //make sure they tidy up properly
-
+    File dir = null;
       String workspaceProperty = Configuration.getProperty(Workspace.WORKSPACE_DIRECTORY_KEY);
-
+    
       if ( workspaceProperty == null)
       {
         //specify a working directory area - need to do this so we can
          //find the workspace to examine the contents
-        tmpDir = File.createTempFile("workspace-test","");
+        dir = File.createTempFile("workspace-test","");
         // gah, want a dir, not a file.
-        tmpDir.delete();
-        tmpDir.mkdir();
-
+        dir.delete();
+        dir.mkdir();
+    
         //set the configuratio property so Workspace can find it
-        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, tmpDir.getAbsolutePath());
+        Configuration.setProperty(Workspace.WORKSPACE_DIRECTORY_KEY, dir.getAbsolutePath());
       }
       else
       {
-         tmpDir = new File(workspaceProperty);
+         dir = new File(workspaceProperty);
       }
-   }
+      return dir;
+}
+
+    protected void setUp() throws Exception{
+        this.tmpDir = setUpWorkspace();
+    }
 
     /** deletes working directory -- otherwise tests are not repeatable
     protected void tearDown() {
@@ -255,6 +266,9 @@ public class WorkspaceTest extends TestCase
 
 /*
 $Log: WorkspaceTest.java,v $
+Revision 1.11  2003/09/24 21:13:16  nw
+moved setup fromo constructor to setUp() - then can call from other tests.
+
 Revision 1.10  2003/09/17 14:53:02  nw
 tidied imports
 
