@@ -2,18 +2,17 @@ package org.astrogrid.mySpace.mySpaceUtil;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
-import java.lang.StringBuffer;
-import java.io.InputStream;
-import java.io.FileInputStream;
+//import java.io.IOException;
+//import java.util.Properties;
+//import java.io.InputStream;
+//import java.io.FileInputStream;
 import java.text.MessageFormat;
 import java.io.StringReader ;
 import java.util.HashMap;
 import java.util.Calendar;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
-import java.lang.ClassLoader;
+//import java.lang.ClassLoader;
 
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
@@ -21,11 +20,14 @@ import org.xml.sax.InputSource ;
 
 import org.apache.log4j.Logger;
 
-import org.apache.axis.AxisProperties;
+//import org.apache.axis.AxisProperties;
 
+//import org.astrogrid.TemplateManager;
 import org.astrogrid.mySpace.mySpaceStatus.MySpaceMessage;
 import org.astrogrid.mySpace.mySpaceManager.DataItemRecord;
 import org.astrogrid.mySpace.mySpaceStatus.*;
+import org.astrogrid.mySpace.mySpaceManager.MMC;
+//import org.astrogrid.TemplateManager;
 
 /**
  * @author C L QIN
@@ -35,17 +37,20 @@ import org.astrogrid.mySpace.mySpaceStatus.*;
 public class MySpaceUtils {
     private static Logger logger = Logger.getLogger(MySpaceUtils.class);
     private static boolean DEBUG = true;
-	private static String catalinaHome = AxisProperties.getProperty("catalina.home");
-	private static String requestResponseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MSManagerRequestResponse.properties";
-    private static Properties conProperties = new Properties();
-    private static final String RESPONSE = "MYSPACEMANAGER_RESPONSE";
-    private static final String D_RESPONSE_HEAD ="MYSPACEMANAGER_D_RESPONSE_HEAD";
-    private static final String D_RESPONSE_ELEMENT ="MYSPACEMANAGER_D_ELEMENT";
-    private static final String D_RESPONSE_FOOT ="MYSPACEMANAGER_D_FOOT";
+	//private static String catalinaHome = AxisProperties.getProperty("catalina.home");
+	/////private static String requestResponseTemplate = "MSManagerRequestResponse.properties";
+	//private static String requestResponseTemplate = "MSManagerRequestResponse.properties";
+	//private static String requestResponseTemplate = catalinaHome+"/conf/astrogrid/mySpace/" +"MSManagerRequestResponse.properties";
+   // private static Properties conProperties = new Properties();
+    //private static final String RESPONSE = "TEMPLATE.RESPONSE";
+    //private static final String D_RESPONSE_HEAD ="TEMPLATE.RESPONSEHEAD";
+    //private static final String D_RESPONSE_ELEMENT ="TEMPLATE.RESPONSEELEMENT";
+    //private static final String D_RESPONSE_FOOT ="TEMPLATE.RESPONSEFOOT";
+    //private static final String CATLOG = "MYSPACEMANAGER";
 	private static MySpaceStatus msstatus = new MySpaceStatus();
 	private static String response = " ";
-	private static final String SUCCESS = "SUCCESS";
-	private static final String FAULT = "FAULT";
+	//private static final String SUCCESS = "SUCCESS";
+	//private static final String FAULT = "FAULT";
 	
 	public static String readFromFile( File file ) {
 		FileReader fileReader = null;
@@ -53,8 +58,8 @@ public class MySpaceUtils {
 			if (file == null || !file.exists()) {
 				//throw new IOException("File does not exist");
 				MySpaceMessage msMessage = new MySpaceMessage("FILE_NOT_EXIST");
-				msstatus.addCode(MySpaceStatusCode.FILE_NOT_EXIST,MySpaceStatusCode.ERROR);
-				response = FAULT+MySpaceStatusCode.FILE_NOT_EXIST;
+				msstatus.addCode(MySpaceStatusCode.AGMSCE00047,MySpaceStatusCode.ERROR);
+				response = MMC.FAULT+MySpaceStatusCode.AGMSCE00047;
 				return response;
 			}
 			//open file to read from
@@ -81,8 +86,8 @@ public class MySpaceUtils {
 			return strbufFileContent.toString();
 		}catch (Exception e) {
 			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",e.toString());
-			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
+			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			response = MMC.FAULT+MySpaceStatusCode.AGMSCE00032;
 			return response;
 		}finally{
 			try{
@@ -120,16 +125,21 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
-			conProperties = loadProperties(requestResponseTemplate);
+			//String tTemp = TemplateManager.getInstance().getTemplate("ASTROGRID_myspacemanagerconfig.xml");
+			//logger.debug("tTemp ="+tTemp);
+			//conProperties = loadProperties(requestResponseTemplate);
+			String requestTemplate = MMC.getProperty( MMC.RESPONSE, MMC.CATLOG) ;//this should get the xml template
+			
+			logger.debug("testing using jConfig: "+requestTemplate);
 			/*
 			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			*/
-			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse: " +conProperties.toString() ) ;
-			String template = conProperties.getProperty( RESPONSE );
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+template);
+			//if (DEBUG)  logger.debug( "buildMySpaceManagerResponse: " +conProperties.toString() ) ;
+			//String template = conProperties.getProperty( RESPONSE );			
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse = "+requestTemplate);
 			
 			Object [] inserts = new Object[12] ;
 			inserts[0] = status;
@@ -148,14 +158,15 @@ public class MySpaceUtils {
 			if (!dataHolderURI.equals(null))  inserts[11] = dataHolderURI;
 			if( DEBUG ) logger.debug("UTIL: DATAHOLDERURI ="+dataHolderURI);		
 		 
-			response = MessageFormat.format( template, inserts ) ;
+			//response = MessageFormat.format( template, inserts ) ;
+			response = MessageFormat.format( requestTemplate, inserts ) ;
 			return response;
 		}
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
+			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			response = MMC.FAULT+MySpaceStatusCode.AGMSCE00032;
 			return response;
 		}
 		
@@ -165,6 +176,7 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
+			response = MMC.getProperty( MMC.D_RESPONSE_FOOT, MMC.CATLOG) ;//this should get the xml template
 			/*
 			//MySpaceUtils.readFromFile(new File(responseTemplate_foot));
 			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
@@ -172,9 +184,9 @@ public class MySpaceUtils {
 			conProperties.load(istream);
 			istream.close();
 			*/
-			conProperties = loadProperties(requestResponseTemplate);
-			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Footer: " +conProperties.toString() ) ;
-			response = conProperties.getProperty( D_RESPONSE_FOOT );
+			//conProperties = loadProperties(requestResponseTemplate);
+			//if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Footer: " +conProperties.toString() ) ;
+			//response = conProperties.getProperty( D_RESPONSE_FOOT );
 			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Footer = "+response);
 	
 			return response;
@@ -182,8 +194,8 @@ public class MySpaceUtils {
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
+			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			response = MMC.FAULT+MySpaceStatusCode.AGMSCE00032;
 			return response;
 		}
 		
@@ -193,30 +205,31 @@ public class MySpaceUtils {
 		//conProperties = new Properties();
 		String response = "";
 		try {
+			String requestTemplate = MMC.getProperty( MMC.D_RESPONSE_HEAD, MMC.CATLOG) ;//this should get the xml template
 			/*
 			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			*/
-			conProperties = loadProperties(requestResponseTemplate);
-			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Header: " +conProperties.toString() ) ;
-			String template = conProperties.getProperty( D_RESPONSE_HEAD );
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Header = "+template);
+			//conProperties = loadProperties(requestResponseTemplate);
+			//if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Header: " +conProperties.toString() ) ;
+			//String template = conProperties.getProperty( D_RESPONSE_HEAD );
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Header = "+requestTemplate);
 			
 			Object [] inserts = new Object[3] ;
 			inserts[0] = status;
 			inserts[1] = details;
 			inserts[2] = Calendar.getInstance().getTime();
 					
-			response = MessageFormat.format( template, inserts ) ;
+			response = MessageFormat.format( requestTemplate, inserts ) ;
 			return response;
 		}
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
+			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			response = MMC.FAULT+MySpaceStatusCode.AGMSCE00032;
 			return response;
 		}
 		
@@ -224,18 +237,19 @@ public class MySpaceUtils {
 	
 	public String buildMySpaceManagerResponseElement(DataItemRecord record, String status, String details){
 		//conProperties = new Properties();
-		String response = "";
+		//String response = "";
 		try {
+			String requestTemplate = MMC.getProperty( MMC.D_RESPONSE_ELEMENT, MMC.CATLOG) ;//this should get the xml template
 			/*
 			//InputStream istream = ClassLoader.getSystemResourceAsStream( requestResponseTemplate );
 			FileInputStream istream = new FileInputStream( requestResponseTemplate );
 			conProperties.load(istream);
 			istream.close();
 			*/
-			conProperties = loadProperties(requestResponseTemplate);
-			if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Element: " +conProperties.toString() ) ;
-			String template = conProperties.getProperty( D_RESPONSE_ELEMENT );
-			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+template);
+			//conProperties = loadProperties(requestResponseTemplate);
+			//if (DEBUG)  logger.debug( "buildMySpaceManagerResponse_Element: " +conProperties.toString() ) ;
+			//String template = conProperties.getProperty( D_RESPONSE_ELEMENT );
+			if (DEBUG)  logger.debug("buildMySpaceManagerResponse_Element = "+requestTemplate);
 			
 			Object [] inserts = new Object[8] ;
 
@@ -250,18 +264,25 @@ public class MySpaceUtils {
 				inserts[7] = record.getPermissionsMask();
 			}
 					
-			response = MessageFormat.format( template, inserts ) ;
+			response = MessageFormat.format( requestTemplate, inserts ) ;
 			return response;
 		}
 		catch ( Exception ex ) {
 			if (DEBUG)  logger.error("MYSPACEUTILS ERROR_READING_FILE :" +ex.getMessage());
 			MySpaceMessage msMessage = new MySpaceMessage("ERROR_READING_FILE",ex.toString());
-			msstatus.addCode(MySpaceStatusCode.ERROR_READING_FILE,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERROR_READING_FILE;
+			msstatus.addCode(MySpaceStatusCode.AGMSCE00032,MySpaceStatusCode.ERROR);
+			response = MMC.FAULT+MySpaceStatusCode.AGMSCE00032;
 			return response;
 		}
 		
 	}		
+
+	/**
+	 * Returns a <code>HashMap</code> with key/value filled in regarding
+	 * to the request template.
+	 * <p>
+	 * @param xmlRequest: Xml Request template with filled parameters. 
+	 */
 	
 	public HashMap getRequestAttributes( String xmlRequest ){
 		HashMap request = new HashMap();
@@ -363,24 +384,27 @@ public class MySpaceUtils {
 		} 		
 		return doc ;	
 	}
+	/*
 	
 	public Properties loadProperties(String propertiesTempl){
 
-		try{
-			FileInputStream istream = new FileInputStream( propertiesTempl );
-			conProperties.load(istream);
-			istream.close();
+		//try{
+			InputStream istream = MySpaceMessage.class.getClassLoader().getResourceAsStream( propertiesTempl ) ;
+		
+			//FileInputStream istream = new FileInputStream( propertiesTempl );
+			//conProperties.load(istream);
+			//istream.close();
 			
-		}catch(IOException ioe){
-			if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ioe.getMessage());
-			MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ioe.toString());
-			msstatus.addCode(MySpaceStatusCode.ERR_IO_BUILD_RESPONS,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_IO_BUILD_RESPONS;
-		}
+		//}catch(IOException ioe){
+		//	if (DEBUG)  logger.error("MYSPACEUTILS IO EXCEPTION :" +ioe.getMessage());
+		//	MySpaceMessage msMessage = new MySpaceMessage("ERR_IO_BUILD_RESPONS",ioe.toString());
+		//	msstatus.addCode(MySpaceStatusCode.AGMSCE00048,MySpaceStatusCode.ERROR);
+		//	response = FAULT+MySpaceStatusCode.AGMSCE00048;
+	//	}
 		return conProperties;
 	}
 	
 	public static void main( String [] args ) {
 	   }
-	
+	*/
 }

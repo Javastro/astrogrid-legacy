@@ -10,14 +10,9 @@ import org.astrogrid.mySpace.mySpaceUtil.MySpaceUtils;
 //java
 import java.io.PrintWriter;
 import java.io.File;
-import java.io.InputStream;
 import java.io.FileOutputStream;
-import java.io.FileInputStream;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.util.Properties;
 
-import org.apache.axis.AxisProperties;
 
 //log4j
 import org.apache.log4j.Logger;
@@ -36,8 +31,9 @@ public class ServerManager {
     private String response = ""; //this would be a xml response contains info match portal/datacentre xml schema.
     private static final String SUCCESS = "SUCCESS";
     private static final String FAULT = "FAULT";
-	private static String catalinaHome = AxisProperties.getProperty("catalina.home");
-	private static String mySpaceProperties = catalinaHome+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
+	//private static String catalinaHome = AxisProperties.getProperty("catalina.home");
+	//private static String mySpaceProperties = catalinaHome+"/conf/astrogrid/mySpace/" +"statuscodes.lis";
+	private static String mySpaceProperties = "statuscodes.lis";
 	private static Properties conProperties = new Properties();
     
     public String processRequest(){
@@ -55,8 +51,8 @@ public class ServerManager {
     		if  (file == null || !file.exists()){
 				if (DEBUG)  logger.debug("File not exist! can't delete.");
 				MySpaceMessage msMessage = new MySpaceMessage("NULL_FILE_DELETE");
-				status.addCode(MySpaceStatusCode.NULL_FILE_DELETE,MySpaceStatusCode.ERROR);
-			    response = FAULT+MySpaceStatusCode.NULL_FILE_DELETE;
+				status.addCode(MySpaceStatusCode.AGMSCE00031,MySpaceStatusCode.ERROR);
+			    response = FAULT+MySpaceStatusCode.AGMSCE00031;
 				return response;
     		}else{
 	    		try{
@@ -67,16 +63,16 @@ public class ServerManager {
 					return response;
 	    		}catch(SecurityException se){
 					MySpaceMessage msMessage = new MySpaceMessage("ERR_SECURITY_DELETE_DATA_HOLDER");
-					status.addCode(MySpaceStatusCode.ERR_SECURITY_DELETE_DATA_HOLDER,MySpaceStatusCode.ERROR);
-					response = FAULT+MySpaceStatusCode.ERR_SECURITY_DELETE_DATA_HOLDER;
+					status.addCode(MySpaceStatusCode.AGMSCE00045,MySpaceStatusCode.ERROR);
+					response = FAULT+MySpaceStatusCode.AGMSCE00045;
 					return response;
 	    		}
     		}
     	}
     	catch(Exception e){
 			MySpaceMessage msMessage = new MySpaceMessage("ERR_DELETE_DATA_HOLDER");
-			status.addCode(MySpaceStatusCode.ERR_DELETE_DATA_HOLDER,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_DELETE_DATA_HOLDER;
+			status.addCode(MySpaceStatusCode.AGMSCE00046,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.AGMSCE00046;
 			return response;
 			}
     }
@@ -88,32 +84,29 @@ public class ServerManager {
 
     public String copyDataHolder(String dataHolderPath, String destinationDataHolderPath) {
 		try{
-			//File oldFile = new File(dataHolderPath);
-			//String content = MySpaceUtils.readFromFile(oldFile);
-			response = SUCCESS +saveDataHolder(dataHolderPath, destinationDataHolderPath)+MySpaceStatusCode.DATA_HOLDER_COPIED;
+			File oldFile = new File(dataHolderPath);
+			String content = MySpaceUtils.readFromFile(oldFile);
+			response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00044;
 			return response;
 		}catch(Exception e){
 			MySpaceMessage message = new MySpaceMessage("ERR_COPY_DATA_HOLDER");
-			status.addCode(MySpaceStatusCode.ERR_COPY_DATA_HOLDER,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_COPY_DATA_HOLDER;	
+			status.addCode(MySpaceStatusCode.AGMSCE00043,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.AGMSCE00043;	
 			return response;
 		}
     }
 
     public String moveDataHolder(String dataHolderPath, String destinationDataHolderPath) {
     	try{
-	    	//File oldFile = new File(dataHolderPath);
-	    	//String content = MySpaceUtils.readFromFile(oldFile);
-			String sResponse = saveDataHolder(dataHolderPath, destinationDataHolderPath);
-			if (sResponse.startsWith("SUCCESS")){
-				deleteDataHolder(dataHolderPath);
-			}
-	    	response = SUCCESS +sResponse;
+	    	File oldFile = new File(dataHolderPath);
+	    	String content = MySpaceUtils.readFromFile(oldFile);
+			deleteDataHolder(dataHolderPath);
+	    	response = SUCCESS +saveDataHolder(content, destinationDataHolderPath)+MySpaceStatusCode.AGMSCE00042;
 	    	return response;
     	}catch(Exception e){
-			MySpaceMessage message = new MySpaceMessage("ERR_MOVE_DATA_HOLDER");
-			status.addCode(MySpaceStatusCode.ERR_MOVE_DATA_HOLDER,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_MOVE_DATA_HOLDER;	
+			MySpaceMessage message = new MySpaceMessage("AGMSCE00041");
+			status.addCode(MySpaceStatusCode.AGMSCE00041,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.AGMSCE00041;	
     		return response;
     	}
     }
@@ -159,8 +152,8 @@ public class ServerManager {
 		}catch (Exception e) {//catch unexpected Exception
 			logger.error("FAULT ServerManagetr.saveDataHolder!!! "+e);
 			MySpaceMessage message = new MySpaceMessage("ERR_SAVE_DATAHOLDER");
-			status.addCode(MySpaceStatusCode.ERR_SAVE_DATAHOLDER,MySpaceStatusCode.ERROR);
-			response = FAULT+MySpaceStatusCode.ERR_SAVE_DATAHOLDER+"::"+e.toString();			
+			status.addCode(MySpaceStatusCode.AGMSCE00040,MySpaceStatusCode.ERROR);
+			response = FAULT+MySpaceStatusCode.AGMSCE00040+"::"+e.toString();			
 			return response; //temp code for now, should catch the exception and return proper error message
 		}finally{
 			//close file

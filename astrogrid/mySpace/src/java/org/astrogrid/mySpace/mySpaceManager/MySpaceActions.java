@@ -197,18 +197,18 @@ public class MySpaceActions
 //                        report an error.
 
                            reg.deleteDataItemRecord(newdataItemID);
-                           status.addCode(MySpaceStatusCode.MS_E_FLCRTDH,
+                           status.addCode(MySpaceStatusCode.AGMMCE00035,
                              MySpaceStatusCode.ERROR);
                         }
                      }
                      else
-                     {  status.addCode(MySpaceStatusCode.MS_E_FCRTDHR,
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00036,
                           MySpaceStatusCode.ERROR);
                      }
                   }
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_E_CPYDHCN,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00037,
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -320,13 +320,13 @@ public class MySpaceActions
                         returnedDataItem = newDataItem;
                      }
                      else
-                     {  status.addCode(MySpaceStatusCode.MS_E_FLMOVDH,
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00038,
                           MySpaceStatusCode.ERROR);
                      }
                   }
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_E_MOVDHCN,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00039,
                      MySpaceStatusCode.ERROR);
                }
             }
@@ -413,7 +413,7 @@ public class MySpaceActions
                {  newDataHolder = newDataItem;
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_E_FCRTDHR,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00036,
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -427,7 +427,7 @@ public class MySpaceActions
 
       }
       catch (Exception e)
-      {  status.addCode(MySpaceStatusCode.MS_E_UPLOAD,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00049,
            MySpaceStatusCode.ERROR);
       }
 
@@ -522,17 +522,17 @@ public class MySpaceActions
                        serverURI + dataItem.getDataItemFile();
                   }
                   else
-                  {  status.addCode(MySpaceStatusCode.MS_E_FACCSDH,
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00040,
                        MySpaceStatusCode.ERROR);
                   }
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_E_FNTCNDH,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00041,
                     MySpaceStatusCode.ERROR);
                }
             }
             else
-            {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
+            {  status.addCode(MySpaceStatusCode.AGMMCE00033,
                  MySpaceStatusCode.ERROR);
             }
          }
@@ -611,7 +611,7 @@ public class MySpaceActions
                {  newContainer = newDataItem;
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_E_FLCRTCN,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00042,
                     MySpaceStatusCode.ERROR);
                }
             }
@@ -684,7 +684,7 @@ public class MySpaceActions
                   if (childrenDataItemVector != null)
                   {  proceedToDelete = false;
 
-                     status.addCode(MySpaceStatusCode.MS_E_DNEMPCN,
+                     status.addCode(MySpaceStatusCode.AGMMCE00043,
                        MySpaceStatusCode.ERROR);
                   }
                }
@@ -751,18 +751,18 @@ public class MySpaceActions
                        returnStatus = true;
                      }
                      else
-                     {  status.addCode(MySpaceStatusCode.MS_E_FLDELDH,
+                     {  status.addCode(MySpaceStatusCode.AGMMCE00044,
                           MySpaceStatusCode.ERROR);
                      }
                   }
                   else
-                  {  status.addCode(MySpaceStatusCode.MS_E_NTPERDH,
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00045,
                        MySpaceStatusCode.ERROR);
                   }
                }
             }
             else
-            {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
+            {  status.addCode(MySpaceStatusCode.AGMMCE00033,
                  MySpaceStatusCode.ERROR);
             }
          }
@@ -856,12 +856,12 @@ public class MySpaceActions
                dataItem = dataItemFound;
             }
             else
-            {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
+            {  status.addCode(MySpaceStatusCode.AGMMCE00033,
                MySpaceStatusCode.ERROR);
             }
          }
          else
-         {  status.addCode(MySpaceStatusCode.MS_E_DHNTFND,
+         {  status.addCode(MySpaceStatusCode.AGMMCE00033,
               MySpaceStatusCode.ERROR);
          }
       }
@@ -981,12 +981,12 @@ public class MySpaceActions
                {  dataItemVector = dataItemFoundVector;
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_I_NDHMTCH,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00034,
                     MySpaceStatusCode.INFO);
                }
             }
             else
-            {  status.addCode(MySpaceStatusCode.MS_I_NDHMTCH,
+            {  status.addCode(MySpaceStatusCode.AGMMCE00034,
                     MySpaceStatusCode.INFO);
             }
          }
@@ -1089,27 +1089,27 @@ public class MySpaceActions
                   {  canBeCreated = true;
                   }
                   else
-                  {  status.addCode(MySpaceStatusCode.MS_E_NPRWPCN,
+                  {  status.addCode(MySpaceStatusCode.AGMMCE00046,
                         MySpaceStatusCode.ERROR);
                   }
                }
                else
-               {  status.addCode(MySpaceStatusCode.MS_E_PCNNTEX,
+               {  status.addCode(MySpaceStatusCode.AGMMCE00047,
                     MySpaceStatusCode.ERROR);
                }
             }
             else
-            {  status.addCode(MySpaceStatusCode.MS_E_SRVINVN,
+            {  status.addCode(MySpaceStatusCode.AGMMCE00052,
                  MySpaceStatusCode.ERROR);
             }
          }
          else
-         {  status.addCode(MySpaceStatusCode.MS_E_ILLSRCN,
+         {  status.addCode(MySpaceStatusCode.AGMMCE00053,
               MySpaceStatusCode.ERROR);
          }
       }
       else
-      {  status.addCode(MySpaceStatusCode.MS_E_DHCNAEX,
+      {  status.addCode(MySpaceStatusCode.AGMMCE00048,
            MySpaceStatusCode.ERROR);
       }
 
