@@ -1,22 +1,11 @@
                         MySpace Release Notes and Installation Guide
-                                     Iteration 2
+                                     Pre-Iteration 3
 
 1. Base Test System
 
 * RedHat Linux 8.0 (qin.star.le.ac.uk:143.210.36.131)
-* RedHat Linux 7.3 (hydra.star.le.ac.uk:143.210.36.120)
 
-2. Assumptions
-
-* The DataMover component was removed from this iteration, therefore the DataCentre and MySpace have to be deployed to the same server.
-
-3. Restrictions
-
-* No testing against Windows or Solaris has been undertaken for this release.
-
-* MySpaceRegistry is assuming “fake user id/communityid/jobID” these info should be getting from portal.
-
-4. Preparation
+2. Preparation for MySpace core system:
 
 * Download Java J2SE 1.4.1_02 and set environment variable JAVA_HOME to point to java install dir.
 
@@ -29,80 +18,69 @@ For more comprehansive installation of Tomcat and Axis please refer to http://wi
   axis.jar
   jaxrpc.jar
   log4j-1.2.4.jar
+  jConfig.jar
 
-5. Deploy mySpace Web Services and configure it to suit mySpace
+3. Deploy mySpace Web Services and configure it to suit mySpace
 
-1) Check out latest version of mySpace.jar from CVS and place it into $CATALINA_HOME/
+1) Create folder: $CATALINA_HOME/conf/astrogrid/mySpace
+   Create folder: $CATALINA_HOME/webapps/mySpace
+2) Check out latest version of mySpace.jar from CVS and place it into $CATALINA_HOME/
+I will attach the jar file with my email for now.
 
-2) Without leaving this directory, unjar mySpace.jar
+3) Without leaving this directory, unjar mySpace.jar
+list of files/folders you will have after this step:
+-- $CATALIN_HOME/webapps/axis/WEB-INF/lib/mySpaceClasses.jar
 
-3) Make sure tomcat is running, goto $CATALINA_HOME/webapps/axis/WEB-INF, type java org.apache.axis.client.AdminClient deploy-msManager.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/MySpaceManager
+-- $CATALINA_HOME/conf/astrogrid/mySpace/example.init
+-- $CATALINA_HOME/conf/astrogrid/mySpace/example.reg
+-- $CATALINA_HOME/conf/astrogrid/mySpace/example.config
 
-4) Type java org.apache.axis.client.AdminClient deploy-msServer.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/ServerManager
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/ASTROGRID_myspacemanagerconfig.xml
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/ASTROGRID_myspacemanagermessages.properties
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/ASTROGRID_myspaceserverconfig.xml
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/ASTROGRID_myspaceservermessages.properties
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/MSManagerRequestTemplate.xml
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/MSManagerResponseElementTemplate.xml
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/MSManagerResponseFootTemplate.xml
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/MSManagerResponseHeadTemplate.xml
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/MSManagerResponseTemplate.xml
 
-5)Create folder astrogrid/mySpace  in $CATALINA_HOME/conf, Check out latest version of all content from astrogrid/mySpace/conf/astrogrid/mySpace into $CATALINA_HOME/conf/astrogrid/mySpace folder, open statuscode.lis, make sure the following:
-REGISTRYCONF=$CATALINA_HOME$/conf/astrogrid/mySpace/example
-###TEMPPATHTO this is where the dataholder files will be stored. eg.:
-TEMPPATHTO=TEMPPATHTO=/usr/local/jakarta-tomcat-4.1.24/webapps/mySpace/ 
-MYSPACEMANAGER=pointing to MySpaceManager web service you deployed
-SERVERMANAGER=pointing to ServerManager web service you deployed 
+-- $CATALINA_HOME/webapps/mySpace/f33; f34; f37; f39
 
-6)open example.config
-* Edit the third argument of each line to match whatever you setup for TEMPPATHTO in statuscode.lis file.
-eg: http://hydra.star.le.ac.uk:8080/mySpace/
-* Edit the fourth argument of each line to match wherever the actural folder path of dataholders
-eg: $CATALINA_HOME/webapps/mySpace
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/deploy-msManager.wsdd
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/undeploy-msManager.wsdd
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/deploy-msServer.wsdd
+-- $CATALINA_HOME/webapps/axis/WEB-INF/classes/undeploy-msServer.wsdd
 
-7) Create folder where the TEMPPATHTO is pointing to.
-eg: /usr/local/jakarta-tomcat-4.1.24/webapps/mySpace/
+4) Make sure tomcat is running, goto $CATALINA_HOME/webapps/axis/WEB-INF, type java org.apache.axis.client.AdminClient deploy-msManager.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/MySpaceManager
 
-For more detailed infomation about mySpace registry, please refer to creatRegistry.lis
+5) Type java org.apache.axis.client.AdminClient deploy-msServer.wsdd, this will deploy MySpaceManager at http://localhost:8080/axis/services/ServerManager
 
-6. Testing
+3. Configuration
+1) open $CATALINA_HOME/webapps/axis/WEB-INF/classes/ASTROGRID_myspacemanagerconfig.xml and 
+--find line: <property name="REGISTRYCONF" value="/usr/local/astroGrid/jakarta-tomcat-4.1.24/conf/astrogrid/mySpace/example" />
+CHANGE: /usr/local/astroGrid/jakarta-tomcat-4.1.24/ TO your tomcat installation directory.
+--find line: <property name="MYSPACEMANAGERURL" value="http://localholst:8080/axis/services/MySpaceManager" />
+CHANGE: localholst TO server name where you installed MySpaceManager
+--find line: <property name="MYSPACESERVERURL" value="http://localhost:8080/axis/services/ServerManager" /> 
+CHANGE: localholst TO server name where you installed ServerManager
 
-Checkout latest version of MySpaceManagerClient.java and compile it.
-There are 8 functions need to be tested:
-1.upLoad
-2.lookupDataHoldersDetails
-3.lookupDataHolderDetails
-4.copyDataHolder
-5.deleteDataHolder
-6.moveDataHolder
-7.exportDataHolder
-8.createContainer
+2) open $CATALINA_HOME/webapps/axis/WEB-INF/classes/ASTROGRID_myspaceserverconfig.xml
+--find line:  <property name="DATAHOLDERFOLDER" value="/usr/local/astroGrid/jakarta-tomcat-4.1.24/webapps/mySpace/" />
+CHANGE: /usr/local/astroGrid/jakarta-tomcat-4.1.24/ to your tomcat installation directory.
+--find line: <property name="COPY_COMMAND" value="cp" />
+CHANGE: copy value TO "copy" if you are using Windows
 
-Before running your test, you need to edit the String request to suit the requested xml string from portal/datacentre.
+3)open example.config
+CHANGE: /usr/local/astroGrid/jakarta-tomcat-4.1.24/ TO your tomcat installation directory
+CHANGE: localhost TO the server name you installed your MySpace System.
+for both serv1 and serv2
+CAUTION: please don't delete the "/" at the end of the last 2 elements.
 
-Run mySpaceDemo to find out information about the registry:
-1) cd $CATALINA_HOME/webapps/axis/WEB-INF/classes
-2) type java org.astrogrid.mySpace.mySpaceDemo.MySpaceDemo $CATALINA_HOME/conf/astrogrid/mySpace/example
-    This will bring you a java applet, click on options/entre query and type * and enter, you will get a list of registry name (you can configure the example.initial to add more usernames followed by the base format in that file.)
+4. Preparation for installing MSExplorer
+1) get version 1.2(29thAug) of cocoon.war from PortalB/InstallKit(Since iteration3 UI stuff still not ready yet and this is the version have been tested fully)
+2) place the war file under your $CATALINA_HOME/webapps restart tomcat
 
-To run the client Java code:
-1) Need an argument as input depends on which method you are   testing, eg. “java MySpaceManagerClient upLoad” will test upload function. 
-2) Need to set String request in each method of MySpaceManagerClient.java, fill in the Mandatory fields by comparing to registry entries by running MySpaceDemo.
+You are off to go and good luck.
 
-
-Example testing upLoad:
-1) Running MySpaceDemo and finds out all the existing registries.
-2) in MySpaceManagerClient.invokeUpload fill in field:
-  <userID><communityID><jobID><newDataHolderName><serverFileName><fileSize>
-3) type java MySpaceManagerClient upLoad
-
-Appendex:
-
-Work Arounds if 5.3 and 5.4 don't work:
-1. got to $CATALINA_HOME/webapps/axis/WEB-INF/
-2. back up your server-config.xml
-3. open server-config.xml and the following to the service area:
-
-<service name="MySpaceManager" provider="java:RPC">
-  <parameter name="allowedMethods" value="upLoad lookupDataHolderDetails lookupDataHoldersDetails copyDataHolder moveDataHolder exportDataHolder createContainer deleteDataHolder"/>
-  <parameter name="className" value="org.astrogrid.mySpace.mySpaceManager.MySpaceManager"/>
-</service>
- <service name="ServerManager" provider="java:RPC">
-  <parameter name="allowedMethods" value="saveDataHolder deleteDataHolder copyDataHolder moveDataHolder enquireDataHolderSize buildXMLResponse tidyMySpace"/>
-  <parameter name="className" value="org.astrogrid.mySpace.mySpaceServer.ServerManager"/>
- </service>
-
-
+Note: Please be aware that since we have not fully finished/tested our code up to now, please raise any problems in Bugzilla giving full describtion, thanks.
