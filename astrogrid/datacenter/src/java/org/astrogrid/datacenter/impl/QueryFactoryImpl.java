@@ -32,11 +32,6 @@ public class QueryFactoryImpl implements QueryFactory {
 	private static InitialContext 
 	    initialContext = null ;
 	    
-	private static final String
-	    JNDI_DATASOURCE_LOCATION = "java:comp/env/my-datasource" ;
-
-//	private static DataSource
-//	    datasource = null ;
 	private static Hashtable 
 	    datasources = null ;
 	    
@@ -78,9 +73,9 @@ public class QueryFactoryImpl implements QueryFactory {
 		if( TRACE_ENABLED ) logger.debug( "getDataSource(): entry") ; 
 		
 		DataSource
-		    retValue = null ;
+		   retValue = null ;
 		String
-			datasourceName = null ;
+		   datasourceName = null ;
 					
 		try{
 			
@@ -89,7 +84,7 @@ public class QueryFactoryImpl implements QueryFactory {
 			if( retValue == null ) {
 				datasourceName = getDataSourceName( catalogName );
 				retValue = (DataSource)getInitialContext().lookup( datasourceName ) ;	
-				getDataSources().put( datasourceName, retValue ) ;
+				getDataSources().put( catalogName, retValue ) ;
 			}
 			
 		}

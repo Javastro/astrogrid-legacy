@@ -28,10 +28,12 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
-import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-import org.apache.axis.message.SOAPBodyElement;
-import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.client.Call;
+import org.apache.axis.encoding.XMLType;
+import javax.xml.rpc.ParameterMode;
+
+// import org.apache.axis.utils.XMLUtils;
 
 import java.net.URL;
 
@@ -310,9 +312,6 @@ public class JobController {
                     		
 			bCleanCommit = factory.end ( true ) ;   // Commit and cleanup
                     			
-	        // Inform JobScheduler (within JES) that job requires scheduling...
-	        informJobScheduler( job ) ;
-
             response = formatGoodResponse( job ) ;
 
         }
@@ -332,6 +331,8 @@ public class JobController {
         	if( bCleanCommit == false ) {
 				try{ factory.end ( false ) ; } catch( JesException jex ) {;}   // Rollback and cleanup
         	}
+			// Inform JobScheduler (within JES) that a job may require scheduling...
+			informJobScheduler( job ) ;
 	        logger.debug( response.toString() );
 	        if( TRACE_ENABLED ) logger.debug( "submitJob() exit") ;
         }
@@ -386,38 +387,32 @@ public class JobController {
 	} // end of formatResponse()
 	
 	  	
-	private void informJobScheduler( Job job ) throws JesException { 
+	private void informJobScheduler( Job job ) { 
 		if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;
-		
+
 		try {
+
+			Object []
+			   parms = new Object[] { formatScheduleRequest( job ) } ;
+			   
+			Call 
+			   call = (Call) new Service().createCall() ;			  
+
+			call.setTargetEndpointAddress( new URL( JobController.getProperty( SCHEDULER_URL ) ) ) ;
+			call.setOperationName( "scheduleJob" ) ;  // Set method to invoke		
+			call.addParameter("scheduleJobXML", XMLType.XSD_STRING,ParameterMode.IN);
+			call.setReturnType(XMLType.XSD_STRING);
 			
-			  Call
-			     call = new Service().createCall() ;
-
-			  call.setTargetEndpointAddress( new URL( getProperty( SCHEDULER_URL ) ) );
-			     
-			  InputSource
-			     jobSource = new InputSource( new StringReader( formatScheduleRequest( job ) ) ) ;
-
-			  DocumentBuilder 
-			     builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		
-			  SOAPBodyElement[] 
-			     input = new SOAPBodyElement[1];
-			     
-			  input[0] = new SOAPBodyElement( builder.parse( jobSource ) ) ;
-        
-              // JBL Note: Axis documentation states "the return immediately part isn't implemented yet"!
-              call.invokeOneWay( input ) ;
+			call.invokeOneWay( parms ) ;
 
 		}
 		catch ( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER ) ; 
+				message = new Message( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER, ex ) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "informJobScheduler() exit") ;	
+			if( TRACE_ENABLED ) logger.debug( "informJobScheduler(): exit") ;	
 		}					
 		
 	} // end informJobScheduler()

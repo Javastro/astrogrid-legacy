@@ -1,8 +1,12 @@
-/* 
+/*
  * @(#)JobScheduler.java   1.0
+ *  
+ * Copyright (C) AstroGrid. All rights reserved.
  *
- * AstroGrid Copyright notice.
- * 
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.jes.jobscheduler;
 
@@ -24,10 +28,11 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
-import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-import org.apache.axis.message.SOAPBodyElement;
-import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.client.Call;
+import org.apache.axis.encoding.XMLType;
+import javax.xml.rpc.ParameterMode;
+// import org.apache.axis.utils.XMLUtils;
 
 import java.net.URL;
 
@@ -58,8 +63,10 @@ public class JobScheduler {
 	private static final String
 		ASTROGRIDERROR_COULD_NOT_READ_CONFIGFILE    = "AGJESZ00001:JobScheduler: Could not read my configuration file",
 		ASTROGRIDERROR_JES_NOT_INITIALIZED          = "AGJESZ00002:JobScheduler: Not initialized. Perhaps my configuration file is missing.",
-		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030" ;
-//		ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE       = "AGJESE00040",
+		ASTROGRIDERROR_FAILED_TO_PARSE_JOB_REQUEST  = "AGJESE00030",
+		ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE     = "AGJESE00500",
+	    ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST = "AGJESE00510",
+	    ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER = "AGJESE00520" ;
 //		ASTROGRIDERROR_FAILED_TO_FORMAT_RESPONSE    = "AGJESE00400",
 //	    ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER   = "AGJESE00410",
 //	    ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE    = "AGJESE00420";
@@ -211,7 +218,7 @@ public class JobScheduler {
 	} // end parseRequest()
 	
 	
-    public void scheduleJob( Document scheduleJobDocument ) {
+    public void scheduleJob( String scheduleJobXML ) {
 		if( TRACE_ENABLED ) logger.debug( "scheduleJob() entry") ;
     	
 		JobFactory
@@ -225,6 +232,10 @@ public class JobScheduler {
 	        // If properties file is not loaded, we bail out...
 	        // Each JES MUST be properly initialized! 
 	        checkPropertiesLoaded() ;
+	        
+			// Parse the request... 
+			Document
+			   scheduleJobDocument = parseRequest( scheduleJobXML ) ;
 	           
 			// Create the necessary Job structures.
 			// This involves persistence, so we bracket the transaction 
@@ -246,7 +257,7 @@ public class JobScheduler {
         	
 	        Message
 		       detailMessage = jex.getAstroGridMessage() ,  
-		       generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_SUBMITFAILURE ) ;
+		       generalMessage = new Message( ASTROGRIDERROR_ULTIMATE_SCHEDULEFAILURE ) ;
 	        logger.error( detailMessage.toString(), jex ) ;
 	        logger.error( generalMessage.toString() ) ;
 	        
@@ -271,29 +282,23 @@ public class JobScheduler {
 		
 		try {
 			
-			  Call
-			     call = new Service().createCall() ;
+			Object []
+			   parms = new Object[] { formatRunRequest( job ) } ;
+			
+			Call 
+			   call = (Call) new Service().createCall() ;			  
 
-			  // call.setTargetEndpointAddress( new URL( job.get ) );
-			  
-			  SOAPBodyElement[] 
-			     input = new SOAPBodyElement[1];
-			     
-			  InputSource
-			     jobSource = new InputSource( new StringReader( this.formatRunRequest( job ) ) ) ; 
-
-			  DocumentBuilder 
-			     builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		
-			  input[0] = new SOAPBodyElement( builder.parse( jobSource ) ) ;
-        
-              // JBL Note: Axis documentation states "the return immediately part isn't implemented yet"!
-              call.invokeOneWay( input ) ;
+			call.setTargetEndpointAddress( new URL( "" ) ) ;
+			call.setOperationName( "runQuery" ) ;  // Set method to invoke		
+			call.addParameter("jobXML", XMLType.XSD_STRING,ParameterMode.IN);
+			call.setReturnType(XMLType.XSD_STRING);   // JBL Note: Is this OK?
+			
+			call.invokeOneWay( parms ) ;
 
 		}
 		catch ( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_INFORM_SCHEDULER ) ; 
+				message = new Message( ASTROGRIDERROR_FAILED_TO_CONTACT_DATACENTER ) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
@@ -306,40 +311,31 @@ public class JobScheduler {
 	private String formatRunRequest( Job job ) {
 		if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;
 		
-		//JBL Note: Requires rewriting... 
+		String
+		    request = null ;
 		
-		String 
-		   response = getProperty( SCHEDULE_JOB_REQUEST_TEMPLATE ) ;
-		
-		try {
-			
-			Object []
-			   inserts = new Object[5] ;
-			inserts[0] = job.getName() ;
-			inserts[1] = job.getUserId() ;
-			inserts[2] = job.getCommunity() ;
-			inserts[3] = job.getDate() ;
-			inserts[4] = job.getId() ;
-			
-			response = MessageFormat.format( response, inserts ) ;
+        try {
+        	
+        	// JBL Note: This is probably not sufficient in anything but the short term...
+        	request = job.getDocumentXML() ;
 
 		}
 		catch ( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_FAILED_TO_FORMAT_SCHEDULE ) ; 
+				message = new Message( ASTROGRIDERROR_FAILED_TO_FORMAT_RUN_REQUEST ) ; 
 			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "formatRunRequest() exit") ;	
 		}		
 		
-		return response ;
+		return request ;
 		
 	} // end of formatRunRequest()
 	
 	
 	private String extractJobURN( Document jobDoc ) { 
-		return element.getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
+		return jobDoc.getDocumentElement().getAttribute( ScheduleRequestDD.JOB_URN_ATTR ).trim() ;	
 	} 
 	
 

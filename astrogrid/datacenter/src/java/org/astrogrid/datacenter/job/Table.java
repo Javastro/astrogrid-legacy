@@ -43,7 +43,7 @@ public class Table {
 		if( TRACE_ENABLED ) logger.debug( "Table(Element): entry") ;   
 				
 		try {
-			setName(tableElement.getFirstChild().toString()) ;			
+			setName( tableElement.getFirstChild().getNodeValue().trim() ) ;			
 		}
 		catch( Exception ex ) {
 			Message

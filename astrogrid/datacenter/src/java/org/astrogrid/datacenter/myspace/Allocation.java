@@ -16,10 +16,15 @@ import org.astrogrid.datacenter.job.* ;
 import org.astrogrid.datacenter.i18n.* ;
 import java.io.OutputStream;
 import java.text.MessageFormat ;
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.xml.sax.InputSource ;
+import java.io.StringReader ;
 
+import org.apache.axis.client.Service;
 import org.apache.axis.client.Call;
-// import org.apache.axis.client.Service;
-// import org.apache.axis.message.SOAPBodyElement;
+import org.apache.axis.encoding.XMLType;
+import javax.xml.rpc.ParameterMode;
 // import org.apache.axis.utils.XMLUtils;
 import java.net.URL;
 
@@ -148,34 +153,27 @@ public class Allocation {
 			
 			Object []
 			   parms = new Object[] { MessageFormat.format( requestTemplate, inserts ) } ;
-					
-			Call
-			   call = new Service().createCall() ;
 
-			call.setTargetEndpointAddress( new URL( getProperty( MYSPACE_URL ) ) );
-			call.setProperty( Call.SOAPACTION_USE_PROPERTY, Boolean.TRUE ) ;
-			call.setProperty( Call.SOAPACTION_URI_PROPERTY, "getQuote" ) ;
-			call.setProperty( Call.ENCODINGSTYLE_URI_PROPERTY, "http://schemas.xmlsoap.org/soap/encoding/" ) ;
-			call.setOperationName( new QName( "urn:xmltoday-delayed-quotes", "getQuote") ) ;
-			call.addParameter( "symbol", XMLType.XSD_STRING, ParameterMode.IN ) ;
-			call.setReturnType( XMLType.XSD_STRING ) ;
-//			call.setProperty(Call.USERNAME_PROPERTY, opts.getUser());
-//			call.setProperty(Call.PASSWORD_PROPERTY, opts.getPassword());
+			Call 
+			   call = (Call) new Service().createCall() ;			  
 
-			String 
-			    result = (String) call.invoke( parms ) ;
-			    
-			diagnoseResponse( result ) ;
+			call.setTargetEndpointAddress( new URL( DatasetAgent.getProperty( MYSPACE_URL ) ) ) ;
+			call.setOperationName( "upLoad" ) ;  // Set method to invoke		
+			call.addParameter("jobDetails", XMLType.XSD_STRING,ParameterMode.IN);
+			call.setReturnType(XMLType.XSD_STRING);
+			
+			mySpaceResponse = (String) call.invoke( parms ) ;
 
 		}
-		catch ( AxisFault af ) {
+		catch ( Exception af ) {
 			Message
 				message = new Message( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_MYSPACEMANAGER, af ) ; 
 			logger.error( message.toString(), af ) ;
 			throw new AllocationException( message , af ) ;
 		} 
 		finally {
-			if( TRACE_ENABLED ) logger.debug( "informMySpace(): exit") ;	
+			try { diagnoseResponse( mySpaceResponse ) ; }
+			finally { if( TRACE_ENABLED ) logger.debug( "informMySpace(): exit") ; }	
 		}	
 		
     } // end of informMySpace()
@@ -185,7 +183,7 @@ public class Allocation {
 		if( TRACE_ENABLED ) logger.debug( "diagnoseResponse() entry") ;
 		
 		Document 
-		   queryDoc = null;
+		   responseDoc = null;
 		DocumentBuilderFactory 
 		   factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder 
@@ -196,13 +194,13 @@ public class Allocation {
 		   logger.debug( responseXML ) ;
 		   InputSource
 			  responseSource = new InputSource( new StringReader( responseXML ) );
-		   responseDoc = builder.parse( responseSource );
+		   responseDoc = builder.parse( responseXML );
 		   
 		   NodeList
 			  nodeList1 = responseDoc.getChildNodes() ;
 			   
 		   Element
-			   element ;
+			   element = null ;
 			
 		   // Focus on the results element...   
 		   for( int i=0 ; i < nodeList1.getLength() ; i++ ) {
@@ -263,11 +261,11 @@ public class Allocation {
 		   } // end for
 		   
 		}
-		catch ( NullPointerException ex ) {
+		catch ( Exception ex ) {
 			Message
 				message = new Message( ASTROGRIDERROR_FAILED_TO_PARSE_MYSPACEMANAGER_RESPONSE ) ; 
 			logger.error( message.toString(), ex ) ;
-			throw new DatasetAgentException( message, ex );
+			throw new AllocationException( message, ex );
 		} 
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "diagnoseResponse() exit") ;	

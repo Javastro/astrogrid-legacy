@@ -1,8 +1,12 @@
-/* 
- * @(#)JobScheduler.java   1.0
+/*
+ * @(#)JobMonitor.java   1.0
  *
- * AstroGrid Copyright notice.
- * 
+ * Copyright (C) AstroGrid. All rights reserved.
+ *
+ * This software is published under the terms of the AstroGrid 
+ * Software License version 1.2, a copy of which has been included 
+ * with this distribution in the LICENSE.txt file.  
+ *
  */
 package org.astrogrid.jes.jobmonitor; 
 
@@ -27,10 +31,11 @@ import javax.xml.parsers.*;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource ;
 
-import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
-import org.apache.axis.message.SOAPBodyElement;
-import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.client.Call;
+import org.apache.axis.encoding.XMLType;
+import javax.xml.rpc.ParameterMode;
+// import org.apache.axis.utils.XMLUtils;
 
 import java.net.URL;
 
@@ -71,8 +76,12 @@ public class JobMonitor {
 	    PARSER_VALIDATION = "PARSER.VALIDATION" ;
 	    
 	private static final String 
+	    SCHEDULE_JOB_REQUEST_TEMPLATE = "SCHEDULE_JOB_REQUEST.TEMPLATE",
 		MONITOR_JOB_RESPONSE_TEMPLATE = "MONITOR_JOB_RESPONSE.TEMPLATE",
 	    MONITOR_JOB_REQUEST_TEMPLATE = "MONITOR_JOB_REQUEST.TEMPLATE" ;
+	    
+	private static final String
+        SCHEDULER_URL = "SCHEDULER.URL" ;
 	    			
 	private static Logger 
 		logger = Logger.getLogger( JobMonitor.class ) ;
@@ -214,7 +223,7 @@ public class JobMonitor {
 	} // end parseRequest()
 	
 	
-    public void monitorJob( Document monitorJobDocument ) {
+    public void monitorJob( String monitorJobXML ) {
 		if( TRACE_ENABLED ) logger.debug( "monitorJob() entry") ;
     	
         String
@@ -230,6 +239,10 @@ public class JobMonitor {
 	        // If properties file is not loaded, we bail out...
 	        // Each JES monitor MUST be properly initialized! 
 	        checkPropertiesLoaded() ;
+	        
+			// Parse the request... 
+			Document
+			   monitorJobDocument = parseRequest( monitorJobXML ) ;
 	           
 			// Create the necessary Job structures.
 			// This involves persistence, so we bracket the transaction 
@@ -238,6 +251,12 @@ public class JobMonitor {
 	        factory.begin() ;
 	        job = factory.findJob( this.extractJobURN( monitorJobDocument ) ) ;
 	        updateJobStepStatus( job, monitorJobDocument ) ;
+	        
+	        
+	        // Now we inform the AstroGrid Message Log.
+	        // 
+	        
+	        
 	        
 			// If not all job steps are finished, prod the scheduler into life...
 			// (This is where the job itself can be marked as finished)
@@ -368,24 +387,19 @@ public class JobMonitor {
 		
 		try {
 			
-			  Call
-			     call = new Service().createCall() ;
+			Object []
+			   parms = new Object[] { formatScheduleRequest( job ) } ;
+			
+			Call 
+			   call = (Call) new Service().createCall() ;			  
 
-			  // call.setTargetEndpointAddress( new URL( job.get ) );
-			  
-			  SOAPBodyElement[] 
-			     input = new SOAPBodyElement[1];
-			     
-			  InputSource
-			     jobSource = new InputSource( new StringReader( this.formatScheduleRequest( job ) ) ) ; 
-
-			  DocumentBuilder 
-			     builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		
-			  input[0] = new SOAPBodyElement( builder.parse( jobSource ) ) ;
-        
-              // JBL Note: Axis documentation states "the return immediately part isn't implemented yet"!
-              call.invokeOneWay( input ) ;
+			call.setTargetEndpointAddress( new URL( JobMonitor.getProperty( SCHEDULER_URL ) ) ) ;
+			call.setOperationName( "scheduleJob" ) ;  // Set method to invoke		
+			call.addParameter("scheduleJobXML", XMLType.XSD_STRING,ParameterMode.IN);
+			call.setReturnType(XMLType.XSD_STRING);   // JBL Note: Is this OK?
+			
+			// JBL Note: Axis documentation states "the return immediately part isn't implemented yet"!
+            call.invokeOneWay( parms ) ; 
 
 		}
 		catch ( Exception ex ) {
@@ -435,8 +449,10 @@ public class JobMonitor {
 	
 	private String extractJobURN( Document jobDoc ) { 
 		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): entry") ;	
-		return jobDoc.getAttribute( MonitorRequestDD.JOB_URN_ATTR ) ;
+		String
+		   retval = jobDoc.getDocumentElement().getAttribute( MonitorRequestDD.JOB_URN_ATTR ) ;
 		if( TRACE_ENABLED ) logger.debug( "extractJobURN(): exit") ;	
+		return retval ;
 	} // end of extractJobURN()
 	
 

@@ -25,9 +25,10 @@ import java.sql.ResultSet ;
 import java.sql.SQLException ;
 import java.text.MessageFormat ;
 
-import org.apache.axis.client.Call ;
-// import org.apache.axis.client.Service ;
-// import org.apache.axis.message.SOAPBodyElement;
+import org.apache.axis.client.Service;
+import org.apache.axis.client.Call;
+import org.apache.axis.encoding.XMLType;
+import javax.xml.rpc.ParameterMode;
 // import org.apache.axis.utils.XMLUtils;
 import java.net.URL;
 
@@ -43,7 +44,7 @@ public class JobImpl extends Job {
 	private static final String
 	    ASTROGRIDERROR_COULD_NOT_CREATE_JOB_CONNECTION            = "AGDTCE00160" ,  
 	    ASTROGRIDERROR_UNABLE_TO_CREATE_JOB_FROM_REQUEST_DOCUMENT = "AGDTCE00180" ,
-        ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR        = "" ;
+        ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR        = "AGDTCE00185" ;
 	    
 	private static final String
         JOB_MONITOR_REQUEST_TEMPLATE = "JOB.MONITOR.REQUEST_TEMPLATE" ;
@@ -160,28 +161,22 @@ public class JobImpl extends Job {
 			inserts[7] = this.getStatus() ;
 			Object []
 			   parms = new Object[] { MessageFormat.format( requestTemplate, inserts ) } ;
-					
-			org.apache.axis.client.Call
-			   call = new org.apache.axis.client.Service().createCall() ; 
+			   
+			Call 
+			   call = (Call) new Service().createCall() ;			  
 
 			call.setTargetEndpointAddress( new URL( this.getJobMonitorURL() ) ) ;
-			call.setProperty( Call.SOAPACTION_USE_PROPERTY, Boolean.TRUE ) ;
-			call.setProperty( Call.SOAPACTION_URI_PROPERTY, "getQuote" ) ;
-			call.setProperty( Call.ENCODINGSTYLE_URI_PROPERTY, "http://schemas.xmlsoap.org/soap/encoding/" ) ;
-			call.setOperationName( new QName( "urn:xmltoday-delayed-quotes", "getQuote") ) ;
-			call.addParameter( "symbol", XMLType.XSD_STRING, ParameterMode.IN ) ;
-			call.setReturnType( XMLType.XSD_STRING ) ;
-//			call.setProperty(Call.USERNAME_PROPERTY, opts.getUser());
-//			call.setProperty(Call.PASSWORD_PROPERTY, opts.getPassword());
-
-			String 
-				result = (String) call.invoke( parms ) ;
+			call.setOperationName( "monitorJob" ) ;  // Set method to invoke		
+			call.addParameter("monitorJobXML", XMLType.XSD_STRING,ParameterMode.IN);
+			call.setReturnType(XMLType.XSD_STRING);
+			
+			call.invokeOneWay( parms ) ;
 
 		}
-		catch ( AxisFault af ) {
+		catch ( Exception ex ) {
 			Message
-				message = new Message( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR, af ) ; 
-			logger.error( message.toString(), af ) ;
+				message = new Message( ASTROGRIDERROR_AXIS_FAULT_WHEN_INVOKING_JOBMONITOR, ex ) ; 
+			logger.error( message.toString(), ex ) ;
 		} 
 		finally {
 			if( TRACE_ENABLED ) logger.debug( "informJobMonitor(): exit") ;	
@@ -285,7 +280,7 @@ public class JobImpl extends Job {
 	
 	public Object getImplementation() { return this ; }
 
-	public void setFactoryImpl(JobFactoryImpl factoryImpl) { this.factoryImpl = factoryImpl ; }
-	public JobFactoryImpl getFactoryImpl() { return factoryImpl ; }
+	public static void setFactoryImpl(JobFactoryImpl someFactoryImpl) { factoryImpl = someFactoryImpl ; }
+	public static JobFactoryImpl getFactoryImpl() { return factoryImpl ; }
 
 } // end of class JobImpl
