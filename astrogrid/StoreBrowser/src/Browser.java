@@ -42,7 +42,9 @@ public class Browser extends HttpServlet {
    
    private final static String refRoot = "Browser?";
    
-   private final static String pageBg = "#BBBBBB";
+   private final static String pageBg = "#AAAAAA";
+   private final static String navBg = "#CC9966";
+   private final static String textBg = "#BBBBBB";
    
    /** post = get */
    public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -271,10 +273,7 @@ public class Browser extends HttpServlet {
             "<title>Store File Browser</title>"+
             getStyle()+
             "</head>"+
-            "<body bgcolor='#AAAAAA'>"+
-            "<div id='address' style='top'>"+
-            "Current Path: "+path+"  (Store "+store+")"+
-            "</div>");
+            "<body bgcolor='"+pageBg+"'>");
       writeToolBar(request, response);
       writeNavBar(request, response);
       writeFileView(request, response);
@@ -308,10 +307,10 @@ public class Browser extends HttpServlet {
    }
    
    public void writeToolBar(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      String bg="#AAAAAA";
+      String bg=textBg;
       response.getWriter().print(
          "<div id='toolbar' style='top'>"+
-            "<table bgcolor='"+bg+"'><tr><td>"+
+            "<table border='1' bgcolor='"+bg+"'><tr><td>"+
             "<table bgcolor='"+bg+"'><tr>"+
             "  <td>"+toolButtonHtml("", "Back.gif", "Back")+"</td>"+
             "  <td>"+toolButtonHtml("", "Forward.gif", "Forward")+"</td>"+
@@ -329,6 +328,13 @@ public class Browser extends HttpServlet {
             "<table bgcolor='"+bg+"'><tr>"+
             "  <td>"+toolButtonHtml(refRoot+"refresh=true'", "Refresh.gif", "Refresh")+"</td>"+
             "</tr></table>  "+
+            "</td><td>"+
+               "<table><tr>"+
+               "<td>Current Path</td>"+
+               "<td bgcolor='#FFFFFF'>"+getParameter(request, SELECTED_PATH_KEY)+"</td>"+
+               "<td>in</td>"+
+               "<td bgolor='#FFFFFF'>"+getParameter(request, STORE_KEY)+"</td>"+
+               "</tr></table>"+
             "</td></tr></table>"+
             "</div>");
    }
@@ -336,13 +342,14 @@ public class Browser extends HttpServlet {
    
    public void writeNavBar(HttpServletRequest request, HttpServletResponse response) throws IOException {
       response.getWriter().print(
-         "<div id='view' align='center' style='float:left'>"+
-            "<table border=2 color='#AAAAAA'><tr><td>"+
+         "<div id='view' style='float:left'>"+
+            "<table border=1 bgcolor='"+navBg+"'><tr><td>"+
             "   <table border=0 cellspacing=4>"+
             "   <tr><td align='center'><a href='Browser?store=file://'>Disk</a></td></tr>"+
             "   <tr><td align='center'><a href='Browser?store=myspace:"+new URL("http", request.getServerName(), request.getServerPort(), request.getContextPath()).toString() +"/services/Manager'>This</a></td></tr>"+
             "   <tr><td align='center'><a href='Browser?store=myspace:http://cadairidris.star.le.ac.uk:8080/astrogrid-mySpace-Itn05_release/services/Manager'>Cadairidris Itn05</a></td></tr>"+
             "   <tr><td align='center'><a href='Browser?store=myspace:http://twmbarlwm.star.le.ac.uk:8888/astrogrid-mySpace-SNAPSHOT/services/Manager'>Twmbarlwm Snapshot</a></td></tr>"+
+            "   <tr><td align='center'><a href='Browser?store=myspace:http://twmbarlwm.star.le.ac.uk:8080/astrogrid-mySpace-SNAPSHOT/services/Manager'>Twmbarlwm 8080</a></td></tr>"+
             "   <tr><td align='center'>VoSpace</td></tr>"+
             "   <tr><td align='center'>MySpace</td></tr>"+
             "   <tr><td align='center'>Storepoints</td></tr>"+
@@ -358,9 +365,9 @@ public class Browser extends HttpServlet {
    /** The panel that contains the list of files */
    public void writeFileView(HttpServletRequest request, HttpServletResponse response) throws IOException {
       
-      response.getWriter().print("\n<div id='files'>\n"+
-                                    "<table align='full'>\n"+
-                                    "<tr bgcolor='#AAAAAA'>"+
+      response.getWriter().print("\n<div id='files' style='full'>\n"+
+                                    "<table align='left' border='1'>\n"+
+                                    "<tr bgcolor='"+textBg+"'>"+
                                     "  <th align='left'>Name</th>"+
                                     "  <th>Size</th>"+
                                     "  <th>Type</th>"+
