@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationControllerConfig.java,v 1.2 2003/11/27 12:40:48 pah Exp $
+ * $Id: ApplicationControllerConfig.java,v 1.3 2003/12/01 22:24:59 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -33,7 +33,7 @@ public class ApplicationControllerConfig {
  
  private ApplicationControllerConfig()
  {
-    config = ConfigLoader.LoadConfig(ApplicationsConstants.ConfigFileKey);
+    config = ConfigLoader.LoadConfig(ApplicationsConstants.CONFIGFILEKEY);
  }
  
  public static ApplicationControllerConfig getInstance()
@@ -41,7 +41,7 @@ public class ApplicationControllerConfig {
     // note the double check......
     if (instance == null)
     {
-       synchronized (instance){
+       synchronized (ApplicationControllerConfig.class){
           if (instance == null)
           {
           
@@ -59,6 +59,15 @@ public class ApplicationControllerConfig {
     File file = new File(config.getProperty(ApplicationsConstants.ApplicationConfigKey));
     //TODO should test for the existance of the file here.
     return file;
+ }
+ 
+ public File getWorkingDirectory(){
+    File dir = new File(config.getProperty(ApplicationsConstants.WorkingDirectory));
+    return dir;
+ }
+ 
+ public String getDatasourceName(){
+    return config.getProperty(ApplicationsConstants.DataSourceName);
  }
  
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: AGParameterDefinition.xsd,v 1.4 2003/11/29 00:50:14 pah Exp $ -->
+<!-- $Id: AGParameterDefinition.xsd,v 1.5 2003/12/01 22:24:59 pah Exp $ -->
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema targetNamespace="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:annotation>
 		<xs:documentation>this file captures some of the ideas used in the WSDL-like parameter definition files, but as yet is not used for validation</xs:documentation>
 	</xs:annotation>
@@ -24,6 +24,21 @@
 			<xs:any processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:simpleType name="java-param">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[a-zA-Z][a-zA-Z0-9]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="java-class">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="([a-zA-Z0-9]+\.)*[a-zA-Z][a-zA-Z0-9]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="java-package">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="([a-zA-Z0-9]+\.)*[a-zA-Z0-9]*"/>
+		</xs:restriction>
+	</xs:simpleType>
 	<xs:complexType name="BaseParameterDefinition">
 		<xs:all>
 			<xs:element name="UI_Name" type="xs:string" minOccurs="0">
@@ -115,7 +130,7 @@
 			<xs:element name="Parameters">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="Parameter" type="agpd:BaseParameterDefinition" maxOccurs="unbounded"/>
+						<xs:element name="Parameter" type="agpd:CommandLineParameterDefinition" maxOccurs="unbounded"/>
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -128,6 +143,7 @@
 			</xs:element>
 		</xs:sequence>
 		<xs:attribute name="name" type="xs:ID" use="required"/>
+		<xs:attribute name="instanceClass" type="agpd:java-class" use="optional"/>
 	</xs:complexType>
 	<xs:element name="ApplicationController">
 		<xs:annotation>
@@ -192,4 +208,16 @@
 			</xs:complexContent>
 		</xs:complexType>
 	</xs:element>
+	<xs:complexType name="CommandLineParameterDefinition">
+		<xs:annotation>
+			<xs:documentation>Defines what it is to be a command line parameter - needs more thought with experience</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="agpd:BaseParameterDefinition">
+				<xs:attribute name="commandSwitch" type="xs:string" use="optional"/>
+				<xs:attribute name="commandPosition" type="xs:integer" use="optional"/>
+				<xs:attribute name="stdio" type="xs:boolean" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
 </xs:schema>

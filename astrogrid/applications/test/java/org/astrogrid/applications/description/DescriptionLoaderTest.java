@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoaderTest.java,v 1.3 2003/12/01 15:46:46 pah Exp $
+ * $Id: DescriptionLoaderTest.java,v 1.4 2003/12/01 22:24:59 pah Exp $
  * 
  * Created on 26-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -104,6 +104,9 @@ public class DescriptionLoaderTest extends TestCase {
       try {
          ApplicationDescription ad =
             ac.getApplicationDescriptions().getDescription("testapp");
+            assertEquals("instance class",ad.getInstanceClass(),"org.astrogrid.applications.commandline.TestApp");
+            
+            assertTrue("execution path", ad.getExecutionPath().endsWith( "testapp.sh")); //this is dependent on the actual location
          ParameterDescription[] params = ad.getParameters();
          assertNotNull("no parameters returned", params);
          assertEquals("there should be 9 parameters ", params.length, 9);

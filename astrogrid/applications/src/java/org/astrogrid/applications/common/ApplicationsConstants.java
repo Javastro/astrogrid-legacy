@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationsConstants.java,v 1.2 2003/11/26 22:07:24 pah Exp $
+ * $Id: ApplicationsConstants.java,v 1.3 2003/12/01 22:24:59 pah Exp $
  * 
  * Created on 17-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -21,10 +21,19 @@ package org.astrogrid.applications.common;
 public final class ApplicationsConstants {
    
 
-/**
+
+   public static String DATABASE_DRIVER_KEY = "DB_DRIVER";
+
+   public static String DATABASE_USER_KEY = "DB_USER";
+
+   public static String DATABASE_PASSWORD_KEY = "DB_PASSWORD";
+
+   public static String DATABASE_JDBC_URL_KEY = "DB_URL";
+
+   /**
  * The key used to look up the location of the configuration file
  */
-public final static String ConfigFileKey = "AstrogridApplicationsConfigURL";
+public final static String CONFIGFILEKEY = "AstrogridApplicationsConfigURL";
 
 /**
  * the JNDI key for the datasource that represents the applicationController datasource

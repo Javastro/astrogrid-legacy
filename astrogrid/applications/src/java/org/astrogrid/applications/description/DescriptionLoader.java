@@ -1,5 +1,5 @@
 /*
- * $Id: DescriptionLoader.java,v 1.4 2003/12/01 15:46:46 pah Exp $
+ * $Id: DescriptionLoader.java,v 1.5 2003/12/01 22:24:59 pah Exp $
  *
  * Created on 26 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -49,6 +49,7 @@ public class DescriptionLoader {
       "ApplicationController";
    private static final String APPLICATION_ELEMENT =
       "ApplicationController/Application";
+      private static final String EXPATH_ELEMENT = APPLICATION_ELEMENT + "/ExecutionPath";
    private static final String PARAMETER_ELEMENT =
       "ApplicationController/Application/Parameters/Parameter";
    private static final String UI_NAME_ELEMENT = PARAMETER_ELEMENT + "/UI_NAME";
@@ -109,6 +110,7 @@ public class DescriptionLoader {
       digester.addObjectCreate(APPLICATION_ELEMENT, ApplicationDescription.class);
       // set the appropriate attributes
       digester.addSetProperties(APPLICATION_ELEMENT);
+      digester.addCallMethod(EXPATH_ELEMENT, "setExecutionPath", 0);
 
       // add the appropriate paramter element and set its properties
       digester.addFactoryCreate(PARAMETER_ELEMENT, new ParameterCreationFactory());

@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationDescription.java,v 1.3 2003/12/01 15:46:46 pah Exp $
+ * $Id: ApplicationDescription.java,v 1.4 2003/12/01 22:24:59 pah Exp $
  * 
  * Created on 14-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -34,7 +34,9 @@ public class ApplicationDescription {
    /**
     * The class that is used to instantiate this particular application. 
     */
-   private String InstanceClass;
+   private String instanceClass;
+   
+   private String executionPath;
 
    /**
     *@link aggregation
@@ -141,6 +143,34 @@ public class ApplicationDescription {
       else
         throw new InterfaceDescriptionNotFoundException();
    }
+   /**
+    * @return
+    */
+   public String getInstanceClass() {
+      return instanceClass;
+   }
+
+   /**
+    * @param string
+    */
+   public void setInstanceClass(String string) {
+      instanceClass = string;
+   }
+
+   /**
+    * @return
+    */
+   public String getExecutionPath() {
+      return executionPath;
+   }
+
+   /**
+    * @param string
+    */
+   public void setExecutionPath(String string) {
+      executionPath = string;
+   }
+
 }
 
 

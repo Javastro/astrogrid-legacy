@@ -1,5 +1,5 @@
 /*
- * $Id: ApplicationController.java,v 1.8 2003/11/29 00:50:14 pah Exp $
+ * $Id: ApplicationController.java,v 1.9 2003/12/01 22:24:59 pah Exp $
  *
  * Created on 03 November 2003 by Paul Harrison
  * Copyright 2003 AstroGrid. All rights reserved.
@@ -11,8 +11,7 @@
 
 package org.astrogrid.applications.manager;
 
-import org.astrogrid.applications.Application;
-import org.astrogrid.applications.description.ApplicationDescription;
+import org.astrogrid.applications.description.SimpleApplicationDescription;
 import org.astrogrid.community.User;
 
 /**
@@ -34,7 +33,7 @@ public interface ApplicationController {
     * returns a full application description (including parameter descriptions) for a particular application.
     * @stereotype query 
     */
-   ApplicationDescription getApplicationDescription(String applicationID);
+   SimpleApplicationDescription getApplicationDescription(String applicationID);
 
    /**
     * Initialize the application environment and set up the parameters.
