@@ -1,4 +1,4 @@
-/* $Id: HttpApplication.java,v 1.2 2004/07/27 17:49:57 jdt Exp $
+/* $Id: HttpApplication.java,v 1.3 2004/07/30 14:54:47 jdt Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,10 +10,6 @@
  */
 package org.astrogrid.applications.http;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,10 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.astrogrid.applications.AbstractApplication;
 import org.astrogrid.applications.CeaException;
 import org.astrogrid.applications.Status;
-import org.astrogrid.applications.AbstractApplication.IDs;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
-import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.workflow.beans.v1.Tool;
@@ -36,7 +29,7 @@ import org.astrogrid.workflow.beans.v1.Tool;
 /**
  * An Application that calls an http service, such as a SIAP service.
  *  ? Responsible for extracting the relevant info from the application
- * description and passing them to a ? that knows how to call the web service.
+ * description and passing them to a HttpServiceClient that knows how to call the web service.
  * Handles the threading (so execute doesn't block) and status settings during
  * execution. ?
  * 
@@ -46,37 +39,44 @@ import org.astrogrid.workflow.beans.v1.Tool;
  */
 public class HttpApplication extends AbstractApplication implements Runnable {
     /**
+     * Commons Logger for this class
+     */
+    private static final Log log = LogFactory.getLog(HttpApplication.class);
+    private HttpServiceClient client;
+    private final Map inputArguments = new HashMap();
+
+    
+
+	/**
+     * Ctor
 	 * @param arg0
 	 * @param arg1
 	 * @param arg2
 	 * @param arg3
 	 */
-	public HttpApplication(IDs arg0, Tool arg1, ApplicationInterface arg2, ProtocolLibrary arg3) {
+	public HttpApplication(IDs arg0, Tool arg1, ApplicationInterface arg2,
+			ProtocolLibrary arg3) {
 		super(arg0, arg1, arg2, arg3);
 		// TODO Auto-generated constructor stub
 	}
-
-	/**
-     * Commons Logger for this class
-     */
-    private static final Log logger = LogFactory.getLog(HttpApplication.class);
-    private HttpServiceClient client;
-
-
-
     /**
      * @see org.astrogrid.applications.Application#execute(org.astrogrid.applications.ApplicationExitMonitor)
      */
     public boolean execute() throws CeaException {
         //@TODO check this out ... how parameters work
         createAdapters();
-        List args = new ArrayList();
+        log.debug("Processing arguments");
         for (Iterator i = inputParameterAdapters(); i.hasNext();) {
             ParameterAdapter a = (ParameterAdapter) i.next();
-            args.add(a.process());
+            final String name = a.getWrappedParameter().getName();
+            final Object value = a.process();
+            inputArguments.put(name,value);
+            log.debug(name+"="+value);
         }
+        HttpApplicationDescription description = (HttpApplicationDescription)getApplicationDescription();            
 
-            client = new HttpServiceClient("http://127.0.0.1",
+        //@TODO can we get this set up in a more picocontainerish way to faciliate testing
+        client = new HttpServiceClient(description.getUrl(),
                                 HttpServiceClient.HttpServiceType.GET);
 
         Thread task = new Thread(this);
@@ -92,15 +92,15 @@ public class HttpApplication extends AbstractApplication implements Runnable {
      */
     public void run() {
         setStatus(Status.RUNNING);
-        Object resultVal = null;
+        String resultVal = null;
         try {
-            //  resultVal = method.invoke(null,args);
-            Map args = new HashMap();
-            resultVal = client.call(args);
+            resultVal = client.call(inputArguments);
             // we can do this, as we know there's only ever going to be one
             // interface, and one output parameter.
             setStatus(Status.WRITINGBACK);
-            ParameterAdapter result = (ParameterAdapter) outputParameterAdapters().next();
+            Iterator outputParamsIt = outputParameterAdapters();
+            ParameterAdapter result = (ParameterAdapter) outputParamsIt;
+            assert !outputParamsIt.hasNext() : "Expect there to be only one output parameter for an HttpApplication";
             result.writeBack(resultVal);
             setStatus(Status.COMPLETED);
         } catch (CeaException e) {
@@ -111,7 +111,8 @@ public class HttpApplication extends AbstractApplication implements Runnable {
     }
 
     /**
-     * overridden to return a JavaClassParameterAdapter.
+     * @TODO - probably not needed since all params will
+     * be strings so Default will do.
      * 
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue,
      *      org.astrogrid.applications.description.ParameterDescription,
@@ -121,13 +122,25 @@ public class HttpApplication extends AbstractApplication implements Runnable {
      * protected ParameterAdapter instantiateAdapter(ParameterValue pval,
      * ParameterDescription descr, IndirectParameterValue indirectVal) { return
      * new HttpParameterAdapter(pval, descr, indirectVal); }
-     */
+     */ 
 }
 
 /*
  * $Log: HttpApplication.java,v $
- * Revision 1.2  2004/07/27 17:49:57  jdt
- * merges from case3 branch
+ * Revision 1.3  2004/07/30 14:54:47  jdt
+ * merges in from case3 branch
+ *
+ * Revision 1.1.4.5  2004/07/30 13:11:28  jdt
+ * wired up the parameters
+ *
+ * Revision 1.1.4.4  2004/07/29 21:30:47  jdt
+ * *** empty log message ***
+ *
+ * Revision 1.1.4.3  2004/07/29 17:08:22  jdt
+ * Think about how I'm going to get stuff out of the registry
+ *
+ * Revision 1.1.4.2  2004/07/27 19:28:43  jdt
+ * fix build errors
  *
  * Revision 1.1.4.1  2004/07/27 17:20:25  jdt
  * merged from applications_JDT_case3

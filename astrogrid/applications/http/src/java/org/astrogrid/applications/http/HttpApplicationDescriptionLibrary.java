@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescriptionLibrary.java,v 1.2 2004/07/27 17:49:57 jdt Exp $
+/*$Id: HttpApplicationDescriptionLibrary.java,v 1.3 2004/07/30 14:54:47 jdt Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,19 +10,21 @@
 **/
 package org.astrogrid.applications.http;
 
-import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
-import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.manager.idgen.IdGen;
-import org.astrogrid.component.descriptor.ComponentDescriptor;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.astrogrid.applications.beans.v1.WebHttpApplication;
+import org.astrogrid.applications.description.BaseApplicationDescriptionLibrary;
+import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
+import org.astrogrid.applications.http.registry.RegistryQuerier;
+import org.astrogrid.component.descriptor.ComponentDescriptor;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
-/** library of java class application descriptions.
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+/** 
+ * library of HttpApplication application descriptions.
+ * @author JDT
  *
  */
 public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptionLibrary implements  ComponentDescriptor{
@@ -30,62 +32,82 @@ public class HttpApplicationDescriptionLibrary extends BaseApplicationDescriptio
      * Commons Logger for this class
      */
     private static final Log logger = LogFactory.getLog(HttpApplicationDescriptionLibrary.class);
+	private RegistryQuerier querier;
 
 
     /** configuration interface - defines the name of the community the applications will be added to. */
+    //@TODO find out about this....can we stick in Base and inherit it?
     public interface Community {
         String getCommunity();
     }
 
-    /** Construct a new JavaClassApplicationDescriptions, based on methods of parameter class
-     * @param implClass - class of static methods, each of which provides an applications for the library.
+    /** Construct a new HttpApplicationDescriptionLibrary, based on methods of parameter class
+     * @param querier does all the hard work of talking to the registry and getting the stuff we need to create HttpAppplicationDescriptions
+     * @TODO see how all this relates to whatever we need in the registry
      * 
      */
-    public HttpApplicationDescriptionLibrary(Class implClass, Community community,ApplicationDescriptionEnvironment env) {
+    public HttpApplicationDescriptionLibrary(RegistryQuerier querier, Community community,ApplicationDescriptionEnvironment env) {
         super();
-        this.implClass= implClass;
-        this.env = env;
+        this.querier = querier;
         this.community = community;
-        populate(implClass,env.getIdGen());
+        this.env = env;
+        populate();
     }
+    
+    //@TODO check with Noel about the non-privateness of all this
     protected final Community community;
-    protected final Class implClass;
+    
     protected final ApplicationDescriptionEnvironment env;
-    /** populates the library using reflection on the methods of the parameter class
-     * @param imp
+    /** 
+     * Populate the library
      */
-    protected final void populate(Class imp,IdGen idgen) {
+    protected final void populate() {
         String communityName = community.getCommunity();
-        Method[] methods = imp.getDeclaredMethods();
-        for (int i = 0; i < methods.length; i++) {
-            Method m = methods[i];
-            int code = m.getModifiers();
-            if (Modifier.isStatic(code) && Modifier.isPublic(code)) {
-                super.addApplicationDescription(new HttpApplicationDescription(m,communityName,env));            
-                } 
-        } 
+        List apps=null;
+        try {
+            apps = querier.getHttpApplications();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return;
+            //@TODO make this robust...
+        }
+        Iterator it = apps.iterator();
+        while (it.hasNext()) {
+            WebHttpApplication app = (WebHttpApplication) it.next(); //@TODO consider renaming to avoid confusion
+            super.addApplicationDescription(new HttpApplicationDescription(app,communityName,env)); 
+        }
     }
 
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getDescription()
      */
     public String getDescription() {
-        return "Implementation class: " + implClass.getName() + "\n" + super.getDescription();
+        return "HttpApplication server serving applications found by RegistryQuerier" + querier + "\n" + super.getDescription();
     }
 
     /**
      * @see org.astrogrid.component.descriptor.ComponentDescriptor#getName()
      */
     public String getName() {
-        return "Java Class Application Library";
+        return "HttpApplication Library";
     }
 
 }
 
 /* 
 $Log: HttpApplicationDescriptionLibrary.java,v $
-Revision 1.2  2004/07/27 17:49:57  jdt
-merges from case3 branch
+Revision 1.3  2004/07/30 14:54:47  jdt
+merges in from case3 branch
+
+Revision 1.1.4.4  2004/07/29 21:30:47  jdt
+*** empty log message ***
+
+Revision 1.1.4.3  2004/07/29 17:08:22  jdt
+Think about how I'm going to get stuff out of the registry
+
+Revision 1.1.4.2  2004/07/29 16:35:21  jdt
+Safety checkin, while I think about what happens next.
 
 Revision 1.1.4.1  2004/07/27 17:20:25  jdt
 merged from applications_JDT_case3
@@ -93,18 +115,5 @@ merged from applications_JDT_case3
 Revision 1.1.2.1  2004/07/24 17:16:16  jdt
 Borrowed from javaclass application....stealing is always quicker.
 
-Revision 1.2  2004/07/01 11:16:22  nw
-merged in branch
-nww-itn06-componentization
-
-Revision 1.1.2.3  2004/07/01 01:42:46  nw
-final version, before merge
-
-Revision 1.1.2.2  2004/06/17 09:21:23  nw
-finished all major functionality additions to core
-
-Revision 1.1.2.1  2004/06/14 08:56:58  nw
-factored applications into sub-projects,
-got packaging of wars to work again
  
 */

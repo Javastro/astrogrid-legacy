@@ -1,4 +1,4 @@
-/*$Id: HttpApplicationDescription.java,v 1.2 2004/07/27 17:49:57 jdt Exp $
+/*$Id: HttpApplicationDescription.java,v 1.3 2004/07/30 14:54:47 jdt Exp $
  * Created on Jul 24, 2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -12,38 +12,39 @@ package org.astrogrid.applications.http;
 
 import org.astrogrid.applications.Application;
 import org.astrogrid.applications.DefaultIDs;
-import org.astrogrid.applications.beans.v1.parameters.types.ParameterTypes;
+import org.astrogrid.applications.beans.v1.WebHttpApplication;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.base.AbstractApplicationDescription;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
-import org.astrogrid.applications.description.base.BaseApplicationInterface;
-import org.astrogrid.applications.description.base.BaseParameterDescription;
-import org.astrogrid.applications.description.exception.ParameterDescriptionNotFoundException;
 import org.astrogrid.community.User;
 import org.astrogrid.workflow.beans.v1.Tool;
-
-import java.lang.reflect.Method;
-
-/** application description for a javaclass application
- * @author Noel Winstanley nw@jb.man.ac.uk 08-Jun-2004
+import org.apache.commons.logging.*;
+/** 
+ * application description for an HttpApplication
+ * @author jdt
  *
  */
 public class HttpApplicationDescription extends AbstractApplicationDescription {
-    /** Construct a new JavaClassApplicationDescription
-     * 
+    
+    Log log = LogFactory.getLog(HttpApplicationDescription.class);
+    
+    /** 
+     * Constructor
      */
-    public HttpApplicationDescription(Method method,String communityName,ApplicationDescriptionEnvironment env) {
+    public HttpApplicationDescription(WebHttpApplication application, final String communityName, final ApplicationDescriptionEnvironment env) {
         super(env);
-        this.method = method;
+        this.application = application;
         createMetadata(communityName);
     }
-    protected final Method method;
+    protected final WebHttpApplication application;
     
     /** creates parameter descriptions, etc.
 */
     /** populates this object with parameterDescriptions by reflecting on application method */
     protected final void createMetadata(String communityName){
-        setName(communityName + "/" + method.getName());
+        setName(communityName + "/" + application.getName());
+        log.debug("Name: "+getName());
+        /*//@TODO add interfaces and parameters...
         Class[] inputs = method.getParameterTypes();
         BaseApplicationInterface singleInterface =new BaseApplicationInterface(method.getName(),this);        
         for (int i = 0; i < inputs.length; i++) {
@@ -77,7 +78,7 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
             }        
             // add parameters to interface.
             this.addInterface(singleInterface);
-        }
+        }*/
     }
     /**
      * @see org.astrogrid.applications.description.ApplicationDescription#initializeApplication(java.lang.String, org.astrogrid.community.User, org.astrogrid.workflow.beans.v1.Tool)
@@ -86,16 +87,36 @@ public class HttpApplicationDescription extends AbstractApplicationDescription {
         String newID = env.getIdGen().getNewID();
         final DefaultIDs ids = new DefaultIDs(jobStepID,newID,user);
         // we know there's only one interface supported for each application
+        // @TODO not true for HttpApplications - but assume for now
         ApplicationInterface interf = this.getInterfaces()[0];
         return new HttpApplication(ids,tool,interf,env.getProtocolLib());
+    }
+    /**
+     * @return
+     */
+    public String getUrl() {
+        return application.getURL();
     }
 }
 
 
 /* 
 $Log: HttpApplicationDescription.java,v $
-Revision 1.2  2004/07/27 17:49:57  jdt
-merges from case3 branch
+Revision 1.3  2004/07/30 14:54:47  jdt
+merges in from case3 branch
+
+Revision 1.1.4.5  2004/07/30 11:02:30  jdt
+Added unit tests, refactored the RegistryQuerier anf finished off
+HttpApplicationCEAComponentManager.
+
+Revision 1.1.4.4  2004/07/29 21:30:47  jdt
+*** empty log message ***
+
+Revision 1.1.4.3  2004/07/29 17:08:22  jdt
+Think about how I'm going to get stuff out of the registry
+
+Revision 1.1.4.2  2004/07/29 16:35:21  jdt
+Safety checkin, while I think about what happens next.
 
 Revision 1.1.4.1  2004/07/27 17:20:25  jdt
 merged from applications_JDT_case3
@@ -103,18 +124,6 @@ merged from applications_JDT_case3
 Revision 1.1.2.1  2004/07/24 17:16:16  jdt
 Borrowed from javaclass application....stealing is always quicker.
 
-Revision 1.2  2004/07/01 11:16:22  nw
-merged in branch
-nww-itn06-componentization
 
-Revision 1.1.2.3  2004/07/01 01:42:46  nw
-final version, before merge
-
-Revision 1.1.2.2  2004/06/17 09:21:23  nw
-finished all major functionality additions to core
-
-Revision 1.1.2.1  2004/06/14 08:56:58  nw
-factored applications into sub-projects,
-got packaging of wars to work again
  
 */

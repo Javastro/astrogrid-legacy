@@ -1,4 +1,4 @@
-/*$Id: JavaClassApplicationDescription.java,v 1.3 2004/07/26 10:21:47 nw Exp $
+/*$Id: JavaClassApplicationDescription.java,v 1.4 2004/07/30 14:54:47 jdt Exp $
  * Created on 08-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -86,6 +86,7 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
             catch (ParameterDescriptionNotFoundException e) {
                 // impossible.
                 e.printStackTrace();
+                assert false; //are you sure?
             }
         }
         Class output = method.getReturnType();
@@ -100,6 +101,7 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
             } catch (ParameterDescriptionNotFoundException e) {
                 // can't happen.
                 e.printStackTrace();
+                assert false; //never say never
             }        
             // add parameters to interface.
             this.addInterface(singleInterface);
@@ -120,6 +122,12 @@ public class JavaClassApplicationDescription extends AbstractApplicationDescript
 
 /* 
 $Log: JavaClassApplicationDescription.java,v $
+Revision 1.4  2004/07/30 14:54:47  jdt
+merges in from case3 branch
+
+Revision 1.3.4.1  2004/07/29 09:11:54  jdt
+can't be too careful
+
 Revision 1.3  2004/07/26 10:21:47  nw
 javadoc
 

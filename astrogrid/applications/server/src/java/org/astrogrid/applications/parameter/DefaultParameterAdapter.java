@@ -1,4 +1,4 @@
-/*$Id: DefaultParameterAdapter.java,v 1.5 2004/07/26 12:07:38 nw Exp $
+/*$Id: DefaultParameterAdapter.java,v 1.6 2004/07/30 14:54:47 jdt Exp $
  * Created on 04-Jun-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -50,7 +50,7 @@ public class DefaultParameterAdapter implements ParameterAdapter {
      * retreives the value for this paramter
      * if the parameter is direct, just return the value of the parameter value itself, 
      * if indirect, retreive the value from the {@link #externalVal}
-     * @returrn always returns the string value of this parameter
+     * @return always returns the string value of this parameter
      *  */
     public Object process() throws CeaException {
         if (externalVal == null) {
@@ -102,6 +102,12 @@ public class DefaultParameterAdapter implements ParameterAdapter {
 
 /* 
 $Log: DefaultParameterAdapter.java,v $
+Revision 1.6  2004/07/30 14:54:47  jdt
+merges in from case3 branch
+
+Revision 1.5.2.1  2004/07/30 13:11:59  jdt
+typo
+
 Revision 1.5  2004/07/26 12:07:38  nw
 renamed indirect package to protocol,
 renamed classes and methods within protocol package
