@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.14 2003/10/28 12:45:50 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.15 2003/10/28 17:27:54 jdt Exp $ -->
 <project
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
@@ -159,14 +159,18 @@
     	<version>UNKNOWN</version>
     	     	<jar>datacenterdelegates.jar</jar>
     </dependency>
-     <!-- Don't know where this one comes from!-doesn't exist on repo -->
+    <!-- Don't know where this one comes from!-doesn't exist on repo -->
     <dependency>
     	<artifactId>authentication-client</artifactId>
     	<groupId>authentication-client</groupId>
     	<version>1.0_JLbugfix</version>
     </dependency>          
-  </dependencies>
   
+    <dependency><!-- hsqldb - for testing -->
+    	<id>hsqldb</id>
+    	<version>1.7.1</version>
+    </dependency>
+  </dependencies>
   <build>
     <sourceDirectory>src/java</sourceDirectory>
     <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
@@ -182,6 +186,7 @@
           <includes>
             <include>**/*.xml</include>
             <include>**/*.properties</include>
+            <include>**/*.sql</include>
           </includes>
         </resource>
       </resources>   
