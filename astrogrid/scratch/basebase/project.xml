@@ -1,7 +1,7 @@
 <project>
     <pomVersion>3</pomVersion>
     <name>Base Project</name>
-    <artifactId>base</artifactId>
+    <artifactId>basebase</artifactId>
     <groupId>basebasegroupdId</groupId>
     <developers>
         <developer>
