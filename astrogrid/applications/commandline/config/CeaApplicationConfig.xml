@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- edited with XMLSPY v5 rel. 4 U (http://www.xmlspy.com) by Paul Harrison (Contractor) -->
-<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1
-\\pahlaptop\work\astrogrid\indsrc\workflow-objects\schema\AGApplicationBase.xsd">
+<CommandLineExecutionControllerConfig xmlns="http://www.astrogrid.org/schema/CommonExecutionArchitectureBase/v1" xmlns:agpd="http://www.astrogrid.org/schema/AGParameterDefinition/v1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 	<!-- put the real applications here - note that they are not autodeployed, so the paths are fixed strings - this is more of a registry test....-->
 	<Application name="REGAUTHORITY.SExtractor" instanceClass="org.astrogrid.applications.commandline.sextractor.SExtractor">
 		<!--This is the application to concentrate on for the end of this iteration-->
@@ -593,7 +592,7 @@ ISOCHRONE ON  LARGE GRID (=2) OR FULL ISOCHRONE (=3):</agpd:UI_Name>
 				<agpd:UI_Description>these are four options for the interpolation in mass. They are explained
      in the code. Shortly: 0 -- evolutionary synthesis with a mass 
      resolution of 5 M (only recommended for tests); 1 -- same as 0, but with
-     a resolution of 1 M. This method was used in Leitherer & Heckman (1995); 
+     a resolution of 1 M. This method was used in Leitherer &amp; Heckman (1995); 
      2 -- isochrone synthesis with a fixed mass resolution of 1 M; 
      3 -- isochrone synthesis with a variable mass grid. This is the fanciest
      method and is the recommended mode.</agpd:UI_Description>
