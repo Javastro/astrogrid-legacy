@@ -21,20 +21,20 @@
    String resultsTarget = request.getParameter("Target");
    
    try {
-      TargetIndicator target = null;
-      if (resultsTarget.startsWith("mailto:")) {
-         target = new TargetIndicator(resultsTarget.substring(7));
+      TargetIndicator target =server.makeTarget(resultsTarget, out);
+
+      if (resultsTarget == null) {
+         server.askQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), out, resultsFormat);
       }
       else {
-         target = new TargetIndicator(new Agsl(resultsTarget));
-      }
-         
-      String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), target, resultsFormat);
-      
-      URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
+         String id = server.submitQuery(Account.ANONYMOUS, new AdqlQuery(adqlXml), target, resultsFormat);
 
-      //redirect to status
-      out.write("Cone Query has been submitted, and assigned ID "+id+".  <a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
+         URL statusUrl = new URL ("http",request.getServerName(),request.getServerPort(), request.getContextPath()+"/queryStatus.jsp");
+         //indicate status
+         out.write("Adql Query has been submitted, and assigned ID "+id+".  <a href='"+statusUrl+"?ID="+id+"'>Query Status Page</a>\n");
+         //redirect to status
+         out.write("<META HTTP-EQUIV='Refresh' CONTENT='0;URL="+statusUrl+"?ID="+id+"'>");
+      }
    }
    catch (Throwable th) {
       LogFactory.getLog(request.getContextPath()).error(th);
