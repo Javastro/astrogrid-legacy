@@ -1,4 +1,4 @@
-/* $Id: SimpleInitialContextFactory.java,v 1.1 2003/10/31 17:21:44 jdt Exp $
+/* $Id: SimpleInitialContextFactory.java,v 1.2 2003/11/10 18:51:07 jdt Exp $
  * Created on 30-Oct-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -30,27 +30,13 @@ public final class SimpleInitialContextFactory implements InitialContextFactory 
   public final Context getInitialContext(final Hashtable environment) {
     return SimpleInitialContext.getInstance();
   }
-
-  /**
-   * The usual singleton pattern way of instiating
-   * @return The one and only SimpleInitialContextFactory instance
-   */
-  public static InitialContextFactory getInstance() {
-    return icf;
-  }
-  /**
-   * The one and only SimpleInitialContextFactory instance
-   */
-  private static InitialContextFactory icf = new SimpleInitialContextFactory();
-  /**
-   * Keep the ctor out of reach of other classes
-   */
-  private SimpleInitialContextFactory() {}
-
 }
 
 /*
 *$Log: SimpleInitialContextFactory.java,v $
+*Revision 1.2  2003/11/10 18:51:07  jdt
+*No longer a singleton since it turns out that occasionally you need a public default ctor
+*
 *Revision 1.1  2003/10/31 17:21:44  jdt
 *simple naming service to allow testing of database bits
 *
