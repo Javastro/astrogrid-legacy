@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+    "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<web-app>
+    <servlet>
+        <servlet-name>
+            SampleServlet
+        </servlet-name>
+        <servlet-class>
+            SampleServlet
+        </servlet-class>
+    </servlet>
+
+   <servlet>
+      <servlet-name>Picker</servlet-name>
+      <servlet-class>org.astrogrid.slinger.ui.servlet.PickerServlet</servlet-class>
+   </servlet>
+
+   <servlet>
+      <servlet-name>StoreFileResolver</servlet-name>
+      <servlet-class>org.astrogrid.slinger.ResolverServlet</servlet-class>
+   </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Picker</servlet-name>
+    <url-pattern>StorePicker</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Picker</servlet-name>
+    <url-pattern>Picker</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>Picker</servlet-name>
+    <url-pattern>servlet/Picker</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>StoreFileResolver</servlet-name>
+    <url-pattern>Resolve</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>StoreFileResolver</servlet-name>
+    <url-pattern>ViewFile</url-pattern>
+  </servlet-mapping>
+
+  <servlet-mapping>
+    <servlet-name>StoreFileResolver</servlet-name>
+    <url-pattern>StoreFile</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list id="WelcomeFileList">
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+
+</web-app>
