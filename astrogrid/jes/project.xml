@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.40 2004/02/03 16:04:31 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.41 2004/02/04 15:43:20 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
     <extend>../maven-base/project.xml</extend>
@@ -18,6 +18,20 @@
         track the progress of a job through its job steps, e.g. in order to 
         trigger subsequent steps.</description>
     <shortDescription>AstroGrid Job Management Components</shortDescription>
+    <!-- Temporary Overrides till we get consistent artifactIds-->
+    <groupId>astrogrid-jes</groupId>
+    <siteDirectory>/var/www/www/maven/build/jes</siteDirectory>
+    <repository>
+        <connection> 
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/jes
+            </connection>
+        <developerConnection> 
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/jes 
+            </developerConnection>
+        <url> http://www.astrogrid.org/viewcvs/astrogrid/jes/ 
+            </url>
+    </repository>
+    <!-- end of overrides -->
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <unitTestSourceDirectory>test/java</unitTestSourceDirectory>
