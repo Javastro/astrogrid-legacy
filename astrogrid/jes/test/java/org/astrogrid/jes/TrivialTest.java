@@ -1,4 +1,4 @@
-/* $Id: TrivialTest.java,v 1.5 2003/11/12 22:25:23 anoncvs Exp $ 
+/* $Id: TrivialTest.java,v 1.6 2003/11/14 19:08:17 jdt Exp $ 
  * Created on 20/10/03 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import junit.framework.TestCase;
  * can run Maven.
  *  
  *  @author jdt
- *  @TODO this is a task in a class javadoc
+ *  
  */
 public class TrivialTest extends TestCase {
 
@@ -25,7 +25,7 @@ public class TrivialTest extends TestCase {
    * @param arg0 Unused
    */
   public TrivialTest(final String arg0) {
-    super(arg0); //@TODO this is a task in an ordinary comment
+    super(arg0); 
   }
 
 /**
@@ -38,7 +38,7 @@ public class TrivialTest extends TestCase {
   
   /**
    * Does nothing.
-   * @TODO this is a task in a method javadoc
+   * 
    */
   public void testTrivial() {
   }
@@ -47,8 +47,11 @@ public class TrivialTest extends TestCase {
 }
 /*
  * $Log: TrivialTest.java,v $
+ * Revision 1.6  2003/11/14 19:08:17  jdt
+ * Got rid of the superfluous TODOs
+ *
  * Revision 1.5  2003/11/12 22:25:23  anoncvs
- * Added some @TODO tags to see what happens when Maven runs tonight.
+ * Added some todo tags to see what happens when Maven runs tonight.
  *
  * Revision 1.4  2003/10/21 16:36:37  jdt
  * Updated to comply with our coding standards.
