@@ -261,17 +261,4 @@
         target="_self"
         status-text="Remove acativity...."/>                         
   </agp:menu>
-  <agp:menu
-      contents="Help"
-      contents-hover="Help"
-      uri=""
-      target="_self"
-      status-text="Help...">  
-    <agp:item
-        contents="FAQ"
-        contents-hover="FAQ"
-        uri=""
-        target="_self"
-        status-text="Frequently asked questions..."/>      
-  </agp:menu>
 </agp:menu-def>
