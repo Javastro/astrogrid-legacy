@@ -1,4 +1,4 @@
-/*$Id: Locator.java,v 1.5 2004/08/03 16:31:25 nw Exp $
+/*$Id: Locator.java,v 1.6 2004/08/13 09:07:58 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 /** Interface to a component that will retreive details / location for a tool
@@ -28,6 +27,9 @@ public interface Locator {
 
 /* 
 $Log: Locator.java,v $
+Revision 1.6  2004/08/13 09:07:58  nw
+tidied imports
+
 Revision 1.5  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

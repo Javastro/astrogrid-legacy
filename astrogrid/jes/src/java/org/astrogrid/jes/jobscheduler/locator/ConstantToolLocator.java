@@ -1,4 +1,4 @@
-/*$Id: ConstantToolLocator.java,v 1.8 2004/08/03 16:31:25 nw Exp $
+/*$Id: ConstantToolLocator.java,v 1.9 2004/08/13 09:07:26 nw Exp $
  * Created on 27-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.jes.jobscheduler.locator;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
@@ -73,6 +72,9 @@ public class ConstantToolLocator implements Locator , ComponentDescriptor{
 
 /* 
 $Log: ConstantToolLocator.java,v $
+Revision 1.9  2004/08/13 09:07:26  nw
+tidied imports
+
 Revision 1.8  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

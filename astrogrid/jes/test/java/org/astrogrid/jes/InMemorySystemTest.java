@@ -1,4 +1,4 @@
-/*$Id: InMemorySystemTest.java,v 1.19 2004/07/30 15:42:34 nw Exp $
+/*$Id: InMemorySystemTest.java,v 1.20 2004/08/13 09:09:40 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,9 +21,6 @@ import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.dispatcher.ShortCircuitDispatcher;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyInterpreterFactory;
 import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl;
-import org.astrogrid.jes.jobscheduler.impl.groovy.GroovyTransformers;
-import org.astrogrid.jes.jobscheduler.impl.groovy.XStreamPickler;
-import org.astrogrid.jes.jobscheduler.impl.groovy.GroovySchedulerImpl.Transformers;
 import org.astrogrid.jes.testutils.io.FileResourceLoader;
 import org.astrogrid.jes.types.v1.JobURN;
 import org.astrogrid.jes.types.v1.WorkflowString;
@@ -198,6 +195,9 @@ public class InMemorySystemTest extends AbstractTestWorkflowInputs {
 
 /* 
 $Log: InMemorySystemTest.java,v $
+Revision 1.20  2004/08/13 09:09:40  nw
+tidied imports
+
 Revision 1.19  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

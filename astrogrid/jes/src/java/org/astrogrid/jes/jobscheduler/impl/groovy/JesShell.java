@@ -1,4 +1,4 @@
-/*$Id: JesShell.java,v 1.9 2004/08/09 17:34:10 nw Exp $
+/*$Id: JesShell.java,v 1.10 2004/08/13 09:10:30 nw Exp $
  * Created on 29-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,17 +27,13 @@ import org.apache.log4j.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
 
 import groovy.lang.Binding;
-import groovy.lang.GString;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /** class that encapuslates the execution and evaluation of grouvy code.
  * @author Noel Winstanley nw@jb.man.ac.uk 29-Jul-2004
@@ -281,6 +277,9 @@ public Object evaluateUserExpr(String expr,String id,ActivityStatusStore map, Li
 
 /* 
 $Log: JesShell.java,v $
+Revision 1.10  2004/08/13 09:10:30  nw
+tidied imports
+
 Revision 1.9  2004/08/09 17:34:10  nw
 implemented parfor.
 removed references to rulestore

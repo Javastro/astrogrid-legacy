@@ -1,4 +1,4 @@
-/*$Id: GroovyAbortJobTest.java,v 1.2 2004/07/30 15:42:34 nw Exp $
+/*$Id: GroovyAbortJobTest.java,v 1.3 2004/08/13 09:10:05 nw Exp $
  * Created on 13-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,8 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
-import org.astrogrid.jes.jobscheduler.impl.AbstractTestForAbort;
 import org.astrogrid.jes.jobscheduler.impl.AbstractJobSchedulerImpl;
+import org.astrogrid.jes.jobscheduler.impl.AbstractTestForAbort;
 
 /** test abort functionality works in script scheduler.
  * @author Noel Winstanley nw@jb.man.ac.uk 13-May-2004
@@ -38,6 +38,9 @@ public class GroovyAbortJobTest extends AbstractTestForAbort {
 
 /* 
 $Log: GroovyAbortJobTest.java,v $
+Revision 1.3  2004/08/13 09:10:05  nw
+tidied imports
+
 Revision 1.2  2004/07/30 15:42:34  nw
 merged in branch nww-itn06-bz#441 (groovy scripting)
 

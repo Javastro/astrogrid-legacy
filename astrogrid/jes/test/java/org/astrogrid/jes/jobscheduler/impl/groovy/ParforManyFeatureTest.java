@@ -1,4 +1,4 @@
-/*$Id: ParforManyFeatureTest.java,v 1.1 2004/08/09 17:34:10 nw Exp $
+/*$Id: ParforManyFeatureTest.java,v 1.2 2004/08/13 09:10:05 nw Exp $
  * Created on 09-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.Parfor;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Set;
@@ -81,6 +80,9 @@ public class ParforManyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ParforManyFeatureTest.java,v $
+Revision 1.2  2004/08/13 09:10:05  nw
+tidied imports
+
 Revision 1.1  2004/08/09 17:34:10  nw
 implemented parfor.
 removed references to rulestore

@@ -1,4 +1,4 @@
-/*$Id: MapLocatorTest.java,v 1.5 2004/08/03 16:31:25 nw Exp $
+/*$Id: MapLocatorTest.java,v 1.6 2004/08/13 09:09:40 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,11 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.locator;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.jes.job.NotFoundException;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import junit.framework.TestCase;
 
@@ -81,6 +78,9 @@ public class MapLocatorTest extends TestCase {
 
 /* 
 $Log: MapLocatorTest.java,v $
+Revision 1.6  2004/08/13 09:09:40  nw
+tidied imports
+
 Revision 1.5  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

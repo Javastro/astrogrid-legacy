@@ -1,4 +1,4 @@
-/*$Id: BackdoorServlet.java,v 1.3 2004/08/03 16:31:25 nw Exp $
+/*$Id: BackdoorServlet.java,v 1.4 2004/08/13 09:07:26 nw Exp $
  * Created on 21-Apr-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.component.JesComponentManager;
 import org.astrogrid.jes.component.JesComponentManagerFactory;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import java.io.IOException;
@@ -65,6 +64,9 @@ public class BackdoorServlet extends HttpServlet {
 
 /* 
 $Log: BackdoorServlet.java,v $
+Revision 1.4  2004/08/13 09:07:26  nw
+tidied imports
+
 Revision 1.3  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

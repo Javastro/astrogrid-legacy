@@ -1,4 +1,4 @@
-/*$Id: ForEmptyFeatureTest.java,v 1.1 2004/08/05 14:38:30 nw Exp $
+/*$Id: ForEmptyFeatureTest.java,v 1.2 2004/08/13 09:10:05 nw Exp $
  * Created on 05-Aug-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,12 +10,10 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.workflow.beans.v1.For;
 import org.astrogrid.workflow.beans.v1.Script;
 import org.astrogrid.workflow.beans.v1.Set;
 import org.astrogrid.workflow.beans.v1.Workflow;
-import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 /**
  * @author Noel Winstanley nw@jb.man.ac.uk 05-Aug-2004
@@ -74,6 +72,9 @@ public class ForEmptyFeatureTest extends AbstractTestForFeature {
 
 /* 
 $Log: ForEmptyFeatureTest.java,v $
+Revision 1.2  2004/08/13 09:10:05  nw
+tidied imports
+
 Revision 1.1  2004/08/05 14:38:30  nw
 tests for sequential for construct
  

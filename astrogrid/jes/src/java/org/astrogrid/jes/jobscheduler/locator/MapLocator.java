@@ -1,4 +1,4 @@
-/*$Id: MapLocator.java,v 1.10 2004/08/03 16:31:25 nw Exp $
+/*$Id: MapLocator.java,v 1.11 2004/08/13 09:07:26 nw Exp $
  * Created on 19-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -14,7 +14,6 @@ import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.job.NotFoundException;
 import org.astrogrid.jes.jobscheduler.Locator;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 
 import org.apache.commons.logging.Log;
@@ -174,6 +173,9 @@ public class MapLocator implements Locator, ComponentDescriptor {
 
 /* 
 $Log: MapLocator.java,v $
+Revision 1.11  2004/08/13 09:07:26  nw
+tidied imports
+
 Revision 1.10  2004/08/03 16:31:25  nw
 simplified interface to dispatcher and locator components.
 removed redundant implementations.

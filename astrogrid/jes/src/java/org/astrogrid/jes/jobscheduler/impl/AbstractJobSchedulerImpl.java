@@ -1,4 +1,4 @@
-/*$Id: AbstractJobSchedulerImpl.java,v 1.5 2004/08/04 16:51:46 nw Exp $
+/*$Id: AbstractJobSchedulerImpl.java,v 1.6 2004/08/13 09:07:58 nw Exp $
  * Created on 10-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,7 +10,6 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl;
 
-import org.astrogrid.applications.beans.v1.axis.ceaparameters.ParameterValue;
 import org.astrogrid.applications.beans.v1.cea.castor.MessageType;
 import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
 import org.astrogrid.applications.beans.v1.cea.castor.types.LogLevel;
@@ -35,7 +34,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
 
-/**
+/**Abstract implementation of a job scheduler. used as as a base class for the groovy job scheduler, and maybe future others.
  * @author Noel Winstanley nw@jb.man.ac.uk 10-May-2004
  *
  */
@@ -186,11 +185,14 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
     
 
     /** project the step correspondinig to this fragment from the workflow 
-     * @return the step, or null if not found.*/
+     * @return the step, or null if not found.
+     * @see #resumeJob(JobIdentifierType, org.astrogrid.jes.types.v1.cea.axis.MessageType) where this method is used.
+     * @see #reportResults(JobIdentifierType, ResultListType) where this method is used.*/
     protected abstract Step getStepForFragment(Workflow job, String fragment); 
     
     /**
      * select steps that can be executed, and fire them off.
+     * used within {@link #resumeJob}, {@link #reportResults}, {@link scheduleNewJob} 
      */
     protected abstract void scheduleSteps(Workflow job) ;
     
@@ -279,7 +281,9 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
         return resultsMessage;
     }
     
-    /** do nothing-implementaiton - may be overridden.*/
+    /**called when a workfllow completes.
+     *  do nothing-implementaiton - may be overridden.
+     * */
     public void notifyJobFinished(Workflow job) {   
     }
     
@@ -335,6 +339,9 @@ public abstract class AbstractJobSchedulerImpl implements JobScheduler {
 
 /* 
 $Log: AbstractJobSchedulerImpl.java,v $
+Revision 1.6  2004/08/13 09:07:58  nw
+tidied imports
+
 Revision 1.5  2004/08/04 16:51:46  nw
 added parameter propagation out of cea step call.
 

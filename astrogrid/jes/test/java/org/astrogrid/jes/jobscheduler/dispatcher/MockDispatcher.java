@@ -1,4 +1,4 @@
-/*$Id: MockDispatcher.java,v 1.10 2004/08/09 17:31:11 nw Exp $
+/*$Id: MockDispatcher.java,v 1.11 2004/08/13 09:09:40 nw Exp $
  * Created on 13-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -13,7 +13,6 @@ package org.astrogrid.jes.jobscheduler.dispatcher;
 import org.astrogrid.component.descriptor.ComponentDescriptor;
 import org.astrogrid.jes.JesException;
 import org.astrogrid.jes.jobscheduler.Dispatcher;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
@@ -91,6 +90,9 @@ public class MockDispatcher implements Dispatcher, ComponentDescriptor {
 
 /* 
 $Log: MockDispatcher.java,v $
+Revision 1.11  2004/08/13 09:09:40  nw
+tidied imports
+
 Revision 1.10  2004/08/09 17:31:11  nw
 adjusted interface, to work better with dynamically-generated states.
 

@@ -1,4 +1,4 @@
-/*$Id: ApplicationControllerDispatcher.java,v 1.18 2004/08/09 17:31:11 nw Exp $
+/*$Id: ApplicationControllerDispatcher.java,v 1.19 2004/08/13 09:07:58 nw Exp $
  * Created on 25-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -21,7 +21,6 @@ import org.astrogrid.jes.jobscheduler.Dispatcher;
 import org.astrogrid.jes.jobscheduler.Locator;
 import org.astrogrid.jes.types.v1.cea.axis.JobIdentifierType;
 import org.astrogrid.jes.util.JesUtil;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
@@ -71,10 +70,7 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
    /** endpoint of local result listener servuce - again, used as a callback */
    protected final URI resultListenerURI;
    
-      
-   /**
-    * @see org.astrogrid.jes.jobscheduler.Dispatcher#dispatchStep(java.lang.String, org.astrogrid.jes.job.JobStep)
-    */
+
    public void dispatchStep(Workflow job, Tool tool,String stepId) throws JesException {
 
       String toolLocation = locator.locateTool(tool);    
@@ -146,6 +142,9 @@ public  class ApplicationControllerDispatcher implements Dispatcher, ComponentDe
 
 /* 
 $Log: ApplicationControllerDispatcher.java,v $
+Revision 1.19  2004/08/13 09:07:58  nw
+tidied imports
+
 Revision 1.18  2004/08/09 17:31:11  nw
 adjusted interface, to work better with dynamically-generated states.
 

@@ -1,4 +1,4 @@
-/*$Id: JesInterface.java,v 1.7 2004/08/09 17:34:10 nw Exp $
+/*$Id: JesInterface.java,v 1.8 2004/08/13 09:10:30 nw Exp $
  * Created on 12-May-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -27,8 +27,6 @@ import org.astrogrid.workflow.beans.v1.execution.JobExecutionRecord;
 import org.astrogrid.workflow.beans.v1.execution.StepExecutionRecord;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.collections.iterators.ListIteratorWrapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,7 +35,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -220,6 +217,9 @@ public class  JesInterface {
 
 /* 
 $Log: JesInterface.java,v $
+Revision 1.8  2004/08/13 09:10:30  nw
+tidied imports
+
 Revision 1.7  2004/08/09 17:34:10  nw
 implemented parfor.
 removed references to rulestore

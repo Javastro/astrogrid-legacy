@@ -1,4 +1,4 @@
-/*$Id: ActivityStatusStore.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: ActivityStatusStore.java,v 1.4 2004/08/13 09:10:30 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,8 +11,6 @@
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**Maintains current state of each activity in the workflow.
@@ -118,6 +116,9 @@ public class ActivityStatusStore {
 
 /* 
 $Log: ActivityStatusStore.java,v $
+Revision 1.4  2004/08/13 09:10:30  nw
+tidied imports
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 

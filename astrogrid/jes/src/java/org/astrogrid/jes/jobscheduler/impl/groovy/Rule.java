@@ -1,4 +1,4 @@
-/*$Id: Rule.java,v 1.4 2004/08/09 17:32:53 nw Exp $
+/*$Id: Rule.java,v 1.5 2004/08/13 09:10:30 nw Exp $
  * Created on 26-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,7 +17,6 @@ import org.codehaus.groovy.control.CompilationFailedException;
 import groovy.lang.Script;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -185,6 +184,9 @@ public class Rule {
 
 /* 
 $Log: Rule.java,v $
+Revision 1.5  2004/08/13 09:10:30  nw
+tidied imports
+
 Revision 1.4  2004/08/09 17:32:53  nw
 optimized string handling - all done via regexps now.
 

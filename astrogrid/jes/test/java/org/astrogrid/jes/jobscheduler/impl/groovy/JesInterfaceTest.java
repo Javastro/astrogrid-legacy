@@ -1,4 +1,4 @@
-/*$Id: JesInterfaceTest.java,v 1.4 2004/08/06 11:59:25 nw Exp $
+/*$Id: JesInterfaceTest.java,v 1.5 2004/08/13 09:10:05 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -10,15 +10,8 @@
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
 
-import org.astrogrid.applications.beans.v1.cea.castor.types.ExecutionPhase;
-import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
-import org.astrogrid.jes.JesException;
-import org.astrogrid.jes.jobscheduler.dispatcher.MockDispatcher;
-import org.astrogrid.workflow.beans.v1.Input;
-import org.astrogrid.workflow.beans.v1.Output;
 import org.astrogrid.workflow.beans.v1.Sequence;
 import org.astrogrid.workflow.beans.v1.Step;
-import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 
 import junit.framework.TestCase;
@@ -100,6 +93,9 @@ public class JesInterfaceTest extends TestCase {
 
 /* 
 $Log: JesInterfaceTest.java,v $
+Revision 1.5  2004/08/13 09:10:05  nw
+tidied imports
+
 Revision 1.4  2004/08/06 11:59:25  nw
 test for helper methods
 

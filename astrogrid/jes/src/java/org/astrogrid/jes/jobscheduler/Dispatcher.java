@@ -1,4 +1,4 @@
-/*$Id: Dispatcher.java,v 1.7 2004/08/09 17:31:11 nw Exp $
+/*$Id: Dispatcher.java,v 1.8 2004/08/13 09:07:58 nw Exp $
  * Created on 12-Feb-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -11,7 +11,6 @@
 package org.astrogrid.jes.jobscheduler;
 
 import org.astrogrid.jes.JesException;
-import org.astrogrid.workflow.beans.v1.Step;
 import org.astrogrid.workflow.beans.v1.Tool;
 import org.astrogrid.workflow.beans.v1.Workflow;
 /** Interface to a component that dispatches (executes) a job step.
@@ -24,9 +23,8 @@ public interface Dispatcher {
      * <p>
      * Implementations should not alter the workflow and step objects - recording execution information is the responsibility of the scheduler engine. 
      * @param wf workflow document the step is from
-     * @param js the job step to execute
      * @param tool the tool to use to perform the call.
-     * @param id id assigned to this step.
+     * @param id identifier of the job step that is being executed.
      * @throws JesException
      */
     void dispatchStep(Workflow wf,Tool tool, String id) throws JesException;
@@ -35,6 +33,9 @@ public interface Dispatcher {
 
 /* 
 $Log: Dispatcher.java,v $
+Revision 1.8  2004/08/13 09:07:58  nw
+tidied imports
+
 Revision 1.7  2004/08/09 17:31:11  nw
 adjusted interface, to work better with dynamically-generated states.
 

@@ -1,4 +1,4 @@
-/*$Id: ActivityStatusStoreTest.java,v 1.3 2004/08/03 14:27:38 nw Exp $
+/*$Id: ActivityStatusStoreTest.java,v 1.4 2004/08/13 09:10:05 nw Exp $
  * Created on 27-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -9,9 +9,6 @@
  *
 **/
 package org.astrogrid.jes.jobscheduler.impl.groovy;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -78,6 +75,9 @@ public class ActivityStatusStoreTest extends TestCase {
 
 /* 
 $Log: ActivityStatusStoreTest.java,v $
+Revision 1.4  2004/08/13 09:10:05  nw
+tidied imports
+
 Revision 1.3  2004/08/03 14:27:38  nw
 added set/unset/scope features.
 
