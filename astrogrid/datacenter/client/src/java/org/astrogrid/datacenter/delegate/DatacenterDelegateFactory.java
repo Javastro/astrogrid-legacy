@@ -1,5 +1,5 @@
 /*
- * $Id: DatacenterDelegateFactory.java,v 1.5 2003/11/25 15:46:25 mch Exp $
+ * $Id: DatacenterDelegateFactory.java,v 1.6 2003/11/25 15:59:55 mch Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -41,7 +41,7 @@ public class DatacenterDelegateFactory {
       // The urls of nvo cone-search servers and adql servers may be similar.
       // only adql servers return metadata.
       
-      if (givenEndPoint.equals(null)) {
+      if (givenEndPoint == null) {
          return makeConeSearcher(Certification.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
       }
       else if (givenEndPoint.toUpperCase().indexOf("?CAT=") >-1) {
@@ -89,7 +89,7 @@ public class DatacenterDelegateFactory {
       // The urls of nvo cone-search servers and adql servers may be similar.
       // only adql servers return metadata.
       
-      if (givenEndPoint.equals(null)) {
+      if (givenEndPoint == null) {
          return makeAdqlQuerier(Certification.ANONYMOUS, givenEndPoint, DUMMY_SERVICE);
       }
       //if the url includes ?CAT it's an nvo-server
@@ -134,7 +134,12 @@ public class DatacenterDelegateFactory {
    
    /**
     * Creates a SQL-passthrough-implementing delegate given an endpoint (a
-    * url to the service).
+    * url to the service). and a service type.
+    * <p>
+    * For a test call, use:
+    * <pre>
+    *    querier = makeSqlQuerier(Certification.ANONYMOUS, "something random", DatacenterDelegateFactory.DUMMY_SERVICE
+    * </pre>
     */
    public static SqlQuerier makeSqlQuerier(Certification user, String givenEndPoint, String serviceType) throws ServiceException, MalformedURLException, IOException {
 
@@ -153,6 +158,9 @@ public class DatacenterDelegateFactory {
 
 /*
  $Log: DatacenterDelegateFactory.java,v $
+ Revision 1.6  2003/11/25 15:59:55  mch
+ Added doc
+
  Revision 1.5  2003/11/25 15:46:25  mch
  Added certification and service types; deprecated older methods
 
