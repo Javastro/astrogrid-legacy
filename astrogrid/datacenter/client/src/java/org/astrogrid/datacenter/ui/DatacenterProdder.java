@@ -1,4 +1,4 @@
-/* $Id: DatacenterProdder.java,v 1.8 2004/08/02 11:33:32 mch Exp $
+/* $Id: DatacenterProdder.java,v 1.9 2004/08/03 11:56:58 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -24,7 +24,6 @@ import javax.swing.ProgressMonitor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.astrogrid.community.Account;
-import org.astrogrid.community.IvoAccount;
 import org.astrogrid.community.User;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
 import org.astrogrid.datacenter.delegate.QuerySearcher;
@@ -420,6 +419,9 @@ public class DatacenterProdder extends JFrame
 
 /*
  $Log: DatacenterProdder.java,v $
+ Revision 1.9  2004/08/03 11:56:58  mch
+ Removed import to unused IvoAccount
+
  Revision 1.8  2004/08/02 11:33:32  mch
  Adapted for new Agsl/etc forms
 
