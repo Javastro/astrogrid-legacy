@@ -1,5 +1,5 @@
 /*
- * $Id: Castor2Axis.java,v 1.10 2004/08/30 17:36:48 jdt Exp $
+ * $Id: Castor2Axis.java,v 1.11 2004/09/02 16:09:23 jdt Exp $
  * 
  * Created on 11-Mar-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -95,10 +95,6 @@ public class Castor2Axis {
    
    public static ParameterValue convert(org.astrogrid.applications.beans.v1.parameters.ParameterValue parameterValue)
    {
-	if (logger.isTraceEnabled()) {
-		logger.trace("convert(org.astrogrid.applications.beans.v1.parameters.ParameterValue) - start");
-	}
-
       ParameterValue result = new ParameterValue();
       result.setName(parameterValue.getName());
       if (parameterValue.getEncoding() != null) {
