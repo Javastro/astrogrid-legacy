@@ -176,6 +176,8 @@ Unjar to some convenient temporary directory. The archive contains the following
 . datacenterBIN.jar     -    the datacenter executables
 . jconn2.jar            -    the Sybase jdbc executables
 . objectwiz-votable.jar -    executables for producing votables from a query
+. VOTableUtil.jar       -    conversion utility routines
+. breezetk.jar          -    conversion utility routines
 . config directory      -    contains datacenter configuration files
 . dbscripts             -    contains script for creating database tables.
 . wsdd                  -    contains deployment descriptors for deploying datacenter as a SOAP service within Axis
