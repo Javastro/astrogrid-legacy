@@ -52,7 +52,8 @@
 				<item name="Obtaining source code" href="/cvs-usage.html"/>
       			<item name="Build AstroGrid from source" href="/developerdocs/buildingastrogrid.html"/>
                 <item name="Development Process" href="/developerdocs/developmentprocess.html" collapse="true">
-				<item name="Coding Standards" href="/developerdocs/standards.html"/>
+				<item name="Coding Standard" href="/developerdocs/standards.html"/>
+				<item name="XML schemata" href="/developerdocs/standards.html"/>
                 </item>
                 <!--item name="AstroGrid architecture" href="fillmein"/-->
 					<!--item name="Writing AstroGrid compatable software" href="/developerdocs/"/-->
