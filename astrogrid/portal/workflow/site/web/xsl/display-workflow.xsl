@@ -8,15 +8,18 @@
     
     <xsl:template match="workflow">
     <ag-div>        
-       <agComponentTitle>Workflow</agComponentTitle>        
-        <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
-        <xsl:if test="$activity_key != ''">
-          <xsl:if test="$display_parameter_values = 'true'">
-            <ag-onload>
-              <xsl:attribute name="function">toggle('parameters:<xsl:value-of select="$activity_key"/>');</xsl:attribute>
-            </ag-onload>
-          </xsl:if>
-        </xsl:if>
+       <agComponentTitle>Workflow</agComponentTitle>
+         <ag-onload>
+           <xsl:attribute name="function">nofooter();</xsl:attribute>                 	
+         </ag-onload>               
+       <ag-script type="text/javascript" src="/astrogrid-portal/mount/workflow/workflow-functions.js"/>
+       <xsl:if test="$activity_key != ''">
+         <xsl:if test="$display_parameter_values = 'true'">
+           <ag-onload>
+             <xsl:attribute name="function">toggle('parameters:<xsl:value-of select="$activity_key"/>');</xsl:attribute>                 	
+           </ag-onload>
+         </xsl:if>
+       </xsl:if>
                 
         <table border="1">
             <form action="/astrogrid-portal/main/mount/workflow/agjobmanager.html" name="workflow_form" id="workflow_form">
@@ -76,7 +79,7 @@
             <tr>
                 <xsl:apply-templates select="*"/>
             </tr>
-        </table>
+        </table>     
         <xsl:call-template name="tool-details"/>
         <xsl:call-template name="script-details"/>
       </ag-div>
