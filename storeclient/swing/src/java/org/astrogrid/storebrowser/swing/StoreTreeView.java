@@ -1,5 +1,5 @@
 /*
- * $Id: StoreTreeView.java,v 1.1 2005/02/16 15:02:46 mch Exp $
+ * $Id: StoreTreeView.java,v 1.1.1.1 2005/02/16 15:02:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -93,8 +93,8 @@ public class StoreTreeView extends JTree {
 
 /*
  $Log: StoreTreeView.java,v $
- Revision 1.1  2005/02/16 15:02:46  mch
- *** empty log message ***
+ Revision 1.1.1.1  2005/02/16 15:02:46  mch
+ Initial Checkin
 
  Revision 1.1.2.1  2005/01/26 14:48:06  mch
  Separating slinger and scapi

@@ -1,5 +1,5 @@
 /*
- $Id: SlingerFtpClient.java,v 1.1 2005/02/16 15:02:46 mch Exp $
+ $Id: SlingerFtpClient.java,v 1.1.1.1 2005/02/16 15:02:46 mch Exp $
 
  (c) Copyright...
  */

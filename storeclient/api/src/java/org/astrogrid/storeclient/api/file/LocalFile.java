@@ -1,5 +1,5 @@
 /*
- * $Id: LocalFile.java,v 1.1 2005/02/16 15:02:46 mch Exp $
+ * $Id: LocalFile.java,v 1.1.1.1 2005/02/16 15:02:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -226,8 +226,8 @@ public class LocalFile implements StoreFile {
 
 /*
 $Log: LocalFile.java,v $
-Revision 1.1  2005/02/16 15:02:46  mch
-*** empty log message ***
+Revision 1.1.1.1  2005/02/16 15:02:46  mch
+Initial Checkin
 
 Revision 1.1.2.1  2005/01/26 14:42:58  mch
 Separating slinger and scapi

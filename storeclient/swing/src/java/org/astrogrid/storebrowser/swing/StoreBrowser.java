@@ -1,5 +1,5 @@
 /*
- * $Id: StoreBrowser.java,v 1.1 2005/02/16 15:02:46 mch Exp $
+ * $Id: StoreBrowser.java,v 1.1.1.1 2005/02/16 15:02:46 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -616,8 +616,8 @@ public class StoreBrowser extends JDialog
 
 /*
 $Log: StoreBrowser.java,v $
-Revision 1.1  2005/02/16 15:02:46  mch
-*** empty log message ***
+Revision 1.1.1.1  2005/02/16 15:02:46  mch
+Initial Checkin
 
 Revision 1.1.2.1  2005/01/26 14:48:04  mch
 Separating slinger and scapi

@@ -1,5 +1,5 @@
 /**
- * $Id: DefaultCellHtmlRenderer.java,v 1.1 2005/02/16 15:02:46 mch Exp $
+ * $Id: DefaultCellHtmlRenderer.java,v 1.1.1.1 2005/02/16 15:02:46 mch Exp $
  */
 package org.astrogrid.storebrowser.html;
 import java.io.IOException;

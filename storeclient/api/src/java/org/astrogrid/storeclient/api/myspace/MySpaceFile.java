@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFile.java,v 1.1 2005/02/16 15:02:46 mch Exp $
+ * $Id: MySpaceFile.java,v 1.1.1.1 2005/02/16 15:02:46 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -335,8 +335,8 @@ public class MySpaceFile implements StoreFile {
 
 /*
 $Log: MySpaceFile.java,v $
-Revision 1.1  2005/02/16 15:02:46  mch
-*** empty log message ***
+Revision 1.1.1.1  2005/02/16 15:02:46  mch
+Initial Checkin
 
 Revision 1.1.2.1  2005/01/26 14:42:59  mch
 Separating slinger and scapi
