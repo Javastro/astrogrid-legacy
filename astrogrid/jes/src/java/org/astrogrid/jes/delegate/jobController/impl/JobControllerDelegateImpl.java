@@ -4,10 +4,8 @@ import org.astrogrid.jes.delegate.jobController.* ;
 import java.net.URL ;
 import java.net.MalformedURLException ;
 import java.rmi.RemoteException ;
-
-
-
 import org.astrogrid.jes.delegate.JesDelegateException ;
+
 
 /**
  * The <code>JobControllerDelegateImpl</code> class. 
@@ -17,6 +15,10 @@ import org.astrogrid.jes.delegate.JesDelegateException ;
  * @since   AstroGrid 1.3
  */
 public class JobControllerDelegateImpl extends JobControllerDelegate {
+    
+    public static final String 
+        SUBMISSION_SUCCESS = "AGJESI00050" ,
+        NO_RESPONSE_MESSAGE_RECEIVED = "No response message received from JobController" ;
         
     public JobControllerDelegateImpl( String targetEndPoint ) {
       super( targetEndPoint ) ;
@@ -27,12 +29,11 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
     }
     
     public void submitJob(String req) throws JesDelegateException {
-
-        System.out.print( "submission: " + req ) ;
         
-        String
-            response = null ;
-        
+        String 
+            response = null ,
+            message = null ;
+               
         JobControllerServiceSoapBindingStub 
             binding = null ;
             
@@ -41,6 +42,10 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
                 new JobControllerServiceLocator().getJobControllerService( new URL( this.getTargetEndPoint() ) );                        
             binding.setTimeout( this.getTimeout() ) ;    
             response = binding.submitJob(req);
+            message = this.extractMessageFromSubmissionResponse( response ) ;
+            if( message.indexOf( SUBMISSION_SUCCESS ) == -1) {
+                throw new JesDelegateException( message ) ;
+            }
         }
         catch( MalformedURLException mex ) {
             throw new JesDelegateException( mex ) ;
@@ -89,5 +94,28 @@ public class JobControllerDelegateImpl extends JobControllerDelegate {
          return response ;
   
      } // end of readJobList()
+     
+     
+     private String extractMessageFromSubmissionResponse( String submissionResponse ) {
+         
+         String message = null ;
+         
+         if( submissionResponse != null ) {
+             int index = submissionResponse.indexOf( "<message>" ) ;
+             if(index != -1) {
+                 message = submissionResponse.substring( index + "<message>".length()
+                                                       , submissionResponse.indexOf("</message>"));
+             }
+             else {
+                 message = NO_RESPONSE_MESSAGE_RECEIVED ;
+             }
+         }
+         else {
+             message = NO_RESPONSE_MESSAGE_RECEIVED ;
+         }
+
+         return message ;
+         
+     } // end of extractMessageFromSubmissionResponse()
 
 } // end of class JobControllerDelegateImpl
