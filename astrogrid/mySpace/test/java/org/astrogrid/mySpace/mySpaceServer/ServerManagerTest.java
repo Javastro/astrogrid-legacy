@@ -51,7 +51,7 @@ public class ServerManagerTest extends TestCase
 //   Test up-loading a string.
 
       response = server.upLoadString("Mary had a little lamb.",
-        "testfile1");
+        "testfile1", false);
 
       System.out.println(" ");
       System.out.println("Up-load: " + response);
@@ -62,12 +62,12 @@ public class ServerManagerTest extends TestCase
 //   remote URLs are tried (well, local to Edinburgh).
 
       response = server.importDataHolder(
-        "http://www.roe.ac.uk/acdwww/index.html", "testfile2");
+        "http://www.google.com", "testfile2", false);
       System.out.println("Import: " + response);
       Assert.assertEquals(response, "SUCCESS File imported.");
 
       response = server.importDataHolder(
-        "http://www.google.com/", "testfile3");
+        "http://www.google.com/", "testfile3", false);
       System.out.println("Import: " + response);
       Assert.assertEquals(response, "SUCCESS File imported.");
 
@@ -75,7 +75,7 @@ public class ServerManagerTest extends TestCase
 //   Test attempting to import a bad (ie. non-existent) URL.
 
       response = server.importDataHolder(
-        "http://www.bluenowhere/", "testfilebad");
+        "http://www.bluenowhere/", "testfilebad", false);
       System.out.println("Deliberate attempt to import from " +
         "non-existent URL: " + response);
       Assert.assertEquals(response, "FAULT AGMSCE01040");
@@ -121,7 +121,7 @@ public class ServerManagerTest extends TestCase
 
    public static void main (String[] args)
    {
-//    junit.textui.TestRunner.run (ServerManagerTest.class);
-      junit.swingui.TestRunner.run (ServerManagerTest.class);
+    junit.textui.TestRunner.run (ServerManagerTest.class);
+//      junit.swingui.TestRunner.run (ServerManagerTest.class);
    }
 }
