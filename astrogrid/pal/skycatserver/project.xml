@@ -63,6 +63,17 @@
       </properties>
     </dependency>
 
+
+    <!-- Starlink's table transformer -->
+    <dependency>
+      <artifactId>stil</artifactId>
+      <groupId>starlink</groupId>
+      <version>2.0-3</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
     <dependency>
       <id>astrogrid-xml</id>
       <groupId>org.astrogrid</groupId>
@@ -182,7 +193,17 @@
       </properties>
     </dependency>
 
-    <!-- more standard deps -->
+    <!-- exist db for fits plugin? -->
+    <dependency>
+      <groupId>org.astrogrid</groupId>
+      <artifactId>astrogrid-exist-server</artifactId>
+         <version>${astrogrid.eXist.version}</version>
+      <type>jar</type>
+      <url>http://www.astrogrid.org/</url>
+      <properties>
+         <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
 
     <!-- servlet support (for compiling against - no need for deployment war as servlet container should have it) -->
     <dependency>
@@ -268,6 +289,26 @@
            <war.bundle>true</war.bundle>
         </properties>
     </dependency>
+
+    <!-- For SRB -->
+    <dependency>
+      <artifactId>jargon</artifactId>
+      <groupId>gsi</groupId>
+      <version>1.4.6</version>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+    </dependency>
+
+   <!-- Grid Service Interface classes? For jargon for SRB access above -->
+   <dependency>
+      <artifactId>GSI</artifactId>
+      <groupId>gsi</groupId>
+      <jar>gsi-classes.jar</jar>
+      <properties>
+        <war.bundle>true</war.bundle>
+      </properties>
+   </dependency>
 
     <!-- accessing myspace services -->
     <dependency>
@@ -391,6 +432,7 @@
       </properties>
     </dependency>
 
+
     <dependency>
       <groupId>oro</groupId>
       <artifactId>oro</artifactId>
@@ -400,6 +442,7 @@
       </properties>
     </dependency>
 
+   <!--  The JXpath library - required for Registry delegate -->
     <dependency>
       <artifactId>commons-jxpath</artifactId>
       <groupId>commons-jxpath</groupId>

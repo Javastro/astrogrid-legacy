@@ -1,10 +1,11 @@
 /*
- * $Id: SkyCircle.java,v 1.3 2005/03/21 18:45:55 mch Exp $
+ * $Id: SkyCircle.java,v 1.4 2005/03/23 10:20:25 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
 package org.astrogrid.sky;
+
 import org.astrogrid.geom.*;
 
 
@@ -140,6 +141,9 @@ public class SkyCircle implements SkyRegion {
 }
 /*
  $Log: SkyCircle.java,v $
+ Revision 1.4  2005/03/23 10:20:25  mch
+ build fixes
+
  Revision 1.3  2005/03/21 18:45:55  mch
  Naughty big lump of changes
 
