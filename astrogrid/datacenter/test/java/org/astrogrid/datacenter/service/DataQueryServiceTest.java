@@ -1,4 +1,4 @@
-/*$Id: DataQueryServiceTest.java,v 1.16 2003/11/05 18:54:43 mch Exp $
+/*$Id: DataQueryServiceTest.java,v 1.17 2003/11/06 17:02:24 mch Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -143,11 +143,23 @@ public class DataQueryServiceTest extends TestCase {
            return (QueryStatus) statusList.get(statusList.size()-1);
         }
     }
+    
+    /**
+     * Runs the test case.
+     */
+    public static void main(String args[])
+    {
+       junit.textui.TestRunner.run(suite());
+    }
+    
 }
 
 
 /*
 $Log: DataQueryServiceTest.java,v $
+Revision 1.17  2003/11/06 17:02:24  mch
+Added main method
+
 Revision 1.16  2003/11/05 18:54:43  mch
 Build fixes for change to SOAPy Beans and new delegates
 
