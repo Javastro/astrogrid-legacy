@@ -1,5 +1,5 @@
 /*
- * $Id: SqlResults.java,v 1.5 2005/03/30 15:52:15 mch Exp $
+ * $Id: SqlResults.java,v 1.6 2005/03/30 16:07:00 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
@@ -68,6 +68,7 @@ public class SqlResults extends TableResults {
        */
    }
 
+   /*
    public Class getJavaType(int sqlType) {
       switch (sqlType)
       {
@@ -89,7 +90,7 @@ public class SqlResults extends TableResults {
          }
       }
    }
-
+    */
    /**
     * Writes out results to given table writer
     */
@@ -111,8 +112,6 @@ public class SqlResults extends TableResults {
          TableMetaDocInterpreter interpreter = new TableMetaDocInterpreter();
          for (int i=1;i<=numCols;i++)
          {
-            cols[i-1] = new ColumnInfo();
-            cols[i-1].setName(metadata.getColumnName(i));
             //now need to look up other things from resource metadata
             if (colDefs == null) {
                //erm. what do we do now?  eg *?
@@ -126,21 +125,23 @@ public class SqlResults extends TableResults {
             }
             else if (colDefs[i-1] instanceof ColumnReference) {
                ColumnReference colRef = (ColumnReference) colDefs[i-1];
+               cols[i-1] = new ColumnInfo();
+               cols[i-1].setName(metadata.getColumnName(i));
                cols[i-1].setId(colRef.getTableName()+"."+colRef.getColName());
                cols[i-1].setUcd(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUcd("1"),"1");
                cols[i-1].setUnits(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getUnits());
-               cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
-               try {
-                  cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
-               }
-               catch (ClassNotFoundException cnfe) {
-                  log.error(cnfe+" for column "+i);
-               }
                cols[i-1].setPublicType(interpreter.getColumn(null, colRef.getTableName(), colRef.getColName()).getPublicType());
             }
             else {
                //should probably throw an exception...
                throw new IllegalArgumentException("Column Definition "+colDefs[i-1]+" is not a ColumnReference; not suitable for SQL data");
+            }
+            cols[i-1].setBackType(""+metadata.getColumnType(i)); //read direct from sql metadata
+            try {
+               cols[i-1].setJavaType(Class.forName(metadata.getColumnClassName(i))); //read from sql metadata and convert
+            }
+            catch (ClassNotFoundException cnfe) {
+               log.error(cnfe+" for column "+i);
             }
             
          }
@@ -221,6 +222,9 @@ public class SqlResults extends TableResults {
 
 /*
  $Log: SqlResults.java,v $
+ Revision 1.6  2005/03/30 16:07:00  mch
+ debug etc for bad sql types
+
  Revision 1.5  2005/03/30 15:52:15  mch
  debug etc for bad sql types
 
@@ -235,6 +239,7 @@ public class SqlResults extends TableResults {
 
 
  */
+
 
 
 

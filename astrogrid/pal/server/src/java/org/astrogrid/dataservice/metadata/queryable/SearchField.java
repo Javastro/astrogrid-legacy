@@ -1,5 +1,5 @@
 /*
- * $Id: SearchField.java,v 1.3 2005/03/30 15:52:15 mch Exp $
+ * $Id: SearchField.java,v 1.4 2005/03/30 16:07:00 mch Exp $
  */
 package org.astrogrid.dataservice.metadata.queryable;
 
@@ -34,7 +34,7 @@ public class SearchField {
    //links to more info about the field
    private Vector links = new Vector();
    
-   public void setBackType(String backType) {      this.backType = backType;  }
+   public void setBackType(String givenType) {      this.backType = givenType;  }
    
    public String getBackType() {    return backType;  }
    
@@ -104,3 +104,4 @@ public class SearchField {
    }
    
 }
+
