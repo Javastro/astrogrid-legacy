@@ -1,4 +1,4 @@
-/*$Id: MySpaceTest.java,v 1.1 2004/03/02 01:20:23 mch Exp $
+/*$Id: MySpaceTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.integrationTests.store;
+package org.astrogrid.integrationtest.store;
 
 import org.astrogrid.store.delegate.*;
 
@@ -90,6 +90,9 @@ public class MySpaceTest extends StoreClientTest {
 
 /*
 $Log: MySpaceTest.java,v $
+Revision 1.1  2004/03/04 19:06:04  jdt
+Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+
 Revision 1.1  2004/03/02 01:20:23  mch
 Added Vm05 Myspace tests
 

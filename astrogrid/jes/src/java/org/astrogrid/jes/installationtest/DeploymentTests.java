@@ -1,4 +1,4 @@
-/* $Id: DeploymentTests.java,v 1.2 2004/03/04 02:14:08 nw Exp $
+/* $Id: DeploymentTests.java,v 1.1 2004/03/04 19:08:20 jdt Exp $
  * Created on 21-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -7,7 +7,7 @@
  * Software License version 1.2, a copy of which has been included 
  * with this distribution in the LICENSE.txt file. 
  */
-package org.astrogrid.jes.installationTests;
+package org.astrogrid.jes.installationtest;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -31,6 +31,9 @@ public class DeploymentTests {
 
 /*
 *$Log: DeploymentTests.java,v $
+*Revision 1.1  2004/03/04 19:08:20  jdt
+*Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+*
 *Revision 1.2  2004/03/04 02:14:08  nw
 *removed old instalation tests - will need to write new ones
 *

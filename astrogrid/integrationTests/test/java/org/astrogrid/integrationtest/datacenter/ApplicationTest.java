@@ -1,4 +1,4 @@
-/*$Id: ApplicationTest.java,v 1.1 2004/03/02 01:20:59 mch Exp $
+/*$Id: ApplicationTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
  * Created on 05-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.integrationTests.datacenter;
+package org.astrogrid.integrationtest.datacenter;
 
 import java.util.Date;
 import junit.framework.Test;
@@ -17,7 +17,7 @@ import org.astrogrid.applications.delegate.ApplicationController;
 import org.astrogrid.applications.delegate.beans.ParameterValues;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.delegate.DatacenterDelegateFactory;
-import org.astrogrid.integrationTests.store.MySpaceTest;
+import org.astrogrid.integrationtest.store.MySpaceTest;
 import org.astrogrid.store.delegate.StoreClientTest;
 
 /** Tests the ApplicationController interface to a datacenter
@@ -80,6 +80,9 @@ public class ApplicationTest extends StoreClientTest {
 
 /*
 $Log: ApplicationTest.java,v $
+Revision 1.1  2004/03/04 19:06:04  jdt
+Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+
 Revision 1.1  2004/03/02 01:20:59  mch
 Added Integration test to try datacenter as an Application
 

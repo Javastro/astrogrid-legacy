@@ -1,5 +1,5 @@
 /*
- * $Id: WorkFlowToApplicationTest.java,v 1.4 2004/03/04 12:28:01 pah Exp $
+ * $Id: WorkFlowToApplicationTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
  * 
  * Created on 07-Jan-2004 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -11,7 +11,7 @@
  *
  */
 
-package org.astrogrid.integrationTests.applications;
+package org.astrogrid.integrationtest.applications;
 
 import java.io.IOException;
 import java.util.Date;
@@ -28,7 +28,7 @@ import org.astrogrid.community.User;
 import org.astrogrid.community.beans.v1.Account;
 import org.astrogrid.community.beans.v1.Credentials;
 import org.astrogrid.community.beans.v1.Group;
-import org.astrogrid.integrationTests.common.ConfManager;
+import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.jes.delegate.JesDelegateException;
 import org.astrogrid.jes.delegate.JesDelegateFactory;
 import org.astrogrid.jes.delegate.JobController;

@@ -1,4 +1,4 @@
-/*$Id: FullSearcherTest.java,v 1.5 2004/02/17 23:59:17 jdt Exp $
+/*$Id: FullSearcherTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $
  * Created on 22-Jan-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * with this distribution in the LICENSE.txt file.  
  *
 **/
-package org.astrogrid.integrationTests.datacenter;
+package org.astrogrid.integrationtest.datacenter;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +26,7 @@ import org.astrogrid.datacenter.delegate.DatacenterResults;
 import org.astrogrid.datacenter.delegate.FullSearcher;
 import org.astrogrid.datacenter.delegate.Metadata;
 import org.astrogrid.datacenter.query.QueryStatus;
-import org.astrogrid.integrationTests.common.ConfManager;
+import org.astrogrid.integrationtest.common.ConfManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 /** Exercises methods of the full searcher delegate interface.
@@ -149,6 +149,9 @@ public class FullSearcherTest extends TestCase {
 
 /* 
 $Log: FullSearcherTest.java,v $
+Revision 1.1  2004/03/04 19:06:04  jdt
+Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+
 Revision 1.5  2004/02/17 23:59:17  jdt
 commented out lines killing the build, and made to conform to 
 coding stds

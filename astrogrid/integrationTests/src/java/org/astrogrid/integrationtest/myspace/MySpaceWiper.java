@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceWiper.java,v 1.3 2004/02/24 18:02:49 jdt Exp $ Created on Feb
+ * $Id: MySpaceWiper.java,v 1.1 2004/03/04 19:06:04 jdt Exp $ Created on Feb
  * 16, 2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,17 +8,15 @@
  * version 1.2, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.astrogrid.integrationTests.mySpace;
+package org.astrogrid.integrationtest.myspace;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.mySpace.delegate.MySpaceClient;
-import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
-import org.astrogrid.mySpace.delegate.helper.Assist;
 /**
  * Useful little utility for clearing out mySpaces @TODO we probably want this
  * to be in the mySpace component since it uses classes from the mySpace jar
@@ -26,6 +24,7 @@ import org.astrogrid.mySpace.delegate.helper.Assist;
  * depend on the delegate?
  * 
  * @author jdt
+ * @TODO following refactoring of mySpace this needs attention
  */
 public class MySpaceWiper {
     Log log = LogFactory.getLog(MySpaceWiper.class);

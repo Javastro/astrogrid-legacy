@@ -1,5 +1,5 @@
 /*
- * $Id: SimpleMySpaceTest.java,v 1.14 2004/02/24 18:15:48 jdt Exp $ Created on
+ * $Id: SimpleMySpaceTest.java,v 1.1 2004/03/04 19:06:04 jdt Exp $ Created on
  * 28-Dec-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * version 1.2, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.astrogrid.integrationTests.mySpace;
+package org.astrogrid.integrationtest.myspace;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.astrogrid.integrationTests.common.ConfManager;
+import org.astrogrid.integrationtest.common.ConfManager;
 import org.astrogrid.mySpace.delegate.MySpaceClient;
 import org.astrogrid.mySpace.delegate.MySpaceDelegateFactory;
 /**

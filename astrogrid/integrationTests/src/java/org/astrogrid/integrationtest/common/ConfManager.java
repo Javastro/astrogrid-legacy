@@ -1,5 +1,5 @@
 /*
- * $Id: ConfManager.java,v 1.4 2004/03/04 11:44:20 pah Exp $ Created on
+ * $Id: ConfManager.java,v 1.1 2004/03/04 19:06:04 jdt Exp $ Created on
  * 19-Jan-2004 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,7 +8,7 @@
  * version 1.2, a copy of which has been included with this distribution in the
  * LICENSE.txt file.
  */
-package org.astrogrid.integrationTests.common;
+package org.astrogrid.integrationtest.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -139,6 +139,9 @@ public String getJobControllerEndPoint() throws IOException
 
 /*
  * $Log: ConfManager.java,v $
+ * Revision 1.1  2004/03/04 19:06:04  jdt
+ * Package name changed to lower case to satisfy coding standards.  mea culpa - didn't read the Book.  Tx Martin.
+ *
  * Revision 1.4  2004/03/04 11:44:20  pah
  * added jobcontroller endpoint getter
  * made the keys private, so that user is forced to go via the singleton
