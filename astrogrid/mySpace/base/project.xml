@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: project.xml,v 1.6 2005/02/17 16:01:10 jdt Exp $ -->
+<!-- $Id: project.xml,v 1.7 2005/02/18 15:44:08 jdt Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../maven-base/xsd/maven-project.xsd">
-    <extend>${basedir}/../../maven-base/project.xml</extend>
+    <extend>../../maven-base/project.xml</extend>
     <artifactId>astrogrid-mySpace-base</artifactId>
     <currentVersion>${astrogrid.mySpace.version}</currentVersion>
     <name>Astrogrid MySpace Base POM</name>
