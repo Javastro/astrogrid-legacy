@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id: tests-project.xml,v 1.1 2004/03/16 17:48:34 nw Exp $ -->
+<!-- $Id: tests-project.xml,v 1.2 2004/03/17 01:14:21 nw Exp $ -->
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="maven-project.xsd">
-    <extend>../../maven-base/project.xml</extend>
+<!--    <extend>../../maven-base/project.xml</extend> -->
     <id>auto-integration-tests</id>
     <name>Tests for Automated Integration.</name>
     <description>
