@@ -1,4 +1,4 @@
-/*$Id: VizierQuerierTest.java,v 1.9 2004/10/04 11:31:42 mch Exp $
+/*$Id: VizierQuerierTest.java,v 1.1 2004/10/05 16:45:28 mch Exp $
  * Created on 01-Dec-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -8,13 +8,13 @@
  * with this distribution in the LICENSE.txt file.
  *
 **/
-package org.astrogrid.datacenter.cds.querier;
+package org.astrogrid.datacenter.deployment.vizier;
 
 import java.io.StringWriter;
 import org.astrogrid.community.Account;
 import org.astrogrid.config.SimpleConfig;
-import org.astrogrid.datacenter.ServerTestCase;
-import org.astrogrid.datacenter.cds.querier.VizierQuerierPlugin;
+import org.astrogrid.datacenter.impl.cds.VizierQuerierPlugin;
+import org.astrogrid.datacenter.integration.DatacenterTestCase;
 import org.astrogrid.datacenter.metadata.VoResourcePlugin;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierManager;
@@ -30,17 +30,16 @@ import org.w3c.dom.Element;
  * @author Noel Winstanley nw@jb.man.ac.uk 01-Dec-2003
  *
  */
-public class VizierQuerierTest extends ServerTestCase {
+public class VizierQuerierTest extends DatacenterTestCase {
 
 //    protected QuerierSPI spi;
     protected VizierQuerierPlugin spi;
 
     /**
      * Constructor for VizierQuerierTest.
-     * @param arg0
      */
-    public VizierQuerierTest(String arg0) {
-        super(arg0);
+    public VizierQuerierTest() {
+        super();
     }
 
     public static void main(String[] args) {
@@ -85,8 +84,6 @@ public class VizierQuerierTest extends ServerTestCase {
 //
 //    Generate a QuerierManager, generate the query and perform it.
 
-       fail("Repair test");
-       /* COmment out until we get proper pal dependency
        QuerierManager manager = QuerierManager.getManager("DummyTest");
 
        StringWriter sw = new StringWriter();
@@ -119,7 +116,6 @@ public class VizierQuerierTest extends ServerTestCase {
        Element rootElement = results.getDocumentElement();
 //       System.out.println("rootElement: " + rootElement.getTagName() );
        assertEquals(rootElement.getTagName(), "VOTABLE");
-        */
     }
 
 
@@ -174,6 +170,9 @@ public class VizierQuerierTest extends ServerTestCase {
 
 /*
 $Log: VizierQuerierTest.java,v $
+Revision 1.1  2004/10/05 16:45:28  mch
+Moved proxy tests to integration tests from unit tests
+
 Revision 1.9  2004/10/04 11:31:42  mch
 removed test that breaks compile
 

@@ -1,19 +1,19 @@
 <?xml version="1.0" ?>
 <Select xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://tempuri.org/adql">
-	<SelectionAll />
-	<TableClause>
-		<FromClause>
-			<TableReference>
-				<Table>
-					<Name>data</Name>
-					<AliasName>dat</AliasName>
-				</Table>
-			</TableReference>
-		</FromClause>
-				<WhereClause>
+   <SelectionAll />
+   <TableClause>
+      <FromClause>
+         <TableReference>
+            <Table>
+               <Name>data</Name>
+               <AliasName>dat</AliasName>
+            </Table>
+         </TableReference>
+      </FromClause>
+            <WhereClause>
 <IntersectionSearch>
-	<FirstCondition xsi:type="PredicateSearch">
-		        <ComparisonPred>
+   <FirstCondition xsi:type="PredicateSearch">
+              <ComparisonPred>
           <FirstExpr xsi:type="ColumnExpr">
                 <SingleColumnReference>
                   <TableName>dat</TableName>
@@ -23,19 +23,19 @@
           <Compare>=</Compare>
           <SecondExpr xsi:type="AtomExpr">
             <Value>
-            	<StringLiteral>
-            		<Value>
-            			<string>SN 1987A</string>
-            			</Value>
-            	</StringLiteral>
+               <StringLiteral>
+                  <Value>
+                     <string>SN 1987A</string>
+                     </Value>
+               </StringLiteral>
             </Value>
           </SecondExpr>
         </ComparisonPred>
-	</FirstCondition>
-	<SecondCondition xsi:type="IntersectionSearch">
-		<FirstCondition xsi:type="PredicateSearch">
+   </FirstCondition>
+   <SecondCondition xsi:type="IntersectionSearch">
+      <FirstCondition xsi:type="PredicateSearch">
 
-		        <ComparisonPred>
+              <ComparisonPred>
           <FirstExpr xsi:type="ColumnExpr">
                 <SingleColumnReference>
                   <TableName>dat</TableName>
@@ -45,18 +45,18 @@
           <Compare>=</Compare>
           <SecondExpr xsi:type="AtomExpr">
             <Value>
-            	<StringLiteral>
-            		<Value>
-            			<string>arcsec</string>
-            			</Value>
-            	</StringLiteral>
+               <StringLiteral>
+                  <Value>
+                     <string>arcsec</string>
+                     </Value>
+               </StringLiteral>
             </Value>
           </SecondExpr>
-        </ComparisonPred>			
-		</FirstCondition>
-		<SecondCondition xsi:type="PredicateSearch">
+        </ComparisonPred>
+      </FirstCondition>
+      <SecondCondition xsi:type="PredicateSearch">
 
-		        <ComparisonPred>
+              <ComparisonPred>
           <FirstExpr xsi:type="ColumnExpr">
                 <SingleColumnReference>
                   <TableName>dat</TableName>
@@ -66,18 +66,18 @@
           <Compare>=</Compare>
           <SecondExpr xsi:type="AtomExpr">
             <Value>
-            	<StringLiteral>
-            		<Value>
-            			<string>1.5</string>
-            			</Value>
-            	</StringLiteral>
+               <StringLiteral>
+                  <Value>
+                     <string>1.5</string>
+                     </Value>
+               </StringLiteral>
             </Value>
           </SecondExpr>
-        </ComparisonPred>			
-		</SecondCondition>
-	</SecondCondition>	
-</IntersectionSearch>					
+        </ComparisonPred>
+      </SecondCondition>
+   </SecondCondition>
+</IntersectionSearch>
 
-		</WhereClause>
-	</TableClause>
+      </WhereClause>
+   </TableClause>
 </Select>
