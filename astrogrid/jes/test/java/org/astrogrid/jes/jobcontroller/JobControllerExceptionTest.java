@@ -1,4 +1,4 @@
-/* $Id $
+/* $Id: JobControllerExceptionTest.java,v 1.2 2003/11/08 22:00:51 anoncvs Exp $
  * Created on 08-Nov-2003 by John Taylor jdt@roe.ac.uk .
  * 
  * Copyright (C) AstroGrid. All rights reserved.
@@ -56,6 +56,9 @@ public class JobControllerExceptionTest extends TestCase {
 }
 /*
  * $Log: JobControllerExceptionTest.java,v $
+ * Revision 1.2  2003/11/08 22:00:51  anoncvs
+ * Annoying $Id$ tag fixed
+ *
  * Revision 1.1  2003/11/08 21:59:38  anoncvs
  * Initial commit
  *
