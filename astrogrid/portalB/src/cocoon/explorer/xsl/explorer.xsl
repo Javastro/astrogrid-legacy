@@ -2,13 +2,17 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsl/Attic/explorer.xsl,v $</cvs:source>
     | <cvs:date>$Author: clq2 $</cvs:date>
-    | <cvs:author>$Date: 2003/09/19 16:23:23 $</cvs:author>
-    | <cvs:version>$Revision: 1.10 $</cvs:version>
+    | <cvs:author>$Date: 2003/10/03 12:14:37 $</cvs:author>
+    | <cvs:version>$Revision: 1.11 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsl,v $
+    | Revision 1.11  2003/10/03 12:14:37  clq2
+    | added more new functions and Keiven's plot been put back from version 1.09
+    |
     | Revision 1.10  2003/09/19 16:23:23  clq2
     | new functions
-    |
+    | Revision 1.9  2003/09/03 07:47:56  KevinBenson
+    | Finishing up the topcat plugin, still needs a few more testing and has one snag that needs to be resolved, but it is about 90-95% there.
     | Revision 1.8  2003/06/30 14:23:15  dave
     | Disabled access to root node in the tree
     |
@@ -51,6 +55,7 @@
 	    +-->
 	<xsl:param name="explorer-page">explorer</xsl:param>
 	<xsl:param name="votable-page">votable</xsl:param>
+        <xsl:param name="plot-page">plot</xsl:param>
 
 	<!--+
 	    | Match the root element.
@@ -219,7 +224,18 @@
 									<xsl:value-of select="@ident"/>
 								</param>
 							</href>
-						</link>                               
+						</link>                               						<xsl:text> </xsl:text>
+						<link type="action">
+							<display>Plot</display>
+							<href>
+								<base>
+									<xsl:value-of select="$plot-page"/>
+								</base>
+								<param name="url">
+									<xsl:value-of select="current/@uri"/>
+								</param>
+							</href>
+						</link>		
 					</xsl:if>
 				</td>
 			</tr>
@@ -346,7 +362,7 @@
 							</href>
 						</link>
 					</xsl:when>
-					<xsl:when test="@type = '4'">
+	                                 <xsl:when test="@type = '0'">
 						<link type="node">
 							<!-- If this matches the current path -->
 							<xsl:if test="@path = //explorer/view/current/@path">
@@ -354,6 +370,22 @@
 							</xsl:if>
 							<image src="explorer/images/item.icon.gif"/>
 							<text><xsl:value-of select="@name"/></text>
+							<href>
+								<base><xsl:value-of select="$explorer-page"/></base>
+								<param name="action">current-path</param>
+								<param name="AST-VIEW"><xsl:value-of select="//explorer/view/@ident"/></param>
+								<param name="AST-PATH"><xsl:value-of select="@href-path"/></param>
+							</href>
+						</link>
+					</xsl:when>
+					<xsl:when test="@type = '4'">
+						<link type="node">
+							<!-- If this matches the current path -->
+							<xsl:if test="@path = //explorer/view/current/@path">
+								<xsl:attribute name="selected">true</xsl:attribute>
+							</xsl:if>
+							<image src="explorer/images/item.icon.gif"/>
+							<text>abccccc<xsl:value-of select="@name"/></text>
 							<href>
 								<base><xsl:value-of select="$explorer-page"/></base>
 								<param name="action">current-path</param>
