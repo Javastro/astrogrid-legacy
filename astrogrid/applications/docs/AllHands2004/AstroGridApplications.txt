@@ -1,0 +1,43 @@
+Applications Integration within AstroGrid
+
+One of the main aims of the Virtual Observatory (VO) is to be able to run applications in a distributed, asynchronous fashion on data which is similarly distributed. In astronomy, as with other scientific fields, there is a strong need to be able to support legacy applications that implement well trusted algorithms. This paper describes the two AstroGrid components that achieve this aim, namely;
+* The Common Execution Architecture (CEA)
+* The Job Execution System (JES), which includes the workflow component.
+
+CEA
+The CEA is an attempt to create a reasonably small set of interfaces and schema to model how to execute a typical Astronomical application within the VO. In this context an application can be any process that consumes or produces data, so in existing terminology could include 
+* A Unix command line application 
+* A database query 
+* A web service 
+There are a number of motivating factors in the design and creation of this architecture.
+* To create a uniform interface and model for an application and its parameters. This has twin benefits; 
+1.It allows VO infrastructure writers a single model of an application that that have to code for. 
+2.Application writers know what they have to implement to be compatible with a VO Infrastructure. 
+* To provide a higher level description than WSDL 1.1 can offer.  This means that the metadata about the parameters for an application are transported over the single constant (in terms of being described by a single piece of WSDL) web service for all applications. The motivations for doing this are ;
+1.To restrict the almost limitless possibilities allowed by WSDL into a manageable subset. 
+2.To provide specific semantics for some astronomical quantities. 
+3.To provide extra information not allowed in WSDL - e.g. default values, descriptions for use in a GUI etc. 
+* To provide extensions with the VO Resource schema (See the IVOA WG) that can describe a general application in the resource registry.
+* To provide asynchronous operation of an application - This is essential as the call tree that invokes the application cannot be expected to be active for extremely long lasting operations - e.g. a user from a web browser invokes a data-mining operation that takes days 
+1.Provide callback for notification of finishing. 
+2.Provide polling mechanisms for status.
+* To allow for the data flow to not necessarily have to follow the call tree. In a typical application execution the results are returned to the invoking process - In a VO scenario it can be useful if the application can be instructed to pass the results on to a different location.
+
+AstroGrid has created a set of software that implements the CEA, which is documented at http://www.astrogrid.org/maven/docs/snapshot/applications/. The main server components that implement the CommonExecutionConnector web service are called ExecutionControllers and there are currently two specialized adapter controllers for
+Wrapping legacy command line applications in the framework.
+Wrapping legacy GET/POST style HTTP applications in the framework.
+There are plans for a further adapter for other web services themselves as well as the possibility of creating new applications that directly implement the CEA.
+
+JES / Workflow
+The CEA only specifies how to call applications, there is another component with the responsibility for actually organising the order of execution of a sequence of  applications – this is JES (http://www.astrogrid.org/maven/docs/SNAPSHOT/jes/). The job system in AstroGrid is driven from the workflow which has a class structure as shown below.
+
+The unit of execution within the workflow is a Step, which can itself be part of a Sequence (a set of actions performed in series) or a Flow (a set of actions performed in parallel). The Step contains a Tool which is the full CEA description of a particular execution instance of an application. The workflow has an XML representation which makes it easy to manipulate and build workflows with existing tools such and XML editors. This diagram does not in fact show the full complexity of the workflow as it also includes a scripting component known as JEScript which allows control structures such as loops and conditionals to be placed in the workflow.
+
+Interaction between CEA and JES
+The diagram below shows some of the typical interactions that occur between the subcomponents of CEA and JES when a user submits a workflow.
+
+ The user is able to design the workflow in the AstroGrid portal and then submit it to the JobController which will simply queue the job for execution. The JobScheduler will then pick this up and attempt to run each of the steps in the workflow. To execute a particular step the JobScheduler has to query the Registry to find out which ExecutionController can run a particular application. The call to the ExecutionController then occurs in two phases
+* The init phase, where the parameter values are passed and any indirect parameters are copied from a storage service – e.g. MySpace or ftp.
+* The execute phase, where the application is actually run in an asynchronous fashion.
+The JobScheduler knows that a particular application has finished by registering itself as a status listener with the ExecutionController (not shown on the diagram). There can be arbitrary numbers of status listeners and results listeners for a particular execution run of an application.
+
