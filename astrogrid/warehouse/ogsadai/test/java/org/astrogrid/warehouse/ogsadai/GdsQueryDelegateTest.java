@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 public class GdsQueryDelegateTest extends TestCase {
 
   private GdsQueryDelegate gdsQueryDelegate = null;
-  private String output = "file:///tmp/GdsQueryDelegateTest.xml";
+  private String output = "file:///dev/null";
 
   private String testRegistryUrl = 
   // HYDRA
@@ -41,7 +41,6 @@ public class GdsQueryDelegateTest extends TestCase {
     super(name);
   }
 		
-    /*
   public void setUp() {
     try {
       gdsQueryDelegate = new GdsQueryDelegate();
@@ -53,7 +52,6 @@ public class GdsQueryDelegateTest extends TestCase {
 
   public void tearDown() {
   }
-  */
 
   // Test against real warehouse, using good query 1
   public void testDoRealQueryGood1() throws Exception {
@@ -64,7 +62,7 @@ public class GdsQueryDelegateTest extends TestCase {
       fail("doRealQuery() failed: " + e.getMessage());
     }
   }
-/*
+
   // Test against real warehouse, using good query 2
   public void testDoRealQueryGood2() throws Exception {
     try {
@@ -75,6 +73,7 @@ public class GdsQueryDelegateTest extends TestCase {
     }
   }
 
+/*
   // TODO Need diff or assertFile extension to use this
   // Test against real warehouse, checking consistency of query
   public void testDoRealQuerySame() throws Exception {
@@ -105,6 +104,7 @@ public class GdsQueryDelegateTest extends TestCase {
     // NEED DIFF OR SOMETHING HERE
     //assertNotEqual("Got same results for different queries",result1,result2);
   }
+*/
 
   // Test against bogus host in registry url
   public void testDoRealQueryBad1() throws Exception {
@@ -135,5 +135,4 @@ public class GdsQueryDelegateTest extends TestCase {
     }
     catch (Exception e) {}
   }
-  */
 }
