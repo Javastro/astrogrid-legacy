@@ -1,4 +1,4 @@
-/* * $Id: GlueDelegate.java,v 1.1 2003/11/05 20:11:34 gtr Exp $
+/* * $Id: GlueDelegate.java,v 1.2 2003/11/07 15:32:27 gtr Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -6,19 +6,8 @@
 package org.astrogrid.warehouse.delegate;
 
 import electric.registry.Registry;
-
 import java.net.URL;
-/*
-import java.io.IOException;
-import java.net.MalformedURLException;
-*/
-
-
-import org.astrogrid.warehouse.common.QueryStatus;
 import org.w3c.dom.Element;
-//import org.astrogrid.warehouse.service.WarehouseServiceIfcSoapBindingStub;
-//import org.astrogrid.warehouse.service.WarehouseServiceLocator;
-
 import org.astrogrid.warehouse.service.WarehouseServiceIfc;
 
 /**
@@ -187,6 +176,9 @@ public class GlueDelegate implements WarehouseDelegateIfc
 
 /*
 $Log: GlueDelegate.java,v $
+Revision 1.2  2003/11/07 15:32:27  gtr
+Unused import statements were removed.
+
 Revision 1.1  2003/11/05 20:11:34  gtr
 New file to address a warehouse service using the GLUE toolkit.
 C.f. WebDelegate which works with Axis instead.

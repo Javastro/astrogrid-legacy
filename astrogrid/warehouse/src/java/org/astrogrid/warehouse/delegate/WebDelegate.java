@@ -1,4 +1,4 @@
-/* * $Id: WebDelegate.java,v 1.4 2003/10/24 20:11:34 kea Exp $
+/* * $Id: WebDelegate.java,v 1.5 2003/11/07 15:36:32 gtr Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -6,12 +6,6 @@
 package org.astrogrid.warehouse.delegate;
 
 import java.net.URL;
-/*
-import java.io.IOException;
-import java.net.MalformedURLException;
-*/
-
-import org.astrogrid.warehouse.common.QueryStatus;
 import org.w3c.dom.Element;
 import org.astrogrid.warehouse.service.WarehouseServiceIfcSoapBindingStub;
 import org.astrogrid.warehouse.service.WarehouseServiceLocator;
@@ -168,6 +162,9 @@ public class WebDelegate implements WarehouseDelegateIfc
 
 /*
 $Log: WebDelegate.java,v $
+Revision 1.5  2003/11/07 15:36:32  gtr
+Unused import statements were removed.
+
 Revision 1.4  2003/10/24 20:11:34  kea
 More work on webservice to call OGSA-DAI.  This was actually working
 as a webservice but suddenly stopped for no apparent reason;  the

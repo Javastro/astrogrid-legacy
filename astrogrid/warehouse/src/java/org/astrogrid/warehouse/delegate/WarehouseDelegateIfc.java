@@ -1,5 +1,5 @@
 /*
- * $Id: WarehouseDelegateIfc.java,v 1.3 2003/10/08 15:25:35 kea Exp $
+ * $Id: WarehouseDelegateIfc.java,v 1.4 2003/11/07 15:34:48 gtr Exp $
  *
  * (C) Copyright AstroGrid...
  */
@@ -7,8 +7,6 @@
 package org.astrogrid.warehouse.delegate;
 
 import org.w3c.dom.Element;
-import org.astrogrid.warehouse.common.QueryStatus;
-import org.astrogrid.warehouse.delegate.WarehouseException;
 
 /**
  * Delegate interface for sending jobs/queries to a grid-based data warehouse.
@@ -67,6 +65,9 @@ public interface WarehouseDelegateIfc
 
 /*
 $Log: WarehouseDelegateIfc.java,v $
+Revision 1.4  2003/11/07 15:34:48  gtr
+Unused import statements were removed.
+
 Revision 1.3  2003/10/08 15:25:35  kea
 Finalised interface classes required for end IT4 wk 2:
     org.astrogrid.warehouse.delegate.WarehouseDelegateIfc
