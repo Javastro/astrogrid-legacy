@@ -1,11 +1,15 @@
 <?xml version="1.0"?>
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
-    | <cvs:date>$Author: KevinBenson $</cvs:date>
-    | <cvs:author>$Date: 2003/09/12 11:20:05 $</cvs:author>
-    | <cvs:version>$Revision: 1.43 $</cvs:version>
+    | <cvs:date>$Author: dave $</cvs:date>
+    | <cvs:author>$Date: 2003/09/17 19:50:13 $</cvs:author>
+    | <cvs:version>$Revision: 1.44 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.44  2003/09/17 19:50:13  dave
+    | 1) Updated build to add community config.
+    | 2) Updated build to work with community.
+    |
     | Revision 1.43  2003/09/12 11:20:05  KevinBenson
     | *** empty log message ***
     |
@@ -2323,23 +2327,18 @@
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
-		
 		<!-- Copy our jconfig jar -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${jconfig.home}">
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
-		
-		
 		<!-- Copy our Community jar -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${community.home}">
 				<include name="**/*.jar"/>
 			</fileset>
 		</copy>
-		
-		
 		<!-- Copy the Axis client jars -->
 		<copy verbose="false" toDir="build/release/cocoon/webapp/WEB-INF/lib">
 			<fileset dir="${axis.webapp}/WEB-INF/lib">
@@ -2355,6 +2354,31 @@
 		</copy>
 		<!-- Replace the main cocoon sitemap -->
 		<copy verbose="false" file="src/ral/cocoon.xmap" toFile="build/release/cocoon/webapp/sitemap.xmap"/>
+
+		<!-- Copy the portal config -->
+<!-- ZRQ Need to update the community name when we do this ....-->
+		<mkdir dir="build/release/cocoon/webapp/WEB-INF/config"/>
+		<copy verbose="false" file="src/config/config.xml" toDir="build/release/cocoon/webapp/WEB-INF/config"/>
+		<!--+
+			| Modify the Cocoon web.xml, adding our JNDI property
+			| This will default to the settings for the current machine.
+			| Real installs need to modify this to match their config.
+			+-->
+		<xslt style="src/build/config/webapp.xsl"
+		      in="build/release/cocoon/webapp/WEB-INF/web.xml"
+		      out="build/release/cocoon/webapp/WEB-INF/web.new">
+			<outputproperty name="method" value="xml"/>
+			<outputproperty name="indent" value="yes"/>
+			<!-- Set the XSL params -->
+			<param name="property.name"  expression="org.astrogrid.community.config"/>
+			<param name="property.value" expression="${basedir}/build/release/cocoon/webapp/WEB-INF/config/config.xml"/>
+		</xslt>
+		<!-- Replace the web.xml with the new one -->
+		<move  verbose="true"
+			file="build/release/cocoon/webapp/WEB-INF/web.new"
+			toFile="build/release/cocoon/webapp/WEB-INF/web.xml"
+			/>
+
 		<!-- Wrap everything up as a WAR fil -->
 		<jar destfile="build/release/cocoon/cocoon.war"
 		     manifest="build/release/cocoon/webapp/META-INF/MANIFEST.MF"
@@ -2364,44 +2388,17 @@
 		</jar>
 	</target>
 
-	<!-- Build the DataQuery servlets for release as a WAR file  -->
-	<!--
-	<target name="query.release" depends="init, cocoon.init">
-		<delete dir="build/release/DataQuery" failonerror="false"/>
-		<mkdir dir="build/release"/>
-		<mkdir dir="build/release/DataQuery"/>
-		<mkdir dir="build/release/DataQuery/webapp"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/lib"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/classes"/>
-		<mkdir dir="build/release/DataQuery/webapp/WEB-INF/servlets"/>
-		<copy verbose="false" toDir="build/release/DataQuery/webapp/servlets">
-			<fileset dir="src/site/DataQuery">
-				<exclude name="**/CVS/**"/>
-			</fileset>
-		</copy>
-		<antcall target="portal.javac"/>
-		<copy verbose="false" toDir="build/release/DataQuery/webapp/WEB-INF/classes">
-			<fileset dir="build/portal/classes">
-				<include name="**/portal/query/**"/>
-				<include name="**/generated/jobcontroller/**"/>
-				<include name="**/generated/registry/**"/>
-			</fileset>
-		</copy>
-
-		<copy verbose="false" toDir="build/release/DataQuery/webapp/WEB-INF/lib">
-			<fileset dir="${axis.webapp}/WEB-INF/lib">
-				<include name="**/*.jar"/>
-			</fileset>
-		</copy>
-
-		<copy verbose="false" file="src/site/WEB-INF/web.xml" toFile="build/release/DataQuery/webapp/WEB-INF/web.xml"/>
-		<jar destfile="build/release/DataQuery/DataQuery.war">
-			<fileset dir="build/release/DataQuery/webapp">
-			</fileset>
-		</jar>
+	<!-- Install the release webapp into Tomcat -->
+	<target name="cocoon.release.install" depends="tomcat.tasks">
+		<!-- Wait for the Tomcat manager -->
+		<antcall target="tomcat.manager.wait"/>
+		<!-- Install our web-app -->
+		<echo message=""/>
+		<echo message="Installing Cocoon ...."/>
+		<tomcat.install username="${tomcat.manager.username}" password="${tomcat.manager.password}" url="${tomcat.manager.url}" path="/cocoon" war="file://${basedir}/build/release/cocoon/webapp"/>
 	</target>
-	-->
+
+
 	<!-- Install our source tree as a web-app -->
 	<target name="project.webapp.install" depends="tomcat.tasks">
 		<!-- Copy our WEB-INF directory -->
