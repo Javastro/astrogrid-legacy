@@ -296,13 +296,13 @@ h6 {
             <table class="details" border="0" celpadding="5" cellspacing="2" width="95%">
             <tr>
                     <td valign="top"><b>System.out</b></td>
-                <td><pre><xsl:value-of select="system-out" disable-ouput-escaping="yes"/>
-				</pre></td>
+                <td><pre><xsl:value-of select="system-out"/>
+                                </pre></td>
             </tr>
             <tr>
                     <td valign="top"><b>System.err</b></td>
-                <td><pre><xsl:value-of select="system-err" disable-ouput-escaping="yes"/>
-				</pre></td>
+                <td><pre><xsl:value-of select="system-err"/>
+                                </pre></td>
             </tr>
             </table>
             <div class="Properties">
@@ -531,16 +531,16 @@ h6 {
         </table>
 <hr />
 
-        <h2>Packages</h2>	
+        <h2>Packages</h2>
         <table border="0" width="95%">
         <tr>
         <td style="text-align: justify;">
-		<b>Key:</b> <span class="improvement"><nobr>improvement on baseline</nobr></span>, 
-			<span class="change"><nobr>regression and improvement from baseline</nobr></span>,
-				<span class="regression"><nobr>regression from baseline</nobr></span>
+                <b>Key:</b> <span class="improvement"><nobr>improvement on baseline</nobr></span>,
+                        <span class="change"><nobr>regression and improvement from baseline</nobr></span>,
+                                <span class="regression"><nobr>regression from baseline</nobr></span>
         </td>
         </tr>
-        </table>				
+        </table>
         <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
             <xsl:call-template name="testsuite.test.header"/>
             <xsl:for-each select="testsuite[not(./@package = preceding-sibling::testsuite/@package)]">
