@@ -2,10 +2,13 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/Attic/build.xml,v $</cvs:source>
     | <cvs:date>$Author: dave $</cvs:date>
-    | <cvs:author>$Date: 2003/09/18 16:02:09 $</cvs:author>
-    | <cvs:version>$Revision: 1.45 $</cvs:version>
+    | <cvs:author>$Date: 2003/09/24 13:20:21 $</cvs:author>
+    | <cvs:version>$Revision: 1.46 $</cvs:version>
     | <cvs:log>
     | $Log: build.xml,v $
+    | Revision 1.46  2003/09/24 13:20:21  dave
+    | Fixed reference to missing authentication library
+    |
     | Revision 1.45  2003/09/18 16:02:09  dave
     | Fixed community config
     |
@@ -187,7 +190,6 @@
 	<property name="junit.home"   value="build/junit"/>
 	
 	<!-- Community client jar -->
-	<property name="community.policy.client.jar" value="depends/community/policy-client-1.0.jar" />
 	<property name="community.home" value="depends/community/" />
 	
 	<!-- JConfig jar -->
@@ -294,9 +296,10 @@
 	
 	<!-- The Plugin libraries -->
 	<path id="community.classpath">
-		<pathelement location="${community.policy.client.jar}"/>
-	</path>	
-
+		<fileset dir="${community.home}">
+			<include name="**/*.jar"/>
+		</fileset>
+	</path>
 
 	<!-- ================ Ant tasks ================ -->
 	<!-- The Ant libraries -->
