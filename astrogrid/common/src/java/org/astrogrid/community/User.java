@@ -1,5 +1,5 @@
 /*
- * $Id: User.java,v 1.12 2004/02/16 18:26:37 pah Exp $
+ * $Id: User.java,v 1.13 2004/03/05 09:34:47 pah Exp $
  *
  * Created on 27-Nov-2003 by Paul Harrison (pah@jb.man.ac.uk)
  *
@@ -25,6 +25,7 @@ import org.astrogrid.community.common.util.CommunityMessage;
  * @author Paul Harrison (pah@jb.man.ac.uk), mch
  * @version $Name:  $
  * @since iteration4
+ * @deprecated From iteration 5 use @link org.astrogrid.community.beans.v1.Credentials
  */
 public class User {
 
@@ -184,13 +185,16 @@ public class User {
 }
 
 /* $Log: User.java,v $
- * Revision 1.12  2004/02/16 18:26:37  pah
+ * Revision 1.13  2004/03/05 09:34:47  pah
+ * deprecated in favour of using the workflow objects generated bean...
  *
- *
- * 1. This is a bean - it needs a default constructor
- * 2. His idea of what a group was is wrong - this represents an instance of the credentials - a user can only  have present themselves in one group
- * 3. The meanings of terms/methods it is defined in this bean are used throughout jes/mySpace and applicationController - any changes here must be debugged with full integration tests of these three components
- *
+/* Revision 1.12  2004/02/16 18:26:37  pah
+/*
+/*
+/* 1. This is a bean - it needs a default constructor
+/* 2. His idea of what a group was is wrong - this represents an instance of the credentials - a user can only  have present themselves in one group
+/* 3. The meanings of terms/methods it is defined in this bean are used throughout jes/mySpace and applicationController - any changes here must be debugged with full integration tests of these three components
+/*
 /* Revision 1.9  2004/01/09 21:38:13  pah
 /* added new constructor
 /*
