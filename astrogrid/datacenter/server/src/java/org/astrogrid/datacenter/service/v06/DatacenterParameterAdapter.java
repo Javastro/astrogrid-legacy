@@ -1,4 +1,4 @@
-/*$Id: DatacenterParameterAdapter.java,v 1.3 2004/07/22 16:31:22 nw Exp $
+/*$Id: DatacenterParameterAdapter.java,v 1.4 2004/07/27 13:48:33 nw Exp $
  * Created on 13-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -16,7 +16,7 @@ import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.DefaultParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterAdapter;
 import org.astrogrid.applications.parameter.ParameterWriteBackException;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
 import org.astrogrid.io.Piper;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
      * @param arg1
      * @param arg2
      */
-    public DatacenterParameterAdapter(ParameterValue arg0, ParameterDescription arg1, IndirectParameterValue arg2) {
+    public DatacenterParameterAdapter(ParameterValue arg0, ParameterDescription arg1, ExternalValue arg2) {
         super(arg0, arg1, arg2);
     }
         
@@ -46,14 +46,14 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
     public void writeBack(Object arg0) throws CeaException {
         CEATargetIndicator ti = (CEATargetIndicator) arg0;
         try {
-            if (this.indirectVal == null) {
+            if (this.externalVal == null) {
                 StringWriter sw = new StringWriter();
                 Reader r = new InputStreamReader(ti.getStream());
                 Piper.pipe(r,sw);
                 val.setValue(sw.toString());
             } else {
                 InputStream is = ti.getStream();
-                OutputStream os = indirectVal.write();
+                OutputStream os = externalVal.write();
                 Piper.pipe(is,os);
                 os.close();
                 
@@ -68,6 +68,10 @@ public class DatacenterParameterAdapter extends DefaultParameterAdapter implemen
 
 /* 
 $Log: DatacenterParameterAdapter.java,v $
+Revision 1.4  2004/07/27 13:48:33  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+
 Revision 1.3  2004/07/22 16:31:22  nw
 cleaned up application / parameter adapter interface.
 

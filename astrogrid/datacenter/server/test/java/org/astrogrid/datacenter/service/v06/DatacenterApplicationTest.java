@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationTest.java,v 1.2 2004/07/20 02:15:05 nw Exp $
+/*$Id: DatacenterApplicationTest.java,v 1.3 2004/07/27 13:48:33 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -24,7 +24,7 @@ import org.astrogrid.applications.description.base.ApplicationDescriptionEnviron
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
 import org.astrogrid.applications.manager.observer.AbstractProgressListener;
 import org.astrogrid.applications.manager.observer.AbstractResultsListener;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.community.User;
 import org.astrogrid.config.Config;
 import org.astrogrid.config.SimpleConfig;
@@ -74,7 +74,7 @@ public class DatacenterApplicationTest extends ServerTestCase {
         super.setUp();
         ds = new DataServer();
         SimpleConfig.setProperty(QuerierPluginFactory.PLUGIN_KEY,PrecannedPlugin.class.getName());
-        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultIndirectionProtocolLibrary());
+        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
         appDesc = new DatacenterApplicationDescription("test",ds,env);
         user = new User();
         tool = new Tool();
@@ -223,6 +223,10 @@ public class DatacenterApplicationTest extends ServerTestCase {
 
 /* 
 $Log: DatacenterApplicationTest.java,v $
+Revision 1.3  2004/07/27 13:48:33  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+
 Revision 1.2  2004/07/20 02:15:05  nw
 final implementaiton of itn06 Datacenter CEA interface
 

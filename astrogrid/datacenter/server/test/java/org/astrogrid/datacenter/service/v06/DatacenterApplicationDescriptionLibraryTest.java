@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.2 2004/07/20 02:15:05 nw Exp $
+/*$Id: DatacenterApplicationDescriptionLibraryTest.java,v 1.3 2004/07/27 13:48:33 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -15,8 +15,7 @@ import org.astrogrid.applications.description.ApplicationDescriptionLibrary;
 import org.astrogrid.applications.description.base.ApplicationDescriptionEnvironment;
 import org.astrogrid.applications.description.exception.ApplicationDescriptionNotFoundException;
 import org.astrogrid.applications.manager.idgen.InMemoryIdGen;
-import org.astrogrid.applications.parameter.indirect.DefaultIndirectionProtocolLibrary;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.DefaultProtocolLibrary;
 import org.astrogrid.datacenter.service.DataServer;
 
 import junit.framework.TestCase;
@@ -39,7 +38,7 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         dataServer = new DataServer();
-        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultIndirectionProtocolLibrary());
+        env = new ApplicationDescriptionEnvironment(new InMemoryIdGen(),new DefaultProtocolLibrary());
         DatacenterApplicationDescriptionLibrary.DatacenterMetadata md = new DatacenterApplicationDescriptionLibrary.DatacenterMetadata() {
             public String getName() {
                 return "testdsa";
@@ -61,6 +60,10 @@ public class DatacenterApplicationDescriptionLibraryTest extends TestCase {
 }
 /* 
 $Log: DatacenterApplicationDescriptionLibraryTest.java,v $
+Revision 1.3  2004/07/27 13:48:33  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+
 Revision 1.2  2004/07/20 02:15:05  nw
 final implementaiton of itn06 Datacenter CEA interface
 

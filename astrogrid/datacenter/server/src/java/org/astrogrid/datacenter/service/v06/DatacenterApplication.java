@@ -1,4 +1,4 @@
-/*$Id: DatacenterApplication.java,v 1.3 2004/07/22 16:31:22 nw Exp $
+/*$Id: DatacenterApplication.java,v 1.4 2004/07/27 13:48:33 nw Exp $
  * Created on 12-Jul-2004
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -17,8 +17,8 @@ import org.astrogrid.applications.beans.v1.parameters.ParameterValue;
 import org.astrogrid.applications.description.ApplicationInterface;
 import org.astrogrid.applications.description.ParameterDescription;
 import org.astrogrid.applications.parameter.ParameterAdapter;
-import org.astrogrid.applications.parameter.indirect.IndirectParameterValue;
-import org.astrogrid.applications.parameter.indirect.IndirectionProtocolLibrary;
+import org.astrogrid.applications.parameter.protocol.ExternalValue;
+import org.astrogrid.applications.parameter.protocol.ProtocolLibrary;
 import org.astrogrid.community.Account;
 import org.astrogrid.datacenter.queriers.Querier;
 import org.astrogrid.datacenter.queriers.QuerierListener;
@@ -57,7 +57,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      * @param arg2
      * @param arg3
      */
-    public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, IndirectionProtocolLibrary arg3,DataServer serv) {
+    public DatacenterApplication(IDs ids, Tool tool, ApplicationInterface interf, ProtocolLibrary arg3,DataServer serv) {
         super(ids, tool,interf, arg3);
         this.serv = serv;
         this.acc = new Account(ids.getUser().getUserId(),ids.getUser().getCommunity(),ids.getUser().getToken());
@@ -206,7 +206,7 @@ public class DatacenterApplication extends AbstractApplication implements Querie
      * @see org.astrogrid.applications.AbstractApplication#instantiateAdapter(org.astrogrid.applications.beans.v1.parameters.ParameterValue, org.astrogrid.applications.description.ParameterDescription, org.astrogrid.applications.parameter.indirect.IndirectParameterValue)
      */
     protected ParameterAdapter instantiateAdapter(ParameterValue arg0,
-            ParameterDescription arg1, IndirectParameterValue arg2) {
+            ParameterDescription arg1, ExternalValue arg2) {
         return new DatacenterParameterAdapter(arg0, arg1, arg2);
     }
 
@@ -215,6 +215,10 @@ public class DatacenterApplication extends AbstractApplication implements Querie
 
 /* 
 $Log: DatacenterApplication.java,v $
+Revision 1.4  2004/07/27 13:48:33  nw
+renamed indirect package to protocol,
+renamed classes and methods within protocol package
+
 Revision 1.3  2004/07/22 16:31:22  nw
 cleaned up application / parameter adapter interface.
 
