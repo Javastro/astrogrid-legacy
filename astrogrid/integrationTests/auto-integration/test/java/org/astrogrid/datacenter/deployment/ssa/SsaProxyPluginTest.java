@@ -1,4 +1,4 @@
-/*$Id: SsaProxyPluginTest.java,v 1.2 2004/10/13 01:31:34 mch Exp $
+/*$Id: SsaProxyPluginTest.java,v 1.3 2004/10/16 14:16:02 mch Exp $
  * Created on 04-Sep-2003
  *
  * Copyright (C) AstroGrid. All rights reserved.
@@ -90,11 +90,11 @@ public class SsaProxyPluginTest extends TestCase {
       log.info("Checking results...");
       String s = sw.toString();
       System.out.println(s);
-      Document results = DomHelper.newDocument(s);
-      //assertIsVotable(results);
-      long numResults = results.getElementsByTagName("TR").getLength();
-      log.info("Number of results = "+numResults);
-//    assertTrue(numResults > 0);
+         Document results = DomHelper.newDocument(s);
+         //assertIsVotable(results);
+         long numResults = results.getElementsByTagName("TR").getLength();
+         log.info("Number of results = "+numResults);
+   //    assertTrue(numResults > 0);
       return results;
    }
 
@@ -119,6 +119,9 @@ public class SsaProxyPluginTest extends TestCase {
       //assertIsVotable(results);
       long numResults = results.getElementsByTagName("TR").getLength();
       log.info("Number of results = "+numResults);
+      if (results.getElementsByTagName("html").getLength()>0) {
+         fail("SSA Server returned: "+sw);
+      }
    }
    
    
@@ -150,6 +153,9 @@ public class SsaProxyPluginTest extends TestCase {
 
 /*
  $Log: SsaProxyPluginTest.java,v $
+ Revision 1.3  2004/10/16 14:16:02  mch
+ Added check for SSa server error
+
  Revision 1.2  2004/10/13 01:31:34  mch
  Added screen dump of returned values.  Need to add better check
 
