@@ -1,9 +1,10 @@
 /*
- * $Id: LocalFileStore.java,v 1.4 2004/03/02 11:53:35 mch Exp $
+ * $Id: LocalFileStore.java,v 1.1 2004/03/04 12:51:31 mch Exp $
  *
  */
 
-package org.astrogrid.store.delegate;
+package org.astrogrid.store.delegate.local;
+import org.astrogrid.store.delegate.*;
 
 import java.io.*;
 
@@ -335,6 +336,9 @@ public class LocalFileStore implements StoreClient
 
 /*
 $Log: LocalFileStore.java,v $
+Revision 1.1  2004/03/04 12:51:31  mch
+Moved delegate implementations into subpackages
+
 Revision 1.4  2004/03/02 11:53:35  mch
 Fixes to copy and move tests
 

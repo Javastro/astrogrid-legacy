@@ -1,10 +1,11 @@
 /*
- $Id: FtpStore.java,v 1.2 2004/03/01 22:38:46 mch Exp $
+ $Id: FtpStore.java,v 1.1 2004/03/04 12:51:31 mch Exp $
 
  (c) Copyright...
  */
 
-package org.astrogrid.store.delegate;
+package org.astrogrid.store.delegate.ftp;
+import org.astrogrid.store.delegate.*;
 
 import java.io.*;
 

@@ -1,10 +1,11 @@
 /*
- * $Id: LocalFile.java,v 1.1 2004/03/01 22:38:46 mch Exp $
+ * $Id: LocalFile.java,v 1.1 2004/03/04 12:51:31 mch Exp $
  *
  * (C) Copyright Astrogrid...
  */
 
-package org.astrogrid.store.delegate;
+package org.astrogrid.store.delegate.local;
+import org.astrogrid.store.delegate.*;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -117,6 +118,9 @@ public class LocalFile implements StoreFile
 
 /*
 $Log: LocalFile.java,v $
+Revision 1.1  2004/03/04 12:51:31  mch
+Moved delegate implementations into subpackages
+
 Revision 1.1  2004/03/01 22:38:46  mch
 Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 

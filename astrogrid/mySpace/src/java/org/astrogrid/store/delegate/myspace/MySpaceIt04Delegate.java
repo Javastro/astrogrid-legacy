@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceIt04Delegate.java,v 1.2 2004/03/02 01:27:00 mch Exp $
+ * $Id: MySpaceIt04Delegate.java,v 1.1 2004/03/04 12:51:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,8 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.store.delegate;
+package org.astrogrid.store.delegate.myspace;
+import org.astrogrid.store.delegate.*;
 
 
 
@@ -363,6 +364,9 @@ public class MySpaceIt04Delegate implements StoreClient
 
 /*
 $Log: MySpaceIt04Delegate.java,v $
+Revision 1.1  2004/03/04 12:51:31  mch
+Moved delegate implementations into subpackages
+
 Revision 1.2  2004/03/02 01:27:00  mch
 Minor fixes
 

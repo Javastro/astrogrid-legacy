@@ -1,5 +1,5 @@
 /*
- * $Id: MySpaceFolder.java,v 1.4 2004/03/01 22:38:46 mch Exp $
+ * $Id: MySpaceFolder.java,v 1.1 2004/03/04 12:51:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -7,7 +7,8 @@
  * a copy of which has been included with this distribution in the LICENSE.txt file.
  */
 
-package org.astrogrid.store.delegate;
+package org.astrogrid.store.delegate.myspace;
+import org.astrogrid.store.delegate.*;
 
 import java.net.MalformedURLException;
 import java.util.Hashtable;
@@ -115,6 +116,9 @@ public class MySpaceFolder implements StoreFile {
 
 /*
  $Log: MySpaceFolder.java,v $
+ Revision 1.1  2004/03/04 12:51:31  mch
+ Moved delegate implementations into subpackages
+
  Revision 1.4  2004/03/01 22:38:46  mch
  Part II of copy from It4.1 datacenter + updates from myspace meetings + test fixes
 

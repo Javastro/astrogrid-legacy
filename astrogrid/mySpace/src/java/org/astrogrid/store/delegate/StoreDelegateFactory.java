@@ -1,5 +1,5 @@
 /*
- * $Id: StoreDelegateFactory.java,v 1.5 2004/03/02 00:15:39 mch Exp $
+ * $Id: StoreDelegateFactory.java,v 1.6 2004/03/04 12:51:31 mch Exp $
  *
  * Copyright 2003 AstroGrid. All rights reserved.
  *
@@ -8,6 +8,9 @@
  */
 
 package org.astrogrid.store.delegate;
+import org.astrogrid.store.delegate.myspace.*;
+import org.astrogrid.store.delegate.local.*;
+import org.astrogrid.store.delegate.ftp.*;
 
 
 import java.io.IOException;
@@ -50,6 +53,9 @@ public class StoreDelegateFactory
 
 /*
 $Log: StoreDelegateFactory.java,v $
+Revision 1.6  2004/03/04 12:51:31  mch
+Moved delegate implementations into subpackages
+
 Revision 1.5  2004/03/02 00:15:39  mch
 Renamed MyspaceIt04Delegate from misleading ServerDelegate
 
