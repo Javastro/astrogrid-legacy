@@ -488,7 +488,7 @@ public class RegistrySetup {
       //d = new BufferedReader(new InputStreamReader(System.in));
       while(accessURL == null || accessURL.trim().length() <= 0) {
          System.out.println("What is the AccessURL for the registry. Needs to be a WSDL for a WebService type (currently this installer does not check though that it is a wsdl)?");
-         System.out.println("Example is this, but DO NOT use loacalhost ex: http://localhost:8080/astrogrid-registry-webapp/services/RegistryHarvest?wsdl")         
+         System.out.println("Example is this, but DO NOT use loacalhost ex: http://localhost:8080/astrogrid-registry-webapp/services/RegistryHarvest?wsdl");         
          accessURL = d.readLine();
       }
       //d.close();
