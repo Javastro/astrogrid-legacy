@@ -4,12 +4,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="maven-project.xsd">
 
+    <extend>../../maven-base/project.xml</extend>
+
     <id>astrogrid-security-sample</id>
     <groupId>org.astrogrid</groupId>
 
     <name>AstroGrid security sample service and client</name>
 
-    <package>org.astrogrid.security.sampleservice</package>
+    <package>org.astrogrid.security.sample</package>
 
     <shortDescription>
         A minimal web-service to exercise the security library.
@@ -18,7 +20,7 @@
     <description>
         <![CDATA[
             <p>
-            This project generates a simple web-server that supports
+            This project generates a simple web-service that supports
             AstroGrid's security infrastructure.  The service can be used
             to test the security libraries.
             </p>
@@ -27,10 +29,10 @@
 
     <repository>
         <connection>
-            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/security/sampleservice
+            scm:cvs:pserver:anoncvs@cvs.astrogrid.org:/devel:astrogrid/security/sample
         </connection>
         <developerConnection>
-            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/security/sampleservice
+            scm:cvs:ext:${maven.username}@cvs.astrogrid.org:/devel:astrogrid/security/sample
         </developerConnection>
     </repository>
 
