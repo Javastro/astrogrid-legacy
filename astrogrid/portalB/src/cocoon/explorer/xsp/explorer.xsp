@@ -2,12 +2,12 @@
 <!--+
     | <cvs:source>$Source: /Users/pharriso/Work/ag/repo/git/astrogrid-mirror/astrogrid/portalB/src/cocoon/explorer/xsp/Attic/explorer.xsp,v $</cvs:source>
     | <cvs:date>$Author: clq2 $</cvs:date>
-    | <cvs:author>$Date: 2003/09/19 16:24:30 $</cvs:author>
-    | <cvs:version>$Revision: 1.5 $</cvs:version>
+    | <cvs:author>$Date: 2003/10/03 12:32:54 $</cvs:author>
+    | <cvs:version>$Revision: 1.6 $</cvs:version>
     | <cvs:log>
     | $Log: explorer.xsp,v $
-    | Revision 1.5  2003/09/19 16:24:30  clq2
-    | new functions
+    | Revision 1.6  2003/10/03 12:32:54  clq2
+    | added new services addresses
     |
     | Revision 1.4  2003/07/03 15:17:17  dave
     | Updated list of MySpace services for demo
@@ -127,8 +127,13 @@
 			<services>
                                <xsp:element name="service">
                                        <xsp:attribute name="default">true</xsp:attribute>
-                                        <xsp:attribute name="name">Localhost </xsp:attribute>
-                                        <xsp:attribute name="url">http://localhost:8080/axis/services/MySpaceManager</xsp:attribute>
+                                       <xsp:attribute name="name">UML01MySpace(Leicester)</xsp:attribute>
+                                        <xsp:attribute name="url">http://143.210.36.173:8080/axis/services/MySpaceManager</xsp:attribute>
+                                </xsp:element>
+
+                               <xsp:element name="service">
+                                        <xsp:attribute name="name">QINDev</xsp:attribute>
+                                        <xsp:attribute name="url">http://143.210.36.131:8080/axis/services/MySpaceManager</xsp:attribute>
                                 </xsp:element>
 
 
