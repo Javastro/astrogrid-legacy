@@ -11,7 +11,9 @@
       </menu>
       <menu name="Query">
      	<item name="Query the Datacenter" href="query-form.html" />
+		<item name="Sample Queries" href="adql" />
         <item name="XML Schema" href="schema.html" />
+
     </menu>
 
    <menu name="Develop">

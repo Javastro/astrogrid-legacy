@@ -14,13 +14,19 @@ How to report bugs (BugZilla, content etc)
 <section name="Iteration 4 Datacenter Release"><p>
 
 <subsection name="Functionality Supported"><p>
-fill in
+Querying datacenters via ADQL and region searches.
 </p></subsection>
 <subsection name="Known bugs and Omissions"><p>
-fill in
+None known.
 </p></subsection>
 <subsection name="Reporting Bugs"><p>
-fill in.
+
+Submit bugs to <a href="http://www.astrogrid.org/bugzilla/enter_bug.cgi">astrogrid's bugzilla</a>
+Before filing a bug, we suggest you run the installation tests to verify that your system is correctly
+configured.
+<p />
+Please include any error output or logs in the bug report, along with the server endpoint URL and version of the
+datacenter server you have installed.
 </p></subsection>
 
 </p></section>
