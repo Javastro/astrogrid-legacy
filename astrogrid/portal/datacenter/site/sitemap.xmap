@@ -11,7 +11,7 @@
     | the accompanying documentation. The sitemaps which come with each
     | sample and each block will help to explain.
     |
-    | CVS $Id: sitemap.xmap,v 1.9 2004/04/19 08:54:39 gps Exp $
+    | CVS $Id: sitemap.xmap,v 1.10 2004/07/06 13:04:20 jl99 Exp $
     +-->
 <map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
 
@@ -105,7 +105,7 @@
           | AstroGrid Actions.
           +-->
       <!--
-        Save ADQL to MySpace from a form.
+        Save ADQL to MySpace from a form..
         -->
       <map:action
           name="save-adql"
