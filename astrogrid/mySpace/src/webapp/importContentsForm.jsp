@@ -43,9 +43,8 @@ the file into a text box, below.
 
   <tr>
     <td>Contents:</td>
-    <td><input name="contents" type="text"
-      value="The Snark was a Boojum, you see." 
-      size=60></td>
+    <td><textarea name="contents"
+          size="60" rows="10">The Snark was a Boojum, you see.</textarea></td>
   </tr>
 
   <tr>
